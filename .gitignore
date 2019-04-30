@@ -44,3 +44,5 @@ bld/
 *.nuget.targets
 
 quotes.txt.dat
+
+ElectronUI/

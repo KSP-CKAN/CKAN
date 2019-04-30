@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(MainModInfo));
             this.ModInfoTabControl = new System.Windows.Forms.TabControl();
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -109,8 +111,8 @@
             this.MetadataTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.MetadataTabPage.Size = new System.Drawing.Size(354, 502);
             this.MetadataTabPage.TabIndex = 0;
-            this.MetadataTabPage.Text = "Metadata";
             this.MetadataTabPage.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.MetadataTabPage, "MetadataTabPage");
             //
             // splitContainer2
             //
@@ -159,12 +161,12 @@
             this.MetadataModuleNameTextBox.Name = "MetadataModuleNameTextBox";
             this.MetadataModuleNameTextBox.Size = new System.Drawing.Size(340, 46);
             this.MetadataModuleNameTextBox.TabIndex = 0;
-            this.MetadataModuleNameTextBox.Text = "Mod Name";
             this.MetadataModuleNameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.MetadataModuleNameTextBox.ReadOnly = true;
             this.MetadataModuleNameTextBox.BackColor = MetaDataUpperLayoutPanel.BackColor;
             this.MetadataModuleNameTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.MetadataModuleNameTextBox, "MetadataModuleNameTextBox");
             //
             // MetadataModuleAbstractLabel
             //
@@ -245,7 +247,7 @@
             this.IdentifierLabel.Name = "IdentifierLabel";
             this.IdentifierLabel.Size = new System.Drawing.Size(84, 20);
             this.IdentifierLabel.TabIndex = 28;
-            this.IdentifierLabel.Text = "Identifier:";
+            resources.ApplyResources(this.IdentifierLabel, "IdentifierLabel");
             //
             // MetadataIdentifierTextBox
             //
@@ -255,11 +257,11 @@
             this.MetadataIdentifierTextBox.Name = "MetadataIdentifierTextBox";
             this.MetadataIdentifierTextBox.Size = new System.Drawing.Size(250, 20);
             this.MetadataIdentifierTextBox.TabIndex = 27;
-            this.MetadataIdentifierTextBox.Text = "-";
             this.MetadataIdentifierTextBox.ReadOnly = true;
             this.MetadataIdentifierTextBox.BackColor = MetadataTabPage.BackColor;
             this.MetadataIdentifierTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataIdentifierTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.MetadataIdentifierTextBox, "MetadataIdentifierTextBox");
             //
             // ReplacementLabel
             //
@@ -270,7 +272,7 @@
             this.ReplacementLabel.Name = "ReplacementLabel";
             this.ReplacementLabel.Size = new System.Drawing.Size(84, 20);
             this.ReplacementLabel.TabIndex = 28;
-            this.ReplacementLabel.Text = "Replaced by:";
+            resources.ApplyResources(this.ReplacementLabel, "ReplacementLabel");
             //
             // ReplacementTextBox
             //
@@ -280,11 +282,11 @@
             this.ReplacementTextBox.Name = "ReplacementTextBox";
             this.ReplacementTextBox.Size = new System.Drawing.Size(250, 20);
             this.ReplacementTextBox.TabIndex = 27;
-            this.ReplacementTextBox.Text = "-";
             this.ReplacementTextBox.ReadOnly = true;
             this.ReplacementTextBox.BackColor = MetadataTabPage.BackColor;
             this.ReplacementTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ReplacementTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.ReplacementTextBox, "ReplacementTextBox");
             //
             // KSPCompatibilityLabel
             //
@@ -295,7 +297,7 @@
             this.KSPCompatibilityLabel.Name = "KSPCompatibilityLabel";
             this.KSPCompatibilityLabel.Size = new System.Drawing.Size(84, 30);
             this.KSPCompatibilityLabel.TabIndex = 13;
-            this.KSPCompatibilityLabel.Text = "Max KSP ver.:";
+            resources.ApplyResources(this.KSPCompatibilityLabel, "KSPCompatibilityLabel");
             //
             // ReleaseLabel
             //
@@ -306,7 +308,7 @@
             this.ReleaseLabel.Name = "ReleaseLabel";
             this.ReleaseLabel.Size = new System.Drawing.Size(84, 30);
             this.ReleaseLabel.TabIndex = 12;
-            this.ReleaseLabel.Text = "Release status:";
+            resources.ApplyResources(this.ReleaseLabel, "ReleaseLabel");
             //
             // GitHubLabel
             //
@@ -317,7 +319,7 @@
             this.GitHubLabel.Name = "GitHubLabel";
             this.GitHubLabel.Size = new System.Drawing.Size(84, 30);
             this.GitHubLabel.TabIndex = 10;
-            this.GitHubLabel.Text = "Source code:";
+            resources.ApplyResources(this.GitHubLabel, "GitHubLabel");
             //
             // HomePageLabel
             //
@@ -328,7 +330,7 @@
             this.HomePageLabel.Name = "HomePageLabel";
             this.HomePageLabel.Size = new System.Drawing.Size(84, 30);
             this.HomePageLabel.TabIndex = 7;
-            this.HomePageLabel.Text = "Home page:";
+            resources.ApplyResources(this.HomePageLabel, "HomePageLabel");
             //
             // AuthorLabel
             //
@@ -339,7 +341,7 @@
             this.AuthorLabel.Name = "AuthorLabel";
             this.AuthorLabel.Size = new System.Drawing.Size(84, 30);
             this.AuthorLabel.TabIndex = 5;
-            this.AuthorLabel.Text = "Author:";
+            resources.ApplyResources(this.AuthorLabel, "AuthorLabel");
             //
             // LicenseLabel
             //
@@ -350,7 +352,7 @@
             this.LicenseLabel.Name = "LicenseLabel";
             this.LicenseLabel.Size = new System.Drawing.Size(84, 30);
             this.LicenseLabel.TabIndex = 3;
-            this.LicenseLabel.Text = "License:";
+            resources.ApplyResources(this.LicenseLabel, "LicenseLabel");
             //
             // MetadataModuleVersionTextBox
             //
@@ -360,11 +362,11 @@
             this.MetadataModuleVersionTextBox.Name = "MetadataModuleVersionTextBox";
             this.MetadataModuleVersionTextBox.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleVersionTextBox.TabIndex = 2;
-            this.MetadataModuleVersionTextBox.Text = "0.0.0";
             this.MetadataModuleVersionTextBox.ReadOnly = true;
             this.MetadataModuleVersionTextBox.BackColor = MetadataTabPage.BackColor;
             this.MetadataModuleVersionTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleVersionTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.MetadataModuleVersionTextBox, "MetadataModuleVersionTextBox");
             //
             // MetadataModuleLicenseTextBox
             //
@@ -374,11 +376,11 @@
             this.MetadataModuleLicenseTextBox.Name = "MetadataModuleLicenseTextBox";
             this.MetadataModuleLicenseTextBox.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleLicenseTextBox.TabIndex = 4;
-            this.MetadataModuleLicenseTextBox.Text = "None";
             this.MetadataModuleLicenseTextBox.ReadOnly = true;
             this.MetadataModuleLicenseTextBox.BackColor = MetadataTabPage.BackColor;
             this.MetadataModuleLicenseTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleLicenseTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.MetadataModuleLicenseTextBox, "MetadataModuleLicenseTextBox");
             //
             // MetadataModuleAuthorTextBox
             //
@@ -388,11 +390,11 @@
             this.MetadataModuleAuthorTextBox.Name = "MetadataModuleAuthorTextBox";
             this.MetadataModuleAuthorTextBox.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleAuthorTextBox.TabIndex = 6;
-            this.MetadataModuleAuthorTextBox.Text = "Nobody";
             this.MetadataModuleAuthorTextBox.ReadOnly = true;
             this.MetadataModuleAuthorTextBox.BackColor = MetadataTabPage.BackColor;
             this.MetadataModuleAuthorTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.MetadataModuleAuthorTextBox, "MetadataModuleAuthorTextBox");
             //
             // VersionLabel
             //
@@ -403,7 +405,7 @@
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Size = new System.Drawing.Size(84, 30);
             this.VersionLabel.TabIndex = 1;
-            this.VersionLabel.Text = "Version:";
+            resources.ApplyResources(this.VersionLabel, "VersionLabel");
             //
             // MetadataModuleReleaseStatusTextBox
             //
@@ -413,11 +415,11 @@
             this.MetadataModuleReleaseStatusTextBox.Name = "MetadataModuleReleaseStatusTextBox";
             this.MetadataModuleReleaseStatusTextBox.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleReleaseStatusTextBox.TabIndex = 11;
-            this.MetadataModuleReleaseStatusTextBox.Text = "Stable";
             this.MetadataModuleReleaseStatusTextBox.ReadOnly = true;
             this.MetadataModuleReleaseStatusTextBox.BackColor = MetadataTabPage.BackColor;
             this.MetadataModuleReleaseStatusTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleReleaseStatusTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.MetadataModuleReleaseStatusTextBox, "MetadataModuleReleaseStatusTextBox");
             //
             // MetadataModuleHomePageLinkLabel
             //
@@ -438,11 +440,11 @@
             this.MetadataModuleKSPCompatibilityTextBox.Name = "MetadataModuleKSPCompatibilityTextBox";
             this.MetadataModuleKSPCompatibilityTextBox.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleKSPCompatibilityTextBox.TabIndex = 14;
-            this.MetadataModuleKSPCompatibilityTextBox.Text = "0.0.0";
             this.MetadataModuleKSPCompatibilityTextBox.ReadOnly = true;
             this.MetadataModuleKSPCompatibilityTextBox.BackColor = MetadataTabPage.BackColor;
             this.MetadataModuleKSPCompatibilityTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleKSPCompatibilityTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.MetadataModuleKSPCompatibilityTextBox, "MetadataModuleKSPCompatibilityTextBox");
             //
             // MetadataModuleGitHubLinkLabel
             //
@@ -473,8 +475,8 @@
             this.RelationshipTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.RelationshipTabPage.Size = new System.Drawing.Size(354, 502);
             this.RelationshipTabPage.TabIndex = 1;
-            this.RelationshipTabPage.Text = "Relationships";
             this.RelationshipTabPage.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.RelationshipTabPage, "RelationshipTabPage");
             //
             // DependsGraphTree
             //
@@ -544,31 +546,31 @@
             //
             this.LegendDependsLabel.AutoSize = true;
             this.LegendDependsLabel.Location = new System.Drawing.Point(24, 3);
-            this.LegendDependsLabel.Text = "Depends";
+            resources.ApplyResources(this.LegendDependsLabel, "LegendDependsLabel");
             //
             // LegendRecommendsLabel
             //
             this.LegendRecommendsLabel.AutoSize = true;
             this.LegendRecommendsLabel.Location = new System.Drawing.Point(24, 21);
-            this.LegendRecommendsLabel.Text = "Recommends";
+            resources.ApplyResources(this.LegendRecommendsLabel, "LegendRecommendsLabel");
             //
             // LegendSuggestsLabel
             //
             this.LegendSuggestsLabel.AutoSize = true;
             this.LegendSuggestsLabel.Location = new System.Drawing.Point(24, 39);
-            this.LegendSuggestsLabel.Text = "Suggests";
+            resources.ApplyResources(this.LegendSuggestsLabel, "LegendSuggestsLabel");
             //
             // LegendSupportsLabel
             //
             this.LegendSupportsLabel.AutoSize = true;
             this.LegendSupportsLabel.Location = new System.Drawing.Point(24, 57);
-            this.LegendSupportsLabel.Text = "Supports";
+            resources.ApplyResources(this.LegendSupportsLabel, "LegendSupportsLabel");
             //
             // LegendConflictsLabel
             //
             this.LegendConflictsLabel.AutoSize = true;
             this.LegendConflictsLabel.Location = new System.Drawing.Point(24, 75);
-            this.LegendConflictsLabel.Text = "Conflicts";
+            resources.ApplyResources(this.LegendConflictsLabel, "LegendConflictsLabel");
             //
             // ContentTabPage
             //
@@ -580,8 +582,8 @@
             this.ContentTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.ContentTabPage.Size = new System.Drawing.Size(354, 502);
             this.ContentTabPage.TabIndex = 2;
-            this.ContentTabPage.Text = "Contents";
             this.ContentTabPage.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.ContentTabPage, "ContentTabPage");
             //
             // ContentsPreviewTree
             //
@@ -602,9 +604,9 @@
             this.ContentsDownloadButton.Name = "ContentsDownloadButton";
             this.ContentsDownloadButton.Size = new System.Drawing.Size(103, 23);
             this.ContentsDownloadButton.TabIndex = 1;
-            this.ContentsDownloadButton.Text = "Download";
             this.ContentsDownloadButton.UseVisualStyleBackColor = true;
             this.ContentsDownloadButton.Click += new System.EventHandler(this.ContentsDownloadButton_Click);
+            resources.ApplyResources(this.ContentsDownloadButton, "ContentsDownloadButton");
             //
             // NotCachedLabel
             //
@@ -612,7 +614,7 @@
             this.NotCachedLabel.Name = "NotCachedLabel";
             this.NotCachedLabel.Size = new System.Drawing.Size(216, 30);
             this.NotCachedLabel.TabIndex = 0;
-            this.NotCachedLabel.Text = "This mod is not in the cache, click \'Download\' to preview contents";
+            resources.ApplyResources(this.NotCachedLabel, "NotCachedLabel");
             //
             // AllModVersionsTabPage
             //
@@ -622,8 +624,8 @@
             this.AllModVersionsTabPage.Name = "AllModVersionsTabPage";
             this.AllModVersionsTabPage.Size = new System.Drawing.Size(354, 502);
             this.AllModVersionsTabPage.TabIndex = 1;
-            this.AllModVersionsTabPage.Text = "Versions";
             this.AllModVersionsTabPage.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.AllModVersionsTabPage, "AllModVersionsTabPage");
             //
             // AllModVersions
             //
@@ -641,6 +643,7 @@
             this.Controls.Add(this.splitContainer2);
             this.Name = "MainModInfoTab";
             this.Size = new System.Drawing.Size(362, 531);
+            resources.ApplyResources(this, "$this");
             this.ModInfoTabControl.ResumeLayout(false);
             this.MetadataTabPage.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);

@@ -28,8 +28,10 @@ namespace CKAN
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent ()
+        private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(SelectionDialog));
             this.panel1 = new System.Windows.Forms.Panel();
             this.MessageLabel = new System.Windows.Forms.Label();
             this.SelectButton = new System.Windows.Forms.Button();
@@ -58,9 +60,9 @@ namespace CKAN
             this.MessageLabel.Size = new System.Drawing.Size(390, 40);
             this.MessageLabel.Name = "MessageLabel";
             this.OptionsList.TabStop = false;
-            this.MessageLabel.Text = "Please select:";
             this.MessageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.DefaultButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.MessageLabel, "MessageLabel");
             //
             // OptionsList
             //
@@ -79,8 +81,8 @@ namespace CKAN
             this.SelectButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.SelectButton.Name = "SelectButton";
             this.SelectButton.TabIndex = 1;
-            this.SelectButton.Text = "Select";
             this.SelectButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.SelectButton, "SelectButton");
             // 
             // DefaultButton
             // 
@@ -89,8 +91,8 @@ namespace CKAN
             this.DefaultButton.DialogResult = System.Windows.Forms.DialogResult.Yes;
             this.DefaultButton.Name = "SelectButton";
             this.DefaultButton.TabIndex = 0;
-            this.DefaultButton.Text = "Default";
             this.DefaultButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.DefaultButton, "DefaultButton");
             // 
             // CancelButton
             // 
@@ -99,8 +101,8 @@ namespace CKAN
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.TabIndex = 2;
-            this.CancelButton.Text = "Cancel";
             this.CancelButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.CancelButton, "CancelButton");
             // 
             // SelectionDialog
             // 
@@ -109,9 +111,10 @@ namespace CKAN
             this.ClientSize = new System.Drawing.Size(420, 420);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = Properties.Resources.AppIcon;
             this.Name = "SelectionDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "CKAN Selection Dialog";
+            resources.ApplyResources(this, "$this");
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

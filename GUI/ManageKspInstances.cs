@@ -15,7 +15,7 @@ namespace CKAN
             CheckFileExists = false,
             CheckPathExists = false,
             InitialDirectory = Environment.CurrentDirectory,
-            Filter = "Build metadata file (buildID*.txt)|buildID*.txt",
+            Filter = Properties.Resources.CloneFakeKspDialogOpenFilter,
             Multiselect = false
         };
 
@@ -64,7 +64,7 @@ namespace CKAN
                             Text = instance.Key
                         },
                         new ListViewItem.ListViewSubItem {
-                            Text = instance.Value.Version()?.ToString() ?? "<NONE>"
+                            Text = instance.Value.Version()?.ToString() ?? Properties.Resources.CompatibleKspVersionsDialogNone
                         },
                         new ListViewItem.ListViewSubItem {
                             Text = instance.Value.GameDir()
@@ -93,7 +93,7 @@ namespace CKAN
             }
             catch (NotKSPDirKraken k)
             {
-                GUI.user.RaiseError("Directory {0} is not valid KSP directory.",
+                GUI.user.RaiseError(Properties.Resources.ManageKspInstancesNotValid,
                     new object[] { k.path });
                 return;
             }
@@ -138,7 +138,7 @@ namespace CKAN
             }
             catch (NotKSPDirKraken k)
             {
-                GUI.user.RaiseError("Directory {0} is not valid KSP directory.",
+                GUI.user.RaiseError(Properties.Resources.ManageKspInstancesNotValid,
                     new object[] { k.path });
             }
         }

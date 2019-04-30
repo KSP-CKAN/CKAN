@@ -29,7 +29,7 @@ namespace CKAN
                 StatusProgress.Visible = true;
             });
             Util.Invoke(CancelCurrentActionButton, () => CancelCurrentActionButton.Enabled = cancelable);
-            Util.Invoke(MessageTextBox, () => MessageTextBox.Text = "Please wait");
+            Util.Invoke(MessageTextBox, () => MessageTextBox.Text = Properties.Resources.MainWaitPleaseWait);
         }
 
         public void HideWaitDialog(bool success)
@@ -41,7 +41,7 @@ namespace CKAN
             });
             Util.Invoke(DialogProgressBar, () =>
             {
-                MessageTextBox.Text = "All done!";
+                MessageTextBox.Text = Properties.Resources.MainWaitDone;
                 DialogProgressBar.Value = 100;
                 DialogProgressBar.Style = ProgressBarStyle.Continuous;
                 RecreateDialogs();

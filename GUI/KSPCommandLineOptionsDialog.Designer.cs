@@ -28,7 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KSPCommandLineOptionsDialog));
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(KSPCommandLineOptionsDialog));
             this.AdditionalArguments = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.AcceptChangesButton = new System.Windows.Forms.Button();
@@ -49,7 +50,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Arguments:";
+            resources.ApplyResources(this.label1, "label1");
             // 
             // AcceptChangesButton
             // 
@@ -59,8 +60,8 @@
             this.AcceptChangesButton.Name = "AcceptChangesButton";
             this.AcceptChangesButton.Size = new System.Drawing.Size(75, 23);
             this.AcceptChangesButton.TabIndex = 3;
-            this.AcceptChangesButton.Text = "OK";
             this.AcceptChangesButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.AcceptChangesButton, "AcceptChangesButton");
             // 
             // CancelChangesButton
             // 
@@ -70,8 +71,8 @@
             this.CancelChangesButton.Name = "CancelChangesButton";
             this.CancelChangesButton.Size = new System.Drawing.Size(75, 23);
             this.CancelChangesButton.TabIndex = 4;
-            this.CancelChangesButton.Text = "Cancel";
             this.CancelChangesButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.CancelChangesButton, "CancelChangesButton");
             // 
             // KSPCommandLineOptionsDialog
             // 
@@ -86,9 +87,9 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.AdditionalArguments);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = Properties.Resources.AppIcon;
             this.Name = "KSPCommandLineOptionsDialog";
-            this.Text = "KSP command-line arguments";
+            resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
 

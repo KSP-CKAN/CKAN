@@ -79,7 +79,7 @@ namespace CKAN
         /// <param name="url">The URL</param>
         public static void OpenLinkFromLinkLabel(string url)
         {
-            if (url == "N/A")
+            if (url == Properties.Resources.MainModInfoNSlashA)
             {
                 return;
             }
@@ -148,7 +148,7 @@ namespace CKAN
         /// <param name="url">The URL of the link</param>
         public static void LinkContextMenu(string url)
         {
-            ToolStripMenuItem copyLink = new ToolStripMenuItem("&Copy link address");
+            ToolStripMenuItem copyLink = new ToolStripMenuItem(Properties.Resources.UtilCopyLink);
             copyLink.Click += new EventHandler((sender, ev) => Clipboard.SetText(url));
 
             ContextMenuStrip menu = new ContextMenuStrip();

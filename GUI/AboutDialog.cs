@@ -9,6 +9,7 @@ namespace CKAN
             InitializeComponent();
             ApplyFormCompatibilityFixes();
             StartPosition = FormStartPosition.CenterScreen;
+            label2.Text = string.Format(Properties.Resources.AboutDialogLabel2Text, Meta.GetVersion());
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

@@ -120,4 +120,19 @@
   <metadata name="folderBrowserDialogNewPath.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="radioButtonClone.Text" xml:space="preserve"><value>Clone existing KSP instance</value></data>
+  <data name="labelOldInstance.Text" xml:space="preserve"><value>Instance to clone:</value></data>
+  <data name="labelOldPath.Text" xml:space="preserve"><value>Path to clone:</value></data>
+  <data name="buttonInstancePathSelection.Text" xml:space="preserve"><value>Select...</value></data>
+  <data name="radioButtonFake.Text" xml:space="preserve"><value>Fake new KSP instance</value></data>
+  <data name="labelVersion.Text" xml:space="preserve"><value>Version:</value></data>
+  <data name="labelDlcVersion.Text" xml:space="preserve"><value>DLC version (empty for none):</value></data>
+  <data name="labelNewName.Text" xml:space="preserve"><value>Name for the new instance:</value></data>
+  <data name="labelNewPath.Text" xml:space="preserve"><value>Path for the new instance:</value></data>
+  <data name="buttonPathBrowser.Text" xml:space="preserve"><value>Select...</value></data>
+  <data name="checkBoxSetAsDefault.Text" xml:space="preserve"><value>Set new instance as default</value></data>
+  <data name="checkBoxSwitchInstance.Text" xml:space="preserve"><value>Switch to new instance</value></data>
+  <data name="buttonOK.Text" xml:space="preserve"><value>Create</value></data>
+  <data name="buttonCancel.Text" xml:space="preserve"><value>Cancel</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Clone or Fake KSP Instance</value></data>
 </root>

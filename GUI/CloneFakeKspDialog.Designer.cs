@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(CloneFakeKspDialog));
             this.radioButtonClone = new System.Windows.Forms.RadioButton();
             this.cloneGroupBox = new System.Windows.Forms.GroupBox();
             this.labelOldInstance = new System.Windows.Forms.Label();
@@ -64,9 +66,9 @@
             this.radioButtonClone.Size = new System.Drawing.Size(157, 17);
             this.radioButtonClone.TabIndex = 99;
             this.radioButtonClone.TabStop = true;
-            this.radioButtonClone.Text = "Clone existing KSP instance";
             this.radioButtonClone.UseVisualStyleBackColor = true;
             this.radioButtonClone.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+            resources.ApplyResources(this.radioButtonClone, "radioButtonClone");
             //
             // cloneGroupBox
             //
@@ -90,7 +92,7 @@
             this.labelOldInstance.Name = "labelOldInstance";
             this.labelOldInstance.Size = new System.Drawing.Size(131, 13);
             this.labelOldInstance.TabIndex = 2;
-            this.labelOldInstance.Text = "Instance to clone:";
+            resources.ApplyResources(this.labelOldInstance, "labelOldInstance");
             //
             // comboBoxKnownInstance
             //
@@ -112,7 +114,7 @@
             this.labelOldPath.Name = "labelOldPath";
             this.labelOldPath.Size = new System.Drawing.Size(131, 13);
             this.labelOldPath.TabIndex = 4;
-            this.labelOldPath.Text = "Path to clone:";
+            resources.ApplyResources(this.labelOldPath, "labelOldPath");
             //
             // textBoxClonePath
             //
@@ -129,9 +131,9 @@
             this.buttonInstancePathSelection.Name = "buttonInstancePathSelection";
             this.buttonInstancePathSelection.Size = new System.Drawing.Size(55, 22);
             this.buttonInstancePathSelection.TabIndex = 6;
-            this.buttonInstancePathSelection.Text = "Select...";
             this.buttonInstancePathSelection.UseVisualStyleBackColor = true;
             this.buttonInstancePathSelection.Click += new System.EventHandler(this.buttonInstancePathSelection_Click);
+            resources.ApplyResources(this.buttonInstancePathSelection, "buttonInstancePathSelection");
             //
             // fakeGroupBox
             //
@@ -155,9 +157,9 @@
             this.radioButtonFake.Size = new System.Drawing.Size(139, 17);
             this.radioButtonFake.TabIndex = 8;
             this.radioButtonFake.TabStop = true;
-            this.radioButtonFake.Text = "Fake new KSP instance";
             this.radioButtonFake.UseVisualStyleBackColor = true;
             this.radioButtonFake.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+            resources.ApplyResources(this.radioButtonFake, "radioButtonFake");
             //
             // labelVersion
             //
@@ -167,6 +169,7 @@
             this.labelVersion.Size = new System.Drawing.Size(174, 26);
             this.labelVersion.TabIndex = 9;
             this.labelVersion.Text = "Version:";
+            resources.ApplyResources(this.labelVersion, "labelVersion");
             //
             // comboBoxKspVersion
             //
@@ -187,7 +190,7 @@
             this.labelDlcVersion.Name = "labelDlcVersion";
             this.labelDlcVersion.Size = new System.Drawing.Size(174, 26);
             this.labelDlcVersion.TabIndex = 11;
-            this.labelDlcVersion.Text = "DLC version (empty for none):";
+            resources.ApplyResources(this.labelDlcVersion, "labelDlcVersion");
             //
             // textBoxDlcVersion
             //
@@ -203,7 +206,7 @@
             this.labelNewName.Name = "labelNewName";
             this.labelNewName.Size = new System.Drawing.Size(137, 13);
             this.labelNewName.TabIndex = 13;
-            this.labelNewName.Text = "Name for the new instance:";
+            resources.ApplyResources(this.labelNewName, "labelNewName");
             //
             // textBoxNewName
             //
@@ -219,7 +222,7 @@
             this.labelNewPath.Name = "labelNewPath";
             this.labelNewPath.Size = new System.Drawing.Size(131, 13);
             this.labelNewPath.TabIndex = 15;
-            this.labelNewPath.Text = "Path for the new instance:";
+            resources.ApplyResources(this.labelNewPath, "labelNewPath");
             //
             // textBoxNewPath
             //
@@ -234,9 +237,9 @@
             this.buttonPathBrowser.Name = "buttonPathBrowser";
             this.buttonPathBrowser.Size = new System.Drawing.Size(55, 22);
             this.buttonPathBrowser.TabIndex = 17;
-            this.buttonPathBrowser.Text = "Select...";
             this.buttonPathBrowser.UseVisualStyleBackColor = true;
             this.buttonPathBrowser.Click += new System.EventHandler(this.buttonPathBrowser_Click);
+            resources.ApplyResources(this.buttonPathBrowser, "buttonPathBrowser");
             //
             // checkBoxSetAsDefault
             //
@@ -245,8 +248,8 @@
             this.checkBoxSetAsDefault.Name = "checkBoxSetAsDefault";
             this.checkBoxSetAsDefault.Size = new System.Drawing.Size(157, 17);
             this.checkBoxSetAsDefault.TabIndex = 18;
-            this.checkBoxSetAsDefault.Text = "Set new instance as default";
             this.checkBoxSetAsDefault.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.checkBoxSetAsDefault, "checkBoxSetAsDefault");
             //
             // checkBoxSwitchInstance
             //
@@ -257,8 +260,8 @@
             this.checkBoxSwitchInstance.Name = "checkBoxSwitchInstance";
             this.checkBoxSwitchInstance.Size = new System.Drawing.Size(136, 17);
             this.checkBoxSwitchInstance.TabIndex = 19;
-            this.checkBoxSwitchInstance.Text = "Switch to new instance";
             this.checkBoxSwitchInstance.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.checkBoxSwitchInstance, "checkBoxSwitchInstance");
             //
             // buttonOK
             //
@@ -266,9 +269,9 @@
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 20;
-            this.buttonOK.Text = "Create";
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            resources.ApplyResources(this.buttonOK, "buttonOK");
             //
             // buttonCancel
             //
@@ -276,9 +279,9 @@
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 21;
-            this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            resources.ApplyResources(this.buttonCancel, "buttonCancel");
             //
             // progressBar
             //
@@ -315,12 +318,13 @@
             this.AcceptButton = this.buttonOK;
             this.CancelButton = this.buttonCancel;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = Properties.Resources.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "CloneFakeKspDialog";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Clone or Fake KSP Instance";
+            resources.ApplyResources(this, "$this");
             this.cloneGroupBox.ResumeLayout(false);
             this.cloneGroupBox.PerformLayout();
             this.fakeGroupBox.ResumeLayout(false);

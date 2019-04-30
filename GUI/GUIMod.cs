@@ -111,11 +111,11 @@ namespace CKAN
             Abstract      = mod.@abstract.Trim();
             Description   = mod.description?.Trim() ?? string.Empty;
             Abbrevation   = new string(Name.Split(' ').Where(s => s.Length > 0).Select(s => s[0]).ToArray());
-            Authors       = mod.author == null ? "N/A" : String.Join(",", mod.author);
+            Authors       = mod.author == null ? Properties.Resources.GUIModNSlashA : String.Join(",", mod.author);
 
             HasUpdate      = registry.HasUpdate(mod.identifier, current_ksp_version);
             HasReplacement = registry.GetReplacement(mod, current_ksp_version) != null;
-            DownloadSize   = mod.download_size == 0 ? "N/A" : CkanModule.FmtSize(mod.download_size);
+            DownloadSize   = mod.download_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.download_size);
             IsIncompatible = IsIncompatible || !mod.IsCompatibleKSP(current_ksp_version);
 
             if (mod.resources != null)
@@ -124,7 +124,7 @@ namespace CKAN
                         ?? mod.resources.spacedock?.ToString()
                         ?? mod.resources.curse?.ToString()
                         ?? mod.resources.repository?.ToString()
-                        ?? "N/A";
+                        ?? Properties.Resources.GUIModNSlashA;
             }
 
             // Get the Searchables.
@@ -180,13 +180,13 @@ namespace CKAN
             if (latest_available_for_any_ksp != null)
             {
                 KSPCompatibility = registry.LatestCompatibleKSP(identifier)?.ToYalovString()
-                    ?? "Unknown";
-                KSPCompatibilityLong = $"{KSPCompatibility} (using mod version {latest_available_for_any_ksp.version})";
+                    ?? Properties.Resources.GUIModUnknown;
+                KSPCompatibilityLong = string.Format(Properties.Resources.GUIModKSPCompatibilityLong, KSPCompatibility, latest_available_for_any_ksp.version);
             }
             else
             {
                 // No idea what this mod is, sorry!
-                KSPCompatibility = KSPCompatibilityLong = "unknown";
+                KSPCompatibility = KSPCompatibilityLong = Properties.Resources.GUIModUnknown;
             }
 
             if (latest_version != null)
@@ -203,7 +203,7 @@ namespace CKAN
             }
 
             // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
-            Homepage = "N/A";
+            Homepage = Properties.Resources.GUIModNSlashA;
 
             SearchableIdentifier = CkanModule.nonAlphaNums.Replace(Identifier, "");
         }
@@ -223,7 +223,8 @@ namespace CKAN
 
         public CkanModule ToCkanModule()
         {
-            if (!IsCKAN) throw new InvalidCastException("Method can not be called unless IsCKAN");
+            if (!IsCKAN)
+                throw new InvalidCastException(Properties.Resources.GUIModMethodNotCKAN);
             var mod = Mod as CkanModule;
             return mod;
         }

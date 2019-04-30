@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(MainAllModVersions));
             System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
             "",
             "i1",
@@ -51,17 +53,17 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(183, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "All available versions of selected mod";
+            resources.ApplyResources(this.label1, "label1");
             // 
             // ModVersion
             // 
-            this.ModVersion.Text = "Mod Version";
             this.ModVersion.Width = 73;
+            resources.ApplyResources(this.ModVersion, "ModVersion");
             // 
             // CompatibleKSPVersion
             // 
-            this.CompatibleKSPVersion.Text = "Compatible KSP Versions";
             this.CompatibleKSPVersion.Width = 248;
+            resources.ApplyResources(this.CompatibleKSPVersion, "CompatibleKSPVersion");
             // 
             // VersionsListView
             // 
@@ -91,7 +93,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(36, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Green";
+            resources.ApplyResources(this.label2, "label2");
             // 
             // label3
             // 
@@ -101,7 +103,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(60, 13);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Light green";
+            resources.ApplyResources(this.label3, "label3");
             // 
             // label4
             // 
@@ -111,7 +113,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(32, 13);
             this.label4.TabIndex = 4;
-            this.label4.Text = "Bold";
+            resources.ApplyResources(this.label4, "label4");
             // 
             // label5
             // 
@@ -120,7 +122,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(229, 13);
             this.label5.TabIndex = 5;
-            this.label5.Text = "- latest compatible version (likely to be installed)";
+            resources.ApplyResources(this.label5, "label5");
             // 
             // label6
             // 
@@ -129,7 +131,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(180, 13);
             this.label6.TabIndex = 6;
-            this.label6.Text = "- version is compatible with your KSP";
+            resources.ApplyResources(this.label6, "label6");
             // 
             // label7
             // 
@@ -138,7 +140,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(131, 13);
             this.label7.TabIndex = 7;
-            this.label7.Text = "- currently installed version";
+            resources.ApplyResources(this.label7, "label7");
             // 
             // MainAllModVersions
             // 
@@ -152,6 +154,7 @@
             this.Controls.Add(this.label1);
             this.Name = "MainAllModVersions";
             this.Size = new System.Drawing.Size(354, 502);
+            resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
         }

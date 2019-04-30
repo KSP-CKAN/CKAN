@@ -23,7 +23,7 @@ namespace CKAN
             }
             catch
             {
-                ReposListBox.Items.Add("Failed to fetch master list..");
+                ReposListBox.Items.Add(Properties.Resources.NewRepoDialogFailed);
                 return;
             }
 
@@ -31,7 +31,7 @@ namespace CKAN
 
             if (repositories.repositories == null)
             {
-                ReposListBox.Items.Add("Failed to fetch master list..");
+                ReposListBox.Items.Add(Properties.Resources.NewRepoDialogFailed);
                 return;
             }
 

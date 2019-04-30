@@ -31,7 +31,7 @@ namespace CKAN
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutDialog));
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(AboutDialog));
             this.label1 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
@@ -49,8 +49,8 @@ namespace CKAN
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(317, 20);
             this.label1.TabIndex = 0;
-            this.label1.Text = "CKAN - The Comprehensive Kerbal Archive Network";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            resources.ApplyResources(this.label1, "label1");
             // 
             // linkLabel1
             // 
@@ -61,10 +61,10 @@ namespace CKAN
             this.linkLabel1.Size = new System.Drawing.Size(43, 17);
             this.linkLabel1.TabIndex = 1;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "License";
             this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.linkLabel1.UseCompatibleTextRendering = true;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            resources.ApplyResources(this.linkLabel1, "linkLabel1");
             // 
             // linkLabel2
             // 
@@ -75,9 +75,9 @@ namespace CKAN
             this.linkLabel2.Size = new System.Drawing.Size(43, 13);
             this.linkLabel2.TabIndex = 2;
             this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "Authors";
             this.linkLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            resources.ApplyResources(this.linkLabel2, "linkLabel2");
             // 
             // linkLabel3
             // 
@@ -88,8 +88,8 @@ namespace CKAN
             this.linkLabel3.Size = new System.Drawing.Size(41, 13);
             this.linkLabel3.TabIndex = 3;
             this.linkLabel3.TabStop = true;
-            this.linkLabel3.Text = "Source";
             this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
+            resources.ApplyResources(this.linkLabel3, "linkLabel3");
             // 
             // linkLabel4
             // 
@@ -100,8 +100,8 @@ namespace CKAN
             this.linkLabel4.Size = new System.Drawing.Size(73, 13);
             this.linkLabel4.TabIndex = 4;
             this.linkLabel4.TabStop = true;
-            this.linkLabel4.Text = "Forum Thread";
             this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
+            resources.ApplyResources(this.linkLabel4, "linkLabel4");
             // 
             // label2
             // 
@@ -109,8 +109,8 @@ namespace CKAN
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(184, 18);
             this.label2.TabIndex = 5;
-            this.label2.Text = "Version " + Meta.GetVersion();
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            resources.ApplyResources(this.label2, "label2");
             // 
             // linkLabel5
             // 
@@ -120,10 +120,10 @@ namespace CKAN
             this.linkLabel5.Size = new System.Drawing.Size(71, 13);
             this.linkLabel5.TabIndex = 6;
             this.linkLabel5.TabStop = true;
-            this.linkLabel5.Text = "Homepage";
             this.linkLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.linkLabel5.UseCompatibleTextRendering = true;
             this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
+            resources.ApplyResources(this.linkLabel5, "linkLabel5");
             // 
             // AboutDialog
             // 
@@ -138,11 +138,11 @@ namespace CKAN
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = Properties.Resources.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AboutDialog";
-            this.Text = "About";
+            resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
 

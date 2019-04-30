@@ -30,7 +30,8 @@ namespace CKAN
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewUpdateDialog));
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(NewUpdateDialog));
             this.label1 = new System.Windows.Forms.Label();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.ReleaseNotesTextbox = new System.Windows.Forms.RichTextBox();
@@ -46,7 +47,7 @@ namespace CKAN
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Version:";
+            resources.ApplyResources(this.label1, "label1");
             // 
             // VersionLabel
             // 
@@ -56,7 +57,7 @@ namespace CKAN
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Size = new System.Drawing.Size(43, 13);
             this.VersionLabel.TabIndex = 1;
-            this.VersionLabel.Text = "v0.0.0";
+            resources.ApplyResources(this.VersionLabel, "VersionLabel");
             // 
             // ReleaseNotesTextbox
             // 
@@ -79,8 +80,8 @@ namespace CKAN
             this.InstallUpdateButton.Name = "InstallUpdateButton";
             this.InstallUpdateButton.Size = new System.Drawing.Size(75, 23);
             this.InstallUpdateButton.TabIndex = 4;
-            this.InstallUpdateButton.Text = "Install";
             this.InstallUpdateButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.InstallUpdateButton, "InstallUpdateButton");
             // 
             // CancelUpdateButton
             // 
@@ -91,8 +92,8 @@ namespace CKAN
             this.CancelUpdateButton.Name = "CancelUpdateButton";
             this.CancelUpdateButton.Size = new System.Drawing.Size(75, 23);
             this.CancelUpdateButton.TabIndex = 5;
-            this.CancelUpdateButton.Text = "Not now";
             this.CancelUpdateButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.CancelUpdateButton, "CancelUpdateButton");
             // 
             // NewUpdateDialog
             // 
@@ -104,10 +105,10 @@ namespace CKAN
             this.Controls.Add(this.ReleaseNotesTextbox);
             this.Controls.Add(this.VersionLabel);
             this.Controls.Add(this.label1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = Properties.Resources.AppIcon;
             this.MinimumSize = new System.Drawing.Size(354, 245);
             this.Name = "NewUpdateDialog";
-            this.Text = "A new version of CKAN is available";
+            resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ErrorDialog));
             this.panel1 = new System.Windows.Forms.Panel();
             this.ErrorMessage = new System.Windows.Forms.RichTextBox();
             this.DismissButton = new System.Windows.Forms.Button();
@@ -50,8 +52,8 @@
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.Size = new System.Drawing.Size(267, 117);
             this.ErrorMessage.TabIndex = 0;
-            this.ErrorMessage.Text = "Error!";
             this.ErrorMessage.ReadOnly = true;
+            resources.ApplyResources(this.ErrorMessage, "ErrorMessage");
             // 
             // DismissButton
             // 
@@ -60,9 +62,9 @@
             this.DismissButton.Name = "DismissButton";
             this.DismissButton.Size = new System.Drawing.Size(75, 23);
             this.DismissButton.TabIndex = 1;
-            this.DismissButton.Text = "Dismiss";
             this.DismissButton.UseVisualStyleBackColor = true;
             this.DismissButton.Click += new System.EventHandler(this.DismissButton_Click);
+            resources.ApplyResources(this.DismissButton, "DismissButton");
             // 
             // ErrorDialog
             // 
@@ -73,8 +75,10 @@
             this.Controls.Add(this.DismissButton);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = Properties.Resources.AppIcon;
             this.Name = "ErrorDialog";
             this.Text = "Error!";
+            resources.ApplyResources(this, "$this");
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

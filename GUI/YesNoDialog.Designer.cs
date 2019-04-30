@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(YesNoDialog));
             this.panel1 = new System.Windows.Forms.Panel();
             this.DescriptionLabel = new System.Windows.Forms.Label();
             this.YesButton = new System.Windows.Forms.Button();
@@ -53,8 +55,8 @@
             this.DescriptionLabel.Name = "DescriptionLabel";
             this.DescriptionLabel.Size = new System.Drawing.Size(393, 73);
             this.DescriptionLabel.TabIndex = 0;
-            this.DescriptionLabel.Text = "Yes/ No?";
             this.DescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            resources.ApplyResources(this.DescriptionLabel, "DescriptionLabel");
             // 
             // YesButton
             // 
@@ -65,8 +67,8 @@
             this.YesButton.Name = "YesButton";
             this.YesButton.Size = new System.Drawing.Size(75, 23);
             this.YesButton.TabIndex = 1;
-            this.YesButton.Text = "Yes";
             this.YesButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.YesButton, "YesButton");
             // 
             // NoButton
             // 
@@ -77,8 +79,8 @@
             this.NoButton.Name = "NoButton";
             this.NoButton.Size = new System.Drawing.Size(75, 23);
             this.NoButton.TabIndex = 2;
-            this.NoButton.Text = "No";
             this.NoButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.NoButton, "NoButton");
             // 
             // YesNoDialog
             // 
@@ -89,9 +91,10 @@
             this.Controls.Add(this.YesButton);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.Icon = Properties.Resources.AppIcon;
             this.Name = "YesNoDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "CKAN";
+            resources.ApplyResources(this, "$this");
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

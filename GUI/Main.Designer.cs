@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Main));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manageKspInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -193,21 +193,21 @@
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
-            this.fileToolStripMenuItem.Text = "File";
+            resources.ApplyResources(this.fileToolStripMenuItem, "fileToolStripMenuItem");
             // 
             // manageKspInstancesMenuItem
             // 
             this.manageKspInstancesMenuItem.Name = "manageKspInstancesMenuItem";
             this.manageKspInstancesMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.manageKspInstancesMenuItem.Text = "Manage KSP Instances";
             this.manageKspInstancesMenuItem.Click += new System.EventHandler(this.manageKspInstancesMenuItem_Click);
+            resources.ApplyResources(this.manageKspInstancesMenuItem, "manageKspInstancesMenuItem");
             // 
             // openKspDirectoryToolStripMenuItem
             // 
             this.openKspDirectoryToolStripMenuItem.Name = "openKspDirectoryToolStripMenuItem";
             this.openKspDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.openKspDirectoryToolStripMenuItem.Text = "Open KSP Directory";
             this.openKspDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openKspDirectoryToolStripMenuItem_Click);
+            resources.ApplyResources(this.openKspDirectoryToolStripMenuItem, "openKspDirectoryToolStripMenuItem");
             //
             // toolStripSeparator1
             // 
@@ -218,15 +218,15 @@
             // 
             this.installFromckanToolStripMenuItem.Name = "installFromckanToolStripMenuItem";
             this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.installFromckanToolStripMenuItem.Text = "Install from .ckan...";
             this.installFromckanToolStripMenuItem.Click += new System.EventHandler(this.installFromckanToolStripMenuItem_Click);
+            resources.ApplyResources(this.installFromckanToolStripMenuItem, "installFromckanToolStripMenuItem");
             // 
             // exportModListToolStripMenuItem
             // 
             this.exportModListToolStripMenuItem.Name = "exportModListToolStripMenuItem";
             this.exportModListToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.exportModListToolStripMenuItem.Text = "&Export installed mods...";
             this.exportModListToolStripMenuItem.Click += new System.EventHandler(this.exportModListToolStripMenuItem_Click);
+            resources.ApplyResources(this.exportModListToolStripMenuItem, "exportModListToolStripMenuItem");
             //
             // toolStripSeparator2
             // 
@@ -237,8 +237,8 @@
             //
             this.importDownloadsToolStripMenuItem.Name = "importDownloadsToolStripMenuItem";
             this.importDownloadsToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.importDownloadsToolStripMenuItem.Text = "&Import downloaded mods...";
             this.importDownloadsToolStripMenuItem.Click += new System.EventHandler(this.importDownloadsToolStripMenuItem_Click);
+            resources.ApplyResources(this.importDownloadsToolStripMenuItem, "importDownloadsToolStripMenuItem");
             //
             // toolStripSeparator3
             // 
@@ -254,16 +254,16 @@
             //
             this.auditRecommendationsMenuItem.Name = "auditRecommendationsMenuItem";
             this.auditRecommendationsMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.auditRecommendationsMenuItem.Text = "Audit recommendations";
             this.auditRecommendationsMenuItem.Click += new System.EventHandler(this.auditRecommendationsMenuItem_Click);
+            resources.ApplyResources(this.auditRecommendationsMenuItem, "auditRecommendationsMenuItem");
             //
             // ExitToolButton
             // 
             this.ExitToolButton.Name = "ExitToolButton";
             this.ExitToolButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
             this.ExitToolButton.Size = new System.Drawing.Size(281, 30);
-            this.ExitToolButton.Text = "E&xit";
             this.ExitToolButton.Click += new System.EventHandler(this.ExitToolButton_Click);
+            resources.ApplyResources(this.ExitToolButton, "ExitToolButton");
             // 
             // settingsToolStripMenuItem
             // 
@@ -274,35 +274,35 @@
             this.compatibleKSPVersionsToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
-            this.settingsToolStripMenuItem.Text = "Settings";
+            resources.ApplyResources(this.settingsToolStripMenuItem, "settingsToolStripMenuItem");
             // 
             // cKANSettingsToolStripMenuItem
             // 
             this.cKANSettingsToolStripMenuItem.Name = "cKANSettingsToolStripMenuItem";
             this.cKANSettingsToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
-            this.cKANSettingsToolStripMenuItem.Text = "CKAN settings";
             this.cKANSettingsToolStripMenuItem.Click += new System.EventHandler(this.CKANSettingsToolStripMenuItem_Click);
+            resources.ApplyResources(this.cKANSettingsToolStripMenuItem, "cKANSettingsToolStripMenuItem");
             // 
             // pluginsToolStripMenuItem
             // 
             this.pluginsToolStripMenuItem.Name = "pluginsToolStripMenuItem";
             this.pluginsToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
-            this.pluginsToolStripMenuItem.Text = "CKAN plugins";
             this.pluginsToolStripMenuItem.Click += new System.EventHandler(this.pluginsToolStripMenuItem_Click);
+            resources.ApplyResources(this.pluginsToolStripMenuItem, "pluginsToolStripMenuItem");
             // 
             // kSPCommandlineToolStripMenuItem
             // 
             this.kSPCommandlineToolStripMenuItem.Name = "kSPCommandlineToolStripMenuItem";
             this.kSPCommandlineToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
-            this.kSPCommandlineToolStripMenuItem.Text = "KSP command-line";
             this.kSPCommandlineToolStripMenuItem.Click += new System.EventHandler(this.KSPCommandlineToolStripMenuItem_Click);
+            resources.ApplyResources(this.kSPCommandlineToolStripMenuItem, "kSPCommandlineToolStripMenuItem");
             // 
             // compatibleKSPVersionsToolStripMenuItem
             // 
             this.compatibleKSPVersionsToolStripMenuItem.Name = "compatibleKSPVersionsToolStripMenuItem";
             this.compatibleKSPVersionsToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
-            this.compatibleKSPVersionsToolStripMenuItem.Text = "Compatible KSP versions";
             this.compatibleKSPVersionsToolStripMenuItem.Click += new System.EventHandler(this.CompatibleKspVersionsToolStripMenuItem_Click);
+            resources.ApplyResources(this.compatibleKSPVersionsToolStripMenuItem, "compatibleKSPVersionsToolStripMenuItem");
             // 
             // helpToolStripMenuItem
             // 
@@ -311,21 +311,21 @@
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(61, 29);
-            this.helpToolStripMenuItem.Text = "Help";
+            resources.ApplyResources(this.helpToolStripMenuItem, "helpToolStripMenuItem");
             // 
             // reportAnIssueToolStripMenuItem
             // 
             this.reportAnIssueToolStripMenuItem.Name = "reportAnIssueToolStripMenuItem";
             this.reportAnIssueToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
-            this.reportAnIssueToolStripMenuItem.Text = "Report an issue...";
             this.reportAnIssueToolStripMenuItem.Click += new System.EventHandler(this.reportAnIssueToolStripMenuItem_Click);
+            resources.ApplyResources(this.reportAnIssueToolStripMenuItem, "reportAnIssueToolStripMenuItem");
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
-            this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            resources.ApplyResources(this.aboutToolStripMenuItem, "aboutToolStripMenuItem");
             //
             // statusStrip1
             //
@@ -367,8 +367,8 @@
             this.launchKSPToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.launchKSPToolStripMenuItem.Name = "launchKSPToolStripMenuItem";
             this.launchKSPToolStripMenuItem.Size = new System.Drawing.Size(146, 56);
-            this.launchKSPToolStripMenuItem.Text = "Launch KSP";
             this.launchKSPToolStripMenuItem.Click += new System.EventHandler(this.launchKSPToolStripMenuItem_Click);
+            resources.ApplyResources(this.launchKSPToolStripMenuItem, "launchKSPToolStripMenuItem");
             // 
             // RefreshToolButton
             // 
@@ -376,8 +376,8 @@
             this.RefreshToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.RefreshToolButton.Name = "RefreshToolButton";
             this.RefreshToolButton.Size = new System.Drawing.Size(114, 56);
-            this.RefreshToolButton.Text = "Refresh";
             this.RefreshToolButton.Click += new System.EventHandler(this.RefreshToolButton_Click);
+            resources.ApplyResources(this.RefreshToolButton, "RefreshToolButton");
             // 
             // UpdateAllToolButton
             // 
@@ -385,8 +385,8 @@
             this.UpdateAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.UpdateAllToolButton.Name = "UpdateAllToolButton";
             this.UpdateAllToolButton.Size = new System.Drawing.Size(232, 56);
-            this.UpdateAllToolButton.Text = "Add available updates";
             this.UpdateAllToolButton.Click += new System.EventHandler(this.MarkAllUpdatesToolButton_Click);
+            resources.ApplyResources(this.UpdateAllToolButton, "UpdateAllToolButton");
             // 
             // ApplyToolButton
             // 
@@ -394,8 +394,8 @@
             this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ApplyToolButton.Name = "ApplyToolButton";
             this.ApplyToolButton.Size = new System.Drawing.Size(173, 56);
-            this.ApplyToolButton.Text = "Apply changes";
             this.ApplyToolButton.Click += new System.EventHandler(this.ApplyToolButton_Click);
+            resources.ApplyResources(this.ApplyToolButton, "ApplyToolButton");
             // 
             // FilterToolButton
             // 
@@ -413,70 +413,70 @@
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
             this.FilterToolButton.Size = new System.Drawing.Size(201, 56);
-            this.FilterToolButton.Text = "Filter (Compatible)";
+            resources.ApplyResources(this.FilterToolButton, "FilterToolButton");
             // 
             // FilterCompatibleButton
             // 
             this.FilterCompatibleButton.Name = "FilterCompatibleButton";
             this.FilterCompatibleButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterCompatibleButton.Text = "Compatible";
             this.FilterCompatibleButton.Click += new System.EventHandler(this.FilterCompatibleButton_Click);
+            resources.ApplyResources(this.FilterCompatibleButton, "FilterCompatibleButton");
             // 
             // FilterInstalledButton
             // 
             this.FilterInstalledButton.Name = "FilterInstalledButton";
             this.FilterInstalledButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterInstalledButton.Text = "Installed";
             this.FilterInstalledButton.Click += new System.EventHandler(this.FilterInstalledButton_Click);
+            resources.ApplyResources(this.FilterInstalledButton, "FilterInstalledButton");
             // 
             // FilterInstalledUpdateButton
             // 
             this.FilterInstalledUpdateButton.Name = "FilterInstalledUpdateButton";
             this.FilterInstalledUpdateButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterInstalledUpdateButton.Text = "Installed (update available)";
             this.FilterInstalledUpdateButton.Click += new System.EventHandler(this.FilterInstalledUpdateButton_Click);
+            resources.ApplyResources(this.FilterInstalledUpdateButton, "FilterInstalledUpdateButton");
             //
             // FilterReplaceableButton
             //
             this.FilterReplaceableButton.Name = "FilterReplaceableButton";
             this.FilterReplaceableButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterReplaceableButton.Text = "Replaceable";
             this.FilterReplaceableButton.Click += new System.EventHandler(this.FilterReplaceableButton_Click);
+            resources.ApplyResources(this.FilterReplaceableButton, "FilterReplaceableButton");
             //
             // cachedToolStripMenuItem
             // 
             this.cachedToolStripMenuItem.Name = "cachedToolStripMenuItem";
             this.cachedToolStripMenuItem.Size = new System.Drawing.Size(307, 30);
-            this.cachedToolStripMenuItem.Text = "Cached";
             this.cachedToolStripMenuItem.Click += new System.EventHandler(this.cachedToolStripMenuItem_Click);
+            resources.ApplyResources(this.cachedToolStripMenuItem, "cachedToolStripMenuItem");
             // 
             // FilterNewButton
             // 
             this.FilterNewButton.Name = "FilterNewButton";
             this.FilterNewButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterNewButton.Text = "Newly compatible";
             this.FilterNewButton.Click += new System.EventHandler(this.FilterNewButton_Click);
+            resources.ApplyResources(this.FilterNewButton, "FilterNewButton");
             // 
             // FilterNotInstalledButton
             // 
             this.FilterNotInstalledButton.Name = "FilterNotInstalledButton";
             this.FilterNotInstalledButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterNotInstalledButton.Text = "Not installed";
             this.FilterNotInstalledButton.Click += new System.EventHandler(this.FilterNotInstalledButton_Click);
+            resources.ApplyResources(this.FilterNotInstalledButton, "FilterNotInstalledButton");
             // 
             // FilterIncompatibleButton
             // 
             this.FilterIncompatibleButton.Name = "FilterIncompatibleButton";
             this.FilterIncompatibleButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterIncompatibleButton.Text = "Incompatible";
             this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
+            resources.ApplyResources(this.FilterIncompatibleButton, "FilterIncompatibleButton");
             // 
             // FilterAllButton
             // 
             this.FilterAllButton.Name = "FilterAllButton";
             this.FilterAllButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterAllButton.Text = "All";
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
+            resources.ApplyResources(this.FilterAllButton, "FilterAllButton");
             // 
             // NavBackwardToolButton
             // 
@@ -484,8 +484,8 @@
             this.NavBackwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.NavBackwardToolButton.Name = "NavBackwardToolButton";
             this.NavBackwardToolButton.Size = new System.Drawing.Size(44, 56);
-            this.NavBackwardToolButton.ToolTipText = "Previous selected mod...";
             this.NavBackwardToolButton.Click += new System.EventHandler(this.NavBackwardToolButton_Click);
+            resources.ApplyResources(this.NavBackwardToolButton, "NavBackwardToolButton");
             // 
             // NavForwardToolButton
             // 
@@ -493,8 +493,8 @@
             this.NavForwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.NavForwardToolButton.Name = "NavForwardToolButton";
             this.NavForwardToolButton.Size = new System.Drawing.Size(44, 56);
-            this.NavForwardToolButton.ToolTipText = "Next selected mod...";
             this.NavForwardToolButton.Click += new System.EventHandler(this.NavForwardToolButton_Click);
+            resources.ApplyResources(this.NavForwardToolButton, "NavForwardToolButton");
             // 
             // splitContainer1
             // 
@@ -567,108 +567,108 @@
             // 
             // Installed
             //
-            this.Installed.HeaderText = "    Inst";
             this.Installed.Name = "Installed";
             this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Installed.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.Installed.Width = 50;
+            resources.ApplyResources(this.Installed, "Installed");
             // 
             // AutoInstalled
             //
-            this.AutoInstalled.HeaderText = "Auto-installed";
             this.AutoInstalled.Name = "AutoInstalled";
             this.AutoInstalled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.AutoInstalled.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.AutoInstalled.Width = 50;
+            resources.ApplyResources(this.AutoInstalled, "AutoInstalled");
             // 
             // UpdateCol
             // 
-            this.UpdateCol.HeaderText = "Update";
             this.UpdateCol.Name = "UpdateCol";
             this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.UpdateCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.UpdateCol.Width = 46;
+            resources.ApplyResources(this.UpdateCol, "UpdateCol");
             //
             // ReplaceCol
             //
-            this.ReplaceCol.HeaderText = "Replace";
             this.ReplaceCol.Name = "ReplaceCol";
             this.ReplaceCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.ReplaceCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.ReplaceCol.Width = 46;
+            resources.ApplyResources(this.ReplaceCol, "ReplaceCol");
             //
             // ModName
             // 
-            this.ModName.HeaderText = "Name";
             this.ModName.Name = "ModName";
             this.ModName.ReadOnly = true;
             this.ModName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.ModName.Width = 250;
+            resources.ApplyResources(this.ModName, "ModName");
             // 
             // Author
             // 
-            this.Author.HeaderText = "Author";
             this.Author.Name = "Author";
             this.Author.ReadOnly = true;
             this.Author.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Author.Width = 120;
+            resources.ApplyResources(this.Author, "Author");
             // 
             // InstalledVersion
             // 
-            this.InstalledVersion.HeaderText = "Installed version";
             this.InstalledVersion.Name = "InstalledVersion";
             this.InstalledVersion.ReadOnly = true;
             this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.InstalledVersion.Width = 70;
+            resources.ApplyResources(this.InstalledVersion, "InstalledVersion");
             // 
             // LatestVersion
             // 
-            this.LatestVersion.HeaderText = "Latest version";
             this.LatestVersion.Name = "LatestVersion";
             this.LatestVersion.ReadOnly = true;
             this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.LatestVersion.Width = 70;
+            resources.ApplyResources(this.LatestVersion, "LatestVersion");
             // 
             // KSPCompatibility
             // 
-            this.KSPCompatibility.HeaderText = "Max KSP version";
             this.KSPCompatibility.Name = "KSPCompatibility";
             this.KSPCompatibility.ReadOnly = true;
             this.KSPCompatibility.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.KSPCompatibility.Width = 78;
+            resources.ApplyResources(this.KSPCompatibility, "KSPCompatibility");
             // 
             // SizeCol
             // 
-            this.SizeCol.HeaderText = "Download";
             this.SizeCol.Name = "SizeCol";
             this.SizeCol.ReadOnly = true;
             this.SizeCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.SizeCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            resources.ApplyResources(this.SizeCol, "SizeCol");
             // 
             // InstallDate
             // 
-            this.InstallDate.HeaderText = "Install Date";
             this.InstallDate.Name = "InstallDate";
             this.InstallDate.ReadOnly = true;
             this.InstallDate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.InstallDate.Width = 140;
+            resources.ApplyResources(this.InstallDate, "InstallDate");
             //
             // DownloadCount
             // 
-            this.DownloadCount.HeaderText = "Downloads";
             this.DownloadCount.Name = "DownloadCount";
             this.DownloadCount.ReadOnly = true;
             this.DownloadCount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.DownloadCount.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             this.DownloadCount.Width = 70;
+            resources.ApplyResources(this.DownloadCount, "DownloadCount");
             //
             // Description
             // 
-            this.Description.HeaderText = "Description";
             this.Description.Name = "Description";
             this.Description.ReadOnly = true;
             this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Description.Width = 821;
+            resources.ApplyResources(this.Description, "Description");
             // 
             // ModListContextMenuStrip
             // 
@@ -682,15 +682,15 @@
             // 
             this.reinstallToolStripMenuItem.Name = "reinstallToolStripMenuItem";
             this.reinstallToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.reinstallToolStripMenuItem.Text = "Reinstall";
             this.reinstallToolStripMenuItem.Click += new System.EventHandler(this.reinstallToolStripMenuItem_Click);
+            resources.ApplyResources(this.reinstallToolStripMenuItem, "reinstallToolStripMenuItem");
             // 
             // downloadContentsToolStripMenuItem
             // 
             this.downloadContentsToolStripMenuItem.Name = "downloadContentsToolStripMenuItem";
             this.downloadContentsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.downloadContentsToolStripMenuItem.Text = "Download Contents";
             this.downloadContentsToolStripMenuItem.Click += new System.EventHandler(this.downloadContentsToolStripMenuItem_Click);
+            resources.ApplyResources(this.downloadContentsToolStripMenuItem, "downloadContentsToolStripMenuItem");
             // 
             // ModListHeaderContextMenuStrip
             // 
@@ -761,7 +761,7 @@
             this.ManageModsTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ManageModsTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ManageModsTabPage.TabIndex = 0;
-            this.ManageModsTabPage.Text = "Manage mods";
+            resources.ApplyResources(this.ManageModsTabPage, "ManageModsTabPage");
             //
             // InstallAllCheckbox
             //
@@ -789,7 +789,7 @@
             this.FilterByAuthorLabel.Name = "FilterByAuthorLabel";
             this.FilterByAuthorLabel.Size = new System.Drawing.Size(162, 20);
             this.FilterByAuthorLabel.TabIndex = 12;
-            this.FilterByAuthorLabel.Text = "Filter by author name:";
+            resources.ApplyResources(this.FilterByAuthorLabel, "FilterByAuthorLabel");
             // 
             // FilterByNameLabel
             // 
@@ -800,7 +800,7 @@
             this.FilterByNameLabel.Name = "FilterByNameLabel";
             this.FilterByNameLabel.Size = new System.Drawing.Size(147, 20);
             this.FilterByNameLabel.TabIndex = 10;
-            this.FilterByNameLabel.Text = "Filter by mod name:";
+            resources.ApplyResources(this.FilterByNameLabel, "FilterByNameLabel");
             // 
             // FilterByNameTextBox
             // 
@@ -821,7 +821,7 @@
             this.FilterByDescriptionLabel.Name = "FilterByDescriptionLabel";
             this.FilterByDescriptionLabel.Size = new System.Drawing.Size(149, 20);
             this.FilterByDescriptionLabel.TabIndex = 14;
-            this.FilterByDescriptionLabel.Text = "Filter by description:";
+            resources.ApplyResources(this.FilterByDescriptionLabel, "FilterByDescriptionLabel");
             // 
             // FilterByDescriptionTextBox
             // 
@@ -844,8 +844,8 @@
             this.ChangesetTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChangesetTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ChangesetTabPage.TabIndex = 2;
-            this.ChangesetTabPage.Text = "Changeset";
             this.ChangesetTabPage.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.ChangesetTabPage, "ChangesetTabPage");
             // 
             // CancelChangesButton
             // 
@@ -856,9 +856,9 @@
             this.CancelChangesButton.Name = "CancelChangesButton";
             this.CancelChangesButton.Size = new System.Drawing.Size(112, 35);
             this.CancelChangesButton.TabIndex = 6;
-            this.CancelChangesButton.Text = "Clear";
             this.CancelChangesButton.UseVisualStyleBackColor = true;
             this.CancelChangesButton.Click += new System.EventHandler(this.CancelChangesButton_Click);
+            resources.ApplyResources(this.CancelChangesButton, "CancelChangesButton");
             // 
             // ConfirmChangesButton
             // 
@@ -869,9 +869,9 @@
             this.ConfirmChangesButton.Name = "ConfirmChangesButton";
             this.ConfirmChangesButton.Size = new System.Drawing.Size(112, 35);
             this.ConfirmChangesButton.TabIndex = 5;
-            this.ConfirmChangesButton.Text = " Apply";
             this.ConfirmChangesButton.UseVisualStyleBackColor = true;
             this.ConfirmChangesButton.Click += new System.EventHandler(this.ConfirmChangesButton_Click);
+            resources.ApplyResources(this.ConfirmChangesButton, "ConfirmChangesButton");
             // 
             // ChangesListView
             // 
@@ -895,18 +895,18 @@
             //
             // Mod
             //
-            this.Mod.Text = "Mod";
             this.Mod.Width = 332;
+            resources.ApplyResources(this.Mod, "Mod");
             //
             // ChangeType
             //
-            this.ChangeType.Text = "Change";
             this.ChangeType.Width = 111;
+            resources.ApplyResources(this.ChangeType, "ChangeType");
             //
             // Reason
             //
-            this.Reason.Text = "Reason for action";
             this.Reason.Width = 606;
+            resources.ApplyResources(this.Reason, "Reason");
             //
             // WaitTabPage
             //
@@ -922,7 +922,7 @@
             this.WaitTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.WaitTabPage.Size = new System.Drawing.Size(1536, 948);
             this.WaitTabPage.TabIndex = 1;
-            this.WaitTabPage.Text = "Status log";
+            resources.ApplyResources(this.WaitTabPage, "WaitTabPage");
             // 
             // CancelCurrentActionButton
             // 
@@ -933,9 +933,9 @@
             this.CancelCurrentActionButton.Name = "CancelCurrentActionButton";
             this.CancelCurrentActionButton.Size = new System.Drawing.Size(112, 35);
             this.CancelCurrentActionButton.TabIndex = 9;
-            this.CancelCurrentActionButton.Text = "Cancel";
             this.CancelCurrentActionButton.UseVisualStyleBackColor = true;
             this.CancelCurrentActionButton.Click += new System.EventHandler(this.CancelCurrentActionButton_Click);
+            resources.ApplyResources(this.CancelCurrentActionButton, "CancelCurrentActionButton");
             //
             // RetryCurrentActionButton
             //
@@ -946,10 +946,10 @@
             this.RetryCurrentActionButton.Name = "RetryCurrentActionButton";
             this.RetryCurrentActionButton.Size = new System.Drawing.Size(112, 35);
             this.RetryCurrentActionButton.TabIndex = 8;
-            this.RetryCurrentActionButton.Text = "Retry";
             this.RetryCurrentActionButton.UseVisualStyleBackColor = true;
             this.RetryCurrentActionButton.Visible = false;
             this.RetryCurrentActionButton.Click += new System.EventHandler(this.RetryCurrentActionButton_Click);
+            resources.ApplyResources(this.RetryCurrentActionButton, "RetryCurrentActionButton");
             //
             // LogTextBox
             //
@@ -992,8 +992,8 @@
             this.MessageTextBox.ReadOnly = true;
             this.MessageTextBox.Size = new System.Drawing.Size(1510, 26);
             this.MessageTextBox.TabIndex = 6;
-            this.MessageTextBox.Text = "Waiting for operation to complete";
             this.MessageTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            resources.ApplyResources(this.MessageTextBox, "MessageTextBox");
             // 
             // ChooseRecommendedModsTabPage
             // 
@@ -1008,8 +1008,8 @@
             this.ChooseRecommendedModsTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseRecommendedModsTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ChooseRecommendedModsTabPage.TabIndex = 3;
-            this.ChooseRecommendedModsTabPage.Text = "Choose recommended mods";
             this.ChooseRecommendedModsTabPage.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.ChooseRecommendedModsTabPage, "ChooseRecommendedModsTabPage");
             // 
             // RecommendedModsCancelButton
             // 
@@ -1020,9 +1020,9 @@
             this.RecommendedModsCancelButton.Name = "RecommendedModsCancelButton";
             this.RecommendedModsCancelButton.Size = new System.Drawing.Size(112, 35);
             this.RecommendedModsCancelButton.TabIndex = 8;
-            this.RecommendedModsCancelButton.Text = "Cancel";
             this.RecommendedModsCancelButton.UseVisualStyleBackColor = true;
             this.RecommendedModsCancelButton.Click += new System.EventHandler(this.RecommendedModsCancelButton_Click);
+            resources.ApplyResources(this.RecommendedModsCancelButton, "RecommendedModsCancelButton");
             // 
             // RecommendedModsContinueButton
             // 
@@ -1033,9 +1033,9 @@
             this.RecommendedModsContinueButton.Name = "RecommendedModsContinueButton";
             this.RecommendedModsContinueButton.Size = new System.Drawing.Size(112, 35);
             this.RecommendedModsContinueButton.TabIndex = 7;
-            this.RecommendedModsContinueButton.Text = "Continue";
             this.RecommendedModsContinueButton.UseVisualStyleBackColor = true;
             this.RecommendedModsContinueButton.Click += new System.EventHandler(this.RecommendedModsContinueButton_Click);
+            resources.ApplyResources(this.RecommendedModsContinueButton, "RecommendedModsContinueButton");
             // 
             // RecommendedModsToggleCheckbox
             // 
@@ -1047,9 +1047,9 @@
             this.RecommendedModsToggleCheckbox.Name = "RecommendedModsToggleCheckbox";
             this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(131, 24);
             this.RecommendedModsToggleCheckbox.TabIndex = 9;
-            this.RecommendedModsToggleCheckbox.Text = "(De-)select all recommended or suggested mods.";
             this.RecommendedModsToggleCheckbox.UseVisualStyleBackColor = true;
             this.RecommendedModsToggleCheckbox.CheckedChanged += new System.EventHandler(this.RecommendedModsToggleCheckbox_CheckedChanged);
+            resources.ApplyResources(this.RecommendedModsToggleCheckbox, "RecommendedModsToggleCheckbox");
             // 
             // RecommendedDialogLabel
             // 
@@ -1059,8 +1059,8 @@
             this.RecommendedDialogLabel.Name = "RecommendedDialogLabel";
             this.RecommendedDialogLabel.Size = new System.Drawing.Size(627, 20);
             this.RecommendedDialogLabel.TabIndex = 6;
+            resources.ApplyResources(this.RecommendedDialogLabel, "RecommendedDialogLabel");
             // 
-            this.RecommendedDialogLabel.Text = "The following modules have been recommended or suggested by one or more of the chosen modules:";
             // RecommendedModsListView
             // 
             this.RecommendedModsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1086,30 +1086,30 @@
             //
             // RecommendationsGroup
             //
-            this.RecommendationsGroup.Header = "Recommendations";
             this.RecommendationsGroup.Name = "Recommendations";
             this.RecommendationsGroup.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Left;
+            resources.ApplyResources(this.RecommendationsGroup, "RecommendationsGroup");
             //
             // SuggestionsGroup
             //
-            this.SuggestionsGroup.Header = "Suggestions";
             this.SuggestionsGroup.Name = "Suggestions";
             this.SuggestionsGroup.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Left;
+            resources.ApplyResources(this.SuggestionsGroup, "SuggestionsGroup");
             //
             // columnHeader3
             // 
-            this.columnHeader3.Text = "Mod";
             this.columnHeader3.Width = 332;
+            resources.ApplyResources(this.columnHeader3, "columnHeader3");
             // 
             // columnHeader4
             // 
-            this.columnHeader4.Text = "Recommended or suggested by:";
             this.columnHeader4.Width = 180;
+            resources.ApplyResources(this.columnHeader4, "columnHeader4");
             // 
             // columnHeader5
             // 
-            this.columnHeader5.Text = "Mod description";
             this.columnHeader5.Width = 606;
+            resources.ApplyResources(this.columnHeader5, "columnHeader5");
             // 
             // ChooseProvidedModsTabPage
             // 
@@ -1123,8 +1123,8 @@
             this.ChooseProvidedModsTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseProvidedModsTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ChooseProvidedModsTabPage.TabIndex = 4;
-            this.ChooseProvidedModsTabPage.Text = "Choose mods";
             this.ChooseProvidedModsTabPage.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.ChooseProvidedModsTabPage, "ChooseProvidedModsTabPage");
             // 
             // ChooseProvidedModsCancelButton
             // 
@@ -1135,9 +1135,9 @@
             this.ChooseProvidedModsCancelButton.Name = "ChooseProvidedModsCancelButton";
             this.ChooseProvidedModsCancelButton.Size = new System.Drawing.Size(112, 35);
             this.ChooseProvidedModsCancelButton.TabIndex = 10;
-            this.ChooseProvidedModsCancelButton.Text = "Cancel";
             this.ChooseProvidedModsCancelButton.UseVisualStyleBackColor = true;
             this.ChooseProvidedModsCancelButton.Click += new System.EventHandler(this.ChooseProvidedModsCancelButton_Click);
+            resources.ApplyResources(this.ChooseProvidedModsCancelButton, "ChooseProvidedModsCancelButton");
             // 
             // ChooseProvidedModsContinueButton
             // 
@@ -1148,9 +1148,9 @@
             this.ChooseProvidedModsContinueButton.Name = "ChooseProvidedModsContinueButton";
             this.ChooseProvidedModsContinueButton.Size = new System.Drawing.Size(112, 35);
             this.ChooseProvidedModsContinueButton.TabIndex = 9;
-            this.ChooseProvidedModsContinueButton.Text = "Continue";
             this.ChooseProvidedModsContinueButton.UseVisualStyleBackColor = true;
             this.ChooseProvidedModsContinueButton.Click += new System.EventHandler(this.ChooseProvidedModsContinueButton_Click);
+            resources.ApplyResources(this.ChooseProvidedModsContinueButton, "ChooseProvidedModsContinueButton");
             // 
             // ChooseProvidedModsListView
             // 
@@ -1176,13 +1176,13 @@
             //
             // columnHeader6
             // 
-            this.columnHeader6.Text = "Mod";
             this.columnHeader6.Width = 332;
+            resources.ApplyResources(this.columnHeader6, "columnHeader6");
             // 
             // columnHeader8
             // 
-            this.columnHeader8.Text = "Mod description";
             this.columnHeader8.Width = 606;
+            resources.ApplyResources(this.columnHeader8, "columnHeader8");
             // 
             // ChooseProvidedModsLabel
             // 
@@ -1192,15 +1192,15 @@
             this.ChooseProvidedModsLabel.Name = "ChooseProvidedModsLabel";
             this.ChooseProvidedModsLabel.Size = new System.Drawing.Size(568, 20);
             this.ChooseProvidedModsLabel.TabIndex = 7;
-            this.ChooseProvidedModsLabel.Text = "Several mods provide the virtual module Foo, choose one of the following mods:";
+            resources.ApplyResources(this.ChooseProvidedModsLabel, "ChooseProvidedModsLabel");
             // 
             // minimizeNotifyIcon
             // 
             this.minimizeNotifyIcon.ContextMenuStrip = this.minimizedContextMenuStrip;
-            this.minimizeNotifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("minimizeNotifyIcon.Icon")));
-            this.minimizeNotifyIcon.Text = "CKAN";
             this.minimizeNotifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.minimizeNotifyIcon_MouseDoubleClick);
             this.minimizeNotifyIcon.BalloonTipClicked += new System.EventHandler(this.minimizeNotifyIcon_BalloonTipClicked);
+            this.minimizeNotifyIcon.Icon = Properties.Resources.AppIcon;
+            resources.ApplyResources(this.minimizeNotifyIcon, "minimizeNotifyIcon");
             // 
             // minimizedContextMenuStrip
             // 
@@ -1224,8 +1224,8 @@
             // 
             this.updatesToolStripMenuItem.Name = "updatesToolStripMenuItem";
             this.updatesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.updatesToolStripMenuItem.Text = "N available updates";
             this.updatesToolStripMenuItem.Click += new System.EventHandler(this.updatesToolStripMenuItem_Click);
+            resources.ApplyResources(this.updatesToolStripMenuItem, "updatesToolStripMenuItem");
             // 
             // toolStripSeparator4
             // 
@@ -1236,15 +1236,15 @@
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
             this.refreshToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            resources.ApplyResources(this.refreshToolStripMenuItem, "refreshToolStripMenuItem");
             // 
             // pauseToolStripMenuItem
             // 
             this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
             this.pauseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.pauseToolStripMenuItem.Text = "Pause";
             this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
+            resources.ApplyResources(this.pauseToolStripMenuItem, "pauseToolStripMenuItem");
             // 
             // toolStripSeparator5
             // 
@@ -1255,30 +1255,30 @@
             // 
             this.openCKANToolStripMenuItem.Name = "openCKANToolStripMenuItem";
             this.openCKANToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openCKANToolStripMenuItem.Text = "Open CKAN";
             this.openCKANToolStripMenuItem.Click += new System.EventHandler(this.openCKANToolStripMenuItem_Click);
+            resources.ApplyResources(this.openCKANToolStripMenuItem, "openCKANToolStripMenuItem");
             // 
             //
             // openKSPToolStripMenuItem
             //
             this.openKSPToolStripMenuItem.Name = "launchKSPToolStripMenuItem";
             this.openKSPToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openKSPToolStripMenuItem.Text = "Launch KSP";
             this.openKSPToolStripMenuItem.Click += new System.EventHandler(this.launchKSPToolStripMenuItem_Click);
+            resources.ApplyResources(this.openKSPToolStripMenuItem, "openKSPToolStripMenuItem");
             //
             // openKSPDirectoryToolStripMenuItem1
             // 
             this.openKSPDirectoryToolStripMenuItem1.Name = "openKSPDirectoryToolStripMenuItem1";
             this.openKSPDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.openKSPDirectoryToolStripMenuItem1.Text = "Open KSP Directory";
             this.openKSPDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.openKspDirectoryToolStripMenuItem_Click);
+            resources.ApplyResources(this.openKSPDirectoryToolStripMenuItem1, "openKSPDirectoryToolStripMenuItem1");
             // 
             // cKANSettingsToolStripMenuItem1
             // 
             this.cKANSettingsToolStripMenuItem1.Name = "cKANSettingsToolStripMenuItem1";
             this.cKANSettingsToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.cKANSettingsToolStripMenuItem1.Text = "CKAN Settings";
             this.cKANSettingsToolStripMenuItem1.Click += new System.EventHandler(this.cKANSettingsToolStripMenuItem1_Click);
+            resources.ApplyResources(this.cKANSettingsToolStripMenuItem1, "cKANSettingsToolStripMenuItem1");
             // 
             // toolStripSeparator6
             // 
@@ -1289,8 +1289,8 @@
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolButton_Click);
+            resources.ApplyResources(this.quitToolStripMenuItem, "quitToolStripMenuItem");
             // 
             // Main
             // 
@@ -1300,14 +1300,14 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MinimumSize = new System.Drawing.Size(1280, 700);
             this.Name = "Main";
-            this.Text = "CKAN-GUI";
             this.Resize += new System.EventHandler(this.Main_Resize);
+            this.Icon = Properties.Resources.AppIcon;
+            resources.ApplyResources(this, "$this");
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.menuStrip2.ResumeLayout(false);

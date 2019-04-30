@@ -28,7 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewRepoDialog));
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(NewRepoDialog));
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
             this.RepoUrlTextBox = new System.Windows.Forms.TextBox();
             this.RepoCancel = new System.Windows.Forms.Button();
@@ -49,7 +50,7 @@
             this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 410);
             this.RepositoryGroupBox.TabIndex = 8;
             this.RepositoryGroupBox.TabStop = false;
-            this.RepositoryGroupBox.Text = "Official repositories";
+            resources.ApplyResources(this.RepositoryGroupBox, "RepositoryGroupBox");
             // 
             // RepoUrlTextBox
             // 
@@ -67,8 +68,8 @@
             this.RepoCancel.Name = "RepoCancel";
             this.RepoCancel.Size = new System.Drawing.Size(56, 26);
             this.RepoCancel.TabIndex = 10;
-            this.RepoCancel.Text = "Cancel";
             this.RepoCancel.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.RepoCancel, "RepoCancel");
             // 
             // RepoOK
             // 
@@ -79,8 +80,8 @@
             this.RepoOK.Name = "RepoOK";
             this.RepoOK.Size = new System.Drawing.Size(56, 26);
             this.RepoOK.TabIndex = 9;
-            this.RepoOK.Text = "OK";
             this.RepoOK.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.RepoOK, "RepoOK");
             // 
             // ReposListBox
             // 
@@ -98,10 +99,10 @@
             this.ClientSize = new System.Drawing.Size(495, 434);
             this.Controls.Add(this.RepositoryGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = Properties.Resources.AppIcon;
             this.Name = "NewRepoDialog";
-            this.Text = "Settings";
             this.Load += new System.EventHandler(this.NewRepoDialog_Load);
+            resources.ApplyResources(this, "$this");
             this.RepositoryGroupBox.ResumeLayout(false);
             this.RepositoryGroupBox.PerformLayout();
             this.ResumeLayout(false);

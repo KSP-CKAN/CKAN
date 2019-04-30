@@ -99,6 +99,9 @@
     <Compile Include="ManageKspInstances.Designer.cs">
       <DependentUpon>ManageKspInstances.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ManageKSPInstances.resx">
+      <DependentUpon>ManageKspInstances.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="CloneFakeKspDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -237,6 +240,8 @@
     <Compile Include="SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="SingleAssemblyComponentResourceManager.cs" />
+    <Compile Include="SingleAssemblyResourceManager.cs" />
     <Compile Include="TabController.cs" />
     <Compile Include="URLHandlers.cs" />
     <Compile Include="Util.cs" />
@@ -263,9 +268,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AskUserForAutoUpdatesDialog.resx">
       <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ChooseKSPInstance.resx">
-      <DependentUpon>ManageKspInstances.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CloneFakeKspDialog.resx">
       <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>
@@ -306,13 +308,24 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.en-US.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="RenameInstanceDialog.resx">
       <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SettingsDialog.en-US.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="YesNoDialog.resx">
+      <DependentUpon>YesNoDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="YesNoDialog.de-DE.resx">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SelectionDialog.resx">

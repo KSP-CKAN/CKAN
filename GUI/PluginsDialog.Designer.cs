@@ -28,7 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PluginsDialog));
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(PluginsDialog));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.ActivePluginsListBox = new System.Windows.Forms.ListBox();
@@ -56,7 +57,7 @@
             this.groupBox1.Size = new System.Drawing.Size(360, 173);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Active Plugins";
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             // 
             // groupBox2
             // 
@@ -72,7 +73,7 @@
             this.groupBox2.Size = new System.Drawing.Size(360, 167);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Dormant Plugins";
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             // 
             // ActivePluginsListBox
             // 
@@ -93,9 +94,9 @@
             this.DeactivateButton.Name = "DeactivateButton";
             this.DeactivateButton.Size = new System.Drawing.Size(124, 23);
             this.DeactivateButton.TabIndex = 1;
-            this.DeactivateButton.Text = "Deactivate";
             this.DeactivateButton.UseVisualStyleBackColor = true;
             this.DeactivateButton.Click += new System.EventHandler(this.DeactivateButton_Click);
+            resources.ApplyResources(this.DeactivateButton, "DeactivateButton");
             // 
             // ReloadPluginButton
             // 
@@ -105,9 +106,9 @@
             this.ReloadPluginButton.Name = "ReloadPluginButton";
             this.ReloadPluginButton.Size = new System.Drawing.Size(124, 23);
             this.ReloadPluginButton.TabIndex = 2;
-            this.ReloadPluginButton.Text = "Reload";
             this.ReloadPluginButton.UseVisualStyleBackColor = true;
             this.ReloadPluginButton.Click += new System.EventHandler(this.ReloadPluginButton_Click);
+            resources.ApplyResources(this.ReloadPluginButton, "ReloadPluginButton");
             // 
             // DormantPluginsListBox
             // 
@@ -129,9 +130,9 @@
             this.ActivatePluginButton.Name = "ActivatePluginButton";
             this.ActivatePluginButton.Size = new System.Drawing.Size(124, 23);
             this.ActivatePluginButton.TabIndex = 3;
-            this.ActivatePluginButton.Text = "Activate";
             this.ActivatePluginButton.UseVisualStyleBackColor = true;
             this.ActivatePluginButton.Click += new System.EventHandler(this.ActivatePluginButton_Click);
+            resources.ApplyResources(this.ActivatePluginButton, "ActivatePluginButton");
             // 
             // AddNewPluginButton
             // 
@@ -140,9 +141,9 @@
             this.AddNewPluginButton.Name = "AddNewPluginButton";
             this.AddNewPluginButton.Size = new System.Drawing.Size(124, 23);
             this.AddNewPluginButton.TabIndex = 3;
-            this.AddNewPluginButton.Text = "Add new..";
             this.AddNewPluginButton.UseVisualStyleBackColor = true;
             this.AddNewPluginButton.Click += new System.EventHandler(this.AddNewPluginButton_Click);
+            resources.ApplyResources(this.AddNewPluginButton, "AddNewPluginButton");
             // 
             // UnloadPluginButton
             // 
@@ -152,9 +153,9 @@
             this.UnloadPluginButton.Name = "UnloadPluginButton";
             this.UnloadPluginButton.Size = new System.Drawing.Size(124, 23);
             this.UnloadPluginButton.TabIndex = 4;
-            this.UnloadPluginButton.Text = "Unload";
             this.UnloadPluginButton.UseVisualStyleBackColor = true;
             this.UnloadPluginButton.Click += new System.EventHandler(this.UnloadPluginButton_Click);
+            resources.ApplyResources(this.UnloadPluginButton, "UnloadPluginButton");
             // 
             // PluginsDialog
             // 
@@ -164,10 +165,10 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = Properties.Resources.AppIcon;
             this.Name = "PluginsDialog";
-            this.Text = "Plugins";
             this.Load += new System.EventHandler(this.PluginsDialog_Load);
+            resources.ApplyResources(this, "$this");
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);

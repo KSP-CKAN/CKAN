@@ -171,28 +171,28 @@ namespace CKAN
             log.Info("Updating the mod list");
 
             ResetProgress();
-            tabController.RenameTab("WaitTabPage", "Loading modules");
+            tabController.RenameTab("WaitTabPage", Properties.Resources.MainModListWaitTitle);
             ShowWaitDialog(false);
             tabController.SetTabLock(true);
             Util.Invoke(this, SwitchEnabledState);
             ClearLog();
 
-            AddLogMessage("Loading registry...");
+            AddLogMessage(Properties.Resources.MainModListLoadingRegistry);
             KspVersionCriteria versionCriteria = CurrentInstance.VersionCriteria();
             IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
 
-            AddLogMessage("Loading installed modules...");
+            AddLogMessage(Properties.Resources.MainModListLoadingInstalled);
             var gui_mods = new HashSet<GUIMod>();
             gui_mods.UnionWith(
                 registry.InstalledModules
                     .Select(instMod => new GUIMod(instMod, registry, versionCriteria))
             );
-            AddLogMessage("Loading available modules...");
+            AddLogMessage(Properties.Resources.MainModListLoadingAvailable);
             gui_mods.UnionWith(
                 registry.Available(versionCriteria)
                     .Select(m => new GUIMod(m, registry, versionCriteria))
             );
-            AddLogMessage("Loading incompatible modules...");
+            AddLogMessage(Properties.Resources.MainModListLoadingIncompatible);
             gui_mods.UnionWith(
                 registry.Incompatible(versionCriteria)
                     .Select(m => new GUIMod(m, registry, versionCriteria, true))
@@ -200,7 +200,7 @@ namespace CKAN
 
             if (mc != null)
             {
-                AddLogMessage("Restoring change set...");
+                AddLogMessage(Properties.Resources.MainModListRestoringChangeset);
                 foreach (ModChange change in mc)
                 {
                     // Propagate IsInstallChecked and IsUpgradeChecked to the next generation
@@ -210,7 +210,7 @@ namespace CKAN
                 }
             }
 
-            AddLogMessage("Preserving new flags...");
+            AddLogMessage(Properties.Resources.MainModListPreservingNew);
             if (old_modules != null)
             {
                 foreach (GUIMod gm in gui_mods)
@@ -242,13 +242,13 @@ namespace CKAN
                 }
             }
 
-            AddLogMessage("Populating mod list...");
+            AddLogMessage(Properties.Resources.MainModListPopulatingList);
             // Update our mod listing
             mainModList.ConstructModList(gui_mods.ToList(), mc, configuration.HideEpochs, configuration.HideV);
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
-            AddLogMessage("Updating filters...");
+            AddLogMessage(Properties.Resources.MainModListUpdatingFilters);
 
             var has_any_updates      = gui_mods.Any(mod => mod.HasUpdate);
             var has_any_installed    = gui_mods.Any(mod => mod.IsInstalled);
@@ -257,23 +257,23 @@ namespace CKAN
             //TODO Consider using smart enumeration pattern so stuff like this is easier
             Util.Invoke(menuStrip2, () =>
             {
-                FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
+                FilterToolButton.DropDownItems[0].Text = String.Format(Properties.Resources.MainModListCompatible,
                     mainModList.CountModsByFilter(GUIModFilter.Compatible));
-                FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
+                FilterToolButton.DropDownItems[1].Text = String.Format(Properties.Resources.MainModListInstalled,
                     mainModList.CountModsByFilter(GUIModFilter.Installed));
-                FilterToolButton.DropDownItems[2].Text = String.Format("Upgradeable ({0})",
+                FilterToolButton.DropDownItems[2].Text = String.Format(Properties.Resources.MainModListUpgradeable,
                     mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-                FilterToolButton.DropDownItems[3].Text = String.Format("Replaceable ({0})",
+                FilterToolButton.DropDownItems[3].Text = String.Format(Properties.Resources.MainModListReplaceable,
                     mainModList.CountModsByFilter(GUIModFilter.Replaceable));
-                FilterToolButton.DropDownItems[4].Text = String.Format("Cached ({0})",
+                FilterToolButton.DropDownItems[4].Text = String.Format(Properties.Resources.MainModListCached,
                     mainModList.CountModsByFilter(GUIModFilter.Cached));
-                FilterToolButton.DropDownItems[5].Text = String.Format("Newly compatible ({0})",
+                FilterToolButton.DropDownItems[5].Text = String.Format(Properties.Resources.MainModListNewlyCompatible,
                     mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
-                FilterToolButton.DropDownItems[6].Text = String.Format("Not installed ({0})",
+                FilterToolButton.DropDownItems[6].Text = String.Format(Properties.Resources.MainModListNotInstalled,
                     mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
-                FilterToolButton.DropDownItems[7].Text = String.Format("Incompatible ({0})",
+                FilterToolButton.DropDownItems[7].Text = String.Format(Properties.Resources.MainModListIncompatible,
                     mainModList.CountModsByFilter(GUIModFilter.Incompatible));
-                FilterToolButton.DropDownItems[8].Text = String.Format("All ({0})",
+                FilterToolButton.DropDownItems[8].Text = String.Format(Properties.Resources.MainModListAll,
                     mainModList.CountModsByFilter(GUIModFilter.All));
 
                 UpdateAllToolButton.Enabled = has_any_updates;
@@ -288,7 +288,7 @@ namespace CKAN
             ModList.Columns["AutoInstalled"].Visible = has_any_installed && !configuration.HiddenColumnNames.Contains("AutoInstalled");
             ModList.Columns["ReplaceCol"].Visible    = has_any_replacements;
 
-            AddLogMessage("Updating tray...");
+            AddLogMessage(Properties.Resources.MainModListUpdatingTray);
             UpdateTrayInfo();
 
             HideWaitDialog(true);
@@ -556,7 +556,7 @@ namespace CKAN
                 if (!string.IsNullOrEmpty(cmd))
                     Process.Start(cmd);
             }
-            else 
+            else
             {
                 GUIMod gui_mod = row?.Tag as GUIMod;
                 if (gui_mod != null)
@@ -890,7 +890,7 @@ namespace CKAN
                 }
                 : new DataGridViewTextBoxCell()
                 {
-                    Value = mod.IsAutodetected ? "AD" : "-"
+                    Value = mod.IsAutodetected ? Properties.Resources.MainModListAutoDetected : "-"
                 };
 
             var autoInstalled = mod.IsInstalled && !mod.IsAutodetected
@@ -974,8 +974,12 @@ namespace CKAN
             // If our version number starts with a string of digits, followed by
             // a colon, and then has no more colons, we're probably safe to assume
             // the first string of digits is an epoch
-            return Regex.IsMatch(version, @"^[0-9][0-9]*:[^:]+$") ? Regex.Replace(version, @"^([^:]+):([^:]+)$", @"$2") : version;
+            //return Regex.IsMatch(version, @"^[0-9][0-9]*:[^:]+$") ? Regex.Replace(version, @"^([^:]+):([^:]+)$", @"$2") : version;
+            return ContainsEpoch.IsMatch(version) ? RemoveEpoch.Replace(version, @"$2") : version;
         }
+
+        private static readonly Regex ContainsEpoch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
+        private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
 
         private bool IsNameInNameFilter(GUIMod mod)
         {
@@ -1014,7 +1018,7 @@ namespace CKAN
                 case GUIModFilter.Incompatible:             return m.IsIncompatible;
                 case GUIModFilter.Replaceable:              return m.IsInstalled && m.HasReplacement;
                 case GUIModFilter.All:                      return true;
-                default:                                    throw new Kraken($"Unknown filter type {filter} in IsModInFilter");
+                default:                                    throw new Kraken(string.Format(Properties.Resources.MainModListUnknownFilter, filter));
             }
         }
 

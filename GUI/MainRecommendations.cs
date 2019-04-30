@@ -129,7 +129,7 @@ namespace CKAN
             Util.Invoke(this, () =>
             {
                 RecommendedModsToggleCheckbox.Checked = true;
-                tabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended or suggested mods");
+                tabController.RenameTab("ChooseRecommendedModsTabPage", Properties.Resources.MainRecommendationsTitle);
 
                 RecommendedModsListView.Items.Clear();
                 RecommendedModsListView.Items.AddRange(rows.ToArray());
@@ -158,8 +158,8 @@ namespace CKAN
                 Checked = check,
                 Group   = group,
                 Text    = Manager.Cache.IsMaybeCachedZip(module)
-                    ? $"{module.name} {module.version} (cached)"
-                    : $"{module.name} {module.version} ({module.download.Host ?? ""}, {CkanModule.FmtSize(module.download_size)})"
+                    ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
+                    : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download.Host ?? "", CkanModule.FmtSize(module.download_size))
             };
 
             item.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = descrip          });
@@ -299,7 +299,7 @@ namespace CKAN
             var rows = getRecSugRows(registry.InstalledModules.Select(im => im.Module), registry, toInstall);
             if (!rows.Any())
             {
-                GUI.user.RaiseError("No recommendations or suggestions found.");
+                GUI.user.RaiseError(Properties.Resources.MainRecommendationsNoneFound);
                 return;
             }
 
