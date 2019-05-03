@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.26.1
+## v1.26.2
 
 ### Features
 
@@ -25,7 +25,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix freeze on non CKAN files in cache folder (#2743 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Ignore dependency self conflicts (#2747 by: HebaruSan; reviewed: DasSkelett)
 
-## v1.26.0
+## v1.26.0 (Baikonur)
 
 ### Features
 
@@ -93,7 +93,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Select 2nd instead of 3rd cell on MarkAllUpdatesToolButton_Click (#2704 by: DasSkelett; reviewed: politas)
 - [GUI] Prevent Null entry in CompatibleKSPVersions (#2707 by: politas; reviewed: DasSkelett)
 
-## v1.25.4 Kennedy
+## v1.25.4 (Kennedy)
 
 ### Features
 
