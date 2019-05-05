@@ -64,7 +64,7 @@ namespace Tests.GUI
 
             // install it and set it as pre-installed
             _manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip());
-            _registry.RegisterModule(_anyVersionModule, new string[] { }, _instance.KSP);
+            _registry.RegisterModule(_anyVersionModule, new string[] { }, _instance.KSP, false);
             _registry.AddAvailable(_anyVersionModule);
 
             ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
@@ -83,7 +83,9 @@ namespace Tests.GUI
             // todo: refactor the column header code to allow mocking of the GUI without creating columns
             _listGui.Columns.Add(new DataGridViewCheckBoxColumn());
             _listGui.Columns.Add(new DataGridViewCheckBoxColumn());
-            for (int i = 0; i < 10; i++)
+            _listGui.Columns.Add(new DataGridViewCheckBoxColumn());
+            _listGui.Columns.Add(new DataGridViewCheckBoxColumn());
+            for (int i = 0; i < 9; i++)
             {
                 _listGui.Columns.Add(i.ToString(), "Column" + i);
             }
@@ -121,7 +123,7 @@ namespace Tests.GUI
             // the header row adds one to the count
             Assert.AreEqual(modules.Count + 1, _listGui.Rows.Count);
 
-            // sort by version, this is the fuse-lighting
+            // sort by a text column, this is the fuse-lighting
             _listGui.Sort(_listGui.Columns[6], ListSortDirection.Descending);
 
             // mark the mod for install, after completion we will get an exception
@@ -135,7 +137,7 @@ namespace Tests.GUI
             {
                 // perform the install of the "other" module - now we need to sort
                 ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
-                    _modList.ComputeUserChangeSet().Select(change => change.Mod.ToCkanModule()).ToList(),
+                    _modList.ComputeUserChangeSet(null).Select(change => change.Mod.ToCkanModule()).ToList(),
                     new RelationshipResolverOptions(),
                     new NetAsyncModulesDownloader(_manager.User)
                 );

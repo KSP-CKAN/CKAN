@@ -77,6 +77,17 @@ namespace CKAN
         /// </summary>
         HashSet<string> FindReverseDependencies(IEnumerable<string> modules);
 
+        /// <summary>
+        /// Find auto-installed modules that have no depending modules
+        /// or only auto-installed depending modules.
+        /// installedModules is a parameter so we can experiment with
+        /// changes that have not yet been made, such as removing other modules.
+        /// </summary>
+        /// <param name="installedModules">The modules currently installed</param>
+        /// <returns>
+        /// Sequence of removable auto-installed modules, if any
+        /// </returns>
+        IEnumerable<InstalledModule> FindRemovableAutoInstalled(IEnumerable<InstalledModule> installedModules);
 
         /// <summary>
         /// Gets the installed version of a mod. Does not check for provided or autodetected mods.

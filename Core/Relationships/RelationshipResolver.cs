@@ -673,6 +673,14 @@ namespace CKAN
                 get { return "  Requested by user.\r\n"; }
             }
         }
+        
+        public class NoLongerUsed: SelectionReason
+        {
+            public override string Reason
+            {
+                get { return "  Auto-installed, depending modules removed.\r\n"; }
+            }
+        }
 
         public class Replacement : SelectionReason
         {

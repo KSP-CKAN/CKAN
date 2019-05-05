@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -83,7 +84,9 @@ namespace CKAN
 
         [JsonProperty] private CkanModule source_module;
 
-//        private static readonly ILog log = LogManager.GetLogger(typeof(InstalledModule));
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
+        private bool auto_installed;
 
         // TODO: Our InstalledModuleFile already knows its path, so this could just
         // be a list. However we've left it as a dictionary for now to maintain
@@ -110,15 +113,22 @@ namespace CKAN
             get { return install_time; }
         }
 
+        public bool AutoInstalled
+        {
+            get { return auto_installed;  }
+            set { auto_installed = value; }
+        }
+
         #endregion
 
         #region Constructors
 
-        public InstalledModule(KSP ksp, CkanModule module, IEnumerable<string> relative_files)
+        public InstalledModule(KSP ksp, CkanModule module, IEnumerable<string> relative_files, bool autoInstalled)
         {
             install_time = DateTime.Now;
             source_module = module;
             installed_files = new Dictionary<string, InstalledModuleFile>();
+            auto_installed = autoInstalled;
 
             foreach (string file in relative_files)
             {

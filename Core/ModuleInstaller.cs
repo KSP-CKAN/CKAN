@@ -136,7 +136,8 @@ namespace CKAN
         public void InstallList(List<string> modules, RelationshipResolverOptions options, IDownloader downloader = null)
         {
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
-            InstallList(resolver.ModList().ToList(), options, downloader);
+            // Only pass the CkanModules of the parameters, so we can tell which are auto
+            InstallList(resolver.ModList().Where(m => modules.Contains(m.identifier)).ToList(), options, downloader);
         }
 
         /// <summary>
@@ -214,7 +215,7 @@ namespace CKAN
                     User.RaiseProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
                                          percent_complete);
 
-                    Install(modsToInstall[i]);
+                    Install(modsToInstall[i], resolver.ReasonFor(modsToInstall[i]) is SelectionReason.Depends);
                 }
 
                 User.RaiseProgress("Updating registry", 70);
@@ -243,31 +244,6 @@ namespace CKAN
             User.RaiseProgress("Done!", 100);
         }
 
-        public void InstallList(ModuleResolution modules, RelationshipResolverOptions options)
-        {
-            // We're about to install all our mods; so begin our transaction.
-            using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
-            {
-                var enumeratedMods = modules.Select((m, i) => new { Idx = i, Module = m });
-                foreach (var item in enumeratedMods)
-                {
-                    var percentComplete = (item.Idx * 100) / modules.Count;
-                    User.RaiseProgress(string.Format("Installing mod \"{0}\"", item.Module), percentComplete);
-                    Install(item.Module);
-                }
-
-                User.RaiseProgress("Updating registry", 70);
-
-                registry_manager.Save(!options.without_enforce_consistency);
-
-                User.RaiseProgress("Committing filesystem changes", 80);
-
-                transaction.Complete();
-
-                EnforceCacheSizeLimit();
-            }
-        }
-
         /// <summary>
         /// Returns the module contents if and only if we have it
         /// available in our cache. Returns null, otherwise.
@@ -291,7 +267,7 @@ namespace CKAN
         /// <summary>
         ///     Install our mod from the filename supplied.
         ///     If no file is supplied, we will check the cache or throw FileNotFoundKraken.
-        ///     Does *not* resolve dependencies; this actually does the heavy listing.
+        ///     Does *not* resolve dependencies; this does the heavy lifting.
         ///     Does *not* save the registry.
         ///     Do *not* call this directly, use InstallList() instead.
         ///
@@ -299,11 +275,9 @@ namespace CKAN
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// Throws a FileNotFoundKraken if we can't find the downloaded module.
         ///
+        /// TODO: The name of this and InstallModule() need to be made more distinctive.
         /// </summary>
-        //
-        // TODO: The name of this and InstallModule() need to be made more distinctive.
-
-        private void Install(CkanModule module, string filename = null)
+        private void Install(CkanModule module, bool autoInstalled, string filename = null)
         {
             CheckMetapackageInstallationKraken(module);
 
@@ -337,7 +311,7 @@ namespace CKAN
                 IEnumerable<string> files = InstallModule(module, filename);
 
                 // Register our module and its files.
-                registry.RegisterModule(module, files, ksp);
+                registry.RegisterModule(module, files, ksp, autoInstalled);
 
                 // Finish our transaction, but *don't* save the registry; we may be in an
                 // intermediate, inconsistent state.
@@ -762,9 +736,13 @@ namespace CKAN
             }
 
             // Find all the things which need uninstalling.
-            IEnumerable<string> goners = mods.Union(
+            IEnumerable<string> revdep = mods.Union(
                 registry_manager.registry.FindReverseDependencies(
                     mods.Except(installing ?? new string[] {})));
+            IEnumerable<string> goners = revdep.Union(
+                registry_manager.registry.FindRemovableAutoInstalled(
+                    registry_manager.registry.InstalledModules.Where(im => !revdep.Contains(im.identifier))
+                ).Select(im => im.identifier));
 
             // If there us nothing to uninstall, skip out.
             if (!goners.Any())
@@ -999,7 +977,7 @@ namespace CKAN
         /// </summary>
         /// <param name="add">Add.</param>
         /// <param name="remove">Remove.</param>
-        public void AddRemove(IEnumerable<CkanModule> add = null, IEnumerable<string> remove = null, bool enforceConsistency = true)
+        public void AddRemove(IEnumerable<CkanModule> add = null, IEnumerable<InstalledModule> remove = null, bool enforceConsistency = true)
         {
             // TODO: We should do a consistency check up-front, rather than relying
             // upon our registry catching inconsistencies at the end.
@@ -1007,14 +985,15 @@ namespace CKAN
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
 
-                foreach (string identifier in remove)
+                foreach (InstalledModule instMod in remove)
                 {
-                    Uninstall(identifier);
+                    Uninstall(instMod.Module.identifier);
                 }
 
                 foreach (CkanModule module in add)
                 {
-                    Install(module);
+                    var previous = remove?.FirstOrDefault(im => im.Module.identifier == module.identifier);
+                    Install(module, previous?.AutoInstalled ?? false);
                 }
 
                 registry_manager.Save(enforceConsistency);
@@ -1050,7 +1029,7 @@ namespace CKAN
             // adding everything that needs installing (which may involve new mods to
             // satisfy dependencies). We always know the list passed in is what we need to
             // install, but we need to calculate what needs to be removed.
-            var to_remove = new List<string>();
+            var to_remove = new List<InstalledModule>();
 
             // Let's discover what we need to do with each module!
             foreach (CkanModule module in modules)
@@ -1071,7 +1050,7 @@ namespace CKAN
                 else
                 {
                     // Module already installed. We'll need to remove it first.
-                    to_remove.Add(module.identifier);
+                    to_remove.Add(installed_mod);
 
                     CkanModule installed = installed_mod.Module;
                     if (installed.version.IsEqualTo(module.version))
@@ -1105,7 +1084,7 @@ namespace CKAN
         {
             log.Debug("Using Replace method");
             List<CkanModule> modsToInstall = new List<CkanModule>();
-            var modsToRemove = new List<string>();
+            var modsToRemove = new List<InstalledModule>();
             foreach (ModuleReplacement repl in replacements)
             {
                 modsToInstall.Add(repl.ReplaceWith);
@@ -1139,7 +1118,7 @@ namespace CKAN
                 else
                 {
                     // Obviously, we need to remove the mod we are replacing
-                    modsToRemove.Add(repl.ToReplace.identifier);
+                    modsToRemove.Add(installedMod);
 
                     log.DebugFormat("Ok, we are removing {0}", repl.ToReplace.identifier);
                     //Check whether our Replacement target is already installed
@@ -1150,7 +1129,7 @@ namespace CKAN
                     {
                         //Module already installed. We'll need to treat it as an upgrade.
                         log.DebugFormat("It turns out {0} is already installed, we'll upgrade it.", installed_replacement.identifier);
-                        modsToRemove.Add(installed_replacement.identifier);
+                        modsToRemove.Add(installed_replacement);
 
                         CkanModule installed = installed_replacement.Module;
                         if (installed.version.IsEqualTo(repl.ReplaceWith.version))

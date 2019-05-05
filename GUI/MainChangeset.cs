@@ -85,11 +85,10 @@ namespace CKAN
                 GUIMod mod = row.Tag as GUIMod;
                 if (mod.IsInstallChecked != mod.IsInstalled)
                 {
-                    mod.SetInstallChecked(row, mod.IsInstalled);
-
+                    mod.SetInstallChecked(row, Installed, mod.IsInstalled);
                 }
-                mod.SetUpgradeChecked(row, false);
-                mod.SetReplaceChecked(row, false);
+                mod.SetUpgradeChecked(row, UpdateCol, false);
+                mod.SetReplaceChecked(row, ReplaceCol, false);
             }
         }
 
@@ -139,7 +138,7 @@ namespace CKAN
             // TODO Work out why this is.
             installWorker.RunWorkerAsync(
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    mainModList.ComputeUserChangeSet().ToList(),
+                    mainModList.ComputeUserChangeSet(RegistryManager.Instance(Main.Instance.CurrentInstance).registry).ToList(),
                     RelationshipResolver.DependsOnlyOpts()
                 )
             );

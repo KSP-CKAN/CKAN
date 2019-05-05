@@ -50,7 +50,7 @@ namespace Tests.GUI
         public void ComputeChangeSetFromModList_WithEmptyList_HasEmptyChangeSet()
         {
             var item = new MainModList(delegate { }, delegate { return null; });
-            Assert.That(item.ComputeUserChangeSet(), Is.Empty);
+            Assert.That(item.ComputeUserChangeSet(null), Is.Empty);
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace Tests.GUI
                 module.conflicts = new List<RelationshipDescriptor> { new ModuleRelationshipDescriptor { name = "kOS" } };
                 registry.AddAvailable(module);
                 registry.AddAvailable(TestData.kOS_014_module());
-                registry.RegisterModule(module, Enumerable.Empty<string>(), tidy.KSP);
+                registry.RegisterModule(module, Enumerable.Empty<string>(), tidy.KSP, false);
 
                 var mainList = new MainModList(null, null, new GUIUser());
                 var mod = new GUIMod(module, registry, tidy.KSP.VersionCriteria());
@@ -73,7 +73,7 @@ namespace Tests.GUI
                 mainList.ConstructModList(mods, null, true);
                 mainList.Modules = new ReadOnlyCollection<GUIMod>(mods);
                 mod2.IsInstallChecked = true;
-                var computeTask = mainList.ComputeChangeSetFromModList(registry, mainList.ComputeUserChangeSet(), null,
+                var computeTask = mainList.ComputeChangeSetFromModList(registry, mainList.ComputeUserChangeSet(registry), null,
                     tidy.KSP.VersionCriteria());
 
                 await UtilStatic.Throws<InconsistentKraken>(() => computeTask);

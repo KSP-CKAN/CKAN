@@ -45,6 +45,8 @@ namespace CKAN
             get { return manager; }
             set { manager = value; }
         }
+        
+        private bool needRegistrySave = false;
 
         public MainModList mainModList { get; }
 
@@ -502,6 +504,13 @@ namespace CKAN
 
             // Save settings.
             configuration.Save();
+
+            if (needRegistrySave)
+            {
+                // Save registry
+                RegistryManager.Instance(CurrentInstance).Save(false);
+            }
+
             base.OnFormClosing(e);
         }
 
@@ -679,7 +688,7 @@ namespace CKAN
             Dictionary<GUIMod, string> new_conflicts = null;
 
             bool too_many_provides_thrown = false;
-            var user_change_set = mainModList.ComputeUserChangeSet();
+            var user_change_set = mainModList.ComputeUserChangeSet(registry);
             try
             {
                 var module_installer = ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, GUI.user);
@@ -689,7 +698,7 @@ namespace CKAN
             {
                 // Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
                 AddStatusMessage(k.ShortDescription);
-                user_change_set = mainModList.ComputeUserChangeSet();
+                user_change_set = mainModList.ComputeUserChangeSet(registry);
                 new_conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.VersionCriteria());
                 full_change_set = null;
             }
@@ -780,9 +789,8 @@ namespace CKAN
             // Ask the configuration which columns to show.
             foreach (DataGridViewColumn col in ModList.Columns)
             {
-                // Start with the third column, because the first one is always shown
-                // and the 2nd/3rd are handled by UpdateModsList().
-                if (col.Index > 2)
+                // Some columns are always shown, and others are handled by UpdateModsList()
+                if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
                 {
                     col.Visible = !configuration.HiddenColumnNames.Contains(col.Name);
                 }
@@ -800,9 +808,10 @@ namespace CKAN
                 case GUIModFilter.Replaceable:              FilterToolButton.Text = "Filter (Replaceable)";   break;
                 case GUIModFilter.Cached:                   FilterToolButton.Text = "Filter (Cached)";        break;
                 case GUIModFilter.NewInRepository:          FilterToolButton.Text = "Filter (New)";           break;
-                case GUIModFilter.NotInstalled:             FilterToolButton.Text = "Filter (Not installed)";
-                                                            ModList.Columns[5].Visible = false;
-                                                            ModList.Columns[9].Visible = false;               break;
+                case GUIModFilter.NotInstalled:             ModList.Columns["InstalledVersion"].Visible = false;
+                                                            ModList.Columns["InstallDate"].Visible      = false;
+                                                            ModList.Columns["AutoInstalled"].Visible    = false;
+                                                            FilterToolButton.Text = "Filter (Not installed)"; break;
                 default:                                    FilterToolButton.Text = "Filter (Compatible)";    break;
             }
         }
@@ -1186,8 +1195,11 @@ namespace CKAN
                 new ModChange(module, GUIModChangeType.Remove, null)
             };
             // Then everything we need to re-install:
-            HashSet<string> goners = registry.FindReverseDependencies(
-                new List<string>() { module.Identifier }
+            var revdep = registry.FindReverseDependencies(new List<string>() { module.Identifier });
+            var goners = revdep.Union(
+                registry.FindRemovableAutoInstalled(
+                    registry.InstalledModules.Where(im => !revdep.Contains(im.identifier))
+                ).Select(im => im.Module.identifier)
             );
             foreach (string id in goners)
             {

@@ -19,6 +19,8 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Run the subcommand
         /// </summary>
+        /// <param name="mgr">Manager to provide game instances</param>
+        /// <param name="opts">Command line parameters paritally handled by parser</param>
         /// <param name="unparsed">Command line parameters not yet handled by parser</param>
         /// <returns>
         /// Exit code

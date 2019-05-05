@@ -23,6 +23,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public static readonly string checkmark        = cp437s(0xfb);
         /// <summary>
+        /// Double tilde
+        /// </summary>
+        public static readonly string feminineOrdinal  = cp437s(0xa6);
+        /// <summary>
         /// >= symbol
         /// </summary>
         public static readonly string greaterEquals    = cp437s(0xf2);

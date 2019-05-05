@@ -44,7 +44,7 @@ namespace Tests.GUI
                 var new_version = generatror.GeneratorRandomModule(version: new ModuleVersion("0.25"), ksp_version: tidy.KSP.Version(),
                     identifier:old_version.identifier);
                 var registry = Registry.Empty();
-                registry.RegisterModule(old_version, Enumerable.Empty<string>(), null);
+                registry.RegisterModule(old_version, Enumerable.Empty<string>(), null, false);
                 registry.AddAvailable(new_version);
 
                 var mod = new GUIMod(old_version, registry, tidy.KSP.VersionCriteria());
