@@ -8,10 +8,12 @@ namespace CKAN
 {
     public sealed class GUIMod
     {
-        private CkanModule Mod { get; set; }
+        private CkanModule      Mod          { get; set; }
+        private InstalledModule InstalledMod { get; set; }
 
         public string Name { get; private set; }
         public bool IsInstalled { get; private set; }
+        public bool IsAutoInstalled { get; private set; }
         public bool HasUpdate { get; private set; }
         public bool HasReplacement { get; private set; }
         public bool IsIncompatible { get; private set; }
@@ -82,6 +84,8 @@ namespace CKAN
         {
             IsInstalled      = true;
             IsInstallChecked = true;
+            InstalledMod     = instMod;
+            IsAutoInstalled  = instMod.AutoInstalled;
             InstallDate      = instMod.InstallTime;
             InstalledVersion = instMod.Module.version.ToString();
             if (LatestVersion == null || LatestVersion.Equals("-"))
@@ -282,10 +286,9 @@ namespace CKAN
             return mod.ToModule();
         }
 
-        public void SetUpgradeChecked(DataGridViewRow row, bool? set_value_to = null)
+        public void SetUpgradeChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
         {
-            //Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
-            var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
+            var update_cell = row.Cells[col.Index] as DataGridViewCheckBoxCell;
             if (update_cell != null)
             {
                 var old_value = (bool) update_cell.Value;
@@ -297,10 +300,9 @@ namespace CKAN
             }
         }
 
-        public void SetInstallChecked(DataGridViewRow row, bool? set_value_to = null)
+        public void SetInstallChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
         {
-            //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
-            var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
+            var install_cell = row.Cells[col.Index] as DataGridViewCheckBoxCell;
             if (install_cell != null)
             {
                 bool changeTo = set_value_to ?? (bool)install_cell.Value;
@@ -324,9 +326,9 @@ namespace CKAN
             }
         }
 
-        public void SetReplaceChecked(DataGridViewRow row, bool? set_value_to = null)
+        public void SetReplaceChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
         {
-            var replace_cell = row.Cells[2] as DataGridViewCheckBoxCell;
+            var replace_cell = row.Cells[col.Index] as DataGridViewCheckBoxCell;
             if (replace_cell != null)
             {
                 var old_value = (bool) replace_cell.Value;
@@ -335,6 +337,24 @@ namespace CKAN
                 IsReplaceChecked = value;
                 if (old_value != value)
                     replace_cell.Value = value;
+            }
+        }
+        
+        public void SetAutoInstallChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
+        {
+            var auto_cell = row.Cells[col.Index] as DataGridViewCheckBoxCell;
+            if (auto_cell != null)
+            {
+                var old_value = (bool) auto_cell.Value;
+
+                bool value = set_value_to ?? old_value;
+                IsAutoInstalled = value;
+                InstalledMod.AutoInstalled = value;
+
+                if (old_value != value)
+                {
+                    auto_cell.Value = value;
+                }
             }
         }
 

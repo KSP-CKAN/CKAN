@@ -94,6 +94,9 @@ namespace CKAN.CmdLine
         [VerbOption("repo", HelpText = "Manage CKAN repositories")]
         public SubCommandOptions Repo { get; set; }
 
+        [VerbOption("mark", HelpText = "Edit flags on modules")]
+        public SubCommandOptions Mark { get; set; }
+
         [VerbOption("ksp", HelpText = "Manage KSP installs")]
         public SubCommandOptions KSP { get; set; }
 

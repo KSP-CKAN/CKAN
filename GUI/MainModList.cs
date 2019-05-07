@@ -32,10 +32,11 @@ namespace CKAN
             switch (this.configuration.SortByColumnIndex)
             {
                 // XXX: There should be a better way to identify checkbox columns than hardcoding their indices here
-                case 0: case 1: case 2: return Sort(rows, CheckboxSorter);
-                case 8:                 return Sort(rows, DownloadSizeSorter);
-                case 9:                 return Sort(rows, InstallDateSorter);
-                case 10:                return Sort(rows, r => (r.Tag as GUIMod)?.DownloadCount ?? 0);
+                case 0: case 1:
+                case 2: case 3: return Sort(rows, CheckboxSorter);
+                case 9:         return Sort(rows, DownloadSizeSorter);
+                case 10:        return Sort(rows, InstallDateSorter);
+                case 11:        return Sort(rows, r => (r.Tag as GUIMod)?.DownloadCount ?? 0);
             }
             return Sort(rows, DefaultSorter);
         }
@@ -249,7 +250,8 @@ namespace CKAN
 
             AddLogMessage("Updating filters...");
 
-            var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
+            var has_any_updates      = gui_mods.Any(mod => mod.HasUpdate);
+            var has_any_installed    = gui_mods.Any(mod => mod.IsInstalled);
             var has_any_replacements = gui_mods.Any(mod => mod.IsInstalled && mod.HasReplacement);
 
             //TODO Consider using smart enumeration pattern so stuff like this is easier
@@ -282,8 +284,9 @@ namespace CKAN
             // Hide update and replacement columns if not needed.
             // Write it to the configuration, else they are hidden agian after a filter change.
             // After the update / replacement, they are hidden again.
-            ModList.Columns[1].Visible = has_any_updates;
-            ModList.Columns[2].Visible = has_any_replacements;
+            ModList.Columns["UpdateCol"].Visible     = has_any_updates;
+            ModList.Columns["AutoInstalled"].Visible = has_any_installed && !configuration.HiddenColumnNames.Contains("AutoInstalled");
+            ModList.Columns["ReplaceCol"].Visible    = has_any_replacements;
 
             AddLogMessage("Updating tray...");
             UpdateTrayInfo();
@@ -311,7 +314,7 @@ namespace CKAN
             var mod = (GUIMod)row.Tag;
             if (mod.Identifier == identifier)
             {
-                mod.SetInstallChecked(row, !uninstall);
+                mod.SetInstallChecked(row, Installed, !uninstall);
             }
         }
 
@@ -324,7 +327,7 @@ namespace CKAN
         {
             DataGridViewRow row = mainModList.full_list_of_mod_rows[identifier];
             var mod = (GUIMod)row.Tag;
-            mod.SetUpgradeChecked(row, true);
+            mod.SetUpgradeChecked(row, UpdateCol, true);
         }
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
@@ -373,7 +376,7 @@ namespace CKAN
 
                 ModListHeaderContextMenuStrip.Items.AddRange(
                     ModList.Columns.Cast<DataGridViewColumn>()
-                    .Where(col => col.Index > 2)
+                    .Where(col => col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
                     .Select(col => new ToolStripMenuItem()
                     {
                         Name    = col.Name,
@@ -431,7 +434,7 @@ namespace CKAN
 
                 case Keys.Space:
                     // If they've focused one of the checkbox columns, don't intercept
-                    if (ModList.CurrentCell.ColumnIndex > 2)
+                    if (ModList.CurrentCell.ColumnIndex > 3)
                     {
                         DataGridViewRow row = ModList.CurrentRow;
                         // Toggle Update column if enabled, otherwise Install
@@ -553,23 +556,27 @@ namespace CKAN
                 if (!string.IsNullOrEmpty(cmd))
                     Process.Start(cmd);
             }
-            else if (column_index <= 2)
+            else 
             {
                 GUIMod gui_mod = row?.Tag as GUIMod;
                 if (gui_mod != null)
                 {
-                    switch (column_index)
+                    switch (ModList.Columns[column_index].Name)
                     {
-                        case 0:
-                            gui_mod.SetInstallChecked(row);
+                        case "Installed":
+                            gui_mod.SetInstallChecked(row, Installed);
                             if (gui_mod.IsInstallChecked)
                                 last_mod_to_have_install_toggled.Push(gui_mod);
                             break;
-                        case 1:
-                            gui_mod.SetUpgradeChecked(row);
+                        case "AutoInstalled":
+                            gui_mod.SetAutoInstallChecked(row, AutoInstalled);
+                            needRegistrySave = true;
                             break;
-                        case 2:
-                            gui_mod.SetReplaceChecked(row);
+                        case "UpdateCol":
+                            gui_mod.SetUpgradeChecked(row, UpdateCol);
+                            break;
+                        case "ReplaceCol":
+                            gui_mod.SetReplaceChecked(row, ReplaceCol);
                             break;
                     }
                     await UpdateChangeSetAndConflicts(
@@ -594,7 +601,7 @@ namespace CKAN
                     GUIMod mod = row.Tag as GUIMod;
                     if (mod.IsInstallChecked)
                     {
-                        mod.SetInstallChecked(row, false);
+                        mod.SetInstallChecked(row, Installed, false);
                     }
                 }
             }
@@ -775,6 +782,13 @@ namespace CKAN
                 changeSet.Add(new ModChange(new GUIMod(module_by_version, registry, version), GUIModChangeType.Remove, null));
                 modules_to_remove.Add(module_by_version);
             }
+            foreach (var im in registry.FindRemovableAutoInstalled(
+                registry.InstalledModules.Where(im => !modules_to_remove.Any(m => m.identifier == im.identifier))
+            ))
+            {
+                changeSet.Add(new ModChange(new GUIMod(im.Module, registry, version), GUIModChangeType.Remove, new SelectionReason.NoLongerUsed()));
+                modules_to_remove.Add(im.Module);
+            }
 
             bool handled_all_too_many_provides = false;
             while (!handled_all_too_many_provides)
@@ -879,6 +893,16 @@ namespace CKAN
                     Value = mod.IsAutodetected ? "AD" : "-"
                 };
 
+            var autoInstalled = mod.IsInstalled
+                ? (DataGridViewCell) new DataGridViewCheckBoxCell()
+                {
+                    Value = mod.IsAutoInstalled
+                }
+                : new DataGridViewTextBoxCell()
+                {
+                    Value = "-"
+                };
+
             var updating = mod.IsInstallable() && mod.HasUpdate
                 ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                 {
@@ -933,10 +957,11 @@ namespace CKAN
             var installDate   = new DataGridViewTextBoxCell() { Value = mod.InstallDate                            };
             var desc          = new DataGridViewTextBoxCell() { Value = mod.Abstract                               };
 
-            item.Cells.AddRange(selecting, updating, replacing, name, author, installVersion, latestVersion, compat, size, installDate, downloadCount, desc);
+            item.Cells.AddRange(selecting, autoInstalled, updating, replacing, name, author, installVersion, latestVersion, compat, size, installDate, downloadCount, desc);
 
-            selecting.ReadOnly = selecting is DataGridViewTextBoxCell;
-            updating.ReadOnly  = updating  is DataGridViewTextBoxCell;
+            selecting.ReadOnly     = selecting     is DataGridViewTextBoxCell;
+            autoInstalled.ReadOnly = autoInstalled is DataGridViewTextBoxCell;
+            updating.ReadOnly      = updating      is DataGridViewTextBoxCell;
 
             return item;
         }
@@ -1055,8 +1080,10 @@ namespace CKAN
                 item => item.Value);
         }
 
-        public HashSet<ModChange> ComputeUserChangeSet()
+        public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier registry)
         {
+            var removableAuto = registry?.FindRemovableAutoInstalled(registry?.InstalledModules)
+                ?? new InstalledModule[] {};
             return new HashSet<ModChange>(
                 Modules
                     .Where(mod => mod.IsInstallable())
@@ -1064,6 +1091,10 @@ namespace CKAN
                     .Where(change => change.HasValue)
                     .Select(change => change.Value)
                     .Select(change => new ModChange(change.Key, change.Value, null))
+                    .Union(removableAuto.Select(im => new ModChange(
+                        new GUIMod(im, registry, Main.Instance.CurrentInstance.VersionCriteria()),
+                        GUIModChangeType.Remove,
+                        new SelectionReason.NoLongerUsed())))
             );
         }
     }

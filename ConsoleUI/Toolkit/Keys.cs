@@ -54,6 +54,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
+        /// Representation of F8 for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo F8 = new ConsoleKeyInfo(
+            (System.Char)0, ConsoleKey.F8, false, false, false
+        );
+
+        /// <summary>
         /// Representation of F9 for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo F9 = new ConsoleKeyInfo(

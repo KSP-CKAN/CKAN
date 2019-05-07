@@ -72,6 +72,7 @@ namespace CKAN.CmdLine
                             log.DebugFormat("Check if upgrades are available for {0}", mod.Key);
                             CkanModule latest = registry.LatestAvailable(mod.Key, ksp.VersionCriteria());
                             CkanModule current = registry.GetInstalledVersion(mod.Key);
+                            InstalledModule inst = registry.InstalledModule(mod.Key);
 
                             if (latest == null)
                             {
@@ -80,13 +81,13 @@ namespace CKAN.CmdLine
                                 bullet = "X";
                                 if ( current == null ) log.DebugFormat( " {0} installed version not found in registry", mod.Key);
                                     
-                                //Check if mod is replaceable
-                                if ( current.replaced_by != null )
+                                // Check if mod is replaceable
+                                if (current.replaced_by != null)
                                 {
                                     ModuleReplacement replacement = registry.GetReplacement(mod.Key, ksp.VersionCriteria());
-                                    if ( replacement != null )
+                                    if (replacement != null)
                                     {
-                                        //Replaceable!
+                                        // Replaceable!
                                         bullet = ">";
                                         modInfo = string.Format("{0} > {1} {2}", modInfo, replacement.ReplaceWith.name, replacement.ReplaceWith.version);
                                     }
@@ -96,14 +97,14 @@ namespace CKAN.CmdLine
                             {
                                 // Up to date
                                 log.InfoFormat("Latest {0} is {1}", mod.Key, latest.version);
-                                bullet = "-";
-                                //Check if mod is replaceable
-                                if ( current.replaced_by != null )
+                                bullet = (inst?.AutoInstalled ?? false) ? "+" : "-";
+                                // Check if mod is replaceable
+                                if (current.replaced_by != null)
                                 {
                                     ModuleReplacement replacement = registry.GetReplacement(latest.identifier, ksp.VersionCriteria());
-                                    if ( replacement != null )
+                                    if (replacement != null)
                                     {
-                                        //Replaceable!
+                                        // Replaceable!
                                         bullet = ">";
                                         modInfo = string.Format("{0} > {1} {2}", modInfo, replacement.ReplaceWith.name, replacement.ReplaceWith.version);
                                     }
@@ -134,7 +135,7 @@ namespace CKAN.CmdLine
 
             if (!(options.porcelain) && exportFileType == null)
             {
-                user.RaiseMessage("\r\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. >: Replaceable\r\n        A: Autodetected. ?: Unknown. *: Broken. ");
+                user.RaiseMessage("\r\nLegend: -: Up to date. +:Auto-installed. X: Incompatible. ^: Upgradable. >: Replaceable\r\n        A: Autodetected. ?: Unknown. *: Broken. ");
                 // Broken mods are in a state that CKAN doesn't understand, and therefore can't handle automatically
             }
 

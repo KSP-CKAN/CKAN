@@ -209,7 +209,8 @@ namespace CKAN
                     var new_control_lock_installed = new InstalledModule(
                         ksp,
                         control_lock_mod,
-                        control_lock_entry.Files
+                        control_lock_entry.Files,
+                        control_lock_entry.AutoInstalled
                     );
 
                     // Re-insert into registry.
@@ -743,7 +744,7 @@ namespace CKAN
         ///     Register the supplied module as having been installed, thereby keeping
         ///     track of its metadata and files.
         /// </summary>
-        public void RegisterModule(CkanModule mod, IEnumerable<string> absolute_files, KSP ksp)
+        public void RegisterModule(CkanModule mod, IEnumerable<string> absolute_files, KSP ksp, bool autoInstalled)
         {
             SealionTransaction();
 
@@ -791,7 +792,7 @@ namespace CKAN
             }
 
             // Finally, register our module proper.
-            var installed = new InstalledModule(ksp, mod, relative_files);
+            var installed = new InstalledModule(ksp, mod, relative_files, autoInstalled);
             installed_modules.Add(mod.identifier, installed);
         }
 
@@ -1116,6 +1117,44 @@ namespace CKAN
         {
             var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
             return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys), _installedDlcModules);
+        }
+
+        /// <summary>
+        /// Find auto-installed modules that have no depending modules
+        /// or only auto-installed depending modules.
+        /// </summary>
+        /// <param name="installedModules">The modules currently installed</param>
+        /// <param name="dlls">The DLLs that are manually installed</param>
+        /// <param name="dlc">The DLCs that are installed</param>
+        /// <returns>
+        /// Sequence of removable auto-installed modules, if any
+        /// </returns>
+        private static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
+            IEnumerable<InstalledModule>                installedModules,
+            IEnumerable<string>                         dlls,
+            IDictionary<string, UnmanagedModuleVersion> dlc
+        )
+        {
+            var instCkanMods = installedModules.Select(im => im.Module);
+            // ToList ensures that the collection isn't modified while the enumeration operation is executing
+            return installedModules.ToList().Where(
+                im => FindReverseDependencies(new List<string> { im.identifier }, instCkanMods, dlls, dlc)
+                    .All(id => installedModules.First(orig => orig.identifier == id).AutoInstalled));
+        }
+
+        /// <summary>
+        /// Find auto-installed modules that have no depending modules
+        /// or only auto-installed depending modules.
+        /// installedModules is a parameter so we can experiment with
+        /// changes that have not yet been made, such as removing other modules.
+        /// </summary>
+        /// <param name="installedModules">The modules currently installed</param>
+        /// <returns>
+        /// Sequence of removable auto-installed modules, if any
+        /// </returns>
+        public IEnumerable<InstalledModule> FindRemovableAutoInstalled(IEnumerable<InstalledModule> installedModules)
+        {
+            return FindRemovableAutoInstalled(installedModules, InstalledDlls, InstalledDlc);
         }
 
         /// <summary>

@@ -30,6 +30,7 @@ namespace CKAN.ConsoleUI {
             symbolTb.AddLine("Status Symbols");
             symbolTb.AddLine("==============");
             symbolTb.AddLine($"{installed}           Installed");
+            symbolTb.AddLine($"{autoInstalled}      Auto-installed");
             symbolTb.AddLine($"{upgradable}         Upgradeable");
             symbolTb.AddLine($"{autodetected}  Manually installed");
             symbolTb.AddLine($"{replaceable}         Replaceable");
@@ -65,10 +66,11 @@ namespace CKAN.ConsoleUI {
             ));
         }
 
-        private static readonly string installed    = Symbols.checkmark;
-        private static readonly string upgradable   = Symbols.greaterEquals;
-        private static readonly string autodetected = Symbols.infinity;
-        private static readonly string replaceable  = Symbols.doubleGreater;
+        private static readonly string installed     = Symbols.checkmark;
+        private static readonly string autoInstalled = Symbols.feminineOrdinal;
+        private static readonly string upgradable    = Symbols.greaterEquals;
+        private static readonly string autodetected  = Symbols.infinity;
+        private static readonly string replaceable   = Symbols.doubleGreater;
     }
 
 }

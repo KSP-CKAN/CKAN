@@ -72,6 +72,7 @@
             this.ModList = new CKAN.MainModListGUI();
             this.InstallAllCheckbox = new System.Windows.Forms.CheckBox();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.AutoInstalled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.UpdateCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ReplaceCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -536,6 +537,7 @@
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
+            this.AutoInstalled,
             this.UpdateCol,
             this.ReplaceCol,
             this.ModName,
@@ -570,6 +572,14 @@
             this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Installed.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.Installed.Width = 50;
+            // 
+            // AutoInstalled
+            //
+            this.AutoInstalled.HeaderText = "Auto-installed";
+            this.AutoInstalled.Name = "AutoInstalled";
+            this.AutoInstalled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.AutoInstalled.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.AutoInstalled.Width = 50;
             // 
             // UpdateCol
             // 
@@ -1373,6 +1383,7 @@
         public CKAN.MainModListGUI ModList;
         private System.Windows.Forms.CheckBox InstallAllCheckbox;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Installed;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn AutoInstalled;
         private System.Windows.Forms.DataGridViewCheckBoxColumn UpdateCol;
         private System.Windows.Forms.DataGridViewCheckBoxColumn ReplaceCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn ModName;

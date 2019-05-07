@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.26.3
+
+### Features
+
+- [Multiple] Auto-uninstall auto-installed modules (#2753 by: HebaruSan; reviewed: DasSkelett)
+
 ## v1.26.2
 
 ### Features

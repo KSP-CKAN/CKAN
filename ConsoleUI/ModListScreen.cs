@@ -205,6 +205,23 @@ namespace CKAN.ConsoleUI {
                 }
                 return true;
             });
+            
+            moduleList.AddTip("F8", "Mark auto-installed",
+                () => moduleList.Selection != null
+                    && (!registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
+            );
+            moduleList.AddTip("F8", "Mark user-selected",
+                () => moduleList.Selection != null
+                    && (registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
+            );
+            moduleList.AddBinding(Keys.F8, (object sender) => {
+                InstalledModule im = registry.InstalledModule(moduleList.Selection.identifier);
+                if (im != null) {
+                    im.AutoInstalled = !im.AutoInstalled;
+                    RegistryManager.Instance(manager.CurrentInstance).Save(false);
+                }
+                return true;
+            });
 
             AddTip("F9", "Apply changes", plan.NonEmpty);
             AddBinding(Keys.F9, (object sender) => {
@@ -552,17 +569,18 @@ namespace CKAN.ConsoleUI {
         public static string StatusSymbol(InstallStatus st)
         {
             switch (st) {
-                case InstallStatus.Unavailable:  return unavailable;
-                case InstallStatus.Removing:     return removing;
-                case InstallStatus.Upgrading:    return upgrading;
-                case InstallStatus.Upgradeable:  return upgradable;
-                case InstallStatus.Installed:    return installed;
-                case InstallStatus.Installing:   return installing;
-                case InstallStatus.NotInstalled: return notinstalled;
-                case InstallStatus.AutoDetected: return autodetected;
-                case InstallStatus.Replaceable:  return replaceable;
-                case InstallStatus.Replacing:    return replacing;
-                default:                         return "";
+                case InstallStatus.Unavailable:   return unavailable;
+                case InstallStatus.Removing:      return removing;
+                case InstallStatus.Upgrading:     return upgrading;
+                case InstallStatus.Upgradeable:   return upgradable;
+                case InstallStatus.Installed:     return installed;
+                case InstallStatus.AutoInstalled: return autoInstalled;
+                case InstallStatus.Installing:    return installing;
+                case InstallStatus.NotInstalled:  return notinstalled;
+                case InstallStatus.AutoDetected:  return autodetected;
+                case InstallStatus.Replaceable:   return replaceable;
+                case InstallStatus.Replacing:     return replacing;
+                default:                          return "";
             }
         }
 
@@ -589,16 +607,17 @@ namespace CKAN.ConsoleUI {
         private const int daysTillStale     = 7;
         private const int daystillVeryStale = 30;
 
-        private static readonly string unavailable  = "!";
-        private static readonly string notinstalled = " ";
-        private static readonly string installed    = Symbols.checkmark;
-        private static readonly string installing   = "+";
-        private static readonly string upgradable   = Symbols.greaterEquals;
-        private static readonly string upgrading    = "^";
-        private static readonly string removing     = "-";
-        private static readonly string autodetected = Symbols.infinity;
-        private static readonly string replaceable  = Symbols.doubleGreater;
-        private static readonly string replacing    = Symbols.plusMinus;
+        private static readonly string unavailable   = "!";
+        private static readonly string notinstalled  = " ";
+        private static readonly string installed     = Symbols.checkmark;
+        private static readonly string autoInstalled = Symbols.feminineOrdinal;
+        private static readonly string installing    = "+";
+        private static readonly string upgradable    = Symbols.greaterEquals;
+        private static readonly string upgrading     = "^";
+        private static readonly string removing      = "-";
+        private static readonly string autodetected  = Symbols.infinity;
+        private static readonly string replaceable   = Symbols.doubleGreater;
+        private static readonly string replacing     = Symbols.plusMinus;
     }
 
     /// <summary>
@@ -703,6 +722,8 @@ namespace CKAN.ConsoleUI {
                     return InstallStatus.Replaceable;
                 } else if (!IsAnyAvailable(registry, identifier)) {
                     return InstallStatus.Unavailable;
+                } else if (registry.InstalledModule(identifier)?.AutoInstalled ?? false) {
+                    return InstallStatus.AutoInstalled;
                 } else {
                     return InstallStatus.Installed;
                 }
@@ -813,6 +834,11 @@ namespace CKAN.ConsoleUI {
         /// This mod is installed and not upgradeable or planned to be removed
         /// </summary>
         Installed,
+        
+        /// <summary>
+        /// Like Installed, but can be auto-removed if depending mods are removed
+        /// </summary>
+        AutoInstalled,
 
         /// <summary>
         /// This mod is not installed but we are planning to install it
