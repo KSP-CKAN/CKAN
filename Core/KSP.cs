@@ -438,10 +438,9 @@ namespace CKAN
                 }
 
                 manager.ScanDlc();
-
+                manager.Save(false);
                 tx.Complete();
             }
-            manager.Save(enforce_consistency: false);
         }
 
         #endregion

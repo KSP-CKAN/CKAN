@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - [Multiple] Auto-uninstall auto-installed modules (#2753 by: HebaruSan; reviewed: DasSkelett)
 
+### Bugfixes
+
+- [Core] Save registry inside of scan transaction (#2755 by: HebaruSan; reviewed: DasSkelett)
+
 ## v1.26.2
 
 ### Features
