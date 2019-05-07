@@ -162,9 +162,9 @@
             this.ChooseProvidedModsTabPage.SuspendLayout();
             this.minimizedContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // menuStrip1
-            // 
+            //
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
@@ -176,9 +176,9 @@
             this.menuStrip1.Size = new System.Drawing.Size(1544, 35);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            // 
+            //
             // fileToolStripMenuItem
-            // 
+            //
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.manageKspInstancesMenuItem,
             this.openKspDirectoryToolStripMenuItem,
@@ -194,42 +194,42 @@
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
             resources.ApplyResources(this.fileToolStripMenuItem, "fileToolStripMenuItem");
-            // 
+            //
             // manageKspInstancesMenuItem
-            // 
+            //
             this.manageKspInstancesMenuItem.Name = "manageKspInstancesMenuItem";
             this.manageKspInstancesMenuItem.Size = new System.Drawing.Size(281, 30);
             this.manageKspInstancesMenuItem.Click += new System.EventHandler(this.manageKspInstancesMenuItem_Click);
             resources.ApplyResources(this.manageKspInstancesMenuItem, "manageKspInstancesMenuItem");
-            // 
+            //
             // openKspDirectoryToolStripMenuItem
-            // 
+            //
             this.openKspDirectoryToolStripMenuItem.Name = "openKspDirectoryToolStripMenuItem";
             this.openKspDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
             this.openKspDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openKspDirectoryToolStripMenuItem_Click);
             resources.ApplyResources(this.openKspDirectoryToolStripMenuItem, "openKspDirectoryToolStripMenuItem");
             //
             // toolStripSeparator1
-            // 
+            //
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(278, 6);
-            // 
+            //
             // installFromckanToolStripMenuItem
-            // 
+            //
             this.installFromckanToolStripMenuItem.Name = "installFromckanToolStripMenuItem";
             this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
             this.installFromckanToolStripMenuItem.Click += new System.EventHandler(this.installFromckanToolStripMenuItem_Click);
             resources.ApplyResources(this.installFromckanToolStripMenuItem, "installFromckanToolStripMenuItem");
-            // 
+            //
             // exportModListToolStripMenuItem
-            // 
+            //
             this.exportModListToolStripMenuItem.Name = "exportModListToolStripMenuItem";
             this.exportModListToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
             this.exportModListToolStripMenuItem.Click += new System.EventHandler(this.exportModListToolStripMenuItem_Click);
             resources.ApplyResources(this.exportModListToolStripMenuItem, "exportModListToolStripMenuItem");
             //
             // toolStripSeparator2
-            // 
+            //
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(278, 6);
             //
@@ -241,7 +241,7 @@
             resources.ApplyResources(this.importDownloadsToolStripMenuItem, "importDownloadsToolStripMenuItem");
             //
             // toolStripSeparator3
-            // 
+            //
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(278, 6);
             //
@@ -250,7 +250,7 @@
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(278, 6);
             //
-            // importDownloadsToolStripMenuItem
+            // auditRecommendationsMenuItem
             //
             this.auditRecommendationsMenuItem.Name = "auditRecommendationsMenuItem";
             this.auditRecommendationsMenuItem.Size = new System.Drawing.Size(281, 30);
@@ -258,15 +258,15 @@
             resources.ApplyResources(this.auditRecommendationsMenuItem, "auditRecommendationsMenuItem");
             //
             // ExitToolButton
-            // 
+            //
             this.ExitToolButton.Name = "ExitToolButton";
             this.ExitToolButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
             this.ExitToolButton.Size = new System.Drawing.Size(281, 30);
             this.ExitToolButton.Click += new System.EventHandler(this.ExitToolButton_Click);
             resources.ApplyResources(this.ExitToolButton, "ExitToolButton");
-            // 
+            //
             // settingsToolStripMenuItem
-            // 
+            //
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cKANSettingsToolStripMenuItem,
             this.pluginsToolStripMenuItem,
@@ -275,53 +275,53 @@
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
             resources.ApplyResources(this.settingsToolStripMenuItem, "settingsToolStripMenuItem");
-            // 
+            //
             // cKANSettingsToolStripMenuItem
-            // 
+            //
             this.cKANSettingsToolStripMenuItem.Name = "cKANSettingsToolStripMenuItem";
             this.cKANSettingsToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
             this.cKANSettingsToolStripMenuItem.Click += new System.EventHandler(this.CKANSettingsToolStripMenuItem_Click);
             resources.ApplyResources(this.cKANSettingsToolStripMenuItem, "cKANSettingsToolStripMenuItem");
-            // 
+            //
             // pluginsToolStripMenuItem
-            // 
+            //
             this.pluginsToolStripMenuItem.Name = "pluginsToolStripMenuItem";
             this.pluginsToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
             this.pluginsToolStripMenuItem.Click += new System.EventHandler(this.pluginsToolStripMenuItem_Click);
             resources.ApplyResources(this.pluginsToolStripMenuItem, "pluginsToolStripMenuItem");
-            // 
+            //
             // kSPCommandlineToolStripMenuItem
-            // 
+            //
             this.kSPCommandlineToolStripMenuItem.Name = "kSPCommandlineToolStripMenuItem";
             this.kSPCommandlineToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
             this.kSPCommandlineToolStripMenuItem.Click += new System.EventHandler(this.KSPCommandlineToolStripMenuItem_Click);
             resources.ApplyResources(this.kSPCommandlineToolStripMenuItem, "kSPCommandlineToolStripMenuItem");
-            // 
+            //
             // compatibleKSPVersionsToolStripMenuItem
-            // 
+            //
             this.compatibleKSPVersionsToolStripMenuItem.Name = "compatibleKSPVersionsToolStripMenuItem";
             this.compatibleKSPVersionsToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
             this.compatibleKSPVersionsToolStripMenuItem.Click += new System.EventHandler(this.CompatibleKspVersionsToolStripMenuItem_Click);
             resources.ApplyResources(this.compatibleKSPVersionsToolStripMenuItem, "compatibleKSPVersionsToolStripMenuItem");
-            // 
+            //
             // helpToolStripMenuItem
-            // 
+            //
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.reportAnIssueToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(61, 29);
             resources.ApplyResources(this.helpToolStripMenuItem, "helpToolStripMenuItem");
-            // 
+            //
             // reportAnIssueToolStripMenuItem
-            // 
+            //
             this.reportAnIssueToolStripMenuItem.Name = "reportAnIssueToolStripMenuItem";
             this.reportAnIssueToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
             this.reportAnIssueToolStripMenuItem.Click += new System.EventHandler(this.reportAnIssueToolStripMenuItem_Click);
             resources.ApplyResources(this.reportAnIssueToolStripMenuItem, "reportAnIssueToolStripMenuItem");
-            // 
+            //
             // aboutToolStripMenuItem
-            // 
+            //
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
@@ -340,8 +340,8 @@
             });
             //
             // menuStrip2
-            // 
-            this.menuStrip2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.menuStrip2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.menuStrip2.AutoSize = false;
             this.menuStrip2.Dock = System.Windows.Forms.DockStyle.None;
@@ -360,45 +360,45 @@
             this.menuStrip2.Size = new System.Drawing.Size(5876, 62);
             this.menuStrip2.TabIndex = 2;
             this.menuStrip2.Text = "menuStrip2";
-            // 
+            //
             // launchKSPToolStripMenuItem
-            // 
+            //
             this.launchKSPToolStripMenuItem.Image = global::CKAN.Properties.Resources.ksp;
             this.launchKSPToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.launchKSPToolStripMenuItem.Name = "launchKSPToolStripMenuItem";
             this.launchKSPToolStripMenuItem.Size = new System.Drawing.Size(146, 56);
             this.launchKSPToolStripMenuItem.Click += new System.EventHandler(this.launchKSPToolStripMenuItem_Click);
             resources.ApplyResources(this.launchKSPToolStripMenuItem, "launchKSPToolStripMenuItem");
-            // 
+            //
             // RefreshToolButton
-            // 
+            //
             this.RefreshToolButton.Image = global::CKAN.Properties.Resources.refresh;
             this.RefreshToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.RefreshToolButton.Name = "RefreshToolButton";
             this.RefreshToolButton.Size = new System.Drawing.Size(114, 56);
             this.RefreshToolButton.Click += new System.EventHandler(this.RefreshToolButton_Click);
             resources.ApplyResources(this.RefreshToolButton, "RefreshToolButton");
-            // 
+            //
             // UpdateAllToolButton
-            // 
+            //
             this.UpdateAllToolButton.Image = global::CKAN.Properties.Resources.update;
             this.UpdateAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.UpdateAllToolButton.Name = "UpdateAllToolButton";
             this.UpdateAllToolButton.Size = new System.Drawing.Size(232, 56);
             this.UpdateAllToolButton.Click += new System.EventHandler(this.MarkAllUpdatesToolButton_Click);
             resources.ApplyResources(this.UpdateAllToolButton, "UpdateAllToolButton");
-            // 
+            //
             // ApplyToolButton
-            // 
+            //
             this.ApplyToolButton.Image = global::CKAN.Properties.Resources.apply;
             this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ApplyToolButton.Name = "ApplyToolButton";
             this.ApplyToolButton.Size = new System.Drawing.Size(173, 56);
             this.ApplyToolButton.Click += new System.EventHandler(this.ApplyToolButton_Click);
             resources.ApplyResources(this.ApplyToolButton, "ApplyToolButton");
-            // 
+            //
             // FilterToolButton
-            // 
+            //
             this.FilterToolButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FilterCompatibleButton,
             this.FilterInstalledButton,
@@ -414,23 +414,23 @@
             this.FilterToolButton.Name = "FilterToolButton";
             this.FilterToolButton.Size = new System.Drawing.Size(201, 56);
             resources.ApplyResources(this.FilterToolButton, "FilterToolButton");
-            // 
+            //
             // FilterCompatibleButton
-            // 
+            //
             this.FilterCompatibleButton.Name = "FilterCompatibleButton";
             this.FilterCompatibleButton.Size = new System.Drawing.Size(307, 30);
             this.FilterCompatibleButton.Click += new System.EventHandler(this.FilterCompatibleButton_Click);
             resources.ApplyResources(this.FilterCompatibleButton, "FilterCompatibleButton");
-            // 
+            //
             // FilterInstalledButton
-            // 
+            //
             this.FilterInstalledButton.Name = "FilterInstalledButton";
             this.FilterInstalledButton.Size = new System.Drawing.Size(307, 30);
             this.FilterInstalledButton.Click += new System.EventHandler(this.FilterInstalledButton_Click);
             resources.ApplyResources(this.FilterInstalledButton, "FilterInstalledButton");
-            // 
+            //
             // FilterInstalledUpdateButton
-            // 
+            //
             this.FilterInstalledUpdateButton.Name = "FilterInstalledUpdateButton";
             this.FilterInstalledUpdateButton.Size = new System.Drawing.Size(307, 30);
             this.FilterInstalledUpdateButton.Click += new System.EventHandler(this.FilterInstalledUpdateButton_Click);
@@ -444,62 +444,62 @@
             resources.ApplyResources(this.FilterReplaceableButton, "FilterReplaceableButton");
             //
             // cachedToolStripMenuItem
-            // 
+            //
             this.cachedToolStripMenuItem.Name = "cachedToolStripMenuItem";
             this.cachedToolStripMenuItem.Size = new System.Drawing.Size(307, 30);
             this.cachedToolStripMenuItem.Click += new System.EventHandler(this.cachedToolStripMenuItem_Click);
             resources.ApplyResources(this.cachedToolStripMenuItem, "cachedToolStripMenuItem");
-            // 
+            //
             // FilterNewButton
-            // 
+            //
             this.FilterNewButton.Name = "FilterNewButton";
             this.FilterNewButton.Size = new System.Drawing.Size(307, 30);
             this.FilterNewButton.Click += new System.EventHandler(this.FilterNewButton_Click);
             resources.ApplyResources(this.FilterNewButton, "FilterNewButton");
-            // 
+            //
             // FilterNotInstalledButton
-            // 
+            //
             this.FilterNotInstalledButton.Name = "FilterNotInstalledButton";
             this.FilterNotInstalledButton.Size = new System.Drawing.Size(307, 30);
             this.FilterNotInstalledButton.Click += new System.EventHandler(this.FilterNotInstalledButton_Click);
             resources.ApplyResources(this.FilterNotInstalledButton, "FilterNotInstalledButton");
-            // 
+            //
             // FilterIncompatibleButton
-            // 
+            //
             this.FilterIncompatibleButton.Name = "FilterIncompatibleButton";
             this.FilterIncompatibleButton.Size = new System.Drawing.Size(307, 30);
             this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
             resources.ApplyResources(this.FilterIncompatibleButton, "FilterIncompatibleButton");
-            // 
+            //
             // FilterAllButton
-            // 
+            //
             this.FilterAllButton.Name = "FilterAllButton";
             this.FilterAllButton.Size = new System.Drawing.Size(307, 30);
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
             resources.ApplyResources(this.FilterAllButton, "FilterAllButton");
-            // 
+            //
             // NavBackwardToolButton
-            // 
+            //
             this.NavBackwardToolButton.Image = global::CKAN.Properties.Resources.backward;
             this.NavBackwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.NavBackwardToolButton.Name = "NavBackwardToolButton";
             this.NavBackwardToolButton.Size = new System.Drawing.Size(44, 56);
             this.NavBackwardToolButton.Click += new System.EventHandler(this.NavBackwardToolButton_Click);
             resources.ApplyResources(this.NavBackwardToolButton, "NavBackwardToolButton");
-            // 
+            //
             // NavForwardToolButton
-            // 
+            //
             this.NavForwardToolButton.Image = global::CKAN.Properties.Resources.forward;
             this.NavForwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.NavForwardToolButton.Name = "NavForwardToolButton";
             this.NavForwardToolButton.Size = new System.Drawing.Size(44, 56);
             this.NavForwardToolButton.Click += new System.EventHandler(this.NavForwardToolButton_Click);
             resources.ApplyResources(this.NavForwardToolButton, "NavForwardToolButton");
-            // 
+            //
             // splitContainer1
-            // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer1.Location = new System.Drawing.Point(0, 35);
@@ -513,16 +513,16 @@
             this.splitContainer1.Panel1MinSize = 200;
             //
             // splitContainer1.Panel2
-            // 
+            //
             this.splitContainer1.Panel2.Controls.Add(this.ModInfoTabControl);
             this.splitContainer1.Panel2MinSize = 300;
             this.splitContainer1.Size = new System.Drawing.Size(1544, 981);
             this.splitContainer1.SplitterDistance = 1156;
             this.splitContainer1.SplitterWidth = 10;
             this.splitContainer1.TabIndex = 7;
-            // 
+            //
             // ModList
-            // 
+            //
             this.ModList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -564,7 +564,7 @@
             this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
             this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
             this.ModList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ModList_MouseDown);
-            // 
+            //
             // Installed
             //
             this.Installed.Name = "Installed";
@@ -572,7 +572,7 @@
             this.Installed.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.Installed.Width = 50;
             resources.ApplyResources(this.Installed, "Installed");
-            // 
+            //
             // AutoInstalled
             //
             this.AutoInstalled.Name = "AutoInstalled";
@@ -580,9 +580,9 @@
             this.AutoInstalled.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.AutoInstalled.Width = 50;
             resources.ApplyResources(this.AutoInstalled, "AutoInstalled");
-            // 
+            //
             // UpdateCol
-            // 
+            //
             this.UpdateCol.Name = "UpdateCol";
             this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.UpdateCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -598,55 +598,55 @@
             resources.ApplyResources(this.ReplaceCol, "ReplaceCol");
             //
             // ModName
-            // 
+            //
             this.ModName.Name = "ModName";
             this.ModName.ReadOnly = true;
             this.ModName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.ModName.Width = 250;
             resources.ApplyResources(this.ModName, "ModName");
-            // 
+            //
             // Author
-            // 
+            //
             this.Author.Name = "Author";
             this.Author.ReadOnly = true;
             this.Author.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Author.Width = 120;
             resources.ApplyResources(this.Author, "Author");
-            // 
+            //
             // InstalledVersion
-            // 
+            //
             this.InstalledVersion.Name = "InstalledVersion";
             this.InstalledVersion.ReadOnly = true;
             this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.InstalledVersion.Width = 70;
             resources.ApplyResources(this.InstalledVersion, "InstalledVersion");
-            // 
+            //
             // LatestVersion
-            // 
+            //
             this.LatestVersion.Name = "LatestVersion";
             this.LatestVersion.ReadOnly = true;
             this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.LatestVersion.Width = 70;
             resources.ApplyResources(this.LatestVersion, "LatestVersion");
-            // 
+            //
             // KSPCompatibility
-            // 
+            //
             this.KSPCompatibility.Name = "KSPCompatibility";
             this.KSPCompatibility.ReadOnly = true;
             this.KSPCompatibility.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.KSPCompatibility.Width = 78;
             resources.ApplyResources(this.KSPCompatibility, "KSPCompatibility");
-            // 
+            //
             // SizeCol
-            // 
+            //
             this.SizeCol.Name = "SizeCol";
             this.SizeCol.ReadOnly = true;
             this.SizeCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.SizeCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             resources.ApplyResources(this.SizeCol, "SizeCol");
-            // 
+            //
             // InstallDate
-            // 
+            //
             this.InstallDate.Name = "InstallDate";
             this.InstallDate.ReadOnly = true;
             this.InstallDate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
@@ -654,7 +654,7 @@
             resources.ApplyResources(this.InstallDate, "InstallDate");
             //
             // DownloadCount
-            // 
+            //
             this.DownloadCount.Name = "DownloadCount";
             this.DownloadCount.ReadOnly = true;
             this.DownloadCount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
@@ -663,44 +663,44 @@
             resources.ApplyResources(this.DownloadCount, "DownloadCount");
             //
             // Description
-            // 
+            //
             this.Description.Name = "Description";
             this.Description.ReadOnly = true;
             this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Description.Width = 821;
             resources.ApplyResources(this.Description, "Description");
-            // 
+            //
             // ModListContextMenuStrip
-            // 
+            //
             this.ModListContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.reinstallToolStripMenuItem,
             this.downloadContentsToolStripMenuItem});
             this.ModListContextMenuStrip.Name = "ModListContextMenuStrip";
             this.ModListContextMenuStrip.Size = new System.Drawing.Size(180, 70);
-            // 
+            //
             // reinstallToolStripMenuItem
-            // 
+            //
             this.reinstallToolStripMenuItem.Name = "reinstallToolStripMenuItem";
             this.reinstallToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.reinstallToolStripMenuItem.Click += new System.EventHandler(this.reinstallToolStripMenuItem_Click);
             resources.ApplyResources(this.reinstallToolStripMenuItem, "reinstallToolStripMenuItem");
-            // 
+            //
             // downloadContentsToolStripMenuItem
-            // 
+            //
             this.downloadContentsToolStripMenuItem.Name = "downloadContentsToolStripMenuItem";
             this.downloadContentsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.downloadContentsToolStripMenuItem.Click += new System.EventHandler(this.downloadContentsToolStripMenuItem_Click);
             resources.ApplyResources(this.downloadContentsToolStripMenuItem, "downloadContentsToolStripMenuItem");
-            // 
+            //
             // ModListHeaderContextMenuStrip
-            // 
+            //
             this.ModListHeaderContextMenuStrip.Name = "ModListHeaderContextMenuStrip";
             this.ModListHeaderContextMenuStrip.AutoSize = true;
             this.ModListHeaderContextMenuStrip.ShowCheckMargin = true;
             this.ModListHeaderContextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(ModListHeaderContextMenuStrip_ItemClicked);
-            // 
+            //
             // ModInfoTabControl
-            // 
+            //
             this.ModInfoTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ModInfoTabControl.Location = new System.Drawing.Point(0, 0);
             this.ModInfoTabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -728,7 +728,7 @@
             this.StatusProgress.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             //
             // MainTabControl
-            // 
+            //
             this.MainTabControl.Controls.Add(this.ManageModsTabPage);
             this.MainTabControl.Controls.Add(this.ChangesetTabPage);
             this.MainTabControl.Controls.Add(this.WaitTabPage);
@@ -744,7 +744,7 @@
             this.MainTabControl.SelectedIndexChanged += new System.EventHandler(this.MainTabControl_OnSelectedIndexChanged);
             //
             // ManageModsTabPage
-            // 
+            //
             this.ManageModsTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.ManageModsTabPage.Controls.Add(this.InstallAllCheckbox);
             this.ManageModsTabPage.Controls.Add(this.FilterByAuthorTextBox);
@@ -771,17 +771,16 @@
             this.InstallAllCheckbox.CheckedChanged += new System.EventHandler(this.InstallAllCheckbox_CheckChanged);
             //
             // FilterByAuthorTextBox
-            // 
+            //
             this.FilterByAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByAuthorTextBox.Location = new System.Drawing.Point(543, 74);
             this.FilterByAuthorTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByAuthorTextBox.Name = "FilterByAuthorTextBox";
-            this.FilterByAuthorTextBox.Size = new System.Drawing.Size(185, 26);
             this.FilterByAuthorTextBox.TabIndex = 13;
             this.FilterByAuthorTextBox.TextChanged += new System.EventHandler(this.FilterByAuthorTextBox_TextChanged);
-            // 
+            resources.ApplyResources(this.FilterByAuthorTextBox, "FilterByAuthorTextBox");
+            //
             // FilterByAuthorLabel
-            // 
+            //
             this.FilterByAuthorLabel.AutoSize = true;
             this.FilterByAuthorLabel.BackColor = System.Drawing.Color.Transparent;
             this.FilterByAuthorLabel.Location = new System.Drawing.Point(372, 77);
@@ -790,9 +789,9 @@
             this.FilterByAuthorLabel.Size = new System.Drawing.Size(162, 20);
             this.FilterByAuthorLabel.TabIndex = 12;
             resources.ApplyResources(this.FilterByAuthorLabel, "FilterByAuthorLabel");
-            // 
+            //
             // FilterByNameLabel
-            // 
+            //
             this.FilterByNameLabel.AutoSize = true;
             this.FilterByNameLabel.BackColor = System.Drawing.Color.Transparent;
             this.FilterByNameLabel.Location = new System.Drawing.Point(6, 77);
@@ -801,19 +800,18 @@
             this.FilterByNameLabel.Size = new System.Drawing.Size(147, 20);
             this.FilterByNameLabel.TabIndex = 10;
             resources.ApplyResources(this.FilterByNameLabel, "FilterByNameLabel");
-            // 
+            //
             // FilterByNameTextBox
-            // 
+            //
             this.FilterByNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByNameTextBox.Location = new System.Drawing.Point(160, 74);
             this.FilterByNameTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByNameTextBox.Name = "FilterByNameTextBox";
-            this.FilterByNameTextBox.Size = new System.Drawing.Size(185, 26);
             this.FilterByNameTextBox.TabIndex = 11;
             this.FilterByNameTextBox.TextChanged += new System.EventHandler(this.FilterByNameTextBox_TextChanged);
-            // 
+            resources.ApplyResources(this.FilterByNameTextBox, "FilterByNameTextBox");
+            //
             // FilterByDescriptionLabel
-            // 
+            //
             this.FilterByDescriptionLabel.AutoSize = true;
             this.FilterByDescriptionLabel.BackColor = System.Drawing.Color.Transparent;
             this.FilterByDescriptionLabel.Location = new System.Drawing.Point(754, 77);
@@ -822,19 +820,18 @@
             this.FilterByDescriptionLabel.Size = new System.Drawing.Size(149, 20);
             this.FilterByDescriptionLabel.TabIndex = 14;
             resources.ApplyResources(this.FilterByDescriptionLabel, "FilterByDescriptionLabel");
-            // 
+            //
             // FilterByDescriptionTextBox
-            // 
+            //
             this.FilterByDescriptionTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByDescriptionTextBox.Location = new System.Drawing.Point(912, 74);
             this.FilterByDescriptionTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByDescriptionTextBox.Name = "FilterByDescriptionTextBox";
-            this.FilterByDescriptionTextBox.Size = new System.Drawing.Size(185, 26);
             this.FilterByDescriptionTextBox.TabIndex = 15;
             this.FilterByDescriptionTextBox.TextChanged += new System.EventHandler(this.FilterByDescriptionTextBox_TextChanged);
-            // 
+            resources.ApplyResources(this.FilterByDescriptionTextBox, "FilterByDescriptionTextBox");
+            //
             // ChangesetTabPage
-            // 
+            //
             this.ChangesetTabPage.Controls.Add(this.CancelChangesButton);
             this.ChangesetTabPage.Controls.Add(this.ConfirmChangesButton);
             this.ChangesetTabPage.Controls.Add(this.ChangesListView);
@@ -846,9 +843,9 @@
             this.ChangesetTabPage.TabIndex = 2;
             this.ChangesetTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.ChangesetTabPage, "ChangesetTabPage");
-            // 
+            //
             // CancelChangesButton
-            // 
+            //
             this.CancelChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelChangesButton.Location = new System.Drawing.Point(1288, 896);
@@ -859,9 +856,9 @@
             this.CancelChangesButton.UseVisualStyleBackColor = true;
             this.CancelChangesButton.Click += new System.EventHandler(this.CancelChangesButton_Click);
             resources.ApplyResources(this.CancelChangesButton, "CancelChangesButton");
-            // 
+            //
             // ConfirmChangesButton
-            // 
+            //
             this.ConfirmChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ConfirmChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ConfirmChangesButton.Location = new System.Drawing.Point(1410, 896);
@@ -872,11 +869,11 @@
             this.ConfirmChangesButton.UseVisualStyleBackColor = true;
             this.ConfirmChangesButton.Click += new System.EventHandler(this.ConfirmChangesButton_Click);
             resources.ApplyResources(this.ConfirmChangesButton, "ConfirmChangesButton");
-            // 
+            //
             // ChangesListView
-            // 
-            this.ChangesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.ChangesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ChangesListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ChangesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -923,9 +920,9 @@
             this.WaitTabPage.Size = new System.Drawing.Size(1536, 948);
             this.WaitTabPage.TabIndex = 1;
             resources.ApplyResources(this.WaitTabPage, "WaitTabPage");
-            // 
+            //
             // CancelCurrentActionButton
-            // 
+            //
             this.CancelCurrentActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelCurrentActionButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelCurrentActionButton.Location = new System.Drawing.Point(1410, 898);
@@ -966,10 +963,10 @@
             this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.LogTextBox.Size = new System.Drawing.Size(1505, 799);
             this.LogTextBox.TabIndex = 8;
-            // 
+            //
             // DialogProgressBar
-            // 
-            this.DialogProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.DialogProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DialogProgressBar.Location = new System.Drawing.Point(14, 45);
             this.DialogProgressBar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -977,10 +974,10 @@
             this.DialogProgressBar.Size = new System.Drawing.Size(1506, 35);
             this.DialogProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.DialogProgressBar.TabIndex = 7;
-            // 
+            //
             // MessageTextBox
-            // 
-            this.MessageTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.MessageTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MessageTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.MessageTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -994,9 +991,9 @@
             this.MessageTextBox.TabIndex = 6;
             this.MessageTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             resources.ApplyResources(this.MessageTextBox, "MessageTextBox");
-            // 
+            //
             // ChooseRecommendedModsTabPage
-            // 
+            //
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsCancelButton);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsContinueButton);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsToggleCheckbox);
@@ -1010,9 +1007,9 @@
             this.ChooseRecommendedModsTabPage.TabIndex = 3;
             this.ChooseRecommendedModsTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.ChooseRecommendedModsTabPage, "ChooseRecommendedModsTabPage");
-            // 
+            //
             // RecommendedModsCancelButton
-            // 
+            //
             this.RecommendedModsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RecommendedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RecommendedModsCancelButton.Location = new System.Drawing.Point(1288, 896);
@@ -1023,9 +1020,9 @@
             this.RecommendedModsCancelButton.UseVisualStyleBackColor = true;
             this.RecommendedModsCancelButton.Click += new System.EventHandler(this.RecommendedModsCancelButton_Click);
             resources.ApplyResources(this.RecommendedModsCancelButton, "RecommendedModsCancelButton");
-            // 
+            //
             // RecommendedModsContinueButton
-            // 
+            //
             this.RecommendedModsContinueButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RecommendedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RecommendedModsContinueButton.Location = new System.Drawing.Point(1410, 896);
@@ -1036,9 +1033,9 @@
             this.RecommendedModsContinueButton.UseVisualStyleBackColor = true;
             this.RecommendedModsContinueButton.Click += new System.EventHandler(this.RecommendedModsContinueButton_Click);
             resources.ApplyResources(this.RecommendedModsContinueButton, "RecommendedModsContinueButton");
-            // 
+            //
             // RecommendedModsToggleCheckbox
-            // 
+            //
             this.RecommendedModsToggleCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RecommendedModsToggleCheckbox.AutoSize = true;
             this.RecommendedModsToggleCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -1050,9 +1047,9 @@
             this.RecommendedModsToggleCheckbox.UseVisualStyleBackColor = true;
             this.RecommendedModsToggleCheckbox.CheckedChanged += new System.EventHandler(this.RecommendedModsToggleCheckbox_CheckedChanged);
             resources.ApplyResources(this.RecommendedModsToggleCheckbox, "RecommendedModsToggleCheckbox");
-            // 
+            //
             // RecommendedDialogLabel
-            // 
+            //
             this.RecommendedDialogLabel.AutoSize = true;
             this.RecommendedDialogLabel.Location = new System.Drawing.Point(4, 20);
             this.RecommendedDialogLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -1060,11 +1057,11 @@
             this.RecommendedDialogLabel.Size = new System.Drawing.Size(627, 20);
             this.RecommendedDialogLabel.TabIndex = 6;
             resources.ApplyResources(this.RecommendedDialogLabel, "RecommendedDialogLabel");
-            // 
+            //
             // RecommendedModsListView
-            // 
-            this.RecommendedModsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.RecommendedModsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.RecommendedModsListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.RecommendedModsListView.CheckBoxes = true;
@@ -1097,22 +1094,22 @@
             resources.ApplyResources(this.SuggestionsGroup, "SuggestionsGroup");
             //
             // columnHeader3
-            // 
+            //
             this.columnHeader3.Width = 332;
             resources.ApplyResources(this.columnHeader3, "columnHeader3");
-            // 
+            //
             // columnHeader4
-            // 
+            //
             this.columnHeader4.Width = 180;
             resources.ApplyResources(this.columnHeader4, "columnHeader4");
-            // 
+            //
             // columnHeader5
-            // 
+            //
             this.columnHeader5.Width = 606;
             resources.ApplyResources(this.columnHeader5, "columnHeader5");
-            // 
+            //
             // ChooseProvidedModsTabPage
-            // 
+            //
             this.ChooseProvidedModsTabPage.Controls.Add(this.ChooseProvidedModsCancelButton);
             this.ChooseProvidedModsTabPage.Controls.Add(this.ChooseProvidedModsContinueButton);
             this.ChooseProvidedModsTabPage.Controls.Add(this.ChooseProvidedModsListView);
@@ -1125,9 +1122,9 @@
             this.ChooseProvidedModsTabPage.TabIndex = 4;
             this.ChooseProvidedModsTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.ChooseProvidedModsTabPage, "ChooseProvidedModsTabPage");
-            // 
+            //
             // ChooseProvidedModsCancelButton
-            // 
+            //
             this.ChooseProvidedModsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ChooseProvidedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ChooseProvidedModsCancelButton.Location = new System.Drawing.Point(1286, 895);
@@ -1138,9 +1135,9 @@
             this.ChooseProvidedModsCancelButton.UseVisualStyleBackColor = true;
             this.ChooseProvidedModsCancelButton.Click += new System.EventHandler(this.ChooseProvidedModsCancelButton_Click);
             resources.ApplyResources(this.ChooseProvidedModsCancelButton, "ChooseProvidedModsCancelButton");
-            // 
+            //
             // ChooseProvidedModsContinueButton
-            // 
+            //
             this.ChooseProvidedModsContinueButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ChooseProvidedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ChooseProvidedModsContinueButton.Location = new System.Drawing.Point(1407, 895);
@@ -1151,11 +1148,11 @@
             this.ChooseProvidedModsContinueButton.UseVisualStyleBackColor = true;
             this.ChooseProvidedModsContinueButton.Click += new System.EventHandler(this.ChooseProvidedModsContinueButton_Click);
             resources.ApplyResources(this.ChooseProvidedModsContinueButton, "ChooseProvidedModsContinueButton");
-            // 
+            //
             // ChooseProvidedModsListView
-            // 
-            this.ChooseProvidedModsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.ChooseProvidedModsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ChooseProvidedModsListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ChooseProvidedModsListView.CheckBoxes = true;
@@ -1175,17 +1172,17 @@
             this.ChooseProvidedModsListView.SelectedIndexChanged += new System.EventHandler(ChooseProvidedModsListView_SelectedIndexChanged);
             //
             // columnHeader6
-            // 
+            //
             this.columnHeader6.Width = 332;
             resources.ApplyResources(this.columnHeader6, "columnHeader6");
-            // 
+            //
             // columnHeader8
-            // 
+            //
             this.columnHeader8.Width = 606;
             resources.ApplyResources(this.columnHeader8, "columnHeader8");
-            // 
+            //
             // ChooseProvidedModsLabel
-            // 
+            //
             this.ChooseProvidedModsLabel.AutoSize = true;
             this.ChooseProvidedModsLabel.Location = new System.Drawing.Point(9, 18);
             this.ChooseProvidedModsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -1193,17 +1190,17 @@
             this.ChooseProvidedModsLabel.Size = new System.Drawing.Size(568, 20);
             this.ChooseProvidedModsLabel.TabIndex = 7;
             resources.ApplyResources(this.ChooseProvidedModsLabel, "ChooseProvidedModsLabel");
-            // 
+            //
             // minimizeNotifyIcon
-            // 
+            //
             this.minimizeNotifyIcon.ContextMenuStrip = this.minimizedContextMenuStrip;
             this.minimizeNotifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.minimizeNotifyIcon_MouseDoubleClick);
             this.minimizeNotifyIcon.BalloonTipClicked += new System.EventHandler(this.minimizeNotifyIcon_BalloonTipClicked);
             this.minimizeNotifyIcon.Icon = Properties.Resources.AppIcon;
             resources.ApplyResources(this.minimizeNotifyIcon, "minimizeNotifyIcon");
-            // 
+            //
             // minimizedContextMenuStrip
-            // 
+            //
             this.minimizedContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.updatesToolStripMenuItem,
             this.toolStripSeparator4,
@@ -1221,43 +1218,43 @@
             this.minimizedContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.minimizedContextMenuStrip_Opening);
             //
             // updatesToolStripMenuItem
-            // 
+            //
             this.updatesToolStripMenuItem.Name = "updatesToolStripMenuItem";
             this.updatesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.updatesToolStripMenuItem.Click += new System.EventHandler(this.updatesToolStripMenuItem_Click);
             resources.ApplyResources(this.updatesToolStripMenuItem, "updatesToolStripMenuItem");
-            // 
+            //
             // toolStripSeparator4
-            // 
+            //
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
-            // 
+            //
             // refreshToolStripMenuItem
-            // 
+            //
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
             this.refreshToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             resources.ApplyResources(this.refreshToolStripMenuItem, "refreshToolStripMenuItem");
-            // 
+            //
             // pauseToolStripMenuItem
-            // 
+            //
             this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
             this.pauseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
             resources.ApplyResources(this.pauseToolStripMenuItem, "pauseToolStripMenuItem");
-            // 
+            //
             // toolStripSeparator5
-            // 
+            //
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
-            // 
+            //
             // openCKANToolStripMenuItem
-            // 
+            //
             this.openCKANToolStripMenuItem.Name = "openCKANToolStripMenuItem";
             this.openCKANToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openCKANToolStripMenuItem.Click += new System.EventHandler(this.openCKANToolStripMenuItem_Click);
             resources.ApplyResources(this.openCKANToolStripMenuItem, "openCKANToolStripMenuItem");
-            // 
+            //
             //
             // openKSPToolStripMenuItem
             //
@@ -1267,33 +1264,33 @@
             resources.ApplyResources(this.openKSPToolStripMenuItem, "openKSPToolStripMenuItem");
             //
             // openKSPDirectoryToolStripMenuItem1
-            // 
+            //
             this.openKSPDirectoryToolStripMenuItem1.Name = "openKSPDirectoryToolStripMenuItem1";
             this.openKSPDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.openKSPDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.openKspDirectoryToolStripMenuItem_Click);
             resources.ApplyResources(this.openKSPDirectoryToolStripMenuItem1, "openKSPDirectoryToolStripMenuItem1");
-            // 
+            //
             // cKANSettingsToolStripMenuItem1
-            // 
+            //
             this.cKANSettingsToolStripMenuItem1.Name = "cKANSettingsToolStripMenuItem1";
             this.cKANSettingsToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.cKANSettingsToolStripMenuItem1.Click += new System.EventHandler(this.cKANSettingsToolStripMenuItem1_Click);
             resources.ApplyResources(this.cKANSettingsToolStripMenuItem1, "cKANSettingsToolStripMenuItem1");
-            // 
+            //
             // toolStripSeparator6
-            // 
+            //
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(177, 6);
-            // 
+            //
             // quitToolStripMenuItem
-            // 
+            //
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolButton_Click);
             resources.ApplyResources(this.quitToolStripMenuItem, "quitToolStripMenuItem");
-            // 
+            //
             // Main
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1544, 1038);

@@ -42,10 +42,10 @@
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.AddNewPluginButton);
             this.groupBox1.Controls.Add(this.ReloadPluginButton);
@@ -58,11 +58,11 @@
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             resources.ApplyResources(this.groupBox1, "groupBox1");
-            // 
+            //
             // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.UnloadPluginButton);
             this.groupBox2.Controls.Add(this.ActivatePluginButton);
@@ -74,10 +74,10 @@
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             resources.ApplyResources(this.groupBox2, "groupBox2");
-            // 
+            //
             // ActivePluginsListBox
-            // 
-            this.ActivePluginsListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.ActivePluginsListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ActivePluginsListBox.FormattingEnabled = true;
             this.ActivePluginsListBox.Location = new System.Drawing.Point(6, 17);
@@ -85,9 +85,9 @@
             this.ActivePluginsListBox.Size = new System.Drawing.Size(219, 147);
             this.ActivePluginsListBox.TabIndex = 0;
             this.ActivePluginsListBox.SelectedIndexChanged += new System.EventHandler(this.ActivePluginsListBox_SelectedIndexChanged);
-            // 
+            //
             // DeactivateButton
-            // 
+            //
             this.DeactivateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.DeactivateButton.Enabled = false;
             this.DeactivateButton.Location = new System.Drawing.Point(231, 17);
@@ -97,9 +97,9 @@
             this.DeactivateButton.UseVisualStyleBackColor = true;
             this.DeactivateButton.Click += new System.EventHandler(this.DeactivateButton_Click);
             resources.ApplyResources(this.DeactivateButton, "DeactivateButton");
-            // 
+            //
             // ReloadPluginButton
-            // 
+            //
             this.ReloadPluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ReloadPluginButton.Enabled = false;
             this.ReloadPluginButton.Location = new System.Drawing.Point(231, 46);
@@ -109,11 +109,11 @@
             this.ReloadPluginButton.UseVisualStyleBackColor = true;
             this.ReloadPluginButton.Click += new System.EventHandler(this.ReloadPluginButton_Click);
             resources.ApplyResources(this.ReloadPluginButton, "ReloadPluginButton");
-            // 
+            //
             // DormantPluginsListBox
-            // 
-            this.DormantPluginsListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.DormantPluginsListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DormantPluginsListBox.FormattingEnabled = true;
             this.DormantPluginsListBox.Location = new System.Drawing.Point(6, 19);
@@ -121,9 +121,9 @@
             this.DormantPluginsListBox.Size = new System.Drawing.Size(219, 134);
             this.DormantPluginsListBox.TabIndex = 3;
             this.DormantPluginsListBox.SelectedIndexChanged += new System.EventHandler(this.DormantPluginsListBox_SelectedIndexChanged);
-            // 
+            //
             // ActivatePluginButton
-            // 
+            //
             this.ActivatePluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ActivatePluginButton.Enabled = false;
             this.ActivatePluginButton.Location = new System.Drawing.Point(231, 19);
@@ -133,9 +133,9 @@
             this.ActivatePluginButton.UseVisualStyleBackColor = true;
             this.ActivatePluginButton.Click += new System.EventHandler(this.ActivatePluginButton_Click);
             resources.ApplyResources(this.ActivatePluginButton, "ActivatePluginButton");
-            // 
+            //
             // AddNewPluginButton
-            // 
+            //
             this.AddNewPluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.AddNewPluginButton.Location = new System.Drawing.Point(231, 75);
             this.AddNewPluginButton.Name = "AddNewPluginButton";
@@ -144,9 +144,9 @@
             this.AddNewPluginButton.UseVisualStyleBackColor = true;
             this.AddNewPluginButton.Click += new System.EventHandler(this.AddNewPluginButton_Click);
             resources.ApplyResources(this.AddNewPluginButton, "AddNewPluginButton");
-            // 
+            //
             // UnloadPluginButton
-            // 
+            //
             this.UnloadPluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.UnloadPluginButton.Enabled = false;
             this.UnloadPluginButton.Location = new System.Drawing.Point(231, 48);
@@ -156,9 +156,9 @@
             this.UnloadPluginButton.UseVisualStyleBackColor = true;
             this.UnloadPluginButton.Click += new System.EventHandler(this.UnloadPluginButton_Click);
             resources.ApplyResources(this.UnloadPluginButton, "UnloadPluginButton");
-            // 
+            //
             // PluginsDialog
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(379, 358);

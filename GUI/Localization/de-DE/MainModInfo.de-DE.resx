@@ -117,18 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve"><value>Additionally install mods compatible with following KSP versions:</value></data>
-  <data name="label2.Text" xml:space="preserve"><value>Game version:</value></data>
-  <data name="label3.Text" xml:space="preserve"><value>Warning! There is no way to check if mod is truly compatible with versions selected here! Please act carefully.</value></data>
-  <data name="GameVersionLabel.Text" xml:space="preserve"><value>&lt;version&gt;</value></data>
-  <data name="ClearSelectionButton.Text" xml:space="preserve"><value>Clear selection</value></data>
-  <data name="AddVersionToListButton.Text" xml:space="preserve"><value>Add</value></data>
-  <data name="label5.Text" xml:space="preserve"><value>Add version to list:</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>Note: if you add version like "1.2" you will force all mods compatible with 1.2.xx (1.2.0, 1.2.1, etc) to be compatible with this KSP installation.</value></data>
-  <data name="label7.Text" xml:space="preserve"><value>If KSP is updated this dialog will be shown again so you can adjust your settings.</value></data>
-  <data name="SaveButton.Text" xml:space="preserve"><value>Accept</value></data>
-  <data name="label8.Text" xml:space="preserve"><value>Installation:</value></data>
-  <data name="GameLocationLabel.Text" xml:space="preserve"><value>&lt;location&gt;</value></data>
-  <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve"><value>Cancel</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Compatible KSP Versions</value></data>
+  <data name="MetadataTabPage.Text" xml:space="preserve"><value>Metadaten</value></data>
+  <data name="MetadataModuleNameTextBox.Text" xml:space="preserve"><value>Modname</value></data>
+  <data name="IdentifierLabel.Text" xml:space="preserve"><value>Kennung:</value></data>
+  <data name="ReplacementLabel.Text" xml:space="preserve"><value>Ersetzt durch:</value></data>
+  <data name="KSPCompatibilityLabel.Text" xml:space="preserve"><value>Max. KSP-Version:</value></data>
+  <data name="ReleaseLabel.Text" xml:space="preserve"><value>Releasestatus:</value></data>
+  <data name="GitHubLabel.Text" xml:space="preserve"><value>Quellcode:</value></data>
+  <data name="HomePageLabel.Text" xml:space="preserve"><value>Homepage:</value></data>
+  <data name="AuthorLabel.Text" xml:space="preserve"><value>Autor:</value></data>
+  <data name="LicenseLabel.Text" xml:space="preserve"><value>Lizenz:</value></data>
+  <data name="MetadataModuleLicenseTextBox.Text" xml:space="preserve"><value>N/A</value></data>
+  <data name="MetadataModuleAuthorTextBox.Text" xml:space="preserve"><value>N/A</value></data>
+  <data name="RelationshipTabPage.Text" xml:space="preserve"><value>Beziehungen</value></data>
+  <data name="LegendDependsLabel.Text" xml:space="preserve"><value>Abhängigkeit</value></data>
+  <data name="LegendRecommendsLabel.Text" xml:space="preserve"><value>Empfehlung</value></data>
+  <data name="LegendSuggestsLabel.Text" xml:space="preserve"><value>Vorschlag</value></data>
+  <data name="LegendSupportsLabel.Text" xml:space="preserve"><value>Unterstützt</value></data>
+  <data name="LegendConflictsLabel.Text" xml:space="preserve"><value>Konflikt</value></data>
+  <data name="ContentTabPage.Text" xml:space="preserve"><value>Inhalt</value></data>
+  <data name="ContentsDownloadButton.Text" xml:space="preserve"><value>Herunterladen</value></data>
+  <data name="NotCachedLabel.Text" xml:space="preserve"><value>Diese Mod ist nicht im Cache, klicke 'Herunterladen' für eine Inhaltsvorschau</value></data>
+  <data name="AllModVersionsTabPage.Text" xml:space="preserve"><value>Versionen</value></data>
 </root>

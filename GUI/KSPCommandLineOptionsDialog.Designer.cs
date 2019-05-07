@@ -35,25 +35,25 @@
             this.AcceptChangesButton = new System.Windows.Forms.Button();
             this.CancelChangesButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
+            //
             // AdditionalArguments
-            // 
+            //
             this.AdditionalArguments.Location = new System.Drawing.Point(15, 25);
             this.AdditionalArguments.Name = "AdditionalArguments";
             this.AdditionalArguments.Size = new System.Drawing.Size(457, 20);
             this.AdditionalArguments.TabIndex = 1;
-            // 
+            //
             // label1
-            // 
+            //
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 2;
             resources.ApplyResources(this.label1, "label1");
-            // 
+            //
             // AcceptChangesButton
-            // 
+            //
             this.AcceptChangesButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.AcceptChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AcceptChangesButton.Location = new System.Drawing.Point(397, 51);
@@ -62,9 +62,9 @@
             this.AcceptChangesButton.TabIndex = 3;
             this.AcceptChangesButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.AcceptChangesButton, "AcceptChangesButton");
-            // 
+            //
             // CancelChangesButton
-            // 
+            //
             this.CancelChangesButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelChangesButton.Location = new System.Drawing.Point(316, 51);
@@ -73,9 +73,9 @@
             this.CancelChangesButton.TabIndex = 4;
             this.CancelChangesButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.CancelChangesButton, "CancelChangesButton");
-            // 
+            //
             // KSPCommandLineOptionsDialog
-            // 
+            //
             this.AcceptButton = this.AcceptChangesButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

@@ -610,9 +610,12 @@
             //
             // NotCachedLabel
             //
-            this.NotCachedLabel.Location = new System.Drawing.Point(3, 3);
+            this.NotCachedLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.NotCachedLabel.Location = new System.Drawing.Point(6, 3);
             this.NotCachedLabel.Name = "NotCachedLabel";
-            this.NotCachedLabel.Size = new System.Drawing.Size(216, 30);
+            this.NotCachedLabel.Size = new System.Drawing.Size(342, 434);
             this.NotCachedLabel.TabIndex = 0;
             resources.ApplyResources(this.NotCachedLabel, "NotCachedLabel");
             //

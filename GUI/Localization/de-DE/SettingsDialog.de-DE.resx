@@ -117,18 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve"><value>Additionally install mods compatible with following KSP versions:</value></data>
-  <data name="label2.Text" xml:space="preserve"><value>Game version:</value></data>
-  <data name="label3.Text" xml:space="preserve"><value>Warning! There is no way to check if mod is truly compatible with versions selected here! Please act carefully.</value></data>
-  <data name="GameVersionLabel.Text" xml:space="preserve"><value>&lt;version&gt;</value></data>
-  <data name="ClearSelectionButton.Text" xml:space="preserve"><value>Clear selection</value></data>
-  <data name="AddVersionToListButton.Text" xml:space="preserve"><value>Add</value></data>
-  <data name="label5.Text" xml:space="preserve"><value>Add version to list:</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>Note: if you add version like "1.2" you will force all mods compatible with 1.2.xx (1.2.0, 1.2.1, etc) to be compatible with this KSP installation.</value></data>
-  <data name="label7.Text" xml:space="preserve"><value>If KSP is updated this dialog will be shown again so you can adjust your settings.</value></data>
-  <data name="SaveButton.Text" xml:space="preserve"><value>Accept</value></data>
-  <data name="label8.Text" xml:space="preserve"><value>Installation:</value></data>
-  <data name="GameLocationLabel.Text" xml:space="preserve"><value>&lt;location&gt;</value></data>
-  <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve"><value>Cancel</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Compatible KSP Versions</value></data>
+  <metadata name="ClearCacheMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>220, 17</value>
+  </metadata>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>48</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="RepositoryGroupBox.Text" xml:space="preserve"><value>Repositories für Metadaten</value></data>
+  <data name="NewRepoButton.Text" xml:space="preserve"><value>Neu</value></data>
+  <data name="UpRepoButton.Text" xml:space="preserve"><value>Hoch</value></data>
+  <data name="DownRepoButton.Text" xml:space="preserve"><value>Runter</value></data>
+  <data name="DeleteRepoButton.Text" xml:space="preserve"><value>Entfernen</value></data>
+  <data name="AuthTokensGroupBox.Text" xml:space="preserve"><value>Authentifikationstoken</value></data>
+  <data name="NewAuthTokenButton.Text" xml:space="preserve"><value>Neu</value></data>
+  <data name="DeleteAuthTokenButton.Text" xml:space="preserve"><value>Entfernen</value></data>
+  <data name="CacheGroupBox.Text" xml:space="preserve"><value>Download-Cache</value></data>
+  <data name="CacheSummary.Text" xml:space="preserve"><value>N Dateien, M MB</value></data>
+  <data name="CacheLimitPreLabel.Text" xml:space="preserve"><value>Größenlimit:</value></data>
+  <data name="CacheLimitPostLabel.Text" xml:space="preserve"><value>MB (leer für unbegrenzt)</value></data>
+  <data name="ChangeCacheButton.Text" xml:space="preserve"><value>Ändern...</value></data>
+  <data name="ClearCacheButton.Text" xml:space="preserve"><value>Leeren</value></data>
+  <data name="PurgeToLimitMenuItem.Text" xml:space="preserve"><value>Bis zum Limit leeren</value></data>
+  <data name="PurgeAllMenuItem.Text" xml:space="preserve"><value>Gesamten Cache leeren</value></data>
+  <data name="ResetCacheButton.Text" xml:space="preserve"><value>Zurücksetzen</value></data>
+  <data name="OpenCacheButton.Text" xml:space="preserve"><value>Öffnen</value></data>
+  <data name="AutoUpdateGroupBox.Text" xml:space="preserve"><value>CKAN-Aktualisierungen</value></data>
+  <data name="LocalVersionPreLabel.Text" xml:space="preserve"><value>Lokale Version:</value></data>
+  <data name="LatestVersionPreLabel.Text" xml:space="preserve"><value>Neueste Version:</value></data>
+  <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve"><value>Beim Start nach Aktualisierungen suchen</value></data>
+  <data name="CheckForUpdatesButton.Text" xml:space="preserve"><value>Nach Updates suchen</value></data>
+  <data name="InstallUpdateButton.Text" xml:space="preserve"><value>Update installieren</value></data>
+  <data name="BehaviourGroupBox.Text" xml:space="preserve"><value>Verhalten</value></data>
+  <data name="EnableTrayIconCheckBox.Text" xml:space="preserve"><value>Aktiviere Taskleistensymbol</value></data>
+  <data name="MinimizeToTrayCheckBox.Text" xml:space="preserve"><value>In die Taskleiste minimieren</value></data>
+  <data name="RefreshPreLabel.Text" xml:space="preserve"><value>Update Modliste alle</value></data>
+  <data name="RefreshPostLabel.Text" xml:space="preserve"><value>Minuten</value></data>
+  <data name="PauseRefreshCheckBox.Text" xml:space="preserve"><value>Autom. Aktualisierung aussetzen</value></data>
+  <data name="MoreSettingsGroupBox.Text" xml:space="preserve"><value>Weitere Einstellungen</value></data>
+  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>Beim Klick auf 'Verfügbare Updates auswählen' aktualisierbare Mods oben anzeigen</value></data>
+  <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve"><value>Modliste beim Start von CKAN aktualisieren</value></data>
+  <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>Epoch-Zahlen bei Modversionsnummern in der Modliste verstecken (Neustart benötigt!)</value></data>
+  <data name="HideVCheckbox.Text" xml:space="preserve"><value>'v' bei Modversionsnummern in der Modliste verstecken (Neustart benötigt!)</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Einstellungen</value></data>
 </root>

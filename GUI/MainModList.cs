@@ -284,9 +284,12 @@ namespace CKAN
             // Hide update and replacement columns if not needed.
             // Write it to the configuration, else they are hidden agian after a filter change.
             // After the update / replacement, they are hidden again.
-            ModList.Columns["UpdateCol"].Visible     = has_any_updates;
-            ModList.Columns["AutoInstalled"].Visible = has_any_installed && !configuration.HiddenColumnNames.Contains("AutoInstalled");
-            ModList.Columns["ReplaceCol"].Visible    = has_any_replacements;
+            Util.Invoke(ModList, () =>
+            {
+                ModList.Columns["UpdateCol"].Visible     = has_any_updates;
+                ModList.Columns["AutoInstalled"].Visible = has_any_installed &&             !configuration.HiddenColumnNames.Contains("AutoInstalled");
+                ModList.Columns["ReplaceCol"].Visible    = has_any_replacements;
+            });
 
             AddLogMessage(Properties.Resources.MainModListUpdatingTray);
             UpdateTrayInfo();
@@ -980,6 +983,7 @@ namespace CKAN
 
         private static readonly Regex ContainsEpoch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
         private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
+
 
         private bool IsNameInNameFilter(GUIMod mod)
         {

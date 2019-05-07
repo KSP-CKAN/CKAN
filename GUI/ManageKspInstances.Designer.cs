@@ -48,11 +48,11 @@
             this.ForgetButton = new System.Windows.Forms.Button();
             this.AddNewMenu.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // KSPInstancesListView
-            // 
-            this.KSPInstancesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.KSPInstancesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.KSPInstancesListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.KSPInstancesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -66,89 +66,89 @@
             this.KSPInstancesListView.Location = new System.Drawing.Point(12, 13);
             this.KSPInstancesListView.MultiSelect = false;
             this.KSPInstancesListView.Name = "KSPInstancesListView";
-            this.KSPInstancesListView.Size = new System.Drawing.Size(462, 301);
+            this.KSPInstancesListView.Size = new System.Drawing.Size(522, 301);
             this.KSPInstancesListView.TabIndex = 0;
             this.KSPInstancesListView.UseCompatibleStateImageBehavior = false;
             this.KSPInstancesListView.View = System.Windows.Forms.View.Details;
             this.KSPInstancesListView.SelectedIndexChanged += new System.EventHandler(this.KSPInstancesListView_SelectedIndexChanged);
             this.KSPInstancesListView.DoubleClick += new System.EventHandler(this.KSPInstancesListView_DoubleClick);
-            // 
+            //
             // KSPInstallName
-            // 
-            this.KSPInstallName.Width = 161;
+            //
+            this.KSPInstallName.Width = 130;
             resources.ApplyResources(this.KSPInstallName, "KSPInstallName");
-            // 
+            //
             // KSPInstallVersion
-            // 
-            this.KSPInstallVersion.Width = 100;
+            //
+            this.KSPInstallVersion.Width = 70;
             resources.ApplyResources(this.KSPInstallVersion, "KSPInstallVersion");
-            // 
+            //
             // KSPInstallPath
-            // 
-            this.KSPInstallPath.Width = 400;
+            //
+            this.KSPInstallPath.Width = 370;
             resources.ApplyResources(this.KSPInstallPath, "KSPInstallPath");
-            // 
+            //
             // SelectButton
-            // 
+            //
             this.SelectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectButton.Enabled = false;
             this.SelectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SelectButton.Location = new System.Drawing.Point(399, 320);
+            this.SelectButton.Location = new System.Drawing.Point(459, 320);
             this.SelectButton.Name = "SelectButton";
             this.SelectButton.Size = new System.Drawing.Size(75, 23);
             this.SelectButton.TabIndex = 1;
             this.SelectButton.UseVisualStyleBackColor = true;
             this.SelectButton.Click += new System.EventHandler(this.SelectButton_Click);
             resources.ApplyResources(this.SelectButton, "SelectButton");
-            // 
+            //
             // AddNewButton
-            // 
+            //
             this.AddNewButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.AddNewButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AddNewButton.Location = new System.Drawing.Point(267, 320);
+            this.AddNewButton.Location = new System.Drawing.Point(327, 320);
             this.AddNewButton.Menu = this.AddNewMenu;
             this.AddNewButton.Name = "AddNewButton";
             this.AddNewButton.Size = new System.Drawing.Size(126, 23);
             this.AddNewButton.TabIndex = 2;
             this.AddNewButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.AddNewButton, "AddNewButton");
-            // 
+            //
             // AddNewMenu
-            // 
+            //
             this.AddNewMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AddToCKANMenuItem,
             this.CloneFakeInstanceMenuItem});
             this.AddNewMenu.Name = "AddNewMenu";
-            this.AddNewMenu.Size = new System.Drawing.Size(217, 48);
-            // 
+            this.AddNewMenu.Size = new System.Drawing.Size(222, 48);
+            //
             // AddToCKANMenuItem
-            // 
+            //
             this.AddToCKANMenuItem.Name = "AddToCKANMenuItem";
             this.AddToCKANMenuItem.Size = new System.Drawing.Size(216, 22);
             this.AddToCKANMenuItem.Click += new System.EventHandler(this.AddToCKANMenuItem_Click);
             resources.ApplyResources(this.AddToCKANMenuItem, "AddToCKANMenuItem");
-            // 
+            //
             // CloneFakeInstanceMenuItem
-            // 
+            //
             this.CloneFakeInstanceMenuItem.Name = "CloneFakeInstanceMenuItem";
             this.CloneFakeInstanceMenuItem.Size = new System.Drawing.Size(216, 22);
             this.CloneFakeInstanceMenuItem.Click += new System.EventHandler(this.CloneFakeInstanceMenuItem_Click);
             resources.ApplyResources(this.CloneFakeInstanceMenuItem, "CloneFakeInstanceMenuItem");
-            // 
+            //
             // RenameButton
-            // 
+            //
             this.RenameButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RenameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RenameButton.Location = new System.Drawing.Point(196, 320);
+            this.RenameButton.Location = new System.Drawing.Point(236, 320);
             this.RenameButton.Name = "RenameButton";
-            this.RenameButton.Size = new System.Drawing.Size(65, 23);
+            this.RenameButton.Size = new System.Drawing.Size(85, 23);
             this.RenameButton.TabIndex = 3;
             this.RenameButton.UseVisualStyleBackColor = true;
             this.RenameButton.Click += new System.EventHandler(this.RenameButton_Click);
             resources.ApplyResources(this.RenameButton, "RenameButton");
-            // 
+            //
             // SetAsDefaultCheckbox
-            // 
+            //
             this.SetAsDefaultCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.SetAsDefaultCheckbox.AutoSize = true;
             this.SetAsDefaultCheckbox.Location = new System.Drawing.Point(12, 324);
@@ -157,25 +157,25 @@
             this.SetAsDefaultCheckbox.TabIndex = 4;
             this.SetAsDefaultCheckbox.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.SetAsDefaultCheckbox, "SetAsDefaultCheckbox");
-            // 
+            //
             // ForgetButton
-            // 
+            //
             this.ForgetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ForgetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ForgetButton.Location = new System.Drawing.Point(125, 320);
+            this.ForgetButton.Location = new System.Drawing.Point(160, 320);
             this.ForgetButton.Name = "ForgetButton";
-            this.ForgetButton.Size = new System.Drawing.Size(65, 23);
+            this.ForgetButton.Size = new System.Drawing.Size(70, 23);
             this.ForgetButton.TabIndex = 5;
             this.ForgetButton.UseVisualStyleBackColor = true;
             this.ForgetButton.Click += new System.EventHandler(this.Forget_Click);
             resources.ApplyResources(this.ForgetButton, "ForgetButton");
-            // 
+            //
             // ManageKspInstances
-            // 
+            //
             this.AcceptButton = this.SelectButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(486, 355);
+            this.ClientSize = new System.Drawing.Size(546, 355);
             this.Controls.Add(this.ForgetButton);
             this.Controls.Add(this.SetAsDefaultCheckbox);
             this.Controls.Add(this.RenameButton);
@@ -183,7 +183,7 @@
             this.Controls.Add(this.SelectButton);
             this.Controls.Add(this.KSPInstancesListView);
             this.Icon = Properties.Resources.AppIcon;
-            this.MinimumSize = new System.Drawing.Size(450, 200);
+            this.MinimumSize = new System.Drawing.Size(560, 200);
             this.Name = "ManageKspInstances";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             resources.ApplyResources(this, "$this");

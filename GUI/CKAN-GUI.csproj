@@ -99,9 +99,6 @@
     <Compile Include="ManageKspInstances.Designer.cs">
       <DependentUpon>ManageKspInstances.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ManageKSPInstances.resx">
-      <DependentUpon>ManageKspInstances.cs</DependentUpon>
-    </EmbeddedResource>
     <Compile Include="CloneFakeKspDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -263,20 +260,35 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Localization\de-DE\AboutDialog.de-DE.resx">
+      <DependentUpon>..\..\AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AskUserForAutoUpdatesDialog.resx">
       <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\AskUserForAutoUpdatesDialog.de-DE.resx">
+      <DependentUpon>..\..\AskUserForAutoUpdatesDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CloneFakeKspDialog.resx">
       <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\CloneFakeKspDialog.de-DE.resx">
+      <DependentUpon>..\..\CloneFakeKspDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CompatibleKspVersionsDialog.resx">
       <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\CompatibleKspVersionsDialog.de-DE.resx">
+      <DependentUpon>..\..\CompatibleKspVersionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\ErrorDialog.de-DE.resx">
+      <DependentUpon>..\..\ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HintTextBox.resx">
       <DependentUpon>HintTextBox.cs</DependentUpon>
@@ -284,52 +296,93 @@
     <EmbeddedResource Include="KSPCommandLineOptionsDialog.resx">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\KSPCommandLineOptionsDialog.de-DE.resx">
+      <DependentUpon>..\..\KSPCommandLineOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\Main.de-DE.resx">
+      <DependentUpon>..\..\Main.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainAllModVersions.resx">
       <DependentUpon>MainAllModVersions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\MainAllModVersions.de-DE.resx">
+      <DependentUpon>..\..\MainAllModVersions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainModInfo.resx">
       <DependentUpon>MainModInfo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\MainModInfo.de-DE.resx">
+      <DependentUpon>..\..\MainModInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageKSPInstances.resx">
+      <DependentUpon>ManageKspInstances.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\ManageKSPInstances.de-DE.resx">
+      <DependentUpon>..\..\ManageKspInstances.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NewRepoDialog.resx">
       <DependentUpon>NewRepoDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\NewRepoDialog.de-DE.resx">
+      <DependentUpon>..\..\NewRepoDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewUpdateDialog.resx">
       <DependentUpon>NewUpdateDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\NewUpdateDialog.de-DE.resx">
+      <DependentUpon>..\..\NewUpdateDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PluginsDialog.resx">
       <DependentUpon>PluginsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\PluginsDialog.de-DE.resx">
+      <DependentUpon>..\..\PluginsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.de-DE.resx">
       <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-        <SubType>Designer</SubType>
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="RenameInstanceDialog.resx">
       <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\RenameInstanceDialog.de-DE.resx">
+      <DependentUpon>..\..\RenameInstanceDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectionDialog.resx">
+      <DependentUpon>SelectionDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\SelectionDialog.de-DE.resx">
+      <DependentUpon>..\..\SelectionDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SettingsDialog.en-US.resx">
-      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\de-DE\SettingsDialog.de-DE.resx">
+      <DependentUpon>..\..\SettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\en-US\SettingsDialog.en-US.resx">
+      <DependentUpon>..\..\SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="YesNoDialog.resx">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="YesNoDialog.de-DE.resx">
-      <DependentUpon>YesNoDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SelectionDialog.resx">
-      <DependentUpon>SelectionDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\de-DE\YesNoDialog.de-DE.resx">
+      <DependentUpon>..\..\YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

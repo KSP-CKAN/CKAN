@@ -32,111 +32,164 @@ namespace CKAN
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(AboutDialog));
-            this.label1 = new System.Windows.Forms.Label();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel3 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel4 = new System.Windows.Forms.LinkLabel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.linkLabel5 = new System.Windows.Forms.LinkLabel();
+            this.projectNameLabel = new System.Windows.Forms.Label();
+            this.versionLabel = new System.Windows.Forms.Label();
+            this.licenseLabel = new System.Windows.Forms.Label();
+            this.licenseLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.authorsLabel = new System.Windows.Forms.Label();
+            this.authorsLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.sourceLabel = new System.Windows.Forms.Label();
+            this.sourceLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.homepageLabel = new System.Windows.Forms.Label();
+            this.homepageLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.forumthreadLabel = new System.Windows.Forms.Label();
+            this.forumthreadLinkLabel = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(317, 20);
-            this.label1.TabIndex = 0;
-            this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            resources.ApplyResources(this.label1, "label1");
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(0, 8);
-            this.linkLabel1.Location = new System.Drawing.Point(140, 29);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(43, 17);
-            this.linkLabel1.TabIndex = 1;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.linkLabel1.UseCompatibleTextRendering = true;
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            resources.ApplyResources(this.linkLabel1, "linkLabel1");
-            // 
-            // linkLabel2
-            // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.LinkArea = new System.Windows.Forms.LinkArea(0, 7);
-            this.linkLabel2.Location = new System.Drawing.Point(141, 56);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(43, 13);
-            this.linkLabel2.TabIndex = 2;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
-            resources.ApplyResources(this.linkLabel2, "linkLabel2");
-            // 
-            // linkLabel3
-            // 
-            this.linkLabel3.AutoSize = true;
-            this.linkLabel3.LinkArea = new System.Windows.Forms.LinkArea(0, 6);
-            this.linkLabel3.Location = new System.Drawing.Point(52, 84);
-            this.linkLabel3.Name = "linkLabel3";
-            this.linkLabel3.Size = new System.Drawing.Size(41, 13);
-            this.linkLabel3.TabIndex = 3;
-            this.linkLabel3.TabStop = true;
-            this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
-            resources.ApplyResources(this.linkLabel3, "linkLabel3");
-            // 
-            // linkLabel4
-            // 
-            this.linkLabel4.AutoSize = true;
-            this.linkLabel4.LinkArea = new System.Windows.Forms.LinkArea(0, 12);
-            this.linkLabel4.Location = new System.Drawing.Point(213, 84);
-            this.linkLabel4.Name = "linkLabel4";
-            this.linkLabel4.Size = new System.Drawing.Size(73, 13);
-            this.linkLabel4.TabIndex = 4;
-            this.linkLabel4.TabStop = true;
-            this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
-            resources.ApplyResources(this.linkLabel4, "linkLabel4");
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(79, 106);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(184, 18);
-            this.label2.TabIndex = 5;
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            resources.ApplyResources(this.label2, "label2");
-            // 
-            // linkLabel5
-            // 
-            this.linkLabel5.LinkArea = new System.Windows.Forms.LinkArea(0, 15);
-            this.linkLabel5.Location = new System.Drawing.Point(125, 84);
-            this.linkLabel5.Name = "linkLabel5";
-            this.linkLabel5.Size = new System.Drawing.Size(71, 13);
-            this.linkLabel5.TabIndex = 6;
-            this.linkLabel5.TabStop = true;
-            this.linkLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.linkLabel5.UseCompatibleTextRendering = true;
-            this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
-            resources.ApplyResources(this.linkLabel5, "linkLabel5");
-            // 
+            //
+            // projectNameLabel
+            //
+            this.projectNameLabel.Location = new System.Drawing.Point(6, 5);
+            this.projectNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.projectNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.projectNameLabel.Name = "projectNameLabel";
+            this.projectNameLabel.Size = new System.Drawing.Size(380, 13);
+            this.projectNameLabel.TabIndex = 0;
+            this.projectNameLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            resources.ApplyResources(this.projectNameLabel, "projectNameLabel");
+            //
+            // versionLabel
+            //
+            this.versionLabel.Location = new System.Drawing.Point(6, 25);
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(100, 13);
+            this.versionLabel.TabIndex = 6;
+            this.versionLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            resources.ApplyResources(this.versionLabel, "versionLabel");
+            //
+            // licenseLabel
+            //
+            this.licenseLabel.Location = new System.Drawing.Point(6, 55);
+            this.licenseLabel.Name = "licenseLabel";
+            this.licenseLabel.Size = new System.Drawing.Size(100, 13);
+            this.licenseLabel.TabIndex = 6;
+            this.licenseLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            resources.ApplyResources(this.licenseLabel, "licenseLabel");
+            //
+            // licenseLinkLabel
+            //
+            this.licenseLinkLabel.Location = new System.Drawing.Point(110, 55);
+            this.licenseLinkLabel.Name = "licenseLinkLabel";
+            this.licenseLinkLabel.Text = "https://github.com/KSP-CKAN/CKAN/blob/master/LICENSE.md";
+            this.licenseLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(0, 56);
+            this.licenseLinkLabel.Size = new System.Drawing.Size(380, 13);
+            this.licenseLinkLabel.TabIndex = 1;
+            this.licenseLinkLabel.TabStop = true;
+            this.licenseLinkLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.licenseLinkLabel.UseCompatibleTextRendering = true;
+            this.licenseLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+            //
+            // authorsLabel
+            //
+            this.authorsLabel.Location = new System.Drawing.Point(6, 75);
+            this.authorsLabel.Name = "authorsLabel";
+            this.authorsLabel.Size = new System.Drawing.Size(100, 13);
+            this.authorsLabel.TabIndex = 6;
+            this.authorsLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            resources.ApplyResources(this.authorsLabel, "authorsLabel");
+            //
+            // authorsLinkLabel
+            //
+            this.authorsLinkLabel.Location = new System.Drawing.Point(110, 75);
+            this.authorsLinkLabel.Name = "authorsLinkLabel";
+            this.authorsLinkLabel.Text = "https://github.com/KSP-CKAN/CKAN/graphs/contributors";
+            this.authorsLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(0, 52);
+            this.authorsLinkLabel.Size = new System.Drawing.Size(380, 13);
+            this.authorsLinkLabel.TabIndex = 2;
+            this.authorsLinkLabel.TabStop = true;
+            this.authorsLinkLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.authorsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+            //
+            // sourceLabel
+            //
+            this.sourceLabel.Location = new System.Drawing.Point(6, 95);
+            this.sourceLabel.Name = "sourceLabel";
+            this.sourceLabel.Size = new System.Drawing.Size(100, 13);
+            this.sourceLabel.TabIndex = 6;
+            this.sourceLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            resources.ApplyResources(this.sourceLabel, "sourceLabel");
+            //
+            // sourceLinkLabel
+            //
+            this.sourceLinkLabel.Location = new System.Drawing.Point(110, 95);
+            this.sourceLinkLabel.Name = "sourceLinkLabel";
+            this.sourceLinkLabel.Text = "https://github.com/KSP-CKAN/CKAN/";
+            this.sourceLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(0, 33);
+            this.sourceLinkLabel.Size = new System.Drawing.Size(380, 13);
+            this.sourceLinkLabel.TabIndex = 3;
+            this.sourceLinkLabel.TabStop = true;
+            this.sourceLinkLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.sourceLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+            //
+            // forumthreadLabel
+            //
+            this.forumthreadLabel.Location = new System.Drawing.Point(6, 115);
+            this.forumthreadLabel.Name = "forumthreadLinkLabel";
+            this.forumthreadLabel.Size = new System.Drawing.Size(100, 13);
+            this.forumthreadLabel.TabIndex = 6;
+            this.forumthreadLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            resources.ApplyResources(this.forumthreadLabel, "forumthreadLabel");
+            //
+            // forumthreadLinkLabel
+            //
+            this.forumthreadLinkLabel.Location = new System.Drawing.Point(110, 115);
+            this.forumthreadLinkLabel.Name = "forumthreadLinkLabel";
+            this.forumthreadLinkLabel.Text = "http://forum.kerbalspaceprogram.com/index.php?/topic/154922-ckan";
+            this.forumthreadLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(0, 64);
+            this.forumthreadLinkLabel.Size = new System.Drawing.Size(380, 13);
+            this.forumthreadLinkLabel.TabIndex = 4;
+            this.forumthreadLinkLabel.TabStop = true;
+            this.forumthreadLinkLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.forumthreadLinkLabel.UseCompatibleTextRendering = true;
+            this.forumthreadLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+            //
+            // homepageLabel
+            //
+            this.homepageLabel.Location = new System.Drawing.Point(6, 135);
+            this.homepageLabel.Name = "homepageLinkLabel";
+            this.homepageLabel.Size = new System.Drawing.Size(100, 13);
+            this.homepageLabel.TabIndex = 6;
+            this.homepageLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            resources.ApplyResources(this.homepageLabel, "homepageLabel");
+            //
+            // homepageLinkLabel
+            //
+            this.homepageLinkLabel.Location = new System.Drawing.Point(110, 135);
+            this.homepageLinkLabel.Name = "homepageLinkLabel";
+            this.homepageLinkLabel.Text = "http://ksp-ckan.space";
+            this.homepageLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(0, 21);
+            this.homepageLinkLabel.Size = new System.Drawing.Size(380, 13);
+            this.homepageLinkLabel.TabIndex = 5;
+            this.homepageLinkLabel.TabStop = true;
+            this.homepageLinkLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.homepageLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+            //
             // AboutDialog
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(341, 133);
-            this.Controls.Add(this.linkLabel5);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.linkLabel4);
-            this.Controls.Add(this.linkLabel3);
-            this.Controls.Add(this.linkLabel2);
-            this.Controls.Add(this.linkLabel1);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(500, 155);
+            this.Controls.Add(this.projectNameLabel);
+            this.Controls.Add(this.versionLabel);
+            this.Controls.Add(this.licenseLabel);
+            this.Controls.Add(this.licenseLinkLabel);
+            this.Controls.Add(this.authorsLabel);
+            this.Controls.Add(this.authorsLinkLabel);
+            this.Controls.Add(this.sourceLabel);
+            this.Controls.Add(this.sourceLinkLabel);
+            this.Controls.Add(this.forumthreadLabel);
+            this.Controls.Add(this.forumthreadLinkLabel);
+            this.Controls.Add(this.homepageLabel);
+            this.Controls.Add(this.homepageLinkLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = Properties.Resources.AppIcon;
             this.MaximizeBox = false;
@@ -150,13 +203,18 @@ namespace CKAN
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.LinkLabel linkLabel2;
-        private System.Windows.Forms.LinkLabel linkLabel3;
-        private System.Windows.Forms.LinkLabel linkLabel4;
-        private System.Windows.Forms.Label label2;
-        private LinkLabel linkLabel5;
+        private System.Windows.Forms.Label projectNameLabel;
+        private System.Windows.Forms.Label versionLabel;
+        private System.Windows.Forms.Label licenseLabel;
+        private System.Windows.Forms.LinkLabel licenseLinkLabel;
+        private System.Windows.Forms.Label authorsLabel;
+        private System.Windows.Forms.LinkLabel authorsLinkLabel;
+        private System.Windows.Forms.Label sourceLabel;
+        private System.Windows.Forms.LinkLabel sourceLinkLabel;
+        private System.Windows.Forms.Label homepageLabel;
+        private System.Windows.Forms.LinkLabel homepageLinkLabel;
+        private System.Windows.Forms.Label forumthreadLabel;
+        private System.Windows.Forms.LinkLabel forumthreadLinkLabel;
 
     }
 }

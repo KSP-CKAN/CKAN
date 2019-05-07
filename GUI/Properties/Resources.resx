@@ -6926,63 +6926,26 @@
 </value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="apply" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\apply.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ksp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ksp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="settings" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="CKANFileFilter" xml:space="preserve">
-    <value>CKAN metadata (*.ckan)|*.ckan</value>
-  </data>
-  <data name="ExportInstalledModsDialogTitle" xml:space="preserve">
-    <value>Export Mod List</value>
-  </data>
-  <data name="update" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\update.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="backward" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\backward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="filter" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\filter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="forward" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="textClear" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\textClear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="star" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\star.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="thumbup" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\thumbup.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\info.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="smile" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\smile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="alert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\alert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="arrow_forward" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\arrow_forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="arrow_upward" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\arrow_upward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
+  <data name="AppIcon" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\..\assets\ckan.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="apply" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\apply.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="ksp" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\ksp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="settings" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="CKANFileFilter" xml:space="preserve"><value>CKAN metadata (*.ckan)|*.ckan</value></data>
+  <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>Export Mod List</value></data>
+  <data name="update" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\update.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="backward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\backward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="filter" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\filter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="textClear" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\textClear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="star" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\star.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="thumbup" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\thumbup.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\info.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="smile" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\smile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="alert" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\alert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="arrow_forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="arrow_upward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_upward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="AboutDialogLabel2Text" xml:space="preserve"><value>Version {0}</value></data>
   <data name="CloneFakeKspDialogOpenFilter" xml:space="preserve"><value>Build metadata file (buildID*.txt)|buildID*.txt</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Please enter a name for the new instance.</value></data>
@@ -6994,7 +6957,7 @@
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>Successfully cloned instance.</value></data>
   <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>Creating new instance...</value></data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>This name is already used.</value></data>
-  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value></value></data>
+  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>Fake instance creation failed: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>Successfully created instance.</value></data>
   <data name="CompatibleKspVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
   <data name="CompatibleKspVersionsDialogKSPUpdated" xml:space="preserve"><value>KSP has been updated since you last reviewed your compatible KSP versions. Please make sure that settings are correct.</value></data>
@@ -7006,12 +6969,14 @@
   <data name="GUIModUnknown" xml:space="preserve"><value>Unknown</value></data>
   <data name="GUIModMethodNotCKAN" xml:space="preserve"><value>Method can not be called unless IsCKAN</value></data>
   <data name="GUIModKSPCompatibilityLong" xml:space="preserve"><value>{0} (using mod version {1})</value></data>
-  <data name="MainAutoUpdateFailed" xml:space="preserve"><value>Error in auto-update:&#xD;&#xA;{exception.Message}</value></data>
+  <data name="MainAutoUpdateFailed" xml:space="preserve"><value>Error in auto-update:&#xD;&#xA;{0}</value></data>
   <data name="MainQuitWithConflicts" xml:space="preserve"><value>There are conflicts. Really quit?&#xD;&#xA;&#xD;&#xA;{0}</value></data>
   <data name="MainQuit" xml:space="preserve"><value>Quit</value></data>
   <data name="MainGoBack" xml:space="preserve"><value>Go Back</value></data>
   <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>There are unmet dependencies. Really quit?</value></data>
-  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve"><value>You have unapplied changes. Really quit?&#xD;&#xA;&#xD;&#xA;{0}</value></data>
+  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve"><value>You have unapplied changes. Really quit?
+
+{0}</value></data>
   <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>Updating CKAN</value></data>
   <data name="MainUpgradingTo" xml:space="preserve"><value>Upgrading CKAN to {0}</value></data>
   <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0} depends on {1}, which is not compatible with the currently installed version of KSP</value></data>
@@ -7024,9 +6989,13 @@
   <data name="MainFilterNew" xml:space="preserve"><value>Filter (New)</value></data>
   <data name="MainFilterNotInstalled" xml:space="preserve"><value>Filter (Not installed)</value></data>
   <data name="MainFilterCompatible" xml:space="preserve"><value>Filter (Compatible)</value></data>
-  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>Some installed modules are incompatible! It might not be safe to launch KSP. Really launch?&#xD;&#xA;&#xD;&#xA;{0}</value></data>
+  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>Some installed modules are incompatible! It might not be safe to launch KSP. Really launch?
+
+{0}</value></data>
   <data name="MainLaunch" xml:space="preserve"><value>Launch</value></data>
-  <data name="MainLaunchFailed" xml:space="preserve"><value>Couldn't start KSP.&#xD;&#xA;&#xD;&#xA;{0}</value></data>
+  <data name="MainLaunchFailed" xml:space="preserve"><value>Couldn't start KSP.
+
+{0}</value></data>
   <data name="MainFavouritesList" xml:space="preserve"><value>CKAN favourites list (*.ckan)</value></data>
   <data name="MainModPack" xml:space="preserve"><value>CKAN modpack (enforces exact mod versions) (*.ckan)</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>Plain text (*.txt)</value></data>
@@ -7051,10 +7020,38 @@
   <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} requires {1} but it is not listed in the index, or not available for your version of KSP.</value></data>
   <data name="MainInstallNotFound" xml:space="preserve"><value>Module {0} required but it is not listed in the index, or not available for your version of KSP.</value></data>
   <data name="MainInstallBadMetadata" xml:space="preserve"><value>Bad metadata detected for module {0}: {1}</value></data>
-  <data name="MainInstallFileExists" xml:space="preserve"><value>Oh no! We tried to overwrite a file owned by another mod!&#xD;&#xA;Please try a `ckan update` and try again.&#xD;&#xA;&#xD;&#xA;If this problem re-occurs, then it maybe a packaging bug.&#xD;&#xA;Please report it at:&#xD;&#xA;&#xD;&#xA;https://github.com/KSP-CKAN/NetKAN/issues/new&#xD;&#xA;&#xD;&#xA;Please including the following information in your report:&#xD;&#xA;&#xD;&#xA;File           : {0}&#xD;&#xA;Installing Mod : {1}&#xD;&#xA;Owning Mod     : {2}&#xD;&#xA;CKAN Version   : {3}</value></data>
-  <data name="MainInstallUnownedFileExists" xml:space="preserve"><value>Oh no!&#xD;&#xA;&#xD;&#xA;It looks like you're trying to install a mod which is already installed,&#xD;&#xA;or which conflicts with another mod which is already installed.&#xD;&#xA;&#xD;&#xA;As a safety feature, the CKAN will *never* overwrite or alter a file&#xD;&#xA;that it did not install itself.&#xD;&#xA;&#xD;&#xA;If you wish to install {0} via the CKAN,&#xD;&#xA;then please manually uninstall the mod which owns:&#xD;&#xA;&#xD;&#xA;{1}&#xD;&#xA;&#xD;&#xA;and try again.</value></data>
+  <data name="MainInstallFileExists" xml:space="preserve"><value>Oh no! We tried to overwrite a file owned by another mod!
+Please try a `ckan update` and try again.
+
+If this problem re-occurs, then it maybe a packaging bug.
+Please report it at:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new
+
+Please including the following information in your report:
+
+File      : {0}
+Installing Mod : {1}
+Owning Mod: {2}
+CKAN Version   : {3}</value></data>
+  <data name="MainInstallUnownedFileExists" xml:space="preserve"><value>Oh no!
+
+It looks like you're trying to install a mod which is already installed,
+or which conflicts with another mod which is already installed.
+
+As a safety feature, the CKAN will *never* overwrite or alter a file
+that it did not install itself.
+
+If you wish to install {0} via the CKAN,
+then please manually uninstall the mod which owns:
+
+{1}
+
+and try again.</value></data>
   <data name="MainInstallGameDataReverted" xml:space="preserve"><value>Your GameData has been returned to its original state.</value></data>
-  <data name="MainInstallOpenSettingsPrompt" xml:space="preserve"><value>{0}&#xD;&#xA;&#xD;&#xA;Open settings now?</value></data>
+  <data name="MainInstallOpenSettingsPrompt" xml:space="preserve"><value>{0}
+
+Open settings now?</value></data>
   <data name="MainInstallOpenSettings" xml:space="preserve"><value>Open Settings</value></data>
   <data name="MainInstallNo" xml:space="preserve"><value>No</value></data>
   <data name="MainInstallLibCurlMissing" xml:space="preserve"><value>libcurl installation not found. Open wiki page for help?</value></data>
@@ -7131,7 +7128,9 @@
   <data name="AddAuthTokenTokenRequired" xml:space="preserve"><value>Token field is required.</value></data>
   <data name="AddAuthTokenInvalidHost" xml:space="preserve"><value>{0} is not a valid host name.</value></data>
   <data name="AddAuthTokenDupHost" xml:space="preserve"><value>{0} already has an authentication token.</value></data>
-  <data name="SettingsDialogUpdateFailed" xml:space="preserve"><value>Error during update.&#xD;&#xA;Can't update automatically, because ckan.exe is read-only or we are not allowed to overwrite it. Please update manually via https://github.com/KSP-CKAN/CKAN/releases/latest.</value></data>
-  <data name="URLHandlersPrompt" xml:space="preserve"><value>"CKAN requires permission to add a handler for ckan:// URLs.&#xD;&#xA;Do you want to allow CKAN to do this? If you click no you won't see this message again.</value></data>
+  <data name="SettingsDialogUpdateFailed" xml:space="preserve"><value>Error during update.
+Can't update automatically, because ckan.exe is read-only or we are not allowed to overwrite it. Please update manually via https://github.com/KSP-CKAN/CKAN/releases/latest.</value></data>
+  <data name="URLHandlersPrompt" xml:space="preserve"><value>CKAN requires permission to add a handler for ckan:// URLs.
+Do you want to allow CKAN to do this? If you click no you won't see this message again.</value></data>
   <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Copy link address</value></data>
 </root>

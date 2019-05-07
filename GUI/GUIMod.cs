@@ -340,7 +340,7 @@ namespace CKAN
                     replace_cell.Value = value;
             }
         }
-        
+
         public void SetAutoInstallChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
         {
             var auto_cell = row.Cells[col.Index] as DataGridViewCheckBoxCell;

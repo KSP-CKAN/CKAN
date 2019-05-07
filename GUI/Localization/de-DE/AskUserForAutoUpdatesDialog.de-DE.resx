@@ -117,18 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve"><value>Additionally install mods compatible with following KSP versions:</value></data>
-  <data name="label2.Text" xml:space="preserve"><value>Game version:</value></data>
-  <data name="label3.Text" xml:space="preserve"><value>Warning! There is no way to check if mod is truly compatible with versions selected here! Please act carefully.</value></data>
-  <data name="GameVersionLabel.Text" xml:space="preserve"><value>&lt;version&gt;</value></data>
-  <data name="ClearSelectionButton.Text" xml:space="preserve"><value>Clear selection</value></data>
-  <data name="AddVersionToListButton.Text" xml:space="preserve"><value>Add</value></data>
-  <data name="label5.Text" xml:space="preserve"><value>Add version to list:</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>Note: if you add version like "1.2" you will force all mods compatible with 1.2.xx (1.2.0, 1.2.1, etc) to be compatible with this KSP installation.</value></data>
-  <data name="label7.Text" xml:space="preserve"><value>If KSP is updated this dialog will be shown again so you can adjust your settings.</value></data>
-  <data name="SaveButton.Text" xml:space="preserve"><value>Accept</value></data>
-  <data name="label8.Text" xml:space="preserve"><value>Installation:</value></data>
-  <data name="GameLocationLabel.Text" xml:space="preserve"><value>&lt;location&gt;</value></data>
-  <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve"><value>Cancel</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Compatible KSP Versions</value></data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Möchtest du, dass CKAN beim Start automatisch nach Updates sucht?
+(Kann jederzeit in den Einstellungen geändert werden)</value>
+  </data>
+  <data name="YesButton.Text" xml:space="preserve">
+    <value>Ja, suche nach Updates</value>
+  </data>
+  <data name="button1.Text" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Automatische Updatesuche</value>
+  </data>
 </root>

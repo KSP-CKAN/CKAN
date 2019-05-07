@@ -35,17 +35,17 @@
             this.DismissButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // panel1
-            // 
+            //
             this.panel1.Controls.Add(this.ErrorMessage);
             this.panel1.Location = new System.Drawing.Point(13, 13);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(267, 117);
             this.panel1.TabIndex = 0;
-            // 
+            //
             // ErrorMessage
-            // 
+            //
             this.ErrorMessage.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ErrorMessage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ErrorMessage.Location = new System.Drawing.Point(0, 0);
@@ -54,9 +54,9 @@
             this.ErrorMessage.TabIndex = 0;
             this.ErrorMessage.ReadOnly = true;
             resources.ApplyResources(this.ErrorMessage, "ErrorMessage");
-            // 
+            //
             // DismissButton
-            // 
+            //
             this.DismissButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DismissButton.Location = new System.Drawing.Point(205, 136);
             this.DismissButton.Name = "DismissButton";
@@ -65,9 +65,9 @@
             this.DismissButton.UseVisualStyleBackColor = true;
             this.DismissButton.Click += new System.EventHandler(this.DismissButton_Click);
             resources.ApplyResources(this.DismissButton, "DismissButton");
-            // 
+            //
             // ErrorDialog
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(292, 174);
@@ -77,7 +77,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = Properties.Resources.AppIcon;
             this.Name = "ErrorDialog";
-            this.Text = "Error!";
             resources.ApplyResources(this, "$this");
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
