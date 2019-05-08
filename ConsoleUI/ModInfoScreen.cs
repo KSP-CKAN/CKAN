@@ -512,13 +512,13 @@ namespace CKAN.ConsoleUI {
         private void Download()
         {
             ProgressScreen            ps   = new ProgressScreen($"Downloading {mod.identifier}");
-            NetAsyncModulesDownloader dl   = new NetAsyncModulesDownloader(ps);
+            NetAsyncModulesDownloader dl   = new NetAsyncModulesDownloader(ps, manager.Cache);
             ModuleInstaller           inst = ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, ps);
             LaunchSubScreen(
                 ps,
                 () => {
                     try {
-                        dl.DownloadModules(manager.Cache, new List<CkanModule> {mod});
+                        dl.DownloadModules(new List<CkanModule> {mod});
                         if (!manager.Cache.IsMaybeCachedZip(mod)) {
                             ps.RaiseError("Download failed, file is corrupted");
                         }

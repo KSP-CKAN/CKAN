@@ -39,7 +39,7 @@ namespace Tests.Core.Net
             CKAN.Repo.Update(registry_manager, ksp.KSP, new NullUser(), TestData.TestKANZip());
 
             // Ready our downloader.
-            async = new CKAN.NetAsyncModulesDownloader(new NullUser());
+            async = new CKAN.NetAsyncModulesDownloader(new NullUser(), manager.Cache);
 
             // General shortcuts
             cache = manager.Cache;
@@ -77,7 +77,7 @@ namespace Tests.Core.Net
             log.InfoFormat("Downloading kOS from {0}", kOS.download);
 
             // Download our module.
-            async.DownloadModules(manager.Cache, modules);
+            async.DownloadModules(modules);
 
             // Assert that we have it, and it passes zip validation.
             Assert.IsTrue(cache.IsCachedZip(kOS));
@@ -100,7 +100,7 @@ namespace Tests.Core.Net
             Assert.IsFalse(cache.IsCachedZip(kOS));
             Assert.IsFalse(cache.IsCachedZip(quick_revert));
 
-            async.DownloadModules(cache, modules);
+            async.DownloadModules(modules);
 
             Assert.IsTrue(cache.IsCachedZip(kOS));
             Assert.IsTrue(cache.IsCachedZip(quick_revert));
@@ -120,7 +120,7 @@ namespace Tests.Core.Net
 
             Assert.IsFalse(cache.IsCachedZip(rAndS), "Module not yet downloaded");
 
-            async.DownloadModules(cache, modules);
+            async.DownloadModules(modules);
 
             Assert.IsTrue(cache.IsCachedZip(rAndS),"Module download successful");
         }

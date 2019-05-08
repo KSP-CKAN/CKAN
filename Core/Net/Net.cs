@@ -191,12 +191,15 @@ namespace CKAN
         {
             new NetAsyncDownloader(user ?? new NullUser())
             {
-                onCompleted = (urls, filenames, errors) =>
+                onOneCompleted = (url, filename, error) =>
                 {
-                    if (filenames == null || urls == null) return;
-                    for (var i = 0; i < Math.Min(urls.Length, filenames.Length); i++)
+                    if (error != null)
                     {
-                        File.Move(filenames[i], downloadTargets.First(p => p.url == urls[i]).filename);
+                        user?.RaiseError(error.ToString());
+                    }
+                    else
+                    {
+                        File.Move(filename, downloadTargets.First(p => p.url == url).filename);
                     }
                 }
             }.DownloadAndWait(downloadTargets);

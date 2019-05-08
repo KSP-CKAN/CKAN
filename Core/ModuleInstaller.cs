@@ -199,10 +199,10 @@ namespace CKAN
             {
                 if (downloader == null)
                 {
-                    downloader = new NetAsyncModulesDownloader(User);
+                    downloader = new NetAsyncModulesDownloader(User, Cache);
                 }
 
-                downloader.DownloadModules(Cache, downloads);
+                downloader.DownloadModules(downloads);
             }
 
             // We're about to install all our mods; so begin our transaction.
@@ -1179,7 +1179,7 @@ namespace CKAN
 
             if (downloads.Count > 0)
             {
-                downloader.DownloadModules(Cache, downloads);
+                downloader.DownloadModules(downloads);
             }
         }
 
