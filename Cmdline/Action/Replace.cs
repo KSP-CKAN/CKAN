@@ -155,7 +155,7 @@ namespace CKAN.CmdLine
                 // TODO: These instances all need to go.
                 try
                 {
-                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(User));
+                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(User, manager.Cache));
                     User.RaiseMessage("\r\nDone!\r\n");
                 }
                 catch (DependencyNotSatisfiedKraken ex)

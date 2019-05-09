@@ -109,10 +109,8 @@ namespace CKAN
         private volatile bool download_canceled;
         private readonly ManualResetEvent complete_or_canceled;
 
-        // Called on completion (including on error)
-        // Called with ALL NULLS on error.
-        public delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
-        public NetAsyncCompleted onCompleted;
+        public delegate void NetAsyncOneCompleted(Uri url, string filename, Exception error);
+        public NetAsyncOneCompleted onOneCompleted;
 
         // When using the curlsharp downloader, this contains all the threads
         // that are working for us.
@@ -399,15 +397,11 @@ namespace CKAN
         {
             log.Info("Cancelling download");
             download_canceled = true;
-            triggerCompleted(null, null, null);
+            triggerCompleted();
         }
 
-        private void triggerCompleted(Uri[] file_urls, string[] file_paths, Exception[] errors)
+        private void triggerCompleted()
         {
-            if (onCompleted != null)
-            {
-                onCompleted.Invoke(file_urls, file_paths, errors);
-            }
             // Signal that we're done.
             complete_or_canceled.Set();
         }
@@ -492,8 +486,6 @@ namespace CKAN
                 }
                 else
                 {
-                    // If there was an error, remember it, but we won't raise it until
-                    // all downloads are finished or cancelled.
                     downloads[index].error = error;
                 }
             }
@@ -501,32 +493,12 @@ namespace CKAN
             {
                 log.InfoFormat("Finished downloading {0}", downloads[index].url);
             }
+            onOneCompleted.Invoke(downloads[index].url, downloads[index].path, downloads[index].error);
 
             if (++completed_downloads >= downloads.Count)
             {
-                FinalizeDownloads();
+                triggerCompleted();
             }
         }
-
-        private void FinalizeDownloads()
-        {
-            log.Info("All files finished downloading");
-
-            Uri[]       fileUrls  = new Uri[downloads.Count];
-            string[]    filePaths = new string[downloads.Count];
-            Exception[] errors    = new Exception[downloads.Count];
-
-            for (int i = 0; i < downloads.Count; ++i)
-            {
-                fileUrls[i]  = downloads[i].url;
-                filePaths[i] = downloads[i].path;
-                errors[i]    = downloads[i].error;
-            }
-
-            // If we have a callback, then signal that we're done.
-            log.Debug("Signalling completion via callback");
-            triggerCompleted(fileUrls, filePaths, errors);
-        }
-
     }
 }

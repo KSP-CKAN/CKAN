@@ -70,7 +70,7 @@ namespace Tests.GUI
             ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
                 new List<CkanModule> { { _anyVersionModule } },
                 new RelationshipResolverOptions(),
-                new NetAsyncModulesDownloader(_manager.User)
+                new NetAsyncModulesDownloader(_manager.User, _manager.Cache)
             );
 
             // this module is not for "any" version, to provide another to sort against
@@ -139,7 +139,7 @@ namespace Tests.GUI
                 ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
                     _modList.ComputeUserChangeSet(null).Select(change => change.Mod.ToCkanModule()).ToList(),
                     new RelationshipResolverOptions(),
-                    new NetAsyncModulesDownloader(_manager.User)
+                    new NetAsyncModulesDownloader(_manager.User, _manager.Cache)
                 );
 
                 // trying to refresh the GUI state will throw a NullReferenceException

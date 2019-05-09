@@ -11,32 +11,32 @@ namespace CKAN
     /// </summary>
     public class NetAsyncModulesDownloader : IDownloader
     {
-        public IUser User
+        private IUser User
         {
             get { return downloader.User;  }
-            set { downloader.User = value; }
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
 
         private          List<CkanModule>   modules;
         private readonly NetAsyncDownloader downloader;
+        private readonly NetModuleCache     cache;
         private const    string             defaultMimeType = "application/octet-stream";
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncModulesDownloader.
         /// </summary>
-        public NetAsyncModulesDownloader(IUser user)
+        public NetAsyncModulesDownloader(IUser user, NetModuleCache cache)
         {
             modules    = new List<CkanModule>();
             downloader = new NetAsyncDownloader(user);
+            this.cache = cache;
         }
-
 
         /// <summary>
         /// <see cref="IDownloader.DownloadModules(NetFileCache, IEnumerable{CkanModule})"/>
         /// </summary>
-        public void DownloadModules(NetModuleCache cache, IEnumerable<CkanModule> modules)
+        public void DownloadModules(IEnumerable<CkanModule> modules)
         {
             // Walk through all our modules, but only keep the first of each
             // one that has a unique download path.
@@ -46,11 +46,9 @@ namespace CKAN
 
             this.modules.AddRange(unique_downloads.Values);
 
-            // Schedule us to process our modules on completion.
-            downloader.onCompleted =
-                (_uris, paths, errors) =>
-                    ModuleDownloadsComplete(cache, _uris, paths, errors);
-
+            // Schedule us to process each module on completion.
+            downloader.onOneCompleted = ModuleDownloadComplete;
+                    
             try
             {
                 // Start the downloads!
@@ -76,42 +74,28 @@ namespace CKAN
             }
         }
 
-        /// <summary>
-        /// Stores all of our files in the cache once done.
-        /// Called by NetAsyncDownloader on completion.
-        /// Called with all nulls on download cancellation.
-        /// </summary>
-        private void ModuleDownloadsComplete(NetModuleCache cache, Uri[] urls, string[] filenames, Exception[] errors)
+        private void ModuleDownloadComplete(Uri url, string filename, Exception error)
         {
-            if (filenames != null)
+            if (error != null)
             {
-                for (int i = 0; i < errors.Length; i++)
+                User.RaiseError(error.ToString());
+            }
+            else
+            {
+                // Cache if this download succeeded
+                try
                 {
-                    if (errors[i] == null)
-                    {
-                        // Cache the downloads that succeeded.
-                        try
-                        {
-                            cache.Store(modules[i], filenames[i], modules[i].StandardName());
-                        }
-                        catch (InvalidModuleFileKraken kraken)
-                        {
-                            User.RaiseError(kraken.ToString());
-                        }
-                        catch (FileNotFoundException e)
-                        {
-                            log.WarnFormat("cache.Store(): FileNotFoundException: {0}", e.Message);
-                        }
-                    }
+                    CkanModule module = modules.First(m => m.download == url);
+                    cache.Store(module, filename, module.StandardName());
+                    File.Delete(filename);
                 }
-
-                // Finally, remove all our temp files.
-                // We probably *could* have used Store's integrated move function above, but if we managed
-                // to somehow get two URLs the same in our download set, that could cause right troubles!
-                foreach (string tmpfile in filenames)
+                catch (InvalidModuleFileKraken kraken)
                 {
-                    log.DebugFormat("Cleaning up {0}", tmpfile);
-                    File.Delete(tmpfile);
+                    User.RaiseError(kraken.ToString());
+                }
+                catch (FileNotFoundException e)
+                {
+                    log.WarnFormat("cache.Store(): FileNotFoundException: {0}", e.Message);
                 }
             }
         }

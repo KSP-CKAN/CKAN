@@ -149,7 +149,7 @@ namespace CKAN
             ShowWaitDialog();
             tabController.SetTabLock(true);
 
-            IDownloader downloader = new NetAsyncModulesDownloader(GUI.user);
+            IDownloader downloader = new NetAsyncModulesDownloader(GUI.user, Manager.Cache);
             cancelCallback = () =>
             {
                 downloader.CancelDownload();

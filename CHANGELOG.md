@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [Core] Save registry inside of scan transaction (#2755 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Cache downloads individually upon completion (#2756 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.2
 

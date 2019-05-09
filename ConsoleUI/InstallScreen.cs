@@ -61,7 +61,7 @@ namespace CKAN.ConsoleUI {
                             inst.UninstallList(plan.Remove);
                             plan.Remove.Clear();
                         }
-                        NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this);
+                        NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache);
                         if (plan.Upgrade.Count > 0) {
                             inst.Upgrade(plan.Upgrade, dl);
                             plan.Upgrade.Clear();
