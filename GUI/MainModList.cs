@@ -893,7 +893,7 @@ namespace CKAN
                     Value = mod.IsAutodetected ? "AD" : "-"
                 };
 
-            var autoInstalled = mod.IsInstalled
+            var autoInstalled = mod.IsInstalled && !mod.IsAutodetected
                 ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                 {
                     Value = mod.IsAutoInstalled
