@@ -36,6 +36,8 @@ addons:
             - fakeroot
             - dpkg
             - lintian
+            # Stuff for building .rpm files
+            - rpm
 
 # These commands simulate having a graphical display, which is needed
 # for our GUI tests.
@@ -51,6 +53,7 @@ script:
 before_deploy:
     - ./build osx
     - ./build deb
+    - ./build rpm
     - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
 deploy:
@@ -64,6 +67,7 @@ deploy:
         - _build/repack/$BUILD_CONFIGURATION/ckan.exe
         - _build/osx/CKAN.dmg
         - _build/deb/ckan_*.deb
+        - _build/rpm/RPMS/noarch/ckan*.rpm
         - _build/out/AutoUpdater/$BUILD_CONFIGURATION/bin/AutoUpdater.exe
       on:
         repo: KSP-CKAN/CKAN
