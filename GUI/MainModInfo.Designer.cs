@@ -194,8 +194,8 @@
             //
             this.MetaDataLowerLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.MetaDataLowerLayoutPanel.ColumnCount = 2;
-            this.MetaDataLowerLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 26.16279F));
-            this.MetaDataLowerLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 73.83721F));
+            this.MetaDataLowerLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
+            this.MetaDataLowerLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.MetaDataLowerLayoutPanel.Controls.Add(this.VersionLabel, 0, 0);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.LicenseLabel, 0, 1);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.AuthorLabel, 0, 2);
@@ -226,9 +226,14 @@
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 13F));
+            this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 15F));
             this.MetaDataLowerLayoutPanel.Size = new System.Drawing.Size(346, 255);
+            this.MetaDataLowerLayoutPanel.AutoSize = true;
+            this.MetaDataLowerLayoutPanel.AutoScroll = true;
+            this.MetaDataLowerLayoutPanel.AutoScrollMinSize = new System.Drawing.Size(MetaDataLowerLayoutPanel.Width, MetaDataLowerLayoutPanel.Height + 20);
+            this.MetaDataLowerLayoutPanel.VerticalScroll.Enabled = true;
+            this.MetaDataLowerLayoutPanel.HorizontalScroll.Enabled = true;
             this.MetaDataLowerLayoutPanel.TabIndex = 0;
             //
             // IdentifierLabel
@@ -352,7 +357,7 @@
             this.MetadataModuleVersionTextBox.AutoSize = true;
             this.MetadataModuleVersionTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleVersionTextBox.Location = new System.Drawing.Point(93, 0);
-            this.MetadataModuleVersionTextBox.Name = "MetadataModuleVersionLabel";
+            this.MetadataModuleVersionTextBox.Name = "MetadataModuleVersionTextBox";
             this.MetadataModuleVersionTextBox.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleVersionTextBox.TabIndex = 2;
             this.MetadataModuleVersionTextBox.Text = "0.0.0";
@@ -366,7 +371,7 @@
             this.MetadataModuleLicenseTextBox.AutoSize = true;
             this.MetadataModuleLicenseTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleLicenseTextBox.Location = new System.Drawing.Point(93, 30);
-            this.MetadataModuleLicenseTextBox.Name = "MetadataModuleLicenseLabel";
+            this.MetadataModuleLicenseTextBox.Name = "MetadataModuleLicenseTextBox";
             this.MetadataModuleLicenseTextBox.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleLicenseTextBox.TabIndex = 4;
             this.MetadataModuleLicenseTextBox.Text = "None";
@@ -405,7 +410,7 @@
             this.MetadataModuleReleaseStatusTextBox.AutoSize = true;
             this.MetadataModuleReleaseStatusTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleReleaseStatusTextBox.Location = new System.Drawing.Point(93, 150);
-            this.MetadataModuleReleaseStatusTextBox.Name = "MetadataModuleReleaseStatusLabel";
+            this.MetadataModuleReleaseStatusTextBox.Name = "MetadataModuleReleaseStatusTextBox";
             this.MetadataModuleReleaseStatusTextBox.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleReleaseStatusTextBox.TabIndex = 11;
             this.MetadataModuleReleaseStatusTextBox.Text = "Stable";
@@ -416,8 +421,7 @@
             //
             // MetadataModuleHomePageLinkLabel
             //
-            this.MetadataModuleHomePageLinkLabel.AutoEllipsis = true;
-            this.MetadataModuleHomePageLinkLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleHomePageLinkLabel.AutoSize = true;
             this.MetadataModuleHomePageLinkLabel.Location = new System.Drawing.Point(93, 90);
             this.MetadataModuleHomePageLinkLabel.Name = "MetadataModuleHomePageLinkLabel";
             this.MetadataModuleHomePageLinkLabel.Size = new System.Drawing.Size(250, 30);
@@ -431,7 +435,7 @@
             this.MetadataModuleKSPCompatibilityTextBox.AutoSize = true;
             this.MetadataModuleKSPCompatibilityTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleKSPCompatibilityTextBox.Location = new System.Drawing.Point(93, 180);
-            this.MetadataModuleKSPCompatibilityTextBox.Name = "MetadataModuleKSPCompatibilityLabel";
+            this.MetadataModuleKSPCompatibilityTextBox.Name = "MetadataModuleKSPCompatibilityTextBox";
             this.MetadataModuleKSPCompatibilityTextBox.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleKSPCompatibilityTextBox.TabIndex = 14;
             this.MetadataModuleKSPCompatibilityTextBox.Text = "0.0.0";
@@ -442,8 +446,7 @@
             //
             // MetadataModuleGitHubLinkLabel
             //
-            this.MetadataModuleGitHubLinkLabel.AutoEllipsis = true;
-            this.MetadataModuleGitHubLinkLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleGitHubLinkLabel.AutoSize = true;
             this.MetadataModuleGitHubLinkLabel.Location = new System.Drawing.Point(93, 120);
             this.MetadataModuleGitHubLinkLabel.Name = "MetadataModuleGitHubLinkLabel";
             this.MetadataModuleGitHubLinkLabel.Size = new System.Drawing.Size(250, 30);
