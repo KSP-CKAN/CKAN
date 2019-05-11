@@ -416,6 +416,22 @@ intended that all included tags will be indexed and searchable.
 Tags have not yet been implemented in the client. They can be added to
 .ckan/.netkan files, but will not be displayed in the client yet.
 
+##### localizations
+
+(**v1.27**)
+
+A list of strings indicating the locales for which this module includes localizations, in KSP's naming convention.
+
+```json
+    "localizations": [
+        "en-us",
+        "es-es",
+        "fr-fr",
+        "zh-cn",
+        "ru"
+    ]
+```
+
 ### Relationships
 
 Relationships are optional fields which describe this mod's relationship

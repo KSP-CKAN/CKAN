@@ -111,6 +111,7 @@
     <Compile Include="Transformers\InternalCkanTransformer.cs" />
     <Compile Include="Transformers\ITransformer.cs" />
     <Compile Include="Transformers\JenkinsTransformer.cs" />
+    <Compile Include="Transformers\LocalizationsTransformer.cs" />
     <Compile Include="Transformers\MetaNetkanTransformer.cs" />
     <Compile Include="Transformers\NetkanTransformer.cs" />
     <Compile Include="Transformers\OptimusPrimeTransformer.cs" />

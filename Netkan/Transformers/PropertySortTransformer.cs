@@ -13,51 +13,55 @@ namespace CKAN.NetKAN.Transformers
 
         private const int DefaultSortOrder = 1073741823; // int.MaxValue / 2
 
-        private static readonly Dictionary<string, int> PropertySortOrder = new Dictionary<string, int>
+        private static readonly Dictionary<string, int> PropertySortOrder = new string[]
         {
-            { "spec_version", 0 },
-            { "comment", 1 },
-            { "identifier", 2 },
-            { "$kref", 3 },
-            { "$vref", 4 },
-            { "name", 5 },
-            { "abstract", 6 },
-            { "description", 7 },
-            { "author", 8 },
-            { "license", 9 },
-            { "release_status", 10 },
-            { "resources", 11 },
-            { "version", 12 },
-            { "ksp_version", 13 },
-            { "ksp_version_min", 14 },
-            { "ksp_version_max", 15 },
-            { "ksp_version_strict", 16 },
-            { "provides", 17 },
-            { "depends", 18 },
-            { "recommends", 19 },
-            { "suggests", 20 },
-            { "supports", 21 },
-            { "conflicts", 22 },
-            { "install", 23 },
-            { "download", 24 },
-            { "download_size", 25 },
-            { "download_hash", 26 },
-            { "download_content_type", 27 },
+            "spec_version",
+            "comment",
+            "identifier",
+            "$kref",
+            "$vref",
+            "name",
+            "abstract",
+            "description",
+            "author",
+            "license",
+            "release_status",
+            "resources",
+            "version",
+            "ksp_version",
+            "ksp_version_min",
+            "ksp_version_max",
+            "ksp_version_strict",
+            "localizations",
+            "provides",
+            "depends",
+            "recommends",
+            "suggests",
+            "supports",
+            "conflicts",
+            "install",
+            "download",
+            "download_size",
+            "download_hash",
+            "download_content_type"
+        }
+            .Select((str, index) => new {index, str})
+            .Concat(new[] { new { index = int.MaxValue, str = "x_generated_by"} })
+            .ToDictionary(t => t.str, t=> t.index);
 
-            { "x_generated_by", int.MaxValue }
-        };
-
-        private static readonly Dictionary<string, int> ResourcePropertySortOrder = new Dictionary<string, int>
+        private static readonly Dictionary<string, int> ResourcePropertySortOrder = new string[]
         {
-            { "homepage", 0 },
-            { "spacedock", 1 },
-            { "curse", 2 },
-            { "repository", 3 },
-            { "bugtracker", 4 },
-            { "ci", 5 },
-            { "license", 6 },
-            { "manual", 7 }
-        };
+            "homepage",
+            "spacedock",
+            "curse",
+            "repository",
+            "bugtracker",
+            "ci",
+            "license",
+            "manual",
+        }
+            .Select((str, index) => new {index, str})
+            .ToDictionary(t => t.str, t=> t.index);
 
         public string Name { get { return "property_sort"; } }
 

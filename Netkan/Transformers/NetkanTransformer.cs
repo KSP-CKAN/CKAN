@@ -38,6 +38,7 @@ namespace CKAN.NetKAN.Transformers
                 new AvcKrefTransformer(http),
                 new InternalCkanTransformer(http, moduleService),
                 new AvcTransformer(http, moduleService),
+                new LocalizationsTransformer(http, moduleService),
                 new VersionEditTransformer(),
                 new ForcedVTransformer(),
                 new EpochTransformer(),
