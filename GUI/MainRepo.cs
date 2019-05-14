@@ -30,8 +30,6 @@ namespace CKAN
         {
             tabController.RenameTab("WaitTabPage", "Updating repositories");
 
-            CurrentInstance.ScanGameData();
-
             try
             {
                 m_UpdateRepoWorker.RunWorkerAsync();
@@ -65,6 +63,9 @@ namespace CKAN
         {
             try
             {
+                AddStatusMessage("Scanning GameData for DLCs and manually installed modules...");
+                bool scanChanged = CurrentInstance.ScanGameData();
+    
                 AddStatusMessage("Updating repositories...");
 
                 // Note the current mods' compatibility for the NewlyCompatible filter
@@ -80,6 +81,10 @@ namespace CKAN
                 RepoUpdateResult result = Repo.UpdateAllRepositories(
                     RegistryManager.Instance(CurrentInstance),
                     CurrentInstance, Manager.Cache, GUI.user);
+                if (result == RepoUpdateResult.NoChanges && scanChanged)
+                {
+                    result = RepoUpdateResult.Updated;
+                }
                 e.Result = new KeyValuePair<RepoUpdateResult, Dictionary<string, bool>>(
                     result, oldModules);
             }

@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Save registry inside of scan transaction (#2755 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Cache downloads individually upon completion (#2756 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Hide auto-installed checkbox for auto-detected mods (#2758 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Update GUI modlist if scan detects changes (#2762 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.2
 
