@@ -469,22 +469,58 @@ namespace CKAN
             file_transaction.WriteAllText(path, serialized);
         }
 
-        public void ScanDlc()
+        /// <summary>
+        /// Look for DLC installed in GameData
+        /// </summary>
+        /// <returns>
+        /// True if not the same list as last scan, false otherwise
+        /// </returns>
+        public bool ScanDlc()
         {
-            var testDlc = TestDlcScan();
-            var wellKnownDlc = WellKnownDlcScan();
+            var dlc = new Dictionary<string, UnmanagedModuleVersion>(registry.InstalledDlc);
+            UnmanagedModuleVersion foundVer;
+            bool changed = false;
 
             registry.ClearDlc();
 
+            var testDlc = TestDlcScan();
             foreach (var i in testDlc)
             {
+                if (!changed
+                    && (!dlc.TryGetValue(i.Key, out foundVer)
+                        || foundVer != i.Value))
+                {
+                    changed = true;
+                }
                 registry.RegisterDlc(i.Key, i.Value);
             }
 
+            var wellKnownDlc = WellKnownDlcScan();
             foreach (var i in wellKnownDlc)
             {
+                if (!changed
+                    && (!dlc.TryGetValue(i.Key, out foundVer)
+                        || foundVer != i.Value))
+                {
+                    changed = true;
+                }
                 registry.RegisterDlc(i.Key, i.Value);
             }
+            
+            // Check if anything got removed
+            if (!changed)
+            {
+                foreach (var i in dlc)
+                {
+                    if (!registry.InstalledDlc.TryGetValue(i.Key, out foundVer)
+                        || foundVer != i.Value)
+                    {
+                        changed = true;
+                        break;
+                    }
+                }
+            }
+            return changed;
         }
 
         private Dictionary<string, UnmanagedModuleVersion> TestDlcScan()

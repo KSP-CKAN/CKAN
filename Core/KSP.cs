@@ -404,13 +404,17 @@ namespace CKAN
         /// Clears the registry of DLL data, and refreshes it by scanning GameData.
         /// This operates as a transaction.
         /// This *saves* the registry upon completion.
+        /// TODO: This would likely be better in the Registry class itself.
         /// </summary>
-        // TODO: This would likely be better in the Registry class itself.
-        public void ScanGameData()
+        /// <returns>
+        /// True if found anything different, false if same as before
+        /// </returns>
+        public bool ScanGameData()
         {
             var manager = RegistryManager.Instance(this);
             using (TransactionScope tx = CkanTransaction.CreateTransactionScope())
             {
+                var oldDlls = new HashSet<string>(manager.registry.InstalledDlls);
                 manager.registry.ClearDlls();
 
                 // TODO: It would be great to optimise this to skip .git directories and the like.
@@ -421,27 +425,28 @@ namespace CKAN
                 // GameData *twice*.
                 //
                 // The least evil is to walk it once, and filter it ourselves.
-                IEnumerable<string> files = Directory.EnumerateFiles(
-                                        GameData(),
-                                        "*",
-                                        SearchOption.AllDirectories
-                                    );
+                IEnumerable<string> files = Directory
+                    .EnumerateFiles(GameData(), "*", SearchOption.AllDirectories)
+                    .Where(file => dllRegex.IsMatch(file))
+                    .Select(KSPPathUtils.NormalizePath)
+                    .Where(absPath => !DllIgnoreList.Contains(ToRelativeGameDir(absPath)));
 
-                files = files.Where(file => Regex.IsMatch(file, @"\.dll$", RegexOptions.IgnoreCase));
-
-                foreach (string dll in files.Select(KSPPathUtils.NormalizePath))
+                foreach (string dll in files)
                 {
-                    var relativePath = ToRelativeGameDir(dll);
-
-                    if (!DllIgnoreList.Contains(relativePath))
-                        manager.registry.RegisterDll(this, dll);
+                    manager.registry.RegisterDll(this, dll);
                 }
+                var newDlls = new HashSet<string>(manager.registry.InstalledDlls);
+                bool dllChanged = !oldDlls.SetEquals(newDlls);                
 
-                manager.ScanDlc();
+                bool dlcChanged = manager.ScanDlc();
                 manager.Save(false);
                 tx.Complete();
+
+                return dllChanged || dlcChanged;
             }
         }
+        
+        private static readonly Regex dllRegex = new Regex(@"\.dll$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         #endregion
 
