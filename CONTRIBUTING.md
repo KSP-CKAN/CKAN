@@ -20,13 +20,13 @@ Contributions of CKAN metadata files *must* be be contributed under the [CC-0][2
 
 **No technical expertise is required to contribute to CKAN**
 
-There are many ways to contribute to CKAN. Some require technical expertise and others do not. If you're interested in contributing or want to know more, inquire in our [IRC chat][5].
+There are many ways to contribute to CKAN. Some require technical expertise and others do not. If you're interested in contributing or want to know more, inquire in our [IRC chat][4].
 
 ### Developing CKAN
 
 The CKAN client is a C# application that targets Mono 4.0 and has several GUI, CLI, and backend components that can always use refinement and improvement.
 
-The [issues][3] list (or the [waffle][4] for a better look) is a good place to start.
+The [issues][3] list is a good place to start.
 
 ### Contributing and reviewing metadata
 
@@ -38,11 +38,11 @@ Metadata is written in JSON and is simply a structure for the data and its struc
 
 At the time of this writing there are more than 260 open issues in CKAN and it can be very hard to keep track of which ones have resolved themselves over time, which are duplicates, etc.
 
-Following up on all these issues is difficult, and any help is appreciated. Good starting-off points are the [issues][3] list, or the [waffle][4] (an alternate view of the issues list)
+Following up on all these issues is difficult, and any help is appreciated. Good starting-off point is the [issues][3] list.
 
 ### Testing pre-release or in-progress features
 
-Sometimes features have been fully written but get stuck waiting for someone to test them properly. An hour here or there testing an in-progress feature for bugs would help immensely. Ask in our [chat channel][5] if you're interested.
+Sometimes features have been fully written but get stuck waiting for someone to test them properly. An hour here or there testing an in-progress feature for bugs would help immensely. Ask in our [chat channel][4] if you're interested.
 
 ### Keeping the wiki and other documentation up to date
 
@@ -60,11 +60,10 @@ Some ideas:
 
 ### Providing user support in IRC chat, the forum thread, or our issue tickets
 
-CKAN isn't perfect and neither are its users. Answering questions in the [IRC chat][5], in the [forum thread][6], or in our [issue tickets][3] is highly appreciated.
+CKAN isn't perfect and neither are its users. Answering questions in the [IRC chat][4], in the [forum thread][5], or in our [issue tickets][3] is highly appreciated.
 
  [1]:https://github.com/KSP-CKAN/CKAN/wiki/Code-of-Conduct
  [2]:http://creativecommons.org/publicdomain/zero/1.0/
  [3]:https://github.com/KSP-CKAN/CKAN/issues
- [4]:https://waffle.io/ksp-ckan/ckan
- [5]:http://webchat.esper.net/?channels=ckan
- [6]:http://forum.kerbalspaceprogram.com/index.php?/topic/154922-ckan-the-comprehensive-kerbal-archive-network
+ [4]:http://webchat.esper.net/?channels=ckan
+ [5]:http://forum.kerbalspaceprogram.com/index.php?/topic/154922-ckan-the-comprehensive-kerbal-archive-network
