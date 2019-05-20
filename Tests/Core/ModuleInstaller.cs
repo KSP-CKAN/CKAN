@@ -495,6 +495,41 @@ namespace Tests.Core
         }
 
         [Test]
+        public void InstallList_IdentifierEqualsVersionSyntax_InstallsModule()
+        {
+            using (DisposableKSP ksp = new DisposableKSP())
+            {
+                // Arrange
+                KSPManager manager = new KSPManager(
+                    new NullUser(),
+                    new FakeWin32Registry(ksp.KSP, ksp.KSP.Name)
+                ) {
+                    CurrentInstance = ksp.KSP
+                };
+                var registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;
+                var inst = CKAN.ModuleInstaller.GetInstance(ksp.KSP, manager.Cache, nullUser);
+
+                const string mod_file_name = "DogeCoinFlag/Flags/dogecoin.png";
+                string mod_file_path = Path.Combine(ksp.KSP.GameData(), mod_file_name);
+                CkanModule mod = TestData.DogeCoinFlag_101_module();
+                registry.AddAvailable(mod);
+                manager.Cache.Store(mod, TestData.DogeCoinFlagZip());
+                List<string> modules = new List<string>()
+                {
+                    $"{mod.identifier}={mod.version}"
+                };
+                
+                // Act
+                inst.InstallList(modules, new RelationshipResolverOptions());
+                
+                // Assert
+                Assert.IsTrue(File.Exists(mod_file_path));
+
+                manager.Dispose();
+            }
+        }
+
+        [Test]
         public void CanUninstallMod()
         {
             string mod_file_name = "DogeCoinFlag/Flags/dogecoin.png";
