@@ -137,7 +137,7 @@ namespace CKAN
         {
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
             // Only pass the CkanModules of the parameters, so we can tell which are auto
-            InstallList(resolver.ModList().Where(m => modules.Contains(m.identifier)).ToList(), options, downloader);
+            InstallList(resolver.ModList().Where(m => resolver.ReasonFor(m) is SelectionReason.UserRequested).ToList(), options, downloader);
         }
 
         /// <summary>
