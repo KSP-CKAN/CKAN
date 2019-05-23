@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using log4net;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Extensions;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -57,7 +58,7 @@ namespace CKAN.NetKAN.Transformers
 
             if (locales.Any())
             {
-                json["localizations"] = new JArray(locales);
+                json.SafeAdd("localizations", new JArray(locales));
                 yield return new Metadata(json);
             }
             else
