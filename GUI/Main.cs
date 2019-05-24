@@ -45,7 +45,7 @@ namespace CKAN
             get { return manager; }
             set { manager = value; }
         }
-        
+
         private bool needRegistrySave = false;
 
         public MainModList mainModList { get; }
@@ -88,43 +88,48 @@ namespace CKAN
                 var orig = conflicts;
                 conflicts = value;
                 if (orig != value)
-                    ConflictsUpdated();
+                    ConflictsUpdated(orig);
             }
         }
 
-        private void ConflictsUpdated()
+        private void ConflictsUpdated(Dictionary<GUIMod, string> prevConflicts)
         {
-            if (Conflicts == null) {
+            if (Conflicts == null)
+            {
                 // Clear status bar if no conflicts
                 AddStatusMessage("");
             }
-            foreach (DataGridViewRow row in ModList.Rows)
+
+            if (prevConflicts != null)
             {
-                GUIMod module = (GUIMod)row.Tag;
-                string value;
-
-                if (Conflicts != null && Conflicts.TryGetValue(module, out value))
+                // Mark old conflicts as non-conflicted
+                // (rows that are _still_ conflicted will be marked as such in the next loop)
+                foreach (GUIMod guiMod in prevConflicts.Keys)
                 {
-                    string conflict_text = value;
-                    foreach (DataGridViewCell cell in row.Cells)
-                    {
-                        cell.ToolTipText = conflict_text;
-                    }
+                    DataGridViewRow row = mainModList.full_list_of_mod_rows[guiMod.Identifier];
 
-                    if (row.DefaultCellStyle.BackColor != Color.LightCoral)
-                    {
-                        row.DefaultCellStyle.BackColor = Color.LightCoral;
-                        ModList.InvalidateRow(row.Index);
-                    }
-                }
-                else if (row.DefaultCellStyle.BackColor != Color.Empty)
-                {
                     foreach (DataGridViewCell cell in row.Cells)
                     {
                         cell.ToolTipText = null;
                     }
-
                     row.DefaultCellStyle.BackColor = Color.Empty;
+                    ModList.InvalidateRow(row.Index);
+                }
+            }
+            if (Conflicts != null)
+            {
+                // Mark current conflicts as conflicted
+                foreach (var kvp in Conflicts)
+                {
+                    GUIMod          guiMod = kvp.Key;
+                    DataGridViewRow row    = mainModList.full_list_of_mod_rows[guiMod.Identifier];
+                    string conflict_text = kvp.Value;
+
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        cell.ToolTipText = conflict_text;
+                    }
+                    row.DefaultCellStyle.BackColor = Color.LightCoral;
                     ModList.InvalidateRow(row.Index);
                 }
             }
