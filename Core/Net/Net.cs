@@ -345,6 +345,12 @@ namespace CKAN
                 // Check that the path is what we expect
                 var segments = remoteUri.Segments.ToList();
 
+                if (segments.Count >= 4
+                    && string.Compare(segments[3], "raw/", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    log.InfoFormat("Remote GitHub URL is in raw format, using as is.");
+                    return remoteUri;
+                }
                 if (segments.Count < 6 ||
                     string.Compare(segments[3], "blob/", StringComparison.OrdinalIgnoreCase) != 0 &&
                     string.Compare(segments[3], "tree/", StringComparison.OrdinalIgnoreCase) != 0)
