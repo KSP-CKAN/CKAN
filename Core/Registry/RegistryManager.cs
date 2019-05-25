@@ -546,7 +546,7 @@ namespace CKAN
         {
             var dlc = new Dictionary<string, UnmanagedModuleVersion>();
 
-            var detectors = new IDlcDetector[] { new MakingHistoryDlcDetector() };
+            var detectors = new IDlcDetector[] { new BreakingGroundDlcDetector(), new MakingHistoryDlcDetector() };
 
             foreach (var d in detectors)
             {
