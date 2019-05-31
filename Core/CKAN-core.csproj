@@ -73,7 +73,9 @@
     <Compile Include="Converters\JsonSingleOrArrayConverter.cs" />
     <Compile Include="Converters\JsonRelationshipConverter.cs" />
     <Compile Include="DLC\IDlcDetector.cs" />
+    <Compile Include="DLC\BreakingGroundDlcDetector.cs" />
     <Compile Include="DLC\MakingHistoryDlcDetector.cs" />
+    <Compile Include="DLC\StandardDlcDetectorBase.cs" />
     <Compile Include="Exporters\BbCodeExporter.cs" />
     <Compile Include="Exporters\DelimeterSeperatedValueExporter.cs" />
     <Compile Include="Exporters\Exporter.cs" />
