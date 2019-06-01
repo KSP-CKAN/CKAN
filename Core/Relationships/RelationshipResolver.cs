@@ -405,11 +405,21 @@ namespace CKAN
                     }
                 }
 
+                // Pass mod list in case an older version of a module is conflict-free while later versions have conflicts
                 var descriptor1 = descriptor;
                 List<CkanModule> candidates = descriptor
                     .LatestAvailableWithProvides(registry, kspversion, modlist.Values)
                     .Where(mod => descriptor1.WithinBounds(mod) && MightBeInstallable(mod))
                     .ToList();
+                if (candidates.Count == 0)
+                {
+                    // Nothing found, try again without mod list
+                    // (conflicts will still be caught below)
+                    candidates = descriptor
+                        .LatestAvailableWithProvides(registry, kspversion)
+                        .Where(mod => descriptor1.WithinBounds(mod) && MightBeInstallable(mod))
+                        .ToList();
+                }
 
                 if (candidates.Count == 0)
                 {

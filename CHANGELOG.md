@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - [Multiple] Auto-uninstall auto-installed modules (#2753 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Add scrollbars to metadata tab (#2759 by: DasSkelett; reviewed: HebaruSan)
+- [Core] Detect Breaking Ground DLC (#2768 by: dbent; reviewed: Olympic1, HebaruSan)
 
 ### Bugfixes
 
@@ -17,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Update GUI modlist if scan detects changes (#2762 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Don't assume string params to Install are identifiers (#2764 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Don't warn that a raw URL is non-raw (#2767 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Don't throw exceptions for dependency conflicts (#2766 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.2
 
@@ -200,7 +202,7 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-- [GUI] Replace empty max KSP version string with "any" (#2420 by: DasSkellet; reviewed: HebaruSan, politas)
+- [GUI] Replace empty max KSP version string with "any" (#2420 by: DasSkelett; reviewed: HebaruSan, politas)
 
 ### Bugfixes
 
@@ -221,7 +223,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Detect DLC and allow as a dependency (#2326 by: dbent; reviewed: politas)
 - [GUI] Install old mod versions by version list double-click (#2364 by: HebaruSan; reviewed: politas)
 - [Core] Allow installations to the Missions folder (#2371 by: Olympic1; reviewed: politas)
-- [GUI] Sort by "update"-column on clicking "add available updates"-button (#2392 by: DasSkellet; reviewed: politas)
+- [GUI] Sort by "update"-column on clicking "add available updates"-button (#2392 by: DasSkelett; reviewed: politas)
 
 ### Bugfixes
 
