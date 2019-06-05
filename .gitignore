@@ -1,6 +1,5 @@
 /_build/
 /.vs/
-/Screenshots/
 /tools
 test-results
 *.userprefs
@@ -28,6 +27,9 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+
+# Don't ignore the root bin folder
+!/bin/
 
 # NuGet Packages
 *.nupkg
