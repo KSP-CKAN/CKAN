@@ -34,6 +34,9 @@
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>7</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac, Version=4.9.2.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\_build\lib\nuget\Autofac.4.9.2\lib\net45\Autofac.dll</HintPath>

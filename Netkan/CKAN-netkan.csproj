@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
     <LangVersion>7</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
       <HintPath>..\_build\lib\nuget\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
