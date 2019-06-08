@@ -7,16 +7,16 @@ namespace CKAN.NetKAN
     /// </summary>
     internal class CmdLineOptions
     {
-        [Option('v', "verbose", DefaultValue = false, HelpText = "Show more of what's going on when running")]
+        [Option('v', "verbose", Default = false, HelpText = "Show more of what's going on when running")]
         public bool Verbose { get; set; }
 
-        [Option('d', "debug", DefaultValue = false, HelpText = "Show debugging level messages. Implies verbose")]
+        [Option('d', "debug", Default = false, HelpText = "Show debugging level messages. Implies verbose")]
         public bool Debug { get; set; }
 
         [Option("debugger", HelpText = "Launch the debugger at start")]
         public bool Debugger { get; set; }
 
-        [Option("outputdir", DefaultValue = ".", HelpText = "Output directory")]
+        [Option("outputdir", Default = ".", HelpText = "Output directory")]
         public string OutputDir { get; set; }
 
         [Option("cachedir", HelpText = "Cache directory for downloaded mods")]
@@ -25,10 +25,10 @@ namespace CKAN.NetKAN
         [Option("github-token", HelpText = "GitHub OAuth token for API access")]
         public string GitHubToken { get; set; }
 
-        [Option("net-useragent", DefaultValue = null, HelpText = "Set the default User-Agent string for HTTP requests")]
+        [Option("net-useragent", Default = null, HelpText = "Set the default User-Agent string for HTTP requests")]
         public string NetUserAgent { get; set; }
 
-        [Option("releases", DefaultValue = "1", HelpText = "Number of releases to inflate, or 'all'")]
+        [Option("releases", Default = "1", HelpText = "Number of releases to inflate, or 'all'")]
         public string Releases { get; set; }
 
         [Option("prerelease", HelpText = "Index GitHub prereleases")]
@@ -41,7 +41,7 @@ namespace CKAN.NetKAN
         public bool Version { get; set; }
 
         // TODO: How do we mark this as required?
-        [ValueOption(0)]
+        [Value(0)]
         public string File { get; set; }
     }
 }

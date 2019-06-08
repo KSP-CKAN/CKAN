@@ -128,7 +128,7 @@ namespace CKAN.NetKAN
             }
 
             Options = new CmdLineOptions();
-            Parser.Default.ParseArgumentsStrict(args, Options);
+            Parser.Default.ParseArguments<CmdLineOptions>(args);
 
             Logging.Initialize();
             LogManager.GetRepository().Threshold = Level.Warn;

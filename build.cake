@@ -70,7 +70,7 @@ Task("Build-DotNet")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
     .Does(() =>
 {
-    DotNetBuild(solution, settings =>
+    MSBuild(solution, settings =>
     {
         settings.Configuration = configuration;
     });
