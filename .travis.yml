@@ -4,7 +4,7 @@ sudo: required
 
 env:
     global:
-        - BUILD_RELEASE_MONO_VERSION=5.4.0
+        - BUILD_RELEASE_MONO_VERSION=5.18.0
     matrix:
         - BUILD_CONFIGURATION=Debug
         - BUILD_CONFIGURATION=Release
