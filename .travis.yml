@@ -4,17 +4,16 @@ sudo: required
 
 env:
     global:
-        - BUILD_RELEASE_MONO_VERSION=5.18.0
+        - BUILD_RELEASE_MONO_VERSION=5.16.0
     matrix:
         - BUILD_CONFIGURATION=Debug
         - BUILD_CONFIGURATION=Release
 
 mono:
-    - 5.20.0
-    - 5.18.0
+    - 5.20.1
+    - 5.16.0
     - 5.14.0
-    - 5.10.0
-    - 5.8.1
+    - 5.12.0
 
 addons:
     apt:
