@@ -42,8 +42,7 @@ namespace CKAN
             Marshal.FreeCoTaskMem(classHints);
         }
 
-        private static readonly Assembly MonoWinformsAssembly = Assembly
-            .LoadWithPartialName("System.Windows.Forms");
+        private static readonly Assembly MonoWinformsAssembly = Assembly.Load("System.Windows.Forms");
 
         private static readonly Type Hwnd = MonoWinformsAssembly
             .GetType("System.Windows.Forms.Hwnd");
