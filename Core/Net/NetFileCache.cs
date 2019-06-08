@@ -366,7 +366,6 @@ namespace CKAN
                 // Go by file age, oldest first
                 return (int)(a.CreationTime - b.CreationTime).TotalSeconds;
             }
-            return 0;
         }
 
         private List<FileInfo> allFiles()
