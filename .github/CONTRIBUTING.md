@@ -47,13 +47,18 @@ If an issue is very vague, can you help narrow it down to something more specifi
 
 You can also help out by examining pull requests that have been submitted to CKAN via GitHub. In order to apply someone's changes, you need to first create a dedicated branch:
 
-`$ git checkout -b testing_branch`
+```
+$ git clone https://github.com/KSP-CKAN/CKAN.git
+$ cd CKAN
+$ git checkout -b testing_branch
+```
 
 Then, you can use their remote branch to update your codebase. For example, let's say the GitHub user JohnSmith has forked and pushed to a topic branch "orange" located at https://github.com/JohnSmith/CKAN.
 
 ```
 $ git remote add JohnSmith https://github.com/JohnSmith/CKAN.git
-$ git pull JohnSmith orange
+$ git fetch JohnSmith
+$ git checkout JohnSmith/orange
 ```
 
 After applying their branch, test it out! Comment on the GitHub issue to apply some changes or by giving your approval.
@@ -62,17 +67,21 @@ After applying their branch, test it out! Comment on the GitHub issue to apply s
 
 We recently started working on translating CKAN and are happy to have people volunteer to translate with us. Just follow these steps:
 
-* Fork the repository:
+* Fork this repository by clicking on the 'Fork' button on the top of this page.
+
+* Click on the green 'Clone' button and copy the link.
+
+* Open a terminal and run following code:
 
 ```
-$ git clone https://github.com/KSP-CKAN/CKAN.git
+$ git clone https://github.com/YourName/CKAN.git
 $ cd CKAN
 $ git checkout -b new_branch
 ``` 
 
-* Add a folder for your own language, for example: `GUI/it-IT` for Italian.
+* Add a folder for your own language, for example: ` GUI/Localization/it-IT` for Italian.
 
-* Copy the contents of `GUI/en-US` into your own language folder.
+* Copy the contents of ` GUI/Localization/en-US` into your own language folder.
 
 * Rename the files from `en-US` to `it-IT`.
 
@@ -94,10 +103,14 @@ Before you make a pull request, you have to agree to contribute under these lice
 
 ### Creating a patch
 
-* Fork the repository:
+* Fork this repository by clicking on the 'Fork' button on the top of this page.
+
+* Click on the green 'Clone' button and copy the link.
+
+* Open a terminal and run following code:
 
 ```
-$ git clone https://github.com/KSP-CKAN/CKAN.git
+$ git clone https://github.com/YourName/CKAN.git
 $ cd CKAN
 $ git checkout -b new_branch
 ``` 
@@ -107,8 +120,9 @@ $ git checkout -b new_branch
 * Commit your changes:
 
 ```
-$ git commit -a
-$ git push
+$ git add -A
+$ git commit -m "Brief description of your change"
+$ git push origin new_branch
 ```
 
 ### Creating a pull request
