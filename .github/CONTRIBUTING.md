@@ -16,7 +16,9 @@ The following is a set of guidelines for contributing to the Comprehensive Kerba
 * [Translating](#translating)
 * [Creating pull requests](#creating-pull-requests)
   * [Creating a patch](#creating-a-patch)
-  * [Creating a pull request](#Creating-a-pull-request)
+  * [Creating a pull request](#creating-a-pull-request)
+  * [Rebasing a pull request](#rebasing-a-pull-request)
+* [Keeping your branch up-to-date](#keeping-your-branch-up-to-date)
 * [Coding conventions](#coding-conventions)
 
 ## Code of Conduct
@@ -112,6 +114,7 @@ Before you make a pull request, you have to agree to contribute under these lice
 ```
 $ git clone https://github.com/YourName/CKAN.git
 $ cd CKAN
+$ git remote add upstream https://github.com/KSP-CKAN/CKAN.git
 $ git checkout -b new_branch
 ``` 
 
@@ -130,6 +133,26 @@ $ git push origin new_branch
 * Open a new GitHub pull request with your patch.
 
 * Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
+
+### Rebasing a pull request
+
+It can sometimes happen that other commits get merged into the master branch and that your pull request will need a rebase.
+
+```
+$ git fetch --all
+$ git checkout new_branch
+$ git rebase upstream/master
+```
+
+## Keeping your branch up-to-date
+
+To keep your 'master' branch up-to-date, you can run following commands:
+
+```
+$ git fetch --all
+$ git checkout master
+$ git pull upstream/master
+```
 
 ## Coding conventions
 
