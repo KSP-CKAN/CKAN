@@ -394,7 +394,6 @@ namespace CKAN
                 }
                 else if (enlisted_tx != current_tx)
                 {
-                    log.Error("CKAN registry does not support nested transactions.");
                     throw new TransactionalKraken("CKAN registry does not support nested transactions.");
                 }
 

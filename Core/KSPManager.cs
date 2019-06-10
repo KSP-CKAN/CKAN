@@ -24,7 +24,12 @@ namespace CKAN
 
         public string AutoStartInstance
         {
-            get { return Win32Registry.AutoStartInstance; }
+            get
+            {
+                return HasInstance(Win32Registry.AutoStartInstance)
+                    ? Win32Registry.AutoStartInstance
+                    : null;
+            }
             private set
             {
                 if (!String.IsNullOrEmpty(value) && !HasInstance(value))
@@ -94,7 +99,6 @@ namespace CKAN
             // We check both null and "" as we can't write NULL to the registry, so we write an empty string instead
             // This is necessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the windows registry keys!
             if (!string.IsNullOrEmpty(AutoStartInstance)
-                    && HasInstance(AutoStartInstance)
                     && instances[AutoStartInstance].Valid)
             {
                 return instances[AutoStartInstance];
@@ -143,7 +147,7 @@ namespace CKAN
             {
                 string name = ksp_instance.Name;
                 instances.Add(name, ksp_instance);
-                Win32Registry.SetRegistryToInstances(instances, AutoStartInstance);
+                Win32Registry.SetRegistryToInstances(instances);
             }
             else
             {
@@ -313,7 +317,7 @@ namespace CKAN
         public void RemoveInstance(string name)
         {
             instances.Remove(name);
-            Win32Registry.SetRegistryToInstances(instances, AutoStartInstance);
+            Win32Registry.SetRegistryToInstances(instances);
         }
 
         /// <summary>
@@ -326,7 +330,7 @@ namespace CKAN
             instances.Remove(from);
             ksp.Name = to;
             instances.Add(to, ksp);
-            Win32Registry.SetRegistryToInstances(instances, AutoStartInstance);
+            Win32Registry.SetRegistryToInstances(instances);
         }
 
         /// <summary>
@@ -418,16 +422,6 @@ namespace CKAN
             }
             string failReason;
             TrySetupCache(Win32Registry.DownloadCacheDir, out failReason);
-
-            try
-            {
-                AutoStartInstance = Win32Registry.AutoStartInstance;
-            }
-            catch (InvalidKSPInstanceKraken e)
-            {
-                log.WarnFormat("Auto-start instance was invalid: {0}", e.Message);
-                AutoStartInstance = null;
-            }
         }
 
         /// <summary>

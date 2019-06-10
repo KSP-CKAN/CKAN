@@ -562,7 +562,6 @@ namespace CKAN
 
                     string error = String.Format("{0} missing required field {1}", identifier, field);
 
-                    log.Error(error);
                     throw new BadMetadataKraken(null, error);
                 }
             }
