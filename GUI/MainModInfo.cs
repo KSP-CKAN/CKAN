@@ -141,10 +141,10 @@ namespace CKAN
 
             // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
             Util.Invoke(MetadataModuleHomePageLinkLabel, () => MetadataModuleHomePageLinkLabel.Text = gui_module.Homepage.ToString());
-            Util.Invoke(MetadataModuleGitHubLinkLabel,() => MetadataModuleGitHubLinkLabel.Text = module.resources?.repository?.ToString() ?? "N/A");
-            Util.Invoke(MetadataModuleReleaseStatusTextBox, () => MetadataModuleReleaseStatusTextBox.Text = module.release_status?.ToString() ?? "N/A");
+            Util.Invoke(MetadataModuleGitHubLinkLabel, () => MetadataModuleGitHubLinkLabel.Text = module.resources?.repository?.ToString() ?? Properties.Resources.MainModInfoNSlashA);
+            Util.Invoke(MetadataModuleReleaseStatusTextBox, () => MetadataModuleReleaseStatusTextBox.Text = module.release_status?.ToString() ?? Properties.Resources.MainModInfoNSlashA);
             Util.Invoke(MetadataModuleKSPCompatibilityTextBox, () => MetadataModuleKSPCompatibilityTextBox.Text = gui_module.KSPCompatibilityLong);
-            Util.Invoke(ReplacementTextBox, () => ReplacementTextBox.Text = gui_module.ToModule()?.replaced_by?.ToString() ?? "N/A");
+            Util.Invoke(ReplacementTextBox, () => ReplacementTextBox.Text = gui_module.ToModule()?.replaced_by?.ToString() ?? Properties.Resources.MainModInfoNSlashA);
         }
 
         private void BeforeExpand(object sender, TreeViewCancelEventArgs args)
@@ -314,7 +314,7 @@ namespace CKAN
         private TreeNode providesNode(string identifier, RelationshipType relationship, IEnumerable<TreeNode> children)
         {
             int icon = (int)relationship + 1;
-            return new TreeNode(identifier + " (virtual)", icon, icon, children.ToArray())
+            return new TreeNode(string.Format(Properties.Resources.MainModInfoVirtual, identifier), icon, icon, children.ToArray())
             {
                 Name        = identifier,
                 ToolTipText = relationship.ToString(),
@@ -350,7 +350,7 @@ namespace CKAN
         {
             // Completely nonexistent dependency, e.g. "AJE"
             int icon = (int)relationship + 1;
-            return new TreeNode(relDescr.ToString() + " (not indexed)", icon, icon)
+            return new TreeNode(string.Format(Properties.Resources.MainModInfoNotIndexed, relDescr.ToString()), icon, icon)
             {
                 Name        = relDescr.ToString(),
                 ToolTipText = relationship.ToString(),
@@ -414,13 +414,13 @@ namespace CKAN
             }
             if (!guiMod.IsCached)
             {
-                NotCachedLabel.Text = "This mod is not in the cache, click 'Download' to preview contents";
+                NotCachedLabel.Text = Properties.Resources.MainModInfoNotCached;
                 ContentsDownloadButton.Enabled = true;
                 ContentsPreviewTree.Enabled = false;
             }
             else
             {
-                NotCachedLabel.Text = "Module is cached, preview available";
+                NotCachedLabel.Text = Properties.Resources.MainModInfoCached;
                 ContentsDownloadButton.Enabled = false;
                 ContentsPreviewTree.Enabled = true;
             }

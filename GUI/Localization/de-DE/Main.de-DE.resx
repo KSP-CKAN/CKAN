@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>126, 17</value>
+  </metadata>
+  <metadata name="menuStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>236, 17</value>
+  </metadata>
+  <metadata name="Installed.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="ModName.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Author.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="InstalledVersion.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="LatestVersion.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="SizeCol.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Description.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="ModListContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>351, 17</value>
+  </metadata>
+  <metadata name="minimizeNotifyIcon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>546, 17</value>
+  </metadata>
+  <metadata name="minimizedContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>704, 17</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>32</value>
+  </metadata>
+  <data name="$this.Localizable" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>Datei</value></data>
+  <data name="manageKspInstancesMenuItem.Text" xml:space="preserve"><value>KSP-Instanzen verwalten</value></data>
+  <data name="openKspDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>Spieleverzeichnis öffnen</value></data>
+  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>Von .ckan installieren</value></data>
+  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>Liste installierter Mods &amp;exportieren</value></data>
+  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>Heruntergeladene Mods &amp;importieren</value></data>
+  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve"><value>Empfehlungen installierter Mods</value></data>
+  <data name="ExitToolButton.Text" xml:space="preserve"><value>&amp;Beenden</value></data>
+  <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>Einstellungen</value></data>
+  <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN Einstellungen</value></data>
+  <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN Plugins</value></data>
+  <data name="kSPCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>KSP Befehlszeile</value></data>
+  <data name="compatibleKSPVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Kompatible KSP-Versionen</value></data>
+  <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Hilfe</value></data>
+  <data name="reportAnIssueToolStripMenuItem.Text" xml:space="preserve"><value>Fehler melden</value></data>
+  <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>Über</value></data>
+  <data name="launchKSPToolStripMenuItem.Text" xml:space="preserve"><value>KSP starten</value></data>
+  <data name="RefreshToolButton.Text" xml:space="preserve"><value>Aktualisieren</value></data>
+  <data name="UpdateAllToolButton.Text" xml:space="preserve"><value>Verfügbare Updates auswählen</value></data>
+  <data name="ApplyToolButton.Text" xml:space="preserve"><value>Annehmen</value></data>
+  <data name="FilterToolButton.Text" xml:space="preserve"><value>Filter (Kompatibel)</value></data>
+  <data name="FilterCompatibleButton.Text" xml:space="preserve"><value>Kompatibel</value></data>
+  <data name="FilterInstalledButton.Text" xml:space="preserve"><value>Installiert</value></data>
+  <data name="FilterInstalledUpdateButton.Text" xml:space="preserve"><value>Aktualisierbar</value></data>
+  <data name="FilterReplaceableButton.Text" xml:space="preserve"><value>Ersetzbar</value></data>
+  <data name="cachedToolStripMenuItem.Text" xml:space="preserve"><value>Im Cache</value></data>
+  <data name="FilterNewButton.Text" xml:space="preserve"><value>Neu kompatibel</value></data>
+  <data name="FilterNotInstalledButton.Text" xml:space="preserve"><value>Nicht installiert</value></data>
+  <data name="FilterIncompatibleButton.Text" xml:space="preserve"><value>Inkompatibel</value></data>
+  <data name="FilterAllButton.Text" xml:space="preserve"><value>Alle</value></data>
+  <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve"><value>Zuvor ausgewählte Mod...</value></data>
+  <data name="NavForwardToolButton.ToolTipText" xml:space="preserve"><value>Danach ausgewählte mod...</value></data>
+  <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>Auto-installiert</value></data>
+  <data name="ReplaceCol.HeaderText" xml:space="preserve"><value>Ersetzen</value></data>
+  <data name="Author.HeaderText" xml:space="preserve"><value>Autor</value></data>
+  <data name="InstalledVersion.HeaderText" xml:space="preserve"><value>Installierte Version</value></data>
+  <data name="LatestVersion.HeaderText" xml:space="preserve"><value>Neueste Version</value></data>
+  <data name="KSPCompatibility.HeaderText" xml:space="preserve"><value>Max. KSP Version</value></data>
+  <data name="SizeCol.HeaderText" xml:space="preserve"><value>Downloadgröße</value></data>
+  <data name="InstallDate.HeaderText" xml:space="preserve"><value>Installationsdatum</value></data>
+  <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Downloadanzahl</value></data>
+  <data name="Description.HeaderText" xml:space="preserve"><value>Kurzbeschreibung</value></data>
+  <data name="reinstallToolStripMenuItem.Text" xml:space="preserve"><value>Neu installieren</value></data>
+  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>Inhalt herunterladen</value></data>
+  <data name="ManageModsTabPage.Text" xml:space="preserve"><value>Mods verwalten</value></data>
+  <data name="FilterByAuthorLabel.Text" xml:space="preserve"><value>Nach Autorenname filtern:</value></data>
+  <data name="FilterByAuthorTextBox.Location" type="System.Drawing.Point, System.Drawing"><value>570, 74</value></data>
+  <data name="FilterByAuthorTextBox.Size" type="System.Drawing.Size, System.Drawing"><value>170, 26</value></data>
+  <data name="FilterByNameLabel.Text" xml:space="preserve"><value>Nach Modname filtern:</value></data>
+  <data name="FilterByNameTextBox.Location" type="System.Drawing.Point, System.Drawing"><value>180, 74</value></data>
+  <data name="FilterByNameTextBox.Size" type="System.Drawing.Size, System.Drawing"><value>170, 26</value></data>
+  <data name="FilterByDescriptionLabel.Text" xml:space="preserve"><value>Nach Beschreibung filtern:</value></data>
+  <data name="FilterByDescriptionTextBox.Location" type="System.Drawing.Point, System.Drawing"><value>955, 74</value></data>
+  <data name="FilterByDescriptionTextBox.Size" type="System.Drawing.Size, System.Drawing"><value>170, 26</value></data>
+  <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Änderungen</value></data>
+  <data name="CancelChangesButton.Text" xml:space="preserve"><value>Löschen</value></data>
+  <data name="ConfirmChangesButton.Text" xml:space="preserve"><value>Annehmen</value></data>
+  <data name="ChangeType.Text" xml:space="preserve"><value>Änderung</value></data>
+  <data name="Reason.Text" xml:space="preserve"><value>Grund</value></data>
+  <data name="WaitTabPage.Text" xml:space="preserve"><value>Statuslog</value></data>
+  <data name="CancelCurrentActionButton.Text" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="RetryCurrentActionButton.Text" xml:space="preserve"><value>Erneut versuchen</value></data>
+  <data name="MessageTextBox.Text" xml:space="preserve"><value>Auf Fertigstellung warten</value></data>
+  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Wähle Empfehlungen und Vorschläge aus</value></data>
+  <data name="RecommendedModsCancelButton.Text" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="RecommendedModsContinueButton.Text" xml:space="preserve"><value>Fortsetzen</value></data>
+  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve"><value>Alle Empfehlungen und Vorschläge ab-/auswählen</value></data>
+  <data name="RecommendedDialogLabel.Text" xml:space="preserve"><value>Die folgenden Module wurden von mindestens einer ausgewählten Mod empfohlen oder vorgeschlagen</value></data>
+  <data name="RecommendationsGroup.Header" xml:space="preserve"><value>Empfehlungen</value></data>
+  <data name="SuggestionsGroup.Header" xml:space="preserve"><value>Vorschläge</value></data>
+  <data name="columnHeader4.Text" xml:space="preserve"><value>Empfohlen/vorgeschlagen von:</value></data>
+  <data name="columnHeader5.Text" xml:space="preserve"><value>Kurzbeschreibung</value></data>
+  <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Wähle Mods</value></data>
+  <data name="ChooseProvidedModsCancelButton.Text" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="ChooseProvidedModsContinueButton.Text" xml:space="preserve"><value>Fortfahren</value></data>
+  <data name="columnHeader8.Text" xml:space="preserve"><value>Kurzbeschreibung der Mod</value></data>
+  <data name="ChooseProvidedModsLabel.Text" xml:space="preserve"><value>Mehrere Mods stellen das virtuelle Modul Foo zur Verfügung, wähle eine der folgenden Mods:</value></data>
+  <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>N verfügbare Updates</value></data>
+  <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Aktualisieren</value></data>
+  <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>Anhalten</value></data>
+  <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>CKAN öffnen</value></data>
+  <data name="openKSPToolStripMenuItem.Text" xml:space="preserve"><value>KSP starten</value></data>
+  <data name="openKSPDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>KSP-Verzeichnis öffnen</value></data>
+  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>CKAN Einstellungen</value></data>
+  <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>Beenden</value></data>
+</root>

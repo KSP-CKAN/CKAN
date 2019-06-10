@@ -29,7 +29,7 @@ namespace CKAN
 
             List<KspVersion> compatibleVersions = ksp.GetCompatibleVersions();
 
-            GameVersionLabel.Text  = ksp.Version()?.ToString() ?? "<NONE>";
+            GameVersionLabel.Text  = ksp.Version()?.ToString() ?? Properties.Resources.CompatibleKspVersionsDialogNone;
             GameLocationLabel.Text = ksp.GameDir();
             List<KspVersion> knownVersions = new List<KspVersion>(ServiceLocator.Container.Resolve<IKspBuildMap>().KnownVersions);
             List<KspVersion> majorVersionsList = CreateMajorVersionsList(knownVersions);
@@ -45,9 +45,13 @@ namespace CKAN
         {
             if (_ksp.CompatibleVersionsAreFromDifferentKsp)
             {
-                MessageBox.Show("KSP has been updated since you last reviewed your compatible KSP versions. Please make sure that settings are correct.");
+                MessageBox.Show(Properties.Resources.CompatibleKspVersionsDialogKSPUpdated);
                 CancelChooseCompatibleVersionsButton.Visible = false;
-                GameVersionLabel.Text =  $"{_ksp.Version()} (previous game version: {_ksp.VersionOfKspWhenCompatibleVersionsWereStored})";
+                GameVersionLabel.Text = string.Format(
+                    Properties.Resources.CompatibleKspVersionsDialogVersionDetails,
+                    _ksp.Version(),
+                    _ksp.VersionOfKspWhenCompatibleVersionsWereStored
+                );
                 GameVersionLabel.ForeColor = System.Drawing.Color.Red;
             }
         }
@@ -88,7 +92,12 @@ namespace CKAN
             }
             if (AddVersionToListTextBox.Text.ToLower() == "any") 
             {
-                MessageBox.Show("Version has invalid format", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    Properties.Resources.CompatibleKspVersionsDialogInvalidFormat,
+                    Properties.Resources.CompatibleKspVersionsDialogErrorTitle,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return;
             }
             try
@@ -98,7 +107,12 @@ namespace CKAN
             }
             catch (FormatException)
             {
-                MessageBox.Show("Version has invalid format", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    Properties.Resources.CompatibleKspVersionsDialogInvalidFormat,
+                    Properties.Resources.CompatibleKspVersionsDialogErrorTitle,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 

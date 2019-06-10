@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="CKANFileFilter" xml:space="preserve"><value>CKAN Metadaten (*.ckan)|*.ckan</value></data>
+  <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>Export der Modliste</value></data>
+  <data name="CloneFakeKspDialogOpenFilter" xml:space="preserve"><value>Build-Metadatendatei (buildID*.txt)|buildID*.txt</value></data>
+  <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Bitte gib einen Namen für die neue Instanz an.</value> </data>
+  <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Bitte gib einen Pfad für die neue Instanz an.</value></data>
+  <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>Klone Instanz...</value></data>
+  <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>Die zu klonende Instanz ist ungültig: {0}</value></data>
+  <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>Der Zielordner is nicht leer: {0}</value></data>
+  <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>Klonen fehlgeschlagen: {0}</value></data>
+  <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>Instanz erfolgreich geklont.</value></data>
+  <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>Erstelle neue Instanz...</value></data>
+  <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>Dieser Name wird bereits verwendet.</value></data>
+  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>Die Erstellung einer gefälschten Instanz ist fehlgeschlagen:</value></data>
+  <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>Instanz erfolgreich erstellt.</value></data>
+  <data name="CompatibleKspVersionsDialogKSPUpdated" xml:space="preserve"><value>KSP wurde aktualisiert, seit du zuletzt deine kompatiblen KSP-Versionen überprüft hast. Bitte stelle sicher, dass die Einstellungen noch korrekt sind.</value></data>
+  <data name="CompatibleKspVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (vorherige Version: {1})</value></data>
+  <data name="CompatibleKspVersionsDialogInvalidFormat" xml:space="preserve"><value>Ungültiges Versionsformat</value></data>
+  <data name="CompatibleKspVersionsDialogErrorTitle" xml:space="preserve"><value>Fehler</value></data>
+  <data name="ConfigurationParseError" xml:space="preserve"><value>Fehler beim Versuch, "{0}"{1} zu parsen. Versuche es aus dem Ordner zu verschieben und CKAN neu zu starten.</value></data>
+  <data name="GUIModUnknown" xml:space="preserve"><value>Unbekannt</value></data>
+  <data name="GUIModKSPCompatibilityLong" xml:space="preserve"><value>{0} (bei Mod-Version {1})</value></data>
+  <data name="MainAutoUpdateFailed" xml:space="preserve">
+    <value>Fehler beim Auto-Update:
+{0}</value>
+  </data>
+  <data name="MainQuitWithConflicts" xml:space="preserve">
+    <value>Es existieren Konflikte. Trotzdem beenden?
+
+{0}</value>
+  </data>
+  <data name="MainQuit" xml:space="preserve"><value>Beenden</value></data>
+  <data name="MainGoBack" xml:space="preserve"><value>Zurück</value></data>
+  <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>Es gibt unerfüllte Abhängigkeiten. Trotzdem beenden?</value></data>
+  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve">
+    <value>Du hast noch nicht übernommene Änderungen. Trotzdem beenden?
+
+{0}</value>
+  </data>
+  <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>Aktualisiere CKAN</value></data>
+  <data name="MainUpgradingTo" xml:space="preserve"><value>Aktualisiere CKAN auf {0}</value></data>
+  <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0} ist abhängig von {1}, das nicht mit der aktuell installierten KSP-Version kompatibel ist.</value></data>
+  <data name="MainFilterAll" xml:space="preserve"><value>Filter (Alle)</value></data>
+  <data name="MainFilterIncompatible" xml:space="preserve"><value>Filter (Inkompatibel)</value></data>
+  <data name="MainFilterInstalled" xml:space="preserve"><value>Filter (Installiert)</value></data>
+  <data name="MainFilterUpgradeable" xml:space="preserve"><value>Filter (Aktualisierbar)</value></data>
+  <data name="MainFilterReplaceable" xml:space="preserve"><value>Filter (Ersetzbar)</value></data>
+  <data name="MainFilterCached" xml:space="preserve"><value>Filter (Im Cache)</value></data>
+  <data name="MainFilterNew" xml:space="preserve"><value>Filter (Neu)</value></data>
+  <data name="MainFilterNotInstalled" xml:space="preserve"><value>Filter (Nicht installiert)</value></data>
+  <data name="MainFilterCompatible" xml:space="preserve"><value>Filter (Kompatibel)</value></data>
+  <data name="MainLaunchWithIncompatible" xml:space="preserve">
+    <value>Einige installierte Module sind inkompatibel! Es ist möglicherweise nicht sicher, KSP zu starten. Trotzdem starten?
+
+{0}</value>
+  </data>
+  <data name="MainLaunch" xml:space="preserve"><value>Starten</value></data>
+  <data name="MainLaunchFailed" xml:space="preserve">
+    <value>KSP konnte nicht gestartet werden.
+
+{0}</value>
+  </data>
+  <data name="MainFavouritesList" xml:space="preserve"><value>CKAN Favoritenliste (*.ckan)</value></data>
+  <data name="MainModPack" xml:space="preserve"><value>CKAN Modpack (erzwingt genaue Mod-Versionen) (*.ckan)</value></data>
+  <data name="MainPlainText" xml:space="preserve"><value>Klartext (*.txt)</value></data>
+  <data name="MainNotFound" xml:space="preserve"><value>Nicht gefunden.</value></data>
+  <data name="MainReinstallConfirm" xml:space="preserve"><value>Möchtest du {0} neu installieren?</value></data>
+  <data name="MainAllModVersionsInstallPrompt" xml:space="preserve"><value>{0} installieren?</value></data>
+  <data name="MainAllModVersionsInstallYes" xml:space="preserve"><value>Installieren</value></data>
+  <data name="MainAllModVersionsInstallNo" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (Metapacket)</value></data>
+  <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Mod-Update ausgewählt vom Nutzer {0}.</value></data>
+  <data name="MainChangesetNewInstall" xml:space="preserve"><value>Neue Mod-Installation ausgewählt vom Nutzer.</value></data>
+  <data name="MainImportTitle" xml:space="preserve"><value>Mod-Import</value></data>
+  <data name="MainImportWaitTitle" xml:space="preserve"><value>Statuslog</value></data>
+  <data name="MainInstallWaitTitle" xml:space="preserve"><value>Statuslog</value></data>
+  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} erfordert {1}, ist aber nicht im Index aufgeführt oder nicht für die installierte KSP-Version verfügbar.</value></data>
+  <data name="MainInstallNotFound" xml:space="preserve"><value>Modul {0} benötigt, aber es ist nicht im Index aufgeführt oder nicht für dies KSP-Version verfügbar.</value></data>
+  <data name="MainInstallBadMetadata" xml:space="preserve"><value>Fehlerhafte Metadaten für das Modul {0} erkannt: {1}</value></data>
+  <data name="MainInstallFileExists" xml:space="preserve">
+    <value>Oh nein! Wir haben versucht, eine Datei zu überschreiben, die einer anderen Mod gehört!
+Bitte versuche `ckan update` und probiere es erneut.
+
+Wenn dieses Problem wieder auftritt, dann ist es vielleicht ein Paketfehler.
+Bitte melde es unter:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new
+
+Bitte gib die folgenden Informationen mit an:
+
+Datei:               {0}
+Installierende Mod : {1}
+Besitzende Mod :     {2}
+CKAN-Version :       {3}</value>
+  </data>
+  <data name="MainInstallUnownedFileExists" xml:space="preserve">
+    <value>Oh nein!
+
+Es sieht so aus, als ob du versuchst, eine Mod zu installieren, die bereits installiert ist,
+oder die mit einer anderen Mod, die bereits installiert ist, in Konflikt steht.
+
+Aus Sicherheitsgründen wird CKAN *nie* eine Datei überschreiben oder ändern, die es nicht selbst installiert hat.
+
+Wenn du {0} über das CKAN installieren möchtest,
+dann deinstalliere bitte manuell die Mod, die folgende Dateien besitzt:
+
+{1}
+
+und versuche es erneut.</value>
+  </data>
+  <data name="MainInstallGameDataReverted" xml:space="preserve"><value>Dein GameData-Ordner wurden in den Originalzustand zurückgesetzt.</value></data>
+  <data name="MainInstallOpenSettingsPrompt" xml:space="preserve">
+    <value>{0}
+
+Einstellungen jetzt öffnen?</value>
+  </data>
+  <data name="MainInstallOpenSettings" xml:space="preserve"><value>Öffnen</value></data>
+  <data name="MainInstallNo" xml:space="preserve"><value>Nein</value></data>
+  <data name="MainInstallLibCurlMissing" xml:space="preserve"><value>Libcurl-Installation nicht gefunden. Wikiseite für Hilfe öffnen?</value></data>
+  <data name="MainInstallModSuccess" xml:space="preserve"><value>Modul "{0}" erfolgreich installiert.</value></data>
+  <data name="MainInstallSuccess" xml:space="preserve"><value>Erfolg!</value></data>
+  <data name="MainInstallCancelTooLate" xml:space="preserve"><value>Abbruch zu spät, Prozess bereits abgeschlossen!</value></data>
+  <data name="MainInstallCancelAfterInstall" xml:space="preserve"><value>Prozess vom Nutzer abgebrochen, aber alle Mods bereits (de)installiert/aktualisiert.</value></data>
+  <data name="MainInstallProcessComplete" xml:space="preserve"><value>Vorgang abgeschlossen!</value></data>
+  <data name="MainInstallProcessCanceled" xml:space="preserve"><value>Prozess vom Nutzer abgebrochen.</value></data>
+  <data name="MainInstallCanceledManually" xml:space="preserve"><value>Prozess vom Nutzer abgebrochen.</value></data>
+  <data name="MainInstallInstallCanceled" xml:space="preserve"><value>(De-)Installation/Aktualisierung abgebrochen!</value></data>
+  <data name="MainInstallErrorInstalling" xml:space="preserve"><value>Fehler bei der Installation!</value></data>
+  <data name="MainInstallUnknownError" xml:space="preserve"><value>Ein unbekannter Fehler ist aufgetreten, bitte versuche es erneut!</value></data>
+  <data name="MainInstallFailed" xml:space="preserve"><value>Installation fehlgeschlagen!</value></data>
+  <data name="MainInstallProvidedBy" xml:space="preserve"><value>Modul {0} wird von mehr als einem verfügbaren Modul bereitgestellt, bitte wähle eine der folgenden Mods:</value></data>
+  <data name="MainModInfoVirtual" xml:space="preserve"><value>{0} (virtuell)</value></data>
+  <data name="MainModInfoNotIndexed" xml:space="preserve"><value>{0} (nicht indiziert)</value></data>
+  <data name="MainModInfoNotCached" xml:space="preserve"><value>Diese Mod ist nicht im Cache, klicke auf 'Download' um eine Inhaltsübersicht zu erhalten.</value></data>
+  <data name="MainModInfoCached" xml:space="preserve"><value>Modul ist im Cache, Vorschau verfügbar</value></data>
+  <data name="MainModListWaitTitle" xml:space="preserve"><value>Module laden</value></data>
+  <data name="MainModListLoadingRegistry" xml:space="preserve"><value>Lade Registry...</value></data>
+  <data name="MainModListLoadingInstalled" xml:space="preserve"><value>Lade installierte Module...</value></data>
+  <data name="MainModListLoadingAvailable" xml:space="preserve"><value>Lade kompatible Module...</value></data>
+  <data name="MainModListLoadingIncompatible" xml:space="preserve"><value>Lade inkompatible Module...</value></data>
+  <data name="MainModListRestoringChangeset" xml:space="preserve"><value>Stelle Änderungsset wieder her...</value></data>
+  <data name="MainModListPreservingNew" xml:space="preserve"><value>"Neu"-Flaggen beibehalten...</value></data>
+  <data name="MainModListPopulatingList" xml:space="preserve"><value>Modliste füllen...</value></data>
+  <data name="MainModListUpdatingFilters" xml:space="preserve"><value>Aktualisiere Filter...</value></data>
+  <data name="MainModListCompatible" xml:space="preserve"><value>Kompatibel ({0})</value></data>
+  <data name="MainModListInstalled" xml:space="preserve"><value>Installiert ({0})</value></data>
+  <data name="MainModListUpgradeable" xml:space="preserve"><value>Aktualisierbar ({0})</value></data>
+  <data name="MainModListReplaceable" xml:space="preserve"><value>Ersetzbar ({0})</value></data>
+  <data name="MainModListCached" xml:space="preserve"><value>Im Cache ({0})</value></data>
+  <data name="MainModListNewlyCompatible" xml:space="preserve"><value>Neu kompatibel ({0})</value></data>
+  <data name="MainModListNotInstalled" xml:space="preserve"><value>Nicht installiert ({0})</value></data>
+  <data name="MainModListIncompatible" xml:space="preserve"><value>Inkompatibel ({0})</value></data>
+  <data name="MainModListAll" xml:space="preserve"><value>Alle ({0})</value></data>
+  <data name="MainModListUpdatingTray" xml:space="preserve"><value>Aktualisiere Taskleiste...</value></data>
+  <data name="MainModListUnknownFilter" xml:space="preserve"><value>Unbekannter Filtertyp {0} in IsModInFilter</value></data>
+  <data name="MainRecommendationsTitle" xml:space="preserve"><value>Wähle empfohlene oder vorgeschlagene Mods aus.</value></data>
+  <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>Keine Empfehlungen oder Vorschläge gefunden.</value></data>
+  <data name="MainRepoWaitTitle" xml:space="preserve"><value>Aktualisiere Repository</value></data>
+  <data name="MainRepoScanning" xml:space="preserve"><value>Suche nach DLCs und manuell installierten Modulen...</value></data>
+  <data name="MainRepoContacting" xml:space="preserve"><value>Kontaktiere das Repository...</value></data>
+  <data name="MainRepoUpdating" xml:space="preserve"><value>Aktualisiere Repository...</value></data>
+  <data name="MainRepoFailedToConnect" xml:space="preserve"><value>Die Verbindung zum Repository konnte nicht hergestellt werden: {0}</value></data>
+  <data name="MainRepoUpToDate" xml:space="preserve"><value>Repository bereits aktuell.</value></data>
+  <data name="MainRepoFailed" xml:space="preserve"><value>Aktualisierung des Repositorys fehlgeschlagen!</value></data>
+  <data name="MainRepoSuccess" xml:space="preserve"><value>Repository erfolgreich aktualisiert.</value></data>
+  <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>Möchtest du, dass CKAN die Modliste jedes Mal mit dem Repository abgleicht und aktualisiert, wenn sie geladen wird? (Du kannst sie jederzeit auch mit der Schaltfläche in der Menüleiste aktualisieren.)</value></data>
+  <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>{0} Aktualisierung(en) verfügbar</value></data>
+  <data name="MainRepoBalloonTipTooltip" xml:space="preserve"><value>Zum Aktualisieren hier klicken</value></data>
+  <data name="MainTrayIconResume" xml:space="preserve"><value>Fortsetzen</value></data>
+  <data name="MainTrayIconPause" xml:space="preserve"><value>Anhalten</value></data>
+  <data name="MainTrayNoUpdates" xml:space="preserve"><value>Keine Aktualisierungen verfügbar</value></data>
+  <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>{0} Aktualisierung(en) verfügbar</value></data>
+  <data name="MainWaitPleaseWait" xml:space="preserve"><value>Bitte warten</value></data>
+  <data name="MainWaitDone" xml:space="preserve"><value>Alles erledigt!</value></data>
+  <data name="ManageKspInstancesNotValid" xml:space="preserve"><value>"{0}" ist kein gültiges KSP-Verzeichnis.</value></data>
+  <data name="NewRepoDialogFailed" xml:space="preserve"><value>Die Master-Liste konnte nicht abgerufen werden.</value></data>
+  <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} Dateien, {1}</value></data>
+  <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Ungültiger Pfad: "{0}"</value></data>
+  <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>Wähle einen Ordner um CKANs Mod-Downloads zu speichern:</value></data>
+  <data name="SettingsDialogDeleteConfirm" xml:space="preserve"><value>Möchten Sie wirklich {0} Dateien aus dem Cache löschen und damit {1} freigeben?</value></data>
+  <data name="AddAuthTokenTitle" xml:space="preserve"><value>Authentifikationstoken hinzufügen</value></data>
+  <data name="AddAuthTokenToken" xml:space="preserve"><value>Token:</value></data>
+  <data name="AddAuthTokenAccept" xml:space="preserve"><value>&amp;Annehmen</value></data>
+  <data name="AddAuthTokenCancel" xml:space="preserve"><value>Abbre&amp;chen</value></data>
+  <data name="AddAuthTokenHostRequired" xml:space="preserve"><value>Host-Feld ist erforderlich.</value></data>
+  <data name="AddAuthTokenTokenRequired" xml:space="preserve"><value>Token-Feld ist notwendig.</value></data>
+  <data name="AddAuthTokenInvalidHost" xml:space="preserve"><value>{0} ist kein gültiger Hostname.</value></data>
+  <data name="AddAuthTokenDupHost" xml:space="preserve"><value>Für {0} existiert bereits ein Authentifikationstoken.</value></data>
+  <data name="SettingsDialogUpdateFailed" xml:space="preserve">
+    <value>Fehler bei der Aktualisierung.
+CKAN kann nicht automatisch aktualisiert werden, da ckan.exe schreibgeschützt ist oder wir es nicht überschreiben dürfen. Bitte aktualisiere manuell via https://github.com/KSP-CKAN/CKAN/releases/latest.</value>
+  </data>
+  <data name="URLHandlersPrompt" xml:space="preserve">
+    <value>CKAN benötigt eine Erlaubnis, um einen Handler für ckan:// URLs hinzuzufügen.
+Möchtest du CKAN dies erlauben?
+Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
+  </data>
+  <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Linkadresse kopieren</value></data>
+</root>

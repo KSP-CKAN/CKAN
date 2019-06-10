@@ -64,7 +64,7 @@ namespace CKAN
                 CheckFileExists = false,
                 CheckPathExists = false,
                 InitialDirectory = Environment.CurrentDirectory,
-                Filter = "Build metadata file (buildID*.txt)|buildID*.txt",
+                Filter = Properties.Resources.CloneFakeKspDialogOpenFilter,
                 Multiselect = false
             };
 
@@ -112,12 +112,12 @@ namespace CKAN
             // Do some basic checks.
             if (textBoxNewName.TextLength == 0)
             {
-                user.RaiseError("Please enter a name for the new instance.");
+                user.RaiseError(Properties.Resources.CloneFakeKspDialogEnterName);
                 return;
             }
             if (textBoxNewPath.TextLength == 0)
             {
-                user.RaiseError("Please enter a path for the new instance.");
+                user.RaiseError(Properties.Resources.CloneFakeKspDialogEnterPath);
                 return;
             }
 
@@ -136,7 +136,7 @@ namespace CKAN
             // Done in a new task to not block the GUI thread.
             if (radioButtonClone.Checked)
             {
-                user.RaiseMessage("Cloning instance...");
+                user.RaiseMessage(Properties.Resources.CloneFakeKspDialogCloningInstance);
 
                 try
                 {
@@ -156,25 +156,25 @@ namespace CKAN
                 }
                 catch (NotKSPDirKraken kraken)
                 {
-                    user.RaiseError("The instance you wanted to clone is not valid: " + kraken.path);
+                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogInstanceNotValid, kraken.path));
                     reactivateDialog();
                     return;
                 }
                 catch (PathErrorKraken kraken)
                 {
-                    user.RaiseError("The destination folder is not empty: " + kraken.path);
+                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty, kraken.path));
                     reactivateDialog();
                     return;
                 }
                 catch (IOException ex)
                 {
-                    user.RaiseError($"Clone failed: {ex.Message}");
+                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogCloneFailed, ex.Message));
                     reactivateDialog();
                     return;
                 }
                 catch (Exception ex)
                 {
-                    user.RaiseError($"Clone failed: {ex.Message}");
+                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogCloneFailed, ex.Message));
                     reactivateDialog();
                     return;
                 }
@@ -189,7 +189,7 @@ namespace CKAN
                     manager.SetCurrentInstance(newName);
                 }
 
-                user.RaiseMessage("Successfully cloned instance.");
+                user.RaiseMessage(Properties.Resources.CloneFakeKspDialogSuccessfulClone);
 
                 DialogResult = DialogResult.OK;
                 this.Close();
@@ -202,7 +202,7 @@ namespace CKAN
                 Versioning.KspVersion kspVersion = Versioning.KspVersion.Parse(comboBoxKspVersion.Text);
                 string dlcVersion = textBoxDlcVersion.Text;
 
-                user.RaiseMessage("Creating new instance...");
+                user.RaiseMessage(Properties.Resources.CloneFakeKspDialogCreatingInstance);
 
                 try
                 {
@@ -213,19 +213,19 @@ namespace CKAN
                 }
                 catch (BadInstallLocationKraken)
                 {
-                    user.RaiseError("The destination folder is not empty or invalid.");
+                    user.RaiseError(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty);
                     reactivateDialog();
                     return;
                 }
                 catch (ArgumentException)
                 {
-                    user.RaiseError("This name is already used.");
+                    user.RaiseError(Properties.Resources.CloneFakeKspDialogNameAlreadyUsed);
                     reactivateDialog();
                     return;
                 }
                 catch (Exception ex)
                 {
-                    user.RaiseError($"Fake instance creation failed: {ex.Message}");
+                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogFakeFailed, ex.Message));
                     reactivateDialog();
                     return;
                 }
@@ -240,7 +240,7 @@ namespace CKAN
                     manager.SetCurrentInstance(newName);
                 }
 
-                user.RaiseMessage("Successfully created instance.");
+                user.RaiseMessage(Properties.Resources.CloneFakeKspDialogSuccessfulCreate);
 
                 DialogResult = DialogResult.OK;
                 this.Close();

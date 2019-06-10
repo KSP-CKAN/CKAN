@@ -28,7 +28,7 @@ namespace CKAN
 
         public void UpdateRepo()
         {
-            tabController.RenameTab("WaitTabPage", "Updating repositories");
+            tabController.RenameTab("WaitTabPage", Properties.Resources.MainRepoWaitTitle);
 
             try
             {
@@ -38,7 +38,7 @@ namespace CKAN
 
             Util.Invoke(this, SwitchEnabledState);
 
-            SetDescription("Contacting repository..");
+            SetDescription(Properties.Resources.MainRepoContacting);
             ClearLog();
             ShowWaitDialog();
         }
@@ -63,10 +63,10 @@ namespace CKAN
         {
             try
             {
-                AddStatusMessage("Scanning GameData for DLCs and manually installed modules...");
+                AddStatusMessage(Properties.Resources.MainRepoScanning);
                 bool scanChanged = CurrentInstance.ScanGameData();
     
-                AddStatusMessage("Updating repositories...");
+                AddStatusMessage(Properties.Resources.MainRepoUpdating);
 
                 // Note the current mods' compatibility for the NewlyCompatible filter
                 KspVersionCriteria versionCriteria = CurrentInstance.VersionCriteria();
@@ -98,7 +98,7 @@ namespace CKAN
             }
             catch (Exception ex)
             {
-                errorDialog.ShowErrorDialog("Failed to connect to repository. Exception: " + ex.Message);
+                errorDialog.ShowErrorDialog(string.Format(Properties.Resources.MainRepoFailedToConnect, ex.Message));
             }
         }
 
@@ -111,7 +111,7 @@ namespace CKAN
             switch (result)
             {
                 case RepoUpdateResult.NoChanges:
-                    AddStatusMessage("Repositories already up to date.");
+                    AddStatusMessage(Properties.Resources.MainRepoUpToDate);
                     HideWaitDialog(true);
                     // Load rows if grid empty, otherwise keep current
                     if (ModList.Rows.Count < 1)
@@ -121,13 +121,13 @@ namespace CKAN
                     break;
 
                 case RepoUpdateResult.Failed:
-                    AddStatusMessage("Repository update failed!");
+                    AddStatusMessage(Properties.Resources.MainRepoFailed);
                     break;
 
                 case RepoUpdateResult.Updated:
                 default:
                     UpdateModsList(ChangeSet, oldModules);
-                    AddStatusMessage("Repositories successfully updated.");
+                    AddStatusMessage(Properties.Resources.MainRepoSuccess);
                     ShowRefreshQuestion();
                     HideWaitDialog(true);
                     UpgradeNotification();
@@ -144,7 +144,7 @@ namespace CKAN
             if (!configuration.RefreshOnStartupNoNag)
             {
                 configuration.RefreshOnStartupNoNag = true;
-                if (!currentUser.RaiseYesNoDialog("Would you like CKAN to refresh the modlist every time it is loaded? (You can always manually refresh using the button up top.)"))
+                if (!currentUser.RaiseYesNoDialog(Properties.Resources.MainRepoAutoRefreshPrompt))
                 {
                     configuration.RefreshOnStartup = false;
                 }
@@ -197,8 +197,8 @@ namespace CKAN
                 {
                     minimizeNotifyIcon.ShowBalloonTip(
                         10000,
-                        $"{numUpgradeable} update{(numUpgradeable > 1 ? "s" : "")} available",
-                        $"Click to upgrade",
+                        string.Format(Properties.Resources.MainRepoBalloonTipDetails, numUpgradeable),
+                        Properties.Resources.MainRepoBalloonTipTooltip,
                         System.Windows.Forms.ToolTipIcon.Info
                     );
                 });

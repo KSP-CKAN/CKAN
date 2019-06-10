@@ -103,7 +103,7 @@ namespace CKAN
             {
                 Main.Instance.Manager.Cache.GetSizeInfo(out m_cacheFileCount, out m_cacheSize);
                 CachePath.Text = winReg.DownloadCacheDir;
-                CacheSummary.Text = $"{m_cacheFileCount} files, {CkanModule.FmtSize(m_cacheSize)}";
+                CacheSummary.Text = string.Format(Properties.Resources.SettingsDialogSummmary, m_cacheFileCount, CkanModule.FmtSize(m_cacheSize));
                 CacheSummary.ForeColor   = SystemColors.ControlText;
                 OpenCacheButton.Enabled  = true;
                 ClearCacheButton.Enabled = (m_cacheSize > 0);
@@ -112,7 +112,7 @@ namespace CKAN
             }
             else
             {
-                CacheSummary.Text        = $"Invalid path: {failReason}";
+                CacheSummary.Text        = string.Format(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
                 CacheSummary.ForeColor   = Color.Red;
                 OpenCacheButton.Enabled  = false;
                 ClearCacheButton.Enabled = false;
@@ -150,7 +150,7 @@ namespace CKAN
         {
             FolderBrowserDialog cacheChooser = new FolderBrowserDialog()
             {
-                Description         = "Choose a folder for storing CKAN's mod downloads:",
+                Description         = Properties.Resources.SettingsDialogCacheDescrip,
                 RootFolder          = Environment.SpecialFolder.MyComputer,
                 SelectedPath        = winReg.DownloadCacheDir,
                 ShowNewFolderButton = true
@@ -180,7 +180,7 @@ namespace CKAN
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
             string confirmationText = String.Format
             (
-                "Do you really want to delete {0} cached files, freeing {1}?",
+                Properties.Resources.SettingsDialogDeleteConfirm,
                 m_cacheFileCount,
                 CkanModule.FmtSize(m_cacheSize)
             );
@@ -349,14 +349,14 @@ namespace CKAN
                 FormBorderStyle = FormBorderStyle.FixedToolWindow,
                 StartPosition   = FormStartPosition.CenterParent,
                 ClientSize      = new Size(300, 100),
-                Text            = "Add Authentication Token"
+                Text            = Properties.Resources.AddAuthTokenTitle
             };
             Label hostLabel = new Label()
             {
                 AutoSize = true,
                 Location = new Point(3, 6),
                 Size     = new Size(271, 13),
-                Text     = "Host:"
+                Text     = Properties.Resources.AddAuthTokenHost
             };
             TextBox hostTextBox = new TextBox()
             {
@@ -369,7 +369,7 @@ namespace CKAN
                 AutoSize = true,
                 Location = new Point(3, 35),
                 Size     = new Size(271, 13),
-                Text     = "Token:"
+                Text     = Properties.Resources.AddAuthTokenToken
             };
             TextBox tokenTextBox = new TextBox()
             {
@@ -382,7 +382,7 @@ namespace CKAN
                 DialogResult = DialogResult.OK,
                 Name         = "okButton",
                 Size         = new Size(75, 23),
-                Text         = "&Accept",
+                Text         = Properties.Resources.AddAuthTokenAccept,
                 Location     = new Point((newAuthTokenPopup.ClientSize.Width - 80 - 80) / 2, 64)
             };
             acceptButton.Click += (origin, evt) =>
@@ -396,7 +396,7 @@ namespace CKAN
                 DialogResult = DialogResult.Cancel,
                 Name         = "cancelButton",
                 Size         = new Size(75, 23),
-                Text         = "&Cancel",
+                Text         = Properties.Resources.AddAuthTokenCancel,
                 Location     = new Point(acceptButton.Location.X + acceptButton.Size.Width + 5, 64)
             };
 
@@ -430,23 +430,23 @@ namespace CKAN
         {
             if (host.Length <= 0)
             {
-                GUI.user.RaiseError("Host field is required.");
+                GUI.user.RaiseError(Properties.Resources.AddAuthTokenHostRequired);
                 return false;
             }
             if (token.Length <= 0)
             {
-                GUI.user.RaiseError("Token field is required.");
+                GUI.user.RaiseError(Properties.Resources.AddAuthTokenTokenRequired);
                 return false;
             }
             if (Uri.CheckHostName(host) == UriHostNameType.Unknown)
             {
-                GUI.user.RaiseError("{0} is not a valid host name.", host);
+                GUI.user.RaiseError(Properties.Resources.AddAuthTokenInvalidHost, host);
                 return false;
             }
             string oldToken;
             if (Win32Registry.TryGetAuthToken(host, out oldToken))
             {
-                GUI.user.RaiseError("{0} already has an authentication token.", host);
+                GUI.user.RaiseError(Properties.Resources.AddAuthTokenDupHost, host);
                 return false;
             }
 
@@ -498,7 +498,7 @@ namespace CKAN
             }
             else
             {
-                GUI.user.RaiseError("Error during update.\r\nCan't update automatically, because ckan.exe is read-only or we are not allowed to overwrite it. Please update manually via https://github.com/KSP-CKAN/CKAN/releases/latest.");
+                GUI.user.RaiseError(Properties.Resources.SettingsDialogUpdateFailed);
             }
 
         }

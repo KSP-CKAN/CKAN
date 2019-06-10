@@ -23,7 +23,7 @@ namespace CKAN
             RefreshActivePlugins();
             RefreshDormantPlugins();
 
-            m_AddNewPluginDialog.Filter = "CKAN Plugins (*.dll)|*.dll";
+            m_AddNewPluginDialog.Filter = Properties.Resources.PluginsDialogFilter;
             m_AddNewPluginDialog.Multiselect = false;
         }
 

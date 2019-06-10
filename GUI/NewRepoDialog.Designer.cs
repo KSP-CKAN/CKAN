@@ -28,7 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewRepoDialog));
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(NewRepoDialog));
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
             this.RepoUrlTextBox = new System.Windows.Forms.TextBox();
             this.RepoCancel = new System.Windows.Forms.Button();
@@ -36,9 +37,9 @@
             this.ReposListBox = new System.Windows.Forms.ListBox();
             this.RepositoryGroupBox.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // RepositoryGroupBox
-            // 
+            //
             this.RepositoryGroupBox.Controls.Add(this.RepoUrlTextBox);
             this.RepositoryGroupBox.Controls.Add(this.RepoCancel);
             this.RepositoryGroupBox.Controls.Add(this.RepoOK);
@@ -49,59 +50,59 @@
             this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 410);
             this.RepositoryGroupBox.TabIndex = 8;
             this.RepositoryGroupBox.TabStop = false;
-            this.RepositoryGroupBox.Text = "Official repositories";
-            // 
+            resources.ApplyResources(this.RepositoryGroupBox, "RepositoryGroupBox");
+            //
             // RepoUrlTextBox
-            // 
+            //
             this.RepoUrlTextBox.Location = new System.Drawing.Point(6, 384);
             this.RepoUrlTextBox.Name = "RepoUrlTextBox";
-            this.RepoUrlTextBox.Size = new System.Drawing.Size(340, 20);
+            this.RepoUrlTextBox.Size = new System.Drawing.Size(332, 20);
             this.RepoUrlTextBox.TabIndex = 11;
             this.RepoUrlTextBox.TextChanged += new System.EventHandler(this.RepoUrlTextBox_TextChanged);
-            // 
+            //
             // RepoCancel
-            // 
+            //
             this.RepoCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.RepoCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RepoCancel.Location = new System.Drawing.Point(352, 380);
+            this.RepoCancel.Location = new System.Drawing.Point(344, 380);
             this.RepoCancel.Name = "RepoCancel";
-            this.RepoCancel.Size = new System.Drawing.Size(56, 26);
+            this.RepoCancel.Size = new System.Drawing.Size(70, 26);
             this.RepoCancel.TabIndex = 10;
-            this.RepoCancel.Text = "Cancel";
             this.RepoCancel.UseVisualStyleBackColor = true;
-            // 
+            resources.ApplyResources(this.RepoCancel, "RepoCancel");
+            //
             // RepoOK
-            // 
+            //
             this.RepoOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.RepoOK.Enabled = false;
             this.RepoOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RepoOK.Location = new System.Drawing.Point(414, 380);
+            this.RepoOK.Location = new System.Drawing.Point(420, 380);
             this.RepoOK.Name = "RepoOK";
-            this.RepoOK.Size = new System.Drawing.Size(56, 26);
+            this.RepoOK.Size = new System.Drawing.Size(50, 26);
             this.RepoOK.TabIndex = 9;
-            this.RepoOK.Text = "OK";
             this.RepoOK.UseVisualStyleBackColor = true;
-            // 
+            resources.ApplyResources(this.RepoOK, "RepoOK");
+            //
             // ReposListBox
-            // 
+            //
             this.ReposListBox.FormattingEnabled = true;
             this.ReposListBox.Location = new System.Drawing.Point(6, 19);
             this.ReposListBox.Name = "ReposListBox";
             this.ReposListBox.Size = new System.Drawing.Size(464, 355);
             this.ReposListBox.TabIndex = 8;
             this.ReposListBox.SelectedIndexChanged += new System.EventHandler(this.ReposListBox_SelectedIndexChanged);
-            // 
+            //
             // NewRepoDialog
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(495, 434);
             this.Controls.Add(this.RepositoryGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = Properties.Resources.AppIcon;
             this.Name = "NewRepoDialog";
-            this.Text = "Settings";
             this.Load += new System.EventHandler(this.NewRepoDialog_Load);
+            resources.ApplyResources(this, "$this");
             this.RepositoryGroupBox.ResumeLayout(false);
             this.RepositoryGroupBox.PerformLayout();
             this.ResumeLayout(false);

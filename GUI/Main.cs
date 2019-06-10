@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Globalization;
 using CKAN.Versioning;
 using CKAN.Exporters;
 using CKAN.Properties;
@@ -385,7 +386,7 @@ namespace CKAN
                 }
                 catch (Exception exception)
                 {
-                    currentUser.RaiseError($"Error in auto-update:\n\t{exception.Message}");
+                    currentUser.RaiseError(Properties.Resources.MainAutoUpdateFailed, exception.Message);
                     log.Error("Error in auto-update", exception);
                 }
             }
@@ -458,7 +459,9 @@ namespace CKAN
                     string confDescrip = Conflicts
                         .Select(kvp => kvp.Value)
                         .Aggregate((a, b) => $"{a}, {b}");
-                    if (!YesNoDialog($"There are conflicts. Really quit?\r\n\r\n{confDescrip}", "Quit", "Go Back"))
+                    if (!YesNoDialog(string.Format(Properties.Resources.MainQuitWithConflicts, confDescrip),
+                        Properties.Resources.MainQuit,
+                        Properties.Resources.MainGoBack))
                     {
                         e.Cancel = true;
                         return;
@@ -467,7 +470,9 @@ namespace CKAN
                 else
                 {
                     // The Conflicts dictionary is empty even when there are unmet dependencies.
-                    if (!YesNoDialog("There are unmet dependencies. Really quit?", "Quit", "Go Back"))
+                    if (!YesNoDialog(Properties.Resources.MainQuitWithUnmetDeps,
+                        Properties.Resources.MainQuit,
+                        Properties.Resources.MainGoBack))
                     {
                         e.Cancel = true;
                         return;
@@ -482,7 +487,9 @@ namespace CKAN
                     .Select(grp => $"{grp.Key}: "
                         + grp.Aggregate((a, b) => $"{a}, {b}"))
                     .Aggregate((a, b) => $"{a}\r\n{b}");
-                if (!YesNoDialog($"You have unapplied changes. Really quit?\r\n\r\n{changeDescrip}", "Quit", "Go Back"))
+                if (!YesNoDialog(string.Format(Properties.Resources.MainQuitWIthUnappliedChanges, changeDescrip),
+                    Properties.Resources.MainQuit,
+                    Properties.Resources.MainGoBack))
                 {
                     e.Cancel = true;
                     return;
@@ -562,8 +569,8 @@ namespace CKAN
             ShowWaitDialog(false);
             SwitchEnabledState();
             ClearLog();
-            tabController.RenameTab("WaitTabPage", "Updating CKAN");
-            SetDescription($"Upgrading CKAN to {AutoUpdate.Instance.latestUpdate.Version}");
+            tabController.RenameTab("WaitTabPage", Properties.Resources.MainUpgradingWaitTitle);
+            SetDescription(string.Format(Properties.Resources.MainUpgradingTo, AutoUpdate.Instance.latestUpdate.Version));
 
             log.Info("Start ckan update");
             BackgroundWorker updateWorker = new BackgroundWorker();
@@ -716,7 +723,7 @@ namespace CKAN
             catch (DependencyNotSatisfiedKraken k)
             {
                 GUI.user.RaiseError(
-                    "{0} depends on {1}, which is not compatible with the currently installed version of KSP",
+                    Properties.Resources.MainDepNotSatisfied,
                     k.parent,
                     k.module
                 );
@@ -806,18 +813,18 @@ namespace CKAN
                 // Some columns really do / don't make sense to be visible on certain filter settings.
                 // Hide / Show them, without writing to config, so once the user changes tab again,
                 // they are shown / hidden again, as before.
-                case GUIModFilter.All:                      FilterToolButton.Text = "Filter (All)";           break;
-                case GUIModFilter.Incompatible:             FilterToolButton.Text = "Filter (Incompatible)";  break;
-                case GUIModFilter.Installed:                FilterToolButton.Text = "Filter (Installed)";     break;
-                case GUIModFilter.InstalledUpdateAvailable: FilterToolButton.Text = "Filter (Upgradeable)";   break;
-                case GUIModFilter.Replaceable:              FilterToolButton.Text = "Filter (Replaceable)";   break;
-                case GUIModFilter.Cached:                   FilterToolButton.Text = "Filter (Cached)";        break;
-                case GUIModFilter.NewInRepository:          FilterToolButton.Text = "Filter (New)";           break;
+                case GUIModFilter.All:                      FilterToolButton.Text = Properties.Resources.MainFilterAll;          break;
+                case GUIModFilter.Incompatible:             FilterToolButton.Text = Properties.Resources.MainFilterIncompatible; break;
+                case GUIModFilter.Installed:                FilterToolButton.Text = Properties.Resources.MainFilterInstalled;    break;
+                case GUIModFilter.InstalledUpdateAvailable: FilterToolButton.Text = Properties.Resources.MainFilterUpgradeable;  break;
+                case GUIModFilter.Replaceable:              FilterToolButton.Text = Properties.Resources.MainFilterReplaceable;  break;
+                case GUIModFilter.Cached:                   FilterToolButton.Text = Properties.Resources.MainFilterCached;       break;
+                case GUIModFilter.NewInRepository:          FilterToolButton.Text = Properties.Resources.MainFilterNew;          break;
                 case GUIModFilter.NotInstalled:             ModList.Columns["InstalledVersion"].Visible = false;
                                                             ModList.Columns["InstallDate"].Visible      = false;
                                                             ModList.Columns["AutoInstalled"].Visible    = false;
-                                                            FilterToolButton.Text = "Filter (Not installed)"; break;
-                default:                                    FilterToolButton.Text = "Filter (Compatible)";    break;
+                                                            FilterToolButton.Text = Properties.Resources.MainFilterNotInstalled; break;
+                default:                                    FilterToolButton.Text = Properties.Resources.MainFilterCompatible;   break;
             }
         }
 
@@ -846,7 +853,9 @@ namespace CKAN
                 string incompatDescrip = incomp
                     .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(m.Module)})")
                     .Aggregate((a, b) => $"{a}, {b}");
-                if (!YesNoDialog($"Some installed modules are incompatible! It might not be safe to launch KSP. Really launch?\r\n\r\n{incompatDescrip}", "Launch", "Go Back"))
+                if (!YesNoDialog(string.Format(Properties.Resources.MainLaunchWithIncompatible, incompatDescrip),
+                    Properties.Resources.MainLaunch,
+                    Properties.Resources.MainGoBack))
                 {
                     return;
                 }
@@ -862,7 +871,7 @@ namespace CKAN
             }
             catch (Exception exception)
             {
-                GUI.user.RaiseError($"Couldn't start KSP.\r\n{exception.Message}.");
+                GUI.user.RaiseError(Properties.Resources.MainLaunchFailed, exception.Message);
             }
         }
 
@@ -949,13 +958,13 @@ namespace CKAN
         {
             var exportOptions = new List<ExportOption>
             {
-                new ExportOption(ExportFileType.CkanFavourite, "CKAN favourites list (*.ckan)", "ckan"),
-                new ExportOption(ExportFileType.Ckan, "CKAN modpack (enforces exact mod versions) (*.ckan)", "ckan"),
-                new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
-                new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
-                new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
-                new ExportOption(ExportFileType.Csv, "Comma-separated values (*.csv)", "csv"),
-                new ExportOption(ExportFileType.Tsv, "Tab-separated values (*.tsv)", "tsv")
+                new ExportOption(ExportFileType.CkanFavourite, Properties.Resources.MainFavouritesList, "ckan"),
+                new ExportOption(ExportFileType.Ckan,          Properties.Resources.MainModPack,        "ckan"),
+                new ExportOption(ExportFileType.PlainText,     Properties.Resources.MainPlainText,      "txt"),
+                new ExportOption(ExportFileType.Markdown,      Properties.Resources.MainMarkdown,       "md"),
+                new ExportOption(ExportFileType.BbCode,        Properties.Resources.MainBBCode,         "txt"),
+                new ExportOption(ExportFileType.Csv,           Properties.Resources.MainCSV,            "csv"),
+                new ExportOption(ExportFileType.Tsv,           Properties.Resources.MainTSV,            "tsv")
             };
 
             var filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray());
@@ -1085,7 +1094,7 @@ namespace CKAN
             }
             else
             {
-                AddStatusMessage("Not found.");
+                AddStatusMessage(Properties.Resources.MainNotFound);
             }
         }
 
@@ -1188,7 +1197,7 @@ namespace CKAN
                 return;
 
             YesNoDialog reinstallDialog = new YesNoDialog();
-            string confirmationText = $"Do you want to reinstall {module.Name}?";
+            string confirmationText = string.Format(Properties.Resources.MainReinstallConfirm, module.Name);
             if (reinstallDialog.ShowYesNoDialog(confirmationText) == DialogResult.No)
                 return;
 

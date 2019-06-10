@@ -50,11 +50,7 @@ namespace CKAN
                             return;
                         }
 
-                        if (user.RaiseYesNoDialog(string.Join("\r\n", new string[]
-                            {
-                                @"CKAN requires permission to add a handler for ckan:// URLs.",
-                                "Do you want to allow CKAN to do this? If you click no you won't see this message again."
-                            })))
+                        if (user.RaiseYesNoDialog(Properties.Resources.URLHandlersPrompt))
                         {
                             // we need elevation to write to the registry
                             ProcessStartInfo startInfo = new ProcessStartInfo(

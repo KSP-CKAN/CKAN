@@ -28,43 +28,45 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(RenameInstanceDialog));
             this.NameTextBox = new System.Windows.Forms.TextBox();
             this.OKButton = new System.Windows.Forms.Button();
             this.CancelRenameInstanceButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
+            //
             // NameTextBox
-            // 
+            //
             this.NameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.NameTextBox.Location = new System.Drawing.Point(13, 13);
             this.NameTextBox.Name = "NameTextBox";
             this.NameTextBox.Size = new System.Drawing.Size(294, 20);
             this.NameTextBox.TabIndex = 0;
-            // 
+            //
             // OKButton
-            // 
+            //
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.OKButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.OKButton.Location = new System.Drawing.Point(232, 39);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
             this.OKButton.TabIndex = 1;
-            this.OKButton.Text = "OK";
             this.OKButton.UseVisualStyleBackColor = true;
-            // 
+            resources.ApplyResources(this.OKButton, "OKButton");
+            //
             // CancelRenameInstanceButton
-            // 
+            //
             this.CancelRenameInstanceButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelRenameInstanceButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelRenameInstanceButton.Location = new System.Drawing.Point(151, 39);
             this.CancelRenameInstanceButton.Name = "CancelRenameInstanceButton";
             this.CancelRenameInstanceButton.Size = new System.Drawing.Size(75, 23);
             this.CancelRenameInstanceButton.TabIndex = 2;
-            this.CancelRenameInstanceButton.Text = "Cancel";
             this.CancelRenameInstanceButton.UseVisualStyleBackColor = true;
-            // 
+            resources.ApplyResources(this.CancelRenameInstanceButton, "CancelRenameInstanceButton");
+            //
             // RenameInstanceDialog
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(319, 68);
@@ -72,9 +74,11 @@
             this.Controls.Add(this.CancelRenameInstanceButton);
             this.Controls.Add(this.OKButton);
             this.Controls.Add(this.NameTextBox);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = Properties.Resources.AppIcon;
             this.Name = "RenameInstanceDialog";
-            this.Text = "Rename installation";
+            resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -50,10 +50,11 @@ namespace CKAN
                 ListViewItem item = new ListViewItem()
                 {
                     Text = m.IsMetapackage
-                        ? $"{m.name} {m.version} (metapackage)"
+                        ? string.Format(Properties.Resources.MainChangesetMetapackage, m.name, m.version)
                         : Manager.Cache.IsMaybeCachedZip(m)
-                            ? $"{m.name} {m.version} (cached)"
-                            : $"{m.name} {m.version} ({m.download.Host ?? ""}, {CkanModule.FmtSize(m.download_size)})",
+                            ? string.Format(Properties.Resources.MainChangesetCached, m.name, m.version)
+                            : string.Format(Properties.Resources.MainChangesetHostSize,
+                                m.name, m.version, m.download.Host ?? "", CkanModule.FmtSize(m.download_size)),
                     Tag  = change.Mod.ToModule()
                 };
 
@@ -64,12 +65,12 @@ namespace CKAN
 
                 if (change.ChangeType == GUIModChangeType.Update)
                 {
-                    description.Text = String.Format("Update selected by user to version {0}.", change.Mod.LatestVersion);
+                    description.Text = String.Format(Properties.Resources.MainChangesetUpdateSelected, change.Mod.LatestVersion);
                 }
 
                 if (change.ChangeType == GUIModChangeType.Install && change.Reason is SelectionReason.UserRequested)
                 {
-                    description.Text = "New mod install selected by user.";
+                    description.Text = Properties.Resources.MainChangesetNewInstall;
                 }
 
                 item.SubItems.Add(sub_change_type);

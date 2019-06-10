@@ -19,20 +19,20 @@ namespace CKAN
             // Prompt the user to select one or more ZIP files
             OpenFileDialog dlg = new OpenFileDialog()
             {
-                Title            = "Import Mods",
+                Title            = Properties.Resources.MainImportTitle,
                 AddExtension     = true,
                 CheckFileExists  = true,
                 CheckPathExists  = true,
                 InitialDirectory = FindDownloadsPath(CurrentInstance),
                 DefaultExt       = "zip",
-                Filter           = "Mods (*.zip)|*.zip",
+                Filter           = Properties.Resources.MainImportFilter,
                 Multiselect      = true
             };
             if (dlg.ShowDialog() == DialogResult.OK
                     && dlg.FileNames.Length > 0)
             {
                 // Show WaitTabPage (status page) and lock it.
-                tabController.RenameTab("WaitTabPage", "Status log");
+                tabController.RenameTab("WaitTabPage", Properties.Resources.MainImportWaitTitle);
                 tabController.ShowTab("WaitTabPage");
                 tabController.SetTabLock(true);
 

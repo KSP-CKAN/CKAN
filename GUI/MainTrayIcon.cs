@@ -14,7 +14,9 @@ namespace CKAN
             enableTrayIcon = configuration.EnableTrayIcon;
             minimizeToTray = configuration.MinimizeToTray;
             pauseToolStripMenuItem.Enabled = winReg.RefreshRate != 0;
-            pauseToolStripMenuItem.Text = configuration.RefreshPaused ? "Resume" : "Pause";
+            pauseToolStripMenuItem.Text = configuration.RefreshPaused
+                ? Properties.Resources.MainTrayIconResume
+                : Properties.Resources.MainTrayIconPause;
             UpdateTrayState();
         }
 
@@ -52,12 +54,12 @@ namespace CKAN
             if (count == 0)
             {
                 updatesToolStripMenuItem.Enabled = false;
-                updatesToolStripMenuItem.Text = "No available updates";
+                updatesToolStripMenuItem.Text = Properties.Resources.MainTrayNoUpdates;
             }
             else
             {
                 updatesToolStripMenuItem.Enabled = true;
-                updatesToolStripMenuItem.Text = $"{count} available update" + (count == 1 ? "" : "s");
+                updatesToolStripMenuItem.Text = string.Format(Properties.Resources.MainTrayUpdatesAvailable, count);
             }
         }
 
@@ -92,12 +94,12 @@ namespace CKAN
             if (configuration.RefreshPaused)
             {
                 refreshTimer.Stop();
-                pauseToolStripMenuItem.Text = "Resume";
+                pauseToolStripMenuItem.Text = Properties.Resources.MainTrayIconResume;
             }
             else
             {
                 refreshTimer.Start();
-                pauseToolStripMenuItem.Text = "Pause";
+                pauseToolStripMenuItem.Text = Properties.Resources.MainTrayIconPause;
             }
         }
 
