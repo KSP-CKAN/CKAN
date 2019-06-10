@@ -94,7 +94,6 @@ namespace CKAN.NetKAN.Transformers
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
                     return new Metadata(json);
-                    break;
 
                 case 0:
                     throw new Exception("Could not find any matching artifacts");

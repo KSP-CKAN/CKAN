@@ -1,7 +1,7 @@
-#addin "nuget:?package=Cake.SemVer&version=2.0.0"
+#addin "nuget:?package=Cake.SemVer&version=3.0.0"
 #addin "nuget:?package=semver&version=2.0.4"
-#tool "nuget:?package=ILRepack&version=2.0.13"
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.7.0"
+#tool "nuget:?package=ILRepack&version=2.0.17"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 
 using System.Text.RegularExpressions;
 using Semver;
@@ -70,7 +70,7 @@ Task("Build-DotNet")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
     .Does(() =>
 {
-    DotNetBuild(solution, settings =>
+    MSBuild(solution, settings =>
     {
         settings.Configuration = configuration;
     });
