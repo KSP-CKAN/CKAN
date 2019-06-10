@@ -38,7 +38,6 @@ namespace CKAN.NetKAN.Transformers
                 }
                 else
                 {
-                    Log.Error("Invalid epoch: " + epoch);
                     throw new BadMetadataKraken(null, "Invalid epoch: " + epoch + "In " + json["identifier"]);
                 }
             }

@@ -95,11 +95,10 @@ namespace Tests.Core
         /// <returns>
         /// Returns
         /// </returns>
-        public void SetRegistryToInstances(SortedList<string, CKAN.KSP> instances, string autoStartInstance)
+        public void SetRegistryToInstances(SortedList<string, CKAN.KSP> instances)
         {
             Instances =
                 instances.Select(kvpair => new Tuple<string, string>(kvpair.Key, kvpair.Value.GameDir())).ToList();
-            AutoStartInstance = autoStartInstance;
         }
 
         /// <summary>

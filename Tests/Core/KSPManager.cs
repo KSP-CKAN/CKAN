@@ -43,9 +43,9 @@ namespace Tests.Core
         }
 
         [Test]
-        public void SetAutoStart_VaildName_SetsAutoStart()
+        public void SetAutoStart_ValidName_SetsAutoStart()
         {
-            Assert.That(manager.AutoStartInstance, Is.EqualTo(string.Empty));
+            Assert.That(manager.AutoStartInstance, Is.EqualTo(null));
 
             manager.SetAutoStart(nameInReg);
             Assert.That(manager.AutoStartInstance, Is.EqualTo(nameInReg));

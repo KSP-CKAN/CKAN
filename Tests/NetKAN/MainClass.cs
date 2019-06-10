@@ -55,10 +55,12 @@ namespace Tests.NetKAN
         }
 
         [TestCase(@"{""spec_version"": 1, ""version"" : ""1.01""}", false)]
+        [TestCase(@"{""spec_version"": 1, ""version"" : ""1.01"", ""x_netkan_epoch"" : ""1""}", false)]
+        [TestCase(@"{""spec_version"": 1, ""version"" : ""1.01"", ""x_netkan_epoch"" : ""3""}", false)]
         [TestCase(@"{""spec_version"": 1, ""version"" : ""1.01"", ""x_netkan_epoch"" : ""a""}", true)]
         [TestCase(@"{""spec_version"": 1, ""version"" : ""1.01"", ""x_netkan_epoch"" : ""-1""}", true)]
         [TestCase(@"{""spec_version"": 1, ""version"" : ""1.01"", ""x_netkan_epoch"" : ""5.5""}", true)]
-        public void Invaild(string json, bool expected_to_throw)
+        public void Invalid(string json, bool expected_to_throw)
         {
             TestDelegate test_delegate = () => new EpochTransformer().Transform(new Metadata(JObject.Parse(json))).First().Json();
             if (expected_to_throw)

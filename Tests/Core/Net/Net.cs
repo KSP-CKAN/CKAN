@@ -18,7 +18,7 @@ namespace Tests.Core.Net
 
         [Test]
         [Category("Online")]
-        public void DownloadThrowsOnInvaildURL()
+        public void DownloadThrowsOnInvalidURL()
         {
             // Download should throw an exception on an invalid URL.
             Assert.That(BadDownload, Throws.Exception);
