@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Don't throw exceptions for dependency conflicts (#2766 by: HebaruSan; reviewed: DasSkelett)
 - [Build] Update packages (#2775 by: Olympic1; reviewed: DasSkelett, HebaruSan)
 - [Core] Suppress autostart warning (#2776 by: HebaruSan; reviewed: DasSkelett)
+- [Build] Fix fake/clone tests on Windows (#2778 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.2
 

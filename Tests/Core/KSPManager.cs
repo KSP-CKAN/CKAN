@@ -128,13 +128,13 @@ namespace Tests.Core
         }
 
         [Test]
-        public void CloneInstance_ToNotEmptyFolder_ThrowsIOException()
+        public void CloneInstance_ToNotEmptyFolder_ThrowsPathErrorKraken()
         {
             using (var KSP = new DisposableKSP())
             {
                 string instanceName = "newInstance";
                 string tempdir = TestData.NewTempDir();
-                System.IO.File.Create(System.IO.Path.Combine(tempdir, "shouldntbehere.txt"));
+                System.IO.File.Create(System.IO.Path.Combine(tempdir, "shouldntbehere.txt")).Close();
 
                 Assert.Throws<PathErrorKraken>(() =>
                     manager.CloneInstance(KSP.KSP, instanceName, tempdir));
@@ -184,7 +184,7 @@ namespace Tests.Core
             string name = "testname";
             string tempdir = TestData.NewTempDir();
             CKAN.Versioning.KspVersion version = CKAN.Versioning.KspVersion.Parse("1.5.1");
-            System.IO.File.Create(System.IO.Path.Combine(tempdir, "shouldntbehere.txt"));
+            System.IO.File.Create(System.IO.Path.Combine(tempdir, "shouldntbehere.txt")).Close();
 
             Assert.Throws<BadInstallLocationKraken>(() =>
                 manager.FakeInstance(name, tempdir, version));
@@ -211,6 +211,7 @@ namespace Tests.Core
             Assert.IsTrue(dlcVersionObject.ToString().Contains(dlcVersion));
 
             // Tidy up.
+            CKAN.RegistryManager.Instance(newKSP).ReleaseLock();
             System.IO.Directory.Delete(tempdir, true);
         }
 
