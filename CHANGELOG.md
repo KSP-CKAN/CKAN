@@ -20,9 +20,12 @@ All notable changes to this project will be documented in this file.
 - [Core] Don't assume string params to Install are identifiers (#2764 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Don't warn that a raw URL is non-raw (#2767 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Don't throw exceptions for dependency conflicts (#2766 by: HebaruSan; reviewed: DasSkelett)
-- [Build] Update packages (#2775 by: Olympic1; reviewed: DasSkelett, HebaruSan)
 - [Core] Suppress autostart warning (#2776 by: HebaruSan; reviewed: DasSkelett)
+
+### Internal
+- [Build] Update packages (#2775 by: Olympic1; reviewed: DasSkelett, HebaruSan)
 - [Build] Fix fake/clone tests on Windows (#2778 by: HebaruSan; reviewed: DasSkelett)
+- [Reporting] Update issue templates (#2777 by: Olympic1; reviewed: DasSkelett, HebaruSan)
 
 ## v1.26.2
 
