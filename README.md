@@ -55,7 +55,7 @@ Note: Are you looking for the Open Data portal software called CKAN? If so, thei
  [1]:https://github.com/KSP-CKAN/CKAN/commits/master
  [2]:https://github.com/KSP-CKAN/CKAN/wiki/User-guide
  [3]:https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN#verifying-metadata-files
- [4]:https://github.com/KSP-CKAN/CKAN/blob/master/CONTRIBUTING.md
+ [4]:https://github.com/KSP-CKAN/.github/blob/master/CONTRIBUTING.md
  [5]:https://github.com/KSP-CKAN/CKAN/wiki
  [6]:https://github.com/KSP-CKAN/CKAN/issues/new
  [7]:https://github.com/KSP-CKAN/NetKAN/issues/new
