@@ -1,8 +1,10 @@
 using System;
 using System.IO;
-using CKAN;
+using System.Threading;
+using System.Globalization;
 using NUnit.Framework;
 using Tests.Data;
+using CKAN;
 
 namespace Tests.Core
 {
@@ -183,6 +185,11 @@ namespace Tests.Core
         [Test]
         public void ZipValid_ContainsFilenameWithBadChars_NoException()
         {
+            // We want to inspect a localized error message below.
+            // Switch to English to ensure it's what we expect.
+            CultureInfo origUICulture = Thread.CurrentThread.CurrentUICulture;
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
             bool valid = false;
             string reason = "";
             Assert.DoesNotThrow(() =>
@@ -194,6 +201,9 @@ namespace Tests.Core
             {
                 Assert.AreEqual(reason, "Illegal characters in path.");
             }
+
+            // Switch back to the original locale
+            Thread.CurrentThread.CurrentUICulture = origUICulture;
         }
 
         [Test]

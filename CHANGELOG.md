@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Update packages (#2775 by: Olympic1; reviewed: DasSkelett, HebaruSan)
 - [Build] Fix fake/clone tests on Windows (#2778 by: HebaruSan; reviewed: DasSkelett)
 - [Reporting] Update issue templates (#2777 by: Olympic1; reviewed: DasSkelett, HebaruSan)
+- [Build] Fix ZipValid test on non-English Windows systems (#2781 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.2
 
