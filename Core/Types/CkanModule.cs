@@ -431,6 +431,9 @@ namespace CKAN
 
         [JsonProperty("install", NullValueHandling = NullValueHandling.Ignore)]
         public ModuleInstallDescriptor[] install;
+        
+        [JsonProperty("localizations", NullValueHandling = NullValueHandling.Ignore)]
+        public string[] localizations;
 
         // Used to see if we're compatible with a given game/KSP version or not.
         private readonly IGameComparator _comparator;

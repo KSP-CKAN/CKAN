@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Add scrollbars to metadata tab (#2759 by: DasSkelett; reviewed: HebaruSan)
 - [Core] Detect Breaking Ground DLC (#2768 by: dbent; reviewed: Olympic1, HebaruSan)
 - [GUI] Internationalize the GUI (#2749 by: HebaruSan, DasSkelett; reviewed: DasSkelett, Olympic1)
+- [NetKAN] Extract locales from downloads (#2760 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using CKAN.NetKAN.Sources.Avc;
@@ -57,6 +58,18 @@ namespace CKAN.NetKAN.Services
             }
 
             return true;
+        }
+        
+        private static readonly Regex cfgRegex = new Regex(
+            @"\.cfg$",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled
+        );
+        
+        public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip)
+        {
+            return ModuleInstaller
+                .FindInstallableFiles(module, zip, null)
+                .Where(instF => cfgRegex.IsMatch(instF.source.Name));
         }
 
         /// <summary>
