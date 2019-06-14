@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Don't warn that a raw URL is non-raw (#2767 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Don't throw exceptions for dependency conflicts (#2766 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Suppress autostart warning (#2776 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Skip comments and allow capital letters in locale extractor (#2783 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 - [Build] Update packages (#2775 by: Olympic1; reviewed: DasSkelett, HebaruSan)
