@@ -63,7 +63,8 @@ namespace CKAN.NetKAN.Transformers
                     .SelectMany(contents => localizationRegex.Matches(contents).Cast<Match>()
                         .Select(m => m.Groups["contents"].Value))
                     .SelectMany(contents => localeRegex.Matches(contents).Cast<Match>()
-                        .Select(m => m.Groups["locale"].Value));
+                        .Select(m => m.Groups["locale"].Value))
+                    .Distinct();
                 log.Debug("Locales extracted");
     
                 if (locales.Any())
