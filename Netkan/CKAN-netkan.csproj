@@ -52,6 +52,12 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\_build\lib\nuget\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NJsonSchema" Version="10.0.19">
+      <HintPath>..\_build\lib\nuget\NJsonSchema.10.0.19\lib\net45\NJsonSchema.dll</HintPath>
+    </Reference>
+    <Reference Include="Namotion.Reflection" Version="1.0.5">
+      <HintPath>..\_build\lib\nuget\Namotion.Reflection.1.0.5\lib\net45\Namotion.Reflection.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +137,21 @@
     <Compile Include="Validators\KrefValidator.cs" />
     <Compile Include="Validators\MatchingIdentifiersValidator.cs" />
     <Compile Include="Validators\NetkanValidator.cs" />
+    <Compile Include="Validators\AlphaNumericIdentifierValidator.cs" />
+    <Compile Include="Validators\DownloadVersionValidator.cs" />
+    <Compile Include="Validators\InstallValidator.cs" />
+    <Compile Include="Validators\KrefDownloadMutexValidator.cs" />
+    <Compile Include="Validators\LicensesValidator.cs" />
+    <Compile Include="Validators\MatchesKnownGameVersionsValidator.cs" />
+    <Compile Include="Validators\ObeysCKANSchemaValidator.cs" />
+    <Compile Include="Validators\OverrideValidator.cs" />
+    <Compile Include="Validators\ReplacedByValidator.cs" />
+    <Compile Include="Validators\RelationshipsValidator.cs" />
+    <Compile Include="Validators\SpecVersionFormatValidator.cs" />
+    <Compile Include="Validators\VersionStrictValidator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="../CKAN.schema" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -64,7 +64,7 @@ namespace CKAN.NetKAN
                     var netkan = ReadNetkan();
                     Log.Info("Finished reading input");
 
-                    new NetkanValidator().Validate(netkan);
+                    new NetkanValidator(Options.File).Validate(netkan);
                     Log.Info("Input successfully passed pre-validation");
 
                     var transformer = new NetkanTransformer(
