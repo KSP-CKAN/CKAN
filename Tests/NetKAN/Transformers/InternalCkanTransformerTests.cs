@@ -12,6 +12,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class InternalCkanTransformerTests
     {
+        private TransformOptions opts = new TransformOptions(1);
+
         [Test]
         public void AddsMiddingProperties()
         {
@@ -38,7 +40,7 @@ namespace Tests.NetKAN.Transformers
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -74,7 +76,7 @@ namespace Tests.NetKAN.Transformers
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -111,7 +113,7 @@ namespace Tests.NetKAN.Transformers
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert

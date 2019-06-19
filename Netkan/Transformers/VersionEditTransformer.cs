@@ -16,7 +16,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name { get { return "version_edit"; } }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             var json = metadata.Json();
 

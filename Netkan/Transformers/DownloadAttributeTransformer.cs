@@ -26,7 +26,7 @@ namespace CKAN.NetKAN.Transformers
             _fileService = fileService;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Download != null)
             {

@@ -10,6 +10,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class StripNetkanMetadataTransformerTests
     {
+        private TransformOptions opts = new TransformOptions(1);
+
         [TestCaseSource("StripNetkanMetadataTestCaseSource")]
         public void StripNetkanMetadata(string json, string expected)
         {
@@ -17,7 +19,7 @@ namespace Tests.NetKAN.Transformers
             var sut = new StripNetkanMetadataTransformer();
 
             // Act
-            var result = sut.Transform(new Metadata(JObject.Parse(json))).First();
+            var result = sut.Transform(new Metadata(JObject.Parse(json)), opts).First();
             var transformedJson = result.Json();
 
             // Assert

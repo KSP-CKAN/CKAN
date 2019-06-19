@@ -18,17 +18,15 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(SpacedockTransformer));
 
         private readonly ISpacedockApi _api;
-        private readonly int?          _releases;
 
         public string Name { get { return "spacedock"; } }
 
-        public SpacedockTransformer(ISpacedockApi api, int? releases)
+        public SpacedockTransformer(ISpacedockApi api)
         {
             _api      = api;
-            _releases = releases;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Kref != null && metadata.Kref.Source == "spacedock")
             {
@@ -40,9 +38,9 @@ namespace CKAN.NetKAN.Transformers
                 // Look up our mod on SD by its Id.
                 var sdMod = _api.GetMod(Convert.ToInt32(metadata.Kref.Id));
                 var versions = sdMod.All();
-                if (_releases.HasValue)
+                if (opts.Releases.HasValue)
                 {
-                    versions = versions.Take(_releases.Value);
+                    versions = versions.Take(opts.Releases.Value);
                 }
                 if (versions.Any())
                 {

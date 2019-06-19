@@ -14,6 +14,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class SpacedockTransformerTests
     {
+        private TransformOptions opts = new TransformOptions(1);
+
         // GH #199: Don't pre-fill KSP version fields if we see a ksp_min/max
         [Test]
         public void DoesNotReplaceKspVersionProperties()
@@ -37,7 +39,7 @@ namespace Tests.NetKAN.Transformers
                     }
                 });
 
-            ITransformer sut = new SpacedockTransformer(mApi.Object, 1);
+            ITransformer sut = new SpacedockTransformer(mApi.Object);
 
             JObject json            = new JObject();
             json["spec_version"]    = 1;
@@ -45,7 +47,7 @@ namespace Tests.NetKAN.Transformers
             json["ksp_version_min"] = "0.23.5";
 
             // Act
-            Metadata result          = sut.Transform(new Metadata(json)).First();
+            Metadata result          = sut.Transform(new Metadata(json), opts).First();
             JObject  transformedJson = result.Json();
 
             // Assert

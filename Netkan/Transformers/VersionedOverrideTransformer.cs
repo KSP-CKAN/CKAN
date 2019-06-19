@@ -37,7 +37,7 @@ namespace CKAN.NetKAN.Transformers
             _after.Add(after);
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             var json = metadata.Json();
 

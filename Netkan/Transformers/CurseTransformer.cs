@@ -19,17 +19,15 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(CurseTransformer));
 
         private readonly ICurseApi _api;
-        private readonly int?      _releases;
 
         public string Name { get { return "curse"; } }
 
-        public CurseTransformer(ICurseApi api, int? releases)
+        public CurseTransformer(ICurseApi api)
         {
             _api      = api;
-            _releases = releases;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Kref != null && metadata.Kref.Source == "curse")
             {
@@ -41,9 +39,9 @@ namespace CKAN.NetKAN.Transformers
                 // Look up our mod on Curse by its Id.
                 var curseMod = _api.GetMod(metadata.Kref.Id);
                 var versions = curseMod.All();
-                if (_releases.HasValue)
+                if (opts.Releases.HasValue)
                 {
-                    versions = versions.Take(_releases.Value);
+                    versions = versions.Take(opts.Releases.Value);
                 }
                 if (versions.Any())
                 {

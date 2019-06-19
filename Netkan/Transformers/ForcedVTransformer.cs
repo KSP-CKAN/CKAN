@@ -15,7 +15,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name { get { return "forced_v"; } }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             var json = metadata.Json();
 

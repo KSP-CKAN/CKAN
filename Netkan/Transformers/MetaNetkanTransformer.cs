@@ -27,7 +27,7 @@ namespace CKAN.NetKAN.Transformers
             _http = http;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Kref != null && metadata.Kref.Source == KrefSource)
             {

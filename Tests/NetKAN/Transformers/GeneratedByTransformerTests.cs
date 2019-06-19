@@ -9,6 +9,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class GeneratedByTransformerTests
     {
+        private TransformOptions opts = new TransformOptions(1);
+        
         [Test]
         public void AddsGeneratedByProperty()
         {
@@ -18,7 +20,7 @@ namespace Tests.NetKAN.Transformers
             json["spec_version"] = 1;
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert

@@ -31,7 +31,7 @@ namespace CKAN.NetKAN.Transformers
             _moduleService = moduleService;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Vref != null && metadata.Vref.Source == "ksp-avc")
             {

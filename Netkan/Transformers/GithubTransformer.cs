@@ -18,21 +18,19 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IGithubApi _api;
         private readonly bool       _matchPreleases;
-        private readonly int?       _releases;
 
         public string Name { get { return "github"; } }
 
-        public GithubTransformer(IGithubApi api, bool matchPreleases, int? releases)
+        public GithubTransformer(IGithubApi api, bool matchPreleases)
         {
             if (api == null)
                 throw new ArgumentNullException("api");
 
             _api            = api;
             _matchPreleases = matchPreleases;
-            _releases       = releases;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Kref != null && metadata.Kref.Source == "github")
             {
@@ -59,9 +57,9 @@ namespace CKAN.NetKAN.Transformers
                 // Get the GitHub repository
                 var ghRepo = _api.GetRepo(ghRef);
                 var versions = _api.GetAllReleases(ghRef);
-                if (_releases.HasValue)
+                if (opts.Releases.HasValue)
                 {
-                    versions = versions.Take(_releases.Value);
+                    versions = versions.Take(opts.Releases.Value);
                 }
                 if (versions.Any())
                 {

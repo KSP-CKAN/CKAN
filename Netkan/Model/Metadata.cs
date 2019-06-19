@@ -12,6 +12,7 @@ namespace CKAN.NetKAN.Model
         private const string VersionPropertyName     = "version";
         private const string DownloadPropertyName    = "download";
         public  const string UpdatedPropertyName     = "x_netkan_asset_updated";
+        private const string StagedPropertyName      = "x_netkan_staging";
 
         private readonly JObject _json;
 
@@ -22,6 +23,7 @@ namespace CKAN.NetKAN.Model
         public ModuleVersion Version         { get; private set; }
         public Uri           Download        { get; private set; }
         public DateTime?     RemoteTimestamp { get; private set; }
+        public bool          Staged          { get; private set; }
 
         public Metadata(JObject json)
         {
@@ -90,6 +92,12 @@ namespace CKAN.NetKAN.Model
             if (json.TryGetValue(DownloadPropertyName, out downloadToken))
             {
                 Download = new Uri((string)downloadToken);
+            }
+
+            JToken stagedToken;
+            if (json.TryGetValue(StagedPropertyName, out stagedToken))
+            {
+                Staged = (bool)stagedToken;
             }
 
             JToken   updatedToken;

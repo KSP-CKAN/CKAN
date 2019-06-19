@@ -9,6 +9,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class HttpTransformerTests
     {
+        private TransformOptions opts = new TransformOptions(1);
+
         [TestCase("#/ckan/github/foo/bar")]
         [TestCase("#/ckan/netkan/http://awesomemod.example/awesomemod.netkan")]
         [TestCase("#/ckan/spacedock/1")]
@@ -23,7 +25,7 @@ namespace Tests.NetKAN.Transformers
             json["$kref"] = kref;
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert

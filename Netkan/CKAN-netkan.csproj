@@ -58,6 +58,12 @@
     <Reference Include="Namotion.Reflection" Version="1.0.5">
       <HintPath>..\_build\lib\nuget\Namotion.Reflection.1.0.5\lib\net45\Namotion.Reflection.dll</HintPath>
     </Reference>
+    <Reference Include="AWSSDK.Core" Version="3.3.103">
+      <HintPath>..\_build\lib\nuget\AWSSDK.Core.3.3.103\lib\net45\AWSSDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.SQS" Version="3.3.100.34">
+      <HintPath>..\_build\lib\nuget\AWSSDK.SQS.3.3.100.34\lib\net45\AWSSDK.SQS.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +82,8 @@
     <Compile Include="Extensions\VersionExtensions.cs" />
     <Compile Include="Model\Metadata.cs" />
     <Compile Include="Model\RemoteRef.cs" />
+    <Compile Include="Processors\Inflator.cs" />
+    <Compile Include="Processors\QueueHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CachingHttpService.cs" />

@@ -12,6 +12,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class CurseTransformerTests
     {
+        private TransformOptions opts = new TransformOptions(1);
+
         // GH #199: Don't pre-fill KSP version fields if we see a ksp_min/max
         [Test]
         public void DoesNotReplaceKspVersionProperties()
@@ -21,7 +23,7 @@ namespace Tests.NetKAN.Transformers
             mApi.Setup(i => i.GetMod(It.IsAny<string>()))
                 .Returns(MakeTestMod());
 
-            var sut = new CurseTransformer(mApi.Object, 1);
+            var sut = new CurseTransformer(mApi.Object);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -29,7 +31,7 @@ namespace Tests.NetKAN.Transformers
             json["ksp_version_min"] = "0.23.5";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
