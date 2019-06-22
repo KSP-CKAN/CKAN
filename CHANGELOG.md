@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Suppress autostart warning (#2776 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Skip comments and allow capital letters in locale extractor (#2783 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Fix UK spelling of licence (#2794 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Mark auto-install correctly when installing from .ckan file (#2793 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 - [Build] Update packages (#2775 by: Olympic1; reviewed: DasSkelett, HebaruSan)
