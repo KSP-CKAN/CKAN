@@ -26,43 +26,32 @@ namespace CKAN
         /// <param name="module">Module to install</param>
         public async void InstallModuleDriver(IRegistryQuerier registry, CkanModule module)
         {
-            RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
-            install_ops.with_recommends = false;
-
             try
             {
-                var initialChangeSet = new HashSet<ModChange>();
-                // Install the selected mod
-                initialChangeSet.Add(new ModChange(
-                    new GUIMod(module, registry, CurrentInstance.VersionCriteria()),
-                    GUIModChangeType.Install,
-                    null
-                ));
+                var userChangeSet = new List<ModChange>();
                 InstalledModule installed = registry.InstalledModule(module.identifier);
                 if (installed != null)
                 {
                     // Already installed, remove it first
-                    initialChangeSet.Add(new ModChange(
+                    userChangeSet.Add(new ModChange(
                         new GUIMod(installed.Module, registry, CurrentInstance.VersionCriteria()),
                         GUIModChangeType.Remove,
                         null
                     ));
                 }
-                List<ModChange> fullChangeSet = new List<ModChange>(
-                    await mainModList.ComputeChangeSetFromModList(
-                        registry,
-                        initialChangeSet,
-                        ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, GUI.user),
-                        CurrentInstance.VersionCriteria()
-                    )
-                );
-                if (fullChangeSet != null && fullChangeSet.Count > 0)
+                // Install the selected mod
+                userChangeSet.Add(new ModChange(
+                    new GUIMod(module, registry, CurrentInstance.VersionCriteria()),
+                    GUIModChangeType.Install,
+                    null
+                ));
+                if (userChangeSet.Count > 0)
                 {
                     // Resolve the provides relationships in the dependencies
                     installWorker.RunWorkerAsync(
                         new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                            fullChangeSet,
-                            install_ops
+                            userChangeSet,
+                            RelationshipResolver.DependsOnlyOpts()
                         )
                     );
                 }
