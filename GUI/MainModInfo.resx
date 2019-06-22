@@ -128,7 +128,7 @@
   <data name="GitHubLabel.Text" xml:space="preserve"><value>Source code:</value></data>
   <data name="HomePageLabel.Text" xml:space="preserve"><value>Home page:</value></data>
   <data name="AuthorLabel.Text" xml:space="preserve"><value>Author:</value></data>
-  <data name="LicenseLabel.Text" xml:space="preserve"><value>License:</value></data>
+  <data name="LicenseLabel.Text" xml:space="preserve"><value>Licence:</value></data>
   <data name="MetadataModuleVersionTextBox.Text" xml:space="preserve"><value>0.0.0</value></data>
   <data name="MetadataModuleLicenseTextBox.Text" xml:space="preserve"><value>None</value></data>
   <data name="MetadataModuleAuthorTextBox.Text" xml:space="preserve"><value>Nobody</value></data>

@@ -263,6 +263,9 @@
     <EmbeddedResource Include="Localization\de-DE\AboutDialog.de-DE.resx">
       <DependentUpon>..\..\AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\en-US\AboutDialog.en-US.resx">
+      <DependentUpon>..\..\AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -316,6 +319,9 @@
       <DependentUpon>MainModInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\MainModInfo.de-DE.resx">
+      <DependentUpon>..\..\MainModInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\en-US\MainModInfo.en-US.resx">
       <DependentUpon>..\..\MainModInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ManageKSPInstances.resx">
