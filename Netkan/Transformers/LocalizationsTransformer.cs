@@ -63,6 +63,7 @@ namespace CKAN.NetKAN.Transformers
                     .SelectMany(contents => localizationRegex.Matches(contents).Cast<Match>()
                         .Select(m => m.Groups["contents"].Value))
                     .SelectMany(contents => localeRegex.Matches(contents).Cast<Match>()
+                        .Where(m => m.Groups["contents"].Value.Contains("="))
                         .Select(m => m.Groups["locale"].Value))
                     .Distinct();
                 log.Debug("Locales extracted");
@@ -93,7 +94,7 @@ namespace CKAN.NetKAN.Transformers
             RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.Singleline
         );
         private static readonly Regex localeRegex = new Regex(
-            @"^\s*(?<locale>[-a-zA-Z]+).*?{.*?}",
+            @"^\s*(?<locale>[-a-zA-Z]+).*?{(?<contents>.*?)}",
             RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.Singleline
         );
     }
