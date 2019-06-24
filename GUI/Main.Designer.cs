@@ -48,7 +48,8 @@
             this.kSPCommandlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compatibleKSPVersionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reportAnIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reportClientIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reportMetadataIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
@@ -307,18 +308,26 @@
             // helpToolStripMenuItem
             //
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.reportAnIssueToolStripMenuItem,
+            this.reportClientIssueToolStripMenuItem,
+            this.reportMetadataIssueToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(61, 29);
             resources.ApplyResources(this.helpToolStripMenuItem, "helpToolStripMenuItem");
             //
-            // reportAnIssueToolStripMenuItem
+            // reportClientIssueToolStripMenuItem
             //
-            this.reportAnIssueToolStripMenuItem.Name = "reportAnIssueToolStripMenuItem";
-            this.reportAnIssueToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
-            this.reportAnIssueToolStripMenuItem.Click += new System.EventHandler(this.reportAnIssueToolStripMenuItem_Click);
-            resources.ApplyResources(this.reportAnIssueToolStripMenuItem, "reportAnIssueToolStripMenuItem");
+            this.reportClientIssueToolStripMenuItem.Name = "reportClientIssueToolStripMenuItem";
+            this.reportClientIssueToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
+            this.reportClientIssueToolStripMenuItem.Click += new System.EventHandler(this.reportClientIssueToolStripMenuItem_Click);
+            resources.ApplyResources(this.reportClientIssueToolStripMenuItem, "reportClientIssueToolStripMenuItem");
+            //
+            // reportMetadataIssueToolStripMenuItem
+            //
+            this.reportMetadataIssueToolStripMenuItem.Name = "reportMetadataIssueToolStripMenuItem";
+            this.reportMetadataIssueToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
+            this.reportMetadataIssueToolStripMenuItem.Click += new System.EventHandler(this.reportMetadataIssueToolStripMenuItem_Click);
+            resources.ApplyResources(this.reportMetadataIssueToolStripMenuItem, "reportMetadataIssueToolStripMenuItem");
             //
             // aboutToolStripMenuItem
             //
@@ -1356,7 +1365,8 @@
         private System.Windows.Forms.ToolStripMenuItem kSPCommandlineToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem compatibleKSPVersionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem reportAnIssueToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reportClientIssueToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reportMetadataIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.MenuStrip menuStrip2;

@@ -1163,9 +1163,14 @@ namespace CKAN
             }
         }
 
-        private void reportAnIssueToolStripMenuItem_Click(object sender, EventArgs e)
+        private void reportClientIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/KSP-CKAN/NetKAN/issues/new");
+            Process.Start("https://github.com/KSP-CKAN/CKAN/issues/new/choose");
+        }
+
+        private void reportMetadataIssueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/KSP-CKAN/NetKAN/issues/new/choose");
         }
 
         private void ModList_MouseDown(object sender, MouseEventArgs e)

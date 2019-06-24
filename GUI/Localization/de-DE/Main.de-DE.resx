@@ -177,7 +177,8 @@
   <data name="kSPCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>KSP Befehlszeile</value></data>
   <data name="compatibleKSPVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Kompatible KSP-Versionen</value></data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Hilfe</value></data>
-  <data name="reportAnIssueToolStripMenuItem.Text" xml:space="preserve"><value>Fehler melden</value></data>
+  <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>Fehler mit dem CKAN Client melden</value></data>
+  <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>Fehler mit Mod-Metadaten melden</value></data>
   <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>Über</value></data>
   <data name="launchKSPToolStripMenuItem.Text" xml:space="preserve"><value>KSP starten</value></data>
   <data name="RefreshToolButton.Text" xml:space="preserve"><value>Aktualisieren</value></data>
