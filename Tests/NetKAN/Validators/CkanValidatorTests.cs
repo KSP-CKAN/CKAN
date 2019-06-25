@@ -18,6 +18,9 @@ namespace Tests.NetKAN.Validators
         {
             ValidCkan["spec_version"] = 1;
             ValidCkan["identifier"] = "AwesomeMod";
+            ValidCkan["name"] = "Awesome Mod";
+            ValidCkan["abstract"] = "A great mod";
+            ValidCkan["license"] = "GPL-3.0";
             ValidCkan["version"] = "1.0.0";
             ValidCkan["download"] = "https://www.awesome-mod.example/AwesomeMod.zip";
         }
@@ -32,11 +35,14 @@ namespace Tests.NetKAN.Validators
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(true);
 
-            var netkan = new JObject();
-            netkan["spec_version"] = 1;
-            netkan["identifier"] = "AwesomeMod";
+            var ckan = new JObject();
+            ckan["spec_version"] = 1;
+            ckan["identifier"] = "AwesomeMod";
+            ckan["name"] = "Awesome Mod";
+            ckan["abstract"] = "A great mod";
+            ckan["license"] = "GPL-3.0";
 
-            var sut = new CkanValidator(new Metadata(netkan), mHttp.Object, mModuleService.Object);
+            var sut = new CkanValidator(new Metadata(ckan), mHttp.Object, mModuleService.Object);
             var json = (JObject)ValidCkan.DeepClone();
 
             // Act

@@ -15,14 +15,13 @@ namespace CKAN.NetKAN.Model
 
         private readonly JObject _json;
 
-        // FIXME: Alignment
-        public string    Identifier      { get { return (string)_json["identifier"]; } }
-        public RemoteRef Kref            { get; private set; }
-        public RemoteRef Vref            { get; private set; }
-        public ModuleVersion   SpecVersion     { get; private set; }
-        public ModuleVersion   Version         { get; private set; }
-        public Uri       Download        { get; private set; }
-        public DateTime? RemoteTimestamp { get; private set; }
+        public string        Identifier      { get { return (string)_json["identifier"]; } }
+        public RemoteRef     Kref            { get; private set; }
+        public RemoteRef     Vref            { get; private set; }
+        public ModuleVersion SpecVersion     { get; private set; }
+        public ModuleVersion Version         { get; private set; }
+        public Uri           Download        { get; private set; }
+        public DateTime?     RemoteTimestamp { get; private set; }
 
         public Metadata(JObject json)
         {
