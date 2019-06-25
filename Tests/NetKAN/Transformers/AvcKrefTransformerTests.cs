@@ -12,6 +12,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class AvcKrefTransformerTests
     {
+        private TransformOptions opts = new TransformOptions(1);
+
         [Test,
             TestCase(
                 "https://mysite.org/AwesomeMod.version",
@@ -66,7 +68,7 @@ namespace Tests.NetKAN.Transformers
 
             // Act
             var tran = new AvcKrefTransformer(http);
-            return tran.Transform(new Metadata(json)).First();
+            return tran.Transform(new Metadata(json), opts).First();
         }
 
     }

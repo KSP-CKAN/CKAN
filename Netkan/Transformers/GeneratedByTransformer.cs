@@ -15,7 +15,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name { get { return "generated_by"; } }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             var json = metadata.Json();
 

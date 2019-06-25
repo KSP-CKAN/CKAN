@@ -14,6 +14,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class GithubTransformerTests
     {
+        private TransformOptions opts = new TransformOptions(1);
+
         [Test]
         public void CalculatesRepositoryUrlCorrectly()
         {
@@ -45,10 +47,10 @@ namespace Tests.NetKAN.Transformers
                     null
                 )});
 
-            var sut = new GithubTransformer(mApi.Object, false, 1);
+            var sut = new GithubTransformer(mApi.Object, false);
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -89,10 +91,10 @@ namespace Tests.NetKAN.Transformers
                     null
                 )});
 
-            ITransformer sut = new GithubTransformer(mApi.Object, false, 1);
+            ITransformer sut = new GithubTransformer(mApi.Object, false);
 
             // Act
-            Metadata result = sut.Transform(new Metadata(json)).First();
+            Metadata result = sut.Transform(new Metadata(json), opts).First();
             JObject transformedJson = result.Json();
 
             // Assert

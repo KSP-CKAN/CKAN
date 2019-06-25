@@ -37,6 +37,9 @@ namespace CKAN.NetKAN
         [Option("overwrite-cache", HelpText = "Overwrite cached files")]
         public bool OverwriteCache { get; set; }
 
+        [Option("queues", HelpText = "Input,Output queue names for Queue Inflator mode")]
+        public string Queues { get; set; }
+
         [Option("version", HelpText = "Display the netkan version number and exit")]
         public bool Version { get; set; }
 

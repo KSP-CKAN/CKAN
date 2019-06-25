@@ -12,7 +12,8 @@ All notable changes to this project will be documented in this file.
 - [GUI] Internationalize the GUI (#2749 by: HebaruSan, DasSkelett; reviewed: DasSkelett, Olympic1)
 - [NetKAN] Extract locales from downloads (#2760 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Add menu option to report issues in the CKAN repo (#2801 by: DasSkelett; reviewed: HebaruSan)
-- [NetKAN] Migrate Perl validation checks into netkan.exe (#2788 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Migrate Perl validation checks into netkan.exe (#2788 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Refactor Netkan for SQS mode (#2798 by: HebaruSan; reviewed: DasSkelett, techman83)
 
 ### Bugfixes
 

@@ -8,14 +8,13 @@ namespace CKAN.NetKAN.Validators
     {
         private readonly List<IValidator> _validators;
 
-        public NetkanValidator(string filename)
+        public NetkanValidator()
         {
             _validators = new List<IValidator>()
             {
                 new SpecVersionFormatValidator(),
                 new HasIdentifierValidator(),
                 new KrefValidator(),
-                new MatchingIdentifiersValidator(Path.GetFileNameWithoutExtension(filename)),
                 new AlphaNumericIdentifierValidator(),
                 new RelationshipsValidator(),
                 new LicensesValidator(),
@@ -34,6 +33,13 @@ namespace CKAN.NetKAN.Validators
             {
                 validator.Validate(metadata);
             }
+        }
+
+        public void ValidateNetkan(Metadata metadata, string filename)
+        {
+            Validate(metadata);
+            new MatchingIdentifiersValidator(Path.GetFileNameWithoutExtension(filename)).Validate(metadata);
+
         }
     }
 }

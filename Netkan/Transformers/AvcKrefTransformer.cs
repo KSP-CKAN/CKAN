@@ -25,7 +25,7 @@ namespace CKAN.NetKAN.Transformers
             httpSvc = http;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Kref?.Source == "ksp-avc")
             {

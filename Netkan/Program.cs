@@ -14,6 +14,7 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Validators;
+using CKAN.NetKAN.Processors;
 
 namespace CKAN.NetKAN
 {
@@ -49,40 +50,37 @@ namespace CKAN.NetKAN
                     return ExitOk;
                 }
 
+                if (!string.IsNullOrEmpty(Options.Queues))
+                {
+                    var queues = Options.Queues.Split(new char[] { ',' }, 2);
+                    var qh = new QueueHandler(
+                        queues[0],
+                        queues[1],
+                        Options.CacheDir,
+                        Options.OverwriteCache,
+                        Options.GitHubToken,
+                        Options.PreRelease
+                    );
+                    qh.Process();
+                    return ExitOk;
+                }
+
                 if (Options.File != null)
                 {
                     Log.InfoFormat("Transforming {0}", Options.File);
 
-                    var moduleService = new ModuleService();
-                    var fileService = new FileService();
-                    cache = FindCache(
-                        new KSPManager(new ConsoleUser(false)),
-                        new Win32Registry()
-                    );
-                    http = new CachingHttpService(cache, Options.OverwriteCache);
-
                     var netkan = ReadNetkan();
                     Log.Info("Finished reading input");
 
-                    new NetkanValidator(Options.File).Validate(netkan);
-                    Log.Info("Input successfully passed pre-validation");
-
-                    var transformer = new NetkanTransformer(
-                        http,
-                        fileService,
-                        moduleService,
+                    var inf = new Inflator(
+                        Options.CacheDir,
+                        Options.OverwriteCache,
                         Options.GitHubToken,
-                        Options.PreRelease,
-                        ParseReleases(Options.Releases)
+                        Options.PreRelease
                     );
-
-                    IEnumerable<Metadata> ckans = transformer.Transform(netkan);
-                    Log.Info("Finished transformation");
+                    var ckans = inf.Inflate(Options.File, netkan, ParseReleases(Options.Releases));
                     foreach (Metadata ckan in ckans)
                     {
-                        new CkanValidator(netkan, http, moduleService).Validate(ckan);
-                        Log.Info("Output successfully passed post-validation");
-
                         WriteCkan(ckan);
                     }
                 }
@@ -91,16 +89,12 @@ namespace CKAN.NetKAN
                     Log.Fatal(
                         "Usage: netkan [--verbose|--debug] [--debugger] [--prerelease] [--outputdir=...] <filename>"
                     );
-
                     return ExitBadOpt;
                 }
             }
             catch (Exception e)
             {
                 e = e.GetBaseException() ?? e;
-
-                // Purge anything we download for a failed indexing attempt from the cache to allow re-downloads
-                PurgeDownloads(http, cache);
 
                 Log.Fatal(e.Message);
 
@@ -148,31 +142,6 @@ namespace CKAN.NetKAN
             }
         }
 
-        private static NetFileCache FindCache(KSPManager kspManager, IWin32Registry reg)
-        {
-            if (Options.CacheDir != null)
-            {
-                Log.InfoFormat("Using user-supplied cache at {0}", Options.CacheDir);
-                return new NetFileCache(Options.CacheDir);
-            }
-
-            try
-            {
-                Log.InfoFormat("Using main CKAN meta-cache at {0}", reg.DownloadCacheDir);
-                /// Create a new file cache in the same location so NetKAN can download pure URLs not sourced from CkanModules
-                return new NetFileCache(kspManager, reg.DownloadCacheDir);
-            }
-            catch
-            {
-                // Meh, can't find KSP. 'Scool, bro.
-            }
-
-            var tempdir = Path.GetTempPath();
-            Log.InfoFormat("Using tempdir for cache: {0}", tempdir);
-
-            return new NetFileCache(tempdir);
-        }
-
         private static Metadata ReadNetkan()
         {
             if (!Options.File.EndsWith(".netkan"))
@@ -183,13 +152,21 @@ namespace CKAN.NetKAN
             return new Metadata(JObject.Parse(File.ReadAllText(Options.File)));
         }
 
+        internal static string CkanFileName(Metadata metadata)
+        {
+            return Path.Combine(
+                Options.OutputDir,
+                string.Format(
+                    "{0}-{1}.ckan",
+                    metadata.Identifier,
+                    metadata.Version.ToString().Replace(':', '-')
+                )
+            );
+        }
+
         private static void WriteCkan(Metadata metadata)
         {
-            var versionFilename = metadata.Version.ToString().Replace(':', '-');
-            var finalPath = Path.Combine(
-                Options.OutputDir,
-                string.Format("{0}-{1}.ckan", metadata.Identifier, versionFilename)
-            );
+            var finalPath = CkanFileName(metadata);
 
             var sb = new StringBuilder();
             var sw = new StringWriter(sb);
@@ -207,17 +184,6 @@ namespace CKAN.NetKAN
             File.WriteAllText(finalPath, sw + Environment.NewLine);
 
             Log.InfoFormat("Transformation written to {0}", finalPath);
-        }
-
-        private static void PurgeDownloads(IHttpService http, NetFileCache cache)
-        {
-            if (http != null && cache != null)
-            {
-                foreach (Uri url in http.RequestedURLs)
-                {
-                    cache.Remove(url);
-                }
-            }
         }
 
     }

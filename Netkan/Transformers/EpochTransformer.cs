@@ -15,7 +15,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name { get { return "epoch"; } }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             Log.Debug("Fixing version strings (if required)...");
 

@@ -38,7 +38,7 @@ namespace CKAN.NetKAN.Transformers
         /// <returns>
         /// Updated metadata with the `locales` property set
         /// </returns>
-        public IEnumerable<Metadata> Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             JObject json = metadata.Json();
             if (json.ContainsKey(localizationsProperty))

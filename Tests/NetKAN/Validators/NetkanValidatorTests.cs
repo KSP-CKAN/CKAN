@@ -12,7 +12,7 @@ namespace Tests.NetKAN.Validators
         public void DoesNotThrowWhenIdentifierPresent()
         {
             // Arrange
-            var sut = new NetkanValidator("AwesomeMod.netkan");
+            var sut = new NetkanValidator();
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AwesomeMod";
@@ -32,7 +32,7 @@ namespace Tests.NetKAN.Validators
         public void DoesThrowWhenIdentifierMissing()
         {
             // Arrange
-            var sut = new NetkanValidator("AwesomeMod.netkan");
+            var sut = new NetkanValidator();
             var json = new JObject();
             json["spec_version"] = 1;
 

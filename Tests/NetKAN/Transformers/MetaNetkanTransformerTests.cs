@@ -13,6 +13,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class MetaNetkanTransformerTests
     {
+        private TransformOptions opts = new TransformOptions(1);
+
         [Test]
         public void DoesNothingWhenNoMatch()
         {
@@ -26,7 +28,7 @@ namespace Tests.NetKAN.Transformers
             json["$kref"] = "#/ckan/foo";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -55,7 +57,7 @@ namespace Tests.NetKAN.Transformers
             json["$kref"] = "#/ckan/netkan/http://awesomemod.example/AwesomeMod.netkan";
 
             // Act
-            TestDelegate act = () => sut.Transform(new Metadata(json)).First();
+            TestDelegate act = () => sut.Transform(new Metadata(json), opts).First();
 
             // Assert
             Assert.That(act, Throws.Exception.InstanceOf<Kraken>(),
@@ -83,7 +85,7 @@ namespace Tests.NetKAN.Transformers
             json["$kref"] = "#/ckan/netkan/http://awesomemod.example/AwesomeMod.netkan";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -113,7 +115,7 @@ namespace Tests.NetKAN.Transformers
             json["foo"] = "baz";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -142,7 +144,7 @@ namespace Tests.NetKAN.Transformers
             json["$kref"] = "#/ckan/netkan/http://awesomemod.example/AwesomeMod.netkan";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert

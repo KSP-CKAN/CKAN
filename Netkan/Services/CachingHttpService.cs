@@ -84,6 +84,10 @@ namespace CKAN.NetKAN.Services
         }
 
         public IEnumerable<Uri> RequestedURLs { get { return _requestedURLs; } }
+        public void ClearRequestedURLs()
+        {
+            _requestedURLs?.Clear();
+        }
 
     }
 }

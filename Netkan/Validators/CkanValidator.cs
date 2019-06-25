@@ -8,12 +8,11 @@ namespace CKAN.NetKAN.Validators
     {
         private readonly List<IValidator> _validators;
 
-        public CkanValidator(Metadata netkan, IHttpService downloader, IModuleService moduleService)
+        public CkanValidator(IHttpService downloader, IModuleService moduleService)
         {
             _validators = new List<IValidator>
             {
                 new IsCkanModuleValidator(),
-                new MatchingIdentifiersValidator(netkan.Identifier),
                 new InstallsFilesValidator(downloader, moduleService),
                 new MatchesKnownGameVersionsValidator(),
                 new ObeysCKANSchemaValidator()
@@ -26,6 +25,12 @@ namespace CKAN.NetKAN.Validators
             {
                 validator.Validate(metadata);
             }
+        }
+
+        public void ValidateCkan(Metadata metadata, Metadata netkan)
+        {
+            Validate(metadata);
+            new MatchingIdentifiersValidator(netkan.Identifier).Validate(metadata);
         }
     }
 }

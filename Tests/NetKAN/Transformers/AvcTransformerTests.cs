@@ -14,6 +14,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class AvcTransformerTests
     {
+        private TransformOptions opts = new TransformOptions(1);
+
         [Test]
         public void AddsMissingVersionInfo()
         {
@@ -39,7 +41,7 @@ namespace Tests.NetKAN.Transformers
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -77,7 +79,7 @@ namespace Tests.NetKAN.Transformers
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -209,7 +211,7 @@ namespace Tests.NetKAN.Transformers
             var sut = new AvcTransformer(mHttp.Object, mModuleService.Object);
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -248,7 +250,7 @@ namespace Tests.NetKAN.Transformers
             json["version"] = "9001";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -280,7 +282,7 @@ namespace Tests.NetKAN.Transformers
             json["x_netkan_trust_version_file"] = true;
 
             // Act
-            Metadata result          = sut.Transform(new Metadata(json)).First();
+            Metadata result          = sut.Transform(new Metadata(json), opts).First();
             JObject  transformedJson = result.Json();
 
             // Assert

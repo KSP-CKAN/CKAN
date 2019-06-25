@@ -42,7 +42,7 @@ namespace Tests.NetKAN.Validators
             ckan["abstract"] = "A great mod";
             ckan["license"] = "GPL-3.0";
 
-            var sut = new CkanValidator(new Metadata(ckan), mHttp.Object, mModuleService.Object);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object);
             var json = (JObject)ValidCkan.DeepClone();
 
             // Act
@@ -67,7 +67,7 @@ namespace Tests.NetKAN.Validators
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(true);
 
-            var sut = new CkanValidator(new Metadata(ValidCkan), mHttp.Object, mModuleService.Object);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object);
             var json = (JObject)ValidCkan.DeepClone();
             json.Remove(propertyName);
 
@@ -90,7 +90,7 @@ namespace Tests.NetKAN.Validators
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(true);
 
-            var sut = new CkanValidator(new Metadata(ValidCkan), mHttp.Object, mModuleService.Object);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object);
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AmazingMod";
@@ -118,7 +118,7 @@ namespace Tests.NetKAN.Validators
             netkan["spec_version"] = 1;
             netkan["identifier"] = "AwesomeMod";
 
-            var sut = new CkanValidator(new Metadata(netkan), mHttp.Object, mModuleService.Object);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object);
             var json = (JObject)ValidCkan.DeepClone();
 
             // Act

@@ -10,6 +10,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class VersionEditTransformerTests
     {
+        private TransformOptions opts = new TransformOptions(1);
+
         [Test]
         public void DoesNothingWhenNoMatch()
         {
@@ -21,7 +23,7 @@ namespace Tests.NetKAN.Transformers
             json["version"] = "1.2.3";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -42,7 +44,7 @@ namespace Tests.NetKAN.Transformers
             json["x_netkan_version_edit"] = "^v?(?<version>.+)$";
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -64,7 +66,7 @@ namespace Tests.NetKAN.Transformers
             json["x_netkan_version_edit"] = edit;
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -87,7 +89,7 @@ namespace Tests.NetKAN.Transformers
             json["x_netkan_version_edit"] = edit;
 
             // Act
-            var result = sut.Transform(new Metadata(json)).First();
+            var result = sut.Transform(new Metadata(json), opts).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -109,7 +111,7 @@ namespace Tests.NetKAN.Transformers
             json["x_netkan_version_edit"] = edit;
 
             // Act
-            TestDelegate act = () => sut.Transform(new Metadata(json)).First();
+            TestDelegate act = () => sut.Transform(new Metadata(json), opts).First();
 
             // Assert
             Assert.That(act, Throws.Exception.TypeOf<Kraken>());
@@ -131,7 +133,7 @@ namespace Tests.NetKAN.Transformers
             json["x_netkan_version_edit"] = edit;
 
             // Act
-            TestDelegate act = () => sut.Transform(new Metadata(json)).First();
+            TestDelegate act = () => sut.Transform(new Metadata(json), opts).First();
 
             // Assert
             Assert.That(act, Throws.Nothing);

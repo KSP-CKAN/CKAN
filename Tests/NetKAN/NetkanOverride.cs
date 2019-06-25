@@ -11,6 +11,7 @@ namespace Tests.NetKAN
     public class NetkanOverride
     {
         JObject such_metadata;
+        private TransformOptions opts = new TransformOptions(1);
 
         [SetUp]
         public void Setup()
@@ -146,8 +147,8 @@ namespace Tests.NetKAN
             var earlyTransformer = new VersionedOverrideTransformer(new[] { "$all" }, new[] { "$none" });
             var lateTransformer = new VersionedOverrideTransformer(new[] { "$none" }, new[] { "$all" });
 
-            var transformedMetadata1 = earlyTransformer.Transform(new Metadata(metadata)).First().Json();
-            var transformedMetadata2 = lateTransformer.Transform(new Metadata(transformedMetadata1)).First();
+            var transformedMetadata1 = earlyTransformer.Transform(new Metadata(metadata), opts).First().Json();
+            var transformedMetadata2 = lateTransformer.Transform(new Metadata(transformedMetadata1), opts).First();
 
             Assert.AreEqual((string)transformedMetadata2.Json()["name"], "LATE");
         }
@@ -170,7 +171,7 @@ namespace Tests.NetKAN
                 after: new string[] { null }
             );
 
-            return transformer.Transform(new Metadata(metadata)).First().Json();
+            return transformer.Transform(new Metadata(metadata), opts).First().Json();
         }
 
         /// <summary>

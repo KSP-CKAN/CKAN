@@ -10,5 +10,6 @@ namespace CKAN.NetKAN.Services
         string DownloadText(Uri url, string authToken);
 
         IEnumerable<Uri> RequestedURLs { get; }
+        void ClearRequestedURLs();
     }
 }
