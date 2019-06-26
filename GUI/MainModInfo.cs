@@ -122,6 +122,11 @@ namespace CKAN
             m_CacheWorker.RunWorkerAsync(module.ToCkanModule());
         }
 
+        private void ContentsOpenButton_Click(object sender, EventArgs e)
+        {
+            Process.Start(manager.Cache.GetCachedFilename(SelectedModule));
+        }
+
         private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Util.HandleLinkClicked((sender as LinkLabel).Text, e);
@@ -136,7 +141,14 @@ namespace CKAN
             Util.Invoke(MetadataModuleLicenseTextBox, () => MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license));
             Util.Invoke(MetadataModuleAuthorTextBox, () => MetadataModuleAuthorTextBox.Text = gui_module.Authors);
             Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = gui_module.Abstract);
-            Util.Invoke(MetadataModuleDescriptionTextBox, () => MetadataModuleDescriptionTextBox.Text = gui_module.Description);
+            Util.Invoke(MetadataModuleDescriptionTextBox, () =>
+            {
+                MetadataModuleDescriptionTextBox.Text = gui_module.Description;
+                MetadataModuleDescriptionTextBox.ScrollBars =
+                    string.IsNullOrWhiteSpace(gui_module.Description)
+                        ? ScrollBars.None
+                        : ScrollBars.Vertical;
+            });
             Util.Invoke(MetadataIdentifierTextBox, () => MetadataIdentifierTextBox.Text = gui_module.Identifier);
 
             // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
@@ -416,12 +428,14 @@ namespace CKAN
             {
                 NotCachedLabel.Text = Properties.Resources.MainModInfoNotCached;
                 ContentsDownloadButton.Enabled = true;
+                ContentsOpenButton.Enabled = false;
                 ContentsPreviewTree.Enabled = false;
             }
             else
             {
                 NotCachedLabel.Text = Properties.Resources.MainModInfoCached;
                 ContentsDownloadButton.Enabled = false;
+                ContentsOpenButton.Enabled = true;
                 ContentsPreviewTree.Enabled = true;
             }
 

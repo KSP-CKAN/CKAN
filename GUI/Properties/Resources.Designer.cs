@@ -728,5 +728,9 @@ namespace CKAN.Properties {
         internal static string UtilCopyLink {
             get { return (string)(ResourceManager.GetObject("UtilCopyLink", resourceCulture)); }
         }
+
+        internal static string StatusInstanceLabelText {
+            get { return (string)(ResourceManager.GetObject("StatusInstanceLabelText", resourceCulture)); }
+        }
    }
 }

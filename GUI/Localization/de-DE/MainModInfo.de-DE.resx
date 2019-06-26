@@ -137,6 +137,7 @@
   <data name="LegendConflictsLabel.Text" xml:space="preserve"><value>Konflikt</value></data>
   <data name="ContentTabPage.Text" xml:space="preserve"><value>Inhalt</value></data>
   <data name="ContentsDownloadButton.Text" xml:space="preserve"><value>Herunterladen</value></data>
+  <data name="ContentsOpenButton.Text" xml:space="preserve"><value>ZIP öffnen</value></data>
   <data name="NotCachedLabel.Text" xml:space="preserve"><value>Diese Mod ist nicht im Cache, klicke 'Herunterladen' für eine Inhaltsvorschau</value></data>
   <data name="AllModVersionsTabPage.Text" xml:space="preserve"><value>Versionen</value></data>
 </root>
