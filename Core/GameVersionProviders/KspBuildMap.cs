@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
+using CKAN.Versioning;
 
 namespace CKAN.GameVersionProviders
 {
@@ -55,41 +55,34 @@ namespace CKAN.GameVersionProviders
         {
             if (ReferenceEquals(_jBuilds, null))
             {
-                lock(_buildMapLock)
+                lock (_buildMapLock)
                 {
                     if (ReferenceEquals(_jBuilds, null))
                     {
-                        Refresh(useCachedVersion: true);
+                        Refresh(BuildMapSource.Cache);
                     }
                 }
             }
         }
 
-        public void Refresh()
+        /// <summary>
+        /// Load a build map
+        /// </summary>
+        /// <param name="source">Remote to download builds.json from GitHub (default), Cache to use the data from the last remote refresh, Embedded to use the builds.json built into the exe</param>
+        public void Refresh(BuildMapSource source = BuildMapSource.Remote)
         {
-            Refresh(useCachedVersion: false);
-        }
-
-        private void Refresh(bool useCachedVersion)
-        {
-            if (useCachedVersion)
+            switch (source)
             {
-                // Attempt to set the build map from the cached version in the registry
-                if (TrySetRegistryBuildMap()) return;
+                case BuildMapSource.Cache:
+                    if (TrySetRegistryBuildMap()) return;
+                    if (TrySetRemoteBuildMap())   return;
+                    break;
 
-                // Attempt to set the build map from the repository
-                if (TrySetRemoteBuildMap()) return;
+                case BuildMapSource.Remote:
+                    if (TrySetRemoteBuildMap())   return;
+                    if (TrySetRegistryBuildMap()) return;
+                    break;
             }
-            else
-            {
-                // Attempt to set the build map from the repository
-                if (TrySetRemoteBuildMap()) return;
-
-                // Attempt to set the build map from the cached version in the registry
-                if (TrySetRegistryBuildMap()) return;
-            }
-
-            // If that fails attempt to set the build map from the embedded version
             if (TrySetEmbeddedBuildMap()) return;
 
             Log.Warn("Could not refresh the build map from any source");
