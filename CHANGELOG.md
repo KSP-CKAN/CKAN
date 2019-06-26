@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix UK spelling of licence (#2794 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Mark auto-install correctly when installing from .ckan file (#2793 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Ignore locales with no strings (#2805 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Fix http kref validation (#2811 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 - [Build] Update packages (#2775 by: Olympic1; reviewed: DasSkelett, HebaruSan)
