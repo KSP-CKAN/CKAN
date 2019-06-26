@@ -55,7 +55,7 @@ namespace CKAN.NetKAN.Processors
             {
                 // Purge anything we download for a failed indexing attempt from the cache to allow re-downloads
                 PurgeDownloads(http, cache);
-                throw e;
+                throw;
             }
         }
 
