@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CKAN;
+using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
 
@@ -164,14 +165,38 @@ namespace Tests.Core
         // FakeInstance
 
         [Test]
-        public void FakeInstance_InvalidVersion_ThrowsArgumentOutOfRangeException()
+        public void FakeInstance_InvalidVersion_ThrowsBadKSPVersionKraken()
         {
             string name = "testname";
             string tempdir = TestData.NewTempDir();
-            CKAN.Versioning.KspVersion version = CKAN.Versioning.KspVersion.Parse("1.1.99");
+            KspVersion version = KspVersion.Parse("1.1.99");
 
-            Assert.Throws<IncorrectKSPVersionKraken>(() =>
+            Assert.Throws<BadKSPVersionKraken>(() =>
                 manager.FakeInstance(name, tempdir, version));
+            Assert.IsFalse(manager.HasInstance(name));
+
+            // Tidy up.
+            System.IO.Directory.Delete(tempdir, true);
+        }
+
+        [Test,
+            TestCase("1.4.0"),
+            TestCase("1.6.1")]
+        public void FakeInstance_DlcsWithWrongBaseVersion_ThrowsWrongKSPVersionKraken(string baseVersion)
+        {
+            string name = "testname";
+            KspVersion mhVersion = KspVersion.Parse("1.1.0");
+            KspVersion bgVersion = KspVersion.Parse("1.0.0");
+            string tempdir = TestData.NewTempDir();
+            KspVersion version = KspVersion.Parse(baseVersion);
+
+            Dictionary<CKAN.DLC.IDlcDetector, KspVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, KspVersion>() {
+                    { new CKAN.DLC.MakingHistoryDlcDetector(), mhVersion },
+                    { new CKAN.DLC.BreakingGroundDlcDetector(), bgVersion }
+                };
+
+            Assert.Throws<WrongKSPVersionKraken>(() =>
+                manager.FakeInstance(name, tempdir, version, dlcs));
             Assert.IsFalse(manager.HasInstance(name));
 
             // Tidy up.
@@ -183,7 +208,7 @@ namespace Tests.Core
         {
             string name = "testname";
             string tempdir = TestData.NewTempDir();
-            CKAN.Versioning.KspVersion version = CKAN.Versioning.KspVersion.Parse("1.5.1");
+            KspVersion version = KspVersion.Parse("1.5.1");
             System.IO.File.Create(System.IO.Path.Combine(tempdir, "shouldntbehere.txt")).Close();
 
             Assert.Throws<BadInstallLocationKraken>(() =>
@@ -195,20 +220,29 @@ namespace Tests.Core
         }
 
         [Test]
-        public void FakeInstance_ValidArgumentsWithDLC_ManagerHasValidInstance()
+        public void FakeInstance_ValidArgumentsWithDLCs_ManagerHasValidInstance()
         {
             string name = "testname";
-            string dlcVersion = "1.1.0";
+            KspVersion mhVersion = KspVersion.Parse("1.1.0");
+            KspVersion bgVersion = KspVersion.Parse("1.0.0");
             string tempdir = TestData.NewTempDir();
-            CKAN.Versioning.KspVersion version = CKAN.Versioning.KspVersion.Parse("1.6.0");
+            KspVersion version = KspVersion.Parse("1.7.1");
 
-            manager.FakeInstance(name, tempdir, version, dlcVersion);
+            Dictionary<CKAN.DLC.IDlcDetector, KspVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, KspVersion>() {
+                    { new CKAN.DLC.MakingHistoryDlcDetector(), mhVersion },
+                    { new CKAN.DLC.BreakingGroundDlcDetector(), bgVersion }
+                };
+
+            manager.FakeInstance(name, tempdir, version, dlcs);
             CKAN.KSP newKSP = new CKAN.KSP(tempdir, name, new NullUser());
-            CKAN.DLC.MakingHistoryDlcDetector detector = new CKAN.DLC.MakingHistoryDlcDetector();
+            CKAN.DLC.MakingHistoryDlcDetector mhDetector = new CKAN.DLC.MakingHistoryDlcDetector();
+            CKAN.DLC.BreakingGroundDlcDetector bgDetector = new CKAN.DLC.BreakingGroundDlcDetector();
 
             Assert.IsTrue(manager.HasInstance(name));
-            Assert.IsTrue(detector.IsInstalled(newKSP, out string _dump, out CKAN.Versioning.UnmanagedModuleVersion dlcVersionObject));
-            Assert.IsTrue(dlcVersionObject.ToString().Contains(dlcVersion));
+            Assert.IsTrue(mhDetector.IsInstalled(newKSP, out string _, out UnmanagedModuleVersion detectedMhVersion));
+            Assert.IsTrue(bgDetector.IsInstalled(newKSP, out string _, out UnmanagedModuleVersion detectedBgVersion));
+            Assert.IsTrue(detectedMhVersion == new UnmanagedModuleVersion(mhVersion.ToString()));
+            Assert.IsTrue(detectedBgVersion == new UnmanagedModuleVersion(bgVersion.ToString()));
 
             // Tidy up.
             CKAN.RegistryManager.Instance(newKSP).ReleaseLock();

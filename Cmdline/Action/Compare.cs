@@ -22,7 +22,12 @@ namespace CKAN.CmdLine
                 var rightVersion = new ModuleVersion(options.Right);
 
                 int compareResult = leftVersion.CompareTo(rightVersion);
-                if (compareResult == 0)
+
+                if (options.machine_readable)
+                {
+                    user.RaiseMessage(compareResult.ToString());
+                }
+                else if (compareResult == 0)
                 {
                     user.RaiseMessage(
                         "\"{0}\" and \"{1}\" are the same versions.", leftVersion, rightVersion);

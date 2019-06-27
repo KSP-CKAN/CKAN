@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Migrate Perl validation checks into netkan.exe (#2788 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Refactor Netkan for SQS mode (#2798 by: HebaruSan; reviewed: DasSkelett, techman83)
 - [GUI] Open ZIP button, instance name in status bar, description scroll bar (#2813 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Support BreakingGround-DLC in instance faking (#2773 by: DasSkelett; reviewed: HebaruSan)
 
 ### Bugfixes
 

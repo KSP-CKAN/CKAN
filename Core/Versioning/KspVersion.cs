@@ -487,7 +487,7 @@ namespace CKAN.Versioning
             }
             else if (!IsMajorDefined || !IsMinorDefined)
             {
-                throw new IncorrectKSPVersionKraken("Needs at least Major and Minor");
+                throw new BadKSPVersionKraken("Needs at least Major and Minor");
             }
             else
             {
@@ -533,7 +533,7 @@ namespace CKAN.Versioning
                 if (possibleVersions.Count == 0)
                 {
                     // No version found in the map. Happens for future or other unknown versions.
-                    throw new IncorrectKSPVersionKraken("The version is not known to CKAN.");
+                    throw new BadKSPVersionKraken("The version is not known to CKAN.");
                 }
                 else if (possibleVersions.Count == 1)
                 {

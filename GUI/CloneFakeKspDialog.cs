@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -24,7 +25,7 @@ namespace CKAN
             InitializeComponent();
 
             // Populate the version combobox for fake instance.
-            List<Versioning.KspVersion> knownVersions = new GameVersionProviders.KspBuildMap(new Win32Registry()).KnownVersions;
+            List<KspVersion> knownVersions = new GameVersionProviders.KspBuildMap(new Win32Registry()).KnownVersions;
             knownVersions.Reverse();
             comboBoxKspVersion.DataSource = knownVersions;
 
@@ -109,20 +110,20 @@ namespace CKAN
         /// </summary>
         private async void buttonOK_Click(object sender, EventArgs e)
         {
+            string newName = textBoxNewName.Text;
+            string newPath = textBoxNewPath.Text;
+
             // Do some basic checks.
-            if (textBoxNewName.TextLength == 0)
+            if (String.IsNullOrWhiteSpace(newName))
             {
                 user.RaiseError(Properties.Resources.CloneFakeKspDialogEnterName);
                 return;
             }
-            if (textBoxNewPath.TextLength == 0)
+            if (String.IsNullOrWhiteSpace(newPath))
             {
                 user.RaiseError(Properties.Resources.CloneFakeKspDialogEnterPath);
                 return;
             }
-
-            string newName = textBoxNewName.Text;
-            string newPath = textBoxNewPath.Text;
 
             // Show progress bar and deactivate controls.
             progressBar.Style = ProgressBarStyle.Marquee;
@@ -153,6 +154,12 @@ namespace CKAN
                             throw new NotKSPDirKraken(instanceToClone.GameDir());
                         }
                     });
+                }
+                catch (InstanceNameTakenKraken)
+                {
+                    user.RaiseError(Properties.Resources.CloneFakeKspDialogNameAlreadyUsed);
+                    reactivateDialog();
+                    return;
                 }
                 catch (NotKSPDirKraken kraken)
                 {
@@ -199,8 +206,35 @@ namespace CKAN
             // Also in a separate task.
             else if (radioButtonFake.Checked)
             {
-                Versioning.KspVersion kspVersion = Versioning.KspVersion.Parse(comboBoxKspVersion.Text);
-                string dlcVersion = textBoxDlcVersion.Text;
+                KspVersion kspVersion = KspVersion.Parse(comboBoxKspVersion.Text);
+
+                Dictionary<DLC.IDlcDetector, KspVersion> dlcs = new Dictionary<DLC.IDlcDetector, KspVersion>();
+                if (!String.IsNullOrWhiteSpace(textBoxMHDlcVersion.Text) && textBoxMHDlcVersion.Text.ToLower() != "none")
+                {
+                    if (KspVersion.TryParse(textBoxMHDlcVersion.Text, out KspVersion ver))
+                    {
+                        dlcs.Add(new DLC.MakingHistoryDlcDetector(), ver);
+                    }
+                    else
+                    {
+                        user.RaiseError(Properties.Resources.CloneFakeKspDialogDlcVersionMalformatted, "Making History");
+                        reactivateDialog();
+                        return;
+                    }
+                }
+                if (!String.IsNullOrWhiteSpace(textBoxBGDlcVersion.Text) && textBoxBGDlcVersion.Text.ToLower() != "none")
+                {
+                    if (KspVersion.TryParse(textBoxBGDlcVersion.Text, out KspVersion ver))
+                    {
+                        dlcs.Add(new DLC.BreakingGroundDlcDetector(), ver);
+                    }
+                    else
+                    {
+                        user.RaiseError(Properties.Resources.CloneFakeKspDialogDlcVersionMalformatted, "Breaking Ground");
+                        reactivateDialog();
+                        return;
+                    }
+                }
 
                 user.RaiseMessage(Properties.Resources.CloneFakeKspDialogCreatingInstance);
 
@@ -208,18 +242,18 @@ namespace CKAN
                 {
                     await Task.Run(() =>
                     {
-                        manager.FakeInstance(newName, newPath, kspVersion, dlcVersion);
+                        manager.FakeInstance(newName, newPath, kspVersion, dlcs);
                     });
                 }
-                catch (BadInstallLocationKraken)
+                catch (InstanceNameTakenKraken)
                 {
-                    user.RaiseError(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty);
+                    user.RaiseError(Properties.Resources.CloneFakeKspDialogNameAlreadyUsed);
                     reactivateDialog();
                     return;
                 }
-                catch (ArgumentException)
+                catch (BadInstallLocationKraken)
                 {
-                    user.RaiseError(Properties.Resources.CloneFakeKspDialogNameAlreadyUsed);
+                    user.RaiseError(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty, newPath);
                     reactivateDialog();
                     return;
                 }
@@ -247,7 +281,7 @@ namespace CKAN
             }
         }
 
-        private async void buttonCancel_Click(object sender, EventArgs e)
+        private void buttonCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             this.Close();

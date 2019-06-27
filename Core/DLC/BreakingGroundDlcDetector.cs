@@ -8,6 +8,6 @@ namespace CKAN.DLC
     public sealed class BreakingGroundDlcDetector : StandardDlcDetectorBase
     {
         public BreakingGroundDlcDetector()
-            : base("BreakingGround", "Serenity") { }
+            : base("BreakingGround", "Serenity", new Versioning.KspVersion(1, 7, 1)) { }
     }
 }

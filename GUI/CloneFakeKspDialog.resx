@@ -126,7 +126,9 @@
   <data name="buttonInstancePathSelection.Text" xml:space="preserve"><value>Select...</value></data>
   <data name="radioButtonFake.Text" xml:space="preserve"><value>Fake new KSP instance</value></data>
   <data name="labelVersion.Text" xml:space="preserve"><value>Version:</value></data>
-  <data name="labelDlcVersion.Text" xml:space="preserve"><value>DLC version (empty for none):</value></data>
+  <data name="labelDlcVersions.Text" xml:space="preserve"><value>DLC versions (empty for none):</value></data>
+  <data name="labelMakingHistory.Text" xml:space="preserve"><value>Making History</value></data>
+  <data name="labelBreakingGround.Text" xml:space="preserve"><value>Breaking Ground</value></data>
   <data name="labelNewName.Text" xml:space="preserve"><value>Name for the new instance:</value></data>
   <data name="labelNewPath.Text" xml:space="preserve"><value>Path for the new instance:</value></data>
   <data name="buttonPathBrowser.Text" xml:space="preserve"><value>Select...</value></data>

@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Transactions;
+using ChinhDo.Transactions;
 
 namespace CKAN
 {
@@ -14,15 +15,16 @@ namespace CKAN
         /// <param name="copySubDirs">Copy sub dirs recursively if set to <c>true</c>.</param>
         public static void CopyDirectory(string sourceDirPath, string destDirPath, bool copySubDirs)
         {
+            TxFileManager file_transaction = new TxFileManager();
             using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
             {
-                _CopyDirectory(sourceDirPath, destDirPath, copySubDirs);
+                _CopyDirectory(sourceDirPath, destDirPath, copySubDirs, file_transaction);
                 transaction.Complete();
             }
         }
 
 
-        private static void _CopyDirectory(string sourceDirPath, string destDirPath, bool copySubDirs)
+        private static void _CopyDirectory(string sourceDirPath, string destDirPath, bool copySubDirs, TxFileManager file_transaction)
         {
             DirectoryInfo sourceDir = new DirectoryInfo(sourceDirPath);
 
@@ -36,7 +38,7 @@ namespace CKAN
             // If the destination directory doesn't exist, create it.
             if (!Directory.Exists(destDirPath))
             {
-                Directory.CreateDirectory(destDirPath);
+                file_transaction.CreateDirectory(destDirPath);
             }
             else if (Directory.GetDirectories(destDirPath).Length != 0 || Directory.GetFiles(destDirPath).Length != 0)
             {
@@ -53,7 +55,7 @@ namespace CKAN
                 }
 
                 string temppath = Path.Combine(destDirPath, file.Name);
-                file.CopyTo(temppath, false);
+                file_transaction.Copy(file.FullName, temppath, false);
             }
 
             // Create all first level subdirectories
@@ -62,12 +64,12 @@ namespace CKAN
             foreach (DirectoryInfo subdir in dirs)
             {
                 string temppath = Path.Combine(destDirPath, subdir.Name);
-                Directory.CreateDirectory(temppath);
+                file_transaction.CreateDirectory(temppath);
 
                 // If copying subdirectories, copy their contents to new location.
                 if (copySubDirs)
                 {
-                    _CopyDirectory(subdir.FullName, temppath, copySubDirs);
+                    _CopyDirectory(subdir.FullName, temppath, copySubDirs, file_transaction);
                 }
             }
 

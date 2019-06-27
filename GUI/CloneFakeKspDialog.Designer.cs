@@ -41,8 +41,11 @@
             this.fakeGroupBox = new System.Windows.Forms.GroupBox();
             this.labelVersion = new System.Windows.Forms.Label();
             this.comboBoxKspVersion = new System.Windows.Forms.ComboBox();
-            this.labelDlcVersion = new System.Windows.Forms.Label();
-            this.textBoxDlcVersion = new System.Windows.Forms.TextBox();
+            this.labelDlcVersions = new System.Windows.Forms.Label();
+            this.textBoxMHDlcVersion = new System.Windows.Forms.TextBox();
+            this.labelMakingHistory = new System.Windows.Forms.Label();
+            this.textBoxBGDlcVersion = new System.Windows.Forms.TextBox();
+            this.labelBreakingGround = new System.Windows.Forms.Label();
             this.labelNewName = new System.Windows.Forms.Label();
             this.textBoxNewName = new System.Windows.Forms.TextBox();
             this.labelNewPath = new System.Windows.Forms.Label();
@@ -139,13 +142,16 @@
             //
             this.fakeGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.fakeGroupBox.Controls.Add(this.labelDlcVersion);
-            this.fakeGroupBox.Controls.Add(this.textBoxDlcVersion);
+            this.fakeGroupBox.Controls.Add(this.labelDlcVersions);
+            this.fakeGroupBox.Controls.Add(this.textBoxMHDlcVersion);
+            this.fakeGroupBox.Controls.Add(this.labelMakingHistory);
+            this.fakeGroupBox.Controls.Add(this.textBoxBGDlcVersion);
+            this.fakeGroupBox.Controls.Add(this.labelBreakingGround);
             this.fakeGroupBox.Controls.Add(this.labelVersion);
             this.fakeGroupBox.Controls.Add(this.comboBoxKspVersion);
             this.fakeGroupBox.Location = new System.Drawing.Point(13, 130);
             this.fakeGroupBox.Name = "fakeGroupBox";
-            this.fakeGroupBox.Size = new System.Drawing.Size(399, 80);
+            this.fakeGroupBox.Size = new System.Drawing.Size(400, 104);
             this.fakeGroupBox.TabIndex = 7;
             this.fakeGroupBox.TabStop = false;
             //
@@ -183,60 +189,85 @@
             this.comboBoxKspVersion.Size = new System.Drawing.Size(83, 21);
             this.comboBoxKspVersion.TabIndex = 10;
             //
-            // labelDlcVersion
+            // labelDlcVersions
             //
-            this.labelDlcVersion.AutoSize = true;
-            this.labelDlcVersion.Location = new System.Drawing.Point(12, 52);
-            this.labelDlcVersion.Name = "labelDlcVersion";
-            this.labelDlcVersion.Size = new System.Drawing.Size(174, 26);
-            this.labelDlcVersion.TabIndex = 11;
-            resources.ApplyResources(this.labelDlcVersion, "labelDlcVersion");
+            this.labelDlcVersions.AutoSize = true;
+            this.labelDlcVersions.Location = new System.Drawing.Point(12, 52);
+            this.labelDlcVersions.Name = "labelDlcVersion";
+            this.labelDlcVersions.Size = new System.Drawing.Size(174, 26);
+            this.labelDlcVersions.TabIndex = 11;
+            resources.ApplyResources(this.labelDlcVersions, "labelDlcVersions");
             //
-            // textBoxDlcVersion
+            // textBoxMHDlcVersion
             //
-            this.textBoxDlcVersion.Location = new System.Drawing.Point(168, 49);
-            this.textBoxDlcVersion.Name = "textBoxDlcVersion";
-            this.textBoxDlcVersion.Size = new System.Drawing.Size(83, 20);
-            this.textBoxDlcVersion.TabIndex = 12;
+            this.textBoxMHDlcVersion.Location = new System.Drawing.Point(170, 49);
+            this.textBoxMHDlcVersion.Name = "textBoxDlcVersion";
+            this.textBoxMHDlcVersion.Size = new System.Drawing.Size(83, 20);
+            this.textBoxMHDlcVersion.TabIndex = 12;
+            //
+            // labelMakingHistory
+            //
+            this.labelMakingHistory.AutoSize = true;
+            this.labelMakingHistory.Location = new System.Drawing.Point(257, 52);
+            this.labelMakingHistory.Name = "labelMakingHistory";
+            this.labelMakingHistory.Size = new System.Drawing.Size(174, 26);
+            this.labelMakingHistory.TabStop = false;
+            resources.ApplyResources(this.labelMakingHistory, "labelMakingHistory");
+            //
+            // textBoxBGDlcVersion
+            //
+            this.textBoxBGDlcVersion.Location = new System.Drawing.Point(170, 71);
+            this.textBoxBGDlcVersion.Name = "textBoxDlcVersion";
+            this.textBoxBGDlcVersion.Size = new System.Drawing.Size(83, 20);
+            this.textBoxBGDlcVersion.TabIndex = 13;
+            //
+            // labelBreakingGround
+            //
+            this.labelBreakingGround.AutoSize = true;
+            this.labelBreakingGround.Location = new System.Drawing.Point(257, 74);
+            this.labelBreakingGround.Name = "labelBreakingGround";
+            this.labelBreakingGround.Size = new System.Drawing.Size(174, 26);
+            this.labelBreakingGround.TabStop = false;
+            resources.ApplyResources(this.labelBreakingGround, "labelBreakingGround");
             //
             // labelNewName
             //
             this.labelNewName.AutoSize = true;
-            this.labelNewName.Location = new System.Drawing.Point(12, 227);
+            this.labelNewName.Location = new System.Drawing.Point(12, 251);
             this.labelNewName.Name = "labelNewName";
             this.labelNewName.Size = new System.Drawing.Size(137, 13);
-            this.labelNewName.TabIndex = 13;
+            this.labelNewName.TabIndex = 14;
             resources.ApplyResources(this.labelNewName, "labelNewName");
             //
             // textBoxNewName
             //
-            this.textBoxNewName.Location = new System.Drawing.Point(181, 224);
+            this.textBoxNewName.Location = new System.Drawing.Point(181, 248);
             this.textBoxNewName.Name = "textBoxNewName";
             this.textBoxNewName.Size = new System.Drawing.Size(218, 20);
-            this.textBoxNewName.TabIndex = 14;
+            this.textBoxNewName.TabIndex = 15;
             //
             // labelNewPath
             //
             this.labelNewPath.AutoSize = true;
-            this.labelNewPath.Location = new System.Drawing.Point(12, 254);
+            this.labelNewPath.Location = new System.Drawing.Point(12, 278);
             this.labelNewPath.Name = "labelNewPath";
             this.labelNewPath.Size = new System.Drawing.Size(131, 13);
-            this.labelNewPath.TabIndex = 15;
+            this.labelNewPath.TabIndex = 16;
             resources.ApplyResources(this.labelNewPath, "labelNewPath");
             //
             // textBoxNewPath
             //
-            this.textBoxNewPath.Location = new System.Drawing.Point(181, 251);
+            this.textBoxNewPath.Location = new System.Drawing.Point(181, 275);
             this.textBoxNewPath.Name = "textBoxNewPath";
             this.textBoxNewPath.Size = new System.Drawing.Size(163, 20);
-            this.textBoxNewPath.TabIndex = 16;
+            this.textBoxNewPath.TabIndex = 17;
             //
             // buttonPathBrowser
             //
-            this.buttonPathBrowser.Location = new System.Drawing.Point(344, 250);
+            this.buttonPathBrowser.Location = new System.Drawing.Point(344, 274);
             this.buttonPathBrowser.Name = "buttonPathBrowser";
             this.buttonPathBrowser.Size = new System.Drawing.Size(55, 22);
-            this.buttonPathBrowser.TabIndex = 17;
+            this.buttonPathBrowser.TabIndex = 18;
             this.buttonPathBrowser.UseVisualStyleBackColor = true;
             this.buttonPathBrowser.Click += new System.EventHandler(this.buttonPathBrowser_Click);
             resources.ApplyResources(this.buttonPathBrowser, "buttonPathBrowser");
@@ -244,10 +275,10 @@
             // checkBoxSetAsDefault
             //
             this.checkBoxSetAsDefault.AutoSize = true;
-            this.checkBoxSetAsDefault.Location = new System.Drawing.Point(12, 286);
+            this.checkBoxSetAsDefault.Location = new System.Drawing.Point(12, 310);
             this.checkBoxSetAsDefault.Name = "checkBoxSetAsDefault";
             this.checkBoxSetAsDefault.Size = new System.Drawing.Size(157, 17);
-            this.checkBoxSetAsDefault.TabIndex = 18;
+            this.checkBoxSetAsDefault.TabIndex = 19;
             this.checkBoxSetAsDefault.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.checkBoxSetAsDefault, "checkBoxSetAsDefault");
             //
@@ -256,29 +287,29 @@
             this.checkBoxSwitchInstance.AutoSize = true;
             this.checkBoxSwitchInstance.Checked = true;
             this.checkBoxSwitchInstance.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSwitchInstance.Location = new System.Drawing.Point(181, 286);
+            this.checkBoxSwitchInstance.Location = new System.Drawing.Point(181, 310);
             this.checkBoxSwitchInstance.Name = "checkBoxSwitchInstance";
             this.checkBoxSwitchInstance.Size = new System.Drawing.Size(136, 17);
-            this.checkBoxSwitchInstance.TabIndex = 19;
+            this.checkBoxSwitchInstance.TabIndex = 20;
             this.checkBoxSwitchInstance.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.checkBoxSwitchInstance, "checkBoxSwitchInstance");
             //
             // buttonOK
             //
-            this.buttonOK.Location = new System.Drawing.Point(256, 312);
+            this.buttonOK.Location = new System.Drawing.Point(256, 336);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 20;
+            this.buttonOK.TabIndex = 21;
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
             resources.ApplyResources(this.buttonOK, "buttonOK");
             //
             // buttonCancel
             //
-            this.buttonCancel.Location = new System.Drawing.Point(337, 312);
+            this.buttonCancel.Location = new System.Drawing.Point(337, 336);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 21;
+            this.buttonCancel.TabIndex = 22;
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             resources.ApplyResources(this.buttonCancel, "buttonCancel");
@@ -287,11 +318,11 @@
             //
             this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar.Location = new System.Drawing.Point(13, 312);
+            this.progressBar.Location = new System.Drawing.Point(13, 336);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(230, 23);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.progressBar.TabIndex = 22;
+            this.progressBar.TabIndex = 23;
             this.progressBar.Visible = false;
             //
             // CloneFakeKspDialog
@@ -300,7 +331,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 347);
+            this.ClientSize = new System.Drawing.Size(424, 371);
             this.Controls.Add(this.radioButtonClone);
             this.Controls.Add(this.radioButtonFake);
             this.Controls.Add(this.progressBar);
@@ -347,8 +378,11 @@
         private System.Windows.Forms.GroupBox fakeGroupBox;
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.ComboBox comboBoxKspVersion;
-        private System.Windows.Forms.Label labelDlcVersion;
-        private System.Windows.Forms.TextBox textBoxDlcVersion;
+        private System.Windows.Forms.Label labelDlcVersions;
+        private System.Windows.Forms.TextBox textBoxMHDlcVersion;
+        private System.Windows.Forms.Label labelMakingHistory;
+        private System.Windows.Forms.TextBox textBoxBGDlcVersion;
+        private System.Windows.Forms.Label labelBreakingGround;
         private System.Windows.Forms.Label labelNewName;
         private System.Windows.Forms.TextBox textBoxNewName;
         private System.Windows.Forms.Label labelNewPath;
