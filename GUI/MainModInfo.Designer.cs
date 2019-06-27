@@ -71,6 +71,7 @@
             this.ContentTabPage = new System.Windows.Forms.TabPage();
             this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
             this.ContentsDownloadButton = new System.Windows.Forms.Button();
+            this.ContentsOpenButton = new System.Windows.Forms.Button();
             this.NotCachedLabel = new System.Windows.Forms.Label();
             this.AllModVersionsTabPage = new System.Windows.Forms.TabPage();
             this.AllModVersions = new CKAN.MainAllModVersions();
@@ -148,8 +149,8 @@
             this.MetaDataUpperLayoutPanel.Name = "MetaDataUpperLayoutPanel";
             this.MetaDataUpperLayoutPanel.RowCount = 3;
             this.MetaDataUpperLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize, 20F));
-            this.MetaDataUpperLayoutPanel.RowStyles.Add (new System.Windows.Forms.RowStyle (System.Windows.Forms.SizeType.AutoSize, 30F));
-            this.MetaDataUpperLayoutPanel.RowStyles.Add (new System.Windows.Forms.RowStyle (System.Windows.Forms.SizeType.AutoSize, 80F));
+            this.MetaDataUpperLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize, 30F));
+            this.MetaDataUpperLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80F));
             this.MetaDataUpperLayoutPanel.Size = new System.Drawing.Size(346, 283);
             this.MetaDataUpperLayoutPanel.TabIndex = 0;
             //
@@ -182,9 +183,9 @@
             // MetadataModuleDescriptionTextBox
             //
             this.MetadataModuleDescriptionTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleDescriptionTextBox.Location = new System.Drawing.Point (3, 129);
+            this.MetadataModuleDescriptionTextBox.Location = new System.Drawing.Point(3, 129);
             this.MetadataModuleDescriptionTextBox.Name = "MetadataModuleDescriptionLabel";
-            this.MetadataModuleDescriptionTextBox.Size = new System.Drawing.Size (340, 121);
+            this.MetadataModuleDescriptionTextBox.Size = new System.Drawing.Size(340, 121);
             this.MetadataModuleDescriptionTextBox.TabIndex = 28;
             this.MetadataModuleDescriptionTextBox.Text = "";
             this.MetadataModuleDescriptionTextBox.ReadOnly = true;
@@ -576,6 +577,7 @@
             //
             this.ContentTabPage.Controls.Add(this.ContentsPreviewTree);
             this.ContentTabPage.Controls.Add(this.ContentsDownloadButton);
+            this.ContentTabPage.Controls.Add(this.ContentsOpenButton);
             this.ContentTabPage.Controls.Add(this.NotCachedLabel);
             this.ContentTabPage.Location = new System.Drawing.Point(4, 25);
             this.ContentTabPage.Name = "ContentTabPage";
@@ -607,6 +609,16 @@
             this.ContentsDownloadButton.UseVisualStyleBackColor = true;
             this.ContentsDownloadButton.Click += new System.EventHandler(this.ContentsDownloadButton_Click);
             resources.ApplyResources(this.ContentsDownloadButton, "ContentsDownloadButton");
+            //
+            // ContentsOpenButton
+            //
+            this.ContentsOpenButton.Location = new System.Drawing.Point(115, 36);
+            this.ContentsOpenButton.Name = "ContentsOpenButton";
+            this.ContentsOpenButton.Size = new System.Drawing.Size(103, 23);
+            this.ContentsOpenButton.TabIndex = 1;
+            this.ContentsOpenButton.UseVisualStyleBackColor = true;
+            this.ContentsOpenButton.Click += new System.EventHandler(this.ContentsOpenButton_Click);
+            resources.ApplyResources(this.ContentsOpenButton, "ContentsOpenButton");
             //
             // NotCachedLabel
             //
@@ -707,6 +719,7 @@
         private System.Windows.Forms.TabPage ContentTabPage;
         private System.Windows.Forms.TreeView ContentsPreviewTree;
         private System.Windows.Forms.Button ContentsDownloadButton;
+        private System.Windows.Forms.Button ContentsOpenButton;
         private System.Windows.Forms.Label NotCachedLabel;
         private System.Windows.Forms.TabPage AllModVersionsTabPage;
         private MainAllModVersions AllModVersions;

@@ -143,6 +143,7 @@
   <data name="LegendConflictsLabel.Text" xml:space="preserve"><value>Conflicts</value></data>
   <data name="ContentTabPage.Text" xml:space="preserve"><value>Contents</value></data>
   <data name="ContentsDownloadButton.Text" xml:space="preserve"><value>Download</value></data>
+  <data name="ContentsOpenButton.Text" xml:space="preserve"><value>Open ZIP</value></data>
   <data name="NotCachedLabel.Text" xml:space="preserve"><value>This mod is not in the cache, click 'Download' to preview contents</value></data>
   <data name="AllModVersionsTabPage.Text" xml:space="preserve"><value>Versions</value></data>
 </root>

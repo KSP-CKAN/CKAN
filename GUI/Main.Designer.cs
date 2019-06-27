@@ -91,6 +91,7 @@
             this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModInfoTabControl = new CKAN.MainModInfo();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.StatusInstanceLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.MainTabControl = new CKAN.MainTabControl();
             this.ManageModsTabPage = new System.Windows.Forms.TabPage();
@@ -345,7 +346,9 @@
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
             {
-                this.StatusLabel, this.StatusProgress
+                this.StatusLabel,
+                this.StatusInstanceLabel,
+                this.StatusProgress,
             });
             //
             // menuStrip2
@@ -719,12 +722,23 @@
             //
             // StatusLabel
             //
+            this.StatusLabel.AutoSize = true;
             this.StatusLabel.Name = "StatusLabel";
             this.StatusLabel.Font = System.Drawing.SystemFonts.DefaultFont;
             this.StatusLabel.Size = new System.Drawing.Size(1050, 29);
             this.StatusLabel.Spring = true;
             this.StatusLabel.Text = "";
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            //
+            // StatusInstanceLabel
+            //
+            this.StatusInstanceLabel.AutoSize = true;
+            this.StatusInstanceLabel.Name = "StatusInstanceLabel";
+            this.StatusInstanceLabel.Font = System.Drawing.SystemFonts.DefaultFont;
+            this.StatusInstanceLabel.Size = new System.Drawing.Size(1050, 29);
+            this.StatusInstanceLabel.Spring = true;
+            this.StatusInstanceLabel.Text = "";
+            this.StatusInstanceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             //
             // StatusProgress
             //
@@ -1408,6 +1422,7 @@
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
         private CKAN.MainModInfo ModInfoTabControl;
         private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
+        private System.Windows.Forms.ToolStripStatusLabel StatusInstanceLabel;
         private System.Windows.Forms.ToolStripProgressBar StatusProgress;
         private CKAN.MainTabControl MainTabControl;
         private System.Windows.Forms.TabPage ManageModsTabPage;

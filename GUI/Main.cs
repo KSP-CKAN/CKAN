@@ -535,6 +535,11 @@ namespace CKAN
             Util.Invoke(this, () =>
             {
                 Text = $"CKAN {Meta.GetVersion()} - KSP {CurrentInstance.Version()}    --    {CurrentInstance.GameDir()}";
+                StatusInstanceLabel.Text = string.Format(
+                    Properties.Resources.StatusInstanceLabelText,
+                    CurrentInstance.Name,
+                    CurrentInstance.Version()?.ToString()
+                );
             });
 
             configuration = Configuration.LoadOrCreateConfiguration(

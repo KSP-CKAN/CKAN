@@ -307,4 +307,5 @@ Möchtest du CKAN dies erlauben?
 Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   </data>
   <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Linkadresse kopieren</value></data>
+  <data name="StatusInstanceLabelText" xml:space="preserve"><value>Spielinstanz: {0} (KSP {1})</value></data>
 </root>

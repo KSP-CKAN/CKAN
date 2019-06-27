@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Add menu option to report issues in the CKAN repo (#2801 by: DasSkelett; reviewed: HebaruSan)
 - [Netkan] Migrate Perl validation checks into netkan.exe (#2788 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Refactor Netkan for SQS mode (#2798 by: HebaruSan; reviewed: DasSkelett, techman83)
+- [GUI] Open ZIP button, instance name in status bar, description scroll bar (#2813 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 
