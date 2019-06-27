@@ -9,13 +9,12 @@ namespace CKAN.NetKAN.Validators
         public MatchesKnownGameVersionsValidator()
         {
             buildMap = new KspBuildMap(new Win32Registry());
+            buildMap.Refresh(BuildMapSource.Embedded);
         }
 
         public void Validate(Metadata metadata)
         {
             var mod = CkanModule.FromJson(metadata.Json().ToString());
-            // Get latest builds from server
-            buildMap.Refresh();
             if (!mod.IsCompatibleKSP(new KspVersionCriteria(null, buildMap.KnownVersions)))
             {
                 throw new Kraken($"{metadata.Identifier} doesn't match any valid game version");
