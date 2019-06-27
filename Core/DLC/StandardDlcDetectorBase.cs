@@ -16,7 +16,9 @@ namespace CKAN.DLC
     /// </remarks>
     public abstract class StandardDlcDetectorBase : IDlcDetector
     {
-        private readonly string IdentifierBaseName;
+        public KspVersion ReleaseGameVersion { get; }
+        public string IdentifierBaseName { get; }
+
         private readonly string DirectoryBaseName;
         private readonly Dictionary<string, string> CanonicalVersions;
 
@@ -25,10 +27,10 @@ namespace CKAN.DLC
             RegexOptions.Compiled | RegexOptions.IgnoreCase
         );
 
-        protected StandardDlcDetectorBase(string identifierBaseName, Dictionary<string, string> canonicalVersions = null)
-            : this(identifierBaseName, identifierBaseName, canonicalVersions) { }
+        protected StandardDlcDetectorBase(string identifierBaseName, KspVersion releaseGameVersion, Dictionary<string, string> canonicalVersions = null)
+            : this(identifierBaseName, identifierBaseName, releaseGameVersion, canonicalVersions) { }
 
-        protected StandardDlcDetectorBase(string identifierBaseName, string directoryBaseName, Dictionary<string, string> canonicalVersions = null)
+        protected StandardDlcDetectorBase(string identifierBaseName, string directoryBaseName, KspVersion releaseGameVersion, Dictionary<string, string> canonicalVersions = null)
         {
             if (string.IsNullOrWhiteSpace(identifierBaseName))
                 throw new ArgumentException("Value must be provided.", nameof(identifierBaseName));
@@ -38,6 +40,7 @@ namespace CKAN.DLC
 
             IdentifierBaseName = identifierBaseName;
             DirectoryBaseName = directoryBaseName;
+            ReleaseGameVersion = releaseGameVersion;
             CanonicalVersions = canonicalVersions ?? new Dictionary<string, string>();
         }
 
@@ -76,6 +79,16 @@ namespace CKAN.DLC
             {
                 return false;
             }
+        }
+
+        public virtual string InstallPath()
+        {
+            return Path.Combine("GameData", "SquadExpansion", DirectoryBaseName);
+        }
+
+        public bool AllowedOnBaseVersion(KspVersion baseVersion)
+        {
+            return baseVersion >= ReleaseGameVersion;
         }
     }
 }

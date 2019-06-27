@@ -8,7 +8,7 @@ namespace CKAN.DLC
     public sealed class MakingHistoryDlcDetector : StandardDlcDetectorBase
     {
         public MakingHistoryDlcDetector()
-            : base("MakingHistory", new Dictionary<string, string>()
+            : base("MakingHistory", new Versioning.KspVersion(1, 4, 1), new Dictionary<string, string>()
                 {
                     { "1.0", "1.0.0" }
                 }

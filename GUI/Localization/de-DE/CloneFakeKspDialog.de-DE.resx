@@ -125,7 +125,7 @@
   <data name="labelOldPath.Text" xml:space="preserve"><value>Pfad zur zu klonenden Instanz:</value></data>
   <data name="buttonInstancePathSelection.Text" xml:space="preserve"><value>Suchen</value></data>
   <data name="radioButtonFake.Text" xml:space="preserve"><value>Neue Instanz fälschen:</value></data>
-  <data name="labelDlcVersion.Text" xml:space="preserve"><value>DLC-Version (Leer für Keinen):</value></data>
+  <data name="labelDlcVersions.Text" xml:space="preserve"><value>DLC-Versionen (leer für keinen):</value></data>
   <data name="labelNewName.Text" xml:space="preserve"><value>Name der neuen Instanz:</value></data>
   <data name="labelNewPath.Text" xml:space="preserve"><value>Pfad für die neue Instanz:</value></data>
   <data name="buttonPathBrowser.Text" xml:space="preserve"><value>Suchen</value></data>

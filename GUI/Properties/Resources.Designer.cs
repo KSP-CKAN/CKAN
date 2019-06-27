@@ -273,6 +273,9 @@ namespace CKAN.Properties {
         internal static string CloneFakeKspDialogInstanceNotValid {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogInstanceNotValid", resourceCulture)); }
         }
+        internal static string CloneFakeKspDialogDlcVersionMalformatted {
+            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogDlcVersionMalformatted", resourceCulture)); }
+        }
         internal static string CloneFakeKspDialogDestinationNotEmpty {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogDestinationNotEmpty", resourceCulture)); }
         }

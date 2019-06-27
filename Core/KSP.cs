@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Transactions;
 using Autofac;
+using ChinhDo.Transactions;
 using CKAN.GameVersionProviders;
 using CKAN.Versioning;
 using log4net;
@@ -53,7 +54,7 @@ namespace CKAN
         /// Will initialise a CKAN instance in the KSP dir if it does not already exist,
         /// if the directory contains a valid KSP install.
         /// </summary>
-        public KSP(string gameDir, string name, IUser user)
+        public KSP(string gameDir, string name, IUser user, bool scanGameData = true)
         {
             Name = name;
             User = user;
@@ -61,7 +62,7 @@ namespace CKAN
             this.gameDir = KSPPathUtils.NormalizePath(Path.GetFullPath(gameDir));
             if (Valid)
             {
-                SetupCkanDirectories();
+                SetupCkanDirectories(scanGameData);
                 LoadCompatibleVersions();
             }
         }
@@ -71,24 +72,30 @@ namespace CKAN
         /// <summary>
         /// Create the CKAN directory and any supporting files.
         /// </summary>
-        private void SetupCkanDirectories()
+        private void SetupCkanDirectories(bool scan = true)
         {
             log.InfoFormat("Initialising {0}", CkanDir());
+
+            // TxFileManager knows if we are in a transaction
+            TxFileManager txFileMgr = new TxFileManager();
 
             if (!Directory.Exists(CkanDir()))
             {
                 User.RaiseMessage("Setting up CKAN for the first time...");
                 User.RaiseMessage("Creating {0}", CkanDir());
-                Directory.CreateDirectory(CkanDir());
+                txFileMgr.CreateDirectory(CkanDir());
 
-                User.RaiseMessage("Scanning for installed mods...");
-                ScanGameData();
+                if (scan)
+                {
+                    User.RaiseMessage("Scanning for installed mods...");
+                    ScanGameData();
+                }
             }
 
             if (!Directory.Exists(InstallHistoryDir()))
             {
                 User.RaiseMessage("Creating {0}", InstallHistoryDir());
-                Directory.CreateDirectory(InstallHistoryDir());
+                txFileMgr.CreateDirectory(InstallHistoryDir());
             }
 
             // Clear any temporary files we find. If the directory
@@ -100,8 +107,9 @@ namespace CKAN
             {
                 var directory = new DirectoryInfo(TempDir());
                 foreach (FileInfo file in directory.GetFiles())
-                    file.Delete();
-                foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
+                    txFileMgr.Delete(file.FullName);
+                foreach (DirectoryInfo subDirectory in directory.GetDirectories())
+                    txFileMgr.DeleteDirectory(subDirectory.FullName);
             }
             log.InfoFormat("Initialised {0}", CkanDir());
         }
