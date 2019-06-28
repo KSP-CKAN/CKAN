@@ -143,7 +143,8 @@ namespace CKAN
             Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = gui_module.Abstract);
             Util.Invoke(MetadataModuleDescriptionTextBox, () =>
             {
-                MetadataModuleDescriptionTextBox.Text = gui_module.Description;
+                MetadataModuleDescriptionTextBox.Text = gui_module.Description
+                    ?.Replace("\r\n", "\n").Replace("\n", Environment.NewLine);
                 MetadataModuleDescriptionTextBox.ScrollBars =
                     string.IsNullOrWhiteSpace(gui_module.Description)
                         ? ScrollBars.None
