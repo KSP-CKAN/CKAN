@@ -90,7 +90,7 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog log = LogManager.GetLogger(typeof(LocalizationsTransformer));
 
         private static readonly Regex localizationRegex = new Regex(
-            @"^\s*Localization\b\s*{(?<contents>([^{}]*{[^{}]*})+[^{}]*)}",
+            @"^\s*Localization\b\s*{(?<contents>[^{}]+({[^{}]*}[^{}]*)+)}",
             RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.Singleline
         );
         private static readonly Regex localeRegex = new Regex(
