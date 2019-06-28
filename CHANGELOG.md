@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Fix http kref validation (#2811 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Fix Netkan localization parser performance (#2816 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Support newlines in GUI description field (#2818 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Fix comparison of 1.0.0 to 1.0 (#2817 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 - [Build] Update packages (#2775 by: Olympic1; reviewed: DasSkelett, HebaruSan)
