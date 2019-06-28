@@ -1,5 +1,6 @@
-﻿using CKAN.Versioning;
 using System;
+using log4net;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -23,15 +24,16 @@ namespace CKAN
             {
                 if (module.ksp_version_min != null && module.ksp_version_max != null)
                 {
-                    if (module.ksp_version_min <= module.ksp_version_max)
+                    var minRange = module.ksp_version_min.ToVersionRange();
+                    var maxRange = module.ksp_version_max.ToVersionRange();
+                    if (minRange.Lower.Value <= maxRange.Upper.Value)
                     {
-                        var minRange = module.ksp_version_min.ToVersionRange();
-                        var maxRange = module.ksp_version_max.ToVersionRange();
-
                         moduleRange = new KspVersionRange(minRange.Lower, maxRange.Upper);
                     }
                     else
                     {
+                        log.WarnFormat("{0} is not less or equal to {1}",
+                            module.ksp_version_min, module.ksp_version_max);
                         return false;
                     }
                 }
@@ -55,5 +57,7 @@ namespace CKAN
 
             return gameVersionRange.IntersectWith(moduleRange) != null;
         }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(StrictGameComparator));
     }
 }

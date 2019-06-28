@@ -159,7 +159,7 @@ namespace CKAN.NetKAN.Transformers
                 if (kspMin != null && kspMax != null)
                 {
                     // If we have both a minimum and maximum KSP version...
-                    if (kspMin.CompareTo(kspMax) == 0)
+                    if (kspMin.Equals(kspMax))
                     {
                         // ...and they are equal, then just set ksp_version
                         json["ksp_version"] = kspMin.ToString();
