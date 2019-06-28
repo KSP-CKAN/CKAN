@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using log4net;
 using CKAN.NetKAN.Model;
@@ -38,10 +39,9 @@ namespace CKAN.NetKAN.Processors
                 netkanValidator.ValidateNetkan(netkan, filename);
                 log.Info("Input successfully passed pre-validation");
 
-                IEnumerable<Metadata> ckans = transformer.Transform(
-                    netkan,
-                    new TransformOptions(releases)
-                );
+                IEnumerable<Metadata> ckans = transformer
+                    .Transform(netkan, new TransformOptions(releases))
+                    .ToList();
                 log.Info("Finished transformation");
 
                 foreach (Metadata ckan in ckans)
@@ -51,7 +51,7 @@ namespace CKAN.NetKAN.Processors
                 log.Info("Output successfully passed post-validation");
                 return ckans;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // Purge anything we download for a failed indexing attempt from the cache to allow re-downloads
                 PurgeDownloads(http, cache);
@@ -70,7 +70,7 @@ namespace CKAN.NetKAN.Processors
             try
             {
                 log.InfoFormat("Using main CKAN meta-cache at {0}", reg.DownloadCacheDir);
-                /// Create a new file cache in the same location so NetKAN can download pure URLs not sourced from CkanModules
+                // Create a new file cache in the same location so NetKAN can download pure URLs not sourced from CkanModules
                 return new NetFileCache(kspManager, reg.DownloadCacheDir);
             }
             catch
