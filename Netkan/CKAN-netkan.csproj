@@ -159,7 +159,9 @@
     <Compile Include="Validators\VersionStrictValidator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="../CKAN.schema" />
+    <EmbeddedResource Include="../CKAN.schema">
+      <LogicalName>CKAN.NetKAN.CKAN.schema</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
