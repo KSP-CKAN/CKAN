@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Transactions;
 using Autofac;
-using ChinhDo.Transactions;
+using ChinhDo.Transactions.FileManager;
 using CKAN.GameVersionProviders;
 using CKAN.Versioning;
 using log4net;

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Autofac;
-using ChinhDo.Transactions;
+using ChinhDo.Transactions.FileManager;
 using CKAN.GameVersionProviders;
 using CKAN.Versioning;
 using ICSharpCode.SharpZipLib.GZip;

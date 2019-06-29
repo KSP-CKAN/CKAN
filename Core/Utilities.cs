@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Transactions;
-using ChinhDo.Transactions;
+using ChinhDo.Transactions.FileManager;
 
 namespace CKAN
 {
