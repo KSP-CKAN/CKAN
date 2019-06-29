@@ -173,7 +173,7 @@ namespace CKAN.NetKAN.Processors
             }
         }
 
-        private string serializeCkan(Metadata ckan)
+        internal static string serializeCkan(Metadata ckan)
         {
             if (ckan == null)
             {

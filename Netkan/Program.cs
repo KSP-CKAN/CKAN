@@ -30,10 +30,6 @@ namespace CKAN.NetKAN
 
         public static int Main(string[] args)
         {
-            // Keep these for purging downloads in the exception handler
-            NetFileCache cache = null;
-            IHttpService http  = null;
-
             try
             {
                 ProcessArgs(args);
@@ -47,6 +43,22 @@ namespace CKAN.NetKAN
                 if (Options.Version)
                 {
                     Console.WriteLine(Meta.GetVersion(VersionFormat.Full));
+                    return ExitOk;
+                }
+
+                if (!string.IsNullOrEmpty(Options.ValidateCkan))
+                {
+                    var ckan = new Metadata(JObject.Parse(File.ReadAllText(Options.ValidateCkan)));
+                    var inf = new Inflator(
+                        Options.CacheDir,
+                        Options.OverwriteCache,
+                        Options.GitHubToken,
+                        Options.PreRelease
+                    );
+                    inf.ValidateCkan(ckan);
+                    Console.WriteLine(QueueHandler.serializeCkan(
+                        new PropertySortTransformer().Transform(ckan, null).First()
+                    ));
                     return ExitOk;
                 }
 
