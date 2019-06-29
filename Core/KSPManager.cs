@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Transactions;
-using ChinhDo.Transactions;
+using ChinhDo.Transactions.FileManager;
 using CKAN.Versioning;
 using log4net;
 

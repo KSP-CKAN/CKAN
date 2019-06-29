@@ -90,7 +90,7 @@ namespace CKAN
         {
             using (FileStream     fs   = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             using (BufferedStream bs   = new BufferedStream(fs))
-            using (SHA1Cng        sha1 = new SHA1Cng())
+            using (SHA1           sha1 = new SHA1CryptoServiceProvider())
             {
                 return BitConverter.ToString(sha1.ComputeHash(bs)).Replace("-", "");
             }

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ChinhDo.Transactions;
+using ChinhDo.Transactions.FileManager;
 using CKAN.DLC;
 using CKAN.Versioning;
 using log4net;

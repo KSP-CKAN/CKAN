@@ -1,17 +1,17 @@
 ﻿using System;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Security.Permissions;
-using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using CKAN.Extensions;
 using CKAN.Versioning;
+using ChinhDo.Transactions.FileManager;
+using System.Security.Cryptography;
 
 namespace CKAN
 {
@@ -592,7 +592,7 @@ namespace CKAN
         /// </returns>
         public static string CreateURLHash(Uri url)
         {
-            using (var sha1 = new SHA1Cng())
+            using (SHA1 sha1 = new SHA1CryptoServiceProvider())
             {
                 byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(url.ToString()));
 
