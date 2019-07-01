@@ -210,7 +210,8 @@ namespace CKAN
             {
                 for (int i = 0; i < modsToInstall.Count; i++)
                 {
-                    int percent_complete = (i * 100) / modsToInstall.Count;
+                    // The post-install steps start at 70%, so count up to 60% for installation
+                    int percent_complete = (i * 60) / modsToInstall.Count;
 
                     User.RaiseProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
                                          percent_complete);
@@ -984,20 +985,29 @@ namespace CKAN
 
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
-
+                int totSteps = (remove?.Count() ?? 0)
+                             + (add?.Count()    ?? 0);
+                int step = 0;
                 foreach (InstalledModule instMod in remove)
                 {
+                    // The post-install steps start at 80%, so count up to 70% for installation
+                    int percent_complete = (step++ * 70) / totSteps;
+                    User.RaiseProgress($"Removing \"{instMod}\"", percent_complete);
                     Uninstall(instMod.Module.identifier);
                 }
 
                 foreach (CkanModule module in add)
                 {
                     var previous = remove?.FirstOrDefault(im => im.Module.identifier == module.identifier);
+                    int percent_complete = (step++ * 70) / totSteps;
+                    User.RaiseProgress($"Installing \"{module}\"", percent_complete);
                     Install(module, previous?.AutoInstalled ?? false);
                 }
 
+                User.RaiseProgress("Updating registry", 80);
                 registry_manager.Save(enforceConsistency);
 
+                User.RaiseProgress("Committing filesystem changes", 90);
                 tx.Complete();
 
                 EnforceCacheSizeLimit();
@@ -1022,6 +1032,8 @@ namespace CKAN
         /// </summary>
         public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
+            User.RaiseMessage("About to upgrade...\r\n");
+
             // Start by making sure we've downloaded everything.
             DownloadModules(modules, netAsyncDownloader);
 
@@ -1073,6 +1085,7 @@ namespace CKAN
                 to_remove,
                 enforceConsistency
             );
+            User.RaiseProgress("Done!", 100);
         }
 
         /// <summary>

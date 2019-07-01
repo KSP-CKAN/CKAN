@@ -46,7 +46,7 @@ namespace CKAN
                     continue;
                 }
 
-                CkanModule m = change.Mod.ToModule();
+                CkanModule m = change.Mod;
                 ListViewItem item = new ListViewItem()
                 {
                     Text = m.IsMetapackage
@@ -55,7 +55,7 @@ namespace CKAN
                             ? string.Format(Properties.Resources.MainChangesetCached, m.name, m.version)
                             : string.Format(Properties.Resources.MainChangesetHostSize,
                                 m.name, m.version, m.download.Host ?? "", CkanModule.FmtSize(m.download_size)),
-                    Tag  = change.Mod.ToModule()
+                    Tag  = change.Mod
                 };
 
                 var sub_change_type = new ListViewItem.ListViewSubItem {Text = change.ChangeType.ToString()};
@@ -65,7 +65,7 @@ namespace CKAN
 
                 if (change.ChangeType == GUIModChangeType.Update)
                 {
-                    description.Text = String.Format(Properties.Resources.MainChangesetUpdateSelected, change.Mod.LatestVersion);
+                    description.Text = String.Format(Properties.Resources.MainChangesetUpdateSelected, change.Mod.version);
                 }
 
                 if (change.ChangeType == GUIModChangeType.Install && change.Reason is SelectionReason.UserRequested)
@@ -100,7 +100,7 @@ namespace CKAN
         /// So we get for example "ModuleRCSFX" directly after "USI Exploration Pack"
         ///
         /// It is very likely that this is forward-compatible with new ChangeTypes's,
-        /// like a a "reconfigure" changetype, but only the future will tell
+        /// like a "reconfigure" changetype, but only the future will tell
         /// </summary>
         /// <param name="changes">Every leftover ModChange that should be sorted</param>
         /// <param name="parent"></param>
@@ -108,11 +108,11 @@ namespace CKAN
         {
             foreach (ModChange change in changes)
             {
-                bool goDeeper = parent == null || change.Reason.Parent.identifier == parent.Mod.Identifier;
+                bool goDeeper = parent == null || change.Reason.Parent.identifier == parent.Mod.identifier;
 
                 if (goDeeper)
                 {
-                    if (!changeSet.Any(c => c.Mod.Identifier == change.Mod.Identifier))
+                    if (!changeSet.Any(c => c.Mod.identifier == change.Mod.identifier && c.ChangeType != GUIModChangeType.Remove))
                         changeSet.Add(change);
                     CreateSortedModList(changes.Where(c => !(c.Reason is SelectionReason.UserRequested)), change);
                 }

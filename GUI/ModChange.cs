@@ -16,11 +16,11 @@ namespace CKAN
     /// </summary>
     public class ModChange
     {
-        public GUIMod           Mod        { get; private set; }
+        public CkanModule       Mod        { get; private set; }
         public GUIModChangeType ChangeType { get; private set; }
         public SelectionReason  Reason     { get; private set; }
 
-        public ModChange(GUIMod mod, GUIModChangeType changeType, SelectionReason reason)
+        public ModChange(CkanModule mod, GUIModChangeType changeType, SelectionReason reason)
         {
             Mod        = mod;
             ChangeType = changeType;
@@ -39,7 +39,7 @@ namespace CKAN
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return (obj as ModChange).Mod.Identifier == Mod.Identifier;
+            return (obj as ModChange).Mod.Equals(Mod);
         }
 
         public override int GetHashCode()

@@ -57,7 +57,7 @@
             //
             // ModVersion
             //
-            this.ModVersion.Width = 73;
+            this.ModVersion.Width = 98;
             resources.ApplyResources(this.ModVersion, "ModVersion");
             //
             // CompatibleKSPVersion
@@ -73,6 +73,7 @@
             this.VersionsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ModVersion,
             this.CompatibleKSPVersion});
+            this.VersionsListView.CheckBoxes = true;
             this.VersionsListView.FullRowSelect = true;
             this.VersionsListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem4});
@@ -82,7 +83,7 @@
             this.VersionsListView.TabIndex = 1;
             this.VersionsListView.UseCompatibleStateImageBehavior = false;
             this.VersionsListView.View = System.Windows.Forms.View.Details;
-            this.VersionsListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.VersionsListView_DoubleClick);
+            this.VersionsListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.VersionsListView_ItemCheck);
             //
             // label2
             //
