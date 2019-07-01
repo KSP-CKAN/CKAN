@@ -58,6 +58,12 @@ namespace CKAN.NetKAN.Processors
                 throw;
             }
         }
+        
+        internal void ValidateCkan(Metadata ckan)
+        {
+            netkanValidator.Validate(ckan);
+            ckanValidator.Validate(ckan);
+        }
 
         private static NetFileCache FindCache(KSPManager kspManager, IWin32Registry reg, string cacheDir)
         {
