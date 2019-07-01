@@ -789,7 +789,7 @@
             // InstallAllCheckbox
             //
             this.InstallAllCheckbox.Location = new System.Drawing.Point(4, 118);
-            this.InstallAllCheckbox.Size = new System.Drawing.Size(18, 18);
+            this.InstallAllCheckbox.Size = new System.Drawing.Size(20, 20);
             this.InstallAllCheckbox.Checked = true;
             this.InstallAllCheckbox.CheckedChanged += new System.EventHandler(this.InstallAllCheckbox_CheckChanged);
             //
