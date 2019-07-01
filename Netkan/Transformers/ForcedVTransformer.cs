@@ -33,7 +33,8 @@ namespace CKAN.NetKAN.Transformers
                 if (!version.StartsWith("v"))
                 {
                     Log.InfoFormat("Force-adding 'v' to start of {0}", version);
-                    version = "v" + version;
+                    version = "v"
+                        + (version.StartsWith("V") ? version.Substring(1) : version);
                     json["version"] = version;
                 }
 
