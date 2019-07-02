@@ -9,6 +9,7 @@ using Amazon.SQS.Model;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Processors
@@ -103,13 +104,20 @@ namespace CKAN.NetKAN.Processors
                 releases = int.Parse(releasesAttr.StringValue);
             }
 
+            ModuleVersion highVer = null;
+            MessageAttributeValue highVerAttr;
+            if (msg.MessageAttributes.TryGetValue("HighestVersion", out highVerAttr))
+            {
+                highVer = new ModuleVersion(highVerAttr.StringValue);
+            }
+
             log.InfoFormat("Inflating {0}", netkan.Identifier);
             IEnumerable<Metadata> ckans = null;
             bool   caught        = false;
             string caughtMessage = null;
             try
             {
-                ckans = inflator.Inflate($"{netkan.Identifier}.netkan", netkan, releases);
+                ckans = inflator.Inflate($"{netkan.Identifier}.netkan", netkan, releases, highVer);
             }
             catch (Exception e)
             {

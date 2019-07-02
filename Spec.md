@@ -855,13 +855,32 @@ If (and only if) no mod version number has been identified (eg a `#/ckan/http/:u
 
 ##### `x_netkan_epoch`
 
-The `x_netkan_epoch` field is used to specify a particular `epoch` number in the `version` field. Its value should be
+The `x_netkan_epoch` field is used to specify a minimum `epoch` number manually in the `version` field. Its value should be
 an unsigned 32-bit integer.
+
+Note that an epoch can be added without this property or incremented automatically, if the auto-indexer detects an out-of-order
+release.
 
 An example `.netkan` excerpt:
 ```json
 {
     "x_netkan_epoch": 1
+}
+```
+
+##### `x_netkan_allow_out_of_order`
+
+If true, then this module allows a freshly released version to have a version number smaller than previously existing releases.
+
+This should be used for modules that intentionally release "backport" versions, to disable automatic incrementing of epochs for
+out of order releases.
+Typical mods should not use this property, to allow their version epochs to be automatically incremented if they release an out
+of order version.
+
+An example `.netkan` excerpt:
+```json
+{
+    "x_netkan_allow_out_of_order": true
 }
 ```
 

@@ -9,7 +9,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class GeneratedByTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1);
+        private TransformOptions opts = new TransformOptions(1, null);
         
         [Test]
         public void AddsGeneratedByProperty()
