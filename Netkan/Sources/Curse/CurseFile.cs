@@ -36,7 +36,7 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             if (string.IsNullOrWhiteSpace(_downloadUrl))
             {
-                _downloadUrl = CurseApi.ResolveRedirect(new Uri(ModPageUrl + "/files/" + id + "/download")).ToString();
+                _downloadUrl = CurseApi.ResolveRedirect(new Uri(url + "/file")).ToString();
             }
             return _downloadUrl;
         }
