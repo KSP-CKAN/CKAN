@@ -1,262 +1,99 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\_build\lib\nuget\NUnit3TestAdapter.3.13.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\_build\lib\nuget\NUnit3TestAdapter.3.13.0\build\net35\NUnit3TestAdapter.props')" />
-  <Import Project="..\_build\lib\nuget\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\_build\lib\nuget\NUnit.3.12.0\build\NUnit.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4F41255E-8BC1-465B-82D5-1C5665BC099A}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Tests</RootNamespace>
     <AssemblyName>CKAN.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+  <Choose>
+    <When Condition="$(Configuration.EndsWith('NetCore'))">
+      <PropertyGroup>
+        <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <TargetFrameworks>net45</TargetFrameworks>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <PropertyGroup>
+    <ProjectGuid>{4F41255E-8BC1-465B-82D5-1C5665BC099A}</ProjectGuid>
+    <RootNamespace>Tests</RootNamespace>
     <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
-    <IntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</IntermediateOutputPath>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
+    <DefaultItemExcludes>$(DefaultItemExcludes);NetKAN\**;GUI\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug_NetCore' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release_NetCore' ">
     <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
-    </Reference>
+    <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">
+      <Link>Properties\GlobalAssemblyVersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Castle.Core" Version="4.4.0" />
+    <PackageReference Include="ICSharpCode.SharpZipLib.Patched" Version="0.86.5.1" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Moq" Version="4.11.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.2" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="CurlSharp">
       <HintPath>..\lib\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.5.0, Culture=neutral, PublicKeyToken=9dea7c6e17aa31ff, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\ICSharpCode.SharpZipLib.Patched.0.86.5.1\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
-      <HintPath>..\_build\lib\nuget\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Moq, Version=4.11.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\Moq.4.11.0\lib\net45\Moq.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\System.Threading.Tasks.Extensions.4.5.2\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Core\Cache.cs" />
-    <Compile Include="Core\FileIdentifier.cs" />
-    <Compile Include="Core\KSP.cs" />
-    <Compile Include="Core\KSPManager.cs" />
-    <Compile Include="Core\FakeWin32Registry.cs" />
-    <Compile Include="Core\KSPPathUtils.cs" />
-    <Compile Include="Core\ModuleInstaller.cs" />
-    <Compile Include="Core\ModuleInstallerDirTest.cs" />
-    <Compile Include="Core\Net\AutoUpdateTests.cs" />
-    <Compile Include="Core\Net\Net.cs" />
-    <Compile Include="Core\Net\NetAsyncModulesDownloader.cs" />
-    <Compile Include="Core\Net\Repo.cs" />
-    <Compile Include="Core\Registry\Registry.cs" />
-    <Compile Include="Core\Registry\RegistryLive.cs" />
-    <Compile Include="Core\Registry\RegistryManager.cs" />
-    <Compile Include="Core\Registry\RegistryMultipleRepos.cs" />
-    <Compile Include="Core\Relationships\RelationshipResolver.cs" />
-    <Compile Include="Core\Relationships\SanityChecker.cs" />
-    <Compile Include="Core\Types\GameComparator.cs" />
-    <Compile Include="Core\Types\License.cs" />
-    <Compile Include="Core\Types\CkanModuleTests.cs" />
-    <Compile Include="Core\Types\ModuleInstallDescriptorTests.cs" />
-    <Compile Include="Core\Types\RelationshipDescriptor.cs" />
-    <Compile Include="Core\Types\ReleaseStatus.cs" />
-    <Compile Include="Core\Versioning\Version.cs" />
-    <Compile Include="Core\Versioning\KspVersionBoundTests.cs" />
-    <Compile Include="Core\Versioning\KspVersionJsonConverterTests.cs" />
-    <Compile Include="Core\Versioning\KspVersionRangeTests.cs" />
-    <Compile Include="Core\Versioning\KspVersionTests.cs" />
-    <Compile Include="Data\DisposableKSP.cs" />
-    <Compile Include="Data\TestData.cs" />
-    <Compile Include="Data\ZipLib.cs" />
-    <Compile Include="GUI\Configuration.cs" />
-    <Compile Include="GUI\GH1866.cs" />
-    <Compile Include="GUI\GUIMod.cs" />
-    <Compile Include="GUI\MainModList.cs" />
-    <Compile Include="GUI\NavigationHistoryTests.cs" />
-    <Compile Include="NetKAN\AVC.cs" />
-    <Compile Include="NetKAN\Extensions\JObjectExtensionsTests.cs" />
-    <Compile Include="NetKAN\Extensions\VersionExtensionsTests.cs" />
-    <Compile Include="NetKAN\MainClass.cs" />
-    <Compile Include="NetKAN\NetkanOverride.cs" />
-    <Compile Include="NetKAN\SDMod.cs" />
-    <Compile Include="NetKAN\Services\FileServiceTests.cs" />
-    <Compile Include="NetKAN\Services\ModuleServiceTests.cs" />
-    <Compile Include="NetKAN\Sources\Curse\CurseApiTests.cs" />
-    <Compile Include="NetKAN\Sources\Github\GithubApiTests.cs" />
-    <Compile Include="NetKAN\Sources\Spacedock\SpacedockApiTests.cs" />
-    <Compile Include="NetKAN\Sources\Jenkins\JenkinsApiTests.cs" />
-    <Compile Include="NetKAN\Transformers\AvcKrefTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\AvcTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\CurseTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\DownloadAttributeTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\GeneratedByTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\GithubTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\HttpTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\InternalCkanTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\MetaNetkanTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\SpacedockTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\StripNetkanMetadataTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\VersionEditTransformerTests.cs" />
-    <Compile Include="NetKAN\Validators\AlphaNumericIdentifierValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\DownloadVersionValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\InstallValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\KrefDownloadMutexValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\LicensesValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\MatchesKnownGameVersionsValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\ObeysCKANSchemaValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\OverrideValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\RelationshipsValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\ReplacedByValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\VersionStrictValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\SpecVersionFormatValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\CkanValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\HasIdentifierValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\InstallsFilesValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\IsCkanModuleValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\MatchingIdentifiersValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\NetkanValidatorTests.cs" />
-    <Compile Include="NetKAN\Validators\KrefValidatorTests.cs" />
-    <Compile Include="Util.cs" />
-    <Compile Include="Core\Utilities.cs" />
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
+    <PackageReference Include="Shaman.CurlSharp" Version="0.6.3.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="Data\DogeCoinFlag-1.01-avc.zip" />
-    <None Include="Data\DogeCoinFlag-1.01-corrupt.zip" />
-    <None Include="Data\DogeCoinFlag-1.01-LZMA.zip" />
-    <None Include="Data\DogeCoinFlag-1.01-no-dir-entries.zip" />
-    <None Include="Data\DogeCoinPlugin.zip" />
-    <None Include="Data\FileIdentifier\random.bin" />
-    <None Include="Data\FileIdentifier\test_gzip.gz" />
-    <None Include="Data\FileIdentifier\test_tar.tar" />
-    <None Include="Data\FileIdentifier\test_tar.tmp" />
-    <None Include="Data\FileIdentifier\test_targz.tar.gz" />
-    <None Include="Data\FileIdentifier\test_targz.tmp" />
-    <None Include="Data\FileIdentifier\test_zip.tmp" />
-    <None Include="Data\FileIdentifier\test_zip.zip" />
-    <None Include="Data\Firespitter-6.3.5.ckan" />
-    <None Include="Data\gh221.zip" />
-    <None Include="Data\ksp-avc-one-line.version" />
-    <None Include="Data\ksp-avc.version" />
-    <None Include="Data\KSP\KSP-0.25\GameData\README.md" />
-    <None Include="Data\KS\CustomAsteroids.json" />
-    <None Include="Data\KS\README.md" />
-    <None Include="Data\lib\CkanTests.pm" />
-    <None Include="Data\MissionTest-1.0.ckan" />
-    <None Include="Data\MissionTest-1.0.zip" />
-    <None Include="Data\ModuleManager-2.5.1.ckan" />
-    <None Include="Data\ModuleManager-2.5.1.zip" />
-    <None Include="Data\README.md" />
-    <None Include="Data\registry.json" />
-    <None Include="Data\test-sln.sh" />
-    <None Include="packages.config" />
+    <ProjectReference Include="..\Core\CKAN-core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Data\CKAN.sln" />
-    <Content Include="Data\cmdline.t" />
-    <Content Include="Data\FileIdentifier\test_ascii.txt" />
-    <Content Include="Data\KSP\bad-KSP\readme.txt" />
-    <Content Include="Data\KSP\KSP-0.25\buildID.txt" />
-    <Content Include="Data\KSP\KSP-0.25\readme.txt" />
-    <Content Include="Data\KSP\missing-gamedata\readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Data\CKAN-meta-badkan.zip" />
-    <None Include="Data\CKAN-meta-testkan.tar.gz" />
-    <None Include="Data\CKAN-meta-testkan.zip" />
-    <None Include="Data\DogeCoinFlag-1.01-avc.zip" />
-    <None Include="Data\DogeCoinFlag-1.01-no-dir-entries.zip" />
-    <None Include="Data\DogeCoinPlugin.zip" />
-    <None Include="Data\FileIdentifier\random.bin" />
-    <None Include="Data\FileIdentifier\test_gzip.gz" />
-    <None Include="Data\FileIdentifier\test_tar.tar" />
-    <None Include="Data\FileIdentifier\test_tar.tmp" />
-    <None Include="Data\FileIdentifier\test_targz.tar.gz" />
-    <None Include="Data\FileIdentifier\test_targz.tmp" />
-    <None Include="Data\FileIdentifier\test_zip.tmp" />
-    <None Include="Data\FileIdentifier\test_zip.zip" />
-    <None Include="Data\Firespitter-6.3.5.ckan" />
-    <None Include="Data\gh221.zip" />
-    <None Include="Data\ksp-avc-one-line.version" />
-    <None Include="Data\ksp-avc.version" />
-    <None Include="Data\KSP\KSP-0.25\GameData\README.md" />
-    <None Include="Data\KS\CustomAsteroids.json" />
-    <None Include="Data\KS\README.md" />
-    <None Include="Data\lib\CkanTests.pm" />
-    <None Include="Data\ModuleManager-2.5.1.ckan" />
-    <None Include="Data\ModuleManager-2.5.1.zip" />
-    <None Include="Data\README.md" />
-    <None Include="Data\registry.json" />
-    <None Include="Data\test-sln.sh" />
-    <None Include="packages.config" />
-    <None Include="Data\CKAN-meta-badkan.tar.gz" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Core\CKAN-core.csproj">
-      <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
-      <Name>CKAN-core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GUI\CKAN-GUI.csproj">
-      <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
-      <Name>CKAN-GUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Netkan\CKAN-netkan.csproj">
-      <Project>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</Project>
-      <Name>CKAN-netkan</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <Choose>
+    <When Condition=" '$(TargetFramework)' == 'net45' ">
+      <ItemGroup>
+        <ProjectReference Include="..\GUI\CKAN-GUI.csproj" />
+        <ProjectReference Include="..\Netkan\CKAN-netkan.csproj" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
   <Target Name="BeforeBuild">
     <Exec Command="powershell ../build.ps1 Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
     <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
-  </Target>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\_build\lib\nuget\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\_build\lib\nuget\NUnit.3.12.0\build\NUnit.props'))" />
-    <Error Condition="!Exists('..\_build\lib\nuget\NUnit3TestAdapter.3.13.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\_build\lib\nuget\NUnit3TestAdapter.3.13.0\build\net35\NUnit3TestAdapter.props'))" />
   </Target>
 </Project>

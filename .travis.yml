@@ -15,6 +15,15 @@ mono:
     - 5.14.0
     - 5.12.0
 
+matrix:
+    include:
+        - env: BUILD_CONFIGURATION=Debug_NetCore
+          mono: latest
+          dotnet: 2.1.700
+        - env: BUILD_CONFIGURATION=Release_NetCore
+          mono: latest
+          dotnet: 2.1.700
+
 addons:
     apt:
         packages:

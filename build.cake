@@ -8,6 +8,7 @@ using Semver;
 
 var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Debug");
+var buildFramework = configuration.EndsWith("_NetCore") ? "netcoreapp2.1" : "net45";
 var solution = Argument<string>("solution", "CKAN.sln");
 
 var rootDirectory = Context.Environment.WorkingDirectory;
@@ -28,7 +29,8 @@ Task("Release")
     .IsDependentOn("Default");
 
 Task("Ckan")
-    .IsDependentOn("Repack-Ckan");
+    .IsDependentOn("Repack-Ckan")
+    .IsDependentOn("Build-DotNetCore");
 
 Task("Netkan")
     .IsDependentOn("Repack-Netkan");
@@ -57,22 +59,49 @@ Task("deb-clean")
         new ProcessSettings { Arguments = "clean", WorkingDirectory = "debian" }));
 
 Task("Restore-Nuget")
+    .WithCriteria(buildFramework == "net45")
     .Does(() =>
 {
     NuGetRestore(solution, new NuGetRestoreSettings
     {
-        ConfigFile = "nuget.config"
+        ConfigFile = "nuget.config",
+        EnvironmentVariables = new Dictionary<string, string> { { "Configuration", configuration } }
     });
 });
 
 Task("Build-DotNet")
     .IsDependentOn("Restore-Nuget")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
+    .WithCriteria(buildFramework == "net45")
     .Does(() =>
 {
     MSBuild(solution, settings =>
     {
         settings.Configuration = configuration;
+    });
+});
+
+Task("Restore-DotNetCore")
+    .WithCriteria(buildFramework == "netcoreapp2.1")
+    .Does(() =>
+{
+    DotNetCoreRestore(solution, new DotNetCoreRestoreSettings
+    {
+        ConfigFile = "nuget.config",
+        EnvironmentVariables = new Dictionary<string, string> { { "Configuration", configuration } }
+    });
+});
+
+Task("Build-DotNetCore")
+    .IsDependentOn("Restore-Dotnetcore")
+    .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
+    .WithCriteria(buildFramework == "netcoreapp2.1")
+    .Does(() =>
+{
+    DotNetCoreBuild(solution, new DotNetCoreBuildSettings
+    {
+        Configuration = configuration,
+        NoRestore = true
     });
 });
 
@@ -96,6 +125,7 @@ Task("Generate-GlobalAssemblyVersionInfo")
 });
 
 Task("Repack-Ckan")
+    .WithCriteria(buildFramework == "net45")
     .IsDependentOn("Build-DotNet")
     .Does(() =>
 {
@@ -120,6 +150,7 @@ Task("Repack-Ckan")
 });
 
 Task("Repack-Netkan")
+    .WithCriteria(buildFramework == "net45")
     .IsDependentOn("Build-DotNet")
     .Does(() =>
 {
@@ -145,6 +176,8 @@ Task("Test+Only")
     .IsDependentOn("Test-Executables+Only");
 
 Task("Test-UnitTests+Only")
+    .IsDependentOn("Test-UnitTests+Only-DotNetCore")
+    .WithCriteria(buildFramework == "net45")
     .Does(() =>
 {
     var where = Argument<string>("where", null);
@@ -153,6 +186,7 @@ Task("Test-UnitTests+Only")
         .Combine("CKAN.Tests")
         .Combine(configuration)
         .Combine("bin")
+        .Combine(buildFramework)
         .CombineWithFilePath("CKAN.Tests.dll");
 
     if (!FileExists(testFile))
@@ -168,11 +202,30 @@ Task("Test-UnitTests+Only")
     });
 });
 
+Task("Test-UnitTests+Only-DotNetCore")
+    .WithCriteria(buildFramework == "netcoreapp2.1")
+    .Does(() =>
+{
+    var where = Argument<string>("where", null);
+
+    var nunitOutputDirectory = buildDirectory.Combine("test/nunit");
+
+    CreateDirectory(nunitOutputDirectory);
+
+    DotNetCoreTest(solution, new DotNetCoreTestSettings {
+        NoBuild = true,
+        Configuration= configuration,
+        ResultsDirectory = nunitOutputDirectory,
+        Filter = where
+    });
+});
+
 Task("Test-Executables+Only")
     .IsDependentOn("Test-CkanExecutable+Only")
     .IsDependentOn("Test-NetkanExecutable+Only");
 
 Task("Test-CkanExecutable+Only")
+    .WithCriteria(buildFramework == "net45")
     .Does(() =>
 {
     if (RunExecutable(ckanFile, "version").FirstOrDefault() != string.Format("v{0}", GetVersion()))
@@ -180,6 +233,7 @@ Task("Test-CkanExecutable+Only")
 });
 
 Task("Test-NetkanExecutable+Only")
+    .WithCriteria(buildFramework == "net45")
     .Does(() =>
 {
     if (RunExecutable(netkanFile, "--version").FirstOrDefault() != string.Format("v{0}", GetVersion()))
@@ -202,6 +256,7 @@ Setup(context =>
             Warning($"Ignoring configuration argument: '{argConfiguration}'");
 
         configuration = "Release";
+        buildFramework = "net45";
     }
     else if (string.Equals(target, "Debug", StringComparison.OrdinalIgnoreCase))
     {
@@ -209,6 +264,7 @@ Setup(context =>
             Warning($"Ignoring configuration argument: '{argConfiguration}'");
 
         configuration = "Debug";
+        buildFramework = "net45";
     }
 });
 
