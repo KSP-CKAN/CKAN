@@ -19,7 +19,7 @@ namespace Tests.Data
             //    But this makes updates hard.
             // 4. A better, but much harder solution, is to not require harded files on disk for any of our tests, but that's
             //    a lot of work.
-            return Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "../../../../../Tests/Data");
+            return Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "../../../../../../Tests/Data");
         }
 
         public static string DataDir(string file)
