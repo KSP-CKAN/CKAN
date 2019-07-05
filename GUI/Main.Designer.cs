@@ -343,7 +343,7 @@
             this.statusStrip1.Location = new System.Drawing.Point(0, 1016);
             this.statusStrip1.Size = new System.Drawing.Size(1544, 22);
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-            this.statusStrip1.TabIndex = 1;
+            this.statusStrip1.TabIndex = 35;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
             {
                 this.StatusLabel,
@@ -370,7 +370,7 @@
             this.menuStrip2.Name = "menuStrip2";
             this.menuStrip2.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
             this.menuStrip2.Size = new System.Drawing.Size(5876, 62);
-            this.menuStrip2.TabIndex = 2;
+            this.menuStrip2.TabIndex = 4;
             this.menuStrip2.Text = "menuStrip2";
             //
             // launchKSPToolStripMenuItem
@@ -531,7 +531,7 @@
             this.splitContainer1.Size = new System.Drawing.Size(1544, 981);
             this.splitContainer1.SplitterDistance = 1156;
             this.splitContainer1.SplitterWidth = 10;
-            this.splitContainer1.TabIndex = 7;
+            this.splitContainer1.TabIndex = 1;
             //
             // ModList
             //
@@ -568,7 +568,8 @@
             this.ModList.RowHeadersVisible = false;
             this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.ModList.Size = new System.Drawing.Size(1536, 837);
-            this.ModList.TabIndex = 3;
+            this.ModList.StandardTab = true;
+            this.ModList.TabIndex = 12;
             this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
             this.ModList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_CellMouseDoubleClick);
             this.ModList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
@@ -576,6 +577,8 @@
             this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
             this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
             this.ModList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ModList_MouseDown);
+            this.ModList.GotFocus += new System.EventHandler(this.ModList_GotFocus);
+            this.ModList.LostFocus += new System.EventHandler(this.ModList_LostFocus);
             //
             // Installed
             //
@@ -718,7 +721,7 @@
             this.ModInfoTabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ModInfoTabControl.Name = "ModInfoTabControl";
             this.ModInfoTabControl.Size = new System.Drawing.Size(360, 836);
-            this.ModInfoTabControl.TabIndex = 0;
+            this.ModInfoTabControl.TabIndex = 34;
             //
             // StatusLabel
             //
@@ -763,7 +766,7 @@
             this.MainTabControl.Name = "MainTabControl";
             this.MainTabControl.SelectedIndex = 0;
             this.MainTabControl.Size = new System.Drawing.Size(1544, 981);
-            this.MainTabControl.TabIndex = 9;
+            this.MainTabControl.TabIndex = 2;
             this.MainTabControl.SelectedIndexChanged += new System.EventHandler(this.MainTabControl_OnSelectedIndexChanged);
             //
             // ManageModsTabPage
@@ -783,7 +786,7 @@
             this.ManageModsTabPage.Name = "ManageModsTabPage";
             this.ManageModsTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ManageModsTabPage.Size = new System.Drawing.Size(1536, 948);
-            this.ManageModsTabPage.TabIndex = 0;
+            this.ManageModsTabPage.TabIndex = 3;
             resources.ApplyResources(this.ManageModsTabPage, "ManageModsTabPage");
             //
             // InstallAllCheckbox
@@ -792,14 +795,17 @@
             this.InstallAllCheckbox.Size = new System.Drawing.Size(20, 20);
             this.InstallAllCheckbox.Checked = true;
             this.InstallAllCheckbox.CheckedChanged += new System.EventHandler(this.InstallAllCheckbox_CheckChanged);
+            this.InstallAllCheckbox.TabIndex = 11;
+            this.InstallAllCheckbox.TabStop = false;
             //
             // FilterByAuthorTextBox
             //
             this.FilterByAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.FilterByAuthorTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByAuthorTextBox.Name = "FilterByAuthorTextBox";
-            this.FilterByAuthorTextBox.TabIndex = 13;
+            this.FilterByAuthorTextBox.TabIndex = 8;
             this.FilterByAuthorTextBox.TextChanged += new System.EventHandler(this.FilterByAuthorTextBox_TextChanged);
+            this.FilterByAuthorTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByAuthorTextBox, "FilterByAuthorTextBox");
             //
             // FilterByAuthorLabel
@@ -810,7 +816,7 @@
             this.FilterByAuthorLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByAuthorLabel.Name = "FilterByAuthorLabel";
             this.FilterByAuthorLabel.Size = new System.Drawing.Size(162, 20);
-            this.FilterByAuthorLabel.TabIndex = 12;
+            this.FilterByAuthorLabel.TabIndex = 7;
             resources.ApplyResources(this.FilterByAuthorLabel, "FilterByAuthorLabel");
             //
             // FilterByNameLabel
@@ -821,7 +827,7 @@
             this.FilterByNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByNameLabel.Name = "FilterByNameLabel";
             this.FilterByNameLabel.Size = new System.Drawing.Size(147, 20);
-            this.FilterByNameLabel.TabIndex = 10;
+            this.FilterByNameLabel.TabIndex = 5;
             resources.ApplyResources(this.FilterByNameLabel, "FilterByNameLabel");
             //
             // FilterByNameTextBox
@@ -829,8 +835,9 @@
             this.FilterByNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.FilterByNameTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByNameTextBox.Name = "FilterByNameTextBox";
-            this.FilterByNameTextBox.TabIndex = 11;
+            this.FilterByNameTextBox.TabIndex = 6;
             this.FilterByNameTextBox.TextChanged += new System.EventHandler(this.FilterByNameTextBox_TextChanged);
+            this.FilterByNameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByNameTextBox, "FilterByNameTextBox");
             //
             // FilterByDescriptionLabel
@@ -841,7 +848,7 @@
             this.FilterByDescriptionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByDescriptionLabel.Name = "FilterByDescriptionLabel";
             this.FilterByDescriptionLabel.Size = new System.Drawing.Size(149, 20);
-            this.FilterByDescriptionLabel.TabIndex = 14;
+            this.FilterByDescriptionLabel.TabIndex = 9;
             resources.ApplyResources(this.FilterByDescriptionLabel, "FilterByDescriptionLabel");
             //
             // FilterByDescriptionTextBox
@@ -849,8 +856,9 @@
             this.FilterByDescriptionTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.FilterByDescriptionTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByDescriptionTextBox.Name = "FilterByDescriptionTextBox";
-            this.FilterByDescriptionTextBox.TabIndex = 15;
+            this.FilterByDescriptionTextBox.TabIndex = 10;
             this.FilterByDescriptionTextBox.TextChanged += new System.EventHandler(this.FilterByDescriptionTextBox_TextChanged);
+            this.FilterByDescriptionTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByDescriptionTextBox, "FilterByDescriptionTextBox");
             //
             // ChangesetTabPage
@@ -863,7 +871,7 @@
             this.ChangesetTabPage.Name = "ChangesetTabPage";
             this.ChangesetTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChangesetTabPage.Size = new System.Drawing.Size(1536, 948);
-            this.ChangesetTabPage.TabIndex = 2;
+            this.ChangesetTabPage.TabIndex = 13;
             this.ChangesetTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.ChangesetTabPage, "ChangesetTabPage");
             //
@@ -875,7 +883,7 @@
             this.CancelChangesButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.CancelChangesButton.Name = "CancelChangesButton";
             this.CancelChangesButton.Size = new System.Drawing.Size(112, 35);
-            this.CancelChangesButton.TabIndex = 6;
+            this.CancelChangesButton.TabIndex = 16;
             this.CancelChangesButton.UseVisualStyleBackColor = true;
             this.CancelChangesButton.Click += new System.EventHandler(this.CancelChangesButton_Click);
             resources.ApplyResources(this.CancelChangesButton, "CancelChangesButton");
@@ -888,7 +896,7 @@
             this.ConfirmChangesButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ConfirmChangesButton.Name = "ConfirmChangesButton";
             this.ConfirmChangesButton.Size = new System.Drawing.Size(112, 35);
-            this.ConfirmChangesButton.TabIndex = 5;
+            this.ConfirmChangesButton.TabIndex = 15;
             this.ConfirmChangesButton.UseVisualStyleBackColor = true;
             this.ConfirmChangesButton.Click += new System.EventHandler(this.ConfirmChangesButton_Click);
             resources.ApplyResources(this.ConfirmChangesButton, "ConfirmChangesButton");
@@ -908,7 +916,7 @@
             this.ChangesListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChangesListView.Name = "ChangesListView";
             this.ChangesListView.Size = new System.Drawing.Size(1532, 886);
-            this.ChangesListView.TabIndex = 4;
+            this.ChangesListView.TabIndex = 14;
             this.ChangesListView.UseCompatibleStateImageBehavior = false;
             this.ChangesListView.View = System.Windows.Forms.View.Details;
             this.ChangesListView.SelectedIndexChanged += new System.EventHandler(ChangesListView_SelectedIndexChanged);
@@ -941,7 +949,7 @@
             this.WaitTabPage.Name = "WaitTabPage";
             this.WaitTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.WaitTabPage.Size = new System.Drawing.Size(1536, 948);
-            this.WaitTabPage.TabIndex = 1;
+            this.WaitTabPage.TabIndex = 17;
             resources.ApplyResources(this.WaitTabPage, "WaitTabPage");
             //
             // CancelCurrentActionButton
@@ -952,7 +960,7 @@
             this.CancelCurrentActionButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.CancelCurrentActionButton.Name = "CancelCurrentActionButton";
             this.CancelCurrentActionButton.Size = new System.Drawing.Size(112, 35);
-            this.CancelCurrentActionButton.TabIndex = 9;
+            this.CancelCurrentActionButton.TabIndex = 22;
             this.CancelCurrentActionButton.UseVisualStyleBackColor = true;
             this.CancelCurrentActionButton.Click += new System.EventHandler(this.CancelCurrentActionButton_Click);
             resources.ApplyResources(this.CancelCurrentActionButton, "CancelCurrentActionButton");
@@ -965,7 +973,7 @@
             this.RetryCurrentActionButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RetryCurrentActionButton.Name = "RetryCurrentActionButton";
             this.RetryCurrentActionButton.Size = new System.Drawing.Size(112, 35);
-            this.RetryCurrentActionButton.TabIndex = 8;
+            this.RetryCurrentActionButton.TabIndex = 21;
             this.RetryCurrentActionButton.UseVisualStyleBackColor = true;
             this.RetryCurrentActionButton.Visible = false;
             this.RetryCurrentActionButton.Click += new System.EventHandler(this.RetryCurrentActionButton_Click);
@@ -985,7 +993,7 @@
             this.LogTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.LogTextBox.Size = new System.Drawing.Size(1505, 799);
-            this.LogTextBox.TabIndex = 8;
+            this.LogTextBox.TabIndex = 18;
             //
             // DialogProgressBar
             //
@@ -996,7 +1004,7 @@
             this.DialogProgressBar.Name = "DialogProgressBar";
             this.DialogProgressBar.Size = new System.Drawing.Size(1506, 35);
             this.DialogProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.DialogProgressBar.TabIndex = 7;
+            this.DialogProgressBar.TabIndex = 19;
             //
             // MessageTextBox
             //
@@ -1011,7 +1019,7 @@
             this.MessageTextBox.Name = "MessageTextBox";
             this.MessageTextBox.ReadOnly = true;
             this.MessageTextBox.Size = new System.Drawing.Size(1510, 26);
-            this.MessageTextBox.TabIndex = 6;
+            this.MessageTextBox.TabIndex = 20;
             this.MessageTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             resources.ApplyResources(this.MessageTextBox, "MessageTextBox");
             //
@@ -1027,7 +1035,7 @@
             this.ChooseRecommendedModsTabPage.Name = "ChooseRecommendedModsTabPage";
             this.ChooseRecommendedModsTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseRecommendedModsTabPage.Size = new System.Drawing.Size(1536, 948);
-            this.ChooseRecommendedModsTabPage.TabIndex = 3;
+            this.ChooseRecommendedModsTabPage.TabIndex = 23;
             this.ChooseRecommendedModsTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.ChooseRecommendedModsTabPage, "ChooseRecommendedModsTabPage");
             //
@@ -1039,7 +1047,7 @@
             this.RecommendedModsCancelButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RecommendedModsCancelButton.Name = "RecommendedModsCancelButton";
             this.RecommendedModsCancelButton.Size = new System.Drawing.Size(112, 35);
-            this.RecommendedModsCancelButton.TabIndex = 8;
+            this.RecommendedModsCancelButton.TabIndex = 27;
             this.RecommendedModsCancelButton.UseVisualStyleBackColor = true;
             this.RecommendedModsCancelButton.Click += new System.EventHandler(this.RecommendedModsCancelButton_Click);
             resources.ApplyResources(this.RecommendedModsCancelButton, "RecommendedModsCancelButton");
@@ -1052,7 +1060,7 @@
             this.RecommendedModsContinueButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RecommendedModsContinueButton.Name = "RecommendedModsContinueButton";
             this.RecommendedModsContinueButton.Size = new System.Drawing.Size(112, 35);
-            this.RecommendedModsContinueButton.TabIndex = 7;
+            this.RecommendedModsContinueButton.TabIndex = 26;
             this.RecommendedModsContinueButton.UseVisualStyleBackColor = true;
             this.RecommendedModsContinueButton.Click += new System.EventHandler(this.RecommendedModsContinueButton_Click);
             resources.ApplyResources(this.RecommendedModsContinueButton, "RecommendedModsContinueButton");
@@ -1066,7 +1074,7 @@
             this.RecommendedModsToggleCheckbox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RecommendedModsToggleCheckbox.Name = "RecommendedModsToggleCheckbox";
             this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(131, 24);
-            this.RecommendedModsToggleCheckbox.TabIndex = 9;
+            this.RecommendedModsToggleCheckbox.TabIndex = 28;
             this.RecommendedModsToggleCheckbox.UseVisualStyleBackColor = true;
             this.RecommendedModsToggleCheckbox.CheckedChanged += new System.EventHandler(this.RecommendedModsToggleCheckbox_CheckedChanged);
             resources.ApplyResources(this.RecommendedModsToggleCheckbox, "RecommendedModsToggleCheckbox");
@@ -1078,7 +1086,7 @@
             this.RecommendedDialogLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.RecommendedDialogLabel.Name = "RecommendedDialogLabel";
             this.RecommendedDialogLabel.Size = new System.Drawing.Size(627, 20);
-            this.RecommendedDialogLabel.TabIndex = 6;
+            this.RecommendedDialogLabel.TabIndex = 25;
             resources.ApplyResources(this.RecommendedDialogLabel, "RecommendedDialogLabel");
             //
             // RecommendedModsListView
@@ -1097,7 +1105,7 @@
             this.RecommendedModsListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RecommendedModsListView.Name = "RecommendedModsListView";
             this.RecommendedModsListView.Size = new System.Drawing.Size(1510, 841);
-            this.RecommendedModsListView.TabIndex = 5;
+            this.RecommendedModsListView.TabIndex = 24;
             this.RecommendedModsListView.UseCompatibleStateImageBehavior = false;
             this.RecommendedModsListView.View = System.Windows.Forms.View.Details;
             this.RecommendedModsListView.SelectedIndexChanged += new System.EventHandler(RecommendedModsListView_SelectedIndexChanged);
@@ -1142,7 +1150,7 @@
             this.ChooseProvidedModsTabPage.Name = "ChooseProvidedModsTabPage";
             this.ChooseProvidedModsTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseProvidedModsTabPage.Size = new System.Drawing.Size(1536, 948);
-            this.ChooseProvidedModsTabPage.TabIndex = 4;
+            this.ChooseProvidedModsTabPage.TabIndex = 29;
             this.ChooseProvidedModsTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.ChooseProvidedModsTabPage, "ChooseProvidedModsTabPage");
             //
@@ -1154,7 +1162,7 @@
             this.ChooseProvidedModsCancelButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseProvidedModsCancelButton.Name = "ChooseProvidedModsCancelButton";
             this.ChooseProvidedModsCancelButton.Size = new System.Drawing.Size(112, 35);
-            this.ChooseProvidedModsCancelButton.TabIndex = 10;
+            this.ChooseProvidedModsCancelButton.TabIndex = 33;
             this.ChooseProvidedModsCancelButton.UseVisualStyleBackColor = true;
             this.ChooseProvidedModsCancelButton.Click += new System.EventHandler(this.ChooseProvidedModsCancelButton_Click);
             resources.ApplyResources(this.ChooseProvidedModsCancelButton, "ChooseProvidedModsCancelButton");
@@ -1167,7 +1175,7 @@
             this.ChooseProvidedModsContinueButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseProvidedModsContinueButton.Name = "ChooseProvidedModsContinueButton";
             this.ChooseProvidedModsContinueButton.Size = new System.Drawing.Size(112, 35);
-            this.ChooseProvidedModsContinueButton.TabIndex = 9;
+            this.ChooseProvidedModsContinueButton.TabIndex = 32;
             this.ChooseProvidedModsContinueButton.UseVisualStyleBackColor = true;
             this.ChooseProvidedModsContinueButton.Click += new System.EventHandler(this.ChooseProvidedModsContinueButton_Click);
             resources.ApplyResources(this.ChooseProvidedModsContinueButton, "ChooseProvidedModsContinueButton");
@@ -1189,7 +1197,7 @@
             this.ChooseProvidedModsListView.MultiSelect = false;
             this.ChooseProvidedModsListView.Name = "ChooseProvidedModsListView";
             this.ChooseProvidedModsListView.Size = new System.Drawing.Size(1510, 841);
-            this.ChooseProvidedModsListView.TabIndex = 8;
+            this.ChooseProvidedModsListView.TabIndex = 31;
             this.ChooseProvidedModsListView.UseCompatibleStateImageBehavior = false;
             this.ChooseProvidedModsListView.View = System.Windows.Forms.View.Details;
             this.ChooseProvidedModsListView.SelectedIndexChanged += new System.EventHandler(ChooseProvidedModsListView_SelectedIndexChanged);
@@ -1211,7 +1219,7 @@
             this.ChooseProvidedModsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ChooseProvidedModsLabel.Name = "ChooseProvidedModsLabel";
             this.ChooseProvidedModsLabel.Size = new System.Drawing.Size(568, 20);
-            this.ChooseProvidedModsLabel.TabIndex = 7;
+            this.ChooseProvidedModsLabel.TabIndex = 30;
             resources.ApplyResources(this.ChooseProvidedModsLabel, "ChooseProvidedModsLabel");
             //
             // minimizeNotifyIcon

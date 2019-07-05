@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -587,6 +588,26 @@ namespace CKAN
                     );
                 }
             }
+        }
+        
+        private void ModList_GotFocus(object sender, EventArgs e)
+        {
+            Util.Invoke(this, () =>
+            {
+                // Give the selected row the standard highlight color
+                ModList.RowsDefaultCellStyle.SelectionBackColor = SystemColors.Highlight;
+                ModList.RowsDefaultCellStyle.SelectionForeColor = SystemColors.HighlightText;
+            });
+        }
+
+        private void ModList_LostFocus(object sender, EventArgs e)
+        {
+            Util.Invoke(this, () =>
+            {
+                // Gray out the selected row so you can tell the mod list is not focused
+                ModList.RowsDefaultCellStyle.SelectionBackColor = SystemColors.Control;
+                ModList.RowsDefaultCellStyle.SelectionForeColor = SystemColors.ControlText;
+            });
         }
 
         private void InstallAllCheckbox_CheckChanged(object sender, EventArgs e)

@@ -666,6 +666,20 @@ namespace CKAN
                 mainModList.ModDescriptionFilter = FilterByDescriptionTextBox.Text;
         }
 
+        private void FilterTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Switch focus from filters to mod list on enter, down, or pgdn
+            switch (e.KeyCode)
+            {
+                case Keys.Enter:
+                case Keys.Down:
+                case Keys.PageDown:
+                    Util.Invoke(this, () => ModList.Focus());
+                    e.Handled = true;
+                    break;
+            }
+        }
+
         /// <summary>
         /// Start or restart a timer to update the filter after an interval since the last keypress.
         /// On Mac OS X, this prevents the search field from locking up due to DataGridViews being
