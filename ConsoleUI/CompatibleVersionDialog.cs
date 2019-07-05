@@ -4,6 +4,7 @@ using System.ComponentModel;
 using CKAN.Versioning;
 using CKAN.GameVersionProviders;
 using CKAN.ConsoleUI.Toolkit;
+using Autofac;
 
 namespace CKAN.ConsoleUI {
 
@@ -83,7 +84,7 @@ namespace CKAN.ConsoleUI {
 
         static CompatibleVersionDialog()
         {
-            options = new KspBuildMap(new Win32Registry()).KnownVersions;
+            options = ServiceLocator.Container.Resolve<IKspBuildMap>().KnownVersions;
             // C# won't let us foreach over an array while modifying it
             for (int i = options.Count - 1; i >= 0; --i) {
                 KspVersion v = options[i];

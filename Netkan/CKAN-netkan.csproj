@@ -64,6 +64,9 @@
     <Reference Include="AWSSDK.SQS" Version="3.3.100.34">
       <HintPath>..\_build\lib\nuget\AWSSDK.SQS.3.3.100.34\lib\net45\AWSSDK.SQS.dll</HintPath>
     </Reference>
+    <Reference Include="Autofac, Version=4.9.2.0, Culture=neutral, PublicKeyToken=17863af14b0044da">
+      <HintPath>..\_build\lib\nuget\Autofac.4.9.2\lib\net45\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>

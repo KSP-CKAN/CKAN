@@ -5,7 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using Autofac;
 using ChinhDo.Transactions.FileManager;
+using CKAN.Win32Registry;
 using CurlSharp;
 using log4net;
 
@@ -93,6 +95,22 @@ namespace CKAN
                 var agent = MakeDefaultHttpClient();
                 agent.DownloadFile(url, filename);
                 etag = agent.ResponseHeaders.Get("ETag")?.Replace("\"", "");
+            }
+            // Explicit redirect handling. This is needed when redirecting from HTTPS to HTTP on .NET Core.
+            catch (WebException ex)
+            {
+                if (ex.Status != WebExceptionStatus.ProtocolError)
+                {
+                    throw;
+                }
+
+                HttpWebResponse response = ex.Response as HttpWebResponse;
+                if (response.StatusCode != HttpStatusCode.Redirect)
+                {
+                    throw;
+                }
+
+                return Net.Download(response.GetResponseHeader("Location"), out etag, filename, user);
             }
             catch (Exception ex)
             {
@@ -215,7 +233,7 @@ namespace CKAN
 
                 // Check whether to use an auth token for this host
                 if (!string.IsNullOrEmpty(authToken)
-                    || (Win32Registry.TryGetAuthToken(url.Host, out authToken)
+                    || (ServiceLocator.Container.Resolve<IWin32Registry>().TryGetAuthToken(url.Host, out authToken)
                         && !string.IsNullOrEmpty(authToken)))
                 {
                     log.InfoFormat("Using auth token for {0}", url.Host);

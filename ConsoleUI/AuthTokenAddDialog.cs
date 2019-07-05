@@ -1,5 +1,7 @@
 using System;
+using Autofac;
 using CKAN.ConsoleUI.Toolkit;
+using CKAN.Win32Registry;
 
 namespace CKAN.ConsoleUI {
 
@@ -57,7 +59,7 @@ namespace CKAN.ConsoleUI {
             AddTip("Enter", "Accept", validKey);
             AddBinding(Keys.Enter, (object sender) => {
                 if (validKey()) {
-                    Win32Registry.SetAuthToken(hostEntry.Value, tokenEntry.Value);
+                    ServiceLocator.Container.Resolve<IWin32Registry>().SetAuthToken(hostEntry.Value, tokenEntry.Value);
                     return false;
                 } else {
                     // Don't close window on Enter unless adding a key
@@ -72,7 +74,7 @@ namespace CKAN.ConsoleUI {
             return hostEntry.Value.Length  > 0
                 && tokenEntry.Value.Length > 0
                 && Uri.CheckHostName(hostEntry.Value) != UriHostNameType.Unknown
-                && !Win32Registry.TryGetAuthToken(hostEntry.Value, out token);
+                && !ServiceLocator.Container.Resolve<IWin32Registry>().TryGetAuthToken(hostEntry.Value, out token);
         }
 
         private ConsoleField hostEntry;

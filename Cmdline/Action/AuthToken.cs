@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Autofac;
+using CKAN.Win32Registry;
 using CommandLine;
 using CommandLine.Text;
 using log4net;
@@ -64,7 +66,7 @@ namespace CKAN.CmdLine
 
         private int listAuthTokens(CommonOptions opts)
         {
-            List<string> hosts  = new List<string>(Win32Registry.GetAuthTokenHosts());
+            List<string> hosts  = new List<string>(ServiceLocator.Container.Resolve<IWin32Registry>().GetAuthTokenHosts());
             if (hosts.Count > 0)
             {
                 int longestHostLen  = hostHeader.Length;
@@ -73,7 +75,7 @@ namespace CKAN.CmdLine
                 {
                     longestHostLen = Math.Max(longestHostLen, host.Length);
                     string token;
-                    if (Win32Registry.TryGetAuthToken(host, out token))
+                    if (ServiceLocator.Container.Resolve<IWin32Registry>().TryGetAuthToken(host, out token))
                     {
                         longestTokenLen = Math.Max(longestTokenLen, token.Length);
                     }
@@ -89,7 +91,7 @@ namespace CKAN.CmdLine
                 foreach (string host in hosts)
                 {
                     string token;
-                    if (Win32Registry.TryGetAuthToken(host, out token))
+                    if (ServiceLocator.Container.Resolve<IWin32Registry>().TryGetAuthToken(host, out token))
                     {
                         user.RaiseMessage(fmt, host, token);
                     }
@@ -102,7 +104,7 @@ namespace CKAN.CmdLine
         {
             if (Uri.CheckHostName(opts.host) != UriHostNameType.Unknown)
             {
-                Win32Registry.SetAuthToken(opts.host, opts.token);
+                ServiceLocator.Container.Resolve<IWin32Registry>().SetAuthToken(opts.host, opts.token);
             }
             else
             {
@@ -113,7 +115,7 @@ namespace CKAN.CmdLine
 
         private int removeAuthToken(RemoveAuthTokenOptions opts)
         {
-            Win32Registry.SetAuthToken(opts.host, null);
+            ServiceLocator.Container.Resolve<IWin32Registry>().SetAuthToken(opts.host, null);
             return Exit.OK;
         }
 

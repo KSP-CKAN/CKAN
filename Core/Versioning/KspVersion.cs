@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using CKAN.GameVersionProviders;
+using Autofac;
 
 namespace CKAN.Versioning
 {
@@ -251,7 +252,7 @@ namespace CKAN.Versioning
         static KspVersion()
         {
             // Should be sorted
-            List<KspVersion> versions = new KspBuildMap(new Win32Registry()).KnownVersions;
+            List<KspVersion> versions = ServiceLocator.Container.Resolve<IKspBuildMap>().KnownVersions;
             VersionsMax[""] = versions.Last();
             foreach (var v in versions)
             {
@@ -451,7 +452,7 @@ namespace CKAN.Versioning
         /// <returns><c>true</c>, if version is in the build map, <c>false</c> otherwise.</returns>
         public bool InBuildMap()
         {
-            List<KspVersion> knownVersions = new KspBuildMap(new Win32Registry()).KnownVersions;
+            List<KspVersion> knownVersions = ServiceLocator.Container.Resolve<IKspBuildMap>().KnownVersions;
 
             foreach (KspVersion ver in knownVersions)
             {
@@ -492,7 +493,7 @@ namespace CKAN.Versioning
             else
             {
                 // Get all known versions out of the build map.
-                KspVersion[] knownVersions = new KspBuildMap(new Win32Registry()).KnownVersions.ToArray();
+                KspVersion[] knownVersions = ServiceLocator.Container.Resolve<IKspBuildMap>().KnownVersions.ToArray();
                 List<KspVersion> possibleVersions = new List<KspVersion>();
 
                 // Default message passed to RaiseSelectionDialog.

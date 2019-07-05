@@ -7,6 +7,8 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Validators;
+using CKAN.Win32Registry;
+using Autofac;
 
 namespace CKAN.NetKAN.Processors
 {
@@ -17,7 +19,7 @@ namespace CKAN.NetKAN.Processors
             log.Debug("Initializing inflator");
             cache = FindCache(
                 new KSPManager(new ConsoleUser(false)),
-                new Win32Registry(),
+                ServiceLocator.Container.Resolve<IWin32Registry>(),
                 cacheDir
             );
 

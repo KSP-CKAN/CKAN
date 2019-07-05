@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CKAN;
+using CKAN.Win32Registry;
 using NUnit.Framework;
 using Tests.Data;
 
@@ -124,6 +125,21 @@ namespace Tests.Core
         public void SetKSPBuilds(string buildMap)
         {
             BuildMap = buildMap;
+        }
+
+        public IEnumerable<string> GetAuthTokenHosts ()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetAuthToken (string host, string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGetAuthToken (string host, out string token)
+        {
+            throw new NotImplementedException();
         }
     }
 }
