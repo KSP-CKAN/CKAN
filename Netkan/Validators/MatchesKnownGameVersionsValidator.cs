@@ -1,6 +1,7 @@
 using CKAN.GameVersionProviders;
 using CKAN.Versioning;
 ﻿using CKAN.NetKAN.Model;
+using Autofac;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -8,7 +9,7 @@ namespace CKAN.NetKAN.Validators
     {
         public MatchesKnownGameVersionsValidator()
         {
-            buildMap = new KspBuildMap(new Win32Registry());
+            buildMap = ServiceLocator.Container.Resolve<IKspBuildMap>();
             buildMap.Refresh(BuildMapSource.Embedded);
         }
 
@@ -21,6 +22,6 @@ namespace CKAN.NetKAN.Validators
             }
         }
 
-        private KspBuildMap buildMap;
+        private IKspBuildMap buildMap;
     }
 }

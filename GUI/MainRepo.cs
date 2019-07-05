@@ -6,6 +6,8 @@ using System.Timers;
 using System.Linq;
 using Newtonsoft.Json;
 using CKAN.Versioning;
+using CKAN.Win32Registry;
+using Autofac;
 
 namespace CKAN
 {
@@ -169,7 +171,7 @@ namespace CKAN
         public void UpdateRefreshTimer()
         {
             refreshTimer.Stop();
-            Win32Registry winReg = new Win32Registry();
+            IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
 
             // Interval is set to 1 minute * RefreshRate
             if (winReg.RefreshRate > 0)

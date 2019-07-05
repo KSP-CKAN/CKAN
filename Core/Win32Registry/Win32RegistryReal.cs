@@ -4,21 +4,10 @@ using System.Linq;
 using System.IO;
 using Microsoft.Win32;
 
-namespace CKAN
+namespace CKAN.Win32Registry
 {
-    public interface IWin32Registry
-    {
-        string AutoStartInstance { get; set; }
-        void SetRegistryToInstances(SortedList<string, KSP> instances);
-        IEnumerable<Tuple<string, string>> GetInstances();
-        string GetKSPBuilds();
-        void SetKSPBuilds(string buildMap);
-        string DownloadCacheDir { get; set; }
-        long? CacheSizeLimit { get; set; }
-        int RefreshRate { get; set; }
-    }
 
-    public class Win32Registry : IWin32Registry
+    public class Win32RegistryReal : IWin32Registry
     {
         private const           string CKAN_KEY           = @"HKEY_CURRENT_USER\Software\CKAN";
         private static readonly string CKAN_KEY_NO_PREFIX = StripPrefixKey(CKAN_KEY);
@@ -26,7 +15,7 @@ namespace CKAN
         private const           string authTokenKey         = CKAN_KEY + @"\AuthTokens";
         private static readonly string authTokenKeyNoPrefix = StripPrefixKey(authTokenKey);
 
-        static Win32Registry()
+        static Win32RegistryReal()
         {
             ConstructKey(CKAN_KEY_NO_PREFIX);
         }
@@ -37,9 +26,6 @@ namespace CKAN
             "downloads"
         );
 
-        /// <summary>
-        /// Get and set the path to the download cache
-        /// </summary>
         public string DownloadCacheDir
         {
             get { return GetRegistryValue(@"DownloadCacheDir", defaultDownloadCacheDir); }
@@ -60,10 +46,6 @@ namespace CKAN
             }
         }
 
-        /// <summary>
-        /// Get and set the maximum number of bytes allowed in the cache.
-        /// Unlimited if null.
-        /// </summary>
         public long? CacheSizeLimit
         {
             get
@@ -84,10 +66,6 @@ namespace CKAN
             }
         }
 
-        /// <summary>
-        /// Get and set the interval in minutes to refresh the modlist.
-        /// Never refresh if 0.
-        /// </summary>
         public int RefreshRate
         {
             get { return GetRegistryValue(@"RefreshRate", 0); }
@@ -147,15 +125,7 @@ namespace CKAN
             SetRegistryValue(@"KSPBuilds", buildMap);
         }
 
-        /// <summary>
-        /// Look for an auth token in the registry.
-        /// </summary>
-        /// <param name="host">Host for which to find a token</param>
-        /// <param name="token">Value of the token returned in parameter</param>
-        /// <returns>
-        /// True if found, false otherwise
-        /// </returns>
-        public static bool TryGetAuthToken(string host, out string token)
+        public bool TryGetAuthToken(string host, out string token)
         {
             try
             {
@@ -171,24 +141,13 @@ namespace CKAN
             }
         }
 
-        /// <summary>
-        /// Get the hosts that have auth tokens stored in the registry
-        /// </summary>
-        /// <returns>
-        /// Strings that are values of the auth token registry key
-        /// </returns>
-        public static IEnumerable<string> GetAuthTokenHosts()
+        public IEnumerable<string> GetAuthTokenHosts()
         {
             RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(authTokenKeyNoPrefix);
             return key?.GetValueNames() ?? new string[0];
         }
 
-        /// <summary>
-        /// Set an auth token in the registry
-        /// </summary>
-        /// <param name="host">Host for which to set the token</param>
-        /// <param name="token">Token to set, or null to delete</param>
-        public static void SetAuthToken(string host, string token)
+        public void SetAuthToken(string host, string token)
         {
             ConstructKey(authTokenKeyNoPrefix);
             if (!string.IsNullOrEmpty(host))

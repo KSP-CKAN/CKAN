@@ -5,6 +5,7 @@ using System.Reflection;
 using log4net;
 using Newtonsoft.Json;
 using CKAN.Versioning;
+using CKAN.Win32Registry;
 
 namespace CKAN.GameVersionProviders
 {

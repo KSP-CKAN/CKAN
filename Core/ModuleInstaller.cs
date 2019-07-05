@@ -10,6 +10,8 @@ using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using CKAN.Versioning;
 using ChinhDo.Transactions.FileManager;
+using CKAN.Win32Registry;
+using Autofac;
 
 namespace CKAN
 {
@@ -1255,7 +1257,7 @@ namespace CKAN
         private void EnforceCacheSizeLimit()
         {
             // Purge old downloads if we're over the limit
-            Win32Registry winReg = new Win32Registry();
+            IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
             if (winReg.CacheSizeLimit.HasValue)
             {
                 Cache.EnforceSizeLimit(winReg.CacheSizeLimit.Value, registry_manager.registry);

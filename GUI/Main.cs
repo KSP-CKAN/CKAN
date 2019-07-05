@@ -15,6 +15,8 @@ using CKAN.Properties;
 using CKAN.Types;
 using log4net;
 using Timer = System.Windows.Forms.Timer;
+using CKAN.Win32Registry;
+using Autofac;
 
 namespace CKAN
 {
@@ -61,7 +63,7 @@ namespace CKAN
 
         private bool enableTrayIcon;
         private bool minimizeToTray;
-        private Win32Registry winReg = new Win32Registry();
+        private IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
 
         private DateTime lastSearchTime;
         private string lastSearchKey;

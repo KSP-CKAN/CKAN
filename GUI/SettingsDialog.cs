@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using System.Drawing;
 using CKAN.Versioning;
 using log4net;
+using CKAN.Win32Registry;
+using Autofac;
 
 namespace CKAN
 {
@@ -15,7 +17,7 @@ namespace CKAN
 
         private long m_cacheSize;
         private int m_cacheFileCount;
-        private Win32Registry winReg;
+        private IWin32Registry winReg;
 
         private List<Repository> _sortedRepos = new List<Repository>();
 
@@ -29,7 +31,7 @@ namespace CKAN
             {
                 this.ClearCacheMenu.Renderer = new FlatToolStripRenderer();
             }
-            winReg = new Win32Registry();
+            winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
         }
 
         private void SettingsDialog_Load(object sender, EventArgs e)
@@ -326,10 +328,10 @@ namespace CKAN
         private void RefreshAuthTokensListBox()
         {
             AuthTokensListBox.Items.Clear();
-            foreach (string host in Win32Registry.GetAuthTokenHosts())
+            foreach (string host in ServiceLocator.Container.Resolve<IWin32Registry>().GetAuthTokenHosts())
             {
                 string token;
-                if (Win32Registry.TryGetAuthToken(host, out token))
+                if (ServiceLocator.Container.Resolve<IWin32Registry>().TryGetAuthToken(host, out token))
                 {
                     AuthTokensListBox.Items.Add(string.Format("{0} | {1}", host, token));
                 }
@@ -420,7 +422,7 @@ namespace CKAN
 
                 case DialogResult.OK:
                 case DialogResult.Yes:
-                    Win32Registry.SetAuthToken(hostTextBox.Text, tokenTextBox.Text);
+                    ServiceLocator.Container.Resolve<IWin32Registry>().SetAuthToken(hostTextBox.Text, tokenTextBox.Text);
                     RefreshAuthTokensListBox();
                     break;
             }
@@ -444,7 +446,7 @@ namespace CKAN
                 return false;
             }
             string oldToken;
-            if (Win32Registry.TryGetAuthToken(host, out oldToken))
+            if (ServiceLocator.Container.Resolve<IWin32Registry>().TryGetAuthToken(host, out oldToken))
             {
                 GUI.user.RaiseError(Properties.Resources.AddAuthTokenDupHost, host);
                 return false;
@@ -460,7 +462,7 @@ namespace CKAN
                 string item = AuthTokensListBox.SelectedItem as string;
                 string host = item?.Split('|')[0].Trim();
 
-                Win32Registry.SetAuthToken(host, null);
+                ServiceLocator.Container.Resolve<IWin32Registry>().SetAuthToken(host, null);
                 RefreshAuthTokensListBox();
                 DeleteRepoButton.Enabled = false;
             }

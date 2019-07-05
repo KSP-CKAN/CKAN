@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Autofac;
 using CKAN.Versioning;
 
 namespace CKAN
@@ -25,7 +26,7 @@ namespace CKAN
             InitializeComponent();
 
             // Populate the version combobox for fake instance.
-            List<KspVersion> knownVersions = new GameVersionProviders.KspBuildMap(new Win32Registry()).KnownVersions;
+            List<KspVersion> knownVersions = ServiceLocator.Container.Resolve<GameVersionProviders.IKspBuildMap>().KnownVersions;
             knownVersions.Reverse();
             comboBoxKspVersion.DataSource = knownVersions;
 

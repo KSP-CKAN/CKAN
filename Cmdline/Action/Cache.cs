@@ -4,6 +4,8 @@ using CommandLine;
 using CommandLine.Text;
 using log4net;
 using CKAN.Versioning;
+using CKAN.Win32Registry;
+using Autofac;
 
 namespace CKAN.CmdLine
 {
@@ -147,7 +149,7 @@ namespace CKAN.CmdLine
 
         private int ListCacheDirectory(CommonOptions options)
         {
-            IWin32Registry winReg = new Win32Registry();
+            IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
             user.RaiseMessage(winReg.DownloadCacheDir);
             printCacheInfo();
             return Exit.OK;
@@ -164,7 +166,7 @@ namespace CKAN.CmdLine
             string failReason;
             if (manager.TrySetupCache(options.Path, out failReason))
             {
-                IWin32Registry winReg = new Win32Registry();
+                IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
                 user.RaiseMessage($"Download cache set to {winReg.DownloadCacheDir}");
                 printCacheInfo();
                 return Exit.OK;
@@ -189,7 +191,7 @@ namespace CKAN.CmdLine
             string failReason;
             if (manager.TrySetupCache("", out failReason))
             {
-                IWin32Registry winReg = new Win32Registry();
+                IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
                 user.RaiseMessage($"Download cache reset to {winReg.DownloadCacheDir}");
                 printCacheInfo();
             }
@@ -202,7 +204,7 @@ namespace CKAN.CmdLine
 
         private int ShowCacheSizeLimit(CommonOptions options)
         {
-            IWin32Registry winReg = new Win32Registry();
+            IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
             if (winReg.CacheSizeLimit.HasValue)
             {
                 user.RaiseMessage(CkanModule.FmtSize(winReg.CacheSizeLimit.Value));
@@ -216,7 +218,7 @@ namespace CKAN.CmdLine
 
         private int SetCacheSizeLimit(SetLimitOptions options)
         {
-            IWin32Registry winReg = new Win32Registry();
+            IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
             if (options.Megabytes < 0)
             {
                 winReg.CacheSizeLimit = null;

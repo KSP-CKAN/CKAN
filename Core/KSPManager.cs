@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Transactions;
+using Autofac;
 using ChinhDo.Transactions.FileManager;
 using CKAN.Versioning;
+using CKAN.Win32Registry;
 using log4net;
 
 namespace CKAN
@@ -50,7 +52,7 @@ namespace CKAN
         public KSPManager(IUser user, IWin32Registry win32_registry = null)
         {
             User = user;
-            Win32Registry = win32_registry ?? new Win32Registry();
+            Win32Registry = win32_registry ?? ServiceLocator.Container.Resolve<IWin32Registry>();
             LoadInstancesFromRegistry();
         }
 

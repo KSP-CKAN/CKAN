@@ -1,5 +1,7 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using CKAN.GameVersionProviders;
+using CKAN.Win32Registry;
 
 namespace CKAN
 {
@@ -36,8 +38,9 @@ namespace CKAN
             builder.RegisterType<GrasGameComparator>()
                 .As<IGameComparator>();
 
-            builder.RegisterType<Win32Registry>()
-                .As<IWin32Registry>();
+            builder.RegisterType<Win32RegistryJson>()
+                .As<IWin32Registry>()
+                .SingleInstance(); // Technically not needed, but makes things easier
 
             builder.RegisterType<KspBuildMap>()
                 .As<IKspBuildMap>()
