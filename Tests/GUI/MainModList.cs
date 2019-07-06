@@ -54,33 +54,6 @@ namespace Tests.GUI
         }
 
         [Test]
-        [Category("Display")]
-        public async Task ComputeChangeSetFromModList_WithConflictingMods_ThrowsInconsistentKraken()
-        {
-            using (var tidy = new DisposableKSP())
-            {
-                var registry = Registry.Empty();
-                var module = TestData.FireSpitterModule();
-                module.conflicts = new List<RelationshipDescriptor> { new ModuleRelationshipDescriptor { name = "kOS" } };
-                registry.AddAvailable(module);
-                registry.AddAvailable(TestData.kOS_014_module());
-                registry.RegisterModule(module, Enumerable.Empty<string>(), tidy.KSP, false);
-
-                var mainList = new MainModList(null, null, new GUIUser());
-                var mod = new GUIMod(module, registry, tidy.KSP.VersionCriteria());
-                var mod2 = new GUIMod(TestData.kOS_014_module(), registry, tidy.KSP.VersionCriteria());
-                var mods = new List<GUIMod>() { mod, mod2 };
-                mainList.ConstructModList(mods, null, true);
-                mainList.Modules = new ReadOnlyCollection<GUIMod>(mods);
-                mod2.IsInstallChecked = true;
-                var computeTask = mainList.ComputeChangeSetFromModList(registry, mainList.ComputeUserChangeSet(registry), null,
-                    tidy.KSP.VersionCriteria());
-
-                await UtilStatic.Throws<InconsistentKraken>(() => computeTask);
-            }
-        }
-
-        [Test]
         public void IsVisible_WithAllAndNoNameFilter_ReturnsTrueForCompatible()
         {
             using (var tidy = new DisposableKSP())
@@ -135,47 +108,6 @@ namespace Tests.GUI
                     new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.VersionCriteria())
                 });
                 Assert.That(mod_list, Has.Count.EqualTo(2));
-
-                manager.Dispose();
-            }
-        }
-
-        [Test]
-        [Category("Display")]
-        public async Task TooManyProvidesCallsHandlers()
-        {
-            using (var tidy = new DisposableKSP())
-            {
-                var manager = new KSPManager(new NullUser());
-                var registry = Registry.Empty();
-                var generator = new RandomModuleGenerator(new Random(0451));
-                var provide_ident = "provide";
-                var ksp_version = tidy.KSP.Version();
-                var mod = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
-                {
-                    new ModuleRelationshipDescriptor {name = provide_ident}
-                },ksp_version:ksp_version);
-                var moda = generator.GeneratorRandomModule(provides: new List<string> { provide_ident }
-                , ksp_version: ksp_version);
-                var modb = generator.GeneratorRandomModule(provides: new List<string> { provide_ident }
-                , ksp_version: ksp_version);
-                var choice_of_provide = modb;
-                registry.AddAvailable(mod);
-                registry.AddAvailable(moda);
-                registry.AddAvailable(modb);
-                var installer = ModuleInstaller.GetInstance(tidy.KSP, manager.Cache, null);
-                var main_mod_list = new MainModList(null, async kraken => await Task.FromResult(choice_of_provide));
-                var a = new HashSet<ModChange>
-                {
-                    new ModChange(new GUIMod(mod,registry,new KspVersionCriteria(ksp_version)), GUIModChangeType.Install, null)
-                };
-
-                var mod_list = await main_mod_list.ComputeChangeSetFromModList(registry, a, installer, new KspVersionCriteria (ksp_version));
-                CollectionAssert.AreEquivalent(
-                    new[] {
-                        new ModChange(new GUIMod(mod,registry,new KspVersionCriteria(ksp_version)), GUIModChangeType.Install, null),
-                        new ModChange(new GUIMod(modb,registry,new KspVersionCriteria(ksp_version)),GUIModChangeType.Install, null)
-                    }, mod_list);
 
                 manager.Dispose();
             }

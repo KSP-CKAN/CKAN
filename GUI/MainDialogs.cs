@@ -83,9 +83,6 @@ namespace CKAN
                 tabController.ShowTab("ManageModsTabPage");
             });
 
-            if (module != null)
-                MarkModForInstall(module.identifier);
-
             last_mod_to_have_install_toggled.TryPop(out mod);
             return module;
         }

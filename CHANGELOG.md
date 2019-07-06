@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Support newlines in GUI description field (#2818 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Fix comparison of 1.0.0 to 1.0 (#2817 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Improve focus interactions of GUI filters and mod list (#2827 by: HebaruSan; reviewed: Olympic1)
+- [GUI] Fix issues when `provides` is removed (#2740 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 - [Build] Update packages (#2775 by: Olympic1; reviewed: DasSkelett, HebaruSan)
