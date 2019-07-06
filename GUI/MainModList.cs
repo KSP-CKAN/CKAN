@@ -199,18 +199,6 @@ namespace CKAN
                     .Select(m => new GUIMod(m, registry, versionCriteria, true))
             );
 
-            if (mc != null)
-            {
-                AddLogMessage(Properties.Resources.MainModListRestoringChangeset);
-                foreach (ModChange change in mc)
-                {
-                    // Propagate IsInstallChecked and IsUpgradeChecked to the next generation
-                    gui_mods.FirstOrDefault(
-                        mod => mod.Identifier == change.Mod.Identifier
-                    )?.SetRequestedChange(change.ChangeType);
-                }
-            }
-
             AddLogMessage(Properties.Resources.MainModListPreservingNew);
             if (old_modules != null)
             {
@@ -309,29 +297,24 @@ namespace CKAN
 
         private void _MarkModForInstall(string identifier, bool uninstall)
         {
-            if (!mainModList.full_list_of_mod_rows.ContainsKey(identifier))
-            {
-                return;
-            }
-            DataGridViewRow row = mainModList.full_list_of_mod_rows[identifier];
-
-            var mod = (GUIMod)row.Tag;
-            if (mod.Identifier == identifier)
+            DataGridViewRow row = mainModList?.full_list_of_mod_rows?[identifier];
+            var mod = (GUIMod)row?.Tag;
+            if (mod?.Identifier == identifier)
             {
                 mod.SetInstallChecked(row, Installed, !uninstall);
             }
         }
 
-        public void MarkModForUpdate(string identifier)
+        public void MarkModForUpdate(string identifier, bool value)
         {
-            Util.Invoke(this, () => _MarkModForUpdate(identifier));
+            Util.Invoke(this, () => _MarkModForUpdate(identifier, value));
         }
 
-        public void _MarkModForUpdate(string identifier)
+        public void _MarkModForUpdate(string identifier, bool value)
         {
             DataGridViewRow row = mainModList.full_list_of_mod_rows[identifier];
             var mod = (GUIMod)row.Tag;
-            mod.SetUpgradeChecked(row, UpdateCol, true);
+            mod.SetUpgradeChecked(row, UpdateCol, value);
         }
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
@@ -772,15 +755,13 @@ namespace CKAN
                         break;
                     case GUIModChangeType.Update:
                     case GUIModChangeType.Install:
-                        //TODO: Fix
-                        //This will give us a mod with a wrong version!
-                        modules_to_install.Add(change.Mod.ToCkanModule());
+                        modules_to_install.Add(change.Mod);
                         break;
                     case GUIModChangeType.Remove:
                         modules_to_remove.Add(change.Mod);
                         break;
                     case GUIModChangeType.Replace:
-                        ModuleReplacement repl = registry.GetReplacement(change.Mod.ToModule(), version);
+                        ModuleReplacement repl = registry.GetReplacement(change.Mod, version);
                         if (repl != null)
                         {
                             modules_to_remove.Add(repl.ToReplace);
@@ -800,17 +781,22 @@ namespace CKAN
                     .Except(modules_to_install.Select(m => m.identifier))
             ))
             {
-                //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
-                CkanModule module_by_version = registry.GetModuleByVersion(installed_modules[dependency].identifier,
-                    installed_modules[dependency].version) ?? registry.InstalledModule(dependency).Module;
-                changeSet.Add(new ModChange(new GUIMod(module_by_version, registry, version), GUIModChangeType.Remove, null));
-                modules_to_remove.Add(module_by_version);
+                //TODO This would be a good place to have an event that alters the row's graphics to show it will be removed
+                CkanModule depMod;
+                if (installed_modules.TryGetValue(dependency, out depMod))
+                {
+                    CkanModule module_by_version = registry.GetModuleByVersion(depMod.identifier,
+                    depMod.version)
+                        ?? registry.InstalledModule(dependency).Module;
+                    changeSet.Add(new ModChange(module_by_version, GUIModChangeType.Remove, null));
+                    modules_to_remove.Add(module_by_version);
+                }
             }
             foreach (var im in registry.FindRemovableAutoInstalled(
-                registry.InstalledModules.Where(im => !modules_to_remove.Any(m => m.identifier == im.identifier))
+                registry.InstalledModules.Where(im => !modules_to_remove.Any(m => m.identifier == im.identifier) || modules_to_install.Any(m => m.identifier == im.identifier))
             ))
             {
-                changeSet.Add(new ModChange(new GUIMod(im.Module, registry, version), GUIModChangeType.Remove, new SelectionReason.NoLongerUsed()));
+                changeSet.Add(new ModChange(im.Module, GUIModChangeType.Remove, new SelectionReason.NoLongerUsed()));
                 modules_to_remove.Add(im.Module);
             }
 
@@ -825,7 +811,7 @@ namespace CKAN
                 opts, registry, version);
             changeSet.UnionWith(
                 resolver.ModList()
-                    .Select(m => new ModChange(new GUIMod(m, registry, version), GUIModChangeType.Install, resolver.ReasonFor(m))));
+                    .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonFor(m))));
 
             return changeSet;
         }
@@ -875,7 +861,7 @@ namespace CKAN
         {
             DataGridViewRow item = new DataGridViewRow() {Tag = mod};
 
-            ModChange myChange = changes?.FindLast((ModChange ch) => ch.Mod.Identifier == mod.Identifier);
+            ModChange myChange = changes?.FindLast((ModChange ch) => ch.Mod.Equals(mod));
 
             var selecting = mod.IsInstallable()
                 ? (DataGridViewCell) new DataGridViewCheckBoxCell()
@@ -1040,15 +1026,15 @@ namespace CKAN
                     case GUIModChangeType.None:
                         break;
                     case GUIModChangeType.Install:
-                        modules_to_install.Add(change.Mod.Identifier);
+                        modules_to_install.Add(change.Mod.identifier);
                         break;
                     case GUIModChangeType.Remove:
-                        modules_to_remove.Add(change.Mod.Identifier);
+                        modules_to_remove.Add(change.Mod.identifier);
                         break;
                     case GUIModChangeType.Update:
                         break;
                     case GUIModChangeType.Replace:
-                        ModuleReplacement repl = registry.GetReplacement(change.Mod.ToModule(), ksp_version);
+                        ModuleReplacement repl = registry.GetReplacement(change.Mod, ksp_version);
                         if (repl != null)
                         {
                             modules_to_remove.Add(repl.ToReplace.identifier);
@@ -1075,7 +1061,7 @@ namespace CKAN
             var resolver = new RelationshipResolver(
                 mods_to_check,
                 change_set.Where(ch => ch.ChangeType == GUIModChangeType.Remove)
-                    .Select(ch => ch.Mod.ToModule()),
+                    .Select(ch => ch.Mod),
                 options, registry, ksp_version
             );
             return resolver.ConflictList.ToDictionary(item => new GUIMod(item.Key, registry, ksp_version),
@@ -1089,12 +1075,10 @@ namespace CKAN
             return new HashSet<ModChange>(
                 Modules
                     .Where(mod => mod.IsInstallable())
-                    .Select(mod => mod.GetRequestedChange())
-                    .Where(change => change.HasValue)
-                    .Select(change => change.Value)
+                    .SelectMany(mod => mod.GetRequestedChanges())
                     .Select(change => new ModChange(change.Key, change.Value, null))
                     .Union(removableAuto.Select(im => new ModChange(
-                        new GUIMod(im, registry, Main.Instance.CurrentInstance.VersionCriteria()),
+                        im.Module,
                         GUIModChangeType.Remove,
                         new SelectionReason.NoLongerUsed())))
             );

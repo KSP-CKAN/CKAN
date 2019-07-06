@@ -34,14 +34,14 @@ namespace CKAN
                 {
                     // Already installed, remove it first
                     userChangeSet.Add(new ModChange(
-                        new GUIMod(installed.Module, registry, CurrentInstance.VersionCriteria()),
+                        installed.Module,
                         GUIModChangeType.Remove,
                         null
                     ));
                 }
                 // Install the selected mod
                 userChangeSet.Add(new ModChange(
-                    new GUIMod(module, registry, CurrentInstance.VersionCriteria()),
+                    module,
                     GUIModChangeType.Install,
                     null
                 ));
@@ -64,7 +64,7 @@ namespace CKAN
             }
             finally
             {
-                changeSet = null;
+                ChangeSet = null;
             }
         }
 
@@ -94,16 +94,16 @@ namespace CKAN
                 switch (change.ChangeType)
                 {
                     case GUIModChangeType.Remove:
-                        toUninstall.Add(change.Mod.Identifier);
+                        toUninstall.Add(change.Mod.identifier);
                         break;
                     case GUIModChangeType.Update:
-                        toUpgrade.Add(change.Mod.Identifier);
+                        toUpgrade.Add(change.Mod.identifier);
                         break;
                     case GUIModChangeType.Install:
-                        toInstall.Add(change.Mod.ToModule());
+                        toInstall.Add(change.Mod);
                         break;
                     case GUIModChangeType.Replace:
-                        ModuleReplacement repl = registry.GetReplacement(change.Mod.ToModule(), CurrentInstance.VersionCriteria());
+                        ModuleReplacement repl = registry.GetReplacement(change.Mod, CurrentInstance.VersionCriteria());
                         if (repl != null)
                         {
                             toUninstall.Add(repl.ToReplace.identifier);
@@ -116,7 +116,7 @@ namespace CKAN
             // Prompt for recommendations and suggestions, if any
             var recRows = getRecSugRows(
                 opts.Key.Where(ch => ch.ChangeType == GUIModChangeType.Install)
-                    .Select(ch => ch.Mod.ToModule()),
+                    .Select(ch => ch.Mod),
                 registry, toInstall
             );
             if (recRows.Any())

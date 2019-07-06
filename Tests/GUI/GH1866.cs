@@ -137,7 +137,7 @@ namespace Tests.GUI
             {
                 // perform the install of the "other" module - now we need to sort
                 ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
-                    _modList.ComputeUserChangeSet(null).Select(change => change.Mod.ToCkanModule()).ToList(),
+                    _modList.ComputeUserChangeSet(null).Select(change => change.Mod).ToList(),
                     new RelationshipResolverOptions(),
                     new NetAsyncModulesDownloader(_manager.User, _manager.Cache)
                 );

@@ -46,14 +46,14 @@ namespace CKAN
                 }
                 else
                 {
-                    var module = value;
+                    var module = value.ToModule();
                     ModInfoTabControl.Enabled = module != null;
                     if (module == null) return;
 
-                    UpdateModInfo(module);
+                    UpdateModInfo(value);
                     UpdateModDependencyGraph(module);
                     UpdateModContentsTree(module);
-                    AllModVersions.SelectedModule = module;
+                    AllModVersions.SelectedModule = value;
                 }
             }
             get
@@ -124,7 +124,7 @@ namespace CKAN
 
         private void ContentsOpenButton_Click(object sender, EventArgs e)
         {
-            Process.Start(manager.Cache.GetCachedFilename(SelectedModule));
+            Process.Start(manager.Cache.GetCachedFilename(SelectedModule.ToModule()));
         }
 
         private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

@@ -150,6 +150,7 @@ namespace CKAN
                 tabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
                 auditRecommendationsMenuItem.Enabled = true;
+                InstallAllCheckbox.Checked = true;
             }
         }
 
@@ -483,7 +484,7 @@ namespace CKAN
             {
                 // Ask if they want to discard the change set
                 string changeDescrip = ChangeSet
-                    .GroupBy(ch => ch.ChangeType, ch => ch.Mod.Name)
+                    .GroupBy(ch => ch.ChangeType, ch => ch.Mod.name)
                     .Select(grp => $"{grp.Key}: "
                         + grp.Aggregate((a, b) => $"{a}, {b}"))
                     .Aggregate((a, b) => $"{a}\r\n{b}");
@@ -595,7 +596,7 @@ namespace CKAN
                 var mod = (GUIMod)row.Tag;
                 if (mod.HasUpdate)
                 {
-                    MarkModForUpdate(mod.Identifier);
+                    MarkModForUpdate(mod.Identifier, true);
                 }
             }
 
@@ -713,7 +714,7 @@ namespace CKAN
             filterTimer.Stop();
         }
 
-        private async Task UpdateChangeSetAndConflicts(IRegistryQuerier registry)
+        public async Task UpdateChangeSetAndConflicts(IRegistryQuerier registry)
         {
             IEnumerable<ModChange> full_change_set = null;
             Dictionary<GUIMod, string> new_conflicts = null;
@@ -1230,7 +1231,7 @@ namespace CKAN
             // Build the list of changes, first the mod to remove:
             List<ModChange> toReinstall = new List<ModChange>()
             {
-                new ModChange(module, GUIModChangeType.Remove, null)
+                new ModChange(module.ToModule(), GUIModChangeType.Remove, null)
             };
             // Then everything we need to re-install:
             var revdep = registry.FindReverseDependencies(new List<string>() { module.Identifier });
@@ -1242,7 +1243,7 @@ namespace CKAN
             foreach (string id in goners)
             {
                 toReinstall.Add(new ModChange(
-                    mainModList.full_list_of_mod_rows[id]?.Tag as GUIMod,
+                    (mainModList.full_list_of_mod_rows[id]?.Tag as GUIMod).ToModule(),
                     GUIModChangeType.Install,
                     null
                 ));

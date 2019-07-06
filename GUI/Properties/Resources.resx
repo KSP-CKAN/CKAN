@@ -7006,7 +7006,9 @@
   <data name="MainTSV" xml:space="preserve"><value>Tab-separated values (*.tsv)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Not found.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Do you want to reinstall {0}?</value></data>
-  <data name="MainAllModVersionsInstallPrompt" xml:space="preserve"><value>Install {0}?</value></data>
+  <data name="MainAllModVersionsInstallPrompt" xml:space="preserve"><value>{0} is not supported on your current game version and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
+
+Do you really want to install it?</value></data>
   <data name="MainAllModVersionsInstallYes" xml:space="preserve"><value>Install</value></data>
   <data name="MainAllModVersionsInstallNo" xml:space="preserve"><value>Cancel</value></data>
   <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (metapackage)</value></data>

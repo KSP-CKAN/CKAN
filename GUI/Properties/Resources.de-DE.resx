@@ -177,7 +177,9 @@
   <data name="MainPlainText" xml:space="preserve"><value>Klartext (*.txt)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Nicht gefunden.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Möchtest du {0} neu installieren?</value></data>
-  <data name="MainAllModVersionsInstallPrompt" xml:space="preserve"><value>{0} installieren?</value></data>
+  <data name="MainAllModVersionsInstallPrompt" xml:space="preserve"><value>{0} wird von Ihrer aktuellen Spielversion nicht unterstützt und funktioniert möglicherweise überhaupt nicht. Wenn Sie Probleme damit haben, sollten Sie die Betreuer NICHT um Hilfe bitten.
+
+Möchten Sie es wirklich installieren?</value></data>
   <data name="MainAllModVersionsInstallYes" xml:space="preserve"><value>Installieren</value></data>
   <data name="MainAllModVersionsInstallNo" xml:space="preserve"><value>Abbrechen</value></data>
   <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (Metapacket)</value></data>

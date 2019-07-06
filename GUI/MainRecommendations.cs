@@ -314,7 +314,7 @@ namespace CKAN
                 installWorker.RunWorkerAsync(
                     new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                         toInstall.Select(mod => new ModChange(
-                            new GUIMod(mod, registry, versionCriteria),
+                            mod,
                             GUIModChangeType.Install,
                             null
                         )).ToList(),

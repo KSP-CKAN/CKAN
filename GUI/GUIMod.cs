@@ -2,14 +2,64 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using CKAN.Versioning;
 
 namespace CKAN
 {
-    public sealed class GUIMod
+    public sealed class GUIMod : INotifyPropertyChanged
     {
-        private CkanModule      Mod          { get; set; }
-        private InstalledModule InstalledMod { get; set; }
+        private CkanModule      Mod                 { get; set; }
+        private CkanModule      LatestCompatibleMod { get; set; }
+        private InstalledModule InstalledMod        { get; set; }
+
+        /// <summary>
+        /// The module of the checkbox that is checked in the MainAllModVersions list if any,
+        /// null otherwise.
+        /// Used for generating this mod's part of the change set.
+        /// </summary>
+        public  CkanModule      SelectedMod
+        {
+            get { return selectedMod; }
+            set
+            {
+                if (!(selectedMod?.Equals(value) ?? value?.Equals(selectedMod) ?? true))
+                {
+                    selectedMod = value;
+                    var row = Main.Instance?.mainModList?.full_list_of_mod_rows?[Identifier];
+
+                    if (IsInstalled && HasUpdate)
+                    {
+                        var isLatest = (LatestCompatibleMod?.Equals(selectedMod) ?? false);
+                        if (IsUpgradeChecked ^ isLatest)
+                        {
+                            // Try upgrading if they pick the latest
+                            Main.Instance.MarkModForUpdate(Identifier, isLatest);
+                        }
+
+                    }
+                    Main.Instance.MarkModForInstall(Identifier, selectedMod == null);
+
+                    Main.Instance.UpdateChangeSetAndConflicts(
+                        RegistryManager.Instance(Main.Instance.Manager.CurrentInstance).registry
+                    );
+
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private CkanModule      selectedMod = null;
+
+        /// <summary>
+        /// Notify listeners when certain properties change.
+        /// Currently used to tell MainAllModVersions to update its checkboxes.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         public string Name { get; private set; }
         public bool IsInstalled { get; private set; }
@@ -85,6 +135,7 @@ namespace CKAN
             IsInstalled      = true;
             IsInstallChecked = true;
             InstalledMod     = instMod;
+            SelectedMod      = instMod.Module;
             IsAutoInstalled  = instMod.AutoInstalled;
             InstallDate      = instMod.InstallTime;
             InstalledVersion = instMod.Module.version.ToString();
@@ -157,7 +208,8 @@ namespace CKAN
             ModuleVersion latest_version = null;
             try
             {
-                latest_version = registry.LatestAvailable(identifier, current_ksp_version)?.version;
+                LatestCompatibleMod = registry.LatestAvailable(identifier, current_ksp_version);
+                latest_version = LatestCompatibleMod?.version;
             }
             catch (ModuleNotFoundKraken)
             {
@@ -234,22 +286,32 @@ namespace CKAN
             return Mod;
         }
 
-        public KeyValuePair<GUIMod, GUIModChangeType>? GetRequestedChange()
+        public IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> GetRequestedChanges()
         {
-            if (IsInstalled ^ IsInstallChecked)
+            if (IsInstalled && !IsInstallChecked)
             {
-                var change_type = IsInstalled ? GUIModChangeType.Remove : GUIModChangeType.Install;
-                return new KeyValuePair<GUIMod, GUIModChangeType>(this, change_type);
+                // Uninstall the version we have installed
+                yield return new KeyValuePair<CkanModule, GUIModChangeType>(InstalledMod.Module, GUIModChangeType.Remove);
             }
-            if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
+            else if (!IsInstalled && IsInstallChecked)
             {
-                return new KeyValuePair<GUIMod, GUIModChangeType>(this, GUIModChangeType.Update);
+                yield return new KeyValuePair<CkanModule, GUIModChangeType>(SelectedMod ?? Mod, GUIModChangeType.Install);
             }
-            if (IsReplaceChecked)
+            else if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
             {
-                return new KeyValuePair<GUIMod, GUIModChangeType>(this, GUIModChangeType.Replace);
+                yield return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, GUIModChangeType.Update);
             }
-            return null;
+            else if (IsReplaceChecked)
+            {
+                yield return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, GUIModChangeType.Replace);
+            }
+            else if (IsInstalled
+                && SelectedMod != null
+                && !InstalledMod.Module.Equals(SelectedMod))
+            {
+                yield return new KeyValuePair<CkanModule, GUIModChangeType>(InstalledMod.Module, GUIModChangeType.Remove);
+                yield return new KeyValuePair<CkanModule, GUIModChangeType>(SelectedMod, GUIModChangeType.Install);
+            }
         }
 
         /// <summary>
@@ -282,14 +344,9 @@ namespace CKAN
             }
         }
 
-        public static implicit operator CkanModule(GUIMod mod)
-        {
-            return mod.ToModule();
-        }
-
         public void SetUpgradeChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
         {
-            var update_cell = row.Cells[col.Index] as DataGridViewCheckBoxCell;
+            var update_cell = row?.Cells[col.Index] as DataGridViewCheckBoxCell;
             if (update_cell != null)
             {
                 var old_value = (bool) update_cell.Value;
@@ -297,13 +354,22 @@ namespace CKAN
                 bool value = set_value_to ?? old_value;
                 IsUpgradeChecked = value;
                 if (old_value != value)
+                {
                     update_cell.Value = value;
+                    SelectedMod = value ? LatestCompatibleMod : (SelectedMod ?? InstalledMod?.Module);
+                }
+                else if (!set_value_to.HasValue)
+                {
+                    var isLatest = (LatestCompatibleMod?.Equals(selectedMod) ?? false);
+                    SelectedMod = value ? LatestCompatibleMod
+                        : isLatest ? InstalledMod?.Module : SelectedMod;
+                }
             }
         }
 
         public void SetInstallChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
         {
-            var install_cell = row.Cells[col.Index] as DataGridViewCheckBoxCell;
+            var install_cell = row?.Cells[col.Index] as DataGridViewCheckBoxCell;
             if (install_cell != null)
             {
                 bool changeTo = set_value_to ?? (bool)install_cell.Value;
@@ -311,6 +377,7 @@ namespace CKAN
                 {
                     IsInstallChecked = changeTo;
                 }
+                SelectedMod = changeTo ? (SelectedMod ?? Mod) : null;
                 // Setting this property causes ModList_CellValueChanged to be called,
                 // which calls SetInstallChecked again. Treat it conservatively.
                 if ((bool)install_cell.Value != IsInstallChecked)
