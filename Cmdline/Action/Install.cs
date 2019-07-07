@@ -128,9 +128,7 @@ namespace CKAN.CmdLine
             }
 
             IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
-            List<CkanModule> modules = options.modules
-                .Select(id => registry.LatestAvailable(id, ksp.VersionCriteria()))
-                .ToList();
+            List<string> modules = options.modules;
 
             for (bool done = false; !done; )
             {
@@ -211,7 +209,7 @@ namespace CKAN.CmdLine
                     }
 
                     // Add the module to the list.
-                    modules.Add(ex.modules[result]);
+                    modules.Add($"{ex.modules[result].identifier}={ex.modules[result].version}");
                     // DON'T return so we can loop around and try again
                 }
                 catch (FileExistsKraken ex)
