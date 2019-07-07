@@ -236,6 +236,8 @@ namespace CKAN
             mainModList.ConstructModList(gui_mods.ToList(), mc, configuration.HideEpochs, configuration.HideV);
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
+            
+            UpdateChangeSetAndConflicts(registry);                
 
             AddLogMessage(Properties.Resources.MainModListUpdatingFilters);
 
@@ -276,7 +278,7 @@ namespace CKAN
             Util.Invoke(ModList, () =>
             {
                 ModList.Columns["UpdateCol"].Visible     = has_any_updates;
-                ModList.Columns["AutoInstalled"].Visible = has_any_installed &&             !configuration.HiddenColumnNames.Contains("AutoInstalled");
+                ModList.Columns["AutoInstalled"].Visible = has_any_installed && !configuration.HiddenColumnNames.Contains("AutoInstalled");
                 ModList.Columns["ReplaceCol"].Visible    = has_any_replacements;
             });
 
@@ -595,7 +597,7 @@ namespace CKAN
 
         private void InstallAllCheckbox_CheckChanged(object sender, EventArgs e)
         {
-            if (this.InstallAllCheckbox.Checked)
+            if (InstallAllCheckbox.Checked)
             {
                 // Reset changeset
                 ClearChangeSet();

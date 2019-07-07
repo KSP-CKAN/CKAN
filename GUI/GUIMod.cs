@@ -135,7 +135,7 @@ namespace CKAN
             IsInstalled      = true;
             IsInstallChecked = true;
             InstalledMod     = instMod;
-            SelectedMod      = instMod.Module;
+            selectedMod      = instMod.Module;
             IsAutoInstalled  = instMod.AutoInstalled;
             InstallDate      = instMod.InstallTime;
             InstalledVersion = instMod.Module.version.ToString();

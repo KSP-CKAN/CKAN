@@ -341,16 +341,13 @@ namespace CKAN
                 // install successful
                 AddStatusMessage(Properties.Resources.MainInstallSuccess);
                 HideWaitDialog(true);
-                ChangeSet = null;
                 RetryCurrentActionButton.Visible = false;
-                UpdateChangesDialog(null, installWorker);
             }
             else if (installCanceled)
             {
                 // User cancelled the installation
                 // Rebuilds the list of GUIMods
                 UpdateModsList(ChangeSet);
-                UpdateChangesDialog(null, installWorker);
                 if (result.Key) {
                     FailWaitDialog(
                         Properties.Resources.MainInstallCancelTooLate,
@@ -376,7 +373,6 @@ namespace CKAN
                     Properties.Resources.MainInstallFailed,
                     result.Key
                 );
-                UpdateChangesDialog(result.Value, installWorker);
             }
 
             Util.Invoke(this, () => Enabled = true);
