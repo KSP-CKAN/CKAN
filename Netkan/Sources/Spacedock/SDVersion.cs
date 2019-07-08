@@ -17,6 +17,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
         public KspVersion KSP_version;
 
         public string changelog;
+        public DateTime? created;
 
         [JsonConverter(typeof(JsonConvertFromRelativeSdUri))]
         public Uri download_path;
