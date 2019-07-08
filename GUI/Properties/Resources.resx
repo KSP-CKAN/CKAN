@@ -7115,7 +7115,8 @@ Open settings now?</value></data>
   <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>{0} available update(s)</value></data>
   <data name="MainWaitPleaseWait" xml:space="preserve"><value>Please wait</value></data>
   <data name="MainWaitDone" xml:space="preserve"><value>All done!</value></data>
-  <data name="ManageKspInstancesNotValid" xml:space="preserve"><value>Directory {0} is not valid KSP directory.</value></data>
+  <data name="ManageKspInstancesNotValid" xml:space="preserve"><value>Directory {0} is not a valid KSP directory.</value></data>
+  <data name="ManageKspInstancesDirectoryDeleted" xml:space="preserve"><value>Directory "{0}" doesn't exist.</value></data>
   <data name="NewRepoDialogFailed" xml:space="preserve"><value>Failed to fetch master list.</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>CKAN Plugins (*.dll)|*.dll</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} files, {1}</value></data>

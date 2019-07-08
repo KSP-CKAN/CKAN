@@ -25,63 +25,27 @@ namespace CKAN
 
         public void ShowTab(string name, int index = 0, bool setActive = true)
         {
-            if (m_TabControl.InvokeRequired)
-            {
-                m_TabControl.Invoke(new MethodInvoker(() => _ShowTab(name, index, setActive)));
-            }
-            else
-            {
-                _ShowTab(name, index, setActive);
-            }
+            Util.Invoke(m_TabControl, () => _ShowTab(name, index, setActive));
         }
 
         public void HideTab(string name)
         {
-            if (m_TabControl.InvokeRequired)
-            {
-                m_TabControl.Invoke(new MethodInvoker(() => _HideTab(name)));
-            }
-            else
-            {
-                _HideTab(name);
-            }
+            Util.Invoke(m_TabControl, () => _HideTab(name));
         }
 
         public void RenameTab(string name, string newDisplayName)
         {
-            if (m_TabControl.InvokeRequired)
-            {
-
-                m_TabControl.Invoke(new MethodInvoker(() => _RenameTab(name, newDisplayName)));
-            }
-            else
-            {
-                _RenameTab(name, newDisplayName);
-            }
+            Util.Invoke(m_TabControl, () => _RenameTab(name, newDisplayName));
         }
 
         public void SetTabLock(bool state)
         {
-            if (m_TabControl.InvokeRequired)
-            {
-                m_TabControl.Invoke(new MethodInvoker(() => _SetTabLock(state)));
-            }
-            else
-            {
-                _SetTabLock(state);
-            }
+            Util.Invoke(m_TabControl, () => _SetTabLock(state));
         }
 
         public void SetActiveTab(string name)
         {
-            if (m_TabControl.InvokeRequired)
-            {
-                m_TabControl.Invoke(new MethodInvoker(() => _SetActiveTab(name)));
-            }
-            else
-            {
-                _SetActiveTab(name);
-            }
+            Util.Invoke(m_TabControl, () => _SetActiveTab(name));
         }
 
         private void _ShowTab(string name, int index = 0, bool setActive = true)
