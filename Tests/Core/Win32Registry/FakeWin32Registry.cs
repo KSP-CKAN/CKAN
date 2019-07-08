@@ -6,7 +6,7 @@ using CKAN.Win32Registry;
 using NUnit.Framework;
 using Tests.Data;
 
-namespace Tests.Core
+namespace Tests.Core.Win32Registry
 {
     public class FakeWin32Registry : IWin32Registry
     {

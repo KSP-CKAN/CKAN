@@ -7,6 +7,7 @@ using CKAN;
 using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Core;
+using Tests.Core.Win32Registry;
 using Tests.Data;
 using ModuleInstaller = CKAN.ModuleInstaller;
 

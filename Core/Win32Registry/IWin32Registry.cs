@@ -5,10 +5,6 @@ namespace CKAN.Win32Registry
 {
     public interface IWin32Registry
     {
-        void SetRegistryToInstances (SortedList<string, KSP> instances);
-        IEnumerable<Tuple<string, string>> GetInstances ();
-        string GetKSPBuilds ();
-        void SetKSPBuilds (string buildMap);
 
         string AutoStartInstance { get; set; }
 
@@ -53,5 +49,11 @@ namespace CKAN.Win32Registry
         /// <param name="host">Host for which to set the token</param>
         /// <param name="token">Token to set, or null to delete</param>
         void SetAuthToken(string host, string token);
+
+        string GetKSPBuilds();
+        void SetKSPBuilds(string buildMap);
+
+        void SetRegistryToInstances(SortedList<string, KSP> instances);
+        IEnumerable<Tuple<string, string>> GetInstances();
     }
 }

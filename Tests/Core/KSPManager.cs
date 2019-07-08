@@ -4,6 +4,7 @@ using System.Linq;
 using CKAN;
 using CKAN.Versioning;
 using NUnit.Framework;
+using Tests.Core.Win32Registry;
 using Tests.Data;
 
 namespace Tests.Core

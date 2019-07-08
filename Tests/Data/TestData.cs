@@ -714,6 +714,132 @@ namespace Tests.Data
               </WindowLoc>
             </Configuration>";
         }
+
+        public static string GoodJsonConfig()
+        {
+            return @"{
+  ""KspInstances"": [
+    {
+      ""Name"": ""instance1"",
+      ""Path"": ""instance1_path""
+    },
+    {
+      ""Name"": ""instance2"",
+      ""Path"": ""instance2_path""
+    }
+  ],
+  ""AuthTokens"": [
+    {
+      ""Host"": ""host1"",
+      ""Token"": ""token1""
+    },
+    {
+      ""Host"": ""host2"",
+      ""Token"": ""token2""
+    },
+    {
+      ""Host"": ""host3"",
+      ""Token"": ""token3""
+    }
+  ],
+  ""AutoStartInstance"": ""asi"",
+  ""DownloadCacheDir"": ""dci"",
+  ""CacheSizeLimit"": 2,
+  ""RefreshRate"": 4,
+  ""KSPBuilds"": ""build_string""
+}";
+        }
+
+        public static string MissingJsonConfig()
+        {
+            return @"{
+  ""KspInstances"": [
+    {
+      ""Name"": ""instance1"",
+      ""Path"": ""instance1_path""
+    },
+    {
+      ""Name"": ""instance2"",
+      ""Path"": ""instance2_path""
+    }
+  ],
+  ""RefreshRate"": 4,
+  ""KSPBuilds"": ""build_string""
+}";
+        }
+
+        public static string ExtraJsonConfig()
+        {
+            return @"{
+  ""KspInstances"": [
+    {
+      ""Name"": ""instance1"",
+      ""Path"": ""instance1_path""
+    },
+    {
+      ""Name"": ""instance2"",
+      ""Path"": ""instance2_path""
+    }
+  ],
+  ""AuthTokens"": [
+    {
+      ""Host"": ""host1"",
+      ""Token"": ""token1""
+    },
+    {
+      ""Host"": ""host2"",
+      ""Token"": ""token2""
+    },
+    {
+      ""Host"": ""host3"",
+      ""Token"": ""token3""
+    }
+  ],
+  ""AutoStartInstance"": ""asi"",
+  ""DownloadCacheDir"": ""dci"",
+  ""CacheSizeLimit"": 2,
+  ""RefreshRate"": 4,
+  ""KSPBuilds"": ""build_string"",
+  ""ExtraToken"": {
+    ""ExtraSubToken"": ""value""
+  }
+}";
+        }
+
+        public static string BadJsonConfig()
+        {
+            return @"{
+  ""KspInstances"":
+    {
+      ""Name"": ""instance1"",
+      ""Path"": ""instance1_path""
+    },
+    {
+      ""Name"": ""instance2"",
+      ""Path"": ""instance2_path""
+    }
+  ],
+  ""AuthTokens"": [
+    {
+      ""Host"": ""host1"",
+      ""Token"": ""token1""
+    },
+    {
+      ""Host"": ""host2"",
+      ""Token"": ""token2""
+    },
+    {
+      ""Host"": ""host3"",
+      ""Token"": ""token3""
+    }
+  ],
+  ""AutoStartInstance"": ""asi"",
+  ""DownloadCacheDir"": ""dci"",
+  ""CacheSizeLimit"": 2,
+  ""RefreshRate"": 4,
+  ""KSPBuilds"": ""build_string""
+}";
+        }
     }
 
     public class RandomModuleGenerator

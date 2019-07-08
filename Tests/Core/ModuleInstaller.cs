@@ -8,6 +8,7 @@ using System.Transactions;
 using CKAN;
 using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
+using Tests.Core.Win32Registry;
 using Tests.Data;
 
 namespace Tests.Core
