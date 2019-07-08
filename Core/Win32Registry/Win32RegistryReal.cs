@@ -6,7 +6,9 @@ using Microsoft.Win32;
 
 namespace CKAN.Win32Registry
 {
-
+    // DEPRECATED: We now use a JSON configuration file. This still exists to facillitate migration.
+    //
+    // N.B., you can resume using this version by changing the instance created in ServiceLocator.
     public class Win32RegistryReal : IWin32Registry
     {
         private const           string CKAN_KEY           = @"HKEY_CURRENT_USER\Software\CKAN";

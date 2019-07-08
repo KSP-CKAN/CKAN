@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using CKAN;
 using NUnit.Framework;
 using Tests.Core;
+using Tests.Core.Win32Registry;
 using Tests.Data;
 using ModuleInstaller = CKAN.ModuleInstaller;
 
