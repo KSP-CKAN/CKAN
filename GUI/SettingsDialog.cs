@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using CKAN.Versioning;
 using log4net;
-using CKAN.Win32Registry;
+using CKAN.Configuration;
 using Autofac;
 
 namespace CKAN
@@ -17,7 +17,7 @@ namespace CKAN
 
         private long m_cacheSize;
         private int m_cacheFileCount;
-        private IWin32Registry winReg;
+        private IConfiguration config;
 
         private List<Repository> _sortedRepos = new List<Repository>();
 
@@ -31,7 +31,7 @@ namespace CKAN
             {
                 this.ClearCacheMenu.Renderer = new FlatToolStripRenderer();
             }
-            winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
+            config = ServiceLocator.Container.Resolve<IConfiguration>();
         }
 
         private void SettingsDialog_Load(object sender, EventArgs e)
@@ -57,20 +57,20 @@ namespace CKAN
 
             UpdateRefreshRate();
 
-            UpdateCacheInfo(winReg.DownloadCacheDir);
-            if (winReg.CacheSizeLimit.HasValue)
+            UpdateCacheInfo(config.DownloadCacheDir);
+            if (config.CacheSizeLimit.HasValue)
             {
                 // Show setting in MB
-                CacheLimit.Text = (winReg.CacheSizeLimit.Value / 1024 / 1024).ToString();
+                CacheLimit.Text = (config.CacheSizeLimit.Value / 1024 / 1024).ToString();
             }
         }
 
         private void UpdateRefreshRate()
         {
-            int rate = winReg.RefreshRate;
+            int rate = config.RefreshRate;
             RefreshTextBox.Text = rate.ToString();
             PauseRefreshCheckBox.Enabled = rate != 0;
-            Main.Instance.pauseToolStripMenuItem.Enabled = winReg.RefreshRate != 0;
+            Main.Instance.pauseToolStripMenuItem.Enabled = config.RefreshRate != 0;
             Main.Instance.UpdateRefreshTimer();
         }
 
@@ -100,17 +100,17 @@ namespace CKAN
         private void UpdateCacheInfo(string newPath)
         {
             string failReason;
-            if (newPath == winReg.DownloadCacheDir
+            if (newPath == config.DownloadCacheDir
                 || Main.Instance.Manager.TrySetupCache(newPath, out failReason))
             {
                 Main.Instance.Manager.Cache.GetSizeInfo(out m_cacheFileCount, out m_cacheSize);
-                CachePath.Text = winReg.DownloadCacheDir;
+                CachePath.Text = config.DownloadCacheDir;
                 CacheSummary.Text = string.Format(Properties.Resources.SettingsDialogSummmary, m_cacheFileCount, CkanModule.FmtSize(m_cacheSize));
                 CacheSummary.ForeColor   = SystemColors.ControlText;
                 OpenCacheButton.Enabled  = true;
                 ClearCacheButton.Enabled = (m_cacheSize > 0);
-                PurgeToLimitMenuItem.Enabled = (winReg.CacheSizeLimit.HasValue
-                    && m_cacheSize > winReg.CacheSizeLimit.Value);
+                PurgeToLimitMenuItem.Enabled = (config.CacheSizeLimit.HasValue
+                    && m_cacheSize > config.CacheSizeLimit.Value);
             }
             else
             {
@@ -130,12 +130,12 @@ namespace CKAN
         {
             if (string.IsNullOrEmpty(CacheLimit.Text))
             {
-                winReg.CacheSizeLimit = null;
+                config.CacheSizeLimit = null;
             }
             else
             {
                 // Translate from MB to bytes
-                winReg.CacheSizeLimit = Convert.ToInt64(CacheLimit.Text) * 1024 * 1024;
+                config.CacheSizeLimit = Convert.ToInt64(CacheLimit.Text) * 1024 * 1024;
             }
             UpdateCacheInfo(CachePath.Text);
         }
@@ -154,7 +154,7 @@ namespace CKAN
             {
                 Description         = Properties.Resources.SettingsDialogCacheDescrip,
                 RootFolder          = Environment.SpecialFolder.MyComputer,
-                SelectedPath        = winReg.DownloadCacheDir,
+                SelectedPath        = config.DownloadCacheDir,
                 ShowNewFolderButton = true
             };
             DialogResult result = cacheChooser.ShowDialog();
@@ -167,13 +167,13 @@ namespace CKAN
         private void PurgeToLimitMenuItem_Click(object sender, EventArgs e)
         {
             // Purge old downloads if we're over the limit
-            if (winReg.CacheSizeLimit.HasValue)
+            if (config.CacheSizeLimit.HasValue)
             {
                 Main.Instance.Manager.Cache.EnforceSizeLimit(
-                    winReg.CacheSizeLimit.Value,
+                    config.CacheSizeLimit.Value,
                     RegistryManager.Instance(Main.Instance.CurrentInstance).registry
                 );
-                UpdateCacheInfo(winReg.DownloadCacheDir);
+                UpdateCacheInfo(config.DownloadCacheDir);
             }
         }
 
@@ -202,7 +202,7 @@ namespace CKAN
                 // finally, clear the preview contents list
                 Main.Instance.UpdateModContentsTree(null, true);
 
-                UpdateCacheInfo(winReg.DownloadCacheDir);
+                UpdateCacheInfo(config.DownloadCacheDir);
             }
         }
 
@@ -216,7 +216,7 @@ namespace CKAN
         {
             Process.Start(new ProcessStartInfo()
             {
-                FileName        = winReg.DownloadCacheDir,
+                FileName        = config.DownloadCacheDir,
                 UseShellExecute = true,
                 Verb            = "open"
             });
@@ -328,10 +328,10 @@ namespace CKAN
         private void RefreshAuthTokensListBox()
         {
             AuthTokensListBox.Items.Clear();
-            foreach (string host in ServiceLocator.Container.Resolve<IWin32Registry>().GetAuthTokenHosts())
+            foreach (string host in config.GetAuthTokenHosts())
             {
                 string token;
-                if (ServiceLocator.Container.Resolve<IWin32Registry>().TryGetAuthToken(host, out token))
+                if (config.TryGetAuthToken(host, out token))
                 {
                     AuthTokensListBox.Items.Add(string.Format("{0} | {1}", host, token));
                 }
@@ -422,7 +422,7 @@ namespace CKAN
 
                 case DialogResult.OK:
                 case DialogResult.Yes:
-                    ServiceLocator.Container.Resolve<IWin32Registry>().SetAuthToken(hostTextBox.Text, tokenTextBox.Text);
+                    config.SetAuthToken(hostTextBox.Text, tokenTextBox.Text);
                     RefreshAuthTokensListBox();
                     break;
             }
@@ -446,7 +446,7 @@ namespace CKAN
                 return false;
             }
             string oldToken;
-            if (ServiceLocator.Container.Resolve<IWin32Registry>().TryGetAuthToken(host, out oldToken))
+            if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out oldToken))
             {
                 GUI.user.RaiseError(Properties.Resources.AddAuthTokenDupHost, host);
                 return false;
@@ -462,7 +462,7 @@ namespace CKAN
                 string item = AuthTokensListBox.SelectedItem as string;
                 string host = item?.Split('|')[0].Trim();
 
-                ServiceLocator.Container.Resolve<IWin32Registry>().SetAuthToken(host, null);
+                config.SetAuthToken(host, null);
                 RefreshAuthTokensListBox();
                 DeleteRepoButton.Enabled = false;
             }
@@ -551,7 +551,7 @@ namespace CKAN
 
         private void RefreshTextBox_TextChanged(object sender, EventArgs e)
         {
-            winReg.RefreshRate = string.IsNullOrEmpty(RefreshTextBox.Text) ? 0 : int.Parse(RefreshTextBox.Text);
+            config.RefreshRate = string.IsNullOrEmpty(RefreshTextBox.Text) ? 0 : int.Parse(RefreshTextBox.Text);
             UpdateRefreshRate();
         }
 

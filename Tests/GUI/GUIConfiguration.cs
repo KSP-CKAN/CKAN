@@ -6,7 +6,7 @@ using Tests.Data;
 namespace Tests.GUI
 {
     [TestFixture]
-    public class ConfigurationTests
+    public class GuiConfigurationTests
     {
         string tempDir;
 
@@ -32,7 +32,7 @@ namespace Tests.GUI
                 stream.Write("This is not a valid XML file.");
             }
 
-            Assert.Throws<Kraken>(() => Configuration.LoadOrCreateConfiguration(tempFile));
+            Assert.Throws<Kraken>(() => GUIConfiguration.LoadOrCreateConfiguration(tempFile));
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace Tests.GUI
                 stream.Write(TestData.ConfigurationFile());
             }
 
-            var result = Configuration.LoadOrCreateConfiguration(tempFile);
+            var result = GUIConfiguration.LoadOrCreateConfiguration(tempFile);
 
             Assert.IsNotNull(result);
         }

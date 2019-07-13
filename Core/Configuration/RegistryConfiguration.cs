@@ -4,12 +4,12 @@ using System.Linq;
 using System.IO;
 using Microsoft.Win32;
 
-namespace CKAN.Win32Registry
+namespace CKAN.Configuration
 {
     // DEPRECATED: We now use a JSON configuration file. This still exists to facillitate migration.
     //
     // N.B., you can resume using this version by changing the instance created in ServiceLocator.
-    public class Win32RegistryReal : IWin32Registry
+    public class RegistryConfiguration : IConfiguration
     {
         private const           string CKAN_KEY           = @"HKEY_CURRENT_USER\Software\CKAN";
         private static readonly string CKAN_KEY_NO_PREFIX = StripPrefixKey(CKAN_KEY);
@@ -17,7 +17,7 @@ namespace CKAN.Win32Registry
         private const           string authTokenKey         = CKAN_KEY + @"\AuthTokens";
         private static readonly string authTokenKeyNoPrefix = StripPrefixKey(authTokenKey);
 
-        static Win32RegistryReal()
+        static RegistryConfiguration()
         {
             ConstructKey(CKAN_KEY_NO_PREFIX);
         }

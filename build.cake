@@ -9,7 +9,7 @@ using Semver;
 
 var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Debug");
-var buildFramework = configuration.EndsWith("_NetCore") ? "netcoreapp2.1" : "net45";
+var buildFramework = configuration.EndsWith("NetCore") ? "netcoreapp2.1" : "net45";
 var solution = Argument<string>("solution", "CKAN.sln");
 
 var rootDirectory = Context.Environment.WorkingDirectory;

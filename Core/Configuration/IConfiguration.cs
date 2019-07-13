@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CKAN.Win32Registry
+namespace CKAN.Configuration
 {
-    public interface IWin32Registry
+    public interface IConfiguration
     {
 
         string AutoStartInstance { get; set; }

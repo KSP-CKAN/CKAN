@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace CKAN.Win32Registry
+namespace CKAN.Configuration
 {
-    public class Win32RegistryJson : IWin32Registry
+    public class JsonConfiguration : IConfiguration
     {
 
         #region JSON Structures
@@ -194,7 +194,7 @@ namespace CKAN.Win32Registry
         // singleton instance, so in general you should use that. However, the
         // core state is static, so creating multiple instances is not an issue.
         // </summary>
-        public Win32RegistryJson()
+        public JsonConfiguration()
         {
             lock (_lock)
             {
@@ -215,7 +215,7 @@ namespace CKAN.Win32Registry
         // doesn't get loaded from the default location first, as that might end up
         // creating files and directories that the user is trying to avoid creating by
         // specifying the configuration file on the command line.
-        public Win32RegistryJson(string newConfig)
+        public JsonConfiguration (string newConfig)
         {
             lock (_lock)
             {
@@ -386,9 +386,9 @@ namespace CKAN.Win32Registry
         // </summary>
         private void Migrate()
         {
-            Win32RegistryReal registryReal = new Win32RegistryReal();
+            RegistryConfiguration registry = new RegistryConfiguration();
 
-            var instances = registryReal.GetInstances();
+            var instances = registry.GetInstances();
             lock (_lock)
             {
                 config.KspInstances = instances.Select(instance => new KspInstance
@@ -400,16 +400,16 @@ namespace CKAN.Win32Registry
                 SaveConfig();
             }
 
-            SetKSPBuilds(registryReal.GetKSPBuilds());
+            SetKSPBuilds(registry.GetKSPBuilds());
 
-            AutoStartInstance = registryReal.AutoStartInstance;
-            DownloadCacheDir = registryReal.DownloadCacheDir;
-            CacheSizeLimit = registryReal.CacheSizeLimit;
-            RefreshRate = registryReal.RefreshRate;
+            AutoStartInstance = registry.AutoStartInstance;
+            DownloadCacheDir = registry.DownloadCacheDir;
+            CacheSizeLimit = registry.CacheSizeLimit;
+            RefreshRate = registry.RefreshRate;
 
-            foreach (string host in registryReal.GetAuthTokenHosts())
+            foreach (string host in registry.GetAuthTokenHosts())
             {
-                if (registryReal.TryGetAuthToken(host, out string token))
+                if (registry.TryGetAuthToken(host, out string token))
                 {
                     SetAuthToken(host, token);
                 }

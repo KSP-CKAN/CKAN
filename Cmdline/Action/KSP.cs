@@ -447,7 +447,7 @@ namespace CKAN.CmdLine
                 string message = "default <name> - argument missing, please select from the list below.";
 
                 // Check if there is a default instance.
-                string defaultInstance = Manager.Win32Registry.AutoStartInstance;
+                string defaultInstance = Manager.Configuration.AutoStartInstance;
                 int defaultInstancePresent = 0;
 
                 if (!String.IsNullOrWhiteSpace(defaultInstance))

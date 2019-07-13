@@ -7,7 +7,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Autofac;
-using CKAN.Win32Registry;
+using CKAN.Configuration;
 using CurlSharp;
 using log4net;
 
@@ -78,7 +78,7 @@ namespace CKAN
 
                 // Check whether to use an auth token for this host
                 string token;
-                if (ServiceLocator.Container.Resolve<IWin32Registry>().TryGetAuthToken(this.url.Host, out token)
+                if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(this.url.Host, out token)
                         && !string.IsNullOrEmpty(token))
                 {
                     log.InfoFormat("Using auth token for {0}", this.url.Host);

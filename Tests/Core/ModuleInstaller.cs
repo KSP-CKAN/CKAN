@@ -8,7 +8,7 @@ using System.Transactions;
 using CKAN;
 using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
-using Tests.Core.Win32Registry;
+using Tests.Core.Configuration;
 using Tests.Data;
 
 namespace Tests.Core
@@ -431,7 +431,7 @@ namespace Tests.Core
             {
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeWin32Registry(tidy.KSP, tidy.KSP.Name)
+                    new FakeConfiguration(tidy.KSP, tidy.KSP.Name)
                 ) {
                     CurrentInstance = tidy.KSP
                 };
@@ -457,7 +457,7 @@ namespace Tests.Core
             {
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeWin32Registry(ksp.KSP, ksp.KSP.Name)
+                    new FakeConfiguration(ksp.KSP, ksp.KSP.Name)
                 ) {
                     CurrentInstance = ksp.KSP
                 };
@@ -503,7 +503,7 @@ namespace Tests.Core
                 // Arrange
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeWin32Registry(ksp.KSP, ksp.KSP.Name)
+                    new FakeConfiguration(ksp.KSP, ksp.KSP.Name)
                 ) {
                     CurrentInstance = ksp.KSP
                 };
@@ -540,7 +540,7 @@ namespace Tests.Core
             {
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeWin32Registry(ksp.KSP, ksp.KSP.Name)
+                    new FakeConfiguration(ksp.KSP, ksp.KSP.Name)
                 ) {
                     CurrentInstance = ksp.KSP
                 };
@@ -579,7 +579,7 @@ namespace Tests.Core
             {
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeWin32Registry(ksp.KSP, ksp.KSP.Name)
+                    new FakeConfiguration(ksp.KSP, ksp.KSP.Name)
                 ) {
                     CurrentInstance = ksp.KSP
                 };
@@ -639,7 +639,7 @@ namespace Tests.Core
                     {
                         KSPManager manager = new KSPManager(
                             new NullUser(),
-                            new FakeWin32Registry(ksp.KSP, ksp.KSP.Name)
+                            new FakeConfiguration(ksp.KSP, ksp.KSP.Name)
                         ) {
                             CurrentInstance = ksp.KSP
                         };

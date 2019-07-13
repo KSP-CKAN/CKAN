@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using CKAN;
 using CKAN.Versioning;
 using NUnit.Framework;
-using Tests.Core;
-using Tests.Core.Win32Registry;
+using Tests.Core.Configuration;
 using Tests.Data;
 using ModuleInstaller = CKAN.ModuleInstaller;
 
@@ -61,7 +60,7 @@ namespace Tests.GUI
             {
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeWin32Registry(tidy.KSP, tidy.KSP.Name)
+                    new FakeConfiguration(tidy.KSP, tidy.KSP.Name)
                 ) {
                     CurrentInstance = tidy.KSP
                 };
@@ -95,7 +94,7 @@ namespace Tests.GUI
             {
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeWin32Registry(tidy.KSP, tidy.KSP.Name)
+                    new FakeConfiguration(tidy.KSP, tidy.KSP.Name)
                 ) {
                     CurrentInstance = tidy.KSP
                 };

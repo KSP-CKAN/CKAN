@@ -6,7 +6,8 @@ using System.Collections.Generic;
 namespace CKAN
 {
 
-    public class Configuration
+    [XmlRootAttribute("Configuration")]
+    public class GUIConfiguration
     {
         public string CommandLineArguments = "";
         public bool AutoCloseWaitDialog = false;
@@ -92,11 +93,11 @@ namespace CKAN
             SaveConfiguration(this);
         }
 
-        public static Configuration LoadOrCreateConfiguration(string path)
+        public static GUIConfiguration LoadOrCreateConfiguration(string path)
         {
             if (!File.Exists(path))
             {
-                var configuration = new Configuration
+                var configuration = new GUIConfiguration
                 {
                     path = path,
                     CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64 -single-instance" :
@@ -110,16 +111,16 @@ namespace CKAN
             return LoadConfiguration(path);
         }
 
-        private static Configuration LoadConfiguration(string path)
+        private static GUIConfiguration LoadConfiguration(string path)
         {
-            var serializer = new XmlSerializer(typeof (Configuration));
+            var serializer = new XmlSerializer(typeof (GUIConfiguration));
 
-            Configuration configuration;
+            GUIConfiguration configuration;
             using (var stream = new StreamReader(path))
             {
                 try
                 {
-                    configuration = (Configuration) serializer.Deserialize(stream);
+                    configuration = (GUIConfiguration) serializer.Deserialize(stream);
                 }
                 catch (System.Exception e)
                 {
@@ -148,9 +149,9 @@ namespace CKAN
             return configuration;
         }
 
-        private static void SaveConfiguration(Configuration configuration)
+        private static void SaveConfiguration(GUIConfiguration configuration)
         {
-            var serializer = new XmlSerializer(typeof (Configuration));
+            var serializer = new XmlSerializer(typeof (GUIConfiguration));
 
             using (var writer = new StreamWriter(configuration.path))
             {

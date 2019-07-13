@@ -7,7 +7,7 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Validators;
-using CKAN.Win32Registry;
+using CKAN.Configuration;
 using Autofac;
 
 namespace CKAN.NetKAN.Processors
@@ -19,7 +19,7 @@ namespace CKAN.NetKAN.Processors
             log.Debug("Initializing inflator");
             cache = FindCache(
                 new KSPManager(new ConsoleUser(false)),
-                ServiceLocator.Container.Resolve<IWin32Registry>(),
+                ServiceLocator.Container.Resolve<IConfiguration>(),
                 cacheDir
             );
 
@@ -67,7 +67,7 @@ namespace CKAN.NetKAN.Processors
             ckanValidator.Validate(ckan);
         }
 
-        private static NetFileCache FindCache(KSPManager kspManager, IWin32Registry reg, string cacheDir)
+        private static NetFileCache FindCache(KSPManager kspManager, IConfiguration cfg, string cacheDir)
         {
             if (cacheDir != null)
             {
@@ -77,9 +77,9 @@ namespace CKAN.NetKAN.Processors
 
             try
             {
-                log.InfoFormat("Using main CKAN meta-cache at {0}", reg.DownloadCacheDir);
+                log.InfoFormat("Using main CKAN meta-cache at {0}", cfg.DownloadCacheDir);
                 // Create a new file cache in the same location so NetKAN can download pure URLs not sourced from CkanModules
-                return new NetFileCache(kspManager, reg.DownloadCacheDir);
+                return new NetFileCache(kspManager, cfg.DownloadCacheDir);
             }
             catch
             {

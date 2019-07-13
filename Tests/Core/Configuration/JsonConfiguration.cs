@@ -1,4 +1,4 @@
-﻿using CKAN.Win32Registry;
+﻿using CKAN.Configuration;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using System.IO;
 using Tests.Data;
 
-namespace Tests.Core.Win32Registry
+namespace Tests.Core.Configuration
 {
-    [TestFixture] public class Win32RegistryJsonTests
+    [TestFixture]
+    public class JsonConfigurationTests
     {
         // We want to make sure that the config file is pointed to the
         // right place for the other tests.
@@ -17,13 +18,13 @@ namespace Tests.Core.Win32Registry
         [SetUp]
         public void SetUp()
         {
-            configFileLoc = new Win32RegistryJson().ConfigFile;
+            configFileLoc = new JsonConfiguration().ConfigFile;
         }
 
         [TearDown]
         public void TearDown()
         {
-            _ = new Win32RegistryJson(configFileLoc);
+            _ = new JsonConfiguration(configFileLoc);
         }
 
         [Test]
@@ -32,7 +33,7 @@ namespace Tests.Core.Win32Registry
             string tmpFile = Path.GetTempFileName();
             File.Delete(tmpFile);
 
-            _ = new Win32RegistryJson(tmpFile);
+            _ = new JsonConfiguration(tmpFile);
 
             Assert.IsTrue(File.Exists(tmpFile));
 
@@ -47,7 +48,7 @@ namespace Tests.Core.Win32Registry
 
             string tmpFile = Path.Combine(tmpDir, "config.json");
 
-            _ = new Win32RegistryJson(tmpFile);
+            _ = new JsonConfiguration(tmpFile);
 
             Assert.IsTrue(File.Exists(tmpFile));
 
@@ -60,9 +61,9 @@ namespace Tests.Core.Win32Registry
             string tmpFile = Path.GetTempFileName();
             File.WriteAllText(tmpFile, TestData.GoodJsonConfig());
 
-            var reg = new Win32RegistryJson(tmpFile);
+            var reg = new JsonConfiguration(tmpFile);
 
-            CollectionAssert.AreEquivalent(new List<Tuple<string, string>> ()
+            CollectionAssert.AreEquivalent(new List<Tuple<string, string>>()
             {
                 new Tuple<string, string>("instance1", "instance1_path"),
                 new Tuple<string, string>("instance2", "instance2_path")
@@ -98,7 +99,7 @@ namespace Tests.Core.Win32Registry
             string tmpFile = Path.GetTempFileName();
             File.WriteAllText(tmpFile, TestData.MissingJsonConfig());
 
-            var reg = new Win32RegistryJson(tmpFile);
+            var reg = new JsonConfiguration(tmpFile);
 
             CollectionAssert.AreEquivalent(new List<Tuple<string, string>>()
             {
@@ -109,7 +110,7 @@ namespace Tests.Core.Win32Registry
             CollectionAssert.AreEquivalent(new List<string>(), reg.GetAuthTokenHosts());
 
             Assert.AreEqual("", reg.AutoStartInstance);
-            Assert.AreEqual(Win32RegistryJson.DefaultDownloadCacheDir, reg.DownloadCacheDir);
+            Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
             Assert.AreEqual(null, reg.CacheSizeLimit);
             Assert.AreEqual(4, reg.RefreshRate);
             Assert.AreEqual("build_string", reg.GetKSPBuilds());
@@ -121,13 +122,13 @@ namespace Tests.Core.Win32Registry
         public void LoadsEmptyConfig()
         {
             string tmpFile = Path.GetTempFileName();
-            var reg = new Win32RegistryJson(tmpFile);
+            var reg = new JsonConfiguration(tmpFile);
 
             CollectionAssert.AreEquivalent(new List<Tuple<string, string>>(), reg.GetInstances());
             CollectionAssert.AreEquivalent(new List<string>(), reg.GetAuthTokenHosts());
 
             Assert.AreEqual("", reg.AutoStartInstance);
-            Assert.AreEqual(Win32RegistryJson.DefaultDownloadCacheDir, reg.DownloadCacheDir);
+            Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
             Assert.AreEqual(null, reg.CacheSizeLimit);
             Assert.AreEqual(0, reg.RefreshRate);
             Assert.AreEqual(null, reg.GetKSPBuilds());
@@ -141,7 +142,7 @@ namespace Tests.Core.Win32Registry
             string tmpFile = Path.GetTempFileName();
             File.WriteAllText(tmpFile, TestData.ExtraJsonConfig());
 
-            var reg = new Win32RegistryJson(tmpFile);
+            var reg = new JsonConfiguration(tmpFile);
 
             CollectionAssert.AreEquivalent(new List<Tuple<string, string>>()
             {
@@ -181,7 +182,7 @@ namespace Tests.Core.Win32Registry
 
             Assert.Catch<JsonException>(delegate
             {
-                _ = new Win32RegistryJson(tmpFile);
+                _ = new JsonConfiguration(tmpFile);
             });
 
             File.Delete(tmpFile);
@@ -202,13 +203,13 @@ namespace Tests.Core.Win32Registry
         public void AutoStartInstancePersists(string val, string expected)
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new Win32RegistryJson(tmpFile1);
+            var reg = new JsonConfiguration(tmpFile1);
 
             reg.AutoStartInstance = val;
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new Win32RegistryJson(tmpFile2);
+            reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(expected, reg.AutoStartInstance);
 
@@ -220,7 +221,7 @@ namespace Tests.Core.Win32Registry
         public void DownloadCacheDirPersistsRooted()
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new Win32RegistryJson(tmpFile1);
+            var reg = new JsonConfiguration(tmpFile1);
 
             var file = Path.GetFullPath("test_path");
 
@@ -228,7 +229,7 @@ namespace Tests.Core.Win32Registry
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new Win32RegistryJson(tmpFile2);
+            reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(file, reg.DownloadCacheDir);
 
@@ -240,14 +241,14 @@ namespace Tests.Core.Win32Registry
         public void DownloadCacheDirPersistsUnrooted()
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new Win32RegistryJson(tmpFile1);
+            var reg = new JsonConfiguration(tmpFile1);
 
 
             reg.DownloadCacheDir = "file";
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new Win32RegistryJson(tmpFile2);
+            reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(Path.GetFullPath("file"), reg.DownloadCacheDir);
 
@@ -260,16 +261,16 @@ namespace Tests.Core.Win32Registry
         public void DownloadCacheDirPersistsNull()
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new Win32RegistryJson(tmpFile1);
+            var reg = new JsonConfiguration(tmpFile1);
 
 
             reg.DownloadCacheDir = null;
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new Win32RegistryJson(tmpFile2);
+            reg = new JsonConfiguration(tmpFile2);
 
-            Assert.AreEqual(Win32RegistryJson.DefaultDownloadCacheDir, reg.DownloadCacheDir);
+            Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
 
             File.Delete(tmpFile1);
             File.Delete(tmpFile2);
@@ -279,16 +280,16 @@ namespace Tests.Core.Win32Registry
         public void DownloadCacheDirPersistsEmpty()
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new Win32RegistryJson(tmpFile1);
+            var reg = new JsonConfiguration(tmpFile1);
 
 
             reg.DownloadCacheDir = "";
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new Win32RegistryJson(tmpFile2);
+            reg = new JsonConfiguration(tmpFile2);
 
-            Assert.AreEqual(Win32RegistryJson.DefaultDownloadCacheDir, reg.DownloadCacheDir);
+            Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
 
             File.Delete(tmpFile1);
             File.Delete(tmpFile2);
@@ -303,13 +304,13 @@ namespace Tests.Core.Win32Registry
         public void CacheSizeLimitPersists(long? val, long? expected)
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new Win32RegistryJson(tmpFile1);
+            var reg = new JsonConfiguration(tmpFile1);
 
             reg.CacheSizeLimit = val;
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new Win32RegistryJson(tmpFile2);
+            reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(expected, reg.CacheSizeLimit);
 
@@ -325,13 +326,13 @@ namespace Tests.Core.Win32Registry
         public void RefreshRatePersists(int val, int expected)
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new Win32RegistryJson(tmpFile1);
+            var reg = new JsonConfiguration(tmpFile1);
 
             reg.RefreshRate = val;
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new Win32RegistryJson(tmpFile2);
+            reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(expected, reg.RefreshRate);
 
@@ -342,14 +343,14 @@ namespace Tests.Core.Win32Registry
         public void AuthTokensPersist()
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new Win32RegistryJson(tmpFile1);
+            var reg = new JsonConfiguration(tmpFile1);
 
             reg.SetAuthToken("test_host1", "hunter2");
             reg.SetAuthToken("test_host2", "asdf");
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new Win32RegistryJson(tmpFile2);
+            reg = new JsonConfiguration(tmpFile2);
 
             CollectionAssert.Contains(reg.GetAuthTokenHosts(), "test_host1");
             CollectionAssert.Contains(reg.GetAuthTokenHosts(), "test_host2");
@@ -371,14 +372,14 @@ namespace Tests.Core.Win32Registry
         public void KspBuildsPersist(string val, string expected)
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new Win32RegistryJson(tmpFile1);
+            var reg = new JsonConfiguration(tmpFile1);
 
 
             reg.SetKSPBuilds(val);
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new Win32RegistryJson(tmpFile2);
+            reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(expected, reg.GetKSPBuilds());
 
@@ -392,7 +393,7 @@ namespace Tests.Core.Win32Registry
             using (var k2 = new DisposableKSP())
             {
                 string tmpFile1 = Path.GetTempFileName();
-                var reg = new Win32RegistryJson(tmpFile1);
+                var reg = new JsonConfiguration(tmpFile1);
 
                 var sl = new SortedList<string, CKAN.KSP>();
                 sl.Add("instance_1", k1.KSP);
@@ -401,7 +402,7 @@ namespace Tests.Core.Win32Registry
 
                 string tmpFile2 = Path.GetTempFileName();
                 File.Copy(tmpFile1, tmpFile2, true);
-                reg = new Win32RegistryJson(tmpFile2);
+                reg = new JsonConfiguration(tmpFile2);
 
                 CollectionAssert.AreEquivalent(new List<Tuple<string, string>>()
                 {
