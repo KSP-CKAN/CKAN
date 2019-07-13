@@ -29,7 +29,7 @@ namespace CKAN
             }
         }
 
-        public static void RegisterURLHandler(Configuration config, IUser user)
+        public static void RegisterURLHandler(GUIConfiguration config, IUser user)
         {
             try
             {

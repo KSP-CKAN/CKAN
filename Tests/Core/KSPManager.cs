@@ -4,7 +4,7 @@ using System.Linq;
 using CKAN;
 using CKAN.Versioning;
 using NUnit.Framework;
-using Tests.Core.Win32Registry;
+using Tests.Core.Configuration;
 using Tests.Data;
 
 namespace Tests.Core
@@ -13,15 +13,15 @@ namespace Tests.Core
     {
         private DisposableKSP tidy;
         private const string nameInReg = "testing";
-        private FakeWin32Registry win32_reg;
+        private FakeConfiguration cfg;
         KSPManager manager;
 
         [SetUp]
         public void SetUp()
         {
             tidy = new DisposableKSP();
-            win32_reg = GetTestWin32Reg(nameInReg);
-            manager = new KSPManager(new NullUser(), win32_reg);
+            cfg = GetTestCfg(nameInReg);
+            manager = new KSPManager(new NullUser(), cfg);
         }
 
         [TearDown]
@@ -87,7 +87,7 @@ namespace Tests.Core
         public void ClearAutoStart_UpdatesValueInWin32Reg()
         {
 
-            Assert.That(win32_reg.AutoStartInstance, Is.Null.Or.Empty);
+            Assert.That(cfg.AutoStartInstance, Is.Null.Or.Empty);
 
         }
 
@@ -263,7 +263,7 @@ namespace Tests.Core
         {
             using (var tidy2 = new DisposableKSP())
             {
-                win32_reg.Instances.Add(new Tuple<string, string>("tidy2",tidy2.KSP.GameDir()));
+                cfg.Instances.Add(new Tuple<string, string>("tidy2",tidy2.KSP.GameDir()));
                 manager.LoadInstancesFromRegistry();
                 manager.ClearAutoStart();
                 Assert.That(manager.GetPreferredInstance(), Is.Null);
@@ -287,16 +287,16 @@ namespace Tests.Core
         [Test] //37a33
         public void Ctor_InvalidAutoStart_DoesNotThrow()
         {
-            Assert.DoesNotThrow(() => new KSPManager(new NullUser(),new FakeWin32Registry(tidy.KSP, "invalid")
+            Assert.DoesNotThrow(() => new KSPManager(new NullUser(),new FakeConfiguration(tidy.KSP, "invalid")
                 ));
         }
 
 
         //TODO Test FindAndRegisterDefaultInstance
 
-        private FakeWin32Registry GetTestWin32Reg(string name)
+        private FakeConfiguration GetTestCfg(string name)
         {
-            return new FakeWin32Registry(
+            return new FakeConfiguration(
                 new List<Tuple<string, string>>
                 {
                     new Tuple<string, string>(name, tidy.KSP.GameDir())

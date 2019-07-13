@@ -6,7 +6,7 @@ using System.Transactions;
 using Autofac;
 using ChinhDo.Transactions.FileManager;
 using CKAN.Versioning;
-using CKAN.Win32Registry;
+using CKAN.Configuration;
 using log4net;
 
 namespace CKAN
@@ -17,7 +17,7 @@ namespace CKAN
     public class KSPManager : IDisposable
     {
         public IUser User { get; set; }
-        public IWin32Registry Win32Registry { get; set; }
+        public IConfiguration Configuration { get; set; }
         public KSP CurrentInstance { get; set; }
 
         public NetModuleCache Cache { get; private set; }
@@ -30,8 +30,8 @@ namespace CKAN
         {
             get
             {
-                return HasInstance(Win32Registry.AutoStartInstance)
-                    ? Win32Registry.AutoStartInstance
+                return HasInstance(Configuration.AutoStartInstance)
+                    ? Configuration.AutoStartInstance
                     : null;
             }
             private set
@@ -40,7 +40,7 @@ namespace CKAN
                 {
                     throw new InvalidKSPInstanceKraken(value);
                 }
-                Win32Registry.AutoStartInstance = value;
+                Configuration.AutoStartInstance = value;
             }
         }
 
@@ -49,10 +49,10 @@ namespace CKAN
             get { return new SortedList<string, KSP>(instances); }
         }
 
-        public KSPManager(IUser user, IWin32Registry win32_registry = null)
+        public KSPManager(IUser user, IConfiguration configuration = null)
         {
             User = user;
-            Win32Registry = win32_registry ?? ServiceLocator.Container.Resolve<IWin32Registry>();
+            Configuration = configuration ?? ServiceLocator.Container.Resolve<IConfiguration>();
             LoadInstancesFromRegistry();
         }
 
@@ -151,7 +151,7 @@ namespace CKAN
             {
                 string name = ksp_instance.Name;
                 instances.Add(name, ksp_instance);
-                Win32Registry.SetRegistryToInstances(instances);
+                Configuration.SetRegistryToInstances(instances);
             }
             else
             {
@@ -350,7 +350,7 @@ namespace CKAN
         public void RemoveInstance(string name)
         {
             instances.Remove(name);
-            Win32Registry.SetRegistryToInstances(instances);
+            Configuration.SetRegistryToInstances(instances);
         }
 
         /// <summary>
@@ -363,7 +363,7 @@ namespace CKAN
             instances.Remove(from);
             ksp.Name = to;
             instances.Add(to, ksp);
-            Win32Registry.SetRegistryToInstances(instances);
+            Configuration.SetRegistryToInstances(instances);
         }
 
         /// <summary>
@@ -431,7 +431,7 @@ namespace CKAN
 
         public void ClearAutoStart()
         {
-            Win32Registry.AutoStartInstance = null;
+            Configuration.AutoStartInstance = null;
         }
 
         public void LoadInstancesFromRegistry()
@@ -440,7 +440,7 @@ namespace CKAN
 
             instances.Clear();
 
-            foreach (Tuple<string, string> instance in Win32Registry.GetInstances())
+            foreach (Tuple<string, string> instance in Configuration.GetInstances())
             {
                 var name = instance.Item1;
                 var path = instance.Item2;
@@ -449,12 +449,12 @@ namespace CKAN
                 instances.Add(name, new KSP(path, name, User));
             }
 
-            if (!Directory.Exists(Win32Registry.DownloadCacheDir))
+            if (!Directory.Exists(Configuration.DownloadCacheDir))
             {
-                Directory.CreateDirectory(Win32Registry.DownloadCacheDir);
+                Directory.CreateDirectory(Configuration.DownloadCacheDir);
             }
             string failReason;
-            TrySetupCache(Win32Registry.DownloadCacheDir, out failReason);
+            TrySetupCache(Configuration.DownloadCacheDir, out failReason);
         }
 
         /// <summary>
@@ -466,18 +466,18 @@ namespace CKAN
         /// </returns>
         public bool TrySetupCache(string path, out string failureReason)
         {
-            string origPath = Win32Registry.DownloadCacheDir;
+            string origPath = Configuration.DownloadCacheDir;
             try
             {
                 if (string.IsNullOrEmpty(path))
                 {
-                    Win32Registry.DownloadCacheDir = "";
-                    Cache = new NetModuleCache(this, Win32Registry.DownloadCacheDir);
+                    Configuration.DownloadCacheDir = "";
+                    Cache = new NetModuleCache(this, Configuration.DownloadCacheDir);
                 }
                 else
                 {
                     Cache = new NetModuleCache(this, path);
-                    Win32Registry.DownloadCacheDir = path;
+                    Configuration.DownloadCacheDir = path;
                 }
                 failureReason = null;
                 return true;
@@ -495,7 +495,7 @@ namespace CKAN
             catch (IOException ex)
             {
                 // MoveFrom failed, possibly full disk, so undo the change
-                Win32Registry.DownloadCacheDir = origPath;
+                Configuration.DownloadCacheDir = origPath;
                 failureReason = ex.Message;
                 return false;
             }

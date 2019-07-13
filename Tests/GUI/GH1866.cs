@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using CKAN;
 using NUnit.Framework;
-using Tests.Core;
-using Tests.Core.Win32Registry;
+using Tests.Core.Configuration;
 using Tests.Data;
 using ModuleInstaller = CKAN.ModuleInstaller;
 
@@ -57,7 +55,7 @@ namespace Tests.GUI
             _registry = Registry.Empty();
             _manager = new KSPManager(
                 new NullUser(),
-                new FakeWin32Registry(_instance.KSP, _instance.KSP.Name)
+                new FakeConfiguration(_instance.KSP, _instance.KSP.Name)
             );
 
             // this module contains a ksp_version of "any" which repros our issue

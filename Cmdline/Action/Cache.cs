@@ -1,10 +1,7 @@
-using System;
-using System.Linq;
 using CommandLine;
 using CommandLine.Text;
 using log4net;
-using CKAN.Versioning;
-using CKAN.Win32Registry;
+using CKAN.Configuration;
 using Autofac;
 
 namespace CKAN.CmdLine
@@ -149,8 +146,8 @@ namespace CKAN.CmdLine
 
         private int ListCacheDirectory(CommonOptions options)
         {
-            IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
-            user.RaiseMessage(winReg.DownloadCacheDir);
+            IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
+            user.RaiseMessage(cfg.DownloadCacheDir);
             printCacheInfo();
             return Exit.OK;
         }
@@ -166,8 +163,8 @@ namespace CKAN.CmdLine
             string failReason;
             if (manager.TrySetupCache(options.Path, out failReason))
             {
-                IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
-                user.RaiseMessage($"Download cache set to {winReg.DownloadCacheDir}");
+                IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
+                user.RaiseMessage($"Download cache set to {cfg.DownloadCacheDir}");
                 printCacheInfo();
                 return Exit.OK;
             }
@@ -191,8 +188,8 @@ namespace CKAN.CmdLine
             string failReason;
             if (manager.TrySetupCache("", out failReason))
             {
-                IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
-                user.RaiseMessage($"Download cache reset to {winReg.DownloadCacheDir}");
+                IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
+                user.RaiseMessage($"Download cache reset to {cfg.DownloadCacheDir}");
                 printCacheInfo();
             }
             else
@@ -204,10 +201,10 @@ namespace CKAN.CmdLine
 
         private int ShowCacheSizeLimit(CommonOptions options)
         {
-            IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
-            if (winReg.CacheSizeLimit.HasValue)
+            IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
+            if (cfg.CacheSizeLimit.HasValue)
             {
-                user.RaiseMessage(CkanModule.FmtSize(winReg.CacheSizeLimit.Value));
+                user.RaiseMessage(CkanModule.FmtSize(cfg.CacheSizeLimit.Value));
             }
             else
             {
@@ -218,14 +215,14 @@ namespace CKAN.CmdLine
 
         private int SetCacheSizeLimit(SetLimitOptions options)
         {
-            IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
+            IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
             if (options.Megabytes < 0)
             {
-                winReg.CacheSizeLimit = null;
+                cfg.CacheSizeLimit = null;
             }
             else
             {
-                winReg.CacheSizeLimit = options.Megabytes * (long)1024 * (long)1024;
+                cfg.CacheSizeLimit = options.Megabytes * (long)1024 * (long)1024;
             }
             return ShowCacheSizeLimit(null);
         }

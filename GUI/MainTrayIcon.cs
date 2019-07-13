@@ -1,7 +1,8 @@
 using System;
-using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
+using CKAN.Configuration;
+using Autofac;
 
 namespace CKAN
 {
@@ -13,7 +14,7 @@ namespace CKAN
         {
             enableTrayIcon = configuration.EnableTrayIcon;
             minimizeToTray = configuration.MinimizeToTray;
-            pauseToolStripMenuItem.Enabled = winReg.RefreshRate != 0;
+            pauseToolStripMenuItem.Enabled = ServiceLocator.Container.Resolve<IConfiguration>().RefreshRate != 0;
             pauseToolStripMenuItem.Text = configuration.RefreshPaused
                 ? Properties.Resources.MainTrayIconResume
                 : Properties.Resources.MainTrayIconPause;

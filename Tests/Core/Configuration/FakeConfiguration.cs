@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CKAN;
-using CKAN.Win32Registry;
-using NUnit.Framework;
+using CKAN.Configuration;
 using Tests.Data;
 
-namespace Tests.Core.Win32Registry
+namespace Tests.Core.Configuration
 {
-    public class FakeWin32Registry : IWin32Registry
+    public class FakeConfiguration : IConfiguration
     {
-        public FakeWin32Registry(CKAN.KSP instance, string autostart)
+        public FakeConfiguration(CKAN.KSP instance, string autostart)
             : this(
                 new List<Tuple<string, string>>
                 {
@@ -26,7 +24,7 @@ namespace Tests.Core.Win32Registry
         /// </summary>
         /// <param name="instances">List of name/path pairs for the instances</param>
         /// <param name="auto_start_instance">The auto start instance to use</param>
-        public FakeWin32Registry(List<Tuple<string, string>> instances, string auto_start_instance)
+        public FakeConfiguration(List<Tuple<string, string>> instances, string auto_start_instance)
         {
             Instances         = instances;
             AutoStartInstance = auto_start_instance;

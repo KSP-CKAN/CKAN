@@ -111,7 +111,7 @@
     <Compile Include="CompatibleKspVersionsDialog.Designer.cs">
       <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Configuration.cs" />
+    <Compile Include="GUIConfiguration.cs" />
     <Compile Include="ControlFactory.cs" />
     <Compile Include="DropdownMenuButton.cs">
       <SubType>Component</SubType>

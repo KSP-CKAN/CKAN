@@ -5,7 +5,7 @@ using System.Reflection;
 using log4net;
 using Newtonsoft.Json;
 using CKAN.Versioning;
-using CKAN.Win32Registry;
+using CKAN.Configuration;
 
 namespace CKAN.GameVersionProviders
 {
@@ -19,7 +19,7 @@ namespace CKAN.GameVersionProviders
         private static readonly ILog Log = LogManager.GetLogger(typeof(KspBuildMap));
 
         private readonly object _buildMapLock = new object();
-        private readonly IWin32Registry _registry;
+        private readonly IConfiguration _configuration;
         private JBuilds _jBuilds;
 
         public KspVersion this[string buildId]
@@ -47,9 +47,9 @@ namespace CKAN.GameVersionProviders
             }
         }
 
-        public KspBuildMap(IWin32Registry registry)
+        public KspBuildMap(IConfiguration configuration)
         {
-            _registry = registry;
+            _configuration = configuration;
         }
 
         private void EnsureBuildMap()
@@ -111,7 +111,7 @@ namespace CKAN.GameVersionProviders
 
                 if (TrySetBuildMap(json))
                 {
-                    _registry.SetKSPBuilds(json);
+                    _configuration.SetKSPBuilds(json);
                     return true;
                 }
                 else
@@ -131,7 +131,7 @@ namespace CKAN.GameVersionProviders
         {
             try
             {
-                var json = _registry.GetKSPBuilds();
+                var json = _configuration.GetKSPBuilds();
                 return json != null && TrySetBuildMap(json);
             }
             catch (Exception e)

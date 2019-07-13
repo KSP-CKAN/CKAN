@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using CKAN.ConsoleUI.Toolkit;
 using Autofac;
-using CKAN.Win32Registry;
+using CKAN.Configuration;
 
 namespace CKAN.ConsoleUI {
 
@@ -30,7 +30,7 @@ namespace CKAN.ConsoleUI {
 
             tokenList = new ConsoleListBox<string>(
                 1, 4, -1, -2,
-                new List<string>(ServiceLocator.Container.Resolve<IWin32Registry>().GetAuthTokenHosts()),
+                new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts()),
                 new List<ConsoleListBoxColumn<string>>() {
                     new ConsoleListBoxColumn<string>() {
                         Header   = "Host",
@@ -42,7 +42,7 @@ namespace CKAN.ConsoleUI {
                         Width    = 50,
                         Renderer = (string s) => {
                             string token;
-                            return ServiceLocator.Container.Resolve<IWin32Registry>().TryGetAuthToken(s, out token)
+                            return ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(s, out token)
                                 ? token
                                 : missingTokenValue;
                         }
@@ -67,15 +67,15 @@ namespace CKAN.ConsoleUI {
                 AuthTokenAddDialog ad = new AuthTokenAddDialog();
                 ad.Run();
                 DrawBackground();
-                tokenList.SetData(new List<string>(ServiceLocator.Container.Resolve<IWin32Registry>().GetAuthTokenHosts()));
+                tokenList.SetData(new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts()));
                 return true;
             });
 
             tokenList.AddTip("R", "Remove", () => tokenList.Selection != null);
             tokenList.AddBinding(Keys.R, (object sender) => {
                 if (tokenList.Selection != null) {
-                    ServiceLocator.Container.Resolve<IWin32Registry>().SetAuthToken(tokenList.Selection, null);
-                    tokenList.SetData(new List<string>(ServiceLocator.Container.Resolve<IWin32Registry>().GetAuthTokenHosts()));
+                    ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(tokenList.Selection, null);
+                    tokenList.SetData(new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts()));
                 }
                 return true;
             });

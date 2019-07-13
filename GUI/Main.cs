@@ -8,14 +8,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Globalization;
 using CKAN.Versioning;
 using CKAN.Exporters;
 using CKAN.Properties;
 using CKAN.Types;
 using log4net;
 using Timer = System.Windows.Forms.Timer;
-using CKAN.Win32Registry;
 using Autofac;
 
 namespace CKAN
@@ -28,7 +26,7 @@ namespace CKAN
 
         public static event ModChangedCallback modChangedCallback;
 
-        public Configuration configuration;
+        public GUIConfiguration configuration;
 
         public ControlFactory controlFactory;
 
@@ -63,7 +61,6 @@ namespace CKAN
 
         private bool enableTrayIcon;
         private bool minimizeToTray;
-        private IWin32Registry winReg = ServiceLocator.Container.Resolve<IWin32Registry>();
 
         private DateTime lastSearchTime;
         private string lastSearchKey;
@@ -204,7 +201,7 @@ namespace CKAN
                 }
             }
 
-            configuration = Configuration.LoadOrCreateConfiguration
+            configuration = GUIConfiguration.LoadOrCreateConfiguration
                 (
                     Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml")
                 );
@@ -544,7 +541,7 @@ namespace CKAN
                 );
             });
 
-            configuration = Configuration.LoadOrCreateConfiguration(
+            configuration = GUIConfiguration.LoadOrCreateConfiguration(
                 Path.Combine(CurrentInstance.CkanDir (), "GUIConfig.xml")
             );
 
