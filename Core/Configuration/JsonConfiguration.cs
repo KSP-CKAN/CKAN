@@ -18,20 +18,14 @@ namespace CKAN.Configuration
             public long? CacheSizeLimit { get; set; }
             public int? RefreshRate { get; set; }
             public JBuilds KSPBuilds { get; set; }
-            public IList<KspInstance> KspInstances;
-            public IList<AuthToken> AuthTokens;
+            public IList<KspInstance> KspInstances = new List<KspInstance>();
+            public IDictionary<string, string> AuthTokens = new Dictionary<string, string>();
         }
 
         private class KspInstance
         {
             public string Name { get; set; }
             public string Path { get; set; }
-        }
-
-        private class AuthToken
-        {
-            public string Host { get; set; }
-            public string Token { get; set; }
         }
 
         #endregion
@@ -190,11 +184,11 @@ namespace CKAN.Configuration
         }
 
         // <summary>
-        // Create a new instance of Win32RegistryJson. ServiceLocator maintains a
+        // Create a new instance of JsonConfiguration. ServiceLocator maintains a
         // singleton instance, so in general you should use that. However, the
         // core state is static, so creating multiple instances is not an issue.
         // </summary>
-        public JsonConfiguration()
+        public JsonConfiguration ()
         {
             lock (_lock)
             {
@@ -271,7 +265,7 @@ namespace CKAN.Configuration
         {
             lock (_lock)
             {
-                return config.AuthTokens.Select(token => token.Host);
+                return config.AuthTokens.Keys;
             }
         }
 
@@ -280,17 +274,7 @@ namespace CKAN.Configuration
         {
             lock (_lock)
             {
-                foreach (AuthToken t in config.AuthTokens)
-                {
-                    if (t.Host == host)
-                    {
-                        token = t.Token;
-                        return true;
-                    }
-                }
-
-                token = "";
-                return false;
+                return config.AuthTokens.TryGetValue(host, out token);
             }
         }
 
@@ -298,24 +282,7 @@ namespace CKAN.Configuration
         {
             lock (_lock)
             {
-                bool found = false;
-                foreach (AuthToken t in config.AuthTokens)
-                {
-                    if (t.Host == host)
-                    {
-                        found = true;
-                        t.Token = token;
-                    }
-                }
-
-                if (!found)
-                {
-                    config.AuthTokens.Add(new AuthToken
-                    {
-                        Host = host,
-                        Token = token
-                    });
-                }
+                config.AuthTokens [host] = token;
 
                 SaveConfig();
             }
@@ -357,7 +324,7 @@ namespace CKAN.Configuration
 
                 if (config.AuthTokens == null)
                 {
-                    config.AuthTokens = new List<AuthToken>();
+                    config.AuthTokens = new Dictionary<string, string>();
                 }
             }
             catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException)
@@ -365,8 +332,6 @@ namespace CKAN.Configuration
                 // This runs if the configuration does not exist. We will create a new configuration and
                 // try to migrate from the registry.
                 config = new Config();
-                config.KspInstances = new List<KspInstance>();
-                config.AuthTokens = new List<AuthToken>();
 
                 // Ensure the directory exists
                 new FileInfo(configFile).Directory.Create();
@@ -376,7 +341,12 @@ namespace CKAN.Configuration
 
 #if !NETSTANDARD
                 // If we are not running on .NET Standard, try to migrate from the real registry
-                Migrate();
+                if (Win32RegistryConfiguration.DoesRegistryConfigurationExist()) {
+                    Migrate();
+
+                    // TODO: At some point, we can uncomment this to clean up after ourselves.
+                    // Win32RegistryConfiguration.DeleteAllKeys();
+                }
 #endif
             }
         }
@@ -386,7 +356,7 @@ namespace CKAN.Configuration
         // </summary>
         private void Migrate()
         {
-            RegistryConfiguration registry = new RegistryConfiguration();
+            Win32RegistryConfiguration registry = new Win32RegistryConfiguration();
 
             var instances = registry.GetInstances();
             lock (_lock)

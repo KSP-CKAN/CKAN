@@ -729,20 +729,11 @@ namespace Tests.Data
                   ""Path"": ""instance2_path""
                 }
               ],
-              ""AuthTokens"": [
-                {
-                  ""Host"": ""host1"",
-                  ""Token"": ""token1""
-                },
-                {
-                  ""Host"": ""host2"",
-                  ""Token"": ""token2""
-                },
-                {
-                  ""Host"": ""host3"",
-                  ""Token"": ""token3""
-                }
-              ],
+              ""AuthTokens"": {
+                ""host1"": ""token1"",
+                ""host2"": ""token2"",
+                ""host3"": ""token3""
+              },
               ""AutoStartInstance"": ""asi"",
               ""DownloadCacheDir"": ""dci"",
               ""CacheSizeLimit"": 2,
@@ -794,20 +785,11 @@ namespace Tests.Data
                   ""Path"": ""instance2_path""
                 }
               ],
-              ""AuthTokens"": [
-                {
-                  ""Host"": ""host1"",
-                  ""Token"": ""token1""
-                },
-                {
-                  ""Host"": ""host2"",
-                  ""Token"": ""token2""
-                },
-                {
-                  ""Host"": ""host3"",
-                  ""Token"": ""token3""
-                }
-              ],
+              ""AuthTokens"": {
+                ""host1"": ""token1"",
+                ""host2"": ""token2"",
+                ""host3"": ""token3""
+              },
               ""AutoStartInstance"": ""asi"",
               ""DownloadCacheDir"": ""dci"",
               ""CacheSizeLimit"": 2,
@@ -838,20 +820,11 @@ namespace Tests.Data
                   ""Path"": ""instance2_path""
                 }
               ],
-              ""AuthTokens"": [
-                {
-                  ""Host"": ""host1"",
-                  ""Token"": ""token1""
-                },
-                {
-                  ""Host"": ""host2"",
-                  ""Token"": ""token2""
-                },
-                {
-                  ""Host"": ""host3"",
-                  ""Token"": ""token3""
-                }
-              ],
+              ""AuthTokens"": {
+                ""host1"": ""token1"",
+                ""host2"": ""token2"",
+                ""host3"": ""token3""
+              },
               ""AutoStartInstance"": ""asi"",
               ""DownloadCacheDir"": ""dci"",
               ""CacheSizeLimit"": 2,
