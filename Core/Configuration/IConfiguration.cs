@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace CKAN.Configuration
 {
@@ -50,10 +51,25 @@ namespace CKAN.Configuration
         /// <param name="token">Token to set, or null to delete</param>
         void SetAuthToken(string host, string token);
 
-        string GetKSPBuilds();
-        void SetKSPBuilds(string buildMap);
+        JBuilds GetKSPBuilds();
+        void SetKSPBuilds(JBuilds buildMap);
 
         void SetRegistryToInstances(SortedList<string, KSP> instances);
         IEnumerable<Tuple<string, string>> GetInstances();
+    }
+
+    // <summary>
+    // THIS IS NOT THE BUILD MAP! If you are trying to access the build map,
+    // you want to use IKspBuildMap.
+    //
+    // This class represents the internal JSON structure of the build map,
+    // and should only be used by implementations of IKspBuildMap and
+    // IConfiguration.
+    // </summary>
+    public sealed class JBuilds
+    {
+        [JsonProperty("builds")]
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
+        public Dictionary<string, string> Builds { get; set; }
     }
 }

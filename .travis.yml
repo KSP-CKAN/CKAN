@@ -19,10 +19,10 @@ matrix:
     include:
         - env: BUILD_CONFIGURATION=Debug_NetCore
           mono: latest
-          dotnet: 2.1.700
+          dotnet: 2.1
         - env: BUILD_CONFIGURATION=Release_NetCore
           mono: latest
-          dotnet: 2.1.700
+          dotnet: 2.1
 
 addons:
     apt:
@@ -49,7 +49,7 @@ before_install:
 
 script:
     - ./build --configuration=$BUILD_CONFIGURATION
-    - ./build test+only --configuration=$BUILD_CONFIGURATION --where="cat!=FlakyNetwork"
+    - ./build test+only --configuration=$BUILD_CONFIGURATION --where="Category!=FlakyNetwork"
 
 # We run ~10 builds, but only the one that deploys needs a .app bundle or .deb file
 before_deploy:

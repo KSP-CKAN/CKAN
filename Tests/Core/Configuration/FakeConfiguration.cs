@@ -38,7 +38,7 @@ namespace Tests.Core.Configuration
         /// <summary>
         /// Build map for the fake registry
         /// </summary>
-        public string                      BuildMap         { get; set; }
+        public JBuilds                     BuildMap         { get; set; }
         /// <summary>
         /// Path to download cache folder for the fake registry
         /// </summary>
@@ -111,7 +111,7 @@ namespace Tests.Core.Configuration
         /// <summary>
         /// The build map of the fake registry
         /// </summary>
-        public string GetKSPBuilds()
+        public JBuilds GetKSPBuilds()
         {
             return BuildMap;
         }
@@ -120,7 +120,7 @@ namespace Tests.Core.Configuration
         /// Set the build map for the fake registry
         /// </summary>
         /// <param name="buildMap">New build map to use</param>
-        public void SetKSPBuilds(string buildMap)
+        public void SetKSPBuilds(JBuilds buildMap)
         {
             BuildMap = buildMap;
         }

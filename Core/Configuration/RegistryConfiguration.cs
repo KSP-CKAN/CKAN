@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Microsoft.Win32;
+using log4net;
+using Newtonsoft.Json;
 
 namespace CKAN.Configuration
 {
@@ -11,6 +13,8 @@ namespace CKAN.Configuration
     // N.B., you can resume using this version by changing the instance created in ServiceLocator.
     public class RegistryConfiguration : IConfiguration
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(RegistryConfiguration));
+
         private const           string CKAN_KEY           = @"HKEY_CURRENT_USER\Software\CKAN";
         private static readonly string CKAN_KEY_NO_PREFIX = StripPrefixKey(CKAN_KEY);
 
@@ -117,14 +121,25 @@ namespace CKAN.Configuration
             return Enumerable.Range(0, InstanceCount).Select(GetInstance).ToList();
         }
 
-        public string GetKSPBuilds()
+        public JBuilds GetKSPBuilds()
         {
-            return GetRegistryValue("KSPBuilds", null as string);
+            var raw = GetRegistryValue("KSPBuilds", null as string);
+            try
+            {
+                return JsonConvert.DeserializeObject<JBuilds>(raw);
+            }
+            catch (Exception e)
+            {
+                Log.WarnFormat("Could not parse cached build map");
+                Log.DebugFormat("{0}\n{1}", raw, e);
+                return null;
+            }
         }
 
-        public void SetKSPBuilds(string buildMap)
+        public void SetKSPBuilds(JBuilds buildMap)
         {
-            SetRegistryValue(@"KSPBuilds", buildMap);
+            string json = JsonConvert.SerializeObject(buildMap);
+            SetRegistryValue(@"KSPBuilds", json);
         }
 
         public bool TryGetAuthToken(string host, out string token)

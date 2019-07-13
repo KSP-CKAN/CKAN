@@ -88,7 +88,12 @@ namespace Tests.Core.Configuration
             Assert.AreEqual("dci", reg.DownloadCacheDir);
             Assert.AreEqual(2, reg.CacheSizeLimit);
             Assert.AreEqual(4, reg.RefreshRate);
-            Assert.AreEqual("build_string", reg.GetKSPBuilds());
+
+            CollectionAssert.AreEquivalent(new Dictionary<string, string>()
+            {
+                { "build1", "version1" },
+                { "build2", "version2" }
+            }, reg.GetKSPBuilds().Builds);
 
             File.Delete(tmpFile);
         }
@@ -113,7 +118,12 @@ namespace Tests.Core.Configuration
             Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
             Assert.AreEqual(null, reg.CacheSizeLimit);
             Assert.AreEqual(4, reg.RefreshRate);
-            Assert.AreEqual("build_string", reg.GetKSPBuilds());
+
+            CollectionAssert.AreEquivalent(new Dictionary<string, string>()
+            {
+                { "build1", "version1" },
+                { "build2", "version2" }
+            }, reg.GetKSPBuilds().Builds);
 
             File.Delete(tmpFile);
         }
@@ -169,7 +179,12 @@ namespace Tests.Core.Configuration
             Assert.AreEqual("dci", reg.DownloadCacheDir);
             Assert.AreEqual(2, reg.CacheSizeLimit);
             Assert.AreEqual(4, reg.RefreshRate);
-            Assert.AreEqual("build_string", reg.GetKSPBuilds());
+
+            CollectionAssert.AreEquivalent(new Dictionary<string, string>()
+            {
+                { "build1", "version1" },
+                { "build2", "version2" }
+            }, reg.GetKSPBuilds().Builds);
 
             File.Delete(tmpFile);
         }
@@ -340,6 +355,7 @@ namespace Tests.Core.Configuration
             File.Delete(tmpFile2);
         }
 
+        [Test]
         public void AuthTokensPersist()
         {
             string tmpFile1 = Path.GetTempFileName();
@@ -365,28 +381,35 @@ namespace Tests.Core.Configuration
             File.Delete(tmpFile2);
         }
 
-        [Test,
-            TestCase("kspbuilds-test", "kspbuilds-test"),
-            TestCase("", ""),
-            TestCase(null, null)]
-        public void KspBuildsPersist(string val, string expected)
+        [Test]
+        public void KspBuildsPersist()
         {
             string tmpFile1 = Path.GetTempFileName();
             var reg = new JsonConfiguration(tmpFile1);
 
 
-            reg.SetKSPBuilds(val);
+            reg.SetKSPBuilds(new JBuilds
+            {
+                Builds = new Dictionary<string, string>
+                {
+                    { "test_build", "test_version" }
+                }
+            });
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
             reg = new JsonConfiguration(tmpFile2);
 
-            Assert.AreEqual(expected, reg.GetKSPBuilds());
+            CollectionAssert.AreEquivalent(new Dictionary<string, string>()
+            {
+                { "test_build", "test_version" }
+            }, reg.GetKSPBuilds().Builds);
 
             File.Delete(tmpFile1);
             File.Delete(tmpFile2);
         }
 
+        [Test]
         public void InstancesPersist()
         {
             using (var k1 = new DisposableKSP())
