@@ -717,128 +717,152 @@ namespace Tests.Data
 
         public static string GoodJsonConfig()
         {
-            return @"{
-  ""KspInstances"": [
-    {
-      ""Name"": ""instance1"",
-      ""Path"": ""instance1_path""
-    },
-    {
-      ""Name"": ""instance2"",
-      ""Path"": ""instance2_path""
-    }
-  ],
-  ""AuthTokens"": [
-    {
-      ""Host"": ""host1"",
-      ""Token"": ""token1""
-    },
-    {
-      ""Host"": ""host2"",
-      ""Token"": ""token2""
-    },
-    {
-      ""Host"": ""host3"",
-      ""Token"": ""token3""
-    }
-  ],
-  ""AutoStartInstance"": ""asi"",
-  ""DownloadCacheDir"": ""dci"",
-  ""CacheSizeLimit"": 2,
-  ""RefreshRate"": 4,
-  ""KSPBuilds"": ""build_string""
-}";
+            return @"
+            {
+              ""KspInstances"": [
+                {
+                  ""Name"": ""instance1"",
+                  ""Path"": ""instance1_path""
+                },
+                {
+                  ""Name"": ""instance2"",
+                  ""Path"": ""instance2_path""
+                }
+              ],
+              ""AuthTokens"": [
+                {
+                  ""Host"": ""host1"",
+                  ""Token"": ""token1""
+                },
+                {
+                  ""Host"": ""host2"",
+                  ""Token"": ""token2""
+                },
+                {
+                  ""Host"": ""host3"",
+                  ""Token"": ""token3""
+                }
+              ],
+              ""AutoStartInstance"": ""asi"",
+              ""DownloadCacheDir"": ""dci"",
+              ""CacheSizeLimit"": 2,
+              ""RefreshRate"": 4,
+              ""KSPBuilds"": {
+                ""builds"": {
+                  ""build1"": ""version1"",
+                  ""build2"": ""version2""
+                }
+              }
+            }";
         }
 
         public static string MissingJsonConfig()
         {
-            return @"{
-  ""KspInstances"": [
-    {
-      ""Name"": ""instance1"",
-      ""Path"": ""instance1_path""
-    },
-    {
-      ""Name"": ""instance2"",
-      ""Path"": ""instance2_path""
-    }
-  ],
-  ""RefreshRate"": 4,
-  ""KSPBuilds"": ""build_string""
-}";
+            return @"
+            {
+              ""KspInstances"": [
+                {
+                  ""Name"": ""instance1"",
+                  ""Path"": ""instance1_path""
+                },
+                {
+                  ""Name"": ""instance2"",
+                  ""Path"": ""instance2_path""
+                }
+              ],
+              ""RefreshRate"": 4,
+              ""KSPBuilds"": {
+                ""builds"": {
+                  ""build1"": ""version1"",
+                  ""build2"": ""version2""
+                }
+              }
+            }";
         }
 
         public static string ExtraJsonConfig()
         {
-            return @"{
-  ""KspInstances"": [
-    {
-      ""Name"": ""instance1"",
-      ""Path"": ""instance1_path""
-    },
-    {
-      ""Name"": ""instance2"",
-      ""Path"": ""instance2_path""
-    }
-  ],
-  ""AuthTokens"": [
-    {
-      ""Host"": ""host1"",
-      ""Token"": ""token1""
-    },
-    {
-      ""Host"": ""host2"",
-      ""Token"": ""token2""
-    },
-    {
-      ""Host"": ""host3"",
-      ""Token"": ""token3""
-    }
-  ],
-  ""AutoStartInstance"": ""asi"",
-  ""DownloadCacheDir"": ""dci"",
-  ""CacheSizeLimit"": 2,
-  ""RefreshRate"": 4,
-  ""KSPBuilds"": ""build_string"",
-  ""ExtraToken"": {
-    ""ExtraSubToken"": ""value""
-  }
-}";
+            return @"
+            {
+              ""KspInstances"": [
+                {
+                  ""Name"": ""instance1"",
+                  ""Path"": ""instance1_path""
+                },
+                {
+                  ""Name"": ""instance2"",
+                  ""Path"": ""instance2_path""
+                }
+              ],
+              ""AuthTokens"": [
+                {
+                  ""Host"": ""host1"",
+                  ""Token"": ""token1""
+                },
+                {
+                  ""Host"": ""host2"",
+                  ""Token"": ""token2""
+                },
+                {
+                  ""Host"": ""host3"",
+                  ""Token"": ""token3""
+                }
+              ],
+              ""AutoStartInstance"": ""asi"",
+              ""DownloadCacheDir"": ""dci"",
+              ""CacheSizeLimit"": 2,
+              ""RefreshRate"": 4,
+              ""KSPBuilds"": {
+                ""builds"": {
+                  ""build1"": ""version1"",
+                  ""build2"": ""version2""
+                }
+              },
+              ""ExtraToken"": {
+                ""ExtraSubToken"": ""value""
+              }
+            }";
         }
 
         public static string BadJsonConfig()
         {
-            return @"{
-  ""KspInstances"":
-    {
-      ""Name"": ""instance1"",
-      ""Path"": ""instance1_path""
-    },
-    {
-      ""Name"": ""instance2"",
-      ""Path"": ""instance2_path""
-    }
-  ],
-  ""AuthTokens"": [
-    {
-      ""Host"": ""host1"",
-      ""Token"": ""token1""
-    },
-    {
-      ""Host"": ""host2"",
-      ""Token"": ""token2""
-    },
-    {
-      ""Host"": ""host3"",
-      ""Token"": ""token3""
-    }
-  ],
-  ""AutoStartInstance"": ""asi"",
-  ""DownloadCacheDir"": ""dci"",
-  ""CacheSizeLimit"": 2,
-  ""RefreshRate"": 4,
-  ""KSPBuilds"": ""build_string""
-}";
+            return @"
+            {
+              ""KspInstances"":
+                {
+                  ""Name"": ""instance1"",
+                  ""Path"": ""instance1_path""
+                },
+                {
+                  ""Name"": ""instance2"",
+                  ""Path"": ""instance2_path""
+                }
+              ],
+              ""AuthTokens"": [
+                {
+                  ""Host"": ""host1"",
+                  ""Token"": ""token1""
+                },
+                {
+                  ""Host"": ""host2"",
+                  ""Token"": ""token2""
+                },
+                {
+                  ""Host"": ""host3"",
+                  ""Token"": ""token3""
+                }
+              ],
+              ""AutoStartInstance"": ""asi"",
+              ""DownloadCacheDir"": ""dci"",
+              ""CacheSizeLimit"": 2,
+              ""RefreshRate"": 4,
+              ""KSPBuilds"": {
+                ""builds"": {
+                  ""build1"": ""version1"",
+                  ""build2"": ""version2""
+                }
+              }
+            }";
         }
     }
 

@@ -17,7 +17,7 @@ namespace CKAN.Configuration
             public string DownloadCacheDir { get; set; }
             public long? CacheSizeLimit { get; set; }
             public int? RefreshRate { get; set; }
-            public string KSPBuilds { get; set; }
+            public JBuilds KSPBuilds { get; set; }
             public IList<KspInstance> KspInstances;
             public IList<AuthToken> AuthTokens;
         }
@@ -226,7 +226,7 @@ namespace CKAN.Configuration
         }
 
 
-        public string GetKSPBuilds ()
+        public JBuilds GetKSPBuilds ()
         {
             lock (_lock)
             {
@@ -234,7 +234,7 @@ namespace CKAN.Configuration
             }
         }
 
-        public void SetKSPBuilds (string buildMap)
+        public void SetKSPBuilds (JBuilds buildMap)
         {
             lock (_lock)
             {

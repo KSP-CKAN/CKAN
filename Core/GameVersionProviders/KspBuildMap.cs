@@ -111,7 +111,7 @@ namespace CKAN.GameVersionProviders
 
                 if (TrySetBuildMap(json))
                 {
-                    _configuration.SetKSPBuilds(json);
+                    _configuration.SetKSPBuilds(_jBuilds);
                     return true;
                 }
                 else
@@ -132,11 +132,19 @@ namespace CKAN.GameVersionProviders
             try
             {
                 var json = _configuration.GetKSPBuilds();
-                return json != null && TrySetBuildMap(json);
+                if (json != null)
+                {
+                    _jBuilds = json;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception e)
             {
-                Log.WarnFormat("Could not retrieve build map from registry");
+                Log.WarnFormat("Could not retrieve build map from configuration");
                 Log.Debug(e);
                 return false;
             }
@@ -167,14 +175,6 @@ namespace CKAN.GameVersionProviders
                 Log.Debug(e);
                 return false;
             }
-        }
-
-        // ReSharper disable once ClassNeverInstantiated.Local
-        private sealed class JBuilds
-        {
-            [JsonProperty("builds")]
-            // ReSharper disable once UnusedAutoPropertyAccessor.Local
-            public Dictionary<string, string> Builds { get; set; }
         }
     }
 }
