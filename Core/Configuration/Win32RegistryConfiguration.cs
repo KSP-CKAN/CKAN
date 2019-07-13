@@ -11,20 +11,15 @@ namespace CKAN.Configuration
     // DEPRECATED: We now use a JSON configuration file. This still exists to facillitate migration.
     //
     // N.B., you can resume using this version by changing the instance created in ServiceLocator.
-    public class RegistryConfiguration : IConfiguration
+    public class Win32RegistryConfiguration : IConfiguration
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(RegistryConfiguration));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Win32RegistryConfiguration));
 
         private const           string CKAN_KEY           = @"HKEY_CURRENT_USER\Software\CKAN";
         private static readonly string CKAN_KEY_NO_PREFIX = StripPrefixKey(CKAN_KEY);
 
         private const           string authTokenKey         = CKAN_KEY + @"\AuthTokens";
         private static readonly string authTokenKeyNoPrefix = StripPrefixKey(authTokenKey);
-
-        static RegistryConfiguration()
-        {
-            ConstructKey(CKAN_KEY_NO_PREFIX);
-        }
 
         private static readonly string defaultDownloadCacheDir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -97,6 +92,11 @@ namespace CKAN.Configuration
         {
             get { return GetRegistryValue(@"KSPAutoStartInstance", ""); }
             set { SetAutoStartInstance(value??String.Empty); }
+        }
+
+        public Win32RegistryConfiguration()
+        {
+            ConstructKey(CKAN_KEY_NO_PREFIX);
         }
 
         private Tuple<string, string> GetInstance(int i)
@@ -181,6 +181,20 @@ namespace CKAN.Configuration
             }
         }
 
+        public static bool DoesRegistryConfigurationExist()
+        {
+            RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(CKAN_KEY_NO_PREFIX);
+            return key != null;
+        }
+
+        public static void DeleteAllKeys()
+        {
+            // This can fail if the key doesn't exist, but we don't really care...
+            try {
+                Microsoft.Win32.Registry.CurrentUser.DeleteSubKeyTree(CKAN_KEY_NO_PREFIX);
+            } catch { }
+        }
+
         private static string StripPrefixKey(string keyname)
         {
             int firstBackslash = keyname.IndexOf(@"\");
@@ -229,6 +243,5 @@ namespace CKAN.Configuration
             RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(CKAN_KEY_NO_PREFIX, true);
             key.DeleteValue(name, false);
         }
-
     }
 }
