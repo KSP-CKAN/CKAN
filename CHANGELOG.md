@@ -44,6 +44,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Fix fake/clone tests on Windows (#2778 by: HebaruSan; reviewed: DasSkelett)
 - [Reporting] Update issue templates (#2777 by: Olympic1; reviewed: DasSkelett, HebaruSan)
 - [Build] Fix ZipValid test on non-English Windows systems (#2781 by: HebaruSan; reviewed: DasSkelett)
+- [Build] Fix for building with VS 2019 (#2834 by: Olympic1; reviewed: DasSkelett)
 
 ## v1.26.2
 
