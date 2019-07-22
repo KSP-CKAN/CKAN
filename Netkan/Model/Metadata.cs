@@ -6,13 +6,14 @@ namespace CKAN.NetKAN.Model
 {
     internal sealed class Metadata
     {
-        private const string KrefPropertyName        = "$kref";
-        private const string VrefPropertyName        = "$vref";
-        private const string SpecVersionPropertyName = "spec_version";
-        private const string VersionPropertyName     = "version";
-        private const string DownloadPropertyName    = "download";
-        public  const string UpdatedPropertyName     = "x_netkan_asset_updated";
-        private const string StagedPropertyName      = "x_netkan_staging";
+        private const string KrefPropertyName          = "$kref";
+        private const string VrefPropertyName          = "$vref";
+        private const string SpecVersionPropertyName   = "spec_version";
+        private const string VersionPropertyName       = "version";
+        private const string DownloadPropertyName      = "download";
+        public  const string UpdatedPropertyName       = "x_netkan_asset_updated";
+        private const string StagedPropertyName        = "x_netkan_staging";
+        private const string StagingReasonPropertyName = "x_netkan_staging_reason";
 
         private readonly JObject _json;
 
@@ -24,6 +25,7 @@ namespace CKAN.NetKAN.Model
         public Uri           Download        { get; private set; }
         public DateTime?     RemoteTimestamp { get; private set; }
         public bool          Staged          { get; private set; }
+        public string        StagingReason   { get; private set; }
 
         public Metadata(JObject json)
         {
@@ -98,6 +100,12 @@ namespace CKAN.NetKAN.Model
             if (json.TryGetValue(StagedPropertyName, out stagedToken))
             {
                 Staged = (bool)stagedToken;
+            }
+            
+            JToken stagingReasonToken;
+            if (json.TryGetValue(StagingReasonPropertyName, out stagingReasonToken))
+            {
+                StagingReason = (string)stagingReasonToken;
             }
 
             JToken   updatedToken;
