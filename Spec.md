@@ -957,3 +957,18 @@ When any metadata changes occur which are version specific, for example a new de
 recommended means of specifying them. Overrides may also be used to *stage* metadata changes, for example when new
 dependencies are anticipated to be added in yet unreleased versions of a mod. This allows mod metadata to be
 up-to-date as soon as possible without requiring excessive coordination.
+
+##### `x_netkan_staging` and `x_netkan_staging_reason`
+
+These properties alter the way the NetKAN-bot pushes updated metadata for a module. Normally, a new or changed .ckan file
+will be committed and pushed to CKAN-meta's `master` branch, which makes it immediately available to users. If there is a
+chance that such an update will contain incorrect metadata, for example if the game compatibility is hard-coded in the
+netkan and changes upstream, then a manual review step may be advisable.
+
+If `x_netkan_staging` is set to `true`, changed metadata files for this module will be committed to a separate
+module-specific branch and a pull request will be created to merge this branch to `master`. This allows CKAN team members
+to check manually that the changes are correct before they are released to users.
+
+To make the review process easier, set `x_netkan_staging_reason` to a string explaining why staging is enabled. This will
+be inserted into the body of the pull request as a reminder of the manual checks that should be performed before merging.
+For example, you may advise reviewers to check a module's game compatibility metadata against its forum thread.
