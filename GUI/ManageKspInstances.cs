@@ -238,7 +238,7 @@ namespace CKAN
         private void UpdateButtonState()
         {
             RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = HasSelections;
-            ForgetButton.Enabled = HasSelections && (string)KSPInstancesListView.SelectedItems[0].Tag != _manager.CurrentInstance.Name;
+            ForgetButton.Enabled = HasSelections && (string)KSPInstancesListView.SelectedItems[0].Tag != _manager.CurrentInstance?.Name;
         }
     }
 }

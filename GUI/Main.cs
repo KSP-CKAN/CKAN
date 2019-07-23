@@ -557,6 +557,7 @@ namespace CKAN
                 || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
             if (allowRepoUpdate && repoUpdateNeeded)
             {
+                ModList.Rows.Clear();
                 UpdateRepo();
 
                 // Update the filters after UpdateRepo() completed.
@@ -575,6 +576,7 @@ namespace CKAN
                 UpdateModsList();
                 Filter((GUIModFilter)configuration.ActiveFilter);
             }
+
             ChangeSet = null;
             Conflicts = null;
         }
