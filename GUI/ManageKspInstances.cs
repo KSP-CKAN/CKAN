@@ -39,17 +39,18 @@ namespace CKAN
             {
                 _manager.FindAndRegisterDefaultInstance();
             }
-            
+
             // Set the renderer for the AddNewMenu
             if (Platform.IsMono)
             {
                 this.AddNewMenu.Renderer = new FlatToolStripRenderer();
+                this.InstanceListContextMenuStrip.Renderer = new FlatToolStripRenderer();
             }
 
             UpdateInstancesList();
             UpdateButtonState();
         }
-        
+
         public void UpdateInstancesList()
         {
             KSPInstancesListView.Items.Clear();
@@ -101,8 +102,15 @@ namespace CKAN
 
         private void CloneFakeInstanceMenuItem_Click(object sender, EventArgs e)
         {
-            CloneFakeKspDialog dialog = new CloneFakeKspDialog(_manager);
-            dialog.ShowDialog();
+            var old_instance = Main.Instance.CurrentInstance;
+
+            var result = new CloneFakeKspDialog(_manager).ShowDialog();
+            if (result == DialogResult.OK && !Equals(old_instance, Main.Instance.CurrentInstance))
+            {
+                DialogResult = DialogResult.OK;
+                this.Close();
+            }
+
             UpdateInstancesList();
         }
 
@@ -127,25 +135,52 @@ namespace CKAN
 
             try
             {
-                if (SetAsDefaultCheckbox.Checked)
-                {
-                    _manager.SetAutoStart(instName);
-                }
-
                 _manager.SetCurrentInstance(instName);
                 DialogResult = DialogResult.OK;
                 Close();
             }
             catch (NotKSPDirKraken k)
             {
-                GUI.user.RaiseError(Properties.Resources.ManageKspInstancesNotValid,
-                    new object[] { k.path });
+                GUI.user.RaiseError(Properties.Resources.ManageKspInstancesNotValid, k.path);
+            }
+        }
+
+        private void SetAsDefaultCheckbox_Click(object sender, EventArgs e)
+        {
+            if (SetAsDefaultCheckbox.Checked)
+            {
+                _manager.ClearAutoStart();
+                SetAsDefaultCheckbox.Checked = false;
+                return;
+            }
+
+            var selected = KSPInstancesListView.SelectedItems[0];
+            string instName = selected?.Tag as string;
+            if (instName == null)
+            {
+                return;
+            }
+
+            try
+            {
+                _manager.SetAutoStart(instName);
+                SetAsDefaultCheckbox.Checked = true;
+            }
+            catch (NotKSPDirKraken k)
+            {
+                GUI.user.RaiseError(Properties.Resources.ManageKspInstancesNotValid, k.path);
             }
         }
 
         private void KSPInstancesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateButtonState();
+
+            if (KSPInstancesListView.SelectedItems.Count == 0)
+                return;
+
+            string instName = (string)KSPInstancesListView.SelectedItems[0].Tag;
+            SetAsDefaultCheckbox.Checked = _manager.AutoStartInstance?.Equals(instName) ?? false;
         }
 
         private void KSPInstancesListView_DoubleClick(object sender, EventArgs r)
@@ -154,6 +189,27 @@ namespace CKAN
             {
                 UseSelectedInstance();
             }
+        }
+
+        private void KSPInstancesListView_Click(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                InstanceListContextMenuStrip.Show(this, new System.Drawing.Point(e.X, e.Y));
+            }
+        }
+
+        private void OpenDirectoryMenuItem_Click(object sender, EventArgs e)
+        {
+            string path = KSPInstancesListView.SelectedItems[0].SubItems[2].Text;
+
+            if (!Directory.Exists(path))
+            {
+                GUI.user.RaiseError(Properties.Resources.ManageKspInstancesDirectoryDeleted, path);
+                return;
+            }
+
+            System.Diagnostics.Process.Start(path);
         }
 
         private void RenameButton_Click(object sender, EventArgs e)
@@ -181,7 +237,8 @@ namespace CKAN
 
         private void UpdateButtonState()
         {
-            ForgetButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = HasSelections;
+            RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = HasSelections;
+            ForgetButton.Enabled = HasSelections && (string)KSPInstancesListView.SelectedItems[0].Tag != _manager.CurrentInstance?.Name;
         }
     }
 }

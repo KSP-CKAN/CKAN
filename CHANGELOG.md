@@ -38,6 +38,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix comparison of 1.0.0 to 1.0 (#2817 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Improve focus interactions of GUI filters and mod list (#2827 by: HebaruSan; reviewed: Olympic1)
 - [GUI] Fix issues when `provides` is removed (#2740 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Fix 'ManageKspInstances' dialog logic (#2787 by: DasSkelett; reviewed: HebaruSan)
 
 ### Internal
 - [Build] Update packages (#2775 by: Olympic1; reviewed: DasSkelett, HebaruSan)

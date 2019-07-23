@@ -32,6 +32,7 @@ namespace CKAN
 
             try
             {
+                // The argument will be accessed with (bool)e.Argument in private UpdateRepo()
                 m_UpdateRepoWorker.RunWorkerAsync();
             }
             catch { }

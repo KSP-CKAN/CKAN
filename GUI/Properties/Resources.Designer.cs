@@ -672,6 +672,10 @@ namespace CKAN.Properties {
             get { return (string)(ResourceManager.GetObject("ManageKspInstancesNotValid", resourceCulture)); }
         }
 
+        internal static string ManageKspInstancesDirectoryDeleted {
+            get { return (string)(ResourceManager.GetObject("ManageKspInstancesDirectoryDeleted", resourceCulture)); }
+        }
+
         internal static string NewRepoDialogFailed {
             get { return (string)(ResourceManager.GetObject("NewRepoDialogFailed", resourceCulture)); }
         }

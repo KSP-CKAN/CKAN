@@ -110,6 +110,7 @@
     <value>17, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="openDirectoryMenuItem.Text" xml:space="preserve"><value>Open directory</value></data>
   <data name="KSPInstallName.Text" xml:space="preserve"><value>Name</value></data>
   <data name="KSPInstallVersion.Text" xml:space="preserve"><value>Version</value></data>
   <data name="KSPInstallPath.Text" xml:space="preserve"><value>Path</value></data>

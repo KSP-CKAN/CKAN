@@ -204,8 +204,7 @@ namespace CKAN
             {
                 foreach (GUIMod gm in gui_mods)
                 {
-                    bool oldIncompat;
-                    if (old_modules.TryGetValue(gm.Identifier, out oldIncompat))
+                    if (old_modules.TryGetValue(gm.Identifier, out bool oldIncompat))
                     {
                         // Found it; check if newly compatible
                         if (!gm.IsIncompatible && oldIncompat)

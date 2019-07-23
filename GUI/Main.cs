@@ -530,8 +530,8 @@ namespace CKAN
         /// <summary>
         /// React to switching to a new game instance
         /// </summary>
-        /// <param name="onStartup">true if this is the initial load and should trigger auto repo updates, false otherwise</param>
-        private void CurrentInstanceUpdated(bool onStartup)
+        /// <param name="allowRepoUpdate">true if a repo update is allowed if needed (e.g. on initial load), false otherwise</param>
+        private void CurrentInstanceUpdated(bool allowRepoUpdate)
         {
             Util.Invoke(this, () =>
             {
@@ -555,18 +555,30 @@ namespace CKAN
 
             bool repoUpdateNeeded = configuration.RefreshOnStartup
                 || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
-            if (onStartup && repoUpdateNeeded)
+            if (allowRepoUpdate && repoUpdateNeeded)
             {
+                ModList.Rows.Clear();
                 UpdateRepo();
+
+                // Update the filters after UpdateRepo() completed.
+                // Since this happens with a backgroundworker, Filter() is added as callback for RunWorkerCompleted.
+                // Remove it again after it ran, else it stays there and is added again and again.
+                void filterUpdate (object sender, RunWorkerCompletedEventArgs e)
+                {
+                    Filter((GUIModFilter)configuration.ActiveFilter);
+                    m_UpdateRepoWorker.RunWorkerCompleted -= filterUpdate;
+                }
+
+                m_UpdateRepoWorker.RunWorkerCompleted += filterUpdate;
             }
             else
             {
                 UpdateModsList();
+                Filter((GUIModFilter)configuration.ActiveFilter);
             }
+
             ChangeSet = null;
             Conflicts = null;
-
-            Filter((GUIModFilter)configuration.ActiveFilter);
         }
 
         public void UpdateCKAN()
@@ -818,6 +830,10 @@ namespace CKAN
             // Triggers mainModList.ModFiltersUpdated()
             mainModList.ModFilter = filter;
 
+            // Save new filter to the configuration.
+            configuration.ActiveFilter = (int)mainModList.ModFilter;
+            configuration.Save();
+
             // Ask the configuration which columns to show.
             foreach (DataGridViewColumn col in ModList.Columns)
             {
@@ -1031,11 +1047,13 @@ namespace CKAN
 
         private void manageKspInstancesMenuItem_Click(object sender, EventArgs e)
         {
-            Instance.Manager.ClearAutoStart();
             var old_instance = Instance.CurrentInstance;
             var result = new ManageKspInstances(!actuallyVisible).ShowDialog();
             if (result == DialogResult.OK && !Equals(old_instance, Instance.CurrentInstance))
-                Instance.CurrentInstanceUpdated(false);
+            {
+                ModList.ClearSelection();
+                CurrentInstanceUpdated(true);
+            }
         }
 
         private void openKspDirectoryToolStripMenuItem_Click(object sender, EventArgs e)

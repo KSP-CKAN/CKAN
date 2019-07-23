@@ -41,6 +41,8 @@
             this.SelectButton = new System.Windows.Forms.Button();
             this.AddNewButton = new CKAN.DropdownMenuButton();
             this.AddNewMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.InstanceListContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openDirectoryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddToCKANMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CloneFakeInstanceMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameButton = new System.Windows.Forms.Button();
@@ -72,6 +74,20 @@
             this.KSPInstancesListView.View = System.Windows.Forms.View.Details;
             this.KSPInstancesListView.SelectedIndexChanged += new System.EventHandler(this.KSPInstancesListView_SelectedIndexChanged);
             this.KSPInstancesListView.DoubleClick += new System.EventHandler(this.KSPInstancesListView_DoubleClick);
+            this.KSPInstancesListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.KSPInstancesListView_Click);
+            //
+            // InstanceListContextMenuStrip
+            //
+            this.InstanceListContextMenuStrip.Items.Add(this.openDirectoryMenuItem);
+            this.InstanceListContextMenuStrip.Name = "InstanceListContextMenuStrip";
+            this.InstanceListContextMenuStrip.Size = new System.Drawing.Size(180, 30);
+            //
+            // openDirectoryToolStripMenuItem
+            //
+            this.openDirectoryMenuItem.Name = "openDirectoryMenuItem";
+            this.openDirectoryMenuItem.Size = new System.Drawing.Size(180, 30);
+            this.openDirectoryMenuItem.Click += new System.EventHandler(this.OpenDirectoryMenuItem_Click);
+            resources.ApplyResources(this.openDirectoryMenuItem, "openDirectoryMenuItem");
             //
             // KSPInstallName
             //
@@ -151,11 +167,13 @@
             //
             this.SetAsDefaultCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.SetAsDefaultCheckbox.AutoSize = true;
+            this.SetAsDefaultCheckbox.AutoCheck = false;
             this.SetAsDefaultCheckbox.Location = new System.Drawing.Point(12, 324);
             this.SetAsDefaultCheckbox.Name = "SetAsDefaultCheckbox";
             this.SetAsDefaultCheckbox.Size = new System.Drawing.Size(91, 17);
             this.SetAsDefaultCheckbox.TabIndex = 4;
             this.SetAsDefaultCheckbox.UseVisualStyleBackColor = true;
+            this.SetAsDefaultCheckbox.Click += new System.EventHandler(this.SetAsDefaultCheckbox_Click);
             resources.ApplyResources(this.SetAsDefaultCheckbox, "SetAsDefaultCheckbox");
             //
             // ForgetButton
@@ -187,6 +205,7 @@
             this.Name = "ManageKspInstances";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             resources.ApplyResources(this, "$this");
+            this.InstanceListContextMenuStrip.ResumeLayout(false);
             this.AddNewMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -202,6 +221,8 @@
         private System.Windows.Forms.Button SelectButton;
         private DropdownMenuButton AddNewButton;
         private System.Windows.Forms.ContextMenuStrip AddNewMenu;
+        private System.Windows.Forms.ContextMenuStrip InstanceListContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem openDirectoryMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AddToCKANMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CloneFakeInstanceMenuItem;
         private System.Windows.Forms.Button RenameButton;
