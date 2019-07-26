@@ -154,6 +154,17 @@ namespace CKAN.NetKAN.Processors
                     }
                 );
             }
+            if (netkan.Staged && !string.IsNullOrEmpty(netkan.StagingReason))
+            {
+                attribs.Add(
+                    "StagingReason",
+                    new MessageAttributeValue()
+                    {
+                        DataType    = "String",
+                        StringValue = netkan.StagingReason
+                    }
+                );
+            }
 
             SendMessageRequest msg = new SendMessageRequest()
             {
