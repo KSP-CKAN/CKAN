@@ -188,7 +188,7 @@ namespace CKAN.Configuration
         // singleton instance, so in general you should use that. However, the
         // core state is static, so creating multiple instances is not an issue.
         // </summary>
-        public JsonConfiguration ()
+        public JsonConfiguration()
         {
             lock (_lock)
             {
@@ -209,7 +209,7 @@ namespace CKAN.Configuration
         // doesn't get loaded from the default location first, as that might end up
         // creating files and directories that the user is trying to avoid creating by
         // specifying the configuration file on the command line.
-        public JsonConfiguration (string newConfig)
+        public JsonConfiguration(string newConfig)
         {
             lock (_lock)
             {
@@ -220,7 +220,7 @@ namespace CKAN.Configuration
         }
 
 
-        public JBuilds GetKSPBuilds ()
+        public JBuilds GetKSPBuilds()
         {
             lock (_lock)
             {
@@ -228,7 +228,7 @@ namespace CKAN.Configuration
             }
         }
 
-        public void SetKSPBuilds (JBuilds buildMap)
+        public void SetKSPBuilds(JBuilds buildMap)
         {
             lock (_lock)
             {
@@ -238,7 +238,7 @@ namespace CKAN.Configuration
             }
         }
 
-        public IEnumerable<Tuple<string, string>> GetInstances ()
+        public IEnumerable<Tuple<string, string>> GetInstances()
         {
             lock (_lock)
             {
@@ -270,7 +270,7 @@ namespace CKAN.Configuration
         }
 
 
-        public bool TryGetAuthToken (string host, out string token)
+        public bool TryGetAuthToken(string host, out string token)
         {
             lock (_lock)
             {
@@ -278,76 +278,80 @@ namespace CKAN.Configuration
             }
         }
 
-        public void SetAuthToken (string host, string token)
+        public void SetAuthToken(string host, string token)
         {
             lock (_lock)
             {
-                config.AuthTokens [host] = token;
+                config.AuthTokens[host] = token;
 
                 SaveConfig();
             }
         }
 
         // <summary>
-        // Save the JSON configuration file. Only call this while you own _lock.
+        // Save the JSON configuration file.
         // </summary>
         private static void SaveConfig()
         {
-            string json = JsonConvert.SerializeObject(config, Formatting.Indented);
-            File.WriteAllText(configFile, json);
+            lock (_lock)
+            {
+                string json = JsonConvert.SerializeObject(config, Formatting.Indented);
+                File.WriteAllText(configFile, json);
+            }
         }
 
         // <summary>
         // Load the JSON configuration file. This will replace the current state.
-        // Only call this while you own _lock.
         //
         // If the configuration file does not exist, this will create it and then
         // try to populate it with values in the registry left from the old system.
         // </summary>
         private void LoadConfig()
         {
-            try
+            lock (_lock)
             {
-                string json = File.ReadAllText(configFile);
-                config = JsonConvert.DeserializeObject<Config>(json);
-
-                if (config == null)
+                try
                 {
+                    string json = File.ReadAllText(configFile);
+                    config = JsonConvert.DeserializeObject<Config>(json);
+
+                    if (config == null)
+                    {
+                        config = new Config();
+                    }
+
+                    if (config.KspInstances == null)
+                    {
+                        config.KspInstances = new List<KspInstance>();
+                    }
+
+                    if (config.AuthTokens == null)
+                    {
+                        config.AuthTokens = new Dictionary<string, string>();
+                    }
+                }
+                catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException)
+                {
+                    // This runs if the configuration does not exist. We will create a new configuration and
+                    // try to migrate from the registry.
                     config = new Config();
-                }
 
-                if (config.KspInstances == null)
-                {
-                    config.KspInstances = new List<KspInstance>();
-
-                }
-
-                if (config.AuthTokens == null)
-                {
-                    config.AuthTokens = new Dictionary<string, string>();
-                }
-            }
-            catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException)
-            {
-                // This runs if the configuration does not exist. We will create a new configuration and
-                // try to migrate from the registry.
-                config = new Config();
-
-                // Ensure the directory exists
-                new FileInfo(configFile).Directory.Create();
-
-                // Write the configuration to the disk
-                SaveConfig();
+                    // Ensure the directory exists
+                    new FileInfo(configFile).Directory.Create();
 
 #if !NETSTANDARD
-                // If we are not running on .NET Standard, try to migrate from the real registry
-                if (Win32RegistryConfiguration.DoesRegistryConfigurationExist()) {
-                    Migrate();
+                    // If we are not running on .NET Standard, try to migrate from the real registry
+                    if (Win32RegistryConfiguration.DoesRegistryConfigurationExist())
+                    {
+                        Migrate();
 
-                    // TODO: At some point, we can uncomment this to clean up after ourselves.
-                    // Win32RegistryConfiguration.DeleteAllKeys();
-                }
+                        // TODO: At some point, we can uncomment this to clean up after ourselves.
+                        // Win32RegistryConfiguration.DeleteAllKeys();
+                    }
 #endif
+
+                    SaveConfig();
+                }
             }
         }
 
@@ -358,31 +362,31 @@ namespace CKAN.Configuration
         {
             Win32RegistryConfiguration registry = new Win32RegistryConfiguration();
 
-            var instances = registry.GetInstances();
             lock (_lock)
             {
+                var instances = registry.GetInstances();
                 config.KspInstances = instances.Select(instance => new KspInstance
                 {
                     Name = instance.Item1,
                     Path = instance.Item2
                 }).ToList();
 
-                SaveConfig();
-            }
+                config.KSPBuilds = registry.GetKSPBuilds();
 
-            SetKSPBuilds(registry.GetKSPBuilds());
+                config.AutoStartInstance = registry.AutoStartInstance;
+                config.DownloadCacheDir = registry.DownloadCacheDir;
+                config.CacheSizeLimit = registry.CacheSizeLimit;
+                config.RefreshRate = registry.RefreshRate;
 
-            AutoStartInstance = registry.AutoStartInstance;
-            DownloadCacheDir = registry.DownloadCacheDir;
-            CacheSizeLimit = registry.CacheSizeLimit;
-            RefreshRate = registry.RefreshRate;
-
-            foreach (string host in registry.GetAuthTokenHosts())
-            {
-                if (registry.TryGetAuthToken(host, out string token))
+                foreach (string host in registry.GetAuthTokenHosts())
                 {
-                    SetAuthToken(host, token);
+                    if (registry.TryGetAuthToken(host, out string token))
+                    {
+                        config.AuthTokens[host] = token;
+                    }
                 }
+
+                SaveConfig();
             }
         }
     }
