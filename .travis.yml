@@ -90,7 +90,7 @@ deploy:
     # Rebuild + Publish Netkan on every merge to master
     - provider: script
       skip_cleanup: true
-      script: bin/build_netkan_container.sh
+      script: ./build docker-inflator
       on:
         repo: KSP-CKAN/CKAN
         branch: master
