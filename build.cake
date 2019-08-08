@@ -1,5 +1,6 @@
 #addin "nuget:?package=Cake.SemVer&version=3.0.0"
 #addin "nuget:?package=semver&version=2.0.4"
+#addin "nuget:?package=Cake.Docker&version=0.10.0"
 #tool "nuget:?package=ILRepack&version=2.0.17"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 
@@ -32,6 +33,30 @@ Task("Ckan")
 
 Task("Netkan")
     .IsDependentOn("Repack-Netkan");
+
+Task("docker-inflator")
+    .IsDependentOn("Repack-Netkan")
+    .Does(() =>
+{
+    var dockerDirectory   = buildDirectory.Combine("docker");
+    var inflatorDirectory = dockerDirectory.Combine("inflator");
+    CreateDirectory(inflatorDirectory);
+    CopyFile(buildDirectory.CombineWithFilePath("netkan.exe"),
+          inflatorDirectory.CombineWithFilePath("netkan.exe"));
+
+    var mainTag   = "kspckan/inflator";
+    var latestTag = mainTag + ":latest";
+    DockerBuild(
+        new DockerImageBuildSettings()
+        {
+            File = "Dockerfile.netkan",
+            Tag  = new string[] { mainTag }
+        },
+        inflatorDirectory.ToString()
+    );
+    DockerTag(mainTag, latestTag);
+    DockerPush(latestTag);
+});
 
 Task("osx")
     .IsDependentOn("Ckan")

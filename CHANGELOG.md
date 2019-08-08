@@ -13,7 +13,6 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] Extract locales from downloads (#2760 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Add menu option to report issues in the CKAN repo (#2801 by: DasSkelett; reviewed: HebaruSan)
 - [Netkan] Migrate Perl validation checks into netkan.exe (#2788 by: HebaruSan; reviewed: DasSkelett)
-- [Netkan] Refactor Netkan for SQS mode (#2798 by: HebaruSan; reviewed: DasSkelett, techman83)
 - [GUI] Open ZIP button, instance name in status bar, description scroll bar (#2813 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Support BreakingGround-DLC in instance faking (#2773 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Queue module version changes in change set (#2821 by: HebaruSan; reviewed: Olympic1)
@@ -46,6 +45,8 @@ All notable changes to this project will be documented in this file.
 - [Reporting] Update issue templates (#2777 by: Olympic1; reviewed: DasSkelett, HebaruSan)
 - [Build] Fix ZipValid test on non-English Windows systems (#2781 by: HebaruSan; reviewed: DasSkelett)
 - [Build] Fix for building with VS 2019 (#2834 by: Olympic1; reviewed: DasSkelett)
+- [Netkan] Refactor Netkan for SQS mode (#2798 by: HebaruSan; reviewed: DasSkelett, techman83)
+- [Build] Add Dockerfile + Deployment for NetKAN Inflator (#2838 by: techman83; reviewed: HebaruSan)
 
 ## v1.26.2
 

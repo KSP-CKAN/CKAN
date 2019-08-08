@@ -1,0 +1,7 @@
+FROM mono:5.20.1
+RUN useradd -ms /bin/bash netkan
+USER netkan
+WORKDIR /home/netkan
+ADD netkan.exe .
+ENTRYPOINT /usr/bin/mono netkan.exe --queues $QUEUES \
+  --github-token $GH_Token --cachedir ckan_cache -v
