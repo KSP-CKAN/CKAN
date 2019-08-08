@@ -40,16 +40,19 @@ Task("docker-inflator")
 {
     var dockerDirectory   = buildDirectory.Combine("docker");
     var inflatorDirectory = dockerDirectory.Combine("inflator");
+    // Versions of Docker prior to 18.03.0-ce require the Dockerfile to be within the build context
+    var dockerFile        = inflatorDirectory.CombineWithFilePath("Dockerfile.netkan");
     CreateDirectory(inflatorDirectory);
     CopyFile(buildDirectory.CombineWithFilePath("netkan.exe"),
           inflatorDirectory.CombineWithFilePath("netkan.exe"));
+    CopyFile(rootDirectory.CombineWithFilePath("Dockerfile.netkan"), dockerFile);
 
     var mainTag   = "kspckan/inflator";
     var latestTag = mainTag + ":latest";
     DockerBuild(
         new DockerImageBuildSettings()
         {
-            File = "Dockerfile.netkan",
+            File = dockerFile.ToString(),
             Tag  = new string[] { mainTag }
         },
         inflatorDirectory.ToString()
