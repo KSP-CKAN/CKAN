@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Open ZIP button, instance name in status bar, description scroll bar (#2813 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Support BreakingGround-DLC in instance faking (#2773 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Queue module version changes in change set (#2821 by: HebaruSan; reviewed: Olympic1)
+- [Build] Generate RPM packages (#2757 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

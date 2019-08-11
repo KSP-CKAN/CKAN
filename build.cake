@@ -86,6 +86,20 @@ Task("deb-clean")
     .Does(() => StartProcess("make",
         new ProcessSettings { Arguments = "clean", WorkingDirectory = "debian" }));
 
+Task("rpm")
+    .IsDependentOn("Ckan")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { WorkingDirectory = "rpm" }));
+
+Task("rpm-test")
+    .IsDependentOn("Ckan")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { Arguments = "test", WorkingDirectory = "rpm" }));
+
+Task("rpm-clean")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { Arguments = "clean", WorkingDirectory = "rpm" }));
+
 Task("Restore-Nuget")
     .WithCriteria(buildFramework == "net45")
     .Does(() =>
