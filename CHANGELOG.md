@@ -48,6 +48,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Fix for building with VS 2019 (#2834 by: Olympic1; reviewed: DasSkelett)
 - [Netkan] Refactor Netkan for SQS mode (#2798 by: HebaruSan; reviewed: DasSkelett, techman83)
 - [Build] Add Dockerfile + Deployment for NetKAN Inflator (#2838 by: techman83; reviewed: HebaruSan)
+- [Core] Move config from Windows Registry to JSON file; Make CKAN-core .NET Standard 2.0 compliant (#2820 by: jbrot; reviewed: HebaruSan, Politas, Olympic, DasSkelett)
 
 ## v1.26.2
 
