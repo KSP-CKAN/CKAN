@@ -7,6 +7,7 @@ Packager: The CKAN authors <rpm@ksp-ckan.space>
 License: MIT
 AutoReqProv: no
 Requires: mono-core >= 5.0
+Requires: libcurl-devel
 BuildArch: noarch
 Source0: ckan
 Source1: ckan.exe
