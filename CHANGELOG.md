@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.26.3
+## v1.26.4
 
 ### Features
 
@@ -50,7 +50,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Add Dockerfile + Deployment for NetKAN Inflator (#2838 by: techman83; reviewed: HebaruSan)
 - [Core] Move config from Windows Registry to JSON file; Make CKAN-core .NET Standard 2.0 compliant (#2820 by: jbrot; reviewed: HebaruSan, Politas, Olympic, DasSkelett)
 
-## v1.26.2
+## v1.26.2 (Dragon)
 
 ### Features
 
