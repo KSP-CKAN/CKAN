@@ -1,9 +1,12 @@
+dist: xenial
 language: csharp
 
 sudo: required
 
 services:
     - docker
+    # XVFB simulates having a graphical display, which is needed for our GUI tests.
+    - xvfb
 
 env:
     global:
@@ -47,12 +50,6 @@ addons:
             - lintian
             # Stuff for building .rpm files
             - rpm
-
-# These commands simulate having a graphical display, which is needed
-# for our GUI tests.
-before_install:
-    - "export DISPLAY=:99.0"
-    - sh -e /etc/init.d/xvfb start
 
 script:
     - ./build --configuration=$BUILD_CONFIGURATION
