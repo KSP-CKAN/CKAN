@@ -113,7 +113,10 @@ namespace CKAN
                         cell.ToolTipText = null;
                     }
                     row.DefaultCellStyle.BackColor = Color.Empty;
-                    ModList.InvalidateRow(row.Index);
+                    if (row.Visible)
+                    {
+                        ModList.InvalidateRow(row.Index);
+                    }
                 }
             }
             if (Conflicts != null)
@@ -130,7 +133,10 @@ namespace CKAN
                         cell.ToolTipText = conflict_text;
                     }
                     row.DefaultCellStyle.BackColor = Color.LightCoral;
-                    ModList.InvalidateRow(row.Index);
+                    if (row.Visible)
+                    {
+                        ModList.InvalidateRow(row.Index);
+                    }
                 }
             }
         }
