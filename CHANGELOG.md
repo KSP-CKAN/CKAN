@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.26.4
+## v1.26.5
+
+### Bugfixes
+
+- [Build] Use Debian machine-readable copyright format (#2853 by: bfrobin446; reviewed: HebaruSan)
+
+## v1.26.4 (Orion)
 
 ### Features
 
