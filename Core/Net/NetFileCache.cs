@@ -295,7 +295,11 @@ namespace CKAN
                 KspVersionCriteria aggregateCriteria = manager?.Instances.Values
                     .Where(ksp => ksp.Valid)
                     .Select(ksp => ksp.VersionCriteria())
-                    .Aggregate((a, b) => a.Union(b));
+                    .Aggregate(
+                        manager?.CurrentInstance?.VersionCriteria()
+                            ?? new KspVersionCriteria(null),
+                        (combinedCrit, nextCrit) => combinedCrit.Union(nextCrit)
+                    );
 
                 // This object lets us find the modules associated with a cached file
                 Dictionary<string, List<CkanModule>> hashMap = registry.GetDownloadHashIndex();
