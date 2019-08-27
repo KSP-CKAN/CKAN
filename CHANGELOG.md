@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - [Build] Use Debian machine-readable copyright format (#2853 by: bfrobin446; reviewed: HebaruSan)
 - [GUI] Don't invalidate invisible rows (#2854 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Speed up autoremove search (#2855 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.4 (Orion)
 

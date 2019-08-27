@@ -555,7 +555,8 @@ namespace CKAN
                             gui_mod.SetInstallChecked(row, Installed);
                             if (gui_mod.IsInstallChecked)
                                 last_mod_to_have_install_toggled.Push(gui_mod);
-                            break;
+                            // The above will call UpdateChangeSetAndConflicts, so we don't need to.
+                            return;
                         case "AutoInstalled":
                             gui_mod.SetAutoInstallChecked(row, AutoInstalled);
                             needRegistrySave = true;

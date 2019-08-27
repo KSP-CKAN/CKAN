@@ -1067,52 +1067,62 @@ namespace CKAN
 
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
-        /// Acts recursively.
+        /// Acts recursively and lazily.
         /// </summary>
-        internal static HashSet<string> FindReverseDependencies(
+        internal static IEnumerable<string> FindReverseDependencies(
             IEnumerable<string> modules_to_remove,
             IEnumerable<CkanModule> orig_installed,
             IEnumerable<string> dlls,
             IDictionary<string, UnmanagedModuleVersion> dlc
         )
         {
-            if (!modules_to_remove.Any())
+            // The empty list has no reverse dependencies
+            // (Don't remove broken modules if we're only installing)
+            if (modules_to_remove.Any())
             {
-                // The empty list has no reverse dependencies
-                // (Don't remove broken modules if we're only installing)
-                return new HashSet<string>();
-            }
-            while (true)
-            {
-                // Make our hypothetical install, and remove the listed modules from it.
-                HashSet<CkanModule> hypothetical = new HashSet<CkanModule>(orig_installed); // Clone because we alter hypothetical.
-                hypothetical.RemoveWhere(mod => modules_to_remove.Contains(mod.identifier));
-
-                log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", orig_installed), string.Join(", ", modules_to_remove), string.Join(", ", hypothetical), string.Join(", ", dlls));
-
-                // Find what would break with this configuration.
-                var broken = SanityChecker.FindUnsatisfiedDepends(hypothetical, dlls.ToHashSet(), dlc)
-                    .Select(x => x.Key.identifier).ToHashSet();
-
-                // If nothing else would break, it's just the list of modules we're removing.
-                HashSet<string> to_remove = new HashSet<string>(modules_to_remove);
-
-                if (to_remove.IsSupersetOf(broken))
+                // All modules in the input are included in the output
+                foreach (string starter in modules_to_remove)
                 {
-                    log.DebugFormat("{0} is a superset of {1}, work done", string.Join(", ", to_remove), string.Join(", ", broken));
-                    return to_remove;
+                    yield return starter;
                 }
+                while (true)
+                {
+                    // Make our hypothetical install, and remove the listed modules from it.
+                    HashSet<CkanModule> hypothetical = new HashSet<CkanModule>(orig_installed); // Clone because we alter hypothetical.
+                    hypothetical.RemoveWhere(mod => modules_to_remove.Contains(mod.identifier));
 
-                // Otherwise, remove our broken modules as well, and recurse.
-                broken.UnionWith(to_remove);
-                modules_to_remove = broken;
+                    log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", orig_installed), string.Join(", ", modules_to_remove), string.Join(", ", hypothetical), string.Join(", ", dlls));
+
+                    // Find what would break with this configuration.
+                    var broken = SanityChecker.FindUnsatisfiedDepends(hypothetical, dlls.ToHashSet(), dlc)
+                        .Select(x => x.Key.identifier).ToHashSet();
+
+                    // Lazily return each newly found rev dep
+                    foreach (string newFound in broken.Except(modules_to_remove))
+                    {
+                        yield return newFound;
+                    }
+
+                    // If nothing else would break, it's just the list of modules we're removing.
+                    HashSet<string> to_remove = new HashSet<string>(modules_to_remove);
+
+                    if (to_remove.IsSupersetOf(broken))
+                    {
+                        log.DebugFormat("{0} is a superset of {1}, work done", string.Join(", ", to_remove), string.Join(", ", broken));
+                        break;
+                    }
+
+                    // Otherwise, remove our broken modules as well, and recurse.
+                    broken.UnionWith(to_remove);
+                    modules_to_remove = broken;
+                }
             }
         }
 
         /// <summary>
         /// Return modules which are dependent on the modules passed in or modules in the return list
         /// </summary>
-        public HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)
+        public IEnumerable<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)
         {
             var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
             return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys), _installedDlcModules);
@@ -1134,11 +1144,13 @@ namespace CKAN
             IDictionary<string, UnmanagedModuleVersion> dlc
         )
         {
-            var instCkanMods = installedModules.Select(im => im.Module);
             // ToList ensures that the collection isn't modified while the enumeration operation is executing
-            return installedModules.ToList().Where(
-                im => FindReverseDependencies(new List<string> { im.identifier }, instCkanMods, dlls, dlc)
-                    .All(id => installedModules.First(orig => orig.identifier == id).AutoInstalled));
+            var autoInstMods = installedModules.Where(im => im.AutoInstalled).ToList();
+            var autoInstIds  = autoInstMods.Select(im => im.Module.identifier).ToHashSet();
+            var instCkanMods = installedModules.Select(im => im.Module);
+            return autoInstMods.Where(
+                im => autoInstIds.IsSupersetOf(FindReverseDependencies(
+                    new List<string> { im.identifier }, instCkanMods, dlls, dlc)));
         }
 
         /// <summary>
