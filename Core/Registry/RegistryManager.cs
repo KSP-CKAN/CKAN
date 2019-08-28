@@ -436,9 +436,11 @@ namespace CKAN
             }
 
             file_transaction.WriteAllText(path, Serialize());
+            
+            string sanitizedName = string.Join("", ksp.Name.Split(Path.GetInvalidFileNameChars()));
 
             ExportInstalled(
-                Path.Combine(directoryPath, $"installed-{ksp.Name}.ckan"),
+                Path.Combine(directoryPath, $"installed-{sanitizedName}.ckan"),
                 false, true
             );
             if (!Directory.Exists(ksp.InstallHistoryDir()))
@@ -448,7 +450,7 @@ namespace CKAN
             ExportInstalled(
                 Path.Combine(
                     ksp.InstallHistoryDir(),
-                    $"installed-{ksp.Name}-{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.ckan"
+                    $"installed-{sanitizedName}-{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.ckan"
                 ),
                 false, true
             );

@@ -68,7 +68,7 @@ namespace CKAN
                             Text = instance.Value.Version()?.ToString() ?? Properties.Resources.CompatibleKspVersionsDialogNone
                         },
                         new ListViewItem.ListViewSubItem {
-                            Text = instance.Value.GameDir()
+                            Text = instance.Value.GameDir().Replace('/', Path.DirectorySeparatorChar)
                         }
                     }, 0)
                     {
@@ -87,6 +87,10 @@ namespace CKAN
             try
             {
                 var instanceName = Path.GetFileName(path);
+                if (string.IsNullOrWhiteSpace(instanceName))
+                {
+                    instanceName = path;
+                }
                 instanceName = _manager.GetNextValidInstanceName(instanceName);
                 KSP instance = new KSP(path, instanceName, GUI.user);
                 _manager.AddInstance(instance);

@@ -226,29 +226,16 @@ namespace CKAN
 
             if (!Path.IsPathRooted(path))
             {
-                throw new PathErrorKraken(
-                    path,
-                    String.Format("{0} is not an absolute path", path)
-                );
+                throw new PathErrorKraken(path, $"{path} is not an absolute path");
             }
 
             if (!path.StartsWith(root, StringComparison.CurrentCultureIgnoreCase))
             {
-                throw new PathErrorKraken(
-                    path,
-                    String.Format(
-                        "Oh snap. {0} isn't inside {1}",
-                        path, root
-                    )
-                );
+                throw new PathErrorKraken(path, $"Oh snap. {path} isn't inside {root}");
             }
 
-            // The +1 here is because root will never have
-            // a trailing slash. However, if the strings are
-            // the same, it causes an exception.
-            return path.Length > root.Length
-                ? path.Remove(0, root.Length + 1)
-                : "";
+            // Strip off the root, then remove any slashes at the beginning
+            return path.Remove(0, root.Length).TrimStart('/');
         }
 
         /// <summary>

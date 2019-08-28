@@ -73,6 +73,34 @@ namespace Tests.Core
                 CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake/", "/home/fionna/KSP/"),
                 "Trailing slashes for everyone!"
             );
+            
+            // Mono can't handle these tests
+            if (Platform.IsWindows)
+            {
+                Assert.AreEqual(
+                    "GameData/Cake",
+                    CKAN.KSPPathUtils.ToRelative("K:GameData/Cake", "K:"),
+                    "Root of a Windows drive"
+                );
+
+                Assert.AreEqual(
+                    "GameData/Cake",
+                    CKAN.KSPPathUtils.ToRelative("K:GameData/Cake", "K:/"),
+                    "Root of a Windows drive, slash in root"
+                );
+
+                Assert.AreEqual(
+                    "GameData/Cake",
+                    CKAN.KSPPathUtils.ToRelative("K:/GameData/Cake", "K:"),
+                    "Root of a Windows drive, slash in path"
+                );
+
+                Assert.AreEqual(
+                    "GameData/Cake",
+                    CKAN.KSPPathUtils.ToRelative("K:/GameData/Cake", "K:/"),
+                    "Root of a Windows drive, slash in both"
+                );
+            }
 
             Assert.Throws<PathErrorKraken>(delegate
             {
@@ -172,4 +200,3 @@ namespace Tests.Core
 
     }
 }
-
