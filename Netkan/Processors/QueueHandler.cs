@@ -133,16 +133,19 @@ namespace CKAN.NetKAN.Processors
                         DataType    = "String",
                         StringValue = DateTime.UtcNow.ToString("s", CultureInfo.InvariantCulture)
                     }
-                },
-                {
+                }
+            };
+            if (ckan != null)
+            {
+                attribs.Add(
                     "FileName",
                     new MessageAttributeValue()
                     {
                         DataType    = "String",
                         StringValue = Program.CkanFileName(ckan)
                     }
-                }
-            };
+                );
+            }
             if (!string.IsNullOrEmpty(err))
             {
                 attribs.Add(
