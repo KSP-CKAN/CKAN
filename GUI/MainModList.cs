@@ -1076,7 +1076,6 @@ namespace CKAN
                 ?? new InstalledModule[] {};
             return new HashSet<ModChange>(
                 Modules
-                    .Where(mod => mod.IsInstallable())
                     .SelectMany(mod => mod.GetRequestedChanges())
                     .Select(change => new ModChange(change.Key, change.Value, null))
                     .Union(removableAuto.Select(im => new ModChange(
