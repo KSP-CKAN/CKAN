@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Speed up autoremove search (#2855 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Find portable installs when enforcing cache limits (#2856 by: HebaruSan; reviewed: DasSkelett)
 - [Build] Add libcurl dependency to RPM (#2858 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Allow totally incompatible modules in changeset (#2869 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.4 (Orion)
 

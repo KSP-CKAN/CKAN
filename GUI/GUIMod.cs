@@ -288,16 +288,11 @@ namespace CKAN
 
         public IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> GetRequestedChanges()
         {
-            if (IsInstalled && !IsInstallChecked)
-            {
-                // Uninstall the version we have installed
-                yield return new KeyValuePair<CkanModule, GUIModChangeType>(InstalledMod.Module, GUIModChangeType.Remove);
-            }
-            else if (!IsInstalled && IsInstallChecked)
-            {
-                yield return new KeyValuePair<CkanModule, GUIModChangeType>(SelectedMod ?? Mod, GUIModChangeType.Install);
-            }
-            else if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
+            bool selectedIsInstalled = SelectedMod?.Equals(InstalledMod?.Module)
+                ?? InstalledMod?.Module.Equals(SelectedMod)
+                // Both null
+                ?? true;
+            if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
             {
                 yield return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, GUIModChangeType.Update);
             }
@@ -305,12 +300,16 @@ namespace CKAN
             {
                 yield return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, GUIModChangeType.Replace);
             }
-            else if (IsInstalled
-                && SelectedMod != null
-                && !InstalledMod.Module.Equals(SelectedMod))
+            else if (!selectedIsInstalled)
             {
-                yield return new KeyValuePair<CkanModule, GUIModChangeType>(InstalledMod.Module, GUIModChangeType.Remove);
-                yield return new KeyValuePair<CkanModule, GUIModChangeType>(SelectedMod, GUIModChangeType.Install);
+                if (InstalledMod != null)
+                {
+                    yield return new KeyValuePair<CkanModule, GUIModChangeType>(InstalledMod.Module, GUIModChangeType.Remove);
+                }
+                if (SelectedMod != null)
+                {
+                    yield return new KeyValuePair<CkanModule, GUIModChangeType>(SelectedMod, GUIModChangeType.Install);
+                }
             }
         }
 
