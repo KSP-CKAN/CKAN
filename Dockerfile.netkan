@@ -1,5 +1,6 @@
 FROM mono:5.20.1
 RUN useradd -ms /bin/bash netkan
+RUN apt-get update && apt-get install -y libcurl4-openssl-dev
 USER netkan
 WORKDIR /home/netkan
 ADD netkan.exe .
