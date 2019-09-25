@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Find portable installs when enforcing cache limits (#2856 by: HebaruSan; reviewed: DasSkelett)
 - [Build] Add libcurl dependency to RPM (#2858 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Allow totally incompatible modules in changeset (#2869 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Remove base64 encoded CKAN icon from resources (#2872 by: DasSkelett; reviewed: HebaruSan)
 
 ## v1.26.4 (Orion)
 
