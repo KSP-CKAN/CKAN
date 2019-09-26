@@ -57,23 +57,36 @@ namespace CKAN.NetKAN.Processors
             }
             else
             {
-                // Might be >10 if Releases>1
-                var responses = resp.Messages.SelectMany(Inflate).ToList();
-                for (int i = 0; i < responses.Count; i += howMany)
+                try
                 {
-                    client.SendMessageBatch(new SendMessageBatchRequest()
+                    // Might be >10 if Releases>1
+                    var responses = resp.Messages.SelectMany(Inflate).ToList();
+                    for (int i = 0; i < responses.Count; i += howMany)
                     {
-                        QueueUrl = outputQueueURL,
-                        Entries  = responses.GetRange(i, Math.Min(howMany, responses.Count - i)),
-                    });                    
+                        client.SendMessageBatch(new SendMessageBatchRequest()
+                        {
+                            QueueUrl = outputQueueURL,
+                            Entries  = responses.GetRange(i, Math.Min(howMany, responses.Count - i)),
+                        });                    
+                    }
                 }
-                
-                log.Debug("Deleting messages");
-                client.DeleteMessageBatch(new DeleteMessageBatchRequest()
+                catch (Exception e)
                 {
-                    QueueUrl = url,
-                    Entries  = resp.Messages.Select(Delete).ToList(),
-                });
+                    log.ErrorFormat("Send failed: {0}\r\n{1}", e.Message, e.StackTrace);
+                }
+                try
+                {
+                    log.Debug("Deleting messages");
+                    client.DeleteMessageBatch(new DeleteMessageBatchRequest()
+                    {
+                        QueueUrl = url,
+                        Entries  = resp.Messages.Select(Delete).ToList(),
+                    });
+                }
+                catch (Exception e)
+                {
+                    log.ErrorFormat("Delete failed: {0}\r\n{1}", e.Message, e.StackTrace);
+                }
             }
         }
         
