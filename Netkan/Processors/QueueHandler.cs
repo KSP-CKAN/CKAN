@@ -55,50 +55,72 @@ namespace CKAN.NetKAN.Processors
             {
                 log.Debug("No metadata in queue");
             }
-            else foreach (var msg in resp.Messages)
+            else
             {
-                log.DebugFormat("Metadata returned: {0}", msg.Body);
-                var netkan = new Metadata(JObject.Parse(msg.Body));
-
-                int releases = 1;
-                MessageAttributeValue releasesAttr;
-                if (msg.MessageAttributes.TryGetValue("Releases", out releasesAttr))
+                // Might be >10 if Releases>1
+                var responses = resp.Messages.SelectMany(Inflate).ToList();
+                for (int i = 0; i < responses.Count; i += howMany)
                 {
-                    releases = int.Parse(releasesAttr.StringValue);
-                }
-
-                log.InfoFormat("Inflating {0}", netkan.Identifier);
-                IEnumerable<Metadata> ckans = null;
-                try
-                {
-                    ckans = inflator.Inflate($"{netkan.Identifier}.netkan", netkan, releases);
-                }
-                catch (Exception e)
-                {
-                    e = e.GetBaseException() ?? e;
-                    log.InfoFormat("Inflation failed, sending error: {0}", e.Message);
-                    sendCkan(null, netkan, false, e.Message);
-                }
-                if (ckans != null)
-                {
-                    foreach (Metadata ckan in ckans)
+                    client.SendMessageBatch(new SendMessageBatchRequest()
                     {
-                        log.InfoFormat("Sending {0}-{1}", ckan.Identifier, ckan.Version);
-                        sendCkan(ckan, netkan, true);
-                    }
+                        QueueUrl = outputQueueURL,
+                        Entries  = responses.GetRange(i, Math.Min(howMany, responses.Count - i)),
+                    });                    
                 }
-
-                // Delete message after processing
-                log.Debug("Deleting message");
-                client.DeleteMessage(new DeleteMessageRequest()
+                
+                log.Debug("Deleting messages");
+                client.DeleteMessageBatch(new DeleteMessageBatchRequest()
                 {
-                    QueueUrl      = url,
-                    ReceiptHandle = msg.ReceiptHandle,
+                    QueueUrl = url,
+                    Entries  = resp.Messages.Select(Delete).ToList(),
                 });
             }
         }
+        
+        private IEnumerable<SendMessageBatchRequestEntry> Inflate(Message msg)
+        {
+            log.DebugFormat("Metadata returned: {0}", msg.Body);
+            var netkan = new Metadata(JObject.Parse(msg.Body));
 
-        private void sendCkan(Metadata ckan, Metadata netkan, bool success, string err = null)
+            int releases = 1;
+            MessageAttributeValue releasesAttr;
+            if (msg.MessageAttributes.TryGetValue("Releases", out releasesAttr))
+            {
+                releases = int.Parse(releasesAttr.StringValue);
+            }
+
+            log.InfoFormat("Inflating {0}", netkan.Identifier);
+            IEnumerable<Metadata> ckans = null;
+            bool   caught        = false;
+            string caughtMessage = null;
+            try
+            {
+                ckans = inflator.Inflate($"{netkan.Identifier}.netkan", netkan, releases);
+            }
+            catch (Exception e)
+            {
+                e = e.GetBaseException() ?? e;
+                log.InfoFormat("Inflation failed, sending error: {0}", e.Message);
+                // If you do this the sensible way, the C# compiler throws:
+                // error CS1631: Cannot yield a value in the body of a catch clause
+                caught        = true;
+                caughtMessage = e.Message;
+            }
+            if (caught)
+            {
+                yield return inflationMessage(null, netkan, false, caughtMessage);
+            }
+            if (ckans != null)
+            {
+                foreach (Metadata ckan in ckans)
+                {
+                    log.InfoFormat("Sending {0}-{1}", ckan.Identifier, ckan.Version);
+                    yield return inflationMessage(ckan, netkan, true);
+                }
+            }
+        }
+
+        private SendMessageBatchRequestEntry inflationMessage(Metadata ckan, Metadata netkan, bool success, string err = null)
         {
             var attribs = new Dictionary<string, MessageAttributeValue>()
             {
@@ -168,23 +190,16 @@ namespace CKAN.NetKAN.Processors
                     }
                 );
             }
-
-            SendMessageRequest msg = new SendMessageRequest()
+            return new SendMessageBatchRequestEntry()
             {
-                QueueUrl               = outputQueueURL,
+                Id                     = ckan == null
+                                             ? netkan.Identifier
+                                             : $"{netkan.Identifier}-{ckan.Version}",
                 MessageGroupId         = "1",
                 MessageDeduplicationId = Path.GetRandomFileName(),
                 MessageBody            = serializeCkan(ckan),
                 MessageAttributes      = attribs,
             };
-            try
-            {
-                var resp = client.SendMessage(msg);
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Send failed: {0}\r\n{1}", e.Message, e.StackTrace);
-            }
         }
 
         internal static string serializeCkan(Metadata ckan)
@@ -206,6 +221,15 @@ namespace CKAN.NetKAN.Processors
                 serializer.Serialize(writer, ckan.Json());
             }
             return sw + Environment.NewLine;
+        }
+        
+        private DeleteMessageBatchRequestEntry Delete(Message msg)
+        {
+            return new DeleteMessageBatchRequestEntry()
+            {
+                Id            = msg.ReceiptHandle,
+                ReceiptHandle = msg.ReceiptHandle,
+            };
         }
 
         private Inflator        inflator;
