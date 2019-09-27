@@ -59,6 +59,8 @@ namespace CKAN.NetKAN.Processors
             {
                 try
                 {
+                    // Reset the ids between batches
+                    responseId = 0;
                     // Might be >10 if Releases>1
                     var responses = resp.Messages.SelectMany(Inflate).ToList();
                     for (int i = 0; i < responses.Count; i += howMany)
@@ -205,9 +207,7 @@ namespace CKAN.NetKAN.Processors
             }
             return new SendMessageBatchRequestEntry()
             {
-                Id                     = ckan == null
-                                             ? netkan.Identifier
-                                             : $"{netkan.Identifier}-{ckan.Version}",
+                Id                     = (responseId++).ToString(),
                 MessageGroupId         = "1",
                 MessageDeduplicationId = Path.GetRandomFileName(),
                 MessageBody            = serializeCkan(ckan),
@@ -250,6 +250,8 @@ namespace CKAN.NetKAN.Processors
 
         private readonly string inputQueueURL;
         private readonly string outputQueueURL;
+        
+        private int responseId = 0;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(QueueHandler));
     }
