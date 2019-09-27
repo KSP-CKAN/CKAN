@@ -240,7 +240,7 @@ namespace CKAN.NetKAN.Processors
         {
             return new DeleteMessageBatchRequestEntry()
             {
-                Id            = msg.ReceiptHandle,
+                Id            = msg.MessageId,
                 ReceiptHandle = msg.ReceiptHandle,
             };
         }
