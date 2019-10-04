@@ -243,37 +243,37 @@ namespace CKAN
 
                 return agent.DownloadString(url.OriginalString);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                try
+                log.InfoFormat(e.ToString());
+                log.InfoFormat("Download failed, trying with curlsharp...");
+
+                var content = string.Empty;
+
+                var client = Curl.CreateEasy(url.OriginalString, delegate (byte[] buf, int size, int nmemb, object extraData)
                 {
-                    log.InfoFormat("Download failed, trying with curlsharp...");
+                    content += Encoding.UTF8.GetString(buf);
+                    return size * nmemb;
+                });
 
-                    var content = string.Empty;
+                client.SetOpt(CurlOption.FailOnError, true);
+                
+                using (client)
+                {
+                    var result = client.Perform();
+                    var returnCode = client.ResponseCode;
 
-                    var client = Curl.CreateEasy(url.OriginalString, delegate (byte[] buf, int size, int nmemb, object extraData)
+                    if (result != CurlCode.Ok)
                     {
-                        content += Encoding.UTF8.GetString(buf);
-                        return size * nmemb;
-                    });
-
-                    using (client)
-                    {
-                        var result = client.Perform();
-
-                        if (result != CurlCode.Ok)
-                        {
-                            throw new Exception("Curl download failed with error " + result);
-                        }
-
-                        log.DebugFormat("Download from {0}:\r\n\r\n{1}", url, content);
-
-                        return content;
+                        throw new WebException(
+                            String.Format("Curl download failed with error {0} ({1})", result, returnCode), 
+                            e
+                            );
                     }
-                }
-                catch (Exception e)
-                {
-                    throw new Kraken("Downloading using cURL failed", e);
+
+                    log.DebugFormat("Download from {0}:\r\n\r\n{1}", url, content);
+
+                    return content;
                 }
             }
         }
