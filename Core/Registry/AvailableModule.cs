@@ -165,10 +165,10 @@ namespace CKAN
             return module;
         }
 
-        public List<CkanModule> AllAvailable()
+        public IEnumerable<CkanModule> AllAvailable()
         {
             // Some code may expect this to be sorted in descending order
-            return new List<CkanModule>(module_version.Values.Reverse());
+            return module_version.Values.Reverse();
         }
 
         /// <summary>

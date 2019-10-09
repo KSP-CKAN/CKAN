@@ -1,5 +1,6 @@
 using System.Transactions;
 using System.Collections.Generic;
+using System.Linq;
 using CKAN;
 using CKAN.Versioning;
 using NUnit.Framework;
@@ -106,7 +107,7 @@ namespace Tests.Core.Registry
             registry.AddAvailable(DLCDepender);
 
             // Act
-            List<CkanModule> avail = registry.Available(v0_24_2);
+            List<CkanModule> avail = registry.Available(v0_24_2).ToList();
 
             // Assert
             Assert.IsFalse(avail.Contains(DLCDepender));
@@ -129,7 +130,7 @@ namespace Tests.Core.Registry
             registry.AddAvailable(DLCDepender);
 
             // Act
-            List<CkanModule> avail = registry.Available(v0_24_2);
+            List<CkanModule> avail = registry.Available(v0_24_2).ToList();
 
             // Assert
             Assert.IsTrue(avail.Contains(DLCDepender));
@@ -153,7 +154,7 @@ namespace Tests.Core.Registry
             registry.AddAvailable(DLCDepender);
 
             // Act
-            List<CkanModule> avail = registry.Available(v0_24_2);
+            List<CkanModule> avail = registry.Available(v0_24_2).ToList();
 
             // Assert
             Assert.IsTrue(avail.Contains(DLCDepender));
@@ -177,7 +178,7 @@ namespace Tests.Core.Registry
             registry.AddAvailable(DLCDepender);
 
             // Act
-            List<CkanModule> avail = registry.Available(v0_24_2);
+            List<CkanModule> avail = registry.Available(v0_24_2).ToList();
 
             // Assert
             Assert.IsFalse(avail.Contains(DLCDepender));

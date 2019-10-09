@@ -186,7 +186,7 @@ namespace CKAN.CmdLine
         {
             IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
             // Get the list of all compatible and incompatible mods
-            List<CkanModule> mods = registry.Available(ksp.VersionCriteria());
+            List<CkanModule> mods = registry.Available(ksp.VersionCriteria()).ToList();
             mods.AddRange(registry.Incompatible(ksp.VersionCriteria()));
             for (int i = 0; i < modules.Count; ++i)
             {
