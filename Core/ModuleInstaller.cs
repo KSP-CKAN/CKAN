@@ -409,34 +409,32 @@ namespace CKAN
             var files = new List<InstallableFile>();
 
             // Normalize the path before doing everything else
-            // TODO: This really should happen in the ModuleInstallDescriptor itself.
-            stanza.install_to = KSPPathUtils.NormalizePath(stanza.install_to);
+            string install_to = KSPPathUtils.NormalizePath(stanza.install_to);
 
             // Convert our stanza to a standard `file` type. This is a no-op if it's
             // already the basic type.
-
             stanza = stanza.ConvertFindToFile(zipfile);
 
-            if (stanza.install_to == "GameData" || stanza.install_to.StartsWith("GameData/"))
+            if (install_to == "GameData" || install_to.StartsWith("GameData/"))
             {
                 // The installation path can be either "GameData" or a sub-directory of "GameData"
                 // but it cannot contain updirs
-                if (stanza.install_to.Contains("/../") || stanza.install_to.EndsWith("/.."))
-                    throw new BadInstallLocationKraken("Invalid installation path: " + stanza.install_to);
+                if (install_to.Contains("/../") || install_to.EndsWith("/.."))
+                    throw new BadInstallLocationKraken("Invalid installation path: " + install_to);
 
-                string subDir = stanza.install_to.Substring("GameData".Length);    // remove "GameData"
+                string subDir = install_to.Substring("GameData".Length);    // remove "GameData"
                 subDir = subDir.StartsWith("/") ? subDir.Substring(1) : subDir;    // remove a "/" at the beginning, if present
 
                 // Add the extracted subdirectory to the path of KSP's GameData
                 installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + subDir));
                 makeDirs = true;
             }
-            else if (stanza.install_to.StartsWith("Ships"))
+            else if (install_to.StartsWith("Ships"))
             {
                 // Don't allow directory creation in ships directory
                 makeDirs = false;
 
-                switch (stanza.install_to)
+                switch (install_to)
                 {
                     case "Ships":
                         installDir = ksp?.Ships();
@@ -457,12 +455,12 @@ namespace CKAN
                         installDir = ksp?.ShipsThumbsSPH();
                         break;
                     default:
-                        throw new BadInstallLocationKraken("Unknown install_to " + stanza.install_to);
+                        throw new BadInstallLocationKraken("Unknown install_to " + install_to);
                 }
             }
             else
             {
-                switch (stanza.install_to)
+                switch (install_to)
                 {
                     case "Tutorial":
                         installDir = ksp?.Tutorial();
@@ -485,7 +483,7 @@ namespace CKAN
                         break;
 
                     default:
-                        throw new BadInstallLocationKraken("Unknown install_to " + stanza.install_to);
+                        throw new BadInstallLocationKraken("Unknown install_to " + install_to);
                 }
             }
 

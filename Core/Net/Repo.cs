@@ -243,7 +243,7 @@ Do you wish to reinstall now?", sb)))
             {
                 for (int i = 0; i < metadata.install.Length; i++)
                 {
-                    if (!InstallStanzaEquals(metadata.install[i], oldMetadata.install[i]))
+                    if (!metadata.install[i].Equals(oldMetadata.install[i]))
                         return false;
                 }
             }
@@ -264,39 +264,6 @@ Do you wish to reinstall now?", sb)))
                 else if (!metadata.provides.OrderBy(i => i).SequenceEqual(oldMetadata.provides.OrderBy(i => i)))
                     return false;
             }
-            return true;
-        }
-
-        private static bool InstallStanzaEquals(ModuleInstallDescriptor newInst, ModuleInstallDescriptor oldInst)
-        {
-            if (newInst.file != oldInst.file)
-                return false;
-            if (newInst.install_to != oldInst.install_to)
-                return false;
-            if (newInst.@as != oldInst.@as)
-                return false;
-            if ((newInst.filter == null) != (oldInst.filter == null))
-                return false;
-            if (newInst.filter != null
-                && !newInst.filter.SequenceEqual(oldInst.filter))
-                return false;
-            if ((newInst.filter_regexp == null) != (oldInst.filter_regexp == null))
-                return false;
-            if (newInst.filter_regexp != null
-                && !newInst.filter_regexp.SequenceEqual(oldInst.filter_regexp))
-                return false;
-            if (newInst.find_matches_files != oldInst.find_matches_files)
-                return false;
-            if ((newInst.include_only == null) != (oldInst.include_only == null))
-                return false;
-            if (newInst.include_only != null
-                && !newInst.include_only.SequenceEqual(oldInst.include_only))
-                return false;
-            if ((newInst.include_only_regexp == null) != (oldInst.include_only_regexp == null))
-                return false;
-            if (newInst.include_only_regexp != null
-                && !newInst.include_only_regexp.SequenceEqual(oldInst.include_only_regexp))
-                return false;
             return true;
         }
 

@@ -85,6 +85,17 @@ namespace CKAN
             {
                 throw new BadMetadataKraken(null, "Install stanzas can only contain filter or include_only directives, not both");
             }
+            
+            // Normalize paths on load (note, doesn't cover assignment like in tests)
+            install_to = KSPPathUtils.NormalizePath(install_to);
+            if (find != null)
+            {
+                find = KSPPathUtils.NormalizePath(find);
+            }
+            if (file != null)
+            {
+                file = KSPPathUtils.NormalizePath(file);
+            }
         }
 
         #endregion
@@ -104,6 +115,54 @@ namespace CKAN
             // Deep clone our object by running it through a serialisation cycle.
             string json = JsonConvert.SerializeObject(this, Formatting.None);
             return JsonConvert.DeserializeObject<ModuleInstallDescriptor>(json);
+        }
+
+        /// <summary>
+        /// Compare two install stanzas
+        /// </summary>
+        /// <param name="other">The other stanza for comparison</param>
+        /// <returns>
+        /// True if they're equivalent, false if they're different
+        /// </returns>
+        public override bool Equals(object other)
+        {
+            ModuleInstallDescriptor otherStanza = other as ModuleInstallDescriptor;
+            if (otherStanza == null)
+                // Not even the right type!
+                return false;
+            if (KSPPathUtils.NormalizePath(file) != KSPPathUtils.NormalizePath(otherStanza.file))
+                return false;
+            if (KSPPathUtils.NormalizePath(find) != KSPPathUtils.NormalizePath(otherStanza.find))
+                return false;
+            if (find_regexp != otherStanza.find_regexp)
+                return false;
+            if (KSPPathUtils.NormalizePath(install_to) != KSPPathUtils.NormalizePath(otherStanza.install_to))
+                return false;
+            if (@as != otherStanza.@as)
+                return false;
+            if ((filter == null) != (otherStanza.filter == null))
+                return false;
+            if (filter != null
+                && !filter.SequenceEqual(otherStanza.filter))
+                return false;
+            if ((filter_regexp == null) != (otherStanza.filter_regexp == null))
+                return false;
+            if (filter_regexp != null
+                && !filter_regexp.SequenceEqual(otherStanza.filter_regexp))
+                return false;
+            if (find_matches_files != otherStanza.find_matches_files)
+                return false;
+            if ((include_only == null) != (otherStanza.include_only == null))
+                return false;
+            if (include_only != null
+                && !include_only.SequenceEqual(otherStanza.include_only))
+                return false;
+            if ((include_only_regexp == null) != (otherStanza.include_only_regexp == null))
+                return false;
+            if (include_only_regexp != null
+                && !include_only_regexp.SequenceEqual(otherStanza.include_only_regexp))
+                return false;
+            return true;
         }
 
         /// <summary>
