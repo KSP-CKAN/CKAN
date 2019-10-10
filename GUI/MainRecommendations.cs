@@ -152,19 +152,19 @@ namespace CKAN
 
         private ListViewItem getRecSugItem(CkanModule module, string descrip, ListViewGroup group, bool check)
         {
-            ListViewItem item = new ListViewItem()
+            return new ListViewItem(new string[]
+            {
+                Manager.Cache.IsMaybeCachedZip(module)
+                    ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
+                    : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download.Host ?? "", CkanModule.FmtSize(module.download_size)),
+                descrip,
+                module.@abstract
+            })
             {
                 Tag     = module,
                 Checked = check,
-                Group   = group,
-                Text    = Manager.Cache.IsMaybeCachedZip(module)
-                    ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
-                    : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download.Host ?? "", CkanModule.FmtSize(module.download_size))
+                Group   = group
             };
-
-            item.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = descrip          });
-            item.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = module.@abstract });
-            return item;
         }
 
         /// <summary>

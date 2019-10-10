@@ -24,7 +24,7 @@ namespace CKAN
         /// </summary>
         /// <param name="registry">Reference to the registry</param>
         /// <param name="module">Module to install</param>
-        public async void InstallModuleDriver(IRegistryQuerier registry, CkanModule module)
+        public void InstallModuleDriver(IRegistryQuerier registry, CkanModule module)
         {
             try
             {
@@ -394,21 +394,17 @@ namespace CKAN
 
             foreach (CkanModule module in tooManyProvides.modules)
             {
-                ListViewItem item = new ListViewItem()
+                ChooseProvidedModsListView.Items.Add(new ListViewItem(new string[]
+                {
+                    Manager.Cache.IsMaybeCachedZip(module)
+                        ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
+                        : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download.Host ?? "", CkanModule.FmtSize(module.download_size)),
+                    module.@abstract
+                })
                 {
                     Tag = module,
-                    Checked = false,
-                    Text = Manager.Cache.IsMaybeCachedZip(module)
-                        ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
-                        : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download.Host ?? "", CkanModule.FmtSize(module.download_size))
-                };
-                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem()
-                {
-                    Text = module.@abstract
-                };
-
-                item.SubItems.Add(description);
-                ChooseProvidedModsListView.Items.Add(item);
+                    Checked = false
+                });
             }
             ChooseProvidedModsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             ChooseProvidedModsContinueButton.Enabled = false;

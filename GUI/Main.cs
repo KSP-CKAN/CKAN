@@ -741,7 +741,7 @@ namespace CKAN
             try
             {
                 var module_installer = ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, GUI.user);
-                full_change_set = await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, CurrentInstance.VersionCriteria());
+                full_change_set = mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, CurrentInstance.VersionCriteria());
             }
             catch (InconsistentKraken k)
             {

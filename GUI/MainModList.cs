@@ -236,7 +236,7 @@ namespace CKAN
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
             
-            UpdateChangeSetAndConflicts(registry);                
+            UpdateChangeSetAndConflicts(registry).RunSynchronously();
 
             AddLogMessage(Properties.Resources.MainModListUpdatingFilters);
 
@@ -742,7 +742,7 @@ namespace CKAN
         /// <param name="changeSet"></param>
         /// <param name="installer">A module installer for the current KSP install</param>
         /// <param name="version">The version of the current KSP install</param>
-        public async Task<IEnumerable<ModChange>> ComputeChangeSetFromModList(
+        public IEnumerable<ModChange> ComputeChangeSetFromModList(
             IRegistryQuerier registry, HashSet<ModChange> changeSet, ModuleInstaller installer,
             KspVersionCriteria version)
         {
@@ -1076,8 +1076,7 @@ namespace CKAN
                 ?? new InstalledModule[] {};
             return new HashSet<ModChange>(
                 Modules
-                    .SelectMany(mod => mod.GetRequestedChanges())
-                    .Select(change => new ModChange(change.Key, change.Value, null))
+                    .SelectMany(mod => mod.GetModChanges())
                     .Union(removableAuto.Select(im => new ModChange(
                         im.Module,
                         GUIModChangeType.Remove,

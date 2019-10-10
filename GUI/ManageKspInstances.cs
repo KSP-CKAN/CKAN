@@ -59,18 +59,12 @@ namespace CKAN
             foreach (var instance in _manager.Instances)
             {
                 KSPInstancesListView.Items.Add(
-                    new ListViewItem(new ListViewItem.ListViewSubItem[]
+                    new ListViewItem(new string[]
                     {
-                        new ListViewItem.ListViewSubItem {
-                            Text = instance.Key
-                        },
-                        new ListViewItem.ListViewSubItem {
-                            Text = instance.Value.Version()?.ToString() ?? Properties.Resources.CompatibleKspVersionsDialogNone
-                        },
-                        new ListViewItem.ListViewSubItem {
-                            Text = instance.Value.GameDir().Replace('/', Path.DirectorySeparatorChar)
-                        }
-                    }, 0)
+                        instance.Key,
+                        instance.Value.Version()?.ToString() ?? Properties.Resources.CompatibleKspVersionsDialogNone,
+                        instance.Value.GameDir().Replace('/', Path.DirectorySeparatorChar)
+                    })
                     {
                         Tag = instance.Key
                     });
