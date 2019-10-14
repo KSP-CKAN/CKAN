@@ -42,6 +42,19 @@ namespace CKAN.NetKAN.Validators
                     {
                         throw new Kraken("spec_version v1.18+ required for 'as'");
                     }
+                    // Check for normalized paths
+                    foreach (string propName in pathProperties)
+                    {
+                        if (stanza.ContainsKey(propName))
+                        {
+                            string val  = (string)stanza[propName];
+                            string norm = KSPPathUtils.NormalizePath(val);
+                            if (val != norm)
+                            {
+                                throw new Kraken($"Path \"{val}\" in '{propName}' is not normalized, should be \"{norm}\"");
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -52,5 +65,6 @@ namespace CKAN.NetKAN.Validators
         private static readonly ModuleVersion v1p12 = new ModuleVersion("v1.12");
         private static readonly ModuleVersion v1p16 = new ModuleVersion("v1.16");
         private static readonly ModuleVersion v1p18 = new ModuleVersion("v1.18");
+        private static readonly string[] pathProperties = {"find", "file", "install_to"};
     }
 }
