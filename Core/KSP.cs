@@ -60,6 +60,16 @@ namespace CKAN
             User = user;
             // Make sure our path is absolute and has normalised slashes.
             this.gameDir = KSPPathUtils.NormalizePath(Path.GetFullPath(gameDir));
+            if (Platform.IsWindows)
+            {
+                // Normalized slashes are bad for pure drive letters,
+                // Path.Combine turns them into drive-relative paths like
+                // K:GameData/whatever
+                if (Regex.IsMatch(this.gameDir, @"^[a-zA-Z]:$"))
+                {
+                    this.gameDir = $"{this.gameDir}/";
+                }
+            }
             if (Valid)
             {
                 SetupCkanDirectories(scanGameData);

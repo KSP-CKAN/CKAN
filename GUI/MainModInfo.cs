@@ -451,7 +451,7 @@ namespace CKAN
 
             foreach (string item in contents)
             {
-                ContentsPreviewTree.Nodes[0].Nodes.Add(item);
+                ContentsPreviewTree.Nodes[0].Nodes.Add(item.Replace('/', Path.DirectorySeparatorChar));
             }
 
             ContentsPreviewTree.Nodes[0].ExpandAll();
