@@ -61,6 +61,24 @@ Task("docker-inflator")
     );
     DockerTag(mainTag, latestTag);
     DockerPush(latestTag);
+
+    // Restart the Inflator
+    var netkanImage = "kspckan/netkan";
+    DockerPull(netkanImage);
+    DockerRun(new DockerContainerRunSettings()
+        {
+            Env = new string[]
+            {
+                "AWS_ACCESS_KEY_ID",
+                "AWS_SECRET_ACCESS_KEY",
+                "AWS_DEFAULT_REGION"
+            }
+        },
+        netkanImage,
+        "redeploy-service",
+        "--cluster",      "NetKANCluster",
+        "--service-name", "Inflator"
+    );
 });
 
 Task("osx")
