@@ -13,6 +13,9 @@ env:
         - BUILD_RELEASE_MONO_VERSION=5.16.0
         - DOCKERHUB_USERNAME=kspckanbuilder
         - secure: "UGXJG9jB9tGwjJXxG0Beu4Poz0leuiCBItnfTTKRm1a/NxXf1eoOH9p9icY5Ur2xHwqh0uWSznuL2aNr58CXtzTcMpXrcUhRsO63FB3Cz6tSdZEb+pKQJ23zmC9929DklKRGUT2D/eBcJcnV+/eAtkarrfLBU1avUQAVJgqXvMI="
+        - AWS_DEFAULT_REGION=us-west-2
+        - AWS_ACCESS_KEY_ID=AKIAZA4K6RW77XSCAMI2
+        - secure: "F4Ee6zQoAjG8a7n7c+wbeWMMzx00bQ/ci5rhKE7EZeMTYsvuiMSorUb4ShvRqbnuLKQH7NxOibnsQHXuQqUw6ZYyESU1xnFAYwhDRQrTdwPOrAOOiUzOhjB4yp3mdzMa8VOcFUUzk+QyrYpds3EUQAqE1a3Ht9Aji586QgK+sY8="
     matrix:
         - BUILD_CONFIGURATION=Debug
         - BUILD_CONFIGURATION=Release
