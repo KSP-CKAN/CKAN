@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Normalize install paths (#2887 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Fixes for KSP in Windows drive root (#2857 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Use current metadata for installed module compatibility (#2886 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Notify when falling back to archive.org URL (#2892 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
