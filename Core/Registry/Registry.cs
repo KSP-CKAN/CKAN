@@ -476,10 +476,9 @@ namespace CKAN
         /// <summary>
         /// <see cref="IRegistryQuerier.Available"/>
         /// </summary>
-        public List<CkanModule> Available(KspVersionCriteria ksp_version)
+        public IEnumerable<CkanModule> Available(KspVersionCriteria ksp_version)
         {
             var candidates = new List<string>(available_modules.Keys);
-            var compatible = new List<CkanModule>();
 
             // It's nice to see things in alphabetical order, so sort our keys first.
             candidates.Sort();
@@ -492,19 +491,17 @@ namespace CKAN
                 if (available != null
                     && allDependenciesCompatible(available, ksp_version))
                 {
-                    compatible.Add(available);
+                    yield return available;
                 }
             }
-            return compatible;
         }
 
         /// <summary>
         /// <see cref="IRegistryQuerier.Incompatible"/>
         /// </summary>
-        public List<CkanModule> Incompatible(KspVersionCriteria ksp_version)
+        public IEnumerable<CkanModule> Incompatible(KspVersionCriteria ksp_version)
         {
             var candidates   = new List<string>(available_modules.Keys);
-            var incompatible = new List<CkanModule>();
 
             // It's nice to see things in alphabetical order, so sort our keys first.
             candidates.Sort();
@@ -518,11 +515,9 @@ namespace CKAN
                 if (available == null
                     || !allDependenciesCompatible(available, ksp_version))
                 {
-                    incompatible.Add(LatestAvailable(candidate, null));
+                    yield return LatestAvailable(candidate, null);
                 }
             }
-
-            return incompatible;
         }
 
         private bool allDependenciesCompatible(CkanModule mod, KspVersionCriteria ksp_version)
@@ -580,7 +575,7 @@ namespace CKAN
         }
 
 
-        public List<CkanModule> AllAvailable(string module)
+        public IEnumerable<CkanModule> AllAvailable(string module)
         {
             log.DebugFormat("Finding all available versions for {0}", module);
             try

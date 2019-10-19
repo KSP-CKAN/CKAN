@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Linq;
 using CKAN.Versioning;
 using CKAN.ConsoleUI.Toolkit;
 
@@ -312,7 +313,7 @@ namespace CKAN.ConsoleUI {
 
             if (ChangePlan.IsAnyAvailable(registry, mod.identifier)) {
 
-                List<CkanModule> avail              = registry.AllAvailable(       mod.identifier);
+                List<CkanModule> avail              = registry.AllAvailable(mod.identifier).ToList();
                 CkanModule       inst               = registry.GetInstalledVersion(mod.identifier);
                 CkanModule       latest             = registry.LatestAvailable(    mod.identifier, null);
                 bool             installed          = registry.IsInstalled(mod.identifier, false);

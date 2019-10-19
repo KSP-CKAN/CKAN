@@ -129,7 +129,7 @@ namespace CKAN
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="current_ksp_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(InstalledModule instMod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool incompatible = false)
+        public GUIMod(InstalledModule instMod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool? incompatible = null)
             : this(instMod.Module, registry, current_ksp_version, incompatible)
         {
             IsInstalled      = true;
@@ -152,7 +152,7 @@ namespace CKAN
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="current_ksp_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool incompatible = false)
+        public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool? incompatible = null)
             : this(mod.identifier, registry, current_ksp_version, incompatible)
         {
             Mod           = mod;
@@ -167,7 +167,6 @@ namespace CKAN
             HasUpdate      = registry.HasUpdate(mod.identifier, current_ksp_version);
             HasReplacement = registry.GetReplacement(mod, current_ksp_version) != null;
             DownloadSize   = mod.download_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.download_size);
-            IsIncompatible = IsIncompatible || !mod.IsCompatibleKSP(current_ksp_version);
 
             if (mod.resources != null)
             {
@@ -194,10 +193,12 @@ namespace CKAN
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="current_ksp_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(string identifier, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool incompatible = false)
+        public GUIMod(string identifier, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool? incompatible = null)
         {
             Identifier     = identifier;
-            IsIncompatible = incompatible;
+            IsIncompatible = incompatible
+                ?? registry.AllAvailable(identifier)
+                    .All(m => !m.IsCompatibleKSP(current_ksp_version));
             IsAutodetected = registry.IsAutodetected(identifier);
             DownloadCount  = registry.DownloadCount(identifier);
             if (registry.IsAutodetected(identifier))

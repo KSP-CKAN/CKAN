@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CKAN.Versioning;
 
 namespace CKAN
@@ -19,7 +20,7 @@ namespace CKAN
         /// the specified version of KSP.
         /// </summary>
         // TODO: This name is misleading. It's more a LatestAvailable's'
-        List<CkanModule> Available(KspVersionCriteria ksp_version);
+        IEnumerable<CkanModule> Available(KspVersionCriteria ksp_version);
 
         /// <summary>
         /// Get full JSON metadata string for a mod's available versions
@@ -49,7 +50,7 @@ namespace CKAN
         ///     Returns all available version of a module.
         /// <exception cref="ModuleNotFoundKraken">Throws if asked for a non-existent module.</exception>
         /// </summary>
-        List<CkanModule> AllAvailable(string identifier);
+        IEnumerable<CkanModule> AllAvailable(string identifier);
 
         /// <summary>
         ///     Returns the latest available version of a module that satisifes the specified version and
@@ -105,7 +106,7 @@ namespace CKAN
         ///     Returns a simple array of all incompatible modules for
         ///     the specified version of KSP.
         /// </summary>
-        List<CkanModule> Incompatible(KspVersionCriteria ksp_version);
+        IEnumerable<CkanModule> Incompatible(KspVersionCriteria ksp_version);
 
         /// <summary>
         /// Returns a dictionary of all modules installed, along with their
@@ -194,7 +195,7 @@ namespace CKAN
         /// </returns>
         public static string CompatibleGameVersions(this IRegistryQuerier querier, string identifier)
         {
-            List<CkanModule> releases = querier.AllAvailable(identifier);
+            List<CkanModule> releases = querier.AllAvailable(identifier).ToList();
             if (releases != null && releases.Count > 0) {
                 ModuleVersion minMod = null, maxMod = null;
                 KspVersion    minKsp = null, maxKsp = null;

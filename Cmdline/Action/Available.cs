@@ -15,7 +15,7 @@ namespace CKAN.CmdLine
         {
             AvailableOptions opts      = (AvailableOptions)raw_options;
             IRegistryQuerier registry  = RegistryManager.Instance(ksp).registry;
-            List<CkanModule> available = registry.Available(ksp.VersionCriteria());
+            var              available = registry.Available(ksp.VersionCriteria());
 
             user.RaiseMessage("Mods available for KSP {0}", ksp.Version());
             user.RaiseMessage("");

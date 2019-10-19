@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Fail on http status codes >=300 for cURL downloads (#2879 by: DasSkelett; reviewed: HebaruSan)
 - [Multiple] Normalize install paths (#2887 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Fixes for KSP in Windows drive root (#2857 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Use current metadata for installed module compatibility (#2886 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

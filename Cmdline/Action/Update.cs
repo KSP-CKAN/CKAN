@@ -39,7 +39,7 @@ namespace CKAN.CmdLine
             {
                 // Get a list of available modules prior to the update.
                 var registry = RegistryManager.Instance(ksp).registry;
-                available_prior = registry.Available(ksp.VersionCriteria());
+                available_prior = registry.Available(ksp.VersionCriteria()).ToList();
             }
 
             // If no repository is selected, select all.
@@ -69,7 +69,7 @@ namespace CKAN.CmdLine
             if (options.list_changes)
             {
                 var registry = RegistryManager.Instance(ksp).registry;
-                PrintChanges(available_prior, registry.Available(ksp.VersionCriteria()));
+                PrintChanges(available_prior, registry.Available(ksp.VersionCriteria()).ToList());
             }
 
             return Exit.OK;
@@ -154,7 +154,7 @@ namespace CKAN.CmdLine
                 : CKAN.Repo.Update(registry_manager, ksp, user, repository);
 
             user.RaiseMessage("Updated information on {0} available modules",
-                registry_manager.registry.Available(ksp.VersionCriteria()).Count);
+                registry_manager.registry.Available(ksp.VersionCriteria()).Count());
         }
     }
 }
