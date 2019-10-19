@@ -480,6 +480,11 @@ namespace CKAN
                 if (!downloads[index].triedFallback && downloads[index].fallbackUrl != null)
                 {
                     log.InfoFormat("Trying fallback URL: {0}", downloads[index].fallbackUrl);
+                    // Encode spaces to avoid confusing URL parsers
+                    User.RaiseMessage("Failed to download \"{0}\", trying fallback \"{1}\"",
+                        downloads[index].url.ToString().Replace(" ", "%20"),
+                        downloads[index].fallbackUrl.ToString().Replace(" ", "%20")
+                    );
                     // Try the fallbackUrl
                     downloads[index].triedFallback = true;
                     downloads[index].Download(downloads[index].fallbackUrl, downloads[index].path);
