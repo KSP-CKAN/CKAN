@@ -387,6 +387,7 @@ Do you wish to reinstall now?", sb)))
                                 downloadCounts = JsonConvert.DeserializeObject<SortedDictionary<string, int>>(
                                     tarStreamString(tarStream, entry)
                                 );
+                                continue;
                             }
                             else if (!Regex.IsMatch(filename, filter))
                             {

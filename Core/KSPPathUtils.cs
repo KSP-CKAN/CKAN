@@ -174,7 +174,7 @@ namespace CKAN
         /// <param name="path">The path to normalize.</param>
         public static string NormalizePath(string path)
         {
-            return path.Replace('\\', '/').TrimEnd('/');
+            return path?.Replace('\\', '/').TrimEnd('/');
         }
 
         /// <summary>
