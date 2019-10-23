@@ -355,13 +355,13 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.de-DE.resx">
-      <LogicalName>CKAN.Properties.Resources.resources</LogicalName>
+      <LogicalName>CKAN.Properties.Resources.de-DE.resources</LogicalName>
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
-      <LogicalName>CKAN.Properties.Resources.resources</LogicalName>
+      <LogicalName>CKAN.Properties.Resources.en-US.resources</LogicalName>
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
