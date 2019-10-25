@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Diagnostics;
 using System.IO;
@@ -11,9 +10,7 @@ using log4net.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
-using CKAN.NetKAN.Validators;
 using CKAN.NetKAN.Processors;
 
 namespace CKAN.NetKAN
@@ -106,7 +103,7 @@ namespace CKAN.NetKAN
             }
             catch (Exception e)
             {
-                e = e.GetBaseException() ?? e;
+                e = e.GetBaseException();
 
                 Log.Fatal(e.Message);
 

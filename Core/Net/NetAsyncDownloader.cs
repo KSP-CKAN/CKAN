@@ -154,7 +154,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Download all our files using the native .NET hanlders.
+        /// Download all our files using the native .NET handlers.
         /// </summary>
         /// <returns>The native.</returns>
         private void DownloadNative()
