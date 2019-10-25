@@ -102,9 +102,12 @@ namespace CKAN.NetKAN.Sources.Github
             {
                 return _http.DownloadText(url, _oauthToken);
             }
-            catch (WebException webEx)
+            catch (NativeAndCurlDownloadFailedKraken k)
             {
-                Log.ErrorFormat("WebException while accessing {0}: {1}", url, webEx);
+                if (k.responseStatus == 403 && k.responseHeader.Contains("X-RateLimit-Remaining: 0"))
+                {
+                    throw new Kraken("GitHub API rate limit exceeded.");
+                }
                 throw;
             }
         }
