@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using log4net;
 
 namespace CKAN.NetKAN.Services
 {
@@ -57,7 +58,8 @@ namespace CKAN.NetKAN.Services
                         string invalidReason;
                         if (!NetFileCache.ZipValid(downloadedFile, out invalidReason))
                         {
-                            throw new Kraken($"{downloadedFile} is not a valid ZIP file: {invalidReason}");
+                            log.Debug($"{downloadedFile} is not a valid ZIP file: {invalidReason}");
+                            throw new Kraken($"{url} is not a valid ZIP file: {invalidReason}");
                         }
                         break;
                     default:
@@ -89,5 +91,6 @@ namespace CKAN.NetKAN.Services
             _requestedURLs?.Clear();
         }
 
+        private static readonly ILog log = LogManager.GetLogger(typeof(CachingHttpService));
     }
 }
