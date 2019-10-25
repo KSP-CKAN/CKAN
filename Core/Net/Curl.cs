@@ -33,7 +33,7 @@ namespace CKAN
 
         /// <summary>
         /// Release any resources used by libcurl. NOT THREADSAFE AT ALL.
-        /// Do this after all other threads are done. 
+        /// Do this after all other threads are done.
         /// </summary>
         public static void CleanUp()
         {
@@ -46,11 +46,12 @@ namespace CKAN
         /// <summary>
         /// Creates a CurlEasy object that calls the given writeback function
         /// when data is received.
+        /// Can also write back the header.
         /// </summary>
-        /// <returns>The CurlEasy obect</returns>
-        /// 
+        /// <returns>The CurlEasy object</returns>
+        ///
         /// Adapted from MultiDemo.cs in the curlsharp repo
-        public static CurlEasy CreateEasy(string url, CurlWriteCallback wf)
+        public static CurlEasy CreateEasy(string url, CurlWriteCallback wf, CurlHeaderCallback hwf = null)
         {
             if (!_initComplete)
             {
@@ -62,20 +63,14 @@ namespace CKAN
             easy.Url = url;
             easy.WriteData = null;
             easy.WriteFunction = wf;
+            if (hwf != null)
+            {
+                easy.HeaderFunction = hwf;
+            }
             easy.Encoding = "deflate, gzip";
             easy.FollowLocation = true; // Follow redirects
             easy.UserAgent = Net.UserAgentString;
             easy.SslVerifyPeer = true;
-
-            // ksp.sarbian.com uses a SSL cert that libcurl can't
-            // verify, so we skip verification. Yeah, that sucks, I know,
-            // but this sucks less than our previous solution that disabled
-            // SSL checking entirely.
-
-            if (url.StartsWith("https://ksp.sarbian.com/"))
-            {
-                easy.SslVerifyPeer = false;
-            }
 
             var caBundle = ResolveCurlCaBundle();
             if (caBundle != null)
@@ -88,15 +83,16 @@ namespace CKAN
 
         /// <summary>
         /// Creates a CurlEasy object that writes to the given stream.
+        /// Can call a writeback function for the header.
         /// </summary>
-        public static CurlEasy CreateEasy(string url, FileStream stream)
+        public static CurlEasy CreateEasy(string url, FileStream stream, CurlHeaderCallback hwf = null)
         {
             // Let's make a happy closure around this stream!
             return CreateEasy(url, delegate(byte[] buf, int size, int nmemb, object extraData)
             {
                 stream.Write(buf, 0, size * nmemb);
                 return size * nmemb;
-            });
+            }, hwf);
         }
 
         public static CurlEasy CreateEasy(Uri url, FileStream stream)
