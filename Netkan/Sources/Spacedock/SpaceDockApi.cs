@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Text.RegularExpressions;
 using CKAN.NetKAN.Services;
 using log4net;
@@ -22,14 +23,23 @@ namespace CKAN.NetKAN.Sources.Spacedock
 
         public SpacedockMod GetMod(int modId)
         {
-            var json = Call("/mod/" + modId);
+            string json;
+            try
+            {
+                json = Call("/mod/" + modId);
+            }
+            catch (NativeAndCurlDownloadFailedKraken e)
+            {
+                // SpaceDock returns a valid json with an error message in case of non 200 codes.
+                json = e.responseContent;
+            }
 
             // Check if the mod has been removed from SD.
             var error = JsonConvert.DeserializeObject<SpacedockError>(json);
 
             if (error.error)
             {
-                var errorMessage = string.Format("Could not get the mod from SpaceDock, reason: {0}", error.reason);
+                var errorMessage = $"Could not get the mod from SpaceDock, reason: {error.reason}";
                 throw new Kraken(errorMessage);
             }
 

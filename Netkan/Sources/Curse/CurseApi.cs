@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using CKAN.NetKAN.Services;
 using log4net;
@@ -22,15 +22,21 @@ namespace CKAN.NetKAN.Sources.Curse
 
         public CurseMod GetMod(string nameOrId)
         {
-            var json = Call(nameOrId);
+            string json;
+            try
+            {
+                json = Call(nameOrId);
+            }
+            catch (NativeAndCurlDownloadFailedKraken e)
+            {
+                // CurseForge returns a valid json with an error message in some cases.
+                json = e.responseContent;
+            }
             // Check if the mod has been removed from Curse and if it corresponds to a KSP mod.
             var error = JsonConvert.DeserializeObject<CurseError>(json);
             if (!string.IsNullOrWhiteSpace(error.error))
             {
-                throw new Kraken(string.Format(
-                    "Could not get the mod from Curse, reason: {0}.",
-                    error.message
-                ));
+                throw new Kraken($"Could not get the mod from Curse, reason: {error.message}.");
             }
             return CurseMod.FromJson(json);
         }
