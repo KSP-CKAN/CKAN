@@ -1,4 +1,6 @@
-using System;
+﻿using System;
+using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Net;
 using CKAN.NetKAN.Services;
 using log4net;
@@ -48,7 +50,24 @@ namespace CKAN.NetKAN.Sources.Curse
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(redirUrl);
             request.AllowAutoRedirect = false;
             request.UserAgent = Net.UserAgentString;
-            HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+
+            HttpWebResponse response;
+            try
+            {
+                response = (HttpWebResponse) request.GetResponse();
+            }
+            catch (WebException e)
+            {
+                if (e.Status == WebExceptionStatus.ProtocolError)
+                {
+                    response = e.Response as HttpWebResponse;
+                    if (response?.StatusCode == HttpStatusCode.Forbidden)
+                    {
+                        throw new Kraken("CKAN blocked by CurseForge");
+                    }
+                }
+                throw;
+            }
             response.Close();
             while (response.Headers["Location"] != null)
             {
