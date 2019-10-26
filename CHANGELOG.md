@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Use current metadata for installed module compatibility (#2886 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Notify when falling back to archive.org URL (#2892 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Only run Mono in 32bit mode when the GUI is launched (#2893 by: DaskSkelett; reviewed: HebaruSan)
+- [Build] Force logical name for generated resources (#2899 by: DasSkelett; reviewed: HebaruSan)
 
 ### Internal
 
