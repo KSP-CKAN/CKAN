@@ -47,35 +47,15 @@ namespace CKAN
                 }
 
                 CkanModule m = change.Mod;
-                ListViewItem item = new ListViewItem()
+                ChangesListView.Items.Add(new ListViewItem(new string[]
                 {
-                    Text = m.IsMetapackage
-                        ? string.Format(Properties.Resources.MainChangesetMetapackage, m.name, m.version)
-                        : Manager.Cache.IsMaybeCachedZip(m)
-                            ? string.Format(Properties.Resources.MainChangesetCached, m.name, m.version)
-                            : string.Format(Properties.Resources.MainChangesetHostSize,
-                                m.name, m.version, m.download.Host ?? "", CkanModule.FmtSize(m.download_size)),
-                    Tag  = change.Mod
-                };
-
-                var sub_change_type = new ListViewItem.ListViewSubItem {Text = change.ChangeType.ToString()};
-
-                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem();
-                description.Text = change.Reason.Reason.Trim();
-
-                if (change.ChangeType == GUIModChangeType.Update)
+                    change.NameAndStatus,
+                    change.ChangeType.ToString(),
+                    change.Description
+                })
                 {
-                    description.Text = String.Format(Properties.Resources.MainChangesetUpdateSelected, change.Mod.version);
-                }
-
-                if (change.ChangeType == GUIModChangeType.Install && change.Reason is SelectionReason.UserRequested)
-                {
-                    description.Text = Properties.Resources.MainChangesetNewInstall;
-                }
-
-                item.SubItems.Add(sub_change_type);
-                item.SubItems.Add(description);
-                ChangesListView.Items.Add(item);
+                    Tag = m
+                });
             }
         }
 

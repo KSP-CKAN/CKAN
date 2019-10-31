@@ -56,7 +56,7 @@ namespace CKAN
         /// Currently used to tell MainAllModVersions to update its checkboxes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        private void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
@@ -287,7 +287,7 @@ namespace CKAN
             return Mod;
         }
 
-        public IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> GetRequestedChanges()
+        public IEnumerable<ModChange> GetModChanges()
         {
             bool selectedIsInstalled = SelectedMod?.Equals(InstalledMod?.Module)
                 ?? InstalledMod?.Module.Equals(SelectedMod)
@@ -295,21 +295,21 @@ namespace CKAN
                 ?? true;
             if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
             {
-                yield return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, GUIModChangeType.Update);
+                yield return new ModUpgrade(Mod, GUIModChangeType.Update, null, SelectedMod);
             }
             else if (IsReplaceChecked)
             {
-                yield return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, GUIModChangeType.Replace);
+                yield return new ModChange(Mod, GUIModChangeType.Replace, null);
             }
             else if (!selectedIsInstalled)
             {
                 if (InstalledMod != null)
                 {
-                    yield return new KeyValuePair<CkanModule, GUIModChangeType>(InstalledMod.Module, GUIModChangeType.Remove);
+                    yield return new ModChange(InstalledMod.Module, GUIModChangeType.Remove, null);
                 }
                 if (SelectedMod != null)
                 {
-                    yield return new KeyValuePair<CkanModule, GUIModChangeType>(SelectedMod, GUIModChangeType.Install);
+                    yield return new ModChange(SelectedMod, GUIModChangeType.Install, null);
                 }
             }
         }

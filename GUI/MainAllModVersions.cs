@@ -18,7 +18,7 @@ namespace CKAN
         private GUIMod visibleGuiModule = null;
         private bool   ignoreItemCheck  = false;
 
-        private async void VersionsListView_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void VersionsListView_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (ignoreItemCheck || e.CurrentValue == e.NewValue)
             {
