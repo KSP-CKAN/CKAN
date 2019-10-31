@@ -43,7 +43,7 @@ namespace CKAN
 
                     Main.Instance.UpdateChangeSetAndConflicts(
                         RegistryManager.Instance(Main.Instance.Manager.CurrentInstance).registry
-                    ).RunSynchronously();
+                    );
 
                     OnPropertyChanged();
                 }

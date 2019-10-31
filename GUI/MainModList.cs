@@ -236,7 +236,7 @@ namespace CKAN
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
             
-            UpdateChangeSetAndConflicts(registry).RunSynchronously();
+            UpdateChangeSetAndConflicts(registry);
 
             AddLogMessage(Properties.Resources.MainModListUpdatingFilters);
 
