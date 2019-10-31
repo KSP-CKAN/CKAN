@@ -58,6 +58,24 @@ namespace CKAN
         {
             return $"{ChangeType} {Mod} ({Reason})";
         }
+        
+        protected string modNameAndStatus(CkanModule m)
+        {
+            return m.IsMetapackage
+                ? string.Format(Properties.Resources.MainChangesetMetapackage, m.name, m.version)
+                : Main.Instance.Manager.Cache.IsMaybeCachedZip(m)
+                    ? string.Format(Properties.Resources.MainChangesetCached, m.name, m.version)
+                    : string.Format(Properties.Resources.MainChangesetHostSize,
+                        m.name, m.version, m.download.Host ?? "", CkanModule.FmtSize(m.download_size));
+        }
+        
+        public virtual string NameAndStatus
+        {
+            get
+            {
+                return modNameAndStatus(Mod);
+            }
+        }
 
         public virtual string Description
         {
@@ -85,6 +103,14 @@ namespace CKAN
             : base(mod, changeType, reason)
         {
             this.targetMod = targetMod;
+        }
+        
+        public override string NameAndStatus
+        {
+            get
+            {
+                return modNameAndStatus(targetMod);
+            }
         }
         
         public override string Description

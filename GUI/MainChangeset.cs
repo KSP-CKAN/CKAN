@@ -49,12 +49,7 @@ namespace CKAN
                 CkanModule m = change.Mod;
                 ChangesListView.Items.Add(new ListViewItem(new string[]
                 {
-                    m.IsMetapackage
-                        ? string.Format(Properties.Resources.MainChangesetMetapackage, m.name, m.version)
-                        : Manager.Cache.IsMaybeCachedZip(m)
-                            ? string.Format(Properties.Resources.MainChangesetCached, m.name, m.version)
-                            : string.Format(Properties.Resources.MainChangesetHostSize,
-                                m.name, m.version, m.download.Host ?? "", CkanModule.FmtSize(m.download_size)),
+                    change.NameAndStatus,
                     change.ChangeType.ToString(),
                     change.Description
                 })
