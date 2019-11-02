@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.26.5
 
+### Features
+
+- [GUI] Default to consoleui on MacOSX Catalina (#2911 by: HebaruSan; reviewed: pfFredd, DasSkelett)
+
 ### Bugfixes
 
 - [Build] Use Debian machine-readable copyright format (#2853 by: bfrobin446; reviewed: HebaruSan)
