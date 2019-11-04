@@ -212,6 +212,11 @@
                     "description" : "Mod's manual",
                     "type"        : "string",
                     "format"      : "uri"
+                },
+                "metanetkan" : {
+                    "description" : "Mod's remote hosted netkan",
+                    "type"        : "string",
+                    "format"      : "uri"
                 }
             }
         },
