@@ -48,6 +48,7 @@ namespace CKAN.NetKAN.Processors
 
                 foreach (Metadata ckan in ckans)
                 {
+                    netkanValidator.Validate(ckan);
                     ckanValidator.ValidateCkan(ckan, netkan);
                 }
                 log.Info("Output successfully passed post-validation");
