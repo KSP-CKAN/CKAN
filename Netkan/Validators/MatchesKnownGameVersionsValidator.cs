@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CKAN.GameVersionProviders;
 using CKAN.Versioning;
 ﻿using CKAN.NetKAN.Model;
@@ -18,7 +19,9 @@ namespace CKAN.NetKAN.Validators
             var mod = CkanModule.FromJson(metadata.Json().ToString());
             if (!mod.IsCompatibleKSP(new KspVersionCriteria(null, buildMap.KnownVersions)))
             {
-                throw new Kraken($"{metadata.Identifier} doesn't match any valid game version");
+                KspVersion minKsp = null, maxKsp = null;
+                Registry.GetMinMaxVersions(new List<CkanModule>() {mod}, out _, out _, out minKsp, out maxKsp);
+                throw new Kraken($"{metadata.Identifier} doesn't match any valid game version: {KspVersionRange.VersionSpan(minKsp, maxKsp)}");
             }
         }
 
