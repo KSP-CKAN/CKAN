@@ -547,6 +547,7 @@ are described. Unless specified otherwise, these are URLs:
 - `spacedock` : The mod on SpaceDock.
 - `curse` :  (**v1.20**) The mod on Curse.
 - `manual` : The mod's manual, if it exists.
+- `metanetkan` :  (**v1.27**) URL of the module's remote hosted netkan
 
 Example resources:
 

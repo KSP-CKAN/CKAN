@@ -36,6 +36,12 @@ namespace CKAN.NetKAN.Transformers
                 Log.InfoFormat("Executing MetaNetkan transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
+                // Make sure resources exist, save metanetkan
+                if (json["resources"] == null)
+                    json["resources"] = new JObject();
+                var resourcesJson = (JObject)json["resources"];
+                resourcesJson.SafeAdd("metanetkan", metadata.Kref.Id);
+
                 var uri = new Uri(metadata.Kref.Id);
                 var targetFileText = _http.DownloadText(CKAN.Net.GetRawUri(uri));
 
@@ -57,6 +63,8 @@ namespace CKAN.NetKAN.Transformers
                     {
                         json.Remove("$kref");
                     }
+                    
+                    json.SafeMerge("resources", targetJson["resources"]);
 
                     foreach (var property in targetJson.Properties())
                     {

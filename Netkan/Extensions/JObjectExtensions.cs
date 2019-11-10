@@ -1,6 +1,7 @@
+using System;
+using System.Linq;
 ﻿using log4net;
 using Newtonsoft.Json.Linq;
-using System;
 
 namespace CKAN.NetKAN.Extensions
 {
@@ -27,5 +28,37 @@ namespace CKAN.NetKAN.Extensions
                 jobject[propertyName] = jobject[propertyName] ?? token;
             }
         }
+        
+        /// <summary>
+        /// Merge an object's properties into one of our child objects
+        /// E.g., the "resources" object should accumulate values from all levels
+        /// </summary>
+        /// <param name="jobject">The object to write to</param>
+        /// <param name="propertyName">The name of the property to write to</param>
+        /// <param name="token">The object containing properties to merge</param>
+        /// <returns>
+        /// Returns
+        /// </returns>
+        public static void SafeMerge(this JObject jobject, string propertyName, JToken token)
+        {
+            JObject srcObj = token as JObject;
+            // No need to do anything if source object is null or empty
+            if (srcObj?.Properties().Any() ?? false)
+            {
+                if (!jobject.ContainsKey(propertyName))
+                {
+                    jobject[propertyName] = new JObject();
+                }
+                JObject targetJson = jobject[propertyName] as JObject;
+                if (targetJson != null)
+                {
+                    foreach (JProperty property in srcObj.Properties())
+                    {
+                        targetJson.SafeAdd(property.Name, property.Value);
+                    }
+                }
+            }
+        }
+        
     }
 }

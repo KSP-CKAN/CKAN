@@ -25,6 +25,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Only run Mono in 32bit mode when the GUI is launched (#2893 by: DaskSkelett; reviewed: HebaruSan)
 - [Build] Force logical name for generated resources (#2899 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Show target version for upgrades in change set (#2888 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Merge resources and include metanetkan (#2913 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
