@@ -137,6 +137,12 @@ namespace CKAN
 
             tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
             tabController.SetTabLock(true);
+            
+            if (Platform.IsMono)
+            {
+                // Workaround: make sure the ListView headers are drawn
+                RecommendedModsListView.EndUpdate();
+            }
 
             lock (this)
             {
