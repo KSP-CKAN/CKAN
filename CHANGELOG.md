@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Force logical name for generated resources (#2899 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Show target version for upgrades in change set (#2888 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Merge resources and include metanetkan (#2913 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Force redraw of recommendation listview headers on Mono (#2920 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
