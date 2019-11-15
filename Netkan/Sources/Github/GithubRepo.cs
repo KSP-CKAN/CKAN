@@ -21,11 +21,26 @@ namespace CKAN.NetKAN.Sources.Github
 
         [JsonProperty("license")]
         public GithubLicense License { get; set; }
+        
+        [JsonProperty("parent")]
+        public GithubRepo ParentRepo { get; set; }
+        
+        [JsonProperty("source")]
+        public GithubRepo SourceRepo { get; set; }
+        
+        [JsonProperty("owner")]
+        public GithubUser Owner { get; set; }
     }
 
     public class GithubLicense
     {
         [JsonProperty("spdx_id")]
         public string Id;
+    }
+    
+    public class GithubUser
+    {
+        [JsonProperty("login")]
+        public string Login { get; set; }
     }
 }
