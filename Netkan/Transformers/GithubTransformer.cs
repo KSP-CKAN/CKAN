@@ -82,12 +82,6 @@ namespace CKAN.NetKAN.Transformers
 
         private Metadata TransformOne(Metadata metadata, JObject json, GithubRef ghRef, GithubRepo ghRepo, GithubRelease ghRelease)
         {
-            // Make sure resources exist.
-            if (json["resources"] == null)
-                json["resources"] = new JObject();
-
-            var resourcesJson = (JObject)json["resources"];
-
             if (!string.IsNullOrWhiteSpace(ghRepo.Description))
                 json.SafeAdd("abstract", ghRepo.Description);
 
@@ -95,6 +89,12 @@ namespace CKAN.NetKAN.Transformers
             if (!string.IsNullOrWhiteSpace(ghRepo.License?.Id)
                 && ghRepo.License.Id != "NOASSERTION")
                 json.SafeAdd("license", ghRepo.License.Id);
+
+            // Make sure resources exist.
+            if (json["resources"] == null)
+                json["resources"] = new JObject();
+
+            var resourcesJson = (JObject)json["resources"];
 
             if (!string.IsNullOrWhiteSpace(ghRepo.Homepage))
                 resourcesJson.SafeAdd("homepage", ghRepo.Homepage);
@@ -104,7 +104,7 @@ namespace CKAN.NetKAN.Transformers
             if (ghRelease != null)
             {
                 json.SafeAdd("version",  ghRelease.Version.ToString());
-                json.SafeAdd("author",   ghRelease.Author);
+                json.SafeAdd("author",   () => getAuthors(ghRepo, ghRelease));
                 json.SafeAdd("download", ghRelease.Download.ToString());
                 json.SafeAdd(Model.Metadata.UpdatedPropertyName, ghRelease.AssetUpdated);
 
@@ -143,6 +143,26 @@ namespace CKAN.NetKAN.Transformers
                 Log.WarnFormat("No releases found for {0}", ghRef.Repository);
                 return metadata;
             }
+        }
+
+        private JToken getAuthors(GithubRepo repo, GithubRelease release)
+        {
+            // Start with the user that published the release
+            var authors = new HashSet<string>() { release.Author };
+            for (GithubRepo r = repo; r != null;)
+            {
+                if (r.Owner?.Login != null)
+                {
+                    // Add repo owner
+                    authors.Add(r.Owner.Login);
+                }
+                // Check parent repos
+                r = r.ParentRepo == null
+                    ? null 
+                    : _api.GetRepo(new GithubRef($"#/ckan/github/{r.ParentRepo.FullName}", false, _matchPreleases));
+            }
+            // Return a string if just one author, else an array
+            return authors.Count == 1 ? (JToken)authors.First() : new JArray(authors);
         }
 
     }

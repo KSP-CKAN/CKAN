@@ -31,6 +31,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Build] Redeploy Inflator after builds (#2889 by: HebaruSan; reviewed: techman83)
+- [Netkan] Add owners of parent GitHub repos to authors (#2922 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.4 (Orion)
 

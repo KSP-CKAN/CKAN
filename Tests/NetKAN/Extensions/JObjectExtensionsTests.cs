@@ -47,7 +47,7 @@ namespace Tests.NetKAN.Extensions
             sut["foo"] = "bar";
 
             // Act
-            sut.SafeAdd("foo", null);
+            sut.SafeAdd("foo", null as JToken);
 
             // Assert
             Assert.That((string)sut["foo"], Is.EqualTo("bar"),
