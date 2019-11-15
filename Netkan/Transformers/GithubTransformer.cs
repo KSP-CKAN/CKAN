@@ -151,8 +151,11 @@ namespace CKAN.NetKAN.Transformers
             var authors = new HashSet<string>() { release.Author };
             for (GithubRepo r = repo; r != null;)
             {
-                // Add repo owner
-                authors.Add(r.Owner.Login);
+                if (r.Owner?.Login != null)
+                {
+                    // Add repo owner
+                    authors.Add(r.Owner.Login);
+                }
                 // Check parent repos
                 r = r.ParentRepo == null
                     ? null 
