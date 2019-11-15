@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using CKAN.Versioning;
-﻿using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -40,7 +40,7 @@ namespace CKAN.NetKAN.Validators
                     try
                     {
                         // This will throw BadMetadataKraken if the license isn't known
-                        new CKAN.License((string)lic);
+                        new License((string)lic);
                     }
                     catch
                     {

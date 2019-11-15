@@ -1,9 +1,8 @@
 using System.IO;
-using System.Reflection;
-using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using NJsonSchema;
-﻿using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Validators
 {

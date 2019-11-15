@@ -1,14 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
+using Autofac;
 using log4net;
+using CKAN.Configuration;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Validators;
-using CKAN.Configuration;
-using Autofac;
 
 namespace CKAN.NetKAN.Processors
 {
@@ -61,7 +61,7 @@ namespace CKAN.NetKAN.Processors
                 throw;
             }
         }
-        
+
         internal void ValidateCkan(Metadata ckan)
         {
             netkanValidator.Validate(ckan);

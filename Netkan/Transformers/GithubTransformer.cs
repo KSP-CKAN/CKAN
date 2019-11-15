@@ -1,6 +1,6 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using log4net;
 using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Extensions;
@@ -105,7 +105,7 @@ namespace CKAN.NetKAN.Transformers
                 json.SafeAdd("version",  ghRelease.Version.ToString());
                 json.SafeAdd("author",   () => getAuthors(ghRepo, ghRelease));
                 json.SafeAdd("download", ghRelease.Download.ToString());
-                json.SafeAdd(Model.Metadata.UpdatedPropertyName, ghRelease.AssetUpdated);
+                json.SafeAdd(Metadata.UpdatedPropertyName, ghRelease.AssetUpdated);
 
                 if (ghRef.Project.Contains("_"))
                 {

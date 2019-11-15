@@ -1,8 +1,8 @@
 using System;
-using System.Net;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using CommandLine;
 using log4net;
@@ -10,8 +10,8 @@ using log4net.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Processors;
+using CKAN.NetKAN.Transformers;
 
 namespace CKAN.NetKAN
 {

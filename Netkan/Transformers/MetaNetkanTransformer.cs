@@ -63,7 +63,7 @@ namespace CKAN.NetKAN.Transformers
                     {
                         json.Remove("$kref");
                     }
-                    
+
                     json.SafeMerge("resources", targetJson["resources"]);
 
                     foreach (var property in targetJson.Properties())

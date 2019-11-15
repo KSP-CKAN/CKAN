@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-﻿using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Validators
 {

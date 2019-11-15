@@ -1,15 +1,14 @@
 using System;
-using System.IO;
-using System.Text;
-using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Amazon;
+using System.IO;
+using System.Linq;
+using System.Text;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using log4net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Processors
@@ -69,7 +68,7 @@ namespace CKAN.NetKAN.Processors
                         {
                             QueueUrl = outputQueueURL,
                             Entries  = responses.GetRange(i, Math.Min(howMany, responses.Count - i)),
-                        });                    
+                        });
                     }
                 }
                 catch (Exception e)
@@ -91,7 +90,7 @@ namespace CKAN.NetKAN.Processors
                 }
             }
         }
-        
+
         private IEnumerable<SendMessageBatchRequestEntry> Inflate(Message msg)
         {
             log.DebugFormat("Metadata returned: {0}", msg.Body);
@@ -235,7 +234,7 @@ namespace CKAN.NetKAN.Processors
             }
             return sw + Environment.NewLine;
         }
-        
+
         private DeleteMessageBatchRequestEntry Delete(Message msg)
         {
             return new DeleteMessageBatchRequestEntry()
@@ -250,7 +249,7 @@ namespace CKAN.NetKAN.Processors
 
         private readonly string inputQueueURL;
         private readonly string outputQueueURL;
-        
+
         private int responseId = 0;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(QueueHandler));

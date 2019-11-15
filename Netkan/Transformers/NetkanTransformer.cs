@@ -4,8 +4,8 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Curse;
 using CKAN.NetKAN.Sources.Github;
-using CKAN.NetKAN.Sources.Spacedock;
 using CKAN.NetKAN.Sources.Jenkins;
+using CKAN.NetKAN.Sources.Spacedock;
 
 namespace CKAN.NetKAN.Transformers
 {

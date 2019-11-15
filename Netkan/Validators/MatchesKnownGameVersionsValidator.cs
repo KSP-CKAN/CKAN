@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using Autofac;
 using CKAN.GameVersionProviders;
 using CKAN.Versioning;
-﻿using CKAN.NetKAN.Model;
-using Autofac;
+using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Validators
 {
