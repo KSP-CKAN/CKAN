@@ -274,7 +274,41 @@ namespace CKAN
         {
             return "Uh oh, the following things went wrong when downloading...\r\n\r\n" + String.Join("\r\n", exceptions);
         }
+    }
 
+    /// <summary>
+    /// We often try downloading using native .NET methods and CurlSharp as a fallback.
+    /// If both downloads fail, use this Kraken to combine the exceptions.
+    /// It assumes that both methods got an equal response.
+    /// Has a nice ToString() method including the response header and content.
+    /// </summary>
+    public class NativeAndCurlDownloadFailedKraken : Kraken
+    {
+        public readonly List<Exception> exceptions;
+        public readonly string URL;
+        public readonly string responseHeader;
+        public readonly string responseContent;
+        public readonly int    responseStatus;
+
+        public NativeAndCurlDownloadFailedKraken(List<Exception> errors, string URL, string responseHeader, string responseContent, int responseStatus)
+            : this($"Native and cURL download failed downloading from {URL}, status {responseStatus}", errors, URL, responseHeader, responseContent, responseStatus)
+        {}
+
+        public NativeAndCurlDownloadFailedKraken(string message, List<Exception> errors, string URL, string responseHeader, string responseContent, int responseStatus)
+            : base(message)
+        {
+            exceptions = errors;
+            this.URL = URL;
+            this.responseHeader = responseHeader;
+            this.responseContent = responseContent;
+            this.responseStatus = responseStatus;
+        }
+
+        public override string ToString()
+        {
+            return $"Native and cURL download failed downloading from {URL}, status {responseStatus}:\r\n" +
+                   $"{String.Join("\r\n\r\n", exceptions)}\r\n{responseHeader}\r\n{responseContent}";
+        }
     }
 
     /// <summary>

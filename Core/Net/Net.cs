@@ -105,16 +105,16 @@ namespace CKAN
                 }
 
                 HttpWebResponse response = ex.Response as HttpWebResponse;
-                if (response.StatusCode != HttpStatusCode.Redirect)
+                if (response?.StatusCode != HttpStatusCode.Redirect)
                 {
                     throw;
                 }
 
-                return Net.Download(response.GetResponseHeader("Location"), out etag, filename, user);
+                return Download(response.GetResponseHeader("Location"), out etag, filename, user);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                log.InfoFormat("Download failed, trying with curlsharp...");
+                log.InfoFormat("Native download failed, trying with CurlSharp...");
                 etag = null;
 
                 try
@@ -122,16 +122,37 @@ namespace CKAN
                     Curl.Init();
 
                     using (FileStream stream = File.OpenWrite(filename))
-                    using (var curl = Curl.CreateEasy(url, stream))
                     {
-                        CurlCode result = curl.Perform();
-                        if (result != CurlCode.Ok)
+                        string header  = string.Empty;
+
+                        var client = Curl.CreateEasy(url, stream, delegate(byte[] buf, int size, int nmemb, object extraData)
                         {
-                            throw new Kraken("curl download of " + url + " failed with CurlCode " + result);
-                        }
-                        else
+                            header += Encoding.UTF8.GetString(buf);
+                            return size * nmemb;
+                        });
+
+                        using (client)
                         {
-                            log.Debug("curlsharp download successful");
+                            var result = client.Perform();
+                            var returnCode = client.ResponseCode;
+
+                            if (result != CurlCode.Ok || returnCode >= 300)
+                            {
+                                // Always log if it's an error.
+                                log.ErrorFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, "Content not logged because it is likely a file.");
+
+                                WebException curlException =
+                                    new WebException($"Curl download failed with status {returnCode}.");
+                                throw new NativeAndCurlDownloadFailedKraken(
+                                    new List<Exception> {e, curlException},
+                                    url.ToString(), header, null, returnCode
+                                );
+                            }
+                            else
+                            {
+                                // Only log if debug flag is set.
+                                log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, "Content not logged because it is likely a file.");
+                            }
                         }
                     }
 
@@ -157,9 +178,9 @@ namespace CKAN
                 }
 
                 // Look for an exception regarding the authentication.
-                if (Regex.IsMatch(ex.ToString(), "The authentication or decryption has failed."))
+                if (Regex.IsMatch(e.ToString(), "The authentication or decryption has failed."))
                 {
-                    throw new MissingCertificateKraken("Failed downloading " + url, ex);
+                    throw new MissingCertificateKraken("Failed downloading " + url, e);
                 }
 
                 // Not the exception we were looking for! Throw it further upwards!
@@ -241,39 +262,55 @@ namespace CKAN
                     agent.Headers.Add("Authorization", $"token {authToken}");
                 }
 
-                return agent.DownloadString(url.OriginalString);
+                string content = agent.DownloadString(url.OriginalString);
+                string header  = agent.ResponseHeaders.ToString();
+
+                log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
+
+                return content;
             }
             catch (Exception e)
             {
-                log.InfoFormat(e.ToString());
-                log.InfoFormat("Download failed, trying with curlsharp...");
+                log.InfoFormat("Native download failed, trying with CurlSharp...");
 
-                var content = string.Empty;
+                string content = string.Empty;
+                string header  = string.Empty;
 
-                var client = Curl.CreateEasy(url.OriginalString, delegate (byte[] buf, int size, int nmemb, object extraData)
-                {
-                    content += Encoding.UTF8.GetString(buf);
-                    return size * nmemb;
-                });
+                var client = Curl.CreateEasy(url.OriginalString,
+                    delegate (byte[] buf, int size, int nmemb, object extraData)
+                    {
+                        content += Encoding.UTF8.GetString(buf);
+                        return size * nmemb;
+                    },
+                    delegate(byte[] buf, int size, int nmemb, object extraData)
+                    {
+                        header += Encoding.UTF8.GetString(buf);
+                        return size * nmemb;
+                    }
+                );
 
-                client.SetOpt(CurlOption.FailOnError, true);
-                
                 using (client)
                 {
                     var result = client.Perform();
                     var returnCode = client.ResponseCode;
 
-                    if (result != CurlCode.Ok)
+                    if (result != CurlCode.Ok || returnCode >= 300 )
                     {
-                        throw new WebException(
-                            String.Format("Curl download failed with error {0} ({1})", result, returnCode), 
-                            e
-                            );
+                        // Always log if it's an error.
+                        log.ErrorFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
+
+                        WebException curlException = new WebException($"Curl download failed with status {returnCode}.");
+                        throw new NativeAndCurlDownloadFailedKraken(
+                            new List<Exception> {e, curlException},
+                            url.ToString(), header, content, returnCode
+                        );
                     }
-
-                    log.DebugFormat("Download from {0}:\r\n\r\n{1}", url, content);
-
-                    return content;
+                    else
+                    {
+                        // Only log if debug flag is set
+                        log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
+                        return content;
+                    }
                 }
             }
         }

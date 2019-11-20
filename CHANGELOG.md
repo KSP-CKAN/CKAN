@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Show target version for upgrades in change set (#2888 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Merge resources and include metanetkan (#2913 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Force redraw of recommendation listview headers on Mono (#2920 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Restructure Net.Download and Net.DownloadText (#2904 by: DasSkelett; reviewed: HebaruSan)
 
 ### Internal
 
