@@ -1,9 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Linq;
 using CKAN.Versioning;
 using log4net;
 using CKAN.Configuration;
@@ -43,6 +43,7 @@ namespace CKAN
         {
             RefreshReposListBox();
             RefreshAuthTokensListBox();
+            UpdateLanguageSelectionComboBox();
 
             LocalVersionLabel.Text = Meta.GetVersion();
 
@@ -95,6 +96,16 @@ namespace CKAN
             }
 
             manager.Save();
+        }
+
+        private void UpdateLanguageSelectionComboBox()
+        {
+            LanguageSelectionComboBox.Items.Clear();
+
+            LanguageSelectionComboBox.Items.AddRange(Utilities.AvailableLanguages);
+            // If the current language is supported by CKAN, set is as selected.
+            // Else display a blank field.
+            LanguageSelectionComboBox.SelectedIndex = LanguageSelectionComboBox.FindStringExact(config.Language);
         }
 
         private void UpdateCacheInfo(string newPath)
@@ -527,6 +538,11 @@ namespace CKAN
         {
             Main.Instance.configuration.HideV = HideVCheckbox.Checked;
             Main.Instance.configuration.Save();
+        }
+
+        private void LanguageSelectionComboBox_SelectionChanged(object sender, EventArgs e)
+        {
+            config.Language = LanguageSelectionComboBox.SelectedItem.ToString();
         }
 
         private void AutoSortUpdateCheckBox_CheckedChanged(object sender, EventArgs e)

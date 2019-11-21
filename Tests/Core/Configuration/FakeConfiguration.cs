@@ -139,5 +139,22 @@ namespace Tests.Core.Configuration
         {
             throw new NotImplementedException();
         }
+
+        private string _Language;
+        public string Language
+        {
+            get
+            {
+                return _Language;
+            }
+
+            set
+            {
+                if (CKAN.Utilities.AvailableLanguages.Contains(value))
+                {
+                    _Language = value;
+                }
+            }
+         }
     }
 }

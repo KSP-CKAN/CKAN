@@ -158,9 +158,10 @@
   <data name="RefreshPostLabel.Text" xml:space="preserve"><value>Minuten</value></data>
   <data name="PauseRefreshCheckBox.Text" xml:space="preserve"><value>Autom. Aktualisierung aussetzen</value></data>
   <data name="MoreSettingsGroupBox.Text" xml:space="preserve"><value>Weitere Einstellungen</value></data>
-  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>Beim Klick auf 'Verfügbare Updates auswählen' aktualisierbare Mods oben anzeigen</value></data>
+  <data name="LanguageSelectionLabel.Text" xml:space="preserve"><value>Sprache (Neustart benötigt!):</value></data>
   <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve"><value>Modliste beim Start von CKAN aktualisieren</value></data>
   <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>Epoch-Zahlen bei Modversionsnummern in der Modliste verstecken (Neustart benötigt!)</value></data>
   <data name="HideVCheckbox.Text" xml:space="preserve"><value>'v' bei Modversionsnummern in der Modliste verstecken (Neustart benötigt!)</value></data>
+  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>Beim Klick auf 'Verfügbare Updates auswählen' aktualisierbare Mods oben anzeigen</value></data>
   <data name="$this.Text" xml:space="preserve"><value>Einstellungen</value></data>
 </root>

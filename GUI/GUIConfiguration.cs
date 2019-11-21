@@ -95,7 +95,7 @@ namespace CKAN
 
         public static GUIConfiguration LoadOrCreateConfiguration(string path)
         {
-            if (!File.Exists(path))
+            if (!File.Exists(path) || new FileInfo(path).Length == 0)
             {
                 var configuration = new GUIConfiguration
                 {

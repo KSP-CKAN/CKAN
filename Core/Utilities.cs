@@ -7,6 +7,8 @@ namespace CKAN
 {
     public static class Utilities
     {
+        public static readonly string[] AvailableLanguages = { "en-GB", "en-US", "de-DE" };
+
         /// <summary>
         /// Copies a directory and optionally its subdirectories as a transaction.
         /// </summary>
@@ -72,7 +74,6 @@ namespace CKAN
                     _CopyDirectory(subdir.FullName, temppath, copySubDirs, file_transaction);
                 }
             }
-
         }
     }
 }

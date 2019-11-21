@@ -160,9 +160,10 @@
   <data name="RefreshPostLabel.Text" xml:space="preserve"><value>minute(s)</value></data>
   <data name="PauseRefreshCheckBox.Text" xml:space="preserve"><value>Pause refreshing</value></data>
   <data name="MoreSettingsGroupBox.Text" xml:space="preserve"><value>More Settings</value></data>
-  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>Automatically sort by "Update"-column when clicking "Add available updates"</value></data>
+  <data name="LanguageSelectionLabel.Text" xml:space="preserve"><value>Language (requires restart):</value></data>
   <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve"><value>Update repositories on launch</value></data>
-  <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>Hide epoch numbers in mod list (Requires Restart)</value></data>
-  <data name="HideVCheckbox.Text" xml:space="preserve"><value>Hide "v" in mod list (Requires Restart)</value></data>
+  <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>Hide epoch numbers in mod list (requires restart)</value></data>
+  <data name="HideVCheckbox.Text" xml:space="preserve"><value>Hide "v" in mod list (requires restart)</value></data>
+  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>Automatically sort by "Update"-column when clicking "Add available updates"</value></data>
   <data name="$this.Text" xml:space="preserve"><value>Settings</value></data>
 </root>

@@ -26,6 +26,8 @@ namespace CKAN.Configuration
         /// </summary>
         int RefreshRate { get; set; }
 
+        string Language { get; set; }
+
         /// <summary>
         /// Get the hosts that have auth tokens stored in the registry
         /// </summary>
