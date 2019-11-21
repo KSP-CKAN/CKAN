@@ -10,6 +10,7 @@ namespace Tests.NetKAN.Sources.Curse
     [TestFixture]
     [Category("FlakyNetwork")]
     [Category("Online")]
+    [Explicit]
     public sealed class CurseApiTests
     {
         private string       _cachePath;
