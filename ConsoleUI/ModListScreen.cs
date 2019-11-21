@@ -268,7 +268,7 @@ namespace CKAN.ConsoleUI {
                     true, UpdateRegistry),
                 new ConsoleMenuOption("Upgrade all",          "Ctrl+U",
                     "Mark all available updates for installation",
-                    true, UpgradeAll),
+                    true, UpgradeAll, null, null, HasAnyUpgradeable()),
                 new ConsoleMenuOption("Audit recommendations",      "",
                     "List mods suggested and recommended by installed mods",
                     true, ViewSuggestions),
@@ -348,6 +348,16 @@ namespace CKAN.ConsoleUI {
             );
             output.Run();
             return true;
+        }
+
+        private bool HasAnyUpgradeable()
+        {
+            foreach (InstalledModule im in registry.InstalledModules) {
+                if (registry.HasUpdate(im.identifier, manager.CurrentInstance.VersionCriteria())) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private bool UpgradeAll()
