@@ -39,14 +39,13 @@ namespace CKAN.NetKAN.Transformers
                 {
                     versions = versions.Take(opts.Releases.Value);
                 }
-                if (versions.Any())
+                bool returnedAny = false;
+                foreach (JenkinsBuild build in versions)
                 {
-                    foreach (JenkinsBuild build in versions)
-                    {
-                        yield return TransformOne(metadata, metadata.Json(), build, options);
-                    }
+                    returnedAny = true;
+                    yield return TransformOne(metadata, metadata.Json(), build, options);
                 }
-                else
+                if (!returnedAny)
                 {
                     Log.WarnFormat("No releases found for {0}", jRef.BaseUri);
                     yield return metadata;

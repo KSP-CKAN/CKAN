@@ -42,14 +42,13 @@ namespace CKAN.NetKAN.Transformers
                 {
                     versions = versions.Take(opts.Releases.Value);
                 }
-                if (versions.Any())
+                bool returnedAny = false;
+                foreach (SDVersion vers in versions)
                 {
-                    foreach (SDVersion vers in versions)
-                    {
-                        yield return TransformOne(metadata, metadata.Json(), sdMod, vers);
-                    }
+                    returnedAny = true;
+                    yield return TransformOne(metadata, metadata.Json(), sdMod, vers);
                 }
-                else
+                if (!returnedAny)
                 {
                     Log.WarnFormat("No releases found for {0}", sdMod.ToString());
                     yield return metadata;
