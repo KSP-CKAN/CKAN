@@ -43,14 +43,13 @@ namespace CKAN.NetKAN.Transformers
                 {
                     versions = versions.Take(opts.Releases.Value);
                 }
-                if (versions.Any())
+                bool returnedAny = false;
+                foreach (CurseFile f in versions)
                 {
-                    foreach (CurseFile f in versions)
-                    {
-                        yield return TransformOne(metadata.Json(), curseMod, f);
-                    }
+                    returnedAny = true;
+                    yield return TransformOne(metadata.Json(), curseMod, f);
                 }
-                else
+                if (!returnedAny)
                 {
                     Log.WarnFormat("No releases found for {0}", curseMod.ToString());
                     yield return metadata;
