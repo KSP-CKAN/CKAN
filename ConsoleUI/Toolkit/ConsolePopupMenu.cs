@@ -51,12 +51,12 @@ namespace CKAN.ConsoleUI.Toolkit {
                     case ConsoleKey.UpArrow:
                         do {
                             selectedOption = (selectedOption + options.Count - 1) % options.Count;
-                        } while (options[selectedOption] == null);
+                        } while (options[selectedOption] == null || !options[selectedOption].Enabled);
                         break;
                     case ConsoleKey.DownArrow:
                         do {
                             selectedOption = (selectedOption + 1) % options.Count;
-                        } while (options[selectedOption] == null);
+                        } while (options[selectedOption] == null || !options[selectedOption].Enabled);
                         break;
                     case ConsoleKey.Enter:
                         if (options[selectedOption].CloseParent) {
@@ -113,6 +113,9 @@ namespace CKAN.ConsoleUI.Toolkit {
                         } else {
                             // Draw menu option
                             Console.Write(Symbols.vertLine);
+                            if (!opt.Enabled) {
+                                Console.ForegroundColor = ConsoleTheme.Current.MenuDisabledFg;
+                            }
                             if (index == selectedOption) {
                                 // Draw highlighted menu option
                                 Console.BackgroundColor = ConsoleTheme.Current.MenuSelectedBg;
@@ -121,6 +124,9 @@ namespace CKAN.ConsoleUI.Toolkit {
                             } else {
                                 // Draw normal menu option
                                 Console.Write(" " + AnnotatedCaption(opt) + " ");
+                            }
+                            if (!opt.Enabled) {
+                                Console.ForegroundColor = ConsoleTheme.Current.MenuFg;
                             }
                             Console.Write(Symbols.vertLine);
                         }
@@ -184,7 +190,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="radio">If set, this option is a radio button, and this function returns its value</param>
         /// <param name="submenu">Submenu to open for this option</param>
         public ConsoleMenuOption(string cap, string key, string tt, bool close,
-                Func<bool> exec = null, Func<bool> radio = null, ConsolePopupMenu submenu = null)
+                Func<bool> exec = null, Func<bool> radio = null, ConsolePopupMenu submenu = null,
+                bool enabled = true)
         {
             Caption     = cap;
             Key         = key;
@@ -193,6 +200,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             OnExec      = exec;
             SubMenu     = submenu;
             RadioActive = radio;
+            Enabled     = enabled;
         }
 
         /// <summary>
@@ -223,6 +231,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Submenu to open for this option
         /// </summary>
         public readonly ConsolePopupMenu SubMenu;
+        /// <summary>
+        /// Function to call to check whether this option is enabled
+        /// </summary>
+        public readonly bool             Enabled;
     }
 
 }

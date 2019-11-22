@@ -113,6 +113,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public readonly ConsoleColor MenuFg         = ConsoleColor.Black;
         /// <summary>
+        /// Foreground for disabled popup menu options
+        /// </summary>
+        public readonly ConsoleColor MenuDisabledFg = ConsoleColor.DarkGray;
+        /// <summary>
         /// Background for selected menu option
         /// </summary>
         public readonly ConsoleColor MenuSelectedBg = ConsoleColor.DarkGreen;

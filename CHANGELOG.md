@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Force redraw of recommendation listview headers on Mono (#2920 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Restructure Net.Download and Net.DownloadText (#2904 by: DasSkelett; reviewed: HebaruSan)
 - [Netkan] Eliminate duplicate network calls in Netkan (#2928 by: HebaruSan; reviewed: DasSkelett, techman83)
+- [ConsoleUI] Disable Upgrade All ConsoleUI menu option when nothing to upgrade (#2927 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
