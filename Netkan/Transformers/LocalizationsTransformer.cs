@@ -1,14 +1,13 @@
-using System;
-﻿using System.IO;
-using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
-using Newtonsoft.Json.Linq;
 using log4net;
+using Newtonsoft.Json.Linq;
+using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.NetKAN.Extensions;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -55,7 +54,7 @@ namespace CKAN.NetKAN.Transformers
                     metadata.Identifier,
                     metadata.RemoteTimestamp
                 ));
-    
+
                 log.Debug("Extracting locales");
                 // Extract the locale names from the ZIP's cfg files
                 var locales = _moduleService.GetConfigFiles(mod, zip)
@@ -67,7 +66,7 @@ namespace CKAN.NetKAN.Transformers
                         .Select(m => m.Groups["locale"].Value))
                     .Distinct();
                 log.Debug("Locales extracted");
-    
+
                 if (locales.Any())
                 {
                     json.SafeAdd(localizationsProperty, new JArray(locales));

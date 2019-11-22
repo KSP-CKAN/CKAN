@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using log4net;
 using CKAN.Versioning;
@@ -48,7 +48,7 @@ namespace CKAN.NetKAN.Transformers
 
                     json["spec_version"] = ModuleVersion.Max(metadata.SpecVersion, new Metadata(internalJson).SpecVersion)
                         .ToSpecVersionJson();
-                        
+
                     json.SafeMerge("resources", internalJson["resources"]);
 
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);

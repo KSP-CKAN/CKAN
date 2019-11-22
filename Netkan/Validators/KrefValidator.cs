@@ -1,6 +1,5 @@
 using log4net;
-﻿using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Validators
 {

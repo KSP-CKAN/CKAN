@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using CKAN.NetKAN.Sources.Avc;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json.Linq;
-﻿using CKAN.NetKAN.Sources.Avc;
 
 namespace CKAN.NetKAN.Services
 {

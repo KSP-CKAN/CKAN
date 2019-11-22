@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using log4net;
 using Newtonsoft.Json.Linq;
+using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.NetKAN.Extensions;
 
 namespace CKAN.NetKAN.Transformers
 {

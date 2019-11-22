@@ -20,23 +20,33 @@ var ckanFile = repackDirectory.Combine(configuration).CombineWithFilePath("ckan.
 var netkanFile = repackDirectory.Combine(configuration).CombineWithFilePath("netkan.exe");
 
 Task("Default")
+    .Description("Build ckan.exe and netkan.exe, if not specified otherwise in Debug configuration for .NET Framework.")
     .IsDependentOn("Ckan")
     .IsDependentOn("Netkan");
 
 Task("Debug")
+    .Description("Build ckan.exe and netkan.exe in Debug configuration, if not specified otherwise for .NET Framework.")
     .IsDependentOn("Default");
 
 Task("Release")
+    .Description("Build ckan.exe and netkan.exe in Release configuration, if not specified otherwise for .NET Framework.")
     .IsDependentOn("Default");
 
 Task("Ckan")
+    .Description("Build only ckan.exe, if not specified otherwise in Debug configuration for .NET Framework.")
     .IsDependentOn("Repack-Ckan")
     .IsDependentOn("Build-DotNetCore");
 
 Task("Netkan")
+    .Description("Build only netkan.exe, if not specified otherwise in Debug configuration for .NET Framework.")
     .IsDependentOn("Repack-Netkan");
 
+Task("DLL")
+    .Description("Build only ckan.dll (CKAN-Core) for .NET Core.")
+    .IsDependentOn("Build-DotNetCore");
+
 Task("docker-inflator")
+    .Description("Build the Docker image for the Inflator and push it to Dockerhub.")
     .IsDependentOn("Repack-Netkan")
     .Does(() =>
 {
@@ -82,44 +92,53 @@ Task("docker-inflator")
 });
 
 Task("osx")
+    .Description("Build the macOS(OSX) dmg package.")
     .IsDependentOn("Ckan")
     .Does(() => StartProcess("make",
         new ProcessSettings { WorkingDirectory = "macosx" }));
 
 Task("osx-clean")
+    .Description("Clean the output directory of the macOS(OSX) package.")
     .Does(() => StartProcess("make",
         new ProcessSettings { Arguments = "clean", WorkingDirectory = "macosx" }));
 
 Task("deb")
+    .Description("Build the deb package for Debian-based distros.")
     .IsDependentOn("Ckan")
     .Does(() => StartProcess("make",
         new ProcessSettings { WorkingDirectory = "debian" }));
 
 Task("deb-test")
+    .Description("Test the deb packaging.")
     .IsDependentOn("deb")
     .Does(() => StartProcess("make",
         new ProcessSettings { Arguments = "test", WorkingDirectory = "debian" }));
 
 Task("deb-clean")
+    .Description("Clean the deb output directory.")
     .Does(() => StartProcess("make",
         new ProcessSettings { Arguments = "clean", WorkingDirectory = "debian" }));
 
 Task("rpm")
+    .Description("Build the rpm package for RPM-based distros.")
     .IsDependentOn("Ckan")
     .Does(() => StartProcess("make",
         new ProcessSettings { WorkingDirectory = "rpm" }));
 
 Task("rpm-test")
+    .Description("Test the rpm packaging.")
     .IsDependentOn("Ckan")
     .Does(() => StartProcess("make",
         new ProcessSettings { Arguments = "test", WorkingDirectory = "rpm" }));
 
 Task("rpm-clean")
+    .Description("Clean the rpm package output directory.")
     .Does(() => StartProcess("make",
         new ProcessSettings { Arguments = "clean", WorkingDirectory = "rpm" }));
 
 Task("Restore-Nuget")
-    .WithCriteria(buildFramework == "net45")
+    .Description("Intermediate - Download dependencies with NuGet when building for .NET Framework.")
+    .WithCriteria(() => buildFramework == "net45")
     .Does(() =>
 {
     NuGetRestore(solution, new NuGetRestoreSettings
@@ -130,9 +149,10 @@ Task("Restore-Nuget")
 });
 
 Task("Build-DotNet")
+    .Description("Intermediate - Call MSBuild/XBuild to build the CKAN.sln.")
     .IsDependentOn("Restore-Nuget")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
-    .WithCriteria(buildFramework == "net45")
+    .WithCriteria(() => buildFramework == "net45")
     .Does(() =>
 {
     MSBuild(solution, settings =>
@@ -142,7 +162,8 @@ Task("Build-DotNet")
 });
 
 Task("Restore-DotNetCore")
-    .WithCriteria(buildFramework == "netcoreapp2.1")
+    .Description("Intermediate - Download dependencies with NuGet when building for .NET Core.")
+    .WithCriteria(() => buildFramework == "netcoreapp2.1")
     .Does(() =>
 {
     DotNetCoreRestore(solution, new DotNetCoreRestoreSettings
@@ -153,9 +174,10 @@ Task("Restore-DotNetCore")
 });
 
 Task("Build-DotNetCore")
+    .Description("Intermediate - Call .NET Core's MSBuild to build the ckan.dll.")
     .IsDependentOn("Restore-Dotnetcore")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
-    .WithCriteria(buildFramework == "netcoreapp2.1")
+    .WithCriteria(() => buildFramework == "netcoreapp2.1")
     .Does(() =>
 {
     DotNetCoreBuild(solution, new DotNetCoreBuildSettings
@@ -166,6 +188,7 @@ Task("Build-DotNetCore")
 });
 
 Task("Generate-GlobalAssemblyVersionInfo")
+    .Description("Intermediate - Calculate the version strings for the assembly.")
     .Does(() =>
 {
     var version = GetVersion();
@@ -185,7 +208,8 @@ Task("Generate-GlobalAssemblyVersionInfo")
 });
 
 Task("Repack-Ckan")
-    .WithCriteria(buildFramework == "net45")
+    .Description("Intermediate - Merge all the separate DLLs and EXEs to a single executable.")
+    .WithCriteria(() => buildFramework == "net45")
     .IsDependentOn("Build-DotNet")
     .Does(() =>
 {
@@ -210,7 +234,8 @@ Task("Repack-Ckan")
 });
 
 Task("Repack-Netkan")
-    .WithCriteria(buildFramework == "net45")
+    .Description("Intermediate - Merge all the separate DLLs and EXEs to a single executable.")
+    .WithCriteria(() => buildFramework == "net45")
     .IsDependentOn("Build-DotNet")
     .Does(() =>
 {
@@ -228,16 +253,19 @@ Task("Repack-Netkan")
 });
 
 Task("Test")
+    .Description("Run CKANs tests after compilation.")
     .IsDependentOn("Default")
     .IsDependentOn("Test+Only");
 
 Task("Test+Only")
+    .Description("Only run CKANs tests, without compiling beforehand.")
     .IsDependentOn("Test-UnitTests+Only")
     .IsDependentOn("Test-Executables+Only");
 
 Task("Test-UnitTests+Only")
+    .Description("Intermediate - Only run CKANs unit tests, without compiling beforehand.")
     .IsDependentOn("Test-UnitTests+Only-DotNetCore")
-    .WithCriteria(buildFramework == "net45")
+    .WithCriteria(() => buildFramework == "net45")
     .Does(() =>
 {
     var where = Argument<string>("where", null);
@@ -263,7 +291,8 @@ Task("Test-UnitTests+Only")
 });
 
 Task("Test-UnitTests+Only-DotNetCore")
-    .WithCriteria(buildFramework == "netcoreapp2.1")
+    .Description("Intermediate - Only run CKANs unit tests using DotNetCoreTest, without compiling beforehand.")
+    .WithCriteria(() => buildFramework == "netcoreapp2.1")
     .Does(() =>
 {
     var where = Argument<string>("where", null);
@@ -281,11 +310,13 @@ Task("Test-UnitTests+Only-DotNetCore")
 });
 
 Task("Test-Executables+Only")
+    .Description("Intermediate - Only test CKANs executables, without compiling them beforhand.")
     .IsDependentOn("Test-CkanExecutable+Only")
     .IsDependentOn("Test-NetkanExecutable+Only");
 
 Task("Test-CkanExecutable+Only")
-    .WithCriteria(buildFramework == "net45")
+    .Description("Intermediate - Only test the ckan.exe, without compiling beforhand.")
+    .WithCriteria(() => buildFramework == "net45")
     .Does(() =>
 {
     if (RunExecutable(ckanFile, "version").FirstOrDefault() != string.Format("v{0}", GetVersion()))
@@ -293,7 +324,8 @@ Task("Test-CkanExecutable+Only")
 });
 
 Task("Test-NetkanExecutable+Only")
-    .WithCriteria(buildFramework == "net45")
+    .Description("Intermediate - Only test the netkan.exe, without compiling beforhand.")
+    .WithCriteria(() => buildFramework == "net45")
     .Does(() =>
 {
     if (RunExecutable(netkanFile, "--version").FirstOrDefault() != string.Format("v{0}", GetVersion()))
@@ -301,6 +333,7 @@ Task("Test-NetkanExecutable+Only")
 });
 
 Task("Version")
+    .Description("Print the current CKAN version.")
     .Does(() =>
 {
     Information(GetVersion().ToString());
@@ -325,6 +358,15 @@ Setup(context =>
 
         configuration = "Debug";
         buildFramework = "net45";
+    }
+    else if (string.Equals(target, "DLL", StringComparison.OrdinalIgnoreCase))
+    {
+        if (argConfiguration == null || argConfiguration.StartsWith("Debug"))
+            configuration = "Debug_NetCore";
+        else if (argConfiguration.StartsWith("Release"))
+            configuration = "Release_NetCore";
+
+        buildFramework = "netcoreapp2.1";
     }
 });
 
