@@ -164,6 +164,22 @@ namespace CKAN
             log.Info("Starting the GUI");
             commandLineArgs = cmdlineArgs;
 
+            Configuration.IConfiguration mainConfig = ServiceLocator.Container.Resolve<Configuration.IConfiguration>();
+
+            // If the language is not set yet in the config, try to save the current language.
+            // If it isn't supported, it'll still be null afterwards. Doesn't matter, .NET handles the resource selection.
+            // Once the user chooses a language in the settings, the string will be no longer null, and we can change
+            // CKAN's language here before any GUI components are initialized.
+            if (string.IsNullOrEmpty(mainConfig.Language))
+            {
+                string runtimeLanguage = Thread.CurrentThread.CurrentUICulture.IetfLanguageTag;
+                mainConfig.Language = runtimeLanguage;
+            }
+            else
+            {
+                Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(mainConfig.Language);
+            }
+
             manager = mgr ?? new KSPManager(user);
             currentUser = user;
 

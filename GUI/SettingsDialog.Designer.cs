@@ -69,10 +69,12 @@
             this.RefreshPostLabel = new System.Windows.Forms.Label();
             this.PauseRefreshCheckBox = new System.Windows.Forms.CheckBox();
             this.MoreSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.AutoSortUpdateCheckBox = new System.Windows.Forms.CheckBox();
+            this.LanguageSelectionLabel = new System.Windows.Forms.Label();
+            this.LanguageSelectionComboBox = new System.Windows.Forms.ComboBox();
             this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
             this.HideEpochsCheckbox = new System.Windows.Forms.CheckBox();
             this.HideVCheckbox = new System.Windows.Forms.CheckBox();
+            this.AutoSortUpdateCheckBox = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.RepositoryGroupBox.SuspendLayout();
             this.AuthTokensGroupBox.SuspendLayout();
@@ -501,6 +503,8 @@
             //
             // MoreSettingsGroupBox
             //
+            this.MoreSettingsGroupBox.Controls.Add(this.LanguageSelectionLabel);
+            this.MoreSettingsGroupBox.Controls.Add(this.LanguageSelectionComboBox);
             this.MoreSettingsGroupBox.Controls.Add(this.AutoSortUpdateCheckBox);
             this.MoreSettingsGroupBox.Controls.Add(this.RefreshOnStartupCheckbox);
             this.MoreSettingsGroupBox.Controls.Add(this.HideEpochsCheckbox);
@@ -508,21 +512,29 @@
             this.MoreSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MoreSettingsGroupBox.Location = new System.Drawing.Point(12, 529);
             this.MoreSettingsGroupBox.Name = "MoreSettingsGroupBox";
-            this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 116);
+            this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 139);
             this.MoreSettingsGroupBox.TabIndex = 5;
             this.MoreSettingsGroupBox.TabStop = false;
             resources.ApplyResources(this.MoreSettingsGroupBox, "MoreSettingsGroupBox");
             //
-            // AutoSortUpdateCheckBox
+            // LanguageSelectionLabel
             //
-            this.AutoSortUpdateCheckBox.AutoSize = true;
-            this.AutoSortUpdateCheckBox.Location = new System.Drawing.Point(12, 18);
-            this.AutoSortUpdateCheckBox.Name = "AutoSortUpdateCheckBox";
-            this.AutoSortUpdateCheckBox.Size = new System.Drawing.Size(393, 17);
-            this.AutoSortUpdateCheckBox.TabIndex = 0;
-            this.AutoSortUpdateCheckBox.UseVisualStyleBackColor = true;
-            this.AutoSortUpdateCheckBox.CheckedChanged += new System.EventHandler(this.AutoSortUpdateCheckBox_CheckedChanged);
-            resources.ApplyResources(this.AutoSortUpdateCheckBox, "AutoSortUpdateCheckBox");
+            this.LanguageSelectionLabel.AutoSize = true;
+            this.LanguageSelectionLabel.Location = new System.Drawing.Point(12, 18);
+            this.LanguageSelectionLabel.Name = "LanguageSelectionLabel";
+            this.LanguageSelectionLabel.Size = new System.Drawing.Size(220, 17);
+            this.LanguageSelectionLabel.TabStop = false;
+            resources.ApplyResources(this.LanguageSelectionLabel, "LanguageSelectionLabel");
+            //
+            // LanguageSelectionComboBox
+            //
+            this.LanguageSelectionComboBox.AutoSize = true;
+            this.LanguageSelectionComboBox.Location = new System.Drawing.Point(244, 18);
+            this.LanguageSelectionComboBox.Name = "LanguageSelectionComboBox";
+            this.LanguageSelectionComboBox.Size = new System.Drawing.Size(220, 17);
+            this.LanguageSelectionComboBox.TabIndex = 0;
+            this.LanguageSelectionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.LanguageSelectionComboBox.SelectionChangeCommitted += new System.EventHandler(this.LanguageSelectionComboBox_SelectionChanged);
             //
             // RefreshOnStartupCheckbox
             //
@@ -557,11 +569,23 @@
             this.HideVCheckbox.CheckedChanged += new System.EventHandler(this.HideVCheckbox_CheckedChanged);
             resources.ApplyResources(this.HideVCheckbox, "HideVCheckbox");
             //
+            // AutoSortUpdateCheckBox
+            //
+            this.AutoSortUpdateCheckBox.AutoSize = true;
+            this.AutoSortUpdateCheckBox.Location = new System.Drawing.Point(12, 110);
+            this.AutoSortUpdateCheckBox.Name = "AutoSortUpdateCheckBox";
+            this.AutoSortUpdateCheckBox.Size = new System.Drawing.Size(393, 17);
+            this.AutoSortUpdateCheckBox.TabIndex = 4;
+            this.AutoSortUpdateCheckBox.UseVisualStyleBackColor = true;
+            this.AutoSortUpdateCheckBox.CheckedChanged += new System.EventHandler(this.AutoSortUpdateCheckBox_CheckedChanged);
+            resources.ApplyResources(this.AutoSortUpdateCheckBox, "AutoSortUpdateCheckBox");
+            //
+            //
             // SettingsDialog
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(500, 657);
+            this.ClientSize = new System.Drawing.Size(500, 680);
             this.Controls.Add(this.RepositoryGroupBox);
             this.Controls.Add(this.AuthTokensGroupBox);
             this.Controls.Add(this.CacheGroupBox);
@@ -632,10 +656,12 @@
         private System.Windows.Forms.Label RefreshPostLabel;
         private System.Windows.Forms.CheckBox PauseRefreshCheckBox;
         private System.Windows.Forms.GroupBox MoreSettingsGroupBox;
-        private System.Windows.Forms.CheckBox AutoSortUpdateCheckBox;
+        private System.Windows.Forms.Label LanguageSelectionLabel;
+        private System.Windows.Forms.ComboBox LanguageSelectionComboBox;
         private System.Windows.Forms.CheckBox RefreshOnStartupCheckbox;
         private System.Windows.Forms.CheckBox HideEpochsCheckbox;
         private System.Windows.Forms.CheckBox HideVCheckbox;
+        private System.Windows.Forms.CheckBox AutoSortUpdateCheckBox;
         private System.Windows.Forms.ToolTip toolTip1;
     }
 }

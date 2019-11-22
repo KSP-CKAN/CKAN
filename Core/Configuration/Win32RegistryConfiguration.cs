@@ -94,6 +94,16 @@ namespace CKAN.Configuration
             set { SetAutoStartInstance(value??String.Empty); }
         }
 
+        public string Language
+        {
+            get { return GetRegistryValue<string>("Language", null); }
+            set
+            {
+                if (Utilities.AvailableLanguages.Contains(value))
+                    SetRegistryValue("Language", value);
+            }
+        }
+
         public Win32RegistryConfiguration()
         {
             ConstructKey(CKAN_KEY_NO_PREFIX);

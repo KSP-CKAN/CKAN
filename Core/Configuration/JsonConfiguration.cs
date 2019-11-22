@@ -17,6 +17,7 @@ namespace CKAN.Configuration
             public string DownloadCacheDir { get; set; }
             public long? CacheSizeLimit { get; set; }
             public int? RefreshRate { get; set; }
+            public string Language { get; set; }
             public JBuilds KSPBuilds { get; set; }
             public IList<KspInstance> KspInstances = new List<KspInstance>();
             public IDictionary<string, string> AuthTokens = new Dictionary<string, string>();
@@ -157,6 +158,29 @@ namespace CKAN.Configuration
                     }
 
                     SaveConfig();
+                }
+            }
+        }
+
+        public string Language
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return config.Language;
+                }
+            }
+
+            set
+            {
+                lock (_lock)
+                {
+                    if (Utilities.AvailableLanguages.Contains(value))
+                    {
+                        config.Language = value;
+                        SaveConfig();
+                    }
                 }
             }
         }

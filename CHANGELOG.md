@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Default to consoleui on MacOSX Catalina (#2911 by: HebaruSan; reviewed: pfFredd, DasSkelett)
+- [GUI] Add language selection option to settings (#2925 by: DasSkelett; reviewed: HebaruSan)
 
 ### Bugfixes
 
