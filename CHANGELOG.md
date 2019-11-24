@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.26.6
+## v1.26.7
+
+### Features
+
+### Bugfixes
+
+### Internal
+
+## v1.26.6 (Leonov)
 
 ### Features
 
