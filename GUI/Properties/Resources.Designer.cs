@@ -376,6 +376,9 @@ namespace CKAN.Properties {
         internal static string MainFilterCached {
             get { return (string)(ResourceManager.GetObject("MainFilterCached", resourceCulture)); }
         }
+        internal static string MainFilterUncached {
+            get { return (string)(ResourceManager.GetObject("MainFilterUncached", resourceCulture)); }
+        }
         internal static string MainFilterNew {
             get { return (string)(ResourceManager.GetObject("MainFilterNew", resourceCulture)); }
         }
@@ -585,6 +588,9 @@ namespace CKAN.Properties {
         }
         internal static string MainModListCached {
             get { return (string)(ResourceManager.GetObject("MainModListCached", resourceCulture)); }
+        }
+        internal static string MainModListUncached {
+            get { return (string)(ResourceManager.GetObject("MainModListUncached", resourceCulture)); }
         }
         internal static string MainModListNewlyCompatible {
             get { return (string)(ResourceManager.GetObject("MainModListNewlyCompatible", resourceCulture)); }

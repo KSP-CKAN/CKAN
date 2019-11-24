@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Autofac;
 using CKAN.Configuration;
-using CurlSharp;
 using log4net;
 
 namespace CKAN
@@ -114,10 +113,6 @@ namespace CKAN
         public delegate void NetAsyncOneCompleted(Uri url, string filename, Exception error);
         public NetAsyncOneCompleted onOneCompleted;
 
-        // When using the curlsharp downloader, this contains all the threads
-        // that are working for us.
-        private List<Thread> curl_threads = new List<Thread>();
-
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader.
         /// </summary>
@@ -138,174 +133,56 @@ namespace CKAN
             downloads.Clear();
             foreach (Net.DownloadTarget target in targets)
             {
-                downloads.Add(new NetAsyncDownloaderDownloadPart(target));
+                DownloadModule(target);
             }
+        }
 
-            // adding chicken bits
-            if (Platform.IsWindows || System.Environment.GetEnvironmentVariable("KSP_CKAN_USE_CURL") == null)
-            {
-                DownloadNative();
-            }
-            else
-            {
-                DownloadCurl();
-            }
+        private void DownloadModule(Net.DownloadTarget target)
+        {
+            // We need a new variable for our closure/lambda, hence index = 1+prev max
+            int index = downloads.Count;
 
+            var dl = new NetAsyncDownloaderDownloadPart(target);
+            downloads.Add(dl);
+
+            // Encode spaces to avoid confusing URL parsers
+            User.RaiseMessage("Downloading \"{0}\"",
+                dl.url.ToString().Replace(" ", "%20"));
+
+            // Schedule for us to get back progress reports.
+            dl.Progress += (sender, args) =>
+                FileProgressReport(index,
+                    args.ProgressPercentage,
+                    args.BytesReceived,
+                    args.TotalBytesToReceive);
+
+            // And schedule a notification if we're done (or if something goes wrong)
+            dl.Done += (sender, args) =>
+                FileDownloadComplete(index, args.Error);
+
+            // Start the download!
+            dl.Download(dl.url, dl.path);
         }
 
         /// <summary>
-        /// Download all our files using the native .NET handlers.
+        /// Start a new batch of downloads
         /// </summary>
-        /// <returns>The native.</returns>
-        private void DownloadNative()
-        {
-            for (int i = 0; i < downloads.Count; i++)
-            {
-                // Encode spaces to avoid confusing URL parsers
-                User.RaiseMessage("Downloading \"{0}\"",
-                    downloads[i].url.ToString().Replace(" ", "%20"));
-
-                // We need a new variable for our closure/lambda, hence index = i.
-                int index = i;
-
-                // Schedule for us to get back progress reports.
-                downloads[i].Progress += (sender, args) =>
-                    FileProgressReport(index,
-                        args.ProgressPercentage,
-                        args.BytesReceived,
-                        args.TotalBytesToReceive);
-
-                // And schedule a notification if we're done (or if something goes wrong)
-                downloads[i].Done += (sender, args) =>
-                    FileDownloadComplete(index, args.Error);
-
-                // Start the download!
-                downloads[i].Download(downloads[i].url, downloads[i].path);
-            }
-        }
-
-        /// <summary>
-        /// Use curlsharp to handle our downloads.
-        /// </summary>
-        private void DownloadCurl()
-        {
-            log.Debug("Curlsharp async downloader engaged");
-
-            // Make sure our environment is set up.
-
-            Curl.Init();
-
-            // We'd *like* to use CurlMulti, but it just hangs when I try to retrieve
-            // messages from it. So we're spawning a thread for each curleasy that does
-            // the same thing. Ends up this is a little easier in handling, anyway.
-
-            for (int i = 0; i < downloads.Count; i++)
-            {
-                log.DebugFormat("Downloading {0}", downloads[i].url);
-                // Encode spaces to avoid confusing URL parsers
-                User.RaiseMessage("Downloading \"{0}\" (libcurl)",
-                    downloads[i].url.ToString().Replace(" ", "%20"));
-
-                // Open our file, and make an easy object...
-                FileStream stream = File.OpenWrite(downloads[i].path);
-                CurlEasy easy = Curl.CreateEasy(downloads[i].url, stream);
-
-                // We need a separate variable for our closure, this is it.
-                int index = i;
-
-                // Curl recommends xferinfofunction, but this doesn't seem to
-                // be supported by curlsharp, so we use the progress function
-                // instead.
-                easy.ProgressFunction = delegate(object extraData, double dlTotal, double dlNow, double ulTotal, double ulNow)
-                {
-                    log.DebugFormat("Progress function called... {0}/{1}", dlNow,dlTotal);
-
-                    int percent;
-
-                    if (dlTotal > 0)
-                    {
-                        percent = (int) dlNow * 100 / (int) dlTotal;
-                    }
-                    else
-                    {
-                        log.Debug("Unknown download size, skipping progress.");
-                        return 0;
-                    }
-
-                    FileProgressReport(
-                        index,
-                        percent,
-                        Convert.ToInt64(dlNow),
-                        Convert.ToInt64(dlTotal)
-                    );
-
-                    // If the user has told us to cancel, then bail out now.
-                    if (download_canceled)
-                    {
-                        log.InfoFormat("Bailing out of download {0} at user request", index);
-                        // Bail out!
-                        return 1;
-                    }
-
-                    // Returning 0 means we want to continue the download.
-                    return 0;
-                };
-
-                // Download, little curl, fulfill your destiny!
-                Thread thread = new Thread(new ThreadStart(delegate
-                {
-                    CurlWatchThread(index, easy, stream);
-                }));
-
-                // Keep track of our threads so we can clean them up later.
-                curl_threads.Add(thread);
-
-                // Background threads will mostly look after themselves.
-                thread.IsBackground = true;
-
-                // Let's go!
-                thread.Start();
-            }
-        }
-
-        /// <summary>
-        /// Starts a thread to watch download progress. Invoked by DownloadCUrl. Not for
-        /// public consumption.
-        /// </summary>
-        private void CurlWatchThread(int index, CurlEasy easy, FileStream stream)
-        {
-            log.Debug("Curlsharp download thread started");
-
-            // This should run until completion or failture.
-            CurlCode result = easy.Perform();
-
-            log.Debug("Curlsharp download complete");
-
-            // Dispose of all our disposables.
-            // We have to do this *BEFORE* we call FileDownloadComplete, as it
-            // ensure we've written everything out to disk.
-            stream.Dispose();
-            easy.Dispose();
-
-            if (result == CurlCode.Ok)
-            {
-                FileDownloadComplete(index, null);
-            }
-            else
-            {
-                // The CurlCode result expands to a human-friendly string, so we can just
-                // throw a kraken containing it and nothing else. The FileDownloadComplete
-                // code collects these into a larger DownloadErrorsKraken aggregate.
-
-                FileDownloadComplete(
-                    index,
-                    new Kraken(result.ToString())
-                );
-            }
-        }
-
+        /// <param name="urls">The downloads to begin</param>
         public void DownloadAndWait(ICollection<Net.DownloadTarget> urls)
         {
+            if (downloads.Count > completed_downloads)
+            {
+                // Some downloads are still in progress, add to the current batch
+                foreach (Net.DownloadTarget target in urls)
+                {
+                    DownloadModule(target);
+                }
+                // Wait for completion along with original caller
+                // so we can handle completion tasks for the added mods
+                complete_or_canceled.WaitOne();
+                return;
+            }
+
             completed_downloads = 0;
             // Make sure we are ready to start a fresh batch
             complete_or_canceled.Reset();
@@ -326,20 +203,12 @@ namespace CKAN
 
 
             // If the user cancelled our progress, then signal that.
-            // This *should* be harmless if we're using the curlsharp downloader,
-            // which watches for downloadCanceled all by itself. :)
             if (old_download_canceled)
             {
                 // Abort all our traditional downloads, if there are any.
                 foreach (var download in downloads.ToList())
                 {
                     download.Abort();
-                }
-
-                // Abort all our curl downloads, if there are any.
-                foreach (var thread in curl_threads.ToList())
-                {
-                    thread.Abort();
                 }
 
                 // Signal to the caller that the user cancelled the download.
@@ -466,9 +335,8 @@ namespace CKAN
         }
 
         /// <summary>
-        /// This method gets called back by `WebClient` or our
-        /// curl downloader when a download is completed. It in turn
-        /// calls the onCompleted hook when *all* downloads are finished.
+        /// This method gets called back by `WebClient` when a download is completed.
+        /// It in turncalls the onCompleted hook when *all* downloads are finished.
         /// </summary>
         private void FileDownloadComplete(int index, Exception error)
         {

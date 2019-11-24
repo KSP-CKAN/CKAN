@@ -158,6 +158,7 @@
   <data name="MainFilterUpgradeable" xml:space="preserve"><value>Filter (Aktualisierbar)</value></data>
   <data name="MainFilterReplaceable" xml:space="preserve"><value>Filter (Ersetzbar)</value></data>
   <data name="MainFilterCached" xml:space="preserve"><value>Filter (Im Cache)</value></data>
+  <data name="MainFilterUncached" xml:space="preserve"><value>Filter (Nicht im Cache)</value></data>
   <data name="MainFilterNew" xml:space="preserve"><value>Filter (Neu)</value></data>
   <data name="MainFilterNotInstalled" xml:space="preserve"><value>Filter (Nicht installiert)</value></data>
   <data name="MainFilterCompatible" xml:space="preserve"><value>Filter (Kompatibel)</value></data>
@@ -261,6 +262,7 @@ Einstellungen jetzt öffnen?</value>
   <data name="MainModListUpgradeable" xml:space="preserve"><value>Aktualisierbar ({0})</value></data>
   <data name="MainModListReplaceable" xml:space="preserve"><value>Ersetzbar ({0})</value></data>
   <data name="MainModListCached" xml:space="preserve"><value>Im Cache ({0})</value></data>
+  <data name="MainModListUncached" xml:space="preserve"><value>Nicht im Cache ({0})</value></data>
   <data name="MainModListNewlyCompatible" xml:space="preserve"><value>Neu kompatibel ({0})</value></data>
   <data name="MainModListNotInstalled" xml:space="preserve"><value>Nicht installiert ({0})</value></data>
   <data name="MainModListIncompatible" xml:space="preserve"><value>Inkompatibel ({0})</value></data>

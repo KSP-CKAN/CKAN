@@ -62,7 +62,8 @@
             this.FilterInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterInstalledUpdateButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterReplaceableButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.cachedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterCachedButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterUncachedButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterNewButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,6 +90,7 @@
             this.ModListHeaderContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.reinstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.purgeContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModInfoTabControl = new CKAN.MainModInfo();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusInstanceLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -416,7 +418,8 @@
             this.FilterInstalledButton,
             this.FilterInstalledUpdateButton,
             this.FilterReplaceableButton,
-            this.cachedToolStripMenuItem,
+            this.FilterCachedButton,
+            this.FilterUncachedButton,
             this.FilterNewButton,
             this.FilterNotInstalledButton,
             this.FilterIncompatibleButton,
@@ -455,12 +458,19 @@
             this.FilterReplaceableButton.Click += new System.EventHandler(this.FilterReplaceableButton_Click);
             resources.ApplyResources(this.FilterReplaceableButton, "FilterReplaceableButton");
             //
-            // cachedToolStripMenuItem
+            // FilterCachedButton
             //
-            this.cachedToolStripMenuItem.Name = "cachedToolStripMenuItem";
-            this.cachedToolStripMenuItem.Size = new System.Drawing.Size(307, 30);
-            this.cachedToolStripMenuItem.Click += new System.EventHandler(this.cachedToolStripMenuItem_Click);
-            resources.ApplyResources(this.cachedToolStripMenuItem, "cachedToolStripMenuItem");
+            this.FilterCachedButton.Name = "FilterCachedButton";
+            this.FilterCachedButton.Size = new System.Drawing.Size(307, 30);
+            this.FilterCachedButton.Click += new System.EventHandler(this.FilterCachedButton_Click);
+            resources.ApplyResources(this.FilterCachedButton, "FilterCachedButton");
+            //
+            // FilterUncachedButton
+            //
+            this.FilterUncachedButton.Name = "FilterUncachedButton";
+            this.FilterUncachedButton.Size = new System.Drawing.Size(307, 30);
+            this.FilterUncachedButton.Click += new System.EventHandler(this.FilterUncachedButton_Click);
+            resources.ApplyResources(this.FilterUncachedButton, "FilterUncachedButton");
             //
             // FilterNewButton
             //
@@ -689,7 +699,8 @@
             //
             this.ModListContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.reinstallToolStripMenuItem,
-            this.downloadContentsToolStripMenuItem});
+            this.downloadContentsToolStripMenuItem,
+            this.purgeContentsToolStripMenuItem});
             this.ModListContextMenuStrip.Name = "ModListContextMenuStrip";
             this.ModListContextMenuStrip.Size = new System.Drawing.Size(180, 70);
             //
@@ -706,6 +717,13 @@
             this.downloadContentsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.downloadContentsToolStripMenuItem.Click += new System.EventHandler(this.downloadContentsToolStripMenuItem_Click);
             resources.ApplyResources(this.downloadContentsToolStripMenuItem, "downloadContentsToolStripMenuItem");
+            //
+            // purgeContentsToolStripMenuItem
+            //
+            this.purgeContentsToolStripMenuItem.Name = "purgeContentsToolStripMenuItem";
+            this.purgeContentsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.purgeContentsToolStripMenuItem.Click += new System.EventHandler(this.purgeContentsToolStripMenuItem_Click);
+            resources.ApplyResources(this.purgeContentsToolStripMenuItem, "purgeContentsToolStripMenuItem");
             //
             // ModListHeaderContextMenuStrip
             //
@@ -1401,7 +1419,8 @@
         private System.Windows.Forms.ToolStripMenuItem FilterInstalledButton;
         private System.Windows.Forms.ToolStripMenuItem FilterInstalledUpdateButton;
         private System.Windows.Forms.ToolStripMenuItem FilterReplaceableButton;
-        private System.Windows.Forms.ToolStripMenuItem cachedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem FilterCachedButton;
+        private System.Windows.Forms.ToolStripMenuItem FilterUncachedButton;
         private System.Windows.Forms.ToolStripMenuItem FilterNewButton;
         private System.Windows.Forms.ToolStripMenuItem FilterNotInstalledButton;
         private System.Windows.Forms.ToolStripMenuItem FilterIncompatibleButton;
@@ -1428,6 +1447,7 @@
         private System.Windows.Forms.ContextMenuStrip ModListHeaderContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem purgeContentsToolStripMenuItem;
         private CKAN.MainModInfo ModInfoTabControl;
         private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
         private System.Windows.Forms.ToolStripStatusLabel StatusInstanceLabel;

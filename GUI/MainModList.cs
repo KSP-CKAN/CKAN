@@ -23,7 +23,8 @@ namespace CKAN
         Incompatible             = 5,
         All                      = 6,
         Cached                   = 7,
-        Replaceable              = 8
+        Replaceable              = 8,
+        Uncached                 = 9,
     }
 
     public partial class Main
@@ -244,26 +245,27 @@ namespace CKAN
             var has_any_installed    = gui_mods.Any(mod => mod.IsInstalled);
             var has_any_replacements = gui_mods.Any(mod => mod.IsInstalled && mod.HasReplacement);
 
-            //TODO Consider using smart enumeration pattern so stuff like this is easier
             Util.Invoke(menuStrip2, () =>
             {
-                FilterToolButton.DropDownItems[0].Text = String.Format(Properties.Resources.MainModListCompatible,
+                FilterCompatibleButton.Text = String.Format(Properties.Resources.MainModListCompatible,
                     mainModList.CountModsByFilter(GUIModFilter.Compatible));
-                FilterToolButton.DropDownItems[1].Text = String.Format(Properties.Resources.MainModListInstalled,
+                FilterInstalledButton.Text = String.Format(Properties.Resources.MainModListInstalled,
                     mainModList.CountModsByFilter(GUIModFilter.Installed));
-                FilterToolButton.DropDownItems[2].Text = String.Format(Properties.Resources.MainModListUpgradeable,
+                FilterInstalledUpdateButton.Text = String.Format(Properties.Resources.MainModListUpgradeable,
                     mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-                FilterToolButton.DropDownItems[3].Text = String.Format(Properties.Resources.MainModListReplaceable,
+                FilterReplaceableButton.Text = String.Format(Properties.Resources.MainModListReplaceable,
                     mainModList.CountModsByFilter(GUIModFilter.Replaceable));
-                FilterToolButton.DropDownItems[4].Text = String.Format(Properties.Resources.MainModListCached,
+                FilterCachedButton.Text = String.Format(Properties.Resources.MainModListCached,
                     mainModList.CountModsByFilter(GUIModFilter.Cached));
-                FilterToolButton.DropDownItems[5].Text = String.Format(Properties.Resources.MainModListNewlyCompatible,
+                FilterUncachedButton.Text = String.Format(Properties.Resources.MainModListUncached,
+                    mainModList.CountModsByFilter(GUIModFilter.Uncached));
+                FilterNewButton.Text = String.Format(Properties.Resources.MainModListNewlyCompatible,
                     mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
-                FilterToolButton.DropDownItems[6].Text = String.Format(Properties.Resources.MainModListNotInstalled,
+                FilterNotInstalledButton.Text = String.Format(Properties.Resources.MainModListNotInstalled,
                     mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
-                FilterToolButton.DropDownItems[7].Text = String.Format(Properties.Resources.MainModListIncompatible,
+                FilterIncompatibleButton.Text = String.Format(Properties.Resources.MainModListIncompatible,
                     mainModList.CountModsByFilter(GUIModFilter.Incompatible));
-                FilterToolButton.DropDownItems[8].Text = String.Format(Properties.Resources.MainModListAll,
+                FilterAllButton.Text = String.Format(Properties.Resources.MainModListAll,
                     mainModList.CountModsByFilter(GUIModFilter.All));
 
                 UpdateAllToolButton.Enabled = has_any_updates;
@@ -999,6 +1001,7 @@ namespace CKAN
                 case GUIModFilter.Installed:                return m.IsInstalled;
                 case GUIModFilter.InstalledUpdateAvailable: return m.IsInstalled && m.HasUpdate;
                 case GUIModFilter.Cached:                   return m.IsCached;
+                case GUIModFilter.Uncached:                 return !m.IsCached;
                 case GUIModFilter.NewInRepository:          return m.IsNew;
                 case GUIModFilter.NotInstalled:             return !m.IsInstalled;
                 case GUIModFilter.Incompatible:             return m.IsIncompatible;

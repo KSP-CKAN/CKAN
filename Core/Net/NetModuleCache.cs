@@ -162,6 +162,18 @@ namespace CKAN
             return cache.Store(module.download, path, description ?? module.StandardName(), move);
         }
 
+        /// <summary>
+        /// Remove a module's download file from the cache
+        /// </summary>
+        /// <param name="module">Module to purge</param>
+        /// <returns>
+        /// True if purged, false otherwise
+        /// </returns>
+        public bool Purge(CkanModule module)
+        {
+            return cache.Remove(module.download);
+        }
+
         private NetFileCache cache;
     }
 }

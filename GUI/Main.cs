@@ -817,9 +817,14 @@ namespace CKAN
             Filter(GUIModFilter.Replaceable);
         }
 
-        private void cachedToolStripMenuItem_Click(object sender, EventArgs e)
+        private void FilterCachedButton_Click(object sender, EventArgs e)
         {
             Filter(GUIModFilter.Cached);
+        }
+
+        private void FilterUncachedButton_Click(object sender, EventArgs e)
+        {
+            Filter(GUIModFilter.Uncached);
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
@@ -876,6 +881,7 @@ namespace CKAN
                 case GUIModFilter.InstalledUpdateAvailable: FilterToolButton.Text = Properties.Resources.MainFilterUpgradeable;  break;
                 case GUIModFilter.Replaceable:              FilterToolButton.Text = Properties.Resources.MainFilterReplaceable;  break;
                 case GUIModFilter.Cached:                   FilterToolButton.Text = Properties.Resources.MainFilterCached;       break;
+                case GUIModFilter.Uncached:                 FilterToolButton.Text = Properties.Resources.MainFilterUncached;     break;
                 case GUIModFilter.NewInRepository:          FilterToolButton.Text = Properties.Resources.MainFilterNew;          break;
                 case GUIModFilter.NotInstalled:             ModList.Columns["InstalledVersion"].Visible = false;
                                                             ModList.Columns["InstallDate"].Visible      = false;
@@ -1250,6 +1256,7 @@ namespace CKAN
                 var guiMod = (GUIMod)ModList.Rows[rowIndex].Tag;
 
                 downloadContentsToolStripMenuItem.Enabled = !guiMod.IsCached;
+                purgeContentsToolStripMenuItem.Enabled = guiMod.IsCached;
                 reinstallToolStripMenuItem.Enabled = guiMod.IsInstalled;
             }
         }
@@ -1298,13 +1305,23 @@ namespace CKAN
 
         private void downloadContentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var module = ModInfoTabControl.SelectedModule;
-            if (module == null || !module.IsCKAN)
-                return;
+            ModInfoTabControl.StartDownload(ModInfoTabControl.SelectedModule);
+        }
 
-            Instance.ResetProgress();
-            Instance.ShowWaitDialog(false);
-            ModInfoTabControl.CacheWorker.RunWorkerAsync(module.ToCkanModule());
+        private void purgeContentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Purge other versions as well since the user is likely to want that
+            // and has no other way to achieve it
+            if (ModInfoTabControl.SelectedModule != null)
+            {
+                IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
+                var allAvail = registry.AllAvailable(ModInfoTabControl.SelectedModule.Identifier);
+                foreach (CkanModule mod in allAvail)
+                {
+                    Manager.Cache.Purge(mod);
+                }
+                ModInfoTabControl.SelectedModule.UpdateIsCached();
+            }
         }
 
         private void Main_Resize(object sender, EventArgs e)
