@@ -17,7 +17,7 @@ if (($PSVersionTable.PSVersion -lt $minPSVer)) {
 }
 
 # Globals
-$NugetVersion       = "5.0.2"
+$NugetVersion       = "5.3.1"
 $UseExperimental    = $false
 $RootDir            = "${PSScriptRoot}"
 $ScriptFile         = "${RootDir}/build.cake"
