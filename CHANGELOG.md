@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Build] Bump nuget to 5.3.1 on Windows (#2929 by: DasSkelett, reviewed: HebaruSan)
+- [Build] Don't send notification to Discord if build succeeds (#2932 by: DasSkelett, reviewed: HebaruSan)
 
 ## v1.26.6 (Leonov)
 
