@@ -1,33 +1,42 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using log4net;
 
 namespace CKAN
 {
-
-    public partial class ErrorDialog : FormCompatibility
+    public partial class ErrorDialog : Form
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(ErrorDialog));
-
         public ErrorDialog()
         {
             InitializeComponent();
-            ApplyFormCompatibilityFixes();
-            StartPosition = FormStartPosition.CenterScreen;
         }
 
         public void ShowErrorDialog(string text, params object[] args)
         {
-            if (Main.Instance.InvokeRequired)
-            {
-                Main.Instance.Invoke(new MethodInvoker(() => ShowErrorDialog(text, args)));
-            }
-            else
+            Util.Invoke(Main.Instance, () =>
             {
                 log.ErrorFormat(text, args);
-                ErrorMessage.Text = String.Format(text, args);
-                ShowDialog();
-            }
+                // Append to previous text, if any
+                if (!string.IsNullOrEmpty(ErrorMessage.Text))
+                {
+                    ErrorMessage.Text += Environment.NewLine + Environment.NewLine;
+                }
+                ErrorMessage.Text += string.Format(text, args);
+                // Resize form to fit
+                var padding = ClientSize.Height - ErrorMessage.Height + 50;
+                ClientSize = new Size(
+                    ClientSize.Width,
+                    Math.Min(
+                        maxHeight,
+                        padding + StringHeight(ErrorMessage.Text, ErrorMessage.Width - 4)
+                    )
+                );
+                if (!Visible)
+                {
+                    ShowDialog(Main.Instance);
+                }
+            });
         }
 
         public void HideErrorDialog()
@@ -39,5 +48,19 @@ namespace CKAN
         {
             Close();
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            // Clear message on close so we start blank next time
+            ErrorMessage.Text = "";
+        }
+
+        private int StringHeight(string text, int maxWidth)
+        {
+            return (int)CreateGraphics().MeasureString(text, ErrorMessage.Font, maxWidth).Height;
+        }
+
+        private const           int  maxHeight = 600;
+        private static readonly ILog log       = LogManager.GetLogger(typeof(ErrorDialog));
     }
 }

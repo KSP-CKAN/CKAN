@@ -38,10 +38,13 @@
             //
             // panel1
             //
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.ErrorMessage);
             this.panel1.Location = new System.Drawing.Point(13, 13);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(267, 117);
+            this.panel1.Size = new System.Drawing.Size(775, 105);
             this.panel1.TabIndex = 0;
             //
             // ErrorMessage
@@ -50,15 +53,16 @@
             this.ErrorMessage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ErrorMessage.Location = new System.Drawing.Point(0, 0);
             this.ErrorMessage.Name = "ErrorMessage";
-            this.ErrorMessage.Size = new System.Drawing.Size(267, 117);
+            this.ErrorMessage.Size = new System.Drawing.Size(267, 105);
             this.ErrorMessage.TabIndex = 0;
             this.ErrorMessage.ReadOnly = true;
             resources.ApplyResources(this.ErrorMessage, "ErrorMessage");
             //
             // DismissButton
             //
+            this.DismissButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom));
             this.DismissButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DismissButton.Location = new System.Drawing.Point(205, 136);
+            this.DismissButton.Location = new System.Drawing.Point(387, 124);
             this.DismissButton.Name = "DismissButton";
             this.DismissButton.Size = new System.Drawing.Size(75, 23);
             this.DismissButton.TabIndex = 1;
@@ -70,13 +74,14 @@
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 174);
-            this.ControlBox = false;
+            this.ClientSize = new System.Drawing.Size(800, 160);
+            this.ControlBox = true;
             this.Controls.Add(this.DismissButton);
             this.Controls.Add(this.panel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = Properties.Resources.AppIcon;
             this.Name = "ErrorDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             resources.ApplyResources(this, "$this");
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
