@@ -8,8 +8,11 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [GUI] Don't launch KSP 1.8 with -single-instance (#2931 by: HebaruSan, reviewed: DasSkelett)
+
 ### Internal
-- [Build] Bump nuget to 5.3.1 on Windows (#2929 by DasSkelett, reviewed: HebaruSan)
+
+- [Build] Bump nuget to 5.3.1 on Windows (#2929 by: DasSkelett, reviewed: HebaruSan)
 
 ## v1.26.6 (Leonov)
 
