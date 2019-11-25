@@ -124,10 +124,9 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Downloads our files, returning an array of filenames that we're writing to.
-        /// The sole argument is a collection of DownloadTargets.
-        /// The .onCompleted delegate will be called on completion.
+        /// Downloads our files.
         /// </summary>
+        /// <param name="targets">A collection of DownloadTargets</param>
         private void Download(ICollection<Net.DownloadTarget> targets)
         {
             downloads.Clear();

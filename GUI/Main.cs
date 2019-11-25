@@ -1321,6 +1321,7 @@ namespace CKAN
                     Manager.Cache.Purge(mod);
                 }
                 ModInfoTabControl.SelectedModule.UpdateIsCached();
+                UpdateModContentsTree(ModInfoTabControl.SelectedModule.ToCkanModule(), true);
             }
         }
 
