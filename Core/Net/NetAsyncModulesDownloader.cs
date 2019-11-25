@@ -29,7 +29,11 @@ namespace CKAN
         public NetAsyncModulesDownloader(IUser user, NetModuleCache cache)
         {
             modules    = new List<CkanModule>();
-            downloader = new NetAsyncDownloader(user);
+            downloader = new NetAsyncDownloader(user)
+            {
+                // Schedule us to process each module on completion.
+                onOneCompleted = ModuleDownloadComplete
+            };
             this.cache = cache;
         }
 
@@ -39,16 +43,15 @@ namespace CKAN
         public void DownloadModules(IEnumerable<CkanModule> modules)
         {
             // Walk through all our modules, but only keep the first of each
-            // one that has a unique download path.
+            // one that has a unique download path (including active downloads).
+            var currentlyActive = new HashSet<Uri>(this.modules.Select(m => m.download));
             Dictionary<Uri, CkanModule> unique_downloads = modules
                 .GroupBy(module => module.download)
-                .ToDictionary(p => p.First().download, p => p.First());
+                .Where(group => !currentlyActive.Contains(group.Key))
+                .ToDictionary(group => group.Key, group => group.First());
 
             this.modules.AddRange(unique_downloads.Values);
 
-            // Schedule us to process each module on completion.
-            downloader.onOneCompleted = ModuleDownloadComplete;
-                    
             try
             {
                 // Start the downloads!

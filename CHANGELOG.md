@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Don't launch KSP 1.8 with -single-instance (#2931 by: HebaruSan, reviewed: DasSkelett)
 - [GUI] Handle multiple errors in same ErrorDialog (#2933 by: HebaruSan, reviewed: DasSkelett)
+- [GUI] Multiple manual downloads, uncached filter, purge option (#2930 by: HebaruSan, reviewed: DasSkelett)
 
 ### Internal
 

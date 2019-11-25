@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using CKAN.Versioning;
 
 namespace CKAN
@@ -21,16 +22,22 @@ namespace CKAN
 
     public partial class MainModInfo : UserControl
     {
-        private BackgroundWorker m_CacheWorker;
-        private GUIMod _selectedModule;
+        private BackgroundWorker          cacheWorker;
+        private GUIMod                    selectedModule;
+        private NetAsyncModulesDownloader downloader;
+        private CkanModule                currentModContentsModule;
 
         public MainModInfo()
         {
             InitializeComponent();
 
-            m_CacheWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
-            m_CacheWorker.RunWorkerCompleted += PostModCaching;
-            m_CacheWorker.DoWork += CacheMod;
+            cacheWorker = new BackgroundWorker()
+            {
+                WorkerReportsProgress      = true,
+                WorkerSupportsCancellation = true,
+            };
+            cacheWorker.RunWorkerCompleted += PostModCaching;
+            cacheWorker.DoWork += CacheMod;
 
             DependsGraphTree.BeforeExpand += BeforeExpand;
         }
@@ -39,7 +46,7 @@ namespace CKAN
         {
             set
             {
-                this._selectedModule = value;
+                this.selectedModule = value;
                 if (value == null)
                 {
                     ModInfoTabControl.Enabled = false;
@@ -58,7 +65,7 @@ namespace CKAN
             }
             get
             {
-                return _selectedModule;
+                return selectedModule;
             }
         }
 
@@ -90,18 +97,6 @@ namespace CKAN
             }
         }
 
-        public BackgroundWorker CacheWorker
-        {
-            get
-            {
-                return m_CacheWorker;
-            }
-            set
-            {
-                m_CacheWorker = value;
-            }
-        }
-
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             Main.Instance.ResetFilterAndSelectModOnList(e.Node.Name);
@@ -114,14 +109,9 @@ namespace CKAN
 
         private void ContentsDownloadButton_Click(object sender, EventArgs e)
         {
-            var module = SelectedModule;
-            if (module == null || !module.IsCKAN) return;
-
-            Main.Instance.ResetProgress();
-            Main.Instance.ShowWaitDialog(false);
-            m_CacheWorker.RunWorkerAsync(module.ToCkanModule());
+            StartDownload(SelectedModule);
         }
-
+        
         private void ContentsOpenButton_Click(object sender, EventArgs e)
         {
             Process.Start(manager.Cache.GetCachedFilename(SelectedModule.ToModule()));
@@ -407,8 +397,6 @@ namespace CKAN
             Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(force));
         }
 
-        private CkanModule current_mod_contents_module;
-
         private void _UpdateModContentsTree(bool force = false)
         {
             GUIMod guiMod = SelectedModule;
@@ -417,13 +405,13 @@ namespace CKAN
                 return;
             }
             CkanModule module = guiMod.ToCkanModule();
-            if (Equals(module, current_mod_contents_module) && !force)
+            if (Equals(module, currentModContentsModule) && !force)
             {
                 return;
             }
             else
             {
-                current_mod_contents_module = module;
+                currentModContentsModule = module;
             }
             if (!guiMod.IsCached)
             {
@@ -457,29 +445,52 @@ namespace CKAN
             ContentsPreviewTree.Nodes[0].ExpandAll();
         }
 
+        public void StartDownload(GUIMod module)
+        {
+            if (module == null || !module.IsCKAN)
+                return;
+
+            Main.Instance.ShowWaitDialog(false);
+            if (cacheWorker.IsBusy)
+            {
+                Task.Factory.StartNew(() => 
+                {
+                    // Just pass to the existing worker
+                    downloader.DownloadModules(new List<CkanModule> { module.ToCkanModule() });
+                    module.UpdateIsCached();
+                });
+            }
+            else
+            {
+                // Start up a new worker
+                downloader = new NetAsyncModulesDownloader(Main.Instance.currentUser, Main.Instance.Manager.Cache);
+                cacheWorker.RunWorkerAsync(module);
+            }
+        }
+
+        // cacheWorker.DoWork
         private void CacheMod(object sender, DoWorkEventArgs e)
         {
             Main.Instance.ResetProgress();
             Main.Instance.ClearLog();
 
-            NetAsyncModulesDownloader downloader = new NetAsyncModulesDownloader(Main.Instance.currentUser, Main.Instance.Manager.Cache);
-
-            downloader.DownloadModules(new List<CkanModule> { (CkanModule)e.Argument });
+            GUIMod gm = e.Argument as GUIMod;
+            downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
             e.Result = e.Argument;
         }
 
+        // cacheWorker.RunWorkerCompleted
         public void PostModCaching(object sender, RunWorkerCompletedEventArgs e)
         {
-            Util.Invoke(this, () => _PostModCaching((CkanModule)e.Result));
+            Util.Invoke(this, () => _PostModCaching((GUIMod)e.Result));
         }
 
-        private void _PostModCaching(CkanModule module)
+        private void _PostModCaching(GUIMod module)
         {
+            module.UpdateIsCached();
             Main.Instance.HideWaitDialog(true);
-
-            SelectedModule?.UpdateIsCached();
-            UpdateModContentsTree(module, true);
-            Main.Instance.RecreateDialogs();
+            // User might have selected another row. Show current in tree.
+            UpdateModContentsTree(SelectedModule.ToCkanModule(), true);
         }
 
         /// <summary>
