@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Linq;
 using CKAN.Versioning;
 using CKAN.Exporters;
 using CKAN.Properties;
@@ -918,6 +919,14 @@ namespace CKAN
                 }
             }
 
+            // -single-instance crashes KSP 1.8 on Linux
+            // https://issuetracker.unity3d.com/issues/linux-segmentation-fault-when-running-a-built-project-with-single-instance-argument
+            if (Platform.IsUnix)
+            {
+                split = filterCmdLineArgs(split,
+                    new KspVersion(1, 8).ToVersionRange(), "-single-instance");
+            }
+
             var binary = split[0];
             var args = string.Join(" ", split.Skip(1));
 
@@ -930,6 +939,32 @@ namespace CKAN
             {
                 GUI.user.RaiseError(Properties.Resources.MainLaunchFailed, exception.Message);
             }
+        }
+        
+        /// <summary>
+        /// If the installed game version is in the given range,
+        /// return the given array without the given parameter,
+        /// otherwise return the array as-is.
+        /// </summary>
+        /// <param name="args">Command line parameters to check</param>
+        /// <param name="crashyKspRange">Game versions that should not use this parameter</param>
+        /// <param name="parameter">The parameter to remove on version match</param>
+        /// <returns>
+        /// args or args minus parameter
+        /// </returns>
+        private string[] filterCmdLineArgs(string[] args, KspVersionRange crashyKspRange, string parameter)
+        {
+            var installedRange = CurrentInstance.Version().ToVersionRange();
+            if (crashyKspRange.IntersectWith(installedRange) != null
+                && args.Contains(parameter))
+            {
+                log.DebugFormat(
+                    "Parameter {0} found on incompatible KSP version {1}, pruning",
+                    parameter,
+                    CurrentInstance.Version().ToString());
+                return args.Where(s => s != parameter).ToArray();
+            }
+            return args;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
