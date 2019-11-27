@@ -30,6 +30,11 @@ namespace CKAN
 
         public int ActiveFilter = 0;
 
+        /// <summary>
+        /// Name of the label filter the user chose, if any
+        /// </summary>
+        public string CustomLabelFilter = null;
+
         // Sort by the mod name (index = 2) column by default
         public int SortByColumnIndex = 2;
         public bool SortDescending = false;

@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System;
 using System.Linq;
+using System.Collections.Generic;
+using System.Drawing;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -47,14 +48,18 @@ namespace CKAN
                 }
 
                 CkanModule m = change.Mod;
+                bool warn = AnyLabelAlertsBeforeInstall(m);
                 ChangesListView.Items.Add(new ListViewItem(new string[]
                 {
                     change.NameAndStatus,
                     change.ChangeType.ToString(),
-                    change.Description
+                    warn
+                        ? string.Format(Properties.Resources.MainChangesetWarningInstallingHidden, change.Description)
+                        : change.Description
                 })
                 {
-                    Tag = m
+                    Tag = m,
+                    ForeColor = warn ? Color.Red : SystemColors.WindowText
                 });
             }
         }

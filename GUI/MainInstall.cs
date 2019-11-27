@@ -317,6 +317,7 @@ namespace CKAN
         private void OnModInstalled(CkanModule mod)
         {
             AddStatusMessage(string.Format(Properties.Resources.MainInstallModSuccess, mod.name));
+            LabelsAfterInstall(mod);
         }
 
         private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)

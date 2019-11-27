@@ -206,6 +206,7 @@ namespace CKAN
                 minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 ModListContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 ModListHeaderContextMenuStrip.Renderer = new FlatToolStripRenderer();
+                LabelsContextMenuStrip.Renderer = new FlatToolStripRenderer();
             }
 
             // Initialize all user interaction dialogs.
@@ -536,6 +537,7 @@ namespace CKAN
 
             // Save the active filter
             configuration.ActiveFilter = (int)mainModList.ModFilter;
+            configuration.CustomLabelFilter = mainModList.CustomLabelFilter?.Name;
 
             // Save settings.
             configuration.Save();
@@ -587,7 +589,11 @@ namespace CKAN
                 // Remove it again after it ran, else it stays there and is added again and again.
                 void filterUpdate (object sender, RunWorkerCompletedEventArgs e)
                 {
-                    Filter((GUIModFilter)configuration.ActiveFilter);
+                    Filter(
+                        (GUIModFilter)configuration.ActiveFilter,
+                        mainModList.ModuleLabels.Labels
+                            .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
+                    );
                     m_UpdateRepoWorker.RunWorkerCompleted -= filterUpdate;
                 }
 
@@ -596,7 +602,11 @@ namespace CKAN
             else
             {
                 UpdateModsList();
-                Filter((GUIModFilter)configuration.ActiveFilter);
+                Filter(
+                    (GUIModFilter)configuration.ActiveFilter,
+                    mainModList.ModuleLabels.Labels
+                        .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
+                );
             }
 
             ChangeSet = null;
@@ -852,13 +862,15 @@ namespace CKAN
         /// Called when the modlist filter (all, compatible, incompatible...) is changed.
         /// </summary>
         /// <param name="filter">Filter.</param>
-        private void Filter(GUIModFilter filter)
+        private void Filter(GUIModFilter filter, ModuleLabel label = null)
         {
             // Triggers mainModList.ModFiltersUpdated()
             mainModList.ModFilter = filter;
+            mainModList.CustomLabelFilter = label;
 
             // Save new filter to the configuration.
             configuration.ActiveFilter = (int)mainModList.ModFilter;
+            configuration.CustomLabelFilter = label?.Name;
             configuration.Save();
 
             // Ask the configuration which columns to show.
@@ -888,6 +900,7 @@ namespace CKAN
                                                             ModList.Columns["InstallDate"].Visible      = false;
                                                             ModList.Columns["AutoInstalled"].Visible    = false;
                                                             FilterToolButton.Text = Properties.Resources.MainFilterNotInstalled; break;
+                case GUIModFilter.CustomLabel:              FilterToolButton.Text = label?.Name ?? "CUSTOM";                      break;
                 default:                                    FilterToolButton.Text = Properties.Resources.MainFilterCompatible;   break;
             }
         }

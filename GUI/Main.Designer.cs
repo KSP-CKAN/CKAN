@@ -87,7 +87,13 @@
             this.DownloadCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ModListContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.LabelsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ModListHeaderContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.modListToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.customFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.labelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.editLabelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reinstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.purgeContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -423,7 +429,9 @@
             this.FilterNewButton,
             this.FilterNotInstalledButton,
             this.FilterIncompatibleButton,
-            this.FilterAllButton});
+            this.FilterAllButton,
+            this.customFilterToolStripSeparator});
+            this.FilterToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterToolButton_DrodDown_Opening);
             this.FilterToolButton.Image = global::CKAN.Properties.Resources.filter;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
@@ -698,11 +706,20 @@
             // ModListContextMenuStrip
             //
             this.ModListContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.labelsToolStripMenuItem,
+            this.modListToolStripSeparator,
             this.reinstallToolStripMenuItem,
             this.downloadContentsToolStripMenuItem,
             this.purgeContentsToolStripMenuItem});
             this.ModListContextMenuStrip.Name = "ModListContextMenuStrip";
             this.ModListContextMenuStrip.Size = new System.Drawing.Size(180, 70);
+            //
+            // labelsToolStripMenuItem
+            //
+            this.labelsToolStripMenuItem.Name = "labelsToolStripMenuItem";
+            this.labelsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.labelsToolStripMenuItem.DropDown = this.LabelsContextMenuStrip;
+            resources.ApplyResources(this.labelsToolStripMenuItem, "labelsToolStripMenuItem");
             //
             // reinstallToolStripMenuItem
             //
@@ -724,6 +741,21 @@
             this.purgeContentsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.purgeContentsToolStripMenuItem.Click += new System.EventHandler(this.purgeContentsToolStripMenuItem_Click);
             resources.ApplyResources(this.purgeContentsToolStripMenuItem, "purgeContentsToolStripMenuItem");
+            //
+            // LabelsContextMenuStrip
+            //
+            this.LabelsContextMenuStrip.Name = "LabelsContextMenuStrip";
+            this.LabelsContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.editLabelsToolStripMenuItem});
+            this.LabelsContextMenuStrip.Size = new System.Drawing.Size(180, 70);
+            this.LabelsContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(LabelsContextMenuStrip_Opening);
+            //
+            // editLabelsToolStripMenuItem
+            //
+            this.editLabelsToolStripMenuItem.Name = "editLabelsToolStripMenuItem";
+            this.editLabelsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.editLabelsToolStripMenuItem.Click += new System.EventHandler(this.editLabelsToolStripMenuItem_Click);
+            resources.ApplyResources(this.editLabelsToolStripMenuItem, "editLabelsToolStripMenuItem");
             //
             // ModListHeaderContextMenuStrip
             //
@@ -1444,7 +1476,13 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn DownloadCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
         private System.Windows.Forms.ContextMenuStrip ModListContextMenuStrip;
+        private System.Windows.Forms.ToolStripSeparator modListToolStripSeparator;
+        private System.Windows.Forms.ToolStripSeparator customFilterToolStripSeparator;
+        private System.Windows.Forms.ContextMenuStrip LabelsContextMenuStrip;
         private System.Windows.Forms.ContextMenuStrip ModListHeaderContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem labelsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator labelToolStripSeparator;
+        private System.Windows.Forms.ToolStripMenuItem editLabelsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem purgeContentsToolStripMenuItem;

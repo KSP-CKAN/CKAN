@@ -25,6 +25,7 @@ namespace CKAN
         Cached                   = 7,
         Replaceable              = 8,
         Uncached                 = 9,
+        CustomLabel              = 10,
     }
 
     public partial class Main
@@ -201,6 +202,7 @@ namespace CKAN
             );
 
             AddLogMessage(Properties.Resources.MainModListPreservingNew);
+            var toNotify = new HashSet<GUIMod>();
             if (old_modules != null)
             {
                 foreach (GUIMod gm in gui_mods)
@@ -211,6 +213,7 @@ namespace CKAN
                         if (!gm.IsIncompatible && oldIncompat)
                         {
                             gm.IsNew = true;
+                            toNotify.Add(gm);
                         }
                     }
                     else
@@ -230,13 +233,14 @@ namespace CKAN
                     gui_mod.IsNew = true;
                 }
             }
+            LabelsAfterUpdate(toNotify);
 
             AddLogMessage(Properties.Resources.MainModListPopulatingList);
             // Update our mod listing
             mainModList.ConstructModList(gui_mods.ToList(), mc, configuration.HideEpochs, configuration.HideV);
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
-            
+
             UpdateChangeSetAndConflicts(registry);
 
             AddLogMessage(Properties.Resources.MainModListUpdatingFilters);
@@ -576,7 +580,7 @@ namespace CKAN
                 }
             }
         }
-        
+
         private void ModList_GotFocus(object sender, EventArgs e)
         {
             Util.Invoke(this, () =>
@@ -692,6 +696,24 @@ namespace CKAN
                 var old = _modFilter;
                 _modFilter = value;
                 if (!old.Equals(value)) ModFiltersUpdated(this);
+            }
+        }
+
+        public readonly ModuleLabelList ModuleLabels = ModuleLabelList.Load(ModuleLabelList.DefaultPath)
+            ?? ModuleLabelList.GetDefaultLabels();
+
+        private ModuleLabel _customLabelFilter;
+        public ModuleLabel CustomLabelFilter
+        {
+            get { return _customLabelFilter; }
+            set
+            {
+                var old = _customLabelFilter;
+                _customLabelFilter = value;
+                if (!old?.Equals(value) ?? !value?.Equals(old) ?? false)
+                {
+                    ModFiltersUpdated(this);
+                }
             }
         }
 
@@ -825,19 +847,19 @@ namespace CKAN
             var nameMatchesFilter = IsNameInNameFilter(mod);
             var authorMatchesFilter = IsAuthorInAuthorFilter(mod);
             var abstractMatchesFilter = IsAbstractInDescriptionFilter(mod);
-            var modMatchesType = IsModInFilter(ModFilter, mod);
+            var modMatchesType = IsModInFilter(ModFilter, CustomLabelFilter, mod);
             var isVisible = nameMatchesFilter && modMatchesType && authorMatchesFilter && abstractMatchesFilter;
             return isVisible;
         }
 
-        public int CountModsByFilter(GUIModFilter filter)
+        public int CountModsByFilter(GUIModFilter filter, ModuleLabel label = null)
         {
             if (filter == GUIModFilter.All)
             {
                 // Don't check each one
                 return Modules.Count;
             }
-            return Modules.Count(m => IsModInFilter(filter, m));
+            return Modules.Count(m => IsModInFilter(filter, label, m));
         }
 
         /// <summary>
@@ -864,6 +886,14 @@ namespace CKAN
         private DataGridViewRow MakeRow(GUIMod mod, List<ModChange> changes, bool hideEpochs = false, bool hideV = false)
         {
             DataGridViewRow item = new DataGridViewRow() {Tag = mod};
+
+            Color? myColor = ModuleLabels.Labels.FirstOrDefault(
+                l => l.ModuleIdentifiers.Contains(mod.Identifier)
+            )?.Color;
+            if (myColor.HasValue)
+            {
+                item.DefaultCellStyle.BackColor = myColor.Value;
+            }
 
             ModChange myChange = changes?.FindLast((ModChange ch) => ch.Mod.Equals(mod));
 
@@ -902,7 +932,7 @@ namespace CKAN
                     Value = "-"
                 };
 
-            var replacing = IsModInFilter(GUIModFilter.Replaceable, mod)
+            var replacing = IsModInFilter(GUIModFilter.Replaceable, null, mod)
                 ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                 {
                     Value = myChange == null ? false
@@ -954,6 +984,27 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Update the color and visible state of the given row
+        /// after it has been added to or removed from a label group
+        /// </summary>
+        /// <param name="mod">The mod that needs an update</param>
+        public void ReapplyLabels(GUIMod mod)
+        {
+            DataGridViewRow row;
+            if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out row))
+            {
+                Color? myColor = ModuleLabels.Labels
+                    .FirstOrDefault(l => l.ModuleIdentifiers.Contains(mod.Identifier))
+                    ?.Color;
+                if (myColor.HasValue)
+                {
+                    row.DefaultCellStyle.BackColor = myColor.Value;
+                }
+                row.Visible = IsVisible(mod);
+            }
+        }
+
+        /// <summary>
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
         /// </summary>
         public string StripEpoch(string version)
@@ -993,8 +1044,18 @@ namespace CKAN
                 || mod.SearchableDescription.IndexOf(sanitisedModDescriptionFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
         }
 
-        private static bool IsModInFilter(GUIModFilter filter, GUIMod m)
+        private static bool IsModInFilter(GUIModFilter filter, ModuleLabel label, GUIMod m)
         {
+            if (filter != GUIModFilter.CustomLabel)
+            {
+                // "Hide" labels apply to all non-custom filters
+                if (Main.Instance.mainModList.ModuleLabels.Labels
+                    .Where(l => l.Hide)
+                    .Any(l => l.ModuleIdentifiers.Contains(m.Identifier)))
+                {
+                    return false;
+                }
+            }
             switch (filter)
             {
                 case GUIModFilter.Compatible:               return !m.IsIncompatible;
@@ -1007,6 +1068,7 @@ namespace CKAN
                 case GUIModFilter.Incompatible:             return m.IsIncompatible;
                 case GUIModFilter.Replaceable:              return m.IsInstalled && m.HasReplacement;
                 case GUIModFilter.All:                      return true;
+                case GUIModFilter.CustomLabel:              return label?.ModuleIdentifiers?.Contains(m.Identifier) ?? false;
                 default:                                    throw new Kraken(string.Format(Properties.Resources.MainModListUnknownFilter, filter));
             }
         }

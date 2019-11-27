@@ -260,4 +260,6 @@
   <data name="openKSPDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>Open KSP Directory</value></data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>CKAN Settings</value></data>
   <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>Quit</value></data>
+  <data name="labelsToolStripMenuItem.Text" xml:space="preserve"><value>Labels</value></data>
+  <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve"><value>Edit labels...</value></data>
 </root>
