@@ -112,10 +112,10 @@ namespace CKAN
                 {
                     MessageBox.Show(
                         string.Format(
-                            "Some of your watched mods have updated:\r\n\r\n{0}",
+                            Properties.Resources.MainLabelsUpdateMessage,
                             string.Join("\r\n", toNotif)
                         ),
-                        "Update Notifications",
+                        Properties.Resources.MainLabelsUpdateTitle,
                         MessageBoxButtons.OK
                     );
                 }

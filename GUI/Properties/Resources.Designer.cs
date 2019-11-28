@@ -808,5 +808,11 @@ namespace CKAN.Properties {
         internal static string EditLabelsToolTipRemoveOnInstall {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipRemoveOnInstall", resourceCulture)); }
         }
+        internal static string MainLabelsUpdateMessage {
+            get { return (string)(ResourceManager.GetObject("MainLabelsUpdateMessage", resourceCulture)); }
+        }
+        internal static string MainLabelsUpdateTitle {
+            get { return (string)(ResourceManager.GetObject("MainLabelsUpdateTitle", resourceCulture)); }
+        }
    }
 }

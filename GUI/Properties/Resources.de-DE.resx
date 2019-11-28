@@ -335,4 +335,8 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="EditLabelsToolTipRemoveOnChanges" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird ein Modul, das von inkompatibel zu kompatibel wechselt, von diesem Label entfernt</value></data>
   <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve"><value>Wenn diese Option aktiviert ist, werden Sie auf dem Bildschirm zum Festlegen von Änderungen benachrichtigt, wenn dieser Mod installiert wird</value></data>
   <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve"><value>Wenn diese Option aktiviert ist, werden Module von diesem Etikett entfernt, wenn sie installiert sind</value></data>
+  <data name="MainLabelsUpdateMessage" xml:space="preserve"><value>Einige deiner beobachteten Mods wurden aktualisiert:
+
+{0}</value></data>
+  <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>Benachrichtigungen aktualisieren</value></data>
 </root>

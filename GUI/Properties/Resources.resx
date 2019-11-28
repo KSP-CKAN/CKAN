@@ -354,4 +354,8 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="EditLabelsToolTipRemoveOnChanges" xml:space="preserve"><value>If checked, a module that changes from incompatible to compatible will be removed from this label</value></data>
   <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve"><value>If checked, the change set screen will alert you if this mod is about to be installed</value></data>
   <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve"><value>If checked, modules will be removed from this label if they are installed</value></data>
+  <data name="MainLabelsUpdateMessage" xml:space="preserve"><value>Some of your watched mods have updated:
+
+{0}</value></data>
+  <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>Update Notifications</value></data>
 </root>
