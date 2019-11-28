@@ -10,6 +10,7 @@ using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CKAN.Versioning;
+using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Processors
@@ -115,9 +116,10 @@ namespace CKAN.NetKAN.Processors
             IEnumerable<Metadata> ckans = null;
             bool   caught        = false;
             string caughtMessage = null;
+            var    opts          = new TransformOptions(releases, highVer);
             try
             {
-                ckans = inflator.Inflate($"{netkan.Identifier}.netkan", netkan, releases, highVer);
+                ckans = inflator.Inflate($"{netkan.Identifier}.netkan", netkan, opts);
             }
             catch (Exception e)
             {
@@ -130,20 +132,25 @@ namespace CKAN.NetKAN.Processors
             }
             if (caught)
             {
-                yield return inflationMessage(null, netkan, false, caughtMessage);
+                yield return inflationMessage(null, netkan, opts, false, caughtMessage);
             }
             if (ckans != null)
             {
                 foreach (Metadata ckan in ckans)
                 {
                     log.InfoFormat("Sending {0}-{1}", ckan.Identifier, ckan.Version);
-                    yield return inflationMessage(ckan, netkan, true);
+                    yield return inflationMessage(ckan, netkan, opts, true);
                 }
             }
         }
 
-        private SendMessageBatchRequestEntry inflationMessage(Metadata ckan, Metadata netkan, bool success, string err = null)
+        private SendMessageBatchRequestEntry inflationMessage(Metadata ckan, Metadata netkan, TransformOptions opts, bool success, string err = null)
         {
+            bool staged = netkan.Staged || opts.Staged;
+            string stagingReason = 
+                  !string.IsNullOrEmpty(netkan.StagingReason) ? netkan.StagingReason
+                : !string.IsNullOrEmpty(opts.StagingReason)   ? opts.StagingReason
+                : null;
             var attribs = new Dictionary<string, MessageAttributeValue>()
             {
                 {
@@ -159,7 +166,7 @@ namespace CKAN.NetKAN.Processors
                     new MessageAttributeValue()
                     {
                         DataType    = "String",
-                        StringValue = netkan.Staged.ToString()
+                        StringValue = staged.ToString()
                     }
                 },
                 {
@@ -201,14 +208,14 @@ namespace CKAN.NetKAN.Processors
                     }
                 );
             }
-            if (netkan.Staged && !string.IsNullOrEmpty(netkan.StagingReason))
+            if (staged && stagingReason != null)
             {
                 attribs.Add(
                     "StagingReason",
                     new MessageAttributeValue()
                     {
                         DataType    = "String",
-                        StringValue = netkan.StagingReason
+                        StringValue = stagingReason,
                     }
                 );
             }

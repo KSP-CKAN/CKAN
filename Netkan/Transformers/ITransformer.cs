@@ -14,6 +14,8 @@ namespace CKAN.NetKAN.Transformers
 
         public readonly int?          Releases;
         public readonly ModuleVersion HighestVersion;
+        public          bool          Staged;
+        public          string        StagingReason;
     }
 
     /// <summary>

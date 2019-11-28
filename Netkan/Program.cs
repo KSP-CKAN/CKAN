@@ -87,7 +87,7 @@ namespace CKAN.NetKAN
                         Options.GitHubToken,
                         Options.PreRelease
                     );
-                    var ckans = inf.Inflate(Options.File, netkan, ParseReleases(Options.Releases), null);
+                    var ckans = inf.Inflate(Options.File, netkan, new TransformOptions(ParseReleases(Options.Releases), null));
                     foreach (Metadata ckan in ckans)
                     {
                         WriteCkan(ckan);

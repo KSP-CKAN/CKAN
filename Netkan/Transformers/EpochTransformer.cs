@@ -56,6 +56,9 @@ namespace CKAN.NetKAN.Transformers
                 {
                     Log.DebugFormat("Auto-epoching out of order version: {0} < {1}",
                         currentV, opts.HighestVersion);
+                    // Tell the Indexer to be careful
+                    opts.Staged = true;
+                    opts.StagingReason = $"Auto-epoching out of order version: {currentV} < {opts.HighestVersion}";
                     // Increment epoch if too small
                     currentV = currentV.IncrementEpoch();
                 }
