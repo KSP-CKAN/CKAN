@@ -1049,9 +1049,9 @@ namespace CKAN
             if (filter != GUIModFilter.CustomLabel)
             {
                 // "Hide" labels apply to all non-custom filters
-                if (Main.Instance.mainModList.ModuleLabels.Labels
+                if (Main.Instance?.mainModList.ModuleLabels.Labels
                     .Where(l => l.Hide)
-                    .Any(l => l.ModuleIdentifiers.Contains(m.Identifier)))
+                    .Any(l => l.ModuleIdentifiers.Contains(m.Identifier)) ?? false)
                 {
                     return false;
                 }
