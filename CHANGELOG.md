@@ -8,14 +8,15 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
-- [GUI] Don't launch KSP 1.8 with -single-instance (#2931 by: HebaruSan, reviewed: DasSkelett)
-- [GUI] Handle multiple errors in same ErrorDialog (#2933 by: HebaruSan, reviewed: DasSkelett)
-- [GUI] Multiple manual downloads, uncached filter, purge option (#2930 by: HebaruSan, reviewed: DasSkelett)
+- [GUI] Don't launch KSP 1.8 with -single-instance (#2931 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Handle multiple errors in same ErrorDialog (#2933 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Multiple manual downloads, uncached filter, purge option (#2930 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
-- [Build] Bump nuget to 5.3.1 on Windows (#2929 by: DasSkelett, reviewed: HebaruSan)
-- [Build] Don't send notification to Discord if build succeeds (#2932 by: DasSkelett, reviewed: HebaruSan)
+- [Build] Bump nuget to 5.3.1 on Windows (#2929 by: DasSkelett; reviewed: HebaruSan)
+- [Build] Don't send notification to Discord if build succeeds (#2932 by: DasSkelett: reviewed: HebaruSan)
+- [Netkan] Auto-epoch based on queue message attribute (#2824 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.6 (Leonov)
 
@@ -552,7 +553,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [CLI] Improve legend on `ckan list` functionality. (#1664 by: politas; reviewed: pjf)
-- [Core] Workaround string.Format() bug in old Mono versions (#1784 by: dbent, reviewed: postremus)
+- [Core] Workaround string.Format() bug in old Mono versions (#1784 by: dbent; reviewed: postremus)
 
 ### Features
 
@@ -569,9 +570,9 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
-- [Core] In certain cases a `NullReferenceException` could be produced inside error handling code when processing the registry. (#1700 by: keyspace, reviewed: dbent)
-- [GUI] Fix typo in export options. (#1718 by: dandrestor, reviewed: plague006)
-- [GUI] Fix unit of measure for download speed. (#1732 by: plague006, reviewed: dbent)
+- [Core] In certain cases a `NullReferenceException` could be produced inside error handling code when processing the registry. (#1700 by: keyspace; reviewed: dbent)
+- [GUI] Fix typo in export options. (#1718 by: dandrestor; reviewed: plague006)
+- [GUI] Fix unit of measure for download speed. (#1732 by: plague006; reviewed: dbent)
 - [Linux] Better menu integration of the CKAN launcher. (#1704 by: reavertm; reviewed: pjf)
 
 ### Features
@@ -595,8 +596,8 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] Catch ValueErrors rather than printing the trace (#1648 by: techman83; reviewed: Daz)
 - [NetKAN] Catch `ksp_version` from SpaceDocks newly implemented `game_version` (#1655 by: dbent; reviewed: -)
 - [NetKAN] Allow specifying when an override is executed (#1684 by: dbent; reviewed: techman83)
-- [NetKAN] Redirects to the download file are now resolved when using HTTP $krefs (#1696 by: dbent, reviewed: techman83)
-- [NetKAN] Remote AVC files will be used in preference to ones stored in the archive if they have the same version (#1701 by: dbent, reviewed: techman83)
+- [NetKAN] Redirects to the download file are now resolved when using HTTP $krefs (#1696 by: dbent; reviewed: techman83)
+- [NetKAN] Remote AVC files will be used in preference to ones stored in the archive if they have the same version (#1701 by: dbent; reviewed: techman83)
 - [NetKAN] Sensible defaults are used when fetching abstract and homepage from github. (#1726, #1723 by: dbent; reviewed: politas)
 - [NetKAN] Add Download Attribute Transformer (#1710 by: techman83; reviewed: dbent)
 - [NetKAN] Add ksp_version_strict to property sort order (#1722 by: dbent; reviewed: plague006)

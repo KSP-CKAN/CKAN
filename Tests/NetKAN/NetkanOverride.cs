@@ -11,7 +11,7 @@ namespace Tests.NetKAN
     public class NetkanOverride
     {
         JObject such_metadata;
-        private TransformOptions opts = new TransformOptions(1);
+        private TransformOptions opts = new TransformOptions(1, null);
 
         [SetUp]
         public void Setup()

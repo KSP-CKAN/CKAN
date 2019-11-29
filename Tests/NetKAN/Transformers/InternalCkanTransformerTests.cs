@@ -12,7 +12,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class InternalCkanTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1);
+        private TransformOptions opts = new TransformOptions(1, null);
 
         [Test]
         public void AddsMiddingProperties()

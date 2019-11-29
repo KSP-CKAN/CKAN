@@ -1,16 +1,21 @@
 using System.Collections.Generic;
 using CKAN.NetKAN.Model;
+using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Transformers
 {
     internal class TransformOptions
     {
-        public TransformOptions(int? releases)
+        public TransformOptions(int? releases, ModuleVersion highVer)
         {
-            Releases = releases;
+            Releases       = releases;
+            HighestVersion = highVer;
         }
 
-        public readonly int? Releases;
+        public readonly int?          Releases;
+        public readonly ModuleVersion HighestVersion;
+        public          bool          Staged;
+        public          string        StagingReason;
     }
 
     /// <summary>

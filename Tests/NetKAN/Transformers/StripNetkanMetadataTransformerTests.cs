@@ -10,7 +10,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class StripNetkanMetadataTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1);
+        private TransformOptions opts = new TransformOptions(1, null);
 
         [TestCaseSource("StripNetkanMetadataTestCaseSource")]
         public void StripNetkanMetadata(string json, string expected)

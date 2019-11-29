@@ -59,6 +59,14 @@ namespace CKAN.Versioning
             _string = version;
         }
 
+        /// <returns>
+        /// New module version with same version as 'this' but with one greater epoch
+        /// </returns>
+        public ModuleVersion IncrementEpoch()
+        {
+            return new ModuleVersion($"{_epoch + 1}:{_version}");
+        }
+
         /// <summary>
         /// Converts the value of the current <see cref="ModuleVersion"/> object to its equivalent
         /// <see cref="String"/> representation.

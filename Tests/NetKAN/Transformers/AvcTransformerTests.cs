@@ -14,7 +14,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class AvcTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1);
+        private TransformOptions opts = new TransformOptions(1, null);
 
         [Test]
         public void AddsMissingVersionInfo()

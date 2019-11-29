@@ -9,7 +9,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class HttpTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1);
+        private TransformOptions opts = new TransformOptions(1, null);
 
         [TestCase("#/ckan/github/foo/bar")]
         [TestCase("#/ckan/netkan/http://awesomemod.example/awesomemod.netkan")]

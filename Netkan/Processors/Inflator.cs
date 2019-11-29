@@ -5,6 +5,7 @@ using System.Linq;
 using Autofac;
 using log4net;
 using CKAN.Configuration;
+using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
@@ -30,7 +31,7 @@ namespace CKAN.NetKAN.Processors
             transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, prerelease);
         }
 
-        internal IEnumerable<Metadata> Inflate(string filename, Metadata netkan, int? releases)
+        internal IEnumerable<Metadata> Inflate(string filename, Metadata netkan, TransformOptions opts)
         {
             log.DebugFormat("Inflating {0}", filename);
             try
@@ -42,7 +43,7 @@ namespace CKAN.NetKAN.Processors
                 log.Info("Input successfully passed pre-validation");
 
                 IEnumerable<Metadata> ckans = transformer
-                    .Transform(netkan, new TransformOptions(releases))
+                    .Transform(netkan, opts)
                     .ToList();
                 log.Info("Finished transformation");
 
