@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-    public class MainTabControl : TabControl
+    public class MainTabControl : ThemedTabControl
     {
         public MainTabControl() : base() { }
 

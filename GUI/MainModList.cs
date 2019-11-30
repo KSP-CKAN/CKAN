@@ -331,7 +331,7 @@ namespace CKAN
         {
             // Skip if already disposed (i.e. after the form has been closed).
             // Needed for TransparentTextBoxes
-            if (ModInfoTabControl.IsDisposed)
+            if (ModInfo.IsDisposed)
             {
                 return;
             }

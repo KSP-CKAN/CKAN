@@ -34,7 +34,7 @@
             "dsadsa",
             "",
             ""}, -1);
-            this.KSPInstancesListView = new System.Windows.Forms.ListView();
+            this.KSPInstancesListView = new ThemedListView();
             this.KSPInstallName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.KSPInstallVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.KSPInstallPath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
