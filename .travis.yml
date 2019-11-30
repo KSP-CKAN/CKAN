@@ -109,6 +109,11 @@ deploy:
         branch: master
         condition: $BUILD_CONFIGURATION = Release && $(mono --version | perl -ne'/version (\d+\.\d+\.\d+)/ and print $1') = $BUILD_RELEASE_MONO_VERSION
 
+after_success:
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - if [ "$BUILD_CONFIGURATION" = "Release" ] && [ "$(mono --version | perl -ne'/version (\d+\.\d+\.\d+)/ and print $1')" = "$BUILD_RELEASE_MONO_VERSION" ] && [ "$TRAVIS_BRANCH" = "master" ]; then ./send.sh success $WEBHOOK_URL; fi
+
 after_failure:
   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
