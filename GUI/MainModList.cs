@@ -26,6 +26,7 @@ namespace CKAN
         Replaceable              = 8,
         Uncached                 = 9,
         CustomLabel              = 10,
+        Tag                      = 11,
     }
 
     public partial class Main
@@ -274,11 +275,13 @@ namespace CKAN
 
                 UpdateAllToolButton.Enabled = has_any_updates;
             });
+            
+            (registry as Registry)?.BuildTagIndex(mainModList.ModuleTags);
 
             UpdateFilters(this);
 
             // Hide update and replacement columns if not needed.
-            // Write it to the configuration, else they are hidden agian after a filter change.
+            // Write it to the configuration, else they are hidden again after a filter change.
             // After the update / replacement, they are hidden again.
             Util.Invoke(ModList, () =>
             {
@@ -368,6 +371,7 @@ namespace CKAN
                 // Start from scrap: clear the entire item list, then add all options again.
                 ModListHeaderContextMenuStrip.Items.Clear();
 
+                // Add columns
                 ModListHeaderContextMenuStrip.Items.AddRange(
                     ModList.Columns.Cast<DataGridViewColumn>()
                     .Where(col => col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
@@ -377,6 +381,22 @@ namespace CKAN
                         Text    = col.HeaderText,
                         Checked = col.Visible,
                         Tag     = col
+                    })
+                    .ToArray()
+                );
+                
+                // Separator
+                ModListHeaderContextMenuStrip.Items.Add(new ToolStripSeparator());
+
+                // Add tags
+                ModListHeaderContextMenuStrip.Items.AddRange(
+                    mainModList.ModuleTags.Tags.OrderBy(kvp => kvp.Key)
+                    .Select(kvp => new ToolStripMenuItem()
+                    {
+                        Name    = kvp.Key,
+                        Text    = kvp.Key,
+                        Checked = kvp.Value.Visible,
+                        Tag     = kvp.Value,
                     })
                     .ToArray()
                 );
@@ -394,6 +414,7 @@ namespace CKAN
             // ClickedItem is of type ToolStripItem, we need ToolStripButton.
             ToolStripMenuItem  clickedItem = e.ClickedItem    as ToolStripMenuItem;
             DataGridViewColumn col         = clickedItem?.Tag as DataGridViewColumn;
+            ModuleTag          tag         = clickedItem?.Tag as ModuleTag;
 
             if (col != null)
             {
@@ -403,6 +424,22 @@ namespace CKAN
                 {
                     InstallAllCheckbox.Visible = col.Visible;
                 }
+            }
+            else if (tag != null)
+            {
+                tag.Visible = !clickedItem.Checked;
+                var regMgr   = RegistryManager.Instance(Manager.CurrentInstance);
+                var registry = regMgr.registry;
+                if (tag.Visible)
+                {
+                    mainModList.ModuleTags.HiddenTags.Remove(tag.Name);
+                }
+                else
+                {
+                    mainModList.ModuleTags.HiddenTags.Add(tag.Name);
+                }
+                mainModList.ModuleTags.Save(ModuleTagList.DefaultPath);
+                UpdateFilters(this);
             }
         }
 
@@ -701,6 +738,24 @@ namespace CKAN
 
         public readonly ModuleLabelList ModuleLabels = ModuleLabelList.Load(ModuleLabelList.DefaultPath)
             ?? ModuleLabelList.GetDefaultLabels();
+            
+        public readonly ModuleTagList ModuleTags = ModuleTagList.Load(ModuleTagList.DefaultPath)
+            ?? new ModuleTagList();
+
+        private ModuleTag _tagFilter;
+        public ModuleTag TagFilter
+        {
+            get { return _tagFilter; }
+            set
+            {
+                var old = _tagFilter;
+                _tagFilter = value;
+                if (!old?.Equals(value) ?? !value?.Equals(old) ?? false)
+                {
+                    ModFiltersUpdated(this);
+                }
+            }
+        }
 
         private ModuleLabel _customLabelFilter;
         public ModuleLabel CustomLabelFilter
@@ -844,22 +899,21 @@ namespace CKAN
 
         public bool IsVisible(GUIMod mod)
         {
-            var nameMatchesFilter = IsNameInNameFilter(mod);
-            var authorMatchesFilter = IsAuthorInAuthorFilter(mod);
-            var abstractMatchesFilter = IsAbstractInDescriptionFilter(mod);
-            var modMatchesType = IsModInFilter(ModFilter, CustomLabelFilter, mod);
-            var isVisible = nameMatchesFilter && modMatchesType && authorMatchesFilter && abstractMatchesFilter;
-            return isVisible;
+            return IsNameInNameFilter(mod)
+                && IsAuthorInAuthorFilter(mod)
+                && IsAbstractInDescriptionFilter(mod)
+                && IsModInFilter(ModFilter, TagFilter, CustomLabelFilter, mod);
         }
 
-        public int CountModsByFilter(GUIModFilter filter, ModuleLabel label = null)
+        public int CountModsByFilter(GUIModFilter filter)
         {
             if (filter == GUIModFilter.All)
             {
                 // Don't check each one
                 return Modules.Count;
             }
-            return Modules.Count(m => IsModInFilter(filter, label, m));
+            // Tags and Labels are not counted here
+            return Modules.Count(m => IsModInFilter(filter, null, null, m));
         }
 
         /// <summary>
@@ -932,7 +986,7 @@ namespace CKAN
                     Value = "-"
                 };
 
-            var replacing = IsModInFilter(GUIModFilter.Replaceable, null, mod)
+            var replacing = IsModInFilter(GUIModFilter.Replaceable, null, null, mod)
                 ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                 {
                     Value = myChange == null ? false
@@ -1044,14 +1098,22 @@ namespace CKAN
                 || mod.SearchableDescription.IndexOf(sanitisedModDescriptionFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
         }
 
-        private static bool IsModInFilter(GUIModFilter filter, ModuleLabel label, GUIMod m)
+        private static bool IsModInFilter(GUIModFilter filter, ModuleTag tag, ModuleLabel label, GUIMod m)
         {
             if (filter != GUIModFilter.CustomLabel)
             {
                 // "Hide" labels apply to all non-custom filters
-                if (Main.Instance?.mainModList.ModuleLabels.Labels
+                if (Main.Instance?.mainModList.ModuleLabels?.Labels
                     .Where(l => l.Hide)
-                    .Any(l => l.ModuleIdentifiers.Contains(m.Identifier)) ?? false)
+                    .Any(l => l.ModuleIdentifiers.Contains(m.Identifier))
+                    ?? false)
+                {
+                    return false;
+                }
+                if (Main.Instance?.mainModList.ModuleTags?.Tags?.Values
+                    .Where(t => t.Visible == false)
+                    .Any(t => t.Modules.Contains(m.Identifier))
+                    ?? false)
                 {
                     return false;
                 }
@@ -1068,6 +1130,7 @@ namespace CKAN
                 case GUIModFilter.Incompatible:             return m.IsIncompatible;
                 case GUIModFilter.Replaceable:              return m.IsInstalled && m.HasReplacement;
                 case GUIModFilter.All:                      return true;
+                case GUIModFilter.Tag:                      return m.HasTag(tag?.Name);
                 case GUIModFilter.CustomLabel:              return label?.ModuleIdentifiers?.Contains(m.Identifier) ?? false;
                 default:                                    throw new Kraken(string.Format(Properties.Resources.MainModListUnknownFilter, filter));
             }

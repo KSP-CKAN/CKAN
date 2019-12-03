@@ -388,6 +388,15 @@ namespace CKAN.Properties {
         internal static string MainFilterCompatible {
             get { return (string)(ResourceManager.GetObject("MainFilterCompatible", resourceCulture)); }
         }
+        internal static string MainFilterLabel {
+            get { return (string)(ResourceManager.GetObject("MainFilterLabel", resourceCulture)); }
+        }
+        internal static string MainFilterTag {
+            get { return (string)(ResourceManager.GetObject("MainFilterTag", resourceCulture)); }
+        }
+        internal static string MainFilterUntagged {
+            get { return (string)(ResourceManager.GetObject("MainFilterUntagged", resourceCulture)); }
+        }
         internal static string MainLaunchWithIncompatible {
             get { return (string)(ResourceManager.GetObject("MainLaunchWithIncompatible", resourceCulture)); }
         }
@@ -813,6 +822,9 @@ namespace CKAN.Properties {
         }
         internal static string MainLabelsUpdateTitle {
             get { return (string)(ResourceManager.GetObject("MainLabelsUpdateTitle", resourceCulture)); }
+        }
+        internal static string MainLabelsUntagged {
+            get { return (string)(ResourceManager.GetObject("MainLabelsUntagged", resourceCulture)); }
         }
    }
 }

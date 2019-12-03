@@ -184,6 +184,9 @@
   <data name="MainFilterNew" xml:space="preserve"><value>Filter (New)</value></data>
   <data name="MainFilterNotInstalled" xml:space="preserve"><value>Filter (Not installed)</value></data>
   <data name="MainFilterCompatible" xml:space="preserve"><value>Filter (Compatible)</value></data>
+  <data name="MainFilterLabel" xml:space="preserve"><value>Label ({0})</value></data>
+  <data name="MainFilterTag" xml:space="preserve"><value>Tag ({0})</value></data>
+  <data name="MainFilterUntagged" xml:space="preserve"><value>Tag (Untagged)</value></data>
   <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>Some installed modules are incompatible! It might not be safe to launch KSP. Really launch?
 
 {0}</value></data>
@@ -358,4 +361,5 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
 
 {0}</value></data>
   <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>Update Notifications</value></data>
+  <data name="MainLabelsUntagged" xml:space="preserve"><value>Untagged ({0})</value></data>
 </root>

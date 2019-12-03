@@ -19,24 +19,23 @@ namespace CKAN
 
         public static ModuleLabelList GetDefaultLabels()
         {
-            return new ModuleLabelList() {
-                Labels = new ModuleLabel[] {
-                    new ModuleLabel() {
+            return new ModuleLabelList()
+            {
+                Labels = new ModuleLabel[]
+                {
+                    new ModuleLabel()
+                    {
                         Name  = Properties.Resources.ModuleLabelListFavourites,
                         Color = Color.PaleGreen,
                     },
-                    new ModuleLabel() {
+                    new ModuleLabel()
+                    {
                         Name  = Properties.Resources.ModuleLabelListHidden,
                         Hide  = true,
                         Color = Color.PaleVioletRed,
                     },
                 }
             };
-        }
-
-        public string[] LabelsMatchingModule(string identifier)
-        {
-            return new string[] {};
         }
 
         public static ModuleLabelList Load(string path)

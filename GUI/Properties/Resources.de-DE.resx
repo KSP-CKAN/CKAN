@@ -162,6 +162,9 @@
   <data name="MainFilterNew" xml:space="preserve"><value>Filter (Neu)</value></data>
   <data name="MainFilterNotInstalled" xml:space="preserve"><value>Filter (Nicht installiert)</value></data>
   <data name="MainFilterCompatible" xml:space="preserve"><value>Filter (Kompatibel)</value></data>
+  <data name="MainFilterLabel" xml:space="preserve"><value>Label ({0})</value></data>
+  <data name="MainFilterTag" xml:space="preserve"><value>Etikett ({0})</value></data>
+  <data name="MainFilterUntagged" xml:space="preserve"><value>Tag (Ohne Tag)</value></data>
   <data name="MainLaunchWithIncompatible" xml:space="preserve">
     <value>Einige installierte Module sind inkompatibel! Es ist möglicherweise nicht sicher, KSP zu starten. Trotzdem starten?
 
@@ -327,7 +330,7 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="EditLabelsDialogSave" xml:space="preserve"><value>Speichern</value></data>
   <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>Verwerfen</value></data>
   <data name="MainChangesetWarningInstallingHidden" xml:space="preserve"><value>WARNUNG: INSTALLIEREN DES VERSTECKTEN MODULS ({0})</value></data>
-  <data name="EditLabelsToolTipName" xml:space="preserve"><value>The label will appear in the Labels menu under this name, must be unique per install</value></data>
+  <data name="EditLabelsToolTipName" xml:space="preserve"><value>Das Label wird im Menü Labels unter diesem Namen angezeigt und muss pro Installation eindeutig sein</value></data>
   <data name="EditLabelsToolTipColor" xml:space="preserve"><value>Zeilen für Module mit dieser Bezeichnung werden mit dieser Hintergrundfarbe gezeichnet</value></data>
   <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>Die Instanz, für die dieses Label verfügbar ist, muss für alle leer gelassen werden</value></data>
   <data name="EditLabelsToolTipHide" xml:space="preserve"><value>Wenn diese Option aktiviert ist, werden Module mit dieser Bezeichnung vor Standardfiltern verborgen</value></data>
@@ -339,4 +342,5 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
 
 {0}</value></data>
   <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>Benachrichtigungen aktualisieren</value></data>
+  <data name="MainLabelsUntagged" xml:space="preserve"><value>Ohne Tags ({0})</value></data>
 </root>

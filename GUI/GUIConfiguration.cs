@@ -31,6 +31,11 @@ namespace CKAN
         public int ActiveFilter = 0;
 
         /// <summary>
+        /// Name of the tag filter the user chose, if any
+        /// </summary>
+        public string TagFilter = null;
+
+        /// <summary>
         /// Name of the label filter the user chose, if any
         /// </summary>
         public string CustomLabelFilter = null;

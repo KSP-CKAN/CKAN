@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Linq;
 using CKAN.Versioning;
 using CKAN.Exporters;
+using CKAN.Extensions;
 using CKAN.Properties;
 using CKAN.Types;
 using log4net;
@@ -591,6 +592,7 @@ namespace CKAN
                 {
                     Filter(
                         (GUIModFilter)configuration.ActiveFilter,
+                        mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
                         mainModList.ModuleLabels.Labels
                             .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
                     );
@@ -604,6 +606,7 @@ namespace CKAN
                 UpdateModsList();
                 Filter(
                     (GUIModFilter)configuration.ActiveFilter,
+                    mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
                     mainModList.ModuleLabels.Labels
                         .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
                 );
@@ -862,15 +865,17 @@ namespace CKAN
         /// Called when the modlist filter (all, compatible, incompatible...) is changed.
         /// </summary>
         /// <param name="filter">Filter.</param>
-        private void Filter(GUIModFilter filter, ModuleLabel label = null)
+        private void Filter(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
         {
             // Triggers mainModList.ModFiltersUpdated()
-            mainModList.ModFilter = filter;
+            mainModList.TagFilter = tag;
             mainModList.CustomLabelFilter = label;
+            mainModList.ModFilter = filter;
 
             // Save new filter to the configuration.
             configuration.ActiveFilter = (int)mainModList.ModFilter;
             configuration.CustomLabelFilter = label?.Name;
+            configuration.TagFilter = tag?.Name;
             configuration.Save();
 
             // Ask the configuration which columns to show.
@@ -900,7 +905,12 @@ namespace CKAN
                                                             ModList.Columns["InstallDate"].Visible      = false;
                                                             ModList.Columns["AutoInstalled"].Visible    = false;
                                                             FilterToolButton.Text = Properties.Resources.MainFilterNotInstalled; break;
-                case GUIModFilter.CustomLabel:              FilterToolButton.Text = label?.Name ?? "CUSTOM";                      break;
+                case GUIModFilter.CustomLabel:              FilterToolButton.Text = string.Format(Properties.Resources.MainFilterLabel, label?.Name ?? "CUSTOM"); break;
+                case GUIModFilter.Tag:
+                    FilterToolButton.Text = tag == null
+                        ? Properties.Resources.MainFilterUntagged
+                        : string.Format(Properties.Resources.MainFilterTag, tag.Name);
+                    break;
                 default:                                    FilterToolButton.Text = Properties.Resources.MainFilterCompatible;   break;
             }
         }

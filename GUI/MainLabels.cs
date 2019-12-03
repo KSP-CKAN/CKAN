@@ -15,13 +15,33 @@ namespace CKAN
             // Remove any existing custom labels from the list
             for (int i = FilterToolButton.DropDownItems.Count - 1; i >= 0; --i)
             {
-                if (FilterToolButton.DropDownItems[i] is ToolStripSeparator)
+                if (FilterToolButton.DropDownItems[i] == tagFilterToolStripSeparator)
                 {
-                    // Stop when we get to the separator
+                    // Stop when we get to the first separator
                     break;
                 }
                 FilterToolButton.DropDownItems.RemoveAt(i);
             }
+            // Tags
+            foreach (var kvp in mainModList.ModuleTags.Tags.OrderBy(kvp => kvp.Key))
+            {
+                FilterToolButton.DropDownItems.Add(new ToolStripMenuItem(
+                    $"{kvp.Key} ({kvp.Value.Modules.Count})",
+                    null, tagFilterButton_Click
+                )
+                {
+                    Tag = kvp.Value
+                });
+            }
+            FilterToolButton.DropDownItems.Add(new ToolStripMenuItem(
+                string.Format(Properties.Resources.MainLabelsUntagged, mainModList.ModuleTags.Untagged.Count),
+                null, tagFilterButton_Click
+            )
+            {
+                Tag = null
+            });
+            FilterToolButton.DropDownItems.Add(customFilterToolStripSeparator);
+            // Labels
             foreach (ModuleLabel mlbl in mainModList.ModuleLabels.Labels)
             {
                 FilterToolButton.DropDownItems.Add(new ToolStripMenuItem(
@@ -34,10 +54,16 @@ namespace CKAN
             }
         }
 
+        private void tagFilterButton_Click(object sender, EventArgs e)
+        {
+            var clicked = sender as ToolStripMenuItem;
+            Filter(GUIModFilter.Tag, clicked.Tag as ModuleTag, null);
+        }
+
         private void customFilterButton_Click(object sender, EventArgs e)
         {
             var clicked = sender as ToolStripMenuItem;
-            Filter(GUIModFilter.CustomLabel, clicked.Tag as ModuleLabel);
+            Filter(GUIModFilter.CustomLabel, null, clicked.Tag as ModuleLabel);
         }
 
         #endregion

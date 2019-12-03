@@ -287,6 +287,18 @@ namespace CKAN
             return Mod;
         }
 
+        public bool HasTag(string tag)
+        {
+            if (string.IsNullOrEmpty(tag))
+            {
+                return !Mod?.Tags?.Any() ?? true;
+            }
+            else
+            {
+                return Mod?.Tags?.Contains(tag) ?? false;
+            }
+        }
+
         public IEnumerable<ModChange> GetModChanges()
         {
             bool selectedIsInstalled = SelectedMod?.Equals(InstalledMod?.Module)

@@ -90,6 +90,7 @@
             this.LabelsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ModListHeaderContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.modListToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.tagFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.customFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.labelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
@@ -430,6 +431,7 @@
             this.FilterNotInstalledButton,
             this.FilterIncompatibleButton,
             this.FilterAllButton,
+            this.tagFilterToolStripSeparator,
             this.customFilterToolStripSeparator});
             this.FilterToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterToolButton_DrodDown_Opening);
             this.FilterToolButton.Image = global::CKAN.Properties.Resources.filter;
@@ -1477,6 +1479,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
         private System.Windows.Forms.ContextMenuStrip ModListContextMenuStrip;
         private System.Windows.Forms.ToolStripSeparator modListToolStripSeparator;
+        private System.Windows.Forms.ToolStripSeparator tagFilterToolStripSeparator;
         private System.Windows.Forms.ToolStripSeparator customFilterToolStripSeparator;
         private System.Windows.Forms.ContextMenuStrip LabelsContextMenuStrip;
         private System.Windows.Forms.ContextMenuStrip ModListHeaderContextMenuStrip;

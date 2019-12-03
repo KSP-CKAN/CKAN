@@ -435,7 +435,7 @@ namespace CKAN
 
         [JsonProperty("install", NullValueHandling = NullValueHandling.Ignore)]
         public ModuleInstallDescriptor[] install;
-        
+
         [JsonProperty("localizations", NullValueHandling = NullValueHandling.Ignore)]
         public string[] localizations;
 
@@ -468,6 +468,9 @@ namespace CKAN
                     specVersion = value;
             }
         }
+
+        [JsonProperty("tags", NullValueHandling = NullValueHandling.Ignore)]
+        public HashSet<string> Tags;
 
         // A list of eveything this mod provides.
         public List<string> ProvidesList
