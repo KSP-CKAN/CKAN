@@ -107,8 +107,8 @@ namespace CKAN
             {
                 mlbl.Remove(module.Identifier);
             }
+            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false);
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
-            mainModList.ReapplyLabels(module);
         }
 
         private void editLabelsToolStripMenuItem_Click(object sender, EventArgs e)

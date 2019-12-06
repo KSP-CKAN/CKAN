@@ -114,7 +114,7 @@ namespace CKAN
                     {
                         cell.ToolTipText = null;
                     }
-                    row.DefaultCellStyle.BackColor = Color.Empty;
+                    mainModList.ReapplyLabels(guiMod, false);
                     if (row.Visible)
                     {
                         ModList.InvalidateRow(row.Index);
@@ -134,7 +134,7 @@ namespace CKAN
                     {
                         cell.ToolTipText = conflict_text;
                     }
-                    row.DefaultCellStyle.BackColor = Color.LightCoral;
+                    row.DefaultCellStyle.BackColor = mainModList.GetRowBackground(guiMod, true);
                     if (row.Visible)
                     {
                         ModList.InvalidateRow(row.Index);

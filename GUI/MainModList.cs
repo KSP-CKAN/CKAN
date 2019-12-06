@@ -1036,14 +1036,13 @@ namespace CKAN
 
             return item;
         }
-
-        /// <summary>
-        /// Update the color and visible state of the given row
-        /// after it has been added to or removed from a label group
-        /// </summary>
-        /// <param name="mod">The mod that needs an update</param>
-        public void ReapplyLabels(GUIMod mod)
+        
+        public Color GetRowBackground(GUIMod mod, bool conflicted)
         {
+            if (conflicted)
+            {
+                return Color.LightCoral;
+            }
             DataGridViewRow row;
             if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out row))
             {
@@ -1052,8 +1051,23 @@ namespace CKAN
                     ?.Color;
                 if (myColor.HasValue)
                 {
-                    row.DefaultCellStyle.BackColor = myColor.Value;
+                    return myColor.Value;
                 }
+            }
+            return Color.Empty;
+        }
+
+        /// <summary>
+        /// Update the color and visible state of the given row
+        /// after it has been added to or removed from a label group
+        /// </summary>
+        /// <param name="mod">The mod that needs an update</param>
+        public void ReapplyLabels(GUIMod mod, bool conflicted)
+        {
+            DataGridViewRow row;
+            if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out row))
+            {
+                row.DefaultCellStyle.BackColor = GetRowBackground(mod, conflicted);
                 row.Visible = IsVisible(mod);
             }
         }
