@@ -35,13 +35,13 @@ namespace CKAN
                     {
                         ModuleTag tag = null;
                         if (Tags.TryGetValue(tagName, out tag))
-                            tag.Modules.Add(m.identifier);
+                            tag.Add(m.identifier);
                         else
                             Tags.Add(tagName, new ModuleTag()
                             {
-                                Name    = tagName,
-                                Visible = !HiddenTags.Contains(tagName),
-                                Modules = new HashSet<string>() { m.identifier },
+                                Name              = tagName,
+                                Visible           = !HiddenTags.Contains(tagName),
+                                ModuleIdentifiers = new HashSet<string>() { m.identifier },
                             });
                     }
                 }

@@ -428,8 +428,6 @@ namespace CKAN
             else if (tag != null)
             {
                 tag.Visible = !clickedItem.Checked;
-                var regMgr   = RegistryManager.Instance(Manager.CurrentInstance);
-                var registry = regMgr.registry;
                 if (tag.Visible)
                 {
                     mainModList.ModuleTags.HiddenTags.Remove(tag.Name);
@@ -1126,7 +1124,7 @@ namespace CKAN
                 }
                 if (Main.Instance?.mainModList.ModuleTags?.Tags?.Values
                     .Where(t => t.Visible == false)
-                    .Any(t => t.Modules.Contains(m.Identifier))
+                    .Any(t => t.ModuleIdentifiers.Contains(m.Identifier))
                     ?? false)
                 {
                     return false;

@@ -26,7 +26,7 @@ namespace CKAN
             foreach (var kvp in mainModList.ModuleTags.Tags.OrderBy(kvp => kvp.Key))
             {
                 FilterToolButton.DropDownItems.Add(new ToolStripMenuItem(
-                    $"{kvp.Key} ({kvp.Value.Modules.Count})",
+                    $"{kvp.Key} ({kvp.Value.ModuleIdentifiers.Count})",
                     null, tagFilterButton_Click
                 )
                 {
