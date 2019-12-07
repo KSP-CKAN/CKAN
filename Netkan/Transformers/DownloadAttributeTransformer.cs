@@ -39,14 +39,18 @@ namespace CKAN.NetKAN.Transformers
 
                 if (file != null)
                 {
+                    Log.Debug("Calculating download size...");
                     json["download_size"] = _fileService.GetSizeBytes(file);
 
                     json["download_hash"] = new JObject();
 
                     var download_hashJson = (JObject)json["download_hash"];
+                    Log.Debug("Calculating download SHA1...");
                     download_hashJson.SafeAdd("sha1", _fileService.GetFileHashSha1(file));
+                    Log.Debug("Calculating download SHA256...");
                     download_hashJson.SafeAdd("sha256", _fileService.GetFileHashSha256(file));
 
+                    Log.Debug("Calculating download MIME type...");
                     json["download_content_type"] = _fileService.GetMimetype(file);
                 }
 

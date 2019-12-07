@@ -59,16 +59,17 @@ namespace CKAN
 
             // Establish a watch on our cache. This means we can cache the directory contents,
             // and discard that cache if we spot changes.
-            watcher = new FileSystemWatcher(cachePath, "");
-
-            // While we should only care about files appearing and disappearing, I've over-asked
-            // for permissions to get things to work on Mono.
-
-            watcher.NotifyFilter =
-                NotifyFilters.LastWrite | NotifyFilters.LastAccess | NotifyFilters.DirectoryName | NotifyFilters.FileName;
+            watcher = new FileSystemWatcher(cachePath, "*.zip")
+            {
+                NotifyFilter = NotifyFilters.LastWrite
+                             | NotifyFilters.LastAccess
+                             | NotifyFilters.DirectoryName
+                             | NotifyFilters.FileName
+            };
 
             // If we spot any changes, we fire our event handler.
-            watcher.Changed += new FileSystemEventHandler(OnCacheChanged);
+            // NOTE: FileSystemWatcher.Changed fires when you READ info about a file,
+            //       do NOT listen for it!
             watcher.Created += new FileSystemEventHandler(OnCacheChanged);
             watcher.Deleted += new FileSystemEventHandler(OnCacheChanged);
             watcher.Renamed += new RenamedEventHandler(OnCacheChanged);
@@ -98,6 +99,7 @@ namespace CKAN
         /// </summary>
         private void OnCacheChanged(object source, FileSystemEventArgs e)
         {
+            log.Debug("File system watcher event fired");
             OnCacheChanged();
         }
 
@@ -107,6 +109,7 @@ namespace CKAN
         /// </summary>
         public void OnCacheChanged()
         {
+            log.Debug("Purging cache index");
             cachedFiles = null;
         }
 
@@ -199,19 +202,26 @@ namespace CKAN
             string file;
             if (files.TryGetValue(findHash, out file))
             {
+                log.DebugFormat("Found file {0}", file);
                 // Check local vs remote timestamps; if local is older, then it's invalid.
                 // null means we don't know the remote timestamp (so file is OK)
                 if (remoteTimestamp == null
                     || remoteTimestamp < File.GetLastWriteTime(file).ToUniversalTime())
                 {
                     // File not too old, use it
+                    log.Debug("Found good file, using it");
                     return file;
                 }
                 else
                 {
                     // Local file too old, delete it
+                    log.Debug("Found stale file, deleting it");
                     File.Delete(file);
                 }
+            }
+            else
+            {
+                log.DebugFormat("{0} not in cache", findHash);
             }
             return null;
         }
@@ -329,6 +339,8 @@ namespace CKAN
                     }
                 }
                 OnCacheChanged();
+                sha1Cache.Clear();
+                sha256Cache.Clear();
             }
         }
 
@@ -490,7 +502,10 @@ namespace CKAN
             }
 
             // We've changed our cache, so signal that immediately.
-            OnCacheChanged();
+            if (!cachedFiles.ContainsKey(hash))
+            {
+                cachedFiles.Add(hash, targetPath);
+            }
 
             return targetPath;
         }
@@ -511,7 +526,9 @@ namespace CKAN
                 tx_file.Delete(file);
 
                 // We've changed our cache, so signal that immediately.
-                OnCacheChanged();
+                cachedFiles.Remove(CreateURLHash(url));
+                sha1Cache.Remove(file);
+                sha256Cache.Remove(file);
 
                 return true;
             }
@@ -544,6 +561,8 @@ namespace CKAN
                 }
             }
             OnCacheChanged();
+            sha1Cache.Clear();
+            sha256Cache.Clear();
         }
 
         /// <summary>
@@ -583,6 +602,8 @@ namespace CKAN
                 if (hasAny)
                 {
                     OnCacheChanged();
+                    sha1Cache.Clear();
+                    sha256Cache.Clear();
                 }
             }
         }
@@ -603,5 +624,62 @@ namespace CKAN
                 return BitConverter.ToString(hash).Replace("-", "").Substring(0, 8);
             }
         }
+
+        /// <summary>
+        /// Calculate the SHA1 hash of a file
+        /// </summary>
+        /// <param name="filePath">Path to file to examine</param>
+        /// <returns>
+        /// SHA1 hash, in all-caps hexadecimal format
+        /// </returns>
+        public string GetFileHashSha1(string filePath)
+        {
+            string hash = null;
+            if (sha1Cache.TryGetValue(filePath, out hash))
+            {
+                return hash;
+            }
+            else
+            {
+                using (FileStream     fs   = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                using (BufferedStream bs   = new BufferedStream(fs))
+                using (SHA1           sha1 = new SHA1CryptoServiceProvider())
+                {
+                    hash = BitConverter.ToString(sha1.ComputeHash(bs)).Replace("-", "");
+                    sha1Cache.Add(filePath, hash);
+                    return hash;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calculate the SHA256 hash of a file
+        /// </summary>
+        /// <param name="filePath">Path to file to examine</param>
+        /// <returns>
+        /// SHA256 hash, in all-caps hexadecimal format
+        /// </returns>
+        public string GetFileHashSha256(string filePath)
+        {
+            string hash = null;
+            if (sha256Cache.TryGetValue(filePath, out hash))
+            {
+                return hash;
+            }
+            else
+            {
+                using (FileStream     fs     = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                using (BufferedStream bs     = new BufferedStream(fs))
+                using (SHA256Managed  sha256 = new SHA256Managed())
+                {
+                    hash = BitConverter.ToString(sha256.ComputeHash(bs)).Replace("-", "");
+                    sha256Cache.Add(filePath, hash);
+                    return hash;
+                }
+            }
+        }
+
+        private Dictionary<string, string> sha1Cache   = new Dictionary<string, string>();
+        private Dictionary<string, string> sha256Cache = new Dictionary<string, string>();
     }
 }

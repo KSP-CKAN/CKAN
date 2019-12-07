@@ -1216,7 +1216,7 @@ namespace CKAN
                 int percent = i * 100 / files.Count;
                 user.RaiseProgress($"Importing {f.Name}... ({percent}%)", percent);
                 // Calc SHA-1 sum
-                string sha1 = NetModuleCache.GetFileHashSha1(f.FullName);
+                string sha1 = Cache.GetFileHashSha1(f.FullName);
                 // Find SHA-1 sum in registry (potentially multiple)
                 if (index.ContainsKey(sha1))
                 {

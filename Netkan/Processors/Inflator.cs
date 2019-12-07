@@ -25,7 +25,7 @@ namespace CKAN.NetKAN.Processors
             );
 
             IModuleService moduleService = new ModuleService();
-            IFileService   fileService   = new FileService();
+            IFileService   fileService   = new FileService(cache);
             http          = new CachingHttpService(cache, overwriteCache);
             ckanValidator = new CkanValidator(http, moduleService);
             transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, prerelease);

@@ -4,6 +4,11 @@ namespace CKAN.NetKAN.Services
 {
     internal sealed class FileService : IFileService
     {
+        public FileService(NetFileCache cache)
+        {
+            this.cache = cache;
+        }
+
         public long GetSizeBytes(string filePath)
         {
             return new FileInfo(filePath).Length;
@@ -13,14 +18,14 @@ namespace CKAN.NetKAN.Services
         {
             // Use shared implementation from Core.
             // Also needs to be an instance method so it can be Moq'd for testing.
-            return NetModuleCache.GetFileHashSha1(filePath);
+            return cache.GetFileHashSha1(filePath);
         }
 
         public string GetFileHashSha256(string filePath)
         {
             // Use shared implementation from Core.
             // Also needs to be an instance method so it can be Moq'd for testing.
-            return NetModuleCache.GetFileHashSha256(filePath);
+            return cache.GetFileHashSha256(filePath);
         }
 
         public string GetMimetype(string filePath)
@@ -51,5 +56,7 @@ namespace CKAN.NetKAN.Services
 
             return mimetype;
         }
+
+        private NetFileCache cache;
     }
 }

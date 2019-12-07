@@ -86,14 +86,9 @@ namespace CKAN
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
-        public static string GetFileHashSha1(string filePath)
+        public string GetFileHashSha1(string filePath)
         {
-            using (FileStream     fs   = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-            using (BufferedStream bs   = new BufferedStream(fs))
-            using (SHA1           sha1 = new SHA1CryptoServiceProvider())
-            {
-                return BitConverter.ToString(sha1.ComputeHash(bs)).Replace("-", "");
-            }
+            return cache.GetFileHashSha1(filePath);
         }
 
         /// <summary>
@@ -103,14 +98,9 @@ namespace CKAN
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
-        public static string GetFileHashSha256(string filePath)
+        public string GetFileHashSha256(string filePath)
         {
-            using (FileStream     fs     = new FileStream(@filePath, FileMode.Open, FileAccess.Read))
-            using (BufferedStream bs     = new BufferedStream(fs))
-            using (SHA256Managed  sha256 = new SHA256Managed())
-            {
-                return BitConverter.ToString(sha256.ComputeHash(bs)).Replace("-", "");
-            }
+            return cache.GetFileHashSha256(filePath);
         }
 
         /// <summary>
