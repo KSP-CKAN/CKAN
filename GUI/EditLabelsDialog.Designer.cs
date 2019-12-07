@@ -285,6 +285,7 @@ namespace CKAN
             this.Name = "EditLabelsDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             resources.ApplyResources(this, "$this");
+            this.EditDetailsPanel.ResumeLayout(false);
             this.ResumeLayout(false);
         }
 
