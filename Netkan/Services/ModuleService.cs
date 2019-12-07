@@ -164,7 +164,18 @@ namespace CKAN.NetKAN.Services
                 var json = stream.ReadToEnd();
 
                 Log.DebugFormat("Parsing {0}", json);
-                return JsonConvert.DeserializeObject<AvcVersion>(json);
+                try
+                {
+                    return JsonConvert.DeserializeObject<AvcVersion>(json);
+                }
+                catch (JsonException exc)
+                {
+                    throw new Kraken(string.Format(
+                        "Error parsing version file {0}: {1}",
+                        files[remoteIndex].Name,
+                        exc.Message
+                    ));
+                }
             }
         }
     }
