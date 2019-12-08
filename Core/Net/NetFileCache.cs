@@ -502,9 +502,9 @@ namespace CKAN
             }
 
             // We've changed our cache, so signal that immediately.
-            if (!cachedFiles.ContainsKey(hash))
+            if (!cachedFiles?.ContainsKey(hash) ?? false)
             {
-                cachedFiles.Add(hash, targetPath);
+                cachedFiles?.Add(hash, targetPath);
             }
 
             return targetPath;
@@ -526,7 +526,7 @@ namespace CKAN
                 tx_file.Delete(file);
 
                 // We've changed our cache, so signal that immediately.
-                cachedFiles.Remove(CreateURLHash(url));
+                cachedFiles?.Remove(CreateURLHash(url));
                 sha1Cache.Remove(file);
                 sha256Cache.Remove(file);
 
