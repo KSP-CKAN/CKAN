@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Don't send notification to Discord if build succeeds (#2932 by: DasSkelett: reviewed: HebaruSan)
 - [Netkan] Auto-epoch based on queue message attribute (#2824 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Better parsing errors for version files (#2939 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Retain URL hash cache, cache file hashes (#2940 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.6 (Leonov)
 
