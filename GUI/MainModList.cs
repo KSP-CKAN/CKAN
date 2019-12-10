@@ -1142,7 +1142,9 @@ namespace CKAN
                 case GUIModFilter.Incompatible:             return m.IsIncompatible;
                 case GUIModFilter.Replaceable:              return m.IsInstalled && m.HasReplacement;
                 case GUIModFilter.All:                      return true;
-                case GUIModFilter.Tag:                      return m.HasTag(tag?.Name);
+                case GUIModFilter.Tag:                      return tag?.ModuleIdentifiers.Contains(m.Identifier)
+                    ?? Main.Instance?.mainModList.ModuleTags.Untagged.Contains(m.Identifier)
+                    ?? false;
                 case GUIModFilter.CustomLabel:              return label?.ModuleIdentifiers?.Contains(m.Identifier) ?? false;
                 default:                                    throw new Kraken(string.Format(Properties.Resources.MainModListUnknownFilter, filter));
             }
