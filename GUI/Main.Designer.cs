@@ -436,7 +436,7 @@
             this.tagFilterToolStripSeparator,
             this.FilterTagsToolButton,
             this.FilterLabelsToolButton});
-            this.FilterToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterToolButton_DrodDown_Opening);
+            this.FilterToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterToolButton_DropDown_Opening);
             this.FilterToolButton.Image = global::CKAN.Properties.Resources.filter;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
@@ -518,14 +518,14 @@
             this.FilterTagsToolButton.Name = "FilterTagsToolButton";
             this.FilterTagsToolButton.Size = new System.Drawing.Size(179, 22);
             resources.ApplyResources(this.FilterTagsToolButton, "FilterTagsToolButton");
-            this.FilterTagsToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterTagsToolButton_DrodDown_Opening);
+            this.FilterTagsToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterTagsToolButton_DropDown_Opening);
             // 
             // FilterLabelsToolButton
             // 
             this.FilterLabelsToolButton.Name = "FilterLabelsToolButton";
             this.FilterLabelsToolButton.Size = new System.Drawing.Size(179, 22);
             resources.ApplyResources(this.FilterLabelsToolButton, "FilterLabelsToolButton");
-            this.FilterLabelsToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterLabelsToolButton_DrodDown_Opening);
+            this.FilterLabelsToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterLabelsToolButton_DropDown_Opening);
             //
             // NavBackwardToolButton
             //

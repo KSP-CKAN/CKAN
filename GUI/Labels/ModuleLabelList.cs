@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.IO;
 using System.Drawing;
 using Newtonsoft.Json;
@@ -10,6 +12,11 @@ namespace CKAN
     {
         [JsonProperty("labels", NullValueHandling = NullValueHandling.Ignore)]
         public ModuleLabel[] Labels = new ModuleLabel[] {};
+
+        public IEnumerable<ModuleLabel> LabelsFor(string instanceName)
+        {
+            return Labels.Where(l => l.AppliesTo(instanceName));
+        }
 
         public static readonly string DefaultPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),

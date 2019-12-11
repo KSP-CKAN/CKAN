@@ -909,8 +909,8 @@ namespace CKAN
             if (filter != GUIModFilter.CustomLabel)
             {
                 // "Hide" labels apply to all non-custom filters
-                if (ModuleLabels?.Labels
-                    .Where(l => l != label && l.AppliesTo(instanceName) && l.Hide)
+                if (ModuleLabels?.LabelsFor(instanceName)
+                    .Where(l => l != label && l.Hide)
                     .Any(l => l.ModuleIdentifiers.Contains(m.Identifier))
                     ?? false)
                 {
@@ -963,8 +963,7 @@ namespace CKAN
         {
             DataGridViewRow item = new DataGridViewRow() {Tag = mod};
 
-            Color? myColor = ModuleLabels.Labels
-                .Where(l => l.AppliesTo(instanceName))
+            Color? myColor = ModuleLabels.LabelsFor(instanceName)
                 .FirstOrDefault(l => l.ModuleIdentifiers.Contains(mod.Identifier))
                 ?.Color;
             if (myColor.HasValue)
@@ -1060,7 +1059,7 @@ namespace CKAN
             return item;
         }
         
-        public Color GetRowBackground(GUIMod mod, bool conflicted)
+        public Color GetRowBackground(GUIMod mod, bool conflicted, string instanceName)
         {
             if (conflicted)
             {
@@ -1069,7 +1068,7 @@ namespace CKAN
             DataGridViewRow row;
             if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out row))
             {
-                Color? myColor = ModuleLabels.Labels
+                Color? myColor = ModuleLabels.LabelsFor(instanceName)
                     .FirstOrDefault(l => l.ModuleIdentifiers.Contains(mod.Identifier))
                     ?.Color;
                 if (myColor.HasValue)
@@ -1090,7 +1089,7 @@ namespace CKAN
             DataGridViewRow row;
             if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out row))
             {
-                row.DefaultCellStyle.BackColor = GetRowBackground(mod, conflicted);
+                row.DefaultCellStyle.BackColor = GetRowBackground(mod, conflicted, instanceName);
                 row.Visible = IsVisible(mod, instanceName);
             }
         }

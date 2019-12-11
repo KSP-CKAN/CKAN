@@ -134,7 +134,7 @@ namespace CKAN
                     {
                         cell.ToolTipText = conflict_text;
                     }
-                    row.DefaultCellStyle.BackColor = mainModList.GetRowBackground(guiMod, true);
+                    row.DefaultCellStyle.BackColor = mainModList.GetRowBackground(guiMod, true, CurrentInstance.Name);
                     if (row.Visible)
                     {
                         ModList.InvalidateRow(row.Index);
@@ -204,6 +204,8 @@ namespace CKAN
                 settingsToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 helpToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 FilterToolButton.DropDown.Renderer = new FlatToolStripRenderer();
+                FilterTagsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
+                FilterLabelsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
                 minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 ModListContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 ModListHeaderContextMenuStrip.Renderer = new FlatToolStripRenderer();
@@ -593,7 +595,7 @@ namespace CKAN
                     Filter(
                         (GUIModFilter)configuration.ActiveFilter,
                         mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
-                        mainModList.ModuleLabels.Labels
+                        mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                             .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
                     );
                     m_UpdateRepoWorker.RunWorkerCompleted -= filterUpdate;
@@ -607,7 +609,7 @@ namespace CKAN
                 Filter(
                     (GUIModFilter)configuration.ActiveFilter,
                     mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
-                    mainModList.ModuleLabels.Labels
+                    mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                         .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
                 );
             }

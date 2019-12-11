@@ -10,14 +10,14 @@ namespace CKAN
     {
         #region Filter dropdown
 
-        private void FilterToolButton_DrodDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private void FilterToolButton_DropDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // The menu items' dropdowns can't be accessed if they're empty
-            FilterTagsToolButton_DrodDown_Opening(null, null);
-            FilterLabelsToolButton_DrodDown_Opening(null, null);
+            FilterTagsToolButton_DropDown_Opening(null, null);
+            FilterLabelsToolButton_DropDown_Opening(null, null);
         }
         
-        private void FilterTagsToolButton_DrodDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private void FilterTagsToolButton_DropDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             FilterTagsToolButton.DropDownItems.Clear();
             foreach (var kvp in mainModList.ModuleTags.Tags.OrderBy(kvp => kvp.Key))
@@ -39,10 +39,10 @@ namespace CKAN
             });
         }
 
-        private void FilterLabelsToolButton_DrodDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private void FilterLabelsToolButton_DropDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             FilterLabelsToolButton.DropDownItems.Clear();
-            foreach (ModuleLabel mlbl in mainModList.ModuleLabels.Labels)
+            foreach (ModuleLabel mlbl in mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name))
             {
                 FilterLabelsToolButton.DropDownItems.Add(new ToolStripMenuItem(
                     $"{mlbl.Name} ({mlbl.ModuleIdentifiers.Count})",
@@ -75,7 +75,7 @@ namespace CKAN
             LabelsContextMenuStrip.Items.Clear();
 
             var module = GetSelectedModule();
-            foreach (ModuleLabel mlbl in mainModList.ModuleLabels.Labels.Where(l => l.AppliesTo(CurrentInstance.Name)))
+            foreach (ModuleLabel mlbl in mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name))
             {
                 LabelsContextMenuStrip.Items.Add(
                     new ToolStripMenuItem(mlbl.Name, null, labelMenuItem_Click)
@@ -128,8 +128,8 @@ namespace CKAN
         {
             Util.Invoke(Main.Instance, () =>
             {
-                var notifLabs = mainModList.ModuleLabels.Labels
-                    .Where(l => l.AppliesTo(CurrentInstance.Name) && l.NotifyOnChange);
+                var notifLabs = mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                    .Where(l => l.NotifyOnChange);
                 var toNotif = mods
                     .Where(m =>
                         notifLabs.Any(l =>
@@ -150,7 +150,7 @@ namespace CKAN
 
                 foreach (GUIMod mod in mods)
                 {
-                    foreach (ModuleLabel l in mainModList.ModuleLabels.Labels
+                    foreach (ModuleLabel l in mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                         .Where(l => l.RemoveOnChange
                             && l.ModuleIdentifiers.Contains(mod.Identifier)))
                     {
@@ -163,16 +163,15 @@ namespace CKAN
 
         private bool AnyLabelAlertsBeforeInstall(CkanModule mod)
         {
-            return mainModList.ModuleLabels.Labels
-                .Where(l => l.AppliesTo(CurrentInstance.Name) && l.AlertOnInstall)
+            return mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                .Where(l => l.AlertOnInstall)
                 .Any(l => l.ModuleIdentifiers.Contains(mod.identifier));
         }
 
         private void LabelsAfterInstall(CkanModule mod)
         {
-            foreach (ModuleLabel l in mainModList.ModuleLabels.Labels
-                .Where(l => l.AppliesTo(CurrentInstance.Name) && l.RemoveOnInstall
-                    && l.ModuleIdentifiers.Contains(mod.identifier)))
+            foreach (ModuleLabel l in mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                .Where(l => l.RemoveOnInstall && l.ModuleIdentifiers.Contains(mod.identifier)))
             {
                 l.Remove(mod.identifier);
             }
