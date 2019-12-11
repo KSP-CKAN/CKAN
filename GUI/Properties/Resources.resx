@@ -348,7 +348,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="EditLabelsDialogCancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="EditLabelsDialogSave" xml:space="preserve"><value>Save</value></data>
   <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>Discard</value></data>
-  <data name="MainChangesetWarningInstallingHidden" xml:space="preserve"><value>WARNING: INSTALLING MODULE WITH LABEL {0} ({1})</value></data>
+  <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>WARNING: INSTALLING MODULE WITH LABEL {0} ({1})</value></data>
   <data name="EditLabelsToolTipName" xml:space="preserve"><value>The label will appear in the Labels menu under this name, must be unique per install</value></data>
   <data name="EditLabelsToolTipColor" xml:space="preserve"><value>Rows for modules with this label will be drawn with this background color</value></data>
   <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>The instance for which this label is available, leave blank for all</value></data>

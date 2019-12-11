@@ -790,8 +790,8 @@ namespace CKAN.Properties {
         internal static string EditLabelsDialogDiscard {
             get { return (string)(ResourceManager.GetObject("EditLabelsDialogDiscard", resourceCulture)); }
         }
-        internal static string MainChangesetWarningInstallingHidden {
-            get { return (string)(ResourceManager.GetObject("MainChangesetWarningInstallingHidden", resourceCulture)); }
+        internal static string MainChangesetWarningInstallingModuleWithLabel {
+            get { return (string)(ResourceManager.GetObject("MainChangesetWarningInstallingModuleWithLabel", resourceCulture)); }
         }
         internal static string EditLabelsToolTipName {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipName", resourceCulture)); }

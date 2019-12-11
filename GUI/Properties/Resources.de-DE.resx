@@ -329,7 +329,7 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="EditLabelsDialogCancel" xml:space="preserve"><value>Stornieren</value></data>
   <data name="EditLabelsDialogSave" xml:space="preserve"><value>Speichern</value></data>
   <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>Verwerfen</value></data>
-  <data name="MainChangesetWarningInstallingHidden" xml:space="preserve"><value>WARNUNG: INSTALLIEREN MODULS MIT LABEL {0} ({1})</value></data>
+  <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>WARNUNG: INSTALLIEREN MODULS MIT LABEL {0} ({1})</value></data>
   <data name="EditLabelsToolTipName" xml:space="preserve"><value>Das Label wird im Menü Labels unter diesem Namen angezeigt und muss pro Installation eindeutig sein</value></data>
   <data name="EditLabelsToolTipColor" xml:space="preserve"><value>Zeilen für Module mit dieser Bezeichnung werden mit dieser Hintergrundfarbe gezeichnet</value></data>
   <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>Die Instanz, für die dieses Label verfügbar ist, muss für alle leer gelassen werden</value></data>

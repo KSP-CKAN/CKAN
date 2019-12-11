@@ -55,7 +55,7 @@ namespace CKAN
                     change.ChangeType.ToString(),
                     warnLbl != null
                         ? string.Format(
-                            Properties.Resources.MainChangesetWarningInstallingHidden,
+                            Properties.Resources.MainChangesetWarningInstallingModuleWithLabel,
                             warnLbl.Name,
                             change.Description
                           )
