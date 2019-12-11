@@ -48,18 +48,22 @@ namespace CKAN
                 }
 
                 CkanModule m = change.Mod;
-                bool warn = AnyLabelAlertsBeforeInstall(m);
+                ModuleLabel warnLbl = FindLabelAlertsBeforeInstall(m);
                 ChangesListView.Items.Add(new ListViewItem(new string[]
                 {
                     change.NameAndStatus,
                     change.ChangeType.ToString(),
-                    warn
-                        ? string.Format(Properties.Resources.MainChangesetWarningInstallingHidden, change.Description)
+                    warnLbl != null
+                        ? string.Format(
+                            Properties.Resources.MainChangesetWarningInstallingHidden,
+                            warnLbl.Name,
+                            change.Description
+                          )
                         : change.Description
                 })
                 {
                     Tag = m,
-                    ForeColor = warn ? Color.Red : SystemColors.WindowText
+                    ForeColor = warnLbl != null ? Color.Red : SystemColors.WindowText
                 });
             }
         }

@@ -161,11 +161,11 @@ namespace CKAN
             });
         }
 
-        private bool AnyLabelAlertsBeforeInstall(CkanModule mod)
+        private ModuleLabel FindLabelAlertsBeforeInstall(CkanModule mod)
         {
             return mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                 .Where(l => l.AlertOnInstall)
-                .Any(l => l.ModuleIdentifiers.Contains(mod.identifier));
+                .FirstOrDefault(l => l.ModuleIdentifiers.Contains(mod.identifier));
         }
 
         private void LabelsAfterInstall(CkanModule mod)
