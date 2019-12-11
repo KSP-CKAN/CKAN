@@ -68,6 +68,8 @@
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterLabelsToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterTagsToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NavBackwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NavForwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -432,7 +434,8 @@
             this.FilterIncompatibleButton,
             this.FilterAllButton,
             this.tagFilterToolStripSeparator,
-            this.customFilterToolStripSeparator});
+            this.FilterTagsToolButton,
+            this.FilterLabelsToolButton});
             this.FilterToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterToolButton_DrodDown_Opening);
             this.FilterToolButton.Image = global::CKAN.Properties.Resources.filter;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
@@ -509,6 +512,20 @@
             this.FilterAllButton.Size = new System.Drawing.Size(307, 30);
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
             resources.ApplyResources(this.FilterAllButton, "FilterAllButton");
+            // 
+            // FilterTagsToolButton
+            // 
+            this.FilterTagsToolButton.Name = "FilterTagsToolButton";
+            this.FilterTagsToolButton.Size = new System.Drawing.Size(179, 22);
+            resources.ApplyResources(this.FilterTagsToolButton, "FilterTagsToolButton");
+            this.FilterTagsToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterTagsToolButton_DrodDown_Opening);
+            // 
+            // FilterLabelsToolButton
+            // 
+            this.FilterLabelsToolButton.Name = "FilterLabelsToolButton";
+            this.FilterLabelsToolButton.Size = new System.Drawing.Size(179, 22);
+            resources.ApplyResources(this.FilterLabelsToolButton, "FilterLabelsToolButton");
+            this.FilterLabelsToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterLabelsToolButton_DrodDown_Opening);
             //
             // NavBackwardToolButton
             //
@@ -1459,6 +1476,8 @@
         private System.Windows.Forms.ToolStripMenuItem FilterNotInstalledButton;
         private System.Windows.Forms.ToolStripMenuItem FilterIncompatibleButton;
         private System.Windows.Forms.ToolStripMenuItem FilterAllButton;
+        private System.Windows.Forms.ToolStripMenuItem FilterLabelsToolButton;
+        private System.Windows.Forms.ToolStripMenuItem FilterTagsToolButton;
         private System.Windows.Forms.ToolStripMenuItem NavBackwardToolButton;
         private System.Windows.Forms.ToolStripMenuItem NavForwardToolButton;
         private System.Windows.Forms.SplitContainer splitContainer1;

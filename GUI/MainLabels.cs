@@ -12,20 +12,17 @@ namespace CKAN
 
         private void FilterToolButton_DrodDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // Remove any existing custom labels from the list
-            for (int i = FilterToolButton.DropDownItems.Count - 1; i >= 0; --i)
-            {
-                if (FilterToolButton.DropDownItems[i] == tagFilterToolStripSeparator)
-                {
-                    // Stop when we get to the first separator
-                    break;
-                }
-                FilterToolButton.DropDownItems.RemoveAt(i);
-            }
-            // Tags
+            // The menu items' dropdowns can't be accessed if they're empty
+            FilterTagsToolButton_DrodDown_Opening(null, null);
+            FilterLabelsToolButton_DrodDown_Opening(null, null);
+        }
+        
+        private void FilterTagsToolButton_DrodDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            FilterTagsToolButton.DropDownItems.Clear();
             foreach (var kvp in mainModList.ModuleTags.Tags.OrderBy(kvp => kvp.Key))
             {
-                FilterToolButton.DropDownItems.Add(new ToolStripMenuItem(
+                FilterTagsToolButton.DropDownItems.Add(new ToolStripMenuItem(
                     $"{kvp.Key} ({kvp.Value.ModuleIdentifiers.Count})",
                     null, tagFilterButton_Click
                 )
@@ -33,18 +30,21 @@ namespace CKAN
                     Tag = kvp.Value
                 });
             }
-            FilterToolButton.DropDownItems.Add(new ToolStripMenuItem(
+            FilterTagsToolButton.DropDownItems.Add(new ToolStripMenuItem(
                 string.Format(Properties.Resources.MainLabelsUntagged, mainModList.ModuleTags.Untagged.Count),
                 null, tagFilterButton_Click
             )
             {
                 Tag = null
             });
-            FilterToolButton.DropDownItems.Add(customFilterToolStripSeparator);
-            // Labels
+        }
+
+        private void FilterLabelsToolButton_DrodDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            FilterLabelsToolButton.DropDownItems.Clear();
             foreach (ModuleLabel mlbl in mainModList.ModuleLabels.Labels)
             {
-                FilterToolButton.DropDownItems.Add(new ToolStripMenuItem(
+                FilterLabelsToolButton.DropDownItems.Add(new ToolStripMenuItem(
                     $"{mlbl.Name} ({mlbl.ModuleIdentifiers.Count})",
                     null, customFilterButton_Click
                 )
@@ -75,19 +75,16 @@ namespace CKAN
             LabelsContextMenuStrip.Items.Clear();
 
             var module = GetSelectedModule();
-            foreach (ModuleLabel mlbl in mainModList.ModuleLabels.Labels)
+            foreach (ModuleLabel mlbl in mainModList.ModuleLabels.Labels.Where(l => l.AppliesTo(CurrentInstance.Name)))
             {
-                if (mlbl.InstanceName == null || mlbl.InstanceName == CurrentInstance.Name)
-                {
-                    LabelsContextMenuStrip.Items.Add(
-                        new ToolStripMenuItem(mlbl.Name, null, labelMenuItem_Click)
-                        {
-                            Checked      = mlbl.ModuleIdentifiers.Contains(module.Identifier),
-                            CheckOnClick = true,
-                            Tag          = mlbl,
-                        }
-                    );
-                }
+                LabelsContextMenuStrip.Items.Add(
+                    new ToolStripMenuItem(mlbl.Name, null, labelMenuItem_Click)
+                    {
+                        Checked      = mlbl.ModuleIdentifiers.Contains(module.Identifier),
+                        CheckOnClick = true,
+                        Tag          = mlbl,
+                    }
+                );
             }
             LabelsContextMenuStrip.Items.Add(labelToolStripSeparator);
             LabelsContextMenuStrip.Items.Add(editLabelsToolStripMenuItem);
@@ -107,7 +104,7 @@ namespace CKAN
             {
                 mlbl.Remove(module.Identifier);
             }
-            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false);
+            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, CurrentInstance.Name);
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
         }
 
@@ -117,6 +114,10 @@ namespace CKAN
             eld.ShowDialog(this);
             eld.Dispose();
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
+            foreach (GUIMod module in mainModList.Modules)
+            {
+                mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, CurrentInstance.Name);
+            }
         }
 
         #endregion
@@ -127,7 +128,8 @@ namespace CKAN
         {
             Util.Invoke(Main.Instance, () =>
             {
-                var notifLabs = mainModList.ModuleLabels.Labels.Where(l => l.NotifyOnChange);
+                var notifLabs = mainModList.ModuleLabels.Labels
+                    .Where(l => l.AppliesTo(CurrentInstance.Name) && l.NotifyOnChange);
                 var toNotif = mods
                     .Where(m =>
                         notifLabs.Any(l =>
@@ -162,14 +164,14 @@ namespace CKAN
         private bool AnyLabelAlertsBeforeInstall(CkanModule mod)
         {
             return mainModList.ModuleLabels.Labels
-                .Where(l => l.AlertOnInstall)
+                .Where(l => l.AppliesTo(CurrentInstance.Name) && l.AlertOnInstall)
                 .Any(l => l.ModuleIdentifiers.Contains(mod.identifier));
         }
 
         private void LabelsAfterInstall(CkanModule mod)
         {
             foreach (ModuleLabel l in mainModList.ModuleLabels.Labels
-                .Where(l => l.RemoveOnInstall
+                .Where(l => l.AppliesTo(CurrentInstance.Name) && l.RemoveOnInstall
                     && l.ModuleIdentifiers.Contains(mod.identifier)))
             {
                 l.Remove(mod.identifier);

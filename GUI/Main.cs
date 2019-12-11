@@ -114,7 +114,7 @@ namespace CKAN
                     {
                         cell.ToolTipText = null;
                     }
-                    mainModList.ReapplyLabels(guiMod, false);
+                    mainModList.ReapplyLabels(guiMod, false, CurrentInstance.Name);
                     if (row.Visible)
                     {
                         ModList.InvalidateRow(row.Index);

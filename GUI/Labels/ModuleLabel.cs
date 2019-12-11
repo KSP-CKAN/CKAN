@@ -43,6 +43,18 @@ namespace CKAN
         public HashSet<string> ModuleIdentifiers = new HashSet<string>();
 
         /// <summary>
+        /// Check whether this label is active for a given game instance
+        /// </summary>
+        /// <param name="instanceName">Name of the instance</param>
+        /// <returns>
+        /// True if active, false otherwise
+        /// </returns>
+        public bool AppliesTo(string instanceName)
+        {
+            return InstanceName == null || InstanceName == instanceName;
+        }
+
+        /// <summary>
         /// Add a module to this label's group
         /// </summary>
         /// <param name="identifier">The identifier of the module to add</param>
