@@ -118,7 +118,7 @@ namespace Tests.GUI
                 .ToList();
 
             // varargs method signature means we must call .ToArray()
-            _listGui.Rows.AddRange(_modList.ConstructModList(modules, _manager.CurrentInstance.Name).ToArray());
+            _listGui.Rows.AddRange(_modList.ConstructModList(modules, null).ToArray());
             // the header row adds one to the count
             Assert.AreEqual(modules.Count + 1, _listGui.Rows.Count);
 
