@@ -35,7 +35,13 @@ namespace CKAN.CmdLine
                 {
                     // Parse input as if it was a normal command line,
                     // but with a persistent KSPManager object.
-                    MainClass.Execute(manager, opts, command.Split(' '));
+                    int cmdExitCode = MainClass.Execute(manager, opts, command.Split(' '));
+                    if ((opts?.Headless ?? false) && cmdExitCode != Exit.OK)
+                    {
+                        // Pass failure codes to calling process in headless mode
+                        // (in interactive mode the user can see the error and try again)
+                        return cmdExitCode;
+                    }
                 }
             }
             return Exit.OK;
