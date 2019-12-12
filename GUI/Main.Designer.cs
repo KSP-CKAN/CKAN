@@ -93,7 +93,7 @@
             this.ModListHeaderContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.modListToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.tagFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.customFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.untaggedFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.labelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.editLabelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1499,7 +1499,7 @@
         private System.Windows.Forms.ContextMenuStrip ModListContextMenuStrip;
         private System.Windows.Forms.ToolStripSeparator modListToolStripSeparator;
         private System.Windows.Forms.ToolStripSeparator tagFilterToolStripSeparator;
-        private System.Windows.Forms.ToolStripSeparator customFilterToolStripSeparator;
+        private System.Windows.Forms.ToolStripSeparator untaggedFilterToolStripSeparator;
         private System.Windows.Forms.ContextMenuStrip LabelsContextMenuStrip;
         private System.Windows.Forms.ContextMenuStrip ModListHeaderContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem labelsToolStripMenuItem;

@@ -30,6 +30,7 @@ namespace CKAN
                     Tag = kvp.Value
                 });
             }
+            FilterTagsToolButton.DropDownItems.Add(untaggedFilterToolStripSeparator);
             FilterTagsToolButton.DropDownItems.Add(new ToolStripMenuItem(
                 string.Format(Properties.Resources.MainLabelsUntagged, mainModList.ModuleTags.Untagged.Count),
                 null, tagFilterButton_Click
