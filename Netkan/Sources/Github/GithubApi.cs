@@ -92,6 +92,13 @@ namespace CKAN.NetKAN.Sources.Github
                 }
             }
         }
+        
+        public List<GithubUser> getOrgMembers(GithubUser organization)
+        {
+            return JsonConvert.DeserializeObject<List<GithubUser>>(
+                Call($"orgs/{organization.Login}/public_members")
+            );
+        }        
 
         private string Call(string path)
         {
