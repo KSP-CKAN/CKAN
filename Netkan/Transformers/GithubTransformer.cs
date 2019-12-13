@@ -147,13 +147,15 @@ namespace CKAN.NetKAN.Transformers
         private JToken getAuthors(GithubRepo repo, GithubRelease release)
         {
             // Start with the user that published the release
-            var authors = new HashSet<string>() { release.Author };
+            var authors = new List<string>() { release.Author };
             for (GithubRepo r = repo; r != null;)
             {
-                if (r.Owner?.Login != null)
+                if (r.Owner?.Login != null
+                    && r.Owner?.Type == userType
+                    && !authors.Contains(r.Owner.Login))
                 {
-                    // Add repo owner
-                    authors.Add(r.Owner.Login);
+                    // Prepend repo owner
+                    authors.Insert(0, r.Owner.Login);
                 }
                 // Check parent repos
                 r = r.ParentRepo == null
@@ -164,5 +166,6 @@ namespace CKAN.NetKAN.Transformers
             return authors.Count == 1 ? (JToken)authors.First() : new JArray(authors);
         }
 
+        private const string userType = "User";
     }
 }
