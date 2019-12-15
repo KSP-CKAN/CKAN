@@ -42,5 +42,8 @@ namespace CKAN.NetKAN.Sources.Github
     {
         [JsonProperty("login")]
         public string Login { get; set; }
+        
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

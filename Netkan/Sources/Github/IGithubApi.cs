@@ -7,5 +7,6 @@ namespace CKAN.NetKAN.Sources.Github
         GithubRepo GetRepo(GithubRef reference);
         GithubRelease GetLatestRelease(GithubRef reference);
         IEnumerable<GithubRelease> GetAllReleases(GithubRef reference);
+        List<GithubUser> getOrgMembers(GithubUser organization);
     }
 }
