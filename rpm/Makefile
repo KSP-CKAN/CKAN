@@ -7,6 +7,7 @@ TOPDIR:=$(shell pwd)/../_build/rpm
 SCRIPTSRC:=$(DEBDIR)/ckan
 MANSRC:=$(DEBDIR)/ckan.1
 DESKTOPSRC:=$(DEBDIR)/ckan.desktop
+CONSOLEUIDESKTOPSRC:=$(DEBDIR)/ckan-consoleui.desktop
 ICONSRC:=$(DEBDIR)/ckan.ico
 EXESRC:=$(shell pwd)/../_build/repack/Release/ckan.exe
 CHANGELOGSRC:=../CHANGELOG.md
@@ -17,7 +18,7 @@ RPM:=$(shell pwd)/../_build/rpm/RPMS/noarch/ckan-$(VERSION)-1.noarch.rpm
 # rpmbuild can't handle relative paths for its topdir
 # rpmbuild assumes we'll copy files into its SOURCES dir for it
 
-$(RPM): $(SCRIPTSRC) $(EXESRC) $(MANSRC) $(DESKTOPSRC) $(ICONSRC)
+$(RPM): $(SCRIPTSRC) $(EXESRC) $(MANSRC) $(DESKTOPSRC) $(ICONSRC) $(CONSOLEUIDESKTOPSRC)
 	mkdir -p "${TOPDIR}/SOURCES"
 	cp $^ "${TOPDIR}/SOURCES"
 	rpmbuild --define "_topdir ${TOPDIR}" --define "_version $(VERSION)" -bb ckan.spec

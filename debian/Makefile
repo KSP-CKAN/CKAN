@@ -19,10 +19,12 @@ COPYRIGHTSRC:=copyright
 COPYRIGHTDEST:=$(DESTDIR)/usr/share/doc/ckan/copyright
 DESKTOPSRC:=ckan.desktop
 DESKTOPDEST:=$(DESTDIR)/usr/share/applications/ckan.desktop
+CONSOLEUIDESKTOPSRC:=ckan-consoleui.desktop
+CONSOLEUIDESKTOPDEST:=$(DESTDIR)/usr/share/applications/ckan-consoleui.desktop
 VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' )
 DEB:=../_build/deb/ckan_$(VERSION)_all.deb
 
-$(DEB): $(EXEDEST) $(SCRIPTDEST) $(CONTROLDEST) $(CHANGELOGDEST) $(DEBCHANGEDEST) $(MANDEST) $(ICONDEST) $(COPYRIGHTDEST) $(DESKTOPDEST)
+$(DEB): $(EXEDEST) $(SCRIPTDEST) $(CONTROLDEST) $(CHANGELOGDEST) $(DEBCHANGEDEST) $(MANDEST) $(ICONDEST) $(COPYRIGHTDEST) $(DESKTOPDEST) $(CONSOLEUIDESKTOPDEST)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	fakeroot dpkg-deb --build $(DESTDIR)/ $@
 
@@ -62,6 +64,10 @@ $(COPYRIGHTDEST): $(COPYRIGHTSRC)
 	umask 0022 && cp $< $@
 
 $(DESKTOPDEST): $(DESKTOPSRC)
+	umask 0022 && mkdir -p $(shell dirname $@)
+	umask 0022 && cp $< $@
+
+$(CONSOLEUIDESKTOPDEST): $(CONSOLEUIDESKTOPSRC)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && cp $< $@
 
