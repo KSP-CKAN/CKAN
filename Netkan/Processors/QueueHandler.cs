@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using log4net;
@@ -31,9 +32,27 @@ namespace CKAN.NetKAN.Processors
         {
             while (true)
             {
-                // 10 messages, 30 minutes to allow time to handle them all
-                handleMessages(inputQueueURL, 10, 30);
+                if (numQueued(outputQueueURL) < 100)
+                {
+                    // 10 messages, 30 minutes to allow time to handle them all
+                    handleMessages(inputQueueURL, 10, 30);
+                }
+                else
+                {
+                    // Wait 20 seconds to let the Indexer catch up
+                    log.Info("Output queue too full, waiting...");
+                    Thread.Sleep(20 * 1000);
+                }
             }
+        }
+
+        private int numQueued(string queueURL)
+        {
+            return client.GetQueueAttributes(new GetQueueAttributesRequest()
+            {
+                QueueUrl       = queueURL,
+                AttributeNames = new List<string>() { "ApproximateNumberOfMessages" }
+            })?.ApproximateNumberOfMessages ?? 0;
         }
 
         private string getQueueUrl(string name)
