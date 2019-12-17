@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Better parsing errors for version files (#2939 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Retain URL hash cache, cache file hashes (#2940 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Get org members as authors, time-sort authors, sort tags to middle (#2942 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Coerce GitHub URLs into the authenticated API in Netkan (#2946 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.6 (Leonov)
 

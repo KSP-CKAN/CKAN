@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+﻿using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -20,6 +21,26 @@ namespace CKAN.NetKAN.Sources.Github
 
         private readonly IHttpService _http;
         private readonly string       _oauthToken;
+
+        private const string rawMediaType = "application/vnd.github.v3.raw";
+
+        // https://github.com/<OWNER>/<REPO>/blob/<BRANCH>/<PATH>
+        // https://github.com/<OWNER>/<REPO>/tree/<BRANCH>/<PATH>
+        // https://github.com/<OWNER>/<REPO>/raw/<BRANCH>/<PATH>
+        private static readonly Regex githubUrlRegex = new Regex(
+            @"^/(?<owner>[^/]+)/(?<repo>[^/]+)/(?<type>[^/]+)/(?<branch>[^/]+)/(?<path>.+)$",
+            RegexOptions.Compiled);
+
+        private static readonly HashSet<string> urlTypes = new HashSet<string>()
+        {
+            "blob", "tree", "raw"
+        };
+
+        // https://raw.githubusercontent.com/<OWNER>/<REPO>/<BRANCH>/<PATH>
+        private static readonly Regex githubUserContentUrlRegex = new Regex(
+            @"^/(?<owner>[^/]+)/(?<repo>[^/]+)/(?<branch>[^/]+)/(?<path>.+)$",
+            RegexOptions.Compiled
+        );
 
         public GithubApi(IHttpService http, string oauthToken = null)
         {
@@ -100,14 +121,75 @@ namespace CKAN.NetKAN.Sources.Github
             );
         }        
 
-        private string Call(string path)
+        /// <summary>
+        /// Download a URL via the GitHubAPI.
+        /// Will use a token if we have one.
+        /// </summary>
+        /// <param name="url">The URL to download</param>
+        /// <returns>
+        /// null if the URL isn't on GitHub, otherwise the contents of the download
+        /// </returns>
+        public string DownloadText(Uri url)
+        {
+            if (TryGetGitHubPath(url, out string ghOwner, out string ghRepo, out string ghBranch, out string ghPath))
+            {
+                Log.Info("Found GitHub URL, retrieving with API");
+                return Call(
+                    $"repos/{ghOwner}/{ghRepo}/contents/{ghPath}?ref={ghBranch}",
+                    rawMediaType
+                );
+            }
+            else
+            {
+                Log.DebugFormat("Not a GitHub URL: {0}", url.ToString());
+                return null;
+            }
+        }
+
+        private bool TryGetGitHubPath(Uri url, out string owner, out string repo, out string branch, out string path)
+        {
+            switch (url.Host)
+            {
+                case "github.com":
+                    Log.DebugFormat("Found standard GitHub host, checking format");
+                    Match ghMatch = githubUrlRegex.Match(url.AbsolutePath);
+                    if (ghMatch.Success && urlTypes.Contains(ghMatch.Groups["type"].Value))
+                    {
+                        Log.DebugFormat("Matched standard GitHub format");
+                        owner  = ghMatch.Groups["owner"].Value;
+                        repo   = ghMatch.Groups["repo"].Value;
+                        branch = ghMatch.Groups["branch"].Value;
+                        path   = ghMatch.Groups["path"].Value;
+                        return true;
+                    }
+                    break;
+
+                case "raw.githubusercontent.com":
+                    Log.DebugFormat("Found raw GitHub host, checking format");
+                    Match rawMatch = githubUserContentUrlRegex.Match(url.AbsolutePath);
+                    if (rawMatch.Success)
+                    {
+                        Log.DebugFormat("Matched raw GitHub format");
+                        owner  = rawMatch.Groups["owner"].Value;
+                        repo   = rawMatch.Groups["repo"].Value;
+                        branch = rawMatch.Groups["branch"].Value;
+                        path   = rawMatch.Groups["path"].Value;
+                        return true;
+                    }
+                    break;
+            }
+            owner = repo = branch = path = null;
+            return false;
+        }
+
+        private string Call(string path, string mimeType = null)
         {
             var url = new Uri(ApiBase, path);
             Log.DebugFormat("Calling {0}", url);
 
             try
             {
-                return _http.DownloadText(url, _oauthToken);
+                return _http.DownloadText(url, _oauthToken, mimeType);
             }
             catch (NativeAndCurlDownloadFailedKraken k)
             {

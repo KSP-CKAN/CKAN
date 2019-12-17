@@ -21,7 +21,7 @@ namespace Tests.NetKAN.Transformers
             // Arrange
             var mHttp = new Mock<IHttpService>();
 
-            var sut = new MetaNetkanTransformer(mHttp.Object);
+            var sut = new MetaNetkanTransformer(mHttp.Object, null);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -50,7 +50,7 @@ namespace Tests.NetKAN.Transformers
             mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>()))
                 .Returns(targetJson.ToString());
 
-            var sut = new MetaNetkanTransformer(mHttp.Object);
+            var sut = new MetaNetkanTransformer(mHttp.Object, null);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -78,7 +78,7 @@ namespace Tests.NetKAN.Transformers
             mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>()))
                 .Returns(targetJson.ToString());
 
-            var sut = new MetaNetkanTransformer(mHttp.Object);
+            var sut = new MetaNetkanTransformer(mHttp.Object, null);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -107,7 +107,7 @@ namespace Tests.NetKAN.Transformers
             mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>()))
                 .Returns(targetJson.ToString());
 
-            var sut = new MetaNetkanTransformer(mHttp.Object);
+            var sut = new MetaNetkanTransformer(mHttp.Object, null);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -137,7 +137,7 @@ namespace Tests.NetKAN.Transformers
             mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>()))
                 .Returns(targetJson.ToString());
 
-            var sut = new MetaNetkanTransformer(mHttp.Object);
+            var sut = new MetaNetkanTransformer(mHttp.Object, null);
 
             var json = new JObject();
             json["spec_version"] = specVersion;

@@ -244,7 +244,7 @@ namespace CKAN
             }.DownloadAndWait(downloadTargets);
         }
 
-        public static string DownloadText(Uri url, string authToken = "")
+        public static string DownloadText(Uri url, string authToken = "", string mimeType = null)
         {
             log.DebugFormat("About to download {0}", url.OriginalString);
 
@@ -260,6 +260,11 @@ namespace CKAN
                     log.InfoFormat("Using auth token for {0}", url.Host);
                     // Send our auth token to the GitHub API (or whoever else needs one)
                     agent.Headers.Add("Authorization", $"token {authToken}");
+                }
+                if (!string.IsNullOrEmpty(mimeType))
+                {
+                    log.InfoFormat("Setting MIME type {0}", mimeType);
+                    agent.Headers.Add("Accept", mimeType);
                 }
 
                 string content = agent.DownloadString(url.OriginalString);

@@ -26,17 +26,18 @@ namespace CKAN.NetKAN.Transformers
             bool prerelease
         )
         {
+            var ghApi = new GithubApi(http, githubToken);
             _transformers = InjectVersionedOverrideTransformers(new List<ITransformer>
             {
-                new MetaNetkanTransformer(http),
+                new MetaNetkanTransformer(http, ghApi),
                 new SpacedockTransformer(new SpacedockApi(http)),
                 new CurseTransformer(new CurseApi(http)),
-                new GithubTransformer(new GithubApi(http, githubToken), prerelease),
+                new GithubTransformer(ghApi, prerelease),
                 new HttpTransformer(),
                 new JenkinsTransformer(new JenkinsApi(http)),
-                new AvcKrefTransformer(http),
+                new AvcKrefTransformer(http, ghApi),
                 new InternalCkanTransformer(http, moduleService),
-                new AvcTransformer(http, moduleService),
+                new AvcTransformer(http, moduleService, ghApi),
                 new LocalizationsTransformer(http, moduleService),
                 new VersionEditTransformer(),
                 new ForcedVTransformer(),
