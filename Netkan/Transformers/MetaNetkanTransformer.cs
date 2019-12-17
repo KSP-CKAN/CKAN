@@ -6,6 +6,7 @@ using CKAN.Versioning;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Sources.Github;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -19,12 +20,14 @@ namespace CKAN.NetKAN.Transformers
         private const string KrefSource = "netkan";
 
         private readonly IHttpService _http;
+        private readonly IGithubApi   _github;
 
         public string Name { get { return "metanetkan"; } }
 
-        public MetaNetkanTransformer(IHttpService http)
+        public MetaNetkanTransformer(IHttpService http, IGithubApi github)
         {
-            _http = http;
+            _http   = http;
+            _github = github;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
@@ -43,7 +46,8 @@ namespace CKAN.NetKAN.Transformers
                 resourcesJson.SafeAdd("metanetkan", metadata.Kref.Id);
 
                 var uri = new Uri(metadata.Kref.Id);
-                var targetFileText = _http.DownloadText(CKAN.Net.GetRawUri(uri));
+                var targetFileText = _github?.DownloadText(uri)
+                    ?? _http.DownloadText(CKAN.Net.GetRawUri(uri));
 
                 Log.DebugFormat("Target netkan:{0}{1}", Environment.NewLine, targetFileText);
 

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Avc;
 using CKAN.Versioning;
-using log4net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using CKAN.NetKAN.Sources.Github;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -20,15 +21,17 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(AvcTransformer));
 
-        private readonly IHttpService _http;
+        private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly IGithubApi     _github;
 
         public string Name { get { return "avc"; } }
 
-        public AvcTransformer(IHttpService http, IModuleService moduleService)
+        public AvcTransformer(IHttpService http, IModuleService moduleService, IGithubApi github)
         {
-            _http = http;
+            _http          = http;
             _moduleService = moduleService;
+            _github        = github;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
@@ -67,7 +70,8 @@ namespace CKAN.NetKAN.Transformers
                     {
                         try
                         {
-                            var remoteJson = _http.DownloadText(remoteUri);
+                            var remoteJson = _github?.DownloadText(remoteUri)
+                                ?? _http.DownloadText(remoteUri);
                             var remoteAvc = JsonConvert.DeserializeObject<AvcVersion>(remoteJson);
 
                             if (avc.version.CompareTo(remoteAvc.version) == 0)

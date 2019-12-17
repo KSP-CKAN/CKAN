@@ -80,9 +80,9 @@ namespace CKAN.NetKAN.Services
         {
             return Net.DownloadText(url);
         }
-        public string DownloadText(Uri url, string authToken)
+        public string DownloadText(Uri url, string authToken, string mimeType = null)
         {
-            return Net.DownloadText(url, authToken);
+            return Net.DownloadText(url, authToken, mimeType);
         }
 
         public IEnumerable<Uri> RequestedURLs { get { return _requestedURLs; } }

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using log4net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Avc;
-using log4net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using CKAN.NetKAN.Sources.Github;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -18,11 +19,13 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(AvcKrefTransformer));
 
         public string Name { get { return "avc-kref"; } }
-        private IHttpService httpSvc;
+        private readonly IHttpService httpSvc;
+        private readonly IGithubApi   githubSrc;
 
-        public AvcKrefTransformer(IHttpService http)
+        public AvcKrefTransformer(IHttpService http, IGithubApi github)
         {
-            httpSvc = http;
+            httpSvc   = http;
+            githubSrc = github;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
@@ -34,8 +37,10 @@ namespace CKAN.NetKAN.Transformers
                 Log.InfoFormat("Executing KSP-AVC $kref transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
+                var url = new Uri(metadata.Kref.Id);
                 AvcVersion remoteAvc = JsonConvert.DeserializeObject<AvcVersion>(
-                    httpSvc.DownloadText(CKAN.Net.GetRawUri(new Uri(metadata.Kref.Id)))
+                    githubSrc?.DownloadText(url)
+                        ?? httpSvc.DownloadText(CKAN.Net.GetRawUri(url))
                 );
 
                 json.SafeAdd("name",     remoteAvc.Name);

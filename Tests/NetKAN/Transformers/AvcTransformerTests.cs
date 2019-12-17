@@ -32,7 +32,7 @@ namespace Tests.NetKAN.Transformers
             mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -70,7 +70,7 @@ namespace Tests.NetKAN.Transformers
             mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -208,7 +208,7 @@ namespace Tests.NetKAN.Transformers
             mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
 
             // Act
             var result = sut.Transform(new Metadata(json), opts).First();
@@ -240,7 +240,7 @@ namespace Tests.NetKAN.Transformers
             mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -271,7 +271,7 @@ namespace Tests.NetKAN.Transformers
                     version = new ModuleVersion("1.2.3")
                 });
 
-            ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object);
+            ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
 
             JObject json = new JObject();
             json["spec_version"]                = 1;

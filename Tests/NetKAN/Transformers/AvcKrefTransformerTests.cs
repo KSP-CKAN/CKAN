@@ -67,7 +67,7 @@ namespace Tests.NetKAN.Transformers
             }
 
             // Act
-            var tran = new AvcKrefTransformer(http);
+            var tran = new AvcKrefTransformer(http, null);
             return tran.Transform(new Metadata(json), opts).First();
         }
 
