@@ -163,8 +163,8 @@
   <data name="MainFilterNotInstalled" xml:space="preserve"><value>Filter (Nicht installiert)</value></data>
   <data name="MainFilterCompatible" xml:space="preserve"><value>Filter (Kompatibel)</value></data>
   <data name="MainFilterLabel" xml:space="preserve"><value>Label ({0})</value></data>
-  <data name="MainFilterTag" xml:space="preserve"><value>Etikett ({0})</value></data>
-  <data name="MainFilterUntagged" xml:space="preserve"><value>Tag (Ohne Tag)</value></data>
+  <data name="MainFilterTag" xml:space="preserve"><value>Kategorie ({0})</value></data>
+  <data name="MainFilterUntagged" xml:space="preserve"><value>Kategorie (Keine)</value></data>
   <data name="MainLaunchWithIncompatible" xml:space="preserve">
     <value>Einige installierte Module sind inkompatibel! Es ist möglicherweise nicht sicher, KSP zu starten. Trotzdem starten?
 
@@ -320,27 +320,27 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favoriten</value></data>
   <data name="ModuleLabelListHidden" xml:space="preserve"><value>Versteckt</value></data>
   <data name="ModuleLabelListGlobal" xml:space="preserve"><value>Global</value></data>
-  <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>Möchten Sie {0} wirklich löschen? Dies kann nicht rückgängig gemacht werden!</value></data>
+  <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>Möchtest du {0} wirklich löschen? Das kann nicht mehr rückgängig gemacht werden!</value></data>
   <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>Änderungen speichern?</value></data>
-  <data name="EditLabelsDialogNoRecord" xml:space="preserve"><value>Es wird kein Datensatz bearbeitet!</value></data>
+  <data name="EditLabelsDialogNoRecord" xml:space="preserve"><value>Es wird gerade kein Label bearbeitet!</value></data>
   <data name="EditLabelsDialogNameRequired" xml:space="preserve"><value>Name ist erforderlich!</value></data>
   <data name="EditLabelsDialogAlreadyExists" xml:space="preserve"><value>{0} existiert bereits in {1}!</value></data>
   <data name="EditLabelsDialogDelete" xml:space="preserve"><value>Löschen</value></data>
-  <data name="EditLabelsDialogCancel" xml:space="preserve"><value>Stornieren</value></data>
+  <data name="EditLabelsDialogCancel" xml:space="preserve"><value>Abbrechen</value></data>
   <data name="EditLabelsDialogSave" xml:space="preserve"><value>Speichern</value></data>
-  <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>Verwerfen</value></data>
-  <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>WARNUNG: INSTALLIEREN MODULS MIT LABEL {0} ({1})</value></data>
-  <data name="EditLabelsToolTipName" xml:space="preserve"><value>Das Label wird im Menü Labels unter diesem Namen angezeigt und muss pro Installation eindeutig sein</value></data>
-  <data name="EditLabelsToolTipColor" xml:space="preserve"><value>Zeilen für Module mit dieser Bezeichnung werden mit dieser Hintergrundfarbe gezeichnet</value></data>
-  <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>Die Instanz, für die dieses Label verfügbar ist, muss für alle leer gelassen werden</value></data>
-  <data name="EditLabelsToolTipHide" xml:space="preserve"><value>Wenn diese Option aktiviert ist, werden Module mit dieser Bezeichnung vor Standardfiltern verborgen</value></data>
-  <data name="EditLabelsToolTipNotifyOnChanges" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird eine Benachrichtigung angezeigt, wenn dieses Modul von inkompatibel zu kompatibel wechselt</value></data>
-  <data name="EditLabelsToolTipRemoveOnChanges" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird ein Modul, das von inkompatibel zu kompatibel wechselt, von diesem Label entfernt</value></data>
-  <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve"><value>Wenn diese Option aktiviert ist, werden Sie auf dem Bildschirm zum Festlegen von Änderungen benachrichtigt, wenn dieser Mod installiert wird</value></data>
-  <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve"><value>Wenn diese Option aktiviert ist, werden Module von diesem Etikett entfernt, wenn sie installiert sind</value></data>
-  <data name="MainLabelsUpdateMessage" xml:space="preserve"><value>Einige deiner beobachteten Mods wurden aktualisiert:
+  <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>Änderungen verwerfen</value></data>
+  <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>WARNUNG: INSTALLATION EINES MODULS MIT LABEL {0} ({1})</value></data>
+  <data name="EditLabelsToolTipName" xml:space="preserve"><value>Das Label wird im Label-Menü unter diesem Namen angezeigt und muss in einer Instanz eindeutig sein</value></data>
+  <data name="EditLabelsToolTipColor" xml:space="preserve"><value>Module mit diesem Label werden haben diese Hintergrundfarbe in der Modliste</value></data>
+  <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>Instanz, für welche dieses Label verfügbar ist. Leerlassen, um es in allen Instanzen verfügbar zu haben</value></data>
+  <data name="EditLabelsToolTipHide" xml:space="preserve"><value>Wenn diese Option aktiviert ist, werden Module mit diesem Label ausgeblendet</value></data>
+  <data name="EditLabelsToolTipNotifyOnChanges" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird eine Benachrichtigung angezeigt, sobald das Modul für deine KSP-Version kompatibel wird</value></data>
+  <data name="EditLabelsToolTipRemoveOnChanges" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird das Label von Modulen entfernt, sobald sie kompatibel werden</value></data>
+  <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird eine Warnung angezeigt, wenn das Modul installiert werden soll</value></data>
+  <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird das Label von dem Modul entfernt, wenn es installiert wurde</value></data>
+  <data name="MainLabelsUpdateMessage" xml:space="preserve"><value>Mods die du beobachtest wurden aktualisiert:
 
 {0}</value></data>
-  <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>Benachrichtigungen aktualisieren</value></data>
-  <data name="MainLabelsUntagged" xml:space="preserve"><value>Ohne Tags ({0})</value></data>
+  <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>Aktualisierungen für beobachtete Mods</value></data>
+  <data name="MainLabelsUntagged" xml:space="preserve"><value>Ohne Kategorie ({0})</value></data>
 </root>

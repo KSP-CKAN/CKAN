@@ -299,6 +299,9 @@
     <EmbeddedResource Include="EditLabelsDialog.resx">
       <DependentUpon>EditLabelsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\EditLabelsDialog.de-DE.resx">
+      <DependentUpon>..\..\EditLabelsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>

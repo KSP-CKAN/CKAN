@@ -195,6 +195,7 @@
   <data name="FilterNotInstalledButton.Text" xml:space="preserve"><value>Nicht installiert</value></data>
   <data name="FilterIncompatibleButton.Text" xml:space="preserve"><value>Inkompatibel</value></data>
   <data name="FilterAllButton.Text" xml:space="preserve"><value>Alle</value></data>
+  <data name="FilterTagsToolButton.Text" xml:space="preserve"><value>Kategorien</value></data>
   <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve"><value>Zuvor ausgewählte Mod...</value></data>
   <data name="NavForwardToolButton.ToolTipText" xml:space="preserve"><value>Danach ausgewählte mod...</value></data>
   <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>Auto-installiert</value></data>
@@ -251,6 +252,5 @@
   <data name="openKSPDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>KSP-Verzeichnis öffnen</value></data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>CKAN Einstellungen</value></data>
   <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>Beenden</value></data>
-  <data name="labelsToolStripMenuItem.Text" xml:space="preserve"><value>Etiketten</value></data>
-  <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve"><value>Labels bearbeiten ...</value></data>
+  <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve"><value>Labels bearbeiten...</value></data>
 </root>
