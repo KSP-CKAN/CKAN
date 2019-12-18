@@ -51,16 +51,20 @@ namespace CKAN.NetKAN.Transformers
             else if (opts.HighestVersion != null)
             {
                 // Ensure we are greater or equal to the previous max
-                ModuleVersion currentV = new ModuleVersion((string)json["version"]);
+                ModuleVersion startV = new ModuleVersion((string)json["version"]);
+                ModuleVersion currentV = startV;
                 while (currentV < opts.HighestVersion)
                 {
                     Log.DebugFormat("Auto-epoching out of order version: {0} < {1}",
                         currentV, opts.HighestVersion);
-                    // Tell the Indexer to be careful
-                    opts.Staged = true;
-                    opts.StagingReason = $"Auto-epoching out of order version: {currentV} < {opts.HighestVersion}";
                     // Increment epoch if too small
                     currentV = currentV.IncrementEpoch();
+                }
+                if (startV < opts.HighestVersion && opts.HighestVersion < currentV)
+                {
+                    // New file, tell the Indexer to be careful
+                    opts.Staged = true;
+                    opts.StagingReason = $"Auto-epoching out of order version: {startV} < {opts.HighestVersion} < {currentV}";
                 }
                 json["version"] = currentV.ToString();
             }
