@@ -175,6 +175,7 @@ namespace CKAN
                 MetadataTagsLabelsPanel.Controls.Clear();
                 var tags = ModuleTags?.Tags
                     .Where(t => t.Value.ModuleIdentifiers.Contains(mod.identifier))
+                    .OrderBy(t => t.Key)
                     .Select(t => t.Value);
                 if (tags != null)
                 {
@@ -186,7 +187,8 @@ namespace CKAN
                     }
                 }
                 var labels = ModuleLabels?.LabelsFor(manager.CurrentInstance.Name)
-                    .Where(l => l.ModuleIdentifiers.Contains(mod.identifier));
+                    .Where(l => l.ModuleIdentifiers.Contains(mod.identifier))
+                    .OrderBy(l => l.Name);
                 if (labels != null)
                 {
                     foreach (ModuleLabel mlbl in labels)
