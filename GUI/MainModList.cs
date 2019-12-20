@@ -276,8 +276,6 @@ namespace CKAN
                 UpdateAllToolButton.Enabled = has_any_updates;
             });
             
-            (registry as Registry)?.BuildTagIndex(mainModList.ModuleTags);
-
             UpdateFilters(this);
 
             // Hide update and replacement columns if not needed.

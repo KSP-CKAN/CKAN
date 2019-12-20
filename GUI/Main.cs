@@ -574,7 +574,7 @@ namespace CKAN
             });
 
             configuration = GUIConfiguration.LoadOrCreateConfiguration(
-                Path.Combine(CurrentInstance.CkanDir (), "GUIConfig.xml")
+                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml")
             );
 
             if (CurrentInstance.CompatibleVersionsAreFromDifferentKsp)
@@ -583,17 +583,17 @@ namespace CKAN
                     .ShowDialog();
             }
 
+            (RegistryManager.Instance(CurrentInstance).registry as Registry)
+                ?.BuildTagIndex(mainModList.ModuleTags);
+
             bool repoUpdateNeeded = configuration.RefreshOnStartup
                 || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
             if (allowRepoUpdate && repoUpdateNeeded)
             {
-                ModList.Rows.Clear();
-                UpdateRepo();
-
                 // Update the filters after UpdateRepo() completed.
                 // Since this happens with a backgroundworker, Filter() is added as callback for RunWorkerCompleted.
                 // Remove it again after it ran, else it stays there and is added again and again.
-                void filterUpdate (object sender, RunWorkerCompletedEventArgs e)
+                void filterUpdate(object sender, RunWorkerCompletedEventArgs e)
                 {
                     Filter(
                         (GUIModFilter)configuration.ActiveFilter,
@@ -605,6 +605,9 @@ namespace CKAN
                 }
 
                 m_UpdateRepoWorker.RunWorkerCompleted += filterUpdate;
+
+                ModList.Rows.Clear();
+                UpdateRepo();
             }
             else
             {
