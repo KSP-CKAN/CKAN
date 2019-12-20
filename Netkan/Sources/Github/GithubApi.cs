@@ -195,7 +195,7 @@ namespace CKAN.NetKAN.Sources.Github
             {
                 if (k.responseStatus == 403 && k.responseHeader.Contains("X-RateLimit-Remaining: 0"))
                 {
-                    throw new Kraken("GitHub API rate limit exceeded.");
+                    throw new Kraken($"GitHub API rate limit exceeded: {path}");
                 }
                 throw;
             }
