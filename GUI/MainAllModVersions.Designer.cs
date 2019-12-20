@@ -62,7 +62,7 @@
             //
             // CompatibleKSPVersion
             //
-            this.CompatibleKSPVersion.Width = 248;
+            this.CompatibleKSPVersion.Width = 160;
             resources.ApplyResources(this.CompatibleKSPVersion, "CompatibleKSPVersion");
             //
             // VersionsListView

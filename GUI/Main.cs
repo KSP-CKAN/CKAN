@@ -195,6 +195,9 @@ namespace CKAN
 
             InitializeComponent();
 
+            // React when the user clicks a tag or filter link in mod info
+            ModInfoTabControl.OnChangeFilter += Filter;
+
             // Replace mono's broken, ugly toolstrip renderer
             if (Platform.IsMono)
             {
