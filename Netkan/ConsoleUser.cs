@@ -20,7 +20,7 @@ namespace CKAN
         /// <summary>
         /// Initializes a new instance of the <see cref="T:CKAN.CmdLine.ConsoleUser"/> class.
         /// </summary>
-        /// <param name="headless">If set to <c>true</c>, supress interactive dialogs like Yes/No-Dialog or SelectionDialog.</param>
+        /// <param name="headless">If set to <c>true</c>, suppress interactive dialogs like Yes/No-Dialog or SelectionDialog.</param>
         public ConsoleUser (bool headless)
         {
             Headless = headless;

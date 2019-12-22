@@ -13,5 +13,6 @@ namespace CKAN.NetKAN.Services
         
         IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip);
         
+        IEnumerable<string> FileDestinations(CkanModule module, string filePath);
     }
 }

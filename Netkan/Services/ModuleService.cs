@@ -72,6 +72,13 @@ namespace CKAN.NetKAN.Services
                 .Where(instF => cfgRegex.IsMatch(instF.source.Name));
         }
 
+        public IEnumerable<string> FileDestinations(CkanModule module, string filePath)
+        {
+            return ModuleInstaller
+                .FindInstallableFiles(module, filePath, new KSP("/", "dummy", null, false))
+                .Select(f => f.destination);
+        }
+
         /// <summary>
         /// Return a parsed JObject from a stream.
         /// </summary>
