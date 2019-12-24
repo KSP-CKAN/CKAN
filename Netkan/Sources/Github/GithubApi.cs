@@ -62,54 +62,64 @@ namespace CKAN.NetKAN.Sources.Github
 
         public IEnumerable<GithubRelease> GetAllReleases(GithubRef reference)
         {
-            var json = Call($"repos/{reference.Repository}/releases?per_page=100");
-            Log.Debug("Parsing JSON...");
-            var releases = JArray.Parse(json);
-
-            // Finding the most recent *stable* release means filtering
-            // out on pre-releases.
-
-            foreach (var release in releases)
+            const int perPage = 10;
+            for (int page = 1; true; ++page)
             {
-                // First, check for prerelease status...
-                if (reference.UsePrerelease == (bool)release["prerelease"])
+                var json = Call($"repos/{reference.Repository}/releases?per_page={perPage}&page={page}");
+                Log.Debug("Parsing JSON...");
+                var releases = JArray.Parse(json);
+
+                // Finding the most recent *stable* release means filtering
+                // out on pre-releases.
+
+                foreach (var release in releases)
                 {
-                    var version = new ModuleVersion((string)release["tag_name"]);
-                    var author = (string)release["author"]["login"];
-
-                    Uri       download = null;
-                    DateTime? updated  = null;
-                    DateTime  parsed;
-
-                    if (reference.UseSourceArchive)
+                    // First, check for prerelease status...
+                    if (reference.UsePrerelease == (bool)release["prerelease"])
                     {
-                        Log.Debug("Using GitHub source archive");
-                        download = new Uri((string)release["zipball_url"]);
-                        if (DateTime.TryParse(release["published_at"].ToString(), out parsed))
-                        {
-                            updated = parsed;
-                        }
-                    }
-                    else
-                    {
-                        var assets = (JArray)release["assets"];
+                        var version = new ModuleVersion((string)release["tag_name"]);
+                        var author = (string)release["author"]["login"];
 
-                        foreach (var asset in assets.Where(asset => reference.Filter.IsMatch((string)asset["name"])))
+                        Uri       download = null;
+                        DateTime? updated  = null;
+                        DateTime  parsed;
+
+                        if (reference.UseSourceArchive)
                         {
-                            Log.DebugFormat("Using GitHub asset: {0}", asset["name"]);
-                            download = new Uri((string)asset["browser_download_url"]);
-                            if (DateTime.TryParse(asset["updated_at"].ToString(), out parsed))
+                            Log.Debug("Using GitHub source archive");
+                            download = new Uri((string)release["zipball_url"]);
+                            if (DateTime.TryParse(release["published_at"].ToString(), out parsed))
                             {
                                 updated = parsed;
                             }
-                            break;
+                        }
+                        else
+                        {
+                            var assets = (JArray)release["assets"];
+
+                            foreach (var asset in assets.Where(asset => reference.Filter.IsMatch((string)asset["name"])))
+                            {
+                                Log.DebugFormat("Using GitHub asset: {0}", asset["name"]);
+                                download = new Uri((string)asset["browser_download_url"]);
+                                if (DateTime.TryParse(asset["updated_at"].ToString(), out parsed))
+                                {
+                                    updated = parsed;
+                                }
+                                break;
+                            }
+                        }
+
+                        if (download != null)
+                        {
+                            yield return new GithubRelease(author, version, download, updated);
                         }
                     }
+                }
 
-                    if (download != null)
-                    {
-                        yield return new GithubRelease(author, version, download, updated);
-                    }
+                if (releases.Count < perPage)
+                {
+                    // That's all folks!
+                    break;
                 }
             }
         }

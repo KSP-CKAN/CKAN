@@ -9,6 +9,10 @@ namespace CKAN.NetKAN.Services
         private readonly NetFileCache _cache;
         private          HashSet<Uri> _requestedURLs  = new HashSet<Uri>();
         private          bool         _overwriteCache = false;
+        private Dictionary<Uri, StringCacheEntry> _stringCache = new Dictionary<Uri, StringCacheEntry>();
+
+        // Re-use string value URLs within 2 minutes
+        private static readonly TimeSpan stringCacheLifetime = new TimeSpan(0, 2, 0);
 
         public CachingHttpService(NetFileCache cache, bool overwrite = false)
         {
@@ -78,11 +82,35 @@ namespace CKAN.NetKAN.Services
 
         public string DownloadText(Uri url)
         {
-            return Net.DownloadText(url);
+            return TryGetCached(url, () => Net.DownloadText(url));
         }
         public string DownloadText(Uri url, string authToken, string mimeType = null)
         {
-            return Net.DownloadText(url, authToken, mimeType);
+            return TryGetCached(url, () => Net.DownloadText(url, authToken, mimeType));
+        }
+        
+        private string TryGetCached(Uri url, Func<string> uncached)
+        {
+            if (_stringCache.TryGetValue(url, out StringCacheEntry entry))
+            {
+                if (DateTime.Now - entry.Timestamp < stringCacheLifetime)
+                {
+                    // Re-use recent cached request of this URL
+                    return entry.Value;
+                }
+                else
+                {
+                    // Too old, purge it
+                    _stringCache.Remove(url);
+                }
+            }
+            string val = uncached();
+            _stringCache.Add(url, new StringCacheEntry()
+            {
+                Value     = val,
+                Timestamp = DateTime.Now
+            });
+            return val;
         }
 
         public IEnumerable<Uri> RequestedURLs { get { return _requestedURLs; } }
@@ -93,4 +121,11 @@ namespace CKAN.NetKAN.Services
 
         private static readonly ILog log = LogManager.GetLogger(typeof(CachingHttpService));
     }
+
+    public class StringCacheEntry
+    {
+        public string   Value;
+        public DateTime Timestamp;
+    }
+    
 }
