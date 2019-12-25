@@ -4,14 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
-using CKAN.Extensions;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
-using CKAN.Versioning;
 using ChinhDo.Transactions.FileManager;
-using CKAN.Configuration;
 using Autofac;
+using CKAN.Extensions;
+using CKAN.Versioning;
+using CKAN.Configuration;
 
 namespace CKAN
 {
@@ -742,7 +742,8 @@ namespace CKAN
             IEnumerable<string> goners = revdep.Union(
                 registry_manager.registry.FindRemovableAutoInstalled(
                     registry_manager.registry.InstalledModules.Where(im => !revdep.Contains(im.identifier))
-                ).Select(im => im.identifier));
+                ).Select(im => im.identifier))
+                .Memoize();
 
             // If there us nothing to uninstall, skip out.
             if (!goners.Any())

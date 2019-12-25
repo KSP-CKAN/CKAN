@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using CKAN.Extensions;
 using CKAN.Versioning;
 
 namespace CKAN
@@ -302,7 +303,8 @@ namespace CKAN
         private void AuditRecommendations(IRegistryQuerier registry, KspVersionCriteria versionCriteria)
         {
             var toInstall   = new HashSet<CkanModule>();
-            var rows = getRecSugRows(registry.InstalledModules.Select(im => im.Module), registry, toInstall);
+            var rows = getRecSugRows(registry.InstalledModules.Select(im => im.Module), registry, toInstall)
+                .Memoize();
             if (!rows.Any())
             {
                 GUI.user.RaiseError(Properties.Resources.MainRecommendationsNoneFound);

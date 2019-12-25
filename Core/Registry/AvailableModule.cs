@@ -87,7 +87,7 @@ namespace CKAN
         )
         {
             log.DebugFormat("Our dictionary has {0} keys", module_version.Keys.Count);
-            IEnumerable<CkanModule> modules = module_version.Values;
+            IEnumerable<CkanModule> modules = module_version.Values.Reverse();
             if (relationship != null)
             {
                 modules = modules.Where(relationship.WithinBounds);
@@ -104,7 +104,7 @@ namespace CKAN
             {
                 modules = modules.Where(m => DependsAndConflictsOK(m, toInstall));
             }
-            return modules.LastOrDefault();
+            return modules.FirstOrDefault();
         }
 
         private static bool DependsAndConflictsOK(CkanModule module, IEnumerable<CkanModule> others)

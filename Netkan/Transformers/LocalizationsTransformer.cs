@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using Newtonsoft.Json.Linq;
+using CKAN.Extensions;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
@@ -64,7 +65,8 @@ namespace CKAN.NetKAN.Transformers
                     .SelectMany(contents => localeRegex.Matches(contents).Cast<Match>()
                         .Where(m => m.Groups["contents"].Value.Contains("="))
                         .Select(m => m.Groups["locale"].Value))
-                    .Distinct();
+                    .Distinct()
+                    .Memoize();
                 log.Debug("Locales extracted");
 
                 if (locales.Any())
