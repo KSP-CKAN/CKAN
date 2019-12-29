@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Get org members as authors, time-sort authors, sort tags to middle (#2942 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Coerce GitHub URLs into the authenticated API in Netkan (#2946 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Request fewer GitHub releases and cache string URLs in Netkan (#2950 by: HebaruSan)
+- [GUI] Create ~/.local/share/applications/ if it doesn't exist on Linux (#1848 by: DinCahill; reviewed: ayan4ml, politas, dannydi12)
 
 ## v1.26.6 (Leonov)
 
