@@ -46,7 +46,7 @@ namespace Tests.Core.Net
         }
 
         [Test]
-        [Category("Online")]
+        [Category("FlakyNetwork"), Category("Online")]
         public void SpaceDockSSL()
         {
             Assert.DoesNotThrow(delegate
