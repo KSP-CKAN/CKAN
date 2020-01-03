@@ -32,6 +32,11 @@ namespace CKAN.NetKAN.Sources.Spacedock
             {
                 // SpaceDock returns a valid json with an error message in case of non 200 codes.
                 json = e.responseContent;
+                if (string.IsNullOrEmpty(json))
+                {
+                    // ... sometimes. Other times we get nothing.
+                    throw;
+                }
             }
 
             // Check if the mod has been removed from SD.
