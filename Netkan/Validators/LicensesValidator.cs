@@ -33,7 +33,7 @@ namespace CKAN.NetKAN.Validators
             {
                 if (licenses == null || licenses.Count < 1)
                 {
-                    throw new Kraken("License should match spec. Set `x_netkan_license_ok` to supress");
+                    throw new Kraken("License should match spec. Set `x_netkan_license_ok` to suppress");
                 }
                 else foreach (var lic in licenses)
                 {
@@ -44,7 +44,7 @@ namespace CKAN.NetKAN.Validators
                     }
                     catch
                     {
-                        throw new Kraken($"License {lic} should match spec. Set `x_netkan_license_ok` to supress");
+                        throw new Kraken($"License {lic} should match spec. Set `x_netkan_license_ok` to suppress");
                     }
                 }
             }
