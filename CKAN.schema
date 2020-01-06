@@ -147,7 +147,9 @@
         "provides" : {
             "description" : "A list of virtual packages this mod provides",
             "type"        : "array",
-            "items"       : { "type" : "string" },
+            "items"       : {
+                "$ref" : "#/definitions/identifier"
+            },
             "uniqueItems" : true
         },
         "replaced_by" : {
