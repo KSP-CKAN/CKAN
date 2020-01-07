@@ -117,7 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="MainFavouritesList" xml:space="preserve"><value>CKAN favorites list (*.ckan)</value></data>
-  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favorites</value></data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="CreateButton.Text" xml:space="preserve"><value>Erstellen</value></data>
+  <data name="SelectOrCreateLabel.Text" xml:space="preserve"><value>Wähle ein Label zum Bearbeiten oder erstelle ein neues</value></data>
+  <data name="NameLabel.Text" xml:space="preserve"><value>Name:</value></data>
+  <data name="ColorLabel.Text" xml:space="preserve"><value>Hintergrund:</value></data>
+  <data name="ColorButton.Text" xml:space="preserve"><value>Auswahl...</value></data>
+  <data name="InstanceNameLabel.Text" xml:space="preserve"><value>Instanz
+(leer für alle):</value></data>
+  <data name="HideFromOtherFiltersCheckBox.Text" xml:space="preserve"><value>In anderen Filtern verstecken</value></data>
+  <data name="NotifyOnChangesCheckBox.Text" xml:space="preserve"><value>Bei verfügbaren Upgrades benachrichtigen</value></data>
+  <data name="RemoveOnChangesCheckBox.Text" xml:space="preserve"><value>Label nach Updates entfernen</value></data>
+  <data name="AlertOnInstallCheckBox.Text" xml:space="preserve"><value>Vor Installation warnen</value></data>
+  <data name="RemoveOnInstallCheckBox.Text" xml:space="preserve"><value>Label nach der Installation entfernen</value></data>
+  <data name="CloseButton.Text" xml:space="preserve"><value>Schließen</value></data>
+  <data name="SaveButton.Text" xml:space="preserve"><value>Speichern</value></data>
+  <data name="CancelButton.Text" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="DeleteButton.Text" xml:space="preserve"><value>Löschen</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Labels bearbeiten</value></data>
 </root>

@@ -64,7 +64,8 @@ namespace CKAN
         // Index of which mods provide what, format:
         //   providers[provided] = { provider1, provider2, ... }
         // Built by BuildProvidesIndex, makes LatestAvailableWithProvides much faster.
-        [JsonIgnore] private Dictionary<string, HashSet<AvailableModule>> providers
+        [JsonIgnore]
+        private Dictionary<string, HashSet<AvailableModule>> providers
             = new Dictionary<string, HashSet<AvailableModule>>();
 
         /// <summary>
@@ -683,6 +684,16 @@ namespace CKAN
                     else
                         providers.Add(provided, new HashSet<AvailableModule>() { am });
                 }
+            }
+        }
+
+        public void BuildTagIndex(ModuleTagList tags)
+        {
+            tags.Tags.Clear();
+            tags.Untagged.Clear();
+            foreach (AvailableModule am in available_modules.Values)
+            {
+                tags.BuildTagIndexFor(am);
             }
         }
 

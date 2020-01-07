@@ -116,6 +116,12 @@
     <Compile Include="DropdownMenuButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="EditLabelsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditLabelsDialog.Designer.cs">
+      <DependentUpon>EditLabelsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +150,8 @@
     <Compile Include="KSPCommandLineOptionsDialog.Designer.cs">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Labels\ModuleLabel.cs" />
+    <Compile Include="Labels\ModuleLabelList.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -168,6 +176,7 @@
     <Compile Include="MainInstall.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="MainLabels.cs" />
     <Compile Include="MainModInfo.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -286,6 +295,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\CompatibleKspVersionsDialog.de-DE.resx">
       <DependentUpon>..\..\CompatibleKspVersionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditLabelsDialog.resx">
+      <DependentUpon>EditLabelsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\EditLabelsDialog.de-DE.resx">
+      <DependentUpon>..\..\EditLabelsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>

@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- [Multiple] Custom mod labels, favorites, hiding (#2936 by: HebaruSan; reviewed: DasSkelett)
+
 ### Bugfixes
 
 - [GUI] Don't launch KSP 1.8 with -single-instance (#2931 by: HebaruSan; reviewed: DasSkelett)

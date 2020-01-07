@@ -388,6 +388,15 @@ namespace CKAN.Properties {
         internal static string MainFilterCompatible {
             get { return (string)(ResourceManager.GetObject("MainFilterCompatible", resourceCulture)); }
         }
+        internal static string MainFilterLabel {
+            get { return (string)(ResourceManager.GetObject("MainFilterLabel", resourceCulture)); }
+        }
+        internal static string MainFilterTag {
+            get { return (string)(ResourceManager.GetObject("MainFilterTag", resourceCulture)); }
+        }
+        internal static string MainFilterUntagged {
+            get { return (string)(ResourceManager.GetObject("MainFilterUntagged", resourceCulture)); }
+        }
         internal static string MainLaunchWithIncompatible {
             get { return (string)(ResourceManager.GetObject("MainLaunchWithIncompatible", resourceCulture)); }
         }
@@ -744,6 +753,78 @@ namespace CKAN.Properties {
 
         internal static string StatusInstanceLabelText {
             get { return (string)(ResourceManager.GetObject("StatusInstanceLabelText", resourceCulture)); }
+        }
+        internal static string ModuleLabelListFavourites {
+            get { return (string)(ResourceManager.GetObject("ModuleLabelListFavourites", resourceCulture)); }
+        }
+        internal static string ModuleLabelListHidden {
+            get { return (string)(ResourceManager.GetObject("ModuleLabelListHidden", resourceCulture)); }
+        }
+        internal static string ModuleLabelListGlobal {
+            get { return (string)(ResourceManager.GetObject("ModuleLabelListGlobal", resourceCulture)); }
+        }
+        internal static string EditLabelsDialogConfirmDelete {
+            get { return (string)(ResourceManager.GetObject("EditLabelsDialogConfirmDelete", resourceCulture)); }
+        }
+        internal static string EditLabelsDialogSavePrompt {
+            get { return (string)(ResourceManager.GetObject("EditLabelsDialogSavePrompt", resourceCulture)); }
+        }
+        internal static string EditLabelsDialogNoRecord {
+            get { return (string)(ResourceManager.GetObject("EditLabelsDialogNoRecord", resourceCulture)); }
+        }
+        internal static string EditLabelsDialogNameRequired {
+            get { return (string)(ResourceManager.GetObject("EditLabelsDialogNameRequired", resourceCulture)); }
+        }
+        internal static string EditLabelsDialogAlreadyExists {
+            get { return (string)(ResourceManager.GetObject("EditLabelsDialogAlreadyExists", resourceCulture)); }
+        }
+        internal static string EditLabelsDialogDelete {
+            get { return (string)(ResourceManager.GetObject("EditLabelsDialogDelete", resourceCulture)); }
+        }
+        internal static string EditLabelsDialogCancel {
+            get { return (string)(ResourceManager.GetObject("EditLabelsDialogCancel", resourceCulture)); }
+        }
+        internal static string EditLabelsDialogSave {
+            get { return (string)(ResourceManager.GetObject("EditLabelsDialogSave", resourceCulture)); }
+        }
+        internal static string EditLabelsDialogDiscard {
+            get { return (string)(ResourceManager.GetObject("EditLabelsDialogDiscard", resourceCulture)); }
+        }
+        internal static string MainChangesetWarningInstallingModuleWithLabel {
+            get { return (string)(ResourceManager.GetObject("MainChangesetWarningInstallingModuleWithLabel", resourceCulture)); }
+        }
+        internal static string EditLabelsToolTipName {
+            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipName", resourceCulture)); }
+        }
+        internal static string EditLabelsToolTipColor {
+            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipColor", resourceCulture)); }
+        }
+        internal static string EditLabelsToolTipInstance {
+            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipInstance", resourceCulture)); }
+        }
+        internal static string EditLabelsToolTipHide {
+            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipHide", resourceCulture)); }
+        }
+        internal static string EditLabelsToolTipNotifyOnChanges {
+            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipNotifyOnChanges", resourceCulture)); }
+        }
+        internal static string EditLabelsToolTipRemoveOnChanges {
+            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipRemoveOnChanges", resourceCulture)); }
+        }
+        internal static string EditLabelsToolTipAlertOnInstall {
+            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipAlertOnInstall", resourceCulture)); }
+        }
+        internal static string EditLabelsToolTipRemoveOnInstall {
+            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipRemoveOnInstall", resourceCulture)); }
+        }
+        internal static string MainLabelsUpdateMessage {
+            get { return (string)(ResourceManager.GetObject("MainLabelsUpdateMessage", resourceCulture)); }
+        }
+        internal static string MainLabelsUpdateTitle {
+            get { return (string)(ResourceManager.GetObject("MainLabelsUpdateTitle", resourceCulture)); }
+        }
+        internal static string MainLabelsUntagged {
+            get { return (string)(ResourceManager.GetObject("MainLabelsUntagged", resourceCulture)); }
         }
    }
 }

@@ -69,7 +69,10 @@ namespace Tests.GUI
                 var registry = Registry.Empty();
                 registry.AddAvailable(ckan_mod);
                 var item = new MainModList(delegate { }, null);
-                Assert.That(item.IsVisible(new GUIMod(ckan_mod, registry, manager.CurrentInstance.VersionCriteria())));
+                Assert.That(item.IsVisible(
+                    new GUIMod(ckan_mod, registry, manager.CurrentInstance.VersionCriteria()),
+                    manager.CurrentInstance.Name
+                ));
 
                 manager.Dispose();
             }
@@ -102,11 +105,14 @@ namespace Tests.GUI
                 registry.AddAvailable(TestData.FireSpitterModule());
                 registry.AddAvailable(TestData.kOS_014_module());
                 var main_mod_list = new MainModList(null, null);
-                var mod_list = main_mod_list.ConstructModList(new List<GUIMod>
-                {
-                    new GUIMod(TestData.FireSpitterModule(), registry, manager.CurrentInstance.VersionCriteria()),
-                    new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.VersionCriteria())
-                });
+                var mod_list = main_mod_list.ConstructModList(
+                    new List<GUIMod>
+                    {
+                        new GUIMod(TestData.FireSpitterModule(), registry, manager.CurrentInstance.VersionCriteria()),
+                        new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.VersionCriteria())
+                    },
+                    manager.CurrentInstance.Name
+                );
                 Assert.That(mod_list, Has.Count.EqualTo(2));
 
                 manager.Dispose();

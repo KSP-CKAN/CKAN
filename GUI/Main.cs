@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Linq;
 using CKAN.Versioning;
 using CKAN.Exporters;
+using CKAN.Extensions;
 using CKAN.Properties;
 using CKAN.Types;
 using log4net;
@@ -113,7 +114,7 @@ namespace CKAN
                     {
                         cell.ToolTipText = null;
                     }
-                    row.DefaultCellStyle.BackColor = Color.Empty;
+                    mainModList.ReapplyLabels(guiMod, false, CurrentInstance.Name);
                     if (row.Visible)
                     {
                         ModList.InvalidateRow(row.Index);
@@ -133,7 +134,7 @@ namespace CKAN
                     {
                         cell.ToolTipText = conflict_text;
                     }
-                    row.DefaultCellStyle.BackColor = Color.LightCoral;
+                    row.DefaultCellStyle.BackColor = mainModList.GetRowBackground(guiMod, true, CurrentInstance.Name);
                     if (row.Visible)
                     {
                         ModList.InvalidateRow(row.Index);
@@ -194,6 +195,9 @@ namespace CKAN
 
             InitializeComponent();
 
+            // React when the user clicks a tag or filter link in mod info
+            ModInfoTabControl.OnChangeFilter += Filter;
+
             // Replace mono's broken, ugly toolstrip renderer
             if (Platform.IsMono)
             {
@@ -203,9 +207,12 @@ namespace CKAN
                 settingsToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 helpToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 FilterToolButton.DropDown.Renderer = new FlatToolStripRenderer();
+                FilterTagsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
+                FilterLabelsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
                 minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 ModListContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 ModListHeaderContextMenuStrip.Renderer = new FlatToolStripRenderer();
+                LabelsContextMenuStrip.Renderer = new FlatToolStripRenderer();
             }
 
             // Initialize all user interaction dialogs.
@@ -536,6 +543,7 @@ namespace CKAN
 
             // Save the active filter
             configuration.ActiveFilter = (int)mainModList.ModFilter;
+            configuration.CustomLabelFilter = mainModList.CustomLabelFilter?.Name;
 
             // Save settings.
             configuration.Save();
@@ -566,7 +574,7 @@ namespace CKAN
             });
 
             configuration = GUIConfiguration.LoadOrCreateConfiguration(
-                Path.Combine(CurrentInstance.CkanDir (), "GUIConfig.xml")
+                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml")
             );
 
             if (CurrentInstance.CompatibleVersionsAreFromDifferentKsp)
@@ -575,28 +583,41 @@ namespace CKAN
                     .ShowDialog();
             }
 
+            (RegistryManager.Instance(CurrentInstance).registry as Registry)
+                ?.BuildTagIndex(mainModList.ModuleTags);
+
             bool repoUpdateNeeded = configuration.RefreshOnStartup
                 || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
             if (allowRepoUpdate && repoUpdateNeeded)
             {
-                ModList.Rows.Clear();
-                UpdateRepo();
-
                 // Update the filters after UpdateRepo() completed.
                 // Since this happens with a backgroundworker, Filter() is added as callback for RunWorkerCompleted.
                 // Remove it again after it ran, else it stays there and is added again and again.
-                void filterUpdate (object sender, RunWorkerCompletedEventArgs e)
+                void filterUpdate(object sender, RunWorkerCompletedEventArgs e)
                 {
-                    Filter((GUIModFilter)configuration.ActiveFilter);
+                    Filter(
+                        (GUIModFilter)configuration.ActiveFilter,
+                        mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
+                        mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                            .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
+                    );
                     m_UpdateRepoWorker.RunWorkerCompleted -= filterUpdate;
                 }
 
                 m_UpdateRepoWorker.RunWorkerCompleted += filterUpdate;
+
+                ModList.Rows.Clear();
+                UpdateRepo();
             }
             else
             {
                 UpdateModsList();
-                Filter((GUIModFilter)configuration.ActiveFilter);
+                Filter(
+                    (GUIModFilter)configuration.ActiveFilter,
+                    mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
+                    mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                        .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
+                );
             }
 
             ChangeSet = null;
@@ -852,13 +873,17 @@ namespace CKAN
         /// Called when the modlist filter (all, compatible, incompatible...) is changed.
         /// </summary>
         /// <param name="filter">Filter.</param>
-        private void Filter(GUIModFilter filter)
+        private void Filter(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
         {
             // Triggers mainModList.ModFiltersUpdated()
+            mainModList.TagFilter = tag;
+            mainModList.CustomLabelFilter = label;
             mainModList.ModFilter = filter;
 
             // Save new filter to the configuration.
             configuration.ActiveFilter = (int)mainModList.ModFilter;
+            configuration.CustomLabelFilter = label?.Name;
+            configuration.TagFilter = tag?.Name;
             configuration.Save();
 
             // Ask the configuration which columns to show.
@@ -888,6 +913,12 @@ namespace CKAN
                                                             ModList.Columns["InstallDate"].Visible      = false;
                                                             ModList.Columns["AutoInstalled"].Visible    = false;
                                                             FilterToolButton.Text = Properties.Resources.MainFilterNotInstalled; break;
+                case GUIModFilter.CustomLabel:              FilterToolButton.Text = string.Format(Properties.Resources.MainFilterLabel, label?.Name ?? "CUSTOM"); break;
+                case GUIModFilter.Tag:
+                    FilterToolButton.Text = tag == null
+                        ? Properties.Resources.MainFilterUntagged
+                        : string.Format(Properties.Resources.MainFilterTag, tag.Name);
+                    break;
                 default:                                    FilterToolButton.Text = Properties.Resources.MainFilterCompatible;   break;
             }
         }

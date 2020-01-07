@@ -111,7 +111,7 @@ namespace CKAN
         {
             StartDownload(SelectedModule);
         }
-        
+
         private void ContentsOpenButton_Click(object sender, EventArgs e)
         {
             Process.Start(manager.Cache.GetCachedFilename(SelectedModule.ToModule()));
@@ -127,9 +127,7 @@ namespace CKAN
             CkanModule module = gui_module.ToModule();
 
             Util.Invoke(MetadataModuleNameTextBox, () => MetadataModuleNameTextBox.Text = gui_module.Name);
-            Util.Invoke(MetadataModuleVersionTextBox, () => MetadataModuleVersionTextBox.Text = gui_module.LatestVersion.ToString());
-            Util.Invoke(MetadataModuleLicenseTextBox, () => MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license));
-            Util.Invoke(MetadataModuleAuthorTextBox, () => MetadataModuleAuthorTextBox.Text = gui_module.Authors);
+            UpdateTagsAndLabels(gui_module.ToModule());
             Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = gui_module.Abstract);
             Util.Invoke(MetadataModuleDescriptionTextBox, () =>
             {
@@ -140,6 +138,10 @@ namespace CKAN
                         ? ScrollBars.None
                         : ScrollBars.Vertical;
             });
+
+            Util.Invoke(MetadataModuleVersionTextBox, () => MetadataModuleVersionTextBox.Text = gui_module.LatestVersion.ToString());
+            Util.Invoke(MetadataModuleLicenseTextBox, () => MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license));
+            Util.Invoke(MetadataModuleAuthorTextBox, () => MetadataModuleAuthorTextBox.Text = gui_module.Authors);
             Util.Invoke(MetadataIdentifierTextBox, () => MetadataIdentifierTextBox.Text = gui_module.Identifier);
 
             // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
@@ -148,6 +150,91 @@ namespace CKAN
             Util.Invoke(MetadataModuleReleaseStatusTextBox, () => MetadataModuleReleaseStatusTextBox.Text = module.release_status?.ToString() ?? Properties.Resources.MainModInfoNSlashA);
             Util.Invoke(MetadataModuleKSPCompatibilityTextBox, () => MetadataModuleKSPCompatibilityTextBox.Text = gui_module.KSPCompatibilityLong);
             Util.Invoke(ReplacementTextBox, () => ReplacementTextBox.Text = gui_module.ToModule()?.replaced_by?.ToString() ?? Properties.Resources.MainModInfoNSlashA);
+        }
+
+        private ModuleLabelList ModuleLabels
+        {
+            get
+            {
+                return Main.Instance.mainModList.ModuleLabels;
+            }
+        }
+
+        private ModuleTagList ModuleTags
+        {
+            get
+            {
+                return Main.Instance.mainModList.ModuleTags;
+            }
+        }
+
+        private void UpdateTagsAndLabels(CkanModule mod)
+        {
+            Util.Invoke(MetadataTagsLabelsPanel, () =>
+            {
+                MetadataTagsLabelsPanel.Controls.Clear();
+                var tags = ModuleTags?.Tags
+                    .Where(t => t.Value.ModuleIdentifiers.Contains(mod.identifier))
+                    .OrderBy(t => t.Key)
+                    .Select(t => t.Value);
+                if (tags != null)
+                {
+                    foreach (ModuleTag tag in tags)
+                    {
+                        MetadataTagsLabelsPanel.Controls.Add(TagLabelLink(
+                            tag.Name, tag, new LinkLabelLinkClickedEventHandler(this.TagLinkLabel_LinkClicked)
+                        ));
+                    }
+                }
+                var labels = ModuleLabels?.LabelsFor(manager.CurrentInstance.Name)
+                    .Where(l => l.ModuleIdentifiers.Contains(mod.identifier))
+                    .OrderBy(l => l.Name);
+                if (labels != null)
+                {
+                    foreach (ModuleLabel mlbl in labels)
+                    {
+                        MetadataTagsLabelsPanel.Controls.Add(TagLabelLink(
+                            mlbl.Name, mlbl, new LinkLabelLinkClickedEventHandler(this.LabelLinkLabel_LinkClicked)
+                        ));
+                    }
+                }
+            });
+        }
+
+        private LinkLabel TagLabelLink(string name, object tag, LinkLabelLinkClickedEventHandler onClick)
+        {
+            var link = new LinkLabel()
+            {
+                AutoSize     = true,
+                LinkColor    = SystemColors.GrayText,
+                LinkBehavior = LinkBehavior.HoverUnderline,
+                Margin       = new Padding(2),
+                Text         = name,
+                Tag          = tag,
+            };
+            link.LinkClicked += onClick;
+            return link;
+        }
+
+        public delegate void ChangeFilter(GUIModFilter filter, ModuleTag tag, ModuleLabel label);
+        public event ChangeFilter OnChangeFilter;
+
+        private void TagLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var link = sender as LinkLabel;
+            if (OnChangeFilter != null)
+            {
+                OnChangeFilter(GUIModFilter.Tag, link.Tag as ModuleTag, null);
+            }
+        }
+
+        private void LabelLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var link = sender as LinkLabel;
+            if (OnChangeFilter != null)
+            {
+                OnChangeFilter(GUIModFilter.CustomLabel, null, link.Tag as ModuleLabel);
+            }
         }
 
         private void BeforeExpand(object sender, TreeViewCancelEventArgs args)
@@ -453,7 +540,7 @@ namespace CKAN
             Main.Instance.ShowWaitDialog(false);
             if (cacheWorker.IsBusy)
             {
-                Task.Factory.StartNew(() => 
+                Task.Factory.StartNew(() =>
                 {
                     // Just pass to the existing worker
                     downloader.DownloadModules(new List<CkanModule> { module.ToCkanModule() });

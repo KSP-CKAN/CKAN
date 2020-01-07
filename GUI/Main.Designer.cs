@@ -68,6 +68,8 @@
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterLabelsToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterTagsToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NavBackwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NavForwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -87,7 +89,14 @@
             this.DownloadCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ModListContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.LabelsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ModListHeaderContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.modListToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.tagFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.untaggedFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.labelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.editLabelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reinstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.purgeContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -423,7 +432,11 @@
             this.FilterNewButton,
             this.FilterNotInstalledButton,
             this.FilterIncompatibleButton,
-            this.FilterAllButton});
+            this.FilterAllButton,
+            this.tagFilterToolStripSeparator,
+            this.FilterTagsToolButton,
+            this.FilterLabelsToolButton});
+            this.FilterToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterToolButton_DropDown_Opening);
             this.FilterToolButton.Image = global::CKAN.Properties.Resources.filter;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
@@ -499,6 +512,20 @@
             this.FilterAllButton.Size = new System.Drawing.Size(307, 30);
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
             resources.ApplyResources(this.FilterAllButton, "FilterAllButton");
+            // 
+            // FilterTagsToolButton
+            // 
+            this.FilterTagsToolButton.Name = "FilterTagsToolButton";
+            this.FilterTagsToolButton.Size = new System.Drawing.Size(179, 22);
+            resources.ApplyResources(this.FilterTagsToolButton, "FilterTagsToolButton");
+            this.FilterTagsToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterTagsToolButton_DropDown_Opening);
+            // 
+            // FilterLabelsToolButton
+            // 
+            this.FilterLabelsToolButton.Name = "FilterLabelsToolButton";
+            this.FilterLabelsToolButton.Size = new System.Drawing.Size(179, 22);
+            resources.ApplyResources(this.FilterLabelsToolButton, "FilterLabelsToolButton");
+            this.FilterLabelsToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterLabelsToolButton_DropDown_Opening);
             //
             // NavBackwardToolButton
             //
@@ -698,11 +725,20 @@
             // ModListContextMenuStrip
             //
             this.ModListContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.labelsToolStripMenuItem,
+            this.modListToolStripSeparator,
             this.reinstallToolStripMenuItem,
             this.downloadContentsToolStripMenuItem,
             this.purgeContentsToolStripMenuItem});
             this.ModListContextMenuStrip.Name = "ModListContextMenuStrip";
             this.ModListContextMenuStrip.Size = new System.Drawing.Size(180, 70);
+            //
+            // labelsToolStripMenuItem
+            //
+            this.labelsToolStripMenuItem.Name = "labelsToolStripMenuItem";
+            this.labelsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.labelsToolStripMenuItem.DropDown = this.LabelsContextMenuStrip;
+            resources.ApplyResources(this.labelsToolStripMenuItem, "labelsToolStripMenuItem");
             //
             // reinstallToolStripMenuItem
             //
@@ -724,6 +760,21 @@
             this.purgeContentsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.purgeContentsToolStripMenuItem.Click += new System.EventHandler(this.purgeContentsToolStripMenuItem_Click);
             resources.ApplyResources(this.purgeContentsToolStripMenuItem, "purgeContentsToolStripMenuItem");
+            //
+            // LabelsContextMenuStrip
+            //
+            this.LabelsContextMenuStrip.Name = "LabelsContextMenuStrip";
+            this.LabelsContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.editLabelsToolStripMenuItem});
+            this.LabelsContextMenuStrip.Size = new System.Drawing.Size(180, 70);
+            this.LabelsContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(LabelsContextMenuStrip_Opening);
+            //
+            // editLabelsToolStripMenuItem
+            //
+            this.editLabelsToolStripMenuItem.Name = "editLabelsToolStripMenuItem";
+            this.editLabelsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.editLabelsToolStripMenuItem.Click += new System.EventHandler(this.editLabelsToolStripMenuItem_Click);
+            resources.ApplyResources(this.editLabelsToolStripMenuItem, "editLabelsToolStripMenuItem");
             //
             // ModListHeaderContextMenuStrip
             //
@@ -1425,6 +1476,8 @@
         private System.Windows.Forms.ToolStripMenuItem FilterNotInstalledButton;
         private System.Windows.Forms.ToolStripMenuItem FilterIncompatibleButton;
         private System.Windows.Forms.ToolStripMenuItem FilterAllButton;
+        private System.Windows.Forms.ToolStripMenuItem FilterLabelsToolButton;
+        private System.Windows.Forms.ToolStripMenuItem FilterTagsToolButton;
         private System.Windows.Forms.ToolStripMenuItem NavBackwardToolButton;
         private System.Windows.Forms.ToolStripMenuItem NavForwardToolButton;
         private System.Windows.Forms.SplitContainer splitContainer1;
@@ -1444,7 +1497,14 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn DownloadCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
         private System.Windows.Forms.ContextMenuStrip ModListContextMenuStrip;
+        private System.Windows.Forms.ToolStripSeparator modListToolStripSeparator;
+        private System.Windows.Forms.ToolStripSeparator tagFilterToolStripSeparator;
+        private System.Windows.Forms.ToolStripSeparator untaggedFilterToolStripSeparator;
+        private System.Windows.Forms.ContextMenuStrip LabelsContextMenuStrip;
         private System.Windows.Forms.ContextMenuStrip ModListHeaderContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem labelsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator labelToolStripSeparator;
+        private System.Windows.Forms.ToolStripMenuItem editLabelsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem purgeContentsToolStripMenuItem;
