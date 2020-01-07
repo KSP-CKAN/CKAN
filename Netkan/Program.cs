@@ -9,6 +9,7 @@ using log4net;
 using log4net.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Processors;
 using CKAN.NetKAN.Transformers;
@@ -87,7 +88,14 @@ namespace CKAN.NetKAN
                         Options.GitHubToken,
                         Options.PreRelease
                     );
-                    var ckans = inf.Inflate(Options.File, netkan, new TransformOptions(ParseReleases(Options.Releases), null));
+                    var ckans = inf.Inflate(
+                        Options.File,
+                        netkan,
+                        new TransformOptions(
+                            ParseReleases(Options.Releases),
+                            ParseHighestVersion(Options.HighestVersion)
+                        )
+                    );
                     foreach (Metadata ckan in ckans)
                     {
                         WriteCkan(ckan);
@@ -121,6 +129,11 @@ namespace CKAN.NetKAN
         private static int? ParseReleases(string val)
         {
             return val == "all" ? (int?)null : int.Parse(val);
+        }
+
+        private static ModuleVersion ParseHighestVersion(string val)
+        {
+            return val == null ? null : new ModuleVersion(val);
         }
 
         private static void ProcessArgs(string[] args)

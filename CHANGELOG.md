@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Request fewer GitHub releases and cache string URLs in Netkan (#2950 by: HebaruSan)
 - [GUI] Create ~/.local/share/applications/ if it doesn't exist on Linux (#1848 by: DinCahill; reviewed: ayan4ml, politas, dannydi12)
 - [Netkan] Catch nested GameData folders in Netkan (#2948 by: HebaruSan; reviewed: techman83)
+- [Netkan] Only stage auto-epoch when creating new file (#2947 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.6 (Leonov)
 
