@@ -583,7 +583,7 @@ namespace CKAN
                 DataGridViewLinkCell cell = gridCell as DataGridViewLinkCell;
                 string cmd = cell?.Value.ToString();
                 if (!string.IsNullOrEmpty(cmd))
-                    Process.Start(cmd);
+                    Utilities.ProcessStartURL(cmd);
             }
             else
             {

@@ -70,7 +70,9 @@ namespace CKAN
         public static bool CheckURLValid(string source)
         {
             Uri uri_result;
-            return Uri.TryCreate(source, UriKind.Absolute, out uri_result) && uri_result.Scheme == Uri.UriSchemeHttp;
+            return Uri.TryCreate(source, UriKind.Absolute, out uri_result)
+                && (uri_result.Scheme == Uri.UriSchemeHttp
+                 || uri_result.Scheme == Uri.UriSchemeHttps);
         }
 
         /// <summary>
@@ -95,30 +97,17 @@ namespace CKAN
         {
             // Default prefixes to try if not provided
             if (prefixes == null)
-                prefixes = new string[] { "http://", "https://" };
+            {
+                prefixes = new string[] { "https://", "http://" };
+            }
 
-            try // opening the page normally
+            foreach (string fullUrl in new string[] { url }
+                .Concat(prefixes.Select(p => p + url).Where(CheckURLValid)))
             {
-                Process.Start(url);
-                return true; // we did it! return true
+                if (Utilities.ProcessStartURL(fullUrl))
+                    return true;
             }
-            catch (Exception) // something bad happened
-            {
-                foreach (string prefixed_url in prefixes.Select(p=>p+url).Where(CheckURLValid))
-                {
-                    try // with a new prefix
-                    {
-                        Process.Start(prefixed_url);
-                        return true;
-                    }
-                    catch (Exception)
-                    {
-                        // move along to the next prefix
-                    }
-                }
-                // We tried all prefixes, and still no luck.
-                return false;
-            }
+            return false;
         }
 
         /// <summary>

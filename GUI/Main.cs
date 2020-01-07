@@ -1151,7 +1151,7 @@ namespace CKAN
 
         private void openKspDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start(Instance.manager.CurrentInstance.GameDir());
+            Utilities.ProcessStartURL(Instance.manager.CurrentInstance.GameDir());
         }
 
         private void CompatibleKspVersionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1296,12 +1296,12 @@ namespace CKAN
 
         private void reportClientIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/KSP-CKAN/CKAN/issues/new/choose");
+            Utilities.ProcessStartURL("https://github.com/KSP-CKAN/CKAN/issues/new/choose");
         }
 
         private void reportMetadataIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/KSP-CKAN/NetKAN/issues/new/choose");
+            Utilities.ProcessStartURL("https://github.com/KSP-CKAN/NetKAN/issues/new/choose");
         }
 
         private void ModList_MouseDown(object sender, MouseEventArgs e)

@@ -207,7 +207,7 @@ namespace CKAN
                 return;
             }
 
-            System.Diagnostics.Process.Start(path);
+            Utilities.ProcessStartURL(path);
         }
 
         private void RenameButton_Click(object sender, EventArgs e)

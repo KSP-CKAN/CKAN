@@ -225,12 +225,7 @@ namespace CKAN
 
         private void OpenCacheButton_Click(object sender, EventArgs e)
         {
-            Process.Start(new ProcessStartInfo()
-            {
-                FileName        = config.DownloadCacheDir,
-                UseShellExecute = true,
-                Verb            = "open"
-            });
+            Utilities.ProcessStartURL(config.DownloadCacheDir);
         }
 
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)

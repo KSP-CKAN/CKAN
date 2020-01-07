@@ -219,10 +219,7 @@ namespace CKAN.ConsoleUI {
             // then wait 1.5 seconds and refresh the screen when it closes.
             ConsoleMessageDialog d = new ConsoleMessageDialog("Launching...", new List<string>());
             d.Run(() => {
-                Process.Start(new ProcessStartInfo() {
-                    UseShellExecute = true,
-                    FileName        = u.ToString()
-                });
+                Utilities.ProcessStartURL(u.ToString());
                 System.Threading.Thread.Sleep(1500);
             });
             return true;
