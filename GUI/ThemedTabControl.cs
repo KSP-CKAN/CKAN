@@ -18,11 +18,12 @@ namespace CKAN
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
             // Background
-            e.Graphics.FillRectangle(new SolidBrush(BackColor), e.Bounds);
+            Rectangle bgRect = e.Bounds;
+            bgRect.Inflate(-2, -1);
+            e.Graphics.FillRectangle(new SolidBrush(BackColor), bgRect);
             // Text
             var tabPage = TabPages[e.Index];
             Rectangle rect = e.Bounds;
-            rect.Offset(1, 1);
             TextRenderer.DrawText(e.Graphics, tabPage.Text, tabPage.Font,
                 rect, tabPage.ForeColor);
             // Alert event subscribers
