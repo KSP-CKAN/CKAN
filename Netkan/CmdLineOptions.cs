@@ -40,6 +40,9 @@ namespace CKAN.NetKAN
         [Option("queues", HelpText = "Input,Output queue names for Queue Inflator mode")]
         public string Queues { get; set; }
 
+        [Option("highest-version", HelpText = "Highest known version for auto-epoching")]
+        public string HighestVersion { get; set; }
+
         [Option("validate-ckan", HelpText = "Name of .ckan file to check for errors")]
         public string ValidateCkan { get; set; }
 
