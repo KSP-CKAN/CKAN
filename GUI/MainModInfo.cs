@@ -294,6 +294,8 @@ namespace CKAN
             CkanModule module = (CkanModule)ModInfoTabControl.Tag;
 
             DependsGraphTree.BeginUpdate();
+            DependsGraphTree.BackColor = SystemColors.Window;
+            DependsGraphTree.LineColor = SystemColors.WindowText;
             DependsGraphTree.Nodes.Clear();
             IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
             TreeNode root = new TreeNode($"{module.name} {module.version}", 0, 0)
@@ -408,7 +410,7 @@ namespace CKAN
             {
                 Name        = identifier,
                 ToolTipText = relationship.ToString(),
-                ForeColor   = Color.Gray
+                ForeColor   = SystemColors.GrayText,
             };
         }
 
@@ -422,7 +424,7 @@ namespace CKAN
                 Name        = module.identifier,
                 ToolTipText = relationship.ToString(),
                 Tag         = module,
-                ForeColor   = compatible ? Color.Empty : Color.Red
+                ForeColor   = compatible ? SystemColors.WindowText : Color.Red,
             };
         }
 
@@ -486,6 +488,8 @@ namespace CKAN
 
         private void _UpdateModContentsTree(bool force = false)
         {
+            ContentsPreviewTree.BackColor = SystemColors.Window;
+            ContentsPreviewTree.LineColor = SystemColors.WindowText;
             GUIMod guiMod = SelectedModule;
             if (!guiMod.IsCKAN)
             {

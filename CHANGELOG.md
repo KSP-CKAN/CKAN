@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Handle multiple errors in same ErrorDialog (#2933 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Multiple manual downloads, uncached filter, purge option (#2930 by: HebaruSan; reviewed: DasSkelett)
 - [Cmdline] Return failure on failed commands for headless prompt (#2941 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Obey system colors for dark theme support (#2937 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

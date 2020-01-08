@@ -37,7 +37,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.ModVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.CompatibleKSPVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.VersionsListView = new System.Windows.Forms.ListView();
+            this.VersionsListView = new ThemedListView();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();

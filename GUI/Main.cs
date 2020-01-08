@@ -196,7 +196,7 @@ namespace CKAN
             InitializeComponent();
 
             // React when the user clicks a tag or filter link in mod info
-            ModInfoTabControl.OnChangeFilter += Filter;
+            ModInfo.OnChangeFilter += Filter;
 
             // Replace mono's broken, ugly toolstrip renderer
             if (Platform.IsMono)
@@ -334,7 +334,7 @@ namespace CKAN
                 // SplitContainer is mis-designed to throw exceptions
                 // if the min/max limits are exceeded rather than simply obeying them.
             }
-            ModInfoTabControl.ModMetaSplitPosition = configuration.ModInfoPosition;
+            ModInfo.ModMetaSplitPosition = configuration.ModInfoPosition;
 
             base.OnShown(e);
         }
@@ -539,7 +539,7 @@ namespace CKAN
             configuration.PanelPosition = splitContainer1.SplitterDistance;
 
             // Copy metadata panel split height to app settings
-            configuration.ModInfoPosition = ModInfoTabControl.ModMetaSplitPosition;
+            configuration.ModInfoPosition = ModInfo.ModMetaSplitPosition;
 
             // Save the active filter
             configuration.ActiveFilter = (int)mainModList.ModFilter;
@@ -676,7 +676,7 @@ namespace CKAN
 
         public void UpdateModContentsTree(CkanModule module, bool force = false)
         {
-            ModInfoTabControl.UpdateModContentsTree(module, force);
+            ModInfo.UpdateModContentsTree(module, force);
         }
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
@@ -792,7 +792,7 @@ namespace CKAN
             catch (TooManyModsProvideKraken)
             {
                 // Can be thrown by ComputeChangeSetFromModList if the user cancels out of it.
-                // We can just rerun it as the ModInfoTabControl has been removed.
+                // We can just rerun it as the ModInfo has been removed.
                 too_many_provides_thrown = true;
             }
             catch (DependencyNotSatisfiedKraken k)
@@ -1242,7 +1242,7 @@ namespace CKAN
                     {
                         splitContainer1.Panel2Collapsed = false;
                     }
-                    ModInfoTabControl.SelectedModule = value;
+                    ModInfo.SelectedModule = value;
                 }
             }
         }
@@ -1329,7 +1329,7 @@ namespace CKAN
 
         private void reinstallToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GUIMod module = ModInfoTabControl.SelectedModule;
+            GUIMod module = ModInfo.SelectedModule;
             if (module == null || !module.IsCKAN)
                 return;
 
@@ -1371,23 +1371,23 @@ namespace CKAN
 
         private void downloadContentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ModInfoTabControl.StartDownload(ModInfoTabControl.SelectedModule);
+            ModInfo.StartDownload(ModInfo.SelectedModule);
         }
 
         private void purgeContentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Purge other versions as well since the user is likely to want that
             // and has no other way to achieve it
-            if (ModInfoTabControl.SelectedModule != null)
+            if (ModInfo.SelectedModule != null)
             {
                 IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
-                var allAvail = registry.AllAvailable(ModInfoTabControl.SelectedModule.Identifier);
+                var allAvail = registry.AllAvailable(ModInfo.SelectedModule.Identifier);
                 foreach (CkanModule mod in allAvail)
                 {
                     Manager.Cache.Purge(mod);
                 }
-                ModInfoTabControl.SelectedModule.UpdateIsCached();
-                UpdateModContentsTree(ModInfoTabControl.SelectedModule.ToCkanModule(), true);
+                ModInfo.SelectedModule.UpdateIsCached();
+                UpdateModContentsTree(ModInfo.SelectedModule.ToCkanModule(), true);
             }
         }
 

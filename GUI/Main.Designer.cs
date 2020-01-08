@@ -100,7 +100,7 @@
             this.reinstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.purgeContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ModInfoTabControl = new CKAN.MainModInfo();
+            this.ModInfo = new CKAN.MainModInfo();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusInstanceLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusProgress = new System.Windows.Forms.ToolStripProgressBar();
@@ -115,7 +115,7 @@
             this.ChangesetTabPage = new System.Windows.Forms.TabPage();
             this.CancelChangesButton = new System.Windows.Forms.Button();
             this.ConfirmChangesButton = new System.Windows.Forms.Button();
-            this.ChangesListView = new System.Windows.Forms.ListView();
+            this.ChangesListView = new ThemedListView();
             this.Mod = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChangeType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Reason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -130,7 +130,7 @@
             this.RecommendedModsContinueButton = new System.Windows.Forms.Button();
             this.RecommendedModsToggleCheckbox = new System.Windows.Forms.CheckBox();
             this.RecommendedDialogLabel = new System.Windows.Forms.Label();
-            this.RecommendedModsListView = new System.Windows.Forms.ListView();
+            this.RecommendedModsListView = new ThemedListView();
             this.RecommendationsGroup = new System.Windows.Forms.ListViewGroup();
             this.SuggestionsGroup = new System.Windows.Forms.ListViewGroup();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -139,7 +139,7 @@
             this.ChooseProvidedModsTabPage = new System.Windows.Forms.TabPage();
             this.ChooseProvidedModsCancelButton = new System.Windows.Forms.Button();
             this.ChooseProvidedModsContinueButton = new System.Windows.Forms.Button();
-            this.ChooseProvidedModsListView = new System.Windows.Forms.ListView();
+            this.ChooseProvidedModsListView = new ThemedListView();
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
@@ -350,6 +350,8 @@
             //
             // statusStrip1
             //
+            this.statusStrip1.BackColor = System.Drawing.SystemColors.Control;
+            this.statusStrip1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Location = new System.Drawing.Point(0, 1016);
             this.statusStrip1.Size = new System.Drawing.Size(1544, 22);
@@ -563,7 +565,7 @@
             //
             // splitContainer1.Panel2
             //
-            this.splitContainer1.Panel2.Controls.Add(this.ModInfoTabControl);
+            this.splitContainer1.Panel2.Controls.Add(this.ModInfo);
             this.splitContainer1.Panel2MinSize = 300;
             this.splitContainer1.Size = new System.Drawing.Size(1544, 981);
             this.splitContainer1.SplitterDistance = 1156;
@@ -579,6 +581,8 @@
             this.ModList.AllowUserToDeleteRows = false;
             this.ModList.AllowUserToResizeRows = false;
             this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.ModList.EnableHeadersVisualStyles = false;
+            this.ModList.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.SystemColors.Control;
             this.ModList.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ModList.DefaultCellStyle.ForeColor = System.Drawing.SystemColors.WindowText;
             this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -783,14 +787,14 @@
             this.ModListHeaderContextMenuStrip.ShowCheckMargin = true;
             this.ModListHeaderContextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(ModListHeaderContextMenuStrip_ItemClicked);
             //
-            // ModInfoTabControl
+            // ModInfo
             //
-            this.ModInfoTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModInfoTabControl.Location = new System.Drawing.Point(0, 0);
-            this.ModInfoTabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.ModInfoTabControl.Name = "ModInfoTabControl";
-            this.ModInfoTabControl.Size = new System.Drawing.Size(360, 836);
-            this.ModInfoTabControl.TabIndex = 34;
+            this.ModInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModInfo.Location = new System.Drawing.Point(0, 0);
+            this.ModInfo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ModInfo.Name = "ModInfo";
+            this.ModInfo.Size = new System.Drawing.Size(360, 836);
+            this.ModInfo.TabIndex = 34;
             //
             // StatusLabel
             //
@@ -824,6 +828,7 @@
             //
             // MainTabControl
             //
+            this.MainTabControl.BackColor = System.Drawing.SystemColors.Control;
             this.MainTabControl.Controls.Add(this.ManageModsTabPage);
             this.MainTabControl.Controls.Add(this.ChangesetTabPage);
             this.MainTabControl.Controls.Add(this.WaitTabPage);
@@ -932,6 +937,7 @@
             //
             // ChangesetTabPage
             //
+            this.ChangesetTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.ChangesetTabPage.Controls.Add(this.CancelChangesButton);
             this.ChangesetTabPage.Controls.Add(this.ConfirmChangesButton);
             this.ChangesetTabPage.Controls.Add(this.ChangesListView);
@@ -941,7 +947,6 @@
             this.ChangesetTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChangesetTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ChangesetTabPage.TabIndex = 13;
-            this.ChangesetTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.ChangesetTabPage, "ChangesetTabPage");
             //
             // CancelChangesButton
@@ -953,7 +958,6 @@
             this.CancelChangesButton.Name = "CancelChangesButton";
             this.CancelChangesButton.Size = new System.Drawing.Size(112, 35);
             this.CancelChangesButton.TabIndex = 16;
-            this.CancelChangesButton.UseVisualStyleBackColor = true;
             this.CancelChangesButton.Click += new System.EventHandler(this.CancelChangesButton_Click);
             resources.ApplyResources(this.CancelChangesButton, "CancelChangesButton");
             //
@@ -966,7 +970,6 @@
             this.ConfirmChangesButton.Name = "ConfirmChangesButton";
             this.ConfirmChangesButton.Size = new System.Drawing.Size(112, 35);
             this.ConfirmChangesButton.TabIndex = 15;
-            this.ConfirmChangesButton.UseVisualStyleBackColor = true;
             this.ConfirmChangesButton.Click += new System.EventHandler(this.ConfirmChangesButton_Click);
             resources.ApplyResources(this.ConfirmChangesButton, "ConfirmChangesButton");
             //
@@ -1030,7 +1033,6 @@
             this.CancelCurrentActionButton.Name = "CancelCurrentActionButton";
             this.CancelCurrentActionButton.Size = new System.Drawing.Size(112, 35);
             this.CancelCurrentActionButton.TabIndex = 22;
-            this.CancelCurrentActionButton.UseVisualStyleBackColor = true;
             this.CancelCurrentActionButton.Click += new System.EventHandler(this.CancelCurrentActionButton_Click);
             resources.ApplyResources(this.CancelCurrentActionButton, "CancelCurrentActionButton");
             //
@@ -1043,7 +1045,6 @@
             this.RetryCurrentActionButton.Name = "RetryCurrentActionButton";
             this.RetryCurrentActionButton.Size = new System.Drawing.Size(112, 35);
             this.RetryCurrentActionButton.TabIndex = 21;
-            this.RetryCurrentActionButton.UseVisualStyleBackColor = true;
             this.RetryCurrentActionButton.Visible = false;
             this.RetryCurrentActionButton.Click += new System.EventHandler(this.RetryCurrentActionButton_Click);
             resources.ApplyResources(this.RetryCurrentActionButton, "RetryCurrentActionButton");
@@ -1094,6 +1095,7 @@
             //
             // ChooseRecommendedModsTabPage
             //
+            this.ChooseRecommendedModsTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsCancelButton);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsContinueButton);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsToggleCheckbox);
@@ -1105,7 +1107,6 @@
             this.ChooseRecommendedModsTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseRecommendedModsTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ChooseRecommendedModsTabPage.TabIndex = 23;
-            this.ChooseRecommendedModsTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.ChooseRecommendedModsTabPage, "ChooseRecommendedModsTabPage");
             //
             // RecommendedModsCancelButton
@@ -1117,7 +1118,6 @@
             this.RecommendedModsCancelButton.Name = "RecommendedModsCancelButton";
             this.RecommendedModsCancelButton.Size = new System.Drawing.Size(112, 35);
             this.RecommendedModsCancelButton.TabIndex = 27;
-            this.RecommendedModsCancelButton.UseVisualStyleBackColor = true;
             this.RecommendedModsCancelButton.Click += new System.EventHandler(this.RecommendedModsCancelButton_Click);
             resources.ApplyResources(this.RecommendedModsCancelButton, "RecommendedModsCancelButton");
             //
@@ -1130,7 +1130,6 @@
             this.RecommendedModsContinueButton.Name = "RecommendedModsContinueButton";
             this.RecommendedModsContinueButton.Size = new System.Drawing.Size(112, 35);
             this.RecommendedModsContinueButton.TabIndex = 26;
-            this.RecommendedModsContinueButton.UseVisualStyleBackColor = true;
             this.RecommendedModsContinueButton.Click += new System.EventHandler(this.RecommendedModsContinueButton_Click);
             resources.ApplyResources(this.RecommendedModsContinueButton, "RecommendedModsContinueButton");
             //
@@ -1144,7 +1143,6 @@
             this.RecommendedModsToggleCheckbox.Name = "RecommendedModsToggleCheckbox";
             this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(131, 24);
             this.RecommendedModsToggleCheckbox.TabIndex = 28;
-            this.RecommendedModsToggleCheckbox.UseVisualStyleBackColor = true;
             this.RecommendedModsToggleCheckbox.CheckedChanged += new System.EventHandler(this.RecommendedModsToggleCheckbox_CheckedChanged);
             resources.ApplyResources(this.RecommendedModsToggleCheckbox, "RecommendedModsToggleCheckbox");
             //
@@ -1210,6 +1208,7 @@
             //
             // ChooseProvidedModsTabPage
             //
+            this.ChooseProvidedModsTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.ChooseProvidedModsTabPage.Controls.Add(this.ChooseProvidedModsCancelButton);
             this.ChooseProvidedModsTabPage.Controls.Add(this.ChooseProvidedModsContinueButton);
             this.ChooseProvidedModsTabPage.Controls.Add(this.ChooseProvidedModsListView);
@@ -1220,7 +1219,6 @@
             this.ChooseProvidedModsTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseProvidedModsTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ChooseProvidedModsTabPage.TabIndex = 29;
-            this.ChooseProvidedModsTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.ChooseProvidedModsTabPage, "ChooseProvidedModsTabPage");
             //
             // ChooseProvidedModsCancelButton
@@ -1232,7 +1230,6 @@
             this.ChooseProvidedModsCancelButton.Name = "ChooseProvidedModsCancelButton";
             this.ChooseProvidedModsCancelButton.Size = new System.Drawing.Size(112, 35);
             this.ChooseProvidedModsCancelButton.TabIndex = 33;
-            this.ChooseProvidedModsCancelButton.UseVisualStyleBackColor = true;
             this.ChooseProvidedModsCancelButton.Click += new System.EventHandler(this.ChooseProvidedModsCancelButton_Click);
             resources.ApplyResources(this.ChooseProvidedModsCancelButton, "ChooseProvidedModsCancelButton");
             //
@@ -1245,7 +1242,6 @@
             this.ChooseProvidedModsContinueButton.Name = "ChooseProvidedModsContinueButton";
             this.ChooseProvidedModsContinueButton.Size = new System.Drawing.Size(112, 35);
             this.ChooseProvidedModsContinueButton.TabIndex = 32;
-            this.ChooseProvidedModsContinueButton.UseVisualStyleBackColor = true;
             this.ChooseProvidedModsContinueButton.Click += new System.EventHandler(this.ChooseProvidedModsContinueButton_Click);
             resources.ApplyResources(this.ChooseProvidedModsContinueButton, "ChooseProvidedModsContinueButton");
             //
@@ -1508,7 +1504,7 @@
         private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem purgeContentsToolStripMenuItem;
-        private CKAN.MainModInfo ModInfoTabControl;
+        private CKAN.MainModInfo ModInfo;
         private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
         private System.Windows.Forms.ToolStripStatusLabel StatusInstanceLabel;
         private System.Windows.Forms.ToolStripProgressBar StatusProgress;

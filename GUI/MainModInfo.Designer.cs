@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(MainModInfo));
-            this.ModInfoTabControl = new System.Windows.Forms.TabControl();
+            this.ModInfoTabControl = new ThemedTabControl();
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.MetaDataUpperLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -93,6 +93,7 @@
             // ModInfoTabControl
             //
             this.ModInfoTabControl.Appearance = System.Windows.Forms.TabAppearance.Normal;
+            this.ModInfoTabControl.BackColor = System.Drawing.SystemColors.Control;
             this.ModInfoTabControl.Multiline = true;
             this.ModInfoTabControl.Controls.Add(this.MetadataTabPage);
             this.ModInfoTabControl.Controls.Add(this.RelationshipTabPage);
@@ -107,13 +108,13 @@
             //
             // MetadataTabPage
             //
+            this.MetadataTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.MetadataTabPage.Controls.Add(this.MetaDataLowerLayoutPanel);
             this.MetadataTabPage.Location = new System.Drawing.Point(4, 25);
             this.MetadataTabPage.Name = "MetadataTabPage";
             this.MetadataTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.MetadataTabPage.Size = new System.Drawing.Size(354, 502);
             this.MetadataTabPage.TabIndex = 0;
-            this.MetadataTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.MetadataTabPage, "MetadataTabPage");
             //
             // splitContainer2
@@ -471,6 +472,7 @@
             //
             // RelationshipTabPage
             //
+            this.RelationshipTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.RelationshipTabPage.Controls.Add(this.DependsGraphTree);
             this.RelationshipTabPage.Controls.Add(this.LegendDependsImage);
             this.RelationshipTabPage.Controls.Add(this.LegendRecommendsImage);
@@ -487,7 +489,6 @@
             this.RelationshipTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.RelationshipTabPage.Size = new System.Drawing.Size(354, 502);
             this.RelationshipTabPage.TabIndex = 1;
-            this.RelationshipTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.RelationshipTabPage, "RelationshipTabPage");
             //
             // DependsGraphTree
@@ -586,6 +587,7 @@
             //
             // ContentTabPage
             //
+            this.ContentTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.ContentTabPage.Controls.Add(this.ContentsPreviewTree);
             this.ContentTabPage.Controls.Add(this.ContentsDownloadButton);
             this.ContentTabPage.Controls.Add(this.ContentsOpenButton);
@@ -595,7 +597,6 @@
             this.ContentTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.ContentTabPage.Size = new System.Drawing.Size(354, 502);
             this.ContentTabPage.TabIndex = 2;
-            this.ContentTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.ContentTabPage, "ContentTabPage");
             //
             // ContentsPreviewTree
@@ -604,6 +605,9 @@
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ContentsPreviewTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ContentsPreviewTree.ShowPlusMinus = false;
+            this.ContentsPreviewTree.ShowRootLines = false;
+            this.ContentsPreviewTree.Indent = 12;
             this.ContentsPreviewTree.Enabled = false;
             this.ContentsPreviewTree.Location = new System.Drawing.Point(6, 65);
             this.ContentsPreviewTree.Name = "ContentsPreviewTree";
@@ -644,13 +648,13 @@
             //
             // AllModVersionsTabPage
             //
+            this.AllModVersionsTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.AllModVersionsTabPage.Controls.Add(this.AllModVersions);
             this.AllModVersionsTabPage.Location = new System.Drawing.Point(4, 25);
             this.AllModVersionsTabPage.Margin = new System.Windows.Forms.Padding(2);
             this.AllModVersionsTabPage.Name = "AllModVersionsTabPage";
             this.AllModVersionsTabPage.Size = new System.Drawing.Size(354, 502);
             this.AllModVersionsTabPage.TabIndex = 1;
-            this.AllModVersionsTabPage.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.AllModVersionsTabPage, "AllModVersionsTabPage");
             //
             // AllModVersions

@@ -132,6 +132,7 @@ namespace CKAN
                 tabController.RenameTab("ChooseRecommendedModsTabPage", Properties.Resources.MainRecommendationsTitle);
 
                 RecommendedModsListView.Items.Clear();
+                ChooseRecommendedModsTabPage.BackColor = System.Drawing.SystemColors.Control;
                 RecommendedModsListView.Items.AddRange(rows.ToArray());
             });
 

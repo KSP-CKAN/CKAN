@@ -249,6 +249,8 @@
     <Compile Include="SingleAssemblyComponentResourceManager.cs" />
     <Compile Include="SingleAssemblyResourceManager.cs" />
     <Compile Include="TabController.cs" />
+    <Compile Include="ThemedTabControl.cs" />
+    <Compile Include="ThemedListView.cs" />
     <Compile Include="URLHandlers.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="X11.cs" />
