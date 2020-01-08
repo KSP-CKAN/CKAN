@@ -93,17 +93,7 @@ namespace CKAN
         {
             try
             {
-                if (Platform.IsWindows)
-                {
-                    Process.Start(new ProcessStartInfo(
-                        "cmd",
-                        $"/c start {url.Replace("&", "^&")}")
-                    {
-                        CreateNoWindow = true
-                    });
-                    return true;
-                }
-                else if (Platform.IsMac)
+                if (Platform.IsMac)
                 {
                     Process.Start("open", $"\"{url}\"");
                     return true;
