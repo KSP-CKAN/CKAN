@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CKAN.Extensions;
 using CKAN.Types;
 
 namespace CKAN
@@ -118,7 +119,7 @@ namespace CKAN
                 opts.Key.Where(ch => ch.ChangeType == GUIModChangeType.Install)
                     .Select(ch => ch.Mod),
                 registry, toInstall
-            );
+            ).Memoize();
             if (recRows.Any())
             {
                 ShowRecSugDialog(recRows, toInstall);

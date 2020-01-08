@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -93,8 +94,11 @@ namespace CKAN
         /// </summary>
         /// <param name="changes">Every leftover ModChange that should be sorted</param>
         /// <param name="parent"></param>
-        private void CreateSortedModList(IEnumerable<ModChange> changes, ModChange parent=null)
+        private void CreateSortedModList(IEnumerable<ModChange> changes, ModChange parent = null)
         {
+            var notUserReq = changes
+                .Where(c => !(c.Reason is SelectionReason.UserRequested))
+                .Memoize();
             foreach (ModChange change in changes)
             {
                 bool goDeeper = parent == null || change.Reason.Parent.identifier == parent.Mod.identifier;
@@ -103,7 +107,7 @@ namespace CKAN
                 {
                     if (!changeSet.Any(c => c.Mod.identifier == change.Mod.identifier && c.ChangeType != GUIModChangeType.Remove))
                         changeSet.Add(change);
-                    CreateSortedModList(changes.Where(c => !(c.Reason is SelectionReason.UserRequested)), change);
+                    CreateSortedModList(notUserReq, change);
                 }
             }
         }

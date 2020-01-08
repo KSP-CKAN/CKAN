@@ -311,6 +311,8 @@ namespace CKAN
             // is true.
             var sub_options = (RelationshipResolverOptions) options.Clone();
             sub_options.with_suggests = false;
+            
+            old_stanza = old_stanza?.Memoize();
 
             log.DebugFormat("Resolving dependencies for {0}", module.identifier);
             ResolveStanza(module.depends, new SelectionReason.Depends(module), sub_options, false, old_stanza);
@@ -348,6 +350,7 @@ namespace CKAN
             {
                 return;
             }
+            stanza = stanza.Memoize();
 
             foreach (RelationshipDescriptor descriptor in stanza)
             {

@@ -4,14 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
-using CKAN.Extensions;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
-using CKAN.Versioning;
 using ChinhDo.Transactions.FileManager;
-using CKAN.Configuration;
 using Autofac;
+using CKAN.Extensions;
+using CKAN.Versioning;
+using CKAN.Configuration;
 
 namespace CKAN
 {
@@ -728,6 +728,7 @@ namespace CKAN
         /// </summary>
         public void UninstallList(IEnumerable<string> mods, bool ConfirmPrompt = true, IEnumerable<string> installing = null)
         {
+            mods = mods.Memoize();
             // Pre-check, have they even asked for things which are installed?
 
             foreach (string mod in mods.Where(mod => registry_manager.registry.InstalledModule(mod) == null))
@@ -736,13 +737,15 @@ namespace CKAN
             }
 
             // Find all the things which need uninstalling.
-            IEnumerable<string> revdep = mods.Union(
-                registry_manager.registry.FindReverseDependencies(
-                    mods.Except(installing ?? new string[] {})));
+            IEnumerable<string> revdep = mods
+                .Union(registry_manager.registry.FindReverseDependencies(
+                    mods.Except(installing ?? new string[] {})))
+                .Memoize();
             IEnumerable<string> goners = revdep.Union(
-                registry_manager.registry.FindRemovableAutoInstalled(
-                    registry_manager.registry.InstalledModules.Where(im => !revdep.Contains(im.identifier))
-                ).Select(im => im.identifier));
+                    registry_manager.registry.FindRemovableAutoInstalled(
+                        registry_manager.registry.InstalledModules.Where(im => !revdep.Contains(im.identifier)))
+                    .Select(im => im.identifier))
+                .Memoize();
 
             // If there us nothing to uninstall, skip out.
             if (!goners.Any())
@@ -984,6 +987,8 @@ namespace CKAN
 
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
+                remove = remove.Memoize();
+                add    = add.Memoize();
                 int totSteps = (remove?.Count() ?? 0)
                              + (add?.Count()    ?? 0);
                 int step = 0;
@@ -1031,6 +1036,7 @@ namespace CKAN
         /// </summary>
         public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
+            modules = modules.Memoize();
             User.RaiseMessage("About to upgrade...\r\n");
 
             // Start by making sure we've downloaded everything.
@@ -1094,6 +1100,7 @@ namespace CKAN
         /// </summary>
         public void Replace(IEnumerable<ModuleReplacement> replacements, RelationshipResolverOptions options, IDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
+            replacements = replacements.Memoize();
             log.Debug("Using Replace method");
             List<CkanModule> modsToInstall = new List<CkanModule>();
             var modsToRemove = new List<InstalledModule>();
