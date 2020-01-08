@@ -275,11 +275,7 @@ namespace CKAN
                         // Launch the URL describing this host's throttling practices, if any
                         if (kraken.infoUrl != null)
                         {
-                            Process.Start(new ProcessStartInfo()
-                            {
-                                UseShellExecute = true,
-                                FileName        = kraken.infoUrl.ToString()
-                            });
+                            Utilities.ProcessStartURL(kraken.infoUrl.ToString());
                         }
                         // Now pretend they clicked the menu option for the settings
                         Enabled = false;
@@ -303,11 +299,7 @@ namespace CKAN
                 {
                     if (GUI.user.RaiseYesNoDialog(Properties.Resources.MainInstallLibCurlMissing))
                     {
-                        Process.Start(new ProcessStartInfo()
-                        {
-                            UseShellExecute = true,
-                            FileName        = "https://github.com/KSP-CKAN/CKAN/wiki/libcurl"
-                        });
+                        Utilities.ProcessStartURL("https://github.com/KSP-CKAN/CKAN/wiki/libcurl");
                     }
                     throw;
                 }

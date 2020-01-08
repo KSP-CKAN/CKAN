@@ -1,7 +1,9 @@
 using System;
 using System.IO;
+using System.Diagnostics;
 using System.Transactions;
 using ChinhDo.Transactions.FileManager;
+using log4net;
 
 namespace CKAN
 {
@@ -75,5 +77,50 @@ namespace CKAN
                 }
             }
         }
+        
+        /// <summary>
+        /// Launch a URL. For YEARS this was done by Process.Start in a
+        /// cross-platform way, but Microsoft chose to break that,
+        /// so now every .NET app has to write its own custom code for it,
+        /// with special code for each platform.
+        /// https://github.com/dotnet/corefx/issues/10361
+        /// </summary>
+        /// <param name="url">URL to launch</param>
+        /// <returns>
+        /// true if launched, false otherwise
+        /// </returns>
+        public static bool ProcessStartURL(string url)
+        {
+            try
+            {
+                if (Platform.IsMac)
+                {
+                    Process.Start("open", $"\"{url}\"");
+                    return true;
+                }
+                else if (Platform.IsUnix)
+                {
+                    Process.Start("xdg-open", $"\"{url}\"");
+                    return true;
+                }
+                else
+                {
+                    // Try the old way
+                    Process.Start(new ProcessStartInfo(url)
+                    {
+                        UseShellExecute = true,
+                        Verb            = "open"
+                    });
+                    return true;
+                }
+            }
+            catch (Exception exc)
+            {
+                log.Error($"Exception for URL {url}", exc);
+            }
+            return false;
+        }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(Utilities));
     }
 }

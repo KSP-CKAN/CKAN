@@ -114,7 +114,7 @@ namespace CKAN
 
         private void ContentsOpenButton_Click(object sender, EventArgs e)
         {
-            Process.Start(manager.Cache.GetCachedFilename(SelectedModule.ToModule()));
+            Utilities.ProcessStartURL(manager.Cache.GetCachedFilename(SelectedModule.ToModule()));
         }
 
         private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -608,7 +608,7 @@ namespace CKAN
                 return;
             }
 
-            Process.Start(location);
+            Utilities.ProcessStartURL(location);
         }
     }
 }
