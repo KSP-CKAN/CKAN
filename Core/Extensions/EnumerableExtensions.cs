@@ -29,6 +29,11 @@ namespace CKAN.Extensions
             {
                 throw new ArgumentNullException("source");
             }
+            else if (source is Memoized<T>)
+            {
+                // Already memoized, don't wrap another layer
+                return source;
+            }
             else
             {
                 return new Memoized<T>(source);

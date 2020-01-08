@@ -3,6 +3,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -129,14 +130,16 @@ namespace CKAN
         {
             Util.Invoke(Main.Instance, () =>
             {
+                mods = mods.Memoize();
                 var notifLabs = mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                    .Where(l => l.NotifyOnChange);
+                    .Where(l => l.NotifyOnChange)
+                    .Memoize();
                 var toNotif = mods
                     .Where(m =>
                         notifLabs.Any(l =>
                             l.ModuleIdentifiers.Contains(m.Identifier)))
                     .Select(m => m.Name)
-                    .ToArray();
+                    .Memoize();
                 if (toNotif.Any())
                 {
                     MessageBox.Show(
@@ -157,7 +160,6 @@ namespace CKAN
                     {
                         l.Remove(mod.Identifier);
                     }
-
                 }
             });
         }

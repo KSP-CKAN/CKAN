@@ -746,8 +746,8 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Register the supplied module as having been installed, thereby keeping
-        ///     track of its metadata and files.
+        /// Register the supplied module as having been installed, thereby keeping
+        /// track of its metadata and files.
         /// </summary>
         public void RegisterModule(CkanModule mod, IEnumerable<string> absolute_files, KSP ksp, bool autoInstalled)
         {
@@ -760,7 +760,9 @@ namespace CKAN
             var inconsistencies = new List<string>();
 
             // We always work with relative files, so let's get some!
-            IEnumerable<string> relative_files = absolute_files.Select(x => ksp.ToRelativeGameDir(x));
+            IEnumerable<string> relative_files = absolute_files
+                .Select(x => ksp.ToRelativeGameDir(x))
+                .Memoize();
 
             // For now, it's always cool if a module wants to register a directory.
             // We have to flip back to absolute paths to actually test this.
@@ -771,10 +773,10 @@ namespace CKAN
                 {
                     // Woah! Registering an already owned file? Not cool!
                     // (Although if it existed, we should have thrown a kraken well before this.)
-                    inconsistencies.Add(
-                        string.Format("{0} wishes to install {1}, but this file is registered to {2}",
-                            mod.identifier, file, owner
-                            ));
+                    inconsistencies.Add(string.Format(
+                        "{0} wishes to install {1}, but this file is registered to {2}",
+                        mod.identifier, file, owner
+                    ));
                 }
             }
 
@@ -1082,6 +1084,9 @@ namespace CKAN
             IDictionary<string, UnmanagedModuleVersion> dlc
         )
         {
+            modules_to_remove = modules_to_remove.Memoize();
+            orig_installed    = orig_installed.Memoize();
+            var dllSet = dlls.ToHashSet();
             // The empty list has no reverse dependencies
             // (Don't remove broken modules if we're only installing)
             if (modules_to_remove.Any())
@@ -1097,10 +1102,10 @@ namespace CKAN
                     HashSet<CkanModule> hypothetical = new HashSet<CkanModule>(orig_installed); // Clone because we alter hypothetical.
                     hypothetical.RemoveWhere(mod => modules_to_remove.Contains(mod.identifier));
 
-                    log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", orig_installed), string.Join(", ", modules_to_remove), string.Join(", ", hypothetical), string.Join(", ", dlls));
+                    log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", orig_installed), string.Join(", ", modules_to_remove), string.Join(", ", hypothetical), string.Join(", ", dllSet));
 
                     // Find what would break with this configuration.
-                    var broken = SanityChecker.FindUnsatisfiedDepends(hypothetical, dlls.ToHashSet(), dlc)
+                    var broken = SanityChecker.FindUnsatisfiedDepends(hypothetical, dllSet, dlc)
                         .Select(x => x.Key.identifier).ToHashSet();
 
                     // Lazily return each newly found rev dep
@@ -1151,6 +1156,7 @@ namespace CKAN
         )
         {
             // ToList ensures that the collection isn't modified while the enumeration operation is executing
+            installedModules = installedModules.Memoize();
             var autoInstMods = installedModules.Where(im => im.AutoInstalled).ToList();
             var autoInstIds  = autoInstMods.Select(im => im.Module.identifier).ToHashSet();
             var instCkanMods = installedModules.Select(im => im.Module);

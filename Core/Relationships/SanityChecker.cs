@@ -82,8 +82,10 @@ namespace CKAN
             out List<KeyValuePair<CkanModule, RelationshipDescriptor>> Conflicts
         )
         {
-            UnmetDepends = FindUnsatisfiedDepends(modules?.ToList(), dlls?.ToHashSet(), dlc);
-            Conflicts    = FindConflicting(       modules,           dlls?.ToHashSet(), dlc);
+            modules = modules?.Memoize();
+            var dllSet = dlls?.ToHashSet();
+            UnmetDepends = FindUnsatisfiedDepends(modules?.ToList(), dllSet, dlc);
+            Conflicts    = FindConflicting(       modules,           dllSet, dlc);
             return !UnmetDepends.Any() && !Conflicts.Any();
         }
 
@@ -106,6 +108,7 @@ namespace CKAN
             var unsat = new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
             if (modules != null)
             {
+                modules = modules.Memoize();
                 foreach (CkanModule m in modules.Where(m => m.depends != null))
                 {
                     foreach (RelationshipDescriptor dep in m.depends)
@@ -139,11 +142,12 @@ namespace CKAN
             var confl = new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
             if (modules != null)
             {
+                modules = modules.Memoize();
                 foreach (CkanModule m in modules.Where(m => m.conflicts != null))
                 {
                     // Remove self from the list, so we're only comparing to OTHER modules.
                     // Also remove other versions of self, to avoid conflicts during upgrades.
-                    var others = modules.Where(other => other.identifier != m.identifier);
+                    var others = modules.Where(other => other.identifier != m.identifier).Memoize();
                     foreach (RelationshipDescriptor dep in m.conflicts)
                     {
                         if (dep.MatchesAny(others, dlls, dlc))

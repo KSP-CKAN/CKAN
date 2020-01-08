@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+using CKAN.Extensions;
 using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
@@ -109,6 +110,7 @@ namespace CKAN
 
         private static bool DependsAndConflictsOK(CkanModule module, IEnumerable<CkanModule> others)
         {
+            others = others.Memoize();
             if (module.depends != null)
             {
                 foreach (RelationshipDescriptor rel in module.depends)
@@ -123,7 +125,7 @@ namespace CKAN
             if (module.conflicts != null)
             {
                 // Skip self-conflicts (but catch other modules providing self)
-                var othersMinusSelf = others.Where(m => m.identifier != module.identifier);
+                var othersMinusSelf = others.Where(m => m.identifier != module.identifier).Memoize();
                 foreach (RelationshipDescriptor rel in module.conflicts)
                 {
                     // If any of the conflicts are present, fail
