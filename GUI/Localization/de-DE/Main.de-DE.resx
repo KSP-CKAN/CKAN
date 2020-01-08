@@ -237,6 +237,7 @@
   <data name="RecommendedDialogLabel.Text" xml:space="preserve"><value>Die folgenden Module wurden von mindestens einer ausgewählten Mod empfohlen oder vorgeschlagen</value></data>
   <data name="RecommendationsGroup.Header" xml:space="preserve"><value>Empfehlungen</value></data>
   <data name="SuggestionsGroup.Header" xml:space="preserve"><value>Vorschläge</value></data>
+  <data name="SupportedByGroup.Header" xml:space="preserve"><value>Unterstützt durch</value></data>
   <data name="columnHeader4.Text" xml:space="preserve"><value>Empfohlen/vorgeschlagen von:</value></data>
   <data name="columnHeader5.Text" xml:space="preserve"><value>Kurzbeschreibung</value></data>
   <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Wähle Mods</value></data>

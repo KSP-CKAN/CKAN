@@ -133,6 +133,7 @@
             this.RecommendedModsListView = new ThemedListView();
             this.RecommendationsGroup = new System.Windows.Forms.ListViewGroup();
             this.SuggestionsGroup = new System.Windows.Forms.ListViewGroup();
+            this.SupportedByGroup = new System.Windows.Forms.ListViewGroup();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -1178,6 +1179,7 @@
             this.RecommendedModsListView.SelectedIndexChanged += new System.EventHandler(RecommendedModsListView_SelectedIndexChanged);
             this.RecommendedModsListView.Groups.Add(this.RecommendationsGroup);
             this.RecommendedModsListView.Groups.Add(this.SuggestionsGroup);
+            this.RecommendedModsListView.Groups.Add(this.SupportedByGroup);
             //
             // RecommendationsGroup
             //
@@ -1190,6 +1192,12 @@
             this.SuggestionsGroup.Name = "Suggestions";
             this.SuggestionsGroup.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             resources.ApplyResources(this.SuggestionsGroup, "SuggestionsGroup");
+            //
+            // SupportedByGroup
+            //
+            this.SupportedByGroup.Name = "SupportedBy";
+            this.SupportedByGroup.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Left;
+            resources.ApplyResources(this.SupportedByGroup, "SupportedByGroup");
             //
             // columnHeader3
             //
@@ -1537,6 +1545,7 @@
         private System.Windows.Forms.ListView RecommendedModsListView;
         private System.Windows.Forms.ListViewGroup RecommendationsGroup;
         private System.Windows.Forms.ListViewGroup SuggestionsGroup;
+        private System.Windows.Forms.ListViewGroup SupportedByGroup;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;
