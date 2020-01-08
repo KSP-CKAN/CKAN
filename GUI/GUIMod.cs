@@ -196,9 +196,6 @@ namespace CKAN
         public GUIMod(string identifier, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool? incompatible = null)
         {
             Identifier     = identifier;
-            IsIncompatible = incompatible
-                ?? registry.AllAvailable(identifier)
-                    .All(m => !m.IsCompatibleKSP(current_ksp_version));
             IsAutodetected = registry.IsAutodetected(identifier);
             DownloadCount  = registry.DownloadCount(identifier);
             if (registry.IsAutodetected(identifier))
@@ -215,6 +212,8 @@ namespace CKAN
             catch (ModuleNotFoundKraken)
             {
             }
+
+            IsIncompatible = incompatible ?? LatestCompatibleMod == null;
 
             // Let's try to find the compatibility for this mod. If it's not in the registry at
             // all (because it's a DarkKAN mod) then this might fail.
