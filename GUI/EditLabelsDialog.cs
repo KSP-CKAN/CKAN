@@ -113,7 +113,7 @@ namespace CKAN
             }
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
+        private void CancelEditButton_Click(object sender, EventArgs e)
         {
             EditDetailsPanel.Visible = false;
             currentlyEditing = null;
