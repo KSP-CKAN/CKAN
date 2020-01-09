@@ -1,11 +1,10 @@
 using System;
-﻿using System.Linq;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using CKAN.Versioning;
 
@@ -592,7 +591,7 @@ namespace CKAN
         /// <param name="node">A node of the ContentsPreviewTree</param>
         internal void OpenFileBrowser(TreeNode node)
         {
-            string location = node.Text;
+            string location = manager.CurrentInstance.ToAbsoluteGameDir(node.Text);
 
             if (File.Exists(location))
             {

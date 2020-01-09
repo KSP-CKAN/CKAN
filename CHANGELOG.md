@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Obey system colors for dark theme support (#2937 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Workaround to launch URLs (#2958 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Memoize lazily evaluated sequences (#2953 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Don't check ZIP health in ModuleInstaller.GetModuleContentsList() (#2959 by: DasSkelett; reviewed: HebaruSan)
 
 ### Internal
 
