@@ -2,7 +2,7 @@
 
 [assembly: AssemblyProduct("CKAN")]
 [assembly: AssemblyCompany("CKAN Contributors")]
-[assembly: AssemblyCopyright("Copyright © 2014-2019")]
+[assembly: AssemblyCopyright("Copyright © 2014-2020")]
 
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
