@@ -335,7 +335,6 @@ namespace CKAN
                 // install successful
                 AddStatusMessage(Properties.Resources.MainInstallSuccess);
                 HideWaitDialog(true);
-                RetryCurrentActionButton.Visible = false;
             }
             else if (installCanceled)
             {

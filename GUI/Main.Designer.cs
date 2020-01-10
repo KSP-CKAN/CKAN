@@ -1012,8 +1012,8 @@
             // WaitTabPage
             //
             this.WaitTabPage.BackColor = System.Drawing.SystemColors.Control;
-            this.WaitTabPage.Controls.Add(this.CancelCurrentActionButton);
             this.WaitTabPage.Controls.Add(this.RetryCurrentActionButton);
+            this.WaitTabPage.Controls.Add(this.CancelCurrentActionButton);
             this.WaitTabPage.Controls.Add(this.LogTextBox);
             this.WaitTabPage.Controls.Add(this.DialogProgressBar);
             this.WaitTabPage.Controls.Add(this.MessageTextBox);
@@ -1046,7 +1046,6 @@
             this.RetryCurrentActionButton.Name = "RetryCurrentActionButton";
             this.RetryCurrentActionButton.Size = new System.Drawing.Size(112, 35);
             this.RetryCurrentActionButton.TabIndex = 21;
-            this.RetryCurrentActionButton.Visible = false;
             this.RetryCurrentActionButton.Click += new System.EventHandler(this.RetryCurrentActionButton_Click);
             resources.ApplyResources(this.RetryCurrentActionButton, "RetryCurrentActionButton");
             //

@@ -155,6 +155,7 @@ namespace CKAN
             {
                 tabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
+                RetryCurrentActionButton.Enabled = false;
                 auditRecommendationsMenuItem.Enabled = true;
                 InstallAllCheckbox.Checked = true;
             }
