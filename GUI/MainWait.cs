@@ -28,6 +28,7 @@ namespace CKAN
                 StatusProgress.Style = ProgressBarStyle.Marquee;
                 StatusProgress.Visible = true;
             });
+            Util.Invoke(RetryCurrentActionButton, () => RetryCurrentActionButton.Enabled = false);
             Util.Invoke(CancelCurrentActionButton, () => CancelCurrentActionButton.Enabled = cancelable);
             Util.Invoke(MessageTextBox, () => MessageTextBox.Text = Properties.Resources.MainWaitPleaseWait);
         }
@@ -48,6 +49,7 @@ namespace CKAN
 
                 tabController.SetActiveTab("ManageModsTabPage");
 
+                RetryCurrentActionButton.Enabled = false;
                 CancelCurrentActionButton.Enabled = false;
                 DialogProgressBar.Value = 0;
                 DialogProgressBar.Style = ProgressBarStyle.Continuous;
@@ -74,11 +76,10 @@ namespace CKAN
             });
             Util.Invoke(WaitTabPage, () => {
                 RecreateDialogs();
-                RetryCurrentActionButton.Visible = !success;
+                RetryCurrentActionButton.Enabled = true;
                 CancelCurrentActionButton.Enabled = false;
                 SetProgress(100);
             });
-            tabController.HideTab("ChangesetTabPage");
             AddLogMessage(logMsg);
             SetDescription(description);
         }
@@ -135,10 +136,7 @@ namespace CKAN
 
         private void RetryCurrentActionButton_Click(object sender, EventArgs e)
         {
-            Util.Invoke(DialogProgressBar, () =>
-            {
-                tabController.ShowTab("ChangesetTabPage", 1);
-            });
+            tabController.ShowTab("ChangesetTabPage", 1);
         }
 
         private void CancelCurrentActionButton_Click(object sender, EventArgs e)

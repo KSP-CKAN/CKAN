@@ -48,7 +48,7 @@ namespace CKAN
             this.CreateButton = new System.Windows.Forms.Button();
             this.CloseButton = new System.Windows.Forms.Button();
             this.SaveButton = new System.Windows.Forms.Button();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancelEditButton = new System.Windows.Forms.Button();
             this.DeleteButton = new System.Windows.Forms.Button();
             this.EditDetailsPanel.SuspendLayout();
             this.SuspendLayout();
@@ -116,7 +116,7 @@ namespace CKAN
             this.EditDetailsPanel.Controls.Add(this.AlertOnInstallCheckBox);
             this.EditDetailsPanel.Controls.Add(this.RemoveOnInstallCheckBox);
             this.EditDetailsPanel.Controls.Add(this.SaveButton);
-            this.EditDetailsPanel.Controls.Add(this.CancelButton);
+            this.EditDetailsPanel.Controls.Add(this.CancelEditButton);
             this.EditDetailsPanel.Controls.Add(this.DeleteButton);
             this.EditDetailsPanel.Location = new System.Drawing.Point(135, 43);
             this.EditDetailsPanel.Name = "EditDetailsPanel";
@@ -232,17 +232,17 @@ namespace CKAN
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             resources.ApplyResources(this.SaveButton, "SaveButton");
             // 
-            // CancelButton
+            // CancelEditButton
             // 
-            this.CancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
+            this.CancelEditButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
-            this.CancelButton.Location = new System.Drawing.Point(90, 290);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 0;
-            this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
-            resources.ApplyResources(this.CancelButton, "CancelButton");
+            this.CancelEditButton.Location = new System.Drawing.Point(90, 290);
+            this.CancelEditButton.Name = "CancelEditButton";
+            this.CancelEditButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelEditButton.TabIndex = 0;
+            this.CancelEditButton.UseVisualStyleBackColor = true;
+            this.CancelEditButton.Click += new System.EventHandler(this.CancelEditButton_Click);
+            resources.ApplyResources(this.CancelEditButton, "CancelEditButton");
             // 
             // DeleteButton
             // 
@@ -309,7 +309,7 @@ namespace CKAN
         private System.Windows.Forms.Button CreateButton;
         private System.Windows.Forms.Button CloseButton;
         private System.Windows.Forms.Button SaveButton;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancelEditButton;
         private System.Windows.Forms.Button DeleteButton;
     }
 }

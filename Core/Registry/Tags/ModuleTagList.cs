@@ -58,7 +58,7 @@ namespace CKAN
             {
                 return JsonConvert.DeserializeObject<ModuleTagList>(File.ReadAllText(path));
             }
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException)
             {
                 return null;
             }

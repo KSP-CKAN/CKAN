@@ -75,10 +75,9 @@ namespace CKAN
                     );
                     foreach (CkanModule provider in providers)
                     {
-                        List<string> dependers;
                         if (!registry.IsInstalled(provider.identifier)
                             && !toInstall.Any(m => m.identifier == provider.identifier)
-                            && dependersIndex.TryGetValue(provider, out dependers)
+                            && dependersIndex.TryGetValue(provider, out List<string> dependers)
                             && CanInstall(registry, CurrentInstance.VersionCriteria(),
                                 RelationshipResolver.DependsOnlyOpts(),
                                 toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList()))
@@ -104,10 +103,9 @@ namespace CKAN
                     );
                     foreach (CkanModule provider in providers)
                     {
-                        List<string> dependers;
                         if (!registry.IsInstalled(provider.identifier)
                             && !toInstall.Any(m => m.identifier == provider.identifier)
-                            && dependersIndex.TryGetValue(provider, out dependers)
+                            && dependersIndex.TryGetValue(provider, out List<string> dependers)
                             && CanInstall(registry, CurrentInstance.VersionCriteria(),
                                 RelationshipResolver.DependsOnlyOpts(),
                                 toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList()))
@@ -121,6 +119,51 @@ namespace CKAN
                             );
                         }
                     }
+                }
+            }
+
+            // Find installable modules with "supports" relationships
+            var candidates = mainModList.Modules
+                .Where(gm => !gm.IsIncompatible
+                    && !registry.IsInstalled(gm.Identifier)
+                    && !toInstall.Any(m => m.identifier == gm.Identifier))
+                .Select(gm => gm.ToModule())
+                .Where(m => m?.supports != null);
+            // Find each module that "supports" something we're installing
+            var supporters = new Dictionary<CkanModule, HashSet<string>>();
+            foreach (CkanModule mod in candidates)
+            {
+                foreach (RelationshipDescriptor rel in mod.supports)
+                {
+                    if (rel.MatchesAny(sourceModules, null, null))
+                    {
+                        var name = (rel as ModuleRelationshipDescriptor)?.name;
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            if (supporters.TryGetValue(mod, out HashSet<string> others))
+                            {
+                                others.Add(name);
+                            }
+                            else
+                            {
+                                supporters.Add(mod, new HashSet<string>() { name });
+                            }
+                        }
+                    }
+                }
+            }
+            // Generate one row per module, sorted by the supported module lists
+            foreach (var kvp in supporters
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => string.Join(", ", kvp.Value.OrderBy(s => s)))
+                .OrderBy(kvp => kvp.Value))
+            {
+                if (CanInstall(registry, CurrentInstance.VersionCriteria(),
+                    RelationshipResolver.DependsOnlyOpts(),
+                    toInstall.ToList().Concat(new List<CkanModule>() { kvp.Key }).ToList()))
+                {
+                    yield return getRecSugItem(kvp.Key, kvp.Value, SupportedByGroup, false);
                 }
             }
         }

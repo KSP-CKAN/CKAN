@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Linq;
 using CKAN.Versioning;
 using CKAN.Exporters;
 using CKAN.Extensions;
@@ -156,6 +155,7 @@ namespace CKAN
             {
                 tabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
+                RetryCurrentActionButton.Enabled = false;
                 auditRecommendationsMenuItem.Enabled = true;
                 InstallAllCheckbox.Checked = true;
             }

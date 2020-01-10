@@ -25,80 +25,70 @@ namespace CKAN
 
         public void ShowTab(string name, int index = 0, bool setActive = true)
         {
-            Util.Invoke(m_TabControl, () => _ShowTab(name, index, setActive));
-        }
-
-        public void HideTab(string name)
-        {
-            Util.Invoke(m_TabControl, () => _HideTab(name));
-        }
-
-        public void RenameTab(string name, string newDisplayName)
-        {
-            Util.Invoke(m_TabControl, () => _RenameTab(name, newDisplayName));
-        }
-
-        public void SetTabLock(bool state)
-        {
-            Util.Invoke(m_TabControl, () => _SetTabLock(state));
-        }
-
-        public void SetActiveTab(string name)
-        {
-            Util.Invoke(m_TabControl, () => _SetActiveTab(name));
-        }
-
-        private void _ShowTab(string name, int index = 0, bool setActive = true)
-        {
-            if (m_TabControl.TabPages.Contains(m_TabPages[name]))
+            Util.Invoke(m_TabControl, () =>
             {
+                if (m_TabControl.TabPages.Contains(m_TabPages[name]))
+                {
+                    if (setActive)
+                    {
+                        SetActiveTab(name);
+                    }
+
+                    return;
+                }
+
+                if (index > m_TabControl.TabPages.Count)
+                {
+                    index = m_TabControl.TabPages.Count;
+                }
+
+                m_TabControl.TabPages.Insert(index, m_TabPages[name]);
+
                 if (setActive)
                 {
                     SetActiveTab(name);
                 }
+            });
+        }
 
-                return;
-            }
-
-            if (index > m_TabControl.TabPages.Count)
+        public void HideTab(string name)
+        {
+            Util.Invoke(m_TabControl, () =>
             {
-                index = m_TabControl.TabPages.Count;
-            }
+                // Unsafe to hide the active tab as of Mono 5.14
+                if (m_TabControl.SelectedTab.Name == name)
+                {
+                    m_TabControl.DeselectTab(name);
+                }
+                m_TabControl.TabPages.Remove(m_TabPages[name]);
+            });
+        }
 
-            m_TabControl.TabPages.Insert(index, m_TabPages[name]);
-
-            if (setActive)
+        public void RenameTab(string name, string newDisplayName)
+        {
+            Util.Invoke(m_TabControl, () =>
             {
-                SetActiveTab(name);
-            }
+                m_TabPages[name].Text = newDisplayName;
+            });
         }
 
-        private void _HideTab(string name)
+        public void SetTabLock(bool state)
         {
-            // Unsafe to hide the active tab as of Mono 5.14
-            if (m_TabControl.SelectedTab.Name == name)
+            Util.Invoke(m_TabControl, () =>
             {
-                m_TabControl.DeselectTab(name);
-            }
-            m_TabControl.TabPages.Remove(m_TabPages[name]);
+                m_TabLock = state;
+            });
         }
 
-        public void _RenameTab(string name, string newDisplayName)
+        public void SetActiveTab(string name)
         {
-            m_TabPages[name].Text = newDisplayName;
-        }
-
-        private void _SetTabLock(bool state)
-        {
-            m_TabLock = state;
-        }
-
-        private void _SetActiveTab(string name)
-        {
-            var tabLock = m_TabLock;
-            m_TabLock = false;
-            m_TabControl.SelectTab(m_TabPages[name]);
-            m_TabLock = tabLock;
+            Util.Invoke(m_TabControl, () =>
+            {
+                var tabLock = m_TabLock;
+                m_TabLock = false;
+                m_TabControl.SelectTab(m_TabPages[name]);
+                m_TabLock = tabLock;
+            });
         }
 
         private void OnDeselect(object sender, TabControlCancelEventArgs args)
@@ -148,8 +138,5 @@ namespace CKAN
         private bool m_TabLock;
 
         public Dictionary<string, TabPage> m_TabPages = new Dictionary<string, TabPage>();
-
     }
-
-
 }

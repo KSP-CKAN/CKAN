@@ -189,6 +189,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="exec">Function to call if the user chooses this option</param>
         /// <param name="radio">If set, this option is a radio button, and this function returns its value</param>
         /// <param name="submenu">Submenu to open for this option</param>
+        /// <param name="enabled">true if this option should be drawn normally and allowed for selection, false to draw it grayed out and not allow selection</param>
         public ConsoleMenuOption(string cap, string key, string tt, bool close,
                 Func<bool> exec = null, Func<bool> radio = null, ConsolePopupMenu submenu = null,
                 bool enabled = true)

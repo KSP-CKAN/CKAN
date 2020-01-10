@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Multiple] Custom mod labels, favorites, hiding (#2936 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Add "supports" relationships to recommendations screen (#2960 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

@@ -12,7 +12,7 @@ using System.IO;
 namespace CKAN
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class ModuleInstallDescriptor : ICloneable
+    public class ModuleInstallDescriptor : ICloneable, IEquatable<ModuleInstallDescriptor>
     {
 
         #region Properties
@@ -122,11 +122,23 @@ namespace CKAN
         /// </summary>
         /// <param name="other">The other stanza for comparison</param>
         /// <returns>
-        /// True if they're equivalent, false if they're different
+        /// True if they're equivalent, false if they're different.
         /// </returns>
         public override bool Equals(object other)
         {
-            ModuleInstallDescriptor otherStanza = other as ModuleInstallDescriptor;
+            return Equals(other as ModuleInstallDescriptor);
+        }
+        
+        /// <summary>
+        /// Compare two install stanzas
+        /// </summary>
+        /// <param name="other">The other stanza for comparison</param>
+        /// <returns>
+        /// True if they're equivalent, false if they're different.
+        /// IEquatable<> uses this for more efficient comparisons.
+        /// </returns>
+        public bool Equals(ModuleInstallDescriptor otherStanza)
+        {
             if (otherStanza == null)
                 // Not even the right type!
                 return false;
@@ -163,6 +175,27 @@ namespace CKAN
                 && !include_only_regexp.SequenceEqual(otherStanza.include_only_regexp))
                 return false;
             return true;
+        }
+        
+        public override int GetHashCode()
+        {
+            // Tuple.Create only handles up to 8 params, we have 10+
+            return Tuple.Create(
+                Tuple.Create(
+                    file,
+                    find,
+                    find_regexp,
+                    find_matches_files,
+                    install_to,
+                    @as
+                ),
+                Tuple.Create(                
+                    filter,
+                    filter_regexp,
+                    include_only,
+                    include_only_regexp
+                )
+            ).GetHashCode();
         }
 
         /// <summary>
