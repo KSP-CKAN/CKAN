@@ -19,7 +19,7 @@ namespace CKAN
         {
             // Background
             Rectangle bgRect = e.Bounds;
-            bgRect.Inflate(-2, 0);
+            bgRect.Inflate(-2, -1);
             bgRect.Offset(0, 1);
             e.Graphics.FillRectangle(new SolidBrush(BackColor), bgRect);
             // Text
