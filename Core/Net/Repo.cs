@@ -79,7 +79,7 @@ namespace CKAN
                     HandleModuleChanges(metadataChanges, user, ksp, cache);
                 }
 
-                // Registry.Available is slow, just return success,
+                // Registry.CompatibleModules is slow, just return success,
                 // caller can check it if it's really needed
                 return RepoUpdateResult.Updated;
             }
@@ -346,7 +346,7 @@ Do you wish to reinstall now?", sb)))
 
             ShowUserInconsistencies(registry_manager.registry, user);
 
-            // Registry.Available is slow, just return success,
+            // Registry.CompatibleModules is slow, just return success,
             // caller can check it if it's really needed
             return true;
         }

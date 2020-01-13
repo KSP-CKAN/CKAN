@@ -132,7 +132,7 @@ namespace CKAN.CmdLine
             if (!searchIncompatible)
             {
                 return registry
-                    .Available(ksp.VersionCriteria())
+                    .CompatibleModules(ksp.VersionCriteria())
                     .Where((module) =>
                 {
                     // Look for a match in each string.
@@ -146,7 +146,7 @@ namespace CKAN.CmdLine
             else
             {
                 return registry
-                    .Incompatible(ksp.VersionCriteria())
+                    .IncompatibleModules(ksp.VersionCriteria())
                     .Where((module) =>
                 {
                     // Look for a match in each string.
@@ -186,8 +186,8 @@ namespace CKAN.CmdLine
         {
             IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
             // Get the list of all compatible and incompatible mods
-            List<CkanModule> mods = registry.Available(ksp.VersionCriteria()).ToList();
-            mods.AddRange(registry.Incompatible(ksp.VersionCriteria()));
+            List<CkanModule> mods = registry.CompatibleModules(ksp.VersionCriteria()).ToList();
+            mods.AddRange(registry.IncompatibleModules(ksp.VersionCriteria()));
             for (int i = 0; i < modules.Count; ++i)
             {
                 Match match = CkanModule.idAndVersionMatcher.Match(modules[i]);

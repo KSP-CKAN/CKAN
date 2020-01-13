@@ -34,9 +34,11 @@ namespace CKAN
         // TODO: These may be good as custom types, especially those which process
         // paths (and flip from absolute to relative, and vice-versa).
         [JsonProperty] internal Dictionary<string, AvailableModule> available_modules;
-        [JsonProperty] private Dictionary<string, string> installed_dlls; // name => path
-        [JsonProperty] private Dictionary<string, InstalledModule> installed_modules;
-        [JsonProperty] private Dictionary<string, string> installed_files; // filename => module
+        // name => path
+        [JsonProperty] private  Dictionary<string, string>          installed_dlls;
+        [JsonProperty] private  Dictionary<string, InstalledModule> installed_modules;
+        // filename => module
+        [JsonProperty] private  Dictionary<string, string>          installed_files;
 
         [JsonProperty] public readonly SortedDictionary<string, int> download_counts = new SortedDictionary<string, int>();
 
@@ -450,6 +452,7 @@ namespace CKAN
             log.DebugFormat("Available: {0} version {1}", identifier, module.version);
             available_modules[identifier].Add(module);
             BuildProvidesIndexFor(available_modules[identifier]);
+            sorter = null;
         }
 
         /// <summary>
@@ -475,92 +478,35 @@ namespace CKAN
         }
 
         /// <summary>
-        /// <see cref="IRegistryQuerier.Available"/>
+        /// <see cref="IRegistryQuerier.CompatibleModules"/>
         /// </summary>
-        public IEnumerable<CkanModule> Available(KspVersionCriteria ksp_version)
+        public IEnumerable<CkanModule> CompatibleModules(KspVersionCriteria ksp_version)
         {
-            var candidates = new List<string>(available_modules.Keys);
-
-            // It's nice to see things in alphabetical order, so sort our keys first.
-            candidates.Sort();
-
-            // Now find what we can give our user.
-            foreach (string candidate in candidates)
-            {
-                CkanModule available = LatestAvailable(candidate, ksp_version);
-
-                if (available != null
-                    && allDependenciesCompatible(available, ksp_version))
-                {
-                    yield return available;
-                }
-            }
+            // Set up our compatibility partition
+            SetCompatibleVersion(ksp_version);
+            return sorter.Compatible.Values.Select(pair => pair.Latest(null)).ToList();
         }
 
         /// <summary>
-        /// <see cref="IRegistryQuerier.Incompatible"/>
+        /// <see cref="IRegistryQuerier.IncompatibleModules"/>
         /// </summary>
-        public IEnumerable<CkanModule> Incompatible(KspVersionCriteria ksp_version)
+        public IEnumerable<CkanModule> IncompatibleModules(KspVersionCriteria ksp_version)
         {
-            var candidates   = new List<string>(available_modules.Keys);
-
-            // It's nice to see things in alphabetical order, so sort our keys first.
-            candidates.Sort();
-
-            // Now find what we can give our user.
-            foreach (string candidate in candidates)
-            {
-                CkanModule available = LatestAvailable(candidate, ksp_version);
-
-                // If a mod is available, it might still have incompatible dependencies.
-                if (available == null
-                    || !allDependenciesCompatible(available, ksp_version))
-                {
-                    yield return LatestAvailable(candidate, null);
-                }
-            }
-        }
-
-        private bool allDependenciesCompatible(CkanModule mod, KspVersionCriteria ksp_version)
-        {
-            // we need to check that we can get everything we depend on
-            if (mod.depends != null)
-            {
-                foreach (RelationshipDescriptor dependency in mod.depends)
-                {
-                    try
-                    {
-                        if (!dependency.MatchesAny(null, InstalledDlls.ToHashSet(), InstalledDlc)
-                            && !dependency.LatestAvailableWithProvides(this, ksp_version).Any())
-                        {
-                            return false;
-                        }
-                    }
-                    catch (KeyNotFoundException e)
-                    {
-                        log.ErrorFormat("Cannot find available version with provides for {0} in registry", dependency.ToString());
-                        throw e;
-                    }
-                    catch (ModuleNotFoundKraken)
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
+            // Set up our compatibility partition
+            SetCompatibleVersion(ksp_version);
+            return sorter.Incompatible.Values.Select(pair => pair.Latest(null)).ToList();
         }
 
         /// <summary>
-        /// <see cref = "IRegistryQuerier.LatestAvailable" />
+        /// <see cref="IRegistryQuerier.LatestAvailable" />
         /// </summary>
-
-        // TODO: Consider making this internal, because practically everything should
-        // be calling LatestAvailableWithProvides()
         public CkanModule LatestAvailable(
             string module,
             KspVersionCriteria ksp_version,
             RelationshipDescriptor relationship_descriptor = null)
         {
+            // TODO: Consider making this internal, because practically everything should
+            // be calling LatestAvailableWithProvides()
             log.DebugFormat("Finding latest available for {0}", module);
 
             // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
@@ -575,17 +521,23 @@ namespace CKAN
             }
         }
 
-
-        public IEnumerable<CkanModule> AllAvailable(string module)
+        /// <summary>
+        /// Find modules with a given identifier
+        /// </summary>
+        /// <param name="identifier">Identifier of modules to find</param>
+        /// <returns>
+        /// List of all modules with this identifier
+        /// </returns>
+        public IEnumerable<CkanModule> AvailableByIdentifier(string identifier)
         {
-            log.DebugFormat("Finding all available versions for {0}", module);
+            log.DebugFormat("Finding all available versions for {0}", identifier);
             try
             {
-                return available_modules[module].AllAvailable();
+                return available_modules[identifier].AllAvailable();
             }
             catch (KeyNotFoundException)
             {
-                throw new ModuleNotFoundKraken(module);
+                throw new ModuleNotFoundKraken(identifier);
             }
         }
 
@@ -678,8 +630,7 @@ namespace CKAN
             {
                 foreach (string provided in m.ProvidesList)
                 {
-                    HashSet<AvailableModule> provs = null;
-                    if (providers.TryGetValue(provided, out provs))
+                    if (providers.TryGetValue(provided, out HashSet<AvailableModule> provs))
                         provs.Add(am);
                     else
                         providers.Add(provided, new HashSet<AvailableModule>() { am });
@@ -701,13 +652,12 @@ namespace CKAN
         /// <see cref="IRegistryQuerier.LatestAvailableWithProvides" />
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(
-            string                  module,
+            string                  identifier,
             KspVersionCriteria      ksp_version,
             RelationshipDescriptor  relationship_descriptor = null,
             IEnumerable<CkanModule> toInstall               = null)
         {
-            HashSet<AvailableModule> provs;
-            if (providers.TryGetValue(module, out provs))
+            if (providers.TryGetValue(identifier, out HashSet<AvailableModule> provs))
             {
                 // For each AvailableModule, we want the latest one matching our constraints
                 return provs
@@ -717,7 +667,7 @@ namespace CKAN
                         InstalledModules.Select(im => im.Module),
                         toInstall
                     ))
-                    .Where(m => m?.ProvidesList?.Contains(module) ?? false)
+                    .Where(m => m?.ProvidesList?.Contains(identifier) ?? false)
                     .ToList();
             }
             else
@@ -1245,5 +1195,22 @@ namespace CKAN
             return index;
         }
 
+        /// <summary>
+        /// Partition all CkanModules in available_modules into
+        /// compatible and incompatible groups.
+        /// </summary>
+        /// <param name="versCrit">Version criteria to determine compatibility</param>
+        public void SetCompatibleVersion(KspVersionCriteria versCrit)
+        {
+            if (!versCrit.Equals(sorter?.CompatibleVersions))
+            {
+                sorter = new CompatibilitySorter(
+                    versCrit, available_modules, providers,
+                    InstalledDlls.ToHashSet(), _installedDlcModules
+                );
+            }
+        }
+
+        [JsonIgnore] private CompatibilitySorter sorter;
     }
 }

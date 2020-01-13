@@ -74,9 +74,9 @@ namespace CKAN
                 // Note the current mods' compatibility for the NewlyCompatible filter
                 KspVersionCriteria versionCriteria = CurrentInstance.VersionCriteria();
                 IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
-                Dictionary<string, bool> oldModules = registry.Available(versionCriteria)
+                Dictionary<string, bool> oldModules = registry.CompatibleModules(versionCriteria)
                     .ToDictionary(m => m.identifier, m => false);
-                registry.Incompatible(versionCriteria)
+                registry.IncompatibleModules(versionCriteria)
                     .Where(m => !oldModules.ContainsKey(m.identifier))
                     .ToList()
                     .ForEach(m => oldModules.Add(m.identifier, true));

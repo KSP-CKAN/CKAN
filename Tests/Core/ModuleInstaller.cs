@@ -478,11 +478,11 @@ namespace Tests.Core
 
                 // Mark it as available in the registry.
                 var registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;
-                Assert.AreEqual(0, registry.Available(ksp.KSP.VersionCriteria()).Count());
+                Assert.AreEqual(0, registry.CompatibleModules(ksp.KSP.VersionCriteria()).Count());
 
                 registry.AddAvailable(TestData.DogeCoinFlag_101_module());
 
-                Assert.AreEqual(1, registry.Available(ksp.KSP.VersionCriteria()).Count());
+                Assert.AreEqual(1, registry.CompatibleModules(ksp.KSP.VersionCriteria()).Count());
 
                 // Attempt to install it.
                 List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };

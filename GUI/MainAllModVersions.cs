@@ -114,7 +114,7 @@ namespace CKAN
                 List<CkanModule> allAvailableVersions;
                 try
                 {
-                    allAvailableVersions = registry.AllAvailable(value.Identifier)
+                    allAvailableVersions = registry.AvailableByIdentifier(value.Identifier)
                         .OrderByDescending(m => m.version)
                         .ToList();
                 }

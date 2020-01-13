@@ -9,18 +9,17 @@ namespace CKAN
     /// </summary>
     public interface IRegistryQuerier
     {
-        IEnumerable<InstalledModule> InstalledModules { get;}
-        IEnumerable<string> InstalledDlls { get; }
+        IEnumerable<InstalledModule> InstalledModules { get; }
+        IEnumerable<string>          InstalledDlls    { get; }
         IDictionary<string, UnmanagedModuleVersion> InstalledDlc { get; }
 
         int? DownloadCount(string identifier);
 
         /// <summary>
-        /// Returns a simple array of all latest available modules for
+        /// Returns a simple array of the latest compatible module for each identifier for
         /// the specified version of KSP.
         /// </summary>
-        // TODO: This name is misleading. It's more a LatestAvailable's'
-        IEnumerable<CkanModule> Available(KspVersionCriteria ksp_version);
+        IEnumerable<CkanModule> CompatibleModules(KspVersionCriteria ksp_version);
 
         /// <summary>
         /// Get full JSON metadata string for a mod's available versions
@@ -32,10 +31,9 @@ namespace CKAN
         string GetAvailableMetadata(string identifier);
 
         /// <summary>
-        ///     Returns the latest available version of a module that
-        ///     satisifes the specified version.
-        ///     Returns null if there's simply no compatible version for this system.
-        ///     If no ksp_version is provided, the latest module for *any* KSP is returned.
+        /// Returns the latest available version of a module that satisfies the specified version.
+        /// Returns null if there's simply no available version for this system.
+        /// If no ksp_version is provided, the latest module for *any* KSP version is returned.
         /// <exception cref="ModuleNotFoundKraken">Throws if asked for a non-existent module.</exception>
         /// </summary>
         CkanModule LatestAvailable(string identifier, KspVersionCriteria ksp_version, RelationshipDescriptor relationship_descriptor = null);
@@ -47,17 +45,17 @@ namespace CKAN
         KspVersion LatestCompatibleKSP(string identifier);
 
         /// <summary>
-        ///     Returns all available version of a module.
+        /// Returns all available versions of a module.
         /// <exception cref="ModuleNotFoundKraken">Throws if asked for a non-existent module.</exception>
         /// </summary>
-        IEnumerable<CkanModule> AllAvailable(string identifier);
+        IEnumerable<CkanModule> AvailableByIdentifier(string identifier);
 
         /// <summary>
-        ///     Returns the latest available version of a module that satisifes the specified version and
-        ///     optionally a RelationshipDescriptor. Takes into account module 'provides', which may
-        ///     result in a list of alternatives being provided.
-        ///     Returns an empty list if nothing is available for our system, which includes if no such module exists.
-        ///     If no KSP version is provided, the latest module for *any* KSP version is given.
+        /// Returns the latest available version of a module that satisfies the specified version and
+        /// optionally a RelationshipDescriptor. Takes into account module 'provides', which may
+        /// result in a list of alternatives being provided.
+        /// Returns an empty list if nothing is available for our system, which includes if no such module exists.
+        /// If no KSP version is provided, the latest module for *any* KSP version is given.
         /// </summary>
         List<CkanModule> LatestAvailableWithProvides(
             string                  identifier,
@@ -67,8 +65,8 @@ namespace CKAN
         );
 
         /// <summary>
-        ///     Checks the sanity of the registry, to ensure that all dependencies are met,
-        ///     and no mods conflict with each other.
+        /// Checks the sanity of the registry, to ensure that all dependencies are met,
+        /// and no mods conflict with each other.
         /// <exception cref="InconsistentKraken">Thrown if a inconsistency is found</exception>
         /// </summary>
         void CheckSanity();
@@ -103,10 +101,10 @@ namespace CKAN
         CkanModule GetModuleByVersion(string identifier, ModuleVersion version);
 
         /// <summary>
-        ///     Returns a simple array of all incompatible modules for
-        ///     the specified version of KSP.
+        /// Returns a simple array of all incompatible modules for
+        /// the specified version of KSP.
         /// </summary>
-        IEnumerable<CkanModule> Incompatible(KspVersionCriteria ksp_version);
+        IEnumerable<CkanModule> IncompatibleModules(KspVersionCriteria ksp_version);
 
         /// <summary>
         /// Returns a dictionary of all modules installed, along with their
@@ -195,7 +193,7 @@ namespace CKAN
         /// </returns>
         public static string CompatibleGameVersions(this IRegistryQuerier querier, string identifier)
         {
-            List<CkanModule> releases = querier.AllAvailable(identifier).ToList();
+            List<CkanModule> releases = querier.AvailableByIdentifier(identifier).ToList();
             if (releases != null && releases.Count > 0) {
                 ModuleVersion minMod = null, maxMod = null;
                 KspVersion    minKsp = null, maxKsp = null;

@@ -193,12 +193,12 @@ namespace CKAN
             );
             AddLogMessage(Properties.Resources.MainModListLoadingAvailable);
             gui_mods.UnionWith(
-                registry.Available(versionCriteria)
-                    .Select(m => new GUIMod(m, registry, versionCriteria, false))
+                registry.CompatibleModules(versionCriteria)
+                    .Select(m => new GUIMod(m, registry, versionCriteria))
             );
             AddLogMessage(Properties.Resources.MainModListLoadingIncompatible);
             gui_mods.UnionWith(
-                registry.Incompatible(versionCriteria)
+                registry.IncompatibleModules(versionCriteria)
                     .Select(m => new GUIMod(m, registry, versionCriteria, true))
             );
 

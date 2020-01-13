@@ -1381,7 +1381,7 @@ namespace CKAN
             if (ModInfo.SelectedModule != null)
             {
                 IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
-                var allAvail = registry.AllAvailable(ModInfo.SelectedModule.Identifier);
+                var allAvail = registry.AvailableByIdentifier(ModInfo.SelectedModule.Identifier);
                 foreach (CkanModule mod in allAvail)
                 {
                     Manager.Cache.Purge(mod);

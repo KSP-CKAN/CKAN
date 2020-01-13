@@ -93,28 +93,28 @@ namespace Tests.Core.Registry
         }
 
         [Test]
-        public void Available_NoDLCInstalled_ExcludesModulesDependingOnMH()
+        public void CompatibleModules_NoDLCInstalled_ExcludesModulesDependingOnMH()
         {
             // Arrange
             CkanModule DLCDepender = CkanModule.FromJson(@"{
                 ""identifier"": ""DLC-Depender"",
                 ""version"":    ""1.0.0"",
                 ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
-                ""depends"": [ {
-                    ""name"":""MakingHistory-DLC""
-                } ]
+                ""depends"": [
+                    { ""name"": ""MakingHistory-DLC"" }
+                ]
             }");
             registry.AddAvailable(DLCDepender);
 
             // Act
-            List<CkanModule> avail = registry.Available(v0_24_2).ToList();
+            List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
 
             // Assert
             Assert.IsFalse(avail.Contains(DLCDepender));
         }
 
         [Test]
-        public void Available_MHInstalled_IncludesModulesDependingOnMH()
+        public void CompatibleModules_MHInstalled_IncludesModulesDependingOnMH()
         {
             // Arrange
             registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0"));
@@ -123,21 +123,21 @@ namespace Tests.Core.Registry
                 ""identifier"": ""DLC-Depender"",
                 ""version"":    ""1.0.0"",
                 ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
-                ""depends"": [ {
-                    ""name"":""MakingHistory-DLC""
-                } ]
+                ""depends"": [
+                    { ""name"": ""MakingHistory-DLC"" }
+                ]
             }");
             registry.AddAvailable(DLCDepender);
 
             // Act
-            List<CkanModule> avail = registry.Available(v0_24_2).ToList();
+            List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
 
             // Assert
             Assert.IsTrue(avail.Contains(DLCDepender));
         }
 
         [Test]
-        public void Available_MH110Installed_IncludesModulesDependingOnMH110()
+        public void CompatibleModules_MH110Installed_IncludesModulesDependingOnMH110()
         {
             // Arrange
             registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0"));
@@ -154,14 +154,14 @@ namespace Tests.Core.Registry
             registry.AddAvailable(DLCDepender);
 
             // Act
-            List<CkanModule> avail = registry.Available(v0_24_2).ToList();
+            List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
 
             // Assert
             Assert.IsTrue(avail.Contains(DLCDepender));
         }
 
         [Test]
-        public void Available_MH100Installed_ExcludesModulesDependingOnMH110()
+        public void CompatibleModules_MH100Installed_ExcludesModulesDependingOnMH110()
         {
             // Arrange
             registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.0.0"));
@@ -178,7 +178,7 @@ namespace Tests.Core.Registry
             registry.AddAvailable(DLCDepender);
 
             // Act
-            List<CkanModule> avail = registry.Available(v0_24_2).ToList();
+            List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
 
             // Assert
             Assert.IsFalse(avail.Contains(DLCDepender));

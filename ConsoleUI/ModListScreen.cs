@@ -426,7 +426,7 @@ namespace CKAN.ConsoleUI {
             d.Run(() => {
                 HashSet<string> availBefore = new HashSet<string>(
                     Array.ConvertAll<CkanModule, string>(
-                        registry.Available(
+                        registry.CompatibleModules(
                             manager.CurrentInstance.VersionCriteria()
                         ).ToArray(),
                         (l => l.identifier)
@@ -445,7 +445,7 @@ namespace CKAN.ConsoleUI {
                     RaiseError(ex.Message + ex.StackTrace);
                 }
                 // Update recent with mods that were updated in this pass
-                foreach (CkanModule mod in registry.Available(
+                foreach (CkanModule mod in registry.CompatibleModules(
                         manager.CurrentInstance.VersionCriteria()
                     )) {
                     if (!availBefore.Contains(mod.identifier)) {
@@ -508,7 +508,7 @@ namespace CKAN.ConsoleUI {
         private List<CkanModule> GetAllMods(bool force = false)
         {
             if (allMods == null || force) {
-                allMods = new List<CkanModule>(registry.Available(manager.CurrentInstance.VersionCriteria()));
+                allMods = new List<CkanModule>(registry.CompatibleModules(manager.CurrentInstance.VersionCriteria()));
                 foreach (InstalledModule im in registry.InstalledModules) {
                     CkanModule m = null;
                     try {
