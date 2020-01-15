@@ -83,6 +83,7 @@ namespace CKAN.CmdLine
 
             try
             {
+                HashSet<string> possibleConfigOnlyDirs = null;
                 if (options.upgrade_all)
                 {
                     var registry = RegistryManager.Instance(ksp).registry;
@@ -129,13 +130,13 @@ namespace CKAN.CmdLine
 
                     }
 
-                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(to_upgrade, new NetAsyncModulesDownloader(User, manager.Cache));
+                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(to_upgrade, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs);
                 }
                 else
                 {
                     // TODO: These instances all need to go.
                     Search.AdjustModulesCase(ksp, options.modules);
-                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(options.modules, new NetAsyncModulesDownloader(User, manager.Cache));
+                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(options.modules, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs);
                 }
             }
             catch (ModuleNotFoundKraken kraken)

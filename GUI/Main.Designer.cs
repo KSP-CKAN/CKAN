@@ -158,6 +158,8 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DeleteDirectoriesTabPage = new System.Windows.Forms.TabPage();
+            this.DeleteDirectories = new CKAN.DeleteDirectories();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -175,6 +177,7 @@
             this.ChooseRecommendedModsTabPage.SuspendLayout();
             this.ChooseProvidedModsTabPage.SuspendLayout();
             this.minimizedContextMenuStrip.SuspendLayout();
+            this.DeleteDirectoriesTabPage.SuspendLayout();
             this.SuspendLayout();
             //
             // menuStrip1
@@ -835,6 +838,7 @@
             this.MainTabControl.Controls.Add(this.WaitTabPage);
             this.MainTabControl.Controls.Add(this.ChooseRecommendedModsTabPage);
             this.MainTabControl.Controls.Add(this.ChooseProvidedModsTabPage);
+            this.MainTabControl.Controls.Add(this.DeleteDirectoriesTabPage);
             this.MainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainTabControl.Location = new System.Drawing.Point(0, 35);
             this.MainTabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -1294,6 +1298,28 @@
             this.ChooseProvidedModsLabel.TabIndex = 30;
             resources.ApplyResources(this.ChooseProvidedModsLabel, "ChooseProvidedModsLabel");
             //
+            // DeleteDirectoriesTabPage
+            //
+            this.DeleteDirectoriesTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.DeleteDirectoriesTabPage.Controls.Add(this.DeleteDirectories);
+            this.DeleteDirectoriesTabPage.Location = new System.Drawing.Point(0, 0);
+            this.DeleteDirectoriesTabPage.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.DeleteDirectoriesTabPage.Name = "DeleteDirectoriesTabPage";
+            this.DeleteDirectoriesTabPage.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.DeleteDirectoriesTabPage.Size = new System.Drawing.Size(500, 500);
+            this.DeleteDirectoriesTabPage.TabIndex = 31;
+            resources.ApplyResources(this.DeleteDirectoriesTabPage, "DeleteDirectoriesTabPage");
+            //
+            // DeleteDirectories
+            //
+            this.DeleteDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DeleteDirectories.Location = new System.Drawing.Point(0, 0);
+            this.DeleteDirectories.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.DeleteDirectories.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.DeleteDirectories.Name = "DeleteDirectories";
+            this.DeleteDirectories.Size = new System.Drawing.Size(500, 500);
+            this.DeleteDirectories.TabIndex = 32;
+            //
             // minimizeNotifyIcon
             //
             this.minimizeNotifyIcon.ContextMenuStrip = this.minimizedContextMenuStrip;
@@ -1433,6 +1459,8 @@
             this.ChooseRecommendedModsTabPage.PerformLayout();
             this.ChooseProvidedModsTabPage.ResumeLayout(false);
             this.ChooseProvidedModsTabPage.PerformLayout();
+            this.DeleteDirectoriesTabPage.ResumeLayout(false);
+            this.DeleteDirectoriesTabPage.PerformLayout();
             this.minimizedContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1555,6 +1583,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.Label ChooseProvidedModsLabel;
+        private System.Windows.Forms.TabPage DeleteDirectoriesTabPage;
+        private CKAN.DeleteDirectories DeleteDirectories;
         private System.Windows.Forms.NotifyIcon minimizeNotifyIcon;
         private System.Windows.Forms.ContextMenuStrip minimizedContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem updatesToolStripMenuItem;

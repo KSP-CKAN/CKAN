@@ -54,16 +54,18 @@ namespace CKAN.ConsoleUI {
                         }
 
                         // FUTURE: BackgroundWorker
+                        
+                        HashSet<string> possibleConfigOnlyDirs = null;
 
                         ModuleInstaller inst = ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, this);
                         inst.onReportModInstalled = OnModInstalled;
                         if (plan.Remove.Count > 0) {
-                            inst.UninstallList(plan.Remove);
+                            inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs);
                             plan.Remove.Clear();
                         }
                         NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache);
                         if (plan.Upgrade.Count > 0) {
-                            inst.Upgrade(plan.Upgrade, dl);
+                            inst.Upgrade(plan.Upgrade, dl, ref possibleConfigOnlyDirs);
                             plan.Upgrade.Clear();
                         }
                         if (plan.Install.Count > 0) {
@@ -72,7 +74,7 @@ namespace CKAN.ConsoleUI {
                             plan.Install.Clear();
                         }
                         if (plan.Replace.Count > 0) {
-                            inst.Replace(AllReplacements(plan.Replace), resolvOpts, dl, true);
+                            inst.Replace(AllReplacements(plan.Replace), resolvOpts, dl, ref possibleConfigOnlyDirs, true);
                         }
 
                         trans.Complete();

@@ -438,8 +438,9 @@ namespace Tests.Core
 
                 Assert.Throws<ModNotInstalledKraken>(delegate
                 {
+                    HashSet<string> possibleConfigOnlyDirs = null;
                     // This should throw, as our tidy KSP has no mods installed.
-                    CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList("Foo");
+                    CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList("Foo", ref possibleConfigOnlyDirs);
                 });
 
                 manager.CurrentInstance = null; // I weep even more.
@@ -560,7 +561,8 @@ namespace Tests.Core
                 Assert.IsTrue(File.Exists(mod_file_path));
 
                 // Attempt to uninstall it.
-                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList(modules);
+                HashSet<string> possibleConfigOnlyDirs = null;
+                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList(modules, ref possibleConfigOnlyDirs);
 
                 // Check that the module is not installed.
                 Assert.IsFalse(File.Exists(mod_file_path));
@@ -616,7 +618,8 @@ namespace Tests.Core
                 modules.Add(TestData.DogeCoinFlag_101_module().identifier);
                 modules.Add(TestData.DogeCoinPlugin_module().identifier);
 
-                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList(modules);
+                HashSet<string> possibleConfigOnlyDirs = null;
+                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList(modules, ref possibleConfigOnlyDirs);
 
                 // Check that the directory has been deleted.
                 Assert.IsFalse(Directory.Exists(directoryPath));

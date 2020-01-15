@@ -254,6 +254,7 @@
   <data name="columnHeader6.Text" xml:space="preserve"><value>Mod</value></data>
   <data name="columnHeader8.Text" xml:space="preserve"><value>Mod description</value></data>
   <data name="ChooseProvidedModsLabel.Text" xml:space="preserve"><value>Several mods provide the virtual module Foo, choose one of the following mods:</value></data>
+  <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>Delete Directories</value></data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
   <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>N available updates</value></data>
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Refresh</value></data>

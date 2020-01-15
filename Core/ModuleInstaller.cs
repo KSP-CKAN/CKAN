@@ -732,7 +732,7 @@ namespace CKAN
         /// This *DOES* save the registry.
         /// Preferred over Uninstall.
         /// </summary>
-        public void UninstallList(IEnumerable<string> mods, bool ConfirmPrompt = true, IEnumerable<string> installing = null)
+        public void UninstallList(IEnumerable<string> mods, ref HashSet<string> possibleConfigOnlyDirs, bool ConfirmPrompt = true, IEnumerable<string> installing = null)
         {
             mods = mods.Memoize();
             // Pre-check, have they even asked for things which are installed?
@@ -788,7 +788,7 @@ namespace CKAN
                 foreach (string mod in goners)
                 {
                     User.RaiseMessage("Removing {0}...", mod);
-                    Uninstall(mod);
+                    Uninstall(mod, ref possibleConfigOnlyDirs);
                 }
 
                 // Enforce consistency if we're not installing anything,
@@ -801,10 +801,10 @@ namespace CKAN
             User.RaiseMessage("Done!\r\n");
         }
 
-        public void UninstallList(string mod)
+        public void UninstallList(string mod, ref HashSet<string> possibleConfigOnlyDirs)
         {
             var list = new List<string> { mod };
-            UninstallList(list);
+            UninstallList(list, ref possibleConfigOnlyDirs);
         }
 
         /// <summary>
@@ -812,8 +812,9 @@ namespace CKAN
         /// Use UninstallList for user queries, it also does dependency handling.
         /// This does *NOT* save the registry.
         /// </summary>
-
-        private void Uninstall(string modName)
+        /// <param name="modName">Identifier of module to uninstall</param>
+        /// <param name="possibleConfigOnlyDirs">Directories that the user might want to remove after uninstall</param>
+        private void Uninstall(string modName, ref HashSet<string> possibleConfigOnlyDirs)
         {
             TxFileManager file_transaction = new TxFileManager();
 
@@ -870,8 +871,6 @@ namespace CKAN
 
                             log.DebugFormat("Removing {0}", file);
                             file_transaction.Delete(path);
-
-
                         }
                     }
                     catch (Exception ex)
@@ -893,14 +892,25 @@ namespace CKAN
                 // before parents. GH #78.
                 foreach (string directory in directoriesToDelete.OrderBy(dir => dir.Length).Reverse())
                 {
-                    if (!Directory.EnumerateFileSystemEntries(directory).Any())
+                    log.DebugFormat("Checking {0}...", directory);
+                    // It is bad if any of this directories gets removed
+                    // So we protect them
+                    // A few string comparisons will be cheaper than hitting the disk, so do this first
+                    if (IsReservedDirectory(directory))
                     {
-                        // It is bad if any of this directories gets removed
-                        // So we protect them
-                        if (IsReservedDirectory(directory))
-                        {
-                            continue;
-                        }
+                        log.DebugFormat("Directory {0} is reserved, skipping", directory);
+                        continue;
+                    }
+
+                    var contents = Directory
+                        .EnumerateFileSystemEntries(directory, "*", SearchOption.AllDirectories)
+                        .Select(f => ksp.ToRelativeGameDir(f))
+                        .Memoize();
+                    log.DebugFormat("Got contents: {0}", string.Join(", ", contents));
+                    var owners = contents.Select(f => registry_manager.registry.FileOwner(f));
+                    log.DebugFormat("Got owners: {0}", string.Join(", ", owners));
+                    if (!contents.Any())
+                    {
 
                         // We *don't* use our file_transaction to delete files here, because
                         // it fails if the system's temp directory is on a different device
@@ -913,6 +923,15 @@ namespace CKAN
 
                         log.DebugFormat("Removing {0}", directory);
                         Directory.Delete(directory);
+                    }
+                    else if (contents.All(f => registry_manager.registry.FileOwner(f) == null))
+                    {
+                        log.DebugFormat("Directory {0} contains only non-registered files, ask user about it later");
+                        if (possibleConfigOnlyDirs == null)
+                        {
+                            possibleConfigOnlyDirs = new HashSet<string>();
+                        }
+                        possibleConfigOnlyDirs.Add(directory);
                     }
                     else
                     {
@@ -986,7 +1005,7 @@ namespace CKAN
         /// </summary>
         /// <param name="add">Add.</param>
         /// <param name="remove">Remove.</param>
-        public void AddRemove(IEnumerable<CkanModule> add = null, IEnumerable<InstalledModule> remove = null, bool enforceConsistency = true)
+        public void AddRemove(ref HashSet<string> possibleConfigOnlyDirs, IEnumerable<CkanModule> add = null, IEnumerable<InstalledModule> remove = null, bool enforceConsistency = true)
         {
             // TODO: We should do a consistency check up-front, rather than relying
             // upon our registry catching inconsistencies at the end.
@@ -1003,7 +1022,7 @@ namespace CKAN
                     // The post-install steps start at 80%, so count up to 70% for installation
                     int percent_complete = (step++ * 70) / totSteps;
                     User.RaiseProgress($"Removing \"{instMod}\"", percent_complete);
-                    Uninstall(instMod.Module.identifier);
+                    Uninstall(instMod.Module.identifier, ref possibleConfigOnlyDirs);
                 }
 
                 foreach (CkanModule module in add)
@@ -1029,10 +1048,10 @@ namespace CKAN
         /// Will *re-install* with warning even if an upgrade is not available.
         /// Throws ModuleNotFoundKraken if module is not installed, or not available.
         /// </summary>
-        public void Upgrade(IEnumerable<string> identifiers, IDownloader netAsyncDownloader, bool enforceConsistency = true)
+        public void Upgrade(IEnumerable<string> identifiers, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, bool enforceConsistency = true)
         {
             var resolver = new RelationshipResolver(identifiers.ToList(), null, RelationshipResolver.DependsOnlyOpts(), registry_manager.registry, ksp.VersionCriteria());
-            Upgrade(resolver.ModList(), netAsyncDownloader, enforceConsistency);
+            Upgrade(resolver.ModList(), netAsyncDownloader, ref possibleConfigOnlyDirs, enforceConsistency);
         }
 
         /// <summary>
@@ -1040,7 +1059,7 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, bool enforceConsistency = true)
+        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, bool enforceConsistency = true)
         {
             modules = modules.Memoize();
             User.RaiseMessage("About to upgrade...\r\n");
@@ -1092,6 +1111,7 @@ namespace CKAN
             }
 
             AddRemove(
+                ref possibleConfigOnlyDirs,
                 modules,
                 to_remove,
                 enforceConsistency
@@ -1104,7 +1124,7 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Replace(IEnumerable<ModuleReplacement> replacements, RelationshipResolverOptions options, IDownloader netAsyncDownloader, bool enforceConsistency = true)
+        public void Replace(IEnumerable<ModuleReplacement> replacements, RelationshipResolverOptions options, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, bool enforceConsistency = true)
         {
             replacements = replacements.Memoize();
             log.Debug("Using Replace method");
@@ -1181,6 +1201,7 @@ namespace CKAN
             {
                 var resolvedModsToInstall = resolver.ModList().ToList();
                 AddRemove(
+                    ref possibleConfigOnlyDirs,
                     resolvedModsToInstall,
                     modsToRemove,
                     enforceConsistency

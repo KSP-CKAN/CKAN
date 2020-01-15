@@ -209,9 +209,11 @@ Do you wish to reinstall now?", sb)))
                 {
                     try
                     {
+                        HashSet<string> possibleConfigOnlyDirs = null;
                         installer.Upgrade(
                             new[] { changedIdentifier },
                             new NetAsyncModulesDownloader(new NullUser(), cache),
+                            ref possibleConfigOnlyDirs,
                             enforceConsistency: false
                         );
                     }

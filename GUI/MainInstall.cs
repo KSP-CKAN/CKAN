@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -77,7 +78,7 @@ namespace CKAN
 
             var opts = (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
 
-            IRegistryQuerier registry  = RegistryManager.Instance(manager.CurrentInstance).registry;
+            Registry registry  = RegistryManager.Instance(manager.CurrentInstance).registry;
             ModuleInstaller  installer = ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, GUI.user);
             // Avoid accumulating multiple event handlers
             installer.onReportModInstalled -= OnModInstalled;
@@ -146,6 +147,8 @@ namespace CKAN
                 installCanceled = true;
             };
 
+            HashSet<string> possibleConfigOnlyDirs = null;
+
             // checks if all actions were successfull
             bool processSuccessful = false;
             bool resolvedAllProvidedMods = false;
@@ -161,7 +164,7 @@ namespace CKAN
                         processSuccessful = false;
                         if (!installCanceled)
                         {
-                            installer.UninstallList(toUninstall, false, toInstall.Select(m => m.identifier));
+                            installer.UninstallList(toUninstall, ref possibleConfigOnlyDirs, false, toInstall.Select(m => m.identifier));
                             processSuccessful = true;
                         }
                     }
@@ -170,7 +173,7 @@ namespace CKAN
                         processSuccessful = false;
                         if (!installCanceled)
                         {
-                            installer.Upgrade(toUpgrade, downloader);
+                            installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs);
                             processSuccessful = true;
                         }
                     }
@@ -183,6 +186,9 @@ namespace CKAN
                             processSuccessful = true;
                         }
                     }
+
+                    HandlePossibleConfigOnlyDirs(registry, possibleConfigOnlyDirs);
+
                     e.Result = new KeyValuePair<bool, ModChanges>(processSuccessful, opts.Key);
                     if (installCanceled)
                     {
@@ -307,6 +313,46 @@ namespace CKAN
             }
         }
 
+        private void HandlePossibleConfigOnlyDirs(Registry registry, HashSet<string> possibleConfigOnlyDirs)
+        {
+            if (possibleConfigOnlyDirs != null)
+            {
+                // Check again for registered files, since we may
+                // just have installed or upgraded some
+                possibleConfigOnlyDirs.RemoveWhere(
+                    d => Directory.EnumerateFileSystemEntries(d, "*", SearchOption.AllDirectories)
+                        .Any(f => registry.FileOwner(CurrentInstance.ToRelativeGameDir(f)) != null));
+                if (possibleConfigOnlyDirs.Count > 0)
+                {
+                    AddStatusMessage("");
+                    tabController.ShowTab("DeleteDirectoriesTabPage", 4);
+                    tabController.SetTabLock(true);
+
+                    DeleteDirectories.LoadDirs(CurrentInstance, possibleConfigOnlyDirs);
+
+                    // Wait here for the GUI process to finish dealing with the user
+                    if (DeleteDirectories.Wait(out HashSet<string> toDelete))
+                    {
+                        foreach (string dir in toDelete)
+                        {
+                            try
+                            {
+                                Directory.Delete(dir, true);
+                            }
+                            catch
+                            {
+                                // Don't worry if it doesn't work, just keep going
+                            }
+                        }
+                    }
+
+                    tabController.ShowTab("WaitTabPage");
+                    tabController.HideTab("DeleteDirectoriesTabPage");
+                    tabController.SetTabLock(false);
+                }
+            }
+        }
+
         private void OnModInstalled(CkanModule mod)
         {
             AddStatusMessage(string.Format(Properties.Resources.MainInstallModSuccess, mod.name));
@@ -370,71 +416,6 @@ namespace CKAN
 
             Util.Invoke(this, () => Enabled = true);
             Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
-        }
-
-        private TaskCompletionSource<CkanModule> toomany_source;
-        private void UpdateProvidedModsDialog(TooManyModsProvideKraken tooManyProvides, TaskCompletionSource<CkanModule> task)
-        {
-            toomany_source = task;
-            ChooseProvidedModsLabel.Text = String.Format(
-                Properties.Resources.MainInstallProvidedBy,
-                tooManyProvides.requested
-            );
-
-            ChooseProvidedModsListView.Items.Clear();
-
-            ChooseProvidedModsListView.ItemChecked += ChooseProvidedModsListView_ItemChecked;
-
-            foreach (CkanModule module in tooManyProvides.modules)
-            {
-                ChooseProvidedModsListView.Items.Add(new ListViewItem(new string[]
-                {
-                    Manager.Cache.IsMaybeCachedZip(module)
-                        ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
-                        : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download.Host ?? "", CkanModule.FmtSize(module.download_size)),
-                    module.@abstract
-                })
-                {
-                    Tag = module,
-                    Checked = false
-                });
-            }
-            ChooseProvidedModsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            ChooseProvidedModsContinueButton.Enabled = false;
-        }
-
-
-        private void ChooseProvidedModsListView_ItemChecked(object sender, ItemCheckedEventArgs e)
-        {
-            var any_item_selected = ChooseProvidedModsListView.Items.Cast<ListViewItem>().Any(item => item.Checked);
-            ChooseProvidedModsContinueButton.Enabled = any_item_selected;
-            if (!e.Item.Checked)
-            {
-                return;
-            }
-
-            foreach (ListViewItem item in ChooseProvidedModsListView.Items.Cast<ListViewItem>()
-                .Where(item => item != e.Item && item.Checked))
-                {
-                    item.Checked = false;
-                }
-
-        }
-
-        private void ChooseProvidedModsCancelButton_Click(object sender, EventArgs e)
-        {
-            toomany_source.SetResult(null);
-        }
-
-        private void ChooseProvidedModsContinueButton_Click(object sender, EventArgs e)
-        {
-            foreach (ListViewItem item in ChooseProvidedModsListView.Items)
-            {
-                if (item.Checked)
-                {
-                    toomany_source.SetResult((CkanModule)item.Tag);
-                }
-            }
         }
 
     }

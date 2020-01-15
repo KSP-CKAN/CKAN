@@ -113,6 +113,12 @@
     </Compile>
     <Compile Include="GUIConfiguration.cs" />
     <Compile Include="ControlFactory.cs" />
+    <Compile Include="DeleteDirectories.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DeleteDirectories.Designer.cs">
+      <DependentUpon>DeleteDirectories.cs</DependentUpon>
+    </Compile>
     <Compile Include="DropdownMenuButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -168,6 +174,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainDialogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainProvides.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainImport.cs">
@@ -297,6 +306,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\CompatibleKspVersionsDialog.de-DE.resx">
       <DependentUpon>..\..\CompatibleKspVersionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeleteDirectories.resx">
+      <DependentUpon>DeleteDirectories.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\DeleteDirectories.de-DE.resx">
+      <DependentUpon>..\..\DeleteDirectories.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EditLabelsDialog.resx">
       <DependentUpon>EditLabelsDialog.cs</DependentUpon>
