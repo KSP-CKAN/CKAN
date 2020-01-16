@@ -9,7 +9,7 @@
   <Choose>
     <When Condition="$(Configuration.EndsWith('NetCore'))">
       <PropertyGroup>
-        <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
+        <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
       </PropertyGroup>
     </When>
     <Otherwise>
@@ -26,7 +26,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <DefaultItemExcludes>$(DefaultItemExcludes);NetKAN\**;GUI\**</DefaultItemExcludes>
   </PropertyGroup>
 
@@ -72,7 +72,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <PackageReference Include="Shaman.CurlSharp" Version="0.6.3.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
   </ItemGroup>
