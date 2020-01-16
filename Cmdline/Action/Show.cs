@@ -38,7 +38,7 @@ namespace CKAN.CmdLine
             // Module was not installed, look for an exact match in the available modules,
             // either by "name" (the user-friendly display name) or by identifier
             CkanModule moduleToShow = registry
-                                      .Available(ksp.VersionCriteria())
+                                      .CompatibleModules(ksp.VersionCriteria())
                                       .SingleOrDefault(
                                             mod => mod.name == options.Modname
                                                 || mod.identifier == options.Modname
@@ -48,7 +48,7 @@ namespace CKAN.CmdLine
             {
                 // No exact match found. Try to look for a close match for this KSP version.
                 user.RaiseMessage("{0} not found or installed.", options.Modname);
-                user.RaiseMessage("Looking for close matches in available mods for KSP {0}.", ksp.Version());
+                user.RaiseMessage("Looking for close matches in mods compatible with KSP {0}.", ksp.Version());
 
                 Search search = new Search(user);
                 var matches = search.PerformSearch(ksp, options.Modname);

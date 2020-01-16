@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace CKAN.Versioning
 {
-    public class KspVersionCriteria
+    public class KspVersionCriteria : IEquatable<KspVersionCriteria>
     {
         private List<KspVersion> _versions = new List<KspVersion>();
 
-        public KspVersionCriteria (KspVersion v)
+        public KspVersionCriteria(KspVersion v)
         {
             if (v != null)
             {
@@ -40,6 +40,25 @@ namespace CKAN.Versioning
                 null,
                 _versions.Union(other.Versions).ToList()
             );
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as KspVersionCriteria);
+        }
+
+        // From IEquatable<KspVersionCriteria>
+        public bool Equals(KspVersionCriteria other)
+        {
+            return other == null
+                ? false
+                : !_versions.Except(other._versions).Any()
+                    && !other._versions.Except(_versions).Any();
+        }
+
+        public override int GetHashCode()
+        {
+            return _versions.Aggregate(19, (code, vers) => code * 31 + vers.GetHashCode());
         }
 
         public override String ToString()

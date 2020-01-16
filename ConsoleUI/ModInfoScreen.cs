@@ -310,9 +310,9 @@ namespace CKAN.ConsoleUI {
 
             if (ChangePlan.IsAnyAvailable(registry, mod.identifier)) {
 
-                List<CkanModule> avail              = registry.AllAvailable(mod.identifier).ToList();
-                CkanModule       inst               = registry.GetInstalledVersion(mod.identifier);
-                CkanModule       latest             = registry.LatestAvailable(    mod.identifier, null);
+                List<CkanModule> avail              = registry.AvailableByIdentifier(mod.identifier).ToList();
+                CkanModule       inst               = registry.GetInstalledVersion(  mod.identifier);
+                CkanModule       latest             = registry.LatestAvailable(      mod.identifier, null);
                 bool             installed          = registry.IsInstalled(mod.identifier, false);
                 bool             latestIsInstalled  = inst?.Equals(latest) ?? false;
                 List<CkanModule> others             = avail;

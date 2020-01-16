@@ -31,15 +31,15 @@ namespace CKAN.CmdLine
         {
             UpdateOptions options = (UpdateOptions) raw_options;
 
-            List<CkanModule> available_prior = null;
+            List<CkanModule> compatible_prior = null;
 
             user.RaiseMessage("Downloading updates...");
 
             if (options.list_changes)
             {
-                // Get a list of available modules prior to the update.
+                // Get a list of compatible modules prior to the update.
                 var registry = RegistryManager.Instance(ksp).registry;
-                available_prior = registry.Available(ksp.VersionCriteria()).ToList();
+                compatible_prior = registry.CompatibleModules(ksp.VersionCriteria()).ToList();
             }
 
             // If no repository is selected, select all.
@@ -69,7 +69,7 @@ namespace CKAN.CmdLine
             if (options.list_changes)
             {
                 var registry = RegistryManager.Instance(ksp).registry;
-                PrintChanges(available_prior, registry.Available(ksp.VersionCriteria()).ToList());
+                PrintChanges(compatible_prior, registry.CompatibleModules(ksp.VersionCriteria()).ToList());
             }
 
             return Exit.OK;
@@ -78,8 +78,8 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Locates the changes between the prior and post state of the modules..
         /// </summary>
-        /// <param name="modules_prior">List of the available modules prior to the update.</param>
-        /// <param name="modules_post">List of the available modules after the update.</param>
+        /// <param name="modules_prior">List of the compatible modules prior to the update.</param>
+        /// <param name="modules_post">List of the compatible modules after the update.</param>
         private void PrintChanges(List<CkanModule> modules_prior, List<CkanModule> modules_post)
         {
             var prior = new HashSet<CkanModule>(modules_prior, new NameComparer());
@@ -153,8 +153,7 @@ namespace CKAN.CmdLine
                 ? CKAN.Repo.UpdateAllRepositories(registry_manager, ksp, manager.Cache, user) != CKAN.RepoUpdateResult.Failed
                 : CKAN.Repo.Update(registry_manager, ksp, user, repository);
 
-            user.RaiseMessage("Updated information on {0} available modules",
-                registry_manager.registry.Available(ksp.VersionCriteria()).Count());
+            user.RaiseMessage("Updated information on {0} compatible modules", updated);
         }
     }
 }

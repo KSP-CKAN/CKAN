@@ -30,10 +30,10 @@ matrix:
     include:
         - env: BUILD_CONFIGURATION=Debug_NetCore
           mono: latest
-          dotnet: 2.1
+          dotnet: 2.1.802
         - env: BUILD_CONFIGURATION=Release_NetCore
           mono: latest
-          dotnet: 2.1
+          dotnet: 2.1.802
 
 addons:
     apt:
