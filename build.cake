@@ -1,4 +1,4 @@
-#addin "nuget:?package=Cake.SemVer&version=3.0.0"
+#addin "nuget:?package=Cake.SemVer&version=4.0.0"
 #addin "nuget:?package=semver&version=2.0.4"
 #addin "nuget:?package=Cake.Docker&version=0.10.0"
 #tool "nuget:?package=ILRepack&version=2.0.17"

@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 language: csharp
 
 sudo: required
@@ -10,7 +10,7 @@ services:
 
 env:
     global:
-        - BUILD_RELEASE_MONO_VERSION=5.16.0
+        - BUILD_RELEASE_MONO_VERSION=6.6.0
         - DOCKERHUB_USERNAME=kspckanbuilder
         - secure: "UGXJG9jB9tGwjJXxG0Beu4Poz0leuiCBItnfTTKRm1a/NxXf1eoOH9p9icY5Ur2xHwqh0uWSznuL2aNr58CXtzTcMpXrcUhRsO63FB3Cz6tSdZEb+pKQJ23zmC9929DklKRGUT2D/eBcJcnV+/eAtkarrfLBU1avUQAVJgqXvMI="
         - AWS_DEFAULT_REGION=us-west-2
@@ -21,19 +21,21 @@ env:
         - BUILD_CONFIGURATION=Release
 
 mono:
+    - 6.6.0
+    - 6.4.0
+    - 6.0.0
     - 5.20.1
     - 5.16.0
-    - 5.14.0
-    - 5.12.0
 
 matrix:
     include:
         - env: BUILD_CONFIGURATION=Debug_NetCore
-          mono: latest
-          dotnet: 2.1.802
+          # Cake is broken on Mono 6.8.0
+          mono: 6.6.0
+          dotnet: 3.1.1
         - env: BUILD_CONFIGURATION=Release_NetCore
-          mono: latest
-          dotnet: 2.1.802
+          mono: 6.6.0
+          dotnet: 3.1.1
 
 addons:
     apt:
