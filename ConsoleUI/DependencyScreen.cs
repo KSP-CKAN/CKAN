@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -20,22 +21,25 @@ namespace CKAN.ConsoleUI {
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
         public DependencyScreen(KSPManager mgr, ChangePlan cp, HashSet<string> rej, bool dbg) : base()
         {
-            debug    = dbg;
-            manager  = mgr;
-            plan     = cp;
-            registry = RegistryManager.Instance(manager.CurrentInstance).registry;
-            rejected = rej;
+            debug     = dbg;
+            manager   = mgr;
+            plan      = cp;
+            registry  = RegistryManager.Instance(manager.CurrentInstance).registry;
+            installer = ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, this);
+            rejected  = rej;
 
             AddObject(new ConsoleLabel(
                 1, 2, -1,
                 () => "Additional mods are recommended or suggested:"
             ));
 
-            generateList(plan.Install);
-            generateList(new HashSet<CkanModule>(
+            HashSet<CkanModule> sourceModules = new HashSet<CkanModule>();
+            sourceModules.UnionWith(plan.Install);
+            sourceModules.UnionWith(new HashSet<CkanModule>(
                 ReplacementIdentifiers(plan.Replace)
-                .Select(id => registry.InstalledModule(id).Module)
+                    .Select(id => registry.InstalledModule(id).Module)
             ));
+            generateList(sourceModules);
 
             dependencyList = new ConsoleListBox<Dependency>(
                 1, 4, -1, -2,
@@ -146,9 +150,36 @@ namespace CKAN.ConsoleUI {
 
         private void generateList(HashSet<CkanModule> inst)
         {
-            foreach (CkanModule mod in inst) {
-                AddDependencies(inst, mod, mod.recommends, true);
-                AddDependencies(inst, mod, mod.suggests,   false);
+            if (installer.FindRecommendations(
+                inst, inst,
+                out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
+                out Dictionary<CkanModule, List<string>> suggestions,
+                out Dictionary<CkanModule, HashSet<string>> supporters
+            )) {
+                foreach (var kvp in recommendations) {
+                    dependencies.Add(kvp.Key, new Dependency() {
+                        module         = kvp.Key,
+                        defaultInstall = kvp.Value.Item1,
+                        dependents     = kvp.Value.Item2.OrderBy(d => d).ToList()
+                    });
+                    if (kvp.Value.Item1) {
+                        accepted.Add(kvp.Key);
+                    }
+                }
+                foreach (var kvp in suggestions) {
+                    dependencies.Add(kvp.Key, new Dependency() {
+                        module         = kvp.Key,
+                        defaultInstall = false,
+                        dependents     = kvp.Value.OrderBy(d => d).ToList()
+                    });
+                }
+                foreach (var kvp in supporters) {
+                    dependencies.Add(kvp.Key, new Dependency() {
+                        module         = kvp.Key,
+                        defaultInstall = false,
+                        dependents     = kvp.Value.OrderBy(d => d).ToList()
+                    });
+                }
             }
         }
 
@@ -161,45 +192,6 @@ namespace CKAN.ConsoleUI {
                 if (repl != null) {
                     yield return repl.ReplaceWith.identifier;
                 }
-            }
-        }
-
-        private void AddDependencies(HashSet<CkanModule> alreadyInstalling, CkanModule dependent, List<RelationshipDescriptor> source, bool installByDefault)
-        {
-            if (source != null) {
-                foreach (RelationshipDescriptor dependency in source) {
-                    if (dependency.ContainsAny(rejected)) {
-                        List<CkanModule> opts = dependency.LatestAvailableWithProvides(
-                            registry,
-                            manager.CurrentInstance.VersionCriteria()
-                        );
-                        foreach (CkanModule provider in opts) {
-                            if (!registry.IsInstalled(provider.identifier)
-                                    && !alreadyInstalling.Contains(provider)) {
-
-                                // Only default to installing if there's only one
-                                AddDep(provider, installByDefault && opts.Count == 1, dependent);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void AddDep(CkanModule mod, bool defaultInstall, CkanModule dependent)
-        {
-            if (dependencies.ContainsKey(mod)) {
-                dependencies[mod].defaultInstall |= defaultInstall;
-                dependencies[mod].dependents.Add(dependent);
-            } else {
-                dependencies.Add(mod, new Dependency() {
-                    module         = mod,
-                    defaultInstall = defaultInstall,
-                    dependents     = new List<CkanModule>() { dependent }
-                });
-            }
-            if (defaultInstall) {
-                accepted.Add(mod);
             }
         }
 
@@ -217,6 +209,7 @@ namespace CKAN.ConsoleUI {
 
         private IRegistryQuerier registry;
         private KSPManager       manager;
+        private ModuleInstaller  installer;
         private ChangePlan       plan;
         private bool             debug;
 
@@ -245,7 +238,7 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// List of mods that recommended or suggested this mod
         /// </summary>
-        public List<CkanModule> dependents = new List<CkanModule>();
+        public List<string>     dependents = new List<string>();
     }
 
 }

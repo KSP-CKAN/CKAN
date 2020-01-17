@@ -1230,6 +1230,226 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Looks for optional related modules that could be installed alongside the given modules
+        /// </summary>
+        /// <param name="sourceModules">Modules to check for relationships</param>
+        /// <param name="toInstall">Modules already being installed, to be omitted from search</param>
+        /// <param name="recommendations">Modules that are recommended to install</param>
+        /// <param name="suggestions">Modules that are suggested to install</param>
+        /// <param name="supporters">Modules that support other modules we're installing</param>
+        /// <returns>
+        /// true if anything found, false otherwise
+        /// </returns>
+        public bool FindRecommendations(
+            HashSet<CkanModule> sourceModules,
+            HashSet<CkanModule> toInstall,
+            out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
+            out Dictionary<CkanModule, List<string>> suggestions,
+            out Dictionary<CkanModule, HashSet<string>> supporters
+        )
+        {
+            Dictionary<CkanModule, List<string>> dependersIndex = getDependersIndex(sourceModules, registry_manager.registry, toInstall);
+            recommendations = new Dictionary<CkanModule, Tuple<bool, List<string>>>();
+            suggestions = new Dictionary<CkanModule, List<string>>();
+            supporters = new Dictionary<CkanModule, HashSet<string>>();
+            foreach (CkanModule mod in sourceModules.Where(m => m.recommends != null))
+            {
+                foreach (RelationshipDescriptor rel in mod.recommends)
+                {
+                    List<CkanModule> providers = rel.LatestAvailableWithProvides(
+                        registry_manager.registry,
+                        ksp.VersionCriteria()
+                    );
+                    foreach (CkanModule provider in providers)
+                    {
+                        if (!registry_manager.registry.IsInstalled(provider.identifier)
+                            && !toInstall.Any(m => m.identifier == provider.identifier)
+                            && dependersIndex.TryGetValue(provider, out List<string> dependers)
+                            && CanInstall(RelationshipResolver.DependsOnlyOpts(),
+                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList()))
+                        {
+                            dependersIndex.Remove(provider);
+                            recommendations.Add(
+                                provider,
+                                new Tuple<bool, List<string>>(
+                                    providers.Count <= 1 || provider.identifier == (rel as ModuleRelationshipDescriptor)?.name,
+                                    dependers)
+                            );
+                        }
+                    }
+                }
+            }
+            foreach (CkanModule mod in sourceModules.Where(m => m.suggests != null))
+            {
+                foreach (RelationshipDescriptor rel in mod.suggests)
+                {
+                    List<CkanModule> providers = rel.LatestAvailableWithProvides(
+                        registry_manager.registry,
+                        ksp.VersionCriteria()
+                    );
+                    foreach (CkanModule provider in providers)
+                    {
+                        if (!registry_manager.registry.IsInstalled(provider.identifier)
+                            && !toInstall.Any(m => m.identifier == provider.identifier)
+                            && dependersIndex.TryGetValue(provider, out List<string> dependers)
+                            && CanInstall(RelationshipResolver.DependsOnlyOpts(),
+                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList()))
+                        {
+                            dependersIndex.Remove(provider);
+                            suggestions.Add(provider, dependers);
+                        }
+                    }
+                }
+            }
+
+            // Find installable modules with "supports" relationships
+            var candidates = registry_manager.registry.CompatibleModules(ksp.VersionCriteria())
+                .Where(mod => !registry_manager.registry.IsInstalled(mod.identifier)
+                    && !toInstall.Any(m => m.identifier == mod.identifier))
+                .Where(m => m?.supports != null);
+            // Find each module that "supports" something we're installing
+            foreach (CkanModule mod in candidates)
+            {
+                foreach (RelationshipDescriptor rel in mod.supports)
+                {
+                    if (rel.MatchesAny(sourceModules, null, null))
+                    {
+                        var name = (rel as ModuleRelationshipDescriptor)?.name;
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            if (supporters.TryGetValue(mod, out HashSet<string> others))
+                            {
+                                others.Add(name);
+                            }
+                            else
+                            {
+                                supporters.Add(mod, new HashSet<string>() { name });
+                            }
+                        }
+                    }
+                }
+            }
+            supporters.RemoveWhere(kvp => !CanInstall(
+                RelationshipResolver.DependsOnlyOpts(),
+                toInstall.ToList().Concat(new List<CkanModule>() { kvp.Key }).ToList()
+            ));
+
+            return recommendations.Any() || suggestions.Any() || supporters.Any();
+        }
+
+        // Build up the list of who recommends what
+        private Dictionary<CkanModule, List<string>> getDependersIndex(
+            IEnumerable<CkanModule> sourceModules,
+            IRegistryQuerier        registry,
+            HashSet<CkanModule>     toExclude
+        )
+        {
+            Dictionary<CkanModule, List<string>> dependersIndex = new Dictionary<CkanModule, List<string>>();
+            foreach (CkanModule mod in sourceModules)
+            {
+                foreach (List<RelationshipDescriptor> relations in new List<List<RelationshipDescriptor>>() { mod.recommends, mod.suggests })
+                {
+                    if (relations != null)
+                    {
+                        foreach (RelationshipDescriptor rel in relations)
+                        {
+                            List<CkanModule> providers = rel.LatestAvailableWithProvides(
+                                registry_manager.registry,
+                                ksp.VersionCriteria()
+                            );
+                            foreach (CkanModule provider in providers)
+                            {
+                                if (!registry.IsInstalled(provider.identifier)
+                                    && !toExclude.Any(m => m.identifier == provider.identifier))
+                                {
+                                    List<string> dependers;
+                                    if (dependersIndex.TryGetValue(provider, out dependers))
+                                    {
+                                        // Add the dependent mod to the list of reasons this dependency is shown.
+                                        dependers.Add(mod.identifier);
+                                    }
+                                    else
+                                    {
+                                        // Add a new entry if this provider isn't listed yet.
+                                        dependersIndex.Add(provider, new List<string>() { mod.identifier });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return dependersIndex;
+        }
+
+        /// <summary>
+        /// Determine whether there is any way to install the given set of mods.
+        /// Handles virtual dependencies, including recursively.
+        /// </summary>
+        /// <param name="registry">Registry of instance into which we want to install</param>
+        /// <param name="versionCriteria">Compatible versions of instance</param>
+        /// <param name="opts">Installer options</param>
+        /// <param name="toInstall">Mods we want to install</param>
+        /// <returns>
+        /// True if it's possible to install these mods, false otherwise
+        /// </returns>
+        private bool CanInstall(
+            RelationshipResolverOptions opts,
+            List<CkanModule>            toInstall
+        )
+        {
+            string request = toInstall.Select(m => m.identifier).Aggregate((a, b) => $"{a}, {b}");
+            try
+            {
+                RelationshipResolver resolver = new RelationshipResolver(
+                    toInstall,
+                    null,
+                    opts, registry_manager.registry, ksp.VersionCriteria()
+                );
+
+                if (resolver.ModList().Count() >= toInstall.Count(m => !m.IsMetapackage))
+                {
+                    // We can install with no further dependencies
+                    string recipe = resolver.ModList()
+                        .Select(m => m.identifier)
+                        .Aggregate((a, b) => $"{a}, {b}");
+                    log.Debug($"Installable: {request}: {recipe}");
+                    return true;
+                }
+                else
+                {
+                    string problems = resolver.ConflictList.Values
+                        .Aggregate((a, b) => $"{a}, {b}");
+                    log.Debug($"Can't install {request}: {problems}");
+                    return false;
+                }
+            }
+            catch (TooManyModsProvideKraken k)
+            {
+                // One of the dependencies is virtual
+                foreach (CkanModule mod in k.modules)
+                {
+                    // Try each option recursively to see if any are successful
+                    if (CanInstall(opts, toInstall.Concat(new List<CkanModule>() { mod }).ToList()))
+                    {
+                        // Child call will emit debug output, so we don't need to here
+                        return true;
+                    }
+                }
+                log.Debug($"Can't install {request}: Can't install provider of {k.requested}");
+            }
+            catch (InconsistentKraken k)
+            {
+                log.Debug($"Can't install {request}: {k.ShortDescription}");
+            }
+            catch (Exception ex)
+            {
+                log.Debug($"Can't install {request}: {ex.Message}");
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Import a list of files into the download cache, with progress bar and
         /// interactive prompts for installation and deletion.
         /// </summary>

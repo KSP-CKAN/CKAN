@@ -203,11 +203,11 @@
   <data name="MainTSV" xml:space="preserve"><value>Tab-separated values (*.tsv)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Not found.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Do you want to reinstall {0}?</value></data>
-  <data name="MainAllModVersionsInstallPrompt" xml:space="preserve"><value>{0} is not supported on your current game version and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
+  <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} is not supported on your current game version and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
 
 Do you really want to install it?</value></data>
-  <data name="MainAllModVersionsInstallYes" xml:space="preserve"><value>Install</value></data>
-  <data name="MainAllModVersionsInstallNo" xml:space="preserve"><value>Cancel</value></data>
+  <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Install</value></data>
+  <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Cancel</value></data>
   <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (metapackage)</value></data>
   <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (cached)</value></data>
   <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
@@ -267,11 +267,11 @@ Open settings now?</value></data>
   <data name="MainInstallUnknownError" xml:space="preserve"><value>An unknown error occurred, please try again!</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>Installation failed!</value></data>
   <data name="MainInstallProvidedBy" xml:space="preserve"><value>Module {0} is provided by more than one available module, please choose one of the following mods:</value></data>
-  <data name="MainModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
-  <data name="MainModInfoVirtual" xml:space="preserve"><value>{0} (virtual)</value></data>
-  <data name="MainModInfoNotIndexed" xml:space="preserve"><value>{0} (not indexed)</value></data>
-  <data name="MainModInfoNotCached" xml:space="preserve"><value>This mod is not in the cache, click 'Download' to preview contents</value></data>
-  <data name="MainModInfoCached" xml:space="preserve"><value>Module is cached, preview available</value></data>
+  <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
+  <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (virtual)</value></data>
+  <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (not indexed)</value></data>
+  <data name="ModInfoNotCached" xml:space="preserve"><value>This mod is not in the cache, click 'Download' to preview contents</value></data>
+  <data name="ModInfoCached" xml:space="preserve"><value>Module is cached, preview available</value></data>
   <data name="MainModListWaitTitle" xml:space="preserve"><value>Loading modules</value></data>
   <data name="MainModListLoadingRegistry" xml:space="preserve"><value>Loading registry...</value></data>
   <data name="MainModListLoadingInstalled" xml:space="preserve"><value>Loading installed modules...</value></data>

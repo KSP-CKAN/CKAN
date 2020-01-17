@@ -434,14 +434,14 @@ namespace CKAN.Properties {
             get { return (string)(ResourceManager.GetObject("MainReinstallConfirm", resourceCulture)); }
         }
 
-        internal static string MainAllModVersionsInstallPrompt {
-            get { return (string)(ResourceManager.GetObject("MainAllModVersionsInstallPrompt", resourceCulture)); }
+        internal static string AllModVersionsInstallPrompt {
+            get { return (string)(ResourceManager.GetObject("AllModVersionsInstallPrompt", resourceCulture)); }
         }
-        internal static string MainAllModVersionsInstallYes {
-            get { return (string)(ResourceManager.GetObject("MainAllModVersionsInstallYes", resourceCulture)); }
+        internal static string AllModVersionsInstallYes {
+            get { return (string)(ResourceManager.GetObject("AllModVersionsInstallYes", resourceCulture)); }
         }
-        internal static string MainAllModVersionsInstallNo {
-            get { return (string)(ResourceManager.GetObject("MainAllModVersionsInstallNo", resourceCulture)); }
+        internal static string AllModVersionsInstallNo {
+            get { return (string)(ResourceManager.GetObject("AllModVersionsInstallNo", resourceCulture)); }
         }
 
         internal static string MainChangesetMetapackage {
@@ -540,20 +540,20 @@ namespace CKAN.Properties {
             get { return (string)(ResourceManager.GetObject("MainInstallProvidedBy", resourceCulture)); }
         }
 
-        internal static string MainModInfoNSlashA {
-            get { return (string)(ResourceManager.GetObject("MainModInfoNSlashA", resourceCulture)); }
+        internal static string ModInfoNSlashA {
+            get { return (string)(ResourceManager.GetObject("ModInfoNSlashA", resourceCulture)); }
         }
-        internal static string MainModInfoVirtual {
-            get { return (string)(ResourceManager.GetObject("MainModInfoVirtual", resourceCulture)); }
+        internal static string ModInfoVirtual {
+            get { return (string)(ResourceManager.GetObject("ModInfoVirtual", resourceCulture)); }
         }
-        internal static string MainModInfoNotIndexed {
-            get { return (string)(ResourceManager.GetObject("MainModInfoNotIndexed", resourceCulture)); }
+        internal static string ModInfoNotIndexed {
+            get { return (string)(ResourceManager.GetObject("ModInfoNotIndexed", resourceCulture)); }
         }
-        internal static string MainModInfoNotCached {
-            get { return (string)(ResourceManager.GetObject("MainModInfoNotCached", resourceCulture)); }
+        internal static string ModInfoNotCached {
+            get { return (string)(ResourceManager.GetObject("ModInfoNotCached", resourceCulture)); }
         }
-        internal static string MainModInfoCached {
-            get { return (string)(ResourceManager.GetObject("MainModInfoCached", resourceCulture)); }
+        internal static string ModInfoCached {
+            get { return (string)(ResourceManager.GetObject("ModInfoCached", resourceCulture)); }
         }
 
         internal static string MainModListWaitTitle {

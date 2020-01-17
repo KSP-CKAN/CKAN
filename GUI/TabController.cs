@@ -27,22 +27,15 @@ namespace CKAN
         {
             Util.Invoke(m_TabControl, () =>
             {
-                if (m_TabControl.TabPages.Contains(m_TabPages[name]))
+                if (!m_TabControl.TabPages.Contains(m_TabPages[name]))
                 {
-                    if (setActive)
+                    if (index > m_TabControl.TabPages.Count)
                     {
-                        SetActiveTab(name);
+                        index = m_TabControl.TabPages.Count;
                     }
 
-                    return;
+                    m_TabControl.TabPages.Insert(index, m_TabPages[name]);
                 }
-
-                if (index > m_TabControl.TabPages.Count)
-                {
-                    index = m_TabControl.TabPages.Count;
-                }
-
-                m_TabControl.TabPages.Insert(index, m_TabPages[name]);
 
                 if (setActive)
                 {
@@ -56,7 +49,7 @@ namespace CKAN
             Util.Invoke(m_TabControl, () =>
             {
                 // Unsafe to hide the active tab as of Mono 5.14
-                if (m_TabControl.SelectedTab.Name == name)
+                if (m_TabControl.SelectedTab?.Name == name)
                 {
                     m_TabControl.DeselectTab(name);
                 }

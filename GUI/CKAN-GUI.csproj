@@ -75,162 +75,226 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialogs\AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\AskUserForAutoUpdatesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AskUserForAutoUpdatesDialog.Designer.cs">
+      <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ManageKspInstancesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ManageKspInstancesDialog.Designer.cs">
+      <DependentUpon>ManageKspInstancesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\CloneFakeKspDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\CloneFakeKspDialog.Designer.cs">
+      <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\CompatibleKspVersionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\CompatibleKspVersionsDialog.Designer.cs">
+      <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\EditLabelsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\EditLabelsDialog.Designer.cs">
+      <DependentUpon>EditLabelsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ErrorDialog.Designer.cs">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\KSPCommandLineOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\KSPCommandLineOptionsDialog.Designer.cs">
+      <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\NewRepoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\NewRepoDialog.Designer.cs">
+      <DependentUpon>NewRepoDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\NewUpdateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\NewUpdateDialog.Designer.cs">
+      <DependentUpon>NewUpdateDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\PluginsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\PluginsDialog.Designer.cs">
+      <DependentUpon>PluginsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\RenameInstanceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\RenameInstanceDialog.Designer.cs">
+      <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\YesNoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\YesNoDialog.Designer.cs">
+      <DependentUpon>YesNoDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SelectionDialog.Designer.cs">
+      <DependentUpon>SelectionDialog.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\Changeset.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Changeset.Designer.cs">
+      <DependentUpon>Changeset.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ChooseProvidedMods.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ChooseProvidedMods.Designer.cs">
+      <DependentUpon>ChooseProvidedMods.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ChooseRecommendedMods.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ChooseRecommendedMods.Designer.cs">
+      <DependentUpon>ChooseRecommendedMods.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Wait.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Wait.Designer.cs">
+      <DependentUpon>Wait.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DeleteDirectories.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DeleteDirectories.Designer.cs">
+      <DependentUpon>DeleteDirectories.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DropdownMenuButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\HintTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\HintTextBox.Designer.cs">
+      <DependentUpon>HintTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AllModVersions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\AllModVersions.Designer.cs">
+      <DependentUpon>AllModVersions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ModInfo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ModInfo.Designer.cs">
+      <DependentUpon>ModInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ThemedTabControl.cs" />
+    <Compile Include="Controls\ThemedListView.cs" />
+    <Compile Include="Controls\TransparentTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Model\GUIConfiguration.cs" />
+    <Compile Include="Model\ExportOption.cs" />
+    <Compile Include="Model\GUIMod.cs" />
+    <Compile Include="Model\ModChange.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main\Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Main\MainChangeset.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainDialogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainDownload.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainProvides.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainInstall.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainLabels.cs" />
+    <Compile Include="Main\MainModList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainRecommendations.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainRepo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Main\MainTrayIcon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainWait.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">
       <Link>Properties\GlobalAssemblyVersionInfo.cs</Link>
     </Compile>
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AboutDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AboutDialog.Designer.cs">
-      <DependentUpon>AboutDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="AskUserForAutoUpdatesDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AskUserForAutoUpdatesDialog.Designer.cs">
-      <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ManageKspInstances.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ManageKspInstances.Designer.cs">
-      <DependentUpon>ManageKspInstances.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CloneFakeKspDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CloneFakeKspDialog.Designer.cs">
-      <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CompatibleKspVersionsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CompatibleKspVersionsDialog.Designer.cs">
-      <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GUIConfiguration.cs" />
     <Compile Include="ControlFactory.cs" />
-    <Compile Include="DeleteDirectories.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DeleteDirectories.Designer.cs">
-      <DependentUpon>DeleteDirectories.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DropdownMenuButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="EditLabelsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="EditLabelsDialog.Designer.cs">
-      <DependentUpon>EditLabelsDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ErrorDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ErrorDialog.Designer.cs">
-      <DependentUpon>ErrorDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ExportOption.cs" />
     <Compile Include="FormCompatibility.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FlatToolStripRenderer.cs" />
-    <Compile Include="GUIMod.cs" />
     <Compile Include="GUIUser.cs" />
-    <Compile Include="HintTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="HintTextBox.Designer.cs">
-      <DependentUpon>HintTextBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IGUIPlugin.cs">
+    <Compile Include="Plugins\IGUIPlugin.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="KSPCommandLineOptionsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="KSPCommandLineOptionsDialog.Designer.cs">
-      <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Labels\ModuleLabel.cs" />
     <Compile Include="Labels\ModuleLabelList.cs" />
-    <Compile Include="Main.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Main.Designer.cs">
-      <DependentUpon>Main.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainAllModVersions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MainAllModVersions.Designer.cs">
-      <DependentUpon>MainAllModVersions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainChangeset.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainDialogs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainProvides.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainImport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainInstall.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainLabels.cs" />
-    <Compile Include="MainModInfo.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MainModInfo.Designer.cs">
-      <DependentUpon>MainModInfo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainModList.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainRecommendations.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainRepo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainTabControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="MainTrayIcon.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainWait.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ModChange.cs" />
     <Compile Include="NavigationHistory.cs" />
-    <Compile Include="NewRepoDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NewRepoDialog.Designer.cs">
-      <DependentUpon>NewRepoDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NewUpdateDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NewUpdateDialog.Designer.cs">
-      <DependentUpon>NewUpdateDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PluginController.cs" />
-    <Compile Include="PluginsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PluginsDialog.Designer.cs">
-      <DependentUpon>PluginsDialog.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Plugins\PluginController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -243,142 +307,137 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="RenameInstanceDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RenameInstanceDialog.Designer.cs">
-      <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SettingsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SettingsDialog.Designer.cs">
-      <DependentUpon>SettingsDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="SingleAssemblyComponentResourceManager.cs" />
     <Compile Include="SingleAssemblyResourceManager.cs" />
     <Compile Include="TabController.cs" />
-    <Compile Include="ThemedTabControl.cs" />
-    <Compile Include="ThemedListView.cs" />
     <Compile Include="URLHandlers.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="X11.cs" />
-    <Compile Include="YesNoDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="YesNoDialog.Designer.cs">
-      <DependentUpon>YesNoDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TransparentTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="SelectionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SelectionDialog.Designer.cs">
-      <DependentUpon>SelectionDialog.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\de-DE\AboutDialog.de-DE.resx">
-      <DependentUpon>..\..\AboutDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\en-US\AboutDialog.en-US.resx">
-      <DependentUpon>..\..\AboutDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AboutDialog.resx">
+    <EmbeddedResource Include="Dialogs\AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AskUserForAutoUpdatesDialog.resx">
+    <EmbeddedResource Include="Dialogs\AskUserForAutoUpdatesDialog.resx">
       <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\AskUserForAutoUpdatesDialog.de-DE.resx">
-      <DependentUpon>..\..\AskUserForAutoUpdatesDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CloneFakeKspDialog.resx">
+    <EmbeddedResource Include="Dialogs\CloneFakeKspDialog.resx">
       <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\CloneFakeKspDialog.de-DE.resx">
-      <DependentUpon>..\..\CloneFakeKspDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\CloneFakeKspDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CompatibleKspVersionsDialog.resx">
+    <EmbeddedResource Include="Dialogs\CompatibleKspVersionsDialog.resx">
       <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\CompatibleKspVersionsDialog.de-DE.resx">
-      <DependentUpon>..\..\CompatibleKspVersionsDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\CompatibleKspVersionsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DeleteDirectories.resx">
+    <EmbeddedResource Include="Controls\Changeset.resx">
+      <DependentUpon>Changeset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\Changeset.de-DE.resx">
+      <DependentUpon>..\..\Controls\Changeset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ChooseProvidedMods.resx">
+      <DependentUpon>ChooseProvidedMods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\ChooseProvidedMods.de-DE.resx">
+      <DependentUpon>..\..\Controls\ChooseProvidedMods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ChooseRecommendedMods.resx">
+      <DependentUpon>ChooseRecommendedMods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\ChooseRecommendedMods.de-DE.resx">
+      <DependentUpon>..\..\Controls\ChooseRecommendedMods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Wait.resx">
+      <DependentUpon>Wait.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\Wait.de-DE.resx">
+      <DependentUpon>..\..\Controls\Wait.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DeleteDirectories.resx">
       <DependentUpon>DeleteDirectories.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\DeleteDirectories.de-DE.resx">
-      <DependentUpon>..\..\DeleteDirectories.cs</DependentUpon>
+      <DependentUpon>..\..\Controls\DeleteDirectories.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EditLabelsDialog.resx">
+    <EmbeddedResource Include="Dialogs\EditLabelsDialog.resx">
       <DependentUpon>EditLabelsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\EditLabelsDialog.de-DE.resx">
-      <DependentUpon>..\..\EditLabelsDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\EditLabelsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ErrorDialog.resx">
+    <EmbeddedResource Include="Dialogs\ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\ErrorDialog.de-DE.resx">
-      <DependentUpon>..\..\ErrorDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HintTextBox.resx">
+    <EmbeddedResource Include="Controls\HintTextBox.resx">
       <DependentUpon>HintTextBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="KSPCommandLineOptionsDialog.resx">
+    <EmbeddedResource Include="Dialogs\KSPCommandLineOptionsDialog.resx">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\KSPCommandLineOptionsDialog.de-DE.resx">
-      <DependentUpon>..\..\KSPCommandLineOptionsDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\KSPCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
+    <EmbeddedResource Include="Main\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\Main.de-DE.resx">
-      <DependentUpon>..\..\Main.cs</DependentUpon>
+      <DependentUpon>..\..\Main\Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainAllModVersions.resx">
-      <DependentUpon>MainAllModVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\AllModVersions.resx">
+      <DependentUpon>AllModVersions.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\de-DE\MainAllModVersions.de-DE.resx">
-      <DependentUpon>..\..\MainAllModVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\de-DE\AllModVersions.de-DE.resx">
+      <DependentUpon>..\..\Controls\AllModVersions.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainModInfo.resx">
-      <DependentUpon>MainModInfo.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\ModInfo.resx">
+      <DependentUpon>ModInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\de-DE\MainModInfo.de-DE.resx">
-      <DependentUpon>..\..\MainModInfo.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\de-DE\ModInfo.de-DE.resx">
+      <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\en-US\MainModInfo.en-US.resx">
-      <DependentUpon>..\..\MainModInfo.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\en-US\ModInfo.en-US.resx">
+      <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ManageKSPInstances.resx">
-      <DependentUpon>ManageKspInstances.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogs\ManageKSPInstancesDialog.resx">
+      <DependentUpon>ManageKspInstancesDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\de-DE\ManageKSPInstances.de-DE.resx">
-      <DependentUpon>..\..\ManageKspInstances.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\de-DE\ManageKSPInstancesDialog.de-DE.resx">
+      <DependentUpon>..\..\Dialogs\ManageKspInstancesDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewRepoDialog.resx">
+    <EmbeddedResource Include="Dialogs\NewRepoDialog.resx">
       <DependentUpon>NewRepoDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\NewRepoDialog.de-DE.resx">
-      <DependentUpon>..\..\NewRepoDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\NewRepoDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewUpdateDialog.resx">
+    <EmbeddedResource Include="Dialogs\NewUpdateDialog.resx">
       <DependentUpon>NewUpdateDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\NewUpdateDialog.de-DE.resx">
-      <DependentUpon>..\..\NewUpdateDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\NewUpdateDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PluginsDialog.resx">
+    <EmbeddedResource Include="Dialogs\PluginsDialog.resx">
       <DependentUpon>PluginsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\PluginsDialog.de-DE.resx">
-      <DependentUpon>..\..\PluginsDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\PluginsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <LogicalName>CKAN.Properties.Resources.resources</LogicalName>
@@ -398,32 +457,32 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="RenameInstanceDialog.resx">
+    <EmbeddedResource Include="Dialogs\RenameInstanceDialog.resx">
       <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\RenameInstanceDialog.de-DE.resx">
-      <DependentUpon>..\..\RenameInstanceDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\RenameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SelectionDialog.resx">
+    <EmbeddedResource Include="Dialogs\SelectionDialog.resx">
       <DependentUpon>SelectionDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\SelectionDialog.de-DE.resx">
-      <DependentUpon>..\..\SelectionDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\SelectionDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SettingsDialog.resx">
+    <EmbeddedResource Include="Dialogs\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\SettingsDialog.de-DE.resx">
-      <DependentUpon>..\..\SettingsDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\en-US\SettingsDialog.en-US.resx">
-      <DependentUpon>..\..\SettingsDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="YesNoDialog.resx">
+    <EmbeddedResource Include="Dialogs\YesNoDialog.resx">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\YesNoDialog.de-DE.resx">
-      <DependentUpon>..\..\YesNoDialog.cs</DependentUpon>
+      <DependentUpon>..\..\Dialogs\YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,6 @@ namespace CKAN
 {
     public static class GUI
     {
-        internal static GUIUser user = new GUIUser();
         /// <summary>
         ///     The main entry point for the application.
         /// </summary>
@@ -33,7 +32,7 @@ namespace CKAN
             }
             else
             {
-                new Main(args, manager, user, showConsole);
+                new Main(args, manager, showConsole);
             }
         }
 
@@ -43,7 +42,7 @@ namespace CKAN
 
             // Provide a stack backtrace, so our users and non-debugging devs can
             // see what's gone wrong.
-            user.RaiseError("Unhandled exception:\r\n{0} ", exception.ToString());
+            CKAN.Main.Instance.ErrorDialog("Unhandled exception:\r\n{0} ", exception.ToString());
         }
     }
 }

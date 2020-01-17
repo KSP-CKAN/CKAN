@@ -81,7 +81,7 @@ namespace CKAN
         /// <param name="url">The URL</param>
         public static void OpenLinkFromLinkLabel(string url)
         {
-            if (url == Properties.Resources.MainModInfoNSlashA)
+            if (url == Properties.Resources.ModInfoNSlashA)
             {
                 return;
             }
