@@ -167,7 +167,8 @@
   <data name="manageKspInstancesMenuItem.Text" xml:space="preserve"><value>KSP-Instanzen verwalten</value></data>
   <data name="openKspDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>Spieleverzeichnis öffnen</value></data>
   <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>Von .ckan installieren</value></data>
-  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>Liste installierter Mods &amp;exportieren</value></data>
+  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>Liste installierter Mods speichern...</value></data>
+  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>Modpack exportieren ...</value></data>
   <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>Heruntergeladene Mods &amp;importieren</value></data>
   <data name="auditRecommendationsMenuItem.Text" xml:space="preserve"><value>Empfehlungen installierter Mods</value></data>
   <data name="ExitToolButton.Text" xml:space="preserve"><value>&amp;Beenden</value></data>
@@ -224,6 +225,7 @@
   <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Änderungen</value></data>
   <data name="WaitTabPage.Text" xml:space="preserve"><value>Statuslog</value></data>
   <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Wähle Empfehlungen und Vorschläge aus</value></data>
+  <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Modpack bearbeiten</value></data>
   <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>N verfügbare Updates</value></data>
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Aktualisieren</value></data>
   <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>Anhalten</value></data>

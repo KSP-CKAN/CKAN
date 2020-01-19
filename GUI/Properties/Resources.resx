@@ -194,8 +194,7 @@
   <data name="MainLaunchFailed" xml:space="preserve"><value>Couldn't start KSP.
 
 {0}</value></data>
-  <data name="MainFavouritesList" xml:space="preserve"><value>CKAN favourites list (*.ckan)</value></data>
-  <data name="MainModPack" xml:space="preserve"><value>CKAN modpack (enforces exact mod versions) (*.ckan)</value></data>
+  <data name="MainModPack" xml:space="preserve"><value>CKAN modpack (*.ckan)</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>Plain text (*.txt)</value></data>
   <data name="MainMarkdown" xml:space="preserve"><value>Markdown (*.md)</value></data>
   <data name="MainBBCode" xml:space="preserve"><value>BBCode (*.txt)</value></data>
@@ -362,4 +361,22 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
 {0}</value></data>
   <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>Update Notifications</value></data>
   <data name="MainLabelsUntagged" xml:space="preserve"><value>Untagged ({0})</value></data>
+  <data name="EditModpackBadIdentifier" xml:space="preserve"><value>Identifier must contain one or more letters, numbers, and dashes, and must start with a letter or number</value></data>
+  <data name="EditModpackBadName" xml:space="preserve"><value>Name is required</value></data>
+  <data name="EditModpackBadVersion" xml:space="preserve"><value>Version is required</value></data>
+  <data name="EditModpackBadKspVersions" xml:space="preserve"><value>Min KSP version must be less than or equal to max KSP version</value></data>
+  <data name="EditModpackTooltipIdentifier" xml:space="preserve"><value>Internal name of this modpack; letters, numbers, and dashes only</value></data>
+  <data name="EditModpackTooltipName" xml:space="preserve"><value>Publicly visible name of this modpack</value></data>
+  <data name="EditModpackTooltipAbstract" xml:space="preserve"><value>Short description of this modpack</value></data>
+  <data name="EditModpackTooltipVersion" xml:space="preserve"><value>The version number for this modpack</value></data>
+  <data name="EditModpackTooltipKspVersionMin" xml:space="preserve"><value>Earliest compatible version of KSP, blank for all</value></data>
+  <data name="EditModpackTooltipKspVersionMax" xml:space="preserve"><value>Latest compatible version of KSP, blank for all</value></data>
+  <data name="EditModpackTooltipLicense" xml:space="preserve"><value>The licence for this modpack</value></data>
+  <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>If checked, the modpack will include the specific versions of the mods shown, otherwise any version will do</value></data>
+  <data name="EditModpackTooltipDepends" xml:space="preserve"><value>Move selected mods to the Depends group. These mods will definitely be installed.</value></data>
+  <data name="EditModpackTooltipRecommends" xml:space="preserve"><value>Move selected mods to the Recommends group. A user can drop these mods on installation.</value></data>
+  <data name="EditModpackTooltipSuggests" xml:space="preserve"><value>Move selected mods to the Suggests group. These mods will be available for installation, but you have to explicitly select them.</value></data>
+  <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>Move selected mods to the Ignored group. These mods won't be included in the modpack. </value></data>
+  <data name="EditModpackTooltipCancel" xml:space="preserve"><value>Abort modpack creation</value></data>
+  <data name="EditModpackTooltipExport" xml:space="preserve"><value>Choose a filename and save the modpack</value></data>
 </root>

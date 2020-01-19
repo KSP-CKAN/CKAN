@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CKAN.Versioning;
-using CKAN.Exporters;
 using CKAN.Extensions;
 using CKAN.Properties;
 using CKAN.Types;
@@ -1080,64 +1079,6 @@ namespace CKAN
             }
         }
 
-        /// <summary>
-        /// Exports installed mods to a .ckan file.
-        /// </summary>
-        private void exportModListToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var exportOptions = new List<ExportOption>
-            {
-                new ExportOption(ExportFileType.CkanFavourite, Properties.Resources.MainFavouritesList, "ckan"),
-                new ExportOption(ExportFileType.Ckan,          Properties.Resources.MainModPack,        "ckan"),
-                new ExportOption(ExportFileType.PlainText,     Properties.Resources.MainPlainText,      "txt"),
-                new ExportOption(ExportFileType.Markdown,      Properties.Resources.MainMarkdown,       "md"),
-                new ExportOption(ExportFileType.BbCode,        Properties.Resources.MainBBCode,         "txt"),
-                new ExportOption(ExportFileType.Csv,           Properties.Resources.MainCSV,            "csv"),
-                new ExportOption(ExportFileType.Tsv,           Properties.Resources.MainTSV,            "tsv")
-            };
-
-            var filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray());
-
-            var dlg = new SaveFileDialog
-            {
-                Filter = filter,
-                Title = Resources.ExportInstalledModsDialogTitle
-            };
-
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
-
-                if (exportOption.ExportFileType == ExportFileType.Ckan || exportOption.ExportFileType == ExportFileType.CkanFavourite)
-                {
-                    bool recommends = false;
-                    bool versions = true;
-
-                    if (exportOption.ExportFileType == ExportFileType.CkanFavourite)
-                    {
-                        recommends = true;
-                        versions = false;
-                    }
-
-                    // Save, just to be certain that the installed-*.ckan metapackage is generated.
-                    RegistryManager mgr = RegistryManager.Instance(CurrentInstance);
-                    mgr.Save(true);
-                    mgr.ExportInstalled(dlg.FileName, recommends, versions);
-                }
-                else
-                {
-                    var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
-
-                    using (var stream = new FileStream(dlg.FileName, fileMode))
-                    {
-                        var registry = RegistryManager.Instance(CurrentInstance).registry;
-
-                        new Exporter(exportOption.ExportFileType).Export(registry, stream);
-                    }
-                }
-            }
-        }
-
         private void manageKspInstancesMenuItem_Click(object sender, EventArgs e)
         {
             var old_instance = Instance.CurrentInstance;
@@ -1257,17 +1198,13 @@ namespace CKAN
                 CurrentInstance.VersionCriteria()
             );
         }
-
+        
         private void MainTabControl_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             switch (MainTabControl.SelectedTab?.Name)
             {
                 case "ManageModsTabPage":
                     ModList_SelectedIndexChanged(sender, e);
-                    break;
-
-                case "WaitTabPage":
-                    ShowSelectionModInfo(null);
                     break;
 
                 case "ChangesetTabPage":
@@ -1280,6 +1217,10 @@ namespace CKAN
 
                 case "ChooseProvidedModsTabPage":
                     ShowSelectionModInfo(ChooseProvidedMods.SelectedItems);
+                    break;
+
+                default:
+                    ShowSelectionModInfo(null);
                     break;
             }
         }

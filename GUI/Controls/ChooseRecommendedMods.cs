@@ -21,11 +21,13 @@ namespace CKAN
             Dictionary<CkanModule, HashSet<string>> supporters
         )
         {
-            RecommendedModsToggleCheckbox.Checked = true;
-            RecommendedModsListView.Items.Clear();
-            RecommendedModsListView.Items.AddRange(
-                getRecSugRows(cache, recommendations, suggestions, supporters).ToArray());
-
+            Util.Invoke(this, () =>
+            {
+                RecommendedModsToggleCheckbox.Checked = true;
+                RecommendedModsListView.Items.Clear();
+                RecommendedModsListView.Items.AddRange(
+                    getRecSugRows(cache, recommendations, suggestions, supporters).ToArray());
+            });
         }
 
         public HashSet<CkanModule> Wait()
@@ -33,7 +35,7 @@ namespace CKAN
             if (Platform.IsMono)
             {
                 // Workaround: make sure the ListView headers are drawn
-                RecommendedModsListView.EndUpdate();
+                Util.Invoke(this, () => RecommendedModsListView.EndUpdate());
             }
             task = new TaskCompletionSource<HashSet<CkanModule>>();
             return task.Task.Result;
@@ -47,8 +49,7 @@ namespace CKAN
             }
         }
 
-        public delegate void SelectedItemsChanged(ListView.SelectedListViewItemCollection items);
-        public event SelectedItemsChanged OnSelectedItemsChanged;
+        public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
 
         private void RecommendedModsListView_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -107,13 +108,13 @@ namespace CKAN
         private void RecommendedModsToggleCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             var state = ((CheckBox)sender).Checked;
+            RecommendedModsListView.BeginUpdate();
             foreach (ListViewItem item in RecommendedModsListView.Items)
             {
                 if (item.Checked != state)
                     item.Checked = state;
             }
-
-            RecommendedModsListView.Refresh();
+            RecommendedModsListView.EndUpdate();
         }
 
         private void RecommendedModsCancelButton_Click(object sender, EventArgs e)

@@ -270,18 +270,6 @@ namespace CKAN
             }
         }
 
-        /// <summary>
-        /// Returns the currently installed modules in json format suitable for outputting to a ckan file.
-        /// Defaults to using depends and with version numbers.
-        /// </summary>
-        /// <param name="recommmends">If the json should use a recommends field instead of depends</param>
-        /// <param name="with_versions">If version numbers should be included</param>
-        /// <returns>String containing a valid ckan file</returns>
-        public string CurrentInstallAsCKAN(bool recommmends, bool with_versions)
-        {
-            return SerializeCurrentInstall(recommmends, with_versions);
-        }
-
         private void Load()
         {
             // Our registry needs to know our KSP install when upgrading from older
@@ -368,48 +356,6 @@ namespace CKAN
             return sw + Environment.NewLine;
         }
 
-        private string SerializeCurrentInstall(bool recommmends = false, bool with_versions = true)
-        {
-            string kspInstanceName = ksp.Name;
-            string name = "installed-" + kspInstanceName;
-
-            var installed = new JObject();
-            installed["kind"] = "metapackage";
-            installed["abstract"] = "A list of modules installed on the " + kspInstanceName + " KSP instance";
-            installed["name"] = name;
-            installed["license"] = "unknown";
-            installed["version"] = DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss");
-            installed["identifier"] = name;
-            installed["spec_version"] = "v1.6";
-
-            var mods = new JArray();
-            foreach (var mod in registry.Installed()
-                .Where(mod => !(mod.Value is ProvidesModuleVersion || mod.Value is UnmanagedModuleVersion)))
-            {
-                var module = new JObject();
-                module["name"] = mod.Key;
-                if (with_versions)
-                {
-                    module["version"] = mod.Value.ToString();
-                }
-                mods.Add(module);
-            }
-
-            installed[recommmends ? "recommends" : "depends"] = mods;
-
-            var sw = new StringWriter(new StringBuilder());
-            using (var writer = new JsonTextWriter(sw))
-            {
-                writer.Formatting = Formatting.Indented;
-                writer.Indentation = 1;
-                writer.IndentChar = '\t';
-
-                new JsonSerializer().Serialize(writer, installed);
-            }
-
-            return sw + Environment.NewLine;
-        }
-
         public void Save(bool enforce_consistency = true)
         {
             TxFileManager file_transaction = new TxFileManager();
@@ -436,7 +382,7 @@ namespace CKAN
             }
 
             file_transaction.WriteAllText(path, Serialize());
-            
+
             string sanitizedName = string.Join("", ksp.Name.Split(Path.GetInvalidFileNameChars()));
 
             ExportInstalled(
@@ -469,6 +415,59 @@ namespace CKAN
 
             string serialized = SerializeCurrentInstall(recommends, with_versions);
             file_transaction.WriteAllText(path, serialized);
+        }
+
+        private string SerializeCurrentInstall(bool recommends = false, bool with_versions = true)
+        {
+            var pack = GenerateModpack(recommends, with_versions);
+            return CkanModule.ToJson(pack);
+        }
+
+        /// <summary>
+        /// Create a CkanModule object that represents the currently installed
+        /// mod list as a metapackage.
+        /// </summary>
+        /// <param name="recommends">If true, put the mods in the recommends relationship, otherwise use depends</param>
+        /// <param name="with_versions">If true, set the installed mod versions in the relationships</param>
+        /// <returns>
+        /// The CkanModule object
+        /// </returns>
+        public CkanModule GenerateModpack(bool recommends = false, bool with_versions = true)
+        {
+            string kspInstanceName = ksp.Name;
+            string name = $"installed-{kspInstanceName}";
+            var module = new CkanModule()
+            {
+                // v1.18 to allow Unlicense
+                spec_version = new ModuleVersion("v1.18"),
+                identifier   = name,
+                name         = name,
+                @abstract    = $"A list of modules installed on the {kspInstanceName} KSP instance",
+                kind         = "metapackage",
+                version      = new ModuleVersion(DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss")),
+                license      = new List<License>() { new License("unknown") },
+                download_content_type = "application/zip",
+            };
+
+            List<RelationshipDescriptor> mods = registry.Installed()
+                .Where(mod => !(mod.Value is ProvidesModuleVersion || mod.Value is UnmanagedModuleVersion))
+                .Select(kvp => (RelationshipDescriptor) new ModuleRelationshipDescriptor()
+                    {
+                        name    = kvp.Key,
+                        version = with_versions ? kvp.Value : null
+                    })
+                .ToList();
+
+            if (recommends)
+            {
+                module.recommends = mods;
+            }
+            else
+            {
+                module.depends = mods;
+            }
+
+            return module;
         }
 
         /// <summary>
@@ -508,7 +507,7 @@ namespace CKAN
                 }
                 registry.RegisterDlc(i.Key, i.Value);
             }
-            
+
             // Check if anything got removed
             if (!changed)
             {

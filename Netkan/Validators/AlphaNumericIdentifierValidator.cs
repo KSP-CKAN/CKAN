@@ -7,15 +7,10 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            if (!alphanumeric.IsMatch(metadata.Identifier))
+            if (!Identifier.ValidIdentifierPattern.IsMatch(metadata.Identifier))
             {
                 throw new Kraken("CKAN identifiers must consist only of letters, numbers, and dashes, and must start with a letter or number.");
             }
         }
-
-        private static readonly Regex alphanumeric = new Regex(
-            @"^[A-Za-z0-9-]+$",
-            RegexOptions.Compiled
-        );
     }
 }

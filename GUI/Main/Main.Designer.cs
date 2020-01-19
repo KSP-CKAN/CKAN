@@ -37,6 +37,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportModPackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.importDownloadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -136,6 +137,8 @@
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteDirectoriesTabPage = new System.Windows.Forms.TabPage();
             this.DeleteDirectories = new CKAN.DeleteDirectories();
+            this.EditModpackTabPage = new System.Windows.Forms.TabPage();
+            this.EditModpack = new CKAN.EditModpack();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -154,6 +157,7 @@
             this.ChooseProvidedModsTabPage.SuspendLayout();
             this.minimizedContextMenuStrip.SuspendLayout();
             this.DeleteDirectoriesTabPage.SuspendLayout();
+            this.EditModpackTabPage.SuspendLayout();
             this.SuspendLayout();
             //
             // menuStrip1
@@ -180,6 +184,7 @@
             this.importDownloadsToolStripMenuItem,
             this.toolStripSeparator2,
             this.exportModListToolStripMenuItem,
+            this.exportModPackToolStripMenuItem,
             this.toolStripSeparator3,
             this.auditRecommendationsMenuItem,
             this.toolStripSeparator7,
@@ -220,6 +225,13 @@
             this.exportModListToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
             this.exportModListToolStripMenuItem.Click += new System.EventHandler(this.exportModListToolStripMenuItem_Click);
             resources.ApplyResources(this.exportModListToolStripMenuItem, "exportModListToolStripMenuItem");
+            //
+            // exportModPackToolStripMenuItem
+            //
+            this.exportModPackToolStripMenuItem.Name = "exportModPackToolStripMenuItem";
+            this.exportModPackToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.exportModPackToolStripMenuItem.Click += new System.EventHandler(this.exportModPackToolStripMenuItem_Click);
+            resources.ApplyResources(this.exportModPackToolStripMenuItem, "exportModPackToolStripMenuItem");
             //
             // toolStripSeparator2
             //
@@ -816,6 +828,7 @@
             this.MainTabControl.Controls.Add(this.ChooseRecommendedModsTabPage);
             this.MainTabControl.Controls.Add(this.ChooseProvidedModsTabPage);
             this.MainTabControl.Controls.Add(this.DeleteDirectoriesTabPage);
+            this.MainTabControl.Controls.Add(this.EditModpackTabPage);
             this.MainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainTabControl.Location = new System.Drawing.Point(0, 35);
             this.MainTabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -1034,6 +1047,29 @@
             this.DeleteDirectories.Size = new System.Drawing.Size(500, 500);
             this.DeleteDirectories.TabIndex = 32;
             //
+            // EditModpackTabPage
+            //
+            this.EditModpackTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.EditModpackTabPage.Controls.Add(this.EditModpack);
+            this.EditModpackTabPage.Location = new System.Drawing.Point(0, 0);
+            this.EditModpackTabPage.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.EditModpackTabPage.Name = "EditModpackTabPage";
+            this.EditModpackTabPage.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.EditModpackTabPage.Size = new System.Drawing.Size(500, 500);
+            this.EditModpackTabPage.TabIndex = 31;
+            resources.ApplyResources(this.EditModpackTabPage, "EditModpackTabPage");
+            //
+            // EditModpack
+            //
+            this.EditModpack.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EditModpack.Location = new System.Drawing.Point(0, 0);
+            this.EditModpack.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.EditModpack.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.EditModpack.Name = "EditModpack";
+            this.EditModpack.Size = new System.Drawing.Size(500, 500);
+            this.EditModpack.TabIndex = 32;
+            this.EditModpack.OnSelectedItemsChanged += this.EditModpack_OnSelectedItemsChanged;
+            //
             // minimizeNotifyIcon
             //
             this.minimizeNotifyIcon.ContextMenuStrip = this.minimizedContextMenuStrip;
@@ -1175,6 +1211,8 @@
             this.ChooseProvidedModsTabPage.PerformLayout();
             this.DeleteDirectoriesTabPage.ResumeLayout(false);
             this.DeleteDirectoriesTabPage.PerformLayout();
+            this.EditModpackTabPage.ResumeLayout(false);
+            this.EditModpackTabPage.PerformLayout();
             this.minimizedContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1190,6 +1228,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem installFromckanToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportModListToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportModPackToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem importDownloadsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
@@ -1275,6 +1314,8 @@
         private CKAN.ChooseProvidedMods ChooseProvidedMods;
         private System.Windows.Forms.TabPage DeleteDirectoriesTabPage;
         private CKAN.DeleteDirectories DeleteDirectories;
+        private System.Windows.Forms.TabPage EditModpackTabPage;
+        private CKAN.EditModpack EditModpack;
         private System.Windows.Forms.NotifyIcon minimizeNotifyIcon;
         private System.Windows.Forms.ContextMenuStrip minimizedContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem updatesToolStripMenuItem;

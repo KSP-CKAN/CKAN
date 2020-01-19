@@ -25,7 +25,7 @@ namespace CKAN.NetKAN.Validators
                             foreach (JObject opt in rel["any_of"])
                             {
                                 string name = (string)opt["name"];
-                                if (!alphanumeric.IsMatch(name))
+                                if (!Identifier.ValidIdentifierPattern.IsMatch(name))
                                 {
                                     throw new Kraken($"{name} in {relName} any_of is not a valid CKAN identifier");
                                 }
@@ -34,7 +34,7 @@ namespace CKAN.NetKAN.Validators
                         else
                         {
                             string name = (string)rel["name"];
-                            if (!alphanumeric.IsMatch(name))
+                            if (!Identifier.ValidIdentifierPattern.IsMatch(name))
                             {
                                 throw new Kraken($"{name} in {relName} is not a valid CKAN identifier");
                             }
@@ -53,10 +53,6 @@ namespace CKAN.NetKAN.Validators
             "conflicts",
             "supports"
         };
-        private static readonly Regex alphanumeric = new Regex(
-            @"^[A-Za-z0-9-]+$",
-            RegexOptions.Compiled
-        );
         private static readonly ModuleVersion v1p26 = new ModuleVersion("v1.26");
     }
 }
