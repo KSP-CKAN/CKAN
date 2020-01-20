@@ -1,4 +1,4 @@
-#addin "nuget:?package=Cake.SemVer&version=3.0.0"
+#addin "nuget:?package=Cake.SemVer&version=4.0.0"
 #addin "nuget:?package=semver&version=2.0.4"
 #addin "nuget:?package=Cake.Docker&version=0.10.0"
 #tool "nuget:?package=ILRepack&version=2.0.17"
@@ -9,7 +9,7 @@ using Semver;
 
 var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Debug");
-var buildFramework = configuration.EndsWith("NetCore") ? "netcoreapp2.1" : "net45";
+var buildFramework = configuration.EndsWith("NetCore") ? "netcoreapp3.1" : "net45";
 var solution = Argument<string>("solution", "CKAN.sln");
 
 var rootDirectory = Context.Environment.WorkingDirectory;
@@ -163,7 +163,7 @@ Task("Build-DotNet")
 
 Task("Restore-DotNetCore")
     .Description("Intermediate - Download dependencies with NuGet when building for .NET Core.")
-    .WithCriteria(() => buildFramework == "netcoreapp2.1")
+    .WithCriteria(() => buildFramework == "netcoreapp3.1")
     .Does(() =>
 {
     DotNetCoreRestore(solution, new DotNetCoreRestoreSettings
@@ -177,7 +177,7 @@ Task("Build-DotNetCore")
     .Description("Intermediate - Call .NET Core's MSBuild to build the ckan.dll.")
     .IsDependentOn("Restore-Dotnetcore")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
-    .WithCriteria(() => buildFramework == "netcoreapp2.1")
+    .WithCriteria(() => buildFramework == "netcoreapp3.1")
     .Does(() =>
 {
     DotNetCoreBuild(solution, new DotNetCoreBuildSettings
@@ -292,7 +292,7 @@ Task("Test-UnitTests+Only")
 
 Task("Test-UnitTests+Only-DotNetCore")
     .Description("Intermediate - Only run CKANs unit tests using DotNetCoreTest, without compiling beforehand.")
-    .WithCriteria(() => buildFramework == "netcoreapp2.1")
+    .WithCriteria(() => buildFramework == "netcoreapp3.1")
     .Does(() =>
 {
     var where = Argument<string>("where", null);
@@ -366,7 +366,7 @@ Setup(context =>
         else if (argConfiguration.StartsWith("Release"))
             configuration = "Release_NetCore";
 
-        buildFramework = "netcoreapp2.1";
+        buildFramework = "netcoreapp3.1";
     }
 });
 
