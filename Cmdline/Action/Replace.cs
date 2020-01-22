@@ -46,7 +46,8 @@ namespace CKAN.CmdLine
                     allow_incompatible = options.allow_incompatible
                 };
 
-            var registry = RegistryManager.Instance(ksp).registry;
+            var regMgr = RegistryManager.Instance(ksp);
+            var registry = regMgr.registry;
             var to_replace = new List<ModuleReplacement>();
 
             if (options.replace_all)
@@ -156,7 +157,7 @@ namespace CKAN.CmdLine
                 try
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
-                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs);
+                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
                     User.RaiseMessage("\r\nDone!\r\n");
                 }
                 catch (DependencyNotSatisfiedKraken ex)

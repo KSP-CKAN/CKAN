@@ -21,7 +21,7 @@ namespace CKAN
     /// <summary>
     /// Everything for dealing with KSP itself.
     /// </summary>
-    public class KSP
+    public class KSP : IEquatable<KSP>
     {
         /// <summary>
         /// List of DLLs that should never be added to the autodetect list.
@@ -490,10 +490,14 @@ namespace CKAN
             return "KSP Install: " + gameDir;
         }
 
+        public bool Equals(KSP other)
+        {
+            return other != null ? gameDir.Equals(other.GameDir()) : base.Equals(other);
+        }
+
         public override bool Equals(object obj)
         {
-            var other = obj as KSP;
-            return other != null ? gameDir.Equals(other.GameDir()) : base.Equals(obj);
+            return Equals(obj as KSP);
         }
 
         public override int GetHashCode()

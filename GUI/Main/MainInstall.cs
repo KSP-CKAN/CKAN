@@ -73,7 +73,8 @@ namespace CKAN
 
             var opts = (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
 
-            Registry registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+            RegistryManager registry_manager = RegistryManager.Instance(manager.CurrentInstance);
+            Registry registry = registry_manager.registry;
             ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, currentUser);
             // Avoid accumulating multiple event handlers
             installer.onReportModInstalled -= OnModInstalled;
@@ -116,6 +117,7 @@ namespace CKAN
                     .Select(ch => ch.Mod)
                     .ToHashSet(),
                 toInstall,
+                registry,
                 out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                 out Dictionary<CkanModule, List<string>> suggestions,
                 out Dictionary<CkanModule, HashSet<string>> supporters
@@ -173,7 +175,7 @@ namespace CKAN
                         processSuccessful = false;
                         if (!installCanceled)
                         {
-                            installer.UninstallList(toUninstall, ref possibleConfigOnlyDirs, false, toInstall.Select(m => m.identifier));
+                            installer.UninstallList(toUninstall, ref possibleConfigOnlyDirs, registry_manager, false, toInstall.Select(m => m.identifier));
                             processSuccessful = true;
                         }
                     }
@@ -182,7 +184,7 @@ namespace CKAN
                         processSuccessful = false;
                         if (!installCanceled)
                         {
-                            installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs);
+                            installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager);
                             processSuccessful = true;
                         }
                     }
@@ -191,7 +193,7 @@ namespace CKAN
                         processSuccessful = false;
                         if (!installCanceled)
                         {
-                            installer.InstallList(toInstall, opts.Value, downloader, false);
+                            installer.InstallList(toInstall, opts.Value, registry_manager, downloader, false);
                             processSuccessful = true;
                         }
                     }

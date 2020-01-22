@@ -33,7 +33,6 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
-        private RegistryManager registry_manager;
         private KSP ksp;
 
         private NetModuleCache Cache;
@@ -46,7 +45,6 @@ namespace CKAN
             User = user;
             Cache = cache;
             this.ksp = ksp;
-            registry_manager = RegistryManager.Instance(ksp);
             log.DebugFormat("Creating ModuleInstaller for {0}", ksp.GameDir());
         }
 
@@ -61,12 +59,12 @@ namespace CKAN
             ModuleInstaller instance;
 
             // Check in the list of instances if we have already created a ModuleInstaller instance for this KSP instance.
-            if (!instances.TryGetValue(ksp_instance.GameDir().ToLower(), out instance))
+            if (!instances.TryGetValue(ksp_instance.GameDir(), out instance))
             {
                 // Create a new instance and insert it in the static list.
                 instance = new ModuleInstaller(ksp_instance, cache, user);
 
-                instances.Add(ksp_instance.GameDir().ToLower(), instance);
+                instances.Add(ksp_instance.GameDir(), instance);
             }
             else if (user != null)
             {
@@ -134,11 +132,11 @@ namespace CKAN
             return full_path;
         }
 
-        public void InstallList(List<string> modules, RelationshipResolverOptions options, IDownloader downloader = null)
+        public void InstallList(List<string> modules, RelationshipResolverOptions options, RegistryManager registry_manager, IDownloader downloader = null)
         {
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
             // Only pass the CkanModules of the parameters, so we can tell which are auto
-            InstallList(resolver.ModList().Where(m => resolver.ReasonFor(m) is SelectionReason.UserRequested).ToList(), options, downloader);
+            InstallList(resolver.ModList().Where(m => resolver.ReasonFor(m) is SelectionReason.UserRequested).ToList(), options, registry_manager, downloader);
         }
 
         /// <summary>
@@ -149,7 +147,7 @@ namespace CKAN
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// Propagates a CancelledActionKraken if the user cancelled the install.
         /// </summary>
-        public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, IDownloader downloader = null, bool ConfirmPrompt = true)
+        public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, RegistryManager registry_manager, IDownloader downloader = null, bool ConfirmPrompt = true)
         {
             // TODO: Break this up into smaller pieces! It's huge!
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
@@ -217,7 +215,7 @@ namespace CKAN
                     User.RaiseProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
                                          percent_complete);
 
-                    Install(modsToInstall[i], resolver.ReasonFor(modsToInstall[i]) is SelectionReason.Depends);
+                    Install(modsToInstall[i], resolver.ReasonFor(modsToInstall[i]) is SelectionReason.Depends, registry_manager.registry);
                 }
 
                 User.RaiseProgress("Updating registry", 70);
@@ -230,7 +228,7 @@ namespace CKAN
 
             }
 
-            EnforceCacheSizeLimit();
+            EnforceCacheSizeLimit(registry_manager.registry);
 
             // We can scan GameData as a separate transaction. Installing the mods
             // leaves everything consistent, and this is just gravy. (And ScanGameData
@@ -285,11 +283,11 @@ namespace CKAN
         ///
         /// TODO: The name of this and InstallModule() need to be made more distinctive.
         /// </summary>
-        private void Install(CkanModule module, bool autoInstalled, string filename = null)
+        private void Install(CkanModule module, bool autoInstalled, Registry registry, string filename = null)
         {
             CheckMetapackageInstallationKraken(module);
 
-            ModuleVersion version = registry_manager.registry.InstalledVersion(module.identifier);
+            ModuleVersion version = registry.InstalledVersion(module.identifier);
 
             // TODO: This really should be handled by higher-up code.
             if (version != null)
@@ -310,13 +308,10 @@ namespace CKAN
                 );
             }
 
-            // We'll need our registry to record which files we've installed.
-            Registry registry = registry_manager.registry;
-
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
                 // Install all the things!
-                IEnumerable<string> files = InstallModule(module, filename);
+                IEnumerable<string> files = InstallModule(module, filename, registry);
 
                 // Register our module and its files.
                 registry.RegisterModule(module, files, ksp, autoInstalled);
@@ -351,7 +346,7 @@ namespace CKAN
         /// Propagates a BadMetadataKraken if our install metadata is bad.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// </summary>
-        private IEnumerable<string> InstallModule(CkanModule module, string zip_filename)
+        private IEnumerable<string> InstallModule(CkanModule module, string zip_filename, Registry registry)
         {
             CheckMetapackageInstallationKraken(module);
 
@@ -373,7 +368,7 @@ namespace CKAN
                     // Decorate the kraken with our module and re-throw
                     kraken.filename = ksp.ToRelativeGameDir(kraken.filename);
                     kraken.installingModule = module;
-                    kraken.owningModule = registry_manager.registry.FileOwner(kraken.filename);
+                    kraken.owningModule = registry.FileOwner(kraken.filename);
                     throw;
                 }
 
@@ -732,7 +727,7 @@ namespace CKAN
         /// This *DOES* save the registry.
         /// Preferred over Uninstall.
         /// </summary>
-        public void UninstallList(IEnumerable<string> mods, ref HashSet<string> possibleConfigOnlyDirs, bool ConfirmPrompt = true, IEnumerable<string> installing = null)
+        public void UninstallList(IEnumerable<string> mods, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool ConfirmPrompt = true, IEnumerable<string> installing = null)
         {
             mods = mods.Memoize();
             // Pre-check, have they even asked for things which are installed?
@@ -788,7 +783,7 @@ namespace CKAN
                 foreach (string mod in goners)
                 {
                     User.RaiseMessage("Removing {0}...", mod);
-                    Uninstall(mod, ref possibleConfigOnlyDirs);
+                    Uninstall(mod, ref possibleConfigOnlyDirs, registry_manager.registry);
                 }
 
                 // Enforce consistency if we're not installing anything,
@@ -801,10 +796,10 @@ namespace CKAN
             User.RaiseMessage("Done!\r\n");
         }
 
-        public void UninstallList(string mod, ref HashSet<string> possibleConfigOnlyDirs)
+        public void UninstallList(string mod, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager)
         {
             var list = new List<string> { mod };
-            UninstallList(list, ref possibleConfigOnlyDirs);
+            UninstallList(list, ref possibleConfigOnlyDirs, registry_manager);
         }
 
         /// <summary>
@@ -814,13 +809,13 @@ namespace CKAN
         /// </summary>
         /// <param name="modName">Identifier of module to uninstall</param>
         /// <param name="possibleConfigOnlyDirs">Directories that the user might want to remove after uninstall</param>
-        private void Uninstall(string modName, ref HashSet<string> possibleConfigOnlyDirs)
+        private void Uninstall(string modName, ref HashSet<string> possibleConfigOnlyDirs, Registry registry)
         {
             TxFileManager file_transaction = new TxFileManager();
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
-                InstalledModule mod = registry_manager.registry.InstalledModule(modName);
+                InstalledModule mod = registry.InstalledModule(modName);
 
                 if (mod == null)
                 {
@@ -883,7 +878,7 @@ namespace CKAN
                 }
 
                 // Remove from registry.
-                registry_manager.registry.DeregisterModule(ksp, modName);
+                registry.DeregisterModule(ksp, modName);
 
                 // Our collection of directories may leave empty parent directories.
                 directoriesToDelete = AddParentDirectories(directoriesToDelete);
@@ -907,7 +902,7 @@ namespace CKAN
                         .Select(f => ksp.ToRelativeGameDir(f))
                         .Memoize();
                     log.DebugFormat("Got contents: {0}", string.Join(", ", contents));
-                    var owners = contents.Select(f => registry_manager.registry.FileOwner(f));
+                    var owners = contents.Select(f => registry.FileOwner(f));
                     log.DebugFormat("Got owners: {0}", string.Join(", ", owners));
                     if (!contents.Any())
                     {
@@ -924,7 +919,7 @@ namespace CKAN
                         log.DebugFormat("Removing {0}", directory);
                         Directory.Delete(directory);
                     }
-                    else if (contents.All(f => registry_manager.registry.FileOwner(f) == null))
+                    else if (contents.All(f => registry.FileOwner(f) == null))
                     {
                         log.DebugFormat("Directory {0} contains only non-registered files, ask user about it later");
                         if (possibleConfigOnlyDirs == null)
@@ -1005,7 +1000,7 @@ namespace CKAN
         /// </summary>
         /// <param name="add">Add.</param>
         /// <param name="remove">Remove.</param>
-        public void AddRemove(ref HashSet<string> possibleConfigOnlyDirs, IEnumerable<CkanModule> add = null, IEnumerable<InstalledModule> remove = null, bool enforceConsistency = true)
+        public void AddRemove(ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, IEnumerable<CkanModule> add = null, IEnumerable<InstalledModule> remove = null, bool enforceConsistency = true)
         {
             // TODO: We should do a consistency check up-front, rather than relying
             // upon our registry catching inconsistencies at the end.
@@ -1022,7 +1017,7 @@ namespace CKAN
                     // The post-install steps start at 80%, so count up to 70% for installation
                     int percent_complete = (step++ * 70) / totSteps;
                     User.RaiseProgress($"Removing \"{instMod}\"", percent_complete);
-                    Uninstall(instMod.Module.identifier, ref possibleConfigOnlyDirs);
+                    Uninstall(instMod.Module.identifier, ref possibleConfigOnlyDirs, registry_manager.registry);
                 }
 
                 foreach (CkanModule module in add)
@@ -1030,7 +1025,7 @@ namespace CKAN
                     var previous = remove?.FirstOrDefault(im => im.Module.identifier == module.identifier);
                     int percent_complete = (step++ * 70) / totSteps;
                     User.RaiseProgress($"Installing \"{module}\"", percent_complete);
-                    Install(module, previous?.AutoInstalled ?? false);
+                    Install(module, previous?.AutoInstalled ?? false, registry_manager.registry);
                 }
 
                 User.RaiseProgress("Updating registry", 80);
@@ -1039,7 +1034,7 @@ namespace CKAN
                 User.RaiseProgress("Committing filesystem changes", 90);
                 tx.Complete();
 
-                EnforceCacheSizeLimit();
+                EnforceCacheSizeLimit(registry_manager.registry);
             }
         }
 
@@ -1048,10 +1043,10 @@ namespace CKAN
         /// Will *re-install* with warning even if an upgrade is not available.
         /// Throws ModuleNotFoundKraken if module is not installed, or not available.
         /// </summary>
-        public void Upgrade(IEnumerable<string> identifiers, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, bool enforceConsistency = true)
+        public void Upgrade(IEnumerable<string> identifiers, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true)
         {
             var resolver = new RelationshipResolver(identifiers.ToList(), null, RelationshipResolver.DependsOnlyOpts(), registry_manager.registry, ksp.VersionCriteria());
-            Upgrade(resolver.ModList(), netAsyncDownloader, ref possibleConfigOnlyDirs, enforceConsistency);
+            Upgrade(resolver.ModList(), netAsyncDownloader, ref possibleConfigOnlyDirs, registry_manager, enforceConsistency);
         }
 
         /// <summary>
@@ -1059,7 +1054,7 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, bool enforceConsistency = true)
+        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true)
         {
             modules = modules.Memoize();
             User.RaiseMessage("About to upgrade...\r\n");
@@ -1112,6 +1107,7 @@ namespace CKAN
 
             AddRemove(
                 ref possibleConfigOnlyDirs,
+                registry_manager,
                 modules,
                 to_remove,
                 enforceConsistency
@@ -1124,7 +1120,7 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Replace(IEnumerable<ModuleReplacement> replacements, RelationshipResolverOptions options, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, bool enforceConsistency = true)
+        public void Replace(IEnumerable<ModuleReplacement> replacements, RelationshipResolverOptions options, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true)
         {
             replacements = replacements.Memoize();
             log.Debug("Using Replace method");
@@ -1202,6 +1198,7 @@ namespace CKAN
                 var resolvedModsToInstall = resolver.ModList().ToList();
                 AddRemove(
                     ref possibleConfigOnlyDirs,
+                    registry_manager,
                     resolvedModsToInstall,
                     modsToRemove,
                     enforceConsistency
@@ -1243,12 +1240,13 @@ namespace CKAN
         public bool FindRecommendations(
             HashSet<CkanModule> sourceModules,
             HashSet<CkanModule> toInstall,
+            Registry registry,
             out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
             out Dictionary<CkanModule, List<string>> suggestions,
             out Dictionary<CkanModule, HashSet<string>> supporters
         )
         {
-            Dictionary<CkanModule, List<string>> dependersIndex = getDependersIndex(sourceModules, registry_manager.registry, toInstall);
+            Dictionary<CkanModule, List<string>> dependersIndex = getDependersIndex(sourceModules, registry, toInstall);
             recommendations = new Dictionary<CkanModule, Tuple<bool, List<string>>>();
             suggestions = new Dictionary<CkanModule, List<string>>();
             supporters = new Dictionary<CkanModule, HashSet<string>>();
@@ -1257,16 +1255,16 @@ namespace CKAN
                 foreach (RelationshipDescriptor rel in mod.recommends)
                 {
                     List<CkanModule> providers = rel.LatestAvailableWithProvides(
-                        registry_manager.registry,
+                        registry,
                         ksp.VersionCriteria()
                     );
                     foreach (CkanModule provider in providers)
                     {
-                        if (!registry_manager.registry.IsInstalled(provider.identifier)
+                        if (!registry.IsInstalled(provider.identifier)
                             && !toInstall.Any(m => m.identifier == provider.identifier)
                             && dependersIndex.TryGetValue(provider, out List<string> dependers)
                             && CanInstall(RelationshipResolver.DependsOnlyOpts(),
-                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList()))
+                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList(), registry))
                         {
                             dependersIndex.Remove(provider);
                             recommendations.Add(
@@ -1284,16 +1282,16 @@ namespace CKAN
                 foreach (RelationshipDescriptor rel in mod.suggests)
                 {
                     List<CkanModule> providers = rel.LatestAvailableWithProvides(
-                        registry_manager.registry,
+                        registry,
                         ksp.VersionCriteria()
                     );
                     foreach (CkanModule provider in providers)
                     {
-                        if (!registry_manager.registry.IsInstalled(provider.identifier)
+                        if (!registry.IsInstalled(provider.identifier)
                             && !toInstall.Any(m => m.identifier == provider.identifier)
                             && dependersIndex.TryGetValue(provider, out List<string> dependers)
                             && CanInstall(RelationshipResolver.DependsOnlyOpts(),
-                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList()))
+                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList(), registry))
                         {
                             dependersIndex.Remove(provider);
                             suggestions.Add(provider, dependers);
@@ -1303,8 +1301,8 @@ namespace CKAN
             }
 
             // Find installable modules with "supports" relationships
-            var candidates = registry_manager.registry.CompatibleModules(ksp.VersionCriteria())
-                .Where(mod => !registry_manager.registry.IsInstalled(mod.identifier)
+            var candidates = registry.CompatibleModules(ksp.VersionCriteria())
+                .Where(mod => !registry.IsInstalled(mod.identifier)
                     && !toInstall.Any(m => m.identifier == mod.identifier))
                 .Where(m => m?.supports != null);
             // Find each module that "supports" something we're installing
@@ -1331,7 +1329,8 @@ namespace CKAN
             }
             supporters.RemoveWhere(kvp => !CanInstall(
                 RelationshipResolver.DependsOnlyOpts(),
-                toInstall.ToList().Concat(new List<CkanModule>() { kvp.Key }).ToList()
+                toInstall.ToList().Concat(new List<CkanModule>() { kvp.Key }).ToList(),
+                registry
             ));
 
             return recommendations.Any() || suggestions.Any() || supporters.Any();
@@ -1354,7 +1353,7 @@ namespace CKAN
                         foreach (RelationshipDescriptor rel in relations)
                         {
                             List<CkanModule> providers = rel.LatestAvailableWithProvides(
-                                registry_manager.registry,
+                                registry,
                                 ksp.VersionCriteria()
                             );
                             foreach (CkanModule provider in providers)
@@ -1395,7 +1394,8 @@ namespace CKAN
         /// </returns>
         private bool CanInstall(
             RelationshipResolverOptions opts,
-            List<CkanModule>            toInstall
+            List<CkanModule>            toInstall,
+            Registry                    registry
         )
         {
             string request = toInstall.Select(m => m.identifier).Aggregate((a, b) => $"{a}, {b}");
@@ -1404,7 +1404,7 @@ namespace CKAN
                 RelationshipResolver resolver = new RelationshipResolver(
                     toInstall,
                     null,
-                    opts, registry_manager.registry, ksp.VersionCriteria()
+                    opts, registry, ksp.VersionCriteria()
                 );
 
                 if (resolver.ModList().Count() >= toInstall.Count(m => !m.IsMetapackage))
@@ -1430,7 +1430,7 @@ namespace CKAN
                 foreach (CkanModule mod in k.modules)
                 {
                     // Try each option recursively to see if any are successful
-                    if (CanInstall(opts, toInstall.Concat(new List<CkanModule>() { mod }).ToList()))
+                    if (CanInstall(opts, toInstall.Concat(new List<CkanModule>() { mod }).ToList(), registry))
                     {
                         // Child call will emit debug output, so we don't need to here
                         return true;
@@ -1457,9 +1457,8 @@ namespace CKAN
         /// <param name="user">Object for user interaction</param>
         /// <param name="installMod">Function to call to mark a mod for installation</param>
         /// <param name="allowDelete">True to ask user whether to delete imported files, false to leave the files as is</param>
-        public void ImportFiles(HashSet<FileInfo> files, IUser user, Action<CkanModule> installMod, bool allowDelete = true)
+        public void ImportFiles(HashSet<FileInfo> files, IUser user, Action<CkanModule> installMod, Registry registry, bool allowDelete = true)
         {
-            Registry            registry    = registry_manager.registry;
             HashSet<CkanModule> installable = new HashSet<CkanModule>();
             List<FileInfo>      deletable   = new List<FileInfo>();
             // Get the mapping of known hashes to modules
@@ -1516,16 +1515,16 @@ namespace CKAN
                 }
             }
 
-            EnforceCacheSizeLimit();
+            EnforceCacheSizeLimit(registry);
         }
 
-        private void EnforceCacheSizeLimit()
+        private void EnforceCacheSizeLimit(Registry registry)
         {
             // Purge old downloads if we're over the limit
             IConfiguration winReg = ServiceLocator.Container.Resolve<IConfiguration>();
             if (winReg.CacheSizeLimit.HasValue)
             {
-                Cache.EnforceSizeLimit(winReg.CacheSizeLimit.Value, registry_manager.registry);
+                Cache.EnforceSizeLimit(winReg.CacheSizeLimit.Value, registry);
             }
         }
 

@@ -20,6 +20,7 @@ namespace Tests.GUI
         private CkanModule _anyVersionModule;
         private DisposableKSP _instance;
         private KSPManager _manager;
+        private RegistryManager _registryManager;
         private Registry _registry;
         private MainModList _modList;
         private MainModListGUI _listGui;
@@ -52,6 +53,7 @@ namespace Tests.GUI
         public void Up()
         {
             _instance = new DisposableKSP();
+            _registryManager = RegistryManager.Instance(_instance.KSP);
             _registry = Registry.Empty();
             _manager = new KSPManager(
                 new NullUser(),
@@ -69,6 +71,7 @@ namespace Tests.GUI
             ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
                 new List<CkanModule> { { _anyVersionModule } },
                 new RelationshipResolverOptions(),
+                _registryManager,
                 new NetAsyncModulesDownloader(_manager.User, _manager.Cache)
             );
 
@@ -138,6 +141,7 @@ namespace Tests.GUI
                 ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
                     _modList.ComputeUserChangeSet(null).Select(change => change.Mod).ToList(),
                     new RelationshipResolverOptions(),
+                    _registryManager,
                     new NetAsyncModulesDownloader(_manager.User, _manager.Cache)
                 );
 

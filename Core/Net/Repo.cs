@@ -76,7 +76,7 @@ namespace CKAN
                 List<CkanModule> metadataChanges = GetChangedInstalledModules(registry_manager.registry);
                 if (metadataChanges.Count > 0)
                 {
-                    HandleModuleChanges(metadataChanges, user, ksp, cache);
+                    HandleModuleChanges(metadataChanges, user, ksp, cache, registry_manager);
                 }
 
                 // Registry.CompatibleModules is slow, just return success,
@@ -181,7 +181,7 @@ namespace CKAN
         /// <param name="metadataChanges">List of modules that changed</param>
         /// <param name="user">Object for user interaction callbacks</param>
         /// <param name="ksp">Game instance</param>
-        private static void HandleModuleChanges(List<CkanModule> metadataChanges, IUser user, KSP ksp, NetModuleCache cache)
+        private static void HandleModuleChanges(List<CkanModule> metadataChanges, IUser user, KSP ksp, NetModuleCache cache, RegistryManager registry_manager)
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < metadataChanges.Count; i++)
@@ -214,6 +214,7 @@ Do you wish to reinstall now?", sb)))
                             new[] { changedIdentifier },
                             new NetAsyncModulesDownloader(new NullUser(), cache),
                             ref possibleConfigOnlyDirs,
+                            registry_manager,
                             enforceConsistency: false
                         );
                     }
