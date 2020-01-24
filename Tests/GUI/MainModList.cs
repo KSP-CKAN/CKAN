@@ -18,7 +18,7 @@ namespace Tests.GUI
         [Test]
         public void OnCreation_HasDefaultFilters()
         {
-            var item = new MainModList(delegate { }, delegate { return null; });
+            var item = new MainModList(delegate { });
             Assert.AreEqual(GUIModFilter.Compatible, item.ModFilter, "ModFilter");
             Assert.AreEqual(String.Empty, item.ModNameFilter, "ModNameFilter");
         }
@@ -27,7 +27,7 @@ namespace Tests.GUI
         public void OnModTextFilterChanges_CallsEventHandler()
         {
             var called_n = 0;
-            var item = new MainModList(delegate { called_n++; }, delegate { return null; });
+            var item = new MainModList(delegate { called_n++; });
             Assert.That(called_n == 1);
             item.ModNameFilter = "randomString";
             Assert.That(called_n == 2);
@@ -38,7 +38,7 @@ namespace Tests.GUI
         public void OnModTypeFilterChanges_CallsEventHandler()
         {
             var called_n = 0;
-            var item = new MainModList(delegate { called_n++; }, delegate { return null; });
+            var item = new MainModList(delegate { called_n++; });
             Assert.That(called_n == 1);
             item.ModFilter = GUIModFilter.Installed;
             Assert.That(called_n == 2);
@@ -49,7 +49,7 @@ namespace Tests.GUI
         [Test]
         public void ComputeChangeSetFromModList_WithEmptyList_HasEmptyChangeSet()
         {
-            var item = new MainModList(delegate { }, delegate { return null; });
+            var item = new MainModList(delegate { });
             Assert.That(item.ComputeUserChangeSet(null), Is.Empty);
         }
 
@@ -68,7 +68,7 @@ namespace Tests.GUI
                 var ckan_mod = TestData.FireSpitterModule();
                 var registry = Registry.Empty();
                 registry.AddAvailable(ckan_mod);
-                var item = new MainModList(delegate { }, null);
+                var item = new MainModList(delegate { });
                 Assert.That(item.IsVisible(
                     new GUIMod(ckan_mod, registry, manager.CurrentInstance.VersionCriteria()),
                     manager.CurrentInstance.Name
@@ -81,7 +81,7 @@ namespace Tests.GUI
         [Test]
         public void CountModsByFilter_EmptyModList_ReturnsZeroForAllFilters()
         {
-            var item = new MainModList(delegate { }, null);
+            var item = new MainModList(delegate { });
             foreach (GUIModFilter filter in Enum.GetValues(typeof(GUIModFilter)))
             {
                 Assert.That(item.CountModsByFilter(filter), Is.EqualTo(0));
@@ -104,7 +104,7 @@ namespace Tests.GUI
                 var registry = Registry.Empty();
                 registry.AddAvailable(TestData.FireSpitterModule());
                 registry.AddAvailable(TestData.kOS_014_module());
-                var main_mod_list = new MainModList(null, null);
+                var main_mod_list = new MainModList(null);
                 var mod_list = main_mod_list.ConstructModList(
                     new List<GUIMod>
                     {

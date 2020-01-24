@@ -199,7 +199,5 @@ namespace CKAN
             parser.WriteFile(handlerPath, data);
             AutoUpdate.SetExecutable(handlerPath);
         }
-
     }
-
 }

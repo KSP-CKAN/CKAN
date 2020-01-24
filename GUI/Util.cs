@@ -1,7 +1,5 @@
 using System;
-﻿using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Drawing;
 
@@ -81,7 +79,7 @@ namespace CKAN
         /// <param name="url">The URL</param>
         public static void OpenLinkFromLinkLabel(string url)
         {
-            if (url == Properties.Resources.MainModInfoNSlashA)
+            if (url == Properties.Resources.ModInfoNSlashA)
             {
                 return;
             }
@@ -211,6 +209,5 @@ namespace CKAN
             // then place our window at an offset within the box
             return ClampedLocation(location - topLeftMargin, size + topLeftMargin + bottomRightMargin, screen) + topLeftMargin;
         }
-
     }
 }

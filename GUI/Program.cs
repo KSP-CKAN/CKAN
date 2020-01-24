@@ -6,9 +6,8 @@ namespace CKAN
 {
     public static class GUI
     {
-        internal static GUIUser user = new GUIUser();
         /// <summary>
-        ///     The main entry point for the application.
+        /// The main entry point for the application.
         /// </summary>
         [STAThread]
         public static void Main(string[] args)
@@ -26,14 +25,14 @@ namespace CKAN
 
             if (args.Contains(URLHandlers.UrlRegistrationArgument))
             {
-                //Passing in null will cause a NullRefrenceException if it tries to show the dialog
+                //Passing in null will cause a NullReferenceException if it tries to show the dialog
                 //asking for elevation permission, but we want that to happen. Doing that keeps us
                 //from getting in to a infinite loop of trying to register.
                 URLHandlers.RegisterURLHandler(null, null);
             }
             else
             {
-                new Main(args, manager, user, showConsole);
+                new Main(args, manager, showConsole);
             }
         }
 
@@ -43,7 +42,7 @@ namespace CKAN
 
             // Provide a stack backtrace, so our users and non-debugging devs can
             // see what's gone wrong.
-            user.RaiseError("Unhandled exception:\r\n{0} ", exception.ToString());
+            CKAN.Main.Instance.ErrorDialog("Unhandled exception:\r\n{0} ", exception.ToString());
         }
     }
 }

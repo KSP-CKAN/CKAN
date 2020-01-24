@@ -39,6 +39,20 @@ namespace CKAN.Extensions
                 return new Memoized<T>(source);
             }
         }
+
+        public static void RemoveWhere<K, V>(
+            this Dictionary<K, V> source,
+            Func<KeyValuePair<K, V>, bool> predicate)
+        {
+            var pairs = source.ToList();
+            foreach (var kvp in pairs)
+            {
+                if (predicate(kvp))
+                {
+                    source.Remove(kvp.Key);
+                }
+            }
+        }
     }
 
     /// <summary>

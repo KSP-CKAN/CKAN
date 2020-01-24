@@ -1,5 +1,3 @@
-using System;
-
 namespace CKAN
 {
     /// <summary>
@@ -7,6 +5,15 @@ namespace CKAN
     /// </summary>
     public class GUIUser : IUser
     {
+        public GUIUser(Main main, Wait wait)
+        {
+            this.main = main;
+            this.wait = wait;
+        }
+
+        private Main main;
+        private Wait wait;
+
         /// <summary>
         /// A GUIUser is obviously not headless. Returns false.
         /// </summary>
@@ -21,9 +28,9 @@ namespace CKAN
         /// </summary>
         /// <returns><c>true</c> if user pressed yes, <c>false</c> if no.</returns>
         /// <param name="question">Question.</param>
-        public bool RaiseYesNoDialog (string question)
+        public bool RaiseYesNoDialog(string question)
         {
-            return Main.Instance.YesNoDialog(question);
+            return main.YesNoDialog(question);
         }
 
         /// <summary>
@@ -34,7 +41,7 @@ namespace CKAN
         /// <param name="args">Array of offered options.</param>
         public int RaiseSelectionDialog(string message, params object[] args)
         {
-            return Main.Instance.SelectionDialog(message, args);
+            return main.SelectionDialog(message, args);
         }
 
         /// <summary>
@@ -42,9 +49,9 @@ namespace CKAN
         /// </summary>
         /// <param name="message">Message.</param>
         /// <param name="args">Arguments to format the message.</param>
-        public void RaiseError (string message, params object[] args)
+        public void RaiseError(string message, params object[] args)
         {
-            Main.Instance.ErrorDialog(message, args);
+            main.ErrorDialog(message, args);
         }
 
         /// <summary>
@@ -52,10 +59,10 @@ namespace CKAN
         /// </summary>
         /// <param name="message">Message.</param>
         /// <param name="percent">Progress in percent.</param>
-        public void RaiseProgress( string message, int percent)
+        public void RaiseProgress(string message, int percent)
         {
-            Main.Instance.SetDescription($"{message} - {percent}%");
-            Main.Instance.SetProgress(percent);
+            wait.SetDescription($"{message} - {percent}%");
+            main.SetProgress(percent);
         }
 
         /// <summary>
@@ -64,10 +71,9 @@ namespace CKAN
         /// </summary>
         /// <param name="message">Message.</param>
         /// <param name="args">Arguments to fromat the message.</param>
-        public void RaiseMessage (string message, params object[] args)
+        public void RaiseMessage(string message, params object[] args)
         {
-            Main.Instance.AddStatusMessage(message, args);
+            main.AddStatusMessage(message, args);
         }
     }
-
 }

@@ -181,11 +181,11 @@
   <data name="MainPlainText" xml:space="preserve"><value>Klartext (*.txt)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Nicht gefunden.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Möchtest du {0} neu installieren?</value></data>
-  <data name="MainAllModVersionsInstallPrompt" xml:space="preserve"><value>{0} wird von Ihrer aktuellen Spielversion nicht unterstützt und funktioniert möglicherweise überhaupt nicht. Wenn Sie Probleme damit haben, sollten Sie die Betreuer NICHT um Hilfe bitten.
+  <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} wird von Ihrer aktuellen Spielversion nicht unterstützt und funktioniert möglicherweise überhaupt nicht. Wenn Sie Probleme damit haben, sollten Sie die Betreuer NICHT um Hilfe bitten.
 
 Möchten Sie es wirklich installieren?</value></data>
-  <data name="MainAllModVersionsInstallYes" xml:space="preserve"><value>Installieren</value></data>
-  <data name="MainAllModVersionsInstallNo" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Installieren</value></data>
+  <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Abbrechen</value></data>
   <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (Metapacket)</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Mod-Update ausgewählt vom Nutzer {0}.</value></data>
   <data name="MainChangesetNewInstall" xml:space="preserve"><value>Neue Mod-Installation ausgewählt vom Nutzer.</value></data>
@@ -247,10 +247,10 @@ Einstellungen jetzt öffnen?</value>
   <data name="MainInstallUnknownError" xml:space="preserve"><value>Ein unbekannter Fehler ist aufgetreten, bitte versuche es erneut!</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>Installation fehlgeschlagen!</value></data>
   <data name="MainInstallProvidedBy" xml:space="preserve"><value>Modul {0} wird von mehr als einem verfügbaren Modul bereitgestellt, bitte wähle eine der folgenden Mods:</value></data>
-  <data name="MainModInfoVirtual" xml:space="preserve"><value>{0} (virtuell)</value></data>
-  <data name="MainModInfoNotIndexed" xml:space="preserve"><value>{0} (nicht indiziert)</value></data>
-  <data name="MainModInfoNotCached" xml:space="preserve"><value>Diese Mod ist nicht im Cache, klicke auf 'Download' um eine Inhaltsübersicht zu erhalten.</value></data>
-  <data name="MainModInfoCached" xml:space="preserve"><value>Modul ist im Cache, Vorschau verfügbar</value></data>
+  <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (virtuell)</value></data>
+  <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (nicht indiziert)</value></data>
+  <data name="ModInfoNotCached" xml:space="preserve"><value>Diese Mod ist nicht im Cache, klicke auf 'Download' um eine Inhaltsübersicht zu erhalten.</value></data>
+  <data name="ModInfoCached" xml:space="preserve"><value>Modul ist im Cache, Vorschau verfügbar</value></data>
   <data name="MainModListWaitTitle" xml:space="preserve"><value>Module laden</value></data>
   <data name="MainModListLoadingRegistry" xml:space="preserve"><value>Lade Registry...</value></data>
   <data name="MainModListLoadingInstalled" xml:space="preserve"><value>Lade installierte Module...</value></data>

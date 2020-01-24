@@ -222,29 +222,8 @@
   <data name="FilterByDescriptionTextBox.Location" type="System.Drawing.Point, System.Drawing"><value>955, 74</value></data>
   <data name="FilterByDescriptionTextBox.Size" type="System.Drawing.Size, System.Drawing"><value>170, 26</value></data>
   <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Änderungen</value></data>
-  <data name="CancelChangesButton.Text" xml:space="preserve"><value>Löschen</value></data>
-  <data name="ConfirmChangesButton.Text" xml:space="preserve"><value>Annehmen</value></data>
-  <data name="ChangeType.Text" xml:space="preserve"><value>Änderung</value></data>
-  <data name="Reason.Text" xml:space="preserve"><value>Grund</value></data>
   <data name="WaitTabPage.Text" xml:space="preserve"><value>Statuslog</value></data>
-  <data name="CancelCurrentActionButton.Text" xml:space="preserve"><value>Abbrechen</value></data>
-  <data name="RetryCurrentActionButton.Text" xml:space="preserve"><value>Erneut versuchen</value></data>
-  <data name="MessageTextBox.Text" xml:space="preserve"><value>Auf Fertigstellung warten</value></data>
   <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Wähle Empfehlungen und Vorschläge aus</value></data>
-  <data name="RecommendedModsCancelButton.Text" xml:space="preserve"><value>Abbrechen</value></data>
-  <data name="RecommendedModsContinueButton.Text" xml:space="preserve"><value>Fortsetzen</value></data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve"><value>Alle Empfehlungen und Vorschläge ab-/auswählen</value></data>
-  <data name="RecommendedDialogLabel.Text" xml:space="preserve"><value>Die folgenden Module wurden von mindestens einer ausgewählten Mod empfohlen oder vorgeschlagen</value></data>
-  <data name="RecommendationsGroup.Header" xml:space="preserve"><value>Empfehlungen</value></data>
-  <data name="SuggestionsGroup.Header" xml:space="preserve"><value>Vorschläge</value></data>
-  <data name="SupportedByGroup.Header" xml:space="preserve"><value>Unterstützt durch</value></data>
-  <data name="columnHeader4.Text" xml:space="preserve"><value>Empfohlen/vorgeschlagen von:</value></data>
-  <data name="columnHeader5.Text" xml:space="preserve"><value>Kurzbeschreibung</value></data>
-  <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Wähle Mods</value></data>
-  <data name="ChooseProvidedModsCancelButton.Text" xml:space="preserve"><value>Abbrechen</value></data>
-  <data name="ChooseProvidedModsContinueButton.Text" xml:space="preserve"><value>Fortfahren</value></data>
-  <data name="columnHeader8.Text" xml:space="preserve"><value>Kurzbeschreibung der Mod</value></data>
-  <data name="ChooseProvidedModsLabel.Text" xml:space="preserve"><value>Mehrere Mods stellen das virtuelle Modul Foo zur Verfügung, wähle eine der folgenden Mods:</value></data>
   <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>N verfügbare Updates</value></data>
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Aktualisieren</value></data>
   <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>Anhalten</value></data>

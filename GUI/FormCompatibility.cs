@@ -15,10 +15,8 @@ namespace CKAN
         {
             if (!Platform.IsWindows)
             {
-                ClientSize = new Size(ClientSize.Width, ClientSize.Height + formHeightDifference);      
+                ClientSize = new Size(ClientSize.Width, ClientSize.Height + formHeightDifference);
             }
         }
-
     }
-
 }

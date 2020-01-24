@@ -37,6 +37,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Only stage auto-epoch when creating new file (#2947 by: HebaruSan; reviewed: DasSkelett)
 - [Build] Use Mono 6.6 and more recent versions of everything else (#2964 by: HebaruSan; reviewed: DasSkelett, Olympic1)
 - [Netkan] Stage modules with hardcoded game versions (#2970 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Move GUI files into subfolders, split controls out from Main (#2966 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.6 (Leonov)
 

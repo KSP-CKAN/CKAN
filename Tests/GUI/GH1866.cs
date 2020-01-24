@@ -76,7 +76,7 @@ namespace Tests.GUI
             _registry.AddAvailable(TestData.kOS_014_module());
 
             // test object
-            _modList = new MainModList(null, null, _manager.User);
+            _modList = new MainModList(null, _manager.User);
             _listGui = new MainModListGUI();
 
             // todo: refactor the column header code to allow mocking of the GUI without creating columns
