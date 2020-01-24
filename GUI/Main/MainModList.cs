@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,7 +8,6 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using CKAN.Versioning;
-using log4net;
 
 namespace CKAN
 {
@@ -275,9 +273,9 @@ namespace CKAN
 
                 UpdateAllToolButton.Enabled = has_any_updates;
             });
-            
+
             (registry as Registry)?.BuildTagIndex(mainModList.ModuleTags);
-            
+
             UpdateFilters(this);
 
             // Hide update and replacement columns if not needed.
@@ -385,7 +383,7 @@ namespace CKAN
                     })
                     .ToArray()
                 );
-                
+
                 // Separator
                 ModListHeaderContextMenuStrip.Items.Add(new ToolStripSeparator());
 
@@ -734,7 +732,7 @@ namespace CKAN
 
         public readonly ModuleLabelList ModuleLabels = ModuleLabelList.Load(ModuleLabelList.DefaultPath)
             ?? ModuleLabelList.GetDefaultLabels();
-            
+
         public readonly ModuleTagList ModuleTags = ModuleTagList.Load(ModuleTagList.DefaultPath)
             ?? new ModuleTagList();
 
@@ -1054,7 +1052,7 @@ namespace CKAN
 
             return item;
         }
-        
+
         public Color GetRowBackground(GUIMod mod, bool conflicted, string instanceName)
         {
             if (conflicted)

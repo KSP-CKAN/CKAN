@@ -1,8 +1,7 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using CKAN.Extensions;
 

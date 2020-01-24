@@ -1,5 +1,3 @@
-using System;
-
 namespace CKAN
 {
     /// <summary>
@@ -78,5 +76,4 @@ namespace CKAN
             main.AddStatusMessage(message, args);
         }
     }
-
 }

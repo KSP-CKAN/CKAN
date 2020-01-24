@@ -24,5 +24,4 @@ namespace CKAN
             return AdditionalArguments.Text;
         }
     }
-
 }

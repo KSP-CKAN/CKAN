@@ -1,16 +1,11 @@
-using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Drawing;
-using System.ComponentModel;
 using System.Windows.Forms;
-using CKAN.Extensions;
 
 namespace CKAN
 {
     public partial class Main
     {
-
         public void UpdateChangesDialog(List<ModChange> changeset)
         {
             Changeset.LoadChangeset(
@@ -60,6 +55,5 @@ namespace CKAN
                 mod.SetReplaceChecked(row, ReplaceCol, false);
             }
         }
-
     }
 }

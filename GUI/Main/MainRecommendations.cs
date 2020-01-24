@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using CKAN.Extensions;
@@ -13,7 +12,6 @@ namespace CKAN
 
     public partial class Main
     {
-
         private void ChooseRecommendedMods_OnSelectedItemsChanged(ListView.SelectedListViewItemCollection items)
         {
             ShowSelectionModInfo(items);
@@ -62,6 +60,5 @@ namespace CKAN
                 currentUser.RaiseError(Properties.Resources.MainRecommendationsNoneFound);
             }
         }
-
     }
 }

@@ -1,14 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using CKAN.Extensions;
-using CKAN.Types;
 
 namespace CKAN
 {
@@ -428,6 +423,5 @@ namespace CKAN
             Util.Invoke(this, () => Enabled = true);
             Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
         }
-
     }
 }

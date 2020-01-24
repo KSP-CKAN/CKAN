@@ -1,9 +1,7 @@
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Linq;
 using CKAN.Versioning;
 using log4net;
 using CKAN.Configuration;

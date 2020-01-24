@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using CKAN.Versioning;
@@ -40,7 +39,7 @@ namespace CKAN
                         e.NewValue = CheckState.Unchecked;
                     }
                     break;
-                
+
                 case CheckState.Unchecked:
                     // Remove or cancel installation
                     visibleGuiModule.SelectedMod = null;
@@ -56,7 +55,7 @@ namespace CKAN
                     Properties.Resources.AllModVersionsInstallYes,
                     Properties.Resources.AllModVersionsInstallNo);
         }
-        
+
         private void visibleGuiModule_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)

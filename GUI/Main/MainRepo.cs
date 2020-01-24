@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Net;
 using System.Timers;
 using System.Linq;
 using Newtonsoft.Json;
@@ -11,7 +10,6 @@ using Autofac;
 
 namespace CKAN
 {
-
     public partial class Main
     {
         private BackgroundWorker m_UpdateRepoWorker;
@@ -68,7 +66,7 @@ namespace CKAN
             {
                 AddStatusMessage(Properties.Resources.MainRepoScanning);
                 bool scanChanged = CurrentInstance.ScanGameData();
-    
+
                 AddStatusMessage(Properties.Resources.MainRepoUpdating);
 
                 // Note the current mods' compatibility for the NewlyCompatible filter
@@ -224,6 +222,5 @@ namespace CKAN
                 )
             );
         }
-
     }
 }

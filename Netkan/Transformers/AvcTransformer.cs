@@ -114,8 +114,8 @@ namespace CKAN.NetKAN.Transformers
             var existingKspMax = existingKspMaxStr == null ? null : KspVersion.Parse(existingKspMaxStr);
 
             // Get the minimum and maximum KSP versions that are in the AVC file.
-            // http://ksp.cybutek.net/kspavc/Documents/README.htm
-            // KSP-AVC allows (requires?) KSP_VERSION to be set
+            // https://github.com/linuxgurugamer/KSPAddonVersionChecker/blob/master/KSP-AVC.schema.json
+            // KSP-AVC allows KSP_VERSION to be set
             // when KSP_VERSION_MIN/_MAX are set, but CKAN treats
             // its equivalent properties as mutually exclusive.
             // Only fallback if neither min nor max are defined,

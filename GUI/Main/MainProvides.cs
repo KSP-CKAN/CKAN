@@ -1,14 +1,9 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
 using System.Windows.Forms;
 
 namespace CKAN
 {
     public partial class Main
     {
-
         private void ChooseProvidedMods_OnSelectedItemsChanged(ListView.SelectedListViewItemCollection items)
         {
             ShowSelectionModInfo(items);
@@ -21,6 +16,5 @@ namespace CKAN
             tabController.SetTabLock(true);
             return ChooseProvidedMods.Wait();
         }
-
-	}
+    }
 }

@@ -16,7 +16,7 @@ namespace CKAN
             FriendlyName = friendlyName;
             Extension = extension;
 
-            _string = string.Format("{0}|{1}", FriendlyName, "*." + Extension);
+            _string = $"{FriendlyName}|*.{Extension}";
         }
 
         public override string ToString()

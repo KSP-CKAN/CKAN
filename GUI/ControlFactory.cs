@@ -3,14 +3,12 @@ using System.Threading;
 
 namespace CKAN
 {
-
-    // this class ensures that all controls are created from the same thread
-    // this is a mono limitation described here - http://www.mono-project.com/docs/faq/winforms/
-
-
+    /// <summary>
+    /// This class ensures that all controls are created from the same thread.
+    /// This is a mono limitation described here - http://www.mono-project.com/docs/faq/winforms/
+    /// </summary>
     public class ControlFactory
     {
-
         private int m_MainThreadID;
 
         public ControlFactory()
@@ -27,8 +25,5 @@ namespace CKAN
 
             return new T();
         }
-        
-
     }
-
 }

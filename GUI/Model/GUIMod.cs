@@ -447,6 +447,5 @@ namespace CKAN
         {
             return $"{ToModule()}";
         }
-
     }
 }

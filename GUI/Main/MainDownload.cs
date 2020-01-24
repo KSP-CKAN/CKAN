@@ -78,6 +78,5 @@ namespace CKAN
             // User might have selected another row. Show current in tree.
             UpdateModContentsTree(ModInfo.SelectedModule.ToCkanModule(), true);
         }
-
     }
 }

@@ -1,11 +1,9 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
-using System.Threading.Tasks;
 using CKAN.Versioning;
 
 namespace CKAN

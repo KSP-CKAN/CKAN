@@ -5,10 +5,8 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-
     public partial class Main
     {
-
         private void importDownloadsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ImportModules();
@@ -80,7 +78,5 @@ namespace CKAN
             }
             return gameInst.GameDir();
         }
-
     }
-
 }

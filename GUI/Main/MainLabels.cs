@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.ComponentModel;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using CKAN.Extensions;
@@ -17,7 +16,7 @@ namespace CKAN
             FilterTagsToolButton_DropDown_Opening(null, null);
             FilterLabelsToolButton_DropDown_Opening(null, null);
         }
-        
+
         private void FilterTagsToolButton_DropDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             FilterTagsToolButton.DropDownItems.Clear();

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace CKAN
 {
-
     [XmlRootAttribute("Configuration")]
     public class GUIConfiguration
     {

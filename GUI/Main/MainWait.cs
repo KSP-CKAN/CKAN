@@ -87,6 +87,5 @@ namespace CKAN
                 cancelCallback();
             }
         }
-
     }
 }

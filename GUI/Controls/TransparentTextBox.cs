@@ -1,5 +1,4 @@
-﻿using System;
-namespace CKAN
+﻿namespace CKAN
 {
     /// <summary>
     /// Create a new TransparentTextBox control that allows the backcolor of textboxes to be transparent.
