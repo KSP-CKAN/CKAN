@@ -29,6 +29,7 @@ namespace CKAN.NetKAN.Transformers
             var ghApi = new GithubApi(http, githubToken);
             _transformers = InjectVersionedOverrideTransformers(new List<ITransformer>
             {
+                new StagingTransformer(),
                 new MetaNetkanTransformer(http, ghApi),
                 new SpacedockTransformer(new SpacedockApi(http)),
                 new CurseTransformer(new CurseApi(http)),

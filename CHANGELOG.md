@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Catch nested GameData folders in Netkan (#2948 by: HebaruSan; reviewed: techman83)
 - [Netkan] Only stage auto-epoch when creating new file (#2947 by: HebaruSan; reviewed: DasSkelett)
 - [Build] Use Mono 6.6 and more recent versions of everything else (#2964 by: HebaruSan; reviewed: DasSkelett, Olympic1)
+- [Netkan] Stage modules with hardcoded game versions (#2970 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.6 (Leonov)
 
