@@ -492,7 +492,7 @@ namespace CKAN
 
         public bool Equals(KSP other)
         {
-            return other != null ? gameDir.Equals(other.GameDir()) : base.Equals(other);
+            return other != null && gameDir.Equals(other.GameDir());
         }
 
         public override bool Equals(object obj)

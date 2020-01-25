@@ -128,7 +128,6 @@ namespace CKAN.CmdLine
             }
 
             RegistryManager regMgr = RegistryManager.Instance(ksp);
-            IRegistryQuerier registry = regMgr.registry;
             List<string> modules = options.modules;
 
             for (bool done = false; !done; )
