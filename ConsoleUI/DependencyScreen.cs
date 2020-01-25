@@ -151,7 +151,7 @@ namespace CKAN.ConsoleUI {
         private void generateList(HashSet<CkanModule> inst)
         {
             if (installer.FindRecommendations(
-                inst, inst,
+                inst, inst, registry as Registry,
                 out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                 out Dictionary<CkanModule, List<string>> suggestions,
                 out Dictionary<CkanModule, HashSet<string>> supporters

@@ -166,7 +166,7 @@ namespace CKAN
         /// <param name="existingInstance">The KSP instance to clone.</param>
         /// <param name="newName">The name for the new instance.</param>
         /// <param name="newPath">The path where the new instance should be located.</param>
-        public void CloneInstance (KSP existingInstance, string newName, string newPath)
+        public void CloneInstance(KSP existingInstance, string newName, string newPath)
         {
             if (HasInstance(newName))
             {
@@ -382,16 +382,11 @@ namespace CKAN
             }
 
             // Don't try to Dispose a null CurrentInstance.
-            if (CurrentInstance != null)
+            if (CurrentInstance != null && !CurrentInstance.Equals(instances[name]))
             {
                 // Dispose of the old registry manager, to release the registry.
-                var manager = RegistryManager.Instance(CurrentInstance);
-                if (manager != null)
-                {
-                    manager.Dispose();
-                }
+                RegistryManager.Instance(CurrentInstance)?.Dispose();
             }
-
             CurrentInstance = instances[name];
         }
 

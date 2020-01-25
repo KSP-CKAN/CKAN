@@ -127,7 +127,7 @@ namespace CKAN.CmdLine
                 install_ops.without_enforce_consistency = true;
             }
 
-            IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
+            RegistryManager regMgr = RegistryManager.Instance(ksp);
             List<string> modules = options.modules;
 
             for (bool done = false; !done; )
@@ -136,7 +136,7 @@ namespace CKAN.CmdLine
                 try
                 {
                     var installer = ModuleInstaller.GetInstance(ksp, manager.Cache, user);
-                    installer.InstallList(modules, install_ops);
+                    installer.InstallList(modules, install_ops, regMgr);
                     user.RaiseMessage("\r\n");
                     done = true;
                 }

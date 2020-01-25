@@ -31,7 +31,7 @@ namespace CKAN.ConsoleUI {
                 ProgressScreen  ps   = new ProgressScreen("Importing Downloads", "Calculating...");
                 ModuleInstaller inst = ModuleInstaller.GetInstance(gameInst, cache, ps);
                 ps.Run(() => inst.ImportFiles(files, ps,
-                    (CkanModule mod) => cp.Install.Add(mod)));
+                    (CkanModule mod) => cp.Install.Add(mod), RegistryManager.Instance(gameInst).registry));
                 // Don't let the installer re-use old screen references
                 inst.User = null;
             }

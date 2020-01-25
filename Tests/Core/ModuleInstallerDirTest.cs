@@ -19,6 +19,7 @@ namespace Tests.Core
     {
         private KSPManager           _manager;
         private DisposableKSP        _instance;
+        private CKAN.RegistryManager _registryManager;
         private CKAN.Registry        _registry;
         private CKAN.ModuleInstaller _installer;
         private CkanModule           _testModule;
@@ -38,7 +39,8 @@ namespace Tests.Core
 
             _manager   = new KSPManager(_nullUser);
             _instance  = new DisposableKSP();
-            _registry  = CKAN.RegistryManager.Instance(_instance.KSP).registry;
+            _registryManager = CKAN.RegistryManager.Instance(_instance.KSP);
+            _registry  = _registryManager.registry;
             _installer = CKAN.ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _nullUser);
 
             _gameDataDir = _instance.KSP.GameData();
@@ -47,7 +49,8 @@ namespace Tests.Core
             _manager.Cache.Store(_testModule, testModFile);
             _installer.InstallList(
                 new List<string>() { _testModule.identifier },
-                new RelationshipResolverOptions()
+                new RelationshipResolverOptions(),
+                _registryManager
             );
         }
 

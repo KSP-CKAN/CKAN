@@ -440,7 +440,7 @@ namespace Tests.Core
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
                     // This should throw, as our tidy KSP has no mods installed.
-                    CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList("Foo", ref possibleConfigOnlyDirs);
+                    CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList("Foo", ref possibleConfigOnlyDirs, CKAN.RegistryManager.Instance(manager.CurrentInstance));
                 });
 
                 manager.CurrentInstance = null; // I weep even more.
@@ -487,7 +487,7 @@ namespace Tests.Core
                 // Attempt to install it.
                 List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
 
-                CKAN.ModuleInstaller.GetInstance(ksp.KSP, manager.Cache, nullUser).InstallList(modules, new RelationshipResolverOptions());
+                CKAN.ModuleInstaller.GetInstance(ksp.KSP, manager.Cache, nullUser).InstallList(modules, new RelationshipResolverOptions(), CKAN.RegistryManager.Instance(manager.CurrentInstance));
 
                 // Check that the module is installed.
                 Assert.IsTrue(File.Exists(mod_file_path));
@@ -522,7 +522,7 @@ namespace Tests.Core
                 };
                 
                 // Act
-                inst.InstallList(modules, new RelationshipResolverOptions());
+                inst.InstallList(modules, new RelationshipResolverOptions(), CKAN.RegistryManager.Instance(manager.CurrentInstance));
                 
                 // Assert
                 Assert.IsTrue(File.Exists(mod_file_path));
@@ -555,14 +555,14 @@ namespace Tests.Core
 
                 List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
 
-                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).InstallList(modules, new RelationshipResolverOptions());
+                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).InstallList(modules, new RelationshipResolverOptions(), CKAN.RegistryManager.Instance(manager.CurrentInstance));
 
                 // Check that the module is installed.
                 Assert.IsTrue(File.Exists(mod_file_path));
 
                 // Attempt to uninstall it.
                 HashSet<string> possibleConfigOnlyDirs = null;
-                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList(modules, ref possibleConfigOnlyDirs);
+                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList(modules, ref possibleConfigOnlyDirs, CKAN.RegistryManager.Instance(manager.CurrentInstance));
 
                 // Check that the module is not installed.
                 Assert.IsFalse(File.Exists(mod_file_path));
@@ -596,7 +596,7 @@ namespace Tests.Core
 
                 List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
 
-                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).InstallList(modules, new RelationshipResolverOptions());
+                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).InstallList(modules, new RelationshipResolverOptions(), CKAN.RegistryManager.Instance(manager.CurrentInstance));
 
                 modules.Clear();
 
@@ -606,7 +606,7 @@ namespace Tests.Core
 
                 modules.Add(TestData.DogeCoinPlugin_module().identifier);
 
-                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).InstallList(modules, new RelationshipResolverOptions());
+                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).InstallList(modules, new RelationshipResolverOptions(), CKAN.RegistryManager.Instance(manager.CurrentInstance));
 
                 modules.Clear();
 
@@ -619,7 +619,7 @@ namespace Tests.Core
                 modules.Add(TestData.DogeCoinPlugin_module().identifier);
 
                 HashSet<string> possibleConfigOnlyDirs = null;
-                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList(modules, ref possibleConfigOnlyDirs);
+                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList(modules, ref possibleConfigOnlyDirs, CKAN.RegistryManager.Instance(manager.CurrentInstance));
 
                 // Check that the directory has been deleted.
                 Assert.IsFalse(Directory.Exists(directoryPath));
@@ -657,7 +657,7 @@ namespace Tests.Core
                         // Attempt to install it.
                         List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
 
-                        CKAN.ModuleInstaller.GetInstance(ksp.KSP, manager.Cache, nullUser).InstallList(modules, new RelationshipResolverOptions());
+                        CKAN.ModuleInstaller.GetInstance(ksp.KSP, manager.Cache, nullUser).InstallList(modules, new RelationshipResolverOptions(), CKAN.RegistryManager.Instance(manager.CurrentInstance));
 
                         // Check that the module is installed.
                         string mod_file_path = Path.Combine(ksp.KSP.GameData(), mod_file_name);

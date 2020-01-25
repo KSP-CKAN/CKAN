@@ -33,8 +33,8 @@ namespace CKAN.CmdLine
         /// </returns>
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
-
             RemoveOptions options = (RemoveOptions) raw_options;
+            RegistryManager regMgr = RegistryManager.Instance(ksp);
 
             // Use one (or more!) regex to select the modules to remove
             if (options.regex)
@@ -47,11 +47,9 @@ namespace CKAN.CmdLine
                 List<string> selectedModules = new List<string>();
 
                 // Get the list of installed modules
-                IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
-
                 // Try every regex on every installed module:
                 // if it matches, select for removal
-                foreach (string mod in registry.InstalledModules.Select(mod => mod.identifier))
+                foreach (string mod in regMgr.registry.InstalledModules.Select(mod => mod.identifier))
                 {
                     if (justins.Any(re => re.IsMatch(mod)))
                         selectedModules.Add(mod);
@@ -66,9 +64,8 @@ namespace CKAN.CmdLine
             {
                 log.Debug("Removing all mods");
                 // Add the list of installed modules to the list that should be uninstalled
-                IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
                 options.modules.AddRange(
-                    registry.InstalledModules.Select(mod => mod.identifier)
+                    regMgr.registry.InstalledModules.Select(mod => mod.identifier)
                 );
             }
 
@@ -79,7 +76,7 @@ namespace CKAN.CmdLine
                     HashSet<string> possibleConfigOnlyDirs = null;
                     var installer = ModuleInstaller.GetInstance(ksp, manager.Cache, user);
                     Search.AdjustModulesCase(ksp, options.modules);
-                    installer.UninstallList(options.modules, ref possibleConfigOnlyDirs);
+                    installer.UninstallList(options.modules, ref possibleConfigOnlyDirs, regMgr);
                 }
                 catch (ModNotInstalledKraken kraken)
                 {

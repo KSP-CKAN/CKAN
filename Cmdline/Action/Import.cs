@@ -46,13 +46,15 @@ namespace CKAN.CmdLine
                 {
                     log.InfoFormat("Importing {0} files", toImport.Count);
                     List<string>    toInstall = new List<string>();
+                    RegistryManager regMgr = RegistryManager.Instance(ksp);
                     ModuleInstaller inst      = ModuleInstaller.GetInstance(ksp, manager.Cache, user);
-                    inst.ImportFiles(toImport, user, mod => toInstall.Add(mod.identifier), !opts.Headless);
+                    inst.ImportFiles(toImport, user, mod => toInstall.Add(mod.identifier), regMgr.registry, !opts.Headless);
                     if (toInstall.Count > 0)
                     {
                         inst.InstallList(
                             toInstall,
-                            new RelationshipResolverOptions()
+                            new RelationshipResolverOptions(),
+                            regMgr
                         );
                     }
                     return Exit.OK;

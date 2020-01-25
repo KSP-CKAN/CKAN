@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Memoize lazily evaluated sequences (#2953 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Don't check ZIP health in ModuleInstaller.GetModuleContentsList() (#2959 by: DasSkelett; reviewed: HebaruSan)
 - [Core] Check all dependencies for compatibility checking (#2963 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Fix CKAN-installed modules shown as AD in some cases (#2969 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
