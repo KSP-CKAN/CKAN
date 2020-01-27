@@ -406,9 +406,6 @@ namespace CKAN.Properties {
         internal static string MainLaunchFailed {
             get { return (string)(ResourceManager.GetObject("MainLaunchFailed", resourceCulture)); }
         }
-        internal static string MainFavouritesList {
-            get { return (string)(ResourceManager.GetObject("MainFavouritesList", resourceCulture)); }
-        }
         internal static string MainModPack {
             get { return (string)(ResourceManager.GetObject("MainModPack", resourceCulture)); }
         }
@@ -825,6 +822,61 @@ namespace CKAN.Properties {
         }
         internal static string MainLabelsUntagged {
             get { return (string)(ResourceManager.GetObject("MainLabelsUntagged", resourceCulture)); }
+        }
+
+        internal static string EditModpackBadIdentifier {
+            get { return (string)(ResourceManager.GetObject("EditModpackBadIdentifier", resourceCulture)); }
+        }
+        internal static string EditModpackBadName {
+            get { return (string)(ResourceManager.GetObject("EditModpackBadName", resourceCulture)); }
+        }
+        internal static string EditModpackBadVersion {
+            get { return (string)(ResourceManager.GetObject("EditModpackBadVersion", resourceCulture)); }
+        }
+        internal static string EditModpackBadKspVersions {
+            get { return (string)(ResourceManager.GetObject("EditModpackBadKspVersions", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipIdentifier {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipIdentifier", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipName {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipName", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipAbstract {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipAbstract", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipVersion {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipVersion", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipKspVersionMin {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipKspVersionMin", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipKspVersionMax {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipKspVersionMax", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipLicense {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipLicense", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipIncludeVersions {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipIncludeVersions", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipDepends {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipDepends", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipRecommends {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipRecommends", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipSuggests {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipSuggests", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipIgnore {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipIgnore", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipCancel {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipCancel", resourceCulture)); }
+        }
+        internal static string EditModpackTooltipExport {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipExport", resourceCulture)); }
         }
    }
 }

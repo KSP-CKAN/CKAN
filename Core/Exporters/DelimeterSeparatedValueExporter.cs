@@ -4,23 +4,23 @@ using System.Linq;
 
 namespace CKAN.Exporters
 {
-    public sealed class DelimeterSeperatedValueExporter : IExporter
+    public sealed class DelimeterSeparatedValueExporter : IExporter
     {
         private const string WritePattern = "{1}{0}{2}{0}{3}{0}{4}{0}{5}" +
                                             "{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}" +
                                             "{0}{11}{0}{12}{0}{13}{0}{14}{0}{15}" +
                                             "{0}{16}{0}{17}{0}{18}";
-        private readonly string _delimter;
+        private readonly string _delimeter;
 
-        public DelimeterSeperatedValueExporter(Delimter delimter)
+        public DelimeterSeparatedValueExporter(Delimeter delimeter)
         {
-            switch (delimter)
+            switch (delimeter)
             {
-                case Delimter.Comma:
-                    _delimter = ",";
+                case Delimeter.Comma:
+                    _delimeter = ",";
                     break;
-                case Delimter.Tab:
-                    _delimter = "\t";
+                case Delimeter.Tab:
+                    _delimeter = "\t";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -32,7 +32,7 @@ namespace CKAN.Exporters
             using (var writer = new StreamWriter(stream))
             {
                 writer.WriteLine(WritePattern,
-                    _delimter,
+                    _delimeter,
                     "identifier",
                     "version",
                     "name",
@@ -57,7 +57,7 @@ namespace CKAN.Exporters
                 foreach (var mod in registry.InstalledModules.OrderBy(i => i.Module.name))
                 {
                     writer.WriteLine(WritePattern,
-                        _delimter,
+                        _delimeter,
                         mod.Module.identifier,
                         mod.Module.version,
                         QuoteIfNecessary(mod.Module.name),
@@ -139,7 +139,7 @@ namespace CKAN.Exporters
 
         private string QuoteIfNecessary(string value)
         {
-            if (value != null && value.IndexOf(_delimter, StringComparison.Ordinal) >= 0)
+            if (value != null && value.IndexOf(_delimeter, StringComparison.Ordinal) >= 0)
             {
                 return "\"" + value + "\"";
             }
@@ -149,12 +149,11 @@ namespace CKAN.Exporters
             }
         }
 
-        public enum Delimter
+        public enum Delimeter
         {
             Comma,
             Tab
         }
-
 
     }
 }

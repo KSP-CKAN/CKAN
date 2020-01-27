@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Text.RegularExpressions;
 using Autofac;
 using log4net;
@@ -270,27 +271,39 @@ namespace CKAN
 
     public class ResourcesDescriptor
     {
-        [JsonProperty("repository", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
-        public Uri repository;
-
-        [JsonProperty("homepage", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("homepage", Order = 1, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
         public Uri homepage;
 
-        [JsonProperty("bugtracker", NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
-        public Uri bugtracker;
-
-        [JsonProperty("spacedock", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("spacedock", Order = 2, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri spacedock;
 
-        [JsonProperty("curse", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("curse", Order = 3, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri curse;
 
-        [JsonProperty("metanetkan", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("repository", Order = 4, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
+        public Uri repository;
+
+        [JsonProperty("bugtracker", Order = 5, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
+        public Uri bugtracker;
+
+        [JsonProperty("ci", Order = 6, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
+        public Uri ci;
+
+        [JsonProperty("license", Order = 7, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
+        public Uri license;
+
+        [JsonProperty("manual", Order = 8, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
+        public Uri manual;
+
+        [JsonProperty("metanetkan", Order = 9, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri metanetkan;
     }
@@ -345,98 +358,99 @@ namespace CKAN
         // identifier, license, and version are always required, so we know
         // what we've got.
 
-        [JsonProperty("abstract")]
+        [JsonProperty("abstract", Order = 5)]
         public string @abstract;
 
-        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("description", Order = 6, NullValueHandling = NullValueHandling.Ignore)]
         public string description;
 
         // Package type: in spec v1.6 can be either "package" or "metapackage"
-        [JsonProperty("kind", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("kind", Order = 29, NullValueHandling = NullValueHandling.Ignore)]
         public string kind;
 
-        [JsonProperty("author", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("author", Order = 7, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> author;
 
-        [JsonProperty("comment", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("comment", Order = 2, NullValueHandling = NullValueHandling.Ignore)]
         public string comment;
 
-        [JsonProperty("conflicts", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("conflicts", Order = 23, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> conflicts;
 
-        [JsonProperty("depends", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("depends", Order = 19, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> depends;
 
         [JsonProperty("replaced_by", NullValueHandling = NullValueHandling.Ignore)]
         public ModuleRelationshipDescriptor replaced_by;
 
-        [JsonProperty("download")]
+        [JsonProperty("download", Order = 25, NullValueHandling = NullValueHandling.Ignore)]
         public Uri download;
 
-        [JsonProperty("download_size")]
+        [JsonProperty("download_size", Order = 26, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [DefaultValue(0)]
         public long download_size;
 
-        [JsonProperty("download_hash", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("download_hash", Order = 27, NullValueHandling = NullValueHandling.Ignore)]
         public DownloadHashesDescriptor download_hash;
 
-        [JsonProperty("download_content_type", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [JsonProperty("download_content_type", Order = 28, DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue("application/zip")]
         public string download_content_type;
 
-        [JsonProperty("identifier", Required = Required.Always)]
+        [JsonProperty("identifier", Order = 3, Required = Required.Always)]
         public string identifier;
 
-        [JsonProperty("ksp_version", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("ksp_version", Order = 9, NullValueHandling = NullValueHandling.Ignore)]
         public KspVersion ksp_version;
 
-        [JsonProperty("ksp_version_max", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("ksp_version_max", Order = 11, NullValueHandling = NullValueHandling.Ignore)]
         public KspVersion ksp_version_max;
 
-        [JsonProperty("ksp_version_min", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("ksp_version_min", Order = 10, NullValueHandling = NullValueHandling.Ignore)]
         public KspVersion ksp_version_min;
 
-        [JsonProperty("ksp_version_strict", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [JsonProperty("ksp_version_strict", Order = 12, DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
         public bool ksp_version_strict = false;
 
-        [JsonProperty("license")]
+        [JsonProperty("license", Order = 13)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
         public List<License> license;
 
-        [JsonProperty("name")]
+        [JsonProperty("name", Order = 4)]
         public string name;
 
-        [JsonProperty("provides", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("provides", Order = 18, NullValueHandling = NullValueHandling.Ignore)]
         public List<string> provides;
 
-        [JsonProperty("recommends", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("recommends", Order = 20, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> recommends;
 
-        [JsonProperty("release_status", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("release_status", Order = 14, NullValueHandling = NullValueHandling.Ignore)]
         public ReleaseStatus release_status;
 
-        [JsonProperty("resources", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("resources", Order = 15, NullValueHandling = NullValueHandling.Ignore)]
         public ResourcesDescriptor resources;
 
-        [JsonProperty("suggests", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("suggests", Order = 21, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> suggests;
 
-        [JsonProperty("version", Required = Required.Always)]
+        [JsonProperty("version", Order = 8, Required = Required.Always)]
         public ModuleVersion version;
 
-        [JsonProperty("supports", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("supports", Order = 22, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> supports;
 
-        [JsonProperty("install", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("install", Order = 24, NullValueHandling = NullValueHandling.Ignore)]
         public ModuleInstallDescriptor[] install;
 
-        [JsonProperty("localizations", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("localizations", Order = 17, NullValueHandling = NullValueHandling.Ignore)]
         public string[] localizations;
 
         // Used to see if we're compatible with a given game/KSP version or not.
@@ -451,7 +465,7 @@ namespace CKAN
         // and has the spec_version's in his installed_modules section
         // We should return this to a simple Required.Always field some time in the future
         // ~ Postremus, 03.09.2015
-        [JsonProperty("spec_version")]
+        [JsonProperty("spec_version", Order = 1)]
         public ModuleVersion spec_version
         {
             get
@@ -469,7 +483,7 @@ namespace CKAN
             }
         }
 
-        [JsonProperty("tags", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("tags", Order = 16, NullValueHandling = NullValueHandling.Ignore)]
         public HashSet<string> Tags;
 
         // A list of eveything this mod provides.
@@ -682,6 +696,19 @@ namespace CKAN
             File.WriteAllText(filename, json);
         }
 
+        public static string ToJson(CkanModule module)
+        {
+            var sw = new StringWriter(new StringBuilder());
+            using (var writer = new JsonTextWriter(sw))
+            {
+                writer.Formatting  = Formatting.Indented;
+                writer.Indentation = 4;
+                writer.IndentChar  = ' ';
+                new JsonSerializer().Serialize(writer, module);
+            }
+            return sw + Environment.NewLine;
+        }
+
         /// <summary>
         /// Generates a CKAN.META object from a string.
         /// Also validates that all required fields are present.
@@ -818,12 +845,6 @@ namespace CKAN
         bool IEquatable<CkanModule>.Equals(CkanModule other)
         {
             return Equals(other);
-        }
-
-
-        public static string ToJson(CkanModule module)
-        {
-            return JsonConvert.SerializeObject(module);
         }
 
         /// <summary>

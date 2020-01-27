@@ -176,8 +176,7 @@
 
 {0}</value>
   </data>
-  <data name="MainFavouritesList" xml:space="preserve"><value>CKAN Favoritenliste (*.ckan)</value></data>
-  <data name="MainModPack" xml:space="preserve"><value>CKAN Modpack (erzwingt genaue Mod-Versionen) (*.ckan)</value></data>
+  <data name="MainModPack" xml:space="preserve"><value>CKAN Modpack (*.ckan)</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>Klartext (*.txt)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Nicht gefunden.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Möchtest du {0} neu installieren?</value></data>
@@ -343,4 +342,22 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
 {0}</value></data>
   <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>Aktualisierungen für beobachtete Mods</value></data>
   <data name="MainLabelsUntagged" xml:space="preserve"><value>Ohne Kategorie ({0})</value></data>
+  <data name="EditModpackBadIdentifier" xml:space="preserve"><value>Die Kennung darf nur aus Buchstaben, Zahlen und Bindestrichen bestehen, muss mindestens zwei Zeichen lang sein und darf nicht mit einem Bindestrich beginnen.</value></data>
+  <data name="EditModpackBadName" xml:space="preserve"><value>Ein Name für das Modpack ist erforderlich.</value></data>
+  <data name="EditModpackBadVersion" xml:space="preserve"><value>Eine Version für das Modpack ist erforderlich.</value></data>
+  <data name="EditModpackBadKspVersions" xml:space="preserve"><value>Die minimale KSP-Version muss kleiner oder gleich der maximalen KSP-Version sein.</value></data>
+  <data name="EditModpackTooltipIdentifier" xml:space="preserve"><value>Interne Kennung dieses Modpacks; Nur Buchstaben, Zahlen und Bindestriche</value></data>
+  <data name="EditModpackTooltipName" xml:space="preserve"><value>Öffentlich sichtbarer Name dieses Modpacks</value></data>
+  <data name="EditModpackTooltipAbstract" xml:space="preserve"><value>Kurze Zusammenfassung dieses Modpacks</value></data>
+  <data name="EditModpackTooltipVersion" xml:space="preserve"><value>Die Versionsnummer für dieses Modpack, nutze das heutige Datum um es später einfach zuordnen zu können.</value></data>
+  <data name="EditModpackTooltipKspVersionMin" xml:space="preserve"><value>Setze die früheste KSP-Version fest, unter der das Modpack installiert werden kann. Leer für unbeschränkt.</value></data>
+  <data name="EditModpackTooltipKspVersionMax" xml:space="preserve"><value>Setze die neusete KSP-Version fest, unter der das Modpack installiert werden kann. Leer für unbeschränkt.</value></data>
+  <data name="EditModpackTooltipLicense" xml:space="preserve"><value>Die Lizenz für dieses Modpack</value></data>
+  <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird bei jeder Mod die unten angezeigte Version mitgespeichert. Beim Importieren des Modpacks werden dann genau diese Versionen installiert.</value></data>
+  <data name="EditModpackTooltipDepends" xml:space="preserve"><value>Speichere die ausgewählten Mods als Abhängigkeiten im Modpack. Diese Mods werden bei der Installation des Modpacks auf jeden Fall installiert.</value></data>
+  <data name="EditModpackTooltipRecommends" xml:space="preserve"><value>Speichere die ausgewählten Mods als Empfehlungen. Beim Installieren des Modpacks kann der Nutzer diese Mods weglassen.</value></data>
+  <data name="EditModpackTooltipSuggests" xml:space="preserve"><value>Speichere die ausgewählten Mods als Vorschläge. Bei der Installation des Modpacks werden diese Mods angezeigt, der Nutzer muss sie jedoch erst explizit zur Installation auswählen.</value></data>
+  <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>Speichere die ausgewählten Mods NICHT im Modpack. Diese Mods werden nicht sichtbar sein.</value></data>
+  <data name="EditModpackTooltipCancel" xml:space="preserve"><value>Brich die Modpackerstellung ab</value></data>
+  <data name="EditModpackTooltipExport" xml:space="preserve"><value>Wähle einen Dateinamen und speichere das Modpack</value></data>
 </root>

@@ -52,8 +52,7 @@ namespace CKAN
             }
         }
 
-        public delegate void SelectedItemsChanged(ListView.SelectedListViewItemCollection items);
-        public event SelectedItemsChanged OnSelectedItemsChanged;
+        public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
 
         private void ChooseProvidedModsListView_SelectedIndexChanged(object sender, EventArgs e)
         {

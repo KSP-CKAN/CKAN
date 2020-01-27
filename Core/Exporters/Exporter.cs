@@ -30,10 +30,10 @@ namespace CKAN.Exporters
                     _exporter = new BbCodeExporter();
                     break;
                 case ExportFileType.Csv:
-                    _exporter = new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Comma);
+                    _exporter = new DelimeterSeparatedValueExporter(DelimeterSeparatedValueExporter.Delimeter.Comma);
                     break;
                 case ExportFileType.Tsv:
-                    _exporter = new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Tab);
+                    _exporter = new DelimeterSeparatedValueExporter(DelimeterSeparatedValueExporter.Delimeter.Tab);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

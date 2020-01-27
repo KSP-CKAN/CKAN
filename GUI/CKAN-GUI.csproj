@@ -200,6 +200,12 @@
     <Compile Include="Controls\DropdownMenuButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\EditModpack.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\EditModpack.Designer.cs">
+      <DependentUpon>EditModpack.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\HintTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -244,6 +250,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main\MainDownload.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainExport.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main\MainProvides.cs">
@@ -374,6 +383,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\EditLabelsDialog.resx">
       <DependentUpon>EditLabelsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EditModpack.resx">
+      <DependentUpon>EditModpack.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\EditModpack.de-DE.resx">
+      <DependentUpon>..\..\Controls\EditModpack.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\en-US\EditModpack.en-US.resx">
+      <DependentUpon>..\..\Controls\EditModpack.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\EditLabelsDialog.de-DE.resx">
       <DependentUpon>..\..\Dialogs\EditLabelsDialog.cs</DependentUpon>

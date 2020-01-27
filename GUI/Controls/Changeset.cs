@@ -50,8 +50,7 @@ namespace CKAN
             }
         }
 
-        public delegate void SelectedItemsChanged(ListView.SelectedListViewItemCollection items);
-        public event SelectedItemsChanged OnSelectedItemsChanged;
+        public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
 
         public event Action OnConfirmChanges;
         public event Action OnCancelChanges;

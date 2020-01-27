@@ -329,7 +329,7 @@
         "identifier" : {
             "description" : "Unique identifier for this mod.",
             "type"        : "string",
-            "pattern"     : "^[A-Za-z0-9-]*$"
+            "pattern"     : "^[A-Za-z0-9][A-Za-z0-9-]+$"
         },
         "version" : {
             "description" : "A version string",

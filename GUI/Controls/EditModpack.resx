@@ -117,7 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favorites</value></data>
-  <data name="EditModpackTooltipLicense" xml:space="preserve"><value>The license for this modpack</value></data>
+  <data name="IdentifierLabel.Text" xml:space="preserve"><value>Identifier:</value></data>
+  <data name="NameLabel.Text" xml:space="preserve"><value>Name:</value></data>
+  <data name="AbstractLabel.Text" xml:space="preserve"><value>Abstract:</value></data>
+  <data name="VersionLabel.Text" xml:space="preserve"><value>Version:</value></data>
+  <data name="KspVersionLabel.Text" xml:space="preserve"><value>KSP versions:</value></data>
+  <data name="LicenseLabel.Text" xml:space="preserve"><value>Licence:</value></data>
+  <data name="IncludeVersionsCheckbox.Text" xml:space="preserve"><value>Save mod versions</value></data>
+  <data name="ModNameColumn.Text" xml:space="preserve"><value>Mod</value></data>
+  <data name="ModVersionColumn.Text" xml:space="preserve"><value>Version</value></data>
+  <data name="ModAbstractColumn.Text" xml:space="preserve"><value>Description</value></data>
+  <data name="DependsGroup.Header" xml:space="preserve"><value>Depends</value></data>
+  <data name="RecommendationsGroup.Header" xml:space="preserve"><value>Recommends</value></data>
+  <data name="SuggestionsGroup.Header" xml:space="preserve"><value>Suggests</value></data>
+  <data name="IgnoredGroup.Header" xml:space="preserve"><value>Ignored</value></data>
+  <data name="DependsRadioButton.Text" xml:space="preserve"><value>Depends</value></data>
+  <data name="RecommendsRadioButton.Text" xml:space="preserve"><value>Recommends</value></data>
+  <data name="SuggestsRadioButton.Text" xml:space="preserve"><value>Suggests</value></data>
+  <data name="IgnoreRadioButton.Text" xml:space="preserve"><value>Ignore</value></data>
+  <data name="CancelExportButton.Text" xml:space="preserve"><value>Cancel</value></data>
+  <data name="ExportModpackButton.Text" xml:space="preserve"><value>Export</value></data>
 </root>
