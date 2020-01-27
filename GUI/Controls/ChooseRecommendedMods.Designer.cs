@@ -158,9 +158,9 @@
             // ChooseRecommendedMods
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Controls.Add(this.RecommendedModsListView);
             this.Controls.Add(this.RecommendedDialogLabel);
             this.Controls.Add(this.BottomButtonPanel);
-            this.Controls.Add(this.RecommendedModsListView);
             this.Margin = new System.Windows.Forms.Padding(0,0,0,0);
             this.Padding = new System.Windows.Forms.Padding(0,0,0,0);
             this.Name = "ChooseRecommendedMods";
