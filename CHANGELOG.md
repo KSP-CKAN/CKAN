@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Build] Downgrade to building on Mono 5.20 (#2976 by: HebaruSan, DasSkelett)
+- [Build] Refresh Info.plist if changelog has changed (#2978 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.8 (Kodiak)
 
