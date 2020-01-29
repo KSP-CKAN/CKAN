@@ -37,7 +37,7 @@ $(ICNSDEST): $(ICNSSRC)
 	mkdir -p $(shell dirname $@)
 	ln -f $< $@
 
-$(PLISTDEST): $(PLISTSRC)
+$(PLISTDEST): $(PLISTSRC) $(CHANGELOGSRC)
 	mkdir -p $(shell dirname $@)
 	sed -e 's/@VERSION@/$(VERSION)/' $< > $(PLISTTMP)
 	plistutil -i $(PLISTTMP) -o $@
