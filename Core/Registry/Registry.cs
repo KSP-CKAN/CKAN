@@ -484,7 +484,7 @@ namespace CKAN
         {
             // Set up our compatibility partition
             SetCompatibleVersion(ksp_version);
-            return sorter.Compatible.Values.Select(pair => pair.Latest(null)).ToList();
+            return sorter.Compatible.Values.Select(avail => avail.Latest(ksp_version)).ToList();
         }
 
         /// <summary>
@@ -494,7 +494,7 @@ namespace CKAN
         {
             // Set up our compatibility partition
             SetCompatibleVersion(ksp_version);
-            return sorter.Incompatible.Values.Select(pair => pair.Latest(null)).ToList();
+            return sorter.Incompatible.Values.Select(avail => avail.Latest(null)).ToList();
         }
 
         /// <summary>
