@@ -185,6 +185,42 @@ namespace Tests.Core.Registry
         }
 
         [Test]
+        public void CompatibleModules_PastAndFutureCompatibility_ReturnsCurrentOnly()
+        {
+            // Arrange
+            CkanModule modFor161 = CkanModule.FromJson(@"{
+                ""identifier"":  ""TypicalMod"",
+                ""version"":     ""0.9.0"",
+                ""download"":    ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""ksp_version"": ""1.6.1""
+            }");
+            CkanModule modFor173 = CkanModule.FromJson(@"{
+                ""identifier"":  ""TypicalMod"",
+                ""version"":     ""1.0.0"",
+                ""download"":    ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""ksp_version"": ""1.7.3""
+            }");
+            CkanModule modFor181 = CkanModule.FromJson(@"{
+                ""identifier"":  ""TypicalMod"",
+                ""version"":     ""1.1.0"",
+                ""download"":    ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""ksp_version"": ""1.8.1""
+            }");
+            registry.AddAvailable(modFor161);
+            registry.AddAvailable(modFor173);
+            registry.AddAvailable(modFor181);
+
+            // Act
+            KspVersionCriteria v173 = new KspVersionCriteria(KspVersion.Parse("1.7.3"));
+            List<CkanModule> compat = registry.CompatibleModules(v173).ToList();
+
+            // Assert
+            Assert.IsFalse(compat.Contains(modFor161));
+            Assert.IsTrue(compat.Contains(modFor173));
+            Assert.IsFalse(compat.Contains(modFor181));
+        }
+
+        [Test]
         public void TxEmbeddedCommit()
         {
             // Our registry should work when we initialise it inside our Tx and commit.
