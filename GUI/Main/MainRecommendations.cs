@@ -17,6 +17,11 @@ namespace CKAN
             ShowSelectionModInfo(items);
         }
 
+        private void ChooseRecommendedMods_OnConflictFound(string message)
+        {
+            AddStatusMessage(message);
+        }
+
         private void auditRecommendationsMenuItem_Click(object sender, EventArgs e)
         {
             // Run in a background task so GUI thread can react to user
@@ -39,7 +44,9 @@ namespace CKAN
             ))
             {
                 tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
-                ChooseRecommendedMods.LoadRecommendations(Manager.Cache, recommendations, suggestions, supporters);
+                ChooseRecommendedMods.LoadRecommendations(
+                    registry, versionCriteria,
+                    Manager.Cache, recommendations, suggestions, supporters);
                 var result = ChooseRecommendedMods.Wait();
                 tabController.HideTab("ChooseRecommendedModsTabPage");
                 if (result != null && result.Any())
