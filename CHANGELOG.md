@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 ### Bugfixes
+- [DLL] Filter compatible modules by compatibility (#2980 by: HebaruSan; reviewed: politas)
 
 ### Internal
 
