@@ -584,23 +584,25 @@ namespace CKAN
         }
 
         /// <summary>
-        ///  Returns a IList consisting of keyValuePairs containing conflicting mods.
-        /// Note: (a,b) in the list should imply that (b,a) is in the list.
+        /// Returns a dictionary consisting of keyValuePairs containing conflicting mods.
         /// </summary>
         public Dictionary<CkanModule, String> ConflictList
         {
             get
             {
-                var dict = new Dictionary<CkanModule, String>();
-                foreach (var conflict in conflicts)
-                {
-                    CkanModule module = conflict.Key;
-                    CkanModule other  = conflict.Value;
-                    dict[module] = string.Format("{0} conflicts with {1}\r\n\r\n{0}:\r\n{2}\r\n{1}:\r\n{3}",
-                        module.identifier, other?.identifier ?? "an unmanaged DLL or DLC",
-                        ReasonStringFor(module), ReasonStringFor(other));
-                }
-                return dict;
+                return conflicts
+                    .GroupBy(kvp => kvp.Key)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.Select(kvp => kvp.Value)
+                                      .Where(v => v != null)
+                                      .Distinct())
+                    .ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => $"{kvp.Key} conflicts with " + (
+                            kvp.Value.Count() == 0
+                                ? "an unmanaged DLL or DLC"
+                                : string.Join(", ", kvp.Value)));
             }
         }
 

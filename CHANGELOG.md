@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## v1.26.9
 
 ### Features
+- [Multiple] Detect conflicts on recommendations screen (#2981 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 - [DLL] Filter compatible modules by compatibility (#2980 by: HebaruSan; reviewed: politas)

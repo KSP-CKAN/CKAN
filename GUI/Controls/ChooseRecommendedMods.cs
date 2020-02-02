@@ -1,9 +1,11 @@
 using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CKAN.Extensions;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -15,12 +17,14 @@ namespace CKAN
         }
 
         public void LoadRecommendations(
-            NetModuleCache cache,
+            IRegistryQuerier registry, KspVersionCriteria kspVersion, NetModuleCache cache,
             Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
             Dictionary<CkanModule, List<string>> suggestions,
             Dictionary<CkanModule, HashSet<string>> supporters
         )
         {
+            this.registry   = registry;
+            this.kspVersion = kspVersion;
             Util.Invoke(this, () =>
             {
                 RecommendedModsToggleCheckbox.Checked = true;
@@ -51,12 +55,49 @@ namespace CKAN
 
         public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
 
+        public event Action<string> OnConflictFound;
+
         private void RecommendedModsListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (OnSelectedItemsChanged != null)
             {
                 OnSelectedItemsChanged(RecommendedModsListView.SelectedItems);
             }
+        }
+        
+        private void RecommendedModsListView_ItemChecked(object sender, EventArgs e)
+        {
+            var conflicts = FindConflicts();
+            foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>())
+            {
+                item.BackColor = conflicts.ContainsKey(item.Tag as CkanModule)
+                    ? Color.LightCoral
+                    : Color.Empty;
+            }
+            RecommendedModsContinueButton.Enabled = !conflicts.Any();
+            if (OnConflictFound != null)
+            {
+                OnConflictFound(conflicts.Any() ? conflicts.First().Value : "");
+            }
+        }
+
+        private static readonly RelationshipResolverOptions conflictOptions = new RelationshipResolverOptions()
+        {
+            without_toomanyprovides_kraken = true,
+            proceed_with_inconsistencies   = true,
+            without_enforce_consistency    = true,
+            with_recommends                = false
+        };
+
+        private Dictionary<CkanModule, String> FindConflicts()
+        {
+            return new RelationshipResolver(
+                RecommendedModsListView.CheckedItems.Cast<ListViewItem>()
+                    .Select(item => item.Tag as CkanModule)
+                    .Distinct(), 
+                new CkanModule[] { },
+                conflictOptions, registry, kspVersion
+            ).ConflictList;
         }
 
         private IEnumerable<ListViewItem> getRecSugRows(
@@ -130,6 +171,9 @@ namespace CKAN
                     .ToHashSet()
             );
         }
+
+        private IRegistryQuerier   registry;
+        private KspVersionCriteria kspVersion;
 
         private TaskCompletionSource<HashSet<CkanModule>> task;
     }

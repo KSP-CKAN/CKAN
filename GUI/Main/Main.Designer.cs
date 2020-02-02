@@ -1001,6 +1001,7 @@
             this.ChooseRecommendedMods.Size = new System.Drawing.Size(500, 500);
             this.ChooseRecommendedMods.TabIndex = 32;
             this.ChooseRecommendedMods.OnSelectedItemsChanged += ChooseRecommendedMods_OnSelectedItemsChanged;
+            this.ChooseRecommendedMods.OnConflictFound += ChooseRecommendedMods_OnConflictFound;
             //
             // ChooseProvidedModsTabPage
             //
