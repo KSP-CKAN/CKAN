@@ -64,11 +64,16 @@ namespace CKAN
                 OnSelectedItemsChanged(RecommendedModsListView.SelectedItems);
             }
         }
-        
+
         private void RecommendedModsListView_ItemChecked(object sender, EventArgs e)
         {
             var conflicts = FindConflicts();
-            foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>())
+            foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
+                // Apparently ListView handes AddRange by:
+                //   1. Expanding the Items list to the new size by filling it with nulls
+                //   2. One by one, replace each null with a real item and call _ItemChecked
+                // ... so the Items list can contain null!!
+                .Where(it => it != null))
             {
                 item.BackColor = conflicts.ContainsKey(item.Tag as CkanModule)
                     ? Color.LightCoral
@@ -94,7 +99,7 @@ namespace CKAN
             return new RelationshipResolver(
                 RecommendedModsListView.CheckedItems.Cast<ListViewItem>()
                     .Select(item => item.Tag as CkanModule)
-                    .Distinct(), 
+                    .Distinct(),
                 new CkanModule[] { },
                 conflictOptions, registry, kspVersion
             ).ConflictList;

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 ### Bugfixes
+- [GUI] Fix null reference in recommendations (#2984 by: HebaruSan; reviewed: politas)
 
 ### Internal
 
