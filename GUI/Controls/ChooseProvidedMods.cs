@@ -67,7 +67,7 @@ namespace CKAN
             ChooseProvidedModsContinueButton.Enabled =
                 (ChooseProvidedModsListView.CheckedItems.Count > 0);
 
-            if (!e.Item.Checked)
+            if (e.Item.Checked)
             {
                 foreach (ListViewItem item in ChooseProvidedModsListView.CheckedItems.Cast<ListViewItem>()
                     .Where(item => item != e.Item))
