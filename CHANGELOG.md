@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 - [GUI] Fix null reference in recommendations (#2984 by: HebaruSan; reviewed: politas)
+- [ConsoleUI] Fix NRE on download errors in ConsoleUI (#2987 by: HebaruSan; reviewed: politas, DasSkelett)
 
 ### Internal
 
@@ -86,7 +87,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Fixes for KSP in Windows drive root (#2857 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Use current metadata for installed module compatibility (#2886 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Notify when falling back to archive.org URL (#2892 by: HebaruSan; reviewed: DasSkelett)
-- [Multiple] Only run Mono in 32bit mode when the GUI is launched (#2893 by: DaskSkelett; reviewed: HebaruSan)
+- [Multiple] Only run Mono in 32bit mode when the GUI is launched (#2893 by: DasSkelett; reviewed: HebaruSan)
 - [Build] Force logical name for generated resources (#2899 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Show target version for upgrades in change set (#2888 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Merge resources and include metanetkan (#2913 by: HebaruSan; reviewed: DasSkelett)

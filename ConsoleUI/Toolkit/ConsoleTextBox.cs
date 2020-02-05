@@ -39,7 +39,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="line">String to add</param>
         public void AddLine(string line)
         {
-            lines.AddRange(Formatting.WordWrap(line, GetRight() - GetLeft() + 1));
+            // AddRange isn't thread-safe, it temporarily pads with nulls
+            foreach (string subLine in Formatting.WordWrap(line, GetRight() - GetLeft() + 1)) {
+                lines.Add(subLine);
+            }
             if (scrollToBottom) {
                 ScrollToBottom();
             } else {
@@ -213,7 +216,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         private bool         scrollToBottom;
         private int          topLine;
         private TextAlign    align;
-        private List<string> lines = new List<string>();
+        private SynchronizedCollection<string> lines = new SynchronizedCollection<string>();
         private Func<ConsoleColor> getBgColor;
         private Func<ConsoleColor> getFgColor;
     }
