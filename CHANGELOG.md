@@ -7,12 +7,15 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 ### Bugfixes
+
 - [GUI] Fix null reference in recommendations (#2984 by: HebaruSan; reviewed: politas)
 - [ConsoleUI] Fix NRE on download errors in ConsoleUI (#2987 by: HebaruSan; reviewed: politas, DasSkelett)
 - [GUI] Only update provides tab from GUI thread (#2989 by: HebaruSan; reviewed: politas)
-- [ConsoleUI] Fix ArgumentException in ConsoleUI recommendations (#2990 by: HebaruSan, DasSkelett)
+- [ConsoleUI] Fix ArgumentException in ConsoleUI recommendations (#2990 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
+
+- [Build] Update Cake to 0.37.0 (#2985 by: DasSkelett; reviewed: HebaruSan)
 
 ## v1.26.10 (Alcubierre)
 
