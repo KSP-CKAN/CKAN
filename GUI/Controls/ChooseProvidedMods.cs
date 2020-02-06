@@ -15,27 +15,30 @@ namespace CKAN
 
         public void LoadProviders(string requested, List<CkanModule> modules, NetModuleCache cache)
         {
-            ChooseProvidedModsLabel.Text = String.Format(
-                Properties.Resources.MainInstallProvidedBy,
-                requested
-            );
-
-            ChooseProvidedModsListView.Items.Clear();
-            ChooseProvidedModsListView.Items.AddRange(modules
-                .Select(module => new ListViewItem(new string[]
-                {
-                    cache.IsMaybeCachedZip(module)
-                        ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
-                        : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download.Host ?? "", CkanModule.FmtSize(module.download_size)),
-                    module.@abstract
-                })
-                {
-                    Tag = module,
-                    Checked = false
-                })
-                .ToArray());
-            ChooseProvidedModsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            ChooseProvidedModsContinueButton.Enabled = false;
+            Util.Invoke(this, () =>
+            {
+                ChooseProvidedModsLabel.Text = String.Format(
+                    Properties.Resources.MainInstallProvidedBy,
+                    requested
+                );
+    
+                ChooseProvidedModsListView.Items.Clear();
+                ChooseProvidedModsListView.Items.AddRange(modules
+                    .Select(module => new ListViewItem(new string[]
+                    {
+                        cache.IsMaybeCachedZip(module)
+                            ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
+                            : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download.Host ?? "", CkanModule.FmtSize(module.download_size)),
+                        module.@abstract
+                    })
+                    {
+                        Tag = module,
+                        Checked = false
+                    })
+                    .ToArray());
+                ChooseProvidedModsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                ChooseProvidedModsContinueButton.Enabled = false;
+            });
         }
 
         public CkanModule Wait()

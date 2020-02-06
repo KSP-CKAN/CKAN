@@ -212,8 +212,12 @@ namespace CKAN
                 catch (TooManyModsProvideKraken k)
                 {
                     // Prompt user to choose which mod to use
-                    CkanModule chosen = TooManyModsProvideCore(k);
+                    tabController.ShowTab("ChooseProvidedModsTabPage", 3);
+                    ChooseProvidedMods.LoadProviders(k.requested, k.modules, Manager.Cache);
+                    tabController.SetTabLock(true);
+                    CkanModule chosen = ChooseProvidedMods.Wait();
                     // Close the selection prompt
+                    tabController.SetTabLock(false);
                     tabController.HideTab("ChooseProvidedModsTabPage");
                     if (chosen != null)
                     {

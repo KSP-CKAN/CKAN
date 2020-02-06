@@ -230,6 +230,7 @@
   <data name="FilterByDescriptionTextBox.Size" type="System.Drawing.Size, System.Drawing"><value>170, 26</value></data>
   <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Changeset</value></data>
   <data name="WaitTabPage.Text" xml:space="preserve"><value>Status log</value></data>
+  <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Choose mods</value></data>
   <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Choose recommended or suggested mods</value></data>
   <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>Delete Directories</value></data>
   <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Edit Modpack</value></data>
