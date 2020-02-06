@@ -1,0 +1,98 @@
+name: Build CKAN + NetKAN
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        mono: ['5.20', '6.4', '6.6', '6.8']
+        configuration: [Debug, Release]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Mono
+      run: |
+        sudo apt remove mono-complete --auto-remove --purge
+        sudo apt install --upgrade gnupg ca-certificates
+        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+        echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic/snapshots/${{ matrix.mono }} main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+        sudo apt update
+        sudo apt install mono-complete
+    - name: Install runtime dependencies
+      run: sudo apt install --upgrade libcurl4-openssl-dev xvfb
+    - name: Restore cache for _build/lib/nuget
+      uses: actions/cache@v1
+      with:
+        path: _build/lib/nuget
+        key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
+    - name: Restore cache for ~/.nuget/packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.nuget/packages
+        key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
+
+    - name: Build ckan.exe and netkan.exe
+      run: ./build --configuration=${{ matrix.configuration}}
+    - name: Run tests
+      run: xvfb-run ./build test+only --configuration=${{ matrix.configuration }} --where="Category!=FlakyNetwork"
+
+    - name: Send Discord Notification
+      if: failure()
+      env:
+        JOB_STATUS: ${{ job.status }}
+        WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
+        HOOK_OS_NAME: ${{ runner.os }}
+        WORKFLOW_NAME: ${{ github.workflow }}
+      run: |
+        git clone https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
+        bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
+      shell: bash
+
+
+  build_NetCore:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug_NetCore, Release_NetCore]
+
+    steps:
+      - name: Install runtime dependencies
+        run: sudo apt install --upgrade libcurl4-openssl-dev
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.101'
+      - name: Restore cache for _build/lib/nuget
+        uses: actions/cache@v1
+        with:
+          path: _build/lib/nuget
+          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
+      - name: Restore cache for ~/.nuget/packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.nuget/packages
+          key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
+
+      - name: Build with .NET Core
+        run: ./build --configuration=${{ matrix.configuration }}
+      - name: Test with .NET Core
+        run: ./build test+only --configuration=${{ matrix.configuration }}
+
+      - name: Send Discord Notification
+        if: failure()
+        env:
+          JOB_STATUS: ${{ job.status }}
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
+          HOOK_OS_NAME: ${{ runner.os }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+        run: |
+          git clone -–depth 1 https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
+          bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
