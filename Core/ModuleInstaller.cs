@@ -1304,7 +1304,9 @@ namespace CKAN
             var candidates = registry.CompatibleModules(ksp.VersionCriteria())
                 .Where(mod => !registry.IsInstalled(mod.identifier)
                     && !toInstall.Any(m => m.identifier == mod.identifier))
-                .Where(m => m?.supports != null);
+                .Where(m => m?.supports != null)
+                .Except(recommendations.Keys)
+                .Except(suggestions.Keys);
             // Find each module that "supports" something we're installing
             foreach (CkanModule mod in candidates)
             {
@@ -1361,8 +1363,7 @@ namespace CKAN
                                 if (!registry.IsInstalled(provider.identifier)
                                     && !toExclude.Any(m => m.identifier == provider.identifier))
                                 {
-                                    List<string> dependers;
-                                    if (dependersIndex.TryGetValue(provider, out dependers))
+                                    if (dependersIndex.TryGetValue(provider, out List<string> dependers))
                                     {
                                         // Add the dependent mod to the list of reasons this dependency is shown.
                                         dependers.Add(mod.identifier);

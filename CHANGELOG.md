@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix null reference in recommendations (#2984 by: HebaruSan; reviewed: politas)
 - [ConsoleUI] Fix NRE on download errors in ConsoleUI (#2987 by: HebaruSan; reviewed: politas, DasSkelett)
 - [GUI] Only update provides tab from GUI thread (#2989 by: HebaruSan; reviewed: politas)
+- [ConsoleUI] Fix ArgumentException in ConsoleUI recommendations (#2990 by: HebaruSan, DasSkelett)
 
 ### Internal
 
