@@ -2,9 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.26.11
-
-### Features
+## v1.27.0
 
 ### Bugfixes
 
