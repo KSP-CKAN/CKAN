@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Build] Update Cake to 0.37.0 (#2985 by: DasSkelett; reviewed: HebaruSan)
+- [Spec] Update tags section of spec (#2991 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.10 (Alcubierre)
 
