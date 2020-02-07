@@ -390,31 +390,32 @@ checking.
 
 ##### tags
 
-(**v<TBA>**) The `tags` field describes keywords that a user or program may
-use to classify or filter the mod in a list, but which are not required.
-These may include general tags which define how the mod interacts with or
-alters KSP or specific tags defining what has been added or changed from
-stock gameplay. Tags may contain lowercase alphanumeric characters or
-hyphens.
+(**v1.27**) The `tags` field describes keywords that a user or program may
+use to classify or filter the mod in a list. These may include general tags
+which define how the mod interacts with or alters KSP or specific tags
+defining what has been added or changed from stock gameplay. Tags may
+contain lowercase alphanumeric characters or hyphens.
+
+All mods should have tags, but it is technically allowed to omit them to
+allow historical metadata to remain valid.
+
+A mod's tags are shown in the mod info section of the client, and the mod
+list may be filtered to find all mods with a given tag.
 
 Example tags:
 
-    "tags" : [
+```json
+    "tags": [
+        "config",
         "physics",
         "parts",
-        "oceanic",
-        "thermal",
-        "science",
-        "my-1-custom-tag"
+        "science"
     ]
+```
 
-The first defined keyword listed in the tag field which matches one of a
-predefined set of 'standard' tags should be considered the most important
-and used to populate a sortable column in online indices, though it is
-intended that all included tags will be indexed and searchable.
+Currently recommended tags are listed here:
 
-Tags have not yet been implemented in the client. They can be added to
-.ckan/.netkan files, but will not be displayed in the client yet.
+https://github.com/KSP-CKAN/CKAN/wiki/Suggested-Tags
 
 ##### localizations
 
