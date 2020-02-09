@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.27.1
+
+### Features
+
+### Bugfixes
+
+### Internal
+
 ## v1.27.0
 
 ### Bugfixes
