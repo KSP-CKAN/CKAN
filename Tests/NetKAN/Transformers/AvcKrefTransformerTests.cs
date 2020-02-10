@@ -12,7 +12,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class AvcKrefTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1, null);
+        private TransformOptions opts = new TransformOptions(1, null, null);
 
         [Test,
             TestCase(

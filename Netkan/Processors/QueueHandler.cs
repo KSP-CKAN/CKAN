@@ -116,7 +116,7 @@ namespace CKAN.NetKAN.Processors
             IEnumerable<Metadata> ckans = null;
             bool   caught        = false;
             string caughtMessage = null;
-            var    opts          = new TransformOptions(releases, highVer);
+            var    opts          = new TransformOptions(releases, null, highVer);
             try
             {
                 ckans = inflator.Inflate($"{netkan.Identifier}.netkan", netkan, opts);
@@ -147,7 +147,7 @@ namespace CKAN.NetKAN.Processors
         private SendMessageBatchRequestEntry inflationMessage(Metadata ckan, Metadata netkan, TransformOptions opts, bool success, string err = null)
         {
             bool staged = netkan.Staged || opts.Staged;
-            string stagingReason = 
+            string stagingReason =
                   !string.IsNullOrEmpty(netkan.StagingReason) ? netkan.StagingReason
                 : !string.IsNullOrEmpty(opts.StagingReason)   ? opts.StagingReason
                 : null;

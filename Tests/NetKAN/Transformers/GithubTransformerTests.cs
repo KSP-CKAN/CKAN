@@ -14,7 +14,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class GithubTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1, null);
+        private TransformOptions opts = new TransformOptions(1, null, null);
 
         [Test]
         public void CalculatesRepositoryUrlCorrectly()

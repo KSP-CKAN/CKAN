@@ -93,6 +93,7 @@ namespace CKAN.NetKAN
                         netkan,
                         new TransformOptions(
                             ParseReleases(Options.Releases),
+                            ParseSkipReleases(Options.SkipReleases),
                             ParseHighestVersion(Options.HighestVersion)
                         )
                     );
@@ -129,6 +130,11 @@ namespace CKAN.NetKAN
         private static int? ParseReleases(string val)
         {
             return val == "all" ? (int?)null : int.Parse(val);
+        }
+
+        private static int? ParseSkipReleases(string val)
+        {
+            return string.IsNullOrWhiteSpace(val) ? (int?)null : int.Parse(val);
         }
 
         private static ModuleVersion ParseHighestVersion(string val)

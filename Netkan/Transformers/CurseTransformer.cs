@@ -39,6 +39,10 @@ namespace CKAN.NetKAN.Transformers
                 // Look up our mod on Curse by its Id.
                 var curseMod = _api.GetMod(metadata.Kref.Id);
                 var versions = curseMod.All();
+                if (opts.SkipReleases.HasValue)
+                {
+                    versions = versions.Skip(opts.SkipReleases.Value);
+                }
                 if (opts.Releases.HasValue)
                 {
                     versions = versions.Take(opts.Releases.Value);

@@ -57,6 +57,10 @@ namespace CKAN.NetKAN.Transformers
                 // Get the GitHub repository
                 var ghRepo = _api.GetRepo(ghRef);
                 var versions = _api.GetAllReleases(ghRef);
+                if (opts.SkipReleases.HasValue)
+                {
+                    versions = versions.Skip(opts.SkipReleases.Value);
+                }
                 if (opts.Releases.HasValue)
                 {
                     versions = versions.Take(opts.Releases.Value);
@@ -168,7 +172,7 @@ namespace CKAN.NetKAN.Transformers
                 }
                 // Check parent repos
                 r = r.ParentRepo == null
-                    ? null 
+                    ? null
                     : _api.GetRepo(new GithubRef($"#/ckan/github/{r.ParentRepo.FullName}", false, _matchPreleases));
             }
             // Return a string if just one author, else an array

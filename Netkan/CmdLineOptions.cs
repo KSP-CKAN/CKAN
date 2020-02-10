@@ -31,6 +31,9 @@ namespace CKAN.NetKAN
         [Option("releases", DefaultValue = "1", HelpText = "Number of releases to inflate, or 'all'")]
         public string Releases { get; set; }
 
+        [Option("skip-releases", DefaultValue = "0", HelpText = "Number of releases to skip / index of release to inflate.")]
+        public string SkipReleases { get; set; }
+
         [Option("prerelease", HelpText = "Index GitHub prereleases")]
         public bool PreRelease { get; set; }
 

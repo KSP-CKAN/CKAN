@@ -6,13 +6,15 @@ namespace CKAN.NetKAN.Transformers
 {
     internal class TransformOptions
     {
-        public TransformOptions(int? releases, ModuleVersion highVer)
+        public TransformOptions(int? releases, int? skipReleases, ModuleVersion highVer)
         {
             Releases       = releases;
+            SkipReleases   = skipReleases;
             HighestVersion = highVer;
         }
 
         public readonly int?          Releases;
+        public readonly int?          SkipReleases;
         public readonly ModuleVersion HighestVersion;
         public          bool          Staged;
         public          string        StagingReason;

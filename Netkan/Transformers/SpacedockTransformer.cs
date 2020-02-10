@@ -38,6 +38,10 @@ namespace CKAN.NetKAN.Transformers
                 // Look up our mod on SD by its Id.
                 var sdMod = _api.GetMod(Convert.ToInt32(metadata.Kref.Id));
                 var versions = sdMod.All();
+                if (opts.SkipReleases.HasValue)
+                {
+                    versions = versions.Skip(opts.SkipReleases.Value);
+                }
                 if (opts.Releases.HasValue)
                 {
                     versions = versions.Take(opts.Releases.Value);
