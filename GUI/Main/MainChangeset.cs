@@ -31,7 +31,7 @@ namespace CKAN
         {
             menuStrip1.Enabled = false;
 
-            //Using the changeset passed in can cause issues with versions.
+            // Using the changeset passed in can cause issues with versions.
             // An example is Mechjeb for FAR at 25/06/2015 with a 1.0.2 install.
             // TODO Work out why this is.
             installWorker.RunWorkerAsync(

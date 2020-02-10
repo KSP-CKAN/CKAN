@@ -244,6 +244,9 @@ Einstellungen jetzt öffnen?</value>
   <data name="MainInstallInstallCanceled" xml:space="preserve"><value>(De-)Installation/Aktualisierung abgebrochen!</value></data>
   <data name="MainInstallErrorInstalling" xml:space="preserve"><value>Fehler bei der Installation!</value></data>
   <data name="MainInstallUnknownError" xml:space="preserve"><value>Ein unbekannter Fehler ist aufgetreten, bitte versuche es erneut!</value></data>
+  <data name="MainInstallKnownError" xml:space="preserve"><value>Falls die Fehlermeldung ein Download-Problem andeutet, versuche es bitte erneut. Andernfalls melde bitte den Fehler bei uns.
+Wenn du ein Fehler mit den Mod-Metadaten vermutest: https://github.com/KSP-CKAN/NetKAN/new/choose
+Wenn du ein Fehler mit dem CKAN Client vermutest: https://github.com/KSP-CKAN/CKAN/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>Installation fehlgeschlagen!</value></data>
   <data name="MainInstallProvidedBy" xml:space="preserve"><value>Modul {0} wird von mehr als einem verfügbaren Modul bereitgestellt, bitte wähle eine der folgenden Mods:</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (virtuell)</value></data>

@@ -12,8 +12,8 @@ namespace CKAN
     {
         private BackgroundWorker installWorker;
 
-        // used to signal the install worker that the user canceled the install process
-        // this may happen on the recommended/suggested mods dialogs
+        // Used to signal the install worker that the user canceled the install process.
+        // This may happen on the recommended/suggested mods dialogs or during the download.
         private volatile bool installCanceled;
 
         /// <summary>
@@ -417,9 +417,19 @@ namespace CKAN
                     );
                 }
             }
+            else if (e.Error == null)
+            {
+                // The install was unsuccessful, but we did catch the exception.
+                FailWaitDialog(
+                    Properties.Resources.MainInstallErrorInstalling,
+                    Properties.Resources.MainInstallKnownError,
+                    Properties.Resources.MainInstallFailed,
+                    result.Key
+                );
+            }
             else
             {
-                // There was an error
+                // An unknown error was thrown which we didn't catch.
                 FailWaitDialog(
                     Properties.Resources.MainInstallErrorInstalling,
                     Properties.Resources.MainInstallUnknownError,

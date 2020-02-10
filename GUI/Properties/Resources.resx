@@ -264,6 +264,9 @@ Open settings now?</value></data>
   <data name="MainInstallInstallCanceled" xml:space="preserve"><value>(Un)Install/Upgrade canceled!</value></data>
   <data name="MainInstallErrorInstalling" xml:space="preserve"><value>Error during installation!</value></data>
   <data name="MainInstallUnknownError" xml:space="preserve"><value>An unknown error occurred, please try again!</value></data>
+  <data name="MainInstallKnownError" xml:space="preserve"><value>If the above message indicates a download error, please try again. Otherwise, please open a issue for us to investigate.
+If you suspect a metadata problem: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>Installation failed!</value></data>
   <data name="MainInstallProvidedBy" xml:space="preserve"><value>Module {0} is provided by more than one available module, please choose one of the following mods:</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>

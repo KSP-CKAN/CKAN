@@ -530,6 +530,9 @@ namespace CKAN.Properties {
         internal static string MainInstallUnknownError {
             get { return (string)(ResourceManager.GetObject("MainInstallUnknownError", resourceCulture)); }
         }
+        internal static string MainInstallKnownError {
+            get { return (string)(ResourceManager.GetObject("MainInstallKnownError", resourceCulture)); }
+        }
         internal static string MainInstallFailed {
             get { return (string)(ResourceManager.GetObject("MainInstallFailed", resourceCulture)); }
         }

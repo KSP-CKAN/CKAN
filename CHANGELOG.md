@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [GUI] Don't report an unknown error if it is known (#2995 by: DasSkelett; reviewed: HebaruSan)
+
 ### Internal
 
 ## v1.27.0
