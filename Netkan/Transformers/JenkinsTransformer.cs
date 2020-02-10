@@ -35,6 +35,10 @@ namespace CKAN.NetKAN.Transformers
                 JenkinsRef jRef = new JenkinsRef(metadata.Kref);
 
                 var versions = _api.GetAllBuilds(jRef, options);
+                if (opts.SkipReleases.HasValue)
+                {
+                    versions = versions.Skip(opts.SkipReleases.Value);
+                }
                 if (opts.Releases.HasValue)
                 {
                     versions = versions.Take(opts.Releases.Value);

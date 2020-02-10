@@ -33,6 +33,7 @@ namespace Tests.NetKAN.Transformers
             ITransformer     sut  = new EpochTransformer();
             TransformOptions opts = new TransformOptions(
                 1,
+                null,
                 string.IsNullOrEmpty(highVer)
                     ? null
                     : new ModuleVersion(highVer)

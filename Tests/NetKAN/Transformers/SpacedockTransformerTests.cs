@@ -14,7 +14,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class SpacedockTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1, null);
+        private TransformOptions opts = new TransformOptions(1, null, null);
 
         // GH #199: Don't pre-fill KSP version fields if we see a ksp_min/max
         [Test]
