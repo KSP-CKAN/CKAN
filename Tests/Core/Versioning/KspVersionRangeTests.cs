@@ -440,6 +440,24 @@ namespace Tests.Core.Versioning
         }
 
         [Test]
+        public void RangeFromVersionsEqualsRangeFromBounds()
+        {
+            // Arrange
+            var lowerBound = new KspVersionBound(new KspVersion(1, 2, 0, 0), true);
+            var upperBound = new KspVersionBound(new KspVersion(2, 4, 7, 0), false);
+            var lowerVersion = new KspVersion(1, 2);
+            var upperVersion = new KspVersion(2, 4, 6);
+
+            // Act
+            var resultFromBounds = new KspVersionRange(lowerBound, upperBound);
+            var resultFromVersions = new KspVersionRange(lowerVersion, upperVersion);
+
+            // Assert
+            Assert.That(resultFromBounds.Lower, Is.EqualTo(resultFromVersions.Lower));
+            Assert.That(resultFromBounds.Upper, Is.EqualTo(resultFromVersions.Upper));
+        }
+
+        [Test]
         public void CtorThrowsOnNullLowerParameter()
         {
             // Act
