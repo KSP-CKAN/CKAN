@@ -955,12 +955,15 @@ namespace CKAN
                 }
             }
 
-            // -single-instance crashes KSP 1.8 on Linux
+            // -single-instance crashes KSP 1.8 to KSP 1.9 on Linux
             // https://issuetracker.unity3d.com/issues/linux-segmentation-fault-when-running-a-built-project-with-single-instance-argument
             if (Platform.IsUnix)
             {
-                split = filterCmdLineArgs(split,
-                    new KspVersion(1, 8).ToVersionRange(), "-single-instance");
+                var brokenVersionRange = new KspVersionRange(
+                    new KspVersion(1, 8),
+                    new KspVersion(1, 9)
+                );
+                split = filterCmdLineArgs(split, brokenVersionRange, "-single-instance");
             }
 
             var binary = split[0];
@@ -976,7 +979,7 @@ namespace CKAN
                 currentUser.RaiseError(Properties.Resources.MainLaunchFailed, exception.Message);
             }
         }
-        
+
         /// <summary>
         /// If the installed game version is in the given range,
         /// return the given array without the given parameter,
@@ -1198,7 +1201,7 @@ namespace CKAN
                 CurrentInstance.VersionCriteria()
             );
         }
-        
+
         private void MainTabControl_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             switch (MainTabControl.SelectedTab?.Name)

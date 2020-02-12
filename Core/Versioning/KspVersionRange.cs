@@ -27,6 +27,9 @@ namespace CKAN.Versioning
             _string = DeriveString(this);
         }
 
+        public KspVersionRange(KspVersion lower, KspVersion upper)
+            : this(lower?.ToVersionRange().Lower, upper?.ToVersionRange().Upper) { }
+
         public override string ToString()
         {
             return _string;
