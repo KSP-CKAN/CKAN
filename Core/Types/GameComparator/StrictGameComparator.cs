@@ -24,13 +24,8 @@ namespace CKAN
             {
                 if (module.ksp_version_min != null && module.ksp_version_max != null)
                 {
-                    var minRange = module.ksp_version_min.ToVersionRange();
-                    var maxRange = module.ksp_version_max.ToVersionRange();
-                    if (minRange.Lower.Value <= maxRange.Upper.Value)
-                    {
-                        moduleRange = new KspVersionRange(minRange.Lower, maxRange.Upper);
-                    }
-                    else
+                    moduleRange = new KspVersionRange(module.ksp_version_min, module.ksp_version_max);
+                    if (moduleRange.Lower.Value > moduleRange.Upper.Value)
                     {
                         log.WarnFormat("{0} is not less or equal to {1}",
                             module.ksp_version_min, module.ksp_version_max);
@@ -39,15 +34,11 @@ namespace CKAN
                 }
                 else if (module.ksp_version_min != null)
                 {
-                    var minRange = module.ksp_version_min.ToVersionRange();
-
-                    moduleRange = new KspVersionRange(minRange.Lower, KspVersionBound.Unbounded);
+                    moduleRange = new KspVersionRange(module.ksp_version_min, KspVersion.Any);
                 }
                 else if (module.ksp_version_max != null)
                 {
-                    var maxRange = module.ksp_version_max.ToVersionRange();
-
-                    moduleRange = new KspVersionRange(KspVersionBound.Unbounded, maxRange.Upper);
+                    moduleRange = new KspVersionRange(KspVersion.Any, module.ksp_version_max);
                 }
             }
             else
