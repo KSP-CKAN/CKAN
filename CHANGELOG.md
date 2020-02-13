@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
-## v1.27.0
+## v1.27.0 (Bussard)
 
 ### Bugfixes
 
