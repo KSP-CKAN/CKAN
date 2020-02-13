@@ -440,7 +440,7 @@ namespace Tests.Core
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
                     // This should throw, as our tidy KSP has no mods installed.
-                    CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList("Foo", ref possibleConfigOnlyDirs, CKAN.RegistryManager.Instance(manager.CurrentInstance));
+                    CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, nullUser).UninstallList(new List<string> {"Foo"}, ref possibleConfigOnlyDirs, CKAN.RegistryManager.Instance(manager.CurrentInstance));
                 });
 
                 manager.CurrentInstance = null; // I weep even more.
@@ -520,10 +520,10 @@ namespace Tests.Core
                 {
                     $"{mod.identifier}={mod.version}"
                 };
-                
+
                 // Act
                 inst.InstallList(modules, new RelationshipResolverOptions(), CKAN.RegistryManager.Instance(manager.CurrentInstance));
-                
+
                 // Assert
                 Assert.IsTrue(File.Exists(mod_file_path));
 

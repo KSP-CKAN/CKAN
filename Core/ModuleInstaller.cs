@@ -727,7 +727,10 @@ namespace CKAN
         /// This *DOES* save the registry.
         /// Preferred over Uninstall.
         /// </summary>
-        public void UninstallList(IEnumerable<string> mods, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool ConfirmPrompt = true, IEnumerable<string> installing = null)
+        public void UninstallList(
+            IEnumerable<string> mods, ref HashSet<string> possibleConfigOnlyDirs,
+            RegistryManager registry_manager, bool ConfirmPrompt = true, IEnumerable<CkanModule> installing = null
+        )
         {
             mods = mods.Memoize();
             // Pre-check, have they even asked for things which are installed?
@@ -740,8 +743,9 @@ namespace CKAN
             // Find all the things which need uninstalling.
             IEnumerable<string> revdep = mods
                 .Union(registry_manager.registry.FindReverseDependencies(
-                    mods.Except(installing ?? new string[] {})))
-                .Memoize();
+                    mods.Except(installing?.Select(m => m.identifier) ?? new string[] {}),
+                    installing
+                )).Memoize();
             IEnumerable<string> goners = revdep.Union(
                     registry_manager.registry.FindRemovableAutoInstalled(
                         registry_manager.registry.InstalledModules.Where(im => !revdep.Contains(im.identifier)))
@@ -794,12 +798,6 @@ namespace CKAN
             }
 
             User.RaiseMessage("Done!\r\n");
-        }
-
-        public void UninstallList(string mod, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager)
-        {
-            var list = new List<string> { mod };
-            UninstallList(list, ref possibleConfigOnlyDirs, registry_manager);
         }
 
         /// <summary>

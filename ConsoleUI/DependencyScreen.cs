@@ -7,7 +7,7 @@ using CKAN.ConsoleUI.Toolkit;
 namespace CKAN.ConsoleUI {
 
     /// <summary>
-    /// Screen for letting the user choose additional pacakges to install
+    /// Screen for letting the user choose additional packages to install
     /// based on others they've selected
     /// </summary>
     public class DependencyScreen : ConsoleScreen {
