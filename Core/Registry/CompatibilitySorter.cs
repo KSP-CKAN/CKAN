@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using log4net;
+using CKAN.Extensions;
 using CKAN.Versioning;
 
 namespace CKAN
@@ -30,7 +31,7 @@ namespace CKAN
             CompatibleVersions = crit;
             this.dlls = dlls;
             this.dlc  = dlc;
-            PartitionModules(available, providers);
+            PartitionModules(available, CompatibleProviders(crit, providers));
         }
 
         /// <summary>
@@ -65,10 +66,38 @@ namespace CKAN
         private readonly Dictionary<string, UnmanagedModuleVersion> dlc;
 
         /// <summary>
+        /// Filter the provides mapping by compatibility
+        /// </summary>
+        /// <param name="crit">Versions to be considered compatible</param>
+        /// <param name="providers">Mapping from identifiers to mods providing those identifiers</param>
+        /// <returns>
+        /// Mapping from identifiers to compatible mods providing those identifiers
+        /// </returns>
+        private Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(KspVersionCriteria crit, Dictionary<string, HashSet<AvailableModule>> providers)
+        {
+            var compat = new Dictionary<string, HashSet<AvailableModule>>();
+            foreach (var kvp in providers)
+            {
+                // Find providing modules that are compatible with crit
+                var compatAvail = kvp.Value.Where(avm =>
+                    avm.AllAvailable().Any(ckm =>
+                        ckm.ProvidesList.Contains(kvp.Key) && ckm.IsCompatibleKSP(crit))
+                ).ToHashSet();
+                // Add compatible providers to mapping, if any
+                if (compatAvail.Any())
+                {
+                    compat.Add(kvp.Key, compatAvail);
+                }
+            }
+            return compat;
+        }
+
+        /// <summary>
         /// Split the given mods into compatible and incompatible.
         /// Handles all levels of dependencies.
         /// </summary>
         /// <param name="available">All mods available from registry</param>
+        /// <param name="providers">Mapping from identifiers to mods providing those identifiers</param>
         private void PartitionModules(Dictionary<string, AvailableModule> available, Dictionary<string, HashSet<AvailableModule>> providers)
         {
             // First get the ones that are trivially [in]compatible.
@@ -106,9 +135,9 @@ namespace CKAN
         /// Move an indeterminate module to Compatible or Incompatible
         /// based on its dependencies.
         /// </summary>
-        /// <param name="indeterminate">The collection of indeterminate modules</param>
         /// <param name="identifier">Identifier of the module to check</param>
         /// <param name="am">The module to check</param>
+        /// <param name="providers">Mapping from identifiers to mods providing those identifiers</param>
         private void CheckDepends(string identifier, AvailableModule am, Dictionary<string, HashSet<AvailableModule>> providers)
         {
             Investigating.Push(identifier);
