@@ -50,7 +50,7 @@ namespace CKAN
 
         private void UpdateTrayInfo()
         {
-            var count = mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable);
+            var count = ManageMods.mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable);
 
             if (count == 0)
             {
@@ -81,7 +81,7 @@ namespace CKAN
         private void updatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenWindow();
-            MarkAllUpdatesToolButton_Click(sender, e);
+            ManageMods.MarkAllUpdates();
         }
 
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)

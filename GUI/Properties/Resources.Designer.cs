@@ -920,5 +920,27 @@ namespace CKAN.Properties {
         internal static string EditModpackTooltipExport {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipExport", resourceCulture)); }
         }
+
+        internal static string ModSearchDescriptionPrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchDescriptionPrefix", resourceCulture)); }
+        }
+        internal static string ModSearchLanguagePrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchLanguagePrefix", resourceCulture)); }
+        }
+        internal static string ModSearchDependsPrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchDependsPrefix", resourceCulture)); }
+        }
+        internal static string ModSearchRecommendsPrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchRecommendsPrefix", resourceCulture)); }
+        }
+        internal static string ModSearchSuggestsPrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchSuggestsPrefix", resourceCulture)); }
+        }
+        internal static string ModSearchConflictsPrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchConflictsPrefix", resourceCulture)); }
+        }
+        internal static string EditModSearchTooltipExpandButton {
+            get { return (string)(ResourceManager.GetObject("EditModSearchTooltipExpandButton", resourceCulture)); }
+        }
    }
 }

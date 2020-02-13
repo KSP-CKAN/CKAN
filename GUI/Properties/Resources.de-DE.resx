@@ -372,4 +372,5 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>Speichere die ausgewählten Mods NICHT im Modpack. Diese Mods werden nicht sichtbar sein.</value></data>
   <data name="EditModpackTooltipCancel" xml:space="preserve"><value>Brich die Modpackerstellung ab</value></data>
   <data name="EditModpackTooltipExport" xml:space="preserve"><value>Wähle einen Dateinamen und speichere das Modpack</value></data>
+  <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Detailierte Suchfelder ein-/ausklappen (Strg-Shift-F)</value></data>
 </root>

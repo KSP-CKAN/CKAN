@@ -117,59 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>126, 17</value>
-  </metadata>
-  <metadata name="minimizeNotifyIcon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>546, 17</value>
-  </metadata>
-  <metadata name="minimizedContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>704, 17</value>
-  </metadata>
-  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>32</value>
-  </metadata>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
-    <value>(Default)</value>
-  </data>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>File</value></data>
-  <data name="manageKspInstancesMenuItem.Text" xml:space="preserve"><value>Manage KSP Instances</value></data>
-  <data name="openKspDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>Open KSP Directory</value></data>
-  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>Install from .ckan...</value></data>
-  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Save installed mod list...</value></data>
-  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>Export modpack...</value></data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Import downloaded mods...</value></data>
-  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve"><value>Audit recommendations</value></data>
-  <data name="ExitToolButton.Text" xml:space="preserve"><value>E&amp;xit</value></data>
-  <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>Settings</value></data>
-  <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN settings</value></data>
-  <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN plugins</value></data>
-  <data name="kSPCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>KSP command-line</value></data>
-  <data name="compatibleKSPVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Compatible KSP versions</value></data>
-  <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Help</value></data>
-  <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>Report an issue with the CKAN client</value></data>
-  <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>Report an issue with mod metadata</value></data>
-  <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>About</value></data>
-  <data name="ManageModsTabPage.Text" xml:space="preserve"><value>Manage mods</value></data>
-  <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Changeset</value></data>
-  <data name="WaitTabPage.Text" xml:space="preserve"><value>Status log</value></data>
-  <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Choose mods</value></data>
-  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Choose recommended, suggested, or supporting mods</value></data>
-  <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>Delete Directories</value></data>
-  <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Edit Modpack</value></data>
-  <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
-  <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>N available updates</value></data>
-  <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Refresh</value></data>
-  <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>Pause</value></data>
-  <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>Open CKAN</value></data>
-  <data name="openKSPToolStripMenuItem.Text" xml:space="preserve"><value>Launch KSP</value></data>
-  <data name="openKSPDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>Open KSP Directory</value></data>
-  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>CKAN Settings</value></data>
-  <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>Quit</value></data>
+  <data name="FilterCombinedLabel.Text" xml:space="preserve"><value>Suche:</value></data>
+  <data name="FilterByNameLabel.Text" xml:space="preserve"><value>Name:</value></data>
+  <data name="FilterByAuthorLabel.Text" xml:space="preserve"><value>Autor:</value></data>
+  <data name="FilterByDescriptionLabel.Text" xml:space="preserve"><value>Beschreibung:</value></data>
+  <data name="FilterByLanguageLabel.Text" xml:space="preserve"><value>Sprache:</value></data>
+  <data name="FilterByDependsLabel.Text" xml:space="preserve"><value>Hängt ab von:</value></data>
+  <data name="FilterByRecommendsLabel.Text" xml:space="preserve"><value>Empfiehlt:</value></data>
+  <data name="FilterBySuggestsLabel.Text" xml:space="preserve"><value>Schlägt vor:</value></data>
+  <data name="FilterByConflictsLabel.Text" xml:space="preserve"><value>Hat einen Konflikt mit:</value></data>
 </root>
