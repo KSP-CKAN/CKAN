@@ -1027,8 +1027,15 @@ namespace CKAN
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// Acts recursively and lazily.
         /// </summary>
+        /// <param name="modulesToRemove">Modules that are about to be removed.</param>
+        /// <param name="modulesToInstall">Optional list of modules that are about to be installed.</param>
+        /// <param name="origInstalled">Modules that are already installed</param>
+        /// <param name="dlls">Installed DLLs</param>
+        /// <param name="dlc">Installed DLCs</param>
+        /// <returns>List of modules whose dependencies are about to be or already removed.</returns>
         internal static IEnumerable<string> FindReverseDependencies(
             IEnumerable<string> modulesToRemove,
+            IEnumerable<CkanModule> modulesToInstall,
             IEnumerable<CkanModule> origInstalled,
             IEnumerable<string> dlls,
             IDictionary<string, UnmanagedModuleVersion> dlc
@@ -1050,6 +1057,12 @@ namespace CKAN
                 {
                     // Make our hypothetical install, and remove the listed modules from it.
                     HashSet<CkanModule> hypothetical = new HashSet<CkanModule>(origInstalled); // Clone because we alter hypothetical.
+                    if (modulesToInstall != null)
+                    {
+                        // Pretend the mods we are going to install are already installed, so that dependencies that will be
+                        // satisfied by a mod that is going to be installed count as satisfied.
+                        hypothetical = hypothetical.Concat(modulesToInstall).ToHashSet();
+                    }
                     hypothetical.RemoveWhere(mod => modulesToRemove.Contains(mod.identifier));
 
                     log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", origInstalled), string.Join(", ", modulesToRemove), string.Join(", ", hypothetical), string.Join(", ", dllSet));
@@ -1058,6 +1071,13 @@ namespace CKAN
                     var broken = SanityChecker.FindUnsatisfiedDepends(hypothetical, dllSet, dlc)
                         .Select(x => x.Key.identifier).ToHashSet();
 
+                    if (modulesToInstall != null)
+                    {
+                        // We added modules to the hypothetical list which are not yet installed,
+                        // but not their dependencies (we don't know them yet).
+                        // Thus the SanityChecker wants to remove them again -> don't let him.
+                        broken = broken.Except(modulesToInstall.Select(m => m.identifier)).ToHashSet();
+                    }
                     // Lazily return each newly found rev dep
                     foreach (string newFound in broken.Except(modulesToRemove))
                     {
@@ -1089,13 +1109,7 @@ namespace CKAN
         )
         {
             var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
-            if (modulesToInstall != null)
-            {
-                // Pretend the mods we are going to install are already installed, so that dependencies that will be
-                // satisfied by a mod that is going to be installed count as satisfied.
-                installed = installed.Concat(modulesToInstall).ToHashSet();
-            }
-            return FindReverseDependencies(modulesToRemove, installed, new HashSet<string>(installed_dlls.Keys), _installedDlcModules);
+            return FindReverseDependencies(modulesToRemove, modulesToInstall, installed, new HashSet<string>(installed_dlls.Keys), _installedDlcModules);
         }
 
         /// <summary>
@@ -1121,7 +1135,7 @@ namespace CKAN
             var instCkanMods = installedModules.Select(im => im.Module);
             return autoInstMods.Where(
                 im => autoInstIds.IsSupersetOf(FindReverseDependencies(
-                    new List<string> { im.identifier }, instCkanMods, dlls, dlc)));
+                    new List<string> { im.identifier }, null, instCkanMods, dlls, dlc)));
         }
 
         /// <summary>
