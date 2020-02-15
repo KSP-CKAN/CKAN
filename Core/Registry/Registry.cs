@@ -1073,10 +1073,10 @@ namespace CKAN
 
                     if (modulesToInstall != null)
                     {
-                        // We added modules to the hypothetical list which are not yet installed,
-                        // but not their dependencies (we don't know them yet).
-                        // Thus the SanityChecker wants to remove them again -> don't let him.
-                        broken = broken.Except(modulesToInstall.Select(m => m.identifier)).ToHashSet();
+                        // Make sure to only report modules as broken if they are actually currently installed.
+                        // This is mainly to remove the modulesToInstall again which we added
+                        // earlier to the hypothetical list.
+                        broken.IntersectWith(origInstalled.Select(m => m.identifier));
                     }
                     // Lazily return each newly found rev dep
                     foreach (string newFound in broken.Except(modulesToRemove))
