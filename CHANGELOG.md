@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Netkan] Create skip-releases option for NetKAN (#2996 by: DasSkelett; reviewed: HebaruSan)
+- [Multiple] Check current dir for portable install (#3005 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 
