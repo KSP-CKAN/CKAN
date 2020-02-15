@@ -54,14 +54,14 @@ namespace CKAN.ConsoleUI {
                         }
 
                         // FUTURE: BackgroundWorker
-                        
+
                         HashSet<string> possibleConfigOnlyDirs = null;
 
                         RegistryManager regMgr = RegistryManager.Instance(manager.CurrentInstance);
                         ModuleInstaller inst = ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, this);
                         inst.onReportModInstalled = OnModInstalled;
                         if (plan.Remove.Count > 0) {
-                            inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr);
+                            inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, plan.Install);
                             plan.Remove.Clear();
                         }
                         NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache);

@@ -311,7 +311,7 @@ namespace CKAN
             // is true.
             var sub_options = (RelationshipResolverOptions) options.Clone();
             sub_options.with_suggests = false;
-            
+
             old_stanza = old_stanza?.Memoize();
 
             log.DebugFormat("Resolving dependencies for {0}", module.identifier);
@@ -364,8 +364,7 @@ namespace CKAN
                 else if (descriptor.ContainsAny(modlist.Keys))
                 {
                     CkanModule module = modlist.Values
-                        .Where(m => descriptor.ContainsAny(new string[] { m.identifier }))
-                        .FirstOrDefault();
+                        .FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
                     if (options.proceed_with_inconsistencies)
                     {
                         conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
@@ -392,8 +391,7 @@ namespace CKAN
                 {
                     CkanModule module = registry.InstalledModules
                         .Select(im => im.Module)
-                        .Where(m => descriptor.ContainsAny(new string[] { m.identifier }))
-                        .FirstOrDefault();
+                        .FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
                     if (options.proceed_with_inconsistencies)
                     {
                         conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
@@ -688,7 +686,7 @@ namespace CKAN
                 get { return "  Requested by user.\r\n"; }
             }
         }
-        
+
         public class NoLongerUsed: SelectionReason
         {
             public override string Reason

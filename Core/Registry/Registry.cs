@@ -1027,45 +1027,65 @@ namespace CKAN
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// Acts recursively and lazily.
         /// </summary>
+        /// <param name="modulesToRemove">Modules that are about to be removed.</param>
+        /// <param name="modulesToInstall">Optional list of modules that are about to be installed.</param>
+        /// <param name="origInstalled">Modules that are already installed</param>
+        /// <param name="dlls">Installed DLLs</param>
+        /// <param name="dlc">Installed DLCs</param>
+        /// <returns>List of modules whose dependencies are about to be or already removed.</returns>
         internal static IEnumerable<string> FindReverseDependencies(
-            IEnumerable<string> modules_to_remove,
-            IEnumerable<CkanModule> orig_installed,
+            IEnumerable<string> modulesToRemove,
+            IEnumerable<CkanModule> modulesToInstall,
+            IEnumerable<CkanModule> origInstalled,
             IEnumerable<string> dlls,
             IDictionary<string, UnmanagedModuleVersion> dlc
         )
         {
-            modules_to_remove = modules_to_remove.Memoize();
-            orig_installed    = orig_installed.Memoize();
+            modulesToRemove = modulesToRemove.Memoize();
+            origInstalled    = origInstalled.Memoize();
             var dllSet = dlls.ToHashSet();
             // The empty list has no reverse dependencies
             // (Don't remove broken modules if we're only installing)
-            if (modules_to_remove.Any())
+            if (modulesToRemove.Any())
             {
                 // All modules in the input are included in the output
-                foreach (string starter in modules_to_remove)
+                foreach (string starter in modulesToRemove)
                 {
                     yield return starter;
                 }
                 while (true)
                 {
                     // Make our hypothetical install, and remove the listed modules from it.
-                    HashSet<CkanModule> hypothetical = new HashSet<CkanModule>(orig_installed); // Clone because we alter hypothetical.
-                    hypothetical.RemoveWhere(mod => modules_to_remove.Contains(mod.identifier));
+                    HashSet<CkanModule> hypothetical = new HashSet<CkanModule>(origInstalled); // Clone because we alter hypothetical.
+                    if (modulesToInstall != null)
+                    {
+                        // Pretend the mods we are going to install are already installed, so that dependencies that will be
+                        // satisfied by a mod that is going to be installed count as satisfied.
+                        hypothetical = hypothetical.Concat(modulesToInstall).ToHashSet();
+                    }
+                    hypothetical.RemoveWhere(mod => modulesToRemove.Contains(mod.identifier));
 
-                    log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", orig_installed), string.Join(", ", modules_to_remove), string.Join(", ", hypothetical), string.Join(", ", dllSet));
+                    log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", origInstalled), string.Join(", ", modulesToRemove), string.Join(", ", hypothetical), string.Join(", ", dllSet));
 
                     // Find what would break with this configuration.
                     var broken = SanityChecker.FindUnsatisfiedDepends(hypothetical, dllSet, dlc)
                         .Select(x => x.Key.identifier).ToHashSet();
 
+                    if (modulesToInstall != null)
+                    {
+                        // Make sure to only report modules as broken if they are actually currently installed.
+                        // This is mainly to remove the modulesToInstall again which we added
+                        // earlier to the hypothetical list.
+                        broken.IntersectWith(origInstalled.Select(m => m.identifier));
+                    }
                     // Lazily return each newly found rev dep
-                    foreach (string newFound in broken.Except(modules_to_remove))
+                    foreach (string newFound in broken.Except(modulesToRemove))
                     {
                         yield return newFound;
                     }
 
                     // If nothing else would break, it's just the list of modules we're removing.
-                    HashSet<string> to_remove = new HashSet<string>(modules_to_remove);
+                    HashSet<string> to_remove = new HashSet<string>(modulesToRemove);
 
                     if (to_remove.IsSupersetOf(broken))
                     {
@@ -1075,7 +1095,7 @@ namespace CKAN
 
                     // Otherwise, remove our broken modules as well, and recurse.
                     broken.UnionWith(to_remove);
-                    modules_to_remove = broken;
+                    modulesToRemove = broken;
                 }
             }
         }
@@ -1083,10 +1103,13 @@ namespace CKAN
         /// <summary>
         /// Return modules which are dependent on the modules passed in or modules in the return list
         /// </summary>
-        public IEnumerable<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)
+        public IEnumerable<string> FindReverseDependencies(
+            IEnumerable<string> modulesToRemove,
+            IEnumerable<CkanModule> modulesToInstall = null
+        )
         {
             var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
-            return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys), _installedDlcModules);
+            return FindReverseDependencies(modulesToRemove, modulesToInstall, installed, new HashSet<string>(installed_dlls.Keys), _installedDlcModules);
         }
 
         /// <summary>
@@ -1112,7 +1135,7 @@ namespace CKAN
             var instCkanMods = installedModules.Select(im => im.Module);
             return autoInstMods.Where(
                 im => autoInstIds.IsSupersetOf(FindReverseDependencies(
-                    new List<string> { im.identifier }, instCkanMods, dlls, dlc)));
+                    new List<string> { im.identifier }, null, instCkanMods, dlls, dlc)));
         }
 
         /// <summary>

@@ -848,19 +848,21 @@ namespace CKAN
 
             var installed_modules =
                 registry.InstalledModules.Select(imod => imod.Module).ToDictionary(mod => mod.identifier, mod => mod);
-            foreach (var dependency in registry.FindReverseDependencies(
+
+            foreach (var dependent in registry.FindReverseDependencies(
                 modules_to_remove
                     .Select(mod => mod.identifier)
-                    .Except(modules_to_install.Select(m => m.identifier))
+                    .Except(modules_to_install.Select(m => m.identifier)),
+                modules_to_install
             ))
             {
                 //TODO This would be a good place to have an event that alters the row's graphics to show it will be removed
                 CkanModule depMod;
-                if (installed_modules.TryGetValue(dependency, out depMod))
+                if (installed_modules.TryGetValue(dependent, out depMod))
                 {
                     CkanModule module_by_version = registry.GetModuleByVersion(depMod.identifier,
                     depMod.version)
-                        ?? registry.InstalledModule(dependency).Module;
+                        ?? registry.InstalledModule(dependent).Module;
                     changeSet.Add(new ModChange(module_by_version, GUIModChangeType.Remove, null));
                     modules_to_remove.Add(module_by_version);
                 }
