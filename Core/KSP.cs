@@ -180,20 +180,31 @@ namespace CKAN
 
         /// <summary>
         /// Returns the path to our portable version of KSP if ckan.exe is in the same
-        /// directory as the game. Otherwise, returns null.
+        /// directory as the game, or if the game is in the current directory.
+        /// Otherwise, returns null.
         /// </summary>
         public static string PortableDir()
         {
+            string curDir = Directory.GetCurrentDirectory();
+
+            log.DebugFormat("Checking if KSP is in my current dir: {0}", curDir);
+
+            if (IsKspDir(curDir))
+            {
+                log.InfoFormat("KSP found at {0}", curDir);
+                return curDir;
+            }
+
             // Find the directory our executable is stored in.
             // In Perl, this is just `use FindBin qw($Bin);` Verbose enough, C#?
-            string exe_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            log.DebugFormat("Checking if KSP is in my exe dir: {0}", exe_dir);
+            log.DebugFormat("Checking if KSP is in my exe dir: {0}", exeDir);
 
-            if (IsKspDir(exe_dir))
+            if (curDir != exeDir && IsKspDir(exeDir))
             {
-                log.InfoFormat("KSP found at {0}", exe_dir);
-                return exe_dir;
+                log.InfoFormat("KSP found at {0}", exeDir);
+                return exeDir;
             }
 
             return null;
@@ -454,7 +465,7 @@ namespace CKAN
                     manager.registry.RegisterDll(this, dll);
                 }
                 var newDlls = new HashSet<string>(manager.registry.InstalledDlls);
-                bool dllChanged = !oldDlls.SetEquals(newDlls);                
+                bool dllChanged = !oldDlls.SetEquals(newDlls);
 
                 bool dlcChanged = manager.ScanDlc();
                 manager.Save(false);
@@ -463,7 +474,7 @@ namespace CKAN
                 return dllChanged || dlcChanged;
             }
         }
-        
+
         private static readonly Regex dllRegex = new Regex(@"\.dll$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         #endregion
