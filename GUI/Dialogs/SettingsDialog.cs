@@ -198,7 +198,7 @@ namespace CKAN
                 CkanModule.FmtSize(m_cacheSize)
             );
 
-            if (deleteConfirmationDialog.ShowYesNoDialog(confirmationText) == DialogResult.Yes)
+            if (deleteConfirmationDialog.ShowYesNoDialog(this, confirmationText) == DialogResult.Yes)
             {
                 // tell the cache object to nuke itself
                 Main.Instance.Manager.Cache.RemoveAll();

@@ -6,13 +6,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Autofac;
 using ChinhDo.Transactions.FileManager;
-using CKAN.GameVersionProviders;
-using CKAN.Versioning;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using Newtonsoft.Json;
+using CKAN.GameVersionProviders;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -181,6 +181,8 @@ namespace CKAN
         /// <param name="metadataChanges">List of modules that changed</param>
         /// <param name="user">Object for user interaction callbacks</param>
         /// <param name="ksp">Game instance</param>
+        /// <param name="cache">Cacne object for mod downloads</param>
+        /// <param name="registry_manager">Manager that holds our game instances</param>
         private static void HandleModuleChanges(List<CkanModule> metadataChanges, IUser user, KSP ksp, NetModuleCache cache, RegistryManager registry_manager)
         {
             StringBuilder sb = new StringBuilder();

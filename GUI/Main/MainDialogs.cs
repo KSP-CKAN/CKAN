@@ -35,7 +35,7 @@ namespace CKAN
 
         public bool YesNoDialog(string text, string yesText = null, string noText = null)
         {
-            return yesNoDialog.ShowYesNoDialog(text, yesText, noText) == DialogResult.Yes;
+            return yesNoDialog.ShowYesNoDialog(this, text, yesText, noText) == DialogResult.Yes;
         }
 
         public int SelectionDialog(string message, params object[] args)

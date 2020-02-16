@@ -1269,7 +1269,7 @@ namespace CKAN
 
             YesNoDialog reinstallDialog = new YesNoDialog();
             string confirmationText = string.Format(Properties.Resources.MainReinstallConfirm, module.Name);
-            if (reinstallDialog.ShowYesNoDialog(confirmationText) == DialogResult.No)
+            if (reinstallDialog.ShowYesNoDialog(this, confirmationText) == DialogResult.No)
                 return;
 
             IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
