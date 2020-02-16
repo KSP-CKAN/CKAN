@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Extend -single-instance fix to 1.9 (#3001 by: DasSkelett; reviewed: HebaruSan)
 - [Core] Check compatibility of providing modules (#3003 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Respect installing modules during dependency resolution (#3002 by: DasSkelett; reviewed: HebaruSan)
+- [GUI] Fix reinstall prompt crash (#3006 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

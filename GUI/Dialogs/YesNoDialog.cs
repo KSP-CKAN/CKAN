@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace CKAN
 {
@@ -8,25 +9,24 @@ namespace CKAN
         public YesNoDialog()
         {
             InitializeComponent();
+            defaultYes = YesButton.Text;
+            defaultNo  = NoButton.Text;
         }
 
-        public DialogResult ShowYesNoDialog(string text, string yesText = null, string noText = null)
+        public DialogResult ShowYesNoDialog(Form parentForm, string text, string yesText = null, string noText = null)
         {
-            Util.Invoke(DescriptionLabel, () =>
+            task = new TaskCompletionSource<DialogResult>();
+
+            Util.Invoke(parentForm, () =>
             {
                 DescriptionLabel.Text = text;
-                if (yesText != null)
-                {
-                    YesButton.Text = yesText;
-                }
-                if (noText != null)
-                {
-                    NoButton.Text = noText;
-                }
+                YesButton.Text = yesText ?? defaultYes;
+                NoButton.Text  = noText  ?? defaultNo;
                 ClientSize = new Size(ClientSize.Width, StringHeight(text, ClientSize.Width - 25) + 2 * 54);
+                task.SetResult(ShowDialog(parentForm));
             });
 
-            return ShowDialog();
+            return task.Task.Result;
         }
 
         /// <summary>
@@ -46,5 +46,9 @@ namespace CKAN
         {
             Util.Invoke(this, Close);
         }
+
+        private TaskCompletionSource<DialogResult> task;
+        private string defaultYes;
+        private string defaultNo;
     }
 }
