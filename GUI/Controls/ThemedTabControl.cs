@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -21,11 +22,19 @@ namespace CKAN
             bgRect.Inflate(-2, -1);
             bgRect.Offset(0, 1);
             e.Graphics.FillRectangle(new SolidBrush(BackColor), bgRect);
-            // Text
-            var tabPage = TabPages[e.Index];
-            Rectangle rect = e.Bounds;
-            TextRenderer.DrawText(e.Graphics, tabPage.Text, tabPage.Font,
-                rect, tabPage.ForeColor);
+            // e.Index can be invalid (!!), so we need try/catch
+            try
+            {
+                // Text
+                var tabPage = TabPages[e.Index];
+                Rectangle rect = e.Bounds;
+                TextRenderer.DrawText(e.Graphics, tabPage.Text, tabPage.Font,
+                    rect, tabPage.ForeColor);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // No such tab page, oh well
+            }
             // Alert event subscribers
             base.OnDrawItem(e);
         }

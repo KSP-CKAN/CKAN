@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Check compatibility of providing modules (#3003 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Respect installing modules during dependency resolution (#3002 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Fix reinstall prompt crash (#3006 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Treat metapackage depends as not auto installed (#3008 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

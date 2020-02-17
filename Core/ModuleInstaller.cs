@@ -215,7 +215,7 @@ namespace CKAN
                     User.RaiseProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
                                          percent_complete);
 
-                    Install(modsToInstall[i], resolver.ReasonFor(modsToInstall[i]) is SelectionReason.Depends, registry_manager.registry);
+                    Install(modsToInstall[i], resolver.IsAutoInstalled(modsToInstall[i]), registry_manager.registry);
                 }
 
                 User.RaiseProgress("Updating registry", 70);
