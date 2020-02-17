@@ -639,6 +639,21 @@ namespace CKAN
 
             return reasons[mod];
         }
+
+        /// <summary>
+        /// Indicates whether a module should be considered auto-installed in this change set.
+        /// A mod is auto-installed if it is in the list because it's a dependency
+        /// and if its depending mod is not a metpaackage.
+        /// </summary>
+        /// <param name="mod">Module to check</param>
+        /// <returns>
+        /// true if auto-installed, false otherwise
+        /// </returns>
+        public bool IsAutoInstalled(CkanModule mod)
+        {
+            var reason = ReasonFor(mod);
+            return reason is SelectionReason.Depends && !reason.Parent.IsMetapackage;
+        }
     }
 
     /// <summary>
