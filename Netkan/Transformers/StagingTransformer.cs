@@ -14,7 +14,11 @@ namespace CKAN.NetKAN.Transformers
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             JObject json = metadata.Json();
-            var matchingKeys = kspVersionKeys.Where(vk => json.ContainsKey(vk)).Memoize();
+            var matchingKeys = kspVersionKeys
+                .Where(vk => json.ContainsKey(vk)
+                          && !string.IsNullOrEmpty((string)json[vk])
+                          && (string)json[vk] != "any")
+                .Memoize();
             if (matchingKeys.Any())
             {
                 string msg = string.Join(", ", matchingKeys.Select(mk => $"{mk} = {json[mk]}"));
