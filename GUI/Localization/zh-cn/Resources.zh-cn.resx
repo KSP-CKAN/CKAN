@@ -162,7 +162,7 @@
   <data name="GUIModNSlashA" xml:space="preserve"><value>N/A</value></data>
   <data name="GUIModUnknown" xml:space="preserve"><value>未知</value></data>
   <data name="GUIModMethodNotCKAN" xml:space="preserve"><value>Method can not be called unless IsCKAN</value></data>
-  <data name="GUIModKSPCompatibilityLong" xml:space="preserve"><value>{0} (正在使用的Mod版本： {1})</value></data>
+  <data name="GUIModKSPCompatibilityLong" xml:space="preserve"><value>{0} (正在使用的Mod版本: {1})</value></data>
   <data name="MainAutoUpdateFailed" xml:space="preserve"><value>自动更新错误:&#xD;&#xA;{0}</value></data>
   <data name="MainQuitWithConflicts" xml:space="preserve"><value>存在冲突. 真的要退出吗？&#xD;&#xA;&#xD;&#xA;{0}</value></data>
   <data name="MainQuit" xml:space="preserve"><value>退出</value></data>
@@ -348,7 +348,7 @@ CKAN Version(CKAN版本)   : {3}</value></data>
   <data name="EditLabelsDialogCancel" xml:space="preserve"><value>取消</value></data>
   <data name="EditLabelsDialogSave" xml:space="preserve"><value>保存</value></data>
   <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>放弃</value></data>
-  <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>警告：正在安装带有 {0} ({1}) 标签的模组</value></data>
+  <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>警告:正在安装带有 {0} ({1}) 标签的模组</value></data>
   <data name="EditLabelsToolTipName" xml:space="preserve"><value>这个标签将会以这个名称出现在标签菜单，在每个实例中必须唯一</value></data>
   <data name="EditLabelsToolTipColor" xml:space="preserve"><value>带有这个标签的这行Mod会带有这个背景色</value></data>
   <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>该标签可用的实例，留空以应用到全部</value></data>
