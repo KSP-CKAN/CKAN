@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AppIcon" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\..\assets\ckan.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="apply" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\apply.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="ksp" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\ksp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="settings" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="CKANFileFilter" xml:space="preserve"><value>CKAN元数据 (*.ckan)|*.ckan</value></data>
+  <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>导出Mod列表</value></data>
+  <data name="update" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\update.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="backward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\backward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="filter" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\filter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="textClear" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\textClear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="star" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\star.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="thumbup" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\thumbup.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\info.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="smile" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\smile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="alert" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\alert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="arrow_forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="arrow_upward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_upward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="AboutDialogLabel2Text" xml:space="preserve"><value>版本 {0}</value></data>
+  <data name="CloneFakeKspDialogOpenFilter" xml:space="preserve"><value>Build metadata file (buildID*.txt)|buildID*.txt</value></data>
+  <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>请输入新实例名称.</value></data>
+  <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>请输入新实例路径.</value></data>
+  <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"正在克隆实例..."</value></data>
+  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve"><value>{0} DLC版本格式错误. 尝试例如 "1.0.0".</value></data>
+  <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>您想要克隆的实例不可用: {0}</value></data>
+  <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>目标文件夹并非空文件夹: {0}</value></data>
+  <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>克隆失败: {0}</value></data>
+  <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>成功克隆实例.</value></data>
+  <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>正在创建新实例...</value></data>
+  <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>该名称已被占用.</value></data>
+  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>伪装实例创建失败: {0}</value></data>
+  <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>成功创建实例.</value></data>
+  <data name="CompatibleKspVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
+  <data name="CompatibleKspVersionsDialogKSPUpdated" xml:space="preserve"><value>KSP已经在您上次确认您的兼容KSP版本后更新. 请确认设置是否正确.</value></data>
+  <data name="CompatibleKspVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (上一个游戏版本: {1})</value></data>
+  <data name="CompatibleKspVersionsDialogInvalidFormat" xml:space="preserve"><value>版本格式无效</value></data>
+  <data name="CompatibleKspVersionsDialogErrorTitle" xml:space="preserve"><value>Error</value></data>
+  <data name="ConfigurationParseError" xml:space="preserve"><value>尝试解析 "{0}"{1}时出现错误. 请尝试将其移出文件夹并重启CKAN.</value></data>
+  <data name="GUIModNSlashA" xml:space="preserve"><value>N/A</value></data>
+  <data name="GUIModUnknown" xml:space="preserve"><value>未知</value></data>
+  <data name="GUIModMethodNotCKAN" xml:space="preserve"><value>Method can not be called unless IsCKAN</value></data>
+  <data name="GUIModKSPCompatibilityLong" xml:space="preserve"><value>{0} (正在使用的Mod版本： {1})</value></data>
+  <data name="MainAutoUpdateFailed" xml:space="preserve"><value>自动更新错误:&#xD;&#xA;{0}</value></data>
+  <data name="MainQuitWithConflicts" xml:space="preserve"><value>存在冲突. 真的要退出吗？&#xD;&#xA;&#xD;&#xA;{0}</value></data>
+  <data name="MainQuit" xml:space="preserve"><value>退出</value></data>
+  <data name="MainGoBack" xml:space="preserve"><value>返回</value></data>
+  <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>有未满足的依赖. 真的要退出吗？</value></data>
+  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve"><value>您有未应用的更改. 真的要退出吗？
+
+{0}</value></data>
+  <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>正在更新CKAN</value></data>
+  <data name="MainUpgradingTo" xml:space="preserve"><value>更新CKAN到 {0}</value></data>
+  <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0} 依赖于 {1}, 而它并不与当前安装的KSP版本兼容</value></data>
+  <data name="MainFilterAll" xml:space="preserve"><value>筛选 (全部)</value></data>
+  <data name="MainFilterIncompatible" xml:space="preserve"><value>筛选 (不兼容)</value></data>
+  <data name="MainFilterInstalled" xml:space="preserve"><value>筛选 (已安装)</value></data>
+  <data name="MainFilterUpgradeable" xml:space="preserve"><value>筛选 (可更新)</value></data>
+  <data name="MainFilterReplaceable" xml:space="preserve"><value>筛选 (可替换)</value></data>
+  <data name="MainFilterCached" xml:space="preserve"><value>筛选 (已缓存)</value></data>
+  <data name="MainFilterUncached" xml:space="preserve"><value>筛选 (未缓存)</value></data>
+  <data name="MainFilterNew" xml:space="preserve"><value>筛选 (新)</value></data>
+  <data name="MainFilterNotInstalled" xml:space="preserve"><value>筛选 (未安装)</value></data>
+  <data name="MainFilterCompatible" xml:space="preserve"><value>筛选 (兼容)</value></data>
+  <data name="MainFilterLabel" xml:space="preserve"><value>标签 ({0})</value></data>
+  <data name="MainFilterTag" xml:space="preserve"><value>分类 ({0})</value></data>
+  <data name="MainFilterUntagged" xml:space="preserve"><value>分类 (未分类)</value></data>
+  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>有一些安装的Mod不兼容！启动KSP可能不安全. 真的要启动吗？
+
+{0}</value></data>
+  <data name="MainLaunch" xml:space="preserve"><value>启动</value></data>
+  <data name="MainLaunchFailed" xml:space="preserve"><value>无法启动KSP.
+
+{0}</value></data>
+  <data name="MainModPack" xml:space="preserve"><value>CKAN modpack (*.ckan)</value></data>
+  <data name="MainPlainText" xml:space="preserve"><value>Plain text (*.txt)</value></data>
+  <data name="MainMarkdown" xml:space="preserve"><value>Markdown (*.md)</value></data>
+  <data name="MainBBCode" xml:space="preserve"><value>BBCode (*.txt)</value></data>
+  <data name="MainCSV" xml:space="preserve"><value>Comma-separated values (*.csv)</value></data>
+  <data name="MainTSV" xml:space="preserve"><value>Tab-separated values (*.tsv)</value></data>
+  <data name="MainNotFound" xml:space="preserve"><value>Not found.</value></data>
+  <data name="MainReinstallConfirm" xml:space="preserve"><value>您真的想要重新安装 {0}吗？</value></data>
+  <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0}不支持您的当前游戏版本并很可能不能正常运行. 如果您遇到任何问题，请不要向其维护者求助. 
+
+您真的想要安装它吗？</value></data>
+  <data name="AllModVersionsInstallYes" xml:space="preserve"><value>安装</value></data>
+  <data name="AllModVersionsInstallNo" xml:space="preserve"><value>取消</value></data>
+  <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (metapackage)</value></data>
+  <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (cached)</value></data>
+  <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
+  <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>用户选择更新到 {0} 版本.</value></data>
+  <data name="MainChangesetNewInstall" xml:space="preserve"><value>用户选择安装的新Mod.</value></data>
+  <data name="MainImportTitle" xml:space="preserve"><value>导入Mod</value></data>
+  <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
+  <data name="MainImportWaitTitle" xml:space="preserve"><value>状态日志</value></data>
+  <data name="MainInstallWaitTitle" xml:space="preserve"><value>状态日志</value></data>
+  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} 需要 {1} 但它未在索引中列出或不兼容您当前的KSP版本.</value></data>
+  <data name="MainInstallNotFound" xml:space="preserve"><value>需要Mod {0} 但它未在索引中列出或不兼容您当前的KSP版本.</value></data>
+  <data name="MainInstallBadMetadata" xml:space="preserve"><value>检测到损坏的元数据，来自Mod {0}: {1}</value></data>
+  <data name="MainInstallFileExists" xml:space="preserve"><value>哦不！ 我们尝试去覆写其它Mod的文件！
+请尝试 `ckan更新` 并重试.
+
+如果这个问题反复出现，可能时由于打包时出现bug.
+请在此处报告:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new
+
+报告时请包括以下信息:
+
+File(文件)      : {0}
+Installing Mod(正在安装的Mod) : {1}
+Owning Mod(已有Mod): {2}
+CKAN Version(CKAN版本)   : {3}</value></data>
+  <data name="MainInstallUnownedFileExists" xml:space="preserve"><value>哦不！
+
+看起来您正在尝试安装一个已经安装的Mod，或者正在尝试安装已经与其它已安装Mod冲突的Mod.
+
+作为一个安全特性，CKAN*永远不会*覆写或修改并非由自己安装的文件.
+
+如果您想要用CKAN安装 {0},
+请手动卸载以下Mod:
+
+{1}
+
+并重试.</value></data>
+  <data name="MainInstallGameDataReverted" xml:space="preserve"><value>您的GameData已恢复原样.</value></data>
+  <data name="MainInstallOpenSettingsPrompt" xml:space="preserve"><value>{0}
+
+现在打开设置吗？</value></data>
+  <data name="MainInstallOpenSettings" xml:space="preserve"><value>打开设置</value></data>
+  <data name="MainInstallNo" xml:space="preserve"><value>不</value></data>
+  <data name="MainInstallLibCurlMissing" xml:space="preserve"><value>未找到libcurl安装. 是否打开wiki页面寻找帮助？</value></data>
+  <data name="MainInstallModSuccess" xml:space="preserve"><value>Mod "{0}" 已成功安装</value></data>
+  <data name="MainInstallSuccess" xml:space="preserve"><value>成功！</value></data>
+  <data name="MainInstallCancelTooLate" xml:space="preserve"><value>取消时间过晚，进程已完成！</value></data>
+  <data name="MainInstallCancelAfterInstall" xml:space="preserve"><value>用户手动取消进程但所有Mod已经安装/卸载/更新.</value></data>
+  <data name="MainInstallProcessComplete" xml:space="preserve"><value>进程完成！</value></data>
+  <data name="MainInstallProcessCanceled" xml:space="preserve"><value>进程被用户取消！</value></data>
+  <data name="MainInstallCanceledManually" xml:space="preserve"><value>用户手动取消进程！</value></data>
+  <data name="MainInstallInstallCanceled" xml:space="preserve"><value>安装/卸载/更新已取消！</value></data>
+  <data name="MainInstallErrorInstalling" xml:space="preserve"><value>安装时发生错误！</value></data>
+  <data name="MainInstallUnknownError" xml:space="preserve"><value>发生未知错误，请重试！</value></data>
+  <data name="MainInstallKnownError" xml:space="preserve"><value>如果上面的消息指明是一个下载错误，请重试. 否则请向我们提交一个issue便于我们调查.
+如果怀疑是元数据问题: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+如果怀疑是客户端问题: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
+  <data name="MainInstallFailed" xml:space="preserve"><value>安装失败！</value></data>
+  <data name="MainInstallProvidedBy" xml:space="preserve"><value>Mod {0} 由超过一个Mod提供，请选择以下Mod之一: </value></data>
+  <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
+  <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (virtual)</value></data>
+  <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (未索引)</value></data>
+  <data name="ModInfoNotCached" xml:space="preserve"><value>这个Mod不在缓存中，点击'下载'以预览内容</value></data>
+  <data name="ModInfoCached" xml:space="preserve"><value>Mod已缓存，预览可用</value></data>
+  <data name="MainModListWaitTitle" xml:space="preserve"><value>正在加载Mod...</value></data>
+  <data name="MainModListLoadingRegistry" xml:space="preserve"><value>正在加载注册表...</value></data>
+  <data name="MainModListLoadingInstalled" xml:space="preserve"><value>正在加载已安装Mod...</value></data>
+  <data name="MainModListLoadingAvailable" xml:space="preserve"><value>正在加载可用Mod...</value></data>
+  <data name="MainModListLoadingIncompatible" xml:space="preserve"><value>正在加载不可用Mod...</value></data>
+  <data name="MainModListRestoringChangeset" xml:space="preserve"><value>恢复更改列表...</value></data>
+  <data name="MainModListPreservingNew" xml:space="preserve"><value>保留新旗帜...</value></data>
+  <data name="MainModListPopulatingList" xml:space="preserve"><value>正在按热门程度排序...</value></data>
+  <data name="MainModListUpdatingFilters" xml:space="preserve"><value>正在更新筛选器...</value></data>
+  <data name="MainModListCompatible" xml:space="preserve"><value>兼容 ({0})</value></data>
+  <data name="MainModListInstalled" xml:space="preserve"><value>已安装 ({0})</value></data>
+  <data name="MainModListUpgradeable" xml:space="preserve"><value>可更新 ({0})</value></data>
+  <data name="MainModListReplaceable" xml:space="preserve"><value>可替换 ({0})</value></data>
+  <data name="MainModListCached" xml:space="preserve"><value>已缓存 ({0})</value></data>
+  <data name="MainModListUncached" xml:space="preserve"><value>未缓存 ({0})</value></data>
+  <data name="MainModListNewlyCompatible" xml:space="preserve"><value>新兼容 ({0})</value></data>
+  <data name="MainModListNotInstalled" xml:space="preserve"><value>未安装 ({0})</value></data>
+  <data name="MainModListIncompatible" xml:space="preserve"><value>不兼容 ({0})</value></data>
+  <data name="MainModListAll" xml:space="preserve"><value>所有 ({0})</value></data>
+  <data name="MainModListUpdatingTray" xml:space="preserve"><value>正在更新托盘...</value></data>
+  <data name="MainModListAutoDetected" xml:space="preserve"><value>AD</value></data>
+  <data name="MainModListUnknownFilter" xml:space="preserve"><value>未知筛选类型 {0} 在 IsModInFilter</value></data>
+  <data name="MainRecommendationsTitle" xml:space="preserve"><value>选择推荐或建议Mod</value></data>
+  <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>没有找到推荐或建议Mod.</value></data>
+  <data name="MainRepoWaitTitle" xml:space="preserve"><value>正在更新Repo</value></data>
+  <data name="MainRepoScanning" xml:space="preserve"><value>正在扫描DLC和手动安装的Mod...</value></data>
+  <data name="MainRepoContacting" xml:space="preserve"><value>正在连接Repo...</value></data>
+  <data name="MainRepoUpdating" xml:space="preserve"><value>正在更新Repo...</value></data>
+  <data name="MainRepoFailedToConnect" xml:space="preserve"><value>无法连接到Repo. 错误码: {0}</value></data>
+  <data name="MainRepoUpToDate" xml:space="preserve"><value>Repo已是最新.</value></data>
+  <data name="MainRepoFailed" xml:space="preserve"><value>Repo更新失败！</value></data>
+  <data name="MainRepoSuccess" xml:space="preserve"><value>Repo成功更新.</value></data>
+  <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>您想要在CKAN在每次加载时刷新Mod列表吗？ (您一直可以通过上方的按钮手动刷新.)</value></data>
+  <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>{0} 个更新可用</value></data>
+  <data name="MainRepoBalloonTipTooltip" xml:space="preserve"><value>点击升级</value></data>
+  <data name="MainTrayIconResume" xml:space="preserve"><value>继续</value></data>
+  <data name="MainTrayIconPause" xml:space="preserve"><value>暂停</value></data>
+  <data name="MainTrayNoUpdates" xml:space="preserve"><value>没有可用更新</value></data>
+  <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>{0} 个可用更新</value></data>
+  <data name="MainWaitPleaseWait" xml:space="preserve"><value>请稍候</value></data>
+  <data name="MainWaitDone" xml:space="preserve"><value>已完成！</value></data>
+  <data name="ManageKspInstancesNotValid" xml:space="preserve"><value>目录 {0} 并非有效的KSP目录.</value></data>
+  <data name="ManageKspInstancesDirectoryDeleted" xml:space="preserve"><value>目录 "{0}" 不存在.</value></data>
+  <data name="NewRepoDialogFailed" xml:space="preserve"><value>同步主列表失败.</value></data>
+  <data name="PluginsDialogFilter" xml:space="preserve"><value>CKAN Plugins (*.dll)|*.dll</value></data>
+  <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} 个文件, {1}</value></data>
+  <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>无效路径: {0}</value></data>
+  <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>选择一个文件夹来存储CKAN下载的Mod:</value></data>
+  <data name="SettingsDialogDeleteConfirm" xml:space="preserve"><value>您知道想要删除 {0} 个缓存文件来释放 {1} 空间?</value></data>
+  <data name="AddAuthTokenTitle" xml:space="preserve"><value>添加验证标记</value></data>
+  <data name="AddAuthTokenHost" xml:space="preserve"><value>Host:</value></data>
+  <data name="AddAuthTokenToken" xml:space="preserve"><value>Token:</value></data>
+  <data name="AddAuthTokenAccept" xml:space="preserve"><value>&amp;确定</value></data>
+  <data name="AddAuthTokenCancel" xml:space="preserve"><value>&amp;取消</value></data>
+  <data name="AddAuthTokenHostRequired" xml:space="preserve"><value>需要输入Host.</value></data>
+  <data name="AddAuthTokenTokenRequired" xml:space="preserve"><value>需要输入Token.</value></data>
+  <data name="AddAuthTokenInvalidHost" xml:space="preserve"><value>{0} 并非有效Host名.</value></data>
+  <data name="AddAuthTokenDupHost" xml:space="preserve"><value>{0} 已经有验证标记.</value></data>
+  <data name="SettingsDialogUpdateFailed" xml:space="preserve"><value>更新时发生错误.
+无法自动更新，因为CKAN.exe为只读或者我们不允许覆写它. 请在 https://github.com/KSP-CKAN/CKAN/releases/latest 手动更新.</value></data>
+  <data name="URLHandlersPrompt" xml:space="preserve"><value>CKAN需要处理 ckan:// URLs 的权限.
+您想要允许CKAN这么做吗? 如果您点击否您将不会再次看到此消息.</value></data>
+  <data name="UtilCopyLink" xml:space="preserve"><value>&amp;复制链接地址</value></data>
+  <data name="StatusInstanceLabelText" xml:space="preserve"><value>游戏实例: {0} (KSP {1})</value></data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>收藏</value></data>
+  <data name="ModuleLabelListHidden" xml:space="preserve"><value>隐藏</value></data>
+  <data name="ModuleLabelListGlobal" xml:space="preserve"><value>全局</value></data>
+  <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>您真的想要删除 {0} 吗？该操作无法撤回！</value></data>
+  <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>保存更改？</value></data>
+  <data name="EditLabelsDialogNoRecord" xml:space="preserve"><value>没有记录被编辑！</value></data>
+  <data name="EditLabelsDialogNameRequired" xml:space="preserve"><value>需要名称！</value></data>
+  <data name="EditLabelsDialogAlreadyExists" xml:space="preserve"><value>{0} 已经存在于 {1} ！</value></data>
+  <data name="EditLabelsDialogDelete" xml:space="preserve"><value>删除</value></data>
+  <data name="EditLabelsDialogCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="EditLabelsDialogSave" xml:space="preserve"><value>保存</value></data>
+  <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>放弃</value></data>
+  <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>警告：正在安装带有 {0} ({1}) 标签的模组</value></data>
+  <data name="EditLabelsToolTipName" xml:space="preserve"><value>这个标签将会以这个名称出现在标签菜单，在每个实例中必须唯一</value></data>
+  <data name="EditLabelsToolTipColor" xml:space="preserve"><value>带有这个标签的这行Mod会带有这个背景色</value></data>
+  <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>该标签可用的实例，留空以应用到全部</value></data>
+  <data name="EditLabelsToolTipHide" xml:space="preserve"><value>如果勾选，带有该标签的Mod会在被标准筛选器筛选时隐藏</value></data>
+  <data name="EditLabelsToolTipNotifyOnChanges" xml:space="preserve"><value>如果勾选，会在这个Mod从不兼容变为兼容时显示一个提醒</value></data>
+  <data name="EditLabelsToolTipRemoveOnChanges" xml:space="preserve"><value>如果勾选，会在这个Mod从不兼容变为兼容时移除这个标签</value></data>
+  <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve"><value>如果勾选，更改列表会提醒您这个Mod即将要被安装</value></data>
+  <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve"><value>如果勾选，Mod在被安装后会被移除该标签</value></data>
+  <data name="MainLabelsUpdateMessage" xml:space="preserve"><value>一些您关注的Mod已经更新:
+
+{0}</value></data>
+  <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>更新提醒</value></data>
+  <data name="MainLabelsUntagged" xml:space="preserve"><value>未分类 ({0})</value></data>
+  <data name="EditModpackBadIdentifier" xml:space="preserve"><value>标识符必须包含一个或多个字母、数字及横杠，并必须以字母或数字开头</value></data>
+  <data name="EditModpackBadName" xml:space="preserve"><value>需要名称</value></data>
+  <data name="EditModpackBadVersion" xml:space="preserve"><value>需要版本</value></data>
+  <data name="EditModpackBadKspVersions" xml:space="preserve"><value>最低KSP版本必须小于或等于最高KSP版本</value></data>
+  <data name="EditModpackTooltipIdentifier" xml:space="preserve"><value>该Mod包的内部名称；仅限字母、数字和横杠</value></data>
+  <data name="EditModpackTooltipName" xml:space="preserve"><value>该Mod包的公开名称</value></data>
+  <data name="EditModpackTooltipAbstract" xml:space="preserve"><value>Mod包的简短描述</value></data>
+  <data name="EditModpackTooltipVersion" xml:space="preserve"><value>Mod包版本号</value></data>
+  <data name="EditModpackTooltipKspVersionMin" xml:space="preserve"><value>最低兼容KSP版本，留空以应用全部</value></data>
+  <data name="EditModpackTooltipKspVersionMax" xml:space="preserve"><value>最高兼容KSP版本，留空以应用全部</value></data>
+  <data name="EditModpackTooltipLicense" xml:space="preserve"><value>该Mod包的协议</value></data>
+  <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>如果勾选，Mod包将会包括特定版本的Mod，否则任何版本均可用</value></data>
+  <data name="EditModpackTooltipDepends" xml:space="preserve"><value>移动选中Mod到依赖组. 这些Mod一定会被安装.</value></data>
+  <data name="EditModpackTooltipRecommends" xml:space="preserve"><value>移动选中Mod到推荐组. 用户在安装时可以取消. </value></data>
+  <data name="EditModpackTooltipSuggests" xml:space="preserve"><value>移动选中Mod到建议组. 这些Mod在安装时可用但您必须去选中它们.</value></data>
+  <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>移动选中Mod到忽略组. 这些Mod不会加入到Mod包中</value></data>
+  <data name="EditModpackTooltipCancel" xml:space="preserve"><value>中止Mod包创建</value></data>
+  <data name="EditModpackTooltipExport" xml:space="preserve"><value>选中一个文件名并保存Mod包</value></data>
+</root>
