@@ -125,6 +125,6 @@
   <data name="SuggestionsGroup.Header" xml:space="preserve"><value>建议</value></data>
   <data name="SupportedByGroup.Header" xml:space="preserve"><value>支持</value></data>
   <data name="ModNameHeader.Text" xml:space="preserve"><value>Mod</value></data>
-  <data name="SourceModulesHeader.Text" xml:space="preserve"><value>推荐自/建议自：</value></data>
+  <data name="SourceModulesHeader.Text" xml:space="preserve"><value>推荐自/建议自:</value></data>
   <data name="DescriptionHeader.Text" xml:space="preserve"><value>Mod描述</value></data>
 </root>

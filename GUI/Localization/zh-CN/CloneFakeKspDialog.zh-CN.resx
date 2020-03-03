@@ -125,12 +125,12 @@
   <data name="labelOldPath.Text" xml:space="preserve"><value>克隆的路径</value></data>
   <data name="buttonInstancePathSelection.Text" xml:space="preserve"><value>选择...</value></data>
   <data name="radioButtonFake.Text" xml:space="preserve"><value>伪装新的KSP实例</value></data>
-  <data name="labelVersion.Text" xml:space="preserve"><value>版本：</value></data>
-  <data name="labelDlcVersions.Text" xml:space="preserve"><value>DLC版本（留空以忽略）：</value></data>
+  <data name="labelVersion.Text" xml:space="preserve"><value>版本:</value></data>
+  <data name="labelDlcVersions.Text" xml:space="preserve"><value>DLC版本（留空以忽略）:</value></data>
   <data name="labelMakingHistory.Text" xml:space="preserve"><value>Making History</value></data>
   <data name="labelBreakingGround.Text" xml:space="preserve"><value>Breaking Ground</value></data>
-  <data name="labelNewName.Text" xml:space="preserve"><value>新实例名称：</value></data>
-  <data name="labelNewPath.Text" xml:space="preserve"><value>新实例路径</value></data>
+  <data name="labelNewName.Text" xml:space="preserve"><value>新实例名称:</value></data>
+  <data name="labelNewPath.Text" xml:space="preserve"><value>新实例路径:</value></data>
   <data name="buttonPathBrowser.Text" xml:space="preserve"><value>选择...</value></data>
   <data name="checkBoxSetAsDefault.Text" xml:space="preserve"><value>将新实例设为默认</value></data>
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve"><value>切换到新实例</value></data>

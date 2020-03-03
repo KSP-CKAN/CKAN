@@ -296,14 +296,14 @@ CKAN Version(CKAN版本)   : {3}</value></data>
   <data name="MainModListUnknownFilter" xml:space="preserve"><value>未知筛选类型 {0} 在 IsModInFilter</value></data>
   <data name="MainRecommendationsTitle" xml:space="preserve"><value>选择推荐或建议Mod</value></data>
   <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>没有找到推荐或建议Mod.</value></data>
-  <data name="MainRepoWaitTitle" xml:space="preserve"><value>正在更新Repo</value></data>
+  <data name="MainRepoWaitTitle" xml:space="preserve"><value>正在更新元数据库</value></data>
   <data name="MainRepoScanning" xml:space="preserve"><value>正在扫描DLC和手动安装的Mod...</value></data>
-  <data name="MainRepoContacting" xml:space="preserve"><value>正在连接Repo...</value></data>
-  <data name="MainRepoUpdating" xml:space="preserve"><value>正在更新Repo...</value></data>
-  <data name="MainRepoFailedToConnect" xml:space="preserve"><value>无法连接到Repo. 错误码: {0}</value></data>
-  <data name="MainRepoUpToDate" xml:space="preserve"><value>Repo已是最新.</value></data>
-  <data name="MainRepoFailed" xml:space="preserve"><value>Repo更新失败！</value></data>
-  <data name="MainRepoSuccess" xml:space="preserve"><value>Repo成功更新.</value></data>
+  <data name="MainRepoContacting" xml:space="preserve"><value>正在连接元数据库...</value></data>
+  <data name="MainRepoUpdating" xml:space="preserve"><value>正在更新元数据库...</value></data>
+  <data name="MainRepoFailedToConnect" xml:space="preserve"><value>无法连接到元数据库. 错误码: {0}</value></data>
+  <data name="MainRepoUpToDate" xml:space="preserve"><value>元数据库已是最新.</value></data>
+  <data name="MainRepoFailed" xml:space="preserve"><value>元数据库更新失败！</value></data>
+  <data name="MainRepoSuccess" xml:space="preserve"><value>元数据库成功更新.</value></data>
   <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>您想要在CKAN在每次加载时刷新Mod列表吗？ (您一直可以通过上方的按钮手动刷新.)</value></data>
   <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>{0} 个更新可用</value></data>
   <data name="MainRepoBalloonTipTooltip" xml:space="preserve"><value>点击升级</value></data>
