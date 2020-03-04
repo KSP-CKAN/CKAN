@@ -213,7 +213,7 @@
   <data name="KSPCompatibility.HeaderText" xml:space="preserve"><value>最高KSP版本</value></data>
   <data name="SizeCol.HeaderText" xml:space="preserve"><value>下载</value></data>
   <data name="InstallDate.HeaderText" xml:space="preserve"><value>安装日期</value></data>
-  <data name="DownloadCount.HeaderText" xml:space="preserve"><value>下载</value></data>
+  <data name="DownloadCount.HeaderText" xml:space="preserve"><value>下载量</value></data>
   <data name="Description.HeaderText" xml:space="preserve"><value>描述</value></data>
   <data name="reinstallToolStripMenuItem.Text" xml:space="preserve"><value>重新安装</value></data>
   <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>下载内容</value></data>
