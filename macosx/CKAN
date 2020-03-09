@@ -39,7 +39,7 @@ MONO=$(which mono)
 if [ -z "$MONO" -o ! -x "$MONO" ]
 then
     # We could not find mono. The wiki explains how to install.
-    open 'https://github.com/KSP-CKAN/CKAN/wiki/Installing-CKAN-on-OSX'
+    open 'https://github.com/KSP-CKAN/CKAN/wiki/Installing-CKAN-on-macOS'
 else
     # Mono found, so we can run CKAN
     # The exe is called ckan.exe
