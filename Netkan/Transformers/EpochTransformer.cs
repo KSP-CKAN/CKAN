@@ -60,7 +60,8 @@ namespace CKAN.NetKAN.Transformers
                     // Increment epoch if too small
                     currentV = currentV.IncrementEpoch();
                 }
-                if (startV < opts.HighestVersion && opts.HighestVersion < currentV)
+                if (!opts.HighestVersion.EpochEquals(currentV)
+                    && startV < opts.HighestVersion && opts.HighestVersion < currentV)
                 {
                     // New file, tell the Indexer to be careful
                     opts.Staged = true;
