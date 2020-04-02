@@ -250,6 +250,7 @@ namespace CKAN
             this.RelationshipsListView.Groups.Add(this.RecommendationsGroup);
             this.RelationshipsListView.Groups.Add(this.SuggestionsGroup);
             this.RelationshipsListView.Groups.Add(this.IgnoredGroup);
+            this.RelationshipsListView.KeyDown += new System.Windows.Forms.KeyEventHandler(RelationshipsListView_KeyDown);
             this.RelationshipsListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(RelationshipsListView_ItemSelectionChanged);
             // 
             // ModNameColumn

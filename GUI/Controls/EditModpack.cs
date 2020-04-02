@@ -172,7 +172,32 @@ namespace CKAN
             return true;
         }
 
-        private void RelationshipsListView_ItemSelectionChanged(Object sender, ListViewItemSelectionChangedEventArgs e)
+        private void RelationshipsListView_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                // Select all on ctrl-A
+                case Keys.A:
+                    if (e.Control)
+                    {
+                        foreach (ListViewItem lvi in RelationshipsListView.Items)
+                        {
+                            lvi.Selected = true;
+                        }
+                    }
+                    break;
+
+                // Deselect all on Esc
+                case Keys.Escape:
+                    foreach (ListViewItem lvi in RelationshipsListView.Items)
+                    {
+                        lvi.Selected = false;
+                    }
+                    break;
+            }
+        }
+
+        private void RelationshipsListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (OnSelectedItemsChanged != null)
             {
