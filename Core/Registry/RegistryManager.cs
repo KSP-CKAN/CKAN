@@ -440,7 +440,7 @@ namespace CKAN
             {
                 // v1.18 to allow Unlicense
                 spec_version = new ModuleVersion("v1.18"),
-                identifier   = name,
+                identifier   = Identifier.Sanitize(name),
                 name         = name,
                 @abstract    = $"A list of modules installed on the {kspInstanceName} KSP instance",
                 kind         = "metapackage",
