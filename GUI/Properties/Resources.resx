@@ -296,8 +296,8 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="MainModListUpdatingTray" xml:space="preserve"><value>Updating tray...</value></data>
   <data name="MainModListAutoDetected" xml:space="preserve"><value>AD</value></data>
   <data name="MainModListUnknownFilter" xml:space="preserve"><value>Unknown filter type {0} in IsModInFilter</value></data>
-  <data name="MainRecommendationsTitle" xml:space="preserve"><value>Choose recommended or suggested mods</value></data>
-  <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>No recommendations or suggestions found.</value></data>
+  <data name="MainRecommendationsTitle" xml:space="preserve"><value>Choose recommended, suggested, or supporting mods</value></data>
+  <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>No recommended, suggested, or supporting mods found.</value></data>
   <data name="MainRepoWaitTitle" xml:space="preserve"><value>Updating repositories</value></data>
   <data name="MainRepoScanning" xml:space="preserve"><value>Scanning for DLCs and manually installed modules...</value></data>
   <data name="MainRepoContacting" xml:space="preserve"><value>Contacting repository...</value></data>
