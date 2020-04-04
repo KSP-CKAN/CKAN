@@ -2,12 +2,11 @@
 
 namespace CKAN
 {
-    public partial class RenameInstanceDialog : FormCompatibility
+    public partial class RenameInstanceDialog : Form
     {
         public RenameInstanceDialog()
         {
             InitializeComponent();
-            ApplyFormCompatibilityFixes();
 
             // Set the default actions for pressing Enter and Escape.
             AcceptButton = OKButton;

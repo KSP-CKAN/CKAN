@@ -149,7 +149,11 @@ namespace CKAN
             }
 
             // Now let's make all our changes.
-            tabController.RenameTab("WaitTabPage", Properties.Resources.MainInstallWaitTitle);
+            Util.Invoke(this, () =>
+            {
+                // Need to be on the GUI thread to get the translated string
+                tabController.RenameTab("WaitTabPage", Properties.Resources.MainInstallWaitTitle);
+            });
             ShowWaitDialog();
             tabController.SetTabLock(true);
 

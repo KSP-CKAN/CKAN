@@ -48,7 +48,7 @@ namespace CKAN
             }
         }
 
-        public void UpdateTrayInfo()
+        private void UpdateTrayInfo()
         {
             var count = mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable);
 

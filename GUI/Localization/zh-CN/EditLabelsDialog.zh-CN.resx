@@ -123,7 +123,9 @@
   <data name="NameLabel.Text" xml:space="preserve"><value>名称:</value></data>
   <data name="ColorLabel.Text" xml:space="preserve"><value>背景色:</value></data>
   <data name="ColorButton.Text" xml:space="preserve"><value>选择...</value></data>
-  <data name="InstanceNameLabel.Text" xml:space="preserve"><value>实例（留空以应用到所有实例）:</value></data>
+  <data name="InstanceNameLabel.Text" xml:space="preserve"><value>实例
+（留空以应用
+到所有实例）:</value></data>
   <data name="HideFromOtherFiltersCheckBox.Text" xml:space="preserve"><value>有其它筛选条件时隐藏</value></data>
   <data name="NotifyOnChangesCheckBox.Text" xml:space="preserve"><value>更新时提醒</value></data>
   <data name="RemoveOnChangesCheckBox.Text" xml:space="preserve"><value>更新时移除</value></data>

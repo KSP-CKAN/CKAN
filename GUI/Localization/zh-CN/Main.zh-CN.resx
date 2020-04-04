@@ -203,7 +203,7 @@
   <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve"><value>上一个选中Mod...</value></data>
   <data name="NavForwardToolButton.ToolTipText" xml:space="preserve"><value>下一个选中Mod...</value></data>
   <data name="Installed.HeaderText" xml:space="preserve"><value>    安装</value></data>
-  <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>已自动安装</value></data>
+  <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>自动安装</value></data>
   <data name="UpdateCol.HeaderText" xml:space="preserve"><value>更新</value></data>
   <data name="ReplaceCol.HeaderText" xml:space="preserve"><value>替换</value></data>
   <data name="ModName.HeaderText" xml:space="preserve"><value>名称</value></data>
