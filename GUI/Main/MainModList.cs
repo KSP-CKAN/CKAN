@@ -163,6 +163,8 @@ namespace CKAN
         {
             // Run the update in the background so the UI thread can appear alive
             // Await it so potential (fatal) errors are thrown, not swallowed.
+            // Need to be on the GUI thread to get the translated strings
+            tabController.RenameTab("WaitTabPage", Properties.Resources.MainModListWaitTitle);
             await Task.Factory.StartNew(() =>
                 _UpdateModsList(mc ?? new List<ModChange>(), old_modules)
             );
@@ -173,7 +175,6 @@ namespace CKAN
             log.Info("Updating the mod list");
 
             ResetProgress();
-            tabController.RenameTab("WaitTabPage", Properties.Resources.MainModListWaitTitle);
             ShowWaitDialog(false);
             tabController.SetTabLock(true);
             Util.Invoke(this, SwitchEnabledState);
@@ -289,7 +290,7 @@ namespace CKAN
             });
 
             Wait.AddLogMessage(Properties.Resources.MainModListUpdatingTray);
-            UpdateTrayInfo();
+            Util.Invoke(this, UpdateTrayInfo);
 
             HideWaitDialog(true);
             tabController.HideTab("WaitTabPage");

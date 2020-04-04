@@ -115,7 +115,7 @@
             this.NewRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.NewRepoButton.Location = new System.Drawing.Point(12, 93);
             this.NewRepoButton.Name = "NewRepoButton";
-            this.NewRepoButton.Size = new System.Drawing.Size(56, 23);
+            this.NewRepoButton.Size = new System.Drawing.Size(56, 25);
             this.NewRepoButton.TabIndex = 1;
             this.NewRepoButton.Click += new System.EventHandler(this.NewRepoButton_Click);
             resources.ApplyResources(this.NewRepoButton, "NewRepoButton");
@@ -126,7 +126,7 @@
             this.UpRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.UpRepoButton.Location = new System.Drawing.Point(74, 93);
             this.UpRepoButton.Name = "UpRepoButton";
-            this.UpRepoButton.Size = new System.Drawing.Size(56, 23);
+            this.UpRepoButton.Size = new System.Drawing.Size(56, 25);
             this.UpRepoButton.TabIndex = 2;
             this.UpRepoButton.Click += new System.EventHandler(this.UpRepoButton_Click);
             resources.ApplyResources(this.UpRepoButton, "UpRepoButton");
@@ -137,7 +137,7 @@
             this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DownRepoButton.Location = new System.Drawing.Point(136, 93);
             this.DownRepoButton.Name = "DownRepoButton";
-            this.DownRepoButton.Size = new System.Drawing.Size(56, 23);
+            this.DownRepoButton.Size = new System.Drawing.Size(56, 25);
             this.DownRepoButton.TabIndex = 3;
             this.DownRepoButton.Click += new System.EventHandler(this.DownRepoButton_Click);
             resources.ApplyResources(this.DownRepoButton, "DownRepoButton");
@@ -148,7 +148,7 @@
             this.DeleteRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DeleteRepoButton.Location = new System.Drawing.Point(408, 93);
             this.DeleteRepoButton.Name = "DeleteRepoButton";
-            this.DeleteRepoButton.Size = new System.Drawing.Size(56, 23);
+            this.DeleteRepoButton.Size = new System.Drawing.Size(56, 25);
             this.DeleteRepoButton.TabIndex = 4;
             this.DeleteRepoButton.Click += new System.EventHandler(this.DeleteRepoButton_Click);
             resources.ApplyResources(this.DeleteRepoButton, "DeleteRepoButton");
@@ -181,7 +181,7 @@
             this.NewAuthTokenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.NewAuthTokenButton.Location = new System.Drawing.Point(12, 93);
             this.NewAuthTokenButton.Name = "NewAuthTokenButton";
-            this.NewAuthTokenButton.Size = new System.Drawing.Size(56, 23);
+            this.NewAuthTokenButton.Size = new System.Drawing.Size(56, 25);
             this.NewAuthTokenButton.TabIndex = 1;
             this.NewAuthTokenButton.Click += new System.EventHandler(this.NewAuthTokenButton_Click);
             resources.ApplyResources(this.NewAuthTokenButton, "NewAuthTokenButton");
@@ -192,7 +192,7 @@
             this.DeleteAuthTokenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DeleteAuthTokenButton.Location = new System.Drawing.Point(408, 93);
             this.DeleteAuthTokenButton.Name = "DeleteAuthTokenButton";
-            this.DeleteAuthTokenButton.Size = new System.Drawing.Size(56, 23);
+            this.DeleteAuthTokenButton.Size = new System.Drawing.Size(56, 25);
             this.DeleteAuthTokenButton.TabIndex = 2;
             this.DeleteAuthTokenButton.Click += new System.EventHandler(this.DeleteAuthTokenButton_Click);
             resources.ApplyResources(this.DeleteAuthTokenButton, "DeleteAuthTokenButton");
@@ -269,7 +269,7 @@
             this.ChangeCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ChangeCacheButton.Location = new System.Drawing.Point(12, 89);
             this.ChangeCacheButton.Name = "ChangeCacheButton";
-            this.ChangeCacheButton.Size = new System.Drawing.Size(75, 23);
+            this.ChangeCacheButton.Size = new System.Drawing.Size(75, 25);
             this.ChangeCacheButton.TabIndex = 5;
             this.ChangeCacheButton.Click += new System.EventHandler(this.ChangeCacheButton_Click);
             resources.ApplyResources(this.ChangeCacheButton, "ChangeCacheButton");
@@ -280,7 +280,7 @@
             this.ClearCacheButton.Location = new System.Drawing.Point(93, 89);
             this.ClearCacheButton.Menu = this.ClearCacheMenu;
             this.ClearCacheButton.Name = "ClearCacheButton";
-            this.ClearCacheButton.Size = new System.Drawing.Size(75, 23);
+            this.ClearCacheButton.Size = new System.Drawing.Size(75, 25);
             this.ClearCacheButton.TabIndex = 6;
             resources.ApplyResources(this.ClearCacheButton, "ClearCacheButton");
             //
@@ -311,7 +311,7 @@
             this.ResetCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ResetCacheButton.Location = new System.Drawing.Point(174, 89);
             this.ResetCacheButton.Name = "ResetCacheButton";
-            this.ResetCacheButton.Size = new System.Drawing.Size(75, 23);
+            this.ResetCacheButton.Size = new System.Drawing.Size(75, 25);
             this.ResetCacheButton.TabIndex = 7;
             this.ResetCacheButton.Click += new System.EventHandler(this.ResetCacheButton_Click);
             resources.ApplyResources(this.ResetCacheButton, "ResetCacheButton");
@@ -321,7 +321,7 @@
             this.OpenCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.OpenCacheButton.Location = new System.Drawing.Point(255, 89);
             this.OpenCacheButton.Name = "OpenCacheButton";
-            this.OpenCacheButton.Size = new System.Drawing.Size(75, 23);
+            this.OpenCacheButton.Size = new System.Drawing.Size(75, 25);
             this.OpenCacheButton.TabIndex = 8;
             this.OpenCacheButton.Click += new System.EventHandler(this.OpenCacheButton_Click);
             resources.ApplyResources(this.OpenCacheButton, "OpenCacheButton");
@@ -394,7 +394,7 @@
             this.CheckForUpdatesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CheckForUpdatesButton.Location = new System.Drawing.Point(12, 84);
             this.CheckForUpdatesButton.Name = "CheckForUpdatesButton";
-            this.CheckForUpdatesButton.Size = new System.Drawing.Size(112, 23);
+            this.CheckForUpdatesButton.Size = new System.Drawing.Size(112, 25);
             this.CheckForUpdatesButton.TabIndex = 5;
             this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
             resources.ApplyResources(this.CheckForUpdatesButton, "CheckForUpdatesButton");
@@ -405,7 +405,7 @@
             this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.InstallUpdateButton.Location = new System.Drawing.Point(130, 84);
             this.InstallUpdateButton.Name = "InstallUpdateButton";
-            this.InstallUpdateButton.Size = new System.Drawing.Size(112, 23);
+            this.InstallUpdateButton.Size = new System.Drawing.Size(112, 25);
             this.InstallUpdateButton.TabIndex = 6;
             this.InstallUpdateButton.Click += new System.EventHandler(this.InstallUpdateButton_Click);
             resources.ApplyResources(this.InstallUpdateButton, "InstallUpdateButton");

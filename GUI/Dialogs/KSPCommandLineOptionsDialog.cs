@@ -3,12 +3,11 @@
 namespace CKAN
 {
 
-    public partial class KSPCommandLineOptionsDialog : FormCompatibility
+    public partial class KSPCommandLineOptionsDialog : Form
     {
         public KSPCommandLineOptionsDialog()
         {
             InitializeComponent();
-            ApplyFormCompatibilityFixes();
 
             StartPosition = FormStartPosition.CenterScreen;
         }

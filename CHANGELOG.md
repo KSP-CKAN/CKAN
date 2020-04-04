@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - [Netkan] Create skip-releases option for NetKAN (#2996 by: DasSkelett; reviewed: HebaruSan)
 - [Multiple] Check current dir for portable install (#3005 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Adding Simplified Chinese Localization (#3014 by: 050644zf; reviewed: HebaruSan)
 
 ### Bugfixes
 
