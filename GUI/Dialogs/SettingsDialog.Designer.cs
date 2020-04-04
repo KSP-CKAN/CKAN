@@ -394,7 +394,7 @@
             this.CheckForUpdatesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CheckForUpdatesButton.Location = new System.Drawing.Point(12, 84);
             this.CheckForUpdatesButton.Name = "CheckForUpdatesButton";
-            this.CheckForUpdatesButton.Size = new System.Drawing.Size(112, 23);
+            this.CheckForUpdatesButton.Size = new System.Drawing.Size(112, 25);
             this.CheckForUpdatesButton.TabIndex = 5;
             this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
             resources.ApplyResources(this.CheckForUpdatesButton, "CheckForUpdatesButton");
