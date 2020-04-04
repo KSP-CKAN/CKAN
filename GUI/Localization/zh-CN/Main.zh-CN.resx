@@ -211,7 +211,7 @@
   <data name="InstalledVersion.HeaderText" xml:space="preserve"><value>已安装版本</value></data>
   <data name="LatestVersion.HeaderText" xml:space="preserve"><value>最新版本</value></data>
   <data name="KSPCompatibility.HeaderText" xml:space="preserve"><value>最高KSP版本</value></data>
-  <data name="SizeCol.HeaderText" xml:space="preserve"><value>下载</value></data>
+  <data name="SizeCol.HeaderText" xml:space="preserve"><value>下载大小</value></data>
   <data name="InstallDate.HeaderText" xml:space="preserve"><value>安装日期</value></data>
   <data name="DownloadCount.HeaderText" xml:space="preserve"><value>下载量</value></data>
   <data name="Description.HeaderText" xml:space="preserve"><value>描述</value></data>
