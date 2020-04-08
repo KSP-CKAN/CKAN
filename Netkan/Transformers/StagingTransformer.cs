@@ -2,13 +2,23 @@ using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using log4net;
+using Autofac;
 using CKAN.Extensions;
+using CKAN.GameVersionProviders;
+using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Transformers
 {
     internal sealed class StagingTransformer : ITransformer
     {
+        public StagingTransformer()
+        {
+            IKspBuildMap builds = ServiceLocator.Container.Resolve<IKspBuildMap>();
+            builds.Refresh(BuildMapSource.Embedded);
+            currentRelease = builds.KnownVersions.Max().ToVersionRange();
+        }
+
         public string Name { get { return "staging"; } }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
@@ -17,7 +27,8 @@ namespace CKAN.NetKAN.Transformers
             var matchingKeys = kspVersionKeys
                 .Where(vk => json.ContainsKey(vk)
                           && !string.IsNullOrEmpty((string)json[vk])
-                          && (string)json[vk] != "any")
+                          && (string)json[vk] != "any"
+                          && !CompatibleWithCurrent((string)json[vk]))
                 .Memoize();
             if (matchingKeys.Any())
             {
@@ -29,6 +40,13 @@ namespace CKAN.NetKAN.Transformers
             // This transformer never changes the metadata
             yield return metadata;
         }
+
+        private bool CompatibleWithCurrent(string version)
+        {
+            return currentRelease.IntersectWith(KspVersion.Parse(version).ToVersionRange()) != null;
+        }
+
+        private static KspVersionRange currentRelease;
 
         private static readonly string[] kspVersionKeys = new string[]
         {
