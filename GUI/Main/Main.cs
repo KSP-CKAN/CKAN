@@ -1257,7 +1257,7 @@ namespace CKAN
 
                 downloadContentsToolStripMenuItem.Enabled = !guiMod.IsCached;
                 purgeContentsToolStripMenuItem.Enabled = guiMod.IsCached;
-                reinstallToolStripMenuItem.Enabled = guiMod.IsInstalled;
+                reinstallToolStripMenuItem.Enabled = guiMod.IsInstalled && !guiMod.IsAutodetected;
             }
         }
 
