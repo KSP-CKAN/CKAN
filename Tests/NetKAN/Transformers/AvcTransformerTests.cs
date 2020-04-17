@@ -426,5 +426,204 @@ namespace Tests.NetKAN.Transformers
             );
         }
 
+        [Test]
+        public void Transform_RemoteAvcOverrides_MultipleVersions_VersionFound()
+        {
+            // Arrange
+            var mHttp = new Mock<IHttpService>();
+            mHttp.Setup(i => i.DownloadText(It.Is<System.Uri>(u => u.OriginalString == "https://awesomemod.example/avc.version")))
+                .Returns(@"//leading comment
+[
+    { ""version"" : ""1.0.1"", ""ksp_version"" : ""2.3.4"" },
+    { ""version"" : ""1.0.0"", ""ksp_version_min"" : ""1.2.1"", ""ksp_version_max"" : ""1.2.99"" },
+    { ""version"" : ""0.9.0"", ""ksp_version"" : ""1.0.0"" },
+]
+");
+
+            var mModuleService = new Mock<IModuleService>();
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(new AvcVersion()
+                {
+                    version = new ModuleVersion("1.0.0"),
+                    ksp_version = new KspVersion(1, 2, 3),
+                    Url = "https://awesomemod.example/avc.version",
+                }); ;
+
+            ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+
+            JObject json = new JObject();
+            json["spec_version"] = 1;
+            json["identifier"] = "AwesomeMod";
+            json["$vref"] = "#/ckan/ksp-avc";
+            json["download"] = "https://awesomemod.example/AwesomeMod.zip";
+            json["version"] = "1.0.0";
+            json["ksp_version"] = "1.2.3";
+
+            // Act
+            Metadata result = sut.Transform(new Metadata(json), opts).First();
+            JObject transformedJson = result.Json();
+
+            // Assert
+            Assert.That((string)transformedJson["ksp_version"], Is.Null,
+                "AvcTransformer should replace local AVC info with remote AVC info if the module versions match."
+            );
+
+            Assert.That((string)transformedJson["ksp_version_min"], Is.EqualTo("1.2.1"),
+                "AvcTransformer should replace local AVC info with remote AVC info if the module versions match."
+            );
+
+            Assert.That((string)transformedJson["ksp_version_max"], Is.EqualTo("1.2.99"),
+                "AvcTransformer should replace local AVC info with remote AVC info if the module versions match."
+            );
+        }
+
+        [Test]
+        public void Transform_RemoteAvcOverrides_MultipleVersions_VersionNotFound()
+        {
+            // Arrange
+            var mHttp = new Mock<IHttpService>();
+            mHttp.Setup(i => i.DownloadText(It.Is<System.Uri>(u => u.OriginalString == "https://awesomemod.example/avc.version")))
+                .Returns(@"//leading comment
+[
+    { ""version"" : ""1.0.2"", ""ksp_version"" : ""2.3.4"" },
+    { ""version"" : ""1.0.1"", ""ksp_version_min"" : ""1.2.1"", ""ksp_version_max"" : ""1.2.99"" },
+    { ""version"" : ""0.9.0"", ""ksp_version"" : ""1.0.0"" },
+]
+");
+
+            var mModuleService = new Mock<IModuleService>();
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(new AvcVersion()
+                {
+                    version = new ModuleVersion("1.0.0"),
+                    ksp_version = new KspVersion(1, 2, 3),
+                    Url = "https://awesomemod.example/avc.version",
+                }); ;
+
+            ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+
+            JObject json = new JObject();
+            json["spec_version"] = 1;
+            json["identifier"] = "AwesomeMod";
+            json["$vref"] = "#/ckan/ksp-avc";
+            json["download"] = "https://awesomemod.example/AwesomeMod.zip";
+            json["version"] = "1.0.0";
+            json["ksp_version"] = "1.2.3";
+
+            // Act
+            Metadata result = sut.Transform(new Metadata(json), opts).First();
+            JObject transformedJson = result.Json();
+
+            // Assert
+            Assert.That((string)transformedJson["ksp_version"], Is.EqualTo("1.2.3"),
+                "AvcTransformer should not replace local AVC info with remote AVC info if the module versions don't match."
+            );
+
+            Assert.That((string)transformedJson["ksp_version_min"], Is.Null,
+                "AvcTransformer should not replace local AVC info with remote AVC info if the module versions don't match."
+            );
+
+            Assert.That((string)transformedJson["ksp_version_max"], Is.Null,
+                "AvcTransformer should not replace local AVC info with remote AVC info if the module versions don't match."
+            );
+        }
+
+        [Test]
+        public void Transform_RemoteAvcOverrides_MultipleVersions_MoreThanOneMatchingVersion()
+        {
+            // Arrange
+            var mHttp = new Mock<IHttpService>();
+            mHttp.Setup(i => i.DownloadText(It.Is<System.Uri>(u => u.OriginalString == "https://awesomemod.example/avc.version")))
+                .Returns(@"//leading comment
+[
+    { ""version"" : ""1.0.1"", ""ksp_version"" : ""2.3.4"" },
+    { ""version"" : ""1.0.0"", ""ksp_version_min"" : ""1.2.0"", ""ksp_version_max"" : ""1.2.9"" },
+    { ""version"" : ""1.0.0"", ""ksp_version_min"" : ""1.2.1"", ""ksp_version_max"" : ""1.2.99"" },
+    { ""version"" : ""0.9.0"", ""ksp_version"" : ""1.0.0"" },
+]
+");
+
+            var mModuleService = new Mock<IModuleService>();
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(new AvcVersion()
+                {
+                    version = new ModuleVersion("1.0.0"),
+                    ksp_version = new KspVersion(1, 2, 3),
+                    Url = "https://awesomemod.example/avc.version",
+                }); ;
+
+            ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+
+            JObject json = new JObject();
+            json["spec_version"] = 1;
+            json["identifier"] = "AwesomeMod";
+            json["$vref"] = "#/ckan/ksp-avc";
+            json["download"] = "https://awesomemod.example/AwesomeMod.zip";
+            json["version"] = "1.0.0";
+            json["ksp_version"] = "1.2.3";
+
+            // Act
+            Metadata result = sut.Transform(new Metadata(json), opts).First();
+            JObject transformedJson = result.Json();
+
+            // Assert
+            Assert.That((string)transformedJson["ksp_version"], Is.EqualTo("1.2.3"),
+                "AvcTransformer should not replace local AVC info with remote AVC info if the module versions don't match."
+            );
+
+            Assert.That((string)transformedJson["ksp_version_min"], Is.Null,
+                "AvcTransformer should not replace local AVC info with remote AVC info if the module versions don't match."
+            );
+
+            Assert.That((string)transformedJson["ksp_version_max"], Is.Null,
+                "AvcTransformer should not replace local AVC info with remote AVC info if the module versions don't match."
+            );
+        }
+
+        [Test]
+        public void Transform_RemoteAvcOverrides_MultipleVersions_UnknownJsonRootToken()
+        {
+            // Arrange
+            var mHttp = new Mock<IHttpService>();
+            mHttp.Setup(i => i.DownloadText(It.Is<System.Uri>(u => u.OriginalString == "https://awesomemod.example/avc.version")))
+                .Returns("//leading comment\n\n1.23456");
+
+            var mModuleService = new Mock<IModuleService>();
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(new AvcVersion()
+                {
+                    version = new ModuleVersion("1.0.0"),
+                    ksp_version = new KspVersion(1, 2, 3),
+                    Url = "https://awesomemod.example/avc.version",
+                }); ;
+
+            ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+
+            JObject json = new JObject();
+            json["spec_version"] = 1;
+            json["identifier"] = "AwesomeMod";
+            json["$vref"] = "#/ckan/ksp-avc";
+            json["download"] = "https://awesomemod.example/AwesomeMod.zip";
+            json["version"] = "1.0.0";
+            json["ksp_version"] = "1.2.3";
+
+            // Act
+            Metadata result = sut.Transform(new Metadata(json), opts).First();
+            JObject transformedJson = result.Json();
+
+            // Assert
+            Assert.That((string)transformedJson["ksp_version"], Is.EqualTo("1.2.3"),
+                "AvcTransformer should not replace local AVC info with remote AVC info if the module versions don't match."
+            );
+
+            Assert.That((string)transformedJson["ksp_version_min"], Is.Null,
+                "AvcTransformer should not replace local AVC info with remote AVC info if the module versions don't match."
+            );
+
+            Assert.That((string)transformedJson["ksp_version_max"], Is.Null,
+                "AvcTransformer should not replace local AVC info with remote AVC info if the module versions don't match."
+            );
+        }
+
     }
 }
