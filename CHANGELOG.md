@@ -21,6 +21,8 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
+- [Netkan] Don't stage if compatible with current game version (#3031 by: HebaruSan; reviewed: DasSkelett)
+
 ## v1.27.0 (Bussard)
 
 ### Bugfixes
