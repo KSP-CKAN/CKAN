@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Respect installing modules during dependency resolution (#3002 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Fix reinstall prompt crash (#3006 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Treat metapackage depends as not auto installed (#3008 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Improve modpack identifier validation (#3025 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

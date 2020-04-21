@@ -364,7 +364,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
 {0}</value></data>
   <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>Update Notifications</value></data>
   <data name="MainLabelsUntagged" xml:space="preserve"><value>Untagged ({0})</value></data>
-  <data name="EditModpackBadIdentifier" xml:space="preserve"><value>Identifier must contain one or more letters, numbers, and dashes, and must start with a letter or number</value></data>
+  <data name="EditModpackBadIdentifier" xml:space="preserve"><value>Identifier must contain ONLY letters, numbers, and dashes, and must start with a letter or number</value></data>
   <data name="EditModpackBadName" xml:space="preserve"><value>Name is required</value></data>
   <data name="EditModpackBadVersion" xml:space="preserve"><value>Version is required</value></data>
   <data name="EditModpackBadKspVersions" xml:space="preserve"><value>Min KSP version must be less than or equal to max KSP version</value></data>
