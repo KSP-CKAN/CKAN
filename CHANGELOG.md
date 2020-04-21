@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix reinstall prompt crash (#3006 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Treat metapackage depends as not auto installed (#3008 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Improve modpack identifier validation (#3025 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Disable reinstall option for AD mods (#3034 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
