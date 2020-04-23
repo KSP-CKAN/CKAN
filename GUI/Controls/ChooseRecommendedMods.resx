@@ -119,12 +119,12 @@
   </resheader>
   <data name="RecommendedModsCancelButton.Text" xml:space="preserve"><value>Cancel</value></data>
   <data name="RecommendedModsContinueButton.Text" xml:space="preserve"><value>Continue</value></data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve"><value>(De-)select all recommended or suggested mods</value></data>
-  <data name="RecommendedDialogLabel.Text" xml:space="preserve"><value>The following modules have been recommended or suggested by one or more of the chosen modules:</value></data>
+  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve"><value>(De-)select all</value></data>
+  <data name="RecommendedDialogLabel.Text" xml:space="preserve"><value>The chosen modules recommend, suggest, or are supported by the following modules:</value></data>
   <data name="RecommendationsGroup.Header" xml:space="preserve"><value>Recommendations</value></data>
   <data name="SuggestionsGroup.Header" xml:space="preserve"><value>Suggestions</value></data>
-  <data name="SupportedByGroup.Header" xml:space="preserve"><value>Supported By</value></data>
+  <data name="SupportedByGroup.Header" xml:space="preserve"><value>Supported By (not endorsed by chosen mods)</value></data>
   <data name="ModNameHeader.Text" xml:space="preserve"><value>Mod</value></data>
-  <data name="SourceModulesHeader.Text" xml:space="preserve"><value>Recommended or suggested by:</value></data>
+  <data name="SourceModulesHeader.Text" xml:space="preserve"><value>Related mod</value></data>
   <data name="DescriptionHeader.Text" xml:space="preserve"><value>Mod description</value></data>
 </root>

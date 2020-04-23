@@ -274,8 +274,8 @@ Wenn du ein Fehler mit dem CKAN Client vermutest: https://github.com/KSP-CKAN/CK
   <data name="MainModListAll" xml:space="preserve"><value>Alle ({0})</value></data>
   <data name="MainModListUpdatingTray" xml:space="preserve"><value>Aktualisiere Taskleiste...</value></data>
   <data name="MainModListUnknownFilter" xml:space="preserve"><value>Unbekannter Filtertyp {0} in IsModInFilter</value></data>
-  <data name="MainRecommendationsTitle" xml:space="preserve"><value>Wähle empfohlene oder vorgeschlagene Mods aus.</value></data>
-  <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>Keine Empfehlungen oder Vorschläge gefunden.</value></data>
+  <data name="MainRecommendationsTitle" xml:space="preserve"><value>Auswahl von Empfehlungen, Vorschlägen und unterstützenden Mods</value></data>
+  <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>Keine Empfehlungen, Vorschläge oder unterstützende Mods gefunden.</value></data>
   <data name="MainRepoWaitTitle" xml:space="preserve"><value>Aktualisiere Repository</value></data>
   <data name="MainRepoScanning" xml:space="preserve"><value>Suche nach DLCs und manuell installierten Modulen...</value></data>
   <data name="MainRepoContacting" xml:space="preserve"><value>Kontaktiere das Repository...</value></data>

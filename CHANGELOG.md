@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Treat metapackage depends as not auto installed (#3008 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Improve modpack identifier validation (#3025 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Disable reinstall option for AD mods (#3034 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Consider supports in recommendations screen descriptions (#3028 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
