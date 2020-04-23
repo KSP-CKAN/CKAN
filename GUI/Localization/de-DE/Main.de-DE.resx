@@ -225,7 +225,7 @@
   <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Änderungen</value></data>
   <data name="WaitTabPage.Text" xml:space="preserve"><value>Statuslog</value></data>
   <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Wähle Mods</value></data>
-  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Wähle Empfehlungen und Vorschläge aus</value></data>
+  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Auswahl von Empfehlungen, Vorschlägen und unterstützenden Mods</value></data>
   <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Modpack bearbeiten</value></data>
   <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>N verfügbare Updates</value></data>
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Aktualisieren</value></data>
