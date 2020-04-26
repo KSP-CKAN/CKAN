@@ -37,19 +37,19 @@ namespace CKAN.DLC
         /// </item>
         /// </list>
         /// </returns>
-        bool IsInstalled (KSP ksp, out string identifier, out UnmanagedModuleVersion version);
+        bool IsInstalled(KSP ksp, out string identifier, out UnmanagedModuleVersion version);
 
         /// <summary>
         /// Path to the DLC directory relative to GameDir.
         /// E.g. GameData/SquadExpansion/Serenity
         /// </summary>
         /// <returns>The relative path as string.</returns>
-        string InstallPath ();
+        string InstallPath();
 
         /// <summary>
         /// Determines whether the DLC is allowed to be installed (or faked)
         /// on the specified base version (i.e. the game version of the KSP instance.)
         /// </summary>
-        bool AllowedOnBaseVersion (KspVersion baseVersion);
+        bool AllowedOnBaseVersion(KspVersion baseVersion);
     }
 }

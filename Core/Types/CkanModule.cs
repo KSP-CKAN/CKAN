@@ -19,7 +19,7 @@ namespace CKAN
         public abstract bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
-            IDictionary<string, UnmanagedModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc
         );
 
         public abstract bool WithinBounds(CkanModule otherModule);
@@ -101,7 +101,7 @@ namespace CKAN
         public override bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
-            IDictionary<string, UnmanagedModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc
         )
         {
             modules = modules?.AsCollection();
@@ -225,7 +225,7 @@ namespace CKAN
         public override bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
-            IDictionary<string, UnmanagedModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc
         )
         {
             return any_of?.Any(r => r.MatchesAny(modules, dlls, dlc))
@@ -306,6 +306,14 @@ namespace CKAN
         [JsonProperty("metanetkan", Order = 9, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri metanetkan;
+        
+        [JsonProperty("store", Order = 10, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
+        public Uri store;
+
+        [JsonProperty("steamstore", Order = 11, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
+        public Uri steamstore;
     }
 
     public class DownloadHashesDescriptor
@@ -344,16 +352,44 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
 
-        private static readonly string[] required_fields =
-        {
-            "spec_version",
-            "name",
-            "abstract",
-            "identifier",
-            "download",
-            "license",
-            "version"
-        };
+        private static readonly Dictionary<string, string[]> required_fields =
+            new Dictionary<string, string[]>()
+            {
+                {
+                    "package", new string[]
+                    {
+                        "spec_version",
+                        "name",
+                        "abstract",
+                        "identifier",
+                        "download",
+                        "license",
+                        "version"
+                    }
+                },
+                {
+                    "metapackage", new string[]
+                    {
+                        "spec_version",
+                        "name",
+                        "abstract",
+                        "identifier",
+                        "license",
+                        "version"
+                    }
+                },
+                {
+                    "dlc", new string[]
+                    {
+                        "spec_version",
+                        "name",
+                        "abstract",
+                        "identifier",
+                        "license",
+                        "version"
+                    }
+                },
+            };
 
         // identifier, license, and version are always required, so we know
         // what we've got.
@@ -365,6 +401,7 @@ namespace CKAN
         public string description;
 
         // Package type: in spec v1.6 can be either "package" or "metapackage"
+        // In spec v1.28, "dlc"
         [JsonProperty("kind", Order = 29, NullValueHandling = NullValueHandling.Ignore)]
         public string kind;
 
@@ -566,7 +603,7 @@ namespace CKAN
 
             // Check everything in the spec is defined.
             // TODO: This *can* and *should* be done with JSON attributes!
-            foreach (string field in required_fields)
+            foreach (string field in required_fields[kind ?? "package"])
             {
                 object value = null;
                 if (GetType().GetField(field) != null)
@@ -581,9 +618,6 @@ namespace CKAN
 
                 if (value == null)
                 {
-                    // Metapackages are allowed to have no download field
-                    if (field == "download" && IsMetapackage) continue;
-
                     string error = String.Format("{0} missing required field {1}", identifier, field);
 
                     throw new BadMetadataKraken(null, error);
@@ -818,7 +852,18 @@ namespace CKAN
 
         public bool IsMetapackage
         {
-            get { return (!string.IsNullOrEmpty(this.kind) && this.kind == "metapackage"); }
+            get
+            {
+                return this.kind == "metapackage";
+            }
+        }
+
+        public bool IsDLC
+        {
+            get
+            {
+                return this.kind == "dlc";
+            }
         }
 
         protected bool Equals(CkanModule other)

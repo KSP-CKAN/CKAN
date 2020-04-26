@@ -71,6 +71,7 @@ and the
 
 ### Example CKAN file
 
+```json
     {
         "spec_version"   : 1,
         "name"           : "Advanced Jet Engine (AJE)",
@@ -108,6 +109,7 @@ and the
             { "name" : "HotRockets" }
         ]
     }
+```
 
 ### Metadata description
 
@@ -160,7 +162,8 @@ with any version and the `.dll` suffix removed.
 ##### download
 
 A fully formed URL, indicating where a machine may download the
-described version of the mod. Note: This field is not required if the `kind` is `metapackage`.
+described version of the mod. Note: This field is not required if the `kind` is `metapackage`
+or `dlc`.
 
 ##### license
 
@@ -187,9 +190,11 @@ A single license (**v1.0**) , or list of licenses (**v1.8**) may be provided. Th
 are both valid, the first describing a mod released under the BSD license,
 the second under the *user's choice* of BSD-2-clause or GPL-2.0 licenses.
 
+```json
     "license" : "BSD-2-clause"
 
     "license" : [ "BSD-2-clause", "GPL-2.0" ]
+```
 
 If different assets in the mod have different licenses, the *most restrictive*
 license should be specified, which may be `restricted`.
@@ -320,12 +325,14 @@ and install that with a target of `GameData`.
 
 A typical install directive only has `file` and `install_to` sections:
 
+```json
     "install" : [
         {
             "file"       : "GameData/ExampleMod",
             "install_to" : "GameData"
         }
     ]
+```
 
 ##### comment
 
@@ -443,11 +450,13 @@ are not installed at the same time.
 At its most basic, this is an array of objects, each being a name
 and identifier:
 
+```json
     "depends" : [
         { "name" : "ModuleManager" },
         { "name" : "RealFuels" },
         { "name" : "RealSolarSystem" }
     ]
+```
 
 Each relationship is an array of entries, each entry *must*
 have a `name`.
@@ -455,11 +464,13 @@ have a `name`.
 The optional fields `min_version`, `max_version`,
 and `version`, may more precisely describe which versions are needed:
 
+```json
     "depends" : [
         { "name" : "ModuleManager",   "min_version" : "2.1.5" },
         { "name" : "RealSolarSystem", "min_version" : "7.3"   },
         { "name" : "RealFuels" }
     ]
+```
 
 It is an error to mix `version` (which specifies an exact version) with
 either `min_version` or `max_version` in the same object.
@@ -477,6 +488,7 @@ satisfied if **any** of the specified modules are installed. It is intended for
 situations in which a module supports multiple ways of providing functionality,
 which are not in themselves mutually compatible enough to use the `"provides"` property.
 
+```json
     "depends": [
         {
             "any_of": [
@@ -487,6 +499,7 @@ which are not in themselves mutually compatible enough to use the `"provides"` p
             ]
         }
     ]
+```
 
 ##### depends
 
@@ -549,24 +562,30 @@ are described. Unless specified otherwise, these are URLs:
 - `curse` :  (**v1.20**) The mod on Curse.
 - `manual` : The mod's manual, if it exists.
 - `metanetkan` :  (**v1.27**) URL of the module's remote hosted netkan
+- `store`:  (**v1.28**) URL where you can purchase a DLC
+- `steamstore`:  (**v1.28**) URL where you can purchase a DLC on Steam
 
 Example resources:
 
+```json
     "resources" : {
         "homepage"     : "https://tinyurl.com/DogeCoinFlag",
         "bugtracker"   : "https://github.com/pjf/DogeCoinFlag/issues",
         "repository"   : "https://github.com/pjf/DogeCoinFlag",
-        "ci"           : "https://ksp.sarbian.com/jenkins/DogecoinFlag"
-        "spacedock"    : "https://spacedock.info/mod/269/Dogecoin%20Flag"
+        "ci"           : "https://ksp.sarbian.com/jenkins/DogecoinFlag",
+        "spacedock"    : "https://spacedock.info/mod/269/Dogecoin%20Flag",
         "curse"        : "https://kerbal.curseforge.com/projects/220221"
     }
+```
 
 While all currently defined resources are URLs, future revisions of the spec may provide for more complex types.
 
 It is permissible to have fields prefixed with an `x_`. These are considered
 custom use fields, and will be ignored. For example:
 
+```json
     "x_twitter" : "https://twitter.com/pjf"
+```
 
 #### Special use fields
 
@@ -575,7 +594,11 @@ Typical mods *should not* include these special use fields.
 
 ##### kind
 
-Specifies the type of package the .ckan file delivers. This field defaults to `package`, the other option (and presently the only time the field is explicitly declared) is `metapackage`. Metapackages allow for a distributable .ckan file that has relationships to other mods while having no `download` of its own. **v1.6**
+Specifies the type of package the .ckan file represents. Allowed values:
+
+- `package` or empty - the default, a normal installable module
+- `metapackage` - a distributable .ckan file that has relationships to other mods while having no `download` of its own. **v1.6**
+- `dlc` - A paid expansion from SQUAD, which CKAN can detect but not install. Also has no `download`. **v1.28**
 
 ##### provides
 
@@ -584,7 +607,9 @@ is intended for use in modules which require one of a selection of texture
 downloads, or one of a selection of mods which provide equivalent
 functionality.  For example:
 
+```json
     "provides"  : [ "RealSolarSystemTextures" ]
+```
 
 It is recommended that this field be used *sparingly*, as all mods with
 the same `provides` string are essentially declaring they can be used
@@ -615,10 +640,12 @@ SHA1 and SHA256 calculated hashes of the resulting file downloaded.
 It is recommended that this field is only generated by automated
 tools (where it is encouraged), and not filled in by hand.
 
+```json
     "download_hash": {
         "sha1": "1F4B3F21A77D4A302E3417A7C7A24A0B63740FC5",
         "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
     }
+```
 
 ##### download_content_type
 
@@ -627,7 +654,9 @@ downloaded from the `download` URL. It is recommended that this field is
 only generated by automated tools (where it is encouraged),
 and not filled in by hand.
 
+```json
     "download_content_type": "application/zip"
+```
 
 #### Extensions
 
@@ -753,6 +782,7 @@ an `object` with the following fields:
 If any options are not present their default values are used.
 
 An example `.netkan` excerpt:
+
 ```json
 {
     "$kref": "#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/",
@@ -811,6 +841,7 @@ The following conditions apply:
 - Any fields specified in the metanetkan will override any fields in the target netkan file.
 
 An example `.netkan` including all required fields for a valid metanetkan:
+
 ```json
 {
     "spec_version": 1,
@@ -863,6 +894,7 @@ Note that an epoch can be added without this property or incremented automatical
 release.
 
 An example `.netkan` excerpt:
+
 ```json
 {
     "x_netkan_epoch": 1
@@ -879,6 +911,7 @@ Typical mods should not use this property, to allow their version epochs to be a
 of order version.
 
 An example `.netkan` excerpt:
+
 ```json
 {
     "x_netkan_allow_out_of_order": true
@@ -894,6 +927,7 @@ A combination of `x_netkan_epoch` and `x_netkan_version_edit` should be used ins
 field *only* contains the actual version string.
 
 An example `.netkan` excerpt:
+
 ```json
 {
     "x_netkan_force_v": true
@@ -917,6 +951,7 @@ an `object` with the following fields:
 the default values for the `replace` and `strict` fields are used.
 
 An example `.netkan` excerpt:
+
 ```json
 {
     "$kref": "#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/",

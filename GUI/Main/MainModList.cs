@@ -188,16 +188,19 @@ namespace CKAN
             var gui_mods = new HashSet<GUIMod>();
             gui_mods.UnionWith(
                 registry.InstalledModules
+                    .Where(instMod => !instMod.Module.IsDLC)
                     .Select(instMod => new GUIMod(instMod, registry, versionCriteria))
             );
             Wait.AddLogMessage(Properties.Resources.MainModListLoadingAvailable);
             gui_mods.UnionWith(
                 registry.CompatibleModules(versionCriteria)
+                    .Where(m => !m.IsDLC)
                     .Select(m => new GUIMod(m, registry, versionCriteria))
             );
             Wait.AddLogMessage(Properties.Resources.MainModListLoadingIncompatible);
             gui_mods.UnionWith(
                 registry.IncompatibleModules(versionCriteria)
+                    .Where(m => !m.IsDLC)
                     .Select(m => new GUIMod(m, registry, versionCriteria, true))
             );
 

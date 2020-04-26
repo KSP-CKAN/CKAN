@@ -285,7 +285,7 @@ namespace CKAN
         /// </summary>
         private void Install(CkanModule module, bool autoInstalled, Registry registry, string filename = null)
         {
-            CheckMetapackageInstallationKraken(module);
+            CheckKindInstallationKraken(module);
 
             ModuleVersion version = registry.InstalledVersion(module.identifier);
 
@@ -332,11 +332,15 @@ namespace CKAN
         /// Check if the given module is a metapackage:
         /// if it is, throws a BadCommandKraken.
         /// </summary>
-        private static void CheckMetapackageInstallationKraken(CkanModule module)
+        private static void CheckKindInstallationKraken(CkanModule module)
         {
             if (module.IsMetapackage)
             {
-                throw new BadCommandKraken("Metapackages can not be installed!");
+                throw new BadCommandKraken("Metapackages cannot be installed!");
+            }
+            if (module.IsDLC)
+            {
+                throw new BadCommandKraken("DLC cannot be installed!");
             }
         }
 
@@ -348,7 +352,7 @@ namespace CKAN
         /// </summary>
         private IEnumerable<string> InstallModule(CkanModule module, string zip_filename, Registry registry)
         {
-            CheckMetapackageInstallationKraken(module);
+            CheckKindInstallationKraken(module);
 
             using (ZipFile zipfile = new ZipFile(zip_filename))
             {
@@ -738,6 +742,14 @@ namespace CKAN
             foreach (string mod in mods.Where(mod => registry_manager.registry.InstalledModule(mod) == null))
             {
                 throw new ModNotInstalledKraken(mod);
+            }
+
+            var instDlc = mods
+                .Select(ident => registry_manager.registry.InstalledModule(ident))
+                .FirstOrDefault(m => m.Module.IsDLC);
+            if (instDlc != null)
+            {
+                throw new ModuleIsDLCKraken(instDlc.Module);
             }
 
             // Find all the things which need uninstalling.
@@ -1261,14 +1273,14 @@ namespace CKAN
                         if (!registry.IsInstalled(provider.identifier)
                             && !toInstall.Any(m => m.identifier == provider.identifier)
                             && dependersIndex.TryGetValue(provider, out List<string> dependers)
-                            && CanInstall(RelationshipResolver.DependsOnlyOpts(),
-                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList(), registry))
+                            && (provider.IsDLC || CanInstall(RelationshipResolver.DependsOnlyOpts(),
+                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList(), registry)))
                         {
                             dependersIndex.Remove(provider);
                             recommendations.Add(
                                 provider,
                                 new Tuple<bool, List<string>>(
-                                    providers.Count <= 1 || provider.identifier == (rel as ModuleRelationshipDescriptor)?.name,
+                                    !provider.IsDLC && (providers.Count <= 1 || provider.identifier == (rel as ModuleRelationshipDescriptor)?.name),
                                     dependers)
                             );
                         }
@@ -1288,8 +1300,8 @@ namespace CKAN
                         if (!registry.IsInstalled(provider.identifier)
                             && !toInstall.Any(m => m.identifier == provider.identifier)
                             && dependersIndex.TryGetValue(provider, out List<string> dependers)
-                            && CanInstall(RelationshipResolver.DependsOnlyOpts(),
-                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList(), registry))
+                            && (provider.IsDLC || CanInstall(RelationshipResolver.DependsOnlyOpts(),
+                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList(), registry)))
                         {
                             dependersIndex.Remove(provider);
                             suggestions.Add(provider, dependers);

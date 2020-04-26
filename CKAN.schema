@@ -30,7 +30,7 @@
         },
         "kind" : {
             "description" : "Package type, defaults to package.",
-            "enum"        : [ "package", "metapackage" ]
+            "enum"        : [ "package", "metapackage", "dlc" ]
         },
         "abstract" : {
             "description" : "Short description of the mod",
@@ -219,6 +219,16 @@
                     "description" : "Mod's remote hosted netkan",
                     "type"        : "string",
                     "format"      : "uri"
+                },
+                "store": {
+                    "description" : "Purchase DLC here",
+                    "type"        : "string",
+                    "format"      : "uri"
+                },
+                "steamstore": {
+                    "description" : "Purchase DLC on Steam here",
+                    "type"        : "string",
+                    "format"      : "uri"
                 }
             }
         },
@@ -316,7 +326,7 @@
         {
             "properties": {
                 "kind": {
-                    "enum": [ "metapackage" ]
+                    "enum": [ "metapackage", "dlc" ]
                 }
             },
             "not": {

@@ -1038,47 +1038,60 @@ namespace CKAN
 
         private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog open_file_dialog = new OpenFileDialog { Filter = Resources.CKANFileFilter };
+            OpenFileDialog open_file_dialog = new OpenFileDialog()
+            {
+                Filter      = Resources.CKANFileFilter,
+                Multiselect = true,
+            };
 
             if (open_file_dialog.ShowDialog() == DialogResult.OK)
             {
-                var path = open_file_dialog.FileName;
-                CkanModule module;
-
-                try
-                {
-                    module = CkanModule.FromFile(path);
-                }
-                catch (Kraken kraken)
-                {
-                    currentUser.RaiseError(kraken.InnerException == null
-                        ? kraken.Message
-                        : $"{kraken.Message}: {kraken.InnerException.Message}");
-
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    currentUser.RaiseError(ex.Message);
-                    return;
-                }
-
                 // We'll need to make some registry changes to do this.
                 RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
 
-                // Don't add metapacakges to the registry
-                if (!module.IsMetapackage)
+                foreach (string path in open_file_dialog.FileNames)
                 {
-                    // Remove this version of the module in the registry, if it exists.
-                    registry_manager.registry.RemoveAvailable(module);
+                    CkanModule module;
 
-                    // Sneakily add our version in...
-                    registry_manager.registry.AddAvailable(module);
+                    try
+                    {
+                        module = CkanModule.FromFile(path);
+                    }
+                    catch (Kraken kraken)
+                    {
+                        currentUser.RaiseError(kraken.InnerException == null
+                            ? kraken.Message
+                            : $"{kraken.Message}: {kraken.InnerException.Message}");
+
+                        continue;
+                    }
+                    catch (Exception ex)
+                    {
+                        currentUser.RaiseError(ex.Message);
+                        continue;
+                    }
+
+                    // Don't add metapacakges to the registry
+                    if (!module.IsMetapackage)
+                    {
+                        // Remove this version of the module in the registry, if it exists.
+                        registry_manager.registry.RemoveAvailable(module);
+
+                        // Sneakily add our version in...
+                        registry_manager.registry.AddAvailable(module);
+                    }
+
+                    if (module.IsDLC)
+                    {
+                        currentUser.RaiseError(Properties.Resources.MainCantInstallDLC, module);
+                        continue;
+                    }
+
+                    menuStrip1.Enabled = false;
+
+                    InstallModuleDriver(registry_manager.registry, module);
                 }
-
-                menuStrip1.Enabled = false;
-
-                InstallModuleDriver(registry_manager.registry, module);
+                registry_manager.Save(true);                        
             }
         }
 

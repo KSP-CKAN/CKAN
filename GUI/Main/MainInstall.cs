@@ -328,6 +328,13 @@ namespace CKAN
                     }
                     throw;
                 }
+                catch (ModuleIsDLCKraken kraken)
+                {
+                    string msg = string.Format(Properties.Resources.MainInstallCantInstallDLC, kraken.module.name);
+                    currentUser.RaiseMessage(msg);
+                    currentUser.RaiseError(msg);
+                    return;
+                }
             }
         }
 

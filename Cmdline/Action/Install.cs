@@ -288,6 +288,19 @@ namespace CKAN.CmdLine
                     user.RaiseMessage("\r\n{0}", kraken.Message);
                     return Exit.ERROR;
                 }
+                catch (ModuleIsDLCKraken kraken)
+                {
+                    user.RaiseMessage($"CKAN can't install expansion '{kraken.module.name}' for you.");
+                    var res = kraken?.module?.resources;
+                    var storePagesMsg = new Uri[] { res?.store, res?.steamstore }
+                        .Where(u => u != null)
+                        .Aggregate("", (a, b) => $"{a}\r\n- {b}");
+                    if (!string.IsNullOrEmpty(storePagesMsg))
+                    {
+                        user.RaiseMessage($"To install this expansion, purchase it from one of its store pages:\r\n{storePagesMsg}");
+                    }
+                    return Exit.ERROR;
+                }
             }
 
             return Exit.OK;

@@ -21,10 +21,12 @@ namespace CKAN
     {
         private GUIMod                    selectedModule;
         private CkanModule                currentModContentsModule;
+        private readonly int staticRowCount;
 
         public ModInfo()
         {
             InitializeComponent();
+            staticRowCount = MetaDataLowerLayoutPanel.RowCount;
 
             DependsGraphTree.BeforeExpand += BeforeExpand;
         }
@@ -136,12 +138,75 @@ namespace CKAN
             Util.Invoke(MetadataModuleAuthorTextBox, () => MetadataModuleAuthorTextBox.Text = gui_module.Authors);
             Util.Invoke(MetadataIdentifierTextBox, () => MetadataIdentifierTextBox.Text = gui_module.Identifier);
 
-            // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
-            Util.Invoke(MetadataModuleHomePageLinkLabel, () => MetadataModuleHomePageLinkLabel.Text = gui_module.Homepage.ToString());
-            Util.Invoke(MetadataModuleGitHubLinkLabel, () => MetadataModuleGitHubLinkLabel.Text = module.resources?.repository?.ToString() ?? Properties.Resources.ModInfoNSlashA);
             Util.Invoke(MetadataModuleReleaseStatusTextBox, () => MetadataModuleReleaseStatusTextBox.Text = module.release_status?.ToString() ?? Properties.Resources.ModInfoNSlashA);
             Util.Invoke(MetadataModuleKSPCompatibilityTextBox, () => MetadataModuleKSPCompatibilityTextBox.Text = gui_module.KSPCompatibilityLong);
             Util.Invoke(ReplacementTextBox, () => ReplacementTextBox.Text = gui_module.ToModule()?.replaced_by?.ToString() ?? Properties.Resources.ModInfoNSlashA);
+
+            Util.Invoke(MetaDataLowerLayoutPanel, () =>
+            {
+                ClearResourceLinks();
+                var res = module.resources;
+                if (res != null)
+                {
+                    AddResourceLink(Properties.Resources.ModInfoHomepageLabel,              res.homepage);
+                    AddResourceLink(Properties.Resources.ModInfoSpaceDockLabel,             res.spacedock);
+                    AddResourceLink(Properties.Resources.ModInfoCurseLabel,                 res.curse);
+                    AddResourceLink(Properties.Resources.ModInfoRepositoryLabel,            res.repository);
+                    AddResourceLink(Properties.Resources.ModInfoBugTrackerLabel,            res.bugtracker);
+                    AddResourceLink(Properties.Resources.ModInfoContinuousIntegrationLabel, res.ci);
+                    AddResourceLink(Properties.Resources.ModInfoLicenseLabel,               res.license);
+                    AddResourceLink(Properties.Resources.ModInfoManualLabel,                res.manual);
+                    AddResourceLink(Properties.Resources.ModInfoMetanetkanLabel,            res.metanetkan);
+                    AddResourceLink(Properties.Resources.ModInfoStoreLabel,                 res.store);
+                    AddResourceLink(Properties.Resources.ModInfoSteamStoreLabel,            res.steamstore);
+                }
+            });
+        }
+
+        private void ClearResourceLinks()
+        {
+            for (int row = MetaDataLowerLayoutPanel.RowCount - 1; row >= staticRowCount; --row)
+            {
+                RemovePanelControl(MetaDataLowerLayoutPanel, 0, row);
+                RemovePanelControl(MetaDataLowerLayoutPanel, 1, row);
+                MetaDataLowerLayoutPanel.RowStyles.RemoveAt(row);
+            }
+            MetaDataLowerLayoutPanel.RowCount = staticRowCount;
+        }
+
+        private static void RemovePanelControl(TableLayoutPanel panel, int col, int row)
+        {
+            var ctl = panel.GetControlFromPosition(col, row);
+            if (ctl != null)
+            {
+                panel.Controls.Remove(ctl);
+            }
+        }
+
+        private void AddResourceLink(string label, Uri link)
+        {
+            if (link != null)
+            {
+                Label lbl = new Label()
+                {
+                    AutoSize  = true,
+                    Dock      = DockStyle.Fill,
+                    ForeColor = SystemColors.GrayText,
+                    Text      = label,
+                };
+                LinkLabel llbl = new LinkLabel()
+                {
+                    AutoSize = true,
+                    TabStop  = true,
+                    Text     = link.ToString(),
+                };
+                llbl.LinkClicked += new LinkLabelLinkClickedEventHandler(LinkLabel_LinkClicked);
+                int row = MetaDataLowerLayoutPanel.RowCount;
+                MetaDataLowerLayoutPanel.Controls.Add(lbl,  0, row);
+                MetaDataLowerLayoutPanel.Controls.Add(llbl, 1, row);
+                MetaDataLowerLayoutPanel.RowCount = row + 1;
+                MetaDataLowerLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            }
         }
 
         private ModuleLabelList ModuleLabels

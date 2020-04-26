@@ -430,6 +430,9 @@ namespace CKAN.Properties {
         internal static string MainReinstallConfirm {
             get { return (string)(ResourceManager.GetObject("MainReinstallConfirm", resourceCulture)); }
         }
+        internal static string MainCantInstallDLC {
+            get { return (string)(ResourceManager.GetObject("MainCantInstallDLC", resourceCulture)); }
+        }
 
         internal static string AllModVersionsInstallPrompt {
             get { return (string)(ResourceManager.GetObject("AllModVersionsInstallPrompt", resourceCulture)); }
@@ -539,6 +542,9 @@ namespace CKAN.Properties {
         internal static string MainInstallProvidedBy {
             get { return (string)(ResourceManager.GetObject("MainInstallProvidedBy", resourceCulture)); }
         }
+        internal static string MainInstallCantInstallDLC {
+            get { return (string)(ResourceManager.GetObject("MainInstallCantInstallDLC", resourceCulture)); }
+        }
 
         internal static string ModInfoNSlashA {
             get { return (string)(ResourceManager.GetObject("ModInfoNSlashA", resourceCulture)); }
@@ -554,6 +560,39 @@ namespace CKAN.Properties {
         }
         internal static string ModInfoCached {
             get { return (string)(ResourceManager.GetObject("ModInfoCached", resourceCulture)); }
+        }
+        internal static string ModInfoHomepageLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoHomepageLabel", resourceCulture)); }
+        }
+        internal static string ModInfoSpaceDockLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoSpaceDockLabel", resourceCulture)); }
+        }
+        internal static string ModInfoCurseLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoCurseLabel", resourceCulture)); }
+        }
+        internal static string ModInfoRepositoryLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoRepositoryLabel", resourceCulture)); }
+        }
+        internal static string ModInfoBugTrackerLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoBugTrackerLabel", resourceCulture)); }
+        }
+        internal static string ModInfoContinuousIntegrationLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoContinuousIntegrationLabel", resourceCulture)); }
+        }
+        internal static string ModInfoLicenseLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoLicenseLabel", resourceCulture)); }
+        }
+        internal static string ModInfoManualLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoManualLabel", resourceCulture)); }
+        }
+        internal static string ModInfoMetanetkanLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoMetanetkanLabel", resourceCulture)); }
+        }
+        internal static string ModInfoStoreLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoStoreLabel", resourceCulture)); }
+        }
+        internal static string ModInfoSteamStoreLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoSteamStoreLabel", resourceCulture)); }
         }
 
         internal static string MainModListWaitTitle {

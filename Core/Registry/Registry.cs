@@ -70,15 +70,6 @@ namespace CKAN
         private Dictionary<string, HashSet<AvailableModule>> providers
             = new Dictionary<string, HashSet<AvailableModule>>();
 
-        /// <summary>
-        /// A map between module identifiers and versions for official DLC that are installed.
-        /// </summary>
-        /// <remarks>
-        /// This shouldn't have a <see cref="JsonPropertyAttribute"/> as detection at runtime should be fast.
-        /// </remarks>
-        private readonly Dictionary<string, UnmanagedModuleVersion> _installedDlcModules =
-            new Dictionary<string, UnmanagedModuleVersion>();
-
         [JsonIgnore] private string transaction_backup;
 
         /// <summary>
@@ -108,9 +99,16 @@ namespace CKAN
             get { return installed_dlls.Keys; }
         }
 
-        [JsonIgnore] public IDictionary<string, UnmanagedModuleVersion> InstalledDlc
+        /// <summary>
+        /// A map between module identifiers and versions for official DLC that are installed.
+        /// </summary>
+        [JsonIgnore] public IDictionary<string, ModuleVersion> InstalledDlc
         {
-            get { return _installedDlcModules; }
+            get {
+                return installed_modules.Values
+                    .Where(im => im.Module.IsDLC)
+                    .ToDictionary(im => im.Module.identifier, im => im.Module.version);
+            }
         }
 
         /// <summary>
@@ -853,12 +851,51 @@ namespace CKAN
 
         public void RegisterDlc(string identifier, UnmanagedModuleVersion version)
         {
-            _installedDlcModules[identifier] = version;
+            if (available_modules.TryGetValue(identifier, out AvailableModule avail))
+            {
+                CkanModule dlcModule = avail.ByVersion(version);
+                if (dlcModule != null)
+                {
+                    installed_modules.Add(
+                        dlcModule.identifier,
+                        new InstalledModule(null, dlcModule, new string[] { }, false)
+                    );
+                }
+            }
+            else
+            {
+                // Don't have the real thing, make a fake one
+                installed_modules.Add(
+                    identifier,
+                    new InstalledModule(
+                        null,
+                        new CkanModule()
+                        {
+                            spec_version = new ModuleVersion("v1.28"),
+                            identifier   = identifier,
+                            name         = identifier,
+                            @abstract    = "An official expansion pack for KSP",
+                            author       = new List<string>() { "SQUAD" },
+                            version      = version,
+                            kind         = "dlc",
+                            license      = new List<License>() { new License("restricted") },
+                        },
+                        new string[] { },
+                        false
+                    )
+                );
+            }
         }
 
         public void ClearDlc()
         {
-            _installedDlcModules.Clear();
+            var installedDlcs = installed_modules.Values
+                .Where(instMod => instMod.Module.IsDLC)
+                .ToList();
+            foreach (var instMod in installedDlcs)
+            {
+                installed_modules.Remove(instMod.identifier);
+            }
         }
 
         /// <summary>
@@ -884,15 +921,10 @@ namespace CKAN
             }
 
             // Index our installed modules (which may overwrite the installed DLLs and provides)
+            // (Includes DLCs)
             foreach (var modinfo in installed_modules)
             {
                 installed[modinfo.Key] = modinfo.Value.Module.version;
-            }
-
-            // Index our detected DLC (which overwrites everything)
-            foreach (var i in _installedDlcModules)
-            {
-                installed[i.Key] = i.Value;
             }
 
             return installed;
@@ -949,13 +981,8 @@ namespace CKAN
         {
             InstalledModule installedModule;
 
-            // If it's in our DLC registry, return that
-            if (_installedDlcModules.ContainsKey(modIdentifier))
-            {
-                return _installedDlcModules[modIdentifier];
-            }
-
             // If it's genuinely installed, return the details we have.
+            // (Includes DLCs)
             if (installed_modules.TryGetValue(modIdentifier, out installedModule))
             {
                 return installedModule.Module.version;
@@ -1014,13 +1041,13 @@ namespace CKAN
         public void CheckSanity()
         {
             IEnumerable<CkanModule> installed = from pair in installed_modules select pair.Value.Module;
-            SanityChecker.EnforceConsistency(installed, installed_dlls.Keys, _installedDlcModules);
+            SanityChecker.EnforceConsistency(installed, installed_dlls.Keys, InstalledDlc);
         }
 
         public List<string> GetSanityErrors()
         {
             var installed = from pair in installed_modules select pair.Value.Module;
-            return SanityChecker.ConsistencyErrors(installed, installed_dlls.Keys, _installedDlcModules).ToList();
+            return SanityChecker.ConsistencyErrors(installed, installed_dlls.Keys, InstalledDlc).ToList();
         }
 
         /// <summary>
@@ -1038,7 +1065,7 @@ namespace CKAN
             IEnumerable<CkanModule> modulesToInstall,
             IEnumerable<CkanModule> origInstalled,
             IEnumerable<string> dlls,
-            IDictionary<string, UnmanagedModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc
         )
         {
             modulesToRemove = modulesToRemove.Memoize();
@@ -1109,7 +1136,7 @@ namespace CKAN
         )
         {
             var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
-            return FindReverseDependencies(modulesToRemove, modulesToInstall, installed, new HashSet<string>(installed_dlls.Keys), _installedDlcModules);
+            return FindReverseDependencies(modulesToRemove, modulesToInstall, installed, new HashSet<string>(installed_dlls.Keys), InstalledDlc);
         }
 
         /// <summary>
@@ -1123,9 +1150,9 @@ namespace CKAN
         /// Sequence of removable auto-installed modules, if any
         /// </returns>
         private static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
-            IEnumerable<InstalledModule>                installedModules,
-            IEnumerable<string>                         dlls,
-            IDictionary<string, UnmanagedModuleVersion> dlc
+            IEnumerable<InstalledModule>       installedModules,
+            IEnumerable<string>                dlls,
+            IDictionary<string, ModuleVersion> dlc
         )
         {
             // ToList ensures that the collection isn't modified while the enumeration operation is executing
@@ -1229,7 +1256,7 @@ namespace CKAN
             {
                 sorter = new CompatibilitySorter(
                     versCrit, available_modules, providers,
-                    InstalledDlls.ToHashSet(), _installedDlcModules
+                    InstalledDlls.ToHashSet(), InstalledDlc
                 );
             }
         }

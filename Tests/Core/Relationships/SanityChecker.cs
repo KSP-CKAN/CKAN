@@ -98,7 +98,7 @@ namespace Tests.Core.Relationships
         {
             var mods = new List<CkanModule>();
             var dlls = CKAN.Extensions.EnumerableExtensions.ToHashSet(Enumerable.Empty<string>());
-            var dlc = new Dictionary<string, UnmanagedModuleVersion>();
+            var dlc = new Dictionary<string, ModuleVersion>();
 
             Assert.IsEmpty(CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc), "Empty list");
 
@@ -330,7 +330,7 @@ namespace Tests.Core.Relationships
             List<string> to_remove,
             List<CkanModule> mods,
             List<string> dlls,
-            Dictionary<string, UnmanagedModuleVersion> dlc,
+            Dictionary<string, ModuleVersion> dlc,
             List<string> expected,
             string message)
         {

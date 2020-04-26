@@ -152,6 +152,7 @@
     <Compile Include="Validators\AlphaNumericIdentifierValidator.cs" />
     <Compile Include="Validators\DownloadVersionValidator.cs" />
     <Compile Include="Validators\InstallValidator.cs" />
+    <Compile Include="Validators\KindValidator.cs" />
     <Compile Include="Validators\KrefDownloadMutexValidator.cs" />
     <Compile Include="Validators\LicensesValidator.cs" />
     <Compile Include="Validators\MatchesKnownGameVersionsValidator.cs" />

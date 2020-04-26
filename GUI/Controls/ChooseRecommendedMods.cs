@@ -65,24 +65,35 @@ namespace CKAN
             }
         }
 
-        private void RecommendedModsListView_ItemChecked(object sender, EventArgs e)
+        private void RecommendedModsListView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            var conflicts = FindConflicts();
-            foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
-                // Apparently ListView handes AddRange by:
-                //   1. Expanding the Items list to the new size by filling it with nulls
-                //   2. One by one, replace each null with a real item and call _ItemChecked
-                // ... so the Items list can contain null!!
-                .Where(it => it != null))
+            var module = e.Item.Tag as CkanModule;
+            if (module?.IsDLC ?? false)
             {
-                item.BackColor = conflicts.ContainsKey(item.Tag as CkanModule)
-                    ? Color.LightCoral
-                    : Color.Empty;
+                if (e.Item.Checked)
+                {
+                    e.Item.Checked = false;
+                }
             }
-            RecommendedModsContinueButton.Enabled = !conflicts.Any();
-            if (OnConflictFound != null)
+            else
             {
-                OnConflictFound(conflicts.Any() ? conflicts.First().Value : "");
+                var conflicts = FindConflicts();
+                foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
+                    // Apparently ListView handes AddRange by:
+                    //   1. Expanding the Items list to the new size by filling it with nulls
+                    //   2. One by one, replace each null with a real item and call _ItemChecked
+                    // ... so the Items list can contain null!!
+                    .Where(it => it != null))
+                {
+                    item.BackColor = conflicts.ContainsKey(item.Tag as CkanModule)
+                        ? Color.LightCoral
+                        : Color.Empty;
+                }
+                RecommendedModsContinueButton.Enabled = !conflicts.Any();
+                if (OnConflictFound != null)
+                {
+                    OnConflictFound(conflicts.Any() ? conflicts.First().Value : "");
+                }
             }
         }
 
@@ -138,9 +149,10 @@ namespace CKAN
         {
             return new ListViewItem(new string[]
             {
-                cache.IsMaybeCachedZip(module)
-                    ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
-                    : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download.Host ?? "", CkanModule.FmtSize(module.download_size)),
+                module.IsDLC ? module.name
+                    : cache.IsMaybeCachedZip(module)
+                        ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
+                        : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download?.Host ?? "", CkanModule.FmtSize(module.download_size)),
                 descrip,
                 module.@abstract
             })

@@ -20,7 +20,7 @@ namespace CKAN
         public static ICollection<string> ConsistencyErrors(
             IEnumerable<CkanModule> modules,
             IEnumerable<string> dlls,
-            IDictionary<string, UnmanagedModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc
         )
         {
             List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
@@ -48,7 +48,7 @@ namespace CKAN
         public static void EnforceConsistency(
             IEnumerable<CkanModule> modules,
             IEnumerable<string> dlls = null,
-            IDictionary<string, UnmanagedModuleVersion> dlc = null
+            IDictionary<string, ModuleVersion> dlc = null
         )
         {
             List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
@@ -65,7 +65,7 @@ namespace CKAN
         public static bool IsConsistent(
             IEnumerable<CkanModule> modules,
             IEnumerable<string> dlls = null,
-            IDictionary<string, UnmanagedModuleVersion> dlc = null
+            IDictionary<string, ModuleVersion> dlc = null
         )
         {
             List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
@@ -76,7 +76,7 @@ namespace CKAN
         private static bool CheckConsistency(
             IEnumerable<CkanModule> modules,
             IEnumerable<string> dlls,
-            IDictionary<string, UnmanagedModuleVersion> dlc,
+            IDictionary<string, ModuleVersion> dlc,
             out List<KeyValuePair<CkanModule, RelationshipDescriptor>> UnmetDepends,
             out List<KeyValuePair<CkanModule, RelationshipDescriptor>> Conflicts
         )
@@ -101,7 +101,7 @@ namespace CKAN
         public static List<KeyValuePair<CkanModule, RelationshipDescriptor>> FindUnsatisfiedDepends(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
-            IDictionary<string, UnmanagedModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc
         )
         {
             var unsat = new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
@@ -135,7 +135,7 @@ namespace CKAN
         public static List<KeyValuePair<CkanModule, RelationshipDescriptor>> FindConflicting(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
-            IDictionary<string, UnmanagedModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc
         )
         {
             var confl = new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();

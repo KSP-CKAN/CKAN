@@ -202,6 +202,7 @@
   <data name="MainTSV" xml:space="preserve"><value>Tab-separated values (*.tsv)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Not found.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Do you want to reinstall {0}?</value></data>
+  <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN can't install expansion {0}!</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} is not supported on your current game version and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
 
 Do you really want to install it?</value></data>
@@ -269,11 +270,23 @@ If you suspect a metadata problem: https://github.com/KSP-CKAN/NetKAN/issues/new
 If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>Installation failed!</value></data>
   <data name="MainInstallProvidedBy" xml:space="preserve"><value>Module {0} is provided by more than one available module, please choose one of the following mods:</value></data>
+  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN can't install expansion '{0}' for you.</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (virtual)</value></data>
   <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (not indexed)</value></data>
   <data name="ModInfoNotCached" xml:space="preserve"><value>This mod is not in the cache, click 'Download' to preview contents</value></data>
   <data name="ModInfoCached" xml:space="preserve"><value>Module is cached, preview available</value></data>
+  <data name="ModInfoHomepageLabel" xml:space="preserve"><value>Home page:</value></data>
+  <data name="ModInfoSpaceDockLabel" xml:space="preserve"><value>SpaceDock:</value></data>
+  <data name="ModInfoCurseLabel" xml:space="preserve"><value>Curse:</value></data>
+  <data name="ModInfoRepositoryLabel" xml:space="preserve"><value>Repository:</value></data>
+  <data name="ModInfoBugTrackerLabel" xml:space="preserve"><value>Bug tracker:</value></data>
+  <data name="ModInfoContinuousIntegrationLabel" xml:space="preserve"><value>Continuous integration:</value></data>
+  <data name="ModInfoLicenseLabel" xml:space="preserve"><value>Licence:</value></data>
+  <data name="ModInfoManualLabel" xml:space="preserve"><value>Manual:</value></data>
+  <data name="ModInfoMetanetkanLabel" xml:space="preserve"><value>Metanetkan:</value></data>
+  <data name="ModInfoStoreLabel" xml:space="preserve"><value>Store:</value></data>
+  <data name="ModInfoSteamStoreLabel" xml:space="preserve"><value>Steam store:</value></data>
   <data name="MainModListWaitTitle" xml:space="preserve"><value>Loading modules</value></data>
   <data name="MainModListLoadingRegistry" xml:space="preserve"><value>Loading registry...</value></data>
   <data name="MainModListLoadingInstalled" xml:space="preserve"><value>Loading installed modules...</value></data>
