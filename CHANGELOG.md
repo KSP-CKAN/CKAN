@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [CLI] Restore cmdline update message (#3042 by: HebaruSan; reviewed: DasSkelett)
+
 ### Internal
 
 ## v1.27.2 (Chandrasekhar)
