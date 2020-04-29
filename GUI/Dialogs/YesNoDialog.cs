@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Threading.Tasks;
@@ -19,10 +20,20 @@ namespace CKAN
 
             Util.Invoke(parentForm, () =>
             {
+                var height = StringHeight(text, ClientSize.Width - 25) + 2 * 54;
                 DescriptionLabel.Text = text;
+                DescriptionLabel.TextAlign = text.Contains("\n")
+                    ? HorizontalAlignment.Left
+                    : HorizontalAlignment.Center;
+                DescriptionLabel.ScrollBars = height < maxHeight
+                    ? ScrollBars.None
+                    : ScrollBars.Vertical;
                 YesButton.Text = yesText ?? defaultYes;
                 NoButton.Text  = noText  ?? defaultNo;
-                ClientSize = new Size(ClientSize.Width, StringHeight(text, ClientSize.Width - 25) + 2 * 54);
+                ClientSize = new Size(
+                    ClientSize.Width,
+                    Math.Min(maxHeight, height)
+                );
                 task.SetResult(ShowDialog(parentForm));
             });
 
@@ -47,6 +58,7 @@ namespace CKAN
             Util.Invoke(this, Close);
         }
 
+        private const int maxHeight = 600;
         private TaskCompletionSource<DialogResult> task;
         private string defaultYes;
         private string defaultNo;

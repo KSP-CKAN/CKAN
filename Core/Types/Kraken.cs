@@ -567,7 +567,7 @@ namespace CKAN
             this.instName = name;
         }
     }
-    
+
     public class ModuleIsDLCKraken : Kraken
     {
         /// <summary>
@@ -581,5 +581,20 @@ namespace CKAN
             this.module = module;
         }
     }
-    
+
+    /// <summary>
+    /// A manually installed mod is installed somewhere other than
+    /// where CKAN would install it, so we can't safely overwrite it.
+    /// </summary>
+    public class DllLocationMismatchKraken : Kraken
+    {
+        public readonly string path;
+
+        public DllLocationMismatchKraken(string path, string reason = null)
+            : base(reason)
+        {
+            this.path = path;
+        }
+    }
+
 }
