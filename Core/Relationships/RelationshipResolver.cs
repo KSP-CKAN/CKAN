@@ -508,6 +508,10 @@ namespace CKAN
         {
             if (module.IsMetapackage)
                 return;
+            if (module.IsDLC)
+            {
+                throw new ModuleIsDLCKraken(module);
+            }
 
             log.DebugFormat("Adding {0} {1}", module.identifier, module.version);
 
@@ -552,7 +556,10 @@ namespace CKAN
         /// <returns>If it has dependencies compatible for the current version</returns>
         private bool MightBeInstallable(CkanModule module, List<string> compatible = null)
         {
-            if (module.depends == null) return true;
+            if (module.IsDLC)
+                return false;
+            if (module.depends == null)
+                return true;
             if (compatible == null)
             {
                 compatible = new List<string>();

@@ -120,4 +120,5 @@
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favorites</value></data>
   <data name="EditModpackTooltipLicense" xml:space="preserve"><value>The license for this modpack</value></data>
+  <data name="ModInfoLicenseLabel" xml:space="preserve"><value>License:</value></data>
 </root>

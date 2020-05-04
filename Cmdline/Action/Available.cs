@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 
 namespace CKAN.CmdLine
@@ -15,7 +16,10 @@ namespace CKAN.CmdLine
         {
             AvailableOptions opts       = (AvailableOptions)raw_options;
             IRegistryQuerier registry   = RegistryManager.Instance(ksp).registry;
-            var              compatible = registry.CompatibleModules(ksp.VersionCriteria());
+            
+            var compatible = registry
+                .CompatibleModules(ksp.VersionCriteria())
+                .Where(m => !m.IsDLC);
 
             user.RaiseMessage("Modules compatible with KSP {0}", ksp.Version());
             user.RaiseMessage("");

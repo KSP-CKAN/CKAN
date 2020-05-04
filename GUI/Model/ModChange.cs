@@ -58,7 +58,7 @@ namespace CKAN
         {
             return $"{ChangeType} {Mod} ({Reason})";
         }
-        
+
         protected string modNameAndStatus(CkanModule m)
         {
             return m.IsMetapackage
@@ -68,7 +68,7 @@ namespace CKAN
                     : string.Format(Properties.Resources.MainChangesetHostSize,
                         m.name, m.version, m.download.Host ?? "", CkanModule.FmtSize(m.download_size));
         }
-        
+
         public virtual string NameAndStatus
         {
             get
@@ -104,7 +104,7 @@ namespace CKAN
         {
             this.targetMod = targetMod;
         }
-        
+
         public override string NameAndStatus
         {
             get
@@ -112,7 +112,7 @@ namespace CKAN
                 return modNameAndStatus(targetMod);
             }
         }
-        
+
         public override string Description
         {
             get
@@ -120,10 +120,10 @@ namespace CKAN
                 return string.Format(
                     Properties.Resources.MainChangesetUpdateSelected,
                     targetMod.version
-                );                
+                );
             }
         }
 
-        private readonly CkanModule targetMod;        
+        private readonly CkanModule targetMod;
     }
 }

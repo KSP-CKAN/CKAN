@@ -1,7 +1,8 @@
-﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using log4net;
 
 namespace CKAN.CmdLine
 {
@@ -65,7 +66,9 @@ namespace CKAN.CmdLine
                 log.Debug("Removing all mods");
                 // Add the list of installed modules to the list that should be uninstalled
                 options.modules.AddRange(
-                    regMgr.registry.InstalledModules.Select(mod => mod.identifier)
+                    regMgr.registry.InstalledModules
+                        .Where(mod => !mod.Module.IsDLC)
+                        .Select(mod => mod.identifier)
                 );
             }
 
@@ -82,6 +85,19 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseMessage("I can't do that, {0} isn't installed.", kraken.mod);
                     user.RaiseMessage("Try `ckan list` for a list of installed mods.");
+                    return Exit.BADOPT;
+                }
+                catch (ModuleIsDLCKraken kraken)
+                {
+                    user.RaiseMessage($"CKAN can't remove expansion '{kraken.module.name}' for you.");
+                    var res = kraken?.module?.resources;
+                    var storePagesMsg = new Uri[] { res?.store, res?.steamstore }
+                        .Where(u => u != null)
+                        .Aggregate("", (a, b) => $"{a}\r\n- {b}");
+                    if (!string.IsNullOrEmpty(storePagesMsg))
+                    {
+                        user.RaiseMessage($"To remove this expansion, follow the instructions for the store page from which you purchased it:\r\n{storePagesMsg}");
+                    }
                     return Exit.BADOPT;
                 }
             }

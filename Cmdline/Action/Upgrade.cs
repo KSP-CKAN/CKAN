@@ -1,6 +1,8 @@
+using System;
+using System.Linq;
 ﻿using System.Collections.Generic;
-using CKAN.Versioning;
 using log4net;
+using CKAN.Versioning;
 
 namespace CKAN.CmdLine
 {
@@ -108,7 +110,7 @@ namespace CKAN.CmdLine
 
                                 // This may be an unindexed mod. If so,
                                 // skip rather than crash. See KSP-CKAN/CKAN#841.
-                                if (latest == null)
+                                if (latest == null || latest.IsDLC)
                                 {
                                     continue;
                                 }
@@ -148,6 +150,19 @@ namespace CKAN.CmdLine
             catch (InconsistentKraken kraken)
             {
                 User.RaiseMessage(kraken.ToString());
+                return Exit.ERROR;
+            }
+            catch (ModuleIsDLCKraken kraken)
+            {
+                User.RaiseMessage($"CKAN can't upgrade expansion '{kraken.module.name}' for you.");
+                var res = kraken?.module?.resources;
+                var storePagesMsg = new Uri[] { res?.store, res?.steamstore }
+                    .Where(u => u != null)
+                    .Aggregate("", (a, b) => $"{a}\r\n- {b}");
+                if (!string.IsNullOrEmpty(storePagesMsg))
+                {
+                    User.RaiseMessage($"To upgrade this expansion, download any updates from the store page from which you purchased it:\r\n{storePagesMsg}");
+                }
                 return Exit.ERROR;
             }
             User.RaiseMessage("\r\nDone!\r\n");

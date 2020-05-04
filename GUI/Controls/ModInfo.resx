@@ -125,8 +125,6 @@
   <data name="ReplacementTextBox.Text" xml:space="preserve"><value>-</value></data>
   <data name="KSPCompatibilityLabel.Text" xml:space="preserve"><value>Max KSP ver.:</value></data>
   <data name="ReleaseLabel.Text" xml:space="preserve"><value>Release status:</value></data>
-  <data name="GitHubLabel.Text" xml:space="preserve"><value>Source code:</value></data>
-  <data name="HomePageLabel.Text" xml:space="preserve"><value>Home page:</value></data>
   <data name="AuthorLabel.Text" xml:space="preserve"><value>Author:</value></data>
   <data name="LicenseLabel.Text" xml:space="preserve"><value>Licence:</value></data>
   <data name="MetadataModuleVersionTextBox.Text" xml:space="preserve"><value>0.0.0</value></data>

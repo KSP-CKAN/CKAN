@@ -11,7 +11,7 @@ namespace CKAN
     {
         IEnumerable<InstalledModule> InstalledModules { get; }
         IEnumerable<string>          InstalledDlls    { get; }
-        IDictionary<string, UnmanagedModuleVersion> InstalledDlc { get; }
+        IDictionary<string, ModuleVersion> InstalledDlc { get; }
 
         int? DownloadCount(string identifier);
 

@@ -107,10 +107,13 @@ namespace CKAN.CmdLine
             ICollection<string> files = module.Files as ICollection<string>;
             if (files == null) throw new InvalidCastException();
 
-            user.RaiseMessage("\r\nShowing {0} installed files:", files.Count);
-            foreach (string file in files)
+            if (!module.Module.IsDLC)
             {
-                user.RaiseMessage("- {0}", file);
+                user.RaiseMessage("\r\nShowing {0} installed files:", files.Count);
+                foreach (string file in files)
+                {
+                    user.RaiseMessage("- {0}", file);
+                }
             }
 
             return return_value;
@@ -192,22 +195,43 @@ namespace CKAN.CmdLine
             if (module.resources != null)
             {
                 if (module.resources.bugtracker != null)
+                {
                     user.RaiseMessage("- bugtracker: {0}", Uri.EscapeUriString(module.resources.bugtracker.ToString()));
+                }
                 if (module.resources.homepage != null)
+                {
                     user.RaiseMessage("- homepage: {0}", Uri.EscapeUriString(module.resources.homepage.ToString()));
+                }
                 if (module.resources.spacedock != null)
+                {
                     user.RaiseMessage("- spacedock: {0}", Uri.EscapeUriString(module.resources.spacedock.ToString()));
+                }
                 if (module.resources.repository != null)
+                {
                     user.RaiseMessage("- repository: {0}", Uri.EscapeUriString(module.resources.repository.ToString()));
+                }
                 if (module.resources.curse != null)
+                {
                     user.RaiseMessage("- curse: {0}", Uri.EscapeUriString(module.resources.curse.ToString()));
+                }
+                if (module.resources.store != null)
+                {
+                    user.RaiseMessage("- store: {0}", Uri.EscapeUriString(module.resources.store.ToString()));
+                }
+                if (module.resources.steamstore != null)
+                {
+                    user.RaiseMessage("- steamstore: {0}", Uri.EscapeUriString(module.resources.steamstore.ToString()));
+                }
             }
 
-            // Compute the CKAN filename.
-            string file_uri_hash = NetFileCache.CreateURLHash(module.download);
-            string file_name = CkanModule.StandardName(module.identifier, module.version);
-
-            user.RaiseMessage("\r\nFilename: {0}", file_uri_hash + "-" + file_name);
+            if (!module.IsDLC)
+            {
+                // Compute the CKAN filename.
+                string file_uri_hash = NetFileCache.CreateURLHash(module.download);
+                string file_name = CkanModule.StandardName(module.identifier, module.version);
+                
+                user.RaiseMessage("\r\nFilename: {0}", file_uri_hash + "-" + file_name);
+            }
 
             return Exit.OK;
         }

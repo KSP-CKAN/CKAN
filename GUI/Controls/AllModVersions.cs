@@ -106,6 +106,8 @@ namespace CKAN
                     }
                 }
                 VersionsListView.Items.Clear();
+                // Only show checkboxes for non-DLC modules
+                VersionsListView.CheckBoxes = !value.ToModule().IsDLC;
 
                 KSP currentInstance = Main.Instance.Manager.CurrentInstance;
                 IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;

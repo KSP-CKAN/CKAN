@@ -45,8 +45,6 @@
             this.ReplacementTextBox = new TransparentTextBox();
             this.KSPCompatibilityLabel = new System.Windows.Forms.Label();
             this.ReleaseLabel = new System.Windows.Forms.Label();
-            this.GitHubLabel = new System.Windows.Forms.Label();
-            this.HomePageLabel = new System.Windows.Forms.Label();
             this.AuthorLabel = new System.Windows.Forms.Label();
             this.LicenseLabel = new System.Windows.Forms.Label();
             this.MetadataModuleVersionTextBox = new TransparentTextBox();
@@ -54,9 +52,7 @@
             this.MetadataModuleAuthorTextBox = new TransparentTextBox();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.MetadataModuleReleaseStatusTextBox = new TransparentTextBox();
-            this.MetadataModuleHomePageLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MetadataModuleKSPCompatibilityTextBox = new TransparentTextBox();
-            this.MetadataModuleGitHubLinkLabel = new System.Windows.Forms.LinkLabel();
             this.RelationshipTabPage = new System.Windows.Forms.TabPage();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
             this.LegendDependsImage = new System.Windows.Forms.PictureBox();
@@ -214,26 +210,22 @@
             this.MetaDataLowerLayoutPanel.Controls.Add(this.VersionLabel, 0, 0);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.LicenseLabel, 0, 1);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.AuthorLabel, 0, 2);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.HomePageLabel, 0, 3);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.GitHubLabel, 0, 4);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.ReleaseLabel, 0, 5);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.KSPCompatibilityLabel, 0, 6);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.IdentifierLabel, 0, 7);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.ReplacementLabel, 0, 8);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.ReleaseLabel, 0, 3);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.KSPCompatibilityLabel, 0, 4);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.IdentifierLabel, 0, 5);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.ReplacementLabel, 0, 6);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleVersionTextBox, 1, 0);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleLicenseTextBox, 1, 1);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleAuthorTextBox, 1, 2);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleHomePageLinkLabel, 1, 3);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleGitHubLinkLabel, 1, 4);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleReleaseStatusTextBox, 1, 5);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleKSPCompatibilityTextBox, 1, 6);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataIdentifierTextBox, 1, 7);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.ReplacementTextBox, 1, 8);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleReleaseStatusTextBox, 1, 3);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleKSPCompatibilityTextBox, 1, 4);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataIdentifierTextBox, 1, 5);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.ReplacementTextBox, 1, 6);
             this.MetaDataLowerLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetaDataLowerLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.MetaDataLowerLayoutPanel.Name = "MetaDataLowerLayoutPanel";
             this.MetaDataLowerLayoutPanel.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
-            this.MetaDataLowerLayoutPanel.RowCount = 9;
+            this.MetaDataLowerLayoutPanel.RowCount = 7;
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
@@ -241,8 +233,6 @@
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 15F));
             this.MetaDataLowerLayoutPanel.Size = new System.Drawing.Size(346, 255);
             this.MetaDataLowerLayoutPanel.AutoSize = true;
             this.MetaDataLowerLayoutPanel.AutoScroll = true;
@@ -322,28 +312,6 @@
             this.ReleaseLabel.Size = new System.Drawing.Size(84, 30);
             this.ReleaseLabel.TabIndex = 12;
             resources.ApplyResources(this.ReleaseLabel, "ReleaseLabel");
-            //
-            // GitHubLabel
-            //
-            this.GitHubLabel.AutoSize = true;
-            this.GitHubLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GitHubLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.GitHubLabel.Location = new System.Drawing.Point(3, 120);
-            this.GitHubLabel.Name = "GitHubLabel";
-            this.GitHubLabel.Size = new System.Drawing.Size(84, 30);
-            this.GitHubLabel.TabIndex = 10;
-            resources.ApplyResources(this.GitHubLabel, "GitHubLabel");
-            //
-            // HomePageLabel
-            //
-            this.HomePageLabel.AutoSize = true;
-            this.HomePageLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HomePageLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.HomePageLabel.Location = new System.Drawing.Point(3, 90);
-            this.HomePageLabel.Name = "HomePageLabel";
-            this.HomePageLabel.Size = new System.Drawing.Size(84, 30);
-            this.HomePageLabel.TabIndex = 7;
-            resources.ApplyResources(this.HomePageLabel, "HomePageLabel");
             //
             // AuthorLabel
             //
@@ -434,17 +402,6 @@
             this.MetadataModuleReleaseStatusTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             resources.ApplyResources(this.MetadataModuleReleaseStatusTextBox, "MetadataModuleReleaseStatusTextBox");
             //
-            // MetadataModuleHomePageLinkLabel
-            //
-            this.MetadataModuleHomePageLinkLabel.AutoSize = true;
-            this.MetadataModuleHomePageLinkLabel.Location = new System.Drawing.Point(93, 90);
-            this.MetadataModuleHomePageLinkLabel.Name = "MetadataModuleHomePageLinkLabel";
-            this.MetadataModuleHomePageLinkLabel.Size = new System.Drawing.Size(250, 30);
-            this.MetadataModuleHomePageLinkLabel.TabIndex = 25;
-            this.MetadataModuleHomePageLinkLabel.TabStop = true;
-            this.MetadataModuleHomePageLinkLabel.Text = "linkLabel1";
-            this.MetadataModuleHomePageLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel_LinkClicked);
-            //
             // MetadataModuleKSPCompatibilityTextBox
             //
             this.MetadataModuleKSPCompatibilityTextBox.AutoSize = true;
@@ -458,17 +415,6 @@
             this.MetadataModuleKSPCompatibilityTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleKSPCompatibilityTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             resources.ApplyResources(this.MetadataModuleKSPCompatibilityTextBox, "MetadataModuleKSPCompatibilityTextBox");
-            //
-            // MetadataModuleGitHubLinkLabel
-            //
-            this.MetadataModuleGitHubLinkLabel.AutoSize = true;
-            this.MetadataModuleGitHubLinkLabel.Location = new System.Drawing.Point(93, 120);
-            this.MetadataModuleGitHubLinkLabel.Name = "MetadataModuleGitHubLinkLabel";
-            this.MetadataModuleGitHubLinkLabel.Size = new System.Drawing.Size(250, 30);
-            this.MetadataModuleGitHubLinkLabel.TabIndex = 26;
-            this.MetadataModuleGitHubLinkLabel.TabStop = true;
-            this.MetadataModuleGitHubLinkLabel.Text = "linkLabel2";
-            this.MetadataModuleGitHubLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel_LinkClicked);
             //
             // RelationshipTabPage
             //
@@ -708,8 +654,6 @@
         private TransparentTextBox ReplacementTextBox;
         private System.Windows.Forms.Label KSPCompatibilityLabel;
         private System.Windows.Forms.Label ReleaseLabel;
-        private System.Windows.Forms.Label GitHubLabel;
-        private System.Windows.Forms.Label HomePageLabel;
         private System.Windows.Forms.Label AuthorLabel;
         private System.Windows.Forms.Label LicenseLabel;
         private TransparentTextBox MetadataModuleVersionTextBox;
@@ -717,9 +661,7 @@
         private TransparentTextBox MetadataModuleAuthorTextBox;
         private System.Windows.Forms.Label VersionLabel;
         private TransparentTextBox MetadataModuleReleaseStatusTextBox;
-        private System.Windows.Forms.LinkLabel MetadataModuleHomePageLinkLabel;
         private TransparentTextBox MetadataModuleKSPCompatibilityTextBox;
-        private System.Windows.Forms.LinkLabel MetadataModuleGitHubLinkLabel;
         private System.Windows.Forms.TabPage RelationshipTabPage;
         private System.Windows.Forms.TreeView DependsGraphTree;
         private System.Windows.Forms.PictureBox LegendDependsImage;

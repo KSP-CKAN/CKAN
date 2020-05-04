@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- [Multiple] Show DLC in recommendations list (#3038 by: HebaruSan; reviewed: DasSkelett)
+
 ### Bugfixes
 
 - [CLI] Restore cmdline update message (#3042 by: HebaruSan; reviewed: DasSkelett)

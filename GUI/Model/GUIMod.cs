@@ -84,7 +84,6 @@ namespace CKAN
 
         public string Abstract { get; private set; }
         public string Description { get; private set; }
-        public string Homepage { get; private set; }
         public string Identifier { get; private set; }
         public bool IsInstallChecked { get; set; }
         public bool IsUpgradeChecked { get; private set; }
@@ -168,15 +167,6 @@ namespace CKAN
             HasReplacement = registry.GetReplacement(mod, current_ksp_version) != null;
             DownloadSize   = mod.download_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.download_size);
 
-            if (mod.resources != null)
-            {
-                Homepage = mod.resources.homepage?.ToString()
-                        ?? mod.resources.spacedock?.ToString()
-                        ?? mod.resources.curse?.ToString()
-                        ?? mod.resources.repository?.ToString()
-                        ?? Properties.Resources.GUIModNSlashA;
-            }
-
             // Get the Searchables.
             SearchableName        = mod.SearchableName;
             SearchableAbstract    = mod.SearchableAbstract;
@@ -253,9 +243,6 @@ namespace CKAN
             {
                 LatestVersion = "-";
             }
-
-            // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
-            Homepage = Properties.Resources.GUIModNSlashA;
 
             SearchableIdentifier = CkanModule.nonAlphaNums.Replace(Identifier, "");
         }

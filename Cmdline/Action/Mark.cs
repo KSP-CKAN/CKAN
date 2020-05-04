@@ -95,8 +95,16 @@ namespace CKAN.CmdLine
                 else
                 {
                     user.RaiseMessage("Marking {0} as {1}...", id, descrip);
-                    im.AutoInstalled = value;
-                    needSave = true;
+                    try
+                    {
+                        im.AutoInstalled = value;
+                        needSave = true;
+                    }
+                    catch (ModuleIsDLCKraken kraken)
+                    {
+                        user.RaiseMessage($"Can't mark expansion '{kraken.module.name}' as auto-installed.");
+                        return Exit.BADOPT;
+                    }
                 }
             }
             if (needSave)

@@ -567,4 +567,19 @@ namespace CKAN
             this.instName = name;
         }
     }
+    
+    public class ModuleIsDLCKraken : Kraken
+    {
+        /// <summary>
+        /// The DLC module that can't be operated upon
+        /// </summary>
+        public readonly CkanModule module;
+
+        public ModuleIsDLCKraken(CkanModule module, string reason = null)
+            : base(reason)
+        {
+            this.module = module;
+        }
+    }
+    
 }

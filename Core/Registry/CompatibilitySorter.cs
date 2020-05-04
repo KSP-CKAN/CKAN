@@ -25,7 +25,7 @@ namespace CKAN
             Dictionary<string, AvailableModule> available,
             Dictionary<string, HashSet<AvailableModule>> providers,
             HashSet<string> dlls,
-            Dictionary<string, UnmanagedModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc
         )
         {
             CompatibleVersions = crit;
@@ -63,7 +63,7 @@ namespace CKAN
         private readonly Stack<string> Investigating = new Stack<string>();
 
         private readonly HashSet<string> dlls;
-        private readonly Dictionary<string, UnmanagedModuleVersion> dlc;
+        private readonly IDictionary<string, ModuleVersion> dlc;
 
         /// <summary>
         /// Filter the provides mapping by compatibility
@@ -78,9 +78,10 @@ namespace CKAN
             var compat = new Dictionary<string, HashSet<AvailableModule>>();
             foreach (var kvp in providers)
             {
-                // Find providing modules that are compatible with crit
+                // Find providing non-DLC modules that are compatible with crit
                 var compatAvail = kvp.Value.Where(avm =>
                     avm.AllAvailable().Any(ckm =>
+                        !ckm.IsDLC &&
                         ckm.ProvidesList.Contains(kvp.Key) && ckm.IsCompatibleKSP(crit))
                 ).ToHashSet();
                 // Add compatible providers to mapping, if any

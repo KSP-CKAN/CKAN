@@ -116,7 +116,13 @@ namespace CKAN
         public bool AutoInstalled
         {
             get { return auto_installed;  }
-            set { auto_installed = value; }
+            set { 
+                if (Module.IsDLC)
+                {
+                    throw new ModuleIsDLCKraken(Module);
+                }
+                auto_installed = value;
+            }
         }
 
         #endregion

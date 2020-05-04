@@ -478,8 +478,8 @@ namespace CKAN
         /// </returns>
         public bool ScanDlc()
         {
-            var dlc = new Dictionary<string, UnmanagedModuleVersion>(registry.InstalledDlc);
-            UnmanagedModuleVersion foundVer;
+            var dlc = new Dictionary<string, ModuleVersion>(registry.InstalledDlc);
+            ModuleVersion foundVer;
             bool changed = false;
 
             registry.ClearDlc();
