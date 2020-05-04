@@ -249,11 +249,18 @@ Wenn du ein Fehler mit den Mod-Metadaten vermutest: https://github.com/KSP-CKAN/
 Wenn du ein Fehler mit dem CKAN Client vermutest: https://github.com/KSP-CKAN/CKAN/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>Installation fehlgeschlagen!</value></data>
   <data name="MainInstallProvidedBy" xml:space="preserve"><value>Modul {0} wird von mehr als einem verfügbaren Modul bereitgestellt, bitte wähle eine der folgenden Mods:</value></data>
+  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN kann die Erweiterung '{0}' nicht für dich installieren.</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (virtuell)</value></data>
   <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (nicht indiziert)</value></data>
   <data name="ModInfoNotCached" xml:space="preserve"><value>Diese Mod ist nicht im Cache, klicke auf 'Download' um eine Inhaltsübersicht zu erhalten.</value></data>
   <data name="ModInfoCached" xml:space="preserve"><value>Modul ist im Cache, Vorschau verfügbar</value></data>
   <data name="ModInfoHomepageLabel" xml:space="preserve"><value>Homepage:</value></data>
+  <data name="ModInfoBugTrackerLabel" xml:space="preserve"><value>Bugtracker:</value></data>
+  <data name="ModInfoContinuousIntegrationLabel" xml:space="preserve"><value>Continuous Integration:</value></data>
+  <data name="ModInfoLicenseLabel" xml:space="preserve"><value>Lizenz:</value></data>
+  <data name="ModInfoManualLabel" xml:space="preserve"><value>Anleitung:</value></data>
+  <data name="ModInfoStoreLabel" xml:space="preserve"><value>Shop:</value></data>
+  <data name="ModInfoSteamStoreLabel" xml:space="preserve"><value>Steam Shop:</value></data>
   <data name="ModInfoLicenseLabel" xml:space="preserve"><value>Lizenz:</value></data>
   <data name="MainModListWaitTitle" xml:space="preserve"><value>Module laden</value></data>
   <data name="MainModListLoadingRegistry" xml:space="preserve"><value>Lade Registry...</value></data>
