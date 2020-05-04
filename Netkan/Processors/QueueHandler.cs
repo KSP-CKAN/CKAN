@@ -7,6 +7,10 @@ using System.Text;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using log4net;
+using log4net.Appender;
+using log4net.Core;
+using log4net.Filter;
+using log4net.Repository.Hierarchy;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CKAN.Versioning;
@@ -19,12 +23,24 @@ namespace CKAN.NetKAN.Processors
     {
         public QueueHandler(string inputQueueName, string outputQueueName, string cacheDir, bool overwriteCache, string githubToken, bool prerelease)
         {
+            warningAppender = GetQueueLogAppender();
+            (LogManager.GetRepository() as Hierarchy)?.Root.AddAppender(warningAppender);
+
             log.Debug("Initializing SQS queue handler");
             inflator = new Inflator(cacheDir, overwriteCache, githubToken, prerelease);
 
             inputQueueURL  = getQueueUrl(inputQueueName);
             outputQueueURL = getQueueUrl(outputQueueName);
             log.DebugFormat("Queue URLs: {0}, {1}", inputQueueURL, outputQueueURL);
+        }
+
+        ~QueueHandler()
+        {
+            if (warningAppender != null)
+            {
+                (LogManager.GetRepository() as Hierarchy)?.Root.RemoveAppender(warningAppender);
+                warningAppender = null;
+            }
         }
 
         public void Process()
@@ -34,6 +50,20 @@ namespace CKAN.NetKAN.Processors
                 // 10 messages, 30 minutes to allow time to handle them all
                 handleMessages(inputQueueURL, 10, 30);
             }
+        }
+
+        private QueueAppender GetQueueLogAppender()
+        {
+            var qap = new QueueAppender()
+            {
+                Name = "QueueAppender",
+            };
+            qap.AddFilter(new LevelMatchFilter()
+            {
+                LevelToMatch  = Level.Warn,
+                AcceptOnMatch = true,
+            });
+            return qap;
         }
 
         private string getQueueUrl(string name)
@@ -208,6 +238,18 @@ namespace CKAN.NetKAN.Processors
                     }
                 );
             }
+            if (warningAppender.Warnings.Any())
+            {
+                attribs.Add(
+                    "WarningMessages",
+                    new MessageAttributeValue()
+                    {
+                        DataType    = "String",
+                        StringValue = string.Join("\r\n", warningAppender.Warnings),
+                    }
+                );
+                warningAppender.Warnings.Clear();
+            }
             if (staged && stagingReason != null)
             {
                 attribs.Add(
@@ -268,5 +310,6 @@ namespace CKAN.NetKAN.Processors
         private int responseId = 0;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(QueueHandler));
+        private QueueAppender        warningAppender;
     }
 }

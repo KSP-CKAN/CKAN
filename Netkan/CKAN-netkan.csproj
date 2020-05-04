@@ -88,6 +88,7 @@
     <Compile Include="Processors\Inflator.cs" />
     <Compile Include="Processors\QueueHandler.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="QueueAppender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CachingHttpService.cs" />
     <Compile Include="Services\FileService.cs" />
@@ -158,10 +159,13 @@
     <Compile Include="Validators\MatchesKnownGameVersionsValidator.cs" />
     <Compile Include="Validators\ObeysCKANSchemaValidator.cs" />
     <Compile Include="Validators\OverrideValidator.cs" />
+    <Compile Include="Validators\PluginCompatibilityValidator.cs" />
     <Compile Include="Validators\ReplacedByValidator.cs" />
     <Compile Include="Validators\RelationshipsValidator.cs" />
     <Compile Include="Validators\SpecVersionFormatValidator.cs" />
     <Compile Include="Validators\VersionStrictValidator.cs" />
+    <Compile Include="Validators\VrefValidator.cs" />
+    <Compile Include="Validators\ModuleManagerDependsValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\CKAN.schema">

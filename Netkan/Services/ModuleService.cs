@@ -72,6 +72,18 @@ namespace CKAN.NetKAN.Services
                 .Where(instF => cfgRegex.IsMatch(instF.source.Name));
         }
 
+        private static readonly Regex dllRegex = new Regex(
+            @"\.dll$",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled
+        );
+        
+        public IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip)
+        {
+            return ModuleInstaller
+                .FindInstallableFiles(module, zip, null)
+                .Where(instF => dllRegex.IsMatch(instF.source.Name));
+        }
+
         public IEnumerable<string> FileDestinations(CkanModule module, string filePath)
         {
             return ModuleInstaller
