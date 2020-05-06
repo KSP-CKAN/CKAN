@@ -29,19 +29,27 @@ namespace CKAN.NetKAN.Validators
             {
                 json.Remove("version");
             }
-            var file = _http.DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
-            var avc = _moduleService.GetInternalAvc(mod, file, null);
 
-            bool hasVref = (_netkan.Vref != null);
-            bool hasVersionFile = (avc != null);
+            if (!mod.IsDLC)
+            {
+                var file = _http.DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
+                if (!string.IsNullOrEmpty(file))
+                {
+                    var avc = _moduleService.GetInternalAvc(mod, file, null);
 
-            if (hasVref && !hasVersionFile)
-            {
-                Log.Warn("$vref present, version file missing");
-            }
-            else if (!hasVref && hasVersionFile)
-            {
-                Log.Warn("$vref absent, version file present");
+                    bool hasVref = (_netkan.Vref != null);
+
+                    bool hasVersionFile = (avc != null);
+
+                    if (hasVref && !hasVersionFile)
+                    {
+                        Log.Warn("$vref present, version file missing");
+                    }
+                    else if (!hasVref && hasVersionFile)
+                    {
+                        Log.Warn("$vref absent, version file present");
+                    }
+                }
             }
         }
 

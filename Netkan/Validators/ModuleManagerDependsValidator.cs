@@ -23,25 +23,32 @@ namespace CKAN.NetKAN.Validators
 
             JObject    json = metadata.Json();
             CkanModule mod  = CkanModule.FromJson(json.ToString());
-            ZipFile    zip  = new ZipFile(_http.DownloadPackage(
-                metadata.Download,
-                metadata.Identifier,
-                metadata.RemoteTimestamp
-            ));
-
-            bool hasMMsyntax = _moduleService.GetConfigFiles(mod, zip)
-                .Select(cfg => new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd())
-                .Any(contents => moduleManagerRegex.IsMatch(contents));
-
-            bool dependsOnMM = mod?.depends?.Any(r => r.ContainsAny(identifiers)) ?? false;
-
-            if (hasMMsyntax && !dependsOnMM)
+            if (!mod.IsDLC)
             {
-                Log.Warn("ModuleManager syntax used without ModuleManager dependency");
-            }
-            else if (!hasMMsyntax && dependsOnMM)
-            {
-                Log.Warn("ModuleManager dependency may not be needed, no ModuleManager syntax found");
+                var package = _http.DownloadPackage(
+                    metadata.Download,
+                    metadata.Identifier,
+                    metadata.RemoteTimestamp
+                );
+                if (!string.IsNullOrEmpty(package))
+                {
+                    ZipFile zip  = new ZipFile(package);
+
+                    bool hasMMsyntax = _moduleService.GetConfigFiles(mod, zip)
+                        .Select(cfg => new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd())
+                        .Any(contents => moduleManagerRegex.IsMatch(contents));
+
+                    bool dependsOnMM = mod?.depends?.Any(r => r.ContainsAny(identifiers)) ?? false;
+
+                    if (hasMMsyntax && !dependsOnMM)
+                    {
+                        Log.Warn("ModuleManager syntax used without ModuleManager dependency");
+                    }
+                    else if (!hasMMsyntax && dependsOnMM)
+                    {
+                        Log.Warn("ModuleManager dependency may not be needed, no ModuleManager syntax found");
+                    }
+                }
             }
         }
 

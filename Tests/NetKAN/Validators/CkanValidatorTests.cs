@@ -35,13 +35,6 @@ namespace Tests.NetKAN.Validators
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(true);
 
-            var ckan = new JObject();
-            ckan["spec_version"] = 1;
-            ckan["identifier"] = "AwesomeMod";
-            ckan["name"] = "Awesome Mod";
-            ckan["abstract"] = "A great mod";
-            ckan["license"] = "GPL-3.0";
-
             var sut = new CkanValidator(mHttp.Object, mModuleService.Object);
             var json = (JObject)ValidCkan.DeepClone();
 

@@ -23,19 +23,26 @@ namespace CKAN.NetKAN.Validators
 
             JObject    json = metadata.Json();
             CkanModule mod  = CkanModule.FromJson(json.ToString());
-            ZipFile    zip  = new ZipFile(_http.DownloadPackage(
-                metadata.Download,
-                metadata.Identifier,
-                metadata.RemoteTimestamp
-            ));
-
-            bool hasPlugin = _moduleService.GetPlugins(mod, zip).Any();
-            
-            bool boundedCompatibility = json.ContainsKey("ksp_version") || json.ContainsKey("ksp_version_max");
-
-            if (hasPlugin && !boundedCompatibility)
+            if (!mod.IsDLC)
             {
-                Log.Warn("Unbounded future compatibility for module with a plugin, consider setting $vref or ksp_version or ksp_version_max");
+                var package = _http.DownloadPackage(
+                    metadata.Download,
+                    metadata.Identifier,
+                    metadata.RemoteTimestamp
+                );
+                if (!string.IsNullOrEmpty(package))
+                {
+                    ZipFile zip  = new ZipFile(package);
+        
+                    bool hasPlugin = _moduleService.GetPlugins(mod, zip).Any();
+                    
+                    bool boundedCompatibility = json.ContainsKey("ksp_version") || json.ContainsKey("ksp_version_max");
+        
+                    if (hasPlugin && !boundedCompatibility)
+                    {
+                        Log.Warn("Unbounded future compatibility for module with a plugin, consider setting $vref or ksp_version or ksp_version_max");
+                    }
+                }
             }
         }
 
