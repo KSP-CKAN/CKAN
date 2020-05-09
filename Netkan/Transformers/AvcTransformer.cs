@@ -83,7 +83,7 @@ namespace CKAN.NetKAN.Transformers
                         }
                         catch (Exception e)
                         {
-                            Log.InfoFormat("An error occured fetching the remote AVC version file, ignoring: {0}", e.Message);
+                            Log.WarnFormat("An error occured fetching the remote AVC version file, ignoring: {0}", e.Message);
                             Log.Debug(e);
                         }
                     }
@@ -204,7 +204,13 @@ namespace CKAN.NetKAN.Transformers
         private static Uri GetRemoteAvcUri(AvcVersion avc)
         {
             if (!Uri.IsWellFormedUriString(avc.Url, UriKind.Absolute))
+            {
+                if (avc.Url != null)
+                {
+                    Log.WarnFormat("Version file URL property is invalid: {0}", avc.Url);
+                }
                 return null;
+            }
 
             var remoteUri = new Uri(avc.Url);
 
