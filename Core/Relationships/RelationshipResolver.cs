@@ -410,7 +410,9 @@ namespace CKAN
                 var descriptor1 = descriptor;
                 List<CkanModule> candidates = descriptor
                     .LatestAvailableWithProvides(registry, kspversion, modlist.Values)
-                    .Where(mod => descriptor1.WithinBounds(mod) && MightBeInstallable(mod))
+                    .Where(mod => !modlist.ContainsKey(mod.identifier)
+                        && descriptor1.WithinBounds(mod)
+                        && MightBeInstallable(mod))
                     .ToList();
                 if (candidates.Count == 0)
                 {
@@ -418,7 +420,9 @@ namespace CKAN
                     // (conflicts will still be caught below)
                     candidates = descriptor
                         .LatestAvailableWithProvides(registry, kspversion)
-                        .Where(mod => descriptor1.WithinBounds(mod) && MightBeInstallable(mod))
+                        .Where(mod => !modlist.ContainsKey(mod.identifier)
+                            && descriptor1.WithinBounds(mod)
+                            && MightBeInstallable(mod))
                         .ToList();
                 }
 
@@ -519,7 +523,7 @@ namespace CKAN
             {
                 // We should never be adding something twice!
                 log.ErrorFormat("Assertion failed: Adding {0} twice in relationship resolution", module.identifier);
-                throw new ArgumentException("Already contains module:" + module.identifier);
+                throw new ArgumentException("Already contains module: " + module.identifier);
             }
             modlist.Add(module.identifier, module);
             if (!reasons.ContainsKey(module))
