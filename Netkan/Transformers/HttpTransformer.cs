@@ -31,6 +31,7 @@ namespace CKAN.NetKAN.Transformers
 
                     if (resolvedUri != null)
                     {
+                        json.Remove("$kref");
                         json["download"] = resolvedUri.ToString();
 
                         Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);

@@ -7,9 +7,8 @@ namespace CKAN.NetKAN.Validators
 {
     internal sealed class VrefValidator : IValidator
     {
-        public VrefValidator(Metadata netkan, IHttpService http, IModuleService moduleService)
+        public VrefValidator(IHttpService http, IModuleService moduleService)
         {
-            _netkan        = netkan;
             _http          = http;
             _moduleService = moduleService;
         }
@@ -37,7 +36,7 @@ namespace CKAN.NetKAN.Validators
                 {
                     var avc = _moduleService.GetInternalAvc(mod, file, null);
 
-                    bool hasVref = (_netkan.Vref != null);
+                    bool hasVref = (metadata.Vref != null);
 
                     bool hasVersionFile = (avc != null);
 
@@ -53,7 +52,6 @@ namespace CKAN.NetKAN.Validators
             }
         }
 
-        private readonly Metadata       _netkan;
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
 

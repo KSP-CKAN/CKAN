@@ -28,7 +28,7 @@ namespace CKAN.NetKAN.Processors
             IFileService   fileService   = new FileService(cache);
             http          = new CachingHttpService(cache, overwriteCache);
             ckanValidator = new CkanValidator(http, moduleService);
-            transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, prerelease);
+            transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, prerelease, netkanValidator);
         }
 
         internal IEnumerable<Metadata> Inflate(string filename, Metadata netkan, TransformOptions opts)
@@ -49,7 +49,6 @@ namespace CKAN.NetKAN.Processors
 
                 foreach (Metadata ckan in ckans)
                 {
-                    netkanValidator.Validate(ckan);
                     ckanValidator.ValidateCkan(ckan, netkan);
                 }
                 log.Info("Output successfully passed post-validation");

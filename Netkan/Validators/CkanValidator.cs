@@ -36,7 +36,6 @@ namespace CKAN.NetKAN.Validators
         {
             Validate(metadata);
             new MatchingIdentifiersValidator(netkan.Identifier).Validate(metadata);
-            new VrefValidator(netkan, downloader, moduleService).Validate(metadata);
         }
 
         private IHttpService   downloader;

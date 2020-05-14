@@ -39,7 +39,6 @@ namespace CKAN.NetKAN.Validators
         {
             Validate(metadata);
             new MatchingIdentifiersValidator(Path.GetFileNameWithoutExtension(filename)).Validate(metadata);
-
         }
     }
 }

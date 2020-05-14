@@ -2,6 +2,7 @@
 using System.Linq;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Validators;
 using CKAN.NetKAN.Sources.Curse;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Sources.Jenkins;
@@ -15,6 +16,7 @@ namespace CKAN.NetKAN.Transformers
     internal sealed class NetkanTransformer : ITransformer
     {
         private readonly List<ITransformer> _transformers;
+        private readonly IValidator _validator;
 
         public string Name { get { return "netkan"; } }
 
@@ -23,9 +25,11 @@ namespace CKAN.NetKAN.Transformers
             IFileService fileService,
             IModuleService moduleService,
             string githubToken,
-            bool prerelease
+            bool prerelease,
+            IValidator validator
         )
         {
+            _validator = validator;
             var ghApi = new GithubApi(http, githubToken);
             _transformers = InjectVersionedOverrideTransformers(new List<ITransformer>
             {
@@ -56,13 +60,19 @@ namespace CKAN.NetKAN.Transformers
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            return _transformers
-                .Aggregate(
-                    (IEnumerable<Metadata>) new Metadata[] { metadata },
-                    (transformedMetadata, transformer) =>
-                        transformedMetadata.SelectMany(meta =>
-                            transformer.Transform(meta, opts))
-                );
+            Metadata[] modules = new Metadata[] { metadata };
+            foreach (ITransformer tr in _transformers)
+            {
+                modules = modules
+                    .SelectMany(meta => tr.Transform(meta, opts))
+                    .ToArray();
+                // The metadata should be valid after each step
+                foreach (Metadata meta in modules)
+                {
+                    _validator.Validate(meta);
+                }
+            }
+            return modules;
         }
 
         private static List<ITransformer> InjectVersionedOverrideTransformers(List<ITransformer> transformers)
