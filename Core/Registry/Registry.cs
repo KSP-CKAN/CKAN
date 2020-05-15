@@ -100,6 +100,15 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Returns the file path of a DLL.
+        /// null if not found.
+        /// </summary>
+        public string DllPath(string identifier)
+        {
+            return installed_dlls.TryGetValue(identifier, out string path) ? path : null;
+        }
+
+        /// <summary>
         /// A map between module identifiers and versions for official DLC that are installed.
         /// </summary>
         [JsonIgnore] public IDictionary<string, ModuleVersion> InstalledDlc

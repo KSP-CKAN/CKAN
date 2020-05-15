@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(YesNoDialog));
             this.panel1 = new System.Windows.Forms.Panel();
-            this.DescriptionLabel = new System.Windows.Forms.Label();
+            this.DescriptionLabel = new TransparentTextBox();
             this.YesButton = new System.Windows.Forms.Button();
             this.NoButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
@@ -55,7 +55,12 @@
             this.DescriptionLabel.Name = "DescriptionLabel";
             this.DescriptionLabel.Size = new System.Drawing.Size(393, 73);
             this.DescriptionLabel.TabIndex = 0;
-            this.DescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.DescriptionLabel.TabStop = false;
+            this.DescriptionLabel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.DescriptionLabel.ReadOnly = true;
+            this.DescriptionLabel.BackColor = System.Drawing.SystemColors.Control;
+            this.DescriptionLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.DescriptionLabel.BorderStyle = System.Windows.Forms.BorderStyle.None;
             resources.ApplyResources(this.DescriptionLabel, "DescriptionLabel");
             // 
             // YesButton
@@ -103,7 +108,7 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label DescriptionLabel;
+        private TransparentTextBox DescriptionLabel;
         private System.Windows.Forms.Button YesButton;
         private System.Windows.Forms.Button NoButton;
     }

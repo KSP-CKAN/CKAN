@@ -279,8 +279,10 @@ namespace CKAN
                     currentUser.RaiseMessage(ex.InconsistenciesPretty);
                     return;
                 }
-                catch (CancelledActionKraken)
+                catch (CancelledActionKraken kraken)
                 {
+                    currentUser.RaiseMessage(kraken.Message);
+                    installCanceled = true;
                     return;
                 }
                 catch (MissingCertificateKraken kraken)
@@ -333,6 +335,11 @@ namespace CKAN
                     string msg = string.Format(Properties.Resources.MainInstallCantInstallDLC, kraken.module.name);
                     currentUser.RaiseMessage(msg);
                     currentUser.RaiseError(msg);
+                    return;
+                }
+                catch (DllLocationMismatchKraken kraken)
+                {
+                    currentUser.RaiseMessage(kraken.Message);
                     return;
                 }
             }
@@ -410,8 +417,6 @@ namespace CKAN
             else if (installCanceled)
             {
                 // User cancelled the installation
-                // Rebuilds the list of GUIMods
-                UpdateModsList(ChangeSet);
                 if (result.Key) {
                     FailWaitDialog(
                         Properties.Resources.MainInstallCancelTooLate,

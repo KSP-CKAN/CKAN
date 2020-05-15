@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Multiple] Show DLC in recommendations list (#3038 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Prompt user to overwrite manually installed files (#3043 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

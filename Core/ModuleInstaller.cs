@@ -290,13 +290,13 @@ namespace CKAN
             ModuleVersion version = registry.InstalledVersion(module.identifier);
 
             // TODO: This really should be handled by higher-up code.
-            if (version != null)
+            if (version != null && !(version is UnmanagedModuleVersion))
             {
                 User.RaiseMessage("    {0} {1} already installed, skipped", module.identifier, version);
                 return;
             }
 
-            // Find our in the cache if we don't already have it.
+            // Find ZIP in the cache if we don't already have it.
             filename = filename ?? Cache.GetCachedZip(module);
 
             // If we *still* don't have a file, then kraken bitterly.
@@ -348,6 +348,7 @@ namespace CKAN
         /// Installs the module from the zipfile provided.
         /// Returns a list of files installed.
         /// Propagates a BadMetadataKraken if our install metadata is bad.
+        /// Propagates a CancelledActionKraken if the user decides not to overwite unowned files.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// </summary>
         private IEnumerable<string> InstallModule(CkanModule module, string zip_filename, Registry registry)
@@ -360,6 +361,32 @@ namespace CKAN
 
                 try
                 {
+                    var dll = registry.DllPath(module.identifier);
+                    if (dll != null && !files.Any(f => ksp.ToRelativeGameDir(f.destination) == dll))
+                    {
+                        throw new DllLocationMismatchKraken(dll, $"DLL for module {module.identifier} found at {dll}, but it's not where CKAN would install it. Aborting to prevent multiple copies of the same mod being installed. To install this module, uninstall it manually and try again.");
+                    }
+
+                    // Look for overwritable files if session is interactive
+                    if (!User.Headless)
+                    {
+                        var conflicting = FindConflictingFiles(zipfile, files, registry).Memoize();
+                        if (conflicting.Any())
+                        {
+                            var fileMsg = conflicting
+                                .OrderBy(c => c.Value)
+                                .Aggregate("", (a, b) =>
+                                    $"{a}\r\n- {ksp.ToRelativeGameDir(b.Key.destination)}  ({(b.Value ? "same" : "DIFFERENT")})");
+                            if (User.RaiseYesNoDialog($"Module {module.name} wants to overwrite the following manually installed files:\r\n{fileMsg}\r\n\r\nOverwrite?"))
+                            {
+                                DeleteConflictingFiles(conflicting.Select(f => f.Key));
+                            }
+                            else
+                            {
+                                throw new CancelledActionKraken($"Not overwriting manually installed files, can't install {module.name}.");
+                            }
+                        }
+                    }
                     foreach (InstallableFile file in files)
                     {
                         log.DebugFormat("Copying {0}", file.source.Name);
@@ -377,6 +404,94 @@ namespace CKAN
                 }
 
                 return files.Select(x => x.destination);
+            }
+        }
+
+        /// <summary>
+        /// Find files in the given list that are already installed and unowned.
+        /// Note, this compares files on demand; Memoize for performance!
+        /// </summary>
+        /// <param name="files">Files that we want to install for a module</param>
+        /// <returns>
+        /// List of pairs: Key = file, Value = true if identical, false if different
+        /// </returns>
+        private IEnumerable<KeyValuePair<InstallableFile, bool>> FindConflictingFiles(ZipFile zip, IEnumerable<InstallableFile> files, Registry registry)
+        {
+            foreach (InstallableFile file in files)
+            {
+                if (File.Exists(file.destination)
+                    && registry.FileOwner(ksp.ToRelativeGameDir(file.destination)) == null)
+                {
+                    log.DebugFormat("Comparing {0}", file.destination);
+                    using (Stream zipStream = zip.GetInputStream(file.source))
+                    using (FileStream curFile = new FileStream(file.destination, FileMode.Open, FileAccess.Read))
+                    {
+                        yield return new KeyValuePair<InstallableFile, bool>(
+                            file,
+                            file.source.Size == curFile.Length
+                                && StreamsEqual(zipStream, curFile)
+                        );
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Compare the contents of two streams
+        /// </summary>
+        /// <param name="s1">First stream to compare</param>
+        /// <param name="s2">Second stream to compare</param>
+        /// <returns>
+        /// true if both streams contain same bytes, false otherwise
+        /// </returns>
+        private bool StreamsEqual(Stream s1, Stream s2)
+        {
+            const int bufLen = 1024;
+            byte[] bytes1 = new byte[bufLen];
+            byte[] bytes2 = new byte[bufLen];
+            for (int bytesChecked = 0; bytesChecked < s1.Length; )
+            {
+                int bytesFrom1 = s1.Read(bytes1, 0, bufLen);
+                int bytesFrom2 = s2.Read(bytes2, 0, bufLen);
+                if (bytesFrom1 != bytesFrom2)
+                {
+                    // One ended early, not equal.
+                    log.DebugFormat("Read {0} bytes from stream1 and {1} bytes from stream2", bytesFrom1, bytesFrom2);
+                    return false;
+                }
+                for (int i = 0; i < bytesFrom1; ++i)
+                {
+                    if (bytes1[i] != bytes2[i])
+                    {
+                        log.DebugFormat("Byte {0} doesn't match", bytesChecked + i);
+                        // Bytes don't match, not equal.
+                        return false;
+                    }
+                }
+                bytesChecked += bytesFrom1;
+            }
+            // Same bytes, they're equal.
+            return true;
+        }
+
+        /// <summary>
+        /// Remove files that the user chose to overwrite, so
+        /// the installer can replace them.
+        /// Uses a transaction so they can be undeleted if the install
+        /// fails at a later stage.
+        /// </summary>
+        /// <param name="files">The files to overwrite</param>
+        private void DeleteConflictingFiles(IEnumerable<InstallableFile> files)
+        {
+            TxFileManager file_transaction = new TxFileManager();
+            using (var transaction = CkanTransaction.CreateTransactionScope())
+            {
+                foreach (InstallableFile file in files)
+                {
+                    log.DebugFormat("Trying to delete {0}", file.destination);
+                    file_transaction.Delete(file.destination);
+                }
+                transaction.Complete();
             }
         }
 
@@ -698,7 +813,7 @@ namespace CKAN
                 }
 
                 // We don't allow for the overwriting of files. See #208.
-                if (File.Exists(fullPath))
+                if (file_transaction.FileExists(fullPath))
                 {
                     throw new FileExistsKraken(fullPath, string.Format("Trying to write {0} but it already exists.", fullPath));
                 }
