@@ -224,6 +224,18 @@
     <Compile Include="Controls\ModInfo.Designer.cs">
       <DependentUpon>ModInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\EditModSearch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\EditModSearch.Designer.cs">
+      <DependentUpon>EditModSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ManageMods.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ManageMods.Designer.cs">
+      <DependentUpon>ManageMods.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ThemedTabControl.cs" />
     <Compile Include="Controls\ThemedListView.cs" />
     <Compile Include="Controls\TransparentTextBox.cs">
@@ -235,6 +247,8 @@
     <Compile Include="Model\ExportOption.cs" />
     <Compile Include="Model\GUIMod.cs" />
     <Compile Include="Model\ModChange.cs" />
+    <Compile Include="Model\ModList.cs" />
+    <Compile Include="Model\ModSearch.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main\Main.cs">
@@ -265,9 +279,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main\MainLabels.cs" />
-    <Compile Include="Main\MainModList.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Main\MainRecommendations.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -471,6 +482,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ModInfo.resx">
       <DependentUpon>ModInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ManageMods.resx">
+      <DependentUpon>ManageMods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\ManageMods.de-DE.resx">
+      <DependentUpon>..\..\Controls\ManageMods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\zh-CN\ManageMods.zh-CN.resx">
+      <DependentUpon>..\..\Controls\ManageMods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EditModSearch.resx">
+      <DependentUpon>EditModSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\EditModSearch.de-DE.resx">
+      <DependentUpon>..\..\Controls\EditModSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\zh-CN\EditModSearch.zh-CN.resx">
+      <DependentUpon>..\..\Controls\EditModSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\ModInfo.de-DE.resx">
       <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>

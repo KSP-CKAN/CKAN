@@ -49,116 +49,12 @@ namespace CKAN
 
         private bool needRegistrySave = false;
 
-        public MainModList mainModList { get; }
-
-        public NavigationHistory<GUIMod> navHistory;
-
         public string[] commandLineArgs;
 
         public GUIUser currentUser;
 
-        private Timer filterTimer;
-
         private bool enableTrayIcon;
         private bool minimizeToTray;
-
-        private DateTime lastSearchTime;
-        private string lastSearchKey;
-
-        private IEnumerable<ModChange> currentChangeSet;
-        private Dictionary<GUIMod, string> conflicts;
-
-        private IEnumerable<ModChange> ChangeSet
-        {
-            get { return currentChangeSet; }
-            set
-            {
-                var orig = currentChangeSet;
-                currentChangeSet = value;
-                if (!ReferenceEquals(orig, value))
-                    ChangeSetUpdated();
-            }
-        }
-
-        private Dictionary<GUIMod, string> Conflicts
-        {
-            get { return conflicts; }
-            set
-            {
-                var orig = conflicts;
-                conflicts = value;
-                if (orig != value)
-                    ConflictsUpdated(orig);
-            }
-        }
-
-        private void ConflictsUpdated(Dictionary<GUIMod, string> prevConflicts)
-        {
-            if (Conflicts == null)
-            {
-                // Clear status bar if no conflicts
-                AddStatusMessage("");
-            }
-
-            if (prevConflicts != null)
-            {
-                // Mark old conflicts as non-conflicted
-                // (rows that are _still_ conflicted will be marked as such in the next loop)
-                foreach (GUIMod guiMod in prevConflicts.Keys)
-                {
-                    DataGridViewRow row = mainModList.full_list_of_mod_rows[guiMod.Identifier];
-
-                    foreach (DataGridViewCell cell in row.Cells)
-                    {
-                        cell.ToolTipText = null;
-                    }
-                    mainModList.ReapplyLabels(guiMod, false, CurrentInstance.Name);
-                    if (row.Visible)
-                    {
-                        ModList.InvalidateRow(row.Index);
-                    }
-                }
-            }
-            if (Conflicts != null)
-            {
-                // Mark current conflicts as conflicted
-                foreach (var kvp in Conflicts)
-                {
-                    GUIMod          guiMod = kvp.Key;
-                    DataGridViewRow row    = mainModList.full_list_of_mod_rows[guiMod.Identifier];
-                    string conflict_text = kvp.Value;
-
-                    foreach (DataGridViewCell cell in row.Cells)
-                    {
-                        cell.ToolTipText = conflict_text;
-                    }
-                    row.DefaultCellStyle.BackColor = mainModList.GetRowBackground(guiMod, true, CurrentInstance.Name);
-                    if (row.Visible)
-                    {
-                        ModList.InvalidateRow(row.Index);
-                    }
-                }
-            }
-        }
-
-        private void ChangeSetUpdated()
-        {
-            if (ChangeSet != null && ChangeSet.Any())
-            {
-                tabController.ShowTab("ChangesetTabPage", 1, false);
-                UpdateChangesDialog(ChangeSet.ToList());
-                ApplyToolButton.Enabled = true;
-                auditRecommendationsMenuItem.Enabled = false;
-            }
-            else
-            {
-                tabController.HideTab("ChangesetTabPage");
-                ApplyToolButton.Enabled = false;
-                Wait.RetryEnabled = false;
-                auditRecommendationsMenuItem.Enabled = true;
-                InstallAllCheckbox.Checked = true;
-            }
-        }
 
         public Main(string[] cmdlineArgs, KSPManager mgr, bool showConsole)
         {
@@ -189,30 +85,18 @@ namespace CKAN
             manager = mgr ?? new KSPManager(currentUser);
 
             controlFactory = new ControlFactory();
-            mainModList = new MainModList(source => UpdateFilters(this), currentUser);
-
-            // History is read-only until the UI is started. We switch
-            // out of it at the end of OnLoad() when we call NavInit().
-            navHistory = new NavigationHistory<GUIMod> { IsReadOnly = true };
 
             // React when the user clicks a tag or filter link in mod info
-            ModInfo.OnChangeFilter += Filter;
+            ModInfo.OnChangeFilter += ManageMods.Filter;
 
             // Replace mono's broken, ugly toolstrip renderer
             if (Platform.IsMono)
             {
                 menuStrip1.Renderer = new FlatToolStripRenderer();
-                menuStrip2.Renderer = new FlatToolStripRenderer();
                 fileToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 settingsToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 helpToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
-                FilterToolButton.DropDown.Renderer = new FlatToolStripRenderer();
-                FilterTagsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
-                FilterLabelsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
                 minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
-                ModListContextMenuStrip.Renderer = new FlatToolStripRenderer();
-                ModListHeaderContextMenuStrip.Renderer = new FlatToolStripRenderer();
-                LabelsContextMenuStrip.Renderer = new FlatToolStripRenderer();
             }
 
             // Initialize all user interaction dialogs.
@@ -251,13 +135,6 @@ namespace CKAN
                 return;
             }
 
-            FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
-            launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
-            ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
-
-            ModList.CurrentCellDirtyStateChanged += ModList_CurrentCellDirtyStateChanged;
-            ModList.CellValueChanged += ModList_CellValueChanged;
-
             tabController = new TabController(MainTabControl);
             tabController.ShowTab("ManageModsTabPage");
 
@@ -288,29 +165,6 @@ namespace CKAN
 
             var registry = RegistryManager.Instance(Manager.CurrentInstance);
             registry?.Dispose();
-        }
-
-        private void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
-        {
-            ModList_CellContentClick(sender, null);
-        }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            switch (keyData)
-            {
-                case Keys.Control | Keys.F:
-                    ActiveControl = FilterByNameTextBox;
-                    return true;
-
-                case Keys.Control | Keys.S:
-                    if (ChangeSet != null && ChangeSet.Any())
-                        ApplyToolButton_Click(null, null);
-
-                    return true;
-            }
-
-            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         public static Main Instance { get; private set; }
@@ -435,8 +289,6 @@ namespace CKAN
 
             URLHandlers.RegisterURLHandler(configuration, currentUser);
 
-            ApplyToolButton.Enabled = false;
-
             CurrentInstanceUpdated(!autoUpdating);
 
             if (commandLineArgs.Length >= 2)
@@ -451,8 +303,8 @@ namespace CKAN
                     identifier = identifier.Substring(0, identifier.Length - 1);
 
                 log.Debug("Attempting to select mod from startup parameters");
-                FocusMod(identifier, true, true);
-                ModList.Refresh();
+                ManageMods.FocusMod(identifier, true, true);
+                ManageMods.ModGrid.Refresh();
                 log.Debug("Failed to select mod from startup parameters");
             }
 
@@ -463,10 +315,6 @@ namespace CKAN
             pluginController = new PluginController(pluginsPath);
 
             CurrentInstance.RebuildKSPSubDir();
-
-            // Initialize navigation. This should be called as late as
-            // possible, once the UI is "settled" from its initial load.
-            NavInit();
 
             log.Info("GUI started");
             base.OnLoad(e);
@@ -481,49 +329,10 @@ namespace CKAN
                 return;
             }
 
-            if (Conflicts != null)
+            if (!ManageMods.AllowClose())
             {
-                if (Conflicts.Any())
-                {
-                    // Ask if they want to resolve conflicts
-                    string confDescrip = Conflicts
-                        .Select(kvp => kvp.Value)
-                        .Aggregate((a, b) => $"{a}, {b}");
-                    if (!YesNoDialog(string.Format(Properties.Resources.MainQuitWithConflicts, confDescrip),
-                        Properties.Resources.MainQuit,
-                        Properties.Resources.MainGoBack))
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-                }
-                else
-                {
-                    // The Conflicts dictionary is empty even when there are unmet dependencies.
-                    if (!YesNoDialog(Properties.Resources.MainQuitWithUnmetDeps,
-                        Properties.Resources.MainQuit,
-                        Properties.Resources.MainGoBack))
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-                }
-            }
-            else if (ChangeSet?.Any() ?? false)
-            {
-                // Ask if they want to discard the change set
-                string changeDescrip = ChangeSet
-                    .GroupBy(ch => ch.ChangeType, ch => ch.Mod.name)
-                    .Select(grp => $"{grp.Key}: "
-                        + grp.Aggregate((a, b) => $"{a}, {b}"))
-                    .Aggregate((a, b) => $"{a}\r\n{b}");
-                if (!YesNoDialog(string.Format(Properties.Resources.MainQuitWIthUnappliedChanges, changeDescrip),
-                    Properties.Resources.MainQuit,
-                    Properties.Resources.MainGoBack))
-                {
-                    e.Cancel = true;
-                    return;
-                }
+                e.Cancel = true;
+                return;
             }
 
             // Copy window location to app settings
@@ -542,8 +351,8 @@ namespace CKAN
             configuration.ModInfoPosition = ModInfo.ModMetaSplitPosition;
 
             // Save the active filter
-            configuration.ActiveFilter = (int)mainModList.ModFilter;
-            configuration.CustomLabelFilter = mainModList.CustomLabelFilter?.Name;
+            configuration.ActiveFilter = (int)ManageMods.mainModList.ModFilter;
+            configuration.CustomLabelFilter = ManageMods.mainModList.CustomLabelFilter?.Name;
 
             // Save settings.
             configuration.Save();
@@ -584,7 +393,7 @@ namespace CKAN
             }
 
             (RegistryManager.Instance(CurrentInstance).registry as Registry)
-                ?.BuildTagIndex(mainModList.ModuleTags);
+                ?.BuildTagIndex(ManageMods.mainModList.ModuleTags);
 
             bool repoUpdateNeeded = configuration.RefreshOnStartup
                 || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
@@ -595,10 +404,10 @@ namespace CKAN
                 // Remove it again after it ran, else it stays there and is added again and again.
                 void filterUpdate(object sender, RunWorkerCompletedEventArgs e)
                 {
-                    Filter(
+                    ManageMods.Filter(
                         (GUIModFilter)configuration.ActiveFilter,
-                        mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
-                        mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                        ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
+                        ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                             .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
                     );
                     m_UpdateRepoWorker.RunWorkerCompleted -= filterUpdate;
@@ -606,22 +415,20 @@ namespace CKAN
 
                 m_UpdateRepoWorker.RunWorkerCompleted += filterUpdate;
 
-                ModList.Rows.Clear();
+                ManageMods.ModGrid.Rows.Clear();
                 UpdateRepo();
             }
             else
             {
-                UpdateModsList();
-                Filter(
+                ManageMods.UpdateModsList();
+                ManageMods.Filter(
                     (GUIModFilter)configuration.ActiveFilter,
-                    mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
-                    mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                    ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
+                    ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                         .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
                 );
             }
-
-            ChangeSet = null;
-            Conflicts = null;
+            ManageMods.InstanceUpdated(CurrentInstance);
         }
 
         public void UpdateCKAN()
@@ -639,371 +446,14 @@ namespace CKAN
             updateWorker.RunWorkerAsync();
         }
 
-        private void RefreshToolButton_Click(object sender, EventArgs e)
-        {
-            UpdateRepo();
-        }
-
-        private void MarkAllUpdatesToolButton_Click(object sender, EventArgs e)
-        {
-            foreach (DataGridViewRow row in ModList.Rows)
-            {
-                var mod = (GUIMod)row.Tag;
-                if (mod.HasUpdate)
-                {
-                    MarkModForUpdate(mod.Identifier, true);
-                }
-            }
-
-            // only sort by Update column if checkbox in settings checked
-            if (Main.Instance.configuration.AutoSortByUpdate)
-            {
-                // set new sort column
-                var new_sort_column = ModList.Columns[UpdateCol.Index];
-                var current_sort_column = ModList.Columns[configuration.SortByColumnIndex];
-
-                // Reset the glyph.
-                current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
-                configuration.SortByColumnIndex = new_sort_column.Index;
-                UpdateFilters(this);
-
-                // Select the top row and scroll the list to it.
-                ModList.CurrentCell = ModList.Rows[0].Cells[SelectableColumnIndex()];
-            }
-
-            ModList.Refresh();
-        }
-
         public void UpdateModContentsTree(CkanModule module, bool force = false)
         {
             ModInfo.UpdateModContentsTree(module, force);
         }
 
-        private void ApplyToolButton_Click(object sender, EventArgs e)
-        {
-            tabController.ShowTab("ChangesetTabPage", 1);
-        }
-
         private void ExitToolButton_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        private void FilterByNameTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (Platform.IsMac)
-            {
-                // Delay updating to improve typing performance on OS X.
-                RunFilterUpdateTimer();
-            }
-            else
-                mainModList.ModNameFilter = FilterByNameTextBox.Text;
-        }
-
-        private void FilterByAuthorTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (Platform.IsMac)
-            {
-                // Delay updating to improve typing performance on OS X.
-                RunFilterUpdateTimer();
-            }
-            else
-                mainModList.ModAuthorFilter = FilterByAuthorTextBox.Text;
-        }
-
-        private void FilterByDescriptionTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (Platform.IsMac)
-            {
-                // Delay updating to improve typing performance on OS X.
-                RunFilterUpdateTimer();
-            }
-            else
-                mainModList.ModDescriptionFilter = FilterByDescriptionTextBox.Text;
-        }
-
-        private void FilterTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            // Switch focus from filters to mod list on enter, down, or pgdn
-            switch (e.KeyCode)
-            {
-                case Keys.Enter:
-                case Keys.Down:
-                case Keys.PageDown:
-                    Util.Invoke(this, () => ModList.Focus());
-                    e.Handled = true;
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Start or restart a timer to update the filter after an interval since the last keypress.
-        /// On Mac OS X, this prevents the search field from locking up due to DataGridViews being
-        /// slow and key strokes being interpreted incorrectly when slowed down:
-        /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
-        /// </summary>
-        private void RunFilterUpdateTimer()
-        {
-            if (filterTimer == null)
-            {
-                filterTimer = new Timer();
-                filterTimer.Tick += OnFilterUpdateTimer;
-                filterTimer.Interval = 700;
-                filterTimer.Start();
-            }
-            else
-            {
-                filterTimer.Stop();
-                filterTimer.Start();
-            }
-        }
-
-        /// <summary>
-        /// Updates the filter after an interval of time has passed since the last keypress.
-        /// </summary>
-        private void OnFilterUpdateTimer(object source, EventArgs e)
-        {
-            mainModList.ModNameFilter = FilterByNameTextBox.Text;
-            mainModList.ModAuthorFilter = FilterByAuthorTextBox.Text;
-            mainModList.ModDescriptionFilter = FilterByDescriptionTextBox.Text;
-            filterTimer.Stop();
-        }
-
-        public async Task UpdateChangeSetAndConflicts(IRegistryQuerier registry)
-        {
-            IEnumerable<ModChange> full_change_set = null;
-            Dictionary<GUIMod, string> new_conflicts = null;
-
-            bool too_many_provides_thrown = false;
-            var user_change_set = mainModList.ComputeUserChangeSet(registry);
-            try
-            {
-                var module_installer = ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, currentUser);
-                full_change_set = mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, CurrentInstance.VersionCriteria());
-            }
-            catch (InconsistentKraken k)
-            {
-                // Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
-                AddStatusMessage(k.ShortDescription);
-                user_change_set = mainModList.ComputeUserChangeSet(registry);
-                new_conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.VersionCriteria());
-                full_change_set = null;
-            }
-            catch (TooManyModsProvideKraken)
-            {
-                // Can be thrown by ComputeChangeSetFromModList if the user cancels out of it.
-                // We can just rerun it as the ModInfo has been removed.
-                too_many_provides_thrown = true;
-            }
-            catch (DependencyNotSatisfiedKraken k)
-            {
-                currentUser.RaiseError(
-                    Properties.Resources.MainDepNotSatisfied,
-                    k.parent,
-                    k.module
-                );
-
-                // Uncheck the box
-                MarkModForInstall(k.parent.identifier, true);
-            }
-
-            if (too_many_provides_thrown)
-            {
-                await UpdateChangeSetAndConflicts(registry);
-                new_conflicts = Conflicts;
-                full_change_set = ChangeSet;
-            }
-
-            Conflicts = new_conflicts;
-            ChangeSet = full_change_set;
-        }
-
-        private void FilterCompatibleButton_Click(object sender, EventArgs e)
-        {
-            Filter(GUIModFilter.Compatible);
-        }
-
-        private void FilterInstalledButton_Click(object sender, EventArgs e)
-        {
-            Filter(GUIModFilter.Installed);
-        }
-
-        private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
-        {
-            Filter(GUIModFilter.InstalledUpdateAvailable);
-        }
-
-        private void FilterReplaceableButton_Click(object sender, EventArgs e)
-        {
-            Filter(GUIModFilter.Replaceable);
-        }
-
-        private void FilterCachedButton_Click(object sender, EventArgs e)
-        {
-            Filter(GUIModFilter.Cached);
-        }
-
-        private void FilterUncachedButton_Click(object sender, EventArgs e)
-        {
-            Filter(GUIModFilter.Uncached);
-        }
-
-        private void FilterNewButton_Click(object sender, EventArgs e)
-        {
-            Filter(GUIModFilter.NewInRepository);
-        }
-
-        private void FilterNotInstalledButton_Click(object sender, EventArgs e)
-        {
-            Filter(GUIModFilter.NotInstalled);
-        }
-
-        private void FilterIncompatibleButton_Click(object sender, EventArgs e)
-        {
-            Filter(GUIModFilter.Incompatible);
-        }
-
-        private void FilterAllButton_Click(object sender, EventArgs e)
-        {
-            Filter(GUIModFilter.All);
-        }
-
-        /// <summary>
-        /// Called when the modlist filter (all, compatible, incompatible...) is changed.
-        /// </summary>
-        /// <param name="filter">Filter.</param>
-        private void Filter(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
-        {
-            // Triggers mainModList.ModFiltersUpdated()
-            mainModList.TagFilter = tag;
-            mainModList.CustomLabelFilter = label;
-            mainModList.ModFilter = filter;
-
-            // Save new filter to the configuration.
-            configuration.ActiveFilter = (int)mainModList.ModFilter;
-            configuration.CustomLabelFilter = label?.Name;
-            configuration.TagFilter = tag?.Name;
-            configuration.Save();
-
-            // Ask the configuration which columns to show.
-            foreach (DataGridViewColumn col in ModList.Columns)
-            {
-                // Some columns are always shown, and others are handled by UpdateModsList()
-                if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
-                {
-                    col.Visible = !configuration.HiddenColumnNames.Contains(col.Name);
-                }
-            }
-
-            switch (filter)
-            {
-                // Some columns really do / don't make sense to be visible on certain filter settings.
-                // Hide / Show them, without writing to config, so once the user changes tab again,
-                // they are shown / hidden again, as before.
-                case GUIModFilter.All:                      FilterToolButton.Text = Properties.Resources.MainFilterAll;          break;
-                case GUIModFilter.Incompatible:             FilterToolButton.Text = Properties.Resources.MainFilterIncompatible; break;
-                case GUIModFilter.Installed:                FilterToolButton.Text = Properties.Resources.MainFilterInstalled;    break;
-                case GUIModFilter.InstalledUpdateAvailable: FilterToolButton.Text = Properties.Resources.MainFilterUpgradeable;  break;
-                case GUIModFilter.Replaceable:              FilterToolButton.Text = Properties.Resources.MainFilterReplaceable;  break;
-                case GUIModFilter.Cached:                   FilterToolButton.Text = Properties.Resources.MainFilterCached;       break;
-                case GUIModFilter.Uncached:                 FilterToolButton.Text = Properties.Resources.MainFilterUncached;     break;
-                case GUIModFilter.NewInRepository:          FilterToolButton.Text = Properties.Resources.MainFilterNew;          break;
-                case GUIModFilter.NotInstalled:             ModList.Columns["InstalledVersion"].Visible = false;
-                                                            ModList.Columns["InstallDate"].Visible      = false;
-                                                            ModList.Columns["AutoInstalled"].Visible    = false;
-                                                            FilterToolButton.Text = Properties.Resources.MainFilterNotInstalled; break;
-                case GUIModFilter.CustomLabel:              FilterToolButton.Text = string.Format(Properties.Resources.MainFilterLabel, label?.Name ?? "CUSTOM"); break;
-                case GUIModFilter.Tag:
-                    FilterToolButton.Text = tag == null
-                        ? Properties.Resources.MainFilterUntagged
-                        : string.Format(Properties.Resources.MainFilterTag, tag.Name);
-                    break;
-                default:                                    FilterToolButton.Text = Properties.Resources.MainFilterCompatible;   break;
-            }
-        }
-
-        private GUIMod GetSelectedModule()
-        {
-            if (ModList.SelectedRows.Count == 0)
-                return null;
-
-            DataGridViewRow selected_item = ModList.SelectedRows[0];
-
-            var module = (GUIMod)selected_item?.Tag;
-            return module;
-        }
-
-        private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var split = configuration.CommandLineArguments.Split(' ');
-            if (split.Length == 0)
-                return;
-
-            var registry = RegistryManager.Instance(CurrentInstance).registry;
-            var incomp   = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria());
-            if (incomp.Any())
-            {
-                // Warn that it might not be safe to run KSP with incompatible modules installed
-                string incompatDescrip = incomp
-                    .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(m.Module)})")
-                    .Aggregate((a, b) => $"{a}, {b}");
-                if (!YesNoDialog(string.Format(Properties.Resources.MainLaunchWithIncompatible, incompatDescrip),
-                    Properties.Resources.MainLaunch,
-                    Properties.Resources.MainGoBack))
-                {
-                    return;
-                }
-            }
-
-            // -single-instance crashes KSP 1.8 to KSP 1.9 on Linux
-            // https://issuetracker.unity3d.com/issues/linux-segmentation-fault-when-running-a-built-project-with-single-instance-argument
-            if (Platform.IsUnix)
-            {
-                var brokenVersionRange = new KspVersionRange(
-                    new KspVersion(1, 8),
-                    new KspVersion(1, 9)
-                );
-                split = filterCmdLineArgs(split, brokenVersionRange, "-single-instance");
-            }
-
-            var binary = split[0];
-            var args = string.Join(" ", split.Skip(1));
-
-            try
-            {
-                Directory.SetCurrentDirectory(CurrentInstance.GameDir());
-                Process.Start(binary, args);
-            }
-            catch (Exception exception)
-            {
-                currentUser.RaiseError(Properties.Resources.MainLaunchFailed, exception.Message);
-            }
-        }
-
-        /// <summary>
-        /// If the installed game version is in the given range,
-        /// return the given array without the given parameter,
-        /// otherwise return the array as-is.
-        /// </summary>
-        /// <param name="args">Command line parameters to check</param>
-        /// <param name="crashyKspRange">Game versions that should not use this parameter</param>
-        /// <param name="parameter">The parameter to remove on version match</param>
-        /// <returns>
-        /// args or args minus parameter
-        /// </returns>
-        private string[] filterCmdLineArgs(string[] args, KspVersionRange crashyKspRange, string parameter)
-        {
-            var installedRange = CurrentInstance.Version().ToVersionRange();
-            if (crashyKspRange.IntersectWith(installedRange) != null
-                && args.Contains(parameter))
-            {
-                log.DebugFormat(
-                    "Parameter {0} found on incompatible KSP version {1}, pruning",
-                    parameter,
-                    CurrentInstance.Version().ToString());
-                return args.Where(s => s != parameter).ToArray();
-            }
-            return args;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1101,14 +551,9 @@ namespace CKAN
             var result = new ManageKspInstancesDialog(!actuallyVisible, currentUser).ShowDialog();
             if (result == DialogResult.OK && !Equals(old_instance, Instance.CurrentInstance))
             {
-                ModList.ClearSelection();
+                ManageMods.ModGrid.ClearSelection();
                 CurrentInstanceUpdated(true);
             }
-        }
-
-        private void openKspDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Utilities.ProcessStartURL(Instance.manager.CurrentInstance.GameDir());
         }
 
         private void CompatibleKspVersionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1120,70 +565,13 @@ namespace CKAN
             if (dialog.ShowDialog() != DialogResult.Cancel)
             {
                 // This takes a while, so don't do it if they cancel out
-                UpdateModsList();
+                ManageMods.UpdateModsList();
             }
         }
 
-        public void ResetFilterAndSelectModOnList(string key)
+        private void ManageMods_OnSelectedModuleChanged(GUIMod m)
         {
-            FilterByNameTextBox.Text = string.Empty;
-            mainModList.ModNameFilter = string.Empty;
-            FocusMod(key, true);
-        }
-
-        private void FocusMod(string key, bool exactMatch, bool showAsFirst = false)
-        {
-            DataGridViewRow current_row = ModList.CurrentRow;
-            int currentIndex = current_row?.Index ?? 0;
-            DataGridViewRow first_match = null;
-
-            var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
-            {
-                GUIMod mod = row.Tag as GUIMod;
-                bool row_match;
-                if (exactMatch)
-                    row_match = mod.Name == key || mod.Identifier == key;
-                else
-                    row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
-                                mod.Abbrevation.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
-                                mod.Identifier.StartsWith(key, StringComparison.OrdinalIgnoreCase);
-
-                if (row_match && first_match == null)
-                {
-                    // Remember the first match to allow cycling back to it if necessary.
-                    first_match = row;
-                }
-
-                if (key.Length == 1 && row_match && row.Index <= currentIndex)
-                {
-                    // Keep going forward if it's a single key match and not ahead of the current row.
-                    return false;
-                }
-
-                return row_match;
-            });
-
-            ModList.ClearSelection();
-            var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
-            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_key);
-            if (match == null && first_match != null)
-            {
-                // If there were no matches after the first match, cycle over to the beginning.
-                match = first_match;
-            }
-
-            if (match != null)
-            {
-                match.Selected = true;
-
-                ModList.CurrentCell = match.Cells[SelectableColumnIndex()];
-                if (showAsFirst)
-                    ModList.FirstDisplayedScrollingRowIndex = match.Index;
-            }
-            else
-            {
-                AddStatusMessage(Properties.Resources.MainNotFound);
-            }
+            ActiveModInfo = m;
         }
 
         private GUIMod ActiveModInfo
@@ -1215,12 +603,34 @@ namespace CKAN
             );
         }
 
+        private void ManageMods_OnChangeSetChanged(IEnumerable<ModChange> changeset)
+        {
+            if (changeset != null && changeset.Any())
+            {
+                tabController.ShowTab("ChangesetTabPage", 1, false);
+                UpdateChangesDialog(changeset.ToList());
+                auditRecommendationsMenuItem.Enabled = false;
+            }
+            else
+            {
+                tabController.HideTab("ChangesetTabPage");
+                Wait.RetryEnabled = false;
+                auditRecommendationsMenuItem.Enabled = true;
+            }
+        }
+
+        private void ManageMods_OnRegistryChanged()
+        {
+            needRegistrySave = true;
+        }
+
         private void MainTabControl_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             switch (MainTabControl.SelectedTab?.Name)
             {
                 case "ManageModsTabPage":
-                    ModList_SelectedIndexChanged(sender, e);
+                    // TODO: Call public func on ManageMods
+                    //ModList_SelectedIndexChanged(sender, e);
                     break;
 
                 case "ChangesetTabPage":
@@ -1251,151 +661,123 @@ namespace CKAN
             Utilities.ProcessStartURL("https://github.com/KSP-CKAN/NetKAN/issues/new/choose");
         }
 
-        private void ModList_MouseDown(object sender, MouseEventArgs e)
-        {
-            var rowIndex = ModList.HitTest(e.X, e.Y).RowIndex;
-
-            // Ignore header column to prevent errors.
-            if (rowIndex != -1 && e.Button == MouseButtons.Right)
-            {
-                // Detect the clicked cell and select the row.
-                ModList.ClearSelection();
-                ModList.Rows[rowIndex].Selected = true;
-
-                // Show the context menu.
-                ModListContextMenuStrip.Show(ModList, new Point(e.X, e.Y));
-
-                // Set the menu options.
-                var guiMod = (GUIMod)ModList.Rows[rowIndex].Tag;
-
-                downloadContentsToolStripMenuItem.Enabled = !guiMod.IsCached;
-                purgeContentsToolStripMenuItem.Enabled = guiMod.IsCached;
-                reinstallToolStripMenuItem.Enabled = guiMod.IsInstalled && !guiMod.IsAutodetected;
-            }
-        }
-
-        private void reinstallToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            GUIMod module = ModInfo.SelectedModule;
-            if (module == null || !module.IsCKAN)
-                return;
-
-            YesNoDialog reinstallDialog = new YesNoDialog();
-            string confirmationText = string.Format(Properties.Resources.MainReinstallConfirm, module.Name);
-            if (reinstallDialog.ShowYesNoDialog(this, confirmationText) == DialogResult.No)
-                return;
-
-            IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
-
-            // Build the list of changes, first the mod to remove:
-            List<ModChange> toReinstall = new List<ModChange>()
-            {
-                new ModChange(module.ToModule(), GUIModChangeType.Remove, null)
-            };
-            // Then everything we need to re-install:
-            var revdep = registry.FindReverseDependencies(new List<string>() { module.Identifier });
-            var goners = revdep.Union(
-                registry.FindRemovableAutoInstalled(
-                    registry.InstalledModules.Where(im => !revdep.Contains(im.identifier))
-                ).Select(im => im.Module.identifier)
-            );
-            foreach (string id in goners)
-            {
-                toReinstall.Add(new ModChange(
-                    (mainModList.full_list_of_mod_rows[id]?.Tag as GUIMod).ToModule(),
-                    GUIModChangeType.Install,
-                    null
-                ));
-            }
-            // Hand off to centralized [un]installer code
-            installWorker.RunWorkerAsync(
-                new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    toReinstall,
-                    RelationshipResolver.DependsOnlyOpts()
-                )
-            );
-        }
-
-        private void purgeContentsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Purge other versions as well since the user is likely to want that
-            // and has no other way to achieve it
-            if (ModInfo.SelectedModule != null)
-            {
-                IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
-                var allAvail = registry.AvailableByIdentifier(ModInfo.SelectedModule.Identifier);
-                foreach (CkanModule mod in allAvail)
-                {
-                    Manager.Cache.Purge(mod);
-                }
-                ModInfo.SelectedModule.UpdateIsCached();
-                UpdateModContentsTree(ModInfo.SelectedModule.ToCkanModule(), true);
-            }
-        }
-
         private void Main_Resize(object sender, EventArgs e)
         {
             UpdateTrayState();
         }
 
-        #region Navigation History
-
-        private void NavInit()
+        private void openKspDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            navHistory.OnHistoryChange += NavOnHistoryChange;
-            navHistory.IsReadOnly = false;
-            var currentMod = GetSelectedModule();
-            if (currentMod != null)
-                navHistory.AddToHistory(currentMod);
+            Utilities.ProcessStartURL(Instance.manager.CurrentInstance.GameDir());
         }
 
-        private void NavUpdateUI()
+        private void openKSPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NavBackwardToolButton.Enabled = navHistory.CanNavigateBackward;
-            NavForwardToolButton.Enabled = navHistory.CanNavigateForward;
+            LaunchKSP();
         }
 
-        private void NavSelectMod(GUIMod module)
+        public void LaunchKSP()
         {
-            navHistory.AddToHistory(module);
+            var split = configuration.CommandLineArguments.Split(' ');
+            if (split.Length == 0)
+                return;
+
+            var registry = RegistryManager.Instance(CurrentInstance).registry;
+            var incomp   = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria());
+            if (incomp.Any())
+            {
+                // Warn that it might not be safe to run KSP with incompatible modules installed
+                string incompatDescrip = incomp
+                    .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(m.Module)})")
+                    .Aggregate((a, b) => $"{a}, {b}");
+                if (!YesNoDialog(string.Format(Properties.Resources.MainLaunchWithIncompatible, incompatDescrip),
+                    Properties.Resources.MainLaunch,
+                    Properties.Resources.MainGoBack))
+                {
+                    return;
+                }
+            }
+
+            // -single-instance crashes KSP 1.8 to KSP 1.9 on Linux
+            // https://issuetracker.unity3d.com/issues/linux-segmentation-fault-when-running-a-built-project-with-single-instance-argument
+            if (Platform.IsUnix)
+            {
+                var brokenVersionRange = new KspVersionRange(
+                    new KspVersion(1, 8),
+                    new KspVersion(1, 9)
+                );
+                split = filterCmdLineArgs(split, brokenVersionRange, "-single-instance");
+            }
+
+            var binary = split[0];
+            var args = string.Join(" ", split.Skip(1));
+
+            try
+            {
+                Directory.SetCurrentDirectory(CurrentInstance.GameDir());
+                Process.Start(binary, args);
+            }
+            catch (Exception exception)
+            {
+                currentUser.RaiseError(Properties.Resources.MainLaunchFailed, exception.Message);
+            }
         }
 
-        private void NavGoBackward()
+        /// <summary>
+        /// If the installed game version is in the given range,
+        /// return the given array without the given parameter,
+        /// otherwise return the array as-is.
+        /// </summary>
+        /// <param name="args">Command line parameters to check</param>
+        /// <param name="crashyKspRange">Game versions that should not use this parameter</param>
+        /// <param name="parameter">The parameter to remove on version match</param>
+        /// <returns>
+        /// args or args minus parameter
+        /// </returns>
+        private string[] filterCmdLineArgs(string[] args, KspVersionRange crashyKspRange, string parameter)
         {
-            if (navHistory.CanNavigateBackward)
-                NavGoToMod(navHistory.NavigateBackward());
+            var installedRange = Main.Instance.CurrentInstance.Version().ToVersionRange();
+            if (crashyKspRange.IntersectWith(installedRange) != null
+                && args.Contains(parameter))
+            {
+                log.DebugFormat(
+                    "Parameter {0} found on incompatible KSP version {1}, pruning",
+                    parameter,
+                    Main.Instance.CurrentInstance.Version().ToString());
+                return args.Where(s => s != parameter).ToArray();
+            }
+            return args;
         }
 
-        private void NavGoForward()
+        private void ManageMods_StartChangeSet(List<ModChange> changeset)
         {
-            if (navHistory.CanNavigateForward)
-                NavGoToMod(navHistory.NavigateForward());
+            // Hand off to centralized [un]installer code
+            installWorker.RunWorkerAsync(
+                new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
+                    changeset,
+                    RelationshipResolver.DependsOnlyOpts()
+                )
+            );
         }
 
-        private void NavGoToMod(GUIMod module)
+        private void ManageMods_OpenProgressTab()
         {
-            // Focussing on a mod also causes navigation, but we don't want
-            // this to affect the history. so we switch to read-only mode.
-            navHistory.IsReadOnly = true;
-            FocusMod(module.Name, true);
-            navHistory.IsReadOnly = false;
+            ResetProgress();
+            ShowWaitDialog(false);
+            tabController.SetTabLock(true);
+            Util.Invoke(this, SwitchEnabledState);
+            Wait.ClearLog();
         }
 
-        private void NavOnHistoryChange()
+        private void ManageMods_CloseProgressTab()
         {
-            NavUpdateUI();
+            Util.Invoke(this, UpdateTrayInfo);
+            HideWaitDialog(true);
+            tabController.HideTab("WaitTabPage");
+            tabController.SetTabLock(false);
+            tabController.ShowTab("ManageModsTabPage");
+            Util.Invoke(this, SwitchEnabledState);
         }
 
-        private void NavBackwardToolButton_Click(object sender, EventArgs e)
-        {
-            NavGoBackward();
-        }
-
-        private void NavForwardToolButton_Click(object sender, EventArgs e)
-        {
-            NavGoForward();
-        }
-
-        #endregion
     }
 }

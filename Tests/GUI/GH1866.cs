@@ -22,8 +22,8 @@ namespace Tests.GUI
         private KSPManager _manager;
         private RegistryManager _registryManager;
         private Registry _registry;
-        private MainModList _modList;
-        private MainModListGUI _listGui;
+        private ModList _modList;
+        private DataGridView _listGui;
 
         /*
          * an exception would be thrown at the bottom of this
@@ -79,8 +79,8 @@ namespace Tests.GUI
             _registry.AddAvailable(TestData.kOS_014_module());
 
             // test object
-            _modList = new MainModList(null, _manager.User);
-            _listGui = new MainModListGUI();
+            _modList = new ModList(null);
+            _listGui = new DataGridView();
 
             // todo: refactor the column header code to allow mocking of the GUI without creating columns
             _listGui.Columns.Add(new DataGridViewCheckBoxColumn());

@@ -90,7 +90,7 @@ namespace CKAN
 
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            Main.Instance.ResetFilterAndSelectModOnList(e.Node.Name);
+            Main.Instance.ManageMods.ResetFilterAndSelectModOnList(e.Node.Name);
         }
 
         private void ContentsPreviewTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -213,7 +213,7 @@ namespace CKAN
         {
             get
             {
-                return Main.Instance.mainModList.ModuleLabels;
+                return Main.Instance.ManageMods.mainModList.ModuleLabels;
             }
         }
 
@@ -221,7 +221,7 @@ namespace CKAN
         {
             get
             {
-                return Main.Instance.mainModList.ModuleTags;
+                return Main.Instance.ManageMods.mainModList.ModuleTags;
             }
         }
 

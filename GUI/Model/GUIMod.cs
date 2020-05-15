@@ -27,7 +27,6 @@ namespace CKAN
                 if (!(selectedMod?.Equals(value) ?? value?.Equals(selectedMod) ?? true))
                 {
                     selectedMod = value;
-                    var row = Main.Instance?.mainModList?.full_list_of_mod_rows?[Identifier];
 
                     if (IsInstalled && HasUpdate)
                     {
@@ -35,13 +34,14 @@ namespace CKAN
                         if (IsUpgradeChecked ^ isLatest)
                         {
                             // Try upgrading if they pick the latest
-                            Main.Instance.MarkModForUpdate(Identifier, isLatest);
+                            Main.Instance.ManageMods.MarkModForUpdate(Identifier, isLatest);
                         }
 
                     }
-                    Main.Instance.MarkModForInstall(Identifier, selectedMod == null);
+                    Main.Instance.ManageMods.MarkModForInstall(Identifier, selectedMod == null);
 
-                    Main.Instance.UpdateChangeSetAndConflicts(
+                    Main.Instance.ManageMods.UpdateChangeSetAndConflicts(
+                        Main.Instance.Manager.CurrentInstance,
                         RegistryManager.Instance(Main.Instance.Manager.CurrentInstance).registry
                     );
 

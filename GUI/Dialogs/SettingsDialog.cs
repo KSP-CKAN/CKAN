@@ -204,7 +204,7 @@ namespace CKAN
                 Main.Instance.Manager.Cache.RemoveAll();
 
                 // forcibly tell all mod rows to re-check cache state
-                foreach (DataGridViewRow row in Main.Instance.ModList.Rows)
+                foreach (DataGridViewRow row in Main.Instance.ManageMods.ModGrid.Rows)
                 {
                     var mod = row.Tag as GUIMod;
                     mod?.UpdateIsCached();

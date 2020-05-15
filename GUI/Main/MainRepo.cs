@@ -115,9 +115,9 @@ namespace CKAN
                     AddStatusMessage(Properties.Resources.MainRepoUpToDate);
                     HideWaitDialog(true);
                     // Load rows if grid empty, otherwise keep current
-                    if (ModList.Rows.Count < 1)
+                    if (ManageMods.ModGrid.Rows.Count < 1)
                     {
-                        UpdateModsList(ChangeSet);
+                        ManageMods.UpdateModsList();
                     }
                     break;
 
@@ -127,7 +127,7 @@ namespace CKAN
 
                 case RepoUpdateResult.Updated:
                 default:
-                    UpdateModsList(ChangeSet, oldModules);
+                    ManageMods.UpdateModsList(oldModules);
                     AddStatusMessage(Properties.Resources.MainRepoSuccess);
                     ShowRefreshQuestion();
                     HideWaitDialog(true);
@@ -137,7 +137,7 @@ namespace CKAN
 
             Util.Invoke(this, SwitchEnabledState);
             Util.Invoke(this, RecreateDialogs);
-            Util.Invoke(this, ModList.Select);
+            Util.Invoke(this, ManageMods.ModGrid.Select);
         }
 
         private void ShowRefreshQuestion()
@@ -182,7 +182,7 @@ namespace CKAN
 
         private void OnRefreshTimer(object sender, ElapsedEventArgs e)
         {
-            if (!configuration.RefreshPaused)
+            if (menuStrip1.Enabled && !configuration.RefreshPaused)
             {
                 // Just a safety check
                 UpdateRepo();
@@ -191,7 +191,7 @@ namespace CKAN
 
         private void UpgradeNotification()
         {
-            int numUpgradeable = mainModList.Modules.Count(mod => mod.HasUpdate);
+            int numUpgradeable = ManageMods.mainModList.Modules.Count(mod => mod.HasUpdate);
             if (numUpgradeable > 0)
             {
                 Util.Invoke(this, () =>
@@ -212,12 +212,12 @@ namespace CKAN
             OpenWindow();
 
             // Check all the upgrade checkboxes
-            MarkAllUpdatesToolButton_Click(null, null);
+            ManageMods.MarkAllUpdates();
 
             // Install
             installWorker.RunWorkerAsync(
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    mainModList.ComputeUserChangeSet(RegistryManager.Instance(Main.Instance.CurrentInstance).registry).ToList(),
+                    ManageMods.mainModList.ComputeUserChangeSet(RegistryManager.Instance(Main.Instance.CurrentInstance).registry).ToList(),
                     RelationshipResolver.DependsOnlyOpts()
                 )
             );

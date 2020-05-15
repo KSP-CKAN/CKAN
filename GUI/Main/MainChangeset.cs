@@ -10,7 +10,7 @@ namespace CKAN
         {
             Changeset.LoadChangeset(
                 changeset,
-                mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                     .Where(l => l.AlertOnInstall)
                     .ToList());
         }
@@ -22,7 +22,7 @@ namespace CKAN
 
         private void Changeset_OnCancelChanges()
         {
-            ClearChangeSet();
+            ManageMods.ClearChangeSet();
             UpdateChangesDialog(null);
             tabController.ShowTab("ManageModsTabPage");
         }
@@ -36,24 +36,11 @@ namespace CKAN
             // TODO Work out why this is.
             installWorker.RunWorkerAsync(
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    mainModList.ComputeUserChangeSet(RegistryManager.Instance(Main.Instance.CurrentInstance).registry).ToList(),
+                    ManageMods.mainModList.ComputeUserChangeSet(RegistryManager.Instance(Main.Instance.CurrentInstance).registry).ToList(),
                     RelationshipResolver.DependsOnlyOpts()
                 )
             );
         }
 
-        private void ClearChangeSet()
-        {
-            foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
-            {
-                GUIMod mod = row.Tag as GUIMod;
-                if (mod.IsInstallChecked != mod.IsInstalled)
-                {
-                    mod.SetInstallChecked(row, Installed, mod.IsInstalled);
-                }
-                mod.SetUpgradeChecked(row, UpdateCol, false);
-                mod.SetReplaceChecked(row, ReplaceCol, false);
-            }
-        }
     }
 }

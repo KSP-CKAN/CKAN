@@ -38,7 +38,7 @@ namespace CKAN
         {
             var first = items.Cast<ListViewItem>().FirstOrDefault()?.Tag as ModuleRelationshipDescriptor;
             var ident = first?.name;
-            if (!string.IsNullOrEmpty(ident) && mainModList.full_list_of_mod_rows.TryGetValue(ident, out DataGridViewRow row))
+            if (!string.IsNullOrEmpty(ident) && ManageMods.mainModList.full_list_of_mod_rows.TryGetValue(ident, out DataGridViewRow row))
             {
                 ActiveModInfo = row.Tag as GUIMod;
             }

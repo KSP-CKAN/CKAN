@@ -10,11 +10,6 @@ namespace CKAN
         private BackgroundWorker          cacheWorker;
         private NetAsyncModulesDownloader downloader;
 
-        private void downloadContentsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            StartDownload(ModInfo.SelectedModule);
-        }
-
         private void ModInfo_OnDownloadClick(GUIMod gmod)
         {
             StartDownload(gmod);

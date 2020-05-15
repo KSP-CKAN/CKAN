@@ -11,7 +11,7 @@ namespace CKAN
             {
                 case "ManageModsTabPage":
                     // Focus the grid
-                    Main.Instance.ModList.Focus();
+                    Main.Instance.ManageMods.ModGrid.Focus();
                     break;
             }
         }

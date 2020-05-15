@@ -395,4 +395,11 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>Move selected mods to the Ignored group. These mods won't be included in the modpack. </value></data>
   <data name="EditModpackTooltipCancel" xml:space="preserve"><value>Abort modpack creation</value></data>
   <data name="EditModpackTooltipExport" xml:space="preserve"><value>Choose a filename and save the modpack</value></data>
+  <data name="ModSearchDescriptionPrefix" xml:space="preserve"><value>desc:</value></data>
+  <data name="ModSearchLanguagePrefix" xml:space="preserve"><value>lang:</value></data>
+  <data name="ModSearchDependsPrefix" xml:space="preserve"><value>dep:</value></data>
+  <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>rec:</value></data>
+  <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>sug:</value></data>
+  <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>conf:</value></data>
+  <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Expand or collapse the detailed search fields (Ctrl-Shift-F)</value></data>
 </root>
