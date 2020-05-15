@@ -15,6 +15,7 @@ StyleCop.Cache
 *.ncrunchproject
 *.ncrunchsolution
 *.pyc
+node_modules/
 
 # Build results
 [Dd]ebug/
