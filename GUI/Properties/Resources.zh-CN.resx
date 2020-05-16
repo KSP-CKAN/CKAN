@@ -380,4 +380,11 @@ CKAN Version(CKAN版本)   : {3}</value></data>
   <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>移动选中Mod到忽略组. 这些Mod不会加入到Mod包中</value></data>
   <data name="EditModpackTooltipCancel" xml:space="preserve"><value>中止Mod包创建</value></data>
   <data name="EditModpackTooltipExport" xml:space="preserve"><value>选中一个文件名并保存Mod包</value></data>
+  <data name="ModSearchDescriptionPrefix" xml:space="preserve"><value>描述:</value></data>
+  <data name="ModSearchLanguagePrefix" xml:space="preserve"><value>语言:</value></data>
+  <data name="ModSearchDependsPrefix" xml:space="preserve"><value>依赖:</value></data>
+  <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>建议:</value></data>
+  <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>推荐:</value></data>
+  <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>冲突:</value></data>
+  <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>展开或折叠详细的搜索字段 (Ctrl-Shift-F)</value></data>
 </root>
