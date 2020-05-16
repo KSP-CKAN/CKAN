@@ -153,4 +153,10 @@
   <data name="FilterByAuthorLabel.Text" xml:space="preserve"><value>按作者名筛选:</value></data>
   <data name="FilterByNameLabel.Text" xml:space="preserve"><value>按Mod名称筛选:</value></data>
   <data name="FilterByDescriptionLabel.Text" xml:space="preserve"><value>按描述筛选:</value></data>
+  <data name="FilterCombinedLabel.Text" xml:space="preserve"><value>搜索:</value></data>
+  <data name="FilterByLanguageLabel.Text" xml:space="preserve"><value>按语言筛选:</value></data>
+  <data name="FilterByDependsLabel.Text" xml:space="preserve"><value>按依赖Mod筛选:</value></data>
+  <data name="FilterByRecommendsLabel.Text" xml:space="preserve"><value>按推荐Mod筛选:</value></data>
+  <data name="FilterBySuggestsLabel.Text" xml:space="preserve"><value>按建议Mod筛选:</value></data>
+  <data name="FilterByConflictsLabel.Text" xml:space="preserve"><value>按冲突Mod筛选:</value></data>
 </root>

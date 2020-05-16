@@ -276,6 +276,7 @@
             // ExpandButton
             // 
             this.ExpandButton.Appearance = System.Windows.Forms.Appearance.Button;
+            this.ExpandButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ExpandButton.Location = new System.Drawing.Point(330, 5);
             this.ExpandButton.Name = "ExpandButton";
             this.ExpandButton.Size = new System.Drawing.Size(20, 26);
