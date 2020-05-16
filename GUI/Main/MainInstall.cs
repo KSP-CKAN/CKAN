@@ -154,6 +154,8 @@ namespace CKAN
             tabController.SetTabLock(true);
 
             IDownloader downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
+            downloader.Progress    += Wait.SetModuleProgress;
+            downloader.AllComplete += Wait.DownloadsComplete;
             cancelCallback = () =>
             {
                 downloader.CancelDownload();

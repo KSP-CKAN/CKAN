@@ -18,10 +18,14 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
 
+        private const    string             defaultMimeType = "application/octet-stream";
+
+        public event Action<CkanModule, long, long> Progress;
+        public event Action                         AllComplete;
+
         private          List<CkanModule>   modules;
         private readonly NetAsyncDownloader downloader;
         private readonly NetModuleCache     cache;
-        private const    string             defaultMimeType = "application/octet-stream";
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncModulesDownloader.
@@ -33,6 +37,14 @@ namespace CKAN
             {
                 // Schedule us to process each module on completion.
                 onOneCompleted = ModuleDownloadComplete
+            };
+            downloader.Progress += (target, remaining, total) =>
+            {
+                var mod = modules.FirstOrDefault(m => m.download == target.url);
+                if (mod != null && Progress != null)
+                {
+                    Progress(mod, remaining, total);
+                }
             };
             this.cache = cache;
         }
@@ -69,6 +81,10 @@ namespace CKAN
                             : $"{item.Value.download_content_type};q=1.0,{defaultMimeType};q=0.9"
                     )).ToList()
                 );
+                if (AllComplete != null)
+                {
+                    AllComplete();
+                }
             }
             catch (DownloadErrorsKraken kraken)
             {
