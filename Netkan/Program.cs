@@ -153,16 +153,11 @@ namespace CKAN.NetKAN
             Parser.Default.ParseArgumentsStrict(args, Options);
 
             Logging.Initialize();
-            LogManager.GetRepository().Threshold = Level.Warn;
 
-            if (Options.Verbose)
-            {
-                LogManager.GetRepository().Threshold = Level.Info;
-            }
-            else if (Options.Debug)
-            {
-                LogManager.GetRepository().Threshold = Level.Debug;
-            }
+            LogManager.GetRepository().Threshold =
+                  Options.Verbose ? Level.Info
+                : Options.Debug   ? Level.Debug
+                :                   Level.Warn;
 
             if (Options.NetUserAgent != null)
             {

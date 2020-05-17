@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Netkan] Purge stale cache entries for SpaceDock (#2859 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] NetKAN warnings (#3045 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.27.2 (Chandrasekhar)
 

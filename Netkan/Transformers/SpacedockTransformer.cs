@@ -78,6 +78,7 @@ namespace CKAN.NetKAN.Transformers
             json.SafeAdd("name", sdMod.name);
             json.SafeAdd("abstract", sdMod.short_description);
             json.SafeAdd("version", latestVersion.friendly_version.ToString());
+            json.Remove("$kref");
             json.SafeAdd("download", latestVersion.download_path.OriginalString);
             json.SafeAdd(Model.Metadata.UpdatedPropertyName, latestVersion.created);
 

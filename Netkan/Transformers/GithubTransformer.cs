@@ -108,6 +108,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 json.SafeAdd("version",  ghRelease.Version.ToString());
                 json.SafeAdd("author",   () => getAuthors(ghRepo, ghRelease));
+                json.Remove("$kref");
                 json.SafeAdd("download", ghRelease.Download.ToString());
                 json.SafeAdd(Metadata.UpdatedPropertyName, ghRelease.AssetUpdated);
 

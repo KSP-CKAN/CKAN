@@ -44,6 +44,7 @@ namespace CKAN.NetKAN.Transformers
                 );
 
                 json.SafeAdd("name",     remoteAvc.Name);
+                json.Remove("$kref");
                 json.SafeAdd("download", remoteAvc.Download);
 
                 // Set .resources.repository based on GITHUB properties

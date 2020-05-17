@@ -76,6 +76,7 @@ namespace CKAN.NetKAN.Transformers
                         $"{build.Url}artifact/{artifact.RelativePath}"
                     );
                     Log.DebugFormat("Using download URL: {0}", download);
+                    json.Remove("$kref");
                     json.SafeAdd("download", download);
 
                     if (options.UseFilenameVersion)

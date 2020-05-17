@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Validators;
 using CKAN.NetKAN.Sources.Avc;
 using CKAN.Versioning;
 using CKAN.NetKAN.Sources.Github;
@@ -24,6 +25,7 @@ namespace CKAN.NetKAN.Transformers
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
         private readonly IGithubApi     _github;
+        private readonly VrefValidator  _vrefValidator;
 
         public string Name { get { return "avc"; } }
 
@@ -32,10 +34,13 @@ namespace CKAN.NetKAN.Transformers
             _http          = http;
             _moduleService = moduleService;
             _github        = github;
+            _vrefValidator = new VrefValidator(_http, _moduleService);
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
+            _vrefValidator.Validate(metadata);
+            
             if (metadata.Vref != null && metadata.Vref.Source == "ksp-avc")
             {
                 var json = metadata.Json();
@@ -83,7 +88,7 @@ namespace CKAN.NetKAN.Transformers
                         }
                         catch (Exception e)
                         {
-                            Log.InfoFormat("An error occured fetching the remote AVC version file, ignoring: {0}", e.Message);
+                            Log.WarnFormat("An error occured fetching the remote AVC version file, ignoring: {0}", e.Message);
                             Log.Debug(e);
                         }
                     }
@@ -204,7 +209,13 @@ namespace CKAN.NetKAN.Transformers
         private static Uri GetRemoteAvcUri(AvcVersion avc)
         {
             if (!Uri.IsWellFormedUriString(avc.Url, UriKind.Absolute))
+            {
+                if (avc.Url != null)
+                {
+                    Log.WarnFormat("Version file URL property is invalid: {0}", avc.Url);
+                }
                 return null;
+            }
 
             var remoteUri = new Uri(avc.Url);
 
