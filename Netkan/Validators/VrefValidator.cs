@@ -34,7 +34,8 @@ namespace CKAN.NetKAN.Validators
                 var file = _http.DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
                 if (!string.IsNullOrEmpty(file))
                 {
-                    var avc = _moduleService.GetInternalAvc(mod, file, null);
+                    // Pass a regex that matches anything so it returns the first if found
+                    var avc = _moduleService.GetInternalAvc(mod, file, ".");
 
                     bool hasVref = (metadata.Vref != null);
 
