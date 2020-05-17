@@ -41,7 +41,7 @@ namespace CKAN
 
         public void UpdateDialog()
         {
-            RefreshReposListBox();
+            RefreshReposListBox(false);
             RefreshAuthTokensListBox();
             UpdateLanguageSelectionComboBox();
 
@@ -75,27 +75,35 @@ namespace CKAN
             Main.Instance.UpdateRefreshTimer();
         }
 
-        private void RefreshReposListBox()
+        private void RefreshReposListBox(bool saveChanges = true)
         {
-            // Give the Repository the priority it
-            // currently has in the gui
-            for (int i = 0; i < _sortedRepos.Count; i++)
-            {
-                _sortedRepos[i].priority = i;
-            }
-
             var manager = RegistryManager.Instance(Main.Instance.CurrentInstance);
             var registry = manager.registry;
-            _sortedRepos = new List<Repository>(registry.Repositories.Values);
 
-            _sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
-            ReposListBox.Items.Clear();
+            if (saveChanges)
+            {
+                // Give the Repository the priority it
+                // currently has in the gui
+                for (int i = 0; i < _sortedRepos.Count; i++)
+                {
+                    _sortedRepos[i].priority = i;
+                }
+
+                _sortedRepos = new List<Repository>(registry.Repositories.Values);
+
+                _sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
+                ReposListBox.Items.Clear();
+
+                manager.Save();
+            }
+            else
+            {
+                _sortedRepos = new List<Repository>(registry.Repositories.Values);
+            }
             foreach (var repo in _sortedRepos)
             {
                 ReposListBox.Items.Add(string.Format("{0} | {1}", repo.name, repo.uri));
             }
-
-            manager.Save();
         }
 
         private void UpdateLanguageSelectionComboBox()
