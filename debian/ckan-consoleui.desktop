@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=CKAN Console UI
+Comment=Comprehensive Kerbal Archive Network Console UI
+Icon=/usr/share/icons/ckan.ico
+Categories=Game;Utility
+Exec=/usr/bin/ckan consoleui
+StartupNotify=true
+Terminal=true
+Type=Application
+Version=1.0

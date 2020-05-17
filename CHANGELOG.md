@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Prompt user to overwrite manually installed files (#3043 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Master search bar and misc GUI clean-up (#3041 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Added Chinese translation of multiple search category fields. (#3053 by: hyx5020; reviewed: HebaruSan)
+- [Build] Create a system menu entry for ConsoleUI (#3052 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 
