@@ -63,6 +63,7 @@ namespace CKAN.NetKAN.Processors
                 LevelToMatch  = Level.Warn,
                 AcceptOnMatch = true,
             });
+            qap.AddFilter(new DenyAllFilter());
             return qap;
         }
 
