@@ -417,6 +417,7 @@
             this.ManageMods.OpenProgressTab += ManageMods_OpenProgressTab;
             this.ManageMods.CloseProgressTab += ManageMods_CloseProgressTab;
             this.ManageMods.LabelsAfterUpdate += ManageMods_LabelsAfterUpdate;
+            this.ManageMods.StartChangeSet += ManageMods_StartChangeSet;
             //
             // ChangesetTabPage
             //
