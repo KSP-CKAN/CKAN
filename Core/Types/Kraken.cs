@@ -291,7 +291,7 @@ namespace CKAN
         public readonly int    responseStatus;
 
         public NativeAndCurlDownloadFailedKraken(List<Exception> errors, string URL, string responseHeader, string responseContent, int responseStatus)
-            : this($"Native and cURL download failed downloading from {URL}, status {responseStatus}", errors, URL, responseHeader, responseContent, responseStatus)
+            : this($"Native and cURL download failed for {URL}, status {responseStatus}", errors, URL, responseHeader, responseContent, responseStatus)
         {}
 
         public NativeAndCurlDownloadFailedKraken(string message, List<Exception> errors, string URL, string responseHeader, string responseContent, int responseStatus)
@@ -306,7 +306,7 @@ namespace CKAN
 
         public override string ToString()
         {
-            return $"Native and cURL download failed downloading from {URL}, status {responseStatus}:\r\n" +
+            return $"Native and cURL download failed for {URL}, status {responseStatus}:\r\n" +
                    $"{String.Join("\r\n\r\n", exceptions)}\r\n{responseHeader}\r\n{responseContent}";
         }
     }
