@@ -88,7 +88,7 @@ namespace CKAN.NetKAN.Transformers
                         }
                         catch (Exception e)
                         {
-                            Log.WarnFormat("An error occured fetching the remote AVC version file, ignoring: {0}", e.Message);
+                            Log.WarnFormat("Error fetching remote version file: {0}", e.Message);
                             Log.Debug(e);
                         }
                     }
