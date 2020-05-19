@@ -34,12 +34,22 @@ namespace CKAN.NetKAN.Validators
                 var file = _http.DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
                 if (!string.IsNullOrEmpty(file))
                 {
-                    // Pass a regex that matches anything so it returns the first if found
-                    var avc = _moduleService.GetInternalAvc(mod, file, ".");
-
                     bool hasVref = (metadata.Vref != null);
 
-                    bool hasVersionFile = (avc != null);
+                    bool hasVersionFile = false;
+                    try
+                    {
+                        // Pass a regex that matches anything so it returns the first if found
+                        var avc = _moduleService.GetInternalAvc(mod, file, ".");
+                        hasVersionFile = (avc != null);
+                    }
+                    catch (Kraken k)
+                    {
+                        // If GetInternalAvc throws, then there's a version file with a syntax error.
+                        // This shouldn't cause the inflation to fail.
+                        hasVersionFile = true;
+                        Log.Warn(k.Message);
+                    }
 
                     if (hasVref && !hasVersionFile)
                     {

@@ -43,6 +43,12 @@ namespace CKAN.NetKAN.Transformers
 
                     foreach (var property in internalJson.Properties())
                     {
+                        // We've already got the file, too late to tell us where it lives
+                        if (property.Name == "$kref")
+                        {
+                            Log.DebugFormat("Skipping $kref property: {0}", property.Value);
+                            continue;
+                        }
                         json.SafeAdd(property.Name, property.Value);
                     }
 
