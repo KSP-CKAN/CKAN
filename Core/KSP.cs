@@ -466,9 +466,11 @@ namespace CKAN
                 }
                 var newDlls = new HashSet<string>(manager.registry.InstalledDlls);
                 bool dllChanged = !oldDlls.SetEquals(newDlls);
-
                 bool dlcChanged = manager.ScanDlc();
-                manager.Save(false);
+
+                if (dllChanged || dlcChanged)
+                    manager.Save(false);
+
                 tx.Complete();
 
                 return dllChanged || dlcChanged;
