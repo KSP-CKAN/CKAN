@@ -86,6 +86,12 @@ namespace CKAN.NetKAN.Transformers
                                 avc = remoteAvc;
                             }
                         }
+                        catch (JsonReaderException e)
+                        {
+                            Log.WarnFormat("Error parsing remote version file {0}: {1}",
+                                remoteUri, e.Message);
+                            Log.Debug(e);
+                        }
                         catch (Exception e)
                         {
                             Log.WarnFormat("Error fetching remote version file: {0}", e.Message);
