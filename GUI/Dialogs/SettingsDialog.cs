@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Threading.Tasks;
 using CKAN.Versioning;
 using log4net;
 using CKAN.Configuration;
@@ -59,11 +60,6 @@ namespace CKAN
             UpdateRefreshRate();
 
             UpdateCacheInfo(config.DownloadCacheDir);
-            if (config.CacheSizeLimit.HasValue)
-            {
-                // Show setting in MB
-                CacheLimit.Text = (config.CacheSizeLimit.Value / 1024 / 1024).ToString();
-            }
         }
 
         private void UpdateRefreshRate()
@@ -116,20 +112,40 @@ namespace CKAN
             LanguageSelectionComboBox.SelectedIndex = LanguageSelectionComboBox.FindStringExact(config.Language);
         }
 
+        private bool updatingCache = false;
+
         private void UpdateCacheInfo(string newPath)
         {
             string failReason;
+            if (updatingCache)
+            {
+                return;
+            }
             if (newPath == config.DownloadCacheDir
                 || Main.Instance.Manager.TrySetupCache(newPath, out failReason))
             {
-                Main.Instance.Manager.Cache.GetSizeInfo(out m_cacheFileCount, out m_cacheSize);
-                CachePath.Text = config.DownloadCacheDir;
-                CacheSummary.Text = string.Format(Properties.Resources.SettingsDialogSummmary, m_cacheFileCount, CkanModule.FmtSize(m_cacheSize));
-                CacheSummary.ForeColor   = SystemColors.ControlText;
-                OpenCacheButton.Enabled  = true;
-                ClearCacheButton.Enabled = (m_cacheSize > 0);
-                PurgeToLimitMenuItem.Enabled = (config.CacheSizeLimit.HasValue
-                    && m_cacheSize > config.CacheSizeLimit.Value);
+                updatingCache = true;
+                Task.Factory.StartNew(() =>
+                {
+                    // This might take a little while if the cache is big
+                    Main.Instance.Manager.Cache.GetSizeInfo(out m_cacheFileCount, out m_cacheSize);
+                    Util.Invoke(this, () =>
+                    {
+                        if (config.CacheSizeLimit.HasValue)
+                        {
+                            // Show setting in MB
+                            CacheLimit.Text = (config.CacheSizeLimit.Value / 1024 / 1024).ToString();
+                        }
+                        CachePath.Text = config.DownloadCacheDir;
+                        CacheSummary.Text = string.Format(Properties.Resources.SettingsDialogSummmary, m_cacheFileCount, CkanModule.FmtSize(m_cacheSize));
+                        CacheSummary.ForeColor   = SystemColors.ControlText;
+                        OpenCacheButton.Enabled  = true;
+                        ClearCacheButton.Enabled = (m_cacheSize > 0);
+                        PurgeToLimitMenuItem.Enabled = (config.CacheSizeLimit.HasValue
+                            && m_cacheSize > config.CacheSizeLimit.Value);
+                        updatingCache = false;
+                    });
+                });
             }
             else
             {
