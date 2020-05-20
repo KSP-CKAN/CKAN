@@ -1,3 +1,4 @@
+using System;
 ﻿using System.Collections.Generic;
 
 namespace CKAN
@@ -12,6 +13,16 @@ namespace CKAN
         /// Blocks until the downloads are complete, cancelled, or errored.
         /// </summary>
         void DownloadModules(IEnumerable<CkanModule> modules);
+
+        /// <summary>
+        /// Raised when data arrives for a module
+        /// </summary>
+        event Action<CkanModule, long, long> Progress;
+
+        /// <summary>
+        /// Raised when a batch of downloads is all done
+        /// </summary>
+        event Action AllComplete;
 
         /// <summary>
         /// Cancel any running downloads.

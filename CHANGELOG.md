@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Master search bar and misc GUI clean-up (#3041 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Added Chinese translation of multiple search category fields. (#3053 by: hyx5020; reviewed: HebaruSan)
 - [Build] Create a system menu entry for ConsoleUI (#3052 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Non-parallel GitHub downloads, one progress bar per download (#3054 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

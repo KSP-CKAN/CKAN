@@ -45,7 +45,7 @@
             this.TopPanel.Controls.Add(this.DialogProgressBar);
             this.TopPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.TopPanel.Name = "TopPanel";
-            this.TopPanel.Size = new System.Drawing.Size(500, 80);
+            this.TopPanel.Size = new System.Drawing.Size(500, 85);
             // 
             // MessageTextBox
             // 
@@ -66,7 +66,8 @@
             // DialogProgressBar
             // 
             this.DialogProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));            this.DialogProgressBar.Location = new System.Drawing.Point(5, 45);
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.DialogProgressBar.Location = new System.Drawing.Point(5, 45);
             this.DialogProgressBar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.DialogProgressBar.Minimum = 0;
             this.DialogProgressBar.Maximum = 100;

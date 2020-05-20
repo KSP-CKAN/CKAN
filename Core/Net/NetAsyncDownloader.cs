@@ -17,14 +17,10 @@ namespace CKAN
     /// </summary>
     public class NetAsyncDownloader
     {
-
-        public IUser User { get; set; }
-
         // Private utility class for tracking downloads
         private class NetAsyncDownloaderDownloadPart
         {
-            public Uri url;
-            public Uri fallbackUrl;
+            public readonly Net.DownloadTarget target;
             public DateTime lastProgressUpdateTime;
             public string path;
             public long bytesLeft;
@@ -42,8 +38,7 @@ namespace CKAN
 
             public NetAsyncDownloaderDownloadPart(Net.DownloadTarget target, string path = null)
             {
-                this.url = target.url;
-                this.fallbackUrl = target.fallbackUrl;
+                this.target = target;
                 this.mimeType = target.mimeType;
                 this.triedFallback = false;
                 this.path = path ?? Path.GetTempFileName();
@@ -77,10 +72,10 @@ namespace CKAN
 
                 // Check whether to use an auth token for this host
                 string token;
-                if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(this.url.Host, out token)
+                if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(this.target.url.Host, out token)
                         && !string.IsNullOrEmpty(token))
                 {
-                    log.InfoFormat("Using auth token for {0}", this.url.Host);
+                    log.InfoFormat("Using auth token for {0}", this.target.url.Host);
                     // Send our auth token to the GitHub API (or whoever else needs one)
                     agent.Headers.Add("Authorization", $"token {token}");
                 }
@@ -101,9 +96,30 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Downloads from hosts in this list will be done sequentially rather
+        /// than in parallel
+        /// </summary>
+        private static readonly HashSet<string> throttledHosts = new HashSet<string>()
+        {
+            /// GitHub returns a 403-Forbidden status sometimes if you try to download
+            /// too much in parallel, see https://github.com/KSP-CKAN/CKAN/issues/2210
+            "github.com",
+            "api.github.com",
+            "raw.githubusercontent.com",
+        };
+
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
 
-        private List<NetAsyncDownloaderDownloadPart> downloads;
+        public readonly IUser User;
+
+        /// <summary>
+        /// Raised when data arrives for a download
+        /// </summary>
+        public event Action<Net.DownloadTarget, long, long> Progress;
+
+        private List<NetAsyncDownloaderDownloadPart> downloads = new List<NetAsyncDownloaderDownloadPart>();
+        private List<Net.DownloadTarget> queuedDownloads = new List<Net.DownloadTarget>();
         private int completed_downloads;
 
         //Used for inter-thread communication.
@@ -119,7 +135,6 @@ namespace CKAN
         public NetAsyncDownloader(IUser user)
         {
             User = user;
-            downloads = new List<NetAsyncDownloaderDownloadPart>();
             complete_or_canceled = new ManualResetEvent(false);
         }
 
@@ -130,6 +145,7 @@ namespace CKAN
         private void Download(ICollection<Net.DownloadTarget> targets)
         {
             downloads.Clear();
+            queuedDownloads.Clear();
             foreach (Net.DownloadTarget target in targets)
             {
                 DownloadModule(target);
@@ -138,29 +154,54 @@ namespace CKAN
 
         private void DownloadModule(Net.DownloadTarget target)
         {
-            // We need a new variable for our closure/lambda, hence index = 1+prev max
-            int index = downloads.Count;
+            if (shouldQueue(target))
+            {
+                // Throttled host already downloading, we will get back to this later
+                queuedDownloads.Add(target);
+            }
+            else
+            {
+                // We need a new variable for our closure/lambda, hence index = 1+prev max
+                int index = downloads.Count;
 
-            var dl = new NetAsyncDownloaderDownloadPart(target);
-            downloads.Add(dl);
+                var dl = new NetAsyncDownloaderDownloadPart(target);
+                downloads.Add(dl);
 
-            // Encode spaces to avoid confusing URL parsers
-            User.RaiseMessage("Downloading \"{0}\"",
-                dl.url.ToString().Replace(" ", "%20"));
+                // Encode spaces to avoid confusing URL parsers
+                User.RaiseMessage("Downloading \"{0}\"",
+                    dl.target.url.ToString().Replace(" ", "%20"));
 
-            // Schedule for us to get back progress reports.
-            dl.Progress += (sender, args) =>
-                FileProgressReport(index,
-                    args.ProgressPercentage,
-                    args.BytesReceived,
-                    args.TotalBytesToReceive);
+                // Schedule for us to get back progress reports.
+                dl.Progress += (sender, args) =>
+                    FileProgressReport(index,
+                        args.ProgressPercentage,
+                        args.BytesReceived,
+                        args.TotalBytesToReceive);
 
-            // And schedule a notification if we're done (or if something goes wrong)
-            dl.Done += (sender, args) =>
-                FileDownloadComplete(index, args.Error);
+                // And schedule a notification if we're done (or if something goes wrong)
+                dl.Done += (sender, args) =>
+                    FileDownloadComplete(index, args.Error);
 
-            // Start the download!
-            dl.Download(dl.url, dl.path);
+                // Start the download!
+                dl.Download(dl.target.url, dl.path);
+            }
+        }
+
+        /// <summary>
+        /// Check whether a given download should be deferred to be started later.
+        /// Decision is made based on whether the host is throttled and whether
+        /// we're already downloading something else from it.
+        /// </summary>
+        /// <param name="target">Info about a requested download</param>
+        /// <returns>
+        /// true to queue, false to start immediately
+        /// </returns>
+        private bool shouldQueue(Net.DownloadTarget target)
+        {
+            return throttledHosts.Contains(target.url.Host)
+                && downloads.Any(dl =>
+                    dl.target.url.Host == target.url.Host
+                    && dl.bytesLeft > 0);
         }
 
         /// <summary>
@@ -200,7 +241,6 @@ namespace CKAN
             download_canceled = false;
             complete_or_canceled.Reset();
 
-
             // If the user cancelled our progress, then signal that.
             if (old_download_canceled)
             {
@@ -234,9 +274,9 @@ namespace CKAN
                             // Handle HTTP 403 used for throttling
                             case HttpStatusCode.Forbidden:
                                 Uri infoUrl;
-                                if (Net.ThrottledHosts.TryGetValue(downloads[i].url.Host, out infoUrl))
+                                if (Net.ThrottledHosts.TryGetValue(downloads[i].target.url.Host, out infoUrl))
                                 {
-                                    throw new DownloadThrottledKraken(downloads[i].url, infoUrl);
+                                    throw new DownloadThrottledKraken(downloads[i].target.url, infoUrl);
                                 }
                                 break;
                         }
@@ -277,11 +317,12 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Generates a download progress reports, and sends it to
-        /// onProgressReport if it's set. This takes the index of the file
-        /// being downloaded, the percent complete, the bytes downloaded,
-        /// and the total amount of bytes we expect to download.
+        /// Generates a download progress report.
         /// </summary>
+        /// <param name="index">Index of the file being downloaded</param>
+        /// <param name="percent">The percent complete</param>
+        /// <param name="bytesDownloaded">The bytes downloaded</param>
+        /// <param name="bytesToDownload">The total amount of bytes we expect to download</param>
         private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesToDownload)
         {
             if (download_canceled)
@@ -298,12 +339,16 @@ namespace CKAN
                 long bytesChange = bytesDownloaded - download.lastProgressUpdateSize;
                 download.lastProgressUpdateSize = (int) bytesDownloaded;
                 download.lastProgressUpdateTime = now;
-                download.bytesPerSecond = (int) bytesChange/timeSpan.Seconds;
+                download.bytesPerSecond = (int) bytesChange / timeSpan.Seconds;
             }
 
             download.size = bytesToDownload;
             download.bytesLeft = download.size - bytesDownloaded;
-            downloads[index] = download;
+
+            if (Progress != null)
+            {
+                Progress(download.target, download.bytesLeft, download.size);
+            }
 
             int totalBytesPerSecond = 0;
             long totalBytesLeft = 0;
@@ -317,6 +362,11 @@ namespace CKAN
                 }
 
                 totalBytesLeft += t.bytesLeft;
+                totalSize += t.size;
+            }
+            foreach (Net.DownloadTarget t in queuedDownloads.ToList())
+            {
+                totalBytesLeft += t.size;
                 totalSize += t.size;
             }
 
@@ -341,20 +391,20 @@ namespace CKAN
         {
             if (error != null)
             {
-                log.InfoFormat("Error downloading {0}: {1}", downloads[index].url, error);
+                log.InfoFormat("Error downloading {0}: {1}", downloads[index].target.url, error);
 
                 // Check whether we were already downloading the fallback url
-                if (!downloads[index].triedFallback && downloads[index].fallbackUrl != null)
+                if (!downloads[index].triedFallback && downloads[index].target.fallbackUrl != null)
                 {
-                    log.InfoFormat("Trying fallback URL: {0}", downloads[index].fallbackUrl);
+                    log.InfoFormat("Trying fallback URL: {0}", downloads[index].target.fallbackUrl);
                     // Encode spaces to avoid confusing URL parsers
                     User.RaiseMessage("Failed to download \"{0}\", trying fallback \"{1}\"",
-                        downloads[index].url.ToString().Replace(" ", "%20"),
-                        downloads[index].fallbackUrl.ToString().Replace(" ", "%20")
+                        downloads[index].target.url.ToString().Replace(" ", "%20"),
+                        downloads[index].target.fallbackUrl.ToString().Replace(" ", "%20")
                     );
                     // Try the fallbackUrl
                     downloads[index].triedFallback = true;
-                    downloads[index].Download(downloads[index].fallbackUrl, downloads[index].path);
+                    downloads[index].Download(downloads[index].target.fallbackUrl, downloads[index].path);
                     // Short circuit the completion process so the fallback can run
                     return;
                 }
@@ -365,11 +415,24 @@ namespace CKAN
             }
             else
             {
-                log.InfoFormat("Finished downloading {0}", downloads[index].url);
+                log.InfoFormat("Finished downloading {0}", downloads[index].target.url);
             }
-            onOneCompleted.Invoke(downloads[index].url, downloads[index].path, downloads[index].error);
 
-            if (++completed_downloads >= downloads.Count)
+            if (throttledHosts.Contains(downloads[index].target.url.Host))
+            {
+                var next = queuedDownloads.FirstOrDefault(dl =>
+                    dl.url.Host == downloads[index].target.url.Host);
+                if (next != null)
+                {
+                    // Start this host's next queued download
+                    queuedDownloads.Remove(next);
+                    DownloadModule(next);
+                }
+            }
+
+            onOneCompleted.Invoke(downloads[index].target.url, downloads[index].path, downloads[index].error);
+
+            if (++completed_downloads >= downloads.Count + queuedDownloads.Count)
             {
                 triggerCompleted();
             }
