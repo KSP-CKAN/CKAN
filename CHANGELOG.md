@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 - [CLI] Restore cmdline update message (#3042 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Don't try to install multiple versions of the same mod (#3051 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Unbreak reinstall right click (#3055 by: HebaruSan; reviewed: DasSkelett)
-- [GUI] Don't save registry when opening settings (#3058 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Don't save registry when opening settings (#3058 by: DasSkelett; reviewed: HebaruSan)
 
 ### Internal
 
