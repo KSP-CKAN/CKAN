@@ -25,11 +25,11 @@
             "type"        : "string"
         },
         "identifier" : {
-            "description" : "Unique identifier for this mod.",
+            "description" : "Unique identifier for this mod",
             "$ref"        : "#/definitions/identifier"
         },
         "kind" : {
-            "description" : "Package type, defaults to package.",
+            "description" : "Package type, defaults to package",
             "enum"        : [ "package", "metapackage", "dlc" ]
         },
         "abstract" : {
@@ -41,11 +41,11 @@
             "type"        : "string"
         },
         "comment" : {
-            "description" : "Free-form comment. Not displayed to users.",
+            "description" : "Free-form comment. Not displayed to users",
             "type"        : "string"
         },
         "author" : {
-            "description" : "Author, or list of authors.",
+            "description" : "Author, or list of authors",
             "oneOf" : [
                 { "type" : "string" },
                 {
@@ -87,7 +87,7 @@
             "$ref"        : "#/definitions/licenses"
         },
         "version" : {
-            "description" : "Version of the mod. Drop the leading v",
+            "description" : "Version of the mod",
             "$ref"        : "#/definitions/version"
         },
         "release_status" : {
@@ -309,6 +309,11 @@
                     }
                 ]
             }
+        },
+        "release_date": {
+            "description" : "Optional timestamp when the described version of the mod was released",
+            "type"        : "string",
+            "format"      : "date-time"
         }
     },
     "required" : [

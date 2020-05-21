@@ -144,9 +144,9 @@ namespace CKAN
         ///
         /// Use IsCachedZip() for a slower but more reliable method.
         /// </summary>
-        public bool IsMaybeCachedZip(Uri url)
+        public bool IsMaybeCachedZip(Uri url, DateTime? remoteTimestamp = null)
         {
-            return GetCachedFilename(url) != null;
+            return GetCachedFilename(url, remoteTimestamp) != null;
         }
 
         /// <summary>>

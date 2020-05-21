@@ -78,6 +78,7 @@ namespace CKAN.NetKAN.Transformers
                     Log.DebugFormat("Using download URL: {0}", download);
                     json.Remove("$kref");
                     json.SafeAdd("download", download);
+                    json.SafeAdd(Metadata.UpdatedPropertyName, build.Timestamp);
 
                     if (options.UseFilenameVersion)
                     {
