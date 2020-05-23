@@ -1,4 +1,5 @@
 ﻿using System;
+﻿using System.Linq;
 using CKAN.Versioning;
 using Newtonsoft.Json.Linq;
 
@@ -116,12 +117,39 @@ namespace CKAN.NetKAN.Model
                 RemoteTimestamp = t;
             }
         }
+        
+        public string[] Licenses
+        {
+            get
+            {
+                var lic = _json["license"];
+                switch (lic.Type)
+                {
+                    case JTokenType.Array:
+                        return lic.Children()
+                            .Select(t => (string)t)
+                            .ToArray();
+                    
+                    case JTokenType.String:
+                        return new string[] { (string)lic };
+                }
+                return new string[] { };
+            }
+        }
+
+        public bool Redistributable
+        {
+            get
+            {
+                return Licenses.Any(lic => new License(lic).Redistributable);
+            }
+        }
 
         public Uri FallbackDownload
         {
             get
             {
-                if (Identifier == null || Version == null)
+                if (Identifier == null || Version == null || !Redistributable)
                 {
                     return null;
                 }
