@@ -31,7 +31,7 @@ namespace CKAN.NetKAN.Validators
 
             if (!mod.IsDLC)
             {
-                var file = _http.DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
+                var file = _http.DownloadModule(metadata);
                 if (!string.IsNullOrEmpty(file))
                 {
                     bool hasVref = (metadata.Vref != null);

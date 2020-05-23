@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using log4net;
+using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Services
 {
@@ -20,7 +21,27 @@ namespace CKAN.NetKAN.Services
             _overwriteCache = overwrite;
         }
 
-        public string DownloadPackage(Uri url, string identifier, DateTime? updated)
+        public string DownloadModule(Metadata metadata)
+        {
+            try
+            {
+                return DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
+            }
+            catch (Exception exc)
+            {
+                var fallback = metadata.FallbackDownload;
+                if (fallback == null)
+                {
+                    throw;
+                }
+                else
+                {
+                    return DownloadPackage(fallback, metadata.Identifier, metadata.RemoteTimestamp);
+                }
+            }
+        }
+
+        private string DownloadPackage(Uri url, string identifier, DateTime? updated)
         {
             if (_overwriteCache && !_requestedURLs.Contains(url))
             {

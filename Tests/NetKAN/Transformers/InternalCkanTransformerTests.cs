@@ -27,7 +27,7 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
-            mHttp.Setup(i => i.DownloadPackage(It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<DateTime?>()))
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(filePath);
 
             mModuleService.Setup(i => i.GetInternalCkan(filePath))
@@ -62,7 +62,7 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
-            mHttp.Setup(i => i.DownloadPackage(It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<DateTime?>()))
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(filePath);
 
             mModuleService.Setup(i => i.GetInternalCkan(filePath))
@@ -100,7 +100,7 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
-            mHttp.Setup(i => i.DownloadPackage(It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<DateTime?>()))
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(filePath);
 
             mModuleService.Setup(i => i.GetInternalCkan(filePath))

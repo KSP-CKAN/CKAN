@@ -20,7 +20,7 @@ namespace CKAN.NetKAN.Validators
             var mod = CkanModule.FromJson(metadata.Json().ToString());
             if (!mod.IsDLC)
             {
-                var file = _http.DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
+                var file = _http.DownloadModule(metadata);
 
                 // Make sure this would actually generate an install.
                 if (!_moduleService.HasInstallableFiles(mod, file))

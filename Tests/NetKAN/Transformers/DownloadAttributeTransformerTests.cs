@@ -28,7 +28,7 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mFileService = new Mock<IFileService>();
 
-            mHttp.Setup(i => i.DownloadPackage(It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<DateTime?>()))
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(downloadFilePath);
 
             mFileService.Setup(i => i.GetFileHashSha1(downloadFilePath))
@@ -75,7 +75,7 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mFileService = new Mock<IFileService>();
 
-            mHttp.Setup(i => i.DownloadPackage(It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<DateTime?>()))
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                 .Returns((string)null);
 
             var sut = new DownloadAttributeTransformer(mHttp.Object, mFileService.Object);

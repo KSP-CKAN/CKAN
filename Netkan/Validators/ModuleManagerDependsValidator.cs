@@ -25,11 +25,7 @@ namespace CKAN.NetKAN.Validators
             CkanModule mod  = CkanModule.FromJson(json.ToString());
             if (!mod.IsDLC)
             {
-                var package = _http.DownloadPackage(
-                    metadata.Download,
-                    metadata.Identifier,
-                    metadata.RemoteTimestamp
-                );
+                var package = _http.DownloadModule(metadata);
                 if (!string.IsNullOrEmpty(package))
                 {
                     ZipFile zip  = new ZipFile(package);

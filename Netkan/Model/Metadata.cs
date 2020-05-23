@@ -101,7 +101,7 @@ namespace CKAN.NetKAN.Model
             {
                 Staged = (bool)stagedToken;
             }
-            
+
             JToken stagingReasonToken;
             if (json.TryGetValue(StagingReasonPropertyName, out stagingReasonToken))
             {
@@ -114,6 +114,31 @@ namespace CKAN.NetKAN.Model
                 && DateTime.TryParse(updatedToken.ToString(), out t))
             {
                 RemoteTimestamp = t;
+            }
+        }
+
+        public Uri FallbackDownload
+        {
+            get
+            {
+                if (Identifier == null || Version == null)
+                {
+                    return null;
+                }
+                string verStr = Version.ToString().Replace(':', '-');
+                var hashes = (JObject)_json["download_hash"];
+                if (hashes == null)
+                {
+                    return null;
+                }
+                var sha1 = (string)hashes["sha1"];
+                if (sha1 == null)
+                {
+                    return null;
+                }
+                return new Uri(
+                    $"https://archive.org/download/{Identifier}-{verStr}/{sha1.Substring(0, 8)}-{Identifier}-{verStr}.zip"
+                );
             }
         }
 
