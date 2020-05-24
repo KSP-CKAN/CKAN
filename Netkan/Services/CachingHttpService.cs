@@ -36,6 +36,7 @@ namespace CKAN.NetKAN.Services
                 }
                 else
                 {
+                    log.InfoFormat("Trying fallback URL: {0}", fallback);
                     return DownloadPackage(fallback, metadata.Identifier, metadata.RemoteTimestamp, metadata.Download);
                 }
             }
