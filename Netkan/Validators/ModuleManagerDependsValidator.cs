@@ -6,6 +6,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
+using CKAN.Extensions;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -34,17 +35,21 @@ namespace CKAN.NetKAN.Validators
                 {
                     ZipFile zip  = new ZipFile(package);
 
-                    bool hasMMsyntax = _moduleService.GetConfigFiles(mod, zip)
-                        .Select(cfg => new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd())
-                        .Any(contents => moduleManagerRegex.IsMatch(contents));
+                    var mmConfigs = _moduleService.GetConfigFiles(mod, zip)
+                        .Where(cfg => moduleManagerRegex.IsMatch(
+                            new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd()))
+                        .Memoize();
 
                     bool dependsOnMM = mod?.depends?.Any(r => r.ContainsAny(identifiers)) ?? false;
 
-                    if (hasMMsyntax && !dependsOnMM)
+                    if (!dependsOnMM && mmConfigs.Any())
                     {
-                        Log.Warn("ModuleManager syntax used without ModuleManager dependency");
+                        Log.WarnFormat(
+                            "ModuleManager syntax used without ModuleManager dependency: {0}",
+                            string.Join(", ", mmConfigs.Select(cfg => cfg.source))
+                        );
                     }
-                    else if (!hasMMsyntax && dependsOnMM)
+                    else if (dependsOnMM && !mmConfigs.Any())
                     {
                         Log.Warn("ModuleManager dependency may not be needed, no ModuleManager syntax found");
                     }
