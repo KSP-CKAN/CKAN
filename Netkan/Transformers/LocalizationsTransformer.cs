@@ -50,11 +50,7 @@ namespace CKAN.NetKAN.Transformers
             else
             {
                 CkanModule mod  = CkanModule.FromJson(json.ToString());
-                ZipFile    zip  = new ZipFile(_http.DownloadPackage(
-                    metadata.Download,
-                    metadata.Identifier,
-                    metadata.RemoteTimestamp
-                ));
+                ZipFile    zip  = new ZipFile(_http.DownloadModule(metadata));
 
                 log.Debug("Extracting locales");
                 // Extract the locale names from the ZIP's cfg files

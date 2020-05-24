@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Services
 {
     internal interface IHttpService
     {
-        string DownloadPackage(Uri url, string identifier, DateTime? updated);
+        string DownloadModule(Metadata metadata);
         string DownloadText(Uri url);
         string DownloadText(Uri url, string authToken, string mimeType);
 

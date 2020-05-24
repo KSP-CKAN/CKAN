@@ -1,4 +1,5 @@
 ﻿using System;
+﻿using System.Linq;
 using CKAN.Versioning;
 using Newtonsoft.Json.Linq;
 
@@ -101,7 +102,7 @@ namespace CKAN.NetKAN.Model
             {
                 Staged = (bool)stagedToken;
             }
-            
+
             JToken stagingReasonToken;
             if (json.TryGetValue(StagingReasonPropertyName, out stagingReasonToken))
             {
@@ -114,6 +115,58 @@ namespace CKAN.NetKAN.Model
                 && DateTime.TryParse(updatedToken.ToString(), out t))
             {
                 RemoteTimestamp = t;
+            }
+        }
+        
+        public string[] Licenses
+        {
+            get
+            {
+                var lic = _json["license"];
+                switch (lic.Type)
+                {
+                    case JTokenType.Array:
+                        return lic.Children()
+                            .Select(t => (string)t)
+                            .ToArray();
+                    
+                    case JTokenType.String:
+                        return new string[] { (string)lic };
+                }
+                return new string[] { };
+            }
+        }
+
+        public bool Redistributable
+        {
+            get
+            {
+                return Licenses.Any(lic => new License(lic).Redistributable);
+            }
+        }
+
+        public Uri FallbackDownload
+        {
+            get
+            {
+                if (Identifier == null || Version == null || !Redistributable)
+                {
+                    return null;
+                }
+                string verStr = Version.ToString().Replace(':', '-');
+                var hashes = (JObject)_json["download_hash"];
+                if (hashes == null)
+                {
+                    return null;
+                }
+                var sha1 = (string)hashes["sha1"];
+                if (sha1 == null)
+                {
+                    return null;
+                }
+                return new Uri(
+                    $"https://archive.org/download/{Identifier}-{verStr}/{sha1.Substring(0, 8)}-{Identifier}-{verStr}.zip"
+                );
             }
         }
 

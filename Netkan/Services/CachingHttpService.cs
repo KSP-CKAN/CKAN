@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using log4net;
+using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Services
 {
@@ -20,8 +21,33 @@ namespace CKAN.NetKAN.Services
             _overwriteCache = overwrite;
         }
 
-        public string DownloadPackage(Uri url, string identifier, DateTime? updated)
+        public string DownloadModule(Metadata metadata)
         {
+            try
+            {
+                return DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
+            }
+            catch (Exception exc)
+            {
+                var fallback = metadata.FallbackDownload;
+                if (fallback == null)
+                {
+                    throw;
+                }
+                else
+                {
+                    log.InfoFormat("Trying fallback URL: {0}", fallback);
+                    return DownloadPackage(fallback, metadata.Identifier, metadata.RemoteTimestamp, metadata.Download);
+                }
+            }
+        }
+
+        private string DownloadPackage(Uri url, string identifier, DateTime? updated, Uri primaryUrl = null)
+        {
+            if (primaryUrl == null)
+            {
+                primaryUrl = url;
+            }
             if (_overwriteCache && !_requestedURLs.Contains(url))
             {
                 // Discard cached file if command line says so,
@@ -31,7 +57,7 @@ namespace CKAN.NetKAN.Services
 
             _requestedURLs.Add(url);
 
-            var cachedFile = _cache.GetCachedFilename(url, updated);
+            var cachedFile = _cache.GetCachedFilename(primaryUrl, updated);
 
             if (!string.IsNullOrWhiteSpace(cachedFile))
             {
@@ -72,7 +98,7 @@ namespace CKAN.NetKAN.Services
                 }
 
                 return _cache.Store(
-                    url,
+                    primaryUrl,
                     downloadedFile,
                     string.Format("netkan-{0}.{1}", identifier, extension),
                     move: true
