@@ -55,7 +55,7 @@ namespace CKAN.NetKAN.Validators
         private string[] identifiers = new string[] { "ModuleManager" };
 
         private static readonly Regex moduleManagerRegex = new Regex(
-            @"^\s*[@+$\-!%]",
+            @"^\s*[@+$\-!%]|^\s*\S+:",
             RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.Singleline
         );
 
