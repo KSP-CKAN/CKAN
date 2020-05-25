@@ -56,6 +56,10 @@ namespace CKAN.NetKAN.Transformers
 
                 // Get the GitHub repository
                 var ghRepo = _api.GetRepo(ghRef);
+                if (ghRepo.Archived)
+                {
+                    Log.Warn("Repo is archived, consider freezing");
+                }
                 var versions = _api.GetAllReleases(ghRef);
                 if (opts.SkipReleases.HasValue)
                 {
@@ -103,6 +107,10 @@ namespace CKAN.NetKAN.Transformers
                 resourcesJson.SafeAdd("homepage", ghRepo.Homepage);
 
             resourcesJson.SafeAdd("repository", ghRepo.HtmlUrl);
+            if (ghRepo.HasIssues)
+            {
+                resourcesJson.SafeAdd("bugtracker", $"{ghRepo.HtmlUrl}/issues");
+            }
 
             if (ghRelease != null)
             {

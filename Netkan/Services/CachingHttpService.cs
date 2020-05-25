@@ -12,8 +12,8 @@ namespace CKAN.NetKAN.Services
         private          bool         _overwriteCache = false;
         private Dictionary<Uri, StringCacheEntry> _stringCache = new Dictionary<Uri, StringCacheEntry>();
 
-        // Re-use string value URLs within 2 minutes
-        private static readonly TimeSpan stringCacheLifetime = new TimeSpan(0, 2, 0);
+        // Re-use string value URLs within 15 minutes
+        private static readonly TimeSpan stringCacheLifetime = new TimeSpan(0, 15, 0);
 
         public CachingHttpService(NetFileCache cache, bool overwrite = false)
         {
