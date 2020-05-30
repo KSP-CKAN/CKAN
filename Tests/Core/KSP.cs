@@ -59,7 +59,7 @@ namespace Tests.Core
         [Test]
         public void Training()
         {
-            //Use Uri to avoid issues with windows vs linux line seperators.
+            //Use Uri to avoid issues with windows vs linux line separators.
             var canonicalPath = new Uri(Path.Combine(ksp_dir, "saves", "training")).LocalPath;
             var training = new Uri(ksp.Tutorial()).LocalPath;
             Assert.AreEqual(canonicalPath, training);

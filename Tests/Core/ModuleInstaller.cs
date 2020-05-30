@@ -5,9 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
-using CKAN;
 using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
+
+using CKAN;
 using Tests.Core.Configuration;
 using Tests.Data;
 
@@ -64,31 +65,16 @@ namespace Tests.Core
             string filename = TestData.DogeCoinFlagZip();
             using (var zipfile = new ZipFile(filename))
             {
-                ModuleInstallDescriptor stanza = ModuleInstallDescriptor.DefaultInstallStanza("DogeCoinFlag", zipfile);
+                ModuleInstallDescriptor stanza = ModuleInstallDescriptor.DefaultInstallStanza("DogeCoinFlag");
 
-                TestDogeCoinStanza(stanza);
+                Assert.AreEqual("GameData", stanza.install_to);
+                Assert.AreEqual("DogeCoinFlag", stanza.find);
 
                 // Same again, but screwing up the case (we see this *all the time*)
-                ModuleInstallDescriptor stanza2 = ModuleInstallDescriptor.DefaultInstallStanza("DogecoinFlag", zipfile);
+                ModuleInstallDescriptor stanza2 = ModuleInstallDescriptor.DefaultInstallStanza("DogecoinFlag");
 
-                TestDogeCoinStanza(stanza2);
-
-                // Now what happens if we can't find what to install?
-
-                Assert.Throws<FileNotFoundKraken>(delegate
-                {
-                    ModuleInstallDescriptor.DefaultInstallStanza("Xyzzy", zipfile);
-                });
-
-                // Make sure the FNFKraken looks like what we expect.
-                try
-                {
-                    ModuleInstallDescriptor.DefaultInstallStanza("Xyzzy", zipfile);
-                }
-                catch (FileNotFoundKraken kraken)
-                {
-                    Assert.AreEqual("Xyzzy", kraken.file);
-                }
+                Assert.AreEqual("GameData", stanza2.install_to);
+                Assert.AreEqual("DogecoinFlag", stanza2.find);
             }
         }
 
@@ -371,42 +357,12 @@ namespace Tests.Core
             using (var zipfile = new ZipFile(corrupt_dogezip))
             {
                 // GenerateDefault Install
-                ModuleInstallDescriptor.DefaultInstallStanza("DogeCoinFlag", zipfile);
+                ModuleInstallDescriptor.DefaultInstallStanza("DogeCoinFlag");
 
                 // FindInstallableFiles
                 CkanModule dogemod = TestData.DogeCoinFlag_101_module();
                 CKAN.ModuleInstaller.FindInstallableFiles(dogemod, corrupt_dogezip, null);
             }
-        }
-
-        [TestCase("GameData/kOS", "GameData/kOS/Plugins/kOS.dll", "GameData", null, "GameData/kOS/Plugins/kOS.dll")]
-        [TestCase("kOS-1.1/GameData/kOS", "kOS-1.1/GameData/kOS/Plugins/kOS.dll", "GameData", null, "GameData/kOS/Plugins/kOS.dll")]
-        [TestCase("ModuleManager.2.5.1.dll", "ModuleManager.2.5.1.dll", "GameData", null, "GameData/ModuleManager.2.5.1.dll")]
-        [TestCase("Ships", "Ships/SPH/FAR Firehound.craft", "SomeDir/Ships", null, "SomeDir/Ships/SPH/FAR Firehound.craft")]
-        [TestCase("GameData/kOS", "GameData/kOS/Plugins/kOS.dll", "GameData", "kOS-Renamed", "GameData/kOS-Renamed/Plugins/kOS.dll")]
-        [TestCase("kOS-1.1/GameData/kOS", "kOS-1.1/GameData/kOS/Plugins/kOS.dll", "GameData", "kOS-Renamed", "GameData/kOS-Renamed/Plugins/kOS.dll")]
-        [TestCase("ModuleManager.2.5.1.dll", "ModuleManager.2.5.1.dll", "GameData", "ModuleManager-Renamed.dll", "GameData/ModuleManager-Renamed.dll")]
-        public void TransformOutputName(string file, string outputName, string installDir, string @as, string expected)
-        {
-            // Act
-            var result = CKAN.ModuleInstaller.TransformOutputName(file, outputName, installDir, @as);
-
-            // Assert
-            Assert.That(result, Is.EqualTo(expected));
-        }
-
-        [TestCase("GameData", "GameData/kOS/Plugins/kOS.dll", "GameData", "GameData-Renamed")]
-        [TestCase("Ships", "Ships/SPH/FAR Firehound.craft", "SomeDir/Ships", "Ships-Renamed")]
-        [TestCase("GameData/kOS", "GameData/kOS/Plugins/kOS.dll", "GameData", "kOS/Renamed")]
-        [TestCase("kOS-1.1/GameData/kOS", "kOS-1.1/GameData/kOS/Plugins/kOS.dll", "GameData", "kOS/Renamed")]
-        [TestCase("ModuleManager.2.5.1.dll", "ModuleManager.2.5.1.dll", "GameData", "Renamed/ModuleManager.dll")]
-        public void TransformOutputNameThrowsOnInvalidParameters(string file, string outputName, string installDir, string @as)
-        {
-            // Act
-            TestDelegate act = () => CKAN.ModuleInstaller.TransformOutputName(file, outputName, installDir, @as);
-
-            // Assert
-            Assert.That(act, Throws.Exception);
         }
 
         private string CopyDogeFromZip()
@@ -704,7 +660,7 @@ namespace Tests.Core
             List<InstallableFile> results;
             using (var ksp = new DisposableKSP())
             {
-                results = CKAN.ModuleInstaller.FindInstallableFiles(mod.install.First(), zip, ksp.KSP);
+                results = mod.install.First().FindInstallableFiles(zip, ksp.KSP);
             }
 
             // Assert
@@ -745,7 +701,7 @@ namespace Tests.Core
             List<InstallableFile> results;
             using (var ksp = new DisposableKSP())
             {
-                results = CKAN.ModuleInstaller.FindInstallableFiles(mod.install.First(), zip, ksp.KSP);
+                results = mod.install.First().FindInstallableFiles(zip, ksp.KSP);
 
                 Assert.AreEqual(
                     CKAN.KSPPathUtils.NormalizePath(
@@ -773,13 +729,5 @@ namespace Tests.Core
             // Assert that DogeCoinFlag has not been removed and DogeTokenFlag has not been installed
             Assert.IsTrue(true);
         }
-
-
-        private static void TestDogeCoinStanza(ModuleInstallDescriptor stanza)
-        {
-            Assert.AreEqual("GameData", stanza.install_to);
-            Assert.AreEqual("DogeCoinFlag-1.01/GameData/DogeCoinFlag", stanza.file);
-        }
-
     }
 }
