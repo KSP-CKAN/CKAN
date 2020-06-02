@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using CKAN.NetKAN.Sources.Avc;
-using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
+using CKAN.Extensions;
+using CKAN.NetKAN.Sources.Avc;
 
 namespace CKAN.NetKAN.Services
 {
@@ -29,7 +32,8 @@ namespace CKAN.NetKAN.Services
                 // Skip everything but embedded .ckan files.
                 var entries = zipfile
                     .Cast<ZipEntry>()
-                    .Where(entry => Regex.IsMatch(entry.Name, ".CKAN$", RegexOptions.IgnoreCase));
+                    .Where(entry => entry.Name.EndsWith(".ckan",
+                        StringComparison.InvariantCultureIgnoreCase));
 
                 foreach (var entry in entries)
                 {
@@ -59,29 +63,21 @@ namespace CKAN.NetKAN.Services
 
             return true;
         }
-        
-        private static readonly Regex cfgRegex = new Regex(
-            @"\.cfg$",
-            RegexOptions.IgnoreCase | RegexOptions.Compiled
-        );
-        
+
         public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip)
         {
             return ModuleInstaller
                 .FindInstallableFiles(module, zip, null)
-                .Where(instF => cfgRegex.IsMatch(instF.source.Name));
+                .Where(instF => instF.source.Name.EndsWith(".cfg",
+                    StringComparison.InvariantCultureIgnoreCase));
         }
 
-        private static readonly Regex dllRegex = new Regex(
-            @"\.dll$",
-            RegexOptions.IgnoreCase | RegexOptions.Compiled
-        );
-        
         public IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip)
         {
             return ModuleInstaller
                 .FindInstallableFiles(module, zip, null)
-                .Where(instF => dllRegex.IsMatch(instF.source.Name));
+                .Where(instF => instF.source.Name.EndsWith(".dll",
+                    StringComparison.InvariantCultureIgnoreCase));
         }
 
         public IEnumerable<string> FileDestinations(CkanModule module, string filePath)
@@ -124,46 +120,38 @@ namespace CKAN.NetKAN.Services
             // Get all our version files.
             var files = ModuleInstaller.FindInstallableFiles(module, zipfile, null)
                 .Select(x => x.source)
-                .Where(source => source.Name.EndsWith(versionExt))
+                .Where(source => source.Name.EndsWith(versionExt,
+                    StringComparison.InvariantCultureIgnoreCase))
                 .ToList();
 
             if (files.Count == 0)
             {
                 // Oh dear, no version file at all? Let's see if we can find *any* to use.
-                var versionFiles = zipfile.Cast<ZipEntry>().Where(file => file.Name.EndsWith(versionExt));
-                files.AddRange(versionFiles);
+                files.AddRange(zipfile.Cast<ZipEntry>()
+                    .Where(file => file.Name.EndsWith(versionExt,
+                        StringComparison.InvariantCultureIgnoreCase)));
 
-                // Okay, there's *really* nothing there.
                 if (files.Count == 0)
                 {
+                    // Okay, there's *really* nothing there.
                     return null;
                 }
             }
 
-            var remoteIndex = 0;
+            ZipEntry avcEntry = null;
 
             if (!string.IsNullOrWhiteSpace(internalFilePath))
             {
-                remoteIndex = -1;
-
-                for (var i = 0; i < files.Count; i++)
+                Regex internalRE = new Regex(internalFilePath, RegexOptions.Compiled);
+                avcEntry = files
+                    .Where(f => f.Name == internalFilePath || internalRE.IsMatch(f.Name))
+                    .FirstOrDefault();
+                if (avcEntry == null)
                 {
-                    Log.DebugFormat("Testing file '{0}' against path '{1}'", files[i].Name, internalFilePath);
-                    // Test for either an exact match or using the filespec as a regexp
-                    if (internalFilePath.Equals(files[i]?.Name) || Regex.IsMatch(files[i]?.Name, internalFilePath))
-                    {
-                        remoteIndex = i;
-                        break;
-                    }
-                }
-
-                if (remoteIndex == -1)
-                {
-                    var remotes = files.Aggregate("", (current, file) => current + (file.Name + ", "));
-
-                    throw new Kraken(string.Format("AVC: Invalid path to remote {0}, doesn't match any of: {1}",
+                    throw new Kraken(
+                        string.Format("AVC: Invalid path to remote {0}, doesn't match any of: {1}",
                         internalFilePath,
-                        remotes
+                        string.Join(", ", files.Select(f => f.Name))
                     ));
                 }
             }
@@ -173,11 +161,15 @@ namespace CKAN.NetKAN.Services
                     string.Format("Too many .version files located: {0}",
                               string.Join(", ", files.Select(x => x.Name))));
             }
+            else
+            {
+                avcEntry = files.First();
+            }
 
-            Log.DebugFormat("Using AVC data from {0}", files[remoteIndex].Name);
+            Log.DebugFormat("Using AVC data from {0}", avcEntry.Name);
 
             // Hooray, found our entry. Extract and return it.
-            using (var zipstream = zipfile.GetInputStream(files[remoteIndex]))
+            using (var zipstream = zipfile.GetInputStream(avcEntry))
             using (var stream = new StreamReader(zipstream))
             {
                 var json = stream.ReadToEnd();
@@ -191,7 +183,7 @@ namespace CKAN.NetKAN.Services
                 {
                     throw new Kraken(string.Format(
                         "Error parsing version file {0}: {1}",
-                        files[remoteIndex].Name,
+                        avcEntry.Name,
                         exc.Message
                     ));
                 }
