@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Don't try to install multiple versions of the same mod (#3051 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Unbreak reinstall right click (#3055 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Don't save registry when opening settings (#3058 by: DasSkelett; reviewed: HebaruSan)
+- [Core] Move WebException stack trace from User error to verbose log (#3062 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

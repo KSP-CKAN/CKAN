@@ -97,7 +97,7 @@ namespace CKAN
         {
             if (error != null)
             {
-                User.RaiseError(error.ToString());
+                log.Info(error.ToString());
             }
             else
             {
