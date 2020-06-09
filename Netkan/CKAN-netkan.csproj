@@ -164,6 +164,7 @@
     <Compile Include="Validators\RelationshipsValidator.cs" />
     <Compile Include="Validators\SpecVersionFormatValidator.cs" />
     <Compile Include="Validators\VersionStrictValidator.cs" />
+    <Compile Include="Validators\TagsValidator.cs" />
     <Compile Include="Validators\VrefValidator.cs" />
     <Compile Include="Validators\ModuleManagerDependsValidator.cs" />
   </ItemGroup>
