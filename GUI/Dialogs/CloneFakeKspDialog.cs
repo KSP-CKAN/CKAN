@@ -11,7 +11,7 @@ namespace CKAN
 {
     /// <summary>
     /// The GUI implementation of clone and fake.
-    /// It's a seperate window, handling the whole process.
+    /// It's a separate window, handling the whole process.
     /// </summary>
     public partial class CloneFakeKspDialog : Form
     {

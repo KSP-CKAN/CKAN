@@ -1,13 +1,17 @@
 using System;
+using System.IO;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Runtime.CompilerServices;
+
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
-using System.IO;
+
+[assembly: InternalsVisibleTo("CKAN.Tests")]
 
 namespace CKAN
 {
@@ -54,6 +58,20 @@ namespace CKAN
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> include_only_regexp;
 
+        [JsonIgnore]
+        private Regex inst_pattern = null;
+
+        private static Regex ckanPattern = new Regex(".ckan$",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private static Regex trailingSlashPattern = new Regex("/$",
+            RegexOptions.Compiled);
+
+        private static string[] ReservedPaths = new string[]
+        {
+            "GameData", "Ships", "Missions"
+        };
+
         [OnDeserialized]
         internal void DeSerialisationFixes(StreamingContext like_i_could_care)
         {
@@ -85,17 +103,9 @@ namespace CKAN
             {
                 throw new BadMetadataKraken(null, "Install stanzas can only contain filter or include_only directives, not both");
             }
-            
+
             // Normalize paths on load (note, doesn't cover assignment like in tests)
             install_to = KSPPathUtils.NormalizePath(install_to);
-            if (find != null)
-            {
-                find = KSPPathUtils.NormalizePath(find);
-            }
-            if (file != null)
-            {
-                file = KSPPathUtils.NormalizePath(file);
-            }
         }
 
         #endregion
@@ -128,7 +138,7 @@ namespace CKAN
         {
             return Equals(other as ModuleInstallDescriptor);
         }
-        
+
         /// <summary>
         /// Compare two install stanzas
         /// </summary>
@@ -176,7 +186,7 @@ namespace CKAN
                 return false;
             return true;
         }
-        
+
         public override int GetHashCode()
         {
             // Tuple.Create only handles up to 8 params, we have 10+
@@ -189,7 +199,7 @@ namespace CKAN
                     install_to,
                     @as
                 ),
-                Tuple.Create(                
+                Tuple.Create(
                     filter,
                     filter_regexp,
                     include_only,
@@ -201,17 +211,47 @@ namespace CKAN
         /// <summary>
         /// Returns a default install stanza for the identifier provided.
         /// </summary>
-        public static ModuleInstallDescriptor DefaultInstallStanza(string ident, ZipFile zipfile)
+        /// <returns>
+        /// { "find": "ident", "install_to": "GameData" }
+        /// </returns>
+        public static ModuleInstallDescriptor DefaultInstallStanza(string ident)
         {
-            // Really this is just making a dummy `find` stanza and returning the processed
-            // result.
-            var stanza = new ModuleInstallDescriptor();
-            stanza.install_to = "GameData";
-            stanza.find = ident;
-            return stanza.ConvertFindToFile(zipfile);
+            return new ModuleInstallDescriptor()
+            {
+                find       = ident,
+                install_to = "GameData",
+            };
         }
 
         #endregion
+
+        private void EnsurePattern()
+        {
+            if (inst_pattern == null)
+            {
+                if (file != null)
+                {
+                    file = KSPPathUtils.NormalizePath(file);
+                    inst_pattern = new Regex(@"^" + Regex.Escape(file) + @"(/|$)",
+                        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                }
+                else if (find != null)
+                {
+                    find = KSPPathUtils.NormalizePath(find);
+                    inst_pattern = new Regex(@"(?:^|/)" + Regex.Escape(find) + @"(/|$)",
+                        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                }
+                else if (find_regexp != null)
+                {
+                    inst_pattern = new Regex(find_regexp,
+                        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                }
+                else
+                {
+                    throw new UnsupportedKraken("Install stanzas requires `file` or `find` or `find_regexp`.");
+                }
+            }
+        }
 
         /// <summary>
         /// Returns true if the path provided should be installed by this stanza.
@@ -219,28 +259,21 @@ namespace CKAN
         /// on a `find` stanza.
         /// Use `ConvertFindToFile` to convert `find` to `file` stanzas.
         /// </summary>
-        public bool IsWanted(string path)
+        private bool IsWanted(string path)
         {
-            if (file == null)
-            {
-                throw new UnsupportedKraken(".IsWanted only works with `file` stanzas.");
-            }
+            EnsurePattern();
 
             // Make sure our path always uses slashes we expect.
             string normalised_path = path.Replace('\\', '/');
 
-            // We want everthing that matches our 'file', either as an exact match,
-            // or as a path leading up to it.
-            string wanted_filter = "^" + Regex.Escape(file) + "(/|$)";
-
             // If it doesn't match our install path, ignore it.
-            if (!Regex.IsMatch(normalised_path, wanted_filter))
+            if (!inst_pattern.IsMatch(normalised_path))
             {
                 return false;
             }
 
             // Skip the file if it's a ckan file, these should never be copied to GameData.
-            if (Regex.IsMatch(normalised_path, ".ckan$", RegexOptions.IgnoreCase))
+            if (ckanPattern.IsMatch(normalised_path))
             {
                 return false;
             }
@@ -280,61 +313,230 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Given a zipfile, returns a `file` ModuleInstallDescriptor that can be used for
-        /// installation.
-        /// Returns `this` if already of a `file` type.
+        /// Given an open zipfile, returns all files that would be installed
+        /// for this stanza.
+        ///
+        /// If a KSP instance is provided, it will be used to generate output paths, otherwise these will be null.
+        ///
+        /// Throws a BadInstallLocationKraken if the install stanza targets an
+        /// unknown install location (eg: not GameData, Ships, etc)
+        ///
+        /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
-        /// <param name="zipfile">Downloaded ZIP file containing the mod</param>
-        public ModuleInstallDescriptor ConvertFindToFile(ZipFile zipfile)
+        /// <exception cref="BadInstallLocationKraken">Thrown when the installation path is not valid according to the spec.</exception>
+        public List<InstallableFile> FindInstallableFiles(ZipFile zipfile, KSP ksp)
         {
-            // If we're already a file type stanza, then we have nothing to do.
-            if (this.file != null)
-                return this;
+            string installDir;
+            bool makeDirs;
+            var files = new List<InstallableFile>();
 
-            // Match *only* things with our find string as a directory.
-            // We can't just look for directories, because some zipfiles
-            // don't include entries for directories, but still include entries
-            // for the files they contain.
-            Regex inst_filt = this.find != null
-                ? new Regex(@"(?:^|/)" + Regex.Escape(this.find) + @"$", RegexOptions.IgnoreCase)
-                : new Regex(this.find_regexp, RegexOptions.IgnoreCase);
+            // Normalize the path before doing everything else
+            string install_to = KSPPathUtils.NormalizePath(this.install_to);
 
-            // Find the shortest directory path that matches our filter,
-            // including all parent directories of all entries.
-            string shortest = null;
-            foreach (ZipEntry entry in zipfile)
+            if (install_to == "GameData" || install_to.StartsWith("GameData/"))
             {
-                bool is_file = !entry.IsDirectory;
-                // Normalize path before searching (path separator as '/', no trailing separator)
-                for (string path = Regex.Replace(entry.Name.Replace('\\', '/'), "/$", "");
-                        !string.IsNullOrEmpty(path);
-                        path = Path.GetDirectoryName(path).Replace('\\', '/'), is_file = false)
+                // The installation path can be either "GameData" or a sub-directory of "GameData"
+                // but it cannot contain updirs
+                if (install_to.Contains("/../") || install_to.EndsWith("/.."))
+                    throw new BadInstallLocationKraken("Invalid installation path: " + install_to);
+
+                string subDir = install_to.Substring("GameData".Length);    // remove "GameData"
+                subDir = subDir.StartsWith("/") ? subDir.Substring(1) : subDir;    // remove a "/" at the beginning, if present
+
+                // Add the extracted subdirectory to the path of KSP's GameData
+                installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + subDir));
+                makeDirs = true;
+            }
+            else if (install_to.StartsWith("Ships"))
+            {
+                // Don't allow directory creation in ships directory
+                makeDirs = false;
+
+                switch (install_to)
                 {
-
-                    // Skip file paths if not allowed
-                    if (!find_matches_files && is_file)
-                        continue;
-
-                    // Is this a shorter matching path?
-                    if ((string.IsNullOrEmpty(shortest) || path.Length < shortest.Length)
-                            && inst_filt.IsMatch(path))
-                        shortest = path;
+                    case "Ships":
+                        installDir = ksp?.Ships();
+                        break;
+                    case "Ships/VAB":
+                        installDir = ksp?.ShipsVab();
+                        break;
+                    case "Ships/SPH":
+                        installDir = ksp?.ShipsSph();
+                        break;
+                    case "Ships/@thumbs":
+                        installDir = ksp?.ShipsThumbs();
+                        break;
+                    case "Ships/@thumbs/VAB":
+                        installDir = ksp?.ShipsThumbsVAB();
+                        break;
+                    case "Ships/@thumbs/SPH":
+                        installDir = ksp?.ShipsThumbsSPH();
+                        break;
+                    default:
+                        throw new BadInstallLocationKraken("Unknown install_to " + install_to);
                 }
             }
-            if (string.IsNullOrEmpty(shortest))
+            else
             {
-                throw new FileNotFoundKraken(
-                    this.find ?? this.find_regexp,
-                    String.Format("Could not find {0} entry in zipfile to install", this.find ?? this.find_regexp)
-                );
+                switch (install_to)
+                {
+                    case "Tutorial":
+                        installDir = ksp?.Tutorial();
+                        makeDirs = true;
+                        break;
+
+                    case "Scenarios":
+                        installDir = ksp?.Scenarios();
+                        makeDirs = true;
+                        break;
+
+                    case "Missions":
+                        installDir = ksp?.Missions();
+                        makeDirs = true;
+                        break;
+
+                    case "GameRoot":
+                        installDir = ksp?.GameDir();
+                        makeDirs = false;
+                        break;
+
+                    default:
+                        throw new BadInstallLocationKraken("Unknown install_to " + install_to);
+                }
             }
 
-            // Fill in our stanza, and remove our old `find` and `find_regexp` info.
-            ModuleInstallDescriptor stanza = (ModuleInstallDescriptor)this.Clone();
-            stanza.file = shortest;
-            stanza.find = null;
-            stanza.find_regexp = null;
-            return stanza;
+            // O(N^2) solution, as we're walking the zipfile for each stanza.
+            // Surely there's a better way, although this is fast enough we may not care.
+
+            foreach (ZipEntry entry in zipfile)
+            {
+                // Skips dirs and things not prescribed by our install stanza.
+                if (!IsWanted(entry.Name))
+                {
+                    continue;
+                }
+
+                // Prepare our file info.
+                InstallableFile file_info = new InstallableFile
+                {
+                    source = entry,
+                    makedir = makeDirs,
+                    destination = null
+                };
+
+                // If we have a place to install it, fill that in...
+                if (installDir != null)
+                {
+                    // Get the full name of the file.
+                    // Update our file info with the install location
+                    file_info.destination = TransformOutputName(
+                        entry.Name, installDir, @as);
+                }
+
+                files.Add(file_info);
+            }
+
+            // If we have no files, then something is wrong! (KSP-CKAN/CKAN#93)
+            if (files.Count == 0)
+            {
+                // We have null as the first argument here, because we don't know which module we're installing
+                throw new BadMetadataKraken(null, String.Format("No files found matching {0} to install!", DescribeMatch()));
+            }
+
+            return files;
+        }
+
+        /// <summary>
+        /// Transforms the name of the output. This will strip the leading directories from the stanza file from
+        /// output name and then combine it with the installDir.
+        /// EX: "kOS-1.1/GameData/kOS", "kOS-1.1/GameData/kOS/Plugins/kOS.dll", "GameData" will be transformed
+        /// to "GameData/kOS/Plugins/kOS.dll"
+        /// </summary>
+        /// <param name="outputName">The name of the file to transform</param>
+        /// <param name="installDir">The installation dir where the file should end up with</param>
+        /// <returns>The output name</returns>
+        internal string TransformOutputName(string outputName, string installDir, string @as)
+        {
+            string leadingPathToRemove = Path
+                .GetDirectoryName(ShortestMatchingPrefix(outputName))
+                .Replace('\\', '/');
+
+            if (!string.IsNullOrEmpty(leadingPathToRemove))
+            {
+                Regex leadingRE = new Regex(
+                    "^" + Regex.Escape(leadingPathToRemove) + "/",
+                    RegexOptions.Compiled);
+                if (!leadingRE.IsMatch(outputName))
+                {
+                    throw new BadMetadataKraken(null, String.Format(
+                        "Output file name ({0}) not matching leading path of stanza ({1})",
+                        outputName, leadingPathToRemove));
+                }
+                // Strip off leading path name
+                outputName = leadingRE.Replace(outputName, "");
+            }
+
+            // Now outputname looks like PATH/what/ever/file.ext, where
+            // PATH is the part that matched `file` or `find` or `find_regexp`
+
+            if (!string.IsNullOrWhiteSpace(@as))
+            {
+                if (@as.Contains("/") || @as.Contains("\\"))
+                {
+                    throw new BadMetadataKraken(null, "`as` may not include path separators.");
+                }
+                // Replace first path component with @as
+                outputName = ReplaceFirstPiece(outputName, "/", @as);
+            }
+            else
+            {
+                var reservedPrefix = ReservedPaths.FirstOrDefault(prefix =>
+                    outputName.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase));
+                if (reservedPrefix != null)
+                {
+                    // If we try to install a folder with the same name as
+                    // one of the reserved directories, strip it off.
+                    // Delete reservedPrefix and one forward slash
+                    outputName = outputName.Substring(reservedPrefix.Length + 1);
+                }
+            }
+
+            // Return our snipped, normalised, and ready to go output filename!
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(installDir, outputName)
+            );
+        }
+
+        private string ShortestMatchingPrefix(string fullPath)
+        {
+            EnsurePattern();
+
+            string shortest = fullPath;
+            for (string path = trailingSlashPattern.Replace(fullPath.Replace('\\', '/'), "");
+                    !string.IsNullOrEmpty(path);
+                    path = Path.GetDirectoryName(path).Replace('\\', '/'))
+            {
+                if (inst_pattern.IsMatch(path))
+                {
+                    shortest = path;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return shortest;
+        }
+
+        private static string ReplaceFirstPiece(string text, string delimiter, string replacement)
+        {
+            int pos = text.IndexOf(delimiter);
+            if (pos < 0)
+            {
+                // No delimiter, replace whole string
+                return replacement;
+            }
+            return replacement + text.Substring(pos);
         }
 
         public string DescribeMatch()
