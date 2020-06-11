@@ -259,16 +259,22 @@ namespace CKAN
         /// on a `find` stanza.
         /// Use `ConvertFindToFile` to convert `find` to `file` stanzas.
         /// </summary>
-        private bool IsWanted(string path)
+        private bool IsWanted(string path, int? matchWhere)
         {
             EnsurePattern();
 
             // Make sure our path always uses slashes we expect.
             string normalised_path = path.Replace('\\', '/');
 
-            // If it doesn't match our install path, ignore it.
-            if (!inst_pattern.IsMatch(normalised_path))
+            var match = inst_pattern.Match(normalised_path);
+            if (!match.Success)
             {
+                // Doesn't match our install pattern, ignore it
+                return false;
+            }
+            else if (matchWhere.HasValue && match.Index != matchWhere.Value)
+            {
+                // Matches too late in the string, not our folder
                 return false;
             }
 
@@ -405,13 +411,21 @@ namespace CKAN
                 }
             }
 
+            EnsurePattern();
+
+            // `find` is supposed to match the "topmost" folder. Find it.
+            var shortestMatch = find == null ? (int?)null
+                : zipfile.Cast<ZipEntry>()
+                    .Select(entry => inst_pattern.Match(entry.Name.Replace('\\', '/')))
+                    .Where(match => match.Success)
+                    .Min(match => match.Index);
+
             // O(N^2) solution, as we're walking the zipfile for each stanza.
             // Surely there's a better way, although this is fast enough we may not care.
-
             foreach (ZipEntry entry in zipfile)
             {
                 // Skips dirs and things not prescribed by our install stanza.
-                if (!IsWanted(entry.Name))
+                if (!IsWanted(entry.Name, shortestMatch))
                 {
                     continue;
                 }
