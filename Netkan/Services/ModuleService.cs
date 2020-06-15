@@ -84,6 +84,7 @@ namespace CKAN.NetKAN.Services
         {
             return ModuleInstaller
                 .FindInstallableFiles(module, filePath, new KSP("/", "dummy", null, false))
+                .Where(f => !f.source.IsDirectory)
                 .Select(f => f.destination);
         }
 
