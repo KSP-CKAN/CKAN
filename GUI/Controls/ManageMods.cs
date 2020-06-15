@@ -380,31 +380,25 @@ namespace CKAN
 
         public void MarkAllUpdates()
         {
-            foreach (DataGridViewRow row in ModGrid.Rows)
+            foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
             {
-                var mod = (GUIMod)row.Tag;
-                if (mod.HasUpdate)
+                var mod = row.Tag as GUIMod;
+                if (mod?.HasUpdate ?? false)
                 {
-                    MarkModForUpdate(mod.Identifier, true);
+                    mod.SetUpgradeChecked(row, UpdateCol, true);
                 }
             }
 
             // only sort by Update column if checkbox in settings checked
             if (Main.Instance.configuration.AutoSortByUpdate)
             {
-                // set new sort column
-                var new_sort_column = ModGrid.Columns[UpdateCol.Index];
-                var current_sort_column = ModGrid.Columns[Main.Instance.configuration.SortByColumnIndex];
-
-                // Reset the glyph.
-                current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
-                Main.Instance.configuration.SortByColumnIndex = new_sort_column.Index;
-                UpdateFilters();
-
+                SetSortColumn(UpdateCol, false);
                 // Select the top row and scroll the list to it.
-                ModGrid.CurrentCell = ModGrid.Rows[0].Cells[SelectableColumnIndex()];
+                if (ModGrid.Rows.Count > 0)
+                {
+                    ModGrid.CurrentCell = ModGrid.Rows[0].Cells[SelectableColumnIndex()];
+                }
             }
-
             ModGrid.Refresh();
         }
 
@@ -465,6 +459,20 @@ namespace CKAN
             }
         }
 
+        private void SetSortColumn(DataGridViewColumn col, bool? descending = null)
+        {
+            var prevSortCol = ModGrid.Columns[Main.Instance.configuration.SortByColumnIndex];
+
+            // Reverse the sort order if the current sorting column is clicked again.
+            Main.Instance.configuration.SortDescending = descending
+                ?? col == prevSortCol && !Main.Instance.configuration.SortDescending;
+
+            // Reset the glyph.
+            prevSortCol.HeaderCell.SortGlyphDirection = SortOrder.None;
+            Main.Instance.configuration.SortByColumnIndex = col.Index;
+            UpdateFilters();
+        }
+
         /// <summary>
         /// Called when there's a click on the ModGrid header row.
         /// Handles sorting and the header right click context menu.
@@ -474,16 +482,7 @@ namespace CKAN
             // Left click -> sort by new column / change sorting direction.
             if (e.Button == MouseButtons.Left)
             {
-                var new_sort_column = ModGrid.Columns [e.ColumnIndex];
-                var current_sort_column = ModGrid.Columns [Main.Instance.configuration.SortByColumnIndex];
-
-                // Reverse the sort order if the current sorting column is clicked again.
-                Main.Instance.configuration.SortDescending = new_sort_column == current_sort_column && !Main.Instance.configuration.SortDescending;
-
-                // Reset the glyph.
-                current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
-                Main.Instance.configuration.SortByColumnIndex = new_sort_column.Index;
-                UpdateFilters();
+                SetSortColumn(ModGrid.Columns[e.ColumnIndex]);
             }
             // Right click -> Bring up context menu to change visibility of columns.
             else if (e.Button == MouseButtons.Right)
