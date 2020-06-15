@@ -401,10 +401,12 @@ namespace CKAN
                 DirectoryInfo legDir = new DirectoryInfo(legacyDir);
                 files = files.Union(legDir.EnumerateFiles());
             }
-            return files
-                // Require 8 digit hex prefix followed by dash; any else was not put there by CKAN
-                .Where(fi => cacheFileRegex.IsMatch(fi.Name))
-                .ToList();
+            return files.Where(fi =>
+                    // Require 8 digit hex prefix followed by dash; any else was not put there by CKAN
+                    cacheFileRegex.IsMatch(fi.Name)
+                    // Treat the hash files as companions of the main files, not their own entries
+                    && !fi.Name.EndsWith(".sha1") && !fi.Name.EndsWith(".sha256")
+                ).ToList();
         }
 
         /// <summary>
@@ -662,7 +664,10 @@ namespace CKAN
                 {
                     hash = BitConverter.ToString(sha1.ComputeHash(bs)).Replace("-", "");
                     sha1Cache.Add(filePath, hash);
-                    File.WriteAllText(hashFile, hash);
+                    if (Path.GetDirectoryName(hashFile) == cachePath)
+                    {
+                        File.WriteAllText(hashFile, hash);
+                    }
                     return hash;
                 }
             }
@@ -695,7 +700,10 @@ namespace CKAN
                 {
                     hash = BitConverter.ToString(sha256.ComputeHash(bs)).Replace("-", "");
                     sha256Cache.Add(filePath, hash);
-                    File.WriteAllText(hashFile, hash);
+                    if (Path.GetDirectoryName(hashFile) == cachePath)
+                    {
+                        File.WriteAllText(hashFile, hash);
+                    }
                     return hash;
                 }
             }
