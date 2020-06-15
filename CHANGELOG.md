@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Netkan warning for archived repos, set bugtracker for GitHub (#3061 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Check mixed case version files (#3065 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Netkan warning for tags (#3072 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Cache hashes on disk (#3080 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.27.2 (Chandrasekhar)
 
