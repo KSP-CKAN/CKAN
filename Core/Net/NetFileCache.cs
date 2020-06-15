@@ -6,12 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Security.Permissions;
-using ICSharpCode.SharpZipLib.Zip;
+using System.Security.Cryptography;
+
 using log4net;
+using ChinhDo.Transactions.FileManager;
+using ICSharpCode.SharpZipLib.Zip;
+
 using CKAN.Extensions;
 using CKAN.Versioning;
-using ChinhDo.Transactions.FileManager;
-using System.Security.Cryptography;
 
 namespace CKAN
 {
@@ -217,6 +219,8 @@ namespace CKAN
                     // Local file too old, delete it
                     log.Debug("Found stale file, deleting it");
                     File.Delete(file);
+                    File.Delete($"{file}.sha1");
+                    File.Delete($"{file}.sha256");
                     sha1Cache.Remove(file);
                     sha256Cache.Remove(file);
                 }
@@ -334,6 +338,8 @@ namespace CKAN
                 {
                     curBytes -= fi.Length;
                     fi.Delete();
+                    File.Delete($"{fi.Name}.sha1");
+                    File.Delete($"{fi.Name}.sha256");
                     if (curBytes <= bytes)
                     {
                         // Limit met, all done!
@@ -526,6 +532,8 @@ namespace CKAN
             if (file != null)
             {
                 tx_file.Delete(file);
+                tx_file.Delete($"{file}.sha1");
+                tx_file.Delete($"{file}.sha256");
 
                 // We've changed our cache, so signal that immediately.
                 cachedFiles?.Remove(CreateURLHash(url));
@@ -637,9 +645,14 @@ namespace CKAN
         public string GetFileHashSha1(string filePath)
         {
             string hash = null;
+            string hashFile = $"{filePath}.sha1";
             if (sha1Cache.TryGetValue(filePath, out hash))
             {
                 return hash;
+            }
+            else if (File.Exists(hashFile))
+            {
+                return File.ReadAllText(hashFile);
             }
             else
             {
@@ -649,6 +662,7 @@ namespace CKAN
                 {
                     hash = BitConverter.ToString(sha1.ComputeHash(bs)).Replace("-", "");
                     sha1Cache.Add(filePath, hash);
+                    File.WriteAllText(hashFile, hash);
                     return hash;
                 }
             }
@@ -664,9 +678,14 @@ namespace CKAN
         public string GetFileHashSha256(string filePath)
         {
             string hash = null;
+            string hashFile = $"{filePath}.sha256";
             if (sha256Cache.TryGetValue(filePath, out hash))
             {
                 return hash;
+            }
+            else if (File.Exists(hashFile))
+            {
+                return File.ReadAllText(hashFile);
             }
             else
             {
@@ -676,6 +695,7 @@ namespace CKAN
                 {
                     hash = BitConverter.ToString(sha256.ComputeHash(bs)).Replace("-", "");
                     sha256Cache.Add(filePath, hash);
+                    File.WriteAllText(hashFile, hash);
                     return hash;
                 }
             }
