@@ -700,7 +700,7 @@ namespace CKAN
                 {
                     hash = BitConverter.ToString(sha256.ComputeHash(bs)).Replace("-", "");
                     sha256Cache.Add(filePath, hash);
-                    if (Path.GetDirectoryName(hashFile) == cachePath)
+                    if (Path.GetDirectoryName(hashFile) == Path.GetFullPath(cachePath))
                     {
                         File.WriteAllText(hashFile, hash);
                     }
