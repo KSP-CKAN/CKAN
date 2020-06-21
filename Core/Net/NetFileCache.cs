@@ -654,7 +654,9 @@ namespace CKAN
             }
             else if (File.Exists(hashFile))
             {
-                return File.ReadAllText(hashFile);
+                hash = File.ReadAllText(hashFile);
+                sha1Cache.Add(filePath, hash);
+                return hash;
             }
             else
             {
@@ -690,7 +692,9 @@ namespace CKAN
             }
             else if (File.Exists(hashFile))
             {
-                return File.ReadAllText(hashFile);
+                hash = File.ReadAllText(hashFile);
+                sha256Cache.Add(filePath, hash);
+                return hash;
             }
             else
             {
