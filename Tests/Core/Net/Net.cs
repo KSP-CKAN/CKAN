@@ -67,7 +67,7 @@ namespace Tests.Core.Net
             // this test on that platform.
             if (Platform.IsWindows) return;
 
-            var curl = Curl.CreateEasy("https://example.com", (FileStream) null);
+            var curl = Curl.CreateEasy("https://example.com", null, (FileStream) null);
             Assert.IsTrue(curl.SslVerifyPeer, "We should enforce SSL");
         }
 
