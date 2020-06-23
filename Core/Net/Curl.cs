@@ -41,7 +41,15 @@ namespace CKAN
             _initComplete = false;
         }
 
-
+        private static CurlSlist GetHeaders(string token)
+        {
+            var l = new CurlSlist();
+            if (!string.IsNullOrEmpty(token))
+            {
+                l.Append($"Authorization: token {token}");
+            }
+            return l;
+        }
 
         /// <summary>
         /// Creates a CurlEasy object that calls the given writeback function
@@ -51,7 +59,7 @@ namespace CKAN
         /// <returns>The CurlEasy object</returns>
         ///
         /// Adapted from MultiDemo.cs in the curlsharp repo
-        public static CurlEasy CreateEasy(string url, CurlWriteCallback wf, CurlHeaderCallback hwf = null)
+        public static CurlEasy CreateEasy(string url, string authToken, CurlWriteCallback wf, CurlHeaderCallback hwf = null)
         {
             if (!_initComplete)
             {
@@ -59,25 +67,29 @@ namespace CKAN
                 Init();
             }
 
-            var easy = new CurlEasy();
-            easy.Url = url;
-            easy.WriteData = null;
-            easy.WriteFunction = wf;
+            var easy = new CurlEasy()
+            {
+                Url = url,
+                WriteData = null,
+                WriteFunction = wf,
+                Encoding = "deflate, gzip",
+                // Follow redirects
+                FollowLocation = true,
+                UserAgent = Net.UserAgentString,
+                SslVerifyPeer = true,
+                HeaderData = null,
+                HttpHeader = GetHeaders(authToken),
+            };
             if (hwf != null)
             {
                 easy.HeaderFunction = hwf;
             }
-            easy.Encoding = "deflate, gzip";
-            easy.FollowLocation = true; // Follow redirects
-            easy.UserAgent = Net.UserAgentString;
-            easy.SslVerifyPeer = true;
 
             var caBundle = ResolveCurlCaBundle();
             if (caBundle != null)
             {
                 easy.CaInfo = caBundle;
             }
-
             return easy;
         }
 
@@ -85,22 +97,22 @@ namespace CKAN
         /// Creates a CurlEasy object that writes to the given stream.
         /// Can call a writeback function for the header.
         /// </summary>
-        public static CurlEasy CreateEasy(string url, FileStream stream, CurlHeaderCallback hwf = null)
+        public static CurlEasy CreateEasy(string url, string authToken, FileStream stream, CurlHeaderCallback hwf = null)
         {
             // Let's make a happy closure around this stream!
-            return CreateEasy(url, delegate(byte[] buf, int size, int nmemb, object extraData)
+            return CreateEasy(url, authToken, delegate(byte[] buf, int size, int nmemb, object extraData)
             {
                 stream.Write(buf, 0, size * nmemb);
                 return size * nmemb;
             }, hwf);
         }
 
-        public static CurlEasy CreateEasy(Uri url, FileStream stream)
+        public static CurlEasy CreateEasy(Uri url, string authToken, FileStream stream)
         {
             // Curl interacts poorly with KS for some (but not all) modules unless
             // the original string is used, hence .OriginalString rather than .ToString
             // here.
-            return CreateEasy(url.OriginalString, stream);
+            return CreateEasy(url.OriginalString, authToken, stream);
         }
 
         /// <summary>
@@ -138,4 +150,3 @@ namespace CKAN
         }
     }
 }
-

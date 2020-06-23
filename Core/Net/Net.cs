@@ -124,7 +124,7 @@ namespace CKAN
                         {
                             string header  = string.Empty;
 
-                            var client = Curl.CreateEasy(url, stream, delegate(byte[] buf, int size, int nmemb, object extraData)
+                            var client = Curl.CreateEasy(url, null, stream, delegate(byte[] buf, int size, int nmemb, object extraData)
                             {
                                 header += Encoding.UTF8.GetString(buf);
                                 return size * nmemb;
@@ -288,7 +288,7 @@ namespace CKAN
                 string content = string.Empty;
                 string header  = string.Empty;
 
-                var client = Curl.CreateEasy(url.OriginalString,
+                var client = Curl.CreateEasy(url.OriginalString, authToken,
                     delegate (byte[] buf, int size, int nmemb, object extraData)
                     {
                         content += Encoding.UTF8.GetString(buf);
