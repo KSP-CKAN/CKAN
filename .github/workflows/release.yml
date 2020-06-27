@@ -1,0 +1,99 @@
+name: Create Release Assets
+
+on:
+  release:
+    types: [created]
+
+env:
+  RELEASE_MONO_VERSION: '5.20'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Installing Mono
+        run: |
+          sudo apt remove mono-complete --auto-remove --purge
+          sudo apt install --upgrade gnupg ca-certificates
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+          echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic/snapshots/$RELEASE_MONO_VERSION main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+          sudo apt update
+          sudo apt install mono-complete
+      - name: Installing build dependencies
+        run: sudo apt install --upgrade git make sed libplist-utils xorriso gzip fakeroot lintian rpm
+      - name: Installing runtime dependencies
+        run: sudo apt install --upgrade libcurl4-openssl-dev xvfb
+
+      - name: Build dmg
+        run: ./build osx --configuration=Release
+      - name: Build deb
+        run: ./build deb --configuration=Release
+      - name: Build rpm
+        run: ./build rpm --configuration=Release
+
+      - name: Get release data
+        id: release_data
+        run: |
+          URL=$(wget -qO- https://api.github.com/repos/$GITHUB_REPOSITORY/releases | jq '.[0].upload_url' | tr -d \")
+          echo "::set-output name=upload_url::$URL"
+          VERSION=$(wget -qO- https://api.github.com/repos/$GITHUB_REPOSITORY/releases | jq '.[0].tag_name' | tr -d \"v)
+          echo "::set-output name=version::$VERSION"
+      - name: Upload ckan.exe
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release_data.outputs.upload_url }}
+          asset_path: _build/repack/Release/ckan.exe
+          asset_name: ckan.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
+      - name: Upload CKAN.dmg
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release_data.outputs.upload_url }}
+          asset_path: _build/osx/CKAN.dmg
+          asset_name: CKAN.dmg
+          asset_content_type: application/x-apple-diskimage
+      - name: Upload ckan_*.deb
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release_data.outputs.upload_url }}
+          asset_path: _build/deb/ckan_${{ steps.release_data.outputs.version }}_all.deb
+          asset_name: ckan_${{ steps.release_data.outputs.version }}_all.deb
+          asset_content_type: application/vnd.debian.binary-package
+      - name: Upload ckan-*.rpm
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release_data.outputs.upload_url }}
+          asset_path: _build/rpm/RPMS/noarch/ckan-${{ steps.release_data.outputs.version }}-1.noarch.rpm
+          asset_name: ckan-${{ steps.release_data.outputs.version }}-1.noarch.rpm
+          asset_content_type: application/x-rpm
+      - name: Upload AutoUpdater.exe
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release_data.outputs.upload_url }}
+          asset_path: _build/out/AutoUpdater/Release/bin/AutoUpdater.exe
+          asset_name: AutoUpdater.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
+
+      - name: Send Discord Notification
+        env:
+          JOB_STATUS: ${{ job.status }}
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
+          HOOK_OS_NAME: ${{ runner.os }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+        run: |
+          git clone -–depth 1 https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
+          bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
+

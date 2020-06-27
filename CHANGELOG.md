@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Netkan warning for tags (#3072 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Cache hashes on disk (#3080 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Don't fallback to Curl on 404, allow smaller GUI (#3084 by: HebaruSan; reviewed: DasSkelett)
+- [Build] Move Travis CI to GitHub Workflows (#3085 by: DasSkelett; reviewed: techman83)
 
 ## v1.27.2 (Chandrasekhar)
 

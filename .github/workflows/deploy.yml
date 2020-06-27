@@ -1,0 +1,73 @@
+name: Deploy CKAN + NetKAN
+
+on:
+  push:
+    branches: [master]
+
+env:
+  RELEASE_MONO_VERSION: '5.20'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Installing Mono
+        run: |
+          sudo apt remove mono-complete --auto-remove --purge
+          sudo apt install --upgrade gnupg ca-certificates
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+          echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic/snapshots/$RELEASE_MONO_VERSION main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+          sudo apt update
+          sudo apt install mono-complete
+      - name: Installing runtime dependencies
+        run: sudo apt install --upgrade libcurl4-openssl-dev xvfb
+      - name: Restore cache for _build/lib/nuget
+        uses: actions/cache@v1
+        with:
+          path: _build/lib/nuget
+          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
+      - name: Restore cache for ~/.nuget/packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.nuget/packages
+          key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
+
+      - name: Build ckan.exe and netkan.exe
+        run: ./build --configuration=Release
+      - name: Run tests
+        run: xvfb-run ./build test+only --configuration=Release --where="Category!=FlakyNetwork"
+
+      - name: Generate Docker image and publish to Hub
+        env:
+          DOCKERHUB_USERNAME: kspckanbuilder
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          AWS_ACCESS_KEY_ID: AKIAZA4K6RW77XSCAMI2
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-west-2
+        run: |
+          echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          ./build docker-inflator
+      - name: Push to S3
+        # Send ckan.exe and netkan.exe to http://ckan-travis.s3-website-us-east-1.amazonaws.com/
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ckan-travis
+          AWS_ACCESS_KEY_ID: AKIAI5JWAEFPFK6GH3XA
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          SOURCE_DIR: _build/repack/Release
+
+      - name: Send Discord Notification
+        env:
+          JOB_STATUS: ${{ job.status }}
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
+          HOOK_OS_NAME: ${{ runner.os }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+        run: |
+          git clone -–depth 1 https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
+          bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
