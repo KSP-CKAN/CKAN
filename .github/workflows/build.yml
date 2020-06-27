@@ -22,14 +22,14 @@ jobs:
 
     - name: Install Mono
       run: |
-        sudo apt remove mono-complete --auto-remove --purge
-        sudo apt install --upgrade gnupg ca-certificates
+        sudo apt-get update
+        sudo apt-get remove mono-complete --auto-remove --purge -y
+        sudo apt-get install -y gnupg ca-certificates
         sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
         echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic/snapshots/${{ matrix.mono }} main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-        sudo apt update
-        sudo apt install mono-complete
+        sudo apt-get install -y mono-complete
     - name: Install runtime dependencies
-      run: sudo apt install --upgrade libcurl4-openssl-dev xvfb
+      run: sudo apt-get install -y libcurl4-openssl-dev xvfb
     - name: Restore cache for _build/lib/nuget
       uses: actions/cache@v1
       with:
@@ -69,7 +69,7 @@ jobs:
 
     steps:
       - name: Install runtime dependencies
-        run: sudo apt install --upgrade libcurl4-openssl-dev
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - uses: actions/checkout@v2
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
