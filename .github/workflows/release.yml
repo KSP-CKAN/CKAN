@@ -94,6 +94,5 @@ jobs:
           HOOK_OS_NAME: ${{ runner.os }}
           WORKFLOW_NAME: ${{ github.workflow }}
         run: |
-          git clone -–depth 1 https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
+          git clone --depth 1 https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
           bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
-
