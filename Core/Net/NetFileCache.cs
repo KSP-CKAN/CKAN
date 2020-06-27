@@ -500,6 +500,9 @@ namespace CKAN
             string fullName = String.Format("{0}-{1}", hash, Path.GetFileName(description));
             string targetPath = Path.Combine(cachePath, fullName);
 
+            // Purge hashes associated with the new file
+            PurgeHashes(tx_file, targetPath);
+
             log.InfoFormat("Storing {0} in {1}", path, targetPath);
 
             if (move)
@@ -534,18 +537,22 @@ namespace CKAN
             if (file != null)
             {
                 tx_file.Delete(file);
-                tx_file.Delete($"{file}.sha1");
-                tx_file.Delete($"{file}.sha256");
-
                 // We've changed our cache, so signal that immediately.
                 cachedFiles?.Remove(CreateURLHash(url));
-                sha1Cache.Remove(file);
-                sha256Cache.Remove(file);
-
+                PurgeHashes(tx_file, file);
                 return true;
             }
 
             return false;
+        }
+
+        private void PurgeHashes(TxFileManager tx_file, string file)
+        {
+            tx_file.Delete($"{file}.sha1");
+            tx_file.Delete($"{file}.sha256");
+
+            sha1Cache.Remove(file);
+            sha256Cache.Remove(file);
         }
 
         /// <summary>
