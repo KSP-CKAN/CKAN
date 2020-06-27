@@ -22,11 +22,11 @@ jobs:
 
     - name: Install Mono
       run: |
-        sudo apt-get update
         sudo apt-get remove mono-complete --auto-remove --purge -y
-        sudo apt-get install -y gnupg ca-certificates
         sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
         echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic/snapshots/${{ matrix.mono }} main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+        sudo apt-get update
+        sudo apt-get install -y gnupg ca-certificates
         sudo apt-get install -y mono-complete
     - name: Install runtime dependencies
       run: sudo apt-get install -y libcurl4-openssl-dev xvfb
