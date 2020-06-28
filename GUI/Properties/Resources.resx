@@ -158,7 +158,7 @@
   <data name="CompatibleKspVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (previous game version: {1})</value></data>
   <data name="CompatibleKspVersionsDialogInvalidFormat" xml:space="preserve"><value>Version has invalid format</value></data>
   <data name="CompatibleKspVersionsDialogErrorTitle" xml:space="preserve"><value>Error</value></data>
-  <data name="ConfigurationParseError" xml:space="preserve"><value>Error trying to parse "{0}"{1}. Try to move it out of the folder and restart CKAN.</value></data>
+  <data name="ConfigurationParseError" xml:space="preserve"><value>Error trying to parse "{0}"{1}. Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="GUIModNSlashA" xml:space="preserve"><value>N/A</value></data>
   <data name="GUIModUnknown" xml:space="preserve"><value>Unknown</value></data>
   <data name="GUIModMethodNotCKAN" xml:space="preserve"><value>Method can not be called unless IsCKAN</value></data>
