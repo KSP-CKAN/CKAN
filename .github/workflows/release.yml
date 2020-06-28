@@ -4,15 +4,12 @@ on:
   release:
     types: [created]
 
-env:
-  RELEASE_MONO_VERSION: '5.20'
-
 jobs:
   release:
     runs-on: ubuntu-latest
 
     container:
-      image: mono:${{ env.RELEASE_MONO_VERSION }}
+      image: mono:5.20
 
     steps:
       - uses: actions/checkout@v2

@@ -4,15 +4,12 @@ on:
   push:
     branches: [master]
 
-env:
-  RELEASE_MONO_VERSION: '5.20'
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     container:
-      image: mono:${{ env.RELEASE_MONO_VERSION }}
+      image: mono:5.20
 
     steps:
       - uses: actions/checkout@v2
