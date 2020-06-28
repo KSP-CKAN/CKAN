@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Move WebException stack trace from User error to verbose log (#3062 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Multi-find fixes (#3074 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Fix crash on marking all updates (#3079 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Use authToken for Curl (#3086 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
