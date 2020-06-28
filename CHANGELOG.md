@@ -35,6 +35,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Cache hashes on disk (#3080 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Don't fallback to Curl on 404, allow smaller GUI (#3084 by: HebaruSan; reviewed: DasSkelett)
 - [Build] Move Travis CI to GitHub Workflows (#3085 by: DasSkelett; reviewed: techman83)
+- [Build] Don't run workflow steps that require secrets on forks (#3089 by: DasSkelett; reviewed: HebaruSan)
 
 ## v1.27.2 (Chandrasekhar)
 

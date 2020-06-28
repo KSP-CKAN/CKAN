@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using CKAN;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Spacedock;
@@ -72,7 +73,7 @@ namespace Tests.NetKAN.Sources.Spacedock
             TestDelegate act = () => sut.GetMod(-1);
 
             // Assert
-            Assert.That(act, Throws.Exception.InstanceOf<Kraken>());
+            Assert.That(act, Throws.Exception.InstanceOf<WebException>());
         }
     }
 }
