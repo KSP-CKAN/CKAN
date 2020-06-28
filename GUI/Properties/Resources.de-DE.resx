@@ -129,7 +129,9 @@
   <data name="CompatibleKspVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (vorherige Version: {1})</value></data>
   <data name="CompatibleKspVersionsDialogInvalidFormat" xml:space="preserve"><value>Ungültiges Versionsformat</value></data>
   <data name="CompatibleKspVersionsDialogErrorTitle" xml:space="preserve"><value>Fehler</value></data>
-  <data name="ConfigurationParseError" xml:space="preserve"><value>Fehler beim Versuch, "{0}"{1} zu parsen. Versuche es aus dem Ordner zu verschieben und CKAN neu zu starten.</value></data>
+  <data name="ConfigurationParseError" xml:space="preserve"><value>Fehler beim Parsen von "{0}"{1}
+
+Versuche {2} aus {3} zu verschieben und CKAN neu zu starten.</value></data>
   <data name="GUIModUnknown" xml:space="preserve"><value>Unbekannt</value></data>
   <data name="GUIModKSPCompatibilityLong" xml:space="preserve"><value>{0} (bei Mod-Version {1})</value></data>
   <data name="MainAutoUpdateFailed" xml:space="preserve">
