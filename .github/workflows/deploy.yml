@@ -14,8 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Installing build dependencies
+        run: apt-get update && apt-get install -y git
       - name: Installing runtime dependencies
-        run: apt-get update && apt-get install -y libcurl4-openssl-dev xvfb docker
+        run: apt-get install -y libcurl4-openssl-dev xvfb
+      - name: Install Docker
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sh get-docker.sh
       - name: Restore cache for _build/lib/nuget
         uses: actions/cache@v1
         with:

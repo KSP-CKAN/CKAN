@@ -23,8 +23,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Installing build dependencies
+      run: apt-get update && apt-get install -y git
     - name: Install runtime dependencies
-      run: apt-get update && apt-get install -y libcurl4-openssl-dev xvfb
+      run: apt-get install -y libcurl4-openssl-dev xvfb
     - name: Restore cache for _build/lib/nuget
       uses: actions/cache@v1
       with:
