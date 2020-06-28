@@ -17,19 +17,14 @@ jobs:
         mono: ['5.20', '6.4', '6.6', '6.8']
         configuration: [Debug, Release]
 
+    container:
+      image: mono:${{ matrix.mono }}
+
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install Mono
-      run: |
-        sudo apt-get remove mono-complete --auto-remove --purge -y
-        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-        echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic/snapshots/${{ matrix.mono }} main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-        sudo apt-get update
-        sudo apt-get install -y gnupg ca-certificates
-        sudo apt-get install -y mono-complete
     - name: Install runtime dependencies
-      run: sudo apt-get install -y libcurl4-openssl-dev xvfb
+      run: apt-get update && apt-get install -y libcurl4-openssl-dev xvfb
     - name: Restore cache for _build/lib/nuget
       uses: actions/cache@v1
       with:
@@ -52,7 +47,7 @@ jobs:
         WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
         HOOK_OS_NAME: ${{ runner.os }}
         WORKFLOW_NAME: ${{ github.workflow }}
-      if: ${{ env.DISCORD_WEBHOOK && failure() }}
+      if: ${{ env.WEBHOOK_URL && failure() }}
       run: |
         git clone https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
         bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
@@ -97,7 +92,7 @@ jobs:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
           HOOK_OS_NAME: ${{ runner.os }}
           WORKFLOW_NAME: ${{ github.workflow }}
-        if: ${{ env.DISCORD_WEBHOOK && failure() }}
+        if: ${{ env.WEBHOOK_URL && failure() }}
         run: |
           git clone --depth 1 https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
           bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
