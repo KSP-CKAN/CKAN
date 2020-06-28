@@ -47,12 +47,12 @@ jobs:
       run: xvfb-run ./build test+only --configuration=${{ matrix.configuration }} --where="Category!=FlakyNetwork"
 
     - name: Send Discord Notification
-      if: failure()
       env:
         JOB_STATUS: ${{ job.status }}
         WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
         HOOK_OS_NAME: ${{ runner.os }}
         WORKFLOW_NAME: ${{ github.workflow }}
+      if: ${{ env.DISCORD_WEBHOOK && failure() }}
       run: |
         git clone https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
         bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
@@ -92,12 +92,12 @@ jobs:
         run: ./build test+only --configuration=${{ matrix.configuration }}
 
       - name: Send Discord Notification
-        if: failure()
         env:
           JOB_STATUS: ${{ job.status }}
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
           HOOK_OS_NAME: ${{ runner.os }}
           WORKFLOW_NAME: ${{ github.workflow }}
+        if: ${{ env.DISCORD_WEBHOOK && failure() }}
         run: |
           git clone --depth 1 https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
           bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
