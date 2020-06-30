@@ -45,6 +45,7 @@ namespace CKAN.NetKAN.Transformers
             "download_size",
             "download_hash",
             "download_content_type",
+            "release_date",
         }
             .Select((str, index) => new {index, str})
             .Concat(new[] { new { index = int.MaxValue, str = "x_generated_by"} })

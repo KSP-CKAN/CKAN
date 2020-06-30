@@ -12,7 +12,7 @@ namespace CKAN.NetKAN.Model
         private const string SpecVersionPropertyName   = "spec_version";
         private const string VersionPropertyName       = "version";
         private const string DownloadPropertyName      = "download";
-        public  const string UpdatedPropertyName       = "x_netkan_asset_updated";
+        public  const string UpdatedPropertyName       = "release_date";
         private const string StagedPropertyName        = "x_netkan_staging";
         private const string StagingReasonPropertyName = "x_netkan_staging_reason";
 
@@ -117,7 +117,7 @@ namespace CKAN.NetKAN.Model
                 RemoteTimestamp = t;
             }
         }
-        
+
         public string[] Licenses
         {
             get
@@ -129,7 +129,7 @@ namespace CKAN.NetKAN.Model
                         return lic.Children()
                             .Select(t => (string)t)
                             .ToArray();
-                    
+
                     case JTokenType.String:
                         return new string[] { (string)lic };
                 }

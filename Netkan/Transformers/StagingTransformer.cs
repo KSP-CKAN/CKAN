@@ -23,38 +23,37 @@ namespace CKAN.NetKAN.Transformers
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            JObject json = metadata.Json();
-            var matchingKeys = kspVersionKeys
-                .Where(vk => json.ContainsKey(vk)
-                          && !string.IsNullOrEmpty((string)json[vk])
-                          && (string)json[vk] != "any"
-                          && !CompatibleWithCurrent((string)json[vk]))
-                .Memoize();
-            if (matchingKeys.Any())
+            if (VersionsNeedManualReview(metadata, out string reason))
             {
-                string msg = string.Join(", ", matchingKeys.Select(mk => $"{mk} = {json[mk]}"));
-                Log.DebugFormat("Enabling staging, found KSP version keys in netkan: {0}", msg);
+                Log.DebugFormat("Enabling staging, reason: {0}", reason);
+                opts.StagingReason = reason;
                 opts.Staged = true;
-                opts.StagingReason = $"Game version keys found in netkan: {msg}.\r\n\r\nPlease check that their values match the forum thread.";
             }
             // This transformer never changes the metadata
             yield return metadata;
         }
 
-        private bool CompatibleWithCurrent(string version)
+        private bool VersionsNeedManualReview(Metadata metadata, out string reason)
         {
-            return currentRelease.IntersectWith(KspVersion.Parse(version).ToVersionRange()) != null;
+            JObject json = metadata.Json();
+            var minStr = json["ksp_version_min"] ?? json["ksp_version"];
+            var maxStr = json["ksp_version_max"] ?? json["ksp_version"];
+            var minVer = minStr == null ? KspVersion.Any : KspVersion.Parse((string)minStr);
+            var maxVer = maxStr == null ? KspVersion.Any : KspVersion.Parse((string)maxStr);
+            if (currentRelease.IntersectWith(new KspVersionRange(minVer, maxVer)) == null)
+            {
+                reason = $"Hard-coded game versions not compatible with current release: {KspVersionRange.VersionSpan(minVer, maxVer)}\r\nPlease check that they match the forum thread.";
+                return true;
+            }
+            else
+            {
+                // Compatible with latest release, no manual review needed
+                reason = "";
+                return false;
+            }
         }
 
         private static KspVersionRange currentRelease;
-
-        private static readonly string[] kspVersionKeys = new string[]
-        {
-            "ksp_version",
-            "ksp_version_min",
-            "ksp_version_max",
-        };
-
         private static readonly ILog Log = LogManager.GetLogger(typeof(StagingTransformer));
     }
 }

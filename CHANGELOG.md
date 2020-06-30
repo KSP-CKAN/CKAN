@@ -39,6 +39,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Move Travis CI to GitHub Workflows (#3085 by: DasSkelett; reviewed: techman83)
 - [Build] Don't run workflow steps that require secrets on forks (#3089 by: DasSkelett; reviewed: HebaruSan)
 - [Build] Run workflows in Mono Docker containers (#3091 by: DasSkelett; reviewed: HebaruSan)
+- [Netkan] Generate release_date property in netkan (#3059 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.27.2 (Chandrasekhar)
 

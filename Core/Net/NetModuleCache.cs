@@ -60,11 +60,11 @@ namespace CKAN
         }
         public bool IsMaybeCachedZip(CkanModule m)
         {
-            return cache.IsMaybeCachedZip(m.download);
+            return cache.IsMaybeCachedZip(m.download, m.release_date);
         }
         public string GetCachedFilename(CkanModule m)
         {
-            return cache.GetCachedFilename(m.download);
+            return cache.GetCachedFilename(m.download, m.release_date);
         }
         public string GetCachedZip(CkanModule m)
         {

@@ -88,10 +88,7 @@ namespace CKAN.NetKAN.Sources.Github
                         {
                             Log.Debug("Using GitHub source archive");
                             download = new Uri((string)release["zipball_url"]);
-                            if (DateTime.TryParse(release["published_at"].ToString(), out parsed))
-                            {
-                                updated = parsed;
-                            }
+                            updated = (DateTime)release["published_at"];
                         }
                         else
                         {
@@ -101,10 +98,7 @@ namespace CKAN.NetKAN.Sources.Github
                             {
                                 Log.DebugFormat("Using GitHub asset: {0}", asset["name"]);
                                 download = new Uri((string)asset["browser_download_url"]);
-                                if (DateTime.TryParse(asset["updated_at"].ToString(), out parsed))
-                                {
-                                    updated = parsed;
-                                }
+                                updated = (DateTime)asset["updated_at"];
                                 break;
                             }
                         }
