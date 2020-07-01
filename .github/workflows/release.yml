@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Installing build dependencies
-        run: apt-get update && apt-get install -y git make sed libplist-utils xorriso gzip fakeroot lintian rpm
+        run: apt-get update && apt-get install -y git make sed libplist-utils xorriso gzip fakeroot lintian rpm wget jq
       - name: Installing runtime dependencies
         run: apt-get install -y libcurl4-openssl-dev xvfb
 
