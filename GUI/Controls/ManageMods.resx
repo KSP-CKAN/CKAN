@@ -179,6 +179,7 @@
   <data name="LatestVersion.HeaderText" xml:space="preserve"><value>Latest version</value></data>
   <data name="KSPCompatibility.HeaderText" xml:space="preserve"><value>Max KSP version</value></data>
   <data name="SizeCol.HeaderText" xml:space="preserve"><value>Download</value></data>
+  <data name="ReleaseDate.HeaderText" xml:space="preserve"><value>Release date</value></data>
   <data name="InstallDate.HeaderText" xml:space="preserve"><value>Install date</value></data>
   <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Downloads</value></data>
   <data name="Description.HeaderText" xml:space="preserve"><value>Description</value></data>
