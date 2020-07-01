@@ -339,10 +339,11 @@ namespace CKAN
             var downloadCount = new DataGridViewTextBoxCell() { Value = String.Format("{0:N0}", mod.DownloadCount) };
             var compat        = new DataGridViewTextBoxCell() { Value = mod.KSPCompatibility                       };
             var size          = new DataGridViewTextBoxCell() { Value = mod.DownloadSize                           };
+            var releaseDate   = new DataGridViewTextBoxCell() { Value = mod.ToModule().release_date                };
             var installDate   = new DataGridViewTextBoxCell() { Value = mod.InstallDate                            };
             var desc          = new DataGridViewTextBoxCell() { Value = mod.Abstract                               };
 
-            item.Cells.AddRange(selecting, autoInstalled, updating, replacing, name, author, installVersion, latestVersion, compat, size, installDate, downloadCount, desc);
+            item.Cells.AddRange(selecting, autoInstalled, updating, replacing, name, author, installVersion, latestVersion, compat, size, releaseDate, installDate, downloadCount, desc);
 
             selecting.ReadOnly     = selecting     is DataGridViewTextBoxCell;
             autoInstalled.ReadOnly = autoInstalled is DataGridViewTextBoxCell;

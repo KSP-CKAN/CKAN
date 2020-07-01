@@ -1161,8 +1161,9 @@ namespace CKAN
                 case 0: case 1:
                 case 2: case 3: return Sort(rows, CheckboxSorter);
                 case 9:         return Sort(rows, DownloadSizeSorter);
-                case 10:        return Sort(rows, InstallDateSorter);
-                case 11:        return Sort(rows, r => (r.Tag as GUIMod)?.DownloadCount ?? 0);
+                case 10:        return Sort(rows, ReleaseDateSorter);
+                case 11:        return Sort(rows, InstallDateSorter);
+                case 12:        return Sort(rows, r => (r.Tag as GUIMod)?.DownloadCount ?? 0);
             }
             return Sort(rows, DefaultSorter);
         }
@@ -1223,6 +1224,11 @@ namespace CKAN
         private long DownloadSizeSorter(DataGridViewRow row)
         {
             return (row.Tag as GUIMod)?.ToCkanModule()?.download_size ?? 0;
+        }
+
+        private long ReleaseDateSorter(DataGridViewRow row)
+        {
+            return -(row.Tag as GUIMod)?.ToModule().release_date?.Ticks ?? 0;
         }
 
         /// <summary>

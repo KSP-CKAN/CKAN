@@ -87,7 +87,7 @@ namespace Tests.GUI
             _listGui.Columns.Add(new DataGridViewCheckBoxColumn());
             _listGui.Columns.Add(new DataGridViewCheckBoxColumn());
             _listGui.Columns.Add(new DataGridViewCheckBoxColumn());
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 10; i++)
             {
                 _listGui.Columns.Add(i.ToString(), "Column" + i);
             }

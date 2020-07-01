@@ -63,6 +63,7 @@
             this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.KSPCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ReleaseDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstallDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DownloadCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -295,6 +296,7 @@
             this.LatestVersion,
             this.KSPCompatibility,
             this.SizeCol,
+            this.ReleaseDate,
             this.InstallDate,
             this.DownloadCount,
             this.Description});
@@ -398,6 +400,14 @@
             this.SizeCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.SizeCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             resources.ApplyResources(this.SizeCol, "SizeCol");
+            //
+            // ReleaseDate
+            //
+            this.ReleaseDate.Name = "ReleaseDate";
+            this.ReleaseDate.ReadOnly = true;
+            this.ReleaseDate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.ReleaseDate.Width = 140;
+            resources.ApplyResources(this.ReleaseDate, "ReleaseDate");
             //
             // InstallDate
             //
@@ -549,6 +559,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn LatestVersion;
         private System.Windows.Forms.DataGridViewTextBoxColumn KSPCompatibility;
         private System.Windows.Forms.DataGridViewTextBoxColumn SizeCol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ReleaseDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn InstallDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn DownloadCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;

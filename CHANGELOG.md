@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Create a system menu entry for ConsoleUI (#3052 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Non-parallel GitHub downloads, one progress bar per download (#3054 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Multi-match 'find', allow 'as' for Ships and GameData (#3064 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Release date column (#3096 by: HebaruSan; reviewed: techman83)
 
 ### Bugfixes
 
