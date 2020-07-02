@@ -31,6 +31,7 @@ namespace CKAN
                 RecommendedModsListView.Items.Clear();
                 RecommendedModsListView.Items.AddRange(
                     getRecSugRows(cache, recommendations, suggestions, supporters).ToArray());
+                MarkConflicts();
             });
         }
 
@@ -77,23 +78,28 @@ namespace CKAN
             }
             else
             {
-                var conflicts = FindConflicts();
-                foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
-                    // Apparently ListView handes AddRange by:
-                    //   1. Expanding the Items list to the new size by filling it with nulls
-                    //   2. One by one, replace each null with a real item and call _ItemChecked
-                    // ... so the Items list can contain null!!
-                    .Where(it => it != null))
-                {
-                    item.BackColor = conflicts.ContainsKey(item.Tag as CkanModule)
-                        ? Color.LightCoral
-                        : Color.Empty;
-                }
-                RecommendedModsContinueButton.Enabled = !conflicts.Any();
-                if (OnConflictFound != null)
-                {
-                    OnConflictFound(conflicts.Any() ? conflicts.First().Value : "");
-                }
+                MarkConflicts();
+            }
+        }
+        
+        private void MarkConflicts()
+        {
+            var conflicts = FindConflicts();
+            foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
+                // Apparently ListView handes AddRange by:
+                //   1. Expanding the Items list to the new size by filling it with nulls
+                //   2. One by one, replace each null with a real item and call _ItemChecked
+                // ... so the Items list can contain null!!
+                .Where(it => it != null))
+            {
+                item.BackColor = conflicts.ContainsKey(item.Tag as CkanModule)
+                    ? Color.LightCoral
+                    : Color.Empty;
+            }
+            RecommendedModsContinueButton.Enabled = !conflicts.Any();
+            if (OnConflictFound != null)
+            {
+                OnConflictFound(conflicts.Any() ? conflicts.First().Value : "");
             }
         }
 
