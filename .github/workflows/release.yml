@@ -19,12 +19,17 @@ jobs:
       - name: Installing runtime dependencies
         run: apt-get install -y libcurl4-openssl-dev xvfb
 
+      - name: Build ckan.exe
+        run: ./build --configuration=Release
+      - name: Run tests
+        run: xvfb-run ./build test+only --configuration=Release --where="Category!=FlakyNetwork"
+
       - name: Build dmg
-        run: ./build osx --configuration=Release
+        run: ./build osx --configuration=Release --exclusive
       - name: Build deb
-        run: ./build deb --configuration=Release
+        run: ./build deb --configuration=Release --exclusive
       - name: Build rpm
-        run: ./build rpm --configuration=Release
+        run: ./build rpm --configuration=Release --exclusive
 
       - name: Get release data
         id: release_data
