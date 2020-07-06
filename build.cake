@@ -94,47 +94,51 @@ Task("docker-inflator")
 Task("osx")
     .Description("Build the macOS(OSX) dmg package.")
     .IsDependentOn("Ckan")
-    .Does(() => StartProcess("make",
-        new ProcessSettings { WorkingDirectory = "macosx" }));
+    .Does(() => MakeIn("macosx"));
 
 Task("osx-clean")
     .Description("Clean the output directory of the macOS(OSX) package.")
-    .Does(() => StartProcess("make",
-        new ProcessSettings { Arguments = "clean", WorkingDirectory = "macosx" }));
+    .Does(() => MakeIn("macosx", "clean"));
 
 Task("deb")
     .Description("Build the deb package for Debian-based distros.")
     .IsDependentOn("Ckan")
-    .Does(() => StartProcess("make",
-        new ProcessSettings { WorkingDirectory = "debian" }));
+    .Does(() => MakeIn("debian"));
 
 Task("deb-test")
     .Description("Test the deb packaging.")
     .IsDependentOn("deb")
-    .Does(() => StartProcess("make",
-        new ProcessSettings { Arguments = "test", WorkingDirectory = "debian" }));
+    .Does(() => MakeIn("debian", "test"));
 
 Task("deb-clean")
     .Description("Clean the deb output directory.")
-    .Does(() => StartProcess("make",
-        new ProcessSettings { Arguments = "clean", WorkingDirectory = "debian" }));
+    .Does(() => MakeIn("debian", "clean"));
 
 Task("rpm")
     .Description("Build the rpm package for RPM-based distros.")
     .IsDependentOn("Ckan")
-    .Does(() => StartProcess("make",
-        new ProcessSettings { WorkingDirectory = "rpm" }));
+    .Does(() => MakeIn("rpm"));
 
 Task("rpm-test")
     .Description("Test the rpm packaging.")
     .IsDependentOn("Ckan")
-    .Does(() => StartProcess("make",
-        new ProcessSettings { Arguments = "test", WorkingDirectory = "rpm" }));
+    .Does(() => MakeIn("rpm", "test"));
 
 Task("rpm-clean")
     .Description("Clean the rpm package output directory.")
-    .Does(() => StartProcess("make",
-        new ProcessSettings { Arguments = "clean", WorkingDirectory = "rpm" }));
+    .Does(() => MakeIn("rpm", "clean"));
+
+private void MakeIn(string dir, string args = null)
+{
+    int exitCode = StartProcess("make", new ProcessSettings {
+        WorkingDirectory = dir,
+        Arguments = args,
+    });
+    if (exitCode != 0)
+    {
+        throw new Exception("Make failed with exit code: " + exitCode);
+    }
+}
 
 Task("Restore-Nuget")
     .Description("Intermediate - Download dependencies with NuGet when building for .NET Framework.")
