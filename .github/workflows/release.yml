@@ -20,7 +20,7 @@ jobs:
         run: apt-get install -y libcurl4-openssl-dev xvfb
 
       - name: Build ckan.exe
-        run: ./build --configuration=Release
+        run: ./build Ckan --configuration=Release
       - name: Run tests
         run: xvfb-run ./build test+only --configuration=Release --where="Category!=FlakyNetwork"
 
