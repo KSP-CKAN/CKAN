@@ -205,32 +205,32 @@ Do you wish to reinstall now?", sb)))
                 // This is perfectly normal and shouldn't produce an error, therefore we skip enforcing
                 // consistency. However, we will show the user any inconsistencies later on.
 
-                // Use the identifiers so we use the overload that actually resolves relationships
                 // Do each changed module one at a time so a failure of one doesn't cause all the others to fail
-                foreach (string changedIdentifier in metadataChanges.Select(i => i.identifier))
+                foreach (CkanModule mod in metadataChanges)
                 {
                     try
                     {
                         HashSet<string> possibleConfigOnlyDirs = null;
                         installer.Upgrade(
-                            new[] { changedIdentifier },
+                            new CkanModule[] { mod },
                             new NetAsyncModulesDownloader(new NullUser(), cache),
                             ref possibleConfigOnlyDirs,
                             registry_manager,
-                            enforceConsistency: false
+                            enforceConsistency: false,
+                            resolveRelationships: true
                         );
                     }
                     // Thrown when a dependency couldn't be satisfied
                     catch (ModuleNotFoundKraken)
                     {
-                        log.WarnFormat("Skipping installation of {0} due to relationship error.", changedIdentifier);
-                        user.RaiseMessage("Skipping installation of {0} due to relationship error.", changedIdentifier);
+                        log.WarnFormat("Skipping installation of {0} due to relationship error.", mod.identifier);
+                        user.RaiseMessage("Skipping installation of {0} due to relationship error.", mod.identifier);
                     }
                     // Thrown when a conflicts relationship is violated
                     catch (InconsistentKraken)
                     {
-                        log.WarnFormat("Skipping installation of {0} due to relationship error.", changedIdentifier);
-                        user.RaiseMessage("Skipping installation of {0} due to relationship error.", changedIdentifier);
+                        log.WarnFormat("Skipping installation of {0} due to relationship error.", mod.identifier);
+                        user.RaiseMessage("Skipping installation of {0} due to relationship error.", mod.identifier);
                     }
                 }
             }

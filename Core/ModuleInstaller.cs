@@ -970,10 +970,16 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true)
+        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true, bool resolveRelationships = false)
         {
             modules = modules.Memoize();
             User.RaiseMessage("About to upgrade...\r\n");
+            
+            if (resolveRelationships)
+            {
+                var resolver = new RelationshipResolver(modules, null, RelationshipResolver.DependsOnlyOpts(), registry_manager.registry, ksp.VersionCriteria());
+                modules = resolver.ModList();
+            }
 
             // Start by making sure we've downloaded everything.
             DownloadModules(modules, netAsyncDownloader);

@@ -82,7 +82,6 @@ namespace CKAN.NetKAN.Sources.Github
 
                         Uri       download = null;
                         DateTime? updated  = null;
-                        DateTime  parsed;
 
                         if (reference.UseSourceArchive)
                         {
