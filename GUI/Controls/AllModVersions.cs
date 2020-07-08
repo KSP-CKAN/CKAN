@@ -1,8 +1,10 @@
+using System;
+using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
+
 using CKAN.Versioning;
 
 namespace CKAN
@@ -47,9 +49,38 @@ namespace CKAN
             }
         }
 
+        private bool installable(CkanModule module)
+        {
+            var currentInstance = Main.Instance.Manager.CurrentInstance;
+            var version = currentInstance.VersionCriteria();
+            if (!module.IsCompatibleKSP(version))
+            {
+                return false;
+            }
+            try
+            {
+                RelationshipResolver resolver = new RelationshipResolver(
+                    new CkanModule[] { module },
+                    null,
+                    new RelationshipResolverOptions()
+                    {
+                        with_recommends = false,
+                        without_toomanyprovides_kraken = true,
+                    },
+                    RegistryManager.Instance(currentInstance).registry,
+                    version
+                );
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
+
         private bool allowInstall(CkanModule module)
         {
-            return module.IsCompatibleKSP(Main.Instance.Manager.CurrentInstance.VersionCriteria())
+            return installable(module)
                 || Main.Instance.YesNoDialog(
                     string.Format(Properties.Resources.AllModVersionsInstallPrompt, module.ToString()),
                     Properties.Resources.AllModVersionsInstallYes,
@@ -125,7 +156,6 @@ namespace CKAN
                     return;
                 }
 
-                KspVersionCriteria kspVersionCriteria = currentInstance.VersionCriteria();
                 ModuleVersion installedVersion = registry.InstalledVersion(value.Identifier);
 
                 bool latestCompatibleVersionAlreadyFound = false;
@@ -143,7 +173,7 @@ namespace CKAN
                         Tag  = module
                     };
 
-                    if (module.IsCompatibleKSP(kspVersionCriteria))
+                    if (installable(module))
                     {
                         if (!latestCompatibleVersionAlreadyFound)
                         {

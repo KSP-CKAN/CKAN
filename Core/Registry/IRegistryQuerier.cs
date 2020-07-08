@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+using System;
 using System.Linq;
+using System.Collections.Generic;
+
 using CKAN.Versioning;
 
 namespace CKAN
@@ -176,13 +178,37 @@ namespace CKAN
             {
                 newest_version = querier.LatestAvailable(identifier, version);
             }
-            catch (ModuleNotFoundKraken)
+            catch (Exception)
             {
                 return false;
             }
-            if (newest_version == null) return false;
-            return !new List<string>(querier.InstalledDlls).Contains(identifier) && querier.IsInstalled(identifier, false)
-                && newest_version.version.IsGreaterThan(querier.InstalledVersion(identifier));
+            if (newest_version == null
+                || !querier.IsInstalled(identifier, false)
+                || querier.InstalledDlls.Contains(identifier)
+                || !newest_version.version.IsGreaterThan(querier.InstalledVersion(identifier)))
+            {
+                return false;
+            }
+            // All quick checks pass. Now check the relationships.
+            try
+            {
+                RelationshipResolver resolver = new RelationshipResolver(
+                    new CkanModule[] { newest_version },
+                    null,
+                    new RelationshipResolverOptions()
+                    {
+                        with_recommends = false,
+                        without_toomanyprovides_kraken = true,
+                    },
+                    querier,
+                    version
+                );
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
