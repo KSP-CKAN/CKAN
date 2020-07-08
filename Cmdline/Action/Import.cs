@@ -49,12 +49,14 @@ namespace CKAN.CmdLine
                     RegistryManager regMgr = RegistryManager.Instance(ksp);
                     ModuleInstaller inst      = ModuleInstaller.GetInstance(ksp, manager.Cache, user);
                     inst.ImportFiles(toImport, user, mod => toInstall.Add(mod.identifier), regMgr.registry, !opts.Headless);
+                    HashSet<string> possibleConfigOnlyDirs = null;
                     if (toInstall.Count > 0)
                     {
                         inst.InstallList(
                             toInstall,
                             new RelationshipResolverOptions(),
-                            regMgr
+                            regMgr,
+                            ref possibleConfigOnlyDirs
                         );
                     }
                     return Exit.OK;

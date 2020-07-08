@@ -132,11 +132,11 @@ namespace CKAN
             return full_path;
         }
 
-        public void InstallList(List<string> modules, RelationshipResolverOptions options, RegistryManager registry_manager, IDownloader downloader = null)
+        public void InstallList(List<string> modules, RelationshipResolverOptions options, RegistryManager registry_manager, ref HashSet<string> possibleConfigOnlyDirs, IDownloader downloader = null)
         {
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
             // Only pass the CkanModules of the parameters, so we can tell which are auto
-            InstallList(resolver.ModList().Where(m => resolver.ReasonFor(m) is SelectionReason.UserRequested).ToList(), options, registry_manager, downloader);
+            InstallList(resolver.ModList().Where(m => resolver.ReasonFor(m) is SelectionReason.UserRequested).ToList(), options, registry_manager, ref possibleConfigOnlyDirs, downloader);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace CKAN
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// Propagates a CancelledActionKraken if the user cancelled the install.
         /// </summary>
-        public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, RegistryManager registry_manager, IDownloader downloader = null, bool ConfirmPrompt = true)
+        public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, RegistryManager registry_manager, ref HashSet<string> possibleConfigOnlyDirs, IDownloader downloader = null, bool ConfirmPrompt = true)
         {
             // TODO: Break this up into smaller pieces! It's huge!
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
@@ -215,7 +215,7 @@ namespace CKAN
                     User.RaiseProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
                                          percent_complete);
 
-                    Install(modsToInstall[i], resolver.IsAutoInstalled(modsToInstall[i]), registry_manager.registry);
+                    Install(modsToInstall[i], resolver.IsAutoInstalled(modsToInstall[i]), registry_manager.registry, ref possibleConfigOnlyDirs);
                 }
 
                 User.RaiseProgress("Updating registry", 70);
@@ -283,7 +283,7 @@ namespace CKAN
         ///
         /// TODO: The name of this and InstallModule() need to be made more distinctive.
         /// </summary>
-        private void Install(CkanModule module, bool autoInstalled, Registry registry, string filename = null)
+        private void Install(CkanModule module, bool autoInstalled, Registry registry, ref HashSet<string> possibleConfigOnlyDirs, string filename = null)
         {
             CheckKindInstallationKraken(module);
 
@@ -311,7 +311,7 @@ namespace CKAN
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
                 // Install all the things!
-                IEnumerable<string> files = InstallModule(module, filename, registry);
+                IEnumerable<string> files = InstallModule(module, filename, registry, ref possibleConfigOnlyDirs);
 
                 // Register our module and its files.
                 registry.RegisterModule(module, files, ksp, autoInstalled);
@@ -351,7 +351,7 @@ namespace CKAN
         /// Propagates a CancelledActionKraken if the user decides not to overwite unowned files.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// </summary>
-        private IEnumerable<string> InstallModule(CkanModule module, string zip_filename, Registry registry)
+        private IEnumerable<string> InstallModule(CkanModule module, string zip_filename, Registry registry, ref HashSet<string> possibleConfigOnlyDirs)
         {
             CheckKindInstallationKraken(module);
 
@@ -391,6 +391,10 @@ namespace CKAN
                     {
                         log.DebugFormat("Copying {0}", file.source.Name);
                         CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
+                        if (file.source.IsDirectory && possibleConfigOnlyDirs != null)
+                        {
+                            possibleConfigOnlyDirs.Remove(file.destination);
+                        }
                     }
                     log.InfoFormat("Installed {0}", module);
                 }
@@ -837,7 +841,7 @@ namespace CKAN
                     }
                     else if (contents.All(f => registry.FileOwner(f) == null))
                     {
-                        log.DebugFormat("Directory {0} contains only non-registered files, ask user about it later");
+                        log.DebugFormat("Directory {0} contains only non-registered files, ask user about it later", directory);
                         if (possibleConfigOnlyDirs == null)
                         {
                             possibleConfigOnlyDirs = new HashSet<string>();
@@ -941,7 +945,7 @@ namespace CKAN
                     var previous = remove?.FirstOrDefault(im => im.Module.identifier == module.identifier);
                     int percent_complete = (step++ * 70) / totSteps;
                     User.RaiseProgress($"Installing \"{module}\"", percent_complete);
-                    Install(module, previous?.AutoInstalled ?? false, registry_manager.registry);
+                    Install(module, previous?.AutoInstalled ?? false, registry_manager.registry, ref possibleConfigOnlyDirs);
                 }
 
                 User.RaiseProgress("Updating registry", 80);

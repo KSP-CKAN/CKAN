@@ -197,7 +197,7 @@ namespace CKAN
                         processSuccessful = false;
                         if (!installCanceled)
                         {
-                            installer.InstallList(toInstall, opts.Value, registry_manager, downloader, false);
+                            installer.InstallList(toInstall, opts.Value, registry_manager, ref possibleConfigOnlyDirs, downloader, false);
                             processSuccessful = true;
                         }
                     }
