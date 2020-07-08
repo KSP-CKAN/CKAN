@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.28.0-PRE2
 
+### Bugfixes
+
+- [Core] Fix reinstallation of updated incompatible modules (#3102 by: HebaruSan; reviewed: DasSkelett)
+
 ## v1.28.0-PRE1 (Drake)
 
 ### Features
@@ -28,7 +32,6 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix crash on marking all updates (#3079 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Use authToken for Curl (#3086 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Be more specific in GUI config parse error (#3090 by: HebaruSan, DasSkelett; reviewed: DasSkelett)
-- [Core] Fix reinstallation of updated incompatible modules (#3102 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
