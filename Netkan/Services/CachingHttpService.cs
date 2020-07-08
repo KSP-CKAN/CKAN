@@ -27,7 +27,7 @@ namespace CKAN.NetKAN.Services
             {
                 return DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 var fallback = metadata.FallbackDownload;
                 if (fallback == null)

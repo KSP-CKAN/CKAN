@@ -75,12 +75,7 @@ namespace CKAN
     {
         #region Fields and Properties
 
-        // This rather awful looking code is because while we write to install_time,
-        // we never read from it. That's cool, C#, because it *does* get serialised,
-        // and in the future we will read from it.
-        #pragma warning disable 0414
         [JsonProperty] private DateTime install_time;
-        #pragma warning restore 0414
 
         [JsonProperty] private CkanModule source_module;
 

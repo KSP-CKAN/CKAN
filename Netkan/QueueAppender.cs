@@ -16,7 +16,5 @@ namespace CKAN.NetKAN
         }
 
         public List<string> Warnings = new List<string>();
-
-        public void Close() { }
     }
 }
