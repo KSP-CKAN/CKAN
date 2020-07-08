@@ -68,10 +68,12 @@ namespace Tests.GUI
             _registry.RegisterModule(_anyVersionModule, new string[] { }, _instance.KSP, false);
             _registry.AddAvailable(_anyVersionModule);
 
+            HashSet<string> possibleConfigOnlyDirs = null;
             ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
                 new List<CkanModule> { { _anyVersionModule } },
                 new RelationshipResolverOptions(),
                 _registryManager,
+                ref possibleConfigOnlyDirs,
                 new NetAsyncModulesDownloader(_manager.User, _manager.Cache)
             );
 
@@ -137,11 +139,13 @@ namespace Tests.GUI
 
             Assert.DoesNotThrow(() =>
             {
+                HashSet<string> possibleConfigOnlyDirs = null;
                 // perform the install of the "other" module - now we need to sort
                 ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
                     _modList.ComputeUserChangeSet(null).Select(change => change.Mod).ToList(),
                     new RelationshipResolverOptions(),
                     _registryManager,
+                    ref possibleConfigOnlyDirs,
                     new NetAsyncModulesDownloader(_manager.User, _manager.Cache)
                 );
 

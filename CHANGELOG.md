@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [Core] Fix reinstallation of updated incompatible modules (#3102 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Don't prompt to delete SCANsat's settings at upgrade (#3103 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.28.0-PRE1 (Drake)
 

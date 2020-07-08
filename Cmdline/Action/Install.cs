@@ -135,8 +135,9 @@ namespace CKAN.CmdLine
                 // Install everything requested. :)
                 try
                 {
+                    HashSet<string> possibleConfigOnlyDirs = null;
                     var installer = ModuleInstaller.GetInstance(ksp, manager.Cache, user);
-                    installer.InstallList(modules, install_ops, regMgr);
+                    installer.InstallList(modules, install_ops, regMgr, ref possibleConfigOnlyDirs);
                     user.RaiseMessage("\r\n");
                     done = true;
                 }

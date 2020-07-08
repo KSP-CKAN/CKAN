@@ -71,7 +71,7 @@ namespace CKAN.ConsoleUI {
                         }
                         if (plan.Install.Count > 0) {
                             List<CkanModule> iList = new List<CkanModule>(plan.Install);
-                            inst.InstallList(iList, resolvOpts, regMgr, dl);
+                            inst.InstallList(iList, resolvOpts, regMgr, ref possibleConfigOnlyDirs, dl);
                             plan.Install.Clear();
                         }
                         if (plan.Replace.Count > 0) {

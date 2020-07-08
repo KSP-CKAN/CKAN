@@ -47,10 +47,12 @@ namespace Tests.Core
             _registry.AddAvailable(_testModule);
             var testModFile = TestData.DogeCoinFlagZip();
             _manager.Cache.Store(_testModule, testModFile);
+            HashSet<string> possibleConfigOnlyDirs = null;
             _installer.InstallList(
                 new List<string>() { _testModule.identifier },
                 new RelationshipResolverOptions(),
-                _registryManager
+                _registryManager,
+                ref possibleConfigOnlyDirs
             );
         }
 
