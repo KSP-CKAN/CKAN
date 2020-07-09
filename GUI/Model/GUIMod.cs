@@ -79,6 +79,7 @@ namespace CKAN
         // These indicate the maximum KSP version that the maximum available
         // version of this mod can handle. The "Long" version also indicates
         // to the user if a mod upgrade would be required. (#1270)
+        public KspVersion KSPCompatibilityVersion { get; private set; }
         public string KSPCompatibility { get; private set; }
         public string KSPCompatibilityLong { get; private set; }
 
@@ -221,7 +222,8 @@ namespace CKAN
             // KSP.
             if (latest_available_for_any_ksp != null)
             {
-                KSPCompatibility = registry.LatestCompatibleKSP(identifier)?.ToYalovString()
+                KSPCompatibilityVersion = registry.LatestCompatibleKSP(identifier);
+                KSPCompatibility = KSPCompatibilityVersion?.ToYalovString()
                     ?? Properties.Resources.GUIModUnknown;
                 KSPCompatibilityLong = string.Format(Properties.Resources.GUIModKSPCompatibilityLong, KSPCompatibility, latest_available_for_any_ksp.version);
             }
