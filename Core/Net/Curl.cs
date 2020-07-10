@@ -32,7 +32,7 @@ namespace CKAN
                 CurlSharp.Curl.GlobalInit(CurlInitFlag.All);
                 _initComplete = true;
             }
-            catch (DllNotFoundException exc)
+            catch (DllNotFoundException)
             {
                 Log.Info("Curl initialization failed. Maybe you should install the DLL?\r\n\r\nhttps://github.com/KSP-CKAN/CKAN/wiki/libcurl");
             }
