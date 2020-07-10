@@ -27,8 +27,15 @@ namespace CKAN
                 Log.Info("Curl init already performed, not running twice");
                 return;
             }
-            CurlSharp.Curl.GlobalInit(CurlInitFlag.All);
-            _initComplete = true;
+            try
+            {
+                CurlSharp.Curl.GlobalInit(CurlInitFlag.All);
+                _initComplete = true;
+            }
+            catch (DllNotFoundException)
+            {
+                Log.Info("Curl initialization failed. Maybe you should install the DLL?\r\n\r\nhttps://github.com/KSP-CKAN/CKAN/wiki/libcurl");
+            }
         }
 
         /// <summary>
