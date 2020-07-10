@@ -55,6 +55,9 @@ namespace CKAN.CmdLine
             // This is on by default in .NET 4.6, but not in 4.5.
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
+            // Make sure Curl is all set up
+            Curl.Init();
+
             try
             {
                 return Execute(null, null, args);

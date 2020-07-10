@@ -5,10 +5,12 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using CommandLine;
+
 using log4net;
 using log4net.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Processors;
@@ -43,6 +45,9 @@ namespace CKAN.NetKAN
                     Console.WriteLine(Meta.GetVersion(VersionFormat.Full));
                     return ExitOk;
                 }
+
+                // Make sure Curl is all set up
+                Curl.Init();
 
                 if (!string.IsNullOrEmpty(Options.ValidateCkan))
                 {
