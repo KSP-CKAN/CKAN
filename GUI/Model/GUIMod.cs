@@ -174,6 +174,19 @@ namespace CKAN
             SearchableDescription = mod.SearchableDescription;
             SearchableAuthors     = mod.SearchableAuthors;
 
+            // If they hasn't been set in GUIMod(identifier, ...) (because the mod is not known to the registry,
+            // set them based on the the data we have from the CkanModule.
+            if (KSPCompatibilityVersion == null)
+            {
+                KSPCompatibilityVersion = mod.LatestCompatibleKSP();
+                KSPCompatibility = KSPCompatibilityVersion?.ToYalovString() ?? Properties.Resources.GUIModUnknown;
+                KSPCompatibilityLong = string.Format(
+                    Properties.Resources.GUIModKSPCompatibilityLong,
+                    KSPCompatibility,
+                    mod.version
+                );
+            }
+
             UpdateIsCached();
         }
 
@@ -226,11 +239,6 @@ namespace CKAN
                 KSPCompatibility = KSPCompatibilityVersion?.ToYalovString()
                     ?? Properties.Resources.GUIModUnknown;
                 KSPCompatibilityLong = string.Format(Properties.Resources.GUIModKSPCompatibilityLong, KSPCompatibility, latest_available_for_any_ksp.version);
-            }
-            else
-            {
-                // No idea what this mod is, sorry!
-                KSPCompatibility = KSPCompatibilityLong = Properties.Resources.GUIModUnknown;
             }
 
             if (latest_version != null)
