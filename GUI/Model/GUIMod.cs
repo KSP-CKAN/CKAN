@@ -174,8 +174,8 @@ namespace CKAN
             SearchableDescription = mod.SearchableDescription;
             SearchableAuthors     = mod.SearchableAuthors;
 
-            // If they hasn't been set in GUIMod(identifier, ...) (because the mod is not known to the registry,
-            // set them based on the the data we have from the CkanModule.
+            // If not set in GUIMod(identifier, ...) (because the mod is not known to the registry),
+            // set based on the the data we have from the CkanModule.
             if (KSPCompatibilityVersion == null)
             {
                 KSPCompatibilityVersion = mod.LatestCompatibleKSP();

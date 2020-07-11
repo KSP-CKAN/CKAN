@@ -1273,8 +1273,16 @@ namespace CKAN
         /// </returns>
         private int KSPCompatComparison(DataGridViewRow a, DataGridViewRow b)
         {
-            KspVersion verA = ((GUIMod)a.Tag).KSPCompatibilityVersion;
-            KspVersion verB = ((GUIMod)b.Tag).KSPCompatibilityVersion;
+            KspVersion verA = ((GUIMod)a.Tag)?.KSPCompatibilityVersion;
+            KspVersion verB = ((GUIMod)b.Tag)?.KSPCompatibilityVersion;
+            if (verA == null)
+            {
+                return verB == null ? 0 : -1;
+            }
+            else if (verB == null)
+            {
+                return 1;
+            }
             var majorCompare = VersionPieceCompare(verA.IsMajorDefined, verA.Major, verB.IsMajorDefined, verB.Major);
             if (majorCompare != 0)
             {
