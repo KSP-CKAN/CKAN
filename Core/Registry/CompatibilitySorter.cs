@@ -24,11 +24,13 @@ namespace CKAN
             KspVersionCriteria crit,
             Dictionary<string, AvailableModule> available,
             Dictionary<string, HashSet<AvailableModule>> providers,
+            Dictionary<string, InstalledModule> installed,
             HashSet<string> dlls,
             IDictionary<string, ModuleVersion> dlc
         )
         {
             CompatibleVersions = crit;
+            this.installed = installed;
             this.dlls = dlls;
             this.dlc  = dlc;
             PartitionModules(available, CompatibleProviders(crit, providers));
@@ -62,6 +64,7 @@ namespace CKAN
         /// </summary>
         private readonly Stack<string> Investigating = new Stack<string>();
 
+        private readonly Dictionary<string, InstalledModule> installed;
         private readonly HashSet<string> dlls;
         private readonly IDictionary<string, ModuleVersion> dlc;
 
@@ -151,7 +154,7 @@ namespace CKAN
                     foreach (RelationshipDescriptor rel in m.depends)
                     {
                         bool foundCompat = false;
-                        if (rel.MatchesAny(null, dlls, dlc))
+                        if (rel.MatchesAny(installed.Select(kvp => kvp.Value.Module), dlls, dlc))
                         {
                             // Matches a DLL or DLC, cool
                             foundCompat = true;

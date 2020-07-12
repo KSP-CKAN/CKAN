@@ -710,6 +710,8 @@ namespace CKAN
         {
             SealionTransaction();
 
+            sorter = null;
+
             // But we also want to keep track of all its files.
             // We start by checking to see if any files are owned by another mod,
             // if so, we abort with a list of errors.
@@ -769,6 +771,8 @@ namespace CKAN
         public void DeregisterModule(KSP ksp, string module)
         {
             SealionTransaction();
+
+            sorter = null;
 
             var inconsistencies = new List<string>();
 
@@ -1265,6 +1269,7 @@ namespace CKAN
             {
                 sorter = new CompatibilitySorter(
                     versCrit, available_modules, providers,
+                    installed_modules,
                     InstalledDlls.ToHashSet(), InstalledDlc
                 );
             }

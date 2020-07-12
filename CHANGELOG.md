@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Don't prompt to delete SCANsat's settings at upgrade (#3103 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Mark conflicts in initial recommendations (#3097 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Sort GUI KSP version column correctly (#3106 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Dependency/compatibility fixes (#3104 by: HebaruSan; reviewed: DasSkelett)
 
 ## Internal
 
