@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using CommandLine;
+using CommandLine.Text;
 
 using log4net;
 using log4net.Core;
@@ -30,21 +31,57 @@ namespace CKAN.NetKAN
 
         public static int Main(string[] args)
         {
+            if (args.Any(i => i == "--debugger"))
+            {
+                Debugger.Launch();
+            }
+
+            var parser = new Parser(c => c.HelpWriter = null).ParseArguments<CmdLineOptions>(args);
+            parser.WithParsed(opt => Run(opt));
+            parser.WithNotParsed(errs =>
+            {
+                if (errs.IsVersion())
+                {
+                    Console.WriteLine(Meta.GetVersion(VersionFormat.Full));
+                }
+                else
+                {
+                    HelpText ht = HelpText.AutoBuild(parser, h =>
+                    {
+                        h.AddDashesToOption = true;
+                        h.AutoHelp = false;
+                        h.Heading = $"NetKAN {Meta.GetVersion(VersionFormat.Full)}";
+                        h.Copyright = $"Copyright © 2014-{DateTime.Now.Year}";
+                        return HelpText.DefaultParsingErrorsHandler(parser, h);
+                    }, e => e, true);
+                    Console.WriteLine(ht);
+                }
+            });
+
+            return ExitOk;
+        }
+
+        private static int Run(CmdLineOptions options)
+        {
+            Program.Options = options;
             try
             {
-                ProcessArgs(args);
+                Logging.Initialize();
+
+                LogManager.GetRepository().Threshold =
+                    Options.Verbose ? Level.Info
+                    : Options.Debug ? Level.Debug
+                    : Level.Warn;
+
+                if (Options.NetUserAgent != null)
+                {
+                    Net.UserAgentString = Options.NetUserAgent;
+                }
 
                 // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
                 // This is on by default in .NET 4.6, but not in 4.5.
                 ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
-                // If we see the --version flag, then display our build info
-                // and exit.
-                if (Options.Version)
-                {
-                    Console.WriteLine(Meta.GetVersion(VersionFormat.Full));
-                    return ExitOk;
-                }
 
                 // Make sure Curl is all set up
                 Curl.Init();
@@ -145,29 +182,6 @@ namespace CKAN.NetKAN
         private static ModuleVersion ParseHighestVersion(string val)
         {
             return val == null ? null : new ModuleVersion(val);
-        }
-
-        private static void ProcessArgs(string[] args)
-        {
-            if (args.Any(i => i == "--debugger"))
-            {
-                Debugger.Launch();
-            }
-
-            Options = new CmdLineOptions();
-            Parser.Default.ParseArgumentsStrict(args, Options);
-
-            Logging.Initialize();
-
-            LogManager.GetRepository().Threshold =
-                  Options.Verbose ? Level.Info
-                : Options.Debug   ? Level.Debug
-                :                   Level.Warn;
-
-            if (Options.NetUserAgent != null)
-            {
-                Net.UserAgentString = Options.NetUserAgent;
-            }
         }
 
         private static Metadata ReadNetkan()

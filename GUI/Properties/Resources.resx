@@ -224,12 +224,12 @@ Do you really want to install it?</value></data>
   <data name="MainInstallFileExists" xml:space="preserve"><value>Oh no! We tried to overwrite a file owned by another mod!
 Please try a `ckan update` and try again.
 
-If this problem re-occurs, then it maybe a packaging bug.
+If this problem re-occurs, then it may be a packaging bug.
 Please report it at:
 
-https://github.com/KSP-CKAN/NetKAN/issues/new
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 
-Please including the following information in your report:
+Please include the following information in your report:
 
 File      : {0}
 Installing Mod : {1}
@@ -240,10 +240,10 @@ CKAN Version   : {3}</value></data>
 It looks like you're trying to install a mod which is already installed,
 or which conflicts with another mod which is already installed.
 
-As a safety feature, the CKAN will *never* overwrite or alter a file
+As a safety feature, CKAN will *never* overwrite or alter a file
 that it did not install itself.
 
-If you wish to install {0} via the CKAN,
+If you wish to install {0} via CKAN,
 then please manually uninstall the mod which owns:
 
 {1}
