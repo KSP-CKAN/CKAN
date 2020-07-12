@@ -20,6 +20,7 @@ namespace Tests.NetKAN.Validators
             TestCase(boringModule, "spec_version"),
             TestCase(boringModule, "identifier"),
             TestCase(boringModule, "name"),
+            TestCase(boringModule, "author"),
             TestCase(boringModule, "version"),
             TestCase(boringModule, "license"),
             TestCase(boringModule, "download"),
@@ -74,6 +75,7 @@ namespace Tests.NetKAN.Validators
             ""identifier"":   ""BoringModule"",
             ""name"":         ""Boring Module"",
             ""abstract"":     ""A minimal module that obeys CKAN.schema"",
+            ""author"":       ""Boring Author"",
             ""version"":      ""1.0.0"",
             ""license"":      ""MIT"",
             ""download"":     ""https://mysite.org/mymod.zip""
