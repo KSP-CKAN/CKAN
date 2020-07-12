@@ -133,16 +133,6 @@ are marked with **v1.2** through to **v1.26** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
 
-##### name
-
-This is the human readable name of the mod, and may contain any
-printable characters. Eg: "Ferram Aërospace Research (FAR)",
-"Real Solar System".
-
-##### abstract
-
-A short, one line description of the mod and what it does.
-
 ##### identifier
 
 This is the globally unique identifier for the mod, and is how the mod
@@ -158,6 +148,21 @@ identifier *should* be same as the ModuleManager name. For most mods,
 this means the identifier *should* be the name of the directory in
 `GameData` in which the mod would be installed, or the name of the `.dll`
 with any version and the `.dll` suffix removed.
+
+##### name
+
+This is the human readable name of the mod, and may contain any
+printable characters. Eg: "Ferram Aërospace Research (FAR)",
+"Real Solar System".
+
+##### abstract
+
+A short, one line description of the mod and what it does.
+
+##### author
+
+The author, or list of authors, for this mod. No restrictions are
+placed upon this field.
 
 ##### download
 
@@ -339,11 +344,6 @@ A typical install directive only has `file` and `install_to` sections:
 A comment field, if included, is ignored. It is not displayed to users,
 nor used by programs. Its primary use is to convey information to humans
 examining the CKAN file manually
-
-##### author
-
-The author, or list of authors, for this mod. No restrictions are
-placed upon this field.
 
 ##### description
 

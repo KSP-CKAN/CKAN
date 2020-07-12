@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 - [Core] Don't prompt to delete SCANsat's settings at upgrade (#3103 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Mark conflicts in initial recommendations (#3097 by: HebaruSan; reviewed: DasSkelett)
 
+## Internal
+
+- [Netkan] Add author to list of required properties in CKAN.schema (#3111 by: DasSkelett; reviewed: HebaruSan)
+
 ## v1.28.0-PRE1 (Drake)
 
 ### Features
