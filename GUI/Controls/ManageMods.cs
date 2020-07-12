@@ -1161,6 +1161,7 @@ namespace CKAN
                 // XXX: There should be a better way to identify checkbox columns than hardcoding their indices here
                 case 0: case 1:
                 case 2: case 3: return Sort(rows, CheckboxSorter);
+                case 8:         return Sort(rows, KSPCompatComparison);
                 case 9:         return Sort(rows, DownloadSizeSorter);
                 case 10:        return Sort(rows, ReleaseDateSorter);
                 case 11:        return Sort(rows, InstallDateSorter);
@@ -1173,7 +1174,7 @@ namespace CKAN
         {
             var get_row_mod_name = new Func<DataGridViewRow, string>(row => ((GUIMod)row.Tag).Name);
             DataGridViewColumnHeaderCell header =
-                this.ModGrid.Columns[Main.Instance.configuration.SortByColumnIndex].HeaderCell;
+                ModGrid.Columns[Main.Instance.configuration.SortByColumnIndex].HeaderCell;
 
             // The columns will be sorted by mod name in addition to whatever the current sorting column is
             if (Main.Instance.configuration.SortDescending)
@@ -1184,6 +1185,48 @@ namespace CKAN
 
             header.SortGlyphDirection = SortOrder.Ascending;
             return rows.OrderBy(sortFunction).ThenBy(get_row_mod_name);
+        }
+
+        private IEnumerable<DataGridViewRow> Sort(IEnumerable<DataGridViewRow> rows, Comparison<DataGridViewRow> comparison)
+        {
+            DataGridViewColumnHeaderCell header =
+                ModGrid.Columns[Main.Instance.configuration.SortByColumnIndex].HeaderCell;
+
+            var descending = Main.Instance.configuration.SortDescending;
+            var newRows = rows.ToList();
+            header.SortGlyphDirection = descending
+                ? SortOrder.Descending
+                : SortOrder.Ascending;
+            // The columns will be sorted by mod name in addition to whatever the current sorting column is
+            newRows.Sort(CompareThenByName(comparison, descending));
+            return newRows;
+        }
+        
+        /// <summary>
+        /// Compare two rows, first by an arbitrary comparison, then by name
+        /// </summary>
+        /// <param name="comparison">First comparison to check</param>
+        /// <param name="descending">true to reverse the comparison, false to leave as-is</param>
+        /// <returns>
+        /// Wrapper around comparison parameter that falls back to checking name if equal
+        /// </returns>
+        private Comparison<DataGridViewRow> CompareThenByName(Comparison<DataGridViewRow> comparison, bool descending = false)
+        {
+            // If we check descending inside the lambda, it has to be checked for every row,
+            // which would be slightly slower. This way we build just the logic we need.
+            return descending
+                ? (Comparison<DataGridViewRow>)((DataGridViewRow a, DataGridViewRow b) =>
+                    {
+                        int result = comparison(a, b);
+                        return result != 0 ? -result
+                            : ((GUIMod)a.Tag).Name.CompareTo(((GUIMod)b.Tag).Name);
+                    })
+                : (DataGridViewRow a, DataGridViewRow b) =>
+                    {
+                        int result = comparison(a, b);
+                        return result != 0 ? result
+                            : ((GUIMod)a.Tag).Name.CompareTo(((GUIMod)b.Tag).Name);
+                    };
         }
 
         /// <summary>
@@ -1218,6 +1261,69 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Compare two rows' KspVersions as max versions.
+        /// KspVersion.CompareTo sorts IsAny to the beginning instead
+        /// of the end, and we can't change that without breaking many things.
+        /// Similarly, 1.8 should sort after 1.8.0.
+        /// </summary>
+        /// <param name="a">First row to compare</param>
+        /// <param name="b">Second row to compare</param>
+        /// <returns>
+        /// Positive to sort as a lessthan b, negative to sort as b lessthan a
+        /// </returns>
+        private int KSPCompatComparison(DataGridViewRow a, DataGridViewRow b)
+        {
+            KspVersion verA = ((GUIMod)a.Tag)?.KSPCompatibilityVersion;
+            KspVersion verB = ((GUIMod)b.Tag)?.KSPCompatibilityVersion;
+            if (verA == null)
+            {
+                return verB == null ? 0 : -1;
+            }
+            else if (verB == null)
+            {
+                return 1;
+            }
+            var majorCompare = VersionPieceCompare(verA.IsMajorDefined, verA.Major, verB.IsMajorDefined, verB.Major);
+            if (majorCompare != 0)
+            {
+                return majorCompare;
+            }
+            else
+            {
+                var minorCompare = VersionPieceCompare(verA.IsMinorDefined, verA.Minor, verB.IsMinorDefined, verB.Minor);
+                if (minorCompare != 0)
+                {
+                    return minorCompare;
+                }
+                else
+                {
+                    var patchCompare = VersionPieceCompare(verA.IsPatchDefined, verA.Patch, verB.IsPatchDefined, verB.Patch);
+                    return patchCompare != 0
+                        ? patchCompare
+                        : VersionPieceCompare(verA.IsBuildDefined, verA.Build, verB.IsBuildDefined, verB.Build);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Compare pieces of two versions, each of which may be undefined,
+        /// sorting undefined toward the end.
+        /// </summary>
+        /// <param name="definedA">true if the first version piece is defined, false if undefined</param>
+        /// <param name="valA">Value of the first version piece</param>
+        /// <param name="definedB">true if the second version piece is defined, false if undefined</param>
+        /// <param name="valB">Value of the second version piece</param>
+        /// <returns>
+        /// Positive to sort a lessthan b, negative to sort b lessthan a
+        /// </returns>
+        private int VersionPieceCompare(bool definedA, int valA, bool definedB, int valB)
+        {
+            return definedA
+                ? (definedB ? valA.CompareTo(valB) : -1)
+                : (definedB ? 1                    :  0);
+        }
+        
         /// <summary>
         /// Transforms a DataGridViewRow into a long representing the download size,
         /// suitable for sorting.
