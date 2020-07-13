@@ -370,7 +370,7 @@ Do you wish to reinstall now?", sb)))
                 using (GZipInputStream gzipStream = new GZipInputStream(inputStream))
                 {
                     // Create a handle for the tar stream.
-                    using (TarInputStream tarStream = new TarInputStream(gzipStream, Encoding.UTF8))
+                    using (TarInputStream tarStream = new TarInputStream(gzipStream))
                     {
                         // Walk the archive, looking for .ckan files.
                         const string filter = @"\.ckan$";

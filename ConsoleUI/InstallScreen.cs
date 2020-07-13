@@ -93,7 +93,7 @@ namespace CKAN.ConsoleUI {
                     } catch (FileExistsKraken ex) {
                         if (ex.owningModule != null) {
                             RaiseMessage($"{ex.installingModule} tried to install {ex.filename}, but {ex.owningModule} has already installed it.");
-                            RaiseMessage($"Please report this problem at https://github.com/KSP-CKAN/NetKAN/issues/new/choose");
+                            RaiseMessage($"Please report this problem at https://github.com/KSP-CKAN/NetKAN/issues/new");
                         } else {
                             RaiseMessage($"{ex.installingModule} tried to install {ex.filename}, but it is already installed.");
                             RaiseMessage($"Please manually uninstall the mod that owns this file to install {ex.installingModule}.");

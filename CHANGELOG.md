@@ -15,7 +15,6 @@ All notable changes to this project will be documented in this file.
 ## Internal
 
 - [Netkan] Add author to list of required properties in CKAN.schema (#3111 by: DasSkelett; reviewed: HebaruSan)
-- [Build] Cleanup project, update builds, fixes (#3108 by: Olympic1; reviewed: HebaruSan, DasSkelett)
 
 ## v1.28.0-PRE1 (Drake)
 
