@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,8 +12,6 @@
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
     <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
     <IntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</IntermediateOutputPath>
   </PropertyGroup>
@@ -37,18 +35,38 @@
     <WarningLevel>4</WarningLevel>
     <LangVersion>7</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.4" />
-    <PackageReference Include="AWSSDK.Core" Version="3.3.107.24" />
-    <PackageReference Include="AWSSDK.SQS" Version="3.3.103.11" />
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="ICSharpCode.SharpZipLib.Patched" Version="1.2.0.9" />
-    <PackageReference Include="log4net" Version="2.0.8" />
-    <PackageReference Include="Namotion.Reflection" Version="1.0.12" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="NJsonSchema" Version="10.1.23" />
-  </ItemGroup>
-  <ItemGroup>
+    <Reference Include="Autofac, Version=4.9.4.0, Culture=neutral, PublicKeyToken=17863af14b0044da">
+      <HintPath>..\_build\lib\nuget\Autofac.4.9.4\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604">
+      <HintPath>..\_build\lib\nuget\AWSSDK.Core.3.3.103.64\lib\net45\AWSSDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.SQS, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604">
+      <HintPath>..\_build\lib\nuget\AWSSDK.SQS.3.3.102.31\lib\net45\AWSSDK.SQS.dll</HintPath>
+    </Reference>
+    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\_build\lib\nuget\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.5.0, Culture=neutral, PublicKeyToken=9dea7c6e17aa31ff, processorArchitecture=MSIL">
+      <HintPath>..\_build\lib\nuget\ICSharpCode.SharpZipLib.Patched.0.86.5.1\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\_build\lib\nuget\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Namotion.Reflection, Version=1.0.7.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102">
+      <HintPath>..\_build\lib\nuget\Namotion.Reflection.1.0.7\lib\net45\Namotion.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\_build\lib\nuget\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NJsonSchema, Version=10.0.27.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102">
+      <HintPath>..\_build\lib\nuget\NJsonSchema.10.0.27\lib\net45\NJsonSchema.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -59,7 +77,9 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CmdLineOptions.cs" />
-    <Compile Include="ConsoleUser.cs" />
+    <Compile Include="ConsoleUser.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\JObjectExtensions.cs" />
     <Compile Include="Extensions\VersionExtensions.cs" />
@@ -68,8 +88,8 @@
     <Compile Include="Processors\Inflator.cs" />
     <Compile Include="Processors\QueueHandler.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueueAppender.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CachingHttpService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\IFileService.cs" />
@@ -100,8 +120,8 @@
     <Compile Include="Sources\Spacedock\SpacedockError.cs" />
     <Compile Include="Sources\Spacedock\SpacedockMod.cs" />
     <Compile Include="Sources\Spacedock\SpacedockUser.cs" />
-    <Compile Include="Transformers\AvcKrefTransformer.cs" />
     <Compile Include="Transformers\AvcTransformer.cs" />
+    <Compile Include="Transformers\AvcKrefTransformer.cs" />
     <Compile Include="Transformers\CurseTransformer.cs" />
     <Compile Include="Transformers\DownloadAttributeTransformer.cs" />
     <Compile Include="Transformers\EpochTransformer.cs" />
@@ -122,31 +142,31 @@
     <Compile Include="Transformers\StripNetkanMetadataTransformer.cs" />
     <Compile Include="Transformers\VersionEditTransformer.cs" />
     <Compile Include="Transformers\VersionedOverrideTransformer.cs" />
-    <Compile Include="Validators\AlphaNumericIdentifierValidator.cs" />
     <Compile Include="Validators\CkanValidator.cs" />
-    <Compile Include="Validators\DownloadVersionValidator.cs" />
     <Compile Include="Validators\HasIdentifierValidator.cs" />
     <Compile Include="Validators\InstallsFilesValidator.cs" />
-    <Compile Include="Validators\InstallValidator.cs" />
     <Compile Include="Validators\IsCkanModuleValidator.cs" />
     <Compile Include="Validators\IValidator.cs" />
+    <Compile Include="Validators\KrefValidator.cs" />
+    <Compile Include="Validators\MatchingIdentifiersValidator.cs" />
+    <Compile Include="Validators\NetkanValidator.cs" />
+    <Compile Include="Validators\AlphaNumericIdentifierValidator.cs" />
+    <Compile Include="Validators\DownloadVersionValidator.cs" />
+    <Compile Include="Validators\InstallValidator.cs" />
     <Compile Include="Validators\KindValidator.cs" />
     <Compile Include="Validators\KrefDownloadMutexValidator.cs" />
-    <Compile Include="Validators\KrefValidator.cs" />
     <Compile Include="Validators\LicensesValidator.cs" />
     <Compile Include="Validators\MatchesKnownGameVersionsValidator.cs" />
-    <Compile Include="Validators\MatchingIdentifiersValidator.cs" />
-    <Compile Include="Validators\ModuleManagerDependsValidator.cs" />
-    <Compile Include="Validators\NetkanValidator.cs" />
     <Compile Include="Validators\ObeysCKANSchemaValidator.cs" />
     <Compile Include="Validators\OverrideValidator.cs" />
     <Compile Include="Validators\PluginCompatibilityValidator.cs" />
-    <Compile Include="Validators\RelationshipsValidator.cs" />
     <Compile Include="Validators\ReplacedByValidator.cs" />
+    <Compile Include="Validators\RelationshipsValidator.cs" />
     <Compile Include="Validators\SpecVersionFormatValidator.cs" />
-    <Compile Include="Validators\TagsValidator.cs" />
     <Compile Include="Validators\VersionStrictValidator.cs" />
+    <Compile Include="Validators\TagsValidator.cs" />
     <Compile Include="Validators\VrefValidator.cs" />
+    <Compile Include="Validators\ModuleManagerDependsValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\CKAN.schema">
@@ -158,6 +178,7 @@
     <None Include="curl-ca-bundle.crt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\CKAN-core.csproj">
@@ -166,9 +187,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="log4net.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Analyzer Include="..\_build\lib\nuget\AWSSDK.SQS.3.3.102.31\analyzers\dotnet\cs\AWSSDK.SQS.CodeAnalysis.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
