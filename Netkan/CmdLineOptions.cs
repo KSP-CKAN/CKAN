@@ -52,7 +52,6 @@ namespace CKAN.NetKAN
         [Option("version", HelpText = "Display the netkan version number and exit")]
         public bool Version { get; set; }
 
-        // TODO: How do we mark this as required?
         [ValueOption(0)]
         public string File { get; set; }
     }

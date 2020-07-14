@@ -641,7 +641,7 @@ namespace Tests.Core
             var zip = ZipFile.Create(new MemoryStream());
             zip.BeginUpdate();
             zip.AddDirectory("ExampleShips");
-            zip.Add(new ZipEntry("/ExampleShips/AwesomeShip.craft") { Size = 0, CompressedSize = 0 });
+            zip.Add(new ZipEntry("ExampleShips/AwesomeShip.craft") { Size = 0, CompressedSize = 0 });
             zip.CommitUpdate();
 
             var mod = CkanModule.FromJson(string.Format(@"
@@ -683,7 +683,7 @@ namespace Tests.Core
             zip.BeginUpdate();
             zip.AddDirectory("saves");
             zip.AddDirectory("saves/scenarios");
-            zip.Add(new ZipEntry("/saves/scenarios/AwesomeRace.sfs") { Size = 0, CompressedSize = 0 });
+            zip.Add(new ZipEntry("saves/scenarios/AwesomeRace.sfs") { Size = 0, CompressedSize = 0 });
             zip.CommitUpdate();
 
             var mod = CkanModule.FromJson(@"
