@@ -1,69 +1,45 @@
 ﻿<Project>
-  <PropertyGroup>
-    <AssemblyName>CKAN</AssemblyName>
-    <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\obj</BaseIntermediateOutputPath>
-  </PropertyGroup>
-
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
-
+  <PropertyGroup>
+    <ProjectGuid>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>CKAN</RootNamespace>
+    <AssemblyName>CKAN</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <IntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</IntermediateOutputPath>
+    <Configurations>Debug;Release;Debug_NetCore;Release_NetCore</Configurations>
+  </PropertyGroup>
   <Choose>
     <When Condition="$(Configuration.EndsWith('NetCore'))">
       <PropertyGroup>
-        <TargetFrameworks>netstandard2.0</TargetFrameworks>
+        <TargetFramework>netstandard2.0</TargetFramework>
       </PropertyGroup>
     </When>
     <Otherwise>
       <PropertyGroup>
-        <TargetFrameworks>net45</TargetFrameworks>
+        <TargetFramework>net45</TargetFramework>
       </PropertyGroup>
     </Otherwise>
   </Choose>
-
-  <PropertyGroup>
-    <ProjectGuid>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</ProjectGuid>
-    <RootNamespace>CKAN</RootNamespace>
-    <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin</OutputPath>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug_NetCore' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <LangVersion>7</LangVersion>
   </PropertyGroup>
-
   <PropertyGroup Condition=" '$(Configuration)' == 'Release_NetCore' ">
     <Optimize>true</Optimize>
+    <LangVersion>7</LangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">
-      <Link>Properties\GlobalAssemblyVersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\GlobalAssemblyInfo.cs">
-      <Link>Properties\GlobalAssemblyInfo.cs</Link>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="builds.json" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="ICSharpCode.SharpZipLib.Patched" Version="0.86.5.1" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="NETStandard.Library" Version="2.0.3" />
-    <PackageReference Include="TxFileManager.NETStandard" Version="2.0.0" />
-    <PackageReference Include="Shaman.CurlSharp" Version="0.6.3.1" />
-    <PackageReference Include="System.Security.Permissions" Version="4.5.0" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-  </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <PackageReference Include="ChinhDo.Transactions.FileManager" Version="1.2.0" />
     <Reference Include="CurlSharp">
@@ -73,9 +49,31 @@
     <Reference Include="System" />
     <Reference Include="System.Transactions" />
   </ItemGroup>
-
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
+    <PackageReference Include="NETStandard.Library" Version="2.0.3" />
+    <PackageReference Include="Shaman.CurlSharp" Version="0.6.3.1" />
+    <PackageReference Include="System.Security.Permissions" Version="4.7.0" />
+    <PackageReference Include="TxFileManager.NETStandard" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">
+      <Link>Properties\GlobalAssemblyVersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="builds.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="log4net.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
-
   <Target Name="BeforeBuild">
     <Exec Command="powershell ../build.ps1 Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
     <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
