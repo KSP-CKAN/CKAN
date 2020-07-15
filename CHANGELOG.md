@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.28.0-PRE2
+## v1.28.0
 
 ### Bugfixes
 
