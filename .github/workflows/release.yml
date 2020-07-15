@@ -19,8 +19,8 @@ jobs:
       - name: Installing runtime dependencies
         run: apt-get install -y libcurl4-openssl-dev xvfb
 
-      - name: Build ckan.exe
-        run: ./build Ckan --configuration=Release
+      - name: Build ckan.exe and netkan.exe
+        run: ./build --configuration=Release
       - name: Run tests
         run: xvfb-run ./build test+only --configuration=Release --where="Category!=FlakyNetwork"
 
