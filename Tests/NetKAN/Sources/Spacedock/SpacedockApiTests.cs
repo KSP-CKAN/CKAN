@@ -73,7 +73,7 @@ namespace Tests.NetKAN.Sources.Spacedock
             TestDelegate act = () => sut.GetMod(-1);
 
             // Assert
-            Assert.That(act, Throws.Exception.InstanceOf<WebException>());
+            Assert.That(act, Throws.Exception.InstanceOf<Kraken>());
         }
     }
 }

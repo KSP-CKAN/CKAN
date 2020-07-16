@@ -17,7 +17,7 @@ jobs:
       - name: Installing build dependencies
         run: apt-get update && apt-get install -y git
       - name: Installing runtime dependencies
-        run: apt-get install -y libcurl4-openssl-dev xvfb
+        run: apt-get install -y xvfb
       - name: Install Docker
         run: |
           curl -fsSL https://get.docker.com -o get-docker.sh

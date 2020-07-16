@@ -26,7 +26,7 @@ jobs:
     - name: Installing build dependencies
       run: apt-get update && apt-get install -y git
     - name: Install runtime dependencies
-      run: apt-get install -y libcurl4-openssl-dev xvfb
+      run: apt-get install -y xvfb
     - name: Restore cache for _build/lib/nuget
       uses: actions/cache@v1
       with:
@@ -65,8 +65,6 @@ jobs:
         configuration: [Debug_NetCore, Release_NetCore]
 
     steps:
-      - name: Install runtime dependencies
-        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - uses: actions/checkout@v2
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1

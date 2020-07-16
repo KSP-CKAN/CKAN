@@ -255,7 +255,6 @@ and try again.</value></data>
 Open settings now?</value></data>
   <data name="MainInstallOpenSettings" xml:space="preserve"><value>Open Settings</value></data>
   <data name="MainInstallNo" xml:space="preserve"><value>No</value></data>
-  <data name="MainInstallLibCurlMissing" xml:space="preserve"><value>libcurl installation not found. Open wiki page for help?</value></data>
   <data name="MainInstallModSuccess" xml:space="preserve"><value>Module "{0}" successfully installed</value></data>
   <data name="MainInstallSuccess" xml:space="preserve"><value>Success!</value></data>
   <data name="MainInstallCancelTooLate" xml:space="preserve"><value>Cancellation too late, process complete!</value></data>

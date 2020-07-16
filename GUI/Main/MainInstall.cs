@@ -365,13 +365,6 @@ namespace CKAN
                         currentUser.RaiseMessage("\r\n{0}", exc.Message);
                         break;
 
-                    case DllNotFoundException exc:
-                        if (currentUser.RaiseYesNoDialog(Properties.Resources.MainInstallLibCurlMissing))
-                        {
-                            Utilities.ProcessStartURL("https://github.com/KSP-CKAN/CKAN/wiki/libcurl");
-                        }
-                        break;
-
                     case ModuleIsDLCKraken exc:
                         string dlcMsg = string.Format(Properties.Resources.MainInstallCantInstallDLC, exc.module.name);
                         currentUser.RaiseMessage(dlcMsg);

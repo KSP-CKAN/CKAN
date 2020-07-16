@@ -500,9 +500,6 @@ namespace CKAN.Properties {
         internal static string MainInstallNo {
             get { return (string)(ResourceManager.GetObject("MainInstallNo", resourceCulture)); }
         }
-        internal static string MainInstallLibCurlMissing {
-            get { return (string)(ResourceManager.GetObject("MainInstallLibCurlMissing", resourceCulture)); }
-        }
         internal static string MainInstallModSuccess {
             get { return (string)(ResourceManager.GetObject("MainInstallModSuccess", resourceCulture)); }
         }
