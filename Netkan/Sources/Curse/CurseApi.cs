@@ -29,10 +29,10 @@ namespace CKAN.NetKAN.Sources.Curse
             {
                 json = Call(nameOrId);
             }
-            catch (NativeAndCurlDownloadFailedKraken e)
+            catch (WebException e)
             {
                 // CurseForge returns a valid json with an error message in some cases.
-                json = e.responseContent;
+                json = new StreamReader(e.Response.GetResponseStream(), System.Text.Encoding.UTF8).ReadToEnd();
             }
             // Check if the mod has been removed from Curse and if it corresponds to a KSP mod.
             var error = JsonConvert.DeserializeObject<CurseError>(json);

@@ -25,9 +25,6 @@ namespace Tests.Core.Net
         [SetUp]
         public void Setup()
         {
-            // Make sure curl is all set up.
-            Curl.Init();
-
             manager = new KSPManager(new NullUser());
             // Give us a registry to play with.
             ksp = new DisposableKSP();
@@ -48,7 +45,6 @@ namespace Tests.Core.Net
         [TearDown]
         public void TearDown()
         {
-            Curl.CleanUp();
             manager.Dispose();
             ksp.Dispose();
         }

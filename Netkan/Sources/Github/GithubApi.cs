@@ -194,9 +194,9 @@ namespace CKAN.NetKAN.Sources.Github
             {
                 return _http.DownloadText(url, _oauthToken, mimeType);
             }
-            catch (NativeAndCurlDownloadFailedKraken k)
+            catch (WebException k)
             {
-                if (k.responseStatus == 403 && k.responseHeader.Contains("X-RateLimit-Remaining: 0"))
+                if (((HttpWebResponse)k.Response).StatusCode == HttpStatusCode.Forbidden && k.Response.Headers["X-RateLimit-Remaining"] == "0")
                 {
                     throw new Kraken($"GitHub API rate limit exceeded: {path}");
                 }

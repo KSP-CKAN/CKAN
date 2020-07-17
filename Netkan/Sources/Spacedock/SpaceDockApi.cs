@@ -28,10 +28,10 @@ namespace CKAN.NetKAN.Sources.Spacedock
             {
                 json = Call("/mod/" + modId);
             }
-            catch (NativeAndCurlDownloadFailedKraken e)
+            catch (WebException e)
             {
                 // SpaceDock returns a valid json with an error message in case of non 200 codes.
-                json = e.responseContent;
+                json = new System.IO.StreamReader(e.Response.GetResponseStream(), System.Text.Encoding.UTF8).ReadToEnd();
                 if (string.IsNullOrEmpty(json))
                 {
                     // ... sometimes. Other times we get nothing.
@@ -61,9 +61,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
 
             // Alas, this isn't as simple as it may sound. For some reason
             // some—but not all—SD mods don't work the same way if the path provided
-            // is escaped or un-escaped. Since our curl implementation preserves the
-            // "original" string used to download a mod, we need to jump through some
-            // hoops to make sure this is escaped.
+            // is escaped or un-escaped.
 
             // Update: The Uri class under mono doesn't un-escape everything when
             // .ToString() is called, even though the .NET documentation says that it

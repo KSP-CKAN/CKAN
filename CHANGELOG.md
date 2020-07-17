@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.28.1
 
+### Bugfixes
 
+- [Multiple] Purge CurlSharp (#3118 by: HebaruSan; reviewed: DasSkelett, techman83)
 
 ## v1.28.0 (Dyson)
 

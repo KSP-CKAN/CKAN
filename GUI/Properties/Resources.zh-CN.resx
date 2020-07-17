@@ -183,7 +183,7 @@
   <data name="MainTSV" xml:space="preserve"><value>Tab-separated values (*.tsv)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Not found.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>您真的想要重新安装 {0}吗？</value></data>
-  <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0}不支持您的当前游戏版本并很可能不能正常运行. 如果您遇到任何问题，请不要向其维护者求助. 
+  <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0}不支持您的当前游戏版本并很可能不能正常运行. 如果您遇到任何问题，请不要向其维护者求助.
 
 您真的想要安装它吗？</value></data>
   <data name="AllModVersionsInstallYes" xml:space="preserve"><value>安装</value></data>
@@ -232,7 +232,6 @@ CKAN Version(CKAN版本)   : {3}</value></data>
 现在打开设置吗？</value></data>
   <data name="MainInstallOpenSettings" xml:space="preserve"><value>打开设置</value></data>
   <data name="MainInstallNo" xml:space="preserve"><value>不</value></data>
-  <data name="MainInstallLibCurlMissing" xml:space="preserve"><value>未找到libcurl安装. 是否打开wiki页面寻找帮助？</value></data>
   <data name="MainInstallModSuccess" xml:space="preserve"><value>Mod "{0}" 已成功安装</value></data>
   <data name="MainInstallSuccess" xml:space="preserve"><value>成功！</value></data>
   <data name="MainInstallCancelTooLate" xml:space="preserve"><value>取消时间过晚，进程已完成！</value></data>

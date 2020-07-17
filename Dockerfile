@@ -49,7 +49,7 @@ RUN echo '#!/bin/bash\n\
   fi\n\
 ' >> /root/entrypoint.sh
 RUN chmod +x /root/entrypoint.sh
-RUN apt-get -y update && apt-get -y install libcurl4-openssl-dev
+RUN apt-get -y update && apt-get -y install
 RUN mkdir /kspdir
 VOLUME ["/kspdir"]
 COPY . /source

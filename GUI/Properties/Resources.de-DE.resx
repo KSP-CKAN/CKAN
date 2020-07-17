@@ -235,7 +235,6 @@ Einstellungen jetzt öffnen?</value>
   </data>
   <data name="MainInstallOpenSettings" xml:space="preserve"><value>Öffnen</value></data>
   <data name="MainInstallNo" xml:space="preserve"><value>Nein</value></data>
-  <data name="MainInstallLibCurlMissing" xml:space="preserve"><value>Libcurl-Installation nicht gefunden. Wikiseite für Hilfe öffnen?</value></data>
   <data name="MainInstallModSuccess" xml:space="preserve"><value>Modul "{0}" erfolgreich installiert.</value></data>
   <data name="MainInstallSuccess" xml:space="preserve"><value>Erfolg!</value></data>
   <data name="MainInstallCancelTooLate" xml:space="preserve"><value>Abbruch zu spät, Prozess bereits abgeschlossen!</value></data>

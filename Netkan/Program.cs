@@ -46,9 +46,6 @@ namespace CKAN.NetKAN
                     return ExitOk;
                 }
 
-                // Make sure Curl is all set up
-                Curl.Init();
-
                 if (!string.IsNullOrEmpty(Options.ValidateCkan))
                 {
                     var ckan = new Metadata(JObject.Parse(File.ReadAllText(Options.ValidateCkan)));

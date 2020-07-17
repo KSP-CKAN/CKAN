@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using Autofac;
 using ChinhDo.Transactions.FileManager;
 using CKAN.Configuration;
-using CurlSharp;
 using log4net;
 
 namespace CKAN
@@ -110,60 +109,6 @@ namespace CKAN
                     }
                     // Otherwise it's a valid failure from the server (probably a 404), keep it
                 }
-                else
-                {
-                    // Something other than the server failed, retry with Curl
-                    log.InfoFormat("Native file download failed, trying with CurlSharp...");
-                    etag = null;
-
-                    try
-                    {
-                        Curl.Init();
-
-                        using (FileStream stream = File.OpenWrite(filename))
-                        {
-                            string header  = string.Empty;
-
-                            var client = Curl.CreateEasy(url, null, stream, delegate(byte[] buf, int size, int nmemb, object extraData)
-                            {
-                                header += Encoding.UTF8.GetString(buf);
-                                return size * nmemb;
-                            });
-
-                            using (client)
-                            {
-                                var result = client.Perform();
-                                var returnCode = client.ResponseCode;
-
-                                if (result != CurlCode.Ok || returnCode >= 300)
-                                {
-                                    // Always log if it's an error.
-                                    log.ErrorFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, "Content not logged because it is likely a file.");
-
-                                    WebException curlException =
-                                        new WebException($"Curl download failed with status {returnCode}.");
-                                    throw new NativeAndCurlDownloadFailedKraken(
-                                        new List<Exception> {exc, curlException},
-                                        url.ToString(), header, null, returnCode
-                                    );
-                                }
-                                else
-                                {
-                                    // Only log if debug flag is set.
-                                    log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, "Content not logged because it is likely a file.");
-                                }
-                            }
-                        }
-
-                        Curl.CleanUp();
-                        return filename;
-                    }
-                    catch
-                    {
-                        // D'oh, failed again. Fall through to clean-up handling.
-                    }
-
-                }
 
                 // Clean up our file, it's unlikely to be complete.
                 // We do this even though we're using transactional files, as we may not be in a transaction.
@@ -249,82 +194,29 @@ namespace CKAN
         {
             log.DebugFormat("About to download {0}", url.OriginalString);
 
-            try
+            WebClient agent = MakeDefaultHttpClient();
+
+            // Check whether to use an auth token for this host
+            if (!string.IsNullOrEmpty(authToken)
+                || (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(url.Host, out authToken)
+                    && !string.IsNullOrEmpty(authToken)))
             {
-                WebClient agent = MakeDefaultHttpClient();
-
-                // Check whether to use an auth token for this host
-                if (!string.IsNullOrEmpty(authToken)
-                    || (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(url.Host, out authToken)
-                        && !string.IsNullOrEmpty(authToken)))
-                {
-                    log.InfoFormat("Using auth token for {0}", url.Host);
-                    // Send our auth token to the GitHub API (or whoever else needs one)
-                    agent.Headers.Add("Authorization", $"token {authToken}");
-                }
-                if (!string.IsNullOrEmpty(mimeType))
-                {
-                    log.InfoFormat("Setting MIME type {0}", mimeType);
-                    agent.Headers.Add("Accept", mimeType);
-                }
-
-                string content = agent.DownloadString(url.OriginalString);
-                string header  = agent.ResponseHeaders.ToString();
-
-                log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
-
-                return content;
+                log.InfoFormat("Using auth token for {0}", url.Host);
+                // Send our auth token to the GitHub API (or whoever else needs one)
+                agent.Headers.Add("Authorization", $"token {authToken}");
             }
-            catch (Exception exc)
+            if (!string.IsNullOrEmpty(mimeType))
             {
-                if ((exc as WebException)?.Status == WebExceptionStatus.ProtocolError)
-                {
-                    // Don't retry with Curl if we get a valid failure from the server
-                    throw;
-                }
-                
-                log.InfoFormat("Native text download failed, trying with CurlSharp...");
-
-                string content = string.Empty;
-                string header  = string.Empty;
-
-                var client = Curl.CreateEasy(url.OriginalString, authToken,
-                    delegate (byte[] buf, int size, int nmemb, object extraData)
-                    {
-                        content += Encoding.UTF8.GetString(buf);
-                        return size * nmemb;
-                    },
-                    delegate(byte[] buf, int size, int nmemb, object extraData)
-                    {
-                        header += Encoding.UTF8.GetString(buf);
-                        return size * nmemb;
-                    }
-                );
-
-                using (client)
-                {
-                    var result = client.Perform();
-                    var returnCode = client.ResponseCode;
-
-                    if (result != CurlCode.Ok || returnCode >= 300 )
-                    {
-                        // Always log if it's an error.
-                        log.ErrorFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
-
-                        WebException curlException = new WebException($"Curl download failed with status {returnCode}.");
-                        throw new NativeAndCurlDownloadFailedKraken(
-                            new List<Exception> {exc, curlException},
-                            url.ToString(), header, content, returnCode
-                        );
-                    }
-                    else
-                    {
-                        // Only log if debug flag is set
-                        log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
-                        return content;
-                    }
-                }
+                log.InfoFormat("Setting MIME type {0}", mimeType);
+                agent.Headers.Add("Accept", mimeType);
             }
+
+            string content = agent.DownloadString(url.OriginalString);
+            string header  = agent.ResponseHeaders.ToString();
+
+            log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
+
+            return content;
         }
 
         public static Uri ResolveRedirect(Uri uri)

@@ -58,18 +58,5 @@ namespace Tests.Core.Net
                 }
             });
         }
-            
-        [Test]
-        [Category("Security")]
-        public void SSLenforced()
-        {
-            // We don't use curl on Windows, and so we just skip
-            // this test on that platform.
-            if (Platform.IsWindows) return;
-
-            var curl = Curl.CreateEasy("https://example.com", null, (FileStream) null);
-            Assert.IsTrue(curl.SslVerifyPeer, "We should enforce SSL");
-        }
-
     }
 }
