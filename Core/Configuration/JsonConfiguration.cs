@@ -306,7 +306,14 @@ namespace CKAN.Configuration
         {
             lock (_lock)
             {
-                config.AuthTokens[host] = token;
+                if (string.IsNullOrEmpty(token))
+                {
+                    config.AuthTokens.Remove(host);
+                }
+                else
+                {
+                    config.AuthTokens[host] = token;
+                }
 
                 SaveConfig();
             }
