@@ -36,6 +36,8 @@ if (!(Test-Path "$NugetDir")) {
 }
 
 if (!(Test-Path "$NugetExe")) {
+    # Enable TLS1.2 for WebClient
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls13
     (New-Object System.Net.WebClient).DownloadFile("https://dist.nuget.org/win-x86-commandline/v${NugetVersion}/nuget.exe", $NugetExe)
 }
 
