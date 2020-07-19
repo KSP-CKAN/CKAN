@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [Multiple] Purge CurlSharp (#3118 by: HebaruSan; reviewed: DasSkelett, techman83)
+- [Core] Delete Authtoken when setting to null (#3119 by: Olympic1; reviewed: HebaruSan, DasSkelett)
 
 ## v1.28.0 (Dyson)
 
