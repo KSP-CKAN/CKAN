@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <AssemblyName>NetKAN</AssemblyName>
+    <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -7,15 +12,12 @@
     <ProjectGuid>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>CKAN.NetKAN</RootNamespace>
-    <AssemblyName>NetKAN</AssemblyName>
     <StartupObject>CKAN.NetKAN.Program</StartupObject>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
-    <IntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -35,34 +37,17 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac, Version=4.9.4.0, Culture=neutral, PublicKeyToken=17863af14b0044da">
-      <HintPath>..\_build\lib\nuget\Autofac.4.9.4\lib\net45\Autofac.dll</HintPath>
-    </Reference>
-    <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604">
-      <HintPath>..\_build\lib\nuget\AWSSDK.Core.3.3.103.64\lib\net45\AWSSDK.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="AWSSDK.SQS, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604">
-      <HintPath>..\_build\lib\nuget\AWSSDK.SQS.3.3.102.31\lib\net45\AWSSDK.SQS.dll</HintPath>
-    </Reference>
-    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.5.0, Culture=neutral, PublicKeyToken=9dea7c6e17aa31ff, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\ICSharpCode.SharpZipLib.Patched.0.86.5.1\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Namotion.Reflection, Version=1.0.7.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102">
-      <HintPath>..\_build\lib\nuget\Namotion.Reflection.1.0.7\lib\net45\Namotion.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NJsonSchema, Version=10.0.27.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102">
-      <HintPath>..\_build\lib\nuget\NJsonSchema.10.0.27\lib\net45\NJsonSchema.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Autofac" Version="4.9.4" />
+    <PackageReference Include="AWSSDK.Core" Version="3.3.103.64" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.3.102.31" />
+    <PackageReference Include="CommandLineParser" Version="1.9.71" />
+    <PackageReference Include="ICSharpCode.SharpZipLib.Patched" Version="0.86.5.1" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Namotion.Reflection" Version="1.0.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NJsonSchema" Version="10.0.27" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -169,7 +154,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\CKAN-core.csproj">
@@ -178,7 +162,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\_build\lib\nuget\AWSSDK.SQS.3.3.102.31\analyzers\dotnet\cs\AWSSDK.SQS.CodeAnalysis.dll" />
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -1,17 +1,20 @@
 ﻿<Project>
+  <PropertyGroup>
+    <AssemblyName>CKAN</AssemblyName>
+    <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
     <ProjectGuid>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>CKAN</RootNamespace>
-    <AssemblyName>CKAN</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
-    <IntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</IntermediateOutputPath>
     <Configurations>Debug;Release;Debug_NetCore;Release_NetCore</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7</LangVersion>
   </PropertyGroup>
   <Choose>
     <When Condition="$(Configuration.EndsWith('NetCore'))">
@@ -29,11 +32,9 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
-    <LangVersion>7</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release_NetCore' ">
     <Optimize>true</Optimize>
-    <LangVersion>7</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />
@@ -50,7 +51,6 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-    <PackageReference Include="NETStandard.Library" Version="2.0.3" />
     <PackageReference Include="System.Security.Permissions" Version="4.7.0" />
     <PackageReference Include="TxFileManager.NETStandard" Version="2.0.0" />
   </ItemGroup>
