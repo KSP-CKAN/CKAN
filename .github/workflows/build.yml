@@ -21,39 +21,49 @@ jobs:
       image: mono:${{ matrix.mono }}
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Installing build dependencies
-      run: apt-get update && apt-get install -y git
-    - name: Install runtime dependencies
-      run: apt-get install -y xvfb
-    - name: Restore cache for _build/lib/nuget
-      uses: actions/cache@v1
-      with:
-        path: _build/lib/nuget
-        key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
-    - name: Restore cache for ~/.nuget/packages
-      uses: actions/cache@v1
-      with:
-        path: ~/.nuget/packages
-        key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
+      - name: Installing build dependencies
+        run: apt-get update && apt-get install -y git
+      - name: Install runtime dependencies
+        run: apt-get install -y xvfb
+      - name: Restore cache for _build/tools
+        uses: actions/cache@v1
+        with:
+          path: _build/tools
+          key: build-tools-${{ hashFiles('build', 'build.ps1', 'build.cake') }}
+      - name: Restore cache for _build/cake
+        uses: actions/cache@v1
+        with:
+          path: _build/cake
+          key: build-cake-${{ hashFiles('build.cake') }}
+      - name: Restore cache for _build/lib/nuget
+        uses: actions/cache@v1
+        with:
+          path: _build/lib/nuget
+          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
+      - name: Restore cache for ~/.nuget/packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.nuget/packages
+          key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
 
-    - name: Build ckan.exe and netkan.exe
-      run: ./build --configuration=${{ matrix.configuration}}
-    - name: Run tests
-      run: xvfb-run ./build test+only --configuration=${{ matrix.configuration }} --where="Category!=FlakyNetwork"
+      - name: Build ckan.exe and netkan.exe
+        run: ./build --configuration=${{ matrix.configuration}}
+      - name: Run tests
+        run: xvfb-run ./build test+only --configuration=${{ matrix.configuration }} --where="Category!=FlakyNetwork"
 
-    - name: Send Discord Notification
-      env:
-        JOB_STATUS: ${{ job.status }}
-        WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
-        HOOK_OS_NAME: ${{ runner.os }}
-        WORKFLOW_NAME: ${{ github.workflow }}
-      if: ${{ failure() && env.WEBHOOK_URL }}
-      run: |
-        git clone https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
-        bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
-      shell: bash
+      - name: Send Discord Notification
+        env:
+          JOB_STATUS: ${{ job.status }}
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
+          HOOK_OS_NAME: ${{ runner.os }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+        if: ${{ failure() && env.WEBHOOK_URL }}
+        run: |
+          git clone https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
+          bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
+        shell: bash
 
 
   build_NetCore:
@@ -70,6 +80,16 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '3.1.301'
+      - name: Restore cache for _build/tools
+        uses: actions/cache@v1
+        with:
+          path: _build/tools
+          key: build-tools-${{ hashFiles('build', 'build.ps1', 'build.cake') }}
+      - name: Restore cache for _build/cake
+        uses: actions/cache@v1
+        with:
+          path: _build/cake
+          key: build-cake-${{ hashFiles('build.cake') }}
       - name: Restore cache for _build/lib/nuget
         uses: actions/cache@v1
         with:
