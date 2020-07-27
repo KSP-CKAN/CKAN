@@ -32,6 +32,11 @@ jobs:
         with:
           path: _build/tools
           key: build-tools-${{ hashfiles('build', 'build.ps1', 'build.cake') }}
+      - name: Restore cache for _build/cake
+        uses: actions/cache@v1
+        with:
+          path: _build/cake
+          key: build-cake-${{ hashfiles('build.cake') }}
       - name: Restore cache for _build/lib/nuget
         uses: actions/cache@v1
         with:
