@@ -18,6 +18,21 @@ jobs:
         run: apt-get update && apt-get install -y git make sed libplist-utils xorriso gzip fakeroot lintian rpm wget jq
       - name: Installing runtime dependencies
         run: apt-get install -y xvfb
+      - name: Restore cache for _build/tools
+        uses: actions/cache@v1
+        with:
+          path: _build/tools
+          key: build-tools-${{ hashfiles('build', 'build.ps1', 'build.cake') }}
+      - name: Restore cache for _build/lib/nuget
+        uses: actions/cache@v1
+        with:
+          path: _build/lib/nuget
+          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
+      - name: Restore cache for ~/.nuget/packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.nuget/packages
+          key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
 
       - name: Build ckan.exe and netkan.exe
         run: ./build --configuration=Release

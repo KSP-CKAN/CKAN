@@ -22,6 +22,11 @@ jobs:
         run: |
           curl -fsSL https://get.docker.com -o get-docker.sh
           sh get-docker.sh
+      - name: Restore cache for _build/tools
+        uses: actions/cache@v1
+        with:
+          path: _build/tools
+          key: build-tools-${{ hashfiles('build', 'build.ps1', 'build.cake') }}
       - name: Restore cache for _build/lib/nuget
         uses: actions/cache@v1
         with:
