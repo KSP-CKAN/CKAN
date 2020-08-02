@@ -467,6 +467,12 @@ namespace CKAN
                 invalidReason = ex.Message;
                 return false;
             }
+            catch (NotSupportedException nse) when (Platform.IsMono)
+            {
+                // SharpZipLib throws this if your locale isn't installed on Mono
+                invalidReason = $"{nse.Message}\r\n\r\nInstall the `mono-complete` package or equivalent for your operating system.";
+                return false;
+            }
         }
 
         /// <summary>

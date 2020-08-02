@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - [Multiple] Purge CurlSharp (#3118 by: HebaruSan; reviewed: DasSkelett, techman83)
 - [Core] Delete Authtoken when setting to null (#3119 by: Olympic1; reviewed: HebaruSan, DasSkelett)
+- [Core] Better message when ZipFile throws NotSupportedException (#3128 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
