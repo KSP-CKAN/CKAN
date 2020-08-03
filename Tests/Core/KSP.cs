@@ -144,6 +144,8 @@ namespace Tests.Core
 
             // Assert
             Assert.IsFalse(my_ksp.Valid);
+
+            Directory.Delete(gamedir, true);
         }
 
         [Test]
@@ -174,6 +176,8 @@ namespace Tests.Core
             {
                 CKAN.KSP my_ksp = new CKAN.KSP(gamedir, "null-compat-ver-test", nullUser);
             });
+
+            Directory.Delete(gamedir, true);
         }
 
     }

@@ -385,9 +385,11 @@ namespace Tests.Core
         {
             using (var tidy = new DisposableKSP())
             {
+                var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name);
+
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeConfiguration(tidy.KSP, tidy.KSP.Name)
+                    config
                 ) {
                     CurrentInstance = tidy.KSP
                 };
@@ -401,6 +403,7 @@ namespace Tests.Core
 
                 manager.CurrentInstance = null; // I weep even more.
                 manager.Dispose();
+                config.Dispose();
             }
         }
 
@@ -412,9 +415,11 @@ namespace Tests.Core
             // Create a new disposable KSP instance to run the test on.
             using (DisposableKSP ksp = new DisposableKSP())
             {
+                var config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name);
+
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeConfiguration(ksp.KSP, ksp.KSP.Name)
+                    config
                 ) {
                     CurrentInstance = ksp.KSP
                 };
@@ -450,6 +455,7 @@ namespace Tests.Core
                 Assert.IsTrue(File.Exists(mod_file_path));
 
                 manager.Dispose();
+                config.Dispose();
             }
         }
 
@@ -459,9 +465,11 @@ namespace Tests.Core
             using (DisposableKSP ksp = new DisposableKSP())
             {
                 // Arrange
+                var config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name);
+
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeConfiguration(ksp.KSP, ksp.KSP.Name)
+                    config
                 ) {
                     CurrentInstance = ksp.KSP
                 };
@@ -486,6 +494,7 @@ namespace Tests.Core
                 Assert.IsTrue(File.Exists(mod_file_path));
 
                 manager.Dispose();
+                config.Dispose();
             }
         }
 
@@ -497,9 +506,11 @@ namespace Tests.Core
             // Create a new disposable KSP instance to run the test on.
             using (var ksp = new DisposableKSP())
             {
+                var config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name);
+
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeConfiguration(ksp.KSP, ksp.KSP.Name)
+                    config
                 ) {
                     CurrentInstance = ksp.KSP
                 };
@@ -526,6 +537,7 @@ namespace Tests.Core
                 Assert.IsFalse(File.Exists(mod_file_path));
 
                 manager.Dispose();
+                config.Dispose();
             }
         }
 
@@ -537,9 +549,11 @@ namespace Tests.Core
             // Create a new disposable KSP instance to run the test on.
             using (var ksp = new DisposableKSP())
             {
+                var config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name);
+
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeConfiguration(ksp.KSP, ksp.KSP.Name)
+                    config
                 ) {
                     CurrentInstance = ksp.KSP
                 };
@@ -583,6 +597,7 @@ namespace Tests.Core
                 Assert.IsFalse(Directory.Exists(directoryPath));
 
                 manager.Dispose();
+                config.Dispose();
             }
         }
 
@@ -598,9 +613,11 @@ namespace Tests.Core
                 {
                     using (DisposableKSP ksp = new DisposableKSP())
                     {
+                        var config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name);
+
                         KSPManager manager = new KSPManager(
                             new NullUser(),
-                            new FakeConfiguration(ksp.KSP, ksp.KSP.Name)
+                            config
                         ) {
                             CurrentInstance = ksp.KSP
                         };
@@ -624,6 +641,7 @@ namespace Tests.Core
                         Assert.IsTrue(File.Exists(mod_file_path));
 
                         manager.Dispose();
+                        config.Dispose();
                     }
                 }
             });

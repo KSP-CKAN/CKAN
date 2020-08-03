@@ -20,6 +20,7 @@ namespace Tests.GUI
         private CkanModule _anyVersionModule;
         private DisposableKSP _instance;
         private KSPManager _manager;
+        private FakeConfiguration _config;
         private RegistryManager _registryManager;
         private Registry _registry;
         private ModList _modList;
@@ -55,9 +56,10 @@ namespace Tests.GUI
             _instance = new DisposableKSP();
             _registryManager = RegistryManager.Instance(_instance.KSP);
             _registry = Registry.Empty();
+            _config = new FakeConfiguration(_instance.KSP, _instance.KSP.Name);
             _manager = new KSPManager(
                 new NullUser(),
-                new FakeConfiguration(_instance.KSP, _instance.KSP.Name)
+                _config
             );
 
             // this module contains a ksp_version of "any" which repros our issue
@@ -100,6 +102,7 @@ namespace Tests.GUI
         {
             _instance.Dispose();
             _manager.Dispose();
+            _config.Dispose();
         }
 
         [Test]
