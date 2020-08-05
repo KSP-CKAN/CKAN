@@ -3,180 +3,190 @@ using System.Collections.Generic;
 using Autofac;
 using CKAN.Configuration;
 using CommandLine;
-using CommandLine.Text;
-using log4net;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
     /// <summary>
-    /// Subcommand for managing authentication tokens
+    /// Class for managing authentication tokens.
     /// </summary>
     public class AuthToken : ISubCommand
     {
-        /// <summary>
-        /// Initialize the subcommand
-        /// </summary>
-        public AuthToken() { }
+        private GameInstanceManager _manager;
+        private IUser _user;
 
         /// <summary>
-        /// Run the subcommand
+        /// Run the 'authtoken' command.
         /// </summary>
-        /// <param name="mgr">Manager to provide game instances</param>
-        /// <param name="opts">Command line parameters paritally handled by parser</param>
-        /// <param name="unparsed">Command line parameters not yet handled by parser</param>
-        /// <returns>
-        /// Exit code
-        /// </returns>
-        public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
+        /// <inheritdoc cref="ISubCommand.RunCommand"/>
+        public int RunCommand(GameInstanceManager manager, object args)
         {
-            string[] args     = unparsed.options.ToArray();
-            int      exitCode = Exit.OK;
+            var s = args.ToString();
+            var opts = s.Replace(s.Substring(0, s.LastIndexOf('.') + 1), "").Split('+');
 
-            Parser.Default.ParseArgumentsStrict(args, new AuthTokenSubOptions(), (string option, object suboptions) =>
+            CommonOptions options = new CommonOptions();
+            _user = new ConsoleUser(options.Headless);
+            _manager = manager ?? new GameInstanceManager(_user);
+            var exitCode = options.Handle(_manager, _user);
+
+            if (exitCode != Exit.Ok)
+                return exitCode;
+
+            switch (opts[1])
             {
-                if (!string.IsNullOrEmpty(option) && suboptions != null)
-                {
-                    CommonOptions options = (CommonOptions)suboptions;
-                    options.Merge(opts);
-                    user                  = new ConsoleUser(options.Headless);
-                    if (manager == null)
-                    {
-                        manager           = new GameInstanceManager(user);
-                    }
-                    exitCode              = options.Handle(manager, user);
-                    if (exitCode == Exit.OK)
-                    {
-                        switch (option)
-                        {
-                            case "list":
-                                exitCode = listAuthTokens(options);
-                                break;
-                            case "add":
-                                exitCode = addAuthToken((AddAuthTokenOptions)options);
-                                break;
-                            case "remove":
-                                exitCode = removeAuthToken((RemoveAuthTokenOptions)options);
-                                break;
-                        }
-                    }
-                }
-            }, () => { exitCode = MainClass.AfterHelp(); });
+                case "AddAuthToken":
+                    exitCode = AddAuthToken(args);
+                    break;
+                case "ListAuthToken":
+                    exitCode = ListAuthTokens();
+                    break;
+                case "RemoveAuthToken":
+                    exitCode = RemoveAuthToken(args);
+                    break;
+                default:
+                    exitCode = Exit.BadOpt;
+                    break;
+            }
+
             return exitCode;
         }
 
-        private int listAuthTokens(CommonOptions opts)
+        /// <inheritdoc cref="ISubCommand.GetUsage"/>
+        public string GetUsage(string prefix, string[] args)
         {
-            List<string> hosts  = new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts());
+            if (args.Length == 1)
+                return $"{prefix} {args[0]} <command> [options]";
+
+            switch (args[1])
+            {
+                case "add":
+                    return $"{prefix} {args[0]} {args[1]} [options] <host> <token>";
+                case "list":
+                    return $"{prefix} {args[0]} {args[1]} [options]";
+                case "remove":
+                    return $"{prefix} {args[0]} {args[1]} [options] <host>";
+                default:
+                    return $"{prefix} {args[0]} <command> [options]";
+            }
+        }
+
+        private int AddAuthToken(object args)
+        {
+            var opts = (AuthTokenOptions.AddAuthToken)args;
+            if (opts.Host == null || opts.Token == null)
+            {
+                _user.RaiseMessage("add <host> <token> - argument(s) missing, perhaps you forgot it?");
+                return Exit.BadOpt;
+            }
+
+            if (Uri.CheckHostName(opts.Host) != UriHostNameType.Unknown)
+            {
+                ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(opts.Host, opts.Token);
+                _user.RaiseMessage("Successfully added \"{0}\".", opts.Host);
+            }
+            else
+            {
+                _user.RaiseMessage("Invalid host name.");
+                return Exit.BadOpt;
+            }
+
+            return Exit.Ok;
+        }
+
+        private int ListAuthTokens()
+        {
+            const string hostHeader = "Host";
+            const string tokenHeader = "Token";
+
+            var hosts = new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts());
             if (hosts.Count > 0)
             {
-                int longestHostLen  = hostHeader.Length;
-                int longestTokenLen = tokenHeader.Length;
-                foreach (string host in hosts)
+                var hostWidth = hostHeader.Length;
+                var tokenWidth = tokenHeader.Length;
+                foreach (var host in hosts)
                 {
-                    longestHostLen = Math.Max(longestHostLen, host.Length);
-                    string token;
-                    if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out token))
+                    hostWidth = Math.Max(hostWidth, host.Length);
+                    if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out string token) && token != null)
                     {
-                        longestTokenLen = Math.Max(longestTokenLen, token.Length);
+                        tokenWidth = Math.Max(tokenWidth, token.Length);
                     }
                 }
-                // Create format string: {0,-longestHostLen}  {1,-longestTokenLen}
-                string fmt = string.Format("{0}0,-{2}{1}  {0}1,-{3}{1}",
-                    "{", "}", longestHostLen, longestTokenLen);
-                user.RaiseMessage(fmt, hostHeader, tokenHeader);
-                user.RaiseMessage(fmt,
-                    new string('-', longestHostLen),
-                    new string('-', longestTokenLen)
+
+                _user.RaiseMessage("{0}  {1}",
+                    hostHeader.PadRight(hostWidth),
+                    tokenHeader.PadRight(tokenWidth)
                 );
-                foreach (string host in hosts)
+
+                _user.RaiseMessage("{0}  {1}",
+                    new string('-', hostWidth),
+                    new string('-', tokenWidth)
+                );
+
+                foreach (var host in hosts)
                 {
-                    string token;
-                    if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out token))
+                    if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out string token))
                     {
-                        user.RaiseMessage(fmt, host, token);
+                        _user.RaiseMessage("{0}  {1}",
+                            host.PadRight(hostWidth),
+                            token.PadRight(tokenWidth)
+                        );
                     }
                 }
             }
-            return Exit.OK;
+
+            return Exit.Ok;
         }
 
-        private int addAuthToken(AddAuthTokenOptions opts)
+        private int RemoveAuthToken(object args)
         {
-            if (Uri.CheckHostName(opts.host) != UriHostNameType.Unknown)
+            var opts = (AuthTokenOptions.RemoveAuthToken)args;
+            if (opts.Host == null)
             {
-                ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(opts.host, opts.token);
+                _user.RaiseMessage("remove <host> - argument missing, perhaps you forgot it?");
+                return Exit.BadOpt;
+            }
+
+            var hosts = new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts());
+            if (hosts.Contains(opts.Host))
+            {
+                ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(opts.Host, null);
+                _user.RaiseMessage("Successfully removed \"{0}\".", opts.Host);
             }
             else
             {
-                user.RaiseError("Invalid host name: {0}", opts.host);
+                _user.RaiseMessage("There is no host with the name \"{0}\".", opts.Host);
+                _user.RaiseMessage("Use 'ckan authtoken list' to view a list of hosts.");
+                return Exit.BadOpt;
             }
-            return Exit.OK;
-        }
 
-        private int removeAuthToken(RemoveAuthTokenOptions opts)
+            return Exit.Ok;
+        }
+    }
+
+    [Verb("authtoken", HelpText = "Manage authentication tokens")]
+    [ChildVerbs(typeof(AddAuthToken), typeof(ListAuthToken), typeof(RemoveAuthToken))]
+    internal class AuthTokenOptions
+    {
+        [VerbExclude]
+        [Verb("add", HelpText = "Add an authentication token")]
+        internal class AddAuthToken : CommonOptions
         {
-            ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(opts.host, null);
-            return Exit.OK;
+            [Value(0, MetaName = "Host", HelpText = "The host (DNS / IP) to authenticate with")]
+            public string Host { get; set; }
+
+            [Value(1, MetaName = "Token", HelpText = "The token to authenticate with")]
+            public string Token { get; set; }
         }
 
-        private const string hostHeader  = "Host";
-        private const string tokenHeader = "Token";
+        [VerbExclude]
+        [Verb("list", HelpText = "List authentication tokens")]
+        internal class ListAuthToken : CommonOptions { }
 
-        private IUser      user;
-        private static readonly ILog log = LogManager.GetLogger(typeof(AuthToken));
-    }
-
-    internal class AuthTokenSubOptions : VerbCommandOptions
-    {
-        [VerbOption("list",   HelpText = "List auth tokens")]
-        public CommonOptions          ListOptions   { get; set; }
-
-        [VerbOption("add",    HelpText = "Add an auth token")]
-        public AddAuthTokenOptions    AddOptions    { get; set; }
-
-        [VerbOption("remove", HelpText = "Delete an auth token")]
-        public RemoveAuthTokenOptions RemoveOptions { get; set; }
-
-        [HelpVerbOption]
-        public string GetUsage(string verb)
+        [VerbExclude]
+        [Verb("remove", HelpText = "Remove an authentication token")]
+        internal class RemoveAuthToken : CommonOptions
         {
-            HelpText ht = HelpText.AutoBuild(this, verb);
-            // Add a usage prefix line
-            ht.AddPreOptionsLine(" ");
-            if (string.IsNullOrEmpty(verb))
-            {
-                ht.AddPreOptionsLine("ckan authtoken - Manage authentication tokens");
-                ht.AddPreOptionsLine($"Usage: ckan authtoken <command> [options]");
-            }
-            else
-            {
-                ht.AddPreOptionsLine("authtoken " + verb + " - " + GetDescription(verb));
-                switch (verb)
-                {
-                    case "add":
-                        ht.AddPreOptionsLine($"Usage: ckan authtoken {verb} [options] host token");
-                        break;
-                    case "remove":
-                        ht.AddPreOptionsLine($"Usage: ckan authtoken {verb} [options] host");
-                        break;
-                    case "list":
-                        ht.AddPreOptionsLine($"Usage: ckan authtoken {verb} [options]");
-                        break;
-                }
-            }
-            return ht;
+            [Value(0, MetaName = "Host", HelpText = "The host (DNS / IP) to remove")]
+            public string Host { get; set; }
         }
     }
-
-    internal class AddAuthTokenOptions : CommonOptions
-    {
-        [ValueOption(0)] public string host  { get; set; }
-        [ValueOption(1)] public string token { get; set; }
-    }
-
-    internal class RemoveAuthTokenOptions : CommonOptions
-    {
-        [ValueOption(0)] public string host { get; set; }
-    }
-
 }

@@ -1,45 +1,62 @@
 using System.Linq;
-using System.Collections.Generic;
+using CommandLine;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
+    /// <summary>
+    /// Class for listing the available mods.
+    /// </summary>
     public class Available : ICommand
     {
-        public IUser user { get; set; }
+        private readonly IUser _user;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CKAN.CmdLine.Action.Available"/> class.
+        /// </summary>
+        /// <param name="user">The current <see cref="CKAN.IUser"/> to raise messages to the user.</param>
         public Available(IUser user)
         {
-            this.user = user;
+            _user = user;
         }
 
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        /// <summary>
+        /// Run the 'available' command.
+        /// </summary>
+        /// <inheritdoc cref="ICommand.RunCommand"/>
+        public int RunCommand(CKAN.GameInstance inst, object args)
         {
-            AvailableOptions opts       = (AvailableOptions)raw_options;
-            IRegistryQuerier registry   = RegistryManager.Instance(ksp).registry;
-            
+            var opts = (AvailableOptions)args;
+            IRegistryQuerier registry = RegistryManager.Instance(inst).registry;
+
             var compatible = registry
-                .CompatibleModules(ksp.VersionCriteria())
+                .CompatibleModules(inst.VersionCriteria())
                 .Where(m => !m.IsDLC);
 
-            user.RaiseMessage("Modules compatible with KSP {0}", ksp.Version());
-            user.RaiseMessage("");
+            _user.RaiseMessage("Mods compatible with {0} {1}\r\n", inst.game.ShortName, inst.Version());
 
-            if (opts.detail)
+            if (opts.Detail)
             {
-                foreach (CkanModule module in compatible)
+                foreach (var module in compatible)
                 {
-                    user.RaiseMessage("* {0} ({1}) - {2} - {3}", module.identifier, module.version, module.name, module.@abstract);
+                    _user.RaiseMessage("* {0} ({1}) - {2} - {3}", module.identifier, module.version, module.name, module.@abstract);
                 }
             }
             else
             {
-                foreach (CkanModule module in compatible)
+                foreach (var module in compatible)
                 {
-                    user.RaiseMessage("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
+                    _user.RaiseMessage("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
                 }
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
+    }
+
+    [Verb("available", HelpText = "List available mods")]
+    internal class AvailableOptions : InstanceSpecificOptions
+    {
+        [Option("detail", HelpText = "Shows a short description of each mod")]
+        public bool Detail { get; set; }
     }
 }

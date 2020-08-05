@@ -4,8 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using CommandLine;
 
+using CommandLine;
+using CommandLine.Text;
 using log4net;
 using log4net.Core;
 using Newtonsoft.Json;
@@ -21,31 +22,64 @@ namespace CKAN.NetKAN
 {
     public static class Program
     {
-        private const int ExitOk = 0;
-        private const int ExitBadOpt = 1;
-        private const int ExitError = 2;
-
         private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
 
         private static CmdLineOptions Options { get; set; }
 
         public static int Main(string[] args)
         {
+            var parser = new Parser(c => c.HelpWriter = null).ParseArguments<CmdLineOptions>(args);
+            return parser.MapResult(opts => Run(opts), errs =>
+            {
+                if (errs.IsVersion())
+                {
+                    Console.WriteLine(Meta.GetVersion(VersionFormat.Full));
+                }
+                else
+                {
+                    var ht = HelpText.AutoBuild(parser, h =>
+                    {
+                        h.AddDashesToOption = true;                                     // Add dashes to options
+                        h.AddNewLineBetweenHelpSections = true;                         // Add blank line between heading and usage
+                        h.AutoHelp = false;                                             // Hide built-in help option
+                        h.AutoVersion = false;                                          // Hide built-in version option
+                        h.Heading = $"NetKAN {Meta.GetVersion(VersionFormat.Full)}";    // Create custom heading
+                        h.Copyright = $"Copyright © 2014-{DateTime.Now.Year}";          // Create custom copyright
+                        h.AddPreOptionsLine("USAGE:\n  netkan <filename> [options]"); // Show usage
+                        return HelpText.DefaultParsingErrorsHandler(parser, h);
+                    }, e => e, true);
+                    Console.WriteLine(ht);
+                }
+
+                return Exit.Ok;
+            });
+        }
+
+        private static int Run(CmdLineOptions options)
+        {
+            Options = options;
             try
             {
-                ProcessArgs(args);
+                if (Options.Debugger)
+                {
+                    Debugger.Launch();
+                }
+
+                Logging.Initialize();
+
+                LogManager.GetRepository().Threshold =
+                    Options.Verbose ? Level.Info
+                    : Options.Debug ? Level.Debug
+                    : Level.Warn;
+
+                if (Options.NetUserAgent != null)
+                {
+                    Net.UserAgentString = Options.NetUserAgent;
+                }
 
                 // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
                 // This is on by default in .NET 4.6, but not in 4.5.
                 ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-
-                // If we see the --version flag, then display our build info
-                // and exit.
-                if (Options.Version)
-                {
-                    Console.WriteLine(Meta.GetVersion(VersionFormat.Full));
-                    return ExitOk;
-                }
 
                 if (!string.IsNullOrEmpty(Options.ValidateCkan))
                 {
@@ -57,15 +91,13 @@ namespace CKAN.NetKAN
                         Options.PreRelease
                     );
                     inf.ValidateCkan(ckan);
-                    Console.WriteLine(QueueHandler.serializeCkan(
-                        new PropertySortTransformer().Transform(ckan, null).First()
-                    ));
-                    return ExitOk;
+                    Console.WriteLine(QueueHandler.serializeCkan(new PropertySortTransformer().Transform(ckan, null).First()));
+                    return Exit.Ok;
                 }
 
                 if (!string.IsNullOrEmpty(Options.Queues))
                 {
-                    var queues = Options.Queues.Split(new char[] { ',' }, 2);
+                    var queues = Options.Queues.Split(new[] { ',' }, 2);
                     var qh = new QueueHandler(
                         queues[0],
                         queues[1],
@@ -75,7 +107,7 @@ namespace CKAN.NetKAN
                         Options.PreRelease
                     );
                     qh.Process();
-                    return ExitOk;
+                    return Exit.Ok;
                 }
 
                 if (Options.File != null)
@@ -91,6 +123,7 @@ namespace CKAN.NetKAN
                         Options.GitHubToken,
                         Options.PreRelease
                     );
+
                     var ckans = inf.Inflate(
                         Options.File,
                         netkan,
@@ -100,6 +133,7 @@ namespace CKAN.NetKAN
                             ParseHighestVersion(Options.HighestVersion)
                         )
                     );
+
                     foreach (Metadata ckan in ckans)
                     {
                         WriteCkan(ckan);
@@ -107,10 +141,8 @@ namespace CKAN.NetKAN
                 }
                 else
                 {
-                    Log.Fatal(
-                        "Usage: netkan [--verbose|--debug] [--debugger] [--prerelease] [--outputdir=...] <filename>"
-                    );
-                    return ExitBadOpt;
+                    Console.WriteLine("There was no file provided, maybe you forgot it?\n\nUSAGE:\n  netkan <filename> [options]");
+                    return Exit.BadOpt;
                 }
             }
             catch (Exception e)
@@ -124,10 +156,10 @@ namespace CKAN.NetKAN
                     Log.Fatal(e.StackTrace);
                 }
 
-                return ExitError;
+                return Exit.Error;
             }
 
-            return ExitOk;
+            return Exit.Ok;
         }
 
         private static int? ParseReleases(string val)
@@ -143,29 +175,6 @@ namespace CKAN.NetKAN
         private static ModuleVersion ParseHighestVersion(string val)
         {
             return val == null ? null : new ModuleVersion(val);
-        }
-
-        private static void ProcessArgs(string[] args)
-        {
-            if (args.Any(i => i == "--debugger"))
-            {
-                Debugger.Launch();
-            }
-
-            Options = new CmdLineOptions();
-            Parser.Default.ParseArgumentsStrict(args, Options);
-
-            Logging.Initialize();
-
-            LogManager.GetRepository().Threshold =
-                  Options.Verbose ? Level.Info
-                : Options.Debug   ? Level.Debug
-                :                   Level.Warn;
-
-            if (Options.NetUserAgent != null)
-            {
-                Net.UserAgentString = Options.NetUserAgent;
-            }
         }
 
         private static Metadata ReadNetkan()
@@ -211,6 +220,5 @@ namespace CKAN.NetKAN
 
             Log.InfoFormat("Transformation written to {0}", finalPath);
         }
-
     }
 }

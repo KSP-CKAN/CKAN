@@ -2,90 +2,98 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CommandLine;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
+    /// <summary>
+    /// Class for showing information about a mod.
+    /// </summary>
     public class Show : ICommand
     {
-        public IUser user { get; set; }
+        private readonly IUser _user;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CKAN.CmdLine.Action.Show"/> class.
+        /// </summary>
+        /// <param name="user">The current <see cref="CKAN.IUser"/> to raise messages to the user.</param>
         public Show(IUser user)
         {
-            this.user = user;
+            _user = user;
         }
 
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        /// <summary>
+        /// Run the 'show' command.
+        /// </summary>
+        /// <inheritdoc cref="ICommand.RunCommand"/>
+        public int RunCommand(CKAN.GameInstance inst, object args)
         {
-            ShowOptions options = (ShowOptions) raw_options;
-
-            if (options.Modname == null)
+            var opts = (ShowOptions)args;
+            if (string.IsNullOrWhiteSpace(opts.ModName))
             {
-                // empty argument
-                user.RaiseMessage("show <module> - module name argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
+                _user.RaiseMessage("show <mod> - argument missing, perhaps you forgot it?");
+                return Exit.BadOpt;
             }
 
-            // Check installed modules for an exact match.
-            var registry = RegistryManager.Instance(ksp).registry;
-            var installedModuleToShow = registry.InstalledModule(options.Modname);
+            // Check installed modules for an exact match
+            var registry = RegistryManager.Instance(inst).registry;
+            var installedModuleToShow = registry.InstalledModule(opts.ModName);
 
             if (installedModuleToShow != null)
             {
-                // Show the installed module.
+                // Show the installed module
                 return ShowMod(installedModuleToShow);
             }
 
             // Module was not installed, look for an exact match in the available modules,
             // either by "name" (the user-friendly display name) or by identifier
-            CkanModule moduleToShow = registry
-                                      .CompatibleModules(ksp.VersionCriteria())
-                                      .SingleOrDefault(
-                                            mod => mod.name == options.Modname
-                                                || mod.identifier == options.Modname
-                                      );
+            var moduleToShow = registry
+                .CompatibleModules(inst.VersionCriteria())
+                .SingleOrDefault(
+                    mod => mod.name == opts.ModName
+                           || mod.identifier == opts.ModName
+                );
 
             if (moduleToShow == null)
             {
-                // No exact match found. Try to look for a close match for this KSP version.
-                user.RaiseMessage("{0} not found or installed.", options.Modname);
-                user.RaiseMessage("Looking for close matches in mods compatible with KSP {0}.", ksp.Version());
+                // No exact match found. Try to look for a close match for this game version
+                _user.RaiseMessage("\"{0}\" was not found or installed.\r\nLooking for close matches in mods compatible with {1} {2}.", opts.ModName, inst.game.ShortName, inst.Version());
 
-                Search search = new Search(user);
-                var matches = search.PerformSearch(ksp, options.Modname);
+                var search = new Search(_user);
+                var matches = search.PerformSearch(inst, opts.ModName);
 
-                // Display the results of the search.
+                // Display the results of the search
                 if (!matches.Any())
                 {
-                    // No matches found.
-                    user.RaiseMessage("No close matches found.");
-                    return Exit.BADOPT;
+                    // No matches found
+                    _user.RaiseMessage("No close matches found.");
+                    return Exit.BadOpt;
                 }
-                else if (matches.Count() == 1)
-                {
-                    // If there is only 1 match, display it.
-                    user.RaiseMessage("Found 1 close match: {0}", matches[0].name);
-                    user.RaiseMessage("");
 
+                if (matches.Count == 1)
+                {
+                    // If there is only 1 match, display it
+                    _user.RaiseMessage("Found 1 close match: \"{0}\".\r\n", matches[0].name);
                     moduleToShow = matches[0];
                 }
                 else
                 {
-                    // Display the found close matches.
-                    string[] strings_matches = new string[matches.Count];
+                    // Display the found close matches
+                    var stringsMatches = new string[matches.Count];
 
-                    for (int i = 0; i < matches.Count; i++)
+                    for (var i = 0; i < matches.Count; i++)
                     {
-                        strings_matches[i] = matches[i].name;
+                        stringsMatches[i] = matches[i].name;
                     }
 
-                    int selection = user.RaiseSelectionDialog("Close matches", strings_matches);
+                    var selection = _user.RaiseSelectionDialog("Close matches", stringsMatches);
 
                     if (selection < 0)
                     {
-                        return Exit.BADOPT;
+                        return Exit.BadOpt;
                     }
 
-                    // Mark the selection as the one to show.
+                    // Mark the selection as the one to show
                     moduleToShow = matches[selection];
                 }
             }
@@ -93,158 +101,167 @@ namespace CKAN.CmdLine
             return ShowMod(moduleToShow);
         }
 
-        /// <summary>
-        /// Shows information about the mod.
-        /// </summary>
-        /// <returns>Success status.</returns>
-        /// <param name="module">The module to show.</param>
-        public int ShowMod(InstalledModule module)
+        private int ShowMod(InstalledModule module)
         {
-            // Display the basic info.
-            int return_value = ShowMod(module.Module);
+            // Display the basic info
+            var returnValue = ShowMod(module.Module);
 
-            // Display InstalledModule specific information.
-            ICollection<string> files = module.Files as ICollection<string>;
-            if (files == null) throw new InvalidCastException();
+            // Display InstalledModule specific information
+            if (!(module.Files is ICollection<string> files))
+            {
+                throw new InvalidCastException();
+            }
 
             if (!module.Module.IsDLC)
             {
-                user.RaiseMessage("\r\nShowing {0} installed files:", files.Count);
-                foreach (string file in files)
+                _user.RaiseMessage("\r\nShowing {0} installed files:", files.Count);
+                foreach (var file in files)
                 {
-                    user.RaiseMessage("- {0}", file);
+                    _user.RaiseMessage("- {0}", file);
                 }
             }
 
-            return return_value;
+            return returnValue;
         }
 
-        /// <summary>
-        /// Shows information about the mod.
-        /// </summary>
-        /// <returns>Success status.</returns>
-        /// <param name="module">The module to show.</param>
-        public int ShowMod(CkanModule module)
+        private int ShowMod(CkanModule module)
         {
-            #region Abstract and description
+            // Abstract and description
+
             if (!string.IsNullOrEmpty(module.@abstract))
             {
-                user.RaiseMessage("{0}: {1}", module.name, module.@abstract);
+                _user.RaiseMessage("{0}: {1}", module.name, module.@abstract);
             }
             else
             {
-                user.RaiseMessage("{0}", module.name);
+                _user.RaiseMessage("{0}", module.name);
             }
 
             if (!string.IsNullOrEmpty(module.description))
             {
-                user.RaiseMessage("\r\n{0}\r\n", module.description);
+                _user.RaiseMessage("\r\n{0}\r\n", module.description);
             }
-            #endregion
 
-            #region General info (author, version...)
-            user.RaiseMessage("\r\nModule info:");
-            user.RaiseMessage("- version:\t{0}", module.version);
+            // General info (author, version...)
+
+            _user.RaiseMessage("\r\nModule info:\r\n- version:\t{0}", module.version);
 
             if (module.author != null)
             {
-                user.RaiseMessage("- authors:\t{0}", string.Join(", ", module.author));
+                _user.RaiseMessage("- authors:\t{0}", string.Join(", ", module.author));
             }
             else
             {
                 // Did you know that authors are optional in the spec?
-                // You do now. #673.
-                user.RaiseMessage("- authors:\tUNKNOWN");
+                // You do now. #673
+                _user.RaiseMessage("- authors:\tUNKNOWN");
             }
 
-            user.RaiseMessage("- status:\t{0}", module.release_status);
-            user.RaiseMessage("- license:\t{0}", string.Join(", ", module.license));
-            #endregion
+            _user.RaiseMessage("- status:\t{0}", module.release_status);
+            _user.RaiseMessage("- license:\t{0}", string.Join(", ", module.license));
 
-            #region Relationships
+            // Relationships
+
             if (module.depends != null && module.depends.Count > 0)
             {
-                user.RaiseMessage("\r\nDepends:");
-                foreach (RelationshipDescriptor dep in module.depends)
-                    user.RaiseMessage("- {0}", RelationshipToPrintableString(dep));
+                _user.RaiseMessage("\r\nDepends:");
+                foreach (var dep in module.depends)
+                {
+                    _user.RaiseMessage("- {0}", RelationshipToPrintableString(dep));
+                }
             }
 
             if (module.recommends != null && module.recommends.Count > 0)
             {
-                user.RaiseMessage("\r\nRecommends:");
-                foreach (RelationshipDescriptor dep in module.recommends)
-                    user.RaiseMessage("- {0}", RelationshipToPrintableString(dep));
+                _user.RaiseMessage("\r\nRecommends:");
+                foreach (var dep in module.recommends)
+                {
+                    _user.RaiseMessage("- {0}", RelationshipToPrintableString(dep));
+                }
             }
 
             if (module.suggests != null && module.suggests.Count > 0)
             {
-                user.RaiseMessage("\r\nSuggests:");
-                foreach (RelationshipDescriptor dep in module.suggests)
-                    user.RaiseMessage("- {0}", RelationshipToPrintableString(dep));
+                _user.RaiseMessage("\r\nSuggests:");
+                foreach (var dep in module.suggests)
+                {
+                    _user.RaiseMessage("- {0}", RelationshipToPrintableString(dep));
+                }
             }
 
             if (module.ProvidesList != null && module.ProvidesList.Count > 0)
             {
-                user.RaiseMessage("\r\nProvides:");
-                foreach (string prov in module.ProvidesList)
-                    user.RaiseMessage("- {0}", prov);
+                _user.RaiseMessage("\r\nProvides:");
+                foreach (var prov in module.ProvidesList)
+                {
+                    _user.RaiseMessage("- {0}", prov);
+                }
             }
-            #endregion
 
-            user.RaiseMessage("\r\nResources:");
+            _user.RaiseMessage("\r\nResources:");
+
             if (module.resources != null)
             {
                 if (module.resources.bugtracker != null)
                 {
-                    user.RaiseMessage("- bugtracker: {0}", Uri.EscapeUriString(module.resources.bugtracker.ToString()));
+                    _user.RaiseMessage("- bugtracker: {0}", Uri.EscapeUriString(module.resources.bugtracker.ToString()));
                 }
+
                 if (module.resources.homepage != null)
                 {
-                    user.RaiseMessage("- homepage: {0}", Uri.EscapeUriString(module.resources.homepage.ToString()));
+                    _user.RaiseMessage("- homepage: {0}", Uri.EscapeUriString(module.resources.homepage.ToString()));
                 }
+
                 if (module.resources.spacedock != null)
                 {
-                    user.RaiseMessage("- spacedock: {0}", Uri.EscapeUriString(module.resources.spacedock.ToString()));
+                    _user.RaiseMessage("- spacedock: {0}", Uri.EscapeUriString(module.resources.spacedock.ToString()));
                 }
+
                 if (module.resources.repository != null)
                 {
-                    user.RaiseMessage("- repository: {0}", Uri.EscapeUriString(module.resources.repository.ToString()));
+                    _user.RaiseMessage("- repository: {0}", Uri.EscapeUriString(module.resources.repository.ToString()));
                 }
+
                 if (module.resources.curse != null)
                 {
-                    user.RaiseMessage("- curse: {0}", Uri.EscapeUriString(module.resources.curse.ToString()));
+                    _user.RaiseMessage("- curse: {0}", Uri.EscapeUriString(module.resources.curse.ToString()));
                 }
+
                 if (module.resources.store != null)
                 {
-                    user.RaiseMessage("- store: {0}", Uri.EscapeUriString(module.resources.store.ToString()));
+                    _user.RaiseMessage("- store: {0}", Uri.EscapeUriString(module.resources.store.ToString()));
                 }
+
                 if (module.resources.steamstore != null)
                 {
-                    user.RaiseMessage("- steamstore: {0}", Uri.EscapeUriString(module.resources.steamstore.ToString()));
+                    _user.RaiseMessage("- steamstore: {0}", Uri.EscapeUriString(module.resources.steamstore.ToString()));
                 }
             }
 
             if (!module.IsDLC)
             {
-                // Compute the CKAN filename.
-                string file_uri_hash = NetFileCache.CreateURLHash(module.download);
-                string file_name = CkanModule.StandardName(module.identifier, module.version);
-                
-                user.RaiseMessage("\r\nFilename: {0}", file_uri_hash + "-" + file_name);
+                // Compute the CKAN filename
+                var fileUriHash = NetFileCache.CreateURLHash(module.download);
+                var fileName = CkanModule.StandardName(module.identifier, module.version);
+
+                _user.RaiseMessage("\r\nFilename: {0}", fileUriHash + "-" + fileName);
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
-        /// <summary>
-        /// Formats a RelationshipDescriptor into a user-readable string:
-        /// Name, version: x, min: x, max: x
-        /// </summary>
         private static string RelationshipToPrintableString(RelationshipDescriptor dep)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(dep.ToString());
+            var sb = new StringBuilder();
+            sb.Append(dep);
             return sb.ToString();
         }
+    }
+
+    [Verb("show", HelpText = "Show information about a mod")]
+    internal class ShowOptions : InstanceSpecificOptions
+    {
+        [Value(0, MetaName = "Mod name", HelpText = "The mod name to show information about")]
+        public string ModName { get; set; }
     }
 }

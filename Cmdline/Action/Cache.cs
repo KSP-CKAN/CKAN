@@ -1,244 +1,209 @@
-using CommandLine;
-using CommandLine.Text;
-using log4net;
-using CKAN.Configuration;
 using Autofac;
+using CKAN.Configuration;
+using CommandLine;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
+    /// <summary>
+    /// Class for managing the CKAN cache.
+    /// </summary>
     public class Cache : ISubCommand
     {
-        public Cache() { }
-
-        private class CacheSubOptions : VerbCommandOptions
-        {
-            [VerbOption("list", HelpText = "List the download cache path")]
-            public CommonOptions ListOptions { get; set; }
-
-            [VerbOption("set", HelpText = "Set the download cache path")]
-            public SetOptions SetOptions { get; set; }
-
-            [VerbOption("clear", HelpText = "Clear the download cache directory")]
-            public CommonOptions ClearOptions { get; set; }
-
-            [VerbOption("reset", HelpText = "Set the download cache path to the default")]
-            public CommonOptions ResetOptions { get; set; }
-
-            [VerbOption("showlimit", HelpText = "Show the cache size limit")]
-            public CommonOptions ShowLimitOptions { get; set; }
-
-            [VerbOption("setlimit", HelpText = "Set the cache size limit")]
-            public SetLimitOptions SetLimitOptions { get; set; }
-
-            [HelpVerbOption]
-            public string GetUsage(string verb)
-            {
-                HelpText ht = HelpText.AutoBuild(this, verb);
-                // Add a usage prefix line
-                ht.AddPreOptionsLine(" ");
-                if (string.IsNullOrEmpty(verb))
-                {
-                    ht.AddPreOptionsLine("ckan cache - Manage the download cache path of CKAN");
-                    ht.AddPreOptionsLine($"Usage: ckan cache <command> [options]");
-                }
-                else
-                {
-                    ht.AddPreOptionsLine("cache " + verb + " - " + GetDescription(verb));
-                    switch (verb)
-                    {
-                        // First the commands with one string argument
-                        case "set":
-                            ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options] path");
-                            break;
-                        case "setlimit":
-                            ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options] megabytes");
-                            break;
-
-                        // Now the commands with only --flag type options
-                        case "list":
-                        case "clear":
-                        case "reset":
-                        case "showlimit":
-                        default:
-                            ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options]");
-                            break;
-                    }
-                }
-                return ht;
-            }
-        }
-
-        private class SetOptions : CommonOptions
-        {
-            [ValueOption(0)]
-            public string Path { get; set; }
-        }
-
-        private class SetLimitOptions : CommonOptions
-        {
-            [ValueOption(0)]
-            public long Megabytes { get; set; } = -1;
-        }
+        private GameInstanceManager _manager;
+        private IUser _user;
 
         /// <summary>
-        /// Execute a cache subcommand
+        /// Run the 'cache' command.
         /// </summary>
-        /// <param name="mgr">GameInstanceManager object containing our instances and cache</param>
-        /// <param name="opts">Command line options object</param>
-        /// <param name="unparsed">Raw command line options</param>
-        /// <returns>
-        /// Exit code for shell environment
-        /// </returns>
-        public int RunSubCommand(GameInstanceManager mgr, CommonOptions opts, SubCommandOptions unparsed)
+        /// <inheritdoc cref="ISubCommand.RunCommand"/>
+        public int RunCommand(GameInstanceManager manager, object args)
         {
-            string[] args = unparsed.options.ToArray();
+            var s = args.ToString();
+            var opts = s.Replace(s.Substring(0, s.LastIndexOf('.') + 1), "").Split('+');
 
-            int exitCode = Exit.OK;
-            // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new CacheSubOptions(), (string option, object suboptions) =>
+            CommonOptions options = new CommonOptions();
+            _user = new ConsoleUser(options.Headless);
+            _manager = manager ?? new GameInstanceManager(_user);
+            var exitCode = options.Handle(_manager, _user);
+
+            if (exitCode != Exit.Ok)
+                return exitCode;
+
+            switch (opts[1])
             {
-                // ParseArgumentsStrict calls us unconditionally, even with bad arguments
-                if (!string.IsNullOrEmpty(option) && suboptions != null)
-                {
-                    CommonOptions options = (CommonOptions)suboptions;
-                    options.Merge(opts);
-                    user     = new ConsoleUser(options.Headless);
-                    manager  = mgr ?? new GameInstanceManager(user);
-                    exitCode = options.Handle(manager, user);
-                    if (exitCode != Exit.OK)
-                        return;
+                case "ClearCache":
+                    exitCode = ClearCacheDirectory();
+                    break;
+                case "ListCache":
+                    exitCode = ListCacheDirectory();
+                    break;
+                case "ResetCache":
+                    exitCode = ResetCacheDirectory();
+                    break;
+                case "SetCache":
+                    exitCode = SetCacheDirectory(args);
+                    break;
+                case "SetCacheLimit":
+                    exitCode = SetCacheSizeLimit(args);
+                    break;
+                case "ShowCacheLimit":
+                    exitCode = ShowCacheSizeLimit();
+                    break;
+                default:
+                    exitCode = Exit.BadOpt;
+                    break;
+            }
 
-                    switch (option)
-                    {
-                        case "list":
-                            exitCode = ListCacheDirectory((CommonOptions)suboptions);
-                            break;
-
-                        case "set":
-                            exitCode = SetCacheDirectory((SetOptions)suboptions);
-                            break;
-
-                        case "clear":
-                            exitCode = ClearCacheDirectory((CommonOptions)suboptions);
-                            break;
-
-                        case "reset":
-                            exitCode = ResetCacheDirectory((CommonOptions)suboptions);
-                            break;
-
-                        case "showlimit":
-                            exitCode = ShowCacheSizeLimit((CommonOptions)suboptions);
-                            break;
-
-                        case "setlimit":
-                            exitCode = SetCacheSizeLimit((SetLimitOptions)suboptions);
-                            break;
-
-                        default:
-                            user.RaiseMessage("Unknown command: cache {0}", option);
-                            exitCode = Exit.BADOPT;
-                            break;
-                    }
-                }
-            }, () => { exitCode = MainClass.AfterHelp(); });
             return exitCode;
         }
 
-        private int ListCacheDirectory(CommonOptions options)
+        /// <inheritdoc cref="ISubCommand.GetUsage"/>
+        public string GetUsage(string prefix, string[] args)
         {
-            IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-            user.RaiseMessage(cfg.DownloadCacheDir);
-            printCacheInfo();
-            return Exit.OK;
+            if (args.Length == 1)
+                return $"{prefix} {args[0]} <command> [options]";
+
+            switch (args[1])
+            {
+                case "set":
+                    return $"{prefix} {args[0]} {args[1]} [options] <path>";
+                case "setlimit":
+                    return $"{prefix} {args[0]} {args[1]} [options] <megabytes>";
+                case "clear":
+                case "list":
+                case "reset":
+                case "showlimit":
+                    return $"{prefix} {args[0]} {args[1]} [options]";
+                default:
+                    return $"{prefix} {args[0]} <command> [options]";
+            }
         }
 
-        private int SetCacheDirectory(SetOptions options)
+        private int ClearCacheDirectory()
         {
-            if (string.IsNullOrEmpty(options.Path))
-            {
-                user.RaiseError("set <path> - argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
-            }
+            _manager.Cache.RemoveAll();
+            _user.RaiseMessage("Cleared download cache.");
+            return Exit.Ok;
+        }
 
-            string failReason;
-            if (manager.TrySetupCache(options.Path, out failReason))
+        private int ListCacheDirectory()
+        {
+            var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
+            _user.RaiseMessage("Download cache is set to \"{0}\".", cfg.DownloadCacheDir);
+            PrintCacheInfo();
+            return Exit.Ok;
+        }
+
+        private int ResetCacheDirectory()
+        {
+            if (_manager.TrySetupCache("", out string failReason))
             {
-                IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-                user.RaiseMessage($"Download cache set to {cfg.DownloadCacheDir}");
-                printCacheInfo();
-                return Exit.OK;
+                var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
+                _user.RaiseMessage("Download cache reset to \"{0}\".", cfg.DownloadCacheDir);
+                PrintCacheInfo();
             }
             else
             {
-                user.RaiseError($"Invalid path: {failReason}");
-                return Exit.BADOPT;
+                _user.RaiseError("Can't reset cache path: {0}.", failReason);
+                return Exit.Error;
             }
+
+            return Exit.Ok;
         }
 
-        private int ClearCacheDirectory(CommonOptions options)
+        private int SetCacheDirectory(object args)
         {
-            manager.Cache.RemoveAll();
-            user.RaiseMessage("Download cache cleared.");
-            printCacheInfo();
-            return Exit.OK;
-        }
-
-        private int ResetCacheDirectory(CommonOptions options)
-        {
-            string failReason;
-            if (manager.TrySetupCache("", out failReason))
+            var opts = (CacheOptions.SetCache)args;
+            if (opts.Path == null)
             {
-                IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-                user.RaiseMessage($"Download cache reset to {cfg.DownloadCacheDir}");
-                printCacheInfo();
+                _user.RaiseMessage("set <path> - argument missing, perhaps you forgot it?");
+                return Exit.BadOpt;
+            }
+
+            if (_manager.TrySetupCache(opts.Path, out string failReason))
+            {
+                var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
+                _user.RaiseMessage("Download cache set to \"{0}\".", cfg.DownloadCacheDir);
+                PrintCacheInfo();
             }
             else
             {
-                user.RaiseError($"Can't reset cache path: {failReason}");
+                _user.RaiseError("Invalid path: {0}.", failReason);
+                return Exit.Error;
             }
-            return Exit.OK;
+
+            return Exit.Ok;
         }
 
-        private int ShowCacheSizeLimit(CommonOptions options)
+        private int SetCacheSizeLimit(object args)
         {
-            IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-            if (cfg.CacheSizeLimit.HasValue)
-            {
-                user.RaiseMessage(CkanModule.FmtSize(cfg.CacheSizeLimit.Value));
-            }
-            else
-            {
-                user.RaiseMessage("Unlimited");
-            }
-            return Exit.OK;
-        }
-
-        private int SetCacheSizeLimit(SetLimitOptions options)
-        {
-            IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-            if (options.Megabytes < 0)
+            var opts = (CacheOptions.SetCacheLimit)args;
+            var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
+            if (opts.Megabytes < 0)
             {
                 cfg.CacheSizeLimit = null;
             }
             else
             {
-                cfg.CacheSizeLimit = options.Megabytes * (long)1024 * (long)1024;
+                cfg.CacheSizeLimit = opts.Megabytes * 1024 * 1024;
             }
-            return ShowCacheSizeLimit(null);
+
+            ShowCacheSizeLimit();
+            return Exit.Ok;
         }
 
-        private void printCacheInfo()
+        private int ShowCacheSizeLimit()
         {
-            int fileCount;
-            long bytes;
-            manager.Cache.GetSizeInfo(out fileCount, out bytes);
-            user.RaiseMessage($"{fileCount} files, {CkanModule.FmtSize(bytes)}");
+            var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
+            var limit = cfg.CacheSizeLimit.HasValue
+                ? CkanModule.FmtSize(cfg.CacheSizeLimit.Value)
+                : "Unlimited";
+
+            _user.RaiseMessage("Cache limit set to {0}.", limit);
+            return Exit.Ok;
         }
 
-        private GameInstanceManager manager;
-        private IUser      user;
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(Cache));
+        private void PrintCacheInfo()
+        {
+            _manager.Cache.GetSizeInfo(out int fileCount, out long bytes);
+            _user.RaiseMessage("Cache currently has {0} files that use {1}.", fileCount, CkanModule.FmtSize(bytes));
+        }
     }
 
+    [Verb("cache", HelpText = "Manage download cache path")]
+    [ChildVerbs(typeof(ClearCache), typeof(ListCache), typeof(ResetCache), typeof(SetCache), typeof(SetCacheLimit), typeof(ShowCacheLimit))]
+    internal class CacheOptions
+    {
+        [VerbExclude]
+        [Verb("clear", HelpText = "Clear the download cache directory")]
+        internal class ClearCache : CommonOptions { }
+
+        [VerbExclude]
+        [Verb("list", HelpText = "List the download cache path")]
+        internal class ListCache : CommonOptions { }
+
+        [VerbExclude]
+        [Verb("reset", HelpText = "Set the download cache path to the default")]
+        internal class ResetCache : CommonOptions { }
+
+        [VerbExclude]
+        [Verb("set", HelpText = "Set the download cache path")]
+        internal class SetCache : CommonOptions
+        {
+            [Value(0, MetaName = "Path", HelpText = "The path to set the download cache to")]
+            public string Path { get; set; }
+        }
+
+        [VerbExclude]
+        [Verb("setlimit", HelpText = "Set the cache size limit")]
+        internal class SetCacheLimit : CommonOptions
+        {
+            [Value(0, MetaName = "MB", HelpText = "The max amount of MB the download cache stores files")]
+            public long Megabytes { get; set; } = -1;
+        }
+
+        [VerbExclude]
+        [Verb("showlimit", HelpText = "Show the cache size limit")]
+        internal class ShowCacheLimit : CommonOptions { }
+    }
 }
