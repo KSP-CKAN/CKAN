@@ -864,40 +864,30 @@ namespace CKAN
 
         public void RegisterDlc(string identifier, UnmanagedModuleVersion version)
         {
+            CkanModule dlcModule = null;
             if (available_modules.TryGetValue(identifier, out AvailableModule avail))
             {
-                CkanModule dlcModule = avail.ByVersion(version);
-                if (dlcModule != null)
-                {
-                    installed_modules.Add(
-                        dlcModule.identifier,
-                        new InstalledModule(null, dlcModule, new string[] { }, false)
-                    );
-                }
+                dlcModule = avail.ByVersion(version);
             }
-            else
+            if (dlcModule == null)
             {
                 // Don't have the real thing, make a fake one
-                installed_modules.Add(
-                    identifier,
-                    new InstalledModule(
-                        null,
-                        new CkanModule()
-                        {
-                            spec_version = new ModuleVersion("v1.28"),
-                            identifier   = identifier,
-                            name         = identifier,
-                            @abstract    = "An official expansion pack for KSP",
-                            author       = new List<string>() { "SQUAD" },
-                            version      = version,
-                            kind         = "dlc",
-                            license      = new List<License>() { new License("restricted") },
-                        },
-                        new string[] { },
-                        false
-                    )
-                );
+                dlcModule = new CkanModule()
+                {
+                    spec_version = new ModuleVersion("v1.28"),
+                    identifier   = identifier,
+                    name         = identifier,
+                    @abstract    = "An official expansion pack for KSP",
+                    author       = new List<string>() { "SQUAD" },
+                    version      = version,
+                    kind         = "dlc",
+                    license      = new List<License>() { new License("restricted") },
+                };
             }
+            installed_modules.Add(
+                identifier,
+                new InstalledModule(null, dlcModule, new string[] { }, false)
+            );
         }
 
         public void ClearDlc()
