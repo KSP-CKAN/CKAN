@@ -576,7 +576,16 @@ namespace CKAN
             // in case a dependent depends on it
             compatible.Add(module.identifier);
 
-            var needed = module.depends.Select(depend => depend.LatestAvailableWithProvides(registry, kspversion));
+            // Get list of lists of dependency choices
+            var needed = module.depends
+                // Skip dependencies satisfied by installed modules
+                .Where(depend => !depend.MatchesAny(installed_modules, null, null))
+                .Select(depend => depend.LatestAvailableWithProvides(registry, kspversion));
+
+            log.DebugFormat("Trying to satisfy: {0}",
+                string.Join("; ", needed.Select(need =>
+                    string.Join(", ", need.Select(mod => mod.identifier)))));
+
             //We need every dependency to have at least one possible module
             var installable = needed.All(need => need.Any(mod => MightBeInstallable(mod, compatible)));
             compatible.Remove(module.identifier);
