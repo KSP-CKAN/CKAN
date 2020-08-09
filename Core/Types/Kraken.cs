@@ -60,7 +60,7 @@ namespace CKAN
 
         // TODO: Is there a way to set the stringify version of this?
         public ModuleNotFoundKraken(string module, string version, string reason, Exception innerException = null)
-            : base(reason, innerException)
+            : base(reason ?? $"Dependency on {module} version {version} not satisfied", innerException)
         {
             this.module  = module;
             this.version = version;
@@ -91,7 +91,9 @@ namespace CKAN
         /// <param name="innerException">Originating exception parameter for base class</param>
         public DependencyNotSatisfiedKraken(CkanModule parentModule,
             string module, string version = null, string reason = null, Exception innerException = null)
-            : base(module, version, reason, innerException)
+            : base(module, version,
+                reason ?? $"{parentModule.identifier} dependency on {module} version {version ?? "(any)"} not satisfied",
+                innerException)
         {
             parent = parentModule;
         }

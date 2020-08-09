@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Delete Authtoken when setting to null (#3119 by: Olympic1; reviewed: HebaruSan, DasSkelett)
 - [Core] Better message when ZipFile throws NotSupportedException (#3128 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Fix missing DLC registration gap (#3136 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Satisfy dependencies with installed incompatible modules (#3137 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
