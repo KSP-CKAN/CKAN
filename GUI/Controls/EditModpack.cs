@@ -1,10 +1,8 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
 using Autofac;
 using CKAN.Versioning;
 using CKAN.GameVersionProviders;
@@ -118,7 +116,9 @@ namespace CKAN
                         {
                             (r as ModuleRelationshipDescriptor)?.name,
                             (r as ModuleRelationshipDescriptor)?.version?.ToString(),
-                            registry.LatestAvailable((r as ModuleRelationshipDescriptor)?.name, null, null)?.@abstract
+                            registry.InstalledModules.First(
+                                im => im.identifier == (r as ModuleRelationshipDescriptor)?.name
+                            )?.Module.@abstract
                         })
                         {
                             Tag   = r,
