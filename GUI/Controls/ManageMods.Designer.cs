@@ -232,16 +232,16 @@
             this.FilterAllButton.Size = new System.Drawing.Size(307, 30);
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
             resources.ApplyResources(this.FilterAllButton, "FilterAllButton");
-            // 
+            //
             // FilterTagsToolButton
-            // 
+            //
             this.FilterTagsToolButton.Name = "FilterTagsToolButton";
             this.FilterTagsToolButton.Size = new System.Drawing.Size(179, 22);
             resources.ApplyResources(this.FilterTagsToolButton, "FilterTagsToolButton");
             this.FilterTagsToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterTagsToolButton_DropDown_Opening);
-            // 
+            //
             // FilterLabelsToolButton
-            // 
+            //
             this.FilterLabelsToolButton.Name = "FilterLabelsToolButton";
             this.FilterLabelsToolButton.Size = new System.Drawing.Size(179, 22);
             resources.ApplyResources(this.FilterLabelsToolButton, "FilterLabelsToolButton");
@@ -264,9 +264,9 @@
             this.NavForwardToolButton.Size = new System.Drawing.Size(44, 56);
             this.NavForwardToolButton.Click += new System.EventHandler(this.NavForwardToolButton_Click);
             resources.ApplyResources(this.NavForwardToolButton, "NavForwardToolButton");
-            // 
+            //
             // EditModSearch
-            // 
+            //
             this.EditModSearch.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.EditModSearch.ApplySearch += EditModSearch_ApplySearch;
             this.EditModSearch.SurrenderFocus += EditModSearch_SurrenderFocus;
