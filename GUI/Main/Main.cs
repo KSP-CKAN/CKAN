@@ -541,7 +541,7 @@ namespace CKAN
 
                     InstallModuleDriver(registry_manager.registry, module);
                 }
-                registry_manager.Save(true);                        
+                registry_manager.Save(true);
             }
         }
 
@@ -704,7 +704,7 @@ namespace CKAN
             {
                 var brokenVersionRange = new KspVersionRange(
                     new KspVersion(1, 8),
-                    new KspVersion(1, 9)
+                    new KspVersion(1, 10)
                 );
                 split = filterCmdLineArgs(split, brokenVersionRange, "-single-instance");
             }
