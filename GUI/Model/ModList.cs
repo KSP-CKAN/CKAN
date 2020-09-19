@@ -312,8 +312,8 @@ namespace CKAN
                     Value = "-"
                 };
 
-            var name   = new DataGridViewTextBoxCell() {Value = mod.Name};
-            var author = new DataGridViewTextBoxCell() {Value = mod.Authors};
+            var name   = new DataGridViewTextBoxCell { Value = mod.Name   .Replace("&", "&&") };
+            var author = new DataGridViewTextBoxCell { Value = mod.Authors.Replace("&", "&&") };
 
             var installVersion = new DataGridViewTextBoxCell()
             {
@@ -336,12 +336,12 @@ namespace CKAN
                         : mod.LatestVersion)
             };
 
-            var downloadCount = new DataGridViewTextBoxCell() { Value = String.Format("{0:N0}", mod.DownloadCount) };
-            var compat        = new DataGridViewTextBoxCell() { Value = mod.KSPCompatibility                       };
-            var size          = new DataGridViewTextBoxCell() { Value = mod.DownloadSize                           };
-            var releaseDate   = new DataGridViewTextBoxCell() { Value = mod.ToModule().release_date                };
-            var installDate   = new DataGridViewTextBoxCell() { Value = mod.InstallDate                            };
-            var desc          = new DataGridViewTextBoxCell() { Value = mod.Abstract                               };
+            var downloadCount = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"       };
+            var compat        = new DataGridViewTextBoxCell { Value = mod.KSPCompatibility            };
+            var size          = new DataGridViewTextBoxCell { Value = mod.DownloadSize                };
+            var releaseDate   = new DataGridViewTextBoxCell { Value = mod.ToModule().release_date     };
+            var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate                 };
+            var desc          = new DataGridViewTextBoxCell { Value = mod.Abstract.Replace("&", "&&") };
 
             item.Cells.AddRange(selecting, autoInstalled, updating, replacing, name, author, installVersion, latestVersion, compat, size, releaseDate, installDate, downloadCount, desc);
 

@@ -152,7 +152,7 @@ namespace CKAN
                     var fi = new FileInfo(path);
                     string message = string.Format(
                         Properties.Resources.ConfigurationParseError,
-                        path, additionalErrorData, fi.Name, fi.DirectoryName);
+                        fi.FullName, additionalErrorData, fi.Name, fi.DirectoryName);
                     throw new Kraken(message);
                 }
             }

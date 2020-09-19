@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix missing DLC registration gap (#3136 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Satisfy dependencies with installed incompatible modules (#3137 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Extend -single-instance fix to 1.10 (#3153 by: DasSkelett; reviewed: HebaruSan)
+- [GUI] Escape '&' in mod list, fix path in GUIConfig.xml exception (#3149 by: DasSkelett; reviewed: HebaruSan)
 
 ### Internal
 
