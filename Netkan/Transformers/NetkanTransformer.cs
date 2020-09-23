@@ -47,7 +47,7 @@ namespace CKAN.NetKAN.Transformers
                 new VersionEditTransformer(),
                 new ForcedVTransformer(),
                 new EpochTransformer(),
-                // This is the "default" VersionedOverrideTransformer for compatability with overrides that don't
+                // This is the "default" VersionedOverrideTransformer for compatibility with overrides that don't
                 // specify a before or after property.
                 new VersionedOverrideTransformer(before: new string[] { null }, after: new string[] { null }),
                 new DownloadAttributeTransformer(http, fileService),

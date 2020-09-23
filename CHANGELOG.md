@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 
 - [Build] Move to PackageReferences (#3125 by: Olympic1; reviewed: HebaruSan)
 - [Build] Cache build tools (#3127 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Remove invalid zip files in NetKAN (#3156 by DasSkelett; reviewed: HebaruSan)
 
 ## v1.28.0 (Dyson)
 
