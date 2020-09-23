@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using log4net;
 using CKAN.NetKAN.Model;
 
@@ -88,7 +89,8 @@ namespace CKAN.NetKAN.Services
                         string invalidReason;
                         if (!NetFileCache.ZipValid(downloadedFile, out invalidReason))
                         {
-                            log.Debug($"{downloadedFile} is not a valid ZIP file: {invalidReason}");
+                            log.Debug($"{url} is not a valid ZIP file: {invalidReason}");
+                            File.Delete(downloadedFile);
                             throw new Kraken($"{url} is not a valid ZIP file: {invalidReason}");
                         }
                         break;
@@ -114,7 +116,7 @@ namespace CKAN.NetKAN.Services
         {
             return TryGetCached(url, () => Net.DownloadText(url, authToken, mimeType));
         }
-        
+
         private string TryGetCached(Uri url, Func<string> uncached)
         {
             if (_stringCache.TryGetValue(url, out StringCacheEntry entry))
@@ -153,5 +155,5 @@ namespace CKAN.NetKAN.Services
         public string   Value;
         public DateTime Timestamp;
     }
-    
+
 }
