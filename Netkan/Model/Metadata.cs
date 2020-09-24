@@ -114,7 +114,7 @@ namespace CKAN.NetKAN.Model
             if (json.TryGetValue(UpdatedPropertyName, out updatedToken)
                 && DateTime.TryParse(updatedToken.ToString(), out t))
             {
-                RemoteTimestamp = t;
+                RemoteTimestamp = t.ToUniversalTime();
             }
         }
 
