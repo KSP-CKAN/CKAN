@@ -90,6 +90,20 @@ namespace CKAN
             }
 
             ignored.Clear();
+            // Find installed modules that aren't in the module's relationships
+            ignored.AddRange(registry.Installed(false, false)
+                .Where(kvp => {
+                    var ids = new string[] { kvp.Key };
+                    return !module.depends.Any(rel => rel.ContainsAny(ids))
+                        && !module.recommends.Any(rel => rel.ContainsAny(ids))
+                        && !module.suggests.Any(rel => rel.ContainsAny(ids));
+                })
+                .Select(kvp => (RelationshipDescriptor) new ModuleRelationshipDescriptor()
+                    {
+                        name    = kvp.Key,
+                        version = kvp.Value,
+                    })
+            );
             RelationshipsListView.Items.Clear();
             AddGroup(module.depends,    DependsGroup,         registry);
             AddGroup(module.recommends, RecommendationsGroup, registry);

@@ -449,8 +449,19 @@ namespace CKAN
                 download_content_type = "application/zip",
             };
 
-            List<RelationshipDescriptor> mods = registry.Installed()
-                .Where(mod => !(mod.Value is ProvidesModuleVersion || mod.Value is UnmanagedModuleVersion))
+            List<RelationshipDescriptor> mods = registry.Installed(false, false)
+                .Where(kvp => {
+                    // Skip unavailable modules (custom .ckan files)
+                    try
+                    {
+                        var avail = registry.LatestAvailable(kvp.Key, null, null);
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                })
                 .Select(kvp => (RelationshipDescriptor) new ModuleRelationshipDescriptor()
                     {
                         name    = kvp.Key,

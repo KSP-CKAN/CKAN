@@ -116,7 +116,7 @@ namespace CKAN
         /// This includes DLLs, which will have a version type of `DllVersion`.
         /// This includes Provides if set, which will have a version of `ProvidesVersion`.
         /// </summary>
-        Dictionary<string, ModuleVersion> Installed(bool include_provides = true);
+        Dictionary<string, ModuleVersion> Installed(bool withProvides = true, bool withDLLs = true);
 
         /// <summary>
         /// Returns the InstalledModule, or null if it is not installed.

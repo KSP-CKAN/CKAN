@@ -521,16 +521,6 @@ namespace CKAN
                         continue;
                     }
 
-                    // Don't add metapacakges to the registry
-                    if (!module.IsMetapackage)
-                    {
-                        // Remove this version of the module in the registry, if it exists.
-                        registry_manager.registry.RemoveAvailable(module);
-
-                        // Sneakily add our version in...
-                        registry_manager.registry.AddAvailable(module);
-                    }
-
                     if (module.IsDLC)
                     {
                         currentUser.RaiseError(Properties.Resources.MainCantInstallDLC, module);

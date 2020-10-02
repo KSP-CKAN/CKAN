@@ -904,20 +904,23 @@ namespace CKAN
         /// <summary>
         /// <see cref = "IRegistryQuerier.Installed" />
         /// </summary>
-        public Dictionary<string, ModuleVersion> Installed(bool withProvides = true)
+        public Dictionary<string, ModuleVersion> Installed(bool withProvides = true, bool withDLLs = true)
         {
             var installed = new Dictionary<string, ModuleVersion>();
 
-            // Index our DLLs, as much as we dislike them.
-            foreach (var dllinfo in installed_dlls)
+            if (withDLLs)
             {
-                installed[dllinfo.Key] = new UnmanagedModuleVersion(null);
+                // Index our DLLs, as much as we dislike them.
+                foreach (var dllinfo in installed_dlls)
+                {
+                    installed[dllinfo.Key] = new UnmanagedModuleVersion(null);
+                }
             }
 
             // Index our provides list, so users can see virtual packages
             if (withProvides)
             {
-                foreach (var provided in Provided())
+                foreach (var provided in ProvidedByInstalled())
                 {
                     installed[provided.Key] = provided.Value;
                 }
@@ -948,14 +951,16 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns a dictionary of provided (virtual) modules, and a
-        /// ProvidesVersion indicating what provides them.
+        /// Find modules provided by currently installed modules
         /// </summary>
-
-        // TODO: In the future it would be nice to cache this list, and mark it for rebuild
-        // if our installed modules change.
-        internal Dictionary<string, ProvidesModuleVersion> Provided()
+        /// <returns>
+        /// Dictionary of provided (virtual) modules and a
+        /// ProvidesVersion indicating what provides them
+        /// </returns>
+        internal Dictionary<string, ProvidesModuleVersion> ProvidedByInstalled()
         {
+            // TODO: In the future it would be nice to cache this list, and mark it for rebuild
+            // if our installed modules change.
             var installed = new Dictionary<string, ProvidesModuleVersion>();
 
             foreach (var modinfo in installed_modules)
@@ -1001,7 +1006,7 @@ namespace CKAN
             // withProvides is false.
             if (!with_provides) return null;
 
-            var provided = Provided();
+            var provided = ProvidedByInstalled();
 
             ProvidesModuleVersion version;
             return provided.TryGetValue(modIdentifier, out version) ? version : null;
