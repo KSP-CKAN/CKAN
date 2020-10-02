@@ -31,6 +31,13 @@ namespace Tests.Core.Relationships
             CKAN.Repo.Update(manager, ksp.KSP, new NullUser(), TestData.TestKANZip());
         }
 
+        [OneTimeTearDown]
+        public void TearDown()
+        {
+            manager.Dispose();
+            ksp.Dispose();
+        }
+
         [Test]
         public void Empty()
         {

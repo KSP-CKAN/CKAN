@@ -87,6 +87,8 @@ namespace Tests.Core.RegistryManager
             // installed_files isn't exposed for testing
             // A default repo is set during load
             Assert.IsTrue(reg.Repositories.Any());
+
+            dispksp.Dispose();
         }
 
     }

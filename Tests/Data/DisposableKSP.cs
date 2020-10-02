@@ -51,7 +51,7 @@ namespace Tests.Data
             }
 
             var i = 6;
-            while (--i < 0)
+            while (--i > 0)
             {
                 try
                 {

@@ -46,9 +46,11 @@ namespace Tests.GUI
         {
             using (var tidy = new DisposableKSP())
             {
+                var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name);
+
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeConfiguration(tidy.KSP, tidy.KSP.Name)
+                    config
                 ) {
                     CurrentInstance = tidy.KSP
                 };
@@ -63,6 +65,7 @@ namespace Tests.GUI
                 ));
 
                 manager.Dispose();
+                config.Dispose();
             }
         }
 
@@ -83,9 +86,11 @@ namespace Tests.GUI
         {
             using (var tidy = new DisposableKSP())
             {
+                var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name);
+
                 KSPManager manager = new KSPManager(
                     new NullUser(),
-                    new FakeConfiguration(tidy.KSP, tidy.KSP.Name)
+                    config
                 ) {
                     CurrentInstance = tidy.KSP
                 };
@@ -104,6 +109,7 @@ namespace Tests.GUI
                 Assert.That(mod_list, Has.Count.EqualTo(2));
 
                 manager.Dispose();
+                config.Dispose();
             }
         }
 

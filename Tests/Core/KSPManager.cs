@@ -29,6 +29,7 @@ namespace Tests.Core
         {
             manager.Dispose();
             tidy.Dispose();
+            cfg.Dispose();
         }
 
         [Test]
@@ -287,8 +288,9 @@ namespace Tests.Core
         [Test] //37a33
         public void Ctor_InvalidAutoStart_DoesNotThrow()
         {
-            Assert.DoesNotThrow(() => new KSPManager(new NullUser(),new FakeConfiguration(tidy.KSP, "invalid")
-                ));
+            var config = new FakeConfiguration(tidy.KSP, "invalid");
+            Assert.DoesNotThrow(() => new KSPManager(new NullUser(), config));
+            config.Dispose();
         }
 
 

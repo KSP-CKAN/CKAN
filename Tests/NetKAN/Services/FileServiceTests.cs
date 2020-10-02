@@ -13,13 +13,19 @@ namespace Tests.NetKAN.Services
         [OneTimeSetUp]
         public void TestFixtureSetup()
         {
-            _cachePath = Path.Combine(
-                Path.GetTempPath(),
-                "CKAN",
-                Guid.NewGuid().ToString("N")
-            );
-            Directory.CreateDirectory(_cachePath);
-            _cache = new NetFileCache(_cachePath);
+            _cachePath = Path.Combine(Path.GetTempPath(), "CKAN");
+            var path = Path.Combine(_cachePath, Guid.NewGuid().ToString("N"));
+
+            Directory.CreateDirectory(path);
+            _cache = new NetFileCache(path);
+        }
+
+        [OneTimeTearDown]
+        public void TestFixtureTearDown()
+        {
+            _cache.Dispose();
+            _cache = null;
+            Directory.Delete(_cachePath, true);
         }
 
         [Test]

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CKAN;
 using log4net.Core;
 using NUnit.Framework;
+using Tests.Core.Configuration;
 using Tests.Data;
 
 namespace Tests.Core
@@ -19,6 +20,7 @@ namespace Tests.Core
     {
         private KSPManager           _manager;
         private DisposableKSP        _instance;
+        private FakeConfiguration    _config;
         private CKAN.RegistryManager _registryManager;
         private CKAN.Registry        _registry;
         private CKAN.ModuleInstaller _installer;
@@ -35,10 +37,10 @@ namespace Tests.Core
         {
             _testModule = TestData.DogeCoinFlag_101_module();
 
-            _nullUser  = new NullUser();
-
-            _manager   = new KSPManager(_nullUser);
             _instance  = new DisposableKSP();
+            _nullUser  = new NullUser();
+            _config    = new FakeConfiguration(_instance.KSP, _instance.KSP.Name);
+            _manager   = new KSPManager(_nullUser, _config);
             _registryManager = CKAN.RegistryManager.Instance(_instance.KSP);
             _registry  = _registryManager.registry;
             _installer = CKAN.ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _nullUser);
@@ -60,6 +62,8 @@ namespace Tests.Core
         public void TearDown()
         {
             _manager.Dispose();
+            _config.Dispose();
+            _instance.Dispose();
         }
 
         /// <summary>

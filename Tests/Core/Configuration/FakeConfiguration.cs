@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CKAN.Configuration;
 using Tests.Data;
 
 namespace Tests.Core.Configuration
 {
-    public class FakeConfiguration : IConfiguration
+    public class FakeConfiguration : IConfiguration, IDisposable
     {
         public FakeConfiguration(CKAN.KSP instance, string autostart)
             : this(
@@ -156,5 +157,10 @@ namespace Tests.Core.Configuration
                 }
             }
          }
+
+        public void Dispose()
+        {
+            Directory.Delete(DownloadCacheDir, true);
+        }
     }
 }

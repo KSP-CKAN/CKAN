@@ -27,6 +27,9 @@ namespace Tests
             File.WriteAllText(f2, "TestLorem IpsumThats SomeCrap");
 
             Assert.IsTrue(UtilStatic.CompareFiles(f1, f2));
+
+            File.Delete(f2);
+            File.Delete(f1);
         }
 
         [Test]
@@ -38,6 +41,9 @@ namespace Tests
             File.WriteAllText(f2, "-");
 
             Assert.IsFalse(UtilStatic.CompareFiles(f1, f2));
+
+            File.Delete(f2);
+            File.Delete(f1);
         }
     }
 
