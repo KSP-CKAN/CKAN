@@ -883,6 +883,7 @@ namespace CKAN
                     kind         = "dlc",
                     license      = new List<License>() { new License("restricted") },
                 };
+                dlcModule.CalculateSearchables();
             }
             installed_modules.Add(
                 identifier,
