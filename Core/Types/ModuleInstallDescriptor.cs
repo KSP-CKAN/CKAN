@@ -418,7 +418,8 @@ namespace CKAN
                 : zipfile.Cast<ZipEntry>()
                     .Select(entry => inst_pattern.Match(entry.Name.Replace('\\', '/')))
                     .Where(match => match.Success)
-                    .Min(match => match.Index);
+                    .DefaultIfEmpty()
+                    .Min(match => match?.Index);
 
             // O(N^2) solution, as we're walking the zipfile for each stanza.
             // Surely there's a better way, although this is fast enough we may not care.

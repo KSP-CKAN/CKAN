@@ -646,9 +646,16 @@ namespace CKAN
         public string DescribeInstallStanzas()
         {
             List<string> descriptions = new List<string>();
-            foreach (ModuleInstallDescriptor mid in install)
+            if (install != null)
             {
-                descriptions.Add(mid.DescribeMatch());
+                foreach (ModuleInstallDescriptor mid in install)
+                {
+                    descriptions.Add(mid.DescribeMatch());
+                }
+            }
+            else
+            {
+                descriptions.Add(ModuleInstallDescriptor.DefaultInstallStanza(identifier).DescribeMatch());
             }
             return string.Join(", ", descriptions);
         }
