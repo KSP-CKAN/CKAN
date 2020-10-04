@@ -189,6 +189,12 @@ namespace CKAN
             switch (e.KeyCode)
             {
                 case Keys.Enter:
+                    // Bypass the timer for immediate update
+                    e.Handled = true;
+                    filterTimer?.Stop();
+                    TriggerSearch();
+                    break;
+
                 case Keys.Up:
                 case Keys.Down:
                 case Keys.PageUp:
@@ -204,9 +210,9 @@ namespace CKAN
 
         private void TriggerSearchOrTimer()
         {
-            if (Platform.IsMac)
+            if (Platform.IsMono && !string.IsNullOrEmpty(FilterCombinedTextBox.Text))
             {
-                // Delay updating to improve typing performance on OS X.
+                // Delay updating to improve typing performance on OS X and Linux
                 RunFilterUpdateTimer();
             }
             else
@@ -227,7 +233,7 @@ namespace CKAN
             {
                 filterTimer = new Timer();
                 filterTimer.Tick += OnFilterUpdateTimer;
-                filterTimer.Interval = 700;
+                filterTimer.Interval = 500;
                 filterTimer.Start();
             }
             else
