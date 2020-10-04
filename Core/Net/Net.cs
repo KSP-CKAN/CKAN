@@ -5,10 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Autofac;
 using ChinhDo.Transactions.FileManager;
-using CKAN.Configuration;
 using log4net;
+using CKAN.Configuration;
 
 namespace CKAN
 {
@@ -20,6 +21,9 @@ namespace CKAN
     {
         // The user agent that we report to web sites
         public static string UserAgentString = "Mozilla/4.0 (compatible; CKAN)";
+
+        private const int MaxRetries             = 3;
+        private const int RetryDelayMilliseconds = 100;
 
         private static readonly ILog          log             = LogManager.GetLogger(typeof(Net));
 
@@ -211,12 +215,27 @@ namespace CKAN
                 agent.Headers.Add("Accept", mimeType);
             }
 
-            string content = agent.DownloadString(url.OriginalString);
-            string header  = agent.ResponseHeaders.ToString();
+            for (int whichAttempt = 0; whichAttempt < MaxRetries + 1; ++whichAttempt)
+            {
+                try
+                {
+                    string content = agent.DownloadString(url.OriginalString);
+                    string header  = agent.ResponseHeaders.ToString();
 
-            log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
+                    log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
 
-            return content;
+                    return content;
+                }
+                catch (WebException wex) when (wex.Status != WebExceptionStatus.ProtocolError && whichAttempt < MaxRetries)
+                {
+                    log.DebugFormat("Web request failed with non-protocol error, retrying in {0} milliseconds: {1}", RetryDelayMilliseconds * whichAttempt, wex.Message);
+                    Thread.Sleep(RetryDelayMilliseconds * whichAttempt);
+                }
+            }
+            // Should never get here, because we don't catch any exceptions
+            // in the final iteration of the above for loop. They should be
+            // thrown to the calling code, or the call should succeed.
+            return null;
         }
 
         public static Uri ResolveRedirect(Uri uri)

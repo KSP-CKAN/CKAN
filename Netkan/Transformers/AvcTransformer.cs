@@ -94,7 +94,7 @@ namespace CKAN.NetKAN.Transformers
                         }
                         catch (Exception e)
                         {
-                            Log.WarnFormat("Error fetching remote version file: {0}", e.Message);
+                            Log.WarnFormat("Error fetching remote version file {0}: {1}", remoteUri, e.Message);
                             Log.Debug(e);
                         }
                     }
