@@ -370,6 +370,10 @@ namespace CKAN
                         currentUser.RaiseMessage(dlcMsg);
                         currentUser.RaiseError(dlcMsg);
                         break;
+
+                    default:
+                        currentUser.RaiseMessage(e.Error.Message);
+                        break;
                 }
 
                 FailWaitDialog(
