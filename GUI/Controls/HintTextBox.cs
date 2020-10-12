@@ -37,11 +37,7 @@ namespace CKAN
         /// <param name="e">The event arguments</param>
         private void HintTextBox_TextChanged(object sender, EventArgs e)
         {
-            // sanity checks
-            if (Visible && !ReadOnly)
-            {
-                ClearIcon.Visible = (TextLength > 0);
-            }
+            ClearIcon.Visible = (TextLength > 0) && !ReadOnly;
         }
 
         /// <summary>
@@ -71,13 +67,22 @@ namespace CKAN
         /// <returns></returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == Keys.Escape)
+            if (keyData == Keys.Escape && !string.IsNullOrEmpty(Text))
             {
                 Text = "";
                 return true;
             }
 
-            return base.ProcessCmdKey(ref msg, keyData);
+            try
+            {
+                return base.ProcessCmdKey(ref msg, keyData);
+            }
+            catch
+            {
+                // The above throws on Mono for a top-level Control
+                // (as opposed to a Form)
+                return false;
+            }
         }
     }
 }

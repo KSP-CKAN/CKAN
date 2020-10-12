@@ -23,33 +23,10 @@ namespace CKAN
 
             this.ToolTip.SetToolTip(ExpandButton, Properties.Resources.EditModSearchTooltipExpandButton);
 
-            labels = new Label[]
-            {
-                FilterByNameLabel,
-                FilterByAuthorLabel,
-                FilterByDescriptionLabel,
-                FilterByLanguageLabel,
-                FilterByDependsLabel,
-                FilterByRecommendsLabel,
-                FilterBySuggestsLabel,
-                FilterByConflictsLabel,
-                FilterCombinedLabel,
-            };
-            textboxes = new TextBox[]
-            {
-                FilterByNameTextBox,
-                FilterByAuthorTextBox,
-                FilterByDescriptionTextBox,
-                FilterByLanguageTextBox,
-                FilterByDependsTextBox,
-                FilterByRecommendsTextBox,
-                FilterBySuggestsTextBox,
-                FilterByConflictsTextBox,
-                FilterCombinedTextBox,
-            };
-            rowCount = labels.Length;
-            maxLabelWidth = labels.Select(l => l.Width).Max();
-            DoLayout(ExpandButton.Checked);
+            // TextBox resizes unpredictably at runtime, so we need special logic
+            // to line up the button with it
+            ExpandButton.Top    = FilterCombinedTextBox.Top;
+            ExpandButton.Height = ExpandButton.Width = FilterCombinedTextBox.Height;
         }
 
         /// <summary>
@@ -79,61 +56,46 @@ namespace CKAN
         public event Action SurrenderFocus;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(EditModSearch));
-        private Label[] labels;
-        private TextBox[] textboxes;
-        private readonly int rowCount;
-        private const int rowHeight = 26;
-        private const int padding   = 4;
-        private readonly int maxLabelWidth;
         private Timer filterTimer;
         private bool suppressSearch = false;
         private ModSearch currentSearch = null;
 
         private void ExpandButton_CheckedChanged(object sender, EventArgs e)
         {
-            ExpandButton.Text = ExpandButton.Checked ? "▾" : "▴";
+            ExpandButton.Text = ExpandButton.Checked ? "▴" : "▾";
             DoLayout(ExpandButton.Checked);
         }
 
         private void DoLayout(bool expanded)
         {
-            if (expanded)
+            FormGeometryChanged(null, null);
+            SearchDetails.Visible = expanded;
+            if (SearchDetails.Visible)
             {
-                for (int row = 0; row < rowCount; ++row)
+                SearchDetails.FilterByNameTextBox.Focus();
+                if (Main.Instance != null)
                 {
-                    labels[row].Visible = true;
-                    labels[row].Left = padding;
-                    labels[row].Top = padding + row * (rowHeight + padding);
-                    textboxes[row].Visible = true;
-                    textboxes[row].Left = maxLabelWidth + 2 * padding;
-                    textboxes[row].Top = padding + row * (rowHeight + padding);
-                }
-                Height = rowCount * (rowHeight + padding);
-            }
-            else
-            {
-                Height = rowHeight + padding;
-                for (int row = 0; row < labels.Length; ++row)
-                {
-                    if (row < labels.Length - 1)
-                    {
-                        labels[row].Visible    = false;
-                        textboxes[row].Visible = false;
-                    }
-                    else
-                    {
-                        labels[row].Top     = padding;
-                        labels[row].Left    = padding;
-                        textboxes[row].Top  = padding;
-                        textboxes[row].Left = maxLabelWidth + 2 * padding;
-                    }
+                    Main.Instance.Move   += FormGeometryChanged;
+                    Resize += FormGeometryChanged;
                 }
             }
-            var botTB = textboxes[rowCount - 1];
-            ExpandButton.Left   = botTB.Left + botTB.Width;
-            ExpandButton.Top    = botTB.Top;
-            ExpandButton.Height = botTB.Height;
-            ExpandButton.Width  = botTB.Height;
+            else if (Main.Instance != null)
+            {
+                Main.Instance.Move   -= FormGeometryChanged;
+                Resize -= FormGeometryChanged;
+            }
+        }
+
+        private void FormGeometryChanged(object sender, EventArgs e)
+        {
+            SearchDetails.Location = PointToScreen(new Point(
+                FilterCombinedTextBox.Left,
+                FilterCombinedTextBox.Top + FilterCombinedTextBox.Height - 1
+            ));
+            // Fit dropdown from left edge of text box to right edge of button
+            SearchDetails.Width = Math.Max(200,
+                ExpandButton.Left + ExpandButton.Width
+                    - FilterCombinedTextBox.Left);
         }
 
         private void FilterCombinedTextBox_TextChanged(object sender, EventArgs e)
@@ -145,14 +107,14 @@ namespace CKAN
             {
                 currentSearch = ModSearch.Parse(FilterCombinedTextBox.Text);
                 suppressSearch = true;
-                    FilterByNameTextBox.Text        = currentSearch?.Name          ?? "";
-                    FilterByAuthorTextBox.Text      = currentSearch?.Author        ?? "";
-                    FilterByDescriptionTextBox.Text = currentSearch?.Description   ?? "";
-                    FilterByLanguageTextBox.Text    = currentSearch?.Localization  ?? "";
-                    FilterByDependsTextBox.Text     = currentSearch?.DependsOn     ?? "";
-                    FilterByRecommendsTextBox.Text  = currentSearch?.Recommends    ?? "";
-                    FilterBySuggestsTextBox.Text    = currentSearch?.Suggests      ?? "";
-                    FilterByConflictsTextBox.Text   = currentSearch?.ConflictsWith ?? "";
+                    SearchDetails.FilterByNameTextBox.Text        = currentSearch?.Name          ?? "";
+                    SearchDetails.FilterByAuthorTextBox.Text      = currentSearch?.Author        ?? "";
+                    SearchDetails.FilterByDescriptionTextBox.Text = currentSearch?.Description   ?? "";
+                    SearchDetails.FilterByLanguageTextBox.Text    = currentSearch?.Localization  ?? "";
+                    SearchDetails.FilterByDependsTextBox.Text     = currentSearch?.DependsOn     ?? "";
+                    SearchDetails.FilterByRecommendsTextBox.Text  = currentSearch?.Recommends    ?? "";
+                    SearchDetails.FilterByConflictsTextBox.Text   = currentSearch?.ConflictsWith ?? "";
+                    SearchDetails.FilterBySuggestsTextBox.Text    = currentSearch?.Suggests      ?? "";
                 suppressSearch = false;
                 TriggerSearchOrTimer();
             }
@@ -162,25 +124,45 @@ namespace CKAN
             }
         }
 
-        private void FilterTextBox_TextChanged(object sender, EventArgs e)
+        private void SearchDetails_ApplySearch(bool immediately)
         {
             if (suppressSearch)
                 return;
 
             currentSearch = new ModSearch(
-                FilterByNameTextBox.Text,
-                FilterByAuthorTextBox.Text,
-                FilterByDescriptionTextBox.Text,
-                FilterByLanguageTextBox.Text,
-                FilterByDependsTextBox.Text,
-                FilterByRecommendsTextBox.Text,
-                FilterBySuggestsTextBox.Text,
-                FilterByConflictsTextBox.Text
+                SearchDetails.FilterByNameTextBox.Text,
+                SearchDetails.FilterByAuthorTextBox.Text,
+                SearchDetails.FilterByDescriptionTextBox.Text,
+                SearchDetails.FilterByLanguageTextBox.Text,
+                SearchDetails.FilterByDependsTextBox.Text,
+                SearchDetails.FilterByRecommendsTextBox.Text,
+                SearchDetails.FilterBySuggestsTextBox.Text,
+                SearchDetails.FilterByConflictsTextBox.Text
             );
             suppressSearch = true;
                 FilterCombinedTextBox.Text = currentSearch?.Combined ?? "";
             suppressSearch = false;
-            TriggerSearchOrTimer();
+            if (immediately)
+            {
+                TriggerSearch();
+            }
+            else
+            {
+                TriggerSearchOrTimer();
+            }
+        }
+
+        private void SearchDetails_SurrenderFocus()
+        {
+            if (SurrenderFocus != null)
+            {
+                SurrenderFocus();
+            }
+        }
+
+        protected override void OnLeave(EventArgs e)
+        {
+            ExpandButton.Checked = false;
         }
 
         private void FilterTextBox_KeyDown(object sender, KeyEventArgs e)
