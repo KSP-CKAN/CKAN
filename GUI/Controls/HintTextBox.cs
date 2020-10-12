@@ -77,7 +77,16 @@ namespace CKAN
                 return true;
             }
 
-            return base.ProcessCmdKey(ref msg, keyData);
+            try
+            {
+                return base.ProcessCmdKey(ref msg, keyData);
+            }
+            catch
+            {
+                // The above throws on Mono for a top-level Control
+                // (as opposed to a Form)
+                return false;
+            }
         }
     }
 }
