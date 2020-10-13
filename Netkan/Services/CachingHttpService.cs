@@ -99,12 +99,22 @@ namespace CKAN.NetKAN.Services
                         break;
                 }
 
-                return _cache.Store(
-                    primaryUrl,
-                    downloadedFile,
-                    string.Format("netkan-{0}.{1}", identifier, extension),
-                    move: true
-                );
+                try
+                {
+                    return _cache.Store(
+                        primaryUrl,
+                        downloadedFile,
+                        $"netkan-{identifier}.{extension}",
+                        move: true
+                    );                    
+                }
+                catch (IOException exc)
+                {
+                    // If cache is full, don't also fill /tmp
+                    log.Debug($"Failed to store to cache: {exc.Message}");
+                    File.Delete(downloadedFile);
+                    throw;
+                }
             }
         }
 

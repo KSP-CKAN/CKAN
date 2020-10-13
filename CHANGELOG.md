@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Remove invalid zip files in NetKAN (#3156 by DasSkelett; reviewed: HebaruSan)
 - [Build] Tests should cleanup its environment (#3132 by Olympic1; reviewed: HebaruSan)
 - [Netkan] Retry failed web requests, fix install stanza error (#3166 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Delete netkan tmp files if cache fills up (#3169 by: HebaruSan; reviewed: techman83)
 
 ## v1.28.0 (Dyson)
 
