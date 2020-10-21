@@ -207,16 +207,16 @@ namespace CKAN.ConsoleUI {
             });
             
             moduleList.AddTip("F8", "Mark auto-installed",
-                () => moduleList.Selection != null
+                () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && (!registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
             );
             moduleList.AddTip("F8", "Mark user-selected",
-                () => moduleList.Selection != null
+                () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && (registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
             );
             moduleList.AddBinding(Keys.F8, (object sender) => {
                 InstalledModule im = registry.InstalledModule(moduleList.Selection.identifier);
-                if (im != null) {
+                if (im != null && !moduleList.Selection.IsDLC) {
                     im.AutoInstalled = !im.AutoInstalled;
                     RegistryManager.Instance(manager.CurrentInstance).Save(false);
                 }
