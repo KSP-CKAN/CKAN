@@ -333,7 +333,6 @@ namespace CKAN
         public List<InstallableFile> FindInstallableFiles(ZipFile zipfile, KSP ksp)
         {
             string installDir;
-            bool makeDirs;
             var files = new List<InstallableFile>();
 
             // Normalize the path before doing everything else
@@ -351,13 +350,9 @@ namespace CKAN
 
                 // Add the extracted subdirectory to the path of KSP's GameData
                 installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + subDir));
-                makeDirs = true;
             }
             else if (install_to.StartsWith("Ships"))
             {
-                // Don't allow directory creation in ships directory
-                makeDirs = false;
-
                 switch (install_to)
                 {
                     case "Ships":
@@ -378,6 +373,9 @@ namespace CKAN
                     case "Ships/@thumbs/SPH":
                         installDir = ksp?.ShipsThumbsSPH();
                         break;
+                    case "Ships/Script":
+                        installDir = ksp?.ShipsScript();
+                        break;
                     default:
                         throw new BadInstallLocationKraken("Unknown install_to " + install_to);
                 }
@@ -388,22 +386,18 @@ namespace CKAN
                 {
                     case "Tutorial":
                         installDir = ksp?.Tutorial();
-                        makeDirs = true;
                         break;
 
                     case "Scenarios":
                         installDir = ksp?.Scenarios();
-                        makeDirs = true;
                         break;
 
                     case "Missions":
                         installDir = ksp?.Missions();
-                        makeDirs = true;
                         break;
 
                     case "GameRoot":
                         installDir = ksp?.GameDir();
-                        makeDirs = false;
                         break;
 
                     default:
@@ -435,7 +429,7 @@ namespace CKAN
                 InstallableFile file_info = new InstallableFile
                 {
                     source = entry,
-                    makedir = makeDirs,
+                    makedir = false,
                     destination = null
                 };
 
@@ -446,6 +440,9 @@ namespace CKAN
                     // Update our file info with the install location
                     file_info.destination = TransformOutputName(
                         entry.Name, installDir, @as);
+                    file_info.makedir = AllowDirectoryCreation(
+                        ksp?.ToRelativeGameDir(file_info.destination)
+                            ?? file_info.destination);
                 }
 
                 files.Add(file_info);
@@ -459,6 +456,16 @@ namespace CKAN
             }
 
             return files;
+        }
+
+        private static string[] CreateableDirs = {
+            "GameData", "Tutorial", "Scenarios", "Missions", "Ships/Script"
+        };
+
+        private bool AllowDirectoryCreation(string relativePath)
+        {
+            return CreateableDirs.Any(dir =>
+                relativePath == dir || relativePath.StartsWith($"{dir}/"));
         }
 
         /// <summary>
@@ -506,7 +513,7 @@ namespace CKAN
             else
             {
                 var reservedPrefix = ReservedPaths.FirstOrDefault(prefix =>
-                    outputName.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase));
+                    outputName.StartsWith(prefix + "/", StringComparison.InvariantCultureIgnoreCase));
                 if (reservedPrefix != null)
                 {
                     // If we try to install a folder with the same name as

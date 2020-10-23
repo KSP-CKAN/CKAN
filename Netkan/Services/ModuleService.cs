@@ -82,10 +82,11 @@ namespace CKAN.NetKAN.Services
 
         public IEnumerable<string> FileDestinations(CkanModule module, string filePath)
         {
+            var ksp = new KSP("/", "dummy", null, false);
             return ModuleInstaller
-                .FindInstallableFiles(module, filePath, new KSP("/", "dummy", null, false))
+                .FindInstallableFiles(module, filePath, ksp)
                 .Where(f => !f.source.IsDirectory)
-                .Select(f => f.destination);
+                .Select(f => ksp.ToRelativeGameDir(f.destination));
         }
 
         /// <summary>
