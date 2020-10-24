@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Escape '&' in mod list, fix path in GUIConfig.xml exception (#3149 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Print message for unknown install exception (#3164 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Search timer for Linux (#3167 by: HebaruSan; reviewed: DasSkelett)
+- [ConsoleUI] ConsoleUI fixes for DLC (#3165 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

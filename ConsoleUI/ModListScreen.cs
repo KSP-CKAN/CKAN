@@ -167,11 +167,11 @@ namespace CKAN.ConsoleUI {
             // Conditionally show only one of these based on selected mod status
 
             moduleList.AddTip("+", "Install",
-                () => moduleList.Selection != null
+                () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && !registry.IsInstalled(moduleList.Selection.identifier, false)
             );
             moduleList.AddTip("+", "Upgrade",
-                () => moduleList.Selection != null
+                () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && registry.HasUpdate(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria())
             );
             moduleList.AddTip("+", "Replace",
@@ -179,7 +179,7 @@ namespace CKAN.ConsoleUI {
                     && registry.GetReplacement(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()) != null
             );
             moduleList.AddBinding(Keys.Plus, (object sender) => {
-                if (moduleList.Selection != null) {
+                if (moduleList.Selection != null && !moduleList.Selection.IsDLC) {
                     if (!registry.IsInstalled(moduleList.Selection.identifier, false)) {
                         plan.ToggleInstall(moduleList.Selection);
                     } else if (registry.IsInstalled(moduleList.Selection.identifier, false)
@@ -193,12 +193,12 @@ namespace CKAN.ConsoleUI {
             });
 
             moduleList.AddTip("-", "Remove",
-                () => moduleList.Selection != null
+                () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && registry.IsInstalled(moduleList.Selection.identifier, false)
                     && !registry.IsAutodetected(moduleList.Selection.identifier)
             );
             moduleList.AddBinding(Keys.Minus, (object sender) => {
-                if (moduleList.Selection != null
+                if (moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && registry.IsInstalled(moduleList.Selection.identifier, false)
                     && !registry.IsAutodetected(moduleList.Selection.identifier)) {
                     plan.ToggleRemove(moduleList.Selection);
@@ -207,16 +207,16 @@ namespace CKAN.ConsoleUI {
             });
             
             moduleList.AddTip("F8", "Mark auto-installed",
-                () => moduleList.Selection != null
+                () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && (!registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
             );
             moduleList.AddTip("F8", "Mark user-selected",
-                () => moduleList.Selection != null
+                () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && (registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
             );
             moduleList.AddBinding(Keys.F8, (object sender) => {
                 InstalledModule im = registry.InstalledModule(moduleList.Selection.identifier);
-                if (im != null) {
+                if (im != null && !moduleList.Selection.IsDLC) {
                     im.AutoInstalled = !im.AutoInstalled;
                     RegistryManager.Instance(manager.CurrentInstance).Save(false);
                 }

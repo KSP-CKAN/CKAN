@@ -104,10 +104,13 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.Escape, (object sender) => false);
 
             AddTip("Ctrl+D", "Download",
-                () => !manager.Cache.IsMaybeCachedZip(mod)
+                () => !manager.Cache.IsMaybeCachedZip(mod) && !mod.IsDLC
             );
             AddBinding(Keys.CtrlD, (object sender) => {
-                Download();
+                if (!mod.IsDLC)
+                {
+                    Download();
+                }
                 return true;
             });
 
@@ -147,6 +150,20 @@ namespace CKAN.ConsoleUI {
                         "Curse",      "", "Open the Curse URL in a browser",
                         true,
                         () => LaunchURL(mod.resources.curse)
+                    ));
+                }
+                if (mod.resources.store != null) {
+                    opts.Add(new ConsoleMenuOption(
+                        "Store",      "", "Open the Store URL in a browser",
+                        true,
+                        () => LaunchURL(mod.resources.store)
+                    ));
+                }
+                if (mod.resources.steamstore != null) {
+                    opts.Add(new ConsoleMenuOption(
+                        "Steam Store", "", "Open the Steam Store URL in a browser",
+                        true,
+                        () => LaunchURL(mod.resources.steamstore)
                     ));
                 }
                 if (debug) {
@@ -472,7 +489,7 @@ namespace CKAN.ConsoleUI {
 
         private string HostedOn()
         {
-            string dl = mod.download.ToString();
+            string dl = mod.download?.ToString() ?? "";
             foreach (var kvp in hostDomains) {
                 if (dl.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0) {
                     return $"Hosted on {kvp.Value}";
@@ -503,8 +520,19 @@ namespace CKAN.ConsoleUI {
                         }
                     }
                 }
+
+                if (mod.resources.store != null || mod.resources.steamstore != null) {
+                    List<string> stores = new List<string>();
+                    if (mod.resources.store != null) {
+                        stores.Add("KSP store");
+                    }
+                    if (mod.resources.steamstore != null) {
+                        stores.Add("Steam store");
+                    }
+                    return $"Buy from {string.Join(" or ", stores)}";
+                }
             }
-            return mod.download.Host;
+            return mod.download?.Host ?? "";
         }
 
         private void Download()
