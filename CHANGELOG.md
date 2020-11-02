@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.28.1
 
+### Features
+
+- [GUI] Search dropdown (#3175 by: HebaruSan; reviewed: DasSkelett)
+
 ### Bugfixes
 
 - [Multiple] Purge CurlSharp (#3118 by: HebaruSan; reviewed: DasSkelett, techman83)

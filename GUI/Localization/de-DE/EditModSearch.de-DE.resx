@@ -118,12 +118,4 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FilterCombinedLabel.Text" xml:space="preserve"><value>Suche:</value></data>
-  <data name="FilterByNameLabel.Text" xml:space="preserve"><value>Name:</value></data>
-  <data name="FilterByAuthorLabel.Text" xml:space="preserve"><value>Autor:</value></data>
-  <data name="FilterByDescriptionLabel.Text" xml:space="preserve"><value>Beschreibung:</value></data>
-  <data name="FilterByLanguageLabel.Text" xml:space="preserve"><value>Sprache:</value></data>
-  <data name="FilterByDependsLabel.Text" xml:space="preserve"><value>Hängt ab von:</value></data>
-  <data name="FilterByRecommendsLabel.Text" xml:space="preserve"><value>Empfiehlt:</value></data>
-  <data name="FilterBySuggestsLabel.Text" xml:space="preserve"><value>Schlägt vor:</value></data>
-  <data name="FilterByConflictsLabel.Text" xml:space="preserve"><value>Hat einen Konflikt mit:</value></data>
 </root>

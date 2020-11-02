@@ -267,7 +267,7 @@
             //
             // EditModSearch
             //
-            this.EditModSearch.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.EditModSearch.Dock = System.Windows.Forms.DockStyle.Top;
             this.EditModSearch.ApplySearch += EditModSearch_ApplySearch;
             this.EditModSearch.SurrenderFocus += EditModSearch_SurrenderFocus;
             //
@@ -497,7 +497,7 @@
             //
             // InstallAllCheckbox
             //
-            this.InstallAllCheckbox.Location = new System.Drawing.Point(2, 50);
+            this.InstallAllCheckbox.Location = new System.Drawing.Point(2, 86);
             this.InstallAllCheckbox.Size = new System.Drawing.Size(20, 20);
             this.InstallAllCheckbox.Checked = true;
             this.InstallAllCheckbox.CheckedChanged += new System.EventHandler(this.InstallAllCheckbox_CheckChanged);
@@ -509,8 +509,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.InstallAllCheckbox);
             this.Controls.Add(this.ModGrid);
-            this.Controls.Add(this.menuStrip2);
             this.Controls.Add(this.EditModSearch);
+            this.Controls.Add(this.menuStrip2);
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ManageMods";
             this.Size = new System.Drawing.Size(1544, 948);
