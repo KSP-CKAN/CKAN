@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Search dropdown (#3175 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Allow installation into Ships/Script (#3180 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

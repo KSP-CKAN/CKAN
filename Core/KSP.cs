@@ -388,6 +388,13 @@ namespace CKAN
                 Path.Combine(ShipsThumbs(), "VAB")
             );
         }
+        
+        public string ShipsScript()
+        {
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(Ships(), "Script")
+            );
+        }
 
         public string Tutorial()
         {

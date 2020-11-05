@@ -168,13 +168,15 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Normalizes the path by replace any \ with / and removing any trailing slash.
+        /// Normalizes the path by replacing all \ with / and removing any trailing slash.
         /// </summary>
-        /// <returns>The normalized path.</returns>
-        /// <param name="path">The path to normalize.</param>
+        /// <param name="path">The path to normalize</param>
+        /// <returns>The normalized path</returns>
         public static string NormalizePath(string path)
         {
-            return path?.Replace('\\', '/').TrimEnd('/');
+            return path == null    ? null
+                 : path.Length < 2 ? path.Replace('\\', '/')
+                 : path.Replace('\\', '/').TrimEnd('/');
         }
 
         /// <summary>

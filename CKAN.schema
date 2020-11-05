@@ -411,7 +411,7 @@
                 {
                     "description" : "Spec v1.12 Ships subfolder paths",
                     "type"        : "string",
-                    "pattern"     : "^Ships/(SPH|VAB)$"
+                    "pattern"     : "^Ships/(SPH|VAB|Script)$"
                 },
                 {
                     "description" : "Spec v1.16 thumbs paths",

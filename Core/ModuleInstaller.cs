@@ -511,7 +511,8 @@ namespace CKAN
                     || path == ksp.Scenarios() || path == ksp.GameData()
                     || path == ksp.GameDir() || path == ksp.CkanDir()
                     || path == ksp.ShipsThumbs() || path == ksp.ShipsThumbsVAB()
-                    || path == ksp.ShipsThumbsSPH() || path == ksp.Missions();
+                    || path == ksp.ShipsThumbsSPH() || path == ksp.ShipsScript()
+                    || path == ksp.Missions();
         }
 
         /// <summary>
@@ -881,7 +882,8 @@ namespace CKAN
                     var results = new HashSet<string>();
                     // adding in the DirectorySeparatorChar fixes attempts on Windows
                     // to parse "X:" which resolves to Environment.CurrentDirectory
-                    var dirInfo = new DirectoryInfo(dir + Path.DirectorySeparatorChar);
+                    var dirInfo = new DirectoryInfo(
+                        dir.EndsWith("/") ? dir : dir + Path.DirectorySeparatorChar);
 
                     // if this is a parentless directory (Windows)
                     // or if the Root equals the current directory (Mono)
