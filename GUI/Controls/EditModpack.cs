@@ -1,10 +1,8 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
 using Autofac;
 using CKAN.Versioning;
 using CKAN.GameVersionProviders;
@@ -92,6 +90,20 @@ namespace CKAN
             }
 
             ignored.Clear();
+            // Find installed modules that aren't in the module's relationships
+            ignored.AddRange(registry.Installed(false, false)
+                .Where(kvp => {
+                    var ids = new string[] { kvp.Key };
+                    return !module.depends.Any(rel => rel.ContainsAny(ids))
+                        && !module.recommends.Any(rel => rel.ContainsAny(ids))
+                        && !module.suggests.Any(rel => rel.ContainsAny(ids));
+                })
+                .Select(kvp => (RelationshipDescriptor) new ModuleRelationshipDescriptor()
+                    {
+                        name    = kvp.Key,
+                        version = kvp.Value,
+                    })
+            );
             RelationshipsListView.Items.Clear();
             AddGroup(module.depends,    DependsGroup,         registry);
             AddGroup(module.recommends, RecommendationsGroup, registry);
@@ -118,7 +130,9 @@ namespace CKAN
                         {
                             (r as ModuleRelationshipDescriptor)?.name,
                             (r as ModuleRelationshipDescriptor)?.version?.ToString(),
-                            registry.LatestAvailable((r as ModuleRelationshipDescriptor)?.name, null, null)?.@abstract
+                            registry.InstalledModules.First(
+                                im => im.identifier == (r as ModuleRelationshipDescriptor)?.name
+                            )?.Module.@abstract
                         })
                         {
                             Tag   = r,

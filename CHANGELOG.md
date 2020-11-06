@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Print message for unknown install exception (#3164 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Search timer for Linux (#3167 by: HebaruSan; reviewed: DasSkelett)
 - [ConsoleUI] ConsoleUI fixes for DLC (#3165 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Don't fail modpack export when having unindexed mods installed (#3139 by: DasSkelett, HebaruSan; reviewed: HebaruSan, DasSkelett)
 
 ### Internal
 
