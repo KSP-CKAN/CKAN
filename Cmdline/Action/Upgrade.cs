@@ -41,7 +41,7 @@ namespace CKAN.CmdLine
                 options.modules.Add(MainClass.LoadCkanFromFile(ksp, options.ckan_file).identifier);
             }
 
-            if (options.modules.Count == 0 && ! options.upgrade_all)
+            if (options.modules.Count == 0 && !options.upgrade_all)
             {
                 // What? No files specified?
                 User.RaiseMessage("Usage: ckan upgrade Mod [Mod2, ...]");
@@ -90,57 +90,50 @@ namespace CKAN.CmdLine
                 var registry = regMgr.registry;
                 if (options.upgrade_all)
                 {
-                    var installed = new Dictionary<string, ModuleVersion>(registry.Installed());
                     var to_upgrade = new List<CkanModule>();
 
-                    foreach (KeyValuePair<string, ModuleVersion> mod in installed)
+                    foreach (KeyValuePair<string, ModuleVersion> mod in registry.Installed(false))
                     {
-                        ModuleVersion current_version = mod.Value;
-
-                        if ((current_version is ProvidesModuleVersion) || (current_version is UnmanagedModuleVersion))
+                        try
                         {
-                            continue;
+                            // Check if upgrades are available
+                            var latest = registry.LatestAvailable(mod.Key, ksp.VersionCriteria());
+
+                            // This may be an unindexed mod. If so,
+                            // skip rather than crash. See KSP-CKAN/CKAN#841.
+                            if (latest == null || latest.IsDLC)
+                            {
+                                continue;
+                            }
+
+                            if (latest.version.IsGreaterThan(mod.Value))
+                            {
+                                // Upgradable
+                                log.InfoFormat("New version {0} found for {1}",
+                                    latest.version, latest.identifier);
+                                to_upgrade.Add(latest);
+                            }
+
                         }
-                        else
+                        catch (ModuleNotFoundKraken)
                         {
-                            try
-                            {
-                                // Check if upgrades are available
-                                var latest = registry.LatestAvailable(mod.Key, ksp.VersionCriteria());
-
-                                // This may be an unindexed mod. If so,
-                                // skip rather than crash. See KSP-CKAN/CKAN#841.
-                                if (latest == null || latest.IsDLC)
-                                {
-                                    continue;
-                                }
-
-                                if (latest.version.IsGreaterThan(mod.Value))
-                                {
-                                    // Upgradable
-                                    log.InfoFormat("New version {0} found for {1}",
-                                        latest.version, latest.identifier);
-                                    to_upgrade.Add(latest);
-                                }
-
-                            }
-                            catch (ModuleNotFoundKraken)
-                            {
-                                log.InfoFormat("{0} is installed, but no longer in the registry",
-                                    mod.Key);
-                            }
+                            log.InfoFormat("{0} is installed, but no longer in the registry",
+                                mod.Key);
                         }
-
                     }
 
-                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(to_upgrade, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
+                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(to_upgrade, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs, regMgr, true, true);
                 }
                 else
                 {
-                    // TODO: These instances all need to go.
                     Search.AdjustModulesCase(ksp, options.modules);
                     ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(options.modules, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
                 }
+            }
+            catch (CancelledActionKraken k)
+            {
+                User.RaiseMessage("Upgrade aborted: {0}", k.Message);
+                return Exit.ERROR;
             }
             catch (ModuleNotFoundKraken kraken)
             {

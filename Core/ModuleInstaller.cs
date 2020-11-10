@@ -1004,12 +1004,6 @@ namespace CKAN
 
                 if (installed_mod == null)
                 {
-                    //Maybe ModuleNotInstalled ?
-                    if (registry_manager.registry.IsAutodetected(ident))
-                    {
-                        throw new ModuleNotFoundKraken(ident, module.version.ToString(), String.Format("Can't upgrade {0} as it was not installed by CKAN. \r\n Please remove manually before trying to install it.", ident));
-                    }
-
                     User.RaiseMessage("Installing previously uninstalled mod {0}", ident);
                 }
                 else

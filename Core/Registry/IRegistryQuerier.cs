@@ -184,7 +184,6 @@ namespace CKAN
             }
             if (newest_version == null
                 || !querier.IsInstalled(identifier, false)
-                || querier.InstalledDlls.Contains(identifier)
                 || !newest_version.version.IsGreaterThan(querier.InstalledVersion(identifier)))
             {
                 return false;
