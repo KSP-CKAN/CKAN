@@ -272,9 +272,6 @@ namespace CKAN.ConsoleUI {
                 new ConsoleMenuOption("Audit recommendations",      "",
                     "List mods suggested and recommended by installed mods",
                     true, ViewSuggestions),
-                new ConsoleMenuOption("Scan KSP dir",               "",
-                    "Check for manually installed mods",
-                    true, ScanForMods),
                 new ConsoleMenuOption("Import downloads...",        "",
                     "Select manually downloaded mods to import into CKAN",
                     true, ImportDownloads),
@@ -352,8 +349,8 @@ namespace CKAN.ConsoleUI {
 
         private bool HasAnyUpgradeable()
         {
-            foreach (InstalledModule im in registry.InstalledModules) {
-                if (registry.HasUpdate(im.identifier, manager.CurrentInstance.VersionCriteria())) {
+            foreach (string identifier in registry.Installed(true).Select(kvp => kvp.Key)) {
+                if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria())) {
                     return true;
                 }
             }
@@ -362,9 +359,9 @@ namespace CKAN.ConsoleUI {
 
         private bool UpgradeAll()
         {
-            foreach (InstalledModule im in registry.InstalledModules) {
-                if (registry.HasUpdate(im.identifier, manager.CurrentInstance.VersionCriteria())) {
-                    plan.Upgrade.Add(im.identifier);
+            foreach (string identifier in registry.Installed(true).Select(kvp => kvp.Key)) {
+                if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria())) {
+                    plan.Upgrade.Add(identifier);
                 }
             }
             return true;
@@ -507,6 +504,7 @@ namespace CKAN.ConsoleUI {
 
         private List<CkanModule> GetAllMods(bool force = false)
         {
+            ScanForMods();
             if (allMods == null || force) {
                 allMods = new List<CkanModule>(registry.CompatibleModules(manager.CurrentInstance.VersionCriteria()));
                 foreach (InstalledModule im in registry.InstalledModules) {
@@ -716,9 +714,7 @@ namespace CKAN.ConsoleUI {
         public InstallStatus GetModStatus(KSPManager manager, IRegistryQuerier registry, string identifier)
         {
             if (registry.IsInstalled(identifier, false)) {
-                if (registry.IsAutodetected(identifier)) {
-                    return InstallStatus.AutoDetected;
-                } else if (Remove.Contains(identifier)) {
+                if (Remove.Contains(identifier)) {
                     return InstallStatus.Removing;
                 } else if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria())) {
                     if (Upgrade.Contains(identifier)) {
@@ -726,6 +722,8 @@ namespace CKAN.ConsoleUI {
                     } else {
                         return InstallStatus.Upgradeable;
                     }
+                } else if (registry.IsAutodetected(identifier)) {
+                    return InstallStatus.AutoDetected;
                 } else if (Replace.Contains(identifier)) {
                     return InstallStatus.Replacing;
                 } else if (registry.GetReplacement(identifier, manager.CurrentInstance.VersionCriteria()) != null) {

@@ -476,7 +476,9 @@ namespace CKAN
                 bool dlcChanged = manager.ScanDlc();
 
                 if (dllChanged || dlcChanged)
+                {
                     manager.Save(false);
+                }
 
                 tx.Complete();
 

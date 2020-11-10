@@ -41,7 +41,7 @@ namespace CKAN.CmdLine
                 return true;
             }
 
-            Console.Write("{0} [Y/n] ", question);
+            Console.Write("\r\n{0} [Y/n] ", question);
             while (true)
             {
                 var input = Console.In.ReadLine();

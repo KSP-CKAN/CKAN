@@ -111,9 +111,6 @@ namespace CKAN
         /// </returns>
         public bool IsInstallable()
         {
-            // Auto detected mods are never installable
-            if (IsAutodetected)
-                return false;
             // Compatible mods are installable, but so are mods that are already installed
             return !IsIncompatible || IsInstalled;
         }
@@ -203,7 +200,7 @@ namespace CKAN
             Identifier     = identifier;
             IsAutodetected = registry.IsAutodetected(identifier);
             DownloadCount  = registry.DownloadCount(identifier);
-            if (registry.IsAutodetected(identifier))
+            if (IsAutodetected)
             {
                 IsInstalled = true;
             }

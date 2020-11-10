@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.29.1
 
+### Features
+
+- [Multiple] Allow upgrading manually installed modules (#3190 by: HebaruSan; reviewed: DasSkelett)
+
 ## v1.29.0 (Eddington)
 
 ### Features

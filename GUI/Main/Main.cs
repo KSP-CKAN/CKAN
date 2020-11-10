@@ -372,6 +372,7 @@ namespace CKAN
         /// <param name="allowRepoUpdate">true if a repo update is allowed if needed (e.g. on initial load), false otherwise</param>
         private void CurrentInstanceUpdated(bool allowRepoUpdate)
         {
+            CurrentInstance.ScanGameData();
             Util.Invoke(this, () =>
             {
                 Text = $"CKAN {Meta.GetVersion()} - KSP {CurrentInstance.Version()}    --    {CurrentInstance.GameDir().Replace('/', Path.DirectorySeparatorChar)}";

@@ -265,7 +265,12 @@ namespace CKAN
 
             ModChange myChange = changes?.FindLast((ModChange ch) => ch.Mod.Equals(mod));
 
-            var selecting = mod.IsInstallable()
+            var selecting = mod.IsAutodetected
+                ? new DataGridViewTextBoxCell()
+                {
+                    Value = Properties.Resources.MainModListAutoDetected
+                }
+                : mod.IsInstallable()
                 ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                 {
                     Value = myChange == null ? mod.IsInstalled
@@ -275,7 +280,7 @@ namespace CKAN
                 }
                 : new DataGridViewTextBoxCell()
                 {
-                    Value = mod.IsAutodetected ? Properties.Resources.MainModListAutoDetected : "-"
+                    Value = "-"
                 };
 
             var autoInstalled = mod.IsInstalled && !mod.IsAutodetected
