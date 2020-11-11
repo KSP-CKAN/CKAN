@@ -15,6 +15,7 @@ namespace CKAN.Extensions
             return source is ICollection<T> collection ? collection : source.ToArray();
         }
 
+#if NET45
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
         {
             if (source == null)
@@ -22,6 +23,7 @@ namespace CKAN.Extensions
 
             return new HashSet<T>(source);
         }
+#endif
 
         public static IEnumerable<T> Memoize<T>(this IEnumerable<T> source)
         {

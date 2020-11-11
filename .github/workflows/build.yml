@@ -79,7 +79,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '3.1.301'
+          dotnet-version: '5.0.x'
       - name: Restore cache for _build/tools
         uses: actions/cache@v1
         with:
