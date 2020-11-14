@@ -25,6 +25,7 @@ namespace Tests.Core
         private CKAN.Registry        _registry;
         private CKAN.ModuleInstaller _installer;
         private CkanModule           _testModule;
+        private string               _gameDir;
         private string               _gameDataDir;
         private IUser                _nullUser;
 
@@ -45,6 +46,7 @@ namespace Tests.Core
             _registry  = _registryManager.registry;
             _installer = CKAN.ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _nullUser);
 
+            _gameDir = _instance.KSP.GameDir();
             _gameDataDir = _instance.KSP.GameData();
             _registry.AddAvailable(_testModule);
             var testModFile = TestData.DogeCoinFlagZip();
@@ -64,6 +66,19 @@ namespace Tests.Core
             _manager.Dispose();
             _config.Dispose();
             _instance.Dispose();
+        }
+
+        /// <summary>
+        /// Make sure that the GameRoot directory is not included and doesn't throw an exception.
+        /// </summary>
+        [Test]
+        public void TestGameRoot()
+        {
+            var result = _installer
+                .AddParentDirectories(new HashSet<string>() { _gameDir })
+                .ToList();
+
+            Assert.IsEmpty(result);
         }
 
         /// <summary>
