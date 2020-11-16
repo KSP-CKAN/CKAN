@@ -775,7 +775,7 @@ namespace CKAN
                         }
                         else
                         {
-                            // Add this files' directory to the list for deletion if it isn't already there.
+                            // Add this file's directory to the list for deletion if it isn't already there.
                             // Helps clean up directories when modules are uninstalled out of dependency order
                             // Since we check for directory contents when deleting, this should purge empty
                             // dirs, making less ModuleManager headaches for people.
@@ -873,19 +873,19 @@ namespace CKAN
             var gameDir = KSPPathUtils.NormalizePath(ksp.GameDir());
             return directories
                 .Where(dir => !string.IsNullOrWhiteSpace(dir))
-                // normalize all paths before deduplicate
+                // Normalize all paths before deduplicate
                 .Select(KSPPathUtils.NormalizePath)
-                // remove any duplicate paths
+                // Remove any duplicate paths
                 .Distinct()
                 .SelectMany(dir =>
                 {
                     var results = new HashSet<string>();
-                    // adding in the DirectorySeparatorChar fixes attempts on Windows
+                    // Adding in the DirectorySeparatorChar fixes attempts on Windows
                     // to parse "X:" which resolves to Environment.CurrentDirectory
                     var dirInfo = new DirectoryInfo(
                         dir.EndsWith("/") ? dir : dir + Path.DirectorySeparatorChar);
 
-                    // if this is a parentless directory (Windows)
+                    // If this is a parentless directory (Windows)
                     // or if the Root equals the current directory (Mono)
                     if (dirInfo.Parent == null || dirInfo.Root == dirInfo)
                     {
@@ -897,14 +897,18 @@ namespace CKAN
                         dir = KSPPathUtils.ToAbsolute(dir, gameDir);
                     }
 
-                    // remove the system paths, leaving the path under the instance directory
+                    // Remove the system paths, leaving the path under the instance directory
                     var relativeHead = KSPPathUtils.ToRelative(dir, gameDir);
-                    var pathArray = relativeHead.Split('/');
-                    var builtPath = string.Empty;
-                    foreach (var path in pathArray)
+                    // Don't try to remove GameRoot
+                    if (!string.IsNullOrEmpty(relativeHead))
                     {
-                        builtPath += path + '/';
-                        results.Add(KSPPathUtils.ToAbsolute(builtPath, gameDir));
+                        var pathArray = relativeHead.Split('/');
+                        var builtPath = "";
+                        foreach (var path in pathArray)
+                        {
+                            builtPath += path + '/';
+                            results.Add(KSPPathUtils.ToAbsolute(builtPath, gameDir));
+                        }
                     }
 
                     return results;

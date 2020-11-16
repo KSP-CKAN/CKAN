@@ -653,6 +653,7 @@ namespace Tests.Core
         [TestCase("Ships/@thumbs")]
         [TestCase("Ships/@thumbs/VAB")]
         [TestCase("Ships/@thumbs/SPH")]
+        [TestCase("Ships/Script")]
         public void AllowsInstallsToShipsDirectories(string directory)
         {
             // Arrange
