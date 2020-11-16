@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - [Multiple] Allow upgrading manually installed modules (#3190 by: HebaruSan; reviewed: DasSkelett)
 
+### Bugfixes
+
+- [GUI] Search UI fixes (#3198 by: HebaruSan; reviewed: DasSkelett)
+
 ## v1.29.0 (Eddington)
 
 ### Features

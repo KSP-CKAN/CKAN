@@ -54,9 +54,19 @@ namespace CKAN
                 cp.Style   |= unchecked((int)WindowStyles.WS_POPUP);
                 // The window is intended to be used as a floating toolbar. A tool window has a title bar that is shorter than a normal title bar, and the window title is drawn using a smaller font. A tool window does not appear in the taskbar or in the dialog that appears when the user presses ALT+TAB. If a tool window has a system menu, its icon is not displayed on the title bar. However, you can display the system menu by right-clicking or by typing ALT+SPACE.
                 cp.ExStyle |= (int)WindowExStyles.WS_EX_TOOLWINDOW;
-                // The window should be placed above all non-topmost windows and should stay above them, even when the window is deactivated. To add or remove this style, use the SetWindowPos function.
-                cp.ExStyle |= (int)WindowExStyles.WS_EX_TOPMOST;
+                // The window itself contains child windows that should take part in dialog box navigation. If this style is specified, the dialog manager recurses into children of this window when performing navigation operations such as handling the TAB key, an arrow key, or a keyboard mnemonic.
+                cp.ExStyle |= (int)WindowExStyles.WS_EX_CONTROLPARENT;
+                // A top-level window created with this style does not become the foreground window when the user clicks it. The system does not bring this window to the foreground when the user minimizes or closes the foreground window. The window should not be activated through programmatic access or via keyboard navigation by accessible technology, such as Narrator. To activate the window, use the SetActiveWindow or SetForegroundWindow function. The window does not appear on the taskbar by default. To force the window to appear on the taskbar, use the WS_EX_APPWINDOW style.
+                cp.ExStyle |= (int)WindowExStyles.WS_EX_NOACTIVATE;
                 return cp;
+            }
+        }
+
+        protected override void OnLeave(EventArgs e)
+        {
+            if (SurrenderFocus != null)
+            {
+                SurrenderFocus();
             }
         }
 
@@ -79,8 +89,19 @@ namespace CKAN
                     if (ApplySearch != null)
                     {
                         ApplySearch(true);
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
                     }
-                    e.Handled = true;
+                    break;
+
+                case Keys.Escape:
+                    if (SurrenderFocus != null
+                        && string.IsNullOrEmpty((sender as HintTextBox)?.Text ?? null))
+                    {
+                        SurrenderFocus();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                    }
                     break;
 
                 case Keys.Up:
@@ -90,8 +111,8 @@ namespace CKAN
                     if (SurrenderFocus != null)
                     {
                         SurrenderFocus();
+                        e.Handled = true;
                     }
-                    e.Handled = true;
                     break;
             }
         }
@@ -107,6 +128,7 @@ namespace CKAN
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        // https://docs.microsoft.com/en-us/windows/win32/winmsg/window-styles
         private enum WindowStyles : uint
         {
             WS_VISIBLE = 0x10000000,
@@ -114,10 +136,12 @@ namespace CKAN
             WS_POPUP   = 0x80000000,
         }
 
+        // https://docs.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
         private enum WindowExStyles : uint
         {
-            WS_EX_TOPMOST    = 0x08,
-            WS_EX_TOOLWINDOW = 0x80,
+            WS_EX_TOOLWINDOW    =       0x80,
+            WS_EX_CONTROLPARENT =    0x10000,
+            WS_EX_NOACTIVATE    = 0x08000000,
         }
 
     }

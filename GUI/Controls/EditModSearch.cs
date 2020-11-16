@@ -160,7 +160,7 @@ namespace CKAN
             }
         }
 
-        private void OnLeave(object sender, EventArgs e)
+        protected override void OnLeave(EventArgs e)
         {
             ExpandButton.Checked = false;
         }

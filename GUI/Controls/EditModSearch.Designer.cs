@@ -74,6 +74,7 @@
             //
             this.ExpandButton.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Right);
             this.ExpandButton.Appearance = System.Windows.Forms.Appearance.Button;
+            this.ExpandButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ExpandButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ExpandButton.Location = new System.Drawing.Point(400, 5);
             this.ExpandButton.Name = "ExpandButton";
@@ -95,7 +96,6 @@
             // EditModSearch
             //
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.Leave += new System.EventHandler(this.OnLeave);
             this.Controls.Add(this.FilterCombinedLabel);
             this.Controls.Add(this.ExpandButton);
             this.Controls.Add(this.FilterCombinedTextBox);

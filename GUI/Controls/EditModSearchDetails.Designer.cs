@@ -63,10 +63,10 @@
             //
             this.FilterByNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByNameTextBox.Location = new System.Drawing.Point(100, 7);
+            this.FilterByNameTextBox.Location = new System.Drawing.Point(110, 7);
             this.FilterByNameTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByNameTextBox.Name = "FilterByNameTextBox";
-            this.FilterByNameTextBox.Size = new System.Drawing.Size(190, 26);
+            this.FilterByNameTextBox.Size = new System.Drawing.Size(180, 26);
             this.FilterByNameTextBox.TabIndex = 1;
             this.FilterByNameTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByNameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -87,10 +87,10 @@
             //
             this.FilterByAuthorTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByAuthorTextBox.Location = new System.Drawing.Point(100, 33);
+            this.FilterByAuthorTextBox.Location = new System.Drawing.Point(110, 33);
             this.FilterByAuthorTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByAuthorTextBox.Name = "FilterByAuthorTextBox";
-            this.FilterByAuthorTextBox.Size = new System.Drawing.Size(190, 26);
+            this.FilterByAuthorTextBox.Size = new System.Drawing.Size(180, 26);
             this.FilterByAuthorTextBox.TabIndex = 3;
             this.FilterByAuthorTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByAuthorTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -111,10 +111,10 @@
             //
             this.FilterByDescriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByDescriptionTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByDescriptionTextBox.Location = new System.Drawing.Point(100, 59);
+            this.FilterByDescriptionTextBox.Location = new System.Drawing.Point(110, 59);
             this.FilterByDescriptionTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByDescriptionTextBox.Name = "FilterByDescriptionTextBox";
-            this.FilterByDescriptionTextBox.Size = new System.Drawing.Size(190, 26);
+            this.FilterByDescriptionTextBox.Size = new System.Drawing.Size(180, 26);
             this.FilterByDescriptionTextBox.TabIndex = 5;
             this.FilterByDescriptionTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByDescriptionTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -135,10 +135,10 @@
             //
             this.FilterByLanguageTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByLanguageTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByLanguageTextBox.Location = new System.Drawing.Point(100, 85);
+            this.FilterByLanguageTextBox.Location = new System.Drawing.Point(110, 85);
             this.FilterByLanguageTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByLanguageTextBox.Name = "FilterByLanguageTextBox";
-            this.FilterByLanguageTextBox.Size = new System.Drawing.Size(190, 26);
+            this.FilterByLanguageTextBox.Size = new System.Drawing.Size(180, 26);
             this.FilterByLanguageTextBox.TabIndex = 7;
             this.FilterByLanguageTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByLanguageTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -159,10 +159,10 @@
             //
             this.FilterByDependsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByDependsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByDependsTextBox.Location = new System.Drawing.Point(100, 111);
+            this.FilterByDependsTextBox.Location = new System.Drawing.Point(110, 111);
             this.FilterByDependsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByDependsTextBox.Name = "FilterByDependsTextBox";
-            this.FilterByDependsTextBox.Size = new System.Drawing.Size(190, 26);
+            this.FilterByDependsTextBox.Size = new System.Drawing.Size(180, 26);
             this.FilterByDependsTextBox.TabIndex = 9;
             this.FilterByDependsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByDependsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -183,10 +183,10 @@
             //
             this.FilterByRecommendsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByRecommendsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByRecommendsTextBox.Location = new System.Drawing.Point(100, 137);
+            this.FilterByRecommendsTextBox.Location = new System.Drawing.Point(110, 137);
             this.FilterByRecommendsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByRecommendsTextBox.Name = "FilterByRecommendsTextBox";
-            this.FilterByRecommendsTextBox.Size = new System.Drawing.Size(190, 26);
+            this.FilterByRecommendsTextBox.Size = new System.Drawing.Size(180, 26);
             this.FilterByRecommendsTextBox.TabIndex = 11;
             this.FilterByRecommendsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByRecommendsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -207,10 +207,10 @@
             //
             this.FilterBySuggestsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterBySuggestsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterBySuggestsTextBox.Location = new System.Drawing.Point(100, 163);
+            this.FilterBySuggestsTextBox.Location = new System.Drawing.Point(110, 163);
             this.FilterBySuggestsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterBySuggestsTextBox.Name = "FilterBySuggestsTextBox";
-            this.FilterBySuggestsTextBox.Size = new System.Drawing.Size(190, 26);
+            this.FilterBySuggestsTextBox.Size = new System.Drawing.Size(180, 26);
             this.FilterBySuggestsTextBox.TabIndex = 13;
             this.FilterBySuggestsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterBySuggestsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -231,10 +231,10 @@
             //
             this.FilterByConflictsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByConflictsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByConflictsTextBox.Location = new System.Drawing.Point(100, 189);
+            this.FilterByConflictsTextBox.Location = new System.Drawing.Point(110, 189);
             this.FilterByConflictsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByConflictsTextBox.Name = "FilterByConflictsTextBox";
-            this.FilterByConflictsTextBox.Size = new System.Drawing.Size(190, 26);
+            this.FilterByConflictsTextBox.Size = new System.Drawing.Size(180, 26);
             this.FilterByConflictsTextBox.TabIndex = 15;
             this.FilterByConflictsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByConflictsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
