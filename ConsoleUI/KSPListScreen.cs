@@ -23,7 +23,7 @@ namespace CKAN.ConsoleUI {
 
             AddObject(new ConsoleLabel(
                 1, 2, -1,
-                () => "Select a game instance:"
+                () => "Select or add a game instance:"
             ));
 
             kspList = new ConsoleListBox<KSP>(

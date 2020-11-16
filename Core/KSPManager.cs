@@ -515,23 +515,4 @@ namespace CKAN
         }
 
     }
-
-    public class KSPManagerKraken : Kraken
-    {
-        public KSPManagerKraken(string reason = null, Exception innerException = null)
-            : base(reason, innerException)
-        {
-        }
-    }
-
-    public class InvalidKSPInstanceKraken : Exception
-    {
-        public string instance;
-
-        public InvalidKSPInstanceKraken(string instance, string reason = null, Exception innerException = null)
-            : base(reason, innerException)
-        {
-            this.instance = instance;
-        }
-    }
 }

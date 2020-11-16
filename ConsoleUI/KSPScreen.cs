@@ -36,8 +36,12 @@ namespace CKAN.ConsoleUI {
                 return false;
             });
 
-            name = new ConsoleField(labelWidth, nameRow, -1, initName);
-            path = new ConsoleField(labelWidth, pathRow, -1, initPath);
+            name = new ConsoleField(labelWidth, nameRow, -1, initName) {
+                GhostText = () => "<Enter the name to use for this copy of KSP>"
+            };
+            path = new ConsoleField(labelWidth, pathRow, -1, initPath) {
+                GhostText = () => "<Enter the location of this copy of KSP on disk>"
+            };
 
             AddObject(new ConsoleLabel(1, nameRow, labelWidth, () => "Name:"));
             AddObject(name);
@@ -51,14 +55,6 @@ namespace CKAN.ConsoleUI {
         protected override string LeftHeader()
         {
             return $"CKAN {Meta.GetVersion()}";
-        }
-
-        /// <summary>
-        /// Put description in top center
-        /// </summary>
-        protected override string CenterHeader()
-        {
-            return "Edit KSP Instance";
         }
 
         /// <summary>
@@ -98,7 +94,11 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected bool pathValid()
         {
-            if (!IsKspDir(path.Value)) {
+            if (Platform.IsMac) {
+                // Handle default path dragged-and-dropped onto Mac's Terminal
+                path.Value = path.Value.Replace("Kerbal\\ Space\\ Program", "Kerbal Space Program");
+            }
+            if (!KSP.IsKspDir(path.Value)) {
                 // Complain about non-KSP path
                 RaiseError("Path does not correspond to a KSP folder!");
                 SetFocus(path);
@@ -122,14 +122,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected KSPManager manager;
 
-        // Copied from KSP class because it's inaccessible.
-        // (Calling a constructor just for validation is gross.)
-        private static bool IsKspDir(string directory)
-        {
-            return Directory.Exists(Path.Combine(directory, "GameData"));
-        }
-
-        private   const int labelWidth = 16;
+        protected const int labelWidth = 16;
         private   const int nameRow    = 2;
         /// <summary>
         /// Y coordinate of path field

@@ -19,8 +19,12 @@ namespace CKAN.ConsoleUI {
         {
             editList = reps;
 
-            name = new ConsoleField(labelWidth, nameRow, -1, initName);
-            url  = new ConsoleField(labelWidth, urlRow,  -1, initUrl);
+            name = new ConsoleField(labelWidth, nameRow, -1, initName) {
+                GhostText = () => "<Enter the name to use for this repository>"
+            };
+            url  = new ConsoleField(labelWidth, urlRow,  -1, initUrl) {
+                GhostText = () => "<Enter the URL of this repository>"
+            };
 
             AddObject(new ConsoleLabel(1, nameRow, labelWidth, () => "Name:"));
             AddObject(name);

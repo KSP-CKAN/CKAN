@@ -175,6 +175,14 @@ namespace CKAN.ConsoleUI {
         }
 
         /// <summary>
+        /// Put description in top center
+        /// </summary>
+        protected override string CenterHeader()
+        {
+            return "Edit KSP Instance";
+        }
+
+        /// <summary>
         /// Return whether the fields are valid.
         /// Similar to adding, except leaving the fields unchanged is allowed.
         /// </summary>

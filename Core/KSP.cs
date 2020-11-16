@@ -219,7 +219,6 @@ namespace CKAN
         {
             // See if we can find KSP as part of a Steam install.
             string kspSteamPath = KSPPathUtils.KSPSteamPath();
-
             if (kspSteamPath != null)
             {
                 if (IsKspDir(kspSteamPath))
@@ -228,6 +227,18 @@ namespace CKAN
                 }
 
                 log.DebugFormat("Have Steam, but KSP is not at \"{0}\".", kspSteamPath);
+            }
+
+            // See if we can find a non-Steam Mac KSP install
+            string kspMacPath = KSPPathUtils.KSPMacPath();
+            if (kspMacPath != null)
+            {
+                if (IsKspDir(kspMacPath))
+                {
+                    log.InfoFormat("Found a KSP install at {0}", kspMacPath);
+                    return kspMacPath;
+                }
+                log.DebugFormat("Default Mac KSP folder exists at \"{0}\", but KSP is not installed there.", kspMacPath);
             }
 
             // Oh noes! We can't find KSP!
@@ -240,7 +251,7 @@ namespace CKAN
         /// Checking for a GameData directory probably isn't the best way to
         /// detect KSP, but it works. More robust implementations welcome.
         /// </summary>
-        internal static bool IsKspDir(string directory)
+        public static bool IsKspDir(string directory)
         {
             return Directory.Exists(Path.Combine(directory, "GameData"));
         }
@@ -388,7 +399,7 @@ namespace CKAN
                 Path.Combine(ShipsThumbs(), "VAB")
             );
         }
-        
+
         public string ShipsScript()
         {
             return KSPPathUtils.NormalizePath(
