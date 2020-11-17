@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Installing build dependencies
-        run: apt-get update && apt-get install -y git make sed libplist-utils xorriso gzip fakeroot lintian rpm wget jq
+        run: apt-get update && apt-get install -y git make sed libplist-utils xorriso gzip fakeroot lintian rpm wget jq dpkg-dev
       - name: Installing runtime dependencies
         run: apt-get install -y xvfb
       - name: Restore cache for _build/tools
@@ -105,6 +105,19 @@ jobs:
           asset_path: _build/out/AutoUpdater/Release/bin/AutoUpdater.exe
           asset_name: AutoUpdater.exe
           asset_content_type: application/vnd.microsoft.portable-executable
+      - name: Push deb to S3
+        # Send deb file to https://ksp-ckan.s3-us-west-2.amazonaws.com/
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --follow-symlinks
+        env:
+          AWS_S3_BUCKET: ksp-ckan
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          SOURCE_DIR: _build/deb/apt-repo
+          DEST_DIR: deb/dists/stable/main/binary-all
+        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
 
       - name: Send Discord Notification
         env:

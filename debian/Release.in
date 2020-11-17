@@ -1,0 +1,4 @@
+Components: main
+Architectures: all
+Description: Packages of the latest releases of the KSP-CKAN official client
+Version: @VERSION@
