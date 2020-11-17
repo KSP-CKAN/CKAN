@@ -385,9 +385,14 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Tries to parse an identifier in the format Modname=version
-        /// If the module cannot be found in the registry, throws a ModuleNotFoundKraken.
+        /// Tries to parse an identifier in the format identifier=version and returns a matching CkanModule from the registry.
+        /// Returns the latest compatible or installed module if no version has been given.
         /// </summary>
+        /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="name">The identifier or identifier=version of the module</param>
+        /// <param name="ksp_version">The current KSP version criteria to consider</param>
+        /// <returns>A CkanModule</returns>
+        /// <exception cref="ModuleNotFoundKraken">Thrown if no matching module could be found</exception>
         public static CkanModule FromIDandVersion(IRegistryQuerier registry, string mod, KspVersionCriteria ksp_version)
         {
             CkanModule module;

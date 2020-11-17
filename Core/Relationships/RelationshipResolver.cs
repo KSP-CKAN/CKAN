@@ -106,9 +106,9 @@ namespace CKAN
         /// <summary>
         /// Creates a new Relationship resolver.
         /// </summary>
-        /// <param name="options"><see cref="RelationshipResolverOptions"/></param>
-        /// <param name="registry">The registry to use</param>
-        /// <param name="kspversion">The version of the install that the registry corresponds to</param>
+        /// <param name="options">Options for the RelationshipResolver</param>
+        /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="kspversion">The current KSP version criteria to consider</param>
         public RelationshipResolver(RelationshipResolverOptions options, IRegistryQuerier registry, KspVersionCriteria kspversion)
         {
             this.registry = registry;
@@ -124,23 +124,39 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Attempts to convert the module_names to ckan modules via  CkanModule.FromIDandVersion and then calls RelationshipResolver.ctor(IEnumerable{CkanModule}, Registry, KSPVersion)"/>
+        /// Attempts to convert the identifiers to CkanModules and then calls RelationshipResolver.ctor(IEnumerable{CkanModule}, IEnumerable{CkanModule}, Registry, KSPVersion)"/>
         /// </summary>
-        /// <param name="modulesToInstall">Identifiers of modules to install</param>
-        /// <param name="modulesToRemove">Identifiers of modules to remove</param>
-        /// <param name="options"></param>
-        /// <param name="registry"></param>
-        /// <param name="kspversion"></param>
+        /// <param name="modulesToInstall">Identifiers of modules to install, will be converted to CkanModules using CkanModule.FromIDandVersion</param>
+        /// <param name="modulesToRemove">Identifiers of modules to remove, will be converted to CkanModules using Registry.InstalledModule</param>
+        /// <param name="options">Options for the RelationshipResolver</param>
+        /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="kspversion">The current KSP version criteria to consider</param>
         public RelationshipResolver(IEnumerable<string> modulesToInstall, IEnumerable<string> modulesToRemove, RelationshipResolverOptions options, IRegistryQuerier registry,
             KspVersionCriteria kspversion) :
                 this(
-                    modulesToInstall?.Select(name => TranslateModule(name, options, registry, kspversion)),
-                    modulesToRemove?.Select(name => TranslateModule(name, options, registry, kspversion)),
+                    modulesToInstall?.Select(mod => TranslateModule(mod, options, registry, kspversion)),
+                    modulesToRemove?
+                        .Select(mod =>
+                        {
+                            var match = CkanModule.idAndVersionMatcher.Match(mod);
+                            return match.Success ? match.Groups["mod"].Value : mod;
+                        })
+                        .Where(identifier => registry.InstalledModule(identifier) != null)
+                        .Select(identifier => registry.InstalledModule(identifier).Module),
                     options, registry, kspversion)
         {
             // Does nothing, just calls the other overloaded constructor
         }
 
+        /// <summary>
+        /// Translate mods from identifiers in its default or identifier=version format into CkanModules,
+        /// optionally falling back to incompatible modules if no compatibles could be found.
+        /// </summary>
+        /// <param name="name">The identifier or identifier=version of the module</param>
+        /// <param name="options">If options.allow_incompatible is set, fall back to searching incompatible modules if no compatible has been found</param>
+        /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="kspversion">The current KSP version criteria to consider</param>
+        /// <returns>A CkanModule</returns>
         private static CkanModule TranslateModule(string name, RelationshipResolverOptions options, IRegistryQuerier registry, KspVersionCriteria kspversion)
         {
             if (options.allow_incompatible)
@@ -167,9 +183,9 @@ namespace CKAN
         /// </summary>
         /// <param name="modulesToInstall">Modules to install</param>
         /// <param name="modulesToRemove">Modules to remove</param>
-        /// <param name="options"></param>
-        /// <param name="registry"></param>
-        /// <param name="kspversion"></param>
+        /// <param name="options">Options for the RelationshipResolver</param>
+        /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="kspversion">The current KSP version criteria to consider</param>
         public RelationshipResolver(IEnumerable<CkanModule> modulesToInstall, IEnumerable<CkanModule> modulesToRemove, RelationshipResolverOptions options, IRegistryQuerier registry,
             KspVersionCriteria kspversion)
             : this(options, registry, kspversion)
@@ -381,16 +397,15 @@ namespace CKAN
 
                 // If it's already installed, skip.
                 if (descriptor.MatchesAny(
-                    registry.InstalledModules.Select(im => im.Module),
+                    installed_modules,
                     registry.InstalledDlls.ToHashSet(),
                     registry.InstalledDlc))
                 {
                     continue;
                 }
-                else if (descriptor.ContainsAny(registry.InstalledModules.Select(im => im.Module.identifier)))
+                else if (descriptor.ContainsAny(installed_modules.Select(im => im.identifier)))
                 {
-                    CkanModule module = registry.InstalledModules
-                        .Select(im => im.Module)
+                    CkanModule module = installed_modules
                         .FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
                     if (options.proceed_with_inconsistencies)
                     {
