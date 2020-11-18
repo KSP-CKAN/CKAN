@@ -26,7 +26,15 @@ namespace CKAN.ConsoleUI {
             if (new SplashScreen(manager).Run()) {
 
                 if (manager.CurrentInstance == null) {
-                    new KSPListScreen(manager, true).Run();
+                    if (manager.Instances.Count == 0) {
+                        // No instances, add one
+                        new KSPAddScreen(manager).Run();
+                        // Set instance to current if they added one
+                        manager.GetPreferredInstance();
+                    } else {
+                        // Multiple instances, no default, pick one
+                        new KSPListScreen(manager).Run();
+                    }
                 }
                 if (manager.CurrentInstance != null) {
                     new ModListScreen(manager, debug).Run();

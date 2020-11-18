@@ -1,3 +1,7 @@
+using System;
+using System.IO;
+using CKAN.ConsoleUI.Toolkit;
+
 namespace CKAN.ConsoleUI {
 
     /// <summary>
@@ -9,7 +13,14 @@ namespace CKAN.ConsoleUI {
         /// Initialize the Screen
         /// </summary>
         /// <param name="mgr">KSP manager containing the instances</param>
-        public KSPAddScreen(KSPManager mgr) : base(mgr) { }
+        public KSPAddScreen(KSPManager mgr) : base(mgr)
+        {
+            AddObject(new ConsoleLabel(
+                labelWidth, pathRow + 1, -1,
+                () => $"Example: {examplePath}",
+                null, () => ConsoleTheme.Current.DimLabelFg
+            ));
+        }
 
         /// <summary>
         /// Return whether the fields are valid.
@@ -24,12 +35,27 @@ namespace CKAN.ConsoleUI {
         }
 
         /// <summary>
+        /// Put description in top center
+        /// </summary>
+        protected override string CenterHeader()
+        {
+            return "Add KSP Instance";
+        }
+
+        /// <summary>
         /// Add the instance
         /// </summary>
         protected override void Save()
         {
             manager.AddInstance(new KSP(path.Value, name.Value, new NullUser()));
         }
+
+        private static readonly string examplePath = Path.Combine(
+            !string.IsNullOrEmpty(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles))
+                ? Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)
+                : Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Kerbal Space Program"
+        );
     }
 
 }

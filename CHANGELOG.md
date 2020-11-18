@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Search UI fixes (#3198 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Fix error when removing file from GameRoot (#3196 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Streamline Mac onboarding (#3199 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.29.0 (Eddington)
 

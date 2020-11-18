@@ -166,6 +166,26 @@ namespace CKAN
             // Could not locate the folder.
             return null;
         }
+        
+        /// <summary>
+        /// Get the default non-Steam path to KSP on macOS
+        /// </summary>
+        /// <returns>
+        /// "/Applications/Kerbal Space Program" if it exists and we're on a Mac, else null
+        /// </returns>
+        public static string KSPMacPath()
+        {
+            if (Platform.IsMac)
+            {
+                string installPath = Path.Combine(
+                    // This is "/Applications" in Mono on Mac
+                    Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                    "Kerbal Space Program"
+                );
+                return Directory.Exists(installPath) ? installPath : null;
+            }
+            return null;
+        }
 
         /// <summary>
         /// Normalizes the path by replacing all \ with / and removing any trailing slash.
