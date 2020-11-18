@@ -23,13 +23,17 @@ CONSOLEUIDESKTOPSRC:=ckan-consoleui.desktop
 CONSOLEUIDESKTOPDEST:=$(DESTDIR)/usr/share/applications/ckan-consoleui.desktop
 VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' )
 DEB:=../_build/deb/ckan_$(VERSION)_all.deb
+
 APTREPO:=../_build/deb/apt-repo
 REPODEB:=$(APTREPO)/ckan_$(VERSION)_all.deb
 PACKAGES:=$(APTREPO)/Packages.gz
 RELEASESRC:=Release.in
 RELEASEDEST:=$(APTREPO)/Release
 
-repo: $(REPODEB) $(PACKAGES) $(RELEASEDEST)
+APTREPOREL:=../_build/deb/apt-repo-rel
+RELRELEASEDEST:=$(APTREPOREL)/Release
+
+repo: $(REPODEB) $(PACKAGES) $(RELEASEDEST) $(RELRELEASEDEST)
 
 $(REPODEB): $(DEB)
 	umask 0022 && mkdir -p $(shell dirname $@)
@@ -40,6 +44,10 @@ $(PACKAGES): $(REPODEB)
 	umask 0022 && (cd $(shell dirname $<) && dpkg-scanpackages -m .) | gzip -c > $@
 
 $(RELEASEDEST): $(RELEASESRC)
+	umask 0022 && mkdir -p $(shell dirname $@)
+	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
+
+$(RELRELEASEDEST): $(RELEASESRC)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
 
