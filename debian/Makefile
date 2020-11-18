@@ -26,7 +26,7 @@ DEB:=../_build/deb/ckan_$(VERSION)_all.deb
 
 # Files for /deb/ (the .deb file)
 APT_REPO_ROOT:=../_build/deb/apt-repo-root
-REPODEB:=$(APT_REPO_ROOT)/ckan_$(VERSION)_all.deb
+REPODEB:=$(APT_REPO_ROOT)/pool/ckan_$(VERSION)_all.deb
 
 # Files for /deb/dists/{stable,nightly}/
 # (Release, main/binary-all/Release, main/binary-all/Packages.gz,
@@ -53,7 +53,7 @@ $(ARCHRELEASEDEST): $(RELEASESRC)
 
 $(PACKAGES): $(REPODEB)
 	umask 0022 && mkdir -p $(shell dirname $@)
-	umask 0022 && (cd $(shell dirname $<) && dpkg-scanpackages -m .) | gzip -c > $@
+	umask 0022 && (cd $(APT_REPO_ROOT) && dpkg-scanpackages -m pool) | gzip -c > $@
 
 $(DEB): $(EXEDEST) $(SCRIPTDEST) $(CONTROLDEST) $(CHANGELOGDEST) $(DEBCHANGEDEST) $(MANDEST) $(ICONDEST) $(COPYRIGHTDEST) $(DESKTOPDEST) $(CONSOLEUIDESKTOPDEST)
 	umask 0022 && mkdir -p $(shell dirname $@)
