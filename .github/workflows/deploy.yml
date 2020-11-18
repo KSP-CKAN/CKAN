@@ -83,11 +83,10 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: us-east-1
-          SOURCE_DIR: _build/deb/apt-repo
-          DEST_DIR: deb/dists/nightly/main/binary-all
+          SOURCE_DIR: _build/deb/apt-repo-root
+          DEST_DIR: deb
         if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
       - name: Push Release file to S3
-        # Send deb file to https://ksp-ckan.s3-us-west-2.amazonaws.com/
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --follow-symlinks
@@ -96,7 +95,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: us-east-1
-          SOURCE_DIR: _build/deb/apt-repo-rel
+          SOURCE_DIR: _build/deb/apt-repo-dist
           DEST_DIR: deb/dists/nightly
         if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
 

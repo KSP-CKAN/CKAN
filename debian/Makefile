@@ -24,32 +24,36 @@ CONSOLEUIDESKTOPDEST:=$(DESTDIR)/usr/share/applications/ckan-consoleui.desktop
 VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' )
 DEB:=../_build/deb/ckan_$(VERSION)_all.deb
 
-APTREPO:=../_build/deb/apt-repo
-REPODEB:=$(APTREPO)/ckan_$(VERSION)_all.deb
-PACKAGES:=$(APTREPO)/Packages.gz
+# Files for /deb/ (the .deb file)
+APT_REPO_ROOT:=../_build/deb/apt-repo-root
+REPODEB:=$(APT_REPO_ROOT)/ckan_$(VERSION)_all.deb
+
+# Files for /deb/dists/{stable,nightly}/
+# (Release, main/binary-all/Release, main/binary-all/Packages.gz,
+#  actual path to be determined by yml files)
+APT_REPO_DIST:=../_build/deb/apt-repo-dist
 RELEASESRC:=Release.in
-RELEASEDEST:=$(APTREPO)/Release
+DISTRELEASEDEST:=$(APT_REPO_DIST)/Release
+ARCHRELEASEDEST:=$(APT_REPO_DIST)/main/binary-all/Release
+PACKAGES:=$(APT_REPO_DIST)/main/binary-all/Packages.gz
 
-APTREPOREL:=../_build/deb/apt-repo-rel
-RELRELEASEDEST:=$(APTREPOREL)/Release
-
-repo: $(REPODEB) $(PACKAGES) $(RELEASEDEST) $(RELRELEASEDEST)
+repo: $(REPODEB) $(DISTRELEASEDEST) $(ARCHRELEASEDEST) $(PACKAGES)
 
 $(REPODEB): $(DEB)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && cp $< $@
 
+$(DISTRELEASEDEST): $(RELEASESRC)
+	umask 0022 && mkdir -p $(shell dirname $@)
+	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
+
+$(ARCHRELEASEDEST): $(RELEASESRC)
+	umask 0022 && mkdir -p $(shell dirname $@)
+	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
+
 $(PACKAGES): $(REPODEB)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && (cd $(shell dirname $<) && dpkg-scanpackages -m .) | gzip -c > $@
-
-$(RELEASEDEST): $(RELEASESRC)
-	umask 0022 && mkdir -p $(shell dirname $@)
-	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
-
-$(RELRELEASEDEST): $(RELEASESRC)
-	umask 0022 && mkdir -p $(shell dirname $@)
-	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
 
 $(DEB): $(EXEDEST) $(SCRIPTDEST) $(CONTROLDEST) $(CHANGELOGDEST) $(DEBCHANGEDEST) $(MANDEST) $(ICONDEST) $(COPYRIGHTDEST) $(DESKTOPDEST) $(CONSOLEUIDESKTOPDEST)
 	umask 0022 && mkdir -p $(shell dirname $@)
