@@ -118,6 +118,19 @@ jobs:
           SOURCE_DIR: _build/deb/apt-repo
           DEST_DIR: deb/dists/stable/main/binary-all
         if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
+      - name: Push Release file to S3
+        # Send deb file to https://ksp-ckan.s3-us-west-2.amazonaws.com/
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --follow-symlinks
+        env:
+          AWS_S3_BUCKET: ksp-ckan
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          SOURCE_DIR: _build/deb/apt-repo-rel
+          DEST_DIR: deb/dists/stable
+        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
 
       - name: Send Discord Notification
         env:
