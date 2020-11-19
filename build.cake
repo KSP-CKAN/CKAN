@@ -108,6 +108,11 @@ Task("deb")
     .IsDependentOn("Ckan")
     .Does(() => MakeIn("debian"));
 
+Task("deb-sign")
+    .Description("Build the deb package for Debian-based distros.")
+    .IsDependentOn("Ckan")
+    .Does(() => MakeIn("debian", "sign"));
+
 Task("deb-test")
     .Description("Test the deb packaging.")
     .IsDependentOn("deb")

@@ -34,7 +34,9 @@ REPODEB:=$(APT_REPO_ROOT)/pool/ckan_$(VERSION)_all.deb
 APT_REPO_DIST:=../_build/deb/apt-repo-dist
 RELEASESRC:=Release.in
 DISTRELEASEDEST:=$(APT_REPO_DIST)/Release
+SIGNEGDISTRELEASEDEST:=$(DISTRELEASEDEST).gpg
 ARCHRELEASEDEST:=$(APT_REPO_DIST)/main/binary-all/Release
+INRELEASE:=$(APT_REPO_DIST)/InRelease
 PACKAGES:=$(APT_REPO_DIST)/main/binary-all/Packages.gz
 
 repo: $(REPODEB) $(DISTRELEASEDEST) $(ARCHRELEASEDEST) $(PACKAGES)
@@ -101,6 +103,14 @@ $(DESKTOPDEST): $(DESKTOPSRC)
 $(CONSOLEUIDESKTOPDEST): $(CONSOLEUIDESKTOPSRC)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && cp $< $@
+
+sign: $(INRELEASE) $(SIGNEGDISTRELEASEDEST)
+
+$(INRELEASE): $(DISTRELEASEDEST)
+	gpg --clearsign -o $@ $<
+
+$(SIGNEGDISTRELEASEDEST): $(DISTRELEASEDEST)
+	gpg -abs -o $@ $<
 
 clean:
 	rm -rf ../_build/deb
