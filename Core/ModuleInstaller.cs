@@ -971,7 +971,16 @@ namespace CKAN
         /// </summary>
         public void Upgrade(IEnumerable<string> identifiers, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true)
         {
-            var resolver = new RelationshipResolver(identifiers.ToList(), null, RelationshipResolver.DependsOnlyOpts(), registry_manager.registry, ksp.VersionCriteria());
+            // When upgrading, we are removing these mods first and install them again afterwards (but in different versions).
+            // So the list of identifiers of modulesToRemove and modulesToInstall is the same,
+            // RelationshipResolver take care of finding the right CkanModule for each identifier.
+            List<string> identifierList = identifiers.ToList();
+            var resolver = new RelationshipResolver(
+                identifierList,
+                identifierList,
+                RelationshipResolver.DependsOnlyOpts(),
+                registry_manager.registry, ksp.VersionCriteria()
+            );
             Upgrade(resolver.ModList(), netAsyncDownloader, ref possibleConfigOnlyDirs, registry_manager, enforceConsistency);
         }
 
@@ -984,7 +993,7 @@ namespace CKAN
         {
             modules = modules.Memoize();
             User.RaiseMessage("About to upgrade...\r\n");
-            
+
             if (resolveRelationships)
             {
                 var resolver = new RelationshipResolver(modules, null, RelationshipResolver.DependsOnlyOpts(), registry_manager.registry, ksp.VersionCriteria());
