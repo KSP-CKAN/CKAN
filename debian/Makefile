@@ -1,4 +1,4 @@
-.PHONY: clean test repo
+.PHONY: clean test repo sign
 
 DESTDIR:=../_build/deb/fakeroot
 EXESRC:=../_build/repack/Release/ckan.exe
@@ -34,12 +34,14 @@ REPODEB:=$(APT_REPO_ROOT)/pool/ckan_$(VERSION)_all.deb
 APT_REPO_DIST:=../_build/deb/apt-repo-dist
 RELEASESRC:=Release.in
 DISTRELEASEDEST:=$(APT_REPO_DIST)/Release
-SIGNEGDISTRELEASEDEST:=$(DISTRELEASEDEST).gpg
+SIGNEDDISTRELEASEDEST:=$(DISTRELEASEDEST).gpg
 ARCHRELEASEDEST:=$(APT_REPO_DIST)/main/binary-all/Release
 INRELEASE:=$(APT_REPO_DIST)/InRelease
 PACKAGES:=$(APT_REPO_DIST)/main/binary-all/Packages.gz
 
 repo: $(REPODEB) $(DISTRELEASEDEST) $(ARCHRELEASEDEST) $(PACKAGES)
+
+sign: $(INRELEASE) $(SIGNEDDISTRELEASEDEST)
 
 $(REPODEB): $(DEB)
 	umask 0022 && mkdir -p $(shell dirname $@)
@@ -56,6 +58,12 @@ $(ARCHRELEASEDEST): $(RELEASESRC)
 $(PACKAGES): $(REPODEB)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && (cd $(APT_REPO_ROOT) && dpkg-scanpackages -m pool) | gzip -c > $@
+
+$(INRELEASE): $(DISTRELEASEDEST)
+	gpg --clearsign -o $@ $<
+
+$(SIGNEDDISTRELEASEDEST): $(DISTRELEASEDEST)
+	gpg -abs -o $@ $<
 
 $(DEB): $(EXEDEST) $(SCRIPTDEST) $(CONTROLDEST) $(CHANGELOGDEST) $(DEBCHANGEDEST) $(MANDEST) $(ICONDEST) $(COPYRIGHTDEST) $(DESKTOPDEST) $(CONSOLEUIDESKTOPDEST)
 	umask 0022 && mkdir -p $(shell dirname $@)
@@ -103,14 +111,6 @@ $(DESKTOPDEST): $(DESKTOPSRC)
 $(CONSOLEUIDESKTOPDEST): $(CONSOLEUIDESKTOPSRC)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && cp $< $@
-
-sign: $(INRELEASE) $(SIGNEGDISTRELEASEDEST)
-
-$(INRELEASE): $(DISTRELEASEDEST)
-	gpg --clearsign -o $@ $<
-
-$(SIGNEGDISTRELEASEDEST): $(DISTRELEASEDEST)
-	gpg -abs -o $@ $<
 
 clean:
 	rm -rf ../_build/deb
