@@ -81,8 +81,6 @@ namespace CKAN.CmdLine
                 return Exit.OK;
             }
 
-            User.RaiseMessage("\r\nUpgrading modules...\r\n");
-
             try
             {
                 HashSet<string> possibleConfigOnlyDirs = null;
@@ -129,6 +127,7 @@ namespace CKAN.CmdLine
                     Search.AdjustModulesCase(ksp, options.modules);
                     ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(options.modules, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
                 }
+                User.RaiseMessage("");
             }
             catch (CancelledActionKraken k)
             {
@@ -158,7 +157,6 @@ namespace CKAN.CmdLine
                 }
                 return Exit.ERROR;
             }
-            User.RaiseMessage("\r\nDone!\r\n");
 
             return Exit.OK;
         }

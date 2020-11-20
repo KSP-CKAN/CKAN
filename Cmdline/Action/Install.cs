@@ -138,7 +138,7 @@ namespace CKAN.CmdLine
                     HashSet<string> possibleConfigOnlyDirs = null;
                     var installer = ModuleInstaller.GetInstance(ksp, manager.Cache, user);
                     installer.InstallList(modules, install_ops, regMgr, ref possibleConfigOnlyDirs);
-                    user.RaiseMessage("\r\n");
+                    user.RaiseMessage("");
                     done = true;
                 }
                 catch (DependencyNotSatisfiedKraken ex)
@@ -257,9 +257,9 @@ namespace CKAN.CmdLine
                     user.RaiseMessage("Install canceled. Your files have been returned to their initial state.");
                     return Exit.ERROR;
                 }
-                catch (CancelledActionKraken)
+                catch (CancelledActionKraken k)
                 {
-                    user.RaiseMessage("Installation canceled at user request.");
+                    user.RaiseMessage("Installation aborted: {0}", k.Message);
                     return Exit.ERROR;
                 }
                 catch (MissingCertificateKraken kraken)
