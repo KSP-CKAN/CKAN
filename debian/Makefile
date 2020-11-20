@@ -39,7 +39,7 @@ ARCHRELEASEDEST:=$(APT_REPO_DIST)/main/binary-all/Release
 INRELEASE:=$(APT_REPO_DIST)/InRelease
 PACKAGES:=$(APT_REPO_DIST)/main/binary-all/Packages.gz
 
-repo: $(REPODEB) $(DISTRELEASEDEST) $(ARCHRELEASEDEST) $(PACKAGES)
+repo: $(REPODEB) $(PACKAGES) $(DISTRELEASEDEST) $(ARCHRELEASEDEST)
 
 sign: $(INRELEASE) $(SIGNEDDISTRELEASEDEST)
 
@@ -49,7 +49,11 @@ $(REPODEB): $(DEB)
 
 $(DISTRELEASEDEST): $(RELEASESRC)
 	umask 0022 && mkdir -p $(shell dirname $@)
-	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
+	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' \
+	-e 's/@RAWHASH@/'$$(zcat $(PACKAGES) | sha256sum -t | cut -d' ' -f1)/ \
+	-e 's/@RAWSIZE@/'$$(zcat $(PACKAGES) | wc -c)/ \
+	-e 's/@GZHASH@/'$$(sha256sum -t < $(PACKAGES) | cut -d' ' -f1)/ \
+	-e 's/@GZSIZE@/'$$(stat -c %s $(PACKAGES))/ $< > $@
 
 $(ARCHRELEASEDEST): $(RELEASESRC)
 	umask 0022 && mkdir -p $(shell dirname $@)
