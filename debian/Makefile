@@ -47,7 +47,7 @@ $(REPODEB): $(DEB)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && cp $< $@
 
-$(DISTRELEASEDEST): $(RELEASESRC)
+$(DISTRELEASEDEST): $(RELEASESRC) $(PACKAGES)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' \
 	-e 's/@RAWHASH@/'$$(zcat $(PACKAGES) | sha256sum -t | cut -d' ' -f1)/ \
@@ -55,9 +55,13 @@ $(DISTRELEASEDEST): $(RELEASESRC)
 	-e 's/@GZHASH@/'$$(sha256sum -t < $(PACKAGES) | cut -d' ' -f1)/ \
 	-e 's/@GZSIZE@/'$$(stat -c %s $(PACKAGES))/ $< > $@
 
-$(ARCHRELEASEDEST): $(RELEASESRC)
+$(ARCHRELEASEDEST): $(RELEASESRC) $(PACKAGES)
 	umask 0022 && mkdir -p $(shell dirname $@)
-	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
+	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' \
+	-e 's/@RAWHASH@/'$$(zcat $(PACKAGES) | sha256sum -t | cut -d' ' -f1)/ \
+	-e 's/@RAWSIZE@/'$$(zcat $(PACKAGES) | wc -c)/ \
+	-e 's/@GZHASH@/'$$(sha256sum -t < $(PACKAGES) | cut -d' ' -f1)/ \
+	-e 's/@GZSIZE@/'$$(stat -c %s $(PACKAGES))/ $< > $@
 
 $(PACKAGES): $(REPODEB)
 	umask 0022 && mkdir -p $(shell dirname $@)
