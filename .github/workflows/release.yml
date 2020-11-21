@@ -48,6 +48,14 @@ jobs:
         run: ./build osx --configuration=Release --exclusive
       - name: Build deb
         run: ./build deb --configuration=Release --exclusive
+      - name: Sign deb release
+        env:
+          DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
+        run: |
+          echo -e "${{ env.DEBIAN_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+          ./build deb-sign --configuration=Release --exclusive
+        if: ${{ env.DEBIAN_PRIVATE_KEY }}
       - name: Build rpm
         run: ./build rpm --configuration=Release --exclusive
 

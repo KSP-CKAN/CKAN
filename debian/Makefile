@@ -1,4 +1,4 @@
-.PHONY: clean test repo
+.PHONY: clean test repo sign
 
 DESTDIR:=../_build/deb/fakeroot
 EXESRC:=../_build/repack/Release/ckan.exe
@@ -34,26 +34,44 @@ REPODEB:=$(APT_REPO_ROOT)/pool/ckan_$(VERSION)_all.deb
 APT_REPO_DIST:=../_build/deb/apt-repo-dist
 RELEASESRC:=Release.in
 DISTRELEASEDEST:=$(APT_REPO_DIST)/Release
+SIGNEDDISTRELEASEDEST:=$(DISTRELEASEDEST).gpg
 ARCHRELEASEDEST:=$(APT_REPO_DIST)/main/binary-all/Release
+INRELEASE:=$(APT_REPO_DIST)/InRelease
 PACKAGES:=$(APT_REPO_DIST)/main/binary-all/Packages.gz
 
-repo: $(REPODEB) $(DISTRELEASEDEST) $(ARCHRELEASEDEST) $(PACKAGES)
+repo: $(REPODEB) $(PACKAGES) $(DISTRELEASEDEST) $(ARCHRELEASEDEST)
+
+sign: $(INRELEASE) $(SIGNEDDISTRELEASEDEST)
 
 $(REPODEB): $(DEB)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && cp $< $@
 
-$(DISTRELEASEDEST): $(RELEASESRC)
+$(DISTRELEASEDEST): $(RELEASESRC) $(PACKAGES)
 	umask 0022 && mkdir -p $(shell dirname $@)
-	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
+	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' \
+	-e 's/@RAWHASH@/'$$(zcat $(PACKAGES) | sha256sum -t | cut -d' ' -f1)/ \
+	-e 's/@RAWSIZE@/'$$(zcat $(PACKAGES) | wc -c)/ \
+	-e 's/@GZHASH@/'$$(sha256sum -t < $(PACKAGES) | cut -d' ' -f1)/ \
+	-e 's/@GZSIZE@/'$$(stat -c %s $(PACKAGES))/ $< > $@
 
-$(ARCHRELEASEDEST): $(RELEASESRC)
+$(ARCHRELEASEDEST): $(RELEASESRC) $(PACKAGES)
 	umask 0022 && mkdir -p $(shell dirname $@)
-	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
+	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' \
+	-e 's/@RAWHASH@/'$$(zcat $(PACKAGES) | sha256sum -t | cut -d' ' -f1)/ \
+	-e 's/@RAWSIZE@/'$$(zcat $(PACKAGES) | wc -c)/ \
+	-e 's/@GZHASH@/'$$(sha256sum -t < $(PACKAGES) | cut -d' ' -f1)/ \
+	-e 's/@GZSIZE@/'$$(stat -c %s $(PACKAGES))/ $< > $@
 
 $(PACKAGES): $(REPODEB)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && (cd $(APT_REPO_ROOT) && dpkg-scanpackages -m pool) | gzip -c > $@
+
+$(INRELEASE): $(DISTRELEASEDEST)
+	gpg --clearsign -o $@ $<
+
+$(SIGNEDDISTRELEASEDEST): $(DISTRELEASEDEST)
+	gpg -abs -o $@ $<
 
 $(DEB): $(EXEDEST) $(SCRIPTDEST) $(CONTROLDEST) $(CHANGELOGDEST) $(DEBCHANGEDEST) $(MANDEST) $(ICONDEST) $(COPYRIGHTDEST) $(DESKTOPDEST) $(CONSOLEUIDESKTOPDEST)
 	umask 0022 && mkdir -p $(shell dirname $@)

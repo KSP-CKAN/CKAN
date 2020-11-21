@@ -47,6 +47,14 @@ jobs:
         run: ./build --configuration=Release
       - name: Build deb
         run: ./build deb --configuration=Release --exclusive
+      - name: Sign deb release
+        env:
+          DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
+        run: |
+          echo -e "${{ env.DEBIAN_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+          ./build deb-sign --configuration=Release --exclusive
+        if: ${{ env.DEBIAN_PRIVATE_KEY }}
       - name: Run tests
         run: xvfb-run ./build test+only --configuration=Release --where="Category!=FlakyNetwork"
 
