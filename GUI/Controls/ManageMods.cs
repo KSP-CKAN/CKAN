@@ -54,6 +54,21 @@ namespace CKAN
         private Dictionary<GUIMod, string> conflicts;
 
         public readonly ModList mainModList;
+        private List<string> sortColumns
+        {
+            get
+            {
+                return Main.Instance.configuration.SortColumns;
+            }
+        }
+
+        private List<bool> descending
+        {
+            get
+            {
+                return Main.Instance.configuration.MultiSortDescending;
+            }
+        }
 
         public event Action<GUIMod> OnSelectedModuleChanged;
         public event Action<IEnumerable<ModChange>> OnChangeSetChanged;
@@ -392,7 +407,8 @@ namespace CKAN
             // only sort by Update column if checkbox in settings checked
             if (Main.Instance.configuration.AutoSortByUpdate)
             {
-                SetSortColumn(UpdateCol, false);
+                SetSort(UpdateCol);
+                UpdateFilters();
                 // Select the top row and scroll the list to it.
                 if (ModGrid.Rows.Count > 0)
                 {
@@ -459,20 +475,6 @@ namespace CKAN
             }
         }
 
-        private void SetSortColumn(DataGridViewColumn col, bool? descending = null)
-        {
-            var prevSortCol = ModGrid.Columns[Main.Instance.configuration.SortByColumnIndex];
-
-            // Reverse the sort order if the current sorting column is clicked again.
-            Main.Instance.configuration.SortDescending = descending
-                ?? col == prevSortCol && !Main.Instance.configuration.SortDescending;
-
-            // Reset the glyph.
-            prevSortCol.HeaderCell.SortGlyphDirection = SortOrder.None;
-            Main.Instance.configuration.SortByColumnIndex = col.Index;
-            UpdateFilters();
-        }
-
         /// <summary>
         /// Called when there's a click on the ModGrid header row.
         /// Handles sorting and the header right click context menu.
@@ -482,7 +484,15 @@ namespace CKAN
             // Left click -> sort by new column / change sorting direction.
             if (e.Button == MouseButtons.Left)
             {
-                SetSortColumn(ModGrid.Columns[e.ColumnIndex]);
+                if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                {
+                    AddSort(ModGrid.Columns[e.ColumnIndex]);
+                }
+                else
+                {
+                    SetSort(ModGrid.Columns[e.ColumnIndex]);
+                }
+                UpdateFilters();
             }
             // Right click -> Bring up context menu to change visibility of columns.
             else if (e.Button == MouseButtons.Right)
@@ -973,9 +983,8 @@ namespace CKAN
                 row.Visible = mainModList.IsVisible(mod, Main.Instance.CurrentInstance.Name);
             }
 
-            var sorted = this._SortRowsByColumn(rows.Where(row => row.Visible));
-
-            ModGrid.Rows.AddRange(sorted.ToArray());
+            ApplyHeaderGlyphs();
+            ModGrid.Rows.AddRange(Sort(rows.Where(row => row.Visible)).ToArray());
 
             // Find and select the previously selected row
             if (selected_mod != null)
@@ -1154,110 +1163,141 @@ namespace CKAN
             ModList_CellContentClick(sender, null);
         }
 
-        private IEnumerable<DataGridViewRow> _SortRowsByColumn(IEnumerable<DataGridViewRow> rows)
+        private void SetSort(DataGridViewColumn col)
         {
-            switch (Main.Instance.configuration.SortByColumnIndex)
+            if (sortColumns.Count == 1 && sortColumns[0] == col.Name)
             {
-                // XXX: There should be a better way to identify checkbox columns than hardcoding their indices here
-                case 0: case 1:
-                case 2: case 3: return Sort(rows, CheckboxSorter);
-                case 8:         return Sort(rows, KSPCompatComparison);
-                case 9:         return Sort(rows, DownloadSizeSorter);
-                case 10:        return Sort(rows, ReleaseDateSorter);
-                case 11:        return Sort(rows, InstallDateSorter);
-                case 12:        return Sort(rows, r => (r.Tag as GUIMod)?.DownloadCount ?? 0);
-            }
-            return Sort(rows, DefaultSorter);
-        }
-
-        private IEnumerable<DataGridViewRow> Sort<T>(IEnumerable<DataGridViewRow> rows, Func<DataGridViewRow, T> sortFunction)
-        {
-            var get_row_mod_name = new Func<DataGridViewRow, string>(row => ((GUIMod)row.Tag).Name);
-            DataGridViewColumnHeaderCell header =
-                ModGrid.Columns[Main.Instance.configuration.SortByColumnIndex].HeaderCell;
-
-            // The columns will be sorted by mod name in addition to whatever the current sorting column is
-            if (Main.Instance.configuration.SortDescending)
-            {
-                header.SortGlyphDirection = SortOrder.Descending;
-                return rows.OrderByDescending(sortFunction).ThenBy(get_row_mod_name);
-            }
-
-            header.SortGlyphDirection = SortOrder.Ascending;
-            return rows.OrderBy(sortFunction).ThenBy(get_row_mod_name);
-        }
-
-        private IEnumerable<DataGridViewRow> Sort(IEnumerable<DataGridViewRow> rows, Comparison<DataGridViewRow> comparison)
-        {
-            DataGridViewColumnHeaderCell header =
-                ModGrid.Columns[Main.Instance.configuration.SortByColumnIndex].HeaderCell;
-
-            var descending = Main.Instance.configuration.SortDescending;
-            var newRows = rows.ToList();
-            header.SortGlyphDirection = descending
-                ? SortOrder.Descending
-                : SortOrder.Ascending;
-            // The columns will be sorted by mod name in addition to whatever the current sorting column is
-            newRows.Sort(CompareThenByName(comparison, descending));
-            return newRows;
-        }
-        
-        /// <summary>
-        /// Compare two rows, first by an arbitrary comparison, then by name
-        /// </summary>
-        /// <param name="comparison">First comparison to check</param>
-        /// <param name="descending">true to reverse the comparison, false to leave as-is</param>
-        /// <returns>
-        /// Wrapper around comparison parameter that falls back to checking name if equal
-        /// </returns>
-        private Comparison<DataGridViewRow> CompareThenByName(Comparison<DataGridViewRow> comparison, bool descending = false)
-        {
-            // If we check descending inside the lambda, it has to be checked for every row,
-            // which would be slightly slower. This way we build just the logic we need.
-            return descending
-                ? (Comparison<DataGridViewRow>)((DataGridViewRow a, DataGridViewRow b) =>
-                    {
-                        int result = comparison(a, b);
-                        return result != 0 ? -result
-                            : ((GUIMod)a.Tag).Name.CompareTo(((GUIMod)b.Tag).Name);
-                    })
-                : (DataGridViewRow a, DataGridViewRow b) =>
-                    {
-                        int result = comparison(a, b);
-                        return result != 0 ? result
-                            : ((GUIMod)a.Tag).Name.CompareTo(((GUIMod)b.Tag).Name);
-                    };
-        }
-
-        /// <summary>
-        /// Transforms a DataGridViewRow's into a generic value suitable for sorting.
-        /// Uses this.m_Configuration.SortByColumnIndex to determine which
-        /// field to sort on.
-        /// </summary>
-        private string DefaultSorter(DataGridViewRow row)
-        {
-            // changed so that it never returns null
-            var cellVal = row.Cells[Main.Instance.configuration.SortByColumnIndex].Value as string;
-            return string.IsNullOrWhiteSpace(cellVal) ? string.Empty : cellVal;
-        }
-
-        /// <summary>
-        /// Transforms a DataGridViewRow's checkbox status into a value suitable for sorting.
-        /// Uses this.m_Configuration.SortByColumnIndex to determine which
-        /// field to sort on.
-        /// </summary>
-        private string CheckboxSorter(DataGridViewRow row)
-        {
-            var cell = row.Cells[Main.Instance.configuration.SortByColumnIndex];
-            if (cell.ValueType == typeof(bool))
-            {
-                return (bool)cell.Value ? "a" : "c";
+                descending[0] = !descending[0];
             }
             else
             {
-                // If it's a "-" cell, let it be ordered last
-                // Otherwise put it after the checked boxes
-                return (string)cell.Value == "-" ? "d" : "b";
+                sortColumns.Clear();
+                descending.Clear();
+                AddSort(col);
+            }
+        }
+
+        private void AddSort(DataGridViewColumn col)
+        {
+            if (sortColumns.Count > 0 && sortColumns[sortColumns.Count - 1] == col.Name)
+            {
+                descending[descending.Count - 1] = !descending[descending.Count - 1];
+            }
+            else
+            {
+                int middlePosition = sortColumns.IndexOf(col.Name);
+                if (middlePosition > -1)
+                {
+                    sortColumns.RemoveAt(middlePosition);
+                    descending.RemoveAt(middlePosition);
+                }
+                sortColumns.Add(col.Name);
+                descending.Add(false);
+            }
+        }
+
+        private IEnumerable<DataGridViewRow> Sort(IEnumerable<DataGridViewRow> rows)
+        {
+            var sorted = rows.ToList();
+            sorted.Sort(CompareRows);
+            return sorted;
+        }
+
+        private void ApplyHeaderGlyphs()
+        {
+            foreach (DataGridViewColumn col in ModGrid.Columns)
+            {
+                col.HeaderCell.SortGlyphDirection = SortOrder.None;
+            }
+            for (int i = 0; i < sortColumns.Count; ++i)
+            {
+                ModGrid.Columns[sortColumns[i]].HeaderCell.SortGlyphDirection = descending[i]
+                    ? SortOrder.Descending : SortOrder.Ascending;
+            }
+        }
+
+        private int CompareRows(DataGridViewRow a, DataGridViewRow b)
+        {
+            for (int i = 0; i < sortColumns.Count; ++i)
+            {
+                var val = CompareColumn(a, b, ModGrid.Columns[sortColumns[i]]);
+                if (val != 0)
+                {
+                    return descending[i] ? -val : val;
+                }
+            }
+            return CompareColumn(a, b, ModName);
+        }
+
+        private int CompareColumn(DataGridViewRow a, DataGridViewRow b, DataGridViewColumn col)
+        {
+            GUIMod gmodA = a.Tag as GUIMod;
+            GUIMod gmodB = b.Tag as GUIMod;
+            CkanModule modA = gmodA.ToModule();
+            CkanModule modB = gmodB.ToModule();
+            var cellA = a.Cells[col.Index];
+            var cellB = b.Cells[col.Index];
+            if (col is DataGridViewCheckBoxColumn cbcol)
+            {
+                if (cellA is DataGridViewCheckBoxCell checkboxA)
+                {
+                    return cellB is DataGridViewCheckBoxCell checkboxB
+                        ? -((bool)checkboxA.Value).CompareTo((bool)checkboxB.Value)
+                        : -1;
+                }
+                else
+                {
+                    return cellB is DataGridViewCheckBoxCell ? 1: 0;
+                }
+            }
+            else
+            {
+                switch (col.Name)
+                {
+                    case "ModName":
+                        return gmodA.Name.CompareTo(gmodB.Name);
+                    case "KSPCompatibility":
+                        return KSPCompatComparison(a, b);
+                    case "InstallDate":
+                        if (gmodA.InstallDate.HasValue)
+                        {
+                            return gmodB.InstallDate.HasValue
+                                ? gmodA.InstallDate.Value.CompareTo(gmodB.InstallDate.Value)
+                                : 1;
+                        }
+                        else
+                        {
+                            return gmodB.InstallDate.HasValue ? -1 : 0;
+                        }
+                    case "ReleaseDate":
+                        if (modA.release_date.HasValue)
+                        {
+                            return modB.release_date.HasValue
+                                ? modA.release_date.Value.CompareTo(modB.release_date.Value)
+                                : 1;
+                        }
+                        else
+                        {
+                            return modB.release_date.HasValue ? -1 : 0;
+                        }
+                    case "SizeCol":
+                        return modA.download_size.CompareTo(modB.download_size);
+                    case "DownloadCount":
+                        if (gmodA.DownloadCount.HasValue)
+                        {
+                            return gmodB.DownloadCount.HasValue
+                                ? gmodA.DownloadCount.Value.CompareTo(gmodB.DownloadCount.Value)
+                                : 1;
+                        }
+                        else
+                        {
+                            return gmodB.DownloadCount.HasValue ? -1 : 0;
+                        }
+                    default:
+                        var valA = cellA.Value as string ?? "";
+                        var valB = cellB.Value as string ?? "";
+                        return valA.CompareTo(valB);
+                }
             }
         }
 
@@ -1305,7 +1345,7 @@ namespace CKAN
                 }
             }
         }
-        
+
         /// <summary>
         /// Compare pieces of two versions, each of which may be undefined,
         /// sorting undefined toward the end.
@@ -1322,31 +1362,6 @@ namespace CKAN
             return definedA
                 ? (definedB ? valA.CompareTo(valB) : -1)
                 : (definedB ? 1                    :  0);
-        }
-        
-        /// <summary>
-        /// Transforms a DataGridViewRow into a long representing the download size,
-        /// suitable for sorting.
-        /// </summary>
-        private long DownloadSizeSorter(DataGridViewRow row)
-        {
-            return (row.Tag as GUIMod)?.ToCkanModule()?.download_size ?? 0;
-        }
-
-        private long ReleaseDateSorter(DataGridViewRow row)
-        {
-            return -(row.Tag as GUIMod)?.ToModule().release_date?.Ticks ?? 0;
-        }
-
-        /// <summary>
-        /// Transforms a DataGridViewRow into a long representing the install date,
-        /// suitable for sorting.
-        /// The grid's default on first click is ascending, and sorting uninstalled mods to
-        /// the top is kind of useless, so we'll make this negative so ascending is useful.
-        /// </summary>
-        private long InstallDateSorter(DataGridViewRow row)
-        {
-            return -(row.Tag as GUIMod)?.InstallDate?.Ticks ?? 0;
         }
 
         public void ResetFilterAndSelectModOnList(string key)
