@@ -980,7 +980,7 @@ namespace CKAN
         {
             modules = modules.Memoize();
             User.RaiseMessage("About to upgrade...\r\n");
-            
+
             if (resolveRelationships)
             {
                 var resolver = new RelationshipResolver(modules, null, RelationshipResolver.DependsOnlyOpts(), registry_manager.registry, ksp.VersionCriteria());
@@ -1040,8 +1040,9 @@ namespace CKAN
         /// <summary>
         /// Enacts listed Module Replacements to the specified versions for the user's KSP.
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
-        /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
+        /// <exception cref="DependencyNotSatisfiedKraken">Thrown if a dependency for a replacing module couldn't be satisfied.</exception>
+        /// <exception cref="ModuleNotFoundKraken">Thrown if a module that should be replaced is not installed.</exception>
         public void Replace(IEnumerable<ModuleReplacement> replacements, RelationshipResolverOptions options, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true)
         {
             replacements = replacements.Memoize();
@@ -1115,22 +1116,14 @@ namespace CKAN
                 }
             }
             var resolver = new RelationshipResolver(modsToInstall, null, options, registry_manager.registry, ksp.VersionCriteria());
-            try
-            {
-                var resolvedModsToInstall = resolver.ModList().ToList();
-                AddRemove(
-                    ref possibleConfigOnlyDirs,
-                    registry_manager,
-                    resolvedModsToInstall,
-                    modsToRemove,
-                    enforceConsistency
-                );
-            }
-            catch (DependencyNotSatisfiedKraken kraken)
-            {
-                throw kraken;
-            }
-
+            var resolvedModsToInstall = resolver.ModList().ToList();
+            AddRemove(
+                ref possibleConfigOnlyDirs,
+                registry_manager,
+                resolvedModsToInstall,
+                modsToRemove,
+                enforceConsistency
+            );
         }
 
         #endregion
