@@ -29,11 +29,11 @@ namespace CKAN.NetKAN.Validators
                 if (!string.IsNullOrEmpty(package))
                 {
                     ZipFile zip  = new ZipFile(package);
-        
+
                     bool hasPlugin = _moduleService.GetPlugins(mod, zip).Any();
-                    
+
                     bool boundedCompatibility = json.ContainsKey("ksp_version") || json.ContainsKey("ksp_version_max");
-        
+
                     if (hasPlugin && !boundedCompatibility)
                     {
                         Log.Warn("Unbounded future compatibility for module with a plugin, consider setting $vref or ksp_version or ksp_version_max");

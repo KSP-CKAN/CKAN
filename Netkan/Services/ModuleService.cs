@@ -66,17 +66,24 @@ namespace CKAN.NetKAN.Services
 
         public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip)
         {
-            return ModuleInstaller
-                .FindInstallableFiles(module, zip, null)
-                .Where(instF => instF.source.Name.EndsWith(".cfg",
-                    StringComparison.InvariantCultureIgnoreCase));
+            return GetFilesBySuffix(module, zip, ".cfg");
         }
 
         public IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip)
         {
+            return GetFilesBySuffix(module, zip, ".dll");
+        }
+
+        public IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, KSP ksp)
+        {
+            return GetFilesBySuffix(module, zip, ".craft", ksp);
+        }
+
+        private IEnumerable<InstallableFile> GetFilesBySuffix(CkanModule module, ZipFile zip, string suffix, KSP ksp = null)
+        {
             return ModuleInstaller
-                .FindInstallableFiles(module, zip, null)
-                .Where(instF => instF.source.Name.EndsWith(".dll",
+                .FindInstallableFiles(module, zip, ksp)
+                .Where(instF => instF.source.Name.EndsWith(suffix,
                     StringComparison.InvariantCultureIgnoreCase));
         }
 
