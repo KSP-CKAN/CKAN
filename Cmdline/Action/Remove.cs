@@ -80,6 +80,7 @@ namespace CKAN.CmdLine
                     var installer = ModuleInstaller.GetInstance(ksp, manager.Cache, user);
                     Search.AdjustModulesCase(ksp, options.modules);
                     installer.UninstallList(options.modules, ref possibleConfigOnlyDirs, regMgr);
+                    user.RaiseMessage("");
                 }
                 catch (ModNotInstalledKraken kraken)
                 {
@@ -99,6 +100,11 @@ namespace CKAN.CmdLine
                         user.RaiseMessage($"To remove this expansion, follow the instructions for the store page from which you purchased it:\r\n{storePagesMsg}");
                     }
                     return Exit.BADOPT;
+                }
+                catch (CancelledActionKraken k)
+                {
+                    user.RaiseMessage("Remove aborted: {0}", k.Message);
+                    return Exit.ERROR;
                 }
             }
             else

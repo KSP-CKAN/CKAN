@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - [Multiple] Allow upgrading manually installed modules (#3190 by: HebaruSan; reviewed: DasSkelett)
 - [Build] Generate APT repo for releases and under dev builds (#3197, #3201, #3202, #3203 by: HebaruSan, techman83; reviewed: DasSkelett, HebaruSan)
+- [Cmdline] Confirmation prompt for Cmdline upgrades (#3204 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

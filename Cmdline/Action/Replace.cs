@@ -145,7 +145,7 @@ namespace CKAN.CmdLine
                         r.ToReplace.identifier, r.ToReplace.version);
                 }
 
-                bool ok = User.RaiseYesNoDialog("\r\nContinue?");
+                bool ok = User.RaiseYesNoDialog("Continue?");
 
                 if (!ok)
                 {
@@ -158,7 +158,7 @@ namespace CKAN.CmdLine
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
                     ModuleInstaller.GetInstance(ksp, manager.Cache, User).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
-                    User.RaiseMessage("\r\nDone!\r\n");
+                    User.RaiseMessage("");
                 }
                 catch (DependencyNotSatisfiedKraken ex)
                 {

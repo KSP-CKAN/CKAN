@@ -157,7 +157,7 @@ namespace CKAN
             // TODO: All this user-stuff should be happening in another method!
             // We should just be installing mods as a transaction.
 
-            User.RaiseMessage("About to install...\r\n");
+            User.RaiseMessage("About to install:\r\n");
 
             foreach (CkanModule module in modsToInstall)
             {
@@ -177,22 +177,10 @@ namespace CKAN
                 }
             }
 
-            bool ok;
-            if (ConfirmPrompt)
-            {
-                ok = User.RaiseYesNoDialog("\r\nContinue?");
-            }
-            else
-            {
-                ok = true;
-            }
-
-            if (!ok)
+            if (ConfirmPrompt && !User.RaiseYesNoDialog("Continue?"))
             {
                 throw new CancelledActionKraken("User declined install list");
             }
-
-            User.RaiseMessage(String.Empty); // Just to look tidy.
 
             if (downloads.Count > 0)
             {
@@ -230,14 +218,12 @@ namespace CKAN
 
             EnforceCacheSizeLimit(registry_manager.registry);
 
-            // We can scan GameData as a separate transaction. Installing the mods
-            // leaves everything consistent, and this is just gravy. (And ScanGameData
-            // acts as a Tx, anyway, so we don't need to provide our own.)
-
-            User.RaiseProgress("Rescanning GameData", 90);
-
             if (!options.without_enforce_consistency)
             {
+                // We can scan GameData as a separate transaction. Installing the mods
+                // leaves everything consistent, and this is just gravy. (And ScanGameData
+                // acts as a Tx, anyway, so we don't need to provide our own.)
+                User.RaiseProgress("Rescanning GameData", 90);
                 ksp.ScanGameData();
             }
 
@@ -669,11 +655,11 @@ namespace CKAN
                     mods.Except(installing?.Select(m => m.identifier) ?? new string[] {}),
                     installing
                 )).Memoize();
-            IEnumerable<string> goners = revdep.Union(
+            var goners = revdep.Union(
                     registry_manager.registry.FindRemovableAutoInstalled(
                         registry_manager.registry.InstalledModules.Where(im => !revdep.Contains(im.identifier)))
                     .Select(im => im.identifier))
-                .Memoize();
+                .ToList();
 
             // If there us nothing to uninstall, skip out.
             if (!goners.Any())
@@ -689,27 +675,18 @@ namespace CKAN
                 User.RaiseMessage(" * {0} {1}", module.Module.name, module.Module.version);
             }
 
-            bool ok;
-            if (ConfirmPrompt)
+            if (ConfirmPrompt && !User.RaiseYesNoDialog("Continue?"))
             {
-                ok = User.RaiseYesNoDialog("\r\nContinue?");
-            }
-            else
-            {
-                ok = true;
-            }
-
-            if (!ok)
-            {
-                User.RaiseMessage("Mod removal aborted at user request.");
-                return;
+                throw new CancelledActionKraken("Mod removal aborted at user request");
             }
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
+                int step = 0;
                 foreach (string mod in goners)
                 {
-                    User.RaiseMessage("Removing {0}...", mod);
+                    int percent_complete = (step++ * 100) / goners.Count;
+                    User.RaiseProgress($"Removing {mod}...", percent_complete);
                     Uninstall(mod, ref possibleConfigOnlyDirs, registry_manager.registry);
                 }
 
@@ -720,7 +697,7 @@ namespace CKAN
                 transaction.Complete();
             }
 
-            User.RaiseMessage("Done!\r\n");
+            User.RaiseProgress("Done!", 100);
         }
 
         /// <summary>
@@ -942,7 +919,7 @@ namespace CKAN
                 {
                     // The post-install steps start at 80%, so count up to 70% for installation
                     int percent_complete = (step++ * 70) / totSteps;
-                    User.RaiseProgress($"Removing \"{instMod}\"", percent_complete);
+                    User.RaiseProgress($"Removing \"{instMod.Module}\"", percent_complete);
                     Uninstall(instMod.Module.identifier, ref possibleConfigOnlyDirs, registry_manager.registry);
                 }
 
@@ -989,19 +966,22 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true, bool resolveRelationships = false)
+        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true, bool resolveRelationships = false, bool ConfirmPrompt = true)
         {
             modules = modules.Memoize();
-            User.RaiseMessage("About to upgrade...\r\n");
+            User.RaiseMessage("About to upgrade:\r\n");
 
             if (resolveRelationships)
             {
-                var resolver = new RelationshipResolver(modules, null, RelationshipResolver.DependsOnlyOpts(), registry_manager.registry, ksp.VersionCriteria());
+                var resolver = new RelationshipResolver(
+                    modules,
+                    modules.Select(m => registry_manager.registry.InstalledModule(m.identifier)?.Module).Where(m => m != null),
+                    RelationshipResolver.DependsOnlyOpts(),
+                    registry_manager.registry,
+                    ksp.VersionCriteria()
+                );
                 modules = resolver.ModList();
             }
-
-            // Start by making sure we've downloaded everything.
-            DownloadModules(modules, netAsyncDownloader);
 
             // Our upgrade involves removing everything that's currently installed, then
             // adding everything that needs installing (which may involve new mods to
@@ -1012,12 +992,24 @@ namespace CKAN
             // Let's discover what we need to do with each module!
             foreach (CkanModule module in modules)
             {
-                string ident = module.identifier;
-                InstalledModule installed_mod = registry_manager.registry.InstalledModule(ident);
+                InstalledModule installed_mod = registry_manager.registry.InstalledModule(module.identifier);
 
                 if (installed_mod == null)
                 {
-                    User.RaiseMessage("Installing previously uninstalled mod {0}", ident);
+                    if (!Cache.IsMaybeCachedZip(module))
+                    {
+                        User.RaiseMessage(" * Install: {0} {1} ({2}, {3})",
+                            module.name,
+                            module.version,
+                            module.download.Host,
+                            CkanModule.FmtSize(module.download_size)
+                        );
+                    }
+                    else
+                    {
+                        User.RaiseMessage(" * Install: {0} {1} (cached)",
+                            module.name, module.version);
+                    }
                 }
                 else
                 {
@@ -1027,18 +1019,42 @@ namespace CKAN
                     CkanModule installed = installed_mod.Module;
                     if (installed.version.IsEqualTo(module.version))
                     {
-                        log.InfoFormat("{0} is already at the latest version, reinstalling", installed.identifier);
+                        User.RaiseMessage(" * Re-install: {0} {1}",
+                            module.name, module.version);
                     }
                     else if (installed.version.IsGreaterThan(module.version))
                     {
-                        log.WarnFormat("Downgrading {0} from {1} to {2}", ident, installed.version, module.version);
+                        User.RaiseMessage(" * Downgrade: {0} from {1} to {2}",
+                            module.name, installed.version, module.version);
                     }
                     else
                     {
-                        log.InfoFormat("Upgrading {0} to {1}", ident, module.version);
+                        if (!Cache.IsMaybeCachedZip(module))
+                        {
+                            User.RaiseMessage(" * Upgrade: {0} {1} to {2} ({3}, {4})",
+                                module.name,
+                                installed.version,
+                                module.version,
+                                module.download.Host,
+                                CkanModule.FmtSize(module.download_size)
+                            );
+                        }
+                        else
+                        {
+                            User.RaiseMessage(" * Upgrade: {0} {1} to {2} (cached)",
+                                module.name, installed.version, module.version);
+                        }
                     }
                 }
             }
+
+            if (ConfirmPrompt && !User.RaiseYesNoDialog("Continue?"))
+            {
+                throw new CancelledActionKraken("User declined upgrade list");
+            }
+
+            // Start by making sure we've downloaded everything.
+            DownloadModules(modules, netAsyncDownloader);
 
             AddRemove(
                 ref possibleConfigOnlyDirs,
@@ -1138,6 +1154,7 @@ namespace CKAN
                     modsToRemove,
                     enforceConsistency
                 );
+                User.RaiseProgress("Done!", 100);
             }
             catch (DependencyNotSatisfiedKraken kraken)
             {
