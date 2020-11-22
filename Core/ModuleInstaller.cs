@@ -1145,18 +1145,15 @@ namespace CKAN
                 }
             }
             var resolver = new RelationshipResolver(modsToInstall, null, options, registry_manager.registry, ksp.VersionCriteria());
-            try
-            {
-                var resolvedModsToInstall = resolver.ModList().ToList();
-                AddRemove(
-                    ref possibleConfigOnlyDirs,
-                    registry_manager,
-                    resolvedModsToInstall,
-                    modsToRemove,
-                    enforceConsistency
-                );
-                User.RaiseProgress("Done!", 100);
-            }
+            var resolvedModsToInstall = resolver.ModList().ToList();
+            AddRemove(
+                ref possibleConfigOnlyDirs,
+                registry_manager,
+                resolvedModsToInstall,
+                modsToRemove,
+                enforceConsistency
+            );
+            User.RaiseProgress("Done!", 100);
         }
 
         #endregion
