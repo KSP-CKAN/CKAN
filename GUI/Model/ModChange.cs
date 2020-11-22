@@ -124,6 +124,6 @@ namespace CKAN
             }
         }
 
-        private readonly CkanModule targetMod;
+        public readonly CkanModule targetMod;
     }
 }
