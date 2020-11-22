@@ -20,7 +20,7 @@
   <Choose>
     <When Condition="$(Configuration.EndsWith('NetCore'))">
       <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
       </PropertyGroup>
     </When>
     <Otherwise>
@@ -29,7 +29,7 @@
       </PropertyGroup>
     </Otherwise>
   </Choose>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
     <DefaultItemExcludes>$(DefaultItemExcludes);NetKAN\**;GUI\**</DefaultItemExcludes>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug_NetCore' ">
@@ -56,7 +56,7 @@
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
   </ItemGroup>
   <ItemGroup>

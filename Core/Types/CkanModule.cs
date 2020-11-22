@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using Autofac;
 using log4net;
 using Newtonsoft.Json;
-using CKAN.Extensions;
 using CKAN.Versioning;
 
 namespace CKAN

@@ -1069,8 +1069,9 @@ namespace CKAN
         /// <summary>
         /// Enacts listed Module Replacements to the specified versions for the user's KSP.
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
-        /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
+        /// <exception cref="DependencyNotSatisfiedKraken">Thrown if a dependency for a replacing module couldn't be satisfied.</exception>
+        /// <exception cref="ModuleNotFoundKraken">Thrown if a module that should be replaced is not installed.</exception>
         public void Replace(IEnumerable<ModuleReplacement> replacements, RelationshipResolverOptions options, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true)
         {
             replacements = replacements.Memoize();
@@ -1156,11 +1157,6 @@ namespace CKAN
                 );
                 User.RaiseProgress("Done!", 100);
             }
-            catch (DependencyNotSatisfiedKraken kraken)
-            {
-                throw kraken;
-            }
-
         }
 
         #endregion

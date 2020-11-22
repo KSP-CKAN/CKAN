@@ -7,7 +7,7 @@
 using System.Text.RegularExpressions;
 using Semver;
 
-var buildNetCore = "netcoreapp3.1";
+var buildNetCore = "net5.0";
 var buildNetFramework = "net45";
 
 var target = Argument<string>("target", "Default");

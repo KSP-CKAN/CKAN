@@ -104,7 +104,7 @@ namespace Tests.Core.Relationships
         public void FindUnsatisfiedDepends()
         {
             var mods = new List<CkanModule>();
-            var dlls = CKAN.Extensions.EnumerableExtensions.ToHashSet(Enumerable.Empty<string>());
+            var dlls = Enumerable.Empty<string>().ToHashSet();
             var dlc = new Dictionary<string, ModuleVersion>();
 
             Assert.IsEmpty(CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc), "Empty list");

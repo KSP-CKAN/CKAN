@@ -17,6 +17,10 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Streamline Mac onboarding (#3199 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Fix dependency resolution in mod upgrades (#3200 by: DasSkelett; reviewed: HebaruSan)
 
+### Internal
+
+- [Build] Upgrade DLL build to .NET 5 (#3194 by: DasSkelett; reviewed: HebaruSan)
+
 ## v1.29.0 (Eddington)
 
 ### Features

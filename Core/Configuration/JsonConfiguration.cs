@@ -370,8 +370,8 @@ namespace CKAN.Configuration
                     // Ensure the directory exists
                     new FileInfo(configFile).Directory.Create();
 
-#if !NETSTANDARD
-                    // If we are not running on .NET Standard, try to migrate from the real registry
+#if !NETCOREAPP
+                    // If we are not running on .NET Core, try to migrate from the real registry
                     if (Win32RegistryConfiguration.DoesRegistryConfigurationExist())
                     {
                         Migrate();
