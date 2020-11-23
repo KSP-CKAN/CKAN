@@ -29,15 +29,15 @@ APT_REPO_ROOT:=../_build/deb/apt-repo-root
 REPODEB:=$(APT_REPO_ROOT)/pool/ckan_$(VERSION)_all.deb
 
 # Files for /deb/dists/{stable,nightly}/
-# (Release, main/binary-all/Release, main/binary-all/Packages.gz,
+# (Release, main/binary-amd64/Release, main/binary-amd64/Packages.gz,
 #  actual path to be determined by yml files)
 APT_REPO_DIST:=../_build/deb/apt-repo-dist
 RELEASESRC:=Release.in
 DISTRELEASEDEST:=$(APT_REPO_DIST)/Release
 SIGNEDDISTRELEASEDEST:=$(DISTRELEASEDEST).gpg
-ARCHRELEASEDEST:=$(APT_REPO_DIST)/main/binary-all/Release
+ARCHRELEASEDEST:=$(APT_REPO_DIST)/main/binary-amd64/Release
 INRELEASE:=$(APT_REPO_DIST)/InRelease
-PACKAGES:=$(APT_REPO_DIST)/main/binary-all/Packages.gz
+PACKAGES:=$(APT_REPO_DIST)/main/binary-amd64/Packages.gz
 
 repo: $(REPODEB) $(PACKAGES) $(DISTRELEASEDEST) $(ARCHRELEASEDEST)
 

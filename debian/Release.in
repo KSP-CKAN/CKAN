@@ -1,6 +1,6 @@
 Codename: @CODENAME@
 Components: main
-Architectures: all
+Architectures: amd64
 Description: Packages of the latest releases of the KSP-CKAN official client
 Date: @DATE@
 Version: @VERSION@
