@@ -80,7 +80,7 @@ namespace CKAN
             // this will be the final list of mods we want to install
             HashSet<CkanModule> toInstall = new HashSet<CkanModule>();
             var toUninstall = new HashSet<string>();
-            var toUpgrade   = new HashSet<string>();
+            var toUpgrade   = new HashSet<CkanModule>();
 
             // First compose sets of what the user wants installed, upgraded, and removed.
             foreach (ModChange change in opts.Key)
@@ -91,7 +91,9 @@ namespace CKAN
                         toUninstall.Add(change.Mod.identifier);
                         break;
                     case GUIModChangeType.Update:
-                        toUpgrade.Add(change.Mod.identifier);
+                        toUpgrade.Add(change is ModUpgrade mu
+                            ? mu.targetMod
+                            : change.Mod);
                         break;
                     case GUIModChangeType.Install:
                         toInstall.Add(change.Mod);
@@ -188,7 +190,7 @@ namespace CKAN
                         processSuccessful = false;
                         if (!installCanceled)
                         {
-                            installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager);
+                            installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, true, false);
                             processSuccessful = true;
                         }
                     }

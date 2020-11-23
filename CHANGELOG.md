@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix error when removing file from GameRoot (#3196 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Streamline Mac onboarding (#3199 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Fix dependency resolution in mod upgrades (#3200 by: DasSkelett; reviewed: HebaruSan)
+- [GUI] Suppress confirmation prompt for GUI upgrades (#3206 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
