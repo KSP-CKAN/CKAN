@@ -50,6 +50,8 @@ $(REPODEB): $(DEB)
 $(DISTRELEASEDEST): $(RELEASESRC) $(PACKAGES)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' \
+	-e "s/@CODENAME@/$${CODENAME-nightly}/" \
+	-e "s/@DATE@/$$(date -R -u)/" \
 	-e 's/@RAWHASH@/'$$(zcat $(PACKAGES) | sha256sum -t | cut -d' ' -f1)/ \
 	-e 's/@RAWSIZE@/'$$(zcat $(PACKAGES) | wc -c)/ \
 	-e 's/@GZHASH@/'$$(sha256sum -t < $(PACKAGES) | cut -d' ' -f1)/ \
@@ -58,6 +60,8 @@ $(DISTRELEASEDEST): $(RELEASESRC) $(PACKAGES)
 $(ARCHRELEASEDEST): $(RELEASESRC) $(PACKAGES)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' \
+	-e "s/@CODENAME@/$${CODENAME-nightly}/" \
+	-e "s/@DATE@/$$(date -R -u)/" \
 	-e 's/@RAWHASH@/'$$(zcat $(PACKAGES) | sha256sum -t | cut -d' ' -f1)/ \
 	-e 's/@RAWSIZE@/'$$(zcat $(PACKAGES) | wc -c)/ \
 	-e 's/@GZHASH@/'$$(sha256sum -t < $(PACKAGES) | cut -d' ' -f1)/ \

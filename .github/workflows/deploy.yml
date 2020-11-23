@@ -46,9 +46,12 @@ jobs:
       - name: Build ckan.exe and netkan.exe
         run: ./build --configuration=Release
       - name: Build deb
+        env:
+          CODENAME: stable
         run: ./build deb --configuration=Release --exclusive
       - name: Sign deb release
         env:
+          CODENAME: nightly
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: |
           echo "$DEBIAN_PRIVATE_KEY" | base64 --decode | gpg --batch --import
