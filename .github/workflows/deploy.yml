@@ -76,7 +76,7 @@ jobs:
         # Send ckan.exe and netkan.exe to https://ksp-ckan.s3-us-west-2.amazonaws.com/
         uses: jakejarvis/s3-sync-action@master
         with:
-          args: --follow-symlinks --delete
+          args: --follow-symlinks
         env:
           AWS_S3_BUCKET: ksp-ckan
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
