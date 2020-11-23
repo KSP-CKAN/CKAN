@@ -5,5 +5,5 @@ Description: Packages of the latest releases of the KSP-CKAN official client
 Date: @DATE@
 Version: @VERSION@
 SHA256:
- @RAWHASH@	@RAWSIZE@ Packages
- @GZHASH@	@GZSIZE@ Packages.gz
+ @RAWHASH@	@RAWSIZE@	@PACKAGESPATH@Packages
+ @GZHASH@	@GZSIZE@	@PACKAGESPATH@Packages.gz

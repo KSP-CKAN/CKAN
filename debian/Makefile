@@ -51,6 +51,7 @@ $(DISTRELEASEDEST): $(RELEASESRC) $(PACKAGES)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' \
 	-e "s/@CODENAME@/$${CODENAME-nightly}/" \
+	-e 's/@PACKAGESPATH@/main\/binary-amd64\//' \
 	-e "s/@DATE@/$$(date -R -u)/" \
 	-e 's/@RAWHASH@/'$$(zcat $(PACKAGES) | sha256sum -t | cut -d' ' -f1)/ \
 	-e 's/@RAWSIZE@/'$$(zcat $(PACKAGES) | wc -c)/ \
@@ -61,6 +62,7 @@ $(ARCHRELEASEDEST): $(RELEASESRC) $(PACKAGES)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' \
 	-e "s/@CODENAME@/$${CODENAME-nightly}/" \
+	-e 's/@PACKAGESPATH@//' \
 	-e "s/@DATE@/$$(date -R -u)/" \
 	-e 's/@RAWHASH@/'$$(zcat $(PACKAGES) | sha256sum -t | cut -d' ' -f1)/ \
 	-e 's/@RAWSIZE@/'$$(zcat $(PACKAGES) | wc -c)/ \
