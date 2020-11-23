@@ -39,9 +39,8 @@ namespace CKAN
         /// </summary>
         public string CustomLabelFilter = null;
 
-        // Sort by the mod name (index = 2) column by default
-        public int SortByColumnIndex = 2;
-        public bool SortDescending = false;
+        public List<string> SortColumns = new List<string>();
+        public List<bool> MultiSortDescending = new List<bool>();
 
         [XmlArray, XmlArrayItem(ElementName = "ColumnName")]
         public List<string> HiddenColumnNames = new List<string>();
