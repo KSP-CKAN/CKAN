@@ -51,7 +51,7 @@ jobs:
         env:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: |
-          base64 --decode <<<"$DEBIAN_PRIVATE_KEY" | gpg --batch --import
+          echo "$DEBIAN_PRIVATE_KEY" | base64 --decode | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
           ./build deb-sign --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
