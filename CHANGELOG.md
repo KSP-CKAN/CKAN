@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Build] Upgrade DLL build to .NET 5 (#3194 by: DasSkelett; reviewed: HebaruSan)
+- [Netkan] Netkan warning for craft files installed outside Ships folder (#3207 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.29.0 (Eddington)
 

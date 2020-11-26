@@ -123,6 +123,7 @@
     <Compile Include="Transformers\VersionedOverrideTransformer.cs" />
     <Compile Include="Validators\AlphaNumericIdentifierValidator.cs" />
     <Compile Include="Validators\CkanValidator.cs" />
+    <Compile Include="Validators\CraftsInShipsValidator.cs" />
     <Compile Include="Validators\DownloadVersionValidator.cs" />
     <Compile Include="Validators\HasIdentifierValidator.cs" />
     <Compile Include="Validators\InstallsFilesValidator.cs" />
