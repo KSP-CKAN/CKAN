@@ -31,7 +31,7 @@ namespace CKAN.NetKAN.Validators
                     var zip       = new ZipFile(package);
                     var ksp       = new KSP("/", "dummy", null, false);
                     var badCrafts = _moduleService.GetCrafts(mod, zip, ksp)
-                        .Where(f => !ksp.ToRelativeGameDir(f.destination).StartsWith("Ships/"))
+                        .Where(f => !AllowedCraftPath(ksp.ToRelativeGameDir(f.destination)))
                         .ToList();
 
                     if (badCrafts.Any())
@@ -45,6 +45,13 @@ namespace CKAN.NetKAN.Validators
                     }
                 }
             }
+        }
+
+        private bool AllowedCraftPath(string path)
+        {
+            return path.StartsWith("Ships/")
+                || path.StartsWith("Missions/")
+                || path.StartsWith("GameData/ContractPacks/");
         }
 
         private readonly IHttpService   _http;
