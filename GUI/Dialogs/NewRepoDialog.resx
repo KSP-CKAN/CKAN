@@ -119,7 +119,11 @@
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="RepositoryGroupBox.Text" xml:space="preserve"><value>Official repositories</value></data>
-  <data name="RepoCancel.Text" xml:space="preserve"><value>Cancel</value></data>
-  <data name="RepoOK.Text" xml:space="preserve"><value>OK</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Settings</value></data>
+  <data name="RepoCancel.Text" xml:space="preserve"><value>&amp;Cancel</value></data>
+  <data name="RepoOK.Text" xml:space="preserve"><value>&amp;Add</value></data>
+  <data name="RepoNameHeader.Text" xml:space="preserve"><value>Name</value></data>
+  <data name="RepoURLHeader.Text" xml:space="preserve"><value>URL</value></data>
+  <data name="RepoNameLabel.Text" xml:space="preserve"><value>Name:</value></data>
+  <data name="RepoUrlLabel.Text" xml:space="preserve"><value>URL:</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Add Repository</value></data>
 </root>

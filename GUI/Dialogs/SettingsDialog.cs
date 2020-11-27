@@ -1,12 +1,13 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Threading.Tasks;
-using CKAN.Versioning;
 using log4net;
-using CKAN.Configuration;
 using Autofac;
+using CKAN.Versioning;
+using CKAN.Configuration;
 
 namespace CKAN
 {
@@ -96,10 +97,9 @@ namespace CKAN
             {
                 _sortedRepos = new List<Repository>(registry.Repositories.Values);
             }
-            foreach (var repo in _sortedRepos)
-            {
-                ReposListBox.Items.Add(string.Format("{0} | {1}", repo.name, repo.uri));
-            }
+            ReposListBox.Items.AddRange(_sortedRepos.Select(r =>
+                new ListViewItem(new string[] { r.name, r.uri.ToString() })
+            ).ToArray());
         }
 
         private void UpdateLanguageSelectionComboBox()
@@ -254,35 +254,23 @@ namespace CKAN
 
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DeleteRepoButton.Enabled = ReposListBox.SelectedItem != null;
-
-            if (ReposListBox.SelectedIndex > 0 && ReposListBox.SelectedIndex < ReposListBox.Items.Count)
-            {
-                UpRepoButton.Enabled = true;
-            }
-            else
-            {
-                UpRepoButton.Enabled = false;
-            }
-
-            if (ReposListBox.SelectedIndex  < ReposListBox.Items.Count - 1 && ReposListBox.SelectedIndex >= 0)
-            {
-                DownRepoButton.Enabled = true;
-            }
-            else
-            {
-                DownRepoButton.Enabled = false;
-            }
+            DeleteRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0;
+            UpRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0
+                && ReposListBox.SelectedIndices[0] > 0
+                && ReposListBox.SelectedIndices[0] < ReposListBox.Items.Count;
+            DownRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0
+                && ReposListBox.SelectedIndices[0] < ReposListBox.Items.Count - 1
+                && ReposListBox.SelectedIndices[0] >= 0;
         }
 
         private void DeleteRepoButton_Click(object sender, EventArgs e)
         {
-            if (ReposListBox.SelectedItem == null)
+            if (ReposListBox.SelectedItems.Count == 0)
             {
                 return;
             }
 
-            var item = _sortedRepos[ReposListBox.SelectedIndex];
+            var item = _sortedRepos[ReposListBox.SelectedIndices[0]];
             var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
             registry.Repositories.Remove(item.name);
             RefreshReposListBox();
@@ -296,18 +284,15 @@ namespace CKAN
             {
                 try
                 {
-                    var repo = dialog.RepoUrlTextBox.Text.Split('|');
-                    var name = repo[0].Trim();
-                    var url = repo[1].Trim();
-
+                    var repo = dialog.Selection;
                     var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
                     SortedDictionary<string, Repository> repositories = registry.Repositories;
-                    if (repositories.ContainsKey(name))
+                    if (repositories.ContainsKey(repo.name))
                     {
-                        repositories.Remove(name);
+                        repositories.Remove(repo.name);
                     }
 
-                    repositories.Add(name, new Repository(name, url, _sortedRepos.Count));
+                    repositories.Add(repo.name, repo);
                     registry.Repositories = repositories;
 
                     RefreshReposListBox();
@@ -321,37 +306,29 @@ namespace CKAN
 
         private void UpRepoButton_Click(object sender, EventArgs e)
         {
-            if (ReposListBox.SelectedItem == null)
+            if (ReposListBox.SelectedIndices.Count == 0
+                || ReposListBox.SelectedIndices[0] == 0)
             {
                 return;
             }
 
-            if (ReposListBox.SelectedIndex == 0)
-            {
-                return;
-            }
-
-            var item = _sortedRepos[ReposListBox.SelectedIndex];
-            _sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
-            _sortedRepos.Insert(ReposListBox.SelectedIndex - 1, item);
+            var item = _sortedRepos[ReposListBox.SelectedIndices[0]];
+            _sortedRepos.RemoveAt(ReposListBox.SelectedIndices[0]);
+            _sortedRepos.Insert(ReposListBox.SelectedIndices[0] - 1, item);
             RefreshReposListBox();
         }
 
         private void DownRepoButton_Click(object sender, EventArgs e)
         {
-            if (ReposListBox.SelectedItem == null)
+            if (ReposListBox.SelectedIndices.Count == 0 
+                || ReposListBox.SelectedIndices[0] == ReposListBox.Items.Count - 1)
             {
                 return;
             }
 
-            if (ReposListBox.SelectedIndex == ReposListBox.Items.Count - 1)
-            {
-                return;
-            }
-
-            var item = _sortedRepos[ReposListBox.SelectedIndex];
-            _sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
-            _sortedRepos.Insert(ReposListBox.SelectedIndex + 1, item);
+            var item = _sortedRepos[ReposListBox.SelectedIndices[0]];
+            _sortedRepos.RemoveAt(ReposListBox.SelectedIndices[0]);
+            _sortedRepos.Insert(ReposListBox.SelectedIndices[0] + 1, item);
             RefreshReposListBox();
         }
 
@@ -363,14 +340,18 @@ namespace CKAN
                 string token;
                 if (config.TryGetAuthToken(host, out token))
                 {
-                    AuthTokensListBox.Items.Add(string.Format("{0} | {1}", host, token));
+                    AuthTokensListBox.Items.Add(new ListViewItem(
+                        new string[] { host, token })
+                    {
+                        Tag = $"{host}|{token}"
+                    });
                 }
             }
         }
 
         private void AuthTokensListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DeleteAuthTokenButton.Enabled = AuthTokensListBox.SelectedItem != null;
+            DeleteAuthTokenButton.Enabled = AuthTokensListBox.SelectedItems.Count > 0;
         }
 
         private void NewAuthTokenButton_Click(object sender, EventArgs e)
@@ -487,9 +468,9 @@ namespace CKAN
 
         private void DeleteAuthTokenButton_Click(object sender, EventArgs e)
         {
-            if (AuthTokensListBox.SelectedItem != null)
+            if (AuthTokensListBox.SelectedItems.Count > 0)
             {
-                string item = AuthTokensListBox.SelectedItem as string;
+                string item = AuthTokensListBox.SelectedItems[0].Tag as string;
                 string host = item?.Split('|')[0].Trim();
 
                 config.SetAuthToken(host, null);

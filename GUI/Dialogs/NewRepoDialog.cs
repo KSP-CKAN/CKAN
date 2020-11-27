@@ -1,16 +1,23 @@
 ﻿using System;
+﻿using System.Linq;
 using System.Windows.Forms;
 
 namespace CKAN
 {
-
-
     public partial class NewRepoDialog : Form
     {
         public NewRepoDialog()
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
+        }
+
+        public Repository Selection
+        {
+            get
+            {
+                return new Repository(RepoNameTextBox.Text, RepoUrlTextBox.Text);
+            }
         }
 
         private void NewRepoDialog_Load(object sender, EventArgs e)
@@ -35,26 +42,30 @@ namespace CKAN
                 return;
             }
 
-            foreach (Repository repository in repositories.repositories)
-            {
-                ReposListBox.Items.Add(String.Format("{0} | {1}", repository.name, repository.uri));
-            }
+            ReposListBox.Items.AddRange(repositories.repositories.Select(r =>
+                new ListViewItem(new string[] { r.name, r.uri.ToString() })
+                {
+                    Tag = r
+                }
+            ).ToArray());
         }
 
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ReposListBox.SelectedItem == null)
+            if (ReposListBox.SelectedItems.Count == 0)
             {
                 return;
             }
 
-            RepoUrlTextBox.Text = (string) ReposListBox.SelectedItem;
+            Repository r = ReposListBox.SelectedItems[0].Tag as Repository;
+            RepoNameTextBox.Text = r.name;
+            RepoUrlTextBox.Text = r.uri.ToString();
         }
 
         private void RepoUrlTextBox_TextChanged(object sender, EventArgs e)
         {
-            RepoOK.Enabled = RepoUrlTextBox.Text.Length != 0;
+            RepoOK.Enabled = RepoNameTextBox.Text.Length > 0
+                && RepoUrlTextBox.Text.Length > 0;
         }
-
     }
 }
