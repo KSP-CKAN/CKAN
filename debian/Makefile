@@ -21,7 +21,7 @@ DESKTOPSRC:=ckan.desktop
 DESKTOPDEST:=$(DESTDIR)/usr/share/applications/ckan.desktop
 CONSOLEUIDESKTOPSRC:=ckan-consoleui.desktop
 CONSOLEUIDESKTOPDEST:=$(DESTDIR)/usr/share/applications/ckan-consoleui.desktop
-VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' )
+VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' ).$(shell date +'%g%j')
 DEB:=../_build/deb/ckan_$(VERSION)_all.deb
 
 # Files for /deb/ (the .deb file)
