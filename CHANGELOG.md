@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Streamline Mac onboarding (#3199 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Fix dependency resolution in mod upgrades (#3200 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Suppress confirmation prompt for GUI upgrades (#3206 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Manage repos with separate name and URL fields (#3214 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

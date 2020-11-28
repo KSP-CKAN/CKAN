@@ -31,13 +31,17 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(SettingsDialog));
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
-            this.ReposListBox = new System.Windows.Forms.ListBox();
+            this.ReposListBox = new System.Windows.Forms.ListView();
+            this.RepoNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.RepoURLHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.NewRepoButton = new System.Windows.Forms.Button();
             this.UpRepoButton = new System.Windows.Forms.Button();
             this.DownRepoButton = new System.Windows.Forms.Button();
             this.DeleteRepoButton = new System.Windows.Forms.Button();
             this.AuthTokensGroupBox = new System.Windows.Forms.GroupBox();
-            this.AuthTokensListBox = new System.Windows.Forms.ListBox();
+            this.AuthTokensListBox = new System.Windows.Forms.ListView();
+            this.AuthHostHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.AuthTokenHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.NewAuthTokenButton = new System.Windows.Forms.Button();
             this.DeleteAuthTokenButton = new System.Windows.Forms.Button();
             this.CacheGroupBox = new System.Windows.Forms.GroupBox();
@@ -103,12 +107,27 @@
             // ReposListBox
             //
             this.ReposListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ReposListBox.FormattingEnabled = true;
+            this.ReposListBox.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.RepoNameHeader,
+            this.RepoURLHeader});
             this.ReposListBox.Location = new System.Drawing.Point(12, 18);
+            this.ReposListBox.FullRowSelect = true;
+            this.ReposListBox.MultiSelect = false;
             this.ReposListBox.Name = "ReposListBox";
             this.ReposListBox.Size = new System.Drawing.Size(452, 67);
             this.ReposListBox.TabIndex = 0;
+            this.ReposListBox.View = System.Windows.Forms.View.Details;
             this.ReposListBox.SelectedIndexChanged += new System.EventHandler(this.ReposListBox_SelectedIndexChanged);
+            //
+            // RepoNameHeader
+            //
+            this.RepoNameHeader.Width = 120;
+            resources.ApplyResources(this.RepoNameHeader, "RepoNameHeader");
+            //
+            // RepoURLHeader
+            //
+            this.RepoURLHeader.Width = 380;
+            resources.ApplyResources(this.RepoURLHeader, "RepoURLHeader");
             //
             // NewRepoButton
             //
@@ -169,12 +188,27 @@
             // AuthTokensListBox
             //
             this.AuthTokensListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.AuthTokensListBox.FormattingEnabled = true;
+            this.AuthTokensListBox.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.AuthHostHeader,
+            this.AuthTokenHeader});
+            this.AuthTokensListBox.FullRowSelect = true;
+            this.AuthTokensListBox.MultiSelect = false;
+            this.AuthTokensListBox.View = System.Windows.Forms.View.Details;
             this.AuthTokensListBox.Location = new System.Drawing.Point(12, 18);
             this.AuthTokensListBox.Name = "AuthTokensListBox";
             this.AuthTokensListBox.Size = new System.Drawing.Size(452, 67);
             this.AuthTokensListBox.TabIndex = 0;
             this.AuthTokensListBox.SelectedIndexChanged += new System.EventHandler(this.AuthTokensListBox_SelectedIndexChanged);
+            //
+            // AuthHostHeader
+            //
+            this.AuthHostHeader.Width = 120;
+            resources.ApplyResources(this.AuthHostHeader, "AuthHostHeader");
+            //
+            // AuthTokenHeader
+            //
+            this.AuthTokenHeader.Width = 380;
+            resources.ApplyResources(this.AuthTokenHeader, "AuthTokenHeader");
             //
             // NewAuthTokenButton
             //
@@ -598,13 +632,17 @@
         #endregion
 
         private System.Windows.Forms.GroupBox RepositoryGroupBox;
-        private System.Windows.Forms.ListBox ReposListBox;
+        private System.Windows.Forms.ListView ReposListBox;
+        private System.Windows.Forms.ColumnHeader RepoNameHeader;
+        private System.Windows.Forms.ColumnHeader RepoURLHeader;
         private System.Windows.Forms.Button NewRepoButton;
         private System.Windows.Forms.Button UpRepoButton;
         private System.Windows.Forms.Button DownRepoButton;
         private System.Windows.Forms.Button DeleteRepoButton;
         private System.Windows.Forms.GroupBox AuthTokensGroupBox;
-        private System.Windows.Forms.ListBox AuthTokensListBox;
+        private System.Windows.Forms.ListView AuthTokensListBox;
+        private System.Windows.Forms.ColumnHeader AuthHostHeader;
+        private System.Windows.Forms.ColumnHeader AuthTokenHeader;
         private System.Windows.Forms.Button NewAuthTokenButton;
         private System.Windows.Forms.Button DeleteAuthTokenButton;
         private System.Windows.Forms.GroupBox CacheGroupBox;
