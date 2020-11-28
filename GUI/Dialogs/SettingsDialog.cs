@@ -320,7 +320,7 @@ namespace CKAN
 
         private void DownRepoButton_Click(object sender, EventArgs e)
         {
-            if (ReposListBox.SelectedIndices.Count == 0 
+            if (ReposListBox.SelectedIndices.Count == 0
                 || ReposListBox.SelectedIndices[0] == ReposListBox.Items.Count - 1)
             {
                 return;
@@ -475,7 +475,7 @@ namespace CKAN
 
                 config.SetAuthToken(host, null);
                 RefreshAuthTokensListBox();
-                DeleteRepoButton.Enabled = false;
+                DeleteAuthTokenButton.Enabled = false;
             }
         }
 
