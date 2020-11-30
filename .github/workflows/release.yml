@@ -71,6 +71,8 @@ jobs:
           echo "::set-output name=version::$VERSION"
           RPM_VERSION=$(echo $VERSION | sed -e 's/-/_/g')
           echo "::set-output name=rpm_version::$RPM_VERSION"
+          DEB_VERSION=${VERSION}.$(date +'%g%j')
+          echo "::set-output name=deb_version::$DEB_VERSION"
       - name: Upload ckan.exe
         uses: actions/upload-release-asset@v1.0.1
         env:
@@ -95,7 +97,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release_data.outputs.upload_url }}
-          asset_path: _build/deb/ckan_${{ steps.release_data.outputs.version }}_all.deb
+          asset_path: _build/deb/ckan_${{ steps.release_data.outputs.deb_version }}_all.deb
           asset_name: ckan_${{ steps.release_data.outputs.version }}_all.deb
           asset_content_type: application/vnd.debian.binary-package
       - name: Upload ckan-*.rpm
