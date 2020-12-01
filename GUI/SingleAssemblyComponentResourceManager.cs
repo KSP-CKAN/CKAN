@@ -9,7 +9,7 @@ namespace CKAN
 {
     // Thanks and credit to this guy: https://stackoverflow.com/q/1952638/2422988
 
-    class SingleAssemblyComponentResourceManager : ComponentResourceManager
+    internal class SingleAssemblyComponentResourceManager : ComponentResourceManager
     {
         public SingleAssemblyComponentResourceManager(Type t) : base(t)
         {
