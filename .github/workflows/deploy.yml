@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: mono:5.20
+      image: mono:latest
 
     steps:
       - uses: actions/checkout@v2

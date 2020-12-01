@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mono: ['5.20', '6.4', '6.6', '6.8']
+        mono: ['5.20', '6.4', '6.6', '6.8', 'latest']
         configuration: [Debug, Release]
 
     container:
