@@ -160,6 +160,7 @@
             //
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(500, 220);
+            this.MinimumSize = new System.Drawing.Size(520, 260);
             this.Controls.Add(this.RepositoryGroupBox);
             this.Controls.Add(this.BottomButtonPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
