@@ -147,8 +147,5 @@
   <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
-    <value>(Default)</value>
-  </data>
   <data name="FilterCombinedLabel.Text" xml:space="preserve"><value>搜索:</value></data>
 </root>

@@ -147,9 +147,6 @@
   <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
-    <value>(Default)</value>
-  </data>
   <data name="launchKSPToolStripMenuItem.Text" xml:space="preserve"><value>KSP starten</value></data>
   <data name="RefreshToolButton.Text" xml:space="preserve"><value>Aktualisieren</value></data>
   <data name="UpdateAllToolButton.Text" xml:space="preserve"><value>Verfügbare Updates auswählen</value></data>

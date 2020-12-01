@@ -135,9 +135,6 @@
   <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
-    <value>(Default)</value>
-  </data>
   <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>File</value></data>
   <data name="manageKspInstancesMenuItem.Text" xml:space="preserve"><value>Manage KSP Instances</value></data>
   <data name="openKspDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>Open KSP Directory</value></data>

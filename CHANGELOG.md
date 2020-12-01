@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.29.3
 
+### Internal
+
+- [GUI] Make Mono 6 builds work on Windows (#3218 by: HebaruSan; reviewed: DasSkelett)
+
 ## v1.29.2 (Freedman)
 
 ### Features

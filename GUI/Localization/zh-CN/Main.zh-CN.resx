@@ -162,9 +162,6 @@
   <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
-    <value>(Default)</value>
-  </data>
   <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>文件</value></data>
   <data name="manageKspInstancesMenuItem.Text" xml:space="preserve"><value>管理KSP实例</value></data>
   <data name="openKspDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>打开KSP目录</value></data>
