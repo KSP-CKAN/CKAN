@@ -799,6 +799,9 @@ namespace CKAN.Properties {
         internal static string ModuleLabelListHidden {
             get { return (string)(ResourceManager.GetObject("ModuleLabelListHidden", resourceCulture)); }
         }
+        internal static string ModuleLabelListHeld {
+            get { return (string)(ResourceManager.GetObject("ModuleLabelListHeld", resourceCulture)); }
+        }
         internal static string ModuleLabelListGlobal {
             get { return (string)(ResourceManager.GetObject("ModuleLabelListGlobal", resourceCulture)); }
         }
@@ -855,6 +858,9 @@ namespace CKAN.Properties {
         }
         internal static string EditLabelsToolTipRemoveOnInstall {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipRemoveOnInstall", resourceCulture)); }
+        }
+        internal static string EditLabelsToolTipHoldVersion {
+            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipHoldVersion", resourceCulture)); }
         }
         internal static string MainLabelsUpdateMessage {
             get { return (string)(ResourceManager.GetObject("MainLabelsUpdateMessage", resourceCulture)); }

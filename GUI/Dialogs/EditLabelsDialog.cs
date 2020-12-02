@@ -25,6 +25,7 @@ namespace CKAN
             this.ToolTip.SetToolTip(RemoveOnChangesCheckBox, Properties.Resources.EditLabelsToolTipRemoveOnChanges);
             this.ToolTip.SetToolTip(AlertOnInstallCheckBox, Properties.Resources.EditLabelsToolTipAlertOnInstall);
             this.ToolTip.SetToolTip(RemoveOnInstallCheckBox, Properties.Resources.EditLabelsToolTipRemoveOnInstall);
+            this.ToolTip.SetToolTip(HoldVersionCheckBox, Properties.Resources.EditLabelsToolTipHoldVersion);
         }
 
         private void LoadTree()
@@ -39,13 +40,21 @@ namespace CKAN
                 string groupName = string.IsNullOrEmpty(group.Key)
                     ? Properties.Resources.ModuleLabelListGlobal
                     : group.Key;
-                var gnd = LabelSelectionTree.Nodes.Add(groupName);
-                gnd.NodeFont = new Font(LabelSelectionTree.Font, FontStyle.Bold);
-                foreach (ModuleLabel mlbl in group.OrderBy(l => l.Name))
-                {
-                    var lblnd = gnd.Nodes.Add(mlbl.Name);
-                    lblnd.Tag = mlbl;
-                }
+                LabelSelectionTree.Nodes.Add(new TreeNode(
+                    groupName,
+                    group.OrderBy(mlbl => mlbl.Name)
+                        .Select(mlbl => new TreeNode(mlbl.Name)
+                        {
+                            // Windows's TreeView has a bug where the node's visual
+                            // width is based on the owning TreeView.Font rather
+                            // than TreeNode.Font, so to ensure there's enough space,
+                            // we have to make the default bold and then override it
+                            // for non-bold nodes.
+                            NodeFont = new Font(LabelSelectionTree.Font, FontStyle.Regular),
+                            Tag      = mlbl
+                        })
+                        .ToArray()
+                ));
             }
             LabelSelectionTree.ExpandAll();
             LabelSelectionTree.EndUpdate();
@@ -159,6 +168,7 @@ namespace CKAN
             RemoveOnChangesCheckBox.Checked      = lbl.RemoveOnChange;
             AlertOnInstallCheckBox.Checked       = lbl.AlertOnInstall;
             RemoveOnInstallCheckBox.Checked      = lbl.RemoveOnInstall;
+            HoldVersionCheckBox.Checked          = lbl.HoldVersion;
 
             DeleteButton.Enabled = labels.Labels.Contains(lbl);
 
@@ -209,6 +219,7 @@ namespace CKAN
                 currentlyEditing.RemoveOnChange  = RemoveOnChangesCheckBox.Checked;
                 currentlyEditing.AlertOnInstall  = AlertOnInstallCheckBox.Checked;
                 currentlyEditing.RemoveOnInstall = RemoveOnInstallCheckBox.Checked;
+                currentlyEditing.HoldVersion     = HoldVersionCheckBox.Checked;
 
                 EditDetailsPanel.Visible = false;
                 currentlyEditing = null;
@@ -267,6 +278,7 @@ namespace CKAN
                     || currentlyEditing.RemoveOnChange  != RemoveOnChangesCheckBox.Checked
                     || currentlyEditing.AlertOnInstall  != AlertOnInstallCheckBox.Checked
                     || currentlyEditing.RemoveOnInstall != RemoveOnInstallCheckBox.Checked
+                    || currentlyEditing.HoldVersion     != HoldVersionCheckBox.Checked
                 );
         }
 

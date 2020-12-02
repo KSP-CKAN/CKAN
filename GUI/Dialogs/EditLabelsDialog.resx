@@ -130,6 +130,7 @@
   <data name="RemoveOnChangesCheckBox.Text" xml:space="preserve"><value>Remove on updates</value></data>
   <data name="AlertOnInstallCheckBox.Text" xml:space="preserve"><value>Alert on install</value></data>
   <data name="RemoveOnInstallCheckBox.Text" xml:space="preserve"><value>Remove on install</value></data>
+  <data name="HoldVersionCheckBox.Text" xml:space="preserve"><value>Don't upgrade</value></data>
   <data name="CloseButton.Text" xml:space="preserve"><value>Close</value></data>
   <data name="SaveButton.Text" xml:space="preserve"><value>Save</value></data>
   <data name="CancelEditButton.Text" xml:space="preserve"><value>Cancel</value></data>

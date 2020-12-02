@@ -1,11 +1,8 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Drawing;
-using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using log4net;
@@ -271,6 +268,11 @@ namespace CKAN
             {
                 mlbl.Remove(module.Identifier);
             }
+            if (mlbl.HoldVersion)
+            {
+                UpdateAllToolButton.Enabled = mainModList.Modules.Any(mod =>
+                    mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
+            }
             mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, Main.Instance.CurrentInstance.Name);
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
         }
@@ -400,7 +402,10 @@ namespace CKAN
                 var mod = row.Tag as GUIMod;
                 if (mod?.HasUpdate ?? false)
                 {
-                    mod.SetUpgradeChecked(row, UpdateCol, true);
+                    if (!Main.Instance.LabelsHeld(mod.Identifier))
+                    {
+                        mod.SetUpgradeChecked(row, UpdateCol, true);
+                    }
                 }
             }
 
@@ -1093,6 +1098,7 @@ namespace CKAN
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListUpdatingFilters);
 
             var has_any_updates      = gui_mods.Any(mod => mod.HasUpdate);
+            var has_unheld_updates   = gui_mods.Any(mod => mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
             var has_any_installed    = gui_mods.Any(mod => mod.IsInstalled);
             var has_any_replacements = gui_mods.Any(mod => mod.IsInstalled && mod.HasReplacement);
 
@@ -1119,7 +1125,7 @@ namespace CKAN
                 FilterAllButton.Text = String.Format(Properties.Resources.MainModListAll,
                     mainModList.CountModsByFilter(GUIModFilter.All));
 
-                UpdateAllToolButton.Enabled = has_any_updates;
+                UpdateAllToolButton.Enabled = has_unheld_updates;
             });
 
             (registry as Registry)?.BuildTagIndex(mainModList.ModuleTags);

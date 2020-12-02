@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -55,6 +54,12 @@ namespace CKAN
             {
                 l.Remove(mod.identifier);
             }
+        }
+
+        public bool LabelsHeld(string identifier)
+        {
+            return ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                .Any(l => l.HoldVersion && l.ModuleIdentifiers.Contains(identifier));
         }
 
         #endregion
