@@ -119,11 +119,11 @@
   </resheader>
   <data name="label1.Text" xml:space="preserve"><value>All available versions of selected mod</value></data>
   <data name="ModVersion.Text" xml:space="preserve"><value>Mod Version</value></data>
-  <data name="CompatibleKSPVersion.Text" xml:space="preserve"><value>Compatible KSP Versions</value></data>
+  <data name="CompatibleGameVersion.Text" xml:space="preserve"><value>Compatible Game Versions</value></data>
   <data name="label2.Text" xml:space="preserve"><value>Green</value></data>
   <data name="label3.Text" xml:space="preserve"><value>Light green</value></data>
   <data name="label4.Text" xml:space="preserve"><value>Bold</value></data>
   <data name="label5.Text" xml:space="preserve"><value>- latest compatible version (likely to be installed)</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>- version is compatible with your KSP</value></data>
+  <data name="label6.Text" xml:space="preserve"><value>- version is compatible with your game</value></data>
   <data name="label7.Text" xml:space="preserve"><value>- currently installed version</value></data>
 </root>

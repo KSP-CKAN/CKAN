@@ -17,7 +17,7 @@ namespace CKAN
 
         public abstract bool WithinBounds(CkanModule otherModule);
 
-        public abstract List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier registry, KspVersionCriteria crit, IEnumerable<CkanModule> toInstall = null);
+        public abstract List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> toInstall = null);
 
         public abstract bool Equals(RelationshipDescriptor other);
 
@@ -138,7 +138,7 @@ namespace CKAN
             return false;
         }
 
-        public override List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier registry, KspVersionCriteria crit, IEnumerable<CkanModule> toInstall = null)
+        public override List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> toInstall = null)
         {
             return registry.LatestAvailableWithProvides(name, crit, this, toInstall);
         }
@@ -225,7 +225,7 @@ namespace CKAN
                 ?? false;
         }
 
-        public override List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier registry, KspVersionCriteria crit, IEnumerable<CkanModule> toInstall = null)
+        public override List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> toInstall = null)
         {
             return any_of?.SelectMany(r => r.LatestAvailableWithProvides(registry, crit, toInstall)).ToList();
         }

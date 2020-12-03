@@ -121,7 +121,7 @@
   <data name="NameLabel.Text" xml:space="preserve"><value>Name:</value></data>
   <data name="AbstractLabel.Text" xml:space="preserve"><value>Abstract:</value></data>
   <data name="VersionLabel.Text" xml:space="preserve"><value>Version:</value></data>
-  <data name="KspVersionLabel.Text" xml:space="preserve"><value>KSP versions:</value></data>
+  <data name="GameVersionLabel.Text" xml:space="preserve"><value>Game versions:</value></data>
   <data name="LicenseLabel.Text" xml:space="preserve"><value>Licence:</value></data>
   <data name="IncludeVersionsCheckbox.Text" xml:space="preserve"><value>Save mod versions</value></data>
   <data name="ModNameColumn.Text" xml:space="preserve"><value>Mod</value></data>

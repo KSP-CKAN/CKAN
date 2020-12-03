@@ -43,7 +43,7 @@
             this.MetadataIdentifierTextBox = new TransparentTextBox();
             this.ReplacementLabel = new System.Windows.Forms.Label();
             this.ReplacementTextBox = new TransparentTextBox();
-            this.KSPCompatibilityLabel = new System.Windows.Forms.Label();
+            this.GameCompatibilityLabel = new System.Windows.Forms.Label();
             this.ReleaseLabel = new System.Windows.Forms.Label();
             this.AuthorLabel = new System.Windows.Forms.Label();
             this.LicenseLabel = new System.Windows.Forms.Label();
@@ -52,7 +52,7 @@
             this.MetadataModuleAuthorTextBox = new TransparentTextBox();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.MetadataModuleReleaseStatusTextBox = new TransparentTextBox();
-            this.MetadataModuleKSPCompatibilityTextBox = new TransparentTextBox();
+            this.MetadataModuleGameCompatibilityTextBox = new TransparentTextBox();
             this.RelationshipTabPage = new System.Windows.Forms.TabPage();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
             this.LegendDependsImage = new System.Windows.Forms.PictureBox();
@@ -211,14 +211,14 @@
             this.MetaDataLowerLayoutPanel.Controls.Add(this.LicenseLabel, 0, 1);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.AuthorLabel, 0, 2);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.ReleaseLabel, 0, 3);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.KSPCompatibilityLabel, 0, 4);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.GameCompatibilityLabel, 0, 4);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.IdentifierLabel, 0, 5);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.ReplacementLabel, 0, 6);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleVersionTextBox, 1, 0);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleLicenseTextBox, 1, 1);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleAuthorTextBox, 1, 2);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleReleaseStatusTextBox, 1, 3);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleKSPCompatibilityTextBox, 1, 4);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleGameCompatibilityTextBox, 1, 4);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataIdentifierTextBox, 1, 5);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.ReplacementTextBox, 1, 6);
             this.MetaDataLowerLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -291,16 +291,16 @@
             this.ReplacementTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             resources.ApplyResources(this.ReplacementTextBox, "ReplacementTextBox");
             //
-            // KSPCompatibilityLabel
+            // GameCompatibilityLabel
             //
-            this.KSPCompatibilityLabel.AutoSize = true;
-            this.KSPCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.KSPCompatibilityLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.KSPCompatibilityLabel.Location = new System.Drawing.Point(3, 180);
-            this.KSPCompatibilityLabel.Name = "KSPCompatibilityLabel";
-            this.KSPCompatibilityLabel.Size = new System.Drawing.Size(84, 30);
-            this.KSPCompatibilityLabel.TabIndex = 13;
-            resources.ApplyResources(this.KSPCompatibilityLabel, "KSPCompatibilityLabel");
+            this.GameCompatibilityLabel.AutoSize = true;
+            this.GameCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GameCompatibilityLabel.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.GameCompatibilityLabel.Location = new System.Drawing.Point(3, 180);
+            this.GameCompatibilityLabel.Name = "GameCompatibilityLabel";
+            this.GameCompatibilityLabel.Size = new System.Drawing.Size(84, 30);
+            this.GameCompatibilityLabel.TabIndex = 13;
+            resources.ApplyResources(this.GameCompatibilityLabel, "GameCompatibilityLabel");
             //
             // ReleaseLabel
             //
@@ -402,19 +402,19 @@
             this.MetadataModuleReleaseStatusTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             resources.ApplyResources(this.MetadataModuleReleaseStatusTextBox, "MetadataModuleReleaseStatusTextBox");
             //
-            // MetadataModuleKSPCompatibilityTextBox
+            // MetadataModuleGameCompatibilityTextBox
             //
-            this.MetadataModuleKSPCompatibilityTextBox.AutoSize = true;
-            this.MetadataModuleKSPCompatibilityTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleKSPCompatibilityTextBox.Location = new System.Drawing.Point(93, 180);
-            this.MetadataModuleKSPCompatibilityTextBox.Name = "MetadataModuleKSPCompatibilityTextBox";
-            this.MetadataModuleKSPCompatibilityTextBox.Size = new System.Drawing.Size(250, 30);
-            this.MetadataModuleKSPCompatibilityTextBox.TabIndex = 14;
-            this.MetadataModuleKSPCompatibilityTextBox.ReadOnly = true;
-            this.MetadataModuleKSPCompatibilityTextBox.BackColor = MetadataTabPage.BackColor;
-            this.MetadataModuleKSPCompatibilityTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.MetadataModuleKSPCompatibilityTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            resources.ApplyResources(this.MetadataModuleKSPCompatibilityTextBox, "MetadataModuleKSPCompatibilityTextBox");
+            this.MetadataModuleGameCompatibilityTextBox.AutoSize = true;
+            this.MetadataModuleGameCompatibilityTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleGameCompatibilityTextBox.Location = new System.Drawing.Point(93, 180);
+            this.MetadataModuleGameCompatibilityTextBox.Name = "MetadataModuleGameCompatibilityTextBox";
+            this.MetadataModuleGameCompatibilityTextBox.Size = new System.Drawing.Size(250, 30);
+            this.MetadataModuleGameCompatibilityTextBox.TabIndex = 14;
+            this.MetadataModuleGameCompatibilityTextBox.ReadOnly = true;
+            this.MetadataModuleGameCompatibilityTextBox.BackColor = MetadataTabPage.BackColor;
+            this.MetadataModuleGameCompatibilityTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.MetadataModuleGameCompatibilityTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.MetadataModuleGameCompatibilityTextBox, "MetadataModuleGameCompatibilityTextBox");
             //
             // RelationshipTabPage
             //
@@ -652,7 +652,7 @@
         private TransparentTextBox MetadataIdentifierTextBox;
         private System.Windows.Forms.Label ReplacementLabel;
         private TransparentTextBox ReplacementTextBox;
-        private System.Windows.Forms.Label KSPCompatibilityLabel;
+        private System.Windows.Forms.Label GameCompatibilityLabel;
         private System.Windows.Forms.Label ReleaseLabel;
         private System.Windows.Forms.Label AuthorLabel;
         private System.Windows.Forms.Label LicenseLabel;
@@ -661,7 +661,7 @@
         private TransparentTextBox MetadataModuleAuthorTextBox;
         private System.Windows.Forms.Label VersionLabel;
         private TransparentTextBox MetadataModuleReleaseStatusTextBox;
-        private TransparentTextBox MetadataModuleKSPCompatibilityTextBox;
+        private TransparentTextBox MetadataModuleGameCompatibilityTextBox;
         private System.Windows.Forms.TabPage RelationshipTabPage;
         private System.Windows.Forms.TreeView DependsGraphTree;
         private System.Windows.Forms.PictureBox LegendDependsImage;

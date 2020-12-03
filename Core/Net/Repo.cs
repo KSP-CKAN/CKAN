@@ -34,7 +34,7 @@ namespace CKAN
         /// Download and update the local CKAN meta-info.
         /// Optionally takes a URL to the zipfile repo to download.
         /// </summary>
-        public static RepoUpdateResult UpdateAllRepositories(RegistryManager registry_manager, KSP ksp, NetModuleCache cache, IUser user)
+        public static RepoUpdateResult UpdateAllRepositories(RegistryManager registry_manager, GameInstance ksp, NetModuleCache cache, IUser user)
         {
             SortedDictionary<string, Repository> sortedRepositories = registry_manager.registry.Repositories;
             user.RaiseProgress("Checking for updates", 0);
@@ -105,13 +105,10 @@ namespace CKAN
         /// <summary>
         /// Retrieve available modules from the URL given.
         /// </summary>
-        private static List<CkanModule> UpdateRegistry(Uri repo, KSP ksp, IUser user, out SortedDictionary<string, int> downloadCounts, out string currentETag)
+        private static List<CkanModule> UpdateRegistry(Uri repo, GameInstance ksp, IUser user, out SortedDictionary<string, int> downloadCounts, out string currentETag)
         {
             TxFileManager file_transaction = new TxFileManager();
             downloadCounts = null;
-
-            // Use this opportunity to also update the build mappings... kind of hacky
-            ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh();
 
             log.InfoFormat("Downloading {0}", repo);
 
@@ -195,7 +192,7 @@ namespace CKAN
         /// <param name="ksp">Game instance</param>
         /// <param name="cache">Cacne object for mod downloads</param>
         /// <param name="registry_manager">Manager that holds our game instances</param>
-        private static void HandleModuleChanges(List<CkanModule> metadataChanges, IUser user, KSP ksp, NetModuleCache cache, RegistryManager registry_manager)
+        private static void HandleModuleChanges(List<CkanModule> metadataChanges, IUser user, GameInstance ksp, NetModuleCache cache, RegistryManager registry_manager)
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < metadataChanges.Count; i++)
@@ -327,7 +324,7 @@ Do you wish to reinstall now?", sb)))
         /// <returns>
         /// Number of modules found in repo
         /// </returns>
-        public static bool Update(RegistryManager registry_manager, KSP ksp, IUser user, string repo = null)
+        public static bool Update(RegistryManager registry_manager, GameInstance ksp, IUser user, string repo = null)
         {
             if (repo == null)
             {
@@ -338,12 +335,12 @@ Do you wish to reinstall now?", sb)))
         }
 
         // Same as above, just with a Uri instead of string for the repo
-        public static bool Update(RegistryManager registry_manager, KSP ksp, IUser user, Uri repo = null)
+        public static bool Update(RegistryManager registry_manager, GameInstance ksp, IUser user, Uri repo = null)
         {
             // Use our default repo, unless we've been told otherwise.
             if (repo == null)
             {
-                repo = CKAN.Repository.default_ckan_repo_uri;
+                repo = ksp.game.DefaultRepositoryURL;
             }
 
             SortedDictionary<string, int> downloadCounts;

@@ -21,7 +21,7 @@ namespace CKAN
         /// before the calling code switches to the tab.
         /// </summary>
         /// <param name="possibleConfigOnlyDirs">Directories that the user may want to delete</param>
-        public void LoadDirs(KSP ksp, HashSet<string> possibleConfigOnlyDirs)
+        public void LoadDirs(GameInstance ksp, HashSet<string> possibleConfigOnlyDirs)
         {
             instance = ksp;
             var items = possibleConfigOnlyDirs
@@ -120,6 +120,6 @@ namespace CKAN
         }
 
         private TaskCompletionSource<bool> task = null;
-        private KSP instance = null;
+        private GameInstance instance = null;
     }
 }

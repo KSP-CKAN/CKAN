@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using CKAN.Versioning;
+using CKAN.Games;
 
 namespace CKAN
 {
@@ -21,7 +22,7 @@ namespace CKAN
         /// Returns a simple array of the latest compatible module for each identifier for
         /// the specified version of KSP.
         /// </summary>
-        IEnumerable<CkanModule> CompatibleModules(KspVersionCriteria ksp_version);
+        IEnumerable<CkanModule> CompatibleModules(GameVersionCriteria ksp_version);
 
         /// <summary>
         /// Get full JSON metadata string for a mod's available versions
@@ -38,13 +39,13 @@ namespace CKAN
         /// If no ksp_version is provided, the latest module for *any* KSP version is returned.
         /// <exception cref="ModuleNotFoundKraken">Throws if asked for a non-existent module.</exception>
         /// </summary>
-        CkanModule LatestAvailable(string identifier, KspVersionCriteria ksp_version, RelationshipDescriptor relationship_descriptor = null);
+        CkanModule LatestAvailable(string identifier, GameVersionCriteria ksp_version, RelationshipDescriptor relationship_descriptor = null);
 
         /// <summary>
         /// Returns the max game version that is compatible with the given mod.
         /// </summary>
         /// <param name="identifier">Name of mod to check</param>
-        KspVersion LatestCompatibleKSP(string identifier);
+        GameVersion LatestCompatibleKSP(string identifier);
 
         /// <summary>
         /// Returns all available versions of a module.
@@ -61,7 +62,7 @@ namespace CKAN
         /// </summary>
         List<CkanModule> LatestAvailableWithProvides(
             string                  identifier,
-            KspVersionCriteria      ksp_version,
+            GameVersionCriteria      ksp_version,
             RelationshipDescriptor  relationship_descriptor = null,
             IEnumerable<CkanModule> toInstall               = null
         );
@@ -108,7 +109,7 @@ namespace CKAN
         /// Returns a simple array of all incompatible modules for
         /// the specified version of KSP.
         /// </summary>
-        IEnumerable<CkanModule> IncompatibleModules(KspVersionCriteria ksp_version);
+        IEnumerable<CkanModule> IncompatibleModules(GameVersionCriteria ksp_version);
 
         /// <summary>
         /// Returns a dictionary of all modules installed, along with their
@@ -171,7 +172,7 @@ namespace CKAN
         /// Is the mod installed and does it have a newer version compatible with version
         /// We can't update AD mods
         /// </summary>
-        public static bool HasUpdate(this IRegistryQuerier querier, string identifier, KspVersionCriteria version)
+        public static bool HasUpdate(this IRegistryQuerier querier, string identifier, GameVersionCriteria version)
         {
             CkanModule newest_version;
             try
@@ -218,14 +219,14 @@ namespace CKAN
         /// <returns>
         /// String describing range of compatible game versions.
         /// </returns>
-        public static string CompatibleGameVersions(this IRegistryQuerier querier, string identifier)
+        public static string CompatibleGameVersions(this IRegistryQuerier querier, IGame game, string identifier)
         {
             List<CkanModule> releases = querier.AvailableByIdentifier(identifier).ToList();
             if (releases != null && releases.Count > 0) {
                 ModuleVersion minMod = null, maxMod = null;
-                KspVersion    minKsp = null, maxKsp = null;
+                GameVersion   minKsp = null, maxKsp = null;
                 Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
-                return KspVersionRange.VersionSpan(minKsp, maxKsp);
+                return GameVersionRange.VersionSpan(game, minKsp, maxKsp);
             }
             return "";
         }
@@ -238,16 +239,16 @@ namespace CKAN
         /// <returns>
         /// String describing range of compatible game versions.
         /// </returns>
-        public static string CompatibleGameVersions(this IRegistryQuerier querier, CkanModule module)
+        public static string CompatibleGameVersions(this IRegistryQuerier querier, IGame game, CkanModule module)
         {
             ModuleVersion minMod = null, maxMod = null;
-            KspVersion    minKsp = null, maxKsp = null;
+            GameVersion   minKsp = null, maxKsp = null;
             Registry.GetMinMaxVersions(
                 new CkanModule[] { module },
                 out minMod, out maxMod,
                 out minKsp, out maxKsp
             );
-            return KspVersionRange.VersionSpan(minKsp, maxKsp);
+            return GameVersionRange.VersionSpan(game, minKsp, maxKsp);
         }
 
         /// <summary>
@@ -257,7 +258,7 @@ namespace CKAN
         /// Given a mod identifier, return a ModuleReplacement containing the relevant replacement
         /// if compatibility matches.
         /// </summary>
-        public static ModuleReplacement GetReplacement(this IRegistryQuerier querier, string identifier, KspVersionCriteria version)
+        public static ModuleReplacement GetReplacement(this IRegistryQuerier querier, string identifier, GameVersionCriteria version)
         {
             // We only care about the installed version
             CkanModule installedVersion;
@@ -272,7 +273,7 @@ namespace CKAN
             return querier.GetReplacement(installedVersion, version);
         }
 
-        public static ModuleReplacement GetReplacement(this IRegistryQuerier querier, CkanModule installedVersion, KspVersionCriteria version)
+        public static ModuleReplacement GetReplacement(this IRegistryQuerier querier, CkanModule installedVersion, GameVersionCriteria version)
         {
             // Mod is not installed, so we don't care about replacements
             if (installedVersion == null)

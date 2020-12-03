@@ -21,7 +21,7 @@ namespace CKAN
 
             mainModList = new ModList(source => UpdateFilters());
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
-            launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
+            launchGameToolStripMenuItem.MouseHover += (sender, args) => launchGameToolStripMenuItem.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
             ApplyToolButton.Enabled = false;
 
@@ -440,9 +440,9 @@ namespace CKAN
             mod.SetUpgradeChecked(row, UpdateCol, value);
         }
 
-        private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
+        private void launchGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Main.Instance.LaunchKSP();
+            Main.Instance.LaunchGame();
         }
 
         private void NavBackwardToolButton_Click(object sender, EventArgs e)
@@ -1019,7 +1019,7 @@ namespace CKAN
             }
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingRegistry);
-            KspVersionCriteria versionCriteria = Main.Instance.CurrentInstance.VersionCriteria();
+            GameVersionCriteria versionCriteria = Main.Instance.CurrentInstance.VersionCriteria();
             IRegistryQuerier registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingInstalled);
@@ -1256,8 +1256,8 @@ namespace CKAN
                 {
                     case "ModName":
                         return gmodA.Name.CompareTo(gmodB.Name);
-                    case "KSPCompatibility":
-                        return KSPCompatComparison(a, b);
+                    case "GameCompatibility":
+                        return GameCompatComparison(a, b);
                     case "InstallDate":
                         if (gmodA.InstallDate.HasValue)
                         {
@@ -1302,8 +1302,8 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Compare two rows' KspVersions as max versions.
-        /// KspVersion.CompareTo sorts IsAny to the beginning instead
+        /// Compare two rows' GameVersions as max versions.
+        /// GameVersion.CompareTo sorts IsAny to the beginning instead
         /// of the end, and we can't change that without breaking many things.
         /// Similarly, 1.8 should sort after 1.8.0.
         /// </summary>
@@ -1312,10 +1312,10 @@ namespace CKAN
         /// <returns>
         /// Positive to sort as a lessthan b, negative to sort as b lessthan a
         /// </returns>
-        private int KSPCompatComparison(DataGridViewRow a, DataGridViewRow b)
+        private int GameCompatComparison(DataGridViewRow a, DataGridViewRow b)
         {
-            KspVersion verA = ((GUIMod)a.Tag)?.KSPCompatibilityVersion;
-            KspVersion verB = ((GUIMod)b.Tag)?.KSPCompatibilityVersion;
+            GameVersion verA = ((GUIMod)a.Tag)?.GameCompatibilityVersion;
+            GameVersion verB = ((GUIMod)b.Tag)?.GameCompatibilityVersion;
             if (verA == null)
             {
                 return verB == null ? 0 : -1;
@@ -1499,13 +1499,13 @@ namespace CKAN
             return true;
         }
 
-        public void InstanceUpdated(KSP ksp)
+        public void InstanceUpdated(GameInstance inst)
         {
             ChangeSet = null;
             Conflicts = null;
         }
 
-        public async Task UpdateChangeSetAndConflicts(KSP ksp, IRegistryQuerier registry)
+        public async Task UpdateChangeSetAndConflicts(GameInstance inst, IRegistryQuerier registry)
         {
             IEnumerable<ModChange> full_change_set = null;
             Dictionary<GUIMod, string> new_conflicts = null;
@@ -1514,15 +1514,15 @@ namespace CKAN
             var user_change_set = mainModList.ComputeUserChangeSet(registry);
             try
             {
-                var module_installer = ModuleInstaller.GetInstance(ksp, Main.Instance.Manager.Cache, Main.Instance.currentUser);
-                full_change_set = mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, ksp.VersionCriteria());
+                var module_installer = ModuleInstaller.GetInstance(inst, Main.Instance.Manager.Cache, Main.Instance.currentUser);
+                full_change_set = mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, inst.VersionCriteria());
             }
             catch (InconsistentKraken k)
             {
                 // Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
                 Main.Instance.AddStatusMessage(k.ShortDescription);
                 user_change_set = mainModList.ComputeUserChangeSet(registry);
-                new_conflicts = ModList.ComputeConflictsFromModList(registry, user_change_set, ksp.VersionCriteria());
+                new_conflicts = ModList.ComputeConflictsFromModList(registry, user_change_set, inst.VersionCriteria());
                 full_change_set = null;
             }
             catch (TooManyModsProvideKraken)
@@ -1545,7 +1545,7 @@ namespace CKAN
 
             if (too_many_provides_thrown)
             {
-                await UpdateChangeSetAndConflicts(ksp, registry);
+                await UpdateChangeSetAndConflicts(inst, registry);
                 new_conflicts = Conflicts;
                 full_change_set = ChangeSet;
             }

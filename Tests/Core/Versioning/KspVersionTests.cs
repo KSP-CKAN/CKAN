@@ -7,14 +7,14 @@ using NUnit.Framework;
 namespace Tests.Core.Versioning
 {
     [TestFixture]
-    public class KspVersionTests
+    public class GameVersionTests
     {
         private static readonly object[] ParseCases =
         {
-            new object[] { "1", new KspVersion(1) },
-            new object[] { "1.2", new KspVersion(1, 2) },
-            new object[] { "1.2.3", new KspVersion(1, 2, 3) },
-            new object[] { "1.2.3.4", new KspVersion(1, 2, 3, 4) }
+            new object[] { "1", new GameVersion(1) },
+            new object[] { "1.2", new GameVersion(1, 2) },
+            new object[] { "1.2.3", new GameVersion(1, 2, 3) },
+            new object[] { "1.2.3.4", new GameVersion(1, 2, 3, 4) }
         };
 
         private static readonly object[] ParseFailureCases =
@@ -32,70 +32,70 @@ namespace Tests.Core.Versioning
 
         private static readonly object[] EqualityCases =
         {
-            new object[] { new KspVersion(), null, false },
-            new object[] { new KspVersion(), new KspVersion(), true },
-            new object[] { new KspVersion(1), new KspVersion(1), true },
-            new object[] { new KspVersion(1, 2), new KspVersion(1, 2), true},
-            new object[] { new KspVersion(1, 2, 3), new KspVersion(1, 2, 3), true},
-            new object[] { new KspVersion(1, 2, 3, 4), new KspVersion(1, 2, 3, 4), true},
-            new object[] { new KspVersion(), new KspVersion(1), false },
-            new object[] { new KspVersion(1), new KspVersion(1, 2), false },
-            new object[] { new KspVersion(1, 2), new KspVersion(1, 2, 3), false},
-            new object[] { new KspVersion(1, 2, 3), new KspVersion(1, 2, 3, 4), false},
-            new object[] { new KspVersion(1, 2, 3, 4), new KspVersion(1, 2, 3, 5), false}
+            new object[] { new GameVersion(), null, false },
+            new object[] { new GameVersion(), new GameVersion(), true },
+            new object[] { new GameVersion(1), new GameVersion(1), true },
+            new object[] { new GameVersion(1, 2), new GameVersion(1, 2), true},
+            new object[] { new GameVersion(1, 2, 3), new GameVersion(1, 2, 3), true},
+            new object[] { new GameVersion(1, 2, 3, 4), new GameVersion(1, 2, 3, 4), true},
+            new object[] { new GameVersion(), new GameVersion(1), false },
+            new object[] { new GameVersion(1), new GameVersion(1, 2), false },
+            new object[] { new GameVersion(1, 2), new GameVersion(1, 2, 3), false},
+            new object[] { new GameVersion(1, 2, 3), new GameVersion(1, 2, 3, 4), false},
+            new object[] { new GameVersion(1, 2, 3, 4), new GameVersion(1, 2, 3, 5), false}
         };
 
         private static readonly object[] CompareToCases =
         {
-            new object[] { new KspVersion(), new KspVersion(), 0 },
-            new object[] { new KspVersion(1), new KspVersion(1), 0 },
-            new object[] { new KspVersion(1, 2), new KspVersion(1, 2), 0 },
-            new object[] { new KspVersion(1, 2, 3), new KspVersion(1, 2, 3), 0 },
-            new object[] { new KspVersion(1, 2, 3, 4), new KspVersion(1, 2, 3, 4), 0 },
-            new object[] { new KspVersion(), new KspVersion(1), -1 },
-            new object[] { new KspVersion(1), new KspVersion(1, 2), -1 },
-            new object[] { new KspVersion(1, 2), new KspVersion(1, 2, 3), -1 },
-            new object[] { new KspVersion(1, 2, 3), new KspVersion(1, 2, 3, 4), -1 },
-            new object[] { new KspVersion(1, 2, 3, 4), new KspVersion(1, 2, 3, 5), -1 },
-            new object[] { new KspVersion(1), new KspVersion(), 1 },
-            new object[] { new KspVersion(1, 2), new KspVersion(1), 1 },
-            new object[] { new KspVersion(1, 2, 3), new KspVersion(1, 2), 1 },
-            new object[] { new KspVersion(1, 2, 3, 5), new KspVersion(1, 2, 3, 4), 1}
+            new object[] { new GameVersion(), new GameVersion(), 0 },
+            new object[] { new GameVersion(1), new GameVersion(1), 0 },
+            new object[] { new GameVersion(1, 2), new GameVersion(1, 2), 0 },
+            new object[] { new GameVersion(1, 2, 3), new GameVersion(1, 2, 3), 0 },
+            new object[] { new GameVersion(1, 2, 3, 4), new GameVersion(1, 2, 3, 4), 0 },
+            new object[] { new GameVersion(), new GameVersion(1), -1 },
+            new object[] { new GameVersion(1), new GameVersion(1, 2), -1 },
+            new object[] { new GameVersion(1, 2), new GameVersion(1, 2, 3), -1 },
+            new object[] { new GameVersion(1, 2, 3), new GameVersion(1, 2, 3, 4), -1 },
+            new object[] { new GameVersion(1, 2, 3, 4), new GameVersion(1, 2, 3, 5), -1 },
+            new object[] { new GameVersion(1), new GameVersion(), 1 },
+            new object[] { new GameVersion(1, 2), new GameVersion(1), 1 },
+            new object[] { new GameVersion(1, 2, 3), new GameVersion(1, 2), 1 },
+            new object[] { new GameVersion(1, 2, 3, 5), new GameVersion(1, 2, 3, 4), 1}
         };
 
         private static readonly object[] ToVersionRangeWorksCorrectlyCases =
         {
-            new object[] { new KspVersion(), KspVersionRange.Any },
+            new object[] { new GameVersion(), GameVersionRange.Any },
             new object[]
             {
-                new KspVersion(1),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), inclusive: true),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), inclusive: false)
+                new GameVersion(1),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), inclusive: true),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), inclusive: false)
                 )
             },
             new object[]
             {
-                new KspVersion(1, 2),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 0, 0), inclusive: true),
-                    new KspVersionBound(new KspVersion(1, 3, 0, 0), inclusive: false)
+                new GameVersion(1, 2),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 0, 0), inclusive: true),
+                    new GameVersionBound(new GameVersion(1, 3, 0, 0), inclusive: false)
                 )
             },
             new object[]
             {
-                new KspVersion(1, 2, 3),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 0), inclusive: true),
-                    new KspVersionBound(new KspVersion(1, 2, 4, 0), inclusive: false)
+                new GameVersion(1, 2, 3),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 0), inclusive: true),
+                    new GameVersionBound(new GameVersion(1, 2, 4, 0), inclusive: false)
                 )
             },
             new object[]
             {
-                new KspVersion(1, 2, 3, 4),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), inclusive: true),
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), inclusive: true)
+                new GameVersion(1, 2, 3, 4),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), inclusive: true),
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), inclusive: true)
                 )
             }
         };
@@ -104,7 +104,7 @@ namespace Tests.Core.Versioning
         public void ParameterlessCtorWorksCorrectly()
         {
             // Act
-            var result = new KspVersion();
+            var result = new GameVersion();
 
             // Assert
             Assert.AreEqual(-1, result.Major);
@@ -127,7 +127,7 @@ namespace Tests.Core.Versioning
         public void SingleParameterCtorWorksCorrectly()
         {
             // Act
-            var result = new KspVersion(1);
+            var result = new GameVersion(1);
 
             // Assert
             Assert.AreEqual(1, result.Major);
@@ -151,7 +151,7 @@ namespace Tests.Core.Versioning
         {
             // Act
             // ReSharper disable once ObjectCreationAsStatement
-            TestDelegate act = () => new KspVersion(major);
+            TestDelegate act = () => new GameVersion(major);
 
             // Assert
             Assert.That(act, Throws.Exception.InstanceOf<ArgumentOutOfRangeException>());
@@ -161,7 +161,7 @@ namespace Tests.Core.Versioning
         public void DoubleParameterCtorWorksCorrectly()
         {
             // Act
-            var result = new KspVersion(1, 2);
+            var result = new GameVersion(1, 2);
 
             // Assert
             Assert.AreEqual(1, result.Major);
@@ -186,7 +186,7 @@ namespace Tests.Core.Versioning
         {
             // Act
             // ReSharper disable once ObjectCreationAsStatement
-            TestDelegate act = () => new KspVersion(major, minor);
+            TestDelegate act = () => new GameVersion(major, minor);
 
             // Assert
             Assert.That(act, Throws.Exception.InstanceOf<ArgumentOutOfRangeException>());
@@ -196,7 +196,7 @@ namespace Tests.Core.Versioning
         public void TripleParameterCtorWorksCorrectly()
         {
             // Act
-            var result = new KspVersion(1, 2, 3);
+            var result = new GameVersion(1, 2, 3);
 
             // Assert
             Assert.AreEqual(1, result.Major);
@@ -222,7 +222,7 @@ namespace Tests.Core.Versioning
         {
             // Act
             // ReSharper disable once ObjectCreationAsStatement
-            TestDelegate act = () => new KspVersion(major, minor, patch);
+            TestDelegate act = () => new GameVersion(major, minor, patch);
 
             // Assert
             Assert.That(act, Throws.Exception.InstanceOf<ArgumentOutOfRangeException>());
@@ -232,7 +232,7 @@ namespace Tests.Core.Versioning
         public void QuadrupleParameterCtorWorksCorrectly()
         {
             // Act
-            var result = new KspVersion(1, 2, 3, 4);
+            var result = new GameVersion(1, 2, 3, 4);
 
             // Assert
             Assert.AreEqual(1, result.Major);
@@ -259,17 +259,17 @@ namespace Tests.Core.Versioning
         {
             // Act
             // ReSharper disable once ObjectCreationAsStatement
-            TestDelegate act = () => new KspVersion(major, minor, patch, build);
+            TestDelegate act = () => new GameVersion(major, minor, patch, build);
 
             // Assert
             Assert.That(act, Throws.Exception.InstanceOf<ArgumentOutOfRangeException>());
         }
 
         [TestCaseSource("ParseCases")]
-        public void ParseWorksCorrectly(string s, KspVersion version)
+        public void ParseWorksCorrectly(string s, GameVersion version)
         {
             // Act
-            var result = KspVersion.Parse(s);
+            var result = GameVersion.Parse(s);
 
             // Assert
             Assert.AreEqual(version, result);
@@ -281,14 +281,14 @@ namespace Tests.Core.Versioning
         {
             // Act
             // ReSharper disable once ObjectCreationAsStatement
-            TestDelegate act = () => KspVersion.Parse(s);
+            TestDelegate act = () => GameVersion.Parse(s);
 
             // Assert
             Assert.That(act, Throws.Exception);
         }
 
         [TestCaseSource("ToVersionRangeWorksCorrectlyCases")]
-        public void ToVersionRangeWorksCorrectly(KspVersion version, KspVersionRange expectedRange)
+        public void ToVersionRangeWorksCorrectly(GameVersion version, GameVersionRange expectedRange)
         {
             // Act
             var result = version.ToVersionRange();
@@ -298,11 +298,11 @@ namespace Tests.Core.Versioning
         }
 
         [TestCaseSource("ParseCases")]
-        public void TryParseWorksCorrectly(string s, KspVersion version)
+        public void TryParseWorksCorrectly(string s, GameVersion version)
         {
             // Act
-            KspVersion result;
-            var success = KspVersion.TryParse(s, out result);
+            GameVersion result;
+            var success = GameVersion.TryParse(s, out result);
 
             // Assert
             Assert.IsTrue(success);
@@ -314,15 +314,15 @@ namespace Tests.Core.Versioning
         public void TryParseReturnsFalseOnInvalidParameter(string s)
         {
             // Act
-            KspVersion result;
-            var success = KspVersion.TryParse(s, out result);
+            GameVersion result;
+            var success = GameVersion.TryParse(s, out result);
 
             // Assert
             Assert.IsFalse(success);
         }
 
         [TestCaseSource("EqualityCases")]
-        public void EqualityWorksCorrectly(KspVersion a, KspVersion b, bool areEqual)
+        public void EqualityWorksCorrectly(GameVersion a, GameVersion b, bool areEqual)
         {
             // Act
             var genericEquality = a.Equals(b);
@@ -342,7 +342,7 @@ namespace Tests.Core.Versioning
         }
 
         [TestCaseSource("CompareToCases")]
-        public void CompareToWorksCorrectly(KspVersion v1, KspVersion v2, int comparison)
+        public void CompareToWorksCorrectly(GameVersion v1, GameVersion v2, int comparison)
         {
             // Act
             var genericCompareTo = v1.CompareTo(v2);
@@ -380,16 +380,16 @@ namespace Tests.Core.Versioning
             // Act
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable UnusedVariable
-            TestDelegate actGenericCompareTo = () => new KspVersion().CompareTo(null);
-            TestDelegate actNonGenericCompareTo = () => new KspVersion().CompareTo((object)null);
-            TestDelegate lessThanOperatorNullLeft = () => { var _ = null < new KspVersion(); };
-            TestDelegate lessThanOperatorNullRight = () => { var _ = new KspVersion() < null; };
-            TestDelegate lessThanOrEqualOperatorNullLeft = () => { var _ = null <= new KspVersion(); };
-            TestDelegate lessThanOrEqualOperatorNullRight = () => { var _ = new KspVersion() <= null; };
-            TestDelegate greaterThanOperatorNullLeft = () => { var _ = null > new KspVersion(); };
-            TestDelegate greaterThanOperatorNullRight = () => { var _ = new KspVersion() > null; };
-            TestDelegate greaterThanOrEqualOperatorNullLeft = () => { var _ = null >= new KspVersion(); };
-            TestDelegate greaterThanOrEqualOperatorNullRight = () => { var _ = new KspVersion() >= null; };
+            TestDelegate actGenericCompareTo = () => new GameVersion().CompareTo(null);
+            TestDelegate actNonGenericCompareTo = () => new GameVersion().CompareTo((object)null);
+            TestDelegate lessThanOperatorNullLeft = () => { var _ = null < new GameVersion(); };
+            TestDelegate lessThanOperatorNullRight = () => { var _ = new GameVersion() < null; };
+            TestDelegate lessThanOrEqualOperatorNullLeft = () => { var _ = null <= new GameVersion(); };
+            TestDelegate lessThanOrEqualOperatorNullRight = () => { var _ = new GameVersion() <= null; };
+            TestDelegate greaterThanOperatorNullLeft = () => { var _ = null > new GameVersion(); };
+            TestDelegate greaterThanOperatorNullRight = () => { var _ = new GameVersion() > null; };
+            TestDelegate greaterThanOrEqualOperatorNullLeft = () => { var _ = null >= new GameVersion(); };
+            TestDelegate greaterThanOrEqualOperatorNullRight = () => { var _ = new GameVersion() >= null; };
             // ReSharper restore UnusedVariable
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
@@ -411,7 +411,7 @@ namespace Tests.Core.Versioning
         {
             // Act
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            TestDelegate act = () => new KspVersion().CompareTo(new object());
+            TestDelegate act = () => new GameVersion().CompareTo(new object());
 
             // Assert
             Assert.That(act, Throws.ArgumentException);
@@ -427,7 +427,7 @@ namespace Tests.Core.Versioning
         {
             // Act
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            TestDelegate act = () => new KspVersion(major, minor, patch, build).GetHashCode();
+            TestDelegate act = () => new GameVersion(major, minor, patch, build).GetHashCode();
 
             // Assert
             Assert.That(act, Throws.Nothing);

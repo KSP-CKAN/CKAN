@@ -21,7 +21,7 @@ namespace Tests.GUI
             {
                 var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name);
 
-                KSPManager manager = new KSPManager(
+                GameInstanceManager manager = new GameInstanceManager(
                     new NullUser(),
                     config
                 ) {
@@ -57,7 +57,7 @@ namespace Tests.GUI
         }
 
         [Test]
-        public void KSPCompatibility_OutOfOrderGameVersions_TrueMaxVersion()
+        public void GameCompatibility_OutOfOrderGameVersions_TrueMaxVersion()
         {
             using (var tidy = new DisposableKSP())
             {
@@ -83,7 +83,7 @@ namespace Tests.GUI
                 GUIMod m = new GUIMod(mainVersion, registry, tidy.KSP.VersionCriteria(), false);
 
                 // Assert
-                Assert.AreEqual("1.4.2", m.KSPCompatibility);
+                Assert.AreEqual("1.4.2", m.GameCompatibility);
             }
         }
 

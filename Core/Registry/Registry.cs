@@ -5,10 +5,11 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Transactions;
-using CKAN.Extensions;
-using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
+using CKAN.Extensions;
+using CKAN.Versioning;
+using CKAN.Games;
 
 namespace CKAN
 {
@@ -125,7 +126,7 @@ namespace CKAN
         /// <returns>
         /// Installed modules that are incompatible, if any
         /// </returns>
-        public IEnumerable<InstalledModule> IncompatibleInstalled(KspVersionCriteria crit)
+        public IEnumerable<InstalledModule> IncompatibleInstalled(GameVersionCriteria crit)
         {
             return installed_modules.Values
                 .Where(im => !im.Module.IsCompatibleKSP(crit));
@@ -136,8 +137,8 @@ namespace CKAN
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext context)
         {
-            // Our context is our KSP install.
-            KSP ksp = (KSP)context.Context;
+            // Our context is our game instance.
+            GameInstance ksp = (GameInstance)context.Context;
 
             // Older registries didn't have the installed_files list, so we create one
             // if absent.
@@ -158,7 +159,7 @@ namespace CKAN
 
                 foreach (KeyValuePair<string,string> tuple in installed_files)
                 {
-                    string path = KSPPathUtils.NormalizePath(tuple.Key);
+                    string path = CKANPathUtils.NormalizePath(tuple.Key);
 
                     if (Path.IsPathRooted(path))
                     {
@@ -237,8 +238,8 @@ namespace CKAN
             var oldDefaultRepo = new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.zip");
             if (repositories != null && repositories.TryGetValue(Repository.default_ckan_repo_name, out default_repo) && default_repo.uri == oldDefaultRepo)
             {
-                log.InfoFormat("Updating default metadata URL from {0} to {1}", oldDefaultRepo, Repository.default_ckan_repo_uri);
-                repositories["default"].uri = Repository.default_ckan_repo_uri;
+                log.InfoFormat("Updating default metadata URL from {0} to {1}", oldDefaultRepo, ksp.game.DefaultRepositoryURL);
+                repositories["default"].uri = ksp.game.DefaultRepositoryURL;
             }
 
             registry_version = LATEST_REGISTRY_VERSION;
@@ -494,7 +495,7 @@ namespace CKAN
         /// <summary>
         /// <see cref="IRegistryQuerier.CompatibleModules"/>
         /// </summary>
-        public IEnumerable<CkanModule> CompatibleModules(KspVersionCriteria ksp_version)
+        public IEnumerable<CkanModule> CompatibleModules(GameVersionCriteria ksp_version)
         {
             // Set up our compatibility partition
             SetCompatibleVersion(ksp_version);
@@ -504,7 +505,7 @@ namespace CKAN
         /// <summary>
         /// <see cref="IRegistryQuerier.IncompatibleModules"/>
         /// </summary>
-        public IEnumerable<CkanModule> IncompatibleModules(KspVersionCriteria ksp_version)
+        public IEnumerable<CkanModule> IncompatibleModules(GameVersionCriteria ksp_version)
         {
             // Set up our compatibility partition
             SetCompatibleVersion(ksp_version);
@@ -516,7 +517,7 @@ namespace CKAN
         /// </summary>
         public CkanModule LatestAvailable(
             string module,
-            KspVersionCriteria ksp_version,
+            GameVersionCriteria ksp_version,
             RelationshipDescriptor relationship_descriptor = null)
         {
             // TODO: Consider making this internal, because practically everything should
@@ -578,7 +579,7 @@ namespace CKAN
         /// Return the latest game version compatible with the given mod.
         /// </summary>
         /// <param name="identifier">Name of mod to check</param>
-        public KspVersion LatestCompatibleKSP(string identifier)
+        public GameVersion LatestCompatibleKSP(string identifier)
         {
             return available_modules.ContainsKey(identifier)
                 ? available_modules[identifier].LatestCompatibleKSP()
@@ -596,7 +597,7 @@ namespace CKAN
         /// <param name="maxKsp">Return parameter for the highest game version</param>
         public static void GetMinMaxVersions(IEnumerable<CkanModule> modVersions,
                 out ModuleVersion minMod, out ModuleVersion maxMod,
-                out KspVersion    minKsp, out KspVersion    maxKsp)
+                out GameVersion    minKsp, out GameVersion    maxKsp)
         {
             minMod = maxMod = null;
             minKsp = maxKsp = null;
@@ -610,8 +611,8 @@ namespace CKAN
                 {
                     maxMod = rel.version;
                 }
-                KspVersion relMin = rel.EarliestCompatibleKSP();
-                KspVersion relMax = rel.LatestCompatibleKSP();
+                GameVersion relMin = rel.EarliestCompatibleKSP();
+                GameVersion relMax = rel.LatestCompatibleKSP();
                 if (minKsp == null || !minKsp.IsAny && (minKsp > relMin || relMin.IsAny))
                 {
                     minKsp = relMin;
@@ -667,7 +668,7 @@ namespace CKAN
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(
             string                  identifier,
-            KspVersionCriteria      ksp_version,
+            GameVersionCriteria      ksp_version,
             RelationshipDescriptor  relationship_descriptor = null,
             IEnumerable<CkanModule> toInstall               = null)
         {
@@ -713,7 +714,7 @@ namespace CKAN
         /// Register the supplied module as having been installed, thereby keeping
         /// track of its metadata and files.
         /// </summary>
-        public void RegisterModule(CkanModule mod, IEnumerable<string> absolute_files, KSP ksp, bool autoInstalled)
+        public void RegisterModule(CkanModule mod, IEnumerable<string> absolute_files, GameInstance ksp, bool autoInstalled)
         {
             EnlistWithTransaction();
 
@@ -775,7 +776,7 @@ namespace CKAN
         ///
         /// Throws an InconsistentKraken if not all files have been removed.
         /// </summary>
-        public void DeregisterModule(KSP ksp, string module)
+        public void DeregisterModule(GameInstance ksp, string module)
         {
             EnlistWithTransaction();
 
@@ -817,7 +818,7 @@ namespace CKAN
         ///
         /// Does nothing if the DLL is already part of an installed module.
         /// </summary>
-        public void RegisterDll(KSP ksp, string absolute_path)
+        public void RegisterDll(GameInstance ksp, string absolute_path)
         {
             EnlistWithTransaction();
 
@@ -1033,7 +1034,7 @@ namespace CKAN
         /// </summary>
         public string FileOwner(string file)
         {
-            file = KSPPathUtils.NormalizePath(file);
+            file = CKANPathUtils.NormalizePath(file);
 
             if (Path.IsPathRooted(file))
             {
@@ -1262,7 +1263,7 @@ namespace CKAN
         /// compatible and incompatible groups.
         /// </summary>
         /// <param name="versCrit">Version criteria to determine compatibility</param>
-        public void SetCompatibleVersion(KspVersionCriteria versCrit)
+        public void SetCompatibleVersion(GameVersionCriteria versCrit)
         {
             if (!versCrit.Equals(sorter?.CompatibleVersions))
             {

@@ -7,32 +7,32 @@ using NUnit.Framework;
 namespace Tests.Core.Versioning
 {
     [TestFixture]
-    public sealed class KspVersionBoundTests
+    public sealed class GameVersionBoundTests
     {
         private static readonly object[] EqualityCases =
         {
             new object[]
             {
-                new KspVersionBound(),
-                new KspVersionBound(),
+                new GameVersionBound(),
+                new GameVersionBound(),
                 true
             },
             new object[]
             {
-                new KspVersionBound(new KspVersion(), false),
-                new KspVersionBound(new KspVersion(), true),
+                new GameVersionBound(new GameVersion(), false),
+                new GameVersionBound(new GameVersion(), true),
                 false
             },
             new object[]
             {
-                new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
-                new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
+                new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
+                new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
                 true
             },
             new object[]
             {
-                new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
-                new KspVersionBound(new KspVersion(1, 3, 4, 4), true),
+                new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
+                new GameVersionBound(new GameVersion(1, 3, 4, 4), true),
                 false
             }
         };
@@ -41,10 +41,10 @@ namespace Tests.Core.Versioning
         public void ParameterlessCtorWorksCorrectly()
         {
             // Act
-            var result = new KspVersionBound();
+            var result = new GameVersionBound();
 
             // Assert
-            Assert.AreEqual(KspVersion.Any, result.Value);
+            Assert.AreEqual(GameVersion.Any, result.Value);
             Assert.IsTrue(result.Inclusive);
         }
 
@@ -52,10 +52,10 @@ namespace Tests.Core.Versioning
         public void ParameterfulCtorWorksCorrectly()
         {
             // Act
-            var result = new KspVersionBound(new KspVersion(1, 2, 3, 4), true);
+            var result = new GameVersionBound(new GameVersion(1, 2, 3, 4), true);
 
             // Assert
-            Assert.AreEqual(new KspVersion(1, 2, 3, 4), result.Value);
+            Assert.AreEqual(new GameVersion(1, 2, 3, 4), result.Value);
             Assert.IsTrue(result.Inclusive);
         }
 
@@ -64,7 +64,7 @@ namespace Tests.Core.Versioning
         {
             // Act
             // ReSharper disable once ObjectCreationAsStatement
-            TestDelegate act = () => new KspVersionBound(null, false);
+            TestDelegate act = () => new GameVersionBound(null, false);
 
             // Assert
             Assert.That(act, Throws.Exception.InstanceOf<ArgumentNullException>());
@@ -75,14 +75,14 @@ namespace Tests.Core.Versioning
         {
             // Act
             // ReSharper disable once ObjectCreationAsStatement
-            TestDelegate act = () => new KspVersionBound(new KspVersion(1, 2, 3), false);
+            TestDelegate act = () => new GameVersionBound(new GameVersion(1, 2, 3), false);
 
             // Assert
             Assert.That(act, Throws.Exception);
         }
 
         [TestCaseSource("EqualityCases")]
-        public void EqualityWorksCorrectly(KspVersionBound vb1, KspVersionBound vb2, bool areEqual)
+        public void EqualityWorksCorrectly(GameVersionBound vb1, GameVersionBound vb2, bool areEqual)
         {
             // Act
             var genericEquals = vb1.Equals(vb2);
@@ -106,12 +106,12 @@ namespace Tests.Core.Versioning
         {
             // Act
             // ReSharper disable ConditionIsAlwaysTrueOrFalse
-            var genericEquals = new KspVersionBound().Equals(null);
-            var nonGenericEquals = new KspVersionBound().Equals((object)null);
-            var equalsOperatorNullLeft = null == new KspVersionBound();
-            var equalsOperatorNullRight = new KspVersionBound() == null;
-            var notEqualsOperatorNullLeft = null != new KspVersionBound();
-            var notEqualsOperatorNullRight = new KspVersionBound() != null;
+            var genericEquals = new GameVersionBound().Equals(null);
+            var nonGenericEquals = new GameVersionBound().Equals((object)null);
+            var equalsOperatorNullLeft = null == new GameVersionBound();
+            var equalsOperatorNullRight = new GameVersionBound() == null;
+            var notEqualsOperatorNullLeft = null != new GameVersionBound();
+            var notEqualsOperatorNullRight = new GameVersionBound() != null;
             // ReSharper restore ConditionIsAlwaysTrueOrFalse
 
             // ASsert
@@ -127,7 +127,7 @@ namespace Tests.Core.Versioning
         public void ReferenceEqualityWorksCorrectly()
         {
             // Arrange
-            var sut = new KspVersionBound();
+            var sut = new GameVersionBound();
 
             // Act
             var genericEquals = sut.Equals(sut);
@@ -150,7 +150,7 @@ namespace Tests.Core.Versioning
             // Act
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             TestDelegate act =
-                () => new KspVersionBound(new KspVersion(major, minor, patch, build), inclusive).GetHashCode();
+                () => new GameVersionBound(new GameVersion(major, minor, patch, build), inclusive).GetHashCode();
 
             // Assert
             Assert.That(act, Throws.Nothing);

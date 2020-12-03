@@ -11,22 +11,6 @@ namespace Tests.Core.Configuration
     [TestFixture]
     public class JsonConfigurationTests
     {
-        // We want to make sure that the config file is pointed to the
-        // right place for the other tests.
-        private string configFileLoc;
-
-        [SetUp]
-        public void SetUp()
-        {
-            configFileLoc = new JsonConfiguration().ConfigFile;
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            _ = new JsonConfiguration(configFileLoc);
-        }
-
         [Test]
         public void CreatesNewConfig()
         {
@@ -63,10 +47,10 @@ namespace Tests.Core.Configuration
 
             var reg = new JsonConfiguration(tmpFile);
 
-            CollectionAssert.AreEquivalent(new List<Tuple<string, string>>()
+            CollectionAssert.AreEquivalent(new List<Tuple<string, string, string>>()
             {
-                new Tuple<string, string>("instance1", "instance1_path"),
-                new Tuple<string, string>("instance2", "instance2_path")
+                new Tuple<string, string, string>("instance1", "instance1_path", "KSP"),
+                new Tuple<string, string, string>("instance2", "instance2_path", "KSP")
             }, reg.GetInstances());
 
             CollectionAssert.AreEquivalent(new List<string>()
@@ -89,12 +73,6 @@ namespace Tests.Core.Configuration
             Assert.AreEqual(2, reg.CacheSizeLimit);
             Assert.AreEqual(4, reg.RefreshRate);
 
-            CollectionAssert.AreEquivalent(new Dictionary<string, string>()
-            {
-                { "build1", "version1" },
-                { "build2", "version2" }
-            }, reg.GetKSPBuilds().Builds);
-
             File.Delete(tmpFile);
         }
 
@@ -106,10 +84,10 @@ namespace Tests.Core.Configuration
 
             var reg = new JsonConfiguration(tmpFile);
 
-            CollectionAssert.AreEquivalent(new List<Tuple<string, string>>()
+            CollectionAssert.AreEquivalent(new List<Tuple<string, string, string>>()
             {
-                new Tuple<string, string>("instance1", "instance1_path"),
-                new Tuple<string, string>("instance2", "instance2_path")
+                new Tuple<string, string, string>("instance1", "instance1_path", "KSP"),
+                new Tuple<string, string, string>("instance2", "instance2_path", "KSP")
             }, reg.GetInstances());
 
             CollectionAssert.AreEquivalent(new List<string>(), reg.GetAuthTokenHosts());
@@ -118,12 +96,6 @@ namespace Tests.Core.Configuration
             Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
             Assert.AreEqual(null, reg.CacheSizeLimit);
             Assert.AreEqual(4, reg.RefreshRate);
-
-            CollectionAssert.AreEquivalent(new Dictionary<string, string>()
-            {
-                { "build1", "version1" },
-                { "build2", "version2" }
-            }, reg.GetKSPBuilds().Builds);
 
             File.Delete(tmpFile);
         }
@@ -141,7 +113,6 @@ namespace Tests.Core.Configuration
             Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
             Assert.AreEqual(null, reg.CacheSizeLimit);
             Assert.AreEqual(0, reg.RefreshRate);
-            Assert.AreEqual(null, reg.GetKSPBuilds());
 
             File.Delete(tmpFile);
         }
@@ -154,10 +125,10 @@ namespace Tests.Core.Configuration
 
             var reg = new JsonConfiguration(tmpFile);
 
-            CollectionAssert.AreEquivalent(new List<Tuple<string, string>>()
+            CollectionAssert.AreEquivalent(new List<Tuple<string, string, string>>()
             {
-                new Tuple<string, string>("instance1", "instance1_path"),
-                new Tuple<string, string>("instance2", "instance2_path")
+                new Tuple<string, string, string>("instance1", "instance1_path", "KSP"),
+                new Tuple<string, string, string>("instance2", "instance2_path", "KSP")
             }, reg.GetInstances());
 
             CollectionAssert.AreEquivalent(new List<string>()
@@ -179,12 +150,6 @@ namespace Tests.Core.Configuration
             Assert.AreEqual("dci", reg.DownloadCacheDir);
             Assert.AreEqual(2, reg.CacheSizeLimit);
             Assert.AreEqual(4, reg.RefreshRate);
-
-            CollectionAssert.AreEquivalent(new Dictionary<string, string>()
-            {
-                { "build1", "version1" },
-                { "build2", "version2" }
-            }, reg.GetKSPBuilds().Builds);
 
             File.Delete(tmpFile);
         }
@@ -382,34 +347,6 @@ namespace Tests.Core.Configuration
         }
 
         [Test]
-        public void KspBuildsPersist()
-        {
-            string tmpFile1 = Path.GetTempFileName();
-            var reg = new JsonConfiguration(tmpFile1);
-
-
-            reg.SetKSPBuilds(new JBuilds
-            {
-                Builds = new Dictionary<string, string>
-                {
-                    { "test_build", "test_version" }
-                }
-            });
-
-            string tmpFile2 = Path.GetTempFileName();
-            File.Copy(tmpFile1, tmpFile2, true);
-            reg = new JsonConfiguration(tmpFile2);
-
-            CollectionAssert.AreEquivalent(new Dictionary<string, string>()
-            {
-                { "test_build", "test_version" }
-            }, reg.GetKSPBuilds().Builds);
-
-            File.Delete(tmpFile1);
-            File.Delete(tmpFile2);
-        }
-
-        [Test]
         public void InstancesPersist()
         {
             using (var k1 = new DisposableKSP())
@@ -418,7 +355,7 @@ namespace Tests.Core.Configuration
                 string tmpFile1 = Path.GetTempFileName();
                 var reg = new JsonConfiguration(tmpFile1);
 
-                var sl = new SortedList<string, CKAN.KSP>();
+                var sl = new SortedList<string, CKAN.GameInstance>();
                 sl.Add("instance_1", k1.KSP);
                 sl.Add("instance_2", k2.KSP);
                 reg.SetRegistryToInstances(sl);
@@ -427,10 +364,10 @@ namespace Tests.Core.Configuration
                 File.Copy(tmpFile1, tmpFile2, true);
                 reg = new JsonConfiguration(tmpFile2);
 
-                CollectionAssert.AreEquivalent(new List<Tuple<string, string>>()
+                CollectionAssert.AreEquivalent(new List<Tuple<string, string, string>>()
                 {
-                    new Tuple<string, string>("instance_1", k1.KSP.GameDir()),
-                    new Tuple<string, string>("instance_2", k2.KSP.GameDir())
+                    new Tuple<string, string, string>("instance_1", k1.KSP.GameDir(), "KSP"),
+                    new Tuple<string, string, string>("instance_2", k2.KSP.GameDir(), "KSP")
                 }, reg.GetInstances());
 
                 File.Delete(tmpFile1);

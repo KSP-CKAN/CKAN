@@ -65,7 +65,7 @@ namespace CKAN.CmdLine.Action
             [ValueOption(0)] public string Version { get; set; }
         }
 
-        public int RunSubCommand(KSPManager manager, CommonOptions opts, SubCommandOptions options)
+        public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions options)
         {
             var exitCode = Exit.OK;
 
@@ -77,7 +77,7 @@ namespace CKAN.CmdLine.Action
                     CommonOptions comOpts = (CommonOptions)suboptions;
                     comOpts.Merge(opts);
                     _user       = new ConsoleUser(comOpts.Headless);
-                    _kspManager = manager ?? new KSPManager(_user);
+                    _kspManager = manager ?? new GameInstanceManager(_user);
                     exitCode    = comOpts.Handle(_kspManager, _user);
                     if (exitCode != Exit.OK)
                         return;
@@ -148,11 +148,11 @@ namespace CKAN.CmdLine.Action
                                 var ksp = MainClass.GetGameInstance(_kspManager);
                                 var addOptions = (CompatAddOptions)suboptions;
 
-                                KspVersion kspVersion;
-                                if (KspVersion.TryParse(addOptions.Version, out kspVersion))
+                                GameVersion GameVersion;
+                                if (GameVersion.TryParse(addOptions.Version, out GameVersion))
                                 {
                                     var newCompatibleVersion = ksp.GetCompatibleVersions();
-                                    newCompatibleVersion.Add(kspVersion);
+                                    newCompatibleVersion.Add(GameVersion);
                                     ksp.SetCompatibleVersions(newCompatibleVersion);
                                 }
                                 else
@@ -168,13 +168,13 @@ namespace CKAN.CmdLine.Action
                                 var ksp = MainClass.GetGameInstance(_kspManager);
                                 var addOptions = (CompatForgetOptions)suboptions;
 
-                                KspVersion kspVersion;
-                                if (KspVersion.TryParse(addOptions.Version, out kspVersion))
+                                GameVersion GameVersion;
+                                if (GameVersion.TryParse(addOptions.Version, out GameVersion))
                                 {
-                                    if (kspVersion != ksp.Version())
+                                    if (GameVersion != ksp.Version())
                                     {
                                         var newCompatibleVersion = ksp.GetCompatibleVersions();
-                                        newCompatibleVersion.RemoveAll(i => i == kspVersion);
+                                        newCompatibleVersion.RemoveAll(i => i == GameVersion);
                                         ksp.SetCompatibleVersions(newCompatibleVersion);
                                     }
                                     else
@@ -200,7 +200,7 @@ namespace CKAN.CmdLine.Action
             return exitCode;
         }
 
-        private KSPManager _kspManager;
+        private GameInstanceManager _kspManager;
         private IUser      _user;
     }
 }

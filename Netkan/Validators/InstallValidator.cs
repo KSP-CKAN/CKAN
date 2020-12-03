@@ -52,7 +52,7 @@ namespace CKAN.NetKAN.Validators
                         if (stanza.ContainsKey(propName))
                         {
                             string val  = (string)stanza[propName];
-                            string norm = KSPPathUtils.NormalizePath(val);
+                            string norm = CKANPathUtils.NormalizePath(val);
                             if (val != norm)
                             {
                                 throw new Kraken($"Path \"{val}\" in '{propName}' is not normalized, should be \"{norm}\"");

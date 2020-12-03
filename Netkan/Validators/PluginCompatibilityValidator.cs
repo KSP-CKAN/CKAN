@@ -6,6 +6,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
+using CKAN.Games;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -28,10 +29,10 @@ namespace CKAN.NetKAN.Validators
                 var package = _http.DownloadModule(metadata);
                 if (!string.IsNullOrEmpty(package))
                 {
-                    ZipFile zip = new ZipFile(package);
-                    var     ksp = new KSP("/", "dummy", null, false);
+                    ZipFile      zip  = new ZipFile(package);
+                    GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
 
-                    bool hasPlugin = _moduleService.GetPlugins(mod, zip, ksp).Any();
+                    bool hasPlugin = _moduleService.GetPlugins(mod, zip, inst).Any();
 
                     bool boundedCompatibility = json.ContainsKey("ksp_version") || json.ContainsKey("ksp_version_max");
 

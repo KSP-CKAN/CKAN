@@ -1,16 +1,17 @@
 using System;
 using System.IO;
-using CKAN;
-using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
+using CKAN;
+using CKAN.Versioning;
+using CKAN.Games;
 
 namespace Tests.Core
 {
     [TestFixture]
     public class KSP
     {
-        private CKAN.KSP ksp;
+        private CKAN.GameInstance ksp;
         private string ksp_dir;
         private IUser nullUser;
 
@@ -20,7 +21,7 @@ namespace Tests.Core
             ksp_dir = TestData.NewTempDir();
             nullUser = new NullUser();
             CKAN.Utilities.CopyDirectory(TestData.good_ksp_dir(), ksp_dir, true);
-            ksp = new CKAN.KSP(ksp_dir, "test", nullUser);
+            ksp = new CKAN.GameInstance(new KerbalSpaceProgram(), ksp_dir, "test", nullUser);
         }
 
         [TearDown]
@@ -40,42 +41,49 @@ namespace Tests.Core
         [Test]
         public void IsGameDir()
         {
+            var game = new KerbalSpaceProgram();
+
             // Our test data directory should be good.
-            Assert.IsTrue(CKAN.KSP.IsKspDir(TestData.good_ksp_dir()));
+            Assert.IsTrue(game.GameInFolder(new DirectoryInfo(TestData.good_ksp_dir())));
 
             // As should our copied folder.
-            Assert.IsTrue(CKAN.KSP.IsKspDir(ksp_dir));
+            Assert.IsTrue(game.GameInFolder(new DirectoryInfo(ksp_dir)));
 
             // And the one from our KSP instance.
-            Assert.IsTrue(CKAN.KSP.IsKspDir(ksp.GameDir()));
+            Assert.IsTrue(game.GameInFolder(new DirectoryInfo(ksp.GameDir())));
 
             // All these ones should be bad.
             foreach (string dir in TestData.bad_ksp_dirs())
             {
-                Assert.IsFalse(CKAN.KSP.IsKspDir(dir));
+                Assert.IsFalse(game.GameInFolder(new DirectoryInfo(dir)));
             }
         }
 
         [Test]
-        public void Training()
+        public void Tutorial()
         {
             //Use Uri to avoid issues with windows vs linux line separators.
             var canonicalPath = new Uri(Path.Combine(ksp_dir, "saves", "training")).LocalPath;
-            var training = new Uri(ksp.Tutorial()).LocalPath;
-            Assert.AreEqual(canonicalPath, training);
+            var game = new KerbalSpaceProgram();
+            string dest;
+            Assert.IsTrue(game.AllowInstallationIn("Tutorial", out dest));
+            Assert.AreEqual(
+                new DirectoryInfo(ksp.ToAbsoluteGameDir(dest)),
+                new DirectoryInfo(canonicalPath)
+            );
         }
 
         [Test]
         public void ScanDlls()
         {
-            string path = Path.Combine(ksp.GameData(), "Example.dll");
+            string path = Path.Combine(ksp.game.PrimaryModDirectory(ksp), "Example.dll");
             var registry = CKAN.RegistryManager.Instance(ksp).registry;
 
             Assert.IsFalse(registry.IsInstalled("Example"), "Example should start uninstalled");
 
             File.WriteAllText(path, "Not really a DLL, are we?");
 
-            ksp.ScanGameData();
+            ksp.Scan();
 
             Assert.IsTrue(registry.IsInstalled("Example"), "Example installed");
 
@@ -84,12 +92,12 @@ namespace Tests.Core
 
             // Now let's do the same with different case.
 
-            string path2 = Path.Combine(ksp.GameData(), "NewMod.DLL");
+            string path2 = Path.Combine(ksp.game.PrimaryModDirectory(ksp), "NewMod.DLL");
 
             Assert.IsFalse(registry.IsInstalled("NewMod"));
             File.WriteAllText(path2, "This text is irrelevant. You will be assimilated");
 
-            ksp.ScanGameData();
+            ksp.Scan();
 
             Assert.IsTrue(registry.IsInstalled("NewMod"));
         }
@@ -98,7 +106,7 @@ namespace Tests.Core
         public void ToAbsolute()
         {
             Assert.AreEqual(
-                CKAN.KSPPathUtils.NormalizePath(
+                CKAN.CKANPathUtils.NormalizePath(
                     Path.Combine(ksp_dir, "GameData/HydrazinePrincess")
                 ),
                 ksp.ToAbsoluteGameDir("GameData/HydrazinePrincess")
@@ -127,7 +135,7 @@ namespace Tests.Core
             string jsonpath = Path.Combine(ckandir, "compatible_ksp_versions.json");
             const string compatible_ksp_versions_json = @"{
                 ""VersionOfKspWhenWritten"": ""1.4.3"",
-                ""CompatibleKspVersions"":   [""1.4""]
+                ""CompatibleGameVersions"":   [""1.4""]
             }";
 
             // Generate a valid game dir except for missing buildID.txt and readme.txt
@@ -140,7 +148,7 @@ namespace Tests.Core
             File.WriteAllText(jsonpath, compatible_ksp_versions_json);
 
             // Act
-            CKAN.KSP my_ksp = new CKAN.KSP(gamedir, "missing-ver-test", nullUser);
+            CKAN.GameInstance my_ksp = new CKAN.GameInstance(new KerbalSpaceProgram(), gamedir, "missing-ver-test", nullUser);
 
             // Assert
             Assert.IsFalse(my_ksp.Valid);
@@ -159,7 +167,7 @@ namespace Tests.Core
             string jsonpath = Path.Combine(ckandir, "compatible_ksp_versions.json");
             const string compatible_ksp_versions_json = @"{
                 ""VersionOfKspWhenWritten"": null,
-                ""CompatibleKspVersions"":   [""1.4""]
+                ""CompatibleGameVersions"":   [""1.4""]
             }";
 
             // Generate a valid game dir except for missing buildID.txt and readme.txt
@@ -174,7 +182,7 @@ namespace Tests.Core
             // Act & Assert
             Assert.DoesNotThrow(() =>
             {
-                CKAN.KSP my_ksp = new CKAN.KSP(gamedir, "null-compat-ver-test", nullUser);
+                CKAN.GameInstance my_ksp = new CKAN.GameInstance(new KerbalSpaceProgram(), gamedir, "null-compat-ver-test", nullUser);
             });
 
             Directory.Delete(gamedir, true);

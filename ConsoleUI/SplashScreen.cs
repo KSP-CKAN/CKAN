@@ -12,8 +12,8 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the screen
         /// </summary>
-        /// <param name="mgr">KSP manager object for getting instances</param>
-        public SplashScreen(KSPManager mgr)
+        /// <param name="mgr">Game instance manager object for getting instances</param>
+        public SplashScreen(GameInstanceManager mgr)
         {
             manager = mgr;
         }
@@ -24,8 +24,8 @@ namespace CKAN.ConsoleUI {
         public bool Run()
         {
             // If there's a default instance, try to get the lock for it.
-            KSP ksp = manager.CurrentInstance ?? manager.GetPreferredInstance();
-            if (ksp != null && !KSPListScreen.TryGetInstance(ksp, () => Draw(false))) {
+            GameInstance ksp = manager.CurrentInstance ?? manager.GetPreferredInstance();
+            if (ksp != null && !GameInstanceListScreen.TryGetInstance(ksp, () => Draw(false))) {
                 Console.ResetColor();
                 Console.Clear();
                 Console.CursorVisible = true;
@@ -93,7 +93,7 @@ namespace CKAN.ConsoleUI {
             } catch { }
         }
 
-        private KSPManager manager;
+        private GameInstanceManager manager;
     }
 
 }

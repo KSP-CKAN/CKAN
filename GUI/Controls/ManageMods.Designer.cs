@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ManageMods));
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
-            this.launchKSPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.launchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,7 +61,7 @@
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.KSPCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.GameCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ReleaseDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstallDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -91,7 +91,7 @@
             this.menuStrip2.Dock = System.Windows.Forms.DockStyle.Top;
             this.menuStrip2.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.launchKSPToolStripMenuItem,
+            this.launchGameToolStripMenuItem,
             this.RefreshToolButton,
             this.UpdateAllToolButton,
             this.ApplyToolButton,
@@ -104,14 +104,14 @@
             this.menuStrip2.TabIndex = 4;
             this.menuStrip2.Text = "menuStrip2";
             //
-            // launchKSPToolStripMenuItem
+            // launchGameToolStripMenuItem
             //
-            this.launchKSPToolStripMenuItem.Image = global::CKAN.Properties.Resources.ksp;
-            this.launchKSPToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.launchKSPToolStripMenuItem.Name = "launchKSPToolStripMenuItem";
-            this.launchKSPToolStripMenuItem.Size = new System.Drawing.Size(146, 56);
-            this.launchKSPToolStripMenuItem.Click += new System.EventHandler(this.launchKSPToolStripMenuItem_Click);
-            resources.ApplyResources(this.launchKSPToolStripMenuItem, "launchKSPToolStripMenuItem");
+            this.launchGameToolStripMenuItem.Image = global::CKAN.Properties.Resources.ksp;
+            this.launchGameToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.launchGameToolStripMenuItem.Name = "launchGameToolStripMenuItem";
+            this.launchGameToolStripMenuItem.Size = new System.Drawing.Size(146, 56);
+            this.launchGameToolStripMenuItem.Click += new System.EventHandler(this.launchGameToolStripMenuItem_Click);
+            resources.ApplyResources(this.launchGameToolStripMenuItem, "launchGameToolStripMenuItem");
             //
             // RefreshToolButton
             //
@@ -294,7 +294,7 @@
             this.Author,
             this.InstalledVersion,
             this.LatestVersion,
-            this.KSPCompatibility,
+            this.GameCompatibility,
             this.SizeCol,
             this.ReleaseDate,
             this.InstallDate,
@@ -385,13 +385,13 @@
             this.LatestVersion.Width = 70;
             resources.ApplyResources(this.LatestVersion, "LatestVersion");
             //
-            // KSPCompatibility
+            // GameCompatibility
             //
-            this.KSPCompatibility.Name = "KSPCompatibility";
-            this.KSPCompatibility.ReadOnly = true;
-            this.KSPCompatibility.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.KSPCompatibility.Width = 78;
-            resources.ApplyResources(this.KSPCompatibility, "KSPCompatibility");
+            this.GameCompatibility.Name = "GameCompatibility";
+            this.GameCompatibility.ReadOnly = true;
+            this.GameCompatibility.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.GameCompatibility.Width = 78;
+            resources.ApplyResources(this.GameCompatibility, "GameCompatibility");
             //
             // SizeCol
             //
@@ -528,7 +528,7 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip menuStrip2;
-        private System.Windows.Forms.ToolStripMenuItem launchKSPToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem launchGameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RefreshToolButton;
         private System.Windows.Forms.ToolStripMenuItem UpdateAllToolButton;
         private System.Windows.Forms.ToolStripMenuItem ApplyToolButton;
@@ -557,7 +557,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Author;
         private System.Windows.Forms.DataGridViewTextBoxColumn InstalledVersion;
         private System.Windows.Forms.DataGridViewTextBoxColumn LatestVersion;
-        private System.Windows.Forms.DataGridViewTextBoxColumn KSPCompatibility;
+        private System.Windows.Forms.DataGridViewTextBoxColumn GameCompatibility;
         private System.Windows.Forms.DataGridViewTextBoxColumn SizeCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn ReleaseDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn InstallDate;

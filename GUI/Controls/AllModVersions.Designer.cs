@@ -36,7 +36,7 @@
             "i2"}, -1);
             this.label1 = new System.Windows.Forms.Label();
             this.ModVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.CompatibleKSPVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.CompatibleGameVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.VersionsListView = new ThemedListView();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -60,10 +60,10 @@
             this.ModVersion.Width = 98;
             resources.ApplyResources(this.ModVersion, "ModVersion");
             //
-            // CompatibleKSPVersion
+            // CompatibleGameVersion
             //
-            this.CompatibleKSPVersion.Width = 160;
-            resources.ApplyResources(this.CompatibleKSPVersion, "CompatibleKSPVersion");
+            this.CompatibleGameVersion.Width = 190;
+            resources.ApplyResources(this.CompatibleGameVersion, "CompatibleGameVersion");
             //
             // VersionsListView
             //
@@ -72,7 +72,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.VersionsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ModVersion,
-            this.CompatibleKSPVersion});
+            this.CompatibleGameVersion});
             this.VersionsListView.CheckBoxes = true;
             this.VersionsListView.FullRowSelect = true;
             this.VersionsListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
@@ -164,7 +164,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ColumnHeader ModVersion;
-        private System.Windows.Forms.ColumnHeader CompatibleKSPVersion;
+        private System.Windows.Forms.ColumnHeader CompatibleGameVersion;
         private System.Windows.Forms.ListView VersionsListView;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;

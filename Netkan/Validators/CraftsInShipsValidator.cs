@@ -6,6 +6,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
+using CKAN.Games;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -29,9 +30,9 @@ namespace CKAN.NetKAN.Validators
                 if (!string.IsNullOrEmpty(package))
                 {
                     var zip       = new ZipFile(package);
-                    var ksp       = new KSP("/", "dummy", null, false);
-                    var badCrafts = _moduleService.GetCrafts(mod, zip, ksp)
-                        .Where(f => !AllowedCraftPath(ksp.ToRelativeGameDir(f.destination)))
+                    var inst      = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", null, false);
+                    var badCrafts = _moduleService.GetCrafts(mod, zip, inst)
+                        .Where(f => !AllowedCraftPath(inst.ToRelativeGameDir(f.destination)))
                         .ToList();
 
                     if (badCrafts.Any())
@@ -39,7 +40,7 @@ namespace CKAN.NetKAN.Validators
                         Log.WarnFormat(
                             "Craft files installed outside Ships folder: {0}",
                             string.Join(", ", badCrafts.Select(f =>
-                                ksp.ToRelativeGameDir(f.destination)
+                                inst.ToRelativeGameDir(f.destination)
                             ))
                         );
                     }

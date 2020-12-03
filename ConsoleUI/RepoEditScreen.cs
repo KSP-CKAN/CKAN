@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CKAN.Games;
 
 namespace CKAN.ConsoleUI {
 
@@ -11,10 +12,11 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Construct the Screen
         /// </summary>
+        /// <param name="game">Game from which to get repos</param>
         /// <param name="reps">Collection of Repository objects</param>
         /// <param name="repo">The object to edit</param>
-        public RepoEditScreen(SortedDictionary<string, Repository> reps, Repository repo)
-            : base(reps, repo.name, repo.uri.ToString())
+        public RepoEditScreen(IGame game, SortedDictionary<string, Repository> reps, Repository repo)
+            : base(game, reps, repo.name, repo.uri.ToString())
         {
             repository = repo;
         }

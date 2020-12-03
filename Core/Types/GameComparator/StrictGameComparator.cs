@@ -10,11 +10,11 @@ namespace CKAN
     /// </summary>
     public class StrictGameComparator : BaseGameComparator
     {
-        public override bool SingleVersionsCompatible(KspVersion gameVersion, CkanModule module)
+        public override bool SingleVersionsCompatible(GameVersion gameVersion, CkanModule module)
         {
             var gameVersionRange = gameVersion.ToVersionRange();
 
-            var moduleRange = KspVersionRange.Any;
+            var moduleRange = GameVersionRange.Any;
 
             if (module.ksp_version != null)
             {
@@ -24,7 +24,7 @@ namespace CKAN
             {
                 if (module.ksp_version_min != null && module.ksp_version_max != null)
                 {
-                    moduleRange = new KspVersionRange(module.ksp_version_min, module.ksp_version_max);
+                    moduleRange = new GameVersionRange(module.ksp_version_min, module.ksp_version_max);
                     if (moduleRange.Lower.Value > moduleRange.Upper.Value)
                     {
                         log.WarnFormat("{0} is not less or equal to {1}",
@@ -34,11 +34,11 @@ namespace CKAN
                 }
                 else if (module.ksp_version_min != null)
                 {
-                    moduleRange = new KspVersionRange(module.ksp_version_min, KspVersion.Any);
+                    moduleRange = new GameVersionRange(module.ksp_version_min, GameVersion.Any);
                 }
                 else if (module.ksp_version_max != null)
                 {
-                    moduleRange = new KspVersionRange(KspVersion.Any, module.ksp_version_max);
+                    moduleRange = new GameVersionRange(GameVersion.Any, module.ksp_version_max);
                 }
             }
             else

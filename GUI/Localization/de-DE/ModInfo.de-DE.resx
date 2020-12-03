@@ -121,7 +121,7 @@
   <data name="MetadataModuleNameTextBox.Text" xml:space="preserve"><value>Modname</value></data>
   <data name="IdentifierLabel.Text" xml:space="preserve"><value>Kennung:</value></data>
   <data name="ReplacementLabel.Text" xml:space="preserve"><value>Ersetzt durch:</value></data>
-  <data name="KSPCompatibilityLabel.Text" xml:space="preserve"><value>Max. KSP-Version:</value></data>
+  <data name="GameCompatibilityLabel.Text" xml:space="preserve"><value>Max. Spielversion:</value></data>
   <data name="ReleaseLabel.Text" xml:space="preserve"><value>Releasestatus:</value></data>
   <data name="AuthorLabel.Text" xml:space="preserve"><value>Autor:</value></data>
   <data name="LicenseLabel.Text" xml:space="preserve"><value>Lizenz:</value></data>

@@ -62,7 +62,7 @@
     <Compile Include="Action\Import.cs" />
     <Compile Include="Action\Install.cs" />
     <Compile Include="Action\ISubCommand.cs" />
-    <Compile Include="Action\KSP.cs" />
+    <Compile Include="Action\GameInstance.cs" />
     <Compile Include="Action\List.cs" />
     <Compile Include="Action\Mark.cs" />
     <Compile Include="Action\Prompt.cs" />

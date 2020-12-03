@@ -4,41 +4,41 @@ using NUnit.Framework;
 namespace Tests.Core
 {
     [TestFixture]
-    public class KSPPathUtils
+    public class CKANPathUtils
     {
         [Test]
         public void NormalizePath()
         {
-            Assert.AreEqual("/a/b/c", CKAN.KSPPathUtils.NormalizePath("/a/b/c"), "Identity function failed");
-            Assert.AreEqual("/a/b/c", CKAN.KSPPathUtils.NormalizePath("\\a\\b\\c"), "Actual replace");
-            Assert.AreEqual("/a/b/c", CKAN.KSPPathUtils.NormalizePath("\\a/b\\c"), "Mixed slashes");
-            Assert.AreEqual("a/b/c", CKAN.KSPPathUtils.NormalizePath("a/b\\c"), "No starting slash");
-            Assert.AreEqual("/a/b/c", CKAN.KSPPathUtils.NormalizePath("\\a/b\\c\\"), "Trailing slash");
-            Assert.AreEqual("SPACE", CKAN.KSPPathUtils.NormalizePath("SPACE"), "All upper-case, no slashes");
+            Assert.AreEqual("/a/b/c", CKAN.CKANPathUtils.NormalizePath("/a/b/c"), "Identity function failed");
+            Assert.AreEqual("/a/b/c", CKAN.CKANPathUtils.NormalizePath("\\a\\b\\c"), "Actual replace");
+            Assert.AreEqual("/a/b/c", CKAN.CKANPathUtils.NormalizePath("\\a/b\\c"), "Mixed slashes");
+            Assert.AreEqual("a/b/c", CKAN.CKANPathUtils.NormalizePath("a/b\\c"), "No starting slash");
+            Assert.AreEqual("/a/b/c", CKAN.CKANPathUtils.NormalizePath("\\a/b\\c\\"), "Trailing slash");
+            Assert.AreEqual("SPACE", CKAN.CKANPathUtils.NormalizePath("SPACE"), "All upper-case, no slashes");
         }
 
         [Test]
         public void GetLastPathElement()
         {
-            Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("/a/b/c"), "Simple case");
-            Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("\\a\\b\\c"), "With other slashes");
-            Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("\\a/b\\c"), "With mixed slashes");
-            Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("a/b\\c"), "No starting slash");
-            Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("\\a/b\\c\\"), "Trailing slash");
-            Assert.AreEqual("kOS", CKAN.KSPPathUtils.GetLastPathElement("GameData/kOS"), "Real world test");
-            Assert.AreEqual("buckethead", CKAN.KSPPathUtils.GetLastPathElement("buckethead"), "No slashes at all");
+            Assert.AreEqual("c", CKAN.CKANPathUtils.GetLastPathElement("/a/b/c"), "Simple case");
+            Assert.AreEqual("c", CKAN.CKANPathUtils.GetLastPathElement("\\a\\b\\c"), "With other slashes");
+            Assert.AreEqual("c", CKAN.CKANPathUtils.GetLastPathElement("\\a/b\\c"), "With mixed slashes");
+            Assert.AreEqual("c", CKAN.CKANPathUtils.GetLastPathElement("a/b\\c"), "No starting slash");
+            Assert.AreEqual("c", CKAN.CKANPathUtils.GetLastPathElement("\\a/b\\c\\"), "Trailing slash");
+            Assert.AreEqual("kOS", CKAN.CKANPathUtils.GetLastPathElement("GameData/kOS"), "Real world test");
+            Assert.AreEqual("buckethead", CKAN.CKANPathUtils.GetLastPathElement("buckethead"), "No slashes at all");
         }
 
         [Test]
         public void GetLeadingPathElements()
         {
-            Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("/a/b/c"), "Simple case");
-            Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("\\a\\b\\c"), "With other slashes");
-            Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("\\a/b\\c"), "With mixed slashes");
-            Assert.AreEqual("a/b", CKAN.KSPPathUtils.GetLeadingPathElements("a/b\\c"), "No starting slash");
-            Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("\\a/b\\c\\"), "Trailing slash");
+            Assert.AreEqual("/a/b", CKAN.CKANPathUtils.GetLeadingPathElements("/a/b/c"), "Simple case");
+            Assert.AreEqual("/a/b", CKAN.CKANPathUtils.GetLeadingPathElements("\\a\\b\\c"), "With other slashes");
+            Assert.AreEqual("/a/b", CKAN.CKANPathUtils.GetLeadingPathElements("\\a/b\\c"), "With mixed slashes");
+            Assert.AreEqual("a/b", CKAN.CKANPathUtils.GetLeadingPathElements("a/b\\c"), "No starting slash");
+            Assert.AreEqual("/a/b", CKAN.CKANPathUtils.GetLeadingPathElements("\\a/b\\c\\"), "Trailing slash");
 
-            Assert.IsEmpty(CKAN.KSPPathUtils.GetLeadingPathElements("ModuleManager.2.5.1.dll"));
+            Assert.IsEmpty(CKAN.CKANPathUtils.GetLeadingPathElements("ModuleManager.2.5.1.dll"));
         }
 
         [Test]
@@ -46,31 +46,31 @@ namespace Tests.Core
         {
             Assert.AreEqual(
                 "GameData/Cake",
-                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "/home/fionna/KSP"),
+                CKAN.CKANPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "/home/fionna/KSP"),
                 "Basic operation"
             );
 
             Assert.AreEqual(
                 "GameData/Cake",
-                CKAN.KSPPathUtils.ToRelative(@"\home\fionna\KSP\GameData\Cake", "/home/fionna/KSP"),
+                CKAN.CKANPathUtils.ToRelative(@"\home\fionna\KSP\GameData\Cake", "/home/fionna/KSP"),
                 "Swapped slashes"
             );
 
             Assert.AreEqual(
                 "GameData/Cake",
-                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake/", "/home/fionna/KSP"),
+                CKAN.CKANPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake/", "/home/fionna/KSP"),
                 "Trailing slash in path"
             );
 
             Assert.AreEqual(
                 "GameData/Cake",
-                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "/home/fionna/KSP/"),
+                CKAN.CKANPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "/home/fionna/KSP/"),
                 "Trailing slash in root"
             );
 
             Assert.AreEqual(
                 "GameData/Cake",
-                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake/", "/home/fionna/KSP/"),
+                CKAN.CKANPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake/", "/home/fionna/KSP/"),
                 "Trailing slashes for everyone!"
             );
             
@@ -79,52 +79,52 @@ namespace Tests.Core
             {
                 Assert.AreEqual(
                     "GameData/Cake",
-                    CKAN.KSPPathUtils.ToRelative("K:GameData/Cake", "K:"),
+                    CKAN.CKANPathUtils.ToRelative("K:GameData/Cake", "K:"),
                     "Root of a Windows drive"
                 );
 
                 Assert.AreEqual(
                     "GameData/Cake",
-                    CKAN.KSPPathUtils.ToRelative("K:GameData/Cake", "K:/"),
+                    CKAN.CKANPathUtils.ToRelative("K:GameData/Cake", "K:/"),
                     "Root of a Windows drive, slash in root"
                 );
 
                 Assert.AreEqual(
                     "GameData/Cake",
-                    CKAN.KSPPathUtils.ToRelative("K:/GameData/Cake", "K:"),
+                    CKAN.CKANPathUtils.ToRelative("K:/GameData/Cake", "K:"),
                     "Root of a Windows drive, slash in path"
                 );
 
                 Assert.AreEqual(
                     "GameData/Cake",
-                    CKAN.KSPPathUtils.ToRelative("K:/GameData/Cake", "K:/"),
+                    CKAN.CKANPathUtils.ToRelative("K:/GameData/Cake", "K:/"),
                     "Root of a Windows drive, slash in both"
                 );
             }
 
             Assert.Throws<PathErrorKraken>(delegate
             {
-                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "/home/finn/KSP");
+                CKAN.CKANPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "/home/finn/KSP");
             }, "Not a sub-path");
 
             Assert.Throws<PathErrorKraken>(delegate
             {
-                CKAN.KSPPathUtils.ToRelative("KSP/GameData/Cake", "/KSP/GameData");
+                CKAN.CKANPathUtils.ToRelative("KSP/GameData/Cake", "/KSP/GameData");
             }, "Path not absolute");
 
             Assert.Throws<PathErrorKraken>(delegate
             {
-                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "home/fionna/KSP");
+                CKAN.CKANPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "home/fionna/KSP");
             }, "Root not absolute");
 
             Assert.Throws<PathErrorKraken>(delegate
             {
-                CKAN.KSPPathUtils.ToRelative(null, "/home/fionna/KSP");
+                CKAN.CKANPathUtils.ToRelative(null, "/home/fionna/KSP");
             }, "null path");
 
             Assert.Throws<PathErrorKraken>(delegate
             {
-                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", null);
+                CKAN.CKANPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", null);
             }, "null root");
 
         }
@@ -138,7 +138,7 @@ namespace Tests.Core
             // Act & Assert
             Assert.DoesNotThrow(() =>
             {
-                string s = CKAN.KSPPathUtils.ToRelative(path, root);
+                string s = CKAN.CKANPathUtils.ToRelative(path, root);
                 Assert.IsEmpty(s);
             });
         }
@@ -148,52 +148,52 @@ namespace Tests.Core
         {
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake","/home/fionna/KSP"),
+                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake","/home/fionna/KSP"),
                 "Basic functionality"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake/","/home/fionna/KSP"),
+                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake/","/home/fionna/KSP"),
                 "Trailing slashes path"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake","/home/fionna/KSP/"),
+                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake","/home/fionna/KSP/"),
                 "Trailing slashes root"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake/","/home/fionna/KSP/"),
+                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake/","/home/fionna/KSP/"),
                 "Trailing slashes for all"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.KSPPathUtils.ToAbsolute(@"GameData\Cake\","/home/fionna/KSP"),
+                CKAN.CKANPathUtils.ToAbsolute(@"GameData\Cake\","/home/fionna/KSP"),
                 "Swapped slashes"
             );
 
             Assert.Throws<PathErrorKraken>(delegate
             {
-                CKAN.KSPPathUtils.ToAbsolute("/GameData/Cake", "/home/fionna/KSP");
+                CKAN.CKANPathUtils.ToAbsolute("/GameData/Cake", "/home/fionna/KSP");
             }, "Rooted path");
 
             Assert.Throws<PathErrorKraken>(delegate
             {
-                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake", "home/fionna/KSP");
+                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake", "home/fionna/KSP");
             }, "Unrooted root");
 
             Assert.Throws<PathErrorKraken>(delegate
             {
-                CKAN.KSPPathUtils.ToAbsolute(null, "/home/fionna/KSP");
+                CKAN.CKANPathUtils.ToAbsolute(null, "/home/fionna/KSP");
             }, "null path");
 
             Assert.Throws<PathErrorKraken>(delegate
             {
-                CKAN.KSPPathUtils.ToAbsolute("/home/fionna/KSP/GameData/Cake", null);
+                CKAN.CKANPathUtils.ToAbsolute("/home/fionna/KSP/GameData/Cake", null);
             }, "null root");
 
         }

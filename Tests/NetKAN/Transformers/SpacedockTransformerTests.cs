@@ -18,7 +18,7 @@ namespace Tests.NetKAN.Transformers
 
         // GH #199: Don't pre-fill KSP version fields if we see a ksp_min/max
         [Test]
-        public void DoesNotReplaceKspVersionProperties()
+        public void DoesNotReplaceGameVersionProperties()
         {
             // Arrange
             var mApi = new Mock<ISpacedockApi>();

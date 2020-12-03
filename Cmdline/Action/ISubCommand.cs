@@ -2,6 +2,6 @@
 {
     internal interface ISubCommand
     {
-        int RunSubCommand(KSPManager manager, CommonOptions opts, SubCommandOptions options);
+        int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions options);
     }
 }

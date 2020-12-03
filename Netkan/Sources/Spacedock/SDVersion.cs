@@ -12,9 +12,9 @@ namespace CKAN.NetKAN.Sources.Spacedock
 
         // These all get filled by JSON deserialisation.
 
-        [JsonConverter(typeof(JsonConvertKSPVersion))]
+        [JsonConverter(typeof(JsonConvertGameVersion))]
         [JsonProperty("game_version")]
-        public KspVersion KSP_version;
+        public GameVersion KSP_version;
 
         public string changelog;
         public DateTime? created;
@@ -31,7 +31,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
         /// will work with more versions than they actually will. This converter
         /// puts the .0 back on when appropriate. GH #1156.
         /// </summary>
-        internal class JsonConvertKSPVersion : JsonConverter
+        internal class JsonConvertGameVersion : JsonConverter
         {
             public override object ReadJson(
                 JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer
@@ -42,7 +42,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
 
                 string raw_version = reader.Value.ToString();
 
-                return KspVersion.Parse(ExpandVersionIfNeeded(raw_version));
+                return GameVersion.Parse(ExpandVersionIfNeeded(raw_version));
             }
 
             /// <summary>

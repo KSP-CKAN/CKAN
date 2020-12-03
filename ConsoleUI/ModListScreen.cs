@@ -15,9 +15,9 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the screen
         /// </summary>
-        /// <param name="mgr">KSP manager object containing the current instance</param>
+        /// <param name="mgr">Game instance manager object containing the current instance</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public ModListScreen(KSPManager mgr, bool dbg)
+        public ModListScreen(GameInstanceManager mgr, bool dbg)
         {
             debug    = dbg;
             manager  = mgr;
@@ -41,7 +41,7 @@ namespace CKAN.ConsoleUI {
                         Renderer = m => ModuleInstaller.StripEpoch(m.version?.ToString() ?? ""),
                         Comparer = (a, b) => a.version.CompareTo(b.version)
                     }, new ConsoleListBoxColumn<CkanModule>() {
-                        Header   = "Max KSP version",
+                        Header   = "Max game version",
                         Width    = 17,
                         Renderer = m => registry.LatestCompatibleKSP(m.identifier)?.ToString() ?? "",
                         Comparer = (a, b) => registry.LatestCompatibleKSP(a.identifier).CompareTo(registry.LatestCompatibleKSP(b.identifier))
@@ -279,7 +279,7 @@ namespace CKAN.ConsoleUI {
                     "Save your mod list",
                     true, ExportInstalled),
                 null,
-                new ConsoleMenuOption("Select KSP install...",      "",
+                new ConsoleMenuOption("Select game instance...",      "",
                     "Switch to a different game instance",
                     true, SelectInstall),
                 new ConsoleMenuOption("Authentication tokens...",     "",
@@ -316,7 +316,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override string CenterHeader()
         {
-            return $"KSP {manager.CurrentInstance.Version()} ({manager.CurrentInstance.Name})";
+            return $"{manager.CurrentInstance.game.ShortName} {manager.CurrentInstance.Version()} ({manager.CurrentInstance.Name})";
         }
 
         // Alt+H doesn't work on Mac, but F1 does, and we need
@@ -465,7 +465,7 @@ namespace CKAN.ConsoleUI {
         private bool ScanForMods()
         {
             try {
-                manager.CurrentInstance.ScanGameData();
+                manager.CurrentInstance.Scan();
             } catch (InconsistentKraken ex) {
                 // Warn about inconsistent state
                 RaiseError(ex.InconsistenciesPretty + " The repo has not been saved.");
@@ -475,8 +475,8 @@ namespace CKAN.ConsoleUI {
 
         private bool SelectInstall()
         {
-            KSP prevInst = manager.CurrentInstance;
-            LaunchSubScreen(new KSPListScreen(manager));
+            GameInstance prevInst = manager.CurrentInstance;
+            LaunchSubScreen(new GameInstanceListScreen(manager));
             // Abort if same instance as before
             if (!prevInst.Equals(manager.CurrentInstance)) {
                 plan.Reset();
@@ -598,7 +598,7 @@ namespace CKAN.ConsoleUI {
             return total;
         }
 
-        private KSPManager       manager;
+        private GameInstanceManager       manager;
         private IRegistryQuerier registry;
         private bool             debug;
 
@@ -702,13 +702,13 @@ namespace CKAN.ConsoleUI {
         /// This function is extremely performance-sensitive because it's the default sort for
         /// the main mod list, so anything in here should be O(1) and fast.
         /// </summary>
-        /// <param name="manager">KSP manager containing the instances</param>
+        /// <param name="manager">Game instance manager containing the instances</param>
         /// <param name="registry">Registry of instance being displayed</param>
         /// <param name="identifier">The mod</param>
         /// <returns>
         /// Status of mod
         /// </returns>
-        public InstallStatus GetModStatus(KSPManager manager, IRegistryQuerier registry, string identifier)
+        public InstallStatus GetModStatus(GameInstanceManager manager, IRegistryQuerier registry, string identifier)
         {
             if (registry.IsInstalled(identifier, false)) {
                 if (Remove.Contains(identifier)) {

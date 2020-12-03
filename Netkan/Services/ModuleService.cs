@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 
 using CKAN.Extensions;
 using CKAN.NetKAN.Sources.Avc;
+using CKAN.Games;
 
 namespace CKAN.NetKAN.Services
 {
@@ -53,7 +54,8 @@ namespace CKAN.NetKAN.Services
         {
             try
             {
-                ModuleInstaller.FindInstallableFiles(module, filePath, null);
+                ModuleInstaller.FindInstallableFiles(module, filePath,
+                    new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser()));
             }
             catch (BadMetadataKraken)
             {
@@ -64,22 +66,22 @@ namespace CKAN.NetKAN.Services
             return true;
         }
 
-        public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip, KSP ksp)
+        public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip, GameInstance inst)
         {
-            return GetFilesBySuffix(module, zip, ".cfg", ksp);
+            return GetFilesBySuffix(module, zip, ".cfg", inst);
         }
 
-        public IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip, KSP ksp)
+        public IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip, GameInstance inst)
         {
-            return GetFilesBySuffix(module, zip, ".dll", ksp);
+            return GetFilesBySuffix(module, zip, ".dll", inst);
         }
 
-        public IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, KSP ksp)
+        public IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, GameInstance ksp)
         {
             return GetFilesBySuffix(module, zip, ".craft", ksp);
         }
 
-        private IEnumerable<InstallableFile> GetFilesBySuffix(CkanModule module, ZipFile zip, string suffix, KSP ksp)
+        private IEnumerable<InstallableFile> GetFilesBySuffix(CkanModule module, ZipFile zip, string suffix, GameInstance ksp)
         {
             return ModuleInstaller
                 .FindInstallableFiles(module, zip, ksp)
@@ -89,7 +91,7 @@ namespace CKAN.NetKAN.Services
 
         public IEnumerable<string> FileDestinations(CkanModule module, string filePath)
         {
-            var ksp = new KSP("/", "dummy", null, false);
+            var ksp = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", null, false);
             return ModuleInstaller
                 .FindInstallableFiles(module, filePath, ksp)
                 .Where(f => !f.source.IsDirectory)
@@ -127,7 +129,8 @@ namespace CKAN.NetKAN.Services
             const string versionExt = ".version";
 
             // Get all our version files.
-            var files = ModuleInstaller.FindInstallableFiles(module, zipfile, null)
+            var ksp = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
+            var files = ModuleInstaller.FindInstallableFiles(module, zipfile, ksp)
                 .Select(x => x.source)
                 .Where(source => source.Name.EndsWith(versionExt,
                     StringComparison.InvariantCultureIgnoreCase))

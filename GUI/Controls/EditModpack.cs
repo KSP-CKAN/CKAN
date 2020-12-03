@@ -20,8 +20,8 @@ namespace CKAN
             this.ToolTip.SetToolTip(NameTextBox,             Properties.Resources.EditModpackTooltipName);
             this.ToolTip.SetToolTip(AbstractTextBox,         Properties.Resources.EditModpackTooltipAbstract);
             this.ToolTip.SetToolTip(VersionTextBox,          Properties.Resources.EditModpackTooltipVersion);
-            this.ToolTip.SetToolTip(KspVersionMinComboBox,   Properties.Resources.EditModpackTooltipKspVersionMin);
-            this.ToolTip.SetToolTip(KspVersionMaxComboBox,   Properties.Resources.EditModpackTooltipKspVersionMax);
+            this.ToolTip.SetToolTip(GameVersionMinComboBox,   Properties.Resources.EditModpackTooltipGameVersionMin);
+            this.ToolTip.SetToolTip(GameVersionMaxComboBox,   Properties.Resources.EditModpackTooltipGameVersionMax);
             this.ToolTip.SetToolTip(LicenseComboBox,         Properties.Resources.EditModpackTooltipLicense);
             this.ToolTip.SetToolTip(IncludeVersionsCheckbox, Properties.Resources.EditModpackTooltipIncludeVersions);
             this.ToolTip.SetToolTip(DependsRadioButton,      Properties.Resources.EditModpackTooltipDepends);
@@ -41,19 +41,19 @@ namespace CKAN
                 NameTextBox.Text       = module.name;
                 AbstractTextBox.Text   = module.@abstract;
                 VersionTextBox.Text    = module.version.ToString();
-                var options = new string[] { "" }.Concat(ServiceLocator.Container.Resolve<IKspBuildMap>().KnownVersions
-                    .SelectMany(v => new KspVersion[] {
-                            new KspVersion(v.Major, v.Minor, v.Patch),
-                            new KspVersion(v.Major, v.Minor)
+                var options = new string[] { "" }.Concat(Main.Instance.CurrentInstance.game.KnownVersions
+                    .SelectMany(v => new GameVersion[] {
+                            new GameVersion(v.Major, v.Minor, v.Patch),
+                            new GameVersion(v.Major, v.Minor)
                         })
                     .Distinct()
                     .OrderByDescending(v => v)
                     .Select(v => v.ToString())
                 );
-                KspVersionMinComboBox.DataSource = options.ToArray();
-                KspVersionMinComboBox.Text = (module.ksp_version_min ?? module.ksp_version)?.ToString();
-                KspVersionMaxComboBox.DataSource = options.ToArray();
-                KspVersionMaxComboBox.Text = (module.ksp_version_max ?? module.ksp_version)?.ToString();
+                GameVersionMinComboBox.DataSource = options.ToArray();
+                GameVersionMinComboBox.Text = (module.ksp_version_min ?? module.ksp_version)?.ToString();
+                GameVersionMaxComboBox.DataSource = options.ToArray();
+                GameVersionMaxComboBox.Text = (module.ksp_version_max ?? module.ksp_version)?.ToString();
                 LicenseComboBox.DataSource = License.valid_licenses.OrderBy(l => l).ToArray();
                 LicenseComboBox.Text = module.license?.FirstOrDefault()?.ToString();
                 LoadRelationships(registry);
@@ -162,11 +162,11 @@ namespace CKAN
                 badField = VersionTextBox;
                 return false;
             }
-            if (!string.IsNullOrEmpty(KspVersionMinComboBox.Text) && !string.IsNullOrEmpty(KspVersionMaxComboBox.Text)
-                && KspVersion.Parse(KspVersionMinComboBox.Text) > KspVersion.Parse(KspVersionMaxComboBox.Text))
+            if (!string.IsNullOrEmpty(GameVersionMinComboBox.Text) && !string.IsNullOrEmpty(GameVersionMaxComboBox.Text)
+                && GameVersion.Parse(GameVersionMinComboBox.Text) > GameVersion.Parse(GameVersionMaxComboBox.Text))
             {
-                error = Properties.Resources.EditModpackBadKspVersions;
-                badField = KspVersionMinComboBox;
+                error = Properties.Resources.EditModpackBadGameVersions;
+                badField = GameVersionMinComboBox;
                 return false;
             }
 
@@ -177,12 +177,12 @@ namespace CKAN
             module.@abstract  = AbstractTextBox.Text;
             module.version    = new ModuleVersion(VersionTextBox.Text);
             module.license    = new List<License>() { new License(LicenseComboBox.Text) };
-            module.ksp_version_min = string.IsNullOrEmpty(KspVersionMinComboBox.Text)
+            module.ksp_version_min = string.IsNullOrEmpty(GameVersionMinComboBox.Text)
                 ? null
-                : KspVersion.Parse(KspVersionMinComboBox.Text);
-            module.ksp_version_max = string.IsNullOrEmpty(KspVersionMaxComboBox.Text)
+                : GameVersion.Parse(GameVersionMinComboBox.Text);
+            module.ksp_version_max = string.IsNullOrEmpty(GameVersionMaxComboBox.Text)
                 ? null
-                : KspVersion.Parse(KspVersionMaxComboBox.Text);
+                : GameVersion.Parse(GameVersionMaxComboBox.Text);
             return true;
         }
 

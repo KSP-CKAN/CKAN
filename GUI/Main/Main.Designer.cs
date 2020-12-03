@@ -32,8 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Main));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.manageKspInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openKspDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.manageGameInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openGameDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,8 +46,8 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.kSPCommandlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.compatibleKSPVersionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.GameCommandlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.compatibleGameVersionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportClientIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportMetadataIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,8 +83,8 @@
             this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.openCKANToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openKSPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openKSPDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.openGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openGameDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -127,8 +127,8 @@
             // fileToolStripMenuItem
             //
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.manageKspInstancesMenuItem,
-            this.openKspDirectoryToolStripMenuItem,
+            this.manageGameInstancesMenuItem,
+            this.openGameDirectoryToolStripMenuItem,
             this.toolStripSeparator1,
             this.installFromckanToolStripMenuItem,
             this.importDownloadsToolStripMenuItem,
@@ -143,19 +143,19 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
             resources.ApplyResources(this.fileToolStripMenuItem, "fileToolStripMenuItem");
             //
-            // manageKspInstancesMenuItem
+            // manageGameInstancesMenuItem
             //
-            this.manageKspInstancesMenuItem.Name = "manageKspInstancesMenuItem";
-            this.manageKspInstancesMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.manageKspInstancesMenuItem.Click += new System.EventHandler(this.manageKspInstancesMenuItem_Click);
-            resources.ApplyResources(this.manageKspInstancesMenuItem, "manageKspInstancesMenuItem");
+            this.manageGameInstancesMenuItem.Name = "manageGameInstancesMenuItem";
+            this.manageGameInstancesMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.manageGameInstancesMenuItem.Click += new System.EventHandler(this.manageGameInstancesMenuItem_Click);
+            resources.ApplyResources(this.manageGameInstancesMenuItem, "manageGameInstancesMenuItem");
             //
-            // openKspDirectoryToolStripMenuItem
+            // openGameDirectoryToolStripMenuItem
             //
-            this.openKspDirectoryToolStripMenuItem.Name = "openKspDirectoryToolStripMenuItem";
-            this.openKspDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.openKspDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openKspDirectoryToolStripMenuItem_Click);
-            resources.ApplyResources(this.openKspDirectoryToolStripMenuItem, "openKspDirectoryToolStripMenuItem");
+            this.openGameDirectoryToolStripMenuItem.Name = "openGameDirectoryToolStripMenuItem";
+            this.openGameDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.openGameDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openGameDirectoryToolStripMenuItem_Click);
+            resources.ApplyResources(this.openGameDirectoryToolStripMenuItem, "openGameDirectoryToolStripMenuItem");
             //
             // toolStripSeparator1
             //
@@ -225,8 +225,8 @@
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cKANSettingsToolStripMenuItem,
             this.pluginsToolStripMenuItem,
-            this.kSPCommandlineToolStripMenuItem,
-            this.compatibleKSPVersionsToolStripMenuItem});
+            this.GameCommandlineToolStripMenuItem,
+            this.compatibleGameVersionsToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
             resources.ApplyResources(this.settingsToolStripMenuItem, "settingsToolStripMenuItem");
@@ -245,19 +245,19 @@
             this.pluginsToolStripMenuItem.Click += new System.EventHandler(this.pluginsToolStripMenuItem_Click);
             resources.ApplyResources(this.pluginsToolStripMenuItem, "pluginsToolStripMenuItem");
             //
-            // kSPCommandlineToolStripMenuItem
+            // GameCommandlineToolStripMenuItem
             //
-            this.kSPCommandlineToolStripMenuItem.Name = "kSPCommandlineToolStripMenuItem";
-            this.kSPCommandlineToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
-            this.kSPCommandlineToolStripMenuItem.Click += new System.EventHandler(this.KSPCommandlineToolStripMenuItem_Click);
-            resources.ApplyResources(this.kSPCommandlineToolStripMenuItem, "kSPCommandlineToolStripMenuItem");
+            this.GameCommandlineToolStripMenuItem.Name = "GameCommandlineToolStripMenuItem";
+            this.GameCommandlineToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
+            this.GameCommandlineToolStripMenuItem.Click += new System.EventHandler(this.GameCommandlineToolStripMenuItem_Click);
+            resources.ApplyResources(this.GameCommandlineToolStripMenuItem, "GameCommandlineToolStripMenuItem");
             //
-            // compatibleKSPVersionsToolStripMenuItem
+            // compatibleGameVersionsToolStripMenuItem
             //
-            this.compatibleKSPVersionsToolStripMenuItem.Name = "compatibleKSPVersionsToolStripMenuItem";
-            this.compatibleKSPVersionsToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
-            this.compatibleKSPVersionsToolStripMenuItem.Click += new System.EventHandler(this.CompatibleKspVersionsToolStripMenuItem_Click);
-            resources.ApplyResources(this.compatibleKSPVersionsToolStripMenuItem, "compatibleKSPVersionsToolStripMenuItem");
+            this.compatibleGameVersionsToolStripMenuItem.Name = "compatibleGameVersionsToolStripMenuItem";
+            this.compatibleGameVersionsToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
+            this.compatibleGameVersionsToolStripMenuItem.Click += new System.EventHandler(this.CompatibleGameVersionsToolStripMenuItem_Click);
+            resources.ApplyResources(this.compatibleGameVersionsToolStripMenuItem, "compatibleGameVersionsToolStripMenuItem");
             //
             // helpToolStripMenuItem
             //
@@ -577,8 +577,8 @@
             this.pauseToolStripMenuItem,
             this.toolStripSeparator5,
             this.openCKANToolStripMenuItem,
-            this.openKSPToolStripMenuItem,
-            this.openKSPDirectoryToolStripMenuItem1,
+            this.openGameToolStripMenuItem,
+            this.openGameDirectoryToolStripMenuItem1,
             this.cKANSettingsToolStripMenuItem1,
             this.toolStripSeparator6,
             this.quitToolStripMenuItem});
@@ -624,19 +624,19 @@
             this.openCKANToolStripMenuItem.Click += new System.EventHandler(this.openCKANToolStripMenuItem_Click);
             resources.ApplyResources(this.openCKANToolStripMenuItem, "openCKANToolStripMenuItem");
             //
-            // openKSPToolStripMenuItem
+            // openGameToolStripMenuItem
             //
-            this.openKSPToolStripMenuItem.Name = "launchKSPToolStripMenuItem";
-            this.openKSPToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openKSPToolStripMenuItem.Click += new System.EventHandler(this.openKSPToolStripMenuItem_Click);
-            resources.ApplyResources(this.openKSPToolStripMenuItem, "openKSPToolStripMenuItem");
+            this.openGameToolStripMenuItem.Name = "openGameToolStripMenuItem";
+            this.openGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openGameToolStripMenuItem.Click += new System.EventHandler(this.openGameToolStripMenuItem_Click);
+            resources.ApplyResources(this.openGameToolStripMenuItem, "openGameToolStripMenuItem");
             //
-            // openKSPDirectoryToolStripMenuItem1
+            // openGameDirectoryToolStripMenuItem1
             //
-            this.openKSPDirectoryToolStripMenuItem1.Name = "openKSPDirectoryToolStripMenuItem1";
-            this.openKSPDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.openKSPDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.openKspDirectoryToolStripMenuItem_Click);
-            resources.ApplyResources(this.openKSPDirectoryToolStripMenuItem1, "openKSPDirectoryToolStripMenuItem1");
+            this.openGameDirectoryToolStripMenuItem1.Name = "openGameDirectoryToolStripMenuItem1";
+            this.openGameDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.openGameDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.openGameDirectoryToolStripMenuItem_Click);
+            resources.ApplyResources(this.openGameDirectoryToolStripMenuItem1, "openGameDirectoryToolStripMenuItem1");
             //
             // cKANSettingsToolStripMenuItem1
             //
@@ -707,8 +707,8 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem manageKspInstancesMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openKspDirectoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem manageGameInstancesMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openGameDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem installFromckanToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportModListToolStripMenuItem;
@@ -721,8 +721,8 @@
         public System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cKANSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pluginsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem kSPCommandlineToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem compatibleKSPVersionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem GameCommandlineToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem compatibleGameVersionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportClientIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportMetadataIssueToolStripMenuItem;
@@ -762,8 +762,8 @@
         public System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem openCKANToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openKSPToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openKSPDirectoryToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem openGameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openGameDirectoryToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem cKANSettingsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;

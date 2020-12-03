@@ -13,7 +13,7 @@ namespace Tests.Core.Net
     [TestFixture]
     public class NetAsyncModulesDownloader
     {
-        private CKAN.KSPManager      manager;
+        private CKAN.GameInstanceManager      manager;
         private CKAN.RegistryManager registry_manager;
         private CKAN.Registry        registry;
         private DisposableKSP        ksp;
@@ -25,7 +25,7 @@ namespace Tests.Core.Net
         [SetUp]
         public void Setup()
         {
-            manager = new KSPManager(new NullUser());
+            manager = new GameInstanceManager(new NullUser());
             // Give us a registry to play with.
             ksp = new DisposableKSP();
             registry_manager = CKAN.RegistryManager.Instance(ksp.KSP);

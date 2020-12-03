@@ -13,10 +13,10 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the Screen
         /// </summary>
-        /// <param name="mgr">KSP manager containing instances</param>
+        /// <param name="mgr">Game instance manager containing instances</param>
         /// <param name="cp">Plan of mods to install or remove</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public InstallScreen(KSPManager mgr, ChangePlan cp, bool dbg)
+        public InstallScreen(GameInstanceManager mgr, ChangePlan cp, bool dbg)
             : base(
                 "Installing, Updating, and Removing Mods",
                 "Calculating..."
@@ -133,9 +133,9 @@ namespace CKAN.ConsoleUI {
                     } catch (BadMetadataKraken ex) {
                         RaiseError($"Bad metadata detected for {ex.module}: {ex.Message}");
                     } catch (DependencyNotSatisfiedKraken ex) {
-                        RaiseError($"{ex.parent} requires {ex.module}, but it is not listed in the index, or not available for your version of KSP.\r\n{ex.Message}");
+                        RaiseError($"{ex.parent} requires {ex.module}, but it is not listed in the index, or not available for your version of the game.\r\n{ex.Message}");
                     } catch (ModuleNotFoundKraken ex) {
-                        RaiseError($"Module {ex.module} required but it is not listed in the index, or not available for your version of KSP.\r\n{ex.Message}");
+                        RaiseError($"Module {ex.module} required but it is not listed in the index, or not available for your version of the game.\r\n{ex.Message}");
                     } catch (ModNotInstalledKraken ex) {
                         RaiseError($"{ex.mod} is not installed, can't remove");
                     }
@@ -170,7 +170,7 @@ namespace CKAN.ConsoleUI {
             without_enforce_consistency    = false
         };
 
-        private KSPManager manager;
+        private GameInstanceManager manager;
         private ChangePlan plan;
         private bool       debug;
     }

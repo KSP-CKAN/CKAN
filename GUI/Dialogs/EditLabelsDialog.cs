@@ -8,7 +8,7 @@ namespace CKAN
 {
     public partial class EditLabelsDialog : Form
     {
-        public EditLabelsDialog(IUser user, KSPManager manager, ModuleLabelList labels)
+        public EditLabelsDialog(IUser user, GameInstanceManager manager, ModuleLabelList labels)
         {
             InitializeComponent();
             this.user    = user;

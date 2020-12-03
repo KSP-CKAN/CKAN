@@ -112,7 +112,7 @@
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="CKANFileFilter" xml:space="preserve"><value>CKAN Metadaten (*.ckan)|*.ckan</value></data>
   <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>Export der Modliste</value></data>
-  <data name="CloneFakeKspDialogOpenFilter" xml:space="preserve"><value>Build-Metadatendatei (buildID*.txt)|buildID*.txt</value></data>
+  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Build-Metadatendatei</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Bitte gib einen Namen für die neue Instanz an.</value> </data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Bitte gib einen Pfad für die neue Instanz an.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>Klone Instanz...</value></data>
@@ -125,15 +125,15 @@
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>Dieser Name wird bereits verwendet.</value></data>
   <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>Die Erstellung einer gefälschten Instanz ist fehlgeschlagen: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>Instanz erfolgreich erstellt.</value></data>
-  <data name="CompatibleKspVersionsDialogKSPUpdated" xml:space="preserve"><value>KSP wurde aktualisiert, seit du zuletzt deine kompatiblen KSP-Versionen überprüft hast. Bitte stelle sicher, dass die Einstellungen noch korrekt sind.</value></data>
-  <data name="CompatibleKspVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (vorherige Version: {1})</value></data>
-  <data name="CompatibleKspVersionsDialogInvalidFormat" xml:space="preserve"><value>Ungültiges Versionsformat</value></data>
-  <data name="CompatibleKspVersionsDialogErrorTitle" xml:space="preserve"><value>Fehler</value></data>
+  <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>Das Spiel wurde aktualisiert, seit du zuletzt deine kompatiblen Spielversionen überprüft hast. Bitte stelle sicher, dass die Einstellungen noch korrekt sind.</value></data>
+  <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (vorherige Version: {1})</value></data>
+  <data name="CompatibleGameVersionsDialogInvalidFormat" xml:space="preserve"><value>Ungültiges Versionsformat</value></data>
+  <data name="CompatibleGameVersionsDialogErrorTitle" xml:space="preserve"><value>Fehler</value></data>
   <data name="ConfigurationParseError" xml:space="preserve"><value>Fehler beim Parsen von "{0}"{1}
 
 Versuche {2} aus {3} zu verschieben und CKAN neu zu starten.</value></data>
   <data name="GUIModUnknown" xml:space="preserve"><value>Unbekannt</value></data>
-  <data name="GUIModKSPCompatibilityLong" xml:space="preserve"><value>{0} (bei Mod-Version {1})</value></data>
+  <data name="GUIModGameCompatibilityLong" xml:space="preserve"><value>{0} (bei Mod-Version {1})</value></data>
   <data name="MainAutoUpdateFailed" xml:space="preserve">
     <value>Fehler beim Auto-Update:
 {0}</value>
@@ -153,7 +153,7 @@ Versuche {2} aus {3} zu verschieben und CKAN neu zu starten.</value></data>
   </data>
   <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>Aktualisiere CKAN</value></data>
   <data name="MainUpgradingTo" xml:space="preserve"><value>Aktualisiere CKAN auf {0}</value></data>
-  <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0} ist abhängig von {1}, das nicht mit der aktuell installierten KSP-Version kompatibel ist.</value></data>
+  <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0} ist abhängig von {1}, das nicht mit der aktuell installierten Spielversion kompatibel ist.</value></data>
   <data name="MainFilterAll" xml:space="preserve"><value>Filter (Alle)</value></data>
   <data name="MainFilterIncompatible" xml:space="preserve"><value>Filter (Inkompatibel)</value></data>
   <data name="MainFilterInstalled" xml:space="preserve"><value>Filter (Installiert)</value></data>
@@ -168,13 +168,13 @@ Versuche {2} aus {3} zu verschieben und CKAN neu zu starten.</value></data>
   <data name="MainFilterTag" xml:space="preserve"><value>Kategorie ({0})</value></data>
   <data name="MainFilterUntagged" xml:space="preserve"><value>Kategorie (Keine)</value></data>
   <data name="MainLaunchWithIncompatible" xml:space="preserve">
-    <value>Einige installierte Module sind inkompatibel! Es ist möglicherweise nicht sicher, KSP zu starten. Trotzdem starten?
+    <value>Einige installierte Module sind inkompatibel! Es ist möglicherweise nicht sicher, das Spiel zu starten. Trotzdem starten?
 
 {0}</value>
   </data>
   <data name="MainLaunch" xml:space="preserve"><value>Starten</value></data>
   <data name="MainLaunchFailed" xml:space="preserve">
-    <value>KSP konnte nicht gestartet werden.
+    <value>Das Spiel konnte nicht gestartet werden.
 
 {0}</value>
   </data>
@@ -193,8 +193,8 @@ Möchten Sie es wirklich installieren?</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Mod-Import</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Statuslog</value></data>
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>Statuslog</value></data>
-  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} erfordert {1}, ist aber nicht im Index aufgeführt oder nicht für die installierte KSP-Version verfügbar.</value></data>
-  <data name="MainInstallNotFound" xml:space="preserve"><value>Modul {0} benötigt, aber es ist nicht im Index aufgeführt oder nicht für dies KSP-Version verfügbar.</value></data>
+  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} erfordert {1}, ist aber nicht im Index aufgeführt oder nicht für die installierte Spielversion verfügbar.</value></data>
+  <data name="MainInstallNotFound" xml:space="preserve"><value>Modul {0} benötigt, aber es ist nicht im Index aufgeführt oder nicht für dies Spielversion verfügbar.</value></data>
   <data name="MainInstallBadMetadata" xml:space="preserve"><value>Fehlerhafte Metadaten für das Modul {0} erkannt: {1}</value></data>
   <data name="MainInstallFileExists" xml:space="preserve">
     <value>Oh nein! Wir haben versucht, eine Datei zu überschreiben, die einer anderen Mod gehört!
@@ -304,8 +304,8 @@ Wenn du ein Fehler mit dem CKAN Client vermutest: https://github.com/KSP-CKAN/CK
   <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>{0} Aktualisierung(en) verfügbar</value></data>
   <data name="MainWaitPleaseWait" xml:space="preserve"><value>Bitte warten</value></data>
   <data name="MainWaitDone" xml:space="preserve"><value>Alles erledigt!</value></data>
-  <data name="ManageKspInstancesNotValid" xml:space="preserve"><value>"{0}" ist kein gültiges KSP-Verzeichnis.</value></data>
-  <data name="ManageKspInstancesDirectoryDeleted" xml:space="preserve"><value>Das Verzeichnis "{0}" existiert nicht.</value></data>
+  <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>"{0}" ist kein gültiges Spielverzeichnis.</value></data>
+  <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Das Verzeichnis "{0}" existiert nicht.</value></data>
   <data name="NewRepoDialogFailed" xml:space="preserve"><value>Die Master-Liste konnte nicht abgerufen werden.</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} Dateien, {1}</value></data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Ungültiger Pfad: "{0}"</value></data>
@@ -329,7 +329,7 @@ Möchtest du CKAN dies erlauben?
 Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   </data>
   <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Linkadresse kopieren</value></data>
-  <data name="StatusInstanceLabelText" xml:space="preserve"><value>Spielinstanz: {0} (KSP {1})</value></data>
+  <data name="StatusInstanceLabelText" xml:space="preserve"><value>Spielinstanz: {0} ({1} {2})</value></data>
   <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favoriten</value></data>
   <data name="ModuleLabelListHidden" xml:space="preserve"><value>Versteckt</value></data>
   <data name="ModuleLabelListGlobal" xml:space="preserve"><value>Global</value></data>
@@ -347,7 +347,7 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="EditLabelsToolTipColor" xml:space="preserve"><value>Module mit diesem Label werden haben diese Hintergrundfarbe in der Modliste</value></data>
   <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>Instanz, für welche dieses Label verfügbar ist. Leerlassen, um es in allen Instanzen verfügbar zu haben</value></data>
   <data name="EditLabelsToolTipHide" xml:space="preserve"><value>Wenn diese Option aktiviert ist, werden Module mit diesem Label ausgeblendet</value></data>
-  <data name="EditLabelsToolTipNotifyOnChanges" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird eine Benachrichtigung angezeigt, sobald das Modul für deine KSP-Version kompatibel wird</value></data>
+  <data name="EditLabelsToolTipNotifyOnChanges" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird eine Benachrichtigung angezeigt, sobald das Modul für deine Spielversion kompatibel wird</value></data>
   <data name="EditLabelsToolTipRemoveOnChanges" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird das Label von Modulen entfernt, sobald sie kompatibel werden</value></data>
   <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird eine Warnung angezeigt, wenn das Modul installiert werden soll</value></data>
   <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird das Label von dem Modul entfernt, wenn es installiert wurde</value></data>
@@ -359,13 +359,13 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="EditModpackBadIdentifier" xml:space="preserve"><value>Die Kennung darf nur aus Buchstaben, Zahlen und Bindestrichen bestehen, muss mindestens zwei Zeichen lang sein und darf nicht mit einem Bindestrich beginnen.</value></data>
   <data name="EditModpackBadName" xml:space="preserve"><value>Ein Name für das Modpack ist erforderlich.</value></data>
   <data name="EditModpackBadVersion" xml:space="preserve"><value>Eine Version für das Modpack ist erforderlich.</value></data>
-  <data name="EditModpackBadKspVersions" xml:space="preserve"><value>Die minimale KSP-Version muss kleiner oder gleich der maximalen KSP-Version sein.</value></data>
+  <data name="EditModpackBadGameVersions" xml:space="preserve"><value>Die minimale Spielversion muss kleiner oder gleich der maximalen Spielversion sein.</value></data>
   <data name="EditModpackTooltipIdentifier" xml:space="preserve"><value>Interne Kennung dieses Modpacks; Nur Buchstaben, Zahlen und Bindestriche</value></data>
   <data name="EditModpackTooltipName" xml:space="preserve"><value>Öffentlich sichtbarer Name dieses Modpacks</value></data>
   <data name="EditModpackTooltipAbstract" xml:space="preserve"><value>Kurze Zusammenfassung dieses Modpacks</value></data>
   <data name="EditModpackTooltipVersion" xml:space="preserve"><value>Die Versionsnummer für dieses Modpack, nutze das heutige Datum um es später einfach zuordnen zu können.</value></data>
-  <data name="EditModpackTooltipKspVersionMin" xml:space="preserve"><value>Setze die früheste KSP-Version fest, unter der das Modpack installiert werden kann. Leer für unbeschränkt.</value></data>
-  <data name="EditModpackTooltipKspVersionMax" xml:space="preserve"><value>Setze die neusete KSP-Version fest, unter der das Modpack installiert werden kann. Leer für unbeschränkt.</value></data>
+  <data name="EditModpackTooltipGameVersionMin" xml:space="preserve"><value>Setze die früheste Spielversion fest, unter der das Modpack installiert werden kann. Leer für unbeschränkt.</value></data>
+  <data name="EditModpackTooltipGameVersionMax" xml:space="preserve"><value>Setze die neusete Spielversion fest, unter der das Modpack installiert werden kann. Leer für unbeschränkt.</value></data>
   <data name="EditModpackTooltipLicense" xml:space="preserve"><value>Die Lizenz für dieses Modpack</value></data>
   <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>Wenn diese Option aktiviert ist, wird bei jeder Mod die unten angezeigte Version mitgespeichert. Beim Importieren des Modpacks werden dann genau diese Versionen installiert.</value></data>
   <data name="EditModpackTooltipDepends" xml:space="preserve"><value>Speichere die ausgewählten Mods als Abhängigkeiten im Modpack. Diese Mods werden bei der Installation des Modpacks auf jeden Fall installiert.</value></data>

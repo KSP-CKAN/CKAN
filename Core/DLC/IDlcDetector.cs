@@ -1,4 +1,5 @@
 ﻿using CKAN.Versioning;
+using CKAN.Games;
 
 namespace CKAN.DLC
 {
@@ -8,12 +9,12 @@ namespace CKAN.DLC
     public interface IDlcDetector
     {
         string IdentifierBaseName { get; }
-        KspVersion ReleaseGameVersion { get; }
+        GameVersion ReleaseGameVersion { get; }
 
         /// <summary>
         /// Checks if the relevant DLC is installed in the specific KSP installation.
         /// </summary>
-        /// <param name="ksp">The KSP installation to check.</param>
+        /// <param name="inst">The KSP installation to check.</param>
         /// <param name="identifier">
         /// The identifier to use for the DLC's psuedo-module. Value is undefined if this method is undefined.
         /// </param>
@@ -26,18 +27,18 @@ namespace CKAN.DLC
         /// <item>
         /// <term><c>true</c></term>
         /// <description>
-        /// When the relevant DLC is installed in the installation specified by <paramref name="ksp"/>.
+        /// When the relevant DLC is installed in the installation specified by <paramref name="inst"/>.
         /// </description>
         /// </item>
         /// <item>
         /// <term><c>false</c></term>
         /// <description>
-        /// When the relevant DLC is not installed in the installation specified by <paramref name="ksp"/>.
+        /// When the relevant DLC is not installed in the installation specified by <paramref name="inst"/>.
         /// </description>
         /// </item>
         /// </list>
         /// </returns>
-        bool IsInstalled(KSP ksp, out string identifier, out UnmanagedModuleVersion version);
+        bool IsInstalled(GameInstance inst, out string identifier, out UnmanagedModuleVersion version);
 
         /// <summary>
         /// Path to the DLC directory relative to GameDir.
@@ -50,6 +51,6 @@ namespace CKAN.DLC
         /// Determines whether the DLC is allowed to be installed (or faked)
         /// on the specified base version (i.e. the game version of the KSP instance.)
         /// </summary>
-        bool AllowedOnBaseVersion(KspVersion baseVersion);
+        bool AllowedOnBaseVersion(GameVersion baseVersion);
     }
 }

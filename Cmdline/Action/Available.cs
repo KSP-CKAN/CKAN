@@ -12,7 +12,7 @@ namespace CKAN.CmdLine
             this.user = user;
         }
 
-        public int RunCommand(CKAN.KSP ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
         {
             AvailableOptions opts       = (AvailableOptions)raw_options;
             IRegistryQuerier registry   = RegistryManager.Instance(ksp).registry;

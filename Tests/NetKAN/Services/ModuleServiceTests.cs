@@ -87,13 +87,13 @@ namespace Tests.NetKAN.Services
             Assert.That(result.version, Is.EqualTo(new ModuleVersion("1.1.0.0")),
                 "ModuleService should get correct version from the internal AVC file."
             );
-            Assert.That(result.ksp_version, Is.EqualTo(KspVersion.Parse("0.24.2")),
+            Assert.That(result.ksp_version, Is.EqualTo(GameVersion.Parse("0.24.2")),
                 "ModuleService should get correct ksp_version from the internal AVC file."
             );
-            Assert.That(result.ksp_version_min, Is.EqualTo(KspVersion.Parse("0.24.0")),
+            Assert.That(result.ksp_version_min, Is.EqualTo(GameVersion.Parse("0.24.0")),
                 "ModuleService should get correct ksp_version_min from the internal AVC file."
             );
-            Assert.That(result.ksp_version_max, Is.EqualTo(KspVersion.Parse("0.24.2")),
+            Assert.That(result.ksp_version_max, Is.EqualTo(GameVersion.Parse("0.24.2")),
                 "ModuleService should get correct ksp_version_max from  the internal AVC file."
             );
         }

@@ -91,7 +91,7 @@ namespace CKAN.CmdLine
         }
 
         // This is required by ISubCommand
-        public int RunSubCommand(KSPManager manager, CommonOptions opts, SubCommandOptions unparsed)
+        public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
         {
             string[] args = unparsed.options.ToArray();
 
@@ -120,7 +120,7 @@ namespace CKAN.CmdLine
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
                     User     = new ConsoleUser(options.Headless);
-                    Manager  = manager ?? new KSPManager(User);
+                    Manager  = manager ?? new GameInstanceManager(User);
                     exitCode = options.Handle(Manager, User);
                     if (exitCode != Exit.OK)
                         return;
@@ -158,11 +158,11 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
-        private static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
+        private RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
         {
             if (master_uri == null)
             {
-                master_uri = Repository.default_repo_master_list;
+                master_uri = MainClass.GetGameInstance(Manager).game.RepositoryListURL;
             }
 
             string json = Net.DownloadText(master_uri);
@@ -180,7 +180,7 @@ namespace CKAN.CmdLine
             }
             catch
             {
-                User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repository.default_repo_master_list.ToString());
+                User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
                 return Exit.ERROR;
             }
 
@@ -238,7 +238,7 @@ namespace CKAN.CmdLine
                 }
                 catch
                 {
-                    User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repository.default_repo_master_list.ToString());
+                    User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Manager.CurrentInstance.game.RepositoryListURL.ToString());
                     return Exit.ERROR;
                 }
 
@@ -322,12 +322,13 @@ namespace CKAN.CmdLine
             log.DebugFormat("About to add repository '{0}' - '{1}'", Repository.default_ckan_repo_name, options.uri);
             SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
-            if (repositories.ContainsKey (Repository.default_ckan_repo_name))
+            if (repositories.ContainsKey(Repository.default_ckan_repo_name))
             {
-                repositories.Remove (Repository.default_ckan_repo_name);
+                repositories.Remove(Repository.default_ckan_repo_name);
             }
 
-            repositories.Add(Repository.default_ckan_repo_name, new Repository(Repository.default_ckan_repo_name, Repository.default_ckan_repo_uri));
+            repositories.Add(Repository.default_ckan_repo_name, new Repository(
+                    Repository.default_ckan_repo_name, options.uri));
 
             User.RaiseMessage("Set {0} repository to '{1}'", Repository.default_ckan_repo_name, options.uri);
             manager.Save();
@@ -335,8 +336,8 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private KSPManager Manager { get; set; }
-        private IUser      User    { get; set; }
+        private GameInstanceManager Manager { get; set; }
+        private IUser               User    { get; set; }
 
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
     }

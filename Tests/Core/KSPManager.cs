@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CKAN;
-using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Core.Configuration;
 using Tests.Data;
+using CKAN;
+using CKAN.Versioning;
+using CKAN.Games;
 
 namespace Tests.Core
 {
@@ -14,14 +15,14 @@ namespace Tests.Core
         private DisposableKSP tidy;
         private const string nameInReg = "testing";
         private FakeConfiguration cfg;
-        KSPManager manager;
+        GameInstanceManager manager;
 
         [SetUp]
         public void SetUp()
         {
             tidy = new DisposableKSP();
             cfg = GetTestCfg(nameInReg);
-            manager = new KSPManager(new NullUser(), cfg);
+            manager = new GameInstanceManager(new NullUser(), cfg);
         }
 
         [TearDown]
@@ -120,7 +121,7 @@ namespace Tests.Core
         {
             string badName = "badInstance";
             string tempdir = TestData.NewTempDir();
-            CKAN.KSP badKSP = new CKAN.KSP(TestData.bad_ksp_dirs().First(), "badDir", new NullUser());
+            CKAN.GameInstance badKSP = new CKAN.GameInstance(new KerbalSpaceProgram(), TestData.bad_ksp_dirs().First(), "badDir", new NullUser());
 
             Assert.Throws<NotKSPDirKraken>(() =>
                 manager.CloneInstance(badKSP, badName, tempdir));
@@ -167,14 +168,14 @@ namespace Tests.Core
         // FakeInstance
 
         [Test]
-        public void FakeInstance_InvalidVersion_ThrowsBadKSPVersionKraken()
+        public void FakeInstance_InvalidVersion_ThrowsBadGameVersionKraken()
         {
             string name = "testname";
             string tempdir = TestData.NewTempDir();
-            KspVersion version = KspVersion.Parse("1.1.99");
+            GameVersion version = GameVersion.Parse("1.1.99");
 
-            Assert.Throws<BadKSPVersionKraken>(() =>
-                manager.FakeInstance(name, tempdir, version));
+            Assert.Throws<BadGameVersionKraken>(() =>
+                manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version));
             Assert.IsFalse(manager.HasInstance(name));
 
             // Tidy up.
@@ -184,21 +185,21 @@ namespace Tests.Core
         [Test,
             TestCase("1.4.0"),
             TestCase("1.6.1")]
-        public void FakeInstance_DlcsWithWrongBaseVersion_ThrowsWrongKSPVersionKraken(string baseVersion)
+        public void FakeInstance_DlcsWithWrongBaseVersion_ThrowsWrongGameVersionKraken(string baseVersion)
         {
             string name = "testname";
-            KspVersion mhVersion = KspVersion.Parse("1.1.0");
-            KspVersion bgVersion = KspVersion.Parse("1.0.0");
+            GameVersion mhVersion = GameVersion.Parse("1.1.0");
+            GameVersion bgVersion = GameVersion.Parse("1.0.0");
             string tempdir = TestData.NewTempDir();
-            KspVersion version = KspVersion.Parse(baseVersion);
+            GameVersion version = GameVersion.Parse(baseVersion);
 
-            Dictionary<CKAN.DLC.IDlcDetector, KspVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, KspVersion>() {
+            Dictionary<CKAN.DLC.IDlcDetector, GameVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, GameVersion>() {
                     { new CKAN.DLC.MakingHistoryDlcDetector(), mhVersion },
                     { new CKAN.DLC.BreakingGroundDlcDetector(), bgVersion }
                 };
 
-            Assert.Throws<WrongKSPVersionKraken>(() =>
-                manager.FakeInstance(name, tempdir, version, dlcs));
+            Assert.Throws<WrongGameVersionKraken>(() =>
+                manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version, dlcs));
             Assert.IsFalse(manager.HasInstance(name));
 
             // Tidy up.
@@ -210,11 +211,11 @@ namespace Tests.Core
         {
             string name = "testname";
             string tempdir = TestData.NewTempDir();
-            KspVersion version = KspVersion.Parse("1.5.1");
+            GameVersion version = GameVersion.Parse("1.5.1");
             System.IO.File.Create(System.IO.Path.Combine(tempdir, "shouldntbehere.txt")).Close();
 
             Assert.Throws<BadInstallLocationKraken>(() =>
-                manager.FakeInstance(name, tempdir, version));
+                manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version));
             Assert.IsFalse(manager.HasInstance(name));
 
             // Tidy up.
@@ -225,18 +226,18 @@ namespace Tests.Core
         public void FakeInstance_ValidArgumentsWithDLCs_ManagerHasValidInstance()
         {
             string name = "testname";
-            KspVersion mhVersion = KspVersion.Parse("1.1.0");
-            KspVersion bgVersion = KspVersion.Parse("1.0.0");
+            GameVersion mhVersion = GameVersion.Parse("1.1.0");
+            GameVersion bgVersion = GameVersion.Parse("1.0.0");
             string tempdir = TestData.NewTempDir();
-            KspVersion version = KspVersion.Parse("1.7.1");
+            GameVersion version = GameVersion.Parse("1.7.1");
 
-            Dictionary<CKAN.DLC.IDlcDetector, KspVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, KspVersion>() {
+            Dictionary<CKAN.DLC.IDlcDetector, GameVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, GameVersion>() {
                     { new CKAN.DLC.MakingHistoryDlcDetector(), mhVersion },
                     { new CKAN.DLC.BreakingGroundDlcDetector(), bgVersion }
                 };
 
-            manager.FakeInstance(name, tempdir, version, dlcs);
-            CKAN.KSP newKSP = new CKAN.KSP(tempdir, name, new NullUser());
+            manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version, dlcs);
+            CKAN.GameInstance newKSP = new CKAN.GameInstance(new KerbalSpaceProgram(), tempdir, name, new NullUser());
             CKAN.DLC.MakingHistoryDlcDetector mhDetector = new CKAN.DLC.MakingHistoryDlcDetector();
             CKAN.DLC.BreakingGroundDlcDetector bgDetector = new CKAN.DLC.BreakingGroundDlcDetector();
 
@@ -264,7 +265,7 @@ namespace Tests.Core
         {
             using (var tidy2 = new DisposableKSP())
             {
-                cfg.Instances.Add(new Tuple<string, string>("tidy2",tidy2.KSP.GameDir()));
+                cfg.Instances.Add(new Tuple<string, string, string>("tidy2",tidy2.KSP.GameDir(), "KSP"));
                 manager.LoadInstancesFromRegistry();
                 manager.ClearAutoStart();
                 Assert.That(manager.GetPreferredInstance(), Is.Null);
@@ -289,7 +290,7 @@ namespace Tests.Core
         public void Ctor_InvalidAutoStart_DoesNotThrow()
         {
             var config = new FakeConfiguration(tidy.KSP, "invalid");
-            Assert.DoesNotThrow(() => new KSPManager(new NullUser(), config));
+            Assert.DoesNotThrow(() => new GameInstanceManager(new NullUser(), config));
             config.Dispose();
         }
 
@@ -299,9 +300,9 @@ namespace Tests.Core
         private FakeConfiguration GetTestCfg(string name)
         {
             return new FakeConfiguration(
-                new List<Tuple<string, string>>
+                new List<Tuple<string, string, string>>
                 {
-                    new Tuple<string, string>(name, tidy.KSP.GameDir())
+                    new Tuple<string, string, string>(name, tidy.KSP.GameDir(), "KSP")
                 },
                 null
             );

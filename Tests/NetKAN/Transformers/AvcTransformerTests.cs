@@ -23,7 +23,7 @@ namespace Tests.NetKAN.Transformers
             var avcVersion = new AvcVersion
             {
                 version = new ModuleVersion("1.0.0"),
-                ksp_version = KspVersion.Parse("1.0.4")
+                ksp_version = GameVersion.Parse("1.0.4")
             };
 
             var mHttp = new Mock<IHttpService>();
@@ -54,14 +54,14 @@ namespace Tests.NetKAN.Transformers
         }
 
         [Test]
-        public void PreferentiallyAddsRangedKspVersionInfo()
+        public void PreferentiallyAddsRangedGameVersionInfo()
         {
             // Arrange
             var avcVersion = new AvcVersion
             {
-                ksp_version = KspVersion.Parse("1.0.4"),
-                ksp_version_min = KspVersion.Parse("0.90"),
-                ksp_version_max  = KspVersion.Parse("1.0.3")
+                ksp_version = GameVersion.Parse("1.0.4"),
+                ksp_version_min = GameVersion.Parse("0.90"),
+                ksp_version_max  = GameVersion.Parse("1.0.3")
             };
 
             var mHttp = new Mock<IHttpService>();
@@ -169,7 +169,7 @@ namespace Tests.NetKAN.Transformers
             null, null, null,
             "any", null, null
         )]
-        public void CorrectlyCalculatesKspVersionInfo(
+        public void CorrectlyCalculatesGameVersionInfo(
             string existingKsp, string existingKspMin, string existingKspMax,
             string avcKsp, string avcKspMin, string avcKspMax,
             string expectedKsp, string expectedKspMin, string expectedKspMax
@@ -194,13 +194,13 @@ namespace Tests.NetKAN.Transformers
             var avcVersion = new AvcVersion();
 
             if (!string.IsNullOrWhiteSpace(avcKsp))
-                avcVersion.ksp_version = KspVersion.Parse(avcKsp);
+                avcVersion.ksp_version = GameVersion.Parse(avcKsp);
 
             if (!string.IsNullOrWhiteSpace(avcKspMin))
-                avcVersion.ksp_version_min = KspVersion.Parse(avcKspMin);
+                avcVersion.ksp_version_min = GameVersion.Parse(avcKspMin);
 
             if (!string.IsNullOrWhiteSpace(avcKspMax))
-                avcVersion.ksp_version_max = KspVersion.Parse(avcKspMax);
+                avcVersion.ksp_version_max = GameVersion.Parse(avcKspMax);
 
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();

@@ -15,7 +15,7 @@ namespace CKAN
             Main_(args);
         }
 
-        public static void Main_(string[] args, KSPManager manager = null, bool showConsole = false)
+        public static void Main_(string[] args, GameInstanceManager manager = null, bool showConsole = false)
         {
             Logging.Initialize();
 

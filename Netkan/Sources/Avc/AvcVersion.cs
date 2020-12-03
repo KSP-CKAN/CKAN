@@ -20,14 +20,14 @@ namespace CKAN.NetKAN.Sources.Avc
         [JsonConverter(typeof(JsonAvcToVersion))]
         public ModuleVersion version;
 
-        [JsonConverter(typeof(JsonAvcToKspVersion))]
-        public KspVersion ksp_version;
+        [JsonConverter(typeof(JsonAvcToGameVersion))]
+        public GameVersion ksp_version;
 
-        [JsonConverter(typeof(JsonAvcToKspVersion))]
-        public KspVersion ksp_version_min;
+        [JsonConverter(typeof(JsonAvcToGameVersion))]
+        public GameVersion ksp_version_min;
 
-        [JsonConverter(typeof(JsonAvcToKspVersion))]
-        public KspVersion ksp_version_max;
+        [JsonConverter(typeof(JsonAvcToGameVersion))]
+        public GameVersion ksp_version_max;
 
     }
 

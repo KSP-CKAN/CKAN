@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using CKAN.Games;
 
 namespace CKAN.CmdLine
 {
@@ -14,7 +15,7 @@ namespace CKAN.CmdLine
             this.user = user;
         }
 
-        public int RunCommand(CKAN.KSP ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
         {
             SearchOptions options = (SearchOptions)raw_options;
 
@@ -88,12 +89,12 @@ namespace CKAN.CmdLine
                     foreach (CkanModule mod in matching_incompatible)
                     {
                         Registry.GetMinMaxVersions(new List<CkanModule> { mod } , out _, out _, out var minKsp, out var maxKsp);
-                        string kspVersion = Versioning.KspVersionRange.VersionSpan(minKsp, maxKsp).ToString();
+                        string GameVersion = Versioning.GameVersionRange.VersionSpan(ksp.game, minKsp, maxKsp).ToString();
 
                         user.RaiseMessage("* {0} ({1} - {2}) - {3} by {4} - {5}",
                             mod.identifier,
                             mod.version,
-                            kspVersion,
+                            GameVersion,
                             mod.name,
                             mod.author == null ? "N/A" : String.Join(", ", mod.author),
                             mod.@abstract);
@@ -121,7 +122,7 @@ namespace CKAN.CmdLine
         /// <returns>List of matching modules.</returns>
         /// <param name="ksp">The KSP instance to perform the search for.</param>
         /// <param name="term">The search term. Case insensitive.</param>
-        public List<CkanModule> PerformSearch(CKAN.KSP ksp, string term, string author = null, bool searchIncompatible = false)
+        public List<CkanModule> PerformSearch(CKAN.GameInstance ksp, string term, string author = null, bool searchIncompatible = false)
         {
             // Remove spaces and special characters from the search term.
             term   = String.IsNullOrWhiteSpace(term)   ? string.Empty : CkanModule.nonAlphaNums.Replace(term, "");
@@ -182,7 +183,7 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <param name="ksp">Game instance forgetting the mods</param>
         /// <param name="modules">List of strings to convert, format 'identifier' or 'identifier=version'</param>
-        public static void AdjustModulesCase(CKAN.KSP ksp, List<string> modules)
+        public static void AdjustModulesCase(CKAN.GameInstance ksp, List<string> modules)
         {
             IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
             // Get the list of all compatible and incompatible mods

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
-using CKAN;
 using NUnit.Framework;
+using CKAN;
+using CKAN.Games;
 
 namespace Tests.Data
 {
@@ -15,7 +16,7 @@ namespace Tests.Data
         private readonly string _goodKsp = TestData.good_ksp_dir();
         private readonly string _disposableDir;
 
-        public KSP KSP { get; private set; }
+        public GameInstance KSP { get; private set; }
 
         /// <summary>
         /// Creates a copy of the provided argument, or a known-good KSP install if passed null.
@@ -38,7 +39,7 @@ namespace Tests.Data
                 File.Copy(registryFile, registryPath, true);
             }
 
-            KSP = new KSP(_disposableDir, "disposable", new NullUser());
+            KSP = new GameInstance(new KerbalSpaceProgram(), _disposableDir, "disposable", new NullUser());
             Logging.Initialize();
         }
 

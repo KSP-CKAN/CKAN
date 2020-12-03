@@ -40,9 +40,9 @@ namespace CKAN
             this.AbstractTextBox = new System.Windows.Forms.TextBox();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.VersionTextBox = new System.Windows.Forms.TextBox();
-            this.KspVersionLabel = new System.Windows.Forms.Label();
-            this.KspVersionMinComboBox = new System.Windows.Forms.ComboBox();
-            this.KspVersionMaxComboBox = new System.Windows.Forms.ComboBox();
+            this.GameVersionLabel = new System.Windows.Forms.Label();
+            this.GameVersionMinComboBox = new System.Windows.Forms.ComboBox();
+            this.GameVersionMaxComboBox = new System.Windows.Forms.ComboBox();
             this.LicenseLabel = new System.Windows.Forms.Label();
             this.LicenseComboBox = new System.Windows.Forms.ComboBox();
             this.IncludeVersionsCheckbox = new System.Windows.Forms.CheckBox();
@@ -80,9 +80,9 @@ namespace CKAN
             this.TopEditPanel.Controls.Add(this.AbstractTextBox);
             this.TopEditPanel.Controls.Add(this.VersionLabel);
             this.TopEditPanel.Controls.Add(this.VersionTextBox);
-            this.TopEditPanel.Controls.Add(this.KspVersionLabel);
-            this.TopEditPanel.Controls.Add(this.KspVersionMinComboBox);
-            this.TopEditPanel.Controls.Add(this.KspVersionMaxComboBox);
+            this.TopEditPanel.Controls.Add(this.GameVersionLabel);
+            this.TopEditPanel.Controls.Add(this.GameVersionMinComboBox);
+            this.TopEditPanel.Controls.Add(this.GameVersionMaxComboBox);
             this.TopEditPanel.Controls.Add(this.LicenseLabel);
             this.TopEditPanel.Controls.Add(this.LicenseComboBox);
             this.TopEditPanel.Controls.Add(this.IncludeVersionsCheckbox);
@@ -167,35 +167,35 @@ namespace CKAN
             this.VersionTextBox.TabIndex = 7;
             resources.ApplyResources(this.VersionTextBox, "VersionTextBox");
             // 
-            // KspVersionLabel
+            // GameVersionLabel
             // 
-            this.KspVersionLabel.AutoSize = true;
-            this.KspVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.KspVersionLabel.Location = new System.Drawing.Point(400, 40);
-            this.KspVersionLabel.Name = "KspVersionLabel";
-            this.KspVersionLabel.Size = new System.Drawing.Size(75, 23);
-            this.KspVersionLabel.TabIndex = 8;
-            resources.ApplyResources(this.KspVersionLabel, "KspVersionLabel");
+            this.GameVersionLabel.AutoSize = true;
+            this.GameVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.GameVersionLabel.Location = new System.Drawing.Point(400, 40);
+            this.GameVersionLabel.Name = "GameVersionLabel";
+            this.GameVersionLabel.Size = new System.Drawing.Size(75, 23);
+            this.GameVersionLabel.TabIndex = 8;
+            resources.ApplyResources(this.GameVersionLabel, "GameVersionLabel");
             // 
-            // KspVersionMinComboBox
+            // GameVersionMinComboBox
             // 
-            this.KspVersionMinComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.KspVersionMinComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.KspVersionMinComboBox.Location = new System.Drawing.Point(515, 40);
-            this.KspVersionMinComboBox.Name = "KspVersionMinComboBox";
-            this.KspVersionMinComboBox.Size = new System.Drawing.Size(70, 23);
-            this.KspVersionMinComboBox.TabIndex = 9;
-            resources.ApplyResources(this.KspVersionMinComboBox, "KspVersionMinComboBox");
+            this.GameVersionMinComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.GameVersionMinComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.GameVersionMinComboBox.Location = new System.Drawing.Point(515, 40);
+            this.GameVersionMinComboBox.Name = "GameVersionMinComboBox";
+            this.GameVersionMinComboBox.Size = new System.Drawing.Size(70, 23);
+            this.GameVersionMinComboBox.TabIndex = 9;
+            resources.ApplyResources(this.GameVersionMinComboBox, "GameVersionMinComboBox");
             // 
-            // KspVersionMaxComboBox
+            // GameVersionMaxComboBox
             // 
-            this.KspVersionMaxComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.KspVersionMaxComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.KspVersionMaxComboBox.Location = new System.Drawing.Point(595, 40);
-            this.KspVersionMaxComboBox.Name = "KspVersionMaxComboBox";
-            this.KspVersionMaxComboBox.Size = new System.Drawing.Size(70, 23);
-            this.KspVersionMaxComboBox.TabIndex = 10;
-            resources.ApplyResources(this.KspVersionMaxComboBox, "KspVersionMaxComboBox");
+            this.GameVersionMaxComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.GameVersionMaxComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.GameVersionMaxComboBox.Location = new System.Drawing.Point(595, 40);
+            this.GameVersionMaxComboBox.Name = "GameVersionMaxComboBox";
+            this.GameVersionMaxComboBox.Size = new System.Drawing.Size(70, 23);
+            this.GameVersionMaxComboBox.TabIndex = 10;
+            resources.ApplyResources(this.GameVersionMaxComboBox, "GameVersionMaxComboBox");
             // 
             // LicenseLabel
             // 
@@ -413,9 +413,9 @@ namespace CKAN
         private System.Windows.Forms.TextBox AbstractTextBox;
         private System.Windows.Forms.Label VersionLabel;
         private System.Windows.Forms.TextBox VersionTextBox;
-        private System.Windows.Forms.Label KspVersionLabel;
-        private System.Windows.Forms.ComboBox KspVersionMinComboBox;
-        private System.Windows.Forms.ComboBox KspVersionMaxComboBox;
+        private System.Windows.Forms.Label GameVersionLabel;
+        private System.Windows.Forms.ComboBox GameVersionMinComboBox;
+        private System.Windows.Forms.ComboBox GameVersionMaxComboBox;
         private System.Windows.Forms.Label LicenseLabel;
         private System.Windows.Forms.ComboBox LicenseComboBox;
         private System.Windows.Forms.CheckBox IncludeVersionsCheckbox;

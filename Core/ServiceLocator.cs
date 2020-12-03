@@ -48,11 +48,11 @@ namespace CKAN
 
             builder.RegisterType<KspBuildIdVersionProvider>()
                 .As<IGameVersionProvider>()
-                .Keyed<IGameVersionProvider>(KspVersionSource.BuildId);
+                .Keyed<IGameVersionProvider>(GameVersionSource.BuildId);
 
             builder.RegisterType<KspReadmeVersionProvider>()
                 .As<IGameVersionProvider>()
-                .Keyed<IGameVersionProvider>(KspVersionSource.Readme);
+                .Keyed<IGameVersionProvider>(GameVersionSource.Readme);
 
             _container = builder.Build();
         }

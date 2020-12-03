@@ -17,7 +17,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="gameInst">Game instance to import into</param>
         /// <param name="cache">Cache object to import into</param>
         /// <param name="cp">Change plan object for marking things to be installed</param>
-        public static void ImportDownloads(KSP gameInst, NetModuleCache cache, ChangePlan cp)
+        public static void ImportDownloads(GameInstance gameInst, NetModuleCache cache, ChangePlan cp)
         {
             ConsoleFileMultiSelectDialog cfmsd = new ConsoleFileMultiSelectDialog(
                 "Import Downloads",
@@ -42,7 +42,7 @@ namespace CKAN.ConsoleUI {
             Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
         };
 
-        private static string FindDownloadsPath(KSP gameInst)
+        private static string FindDownloadsPath(GameInstance gameInst)
         {
             foreach (string p in downloadPaths) {
                 if (!string.IsNullOrEmpty(p) && Directory.Exists(p)) {

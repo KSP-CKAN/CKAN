@@ -99,7 +99,7 @@ namespace CKAN
             new Dictionary<CkanModule, SelectionReason>(new NameComparer());
 
         private readonly IRegistryQuerier registry;
-        private readonly KspVersionCriteria kspversion;
+        private readonly GameVersionCriteria GameVersion;
         private readonly RelationshipResolverOptions options;
         private readonly HashSet<CkanModule> installed_modules;
 
@@ -108,11 +108,11 @@ namespace CKAN
         /// </summary>
         /// <param name="options">Options for the RelationshipResolver</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="kspversion">The current KSP version criteria to consider</param>
-        public RelationshipResolver(RelationshipResolverOptions options, IRegistryQuerier registry, KspVersionCriteria kspversion)
+        /// <param name="GameVersion">The current KSP version criteria to consider</param>
+        public RelationshipResolver(RelationshipResolverOptions options, IRegistryQuerier registry, GameVersionCriteria GameVersion)
         {
             this.registry = registry;
-            this.kspversion = kspversion;
+            this.GameVersion = GameVersion;
             this.options = options;
 
             installed_modules = new HashSet<CkanModule>(registry.InstalledModules.Select(i_module => i_module.Module));
@@ -124,17 +124,17 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Attempts to convert the identifiers to CkanModules and then calls RelationshipResolver.ctor(IEnumerable{CkanModule}, IEnumerable{CkanModule}, Registry, KSPVersion)"/>
+        /// Attempts to convert the identifiers to CkanModules and then calls RelationshipResolver.ctor(IEnumerable{CkanModule}, IEnumerable{CkanModule}, Registry, GameVersion)"/>
         /// </summary>
         /// <param name="modulesToInstall">Identifiers of modules to install, will be converted to CkanModules using CkanModule.FromIDandVersion</param>
         /// <param name="modulesToRemove">Identifiers of modules to remove, will be converted to CkanModules using Registry.InstalledModule</param>
         /// <param name="options">Options for the RelationshipResolver</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="kspversion">The current KSP version criteria to consider</param>
+        /// <param name="GameVersion">The current KSP version criteria to consider</param>
         public RelationshipResolver(IEnumerable<string> modulesToInstall, IEnumerable<string> modulesToRemove, RelationshipResolverOptions options, IRegistryQuerier registry,
-            KspVersionCriteria kspversion) :
+            GameVersionCriteria GameVersion) :
                 this(
-                    modulesToInstall?.Select(mod => TranslateModule(mod, options, registry, kspversion)),
+                    modulesToInstall?.Select(mod => TranslateModule(mod, options, registry, GameVersion)),
                     modulesToRemove?
                         .Select(mod =>
                         {
@@ -143,7 +143,7 @@ namespace CKAN
                         })
                         .Where(identifier => registry.InstalledModule(identifier) != null)
                         .Select(identifier => registry.InstalledModule(identifier).Module),
-                    options, registry, kspversion)
+                    options, registry, GameVersion)
         {
             // Does nothing, just calls the other overloaded constructor
         }
@@ -155,15 +155,15 @@ namespace CKAN
         /// <param name="name">The identifier or identifier=version of the module</param>
         /// <param name="options">If options.allow_incompatible is set, fall back to searching incompatible modules if no compatible has been found</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="kspversion">The current KSP version criteria to consider</param>
+        /// <param name="GameVersion">The current KSP version criteria to consider</param>
         /// <returns>A CkanModule</returns>
-        private static CkanModule TranslateModule(string name, RelationshipResolverOptions options, IRegistryQuerier registry, KspVersionCriteria kspversion)
+        private static CkanModule TranslateModule(string name, RelationshipResolverOptions options, IRegistryQuerier registry, GameVersionCriteria GameVersion)
         {
             if (options.allow_incompatible)
             {
                 try
                 {
-                    return CkanModule.FromIDandVersion(registry, name, kspversion);
+                    return CkanModule.FromIDandVersion(registry, name, GameVersion);
                 }
                 catch (ModuleNotFoundKraken)
                 {
@@ -174,7 +174,7 @@ namespace CKAN
             }
             else
             {
-                return CkanModule.FromIDandVersion(registry, name, kspversion);
+                return CkanModule.FromIDandVersion(registry, name, GameVersion);
             }
         }
 
@@ -185,10 +185,10 @@ namespace CKAN
         /// <param name="modulesToRemove">Modules to remove</param>
         /// <param name="options">Options for the RelationshipResolver</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="kspversion">The current KSP version criteria to consider</param>
+        /// <param name="GameVersion">The current KSP version criteria to consider</param>
         public RelationshipResolver(IEnumerable<CkanModule> modulesToInstall, IEnumerable<CkanModule> modulesToRemove, RelationshipResolverOptions options, IRegistryQuerier registry,
-            KspVersionCriteria kspversion)
-            : this(options, registry, kspversion)
+            GameVersionCriteria GameVersion)
+            : this(options, registry, GameVersion)
         {
             if (modulesToRemove != null)
             {
@@ -424,7 +424,7 @@ namespace CKAN
                 // Pass mod list in case an older version of a module is conflict-free while later versions have conflicts
                 var descriptor1 = descriptor;
                 List<CkanModule> candidates = descriptor
-                    .LatestAvailableWithProvides(registry, kspversion, modlist.Values)
+                    .LatestAvailableWithProvides(registry, GameVersion, modlist.Values)
                     .Where(mod => !modlist.ContainsKey(mod.identifier)
                         && descriptor1.WithinBounds(mod)
                         && MightBeInstallable(mod))
@@ -434,7 +434,7 @@ namespace CKAN
                     // Nothing found, try again without mod list
                     // (conflicts will still be caught below)
                     candidates = descriptor
-                        .LatestAvailableWithProvides(registry, kspversion)
+                        .LatestAvailableWithProvides(registry, GameVersion)
                         .Where(mod => !modlist.ContainsKey(mod.identifier)
                             && descriptor1.WithinBounds(mod)
                             && MightBeInstallable(mod))
@@ -595,7 +595,7 @@ namespace CKAN
             var needed = module.depends
                 // Skip dependencies satisfied by installed modules
                 .Where(depend => !depend.MatchesAny(installed_modules, null, null))
-                .Select(depend => depend.LatestAvailableWithProvides(registry, kspversion));
+                .Select(depend => depend.LatestAvailableWithProvides(registry, GameVersion));
 
             log.DebugFormat("Trying to satisfy: {0}",
                 string.Join("; ", needed.Select(need =>

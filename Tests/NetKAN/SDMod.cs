@@ -43,7 +43,7 @@ namespace Tests.NetKAN
         {
             Assert.AreEqual(
                 expected,
-                SDVersion.JsonConvertKSPVersion.ExpandVersionIfNeeded(original)
+                SDVersion.JsonConvertGameVersion.ExpandVersionIfNeeded(original)
             );
         }
     }

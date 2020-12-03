@@ -76,7 +76,7 @@
     <Compile Include="Services\IModuleService.cs" />
     <Compile Include="Services\ModuleService.cs" />
     <Compile Include="Sources\Avc\AvcVersion.cs" />
-    <Compile Include="Sources\Avc\JsonAvcToKspVersion.cs" />
+    <Compile Include="Sources\Avc\JsonAvcToGameVersion.cs" />
     <Compile Include="Sources\Curse\CurseApi.cs" />
     <Compile Include="Sources\Curse\CurseError.cs" />
     <Compile Include="Sources\Curse\CurseFile.cs" />

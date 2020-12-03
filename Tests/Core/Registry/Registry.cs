@@ -13,8 +13,8 @@ namespace Tests.Core.Registry
     {
         private static readonly CkanModule module = TestData.kOS_014_module();
         private static readonly string identifier = module.identifier;
-        private static readonly KspVersionCriteria v0_24_2 = new KspVersionCriteria(KspVersion.Parse("0.24.2"));
-        private static readonly KspVersionCriteria v0_25_0 = new KspVersionCriteria (KspVersion.Parse("0.25.0"));
+        private static readonly GameVersionCriteria v0_24_2 = new GameVersionCriteria(GameVersion.Parse("0.24.2"));
+        private static readonly GameVersionCriteria v0_25_0 = new GameVersionCriteria (GameVersion.Parse("0.25.0"));
 
         private CKAN.Registry registry;
 
@@ -211,7 +211,7 @@ namespace Tests.Core.Registry
             registry.AddAvailable(modFor181);
 
             // Act
-            KspVersionCriteria v173 = new KspVersionCriteria(KspVersion.Parse("1.7.3"));
+            GameVersionCriteria v173 = new GameVersionCriteria(GameVersion.Parse("1.7.3"));
             List<CkanModule> compat = registry.CompatibleModules(v173).ToList();
 
             // Assert

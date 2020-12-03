@@ -15,11 +15,11 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the screen
         /// </summary>
-        /// <param name="mgr">KSP manager containing instances</param>
+        /// <param name="mgr">Game instance manager containing instances</param>
         /// <param name="cp">Plan of mods to add and remove</param>
         /// <param name="rej">Mods that the user saw and did not select, in this pass or a previous pass</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public DependencyScreen(KSPManager mgr, ChangePlan cp, HashSet<string> rej, bool dbg) : base()
+        public DependencyScreen(GameInstanceManager mgr, ChangePlan cp, HashSet<string> rej, bool dbg) : base()
         {
             debug     = dbg;
             manager   = mgr;
@@ -208,7 +208,7 @@ namespace CKAN.ConsoleUI {
         private HashSet<string> rejected;
 
         private IRegistryQuerier registry;
-        private KSPManager       manager;
+        private GameInstanceManager       manager;
         private ModuleInstaller  installer;
         private ChangePlan       plan;
         private bool             debug;

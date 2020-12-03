@@ -17,7 +17,7 @@ namespace CKAN.CmdLine
         /// Initialize the command
         /// </summary>
         /// <param name="user">IUser object for user interaction</param>
-        public Import(KSPManager mgr, IUser user)
+        public Import(GameInstanceManager mgr, IUser user)
         {
             manager   = mgr;
             this.user = user;
@@ -31,7 +31,7 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Process exit code
         /// </returns>
-        public int RunCommand(CKAN.KSP ksp, object options)
+        public int RunCommand(CKAN.GameInstance ksp, object options)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace CKAN.CmdLine
             }
         }
 
-        private        readonly KSPManager manager;
+        private        readonly GameInstanceManager manager;
         private        readonly IUser      user;
         private static readonly ILog       log = LogManager.GetLogger(typeof(Import));
     }

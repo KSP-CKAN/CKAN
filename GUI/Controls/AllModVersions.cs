@@ -140,7 +140,7 @@ namespace CKAN
                 // Only show checkboxes for non-DLC modules
                 VersionsListView.CheckBoxes = !value.ToModule().IsDLC;
 
-                KSP currentInstance = Main.Instance.Manager.CurrentInstance;
+                GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
                 IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
 
                 List<CkanModule> allAvailableVersions;
@@ -162,12 +162,12 @@ namespace CKAN
                 VersionsListView.Items.AddRange(allAvailableVersions.Select(module =>
                 {
                     ModuleVersion minMod = null, maxMod = null;
-                    KspVersion    minKsp = null, maxKsp = null;
+                    GameVersion   minKsp = null, maxKsp = null;
                     Registry.GetMinMaxVersions(new List<CkanModule>() {module}, out minMod, out maxMod, out minKsp, out maxKsp);
                     ListViewItem toRet = new ListViewItem(new string[]
                         {
                             module.version.ToString(),
-                            KspVersionRange.VersionSpan(minKsp, maxKsp).ToString()
+                            GameVersionRange.VersionSpan(currentInstance.game, minKsp, maxKsp)
                         })
                     {
                         Tag  = module

@@ -498,9 +498,9 @@ namespace CKAN
     /// <summary>
     /// The version is either not in the build map, or incomplete or something like this.
     /// </summary>
-    public class BadKSPVersionKraken : Kraken
+    public class BadGameVersionKraken : Kraken
     {
-        public BadKSPVersionKraken(string reason = null, Exception inner_exception = null)
+        public BadGameVersionKraken(string reason = null, Exception inner_exception = null)
             : base(reason, inner_exception)
         {
         }
@@ -510,11 +510,11 @@ namespace CKAN
     /// The version is a known and per se a valid KSP version, but is not allowed to be used for an action.
     /// For example the given base game version is too low to fake a DLC in instance faking.
     /// </summary>
-    public class WrongKSPVersionKraken : Kraken
+    public class WrongGameVersionKraken : Kraken
     {
-        public readonly Versioning.KspVersion version;
+        public readonly Versioning.GameVersion version;
 
-        public WrongKSPVersionKraken(Versioning.KspVersion version, string reason = null, Exception inner_exception = null)
+        public WrongGameVersionKraken(Versioning.GameVersion version, string reason = null, Exception inner_exception = null)
             : base(reason, inner_exception)
         {
             this.version = version;

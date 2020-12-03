@@ -10,7 +10,7 @@ namespace Tests.Core.Types
     [TestFixture]
     public class GameComparator
     {
-        static readonly KspVersion gameVersion = KspVersion.Parse("1.0.4");
+        static readonly GameVersion gameVersion = GameVersion.Parse("1.0.4");
         CkanModule gameMod;
 
         [SetUp]
@@ -30,10 +30,10 @@ namespace Tests.Core.Types
 
             // Mark the mod as being for 1.0.4
             gameMod.ksp_version = gameMod.ksp_version_min = gameMod.ksp_version_max
-                = KspVersion.Parse("1.0.4");
+                = GameVersion.Parse("1.0.4");
 
             // Now test!
-            Assert.AreEqual(expected, comparator.Compatible(new KspVersionCriteria (gameVersion), gameMod));
+            Assert.AreEqual(expected, comparator.Compatible(new GameVersionCriteria (gameVersion), gameMod));
         }
 
         [Test]
@@ -46,10 +46,10 @@ namespace Tests.Core.Types
 
             // We're going to tweak compatibly to mark the mod as being for 1.0.3
             gameMod.ksp_version = gameMod.ksp_version_min = gameMod.ksp_version_max
-                = KspVersion.Parse("1.0.3");
+                = GameVersion.Parse("1.0.3");
 
             // Now test!
-            Assert.AreEqual(expected, comparator.Compatible(new KspVersionCriteria (gameVersion), gameMod));
+            Assert.AreEqual(expected, comparator.Compatible(new GameVersionCriteria (gameVersion), gameMod));
         }
 
         [Test]
@@ -62,12 +62,12 @@ namespace Tests.Core.Types
 
             // We're going to tweak compatibly to mark the mod as being for 1.0.3 ONLY
             gameMod.ksp_version = gameMod.ksp_version_min = gameMod.ksp_version_max
-                = KspVersion.Parse("1.0.3");
+                = GameVersion.Parse("1.0.3");
 
             gameMod.ksp_version_strict = true;
 
             // Now test!
-            Assert.AreEqual(expected, comparator.Compatible(new KspVersionCriteria (gameVersion), gameMod));
+            Assert.AreEqual(expected, comparator.Compatible(new GameVersionCriteria (gameVersion), gameMod));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace Tests.Core.Types
             var comparator = (CKAN.IGameComparator) Activator.CreateInstance(type);
 
             // The mod already starts off being incompatible, so just do the test. :)
-            Assert.AreEqual(expected, comparator.Compatible(new KspVersionCriteria (gameVersion), gameMod));
+            Assert.AreEqual(expected, comparator.Compatible(new GameVersionCriteria (gameVersion), gameMod));
         }
 
         public static readonly object[] TestStrictGameComparatorCases =
@@ -124,10 +124,10 @@ namespace Tests.Core.Types
             var comparator = new CKAN.StrictGameComparator();
 
             // We're going to tweak compatibly of the mod
-            gameMod.ksp_version = KspVersion.Parse(modVersion);
+            gameMod.ksp_version = GameVersion.Parse(modVersion);
 
             // Now test!
-            Assert.AreEqual(expectedResult, comparator.Compatible(new KspVersionCriteria(KspVersion.Parse(gameVersion)), gameMod));
+            Assert.AreEqual(expectedResult, comparator.Compatible(new GameVersionCriteria(GameVersion.Parse(gameVersion)), gameMod));
         }
 
         public static readonly object[] TestStrictGameComparatorMinMaxCases =
@@ -170,11 +170,11 @@ namespace Tests.Core.Types
             var comparator = new CKAN.StrictGameComparator();
 
             gameMod.ksp_version = null;
-            gameMod.ksp_version_min = modMinVersion == null ? null : KspVersion.Parse(modMinVersion);
-            gameMod.ksp_version_max = modMaxVersion == null ? null : KspVersion.Parse(modMaxVersion);
+            gameMod.ksp_version_min = modMinVersion == null ? null : GameVersion.Parse(modMinVersion);
+            gameMod.ksp_version_max = modMaxVersion == null ? null : GameVersion.Parse(modMaxVersion);
 
             // Now test!
-            Assert.AreEqual(expectedResult, comparator.Compatible(new KspVersionCriteria(KspVersion.Parse(gameVersion)), gameMod));
+            Assert.AreEqual(expectedResult, comparator.Compatible(new GameVersionCriteria(GameVersion.Parse(gameVersion)), gameMod));
         }
     }
 }

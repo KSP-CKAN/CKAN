@@ -12,15 +12,15 @@ namespace CKAN.CmdLine
 
         public IUser User { get; set; }
 
-        public Replace(CKAN.KSPManager mgr, IUser user)
+        public Replace(CKAN.GameInstanceManager mgr, IUser user)
         {
             manager = mgr;
             User = user;
         }
 
-        private KSPManager manager;
+        private GameInstanceManager manager;
 
-        public int RunCommand(CKAN.KSP ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
         {
             ReplaceOptions options = (ReplaceOptions) raw_options;
 

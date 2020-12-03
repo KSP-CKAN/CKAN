@@ -25,7 +25,7 @@ namespace CKAN
             }
         }
 
-        public InstalledModuleFile(string path, KSP ksp)
+        public InstalledModuleFile(string path, GameInstance ksp)
         {
             string absolute_path = ksp.ToAbsoluteGameDir(path);
             sha1_sum = Sha1Sum(absolute_path);
@@ -124,7 +124,7 @@ namespace CKAN
 
         #region Constructors
 
-        public InstalledModule(KSP ksp, CkanModule module, IEnumerable<string> relative_files, bool autoInstalled)
+        public InstalledModule(GameInstance ksp, CkanModule module, IEnumerable<string> relative_files, bool autoInstalled)
         {
             install_time = DateTime.Now;
             source_module = module;
@@ -158,13 +158,13 @@ namespace CKAN
         /// Ensures all files for this module have relative paths.
         /// Called when upgrading registry versions. Should be a no-op
         /// if called on newer registries.</summary>
-        public void Renormalise(KSP ksp)
+        public void Renormalise(GameInstance ksp)
         {
             var normalised_installed_files = new Dictionary<string, InstalledModuleFile>();
 
             foreach (KeyValuePair<string, InstalledModuleFile> tuple in installed_files)
             {
-                string path = KSPPathUtils.NormalizePath(tuple.Key);
+                string path = CKANPathUtils.NormalizePath(tuple.Key);
 
                 if (Path.IsPathRooted(path))
                 {

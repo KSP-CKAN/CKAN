@@ -16,11 +16,11 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the Screen
         /// </summary>
-        /// <param name="mgr">KSP manager containing game instances</param>
+        /// <param name="mgr">Game instance manager containing game instances</param>
         /// <param name="cp">Plan of other mods to be added or removed</param>
         /// <param name="m">The module to display</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public ModInfoScreen(KSPManager mgr, ChangePlan cp, CkanModule m, bool dbg)
+        public ModInfoScreen(GameInstanceManager mgr, ChangePlan cp, CkanModule m, bool dbg)
         {
             debug    = dbg;
             mod      = m;
@@ -461,7 +461,7 @@ namespace CKAN.ConsoleUI {
             if (releases != null && releases.Count > 0) {
 
                 ModuleVersion minMod = null, maxMod = null;
-                KspVersion    minKsp = null, maxKsp = null;
+                GameVersion   minKsp = null, maxKsp = null;
                 Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
                 AddObject(new ConsoleLabel(
                     l + 2, t + 1, r - 2,
@@ -479,7 +479,7 @@ namespace CKAN.ConsoleUI {
                 ));
                 AddObject(new ConsoleLabel(
                     l + 4, t + 3, r - 2,
-                    () => KspVersionRange.VersionSpan(minKsp, maxKsp),
+                    () => GameVersionRange.VersionSpan(manager.CurrentInstance.game, minKsp, maxKsp),
                     null,
                     color
                 ));
@@ -567,11 +567,11 @@ namespace CKAN.ConsoleUI {
             { "forum.kerbalspaceprogram.com", "KSP Forums"       }
         };
 
-        private KSPManager       manager;
-        private IRegistryQuerier registry;
-        private ChangePlan       plan;
-        private CkanModule       mod;
-        private bool             debug;
+        private GameInstanceManager manager;
+        private IRegistryQuerier    registry;
+        private ChangePlan          plan;
+        private CkanModule          mod;
+        private bool                debug;
     }
 
 }

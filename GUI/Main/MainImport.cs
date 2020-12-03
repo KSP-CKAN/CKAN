@@ -68,7 +68,7 @@ namespace CKAN
             Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
         };
 
-        private static string FindDownloadsPath(KSP gameInst)
+        private static string FindDownloadsPath(GameInstance gameInst)
         {
             foreach (string p in downloadPaths)
             {

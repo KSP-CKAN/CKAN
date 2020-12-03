@@ -22,17 +22,17 @@ namespace CKAN.GameVersionProviders
             _kspBuildMap = kspBuildMap;
         }
 
-        public bool TryGetVersion(string directory, out KspVersion result)
+        public bool TryGetVersion(string directory, out GameVersion result)
         {
-            KspVersion buildIdVersion;
+            GameVersion buildIdVersion;
             var hasBuildId = TryGetVersionFromFile(Path.Combine(directory, "buildID.txt"), out buildIdVersion);
 
-            KspVersion buildId64Version;
+            GameVersion buildId64Version;
             var hasBuildId64 = TryGetVersionFromFile(Path.Combine(directory, "buildID64.txt"), out buildId64Version);
 
             if (hasBuildId && hasBuildId64)
             {
-                result = KspVersion.Max(buildIdVersion, buildId64Version);
+                result = GameVersion.Max(buildIdVersion, buildId64Version);
 
                 if (buildIdVersion != buildId64Version)
                 {
@@ -58,12 +58,12 @@ namespace CKAN.GameVersionProviders
             }
             else
             {
-                result = default(KspVersion);
+                result = default(GameVersion);
                 return false;
             }
         }
 
-        private bool TryGetVersionFromFile(string file, out KspVersion result)
+        private bool TryGetVersionFromFile(string file, out GameVersion result)
         {
             if (File.Exists(file))
             {
@@ -84,7 +84,7 @@ namespace CKAN.GameVersionProviders
                 }
             }
 
-            result = default(KspVersion);
+            result = default(GameVersion);
             return false;
         }
     }

@@ -147,7 +147,7 @@
   <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="launchKSPToolStripMenuItem.Text" xml:space="preserve"><value>Launch KSP</value></data>
+  <data name="launchGameToolStripMenuItem.Text" xml:space="preserve"><value>Launch Game</value></data>
   <data name="RefreshToolButton.Text" xml:space="preserve"><value>Refresh</value></data>
   <data name="UpdateAllToolButton.Text" xml:space="preserve"><value>Add available updates</value></data>
   <data name="ApplyToolButton.Text" xml:space="preserve"><value>Apply changes</value></data>
@@ -174,7 +174,7 @@
   <data name="Author.HeaderText" xml:space="preserve"><value>Author</value></data>
   <data name="InstalledVersion.HeaderText" xml:space="preserve"><value>Installed version</value></data>
   <data name="LatestVersion.HeaderText" xml:space="preserve"><value>Latest version</value></data>
-  <data name="KSPCompatibility.HeaderText" xml:space="preserve"><value>Max KSP version</value></data>
+  <data name="GameCompatibility.HeaderText" xml:space="preserve"><value>Max game version</value></data>
   <data name="SizeCol.HeaderText" xml:space="preserve"><value>Download</value></data>
   <data name="ReleaseDate.HeaderText" xml:space="preserve"><value>Release date</value></data>
   <data name="InstallDate.HeaderText" xml:space="preserve"><value>Install date</value></data>

@@ -121,7 +121,7 @@
   <data name="CKANFileFilter" xml:space="preserve"><value>CKAN元数据 (*.ckan)|*.ckan</value></data>
   <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>导出Mod列表</value></data>
   <data name="AboutDialogLabel2Text" xml:space="preserve"><value>版本 {0}</value></data>
-  <data name="CloneFakeKspDialogOpenFilter" xml:space="preserve"><value>Build metadata file (buildID*.txt)|buildID*.txt</value></data>
+  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Build metadata file</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>请输入新实例名称.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>请输入新实例路径.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"正在克隆实例..."</value></data>
@@ -134,16 +134,16 @@
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>该名称已被占用.</value></data>
   <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>伪装实例创建失败: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>成功创建实例.</value></data>
-  <data name="CompatibleKspVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
-  <data name="CompatibleKspVersionsDialogKSPUpdated" xml:space="preserve"><value>KSP已经在您上次确认您的兼容KSP版本后更新. 请确认设置是否正确.</value></data>
-  <data name="CompatibleKspVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (上一个游戏版本: {1})</value></data>
-  <data name="CompatibleKspVersionsDialogInvalidFormat" xml:space="preserve"><value>版本格式无效</value></data>
-  <data name="CompatibleKspVersionsDialogErrorTitle" xml:space="preserve"><value>Error</value></data>
+  <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
+  <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>游戏已经在您上次确认您的兼容游戏版本后更新. 请确认设置是否正确.</value></data>
+  <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (上一个游戏版本: {1})</value></data>
+  <data name="CompatibleGameVersionsDialogInvalidFormat" xml:space="preserve"><value>版本格式无效</value></data>
+  <data name="CompatibleGameVersionsDialogErrorTitle" xml:space="preserve"><value>Error</value></data>
   <data name="ConfigurationParseError" xml:space="preserve"><value>尝试解析 "{0}"{1}时出现错误. 请尝试将其移出文件夹并重启CKAN.</value></data>
   <data name="GUIModNSlashA" xml:space="preserve"><value>N/A</value></data>
   <data name="GUIModUnknown" xml:space="preserve"><value>未知</value></data>
   <data name="GUIModMethodNotCKAN" xml:space="preserve"><value>Method can not be called unless IsCKAN</value></data>
-  <data name="GUIModKSPCompatibilityLong" xml:space="preserve"><value>{0} (正在使用的Mod版本: {1})</value></data>
+  <data name="GUIModGameCompatibilityLong" xml:space="preserve"><value>{0} (正在使用的Mod版本: {1})</value></data>
   <data name="MainAutoUpdateFailed" xml:space="preserve"><value>自动更新错误:&#xD;&#xA;{0}</value></data>
   <data name="MainQuitWithConflicts" xml:space="preserve"><value>存在冲突. 真的要退出吗？&#xD;&#xA;&#xD;&#xA;{0}</value></data>
   <data name="MainQuit" xml:space="preserve"><value>退出</value></data>
@@ -154,7 +154,7 @@
 {0}</value></data>
   <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>正在更新CKAN</value></data>
   <data name="MainUpgradingTo" xml:space="preserve"><value>更新CKAN到 {0}</value></data>
-  <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0} 依赖于 {1}, 而它并不与当前安装的KSP版本兼容</value></data>
+  <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0} 依赖于 {1}, 而它并不与当前安装的游戏版本兼容</value></data>
   <data name="MainFilterAll" xml:space="preserve"><value>筛选 (全部)</value></data>
   <data name="MainFilterIncompatible" xml:space="preserve"><value>筛选 (不兼容)</value></data>
   <data name="MainFilterInstalled" xml:space="preserve"><value>筛选 (已安装)</value></data>
@@ -168,11 +168,11 @@
   <data name="MainFilterLabel" xml:space="preserve"><value>标签 ({0})</value></data>
   <data name="MainFilterTag" xml:space="preserve"><value>分类 ({0})</value></data>
   <data name="MainFilterUntagged" xml:space="preserve"><value>分类 (未分类)</value></data>
-  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>有一些安装的Mod不兼容！启动KSP可能不安全. 真的要启动吗？
+  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>有一些安装的Mod不兼容！启动游戏可能不安全. 真的要启动吗？
 
 {0}</value></data>
   <data name="MainLaunch" xml:space="preserve"><value>启动</value></data>
-  <data name="MainLaunchFailed" xml:space="preserve"><value>无法启动KSP.
+  <data name="MainLaunchFailed" xml:space="preserve"><value>无法启动游戏.
 
 {0}</value></data>
   <data name="MainModPack" xml:space="preserve"><value>CKAN modpack (*.ckan)</value></data>
@@ -197,8 +197,8 @@
   <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>状态日志</value></data>
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>状态日志</value></data>
-  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} 需要 {1} 但它未在索引中列出或不兼容您当前的KSP版本.</value></data>
-  <data name="MainInstallNotFound" xml:space="preserve"><value>需要Mod {0} 但它未在索引中列出或不兼容您当前的KSP版本.</value></data>
+  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} 需要 {1} 但它未在索引中列出或不兼容您当前的游戏版本.</value></data>
+  <data name="MainInstallNotFound" xml:space="preserve"><value>需要Mod {0} 但它未在索引中列出或不兼容您当前的游戏版本.</value></data>
   <data name="MainInstallBadMetadata" xml:space="preserve"><value>检测到损坏的元数据，来自Mod {0}: {1}</value></data>
   <data name="MainInstallFileExists" xml:space="preserve"><value>哦不！ 我们尝试去覆写其它Mod的文件！
 请尝试 `ckan更新` 并重试.
@@ -293,8 +293,8 @@ CKAN Version(CKAN版本)   : {3}</value></data>
   <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>{0} 个可用更新</value></data>
   <data name="MainWaitPleaseWait" xml:space="preserve"><value>请稍候</value></data>
   <data name="MainWaitDone" xml:space="preserve"><value>已完成！</value></data>
-  <data name="ManageKspInstancesNotValid" xml:space="preserve"><value>目录 {0} 并非有效的KSP目录.</value></data>
-  <data name="ManageKspInstancesDirectoryDeleted" xml:space="preserve"><value>目录 "{0}" 不存在.</value></data>
+  <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>目录 {0} 并非有效的游戏目录.</value></data>
+  <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>目录 "{0}" 不存在.</value></data>
   <data name="NewRepoDialogFailed" xml:space="preserve"><value>同步主列表失败.</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>CKAN Plugins (*.dll)|*.dll</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} 个文件, {1}</value></data>
@@ -315,7 +315,7 @@ CKAN Version(CKAN版本)   : {3}</value></data>
   <data name="URLHandlersPrompt" xml:space="preserve"><value>CKAN需要处理 ckan:// URLs 的权限.
 您想要允许CKAN这么做吗? 如果您点击否您将不会再次看到此消息.</value></data>
   <data name="UtilCopyLink" xml:space="preserve"><value>&amp;复制链接地址</value></data>
-  <data name="StatusInstanceLabelText" xml:space="preserve"><value>游戏实例: {0} (KSP {1})</value></data>
+  <data name="StatusInstanceLabelText" xml:space="preserve"><value>游戏实例: {0} ({1} {2})</value></data>
   <data name="ModuleLabelListFavourites" xml:space="preserve"><value>收藏</value></data>
   <data name="ModuleLabelListHidden" xml:space="preserve"><value>隐藏</value></data>
   <data name="ModuleLabelListGlobal" xml:space="preserve"><value>全局</value></data>
@@ -345,13 +345,13 @@ CKAN Version(CKAN版本)   : {3}</value></data>
   <data name="EditModpackBadIdentifier" xml:space="preserve"><value>标识符必须包含一个或多个字母、数字及横杠，并必须以字母或数字开头</value></data>
   <data name="EditModpackBadName" xml:space="preserve"><value>需要名称</value></data>
   <data name="EditModpackBadVersion" xml:space="preserve"><value>需要版本</value></data>
-  <data name="EditModpackBadKspVersions" xml:space="preserve"><value>最低KSP版本必须小于或等于最高KSP版本</value></data>
+  <data name="EditModpackBadGameVersions" xml:space="preserve"><value>最低游戏版本必须小于或等于最高游戏版本</value></data>
   <data name="EditModpackTooltipIdentifier" xml:space="preserve"><value>该Mod包的内部名称；仅限字母、数字和横杠</value></data>
   <data name="EditModpackTooltipName" xml:space="preserve"><value>该Mod包的公开名称</value></data>
   <data name="EditModpackTooltipAbstract" xml:space="preserve"><value>Mod包的简短描述</value></data>
   <data name="EditModpackTooltipVersion" xml:space="preserve"><value>Mod包版本号</value></data>
-  <data name="EditModpackTooltipKspVersionMin" xml:space="preserve"><value>最低兼容KSP版本，留空以应用全部</value></data>
-  <data name="EditModpackTooltipKspVersionMax" xml:space="preserve"><value>最高兼容KSP版本，留空以应用全部</value></data>
+  <data name="EditModpackTooltipGameVersionMin" xml:space="preserve"><value>最低兼容游戏版本，留空以应用全部</value></data>
+  <data name="EditModpackTooltipGameVersionMax" xml:space="preserve"><value>最高兼容游戏版本，留空以应用全部</value></data>
   <data name="EditModpackTooltipLicense" xml:space="preserve"><value>该Mod包的协议</value></data>
   <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>如果勾选，Mod包将会包括特定版本的Mod，否则任何版本均可用</value></data>
   <data name="EditModpackTooltipDepends" xml:space="preserve"><value>移动选中Mod到依赖组. 这些Mod一定会被安装.</value></data>

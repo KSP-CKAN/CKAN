@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using CKAN.Versioning;
+using CKAN.Games;
 using CKAN.GameVersionProviders;
 using CKAN.ConsoleUI.Toolkit;
 using Autofac;
@@ -16,18 +17,19 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the popup
         /// </summary>
-        public CompatibleVersionDialog() : base()
+        public CompatibleVersionDialog(IGame game) : base()
         {
             int l = GetLeft(),
                 r = GetRight();
             int t = GetTop(),
                 b = GetBottom();
 
-            choices = new ConsoleListBox<KspVersion>(
+            loadOptions(game);
+            choices = new ConsoleListBox<GameVersion>(
                 l + 2, t + 2, r - 2, b - 4,
                 options,
-                new List<ConsoleListBoxColumn<KspVersion>>() {
-                    new ConsoleListBoxColumn<KspVersion>() {
+                new List<ConsoleListBoxColumn<GameVersion>>() {
+                    new ConsoleListBoxColumn<GameVersion>() {
                         Header   = "Predefined Version",
                         Width    = r - l - 5,
                         Renderer = v => v.ToString(),
@@ -49,9 +51,9 @@ namespace CKAN.ConsoleUI {
                 GhostText = () => "<Enter a version>"
             };
             AddObject(manualEntry);
-            manualEntry.AddTip("Enter", "Accept value", () => KspVersion.TryParse(manualEntry.Value, out choice));
+            manualEntry.AddTip("Enter", "Accept value", () => GameVersion.TryParse(manualEntry.Value, out choice));
             manualEntry.AddBinding(Keys.Enter, (object sender) => {
-                if (KspVersion.TryParse(manualEntry.Value, out choice)) {
+                if (GameVersion.TryParse(manualEntry.Value, out choice)) {
                     // Good value, done running
                     return false;
                 } else {
@@ -76,31 +78,31 @@ namespace CKAN.ConsoleUI {
         /// <returns>
         /// Row user selected
         /// </returns>
-        public new KspVersion Run(Action process = null)
+        public new GameVersion Run(Action process = null)
         {
             base.Run(process);
             return choice;
         }
 
-        static CompatibleVersionDialog()
+        private void loadOptions(IGame game)
         {
-            options = ServiceLocator.Container.Resolve<IKspBuildMap>().KnownVersions;
+            options = game.KnownVersions;
             // C# won't let us foreach over an array while modifying it
             for (int i = options.Count - 1; i >= 0; --i) {
-                KspVersion v = options[i];
-                // From GUI/CompatibleKspVersionsDialog.cs
-                KspVersion fullKnownVersion = v.ToVersionRange().Lower.Value;
-                KspVersion toAdd = new KspVersion(fullKnownVersion.Major, fullKnownVersion.Minor);
+                GameVersion v = options[i];
+                // From GUI/CompatibleGameVersionsDialog.cs
+                GameVersion fullKnownVersion = v.ToVersionRange().Lower.Value;
+                GameVersion toAdd = new GameVersion(fullKnownVersion.Major, fullKnownVersion.Minor);
                 if (!options.Contains(toAdd)) {
                     options.Add(toAdd);
                 }
             }
         }
 
-        private static List<KspVersion> options;
+        private List<GameVersion> options;
 
-        private ConsoleListBox<KspVersion> choices;
-        private ConsoleField               manualEntry;
-        private KspVersion                 choice;
+        private ConsoleListBox<GameVersion> choices;
+        private ConsoleField                manualEntry;
+        private GameVersion                 choice;
     }
 }

@@ -6,13 +6,13 @@ namespace CKAN
     {
         public BaseGameComparator() { }
 
-        public virtual bool Compatible(KspVersionCriteria gameVersionCriteria, CkanModule module)
+        public virtual bool Compatible(GameVersionCriteria gameVersionCriteria, CkanModule module)
         {
             if (gameVersionCriteria.Versions.Count == 0)
             {
                 return true;
             }
-            foreach (KspVersion gameVersion in gameVersionCriteria.Versions)
+            foreach (GameVersion gameVersion in gameVersionCriteria.Versions)
             {
                 if (SingleVersionsCompatible (gameVersion, module))
                 {
@@ -22,6 +22,6 @@ namespace CKAN
             return false;
         }
 
-        public abstract bool SingleVersionsCompatible(KspVersion gameVersionCriteria, CkanModule module);
+        public abstract bool SingleVersionsCompatible(GameVersion gameVersionCriteria, CkanModule module);
     }
 }
