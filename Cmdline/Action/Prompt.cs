@@ -13,6 +13,19 @@ namespace CKAN.CmdLine
         public int RunCommand(KSPManager manager, object raw_options)
         {
             CommonOptions opts = raw_options as CommonOptions;
+            // Print an intro if not in headless mode
+            if (!(opts?.Headless ?? false))
+            {
+                Console.WriteLine("Welcome to CKAN!");
+                Console.WriteLine("");
+                if (DateTime.Now.Month == 4 && DateTime.Now.Day == 1)
+                {
+                    Console.WriteLine("Happy April Fools' Day! You may want to try the consoleui command.");
+                    Console.WriteLine("");
+                }
+                Console.WriteLine("To get help, type help and press enter.");
+                Console.WriteLine("");
+            }
             bool done = false;
             while (!done)
             {

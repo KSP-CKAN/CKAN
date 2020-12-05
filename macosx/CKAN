@@ -67,9 +67,15 @@ else
     # Default to consoleui on Catalina and later if they double click
     if ! supports_32_bit && [[ "$@" == "" ]]
     then
+        COMMAND=consoleui
+        if [[ $(date +'%m%d') == 0401 ]]
+        then
+            # Prank Mac users on April 1
+            COMMAND=prompt
+        fi
         osascript <<END
 tell application "Terminal"
-    do script "cd \"`pwd`\"; \"$MONO\" \"$ASSEMBLY\" consoleui"
+    do script "cd \"`pwd`\"; \"$MONO\" \"$ASSEMBLY\" $COMMAND"
 end tell
 END
     else
