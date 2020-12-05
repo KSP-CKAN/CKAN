@@ -28,8 +28,8 @@ namespace CKAN.ConsoleUI {
             AddObject(new ConsoleLabel(
                 l + 2, t + 2, l + 2 + labelW,
                 () => "Host:",
-                () => ConsoleTheme.Current.PopupBg,
-                () => ConsoleTheme.Current.PopupFg
+                th => th.PopupBg,
+                th => th.PopupFg
             ));
 
             hostEntry = new ConsoleField(
@@ -42,8 +42,8 @@ namespace CKAN.ConsoleUI {
             AddObject(new ConsoleLabel(
                 l + 2, t + 4, l + 2 + labelW,
                 () => "Token:",
-                () => ConsoleTheme.Current.PopupBg,
-                () => ConsoleTheme.Current.PopupFg
+                th => th.PopupBg,
+                th => th.PopupFg
             ));
 
             tokenEntry = new ConsoleField(
@@ -54,10 +54,10 @@ namespace CKAN.ConsoleUI {
             AddObject(tokenEntry);
 
             AddTip("Esc", "Cancel");
-            AddBinding(Keys.Escape, (object sender) => false);
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
 
             AddTip("Enter", "Accept", validKey);
-            AddBinding(Keys.Enter, (object sender) => {
+            AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 if (validKey()) {
                     ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(hostEntry.Value, tokenEntry.Value);
                     return false;

@@ -23,7 +23,8 @@ namespace CKAN.ConsoleUI {
                 1, 2, -1, -1, 8,
                 () => "Progress",
                 () => "Messages",
-                () => ConsoleTheme.Current.NormalFrameFg
+                // Cheating because our IUser handler needs a theme context
+                th => { yesNoTheme = th; return th.NormalFrameFg; }
             ));
             progress = new ConsoleProgressBar(
                 3, 5, -3,
@@ -78,11 +79,11 @@ namespace CKAN.ConsoleUI {
                 TextAlign.Center,
                 -Console.WindowHeight / 2
             );
-            d.AddBinding(Keys.Y, (object sender) => {
+            d.AddBinding(Keys.Y, (object sender, ConsoleTheme theme) => {
                 d.PressButton(0);
                 return false;
             });
-            d.AddBinding(Keys.N, (object sender) => {
+            d.AddBinding(Keys.N, (object sender, ConsoleTheme theme) => {
                 d.PressButton(1);
                 return false;
             });
@@ -91,9 +92,9 @@ namespace CKAN.ConsoleUI {
             d.AddTip("Cursor keys", "Scroll messages");
             messages.AddScrollBindings(d, true);
 
-            bool val = d.Run() == 0;
-            DrawBackground();
-            Draw();
+            bool val = d.Run(yesNoTheme) == 0;
+            DrawBackground(yesNoTheme);
+            Draw(yesNoTheme);
             return val;
         }
 
@@ -120,6 +121,8 @@ namespace CKAN.ConsoleUI {
 
         private ConsoleProgressBar progress;
         private ConsoleTextBox     messages;
+
+        private ConsoleTheme yesNoTheme;
 
         private string topMessage      = "";
         private string taskDescription = "";

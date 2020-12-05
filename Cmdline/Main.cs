@@ -177,7 +177,7 @@ namespace CKAN.CmdLine
                         return Gui(manager, (GuiOptions)options, args);
 
                     case "consoleui":
-                        return ConsoleUi(manager, options, args);
+                        return ConsoleUi(manager, (ConsoleUIOptions)options, args);
 
                     case "prompt":
                         return new Prompt().RunCommand(manager, cmdline.options);
@@ -277,11 +277,13 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static int ConsoleUi(GameInstanceManager manager, CommonOptions opts, string[] args)
+        private static int ConsoleUi(GameInstanceManager manager, ConsoleUIOptions opts, string[] args)
         {
             // Debug/verbose output just messes up the screen
             LogManager.GetRepository().Threshold = Level.Warn;
-            return CKAN.ConsoleUI.ConsoleUI.Main_(args, manager, opts.Debug);
+            return CKAN.ConsoleUI.ConsoleUI.Main_(args, manager,
+                opts.Theme ?? Environment.GetEnvironmentVariable("CKAN_CONSOLEUI_THEME") ?? "default",
+                opts.Debug);
         }
 
         private static int Version(IUser user)

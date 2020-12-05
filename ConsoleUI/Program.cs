@@ -16,7 +16,7 @@ namespace CKAN.ConsoleUI
         [STAThread]
         public static void Main(string[] args)
         {
-            Main_(args, null);
+            Main_(args, null, null);
         }
 
         /// <summary>
@@ -25,15 +25,16 @@ namespace CKAN.ConsoleUI
         /// </summary>
         /// <param name="args">Command line arguments</param>
         /// <param name="manager">Game instance manager object potentially initialized by command line flags</param>
+        /// <param name="themeName">'default' to use default theme, 'dark' to use dark theme</param>
         /// <param name="debug">True if debug options should be available, false otherwise</param>
         /// <returns>
         /// Process exit status
         /// </returns>
-        public static int Main_(string[] args, GameInstanceManager manager, bool debug = false)
+        public static int Main_(string[] args, GameInstanceManager manager, string themeName, bool debug = false)
         {
             Logging.Initialize();
 
-            new ConsoleCKAN(manager, debug);
+            new ConsoleCKAN(manager, themeName, debug);
 
             // Tell RegistryManager not to throw Dispose-related exceptions at exit
             RegistryManager.DisposeAll();

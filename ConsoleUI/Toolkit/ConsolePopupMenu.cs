@@ -35,17 +35,18 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Display the menu and handle its interactions
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="right">X coordinate of right edge of menu</param>
         /// <param name="top">Y coordinate of top edge of menu</param>
         /// <returns>
         /// Return value of menu option selected by user
         /// </returns>
-        public bool Run(int right, int top)
+        public bool Run(ConsoleTheme theme, int right, int top)
         {
             bool val  = true;
             bool done = false;
             do {
-                Draw(right, top);
+                Draw(theme, right, top);
                 ConsoleKeyInfo k = Console.ReadKey(true);
                 switch (k.Key) {
                     case ConsoleKey.UpArrow:
@@ -63,10 +64,11 @@ namespace CKAN.ConsoleUI.Toolkit {
                             done = true;
                         }
                         if (options[selectedOption].OnExec != null) {
-                            val = options[selectedOption].OnExec();
+                            val = options[selectedOption].OnExec(theme);
                         }
                         if (options[selectedOption].SubMenu != null) {
                             options[selectedOption].SubMenu.Run(
+                                theme,
                                 right - 2,
                                 top + selectedOption + 2
                             );
@@ -81,7 +83,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             return val;
         }
 
-        private void Draw(int right, int top)
+        private void Draw(ConsoleTheme theme, int right, int top)
         {
             if (options.Count > 0) {
                 right = Formatting.ConvertCoord(right, Console.WindowWidth);
@@ -92,8 +94,8 @@ namespace CKAN.ConsoleUI.Toolkit {
                 // Horizontal lines before and after the options
                 int h = options.Count + 2;
 
-                Console.BackgroundColor = ConsoleTheme.Current.MenuBg;
-                Console.ForegroundColor = ConsoleTheme.Current.MenuFg;
+                Console.BackgroundColor = theme.MenuBg;
+                Console.ForegroundColor = theme.MenuFg;
                 string fullHorizLine = new string(Symbols.horizLine, longestLength + 2);
                 for (int index = -1, y = top; y < top + h; ++index, ++y) {
                     Console.SetCursorPosition(right - w + 1, y);
@@ -114,19 +116,19 @@ namespace CKAN.ConsoleUI.Toolkit {
                             // Draw menu option
                             Console.Write(Symbols.vertLine);
                             if (!opt.Enabled) {
-                                Console.ForegroundColor = ConsoleTheme.Current.MenuDisabledFg;
+                                Console.ForegroundColor = theme.MenuDisabledFg;
                             }
                             if (index == selectedOption) {
                                 // Draw highlighted menu option
-                                Console.BackgroundColor = ConsoleTheme.Current.MenuSelectedBg;
+                                Console.BackgroundColor = theme.MenuSelectedBg;
                                 Console.Write(" " + AnnotatedCaption(opt) + " ");
-                                Console.BackgroundColor = ConsoleTheme.Current.MenuBg;
+                                Console.BackgroundColor = theme.MenuBg;
                             } else {
                                 // Draw normal menu option
                                 Console.Write(" " + AnnotatedCaption(opt) + " ");
                             }
                             if (!opt.Enabled) {
-                                Console.ForegroundColor = ConsoleTheme.Current.MenuFg;
+                                Console.ForegroundColor = theme.MenuFg;
                             }
                             Console.Write(Symbols.vertLine);
                         }
@@ -134,17 +136,17 @@ namespace CKAN.ConsoleUI.Toolkit {
                     // Right padding
                     Console.Write(" ");
                 }
-                ConsoleDialog.DrawShadow(right - w + 1, top, right, top + h - 1);
-                DrawFooter();
+                ConsoleDialog.DrawShadow(theme, right - w + 1, top, right, top + h - 1);
+                DrawFooter(theme);
                 Console.SetCursorPosition(right - longestLength - 3, top + selectedOption + 1);
                 Console.CursorVisible = true;
             }
         }
 
-        private void DrawFooter()
+        private void DrawFooter(ConsoleTheme theme)
         {
-            Console.BackgroundColor = ConsoleTheme.Current.FooterBg;
-            Console.ForegroundColor = ConsoleTheme.Current.FooterDescriptionFg;
+            Console.BackgroundColor = theme.FooterBg;
+            Console.ForegroundColor = theme.FooterDescriptionFg;
             Console.SetCursorPosition(0, Console.WindowHeight - 1);
             Console.Write("  ");
             // Windows cmd.exe auto-scrolls the whole window if you draw a
@@ -191,7 +193,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="submenu">Submenu to open for this option</param>
         /// <param name="enabled">true if this option should be drawn normally and allowed for selection, false to draw it grayed out and not allow selection</param>
         public ConsoleMenuOption(string cap, string key, string tt, bool close,
-                Func<bool> exec = null, Func<bool> radio = null, ConsolePopupMenu submenu = null,
+                Func<ConsoleTheme, bool> exec = null, Func<bool> radio = null, ConsolePopupMenu submenu = null,
                 bool enabled = true)
         {
             Caption     = cap;
@@ -223,7 +225,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Function to call if the user chooses this option
         /// </summary>
-        public readonly Func<bool>       OnExec;
+        public readonly Func<ConsoleTheme, bool> OnExec;
         /// <summary>
         /// If set, this option is a radio button, and this function returns its value
         /// </summary>

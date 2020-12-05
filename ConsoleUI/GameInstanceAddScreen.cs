@@ -18,7 +18,7 @@ namespace CKAN.ConsoleUI {
             AddObject(new ConsoleLabel(
                 labelWidth, pathRow + 1, -1,
                 () => $"Example: {examplePath}",
-                null, () => ConsoleTheme.Current.DimLabelFg
+                null, th => th.DimLabelFg
             ));
         }
 

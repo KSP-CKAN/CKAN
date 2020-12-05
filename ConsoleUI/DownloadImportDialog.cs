@@ -14,10 +14,11 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Let the user choose some zip files, then import them to the mod cache.
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="gameInst">Game instance to import into</param>
         /// <param name="cache">Cache object to import into</param>
         /// <param name="cp">Change plan object for marking things to be installed</param>
-        public static void ImportDownloads(GameInstance gameInst, NetModuleCache cache, ChangePlan cp)
+        public static void ImportDownloads(ConsoleTheme theme, GameInstance gameInst, NetModuleCache cache, ChangePlan cp)
         {
             ConsoleFileMultiSelectDialog cfmsd = new ConsoleFileMultiSelectDialog(
                 "Import Downloads",
@@ -25,12 +26,12 @@ namespace CKAN.ConsoleUI {
                 "*.zip",
                 "Import"
             );
-            HashSet<FileInfo> files = cfmsd.Run();
+            HashSet<FileInfo> files = cfmsd.Run(theme);
 
             if (files.Count > 0) {
                 ProgressScreen  ps   = new ProgressScreen("Importing Downloads", "Calculating...");
                 ModuleInstaller inst = ModuleInstaller.GetInstance(gameInst, cache, ps);
-                ps.Run(() => inst.ImportFiles(files, ps,
+                ps.Run(theme, (ConsoleTheme th) => inst.ImportFiles(files, ps,
                     (CkanModule mod) => cp.Install.Add(mod), RegistryManager.Instance(gameInst).registry));
                 // Don't let the installer re-use old screen references
                 inst.User = null;

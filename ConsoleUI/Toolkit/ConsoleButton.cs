@@ -26,29 +26,33 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw the button
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="focused">True if button has the focus, false otherwise</param>
-        public override void Draw(bool focused)
+        public override void Draw(ConsoleTheme theme, bool focused)
         {
             int w = GetRight() - GetLeft() + 1;
 
             // Main button text
             Console.SetCursorPosition(GetLeft(), GetTop());
-            Console.BackgroundColor = ConsoleTheme.Current.PopupButtonBg;
+            Console.BackgroundColor = theme.PopupButtonBg;
             if (focused) {
-                Console.ForegroundColor = ConsoleTheme.Current.PopupButtonSelectedFg;
+                Console.ForegroundColor = theme.PopupButtonSelectedFg;
             } else {
-                Console.ForegroundColor = ConsoleTheme.Current.PopupButtonFg;
+                Console.ForegroundColor = theme.PopupButtonFg;
             }
             Console.Write(ScreenObject.PadCenter(caption, w));
 
             // Right shadow
-            Console.BackgroundColor = ConsoleTheme.Current.PopupBg;
-            Console.ForegroundColor = ConsoleTheme.Current.PopupButtonShadow;
-            Console.Write(Symbols.lowerHalfBlock);
+            if (theme.PopupButtonShadow.HasValue)
+            {
+                Console.BackgroundColor = theme.PopupBg;
+                Console.ForegroundColor = theme.PopupButtonShadow.Value;
+                Console.Write(Symbols.lowerHalfBlock);
 
-            // Bottom shadow
-            Console.SetCursorPosition(GetLeft() + 1, GetTop() + 1);
-            Console.Write(shadowStrip);
+                // Bottom shadow
+                Console.SetCursorPosition(GetLeft() + 1, GetTop() + 1);
+                Console.Write(shadowStrip);
+            }
         }
 
         /// <summary>

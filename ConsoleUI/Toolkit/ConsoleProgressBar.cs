@@ -25,8 +25,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw the progress bar
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="focused">Framework parameter not relevant to this object</param>
-        public override void Draw(bool focused)
+        public override void Draw(ConsoleTheme theme, bool focused)
         {
             int l = GetLeft(), t = GetTop();
             int w = GetRight() - l + 1;
@@ -46,14 +47,14 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             // Draw the highlighted part
             if (highlightWidth > 0) {
-                Console.BackgroundColor = ConsoleTheme.Current.ProgressBarHighlightBg;
-                Console.ForegroundColor = ConsoleTheme.Current.ProgressBarHighlightFg;
+                Console.BackgroundColor = theme.ProgressBarHighlightBg;
+                Console.ForegroundColor = theme.ProgressBarHighlightFg;
                 Console.Write(caption.Substring(0, highlightWidth));
             }
 
             // Draw the non highlighted part
-            Console.BackgroundColor = ConsoleTheme.Current.ProgressBarBg;
-            Console.ForegroundColor = ConsoleTheme.Current.ProgressBarFg;
+            Console.BackgroundColor = theme.ProgressBarBg;
+            Console.ForegroundColor = theme.ProgressBarFg;
             Console.Write(caption.Substring(highlightWidth));
         }
 

@@ -106,14 +106,15 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw a scrollbar for scrollable screen objects
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="r">X coordinate of scrollbar</param>
         /// <param name="t">Y coordinate of top of scrollbar</param>
         /// <param name="b">Y coordinate of bottom of scrollbar</param>
         /// <param name="dragRow">Y coordinate of the box indicating how scrolled the bar is</param>
-        protected void DrawScrollbar(int r, int t, int b, int dragRow)
+        protected void DrawScrollbar(ConsoleTheme theme, int r, int t, int b, int dragRow)
         {
-            Console.BackgroundColor = ConsoleTheme.Current.ScrollBarBg;
-            Console.ForegroundColor = ConsoleTheme.Current.ScrollBarFg;
+            Console.BackgroundColor = theme.ScrollBarBg;
+            Console.ForegroundColor = theme.ScrollBarFg;
             for (int y = t; y <= b; ++y) {
                 Console.SetCursorPosition(r, y);
                 if (y <= t) {
@@ -148,8 +149,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw the UI element
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="focused">If true, draw with focus, else draw without focused</param>
-        public abstract void Draw(bool focused);
+        public abstract void Draw(ConsoleTheme theme, bool focused);
 
         /// <summary>
         /// Return whether the UI element can accept focus

@@ -16,7 +16,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="lf">Function returning the text to show in the label</param>
         /// <param name="bgFunc">Function returning the background color for the label</param>
         /// <param name="fgFunc">Function returning the foreground color for the label</param>
-        public ConsoleLabel(int l, int t, int r, Func<string> lf, Func<ConsoleColor> bgFunc = null, Func<ConsoleColor> fgFunc = null)
+        public ConsoleLabel(int l, int t, int r, Func<string> lf, Func<ConsoleTheme, ConsoleColor> bgFunc = null, Func<ConsoleTheme, ConsoleColor> fgFunc = null)
             : base(l, t, r, t)
         {
             labelFunc  = lf;
@@ -27,20 +27,21 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw the labelFunc
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="focused">Framework parameter not relevant to this object</param>
-        public override void Draw(bool focused)
+        public override void Draw(ConsoleTheme theme, bool focused)
         {
             int w = GetRight() - GetLeft() + 1;
             Console.SetCursorPosition(GetLeft(), GetTop());
             if (getBgColor == null) {
-                Console.BackgroundColor = ConsoleTheme.Current.LabelBg;
+                Console.BackgroundColor = theme.LabelBg;
             } else {
-                Console.BackgroundColor = getBgColor();
+                Console.BackgroundColor = getBgColor(theme);
             }
             if (getFgColor == null) {
-                Console.ForegroundColor = ConsoleTheme.Current.LabelFg;
+                Console.ForegroundColor = theme.LabelFg;
             } else {
-                Console.ForegroundColor = getFgColor();
+                Console.ForegroundColor = getFgColor(theme);
             }
             try {
                 Console.Write(FormatExactWidth(labelFunc(), w));
@@ -55,8 +56,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         public override bool Focusable() { return false; }
 
         private Func<string>       labelFunc;
-        private Func<ConsoleColor> getBgColor;
-        private Func<ConsoleColor> getFgColor;
+        private Func<ConsoleTheme, ConsoleColor> getBgColor;
+        private Func<ConsoleTheme, ConsoleColor> getFgColor;
     }
 
 }

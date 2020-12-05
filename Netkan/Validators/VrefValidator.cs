@@ -43,7 +43,7 @@ namespace CKAN.NetKAN.Validators
                         var avc = _moduleService.GetInternalAvc(mod, file, ".");
                         hasVersionFile = (avc != null);
                     }
-                    catch (BadMetadataKraken k)
+                    catch (BadMetadataKraken)
                     {
                         // This means the install stanzas don't match any files.
                         // That's not our problem; someone else will report it.

@@ -30,15 +30,16 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Run the screen
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="process">Framework parameter not used by this object</param>
-        public override void Run(Action process = null)
+        public override void Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
         {
             HashSet<string> rejected = new HashSet<string>();
-            DrawBackground();
+            DrawBackground(theme);
             using (TransactionScope trans = CkanTransaction.CreateTransactionScope()) {
                 bool retry = false;
                 do {
-                    Draw();
+                    Draw(theme);
                     try {
                         // Reset this so we stop unless an exception sets it to true
                         retry = false;
@@ -49,7 +50,7 @@ namespace CKAN.ConsoleUI {
                             // Track previously rejected optional dependencies and don't prompt for them again.
                             DependencyScreen ds = new DependencyScreen(manager, plan, rejected, debug);
                             if (ds.HaveOptions()) {
-                                LaunchSubScreen(ds);
+                                LaunchSubScreen(theme, ds);
                             }
                         }
 
@@ -106,9 +107,9 @@ namespace CKAN.ConsoleUI {
                     } catch (DownloadThrottledKraken ex) {
                         if (RaiseYesNoDialog($"{ex.ToString()}\n\nEdit authentication tokens now?")) {
                             if (ex.infoUrl != null) {
-                                ModInfoScreen.LaunchURL(ex.infoUrl);
+                                ModInfoScreen.LaunchURL(theme, ex.infoUrl);
                             }
-                            LaunchSubScreen(new AuthTokenScreen());
+                            LaunchSubScreen(theme, new AuthTokenScreen());
                         }
                     } catch (MissingCertificateKraken ex) {
                         RaiseError(ex.ToString());
@@ -122,8 +123,8 @@ namespace CKAN.ConsoleUI {
                             ex.modules,
                             (CkanModule mod) => mod.ToString()
                         );
-                        CkanModule chosen = ch.Run();
-                        DrawBackground();
+                        CkanModule chosen = ch.Run(theme);
+                        DrawBackground(theme);
                         if (chosen != null) {
                             // Use chosen to continue installing
                             plan.Install.Add(chosen);

@@ -23,30 +23,34 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw a drop shadow to the right and bottom of a given box
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="l">Left edge of box casting the shadow</param>
         /// <param name="t">Top edge of box casting the shadow</param>
         /// <param name="r">Right edge of box casting the shadow</param>
         /// <param name="b">Bottom edge of box casting the shadow</param>
-        public static void DrawShadow(int l, int t, int r, int b)
+        public static void DrawShadow(ConsoleTheme theme, int l, int t, int r, int b)
         {
             int w = r - l + 1;
-            Console.BackgroundColor = ConsoleTheme.Current.PopupShadow;
-            if (r < Console.WindowWidth - 2) {
-                // Right shadow
-                for (int y = t + 1; y <= b; ++y) {
-                    if (y >= 0 && y < Console.WindowHeight - 1) {
-                        Console.SetCursorPosition(r + 1, y);
-                        Console.Write("  ");
+            if (theme.PopupShadow.HasValue)
+            {
+                Console.BackgroundColor = theme.PopupShadow.Value;
+                if (r < Console.WindowWidth - 2) {
+                    // Right shadow
+                    for (int y = t + 1; y <= b; ++y) {
+                        if (y >= 0 && y < Console.WindowHeight - 1) {
+                            Console.SetCursorPosition(r + 1, y);
+                            Console.Write("  ");
+                        }
                     }
                 }
-            }
-            // Bottom shadow
-            if (l + w + 2 > Console.WindowWidth) {
-                w = Console.WindowWidth - l - 2;
-            }
-            if (b < Console.WindowHeight - 1) {
-                Console.SetCursorPosition(l + 2, b + 1);
-                Console.Write("".PadRight(w));
+                // Bottom shadow
+                if (l + w + 2 > Console.WindowWidth) {
+                    w = Console.WindowWidth - l - 2;
+                }
+                if (b < Console.WindowHeight - 1) {
+                    Console.SetCursorPosition(l + 2, b + 1);
+                    Console.Write("".PadRight(w));
+                }
             }
         }
 
@@ -92,13 +96,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw the outline of the dialog and clear the footer
         /// </summary>
-        protected override void DrawBackground()
+        protected override void DrawBackground(ConsoleTheme theme)
         {
             int w = GetRight() - GetLeft() + 1;
             string fullHorizLineDouble = new string(Symbols.horizLineDouble, w - 2);
             string midSpace            = new string(' ',                     w - 2);
-            Console.BackgroundColor = ConsoleTheme.Current.PopupBg;
-            Console.ForegroundColor = ConsoleTheme.Current.PopupOutlineFg;
+            Console.BackgroundColor = theme.PopupBg;
+            Console.ForegroundColor = theme.PopupOutlineFg;
             for (int y = GetTop(); y <= GetBottom(); ++y) {
                 if (y < 0 || y >= Console.WindowHeight) {
                     continue;
@@ -123,7 +127,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                     Console.Write(Symbols.vertLineDouble + midSpace + Symbols.vertLineDouble);
                 }
             }
-            DrawShadow(GetLeft(), GetTop(), GetRight(), GetBottom());
+            DrawShadow(theme, GetLeft(), GetTop(), GetRight(), GetBottom());
         }
 
         private bool validX(int x)

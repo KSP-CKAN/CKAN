@@ -40,7 +40,7 @@ namespace CKAN.ConsoleUI {
             );
             AddObject(choices);
             choices.AddTip("Enter", "Select version");
-            choices.AddBinding(Keys.Enter, (object sender) => {
+            choices.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 choice = choices.Selection;
                 return false;
             });
@@ -52,7 +52,7 @@ namespace CKAN.ConsoleUI {
             };
             AddObject(manualEntry);
             manualEntry.AddTip("Enter", "Accept value", () => GameVersion.TryParse(manualEntry.Value, out choice));
-            manualEntry.AddBinding(Keys.Enter, (object sender) => {
+            manualEntry.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 if (GameVersion.TryParse(manualEntry.Value, out choice)) {
                     // Good value, done running
                     return false;
@@ -63,7 +63,7 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip("Esc", "Cancel");
-            AddBinding(Keys.Escape, (object sender) => {
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 choice = null;
                 return false;
             });
@@ -75,12 +75,13 @@ namespace CKAN.ConsoleUI {
         /// Display the dialog and handle its interaction
         /// </summary>
         /// <param name="process">Function to control the dialog, default is normal user interaction</param>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <returns>
         /// Row user selected
         /// </returns>
-        public new GameVersion Run(Action process = null)
+        public new GameVersion Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
         {
-            base.Run(process);
+            base.Run(theme, process);
             return choice;
         }
 

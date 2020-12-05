@@ -35,7 +35,7 @@ namespace CKAN.ConsoleUI {
             AddObject(url);
 
             AddTip("F2", "Accept");
-            AddBinding(Keys.F2, (object sender) => {
+            AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
                 if (Valid()) {
                     Save();
                     return false;
@@ -45,7 +45,7 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip("Esc", "Cancel");
-            AddBinding(Keys.Escape, (object sender) => {
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 return false;
             });
 
@@ -57,7 +57,7 @@ namespace CKAN.ConsoleUI {
                     Repository repo = r;
                     opts.Add(new ConsoleMenuOption(
                         repo.name, "", $"Import values from default mod list source {repo.name}",
-                        true, () => {
+                        true, (ConsoleTheme theme) => {
                             name.Value    = repo.name;
                             name.Position = name.Value.Length;
                             url.Value     = repo.uri.ToString();

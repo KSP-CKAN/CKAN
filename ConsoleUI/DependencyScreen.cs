@@ -64,13 +64,13 @@ namespace CKAN.ConsoleUI {
                 1, 0, ListSortDirection.Descending
             );
             dependencyList.AddTip("+", "Toggle");
-            dependencyList.AddBinding(Keys.Plus, (object sender) => {
+            dependencyList.AddBinding(Keys.Plus, (object sender, ConsoleTheme theme) => {
                 ChangePlan.toggleContains(accepted, dependencyList.Selection.module);
                 return true;
             });
 
             dependencyList.AddTip("Ctrl+A", "Select all");
-            dependencyList.AddBinding(Keys.CtrlA, (object sender) => {
+            dependencyList.AddBinding(Keys.CtrlA, (object sender, ConsoleTheme theme) => {
                 foreach (var kvp in dependencies) {
                     if (!accepted.Contains(kvp.Key)) {
                         ChangePlan.toggleContains(accepted, kvp.Key);
@@ -80,15 +80,15 @@ namespace CKAN.ConsoleUI {
             });
 
             dependencyList.AddTip("Ctrl+D", "Deselect all", () => accepted.Count > 0);
-            dependencyList.AddBinding(Keys.CtrlD, (object sender) => {
+            dependencyList.AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) => {
                 accepted.Clear();
                 return true;
             });
 
             dependencyList.AddTip("Enter", "Details");
-            dependencyList.AddBinding(Keys.Enter, (object sender) => {
+            dependencyList.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 if (dependencyList.Selection != null) {
-                    LaunchSubScreen(new ModInfoScreen(
+                    LaunchSubScreen(theme, new ModInfoScreen(
                         manager, plan,
                         dependencyList.Selection.module,
                         debug
@@ -100,7 +100,7 @@ namespace CKAN.ConsoleUI {
             AddObject(dependencyList);
 
             AddTip("Esc", "Cancel");
-            AddBinding(Keys.Escape, (object sender) => {
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 // Add everything to rejected
                 foreach (var kvp in dependencies) {
                     rejected.Add(kvp.Key.identifier);
@@ -109,7 +109,7 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip("F9", "Accept");
-            AddBinding(Keys.F9, (object sender) => {
+            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
                 foreach (CkanModule mod in accepted) {
                     plan.Install.Add(mod);
                 }

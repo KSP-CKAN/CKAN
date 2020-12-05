@@ -19,7 +19,7 @@ namespace CKAN.ConsoleUI {
             manager = mgr;
 
             AddTip("F2", "Accept");
-            AddBinding(Keys.F2, (object sender) => {
+            AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
                 if (Valid()) {
                     Save();
                     // Close screen
@@ -31,7 +31,7 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip("Esc", "Cancel");
-            AddBinding(Keys.Escape, (object sender) => {
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 // Discard changes
                 return false;
             });
@@ -98,14 +98,19 @@ namespace CKAN.ConsoleUI {
                 // Handle default path dragged-and-dropped onto Mac's Terminal
                 path.Value = path.Value.Replace("Kerbal\\ Space\\ Program", "Kerbal Space Program");
             }
-            if (!GameInstanceManager.IsGameInstanceDir(new DirectoryInfo(path.Value))) {
-                // Complain about non-KSP path
-                RaiseError("Path does not correspond to a game folder!");
-                SetFocus(path);
-                return false;
-            } else {
-                return true;
+            try
+            {
+                // DirectoryInfo's constructor throws exceptions for invalid characters, empty strings, etc.
+                if (GameInstanceManager.IsGameInstanceDir(new DirectoryInfo(path.Value))) {
+                    return true;
+                }
+            } catch {
+                // Pretend DirectoryInfo constructed an instance that made IsGameInstanceDir return false
             }
+            // Complain about non-KSP path
+            RaiseError("Path does not correspond to a game folder!");
+            SetFocus(path);
+            return false;
         }
 
         /// <summary>

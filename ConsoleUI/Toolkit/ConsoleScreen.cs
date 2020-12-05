@@ -18,14 +18,14 @@ namespace CKAN.ConsoleUI.Toolkit {
                 "F10", MenuTip(),
                 () => mainMenu != null
             );
-            AddBinding(Keys.F10, (object sender) => {
+            AddBinding(Keys.F10, (object sender, ConsoleTheme theme) => {
                 bool val = true;
                 if (mainMenu != null) {
-                    DrawSelectedHamburger();
+                    DrawSelectedHamburger(theme);
 
-                    val = mainMenu.Run(Console.WindowWidth - 1, 1);
+                    val = mainMenu.Run(theme, Console.WindowWidth - 1, 1);
 
-                    DrawBackground();
+                    DrawBackground(theme);
                 }
                 return val;
             });
@@ -34,13 +34,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Launch a screen and then clean up after it so we can continue using this screen.
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="cs">Subscreen to launch</param>
         /// <param name="newProc">Function to drive the screen, default is normal interaction</param>
-        protected void LaunchSubScreen(ConsoleScreen cs, Action newProc = null)
+        protected void LaunchSubScreen(ConsoleTheme theme, ConsoleScreen cs, Action<ConsoleTheme> newProc = null)
         {
-            cs.Run(newProc);
-            DrawBackground();
-            Draw();
+            cs.Run(theme, newProc);
+            DrawBackground(theme);
+            Draw(theme);
         }
 
         /// <summary>
@@ -95,18 +96,18 @@ namespace CKAN.ConsoleUI.Toolkit {
                 string.Join("", messagePieces) + question,
                 new List<string>() {"Yes", "No"}
             );
-            d.AddBinding(Keys.Y, (object sender) => {
+            d.AddBinding(Keys.Y, (object sender, ConsoleTheme theme) => {
                 d.PressButton(0);
                 return false;
             });
-            d.AddBinding(Keys.N, (object sender) => {
+            d.AddBinding(Keys.N, (object sender, ConsoleTheme theme) => {
                 d.PressButton(1);
                 return false;
             });
             messagePieces.Clear();
-            bool val = d.Run() == 0;
-            DrawBackground();
-            Draw();
+            bool val = d.Run(userTheme) == 0;
+            DrawBackground(userTheme);
+            Draw(userTheme);
             return val;
         }
 
@@ -127,9 +128,9 @@ namespace CKAN.ConsoleUI.Toolkit {
                 new List<string>(Array.ConvertAll<object, string>(args, p => p.ToString()))
             );
             messagePieces.Clear();
-            int val = d.Run();
-            DrawBackground();
-            Draw();
+            int val = d.Run(userTheme);
+            DrawBackground(userTheme);
+            Draw(userTheme);
             return val;
         }
 
@@ -146,9 +147,9 @@ namespace CKAN.ConsoleUI.Toolkit {
                 new List<string>() {"OK"}
             );
             messagePieces.Clear();
-            d.Run();
-            DrawBackground();
-            Draw();
+            d.Run(userTheme);
+            DrawBackground(userTheme);
+            Draw(userTheme);
         }
 
         /// <summary>
@@ -160,7 +161,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public void RaiseMessage(string message, params object[] args)
         {
             Message(message, args);
-            Draw();
+            Draw(userTheme);
         }
 
         /// <summary>
@@ -197,7 +198,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public void RaiseProgress(string message, int percent)
         {
             Progress(message, percent);
-            Draw();
+            Draw(userTheme);
         }
 
         /// <summary>
@@ -209,25 +210,28 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         #endregion IUser
 
-        private void DrawSelectedHamburger()
+        private void DrawSelectedHamburger(ConsoleTheme theme)
         {
             Console.SetCursorPosition(Console.WindowWidth - 3, 0);
-            Console.BackgroundColor = ConsoleTheme.Current.MenuSelectedBg;
-            Console.ForegroundColor = ConsoleTheme.Current.MenuFg;
+            Console.BackgroundColor = theme.MenuSelectedBg;
+            Console.ForegroundColor = theme.MenuFg;
             Console.Write(hamburger);
         }
 
         /// <summary>
         /// Set the whole screen to dark blue and draw the top header bar
         /// </summary>
-        protected override void DrawBackground()
+        protected override void DrawBackground(ConsoleTheme theme)
         {
-            Console.BackgroundColor = ConsoleTheme.Current.MainBg;
+            // Cheat because our IUser handlers need a theme
+            userTheme = theme;
+
+            Console.BackgroundColor = theme.MainBg;
             Console.Clear();
 
             Console.SetCursorPosition(0, 0);
-            Console.BackgroundColor = ConsoleTheme.Current.HeaderBg;
-            Console.ForegroundColor = ConsoleTheme.Current.HeaderFg;
+            Console.BackgroundColor = theme.HeaderBg;
+            Console.ForegroundColor = theme.HeaderFg;
             Console.Write(LeftCenterRight(
                 " " + LeftHeader(),
                 CenterHeader(),
@@ -262,6 +266,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             return left.PadRight(leftSideWidth) + center + right.PadLeft(rightSideWidth);
         }
 
+        private ConsoleTheme userTheme;
         private static readonly string hamburger    = $" {Symbols.hamburger} ";
     }
 

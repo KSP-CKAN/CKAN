@@ -66,8 +66,8 @@ namespace CKAN.ConsoleUI.Toolkit {
                 GetLeft() + 2, GetTop() + 2, GetRight() - 2, GetBottom() - 2 - (btns.Count > 0 ? 2 : 0),
                 false,
                 ta,
-                () => ConsoleTheme.Current.PopupBg,
-                () => ConsoleTheme.Current.PopupFg
+                th => th.PopupBg,
+                th => th.PopupFg
             );
             AddObject(tb);
             tb.AddLine(m);
@@ -95,13 +95,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Show the dialog and handle its interaction
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="process">Function to control the dialog, default is normal user interaction</param>
         /// <returns>
         /// Index of button the user pressed
         /// </returns>
-        public new int Run(Action process = null)
+        public new int Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
         {
-            base.Run(process);
+            base.Run(theme, process);
             return selectedButton;
         }
 
