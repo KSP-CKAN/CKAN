@@ -94,6 +94,37 @@ Task("docker-inflator")
     );
 });
 
+Task("docker-metadata")
+    .Description("Build the Docker image for the metadata testing and push it to Dockerhub.")
+    .IsDependentOn("Repack-Netkan")
+    .IsDependentOn("Repack-Ckan")
+    .Does(() =>
+{
+    var dockerDirectory   = buildDirectory.Combine("docker");
+    var metadataDirectory = dockerDirectory.Combine("metadata");
+    // Versions of Docker prior to 18.03.0-ce require the Dockerfile to be within the build context
+    var dockerFile        = metadataDirectory.CombineWithFilePath("Dockerfile.metadata");
+    CreateDirectory(metadataDirectory);
+    CopyFile(buildDirectory.CombineWithFilePath("netkan.exe"),
+          metadataDirectory.CombineWithFilePath("netkan.exe"));
+    CopyFile(buildDirectory.CombineWithFilePath("ckan.exe"),
+          metadataDirectory.CombineWithFilePath("ckan.exe"));
+    CopyFile(rootDirectory.CombineWithFilePath("Dockerfile.metadata"), dockerFile);
+
+    var mainTag   = "kspckan/metadata";
+    var latestTag = mainTag + ":latest";
+    DockerBuild(
+        new DockerImageBuildSettings()
+        {
+            File = dockerFile.ToString(),
+            Tag  = new string[] { mainTag }
+        },
+        metadataDirectory.ToString()
+    );
+    DockerTag(mainTag, latestTag);
+    DockerPush(latestTag);
+});
+
 Task("osx")
     .Description("Build the macOS(OSX) dmg package.")
     .IsDependentOn("Ckan")
