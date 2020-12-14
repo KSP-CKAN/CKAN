@@ -143,7 +143,7 @@ namespace CKAN
             //
             this.forumthreadLinkLabel.Location = new System.Drawing.Point(110, 115);
             this.forumthreadLinkLabel.Name = "forumthreadLinkLabel";
-            this.forumthreadLinkLabel.Text = "http://forum.kerbalspaceprogram.com/index.php?/topic/154922-ckan";
+            this.forumthreadLinkLabel.Text = "http://forum.kerbalspaceprogram.com/index.php?/topic/197082-ckan";
             this.forumthreadLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(0, 64);
             this.forumthreadLinkLabel.Size = new System.Drawing.Size(380, 13);
             this.forumthreadLinkLabel.TabIndex = 4;
