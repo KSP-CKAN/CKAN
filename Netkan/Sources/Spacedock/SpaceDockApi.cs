@@ -30,6 +30,12 @@ namespace CKAN.NetKAN.Sources.Spacedock
             }
             catch (WebException e)
             {
+                if (e.Response == null)
+                {
+                    // Can't parse if no response
+                    throw;
+                }
+
                 // SpaceDock returns a valid json with an error message in case of non 200 codes.
                 json = new System.IO.StreamReader(e.Response.GetResponseStream(), System.Text.Encoding.UTF8).ReadToEnd();
                 if (string.IsNullOrEmpty(json))
