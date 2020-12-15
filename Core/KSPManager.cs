@@ -230,6 +230,9 @@ namespace CKAN
                 fileMgr.CreateDirectory(Path.Combine(newPath, "Ships", "@thumbs"));
                 fileMgr.CreateDirectory(Path.Combine(newPath, "Ships", "@thumbs", "VAB"));
                 fileMgr.CreateDirectory(Path.Combine(newPath, "Ships", "@thumbs", "SPH"));
+                fileMgr.CreateDirectory(Path.Combine(newPath, "saves"));
+                fileMgr.CreateDirectory(Path.Combine(newPath, "saves", "scenarios"));
+                fileMgr.CreateDirectory(Path.Combine(newPath, "saves", "training"));
 
                 // Don't write the buildID.txts if we have no build, otherwise it would be -1.
                 if (version.IsBuildDefined)
