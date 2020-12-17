@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [GUI] Make Mono 6 builds work on Windows (#3218, #3219 by: HebaruSan; reviewed: DasSkelett)
+- [Cmdline] Format installation errors for GitHub Actions in headless mode (#3239 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.29.2 (Freedman)
 

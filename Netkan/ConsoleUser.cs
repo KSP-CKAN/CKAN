@@ -1,4 +1,5 @@
 ﻿using System;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 using log4net;
 
@@ -18,10 +19,10 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(ConsoleUser));
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:CKAN.CmdLine.ConsoleUser"/> class.
+        /// Initializes a new instance of the <see cref="T:CKAN.CmdLine.ConsoleUser"/> class
         /// </summary>
-        /// <param name="headless">If set to <c>true</c>, suppress interactive dialogs like Yes/No-Dialog or SelectionDialog.</param>
-        public ConsoleUser (bool headless)
+        /// <param name="headless">If set to <c>true</c>, suppress interactive dialogs like Yes/No-Dialog or SelectionDialog</param>
+        public ConsoleUser(bool headless)
         {
             Headless = headless;
         }
@@ -29,14 +30,14 @@ namespace CKAN
         /// <summary>
         /// Gets a value indicating whether this <see cref="T:CKAN.CmdLine.ConsoleUser"/> is headless.
         /// </summary>
-        /// <value><c>true</c> if headless; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if headless; otherwise, <c>false</c></value>
         public bool Headless { get; }
 
         /// <summary>
-        /// Ask the user for a yes or no input.
+        /// Ask the user for a yes or no input
         /// </summary>
-        /// <param name="question">Question.</param>
-        public bool RaiseYesNoDialog (string question)
+        /// <param name="question">Question</param>
+        public bool RaiseYesNoDialog(string question)
         {
             if (Headless)
             {
@@ -79,10 +80,10 @@ namespace CKAN
         /// The output is index 0 based.
         /// To supply a default option, make the first option an integer indicating the index of it.
         /// </summary>
-        /// <returns>The selection dialog.</returns>
-        /// <param name="message">Message.</param>
-        /// <param name="args">Array of available options.</param>
-        public int RaiseSelectionDialog (string message, params object[] args)
+        /// <returns>The selection dialog</returns>
+        /// <param name="message">Message</param>
+        /// <param name="args">Array of available options</param>
+        public int RaiseSelectionDialog(string message, params object[] args)
         {
             const int return_cancel = -1;
 
@@ -240,21 +241,31 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Write an error to the console.
+        /// Write an error to the console
         /// </summary>
-        /// <param name="message">Message.</param>
-        /// <param name="args">Possible arguments to format the message.</param>
-        public void RaiseError (string message, params object[] args)
+        /// <param name="message">Message</param>
+        /// <param name="args">Possible arguments to format the message</param>
+        public void RaiseError(string message, params object[] args)
         {
-            Console.Error.WriteLine(message, args);
+            if (Headless)
+            {
+                log.ErrorFormat(
+                    message.Replace("\r\n", "%0A"),
+                    args.Select(a => a.ToString().Replace("\r\n", "%0A")).ToArray()
+                );
+            }
+            else
+            {
+                Console.Error.WriteLine(message, args);
+            }
         }
 
         /// <summary>
         /// Write a progress message including the percentage to the console.
         /// Rewrites the line, so the console is not cluttered by progress messages.
         /// </summary>
-        /// <param name="message">Message.</param>
-        /// <param name="percent">Progress in percent.</param>
+        /// <param name="message">Message</param>
+        /// <param name="percent">Progress in percent</param>
         public void RaiseProgress (string message, int percent)
         {
             if (Regex.IsMatch(message, "download", RegexOptions.IgnoreCase))
@@ -284,11 +295,11 @@ namespace CKAN
         private int previousPercent = -1;
 
         /// <summary>
-        /// Writes a message to the console.
+        /// Writes a message to the console
         /// </summary>
-        /// <param name="message">Message.</param>
-        /// <param name="args">Arguments to format the message.</param>
-        public void RaiseMessage (string message, params object[] args)
+        /// <param name="message">Message</param>
+        /// <param name="args">Arguments to format the message</param>
+        public void RaiseMessage(string message, params object[] args)
         {
             Console.WriteLine(message, args);
         }
