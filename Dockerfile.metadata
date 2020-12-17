@@ -8,4 +8,4 @@ RUN pip3 install 'git+https://github.com/KSP-CKAN/NetKAN-Infra#subdirectory=netk
 ADD netkan.exe /usr/local/bin/.
 ADD ckan.exe /usr/local/bin/.
 
-RUN mkdir -p /ckans /cache /repo
+RUN mkdir -p /ckans /repo
