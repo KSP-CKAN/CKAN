@@ -695,7 +695,7 @@ namespace CKAN
             {
                 var brokenVersionRange = new KspVersionRange(
                     new KspVersion(1, 8),
-                    new KspVersion(1, 10)
+                    new KspVersion(1, 11)
                 );
                 split = filterCmdLineArgs(split, brokenVersionRange, "-single-instance");
             }
