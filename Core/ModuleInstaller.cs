@@ -1315,17 +1315,16 @@ namespace CKAN
         /// Determine whether there is any way to install the given set of mods.
         /// Handles virtual dependencies, including recursively.
         /// </summary>
-        /// <param name="registry">Registry of instance into which we want to install</param>
-        /// <param name="versionCriteria">Compatible versions of instance</param>
         /// <param name="opts">Installer options</param>
         /// <param name="toInstall">Mods we want to install</param>
+        /// <param name="registry">Registry of instance into which we want to install</param>
         /// <returns>
         /// True if it's possible to install these mods, false otherwise
         /// </returns>
-        private bool CanInstall(
+        public bool CanInstall(
             RelationshipResolverOptions opts,
             List<CkanModule>            toInstall,
-            Registry                    registry
+            IRegistryQuerier            registry
         )
         {
             string request = toInstall.Select(m => m.identifier).Aggregate((a, b) => $"{a}, {b}");

@@ -36,6 +36,7 @@
             this.Reason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.BottomButtonPanel = new System.Windows.Forms.Panel();
             this.ConfirmChangesButton = new System.Windows.Forms.Button();
+            this.BackButton = new System.Windows.Forms.Button();
             this.CancelChangesButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             //
@@ -75,10 +76,23 @@
             // BottomButtonPanel
             // 
             this.BottomButtonPanel.Controls.Add(this.ConfirmChangesButton);
+            this.BottomButtonPanel.Controls.Add(this.BackButton);
             this.BottomButtonPanel.Controls.Add(this.CancelChangesButton);
             this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomButtonPanel.Name = "BottomButtonPanel";
             this.BottomButtonPanel.Size = new System.Drawing.Size(500, 40);
+            //
+            // BackButton
+            //
+            this.BackButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BackButton.Location = new System.Drawing.Point(149, 5);
+            this.BackButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.BackButton.Name = "BackButton";
+            this.BackButton.Size = new System.Drawing.Size(112, 30);
+            this.BackButton.TabIndex = 1;
+            this.BackButton.Click += new System.EventHandler(this.BackButton_Click);
+            resources.ApplyResources(this.BackButton, "BackButton");
             //
             // CancelChangesButton
             //
@@ -125,6 +139,7 @@
         private System.Windows.Forms.ColumnHeader ChangeType;
         private System.Windows.Forms.ColumnHeader Reason;
         private System.Windows.Forms.Panel BottomButtonPanel;
+        private System.Windows.Forms.Button BackButton;
         private System.Windows.Forms.Button CancelChangesButton;
         private System.Windows.Forms.Button ConfirmChangesButton;
     }
