@@ -580,19 +580,21 @@ namespace CKAN
             {
                 case Keys.Home:
                     // First row.
-                    ModGrid.CurrentCell = ModGrid.Rows[0].Cells[SelectableColumnIndex()];
+                    if (ModGrid.Rows.Count > 0) //Handles for empty filters
+                        ModGrid.CurrentCell = ModGrid.Rows[0].Cells[SelectableColumnIndex()];
                     e.Handled = true;
                     break;
 
                 case Keys.End:
                     // Last row.
-                    ModGrid.CurrentCell = ModGrid.Rows[ModGrid.Rows.Count - 1].Cells[SelectableColumnIndex()];
+                    if (ModGrid.Rows.Count > 0) //Handles for empty filters
+                        ModGrid.CurrentCell = ModGrid.Rows[ModGrid.Rows.Count - 1].Cells[SelectableColumnIndex()];
                     e.Handled = true;
                     break;
 
                 case Keys.Space:
                     // If they've focused one of the checkbox columns, don't intercept
-                    if (ModGrid.CurrentCell.ColumnIndex > 3)
+                    if (ModGrid.CurrentCell != null && ModGrid.CurrentCell.ColumnIndex > 3)
                     {
                         DataGridViewRow row = ModGrid.CurrentRow;
                         // Toggle Update column if enabled, otherwise Install
