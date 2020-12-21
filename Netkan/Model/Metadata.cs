@@ -109,11 +109,10 @@ namespace CKAN.NetKAN.Model
                 StagingReason = (string)stagingReasonToken;
             }
 
-            JToken   updatedToken;
-            DateTime t;
-            if (json.TryGetValue(UpdatedPropertyName, out updatedToken)
-                && DateTime.TryParse(updatedToken.ToString(), out t))
+            JToken updatedToken;
+            if (json.TryGetValue(UpdatedPropertyName, out updatedToken))
             {
+                DateTime t = (DateTime)updatedToken;
                 RemoteTimestamp = t.ToUniversalTime();
             }
         }
