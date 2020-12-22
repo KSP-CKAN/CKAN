@@ -248,6 +248,7 @@ namespace CKAN.CmdLine
         /// <param name="args">Possible arguments to format the message</param>
         public void RaiseError(string message, params object[] args)
         {
+            GoToStartOfLine();
             if (Headless)
             {
                 // Special GitHub Action formatting for mutli-line errors
@@ -260,6 +261,7 @@ namespace CKAN.CmdLine
             {
                 Console.Error.WriteLine(message, args);
             }
+            atStartOfLine = true;
         }
 
         /// <summary>
@@ -287,8 +289,11 @@ namespace CKAN.CmdLine
                 // The percent looks weird on non-download messages.
                 // The leading newline makes sure we don't end up with a mess from previous
                 // download messages.
-                Console.Write("\r\n{0}", message);
+                GoToStartOfLine();
+                Console.Write("{0}", message);
             }
+            // These messages leave the cursor at the end of a line of text
+            atStartOfLine = false;
         }
 
         /// <summary>
@@ -303,7 +308,21 @@ namespace CKAN.CmdLine
         /// <param name="args">Arguments to format the message</param>
         public void RaiseMessage(string message, params object[] args)
         {
+            GoToStartOfLine();
             Console.WriteLine(message, args);
+            atStartOfLine = true;
         }
+
+        private void GoToStartOfLine()
+        {
+            if (!atStartOfLine)
+            {
+                // Carriage return
+                Console.WriteLine("");
+                atStartOfLine = true;
+            }
+        }
+
+        private bool atStartOfLine = true;
     }
 }

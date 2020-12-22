@@ -33,8 +33,6 @@ namespace CKAN.CmdLine
 
             List<CkanModule> compatible_prior = null;
 
-            user.RaiseMessage("Downloading updates...");
-
             if (options.list_changes)
             {
                 // Get a list of compatible modules prior to the update.
