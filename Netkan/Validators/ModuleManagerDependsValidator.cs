@@ -29,9 +29,10 @@ namespace CKAN.NetKAN.Validators
                 var package = _http.DownloadModule(metadata);
                 if (!string.IsNullOrEmpty(package))
                 {
-                    ZipFile zip  = new ZipFile(package);
+                    ZipFile zip = new ZipFile(package);
+                    var     ksp = new KSP("/", "dummy", null, false);
 
-                    var mmConfigs = _moduleService.GetConfigFiles(mod, zip)
+                    var mmConfigs = _moduleService.GetConfigFiles(mod, zip, ksp)
                         .Where(cfg => moduleManagerRegex.IsMatch(
                             new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd()))
                         .Memoize();

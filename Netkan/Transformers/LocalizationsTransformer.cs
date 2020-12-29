@@ -49,12 +49,13 @@ namespace CKAN.NetKAN.Transformers
             }
             else
             {
-                CkanModule mod  = CkanModule.FromJson(json.ToString());
-                ZipFile    zip  = new ZipFile(_http.DownloadModule(metadata));
+                CkanModule mod = CkanModule.FromJson(json.ToString());
+                ZipFile    zip = new ZipFile(_http.DownloadModule(metadata));
+                var        ksp = new KSP("/", "dummy", null, false);
 
                 log.Debug("Extracting locales");
                 // Extract the locale names from the ZIP's cfg files
-                var locales = _moduleService.GetConfigFiles(mod, zip)
+                var locales = _moduleService.GetConfigFiles(mod, zip, ksp)
                     .Select(cfg => new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd())
                     .SelectMany(contents => localizationRegex.Matches(contents).Cast<Match>()
                         .Select(m => m.Groups["contents"].Value))
