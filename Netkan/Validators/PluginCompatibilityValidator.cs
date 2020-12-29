@@ -28,9 +28,10 @@ namespace CKAN.NetKAN.Validators
                 var package = _http.DownloadModule(metadata);
                 if (!string.IsNullOrEmpty(package))
                 {
-                    ZipFile zip  = new ZipFile(package);
+                    ZipFile zip = new ZipFile(package);
+                    var     ksp = new KSP("/", "dummy", null, false);
 
-                    bool hasPlugin = _moduleService.GetPlugins(mod, zip).Any();
+                    bool hasPlugin = _moduleService.GetPlugins(mod, zip, ksp).Any();
 
                     bool boundedCompatibility = json.ContainsKey("ksp_version") || json.ContainsKey("ksp_version_max");
 

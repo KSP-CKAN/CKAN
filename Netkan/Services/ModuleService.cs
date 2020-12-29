@@ -64,14 +64,14 @@ namespace CKAN.NetKAN.Services
             return true;
         }
 
-        public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip)
+        public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip, KSP ksp)
         {
-            return GetFilesBySuffix(module, zip, ".cfg");
+            return GetFilesBySuffix(module, zip, ".cfg", ksp);
         }
 
-        public IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip)
+        public IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip, KSP ksp)
         {
-            return GetFilesBySuffix(module, zip, ".dll");
+            return GetFilesBySuffix(module, zip, ".dll", ksp);
         }
 
         public IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, KSP ksp)
@@ -79,11 +79,11 @@ namespace CKAN.NetKAN.Services
             return GetFilesBySuffix(module, zip, ".craft", ksp);
         }
 
-        private IEnumerable<InstallableFile> GetFilesBySuffix(CkanModule module, ZipFile zip, string suffix, KSP ksp = null)
+        private IEnumerable<InstallableFile> GetFilesBySuffix(CkanModule module, ZipFile zip, string suffix, KSP ksp)
         {
             return ModuleInstaller
                 .FindInstallableFiles(module, zip, ksp)
-                .Where(instF => instF.source.Name.EndsWith(suffix,
+                .Where(instF => instF.destination.EndsWith(suffix,
                     StringComparison.InvariantCultureIgnoreCase));
         }
 
