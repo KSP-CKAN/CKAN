@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
+using log4net;
 
 namespace CKAN
 {
@@ -174,19 +175,22 @@ namespace CKAN
         {
             if (screen == null)
             {
+                log.DebugFormat("Looking for screen of {0}, {1}", location, size);
                 screen = FindScreen(location, size);
             }
             if (screen != null)
             {
+                log.DebugFormat("Found screen: {0}", screen.WorkingArea);
                 // Slide the whole rectangle fully onto the screen
-                if (location.X < screen.WorkingArea.Top)
-                    location.X = screen.WorkingArea.Top;
-                if (location.Y < screen.WorkingArea.Left)
-                    location.Y = screen.WorkingArea.Left;
+                if (location.X < screen.WorkingArea.Left)
+                    location.X = screen.WorkingArea.Left;
+                if (location.Y < screen.WorkingArea.Top)
+                    location.Y = screen.WorkingArea.Top;
                 if (location.X + size.Width > screen.WorkingArea.Right)
                     location.X = screen.WorkingArea.Right - size.Width;
                 if (location.Y + size.Height > screen.WorkingArea.Bottom)
                     location.Y = screen.WorkingArea.Bottom - size.Height;
+                log.DebugFormat("Clamped location: {0}", location);
             }
             return location;
         }
@@ -209,5 +213,7 @@ namespace CKAN
             // then place our window at an offset within the box
             return ClampedLocation(location - topLeftMargin, size + topLeftMargin + bottomRightMargin, screen) + topLeftMargin;
         }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(Util));
     }
 }
