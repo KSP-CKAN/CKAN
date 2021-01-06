@@ -48,7 +48,7 @@ namespace CKAN.Configuration
             "downloads"
         );
 
-        // The actual config file state, and it's location on the disk (we allow
+        // The actual config file state, and its location on the disk (we allow
         // the location to be changed for unit tests). Note that these are static
         // because we only want to have one copy of the config file in memory. This
         // version is considered authoritative, and we save it to the disk every time
