@@ -585,6 +585,9 @@ namespace CKAN.Properties {
         internal static string ModInfoMetanetkanLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoMetanetkanLabel", resourceCulture)); }
         }
+        internal static string ModInfoRemoteAvcLabel {
+            get { return (string)(ResourceManager.GetObject("ModInfoRemoteAvcLabel", resourceCulture)); }
+        }
         internal static string ModInfoStoreLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoStoreLabel", resourceCulture)); }
         }

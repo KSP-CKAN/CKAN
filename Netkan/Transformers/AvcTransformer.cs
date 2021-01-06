@@ -73,6 +73,11 @@ namespace CKAN.NetKAN.Transformers
 
                     if (remoteUri != null)
                     {
+                        if (json["resources"] == null)
+                            json["resources"] = new JObject();
+                        var resourcesJson = (JObject)json["resources"];
+                        resourcesJson.SafeAdd("remote-avc", remoteUri.OriginalString);
+
                         try
                         {
                             var remoteJson = _github?.DownloadText(remoteUri)
