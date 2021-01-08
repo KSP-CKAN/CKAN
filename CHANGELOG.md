@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.29.3
 
+### Features
+
+- [Multiple] Store remote version file URL in metadata resources (#3259 by: HebaruSan; reviewed: DasSkelett)
+
 ### Bugfixes
 
 - [GUI] Fix screen clamping logic (#3255 by: HebaruSan; reviewed: DasSkelett)

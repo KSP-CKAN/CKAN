@@ -157,6 +157,7 @@ namespace CKAN
                     AddResourceLink(Properties.Resources.ModInfoLicenseLabel,               res.license);
                     AddResourceLink(Properties.Resources.ModInfoManualLabel,                res.manual);
                     AddResourceLink(Properties.Resources.ModInfoMetanetkanLabel,            res.metanetkan);
+                    AddResourceLink(Properties.Resources.ModInfoRemoteAvcLabel,             res.remoteAvc);
                     AddResourceLink(Properties.Resources.ModInfoStoreLabel,                 res.store);
                     AddResourceLink(Properties.Resources.ModInfoSteamStoreLabel,            res.steamstore);
                 }

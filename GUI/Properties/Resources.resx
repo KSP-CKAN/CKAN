@@ -285,6 +285,7 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="ModInfoLicenseLabel" xml:space="preserve"><value>Licence:</value></data>
   <data name="ModInfoManualLabel" xml:space="preserve"><value>Manual:</value></data>
   <data name="ModInfoMetanetkanLabel" xml:space="preserve"><value>Metanetkan:</value></data>
+  <data name="ModInfoRemoteAvcLabel" xml:space="preserve"><value>Remote version file:</value></data>
   <data name="ModInfoStoreLabel" xml:space="preserve"><value>Store:</value></data>
   <data name="ModInfoSteamStoreLabel" xml:space="preserve"><value>Steam store:</value></data>
   <data name="MainModListWaitTitle" xml:space="preserve"><value>Loading modules</value></data>

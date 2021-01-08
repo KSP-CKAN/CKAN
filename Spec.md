@@ -603,6 +603,7 @@ are described. Unless specified otherwise, these are URLs:
 - `curse` :  (**v1.20**) The mod on Curse.
 - `manual` : The mod's manual, if it exists.
 - `metanetkan` :  (**v1.27**) URL of the module's remote hosted netkan
+- `remote-avc` : URL of remote version file
 - `store`:  (**v1.28**) URL where you can purchase a DLC
 - `steamstore`:  (**v1.28**) URL where you can purchase a DLC on Steam
 

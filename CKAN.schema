@@ -220,6 +220,11 @@
                     "type"        : "string",
                     "format"      : "uri"
                 },
+                "remote-avc" : {
+                    "description" : "Mod's remote hosted version file",
+                    "type"        : "string",
+                    "format"      : "uri"
+                },
                 "store": {
                     "description" : "Purchase DLC here",
                     "type"        : "string",
