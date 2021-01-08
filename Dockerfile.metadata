@@ -1,7 +1,7 @@
 FROM mono:latest
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3 python3-pip python3-setuptools git && \
+    apt-get install -y --no-install-recommends python3 python3-pip python3-setuptools git build-essential python-dev && \
     apt-get clean
 RUN pip3 install 'git+https://github.com/KSP-CKAN/NetKAN-Infra#subdirectory=netkan'
 RUN pip3 install 'git+https://github.com/KSP-CKAN/xKAN-meta_testing'
