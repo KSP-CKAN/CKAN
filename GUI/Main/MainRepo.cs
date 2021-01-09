@@ -123,6 +123,7 @@ namespace CKAN
 
                 case RepoUpdateResult.Failed:
                     AddStatusMessage(Properties.Resources.MainRepoFailed);
+                    HideWaitDialog(false);
                     break;
 
                 case RepoUpdateResult.Updated:
@@ -135,6 +136,7 @@ namespace CKAN
                     break;
             }
 
+            tabController.HideTab("WaitTabPage");
             Util.Invoke(this, SwitchEnabledState);
             Util.Invoke(this, RecreateDialogs);
             Util.Invoke(this, ManageMods.ModGrid.Select);

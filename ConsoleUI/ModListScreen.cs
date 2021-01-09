@@ -416,11 +416,8 @@ namespace CKAN.ConsoleUI {
 
         private bool UpdateRegistry()
         {
-            ConsoleMessageDialog d = new ConsoleMessageDialog(
-                "Updating registry...",
-                new List<string>()
-            );
-            d.Run(() => {
+            ProgressScreen ps = new ProgressScreen("Updating Registry", "Checking for updates");
+            LaunchSubScreen(ps, () => {
                 HashSet<string> availBefore = new HashSet<string>(
                     Array.ConvertAll<CkanModule, string>(
                         registry.CompatibleModules(
@@ -435,11 +432,11 @@ namespace CKAN.ConsoleUI {
                         RegistryManager.Instance(manager.CurrentInstance),
                         manager.CurrentInstance,
                         manager.Cache,
-                        this
+                        ps
                     );
                 } catch (Exception ex) {
                     // There can be errors while you re-install mods with changed metadata
-                    RaiseError(ex.Message + ex.StackTrace);
+                    ps.RaiseError(ex.Message + ex.StackTrace);
                 }
                 // Update recent with mods that were updated in this pass
                 foreach (CkanModule mod in registry.CompatibleModules(

@@ -359,8 +359,12 @@ namespace CKAN
 
             if (needRegistrySave)
             {
-                // Save registry
-                RegistryManager.Instance(CurrentInstance).Save(false);
+                using (var transaction = CkanTransaction.CreateTransactionScope())
+                {
+                    // Save registry
+                    RegistryManager.Instance(CurrentInstance).Save(false);
+                    transaction.Complete();
+                }
             }
 
             base.OnFormClosing(e);

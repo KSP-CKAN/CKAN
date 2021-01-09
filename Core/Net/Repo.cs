@@ -37,15 +37,19 @@ namespace CKAN
         public static RepoUpdateResult UpdateAllRepositories(RegistryManager registry_manager, KSP ksp, NetModuleCache cache, IUser user)
         {
             SortedDictionary<string, Repository> sortedRepositories = registry_manager.registry.Repositories;
+            user.RaiseProgress("Checking for updates", 0);
             if (sortedRepositories.Values.All(repo => !string.IsNullOrEmpty(repo.last_server_etag) && repo.last_server_etag == Net.CurrentETag(repo.uri)))
             {
-                user?.RaiseMessage("No changes since last update");
+                user.RaiseProgress("Already up to date", 100);
+                user.RaiseMessage("No changes since last update");
                 return RepoUpdateResult.NoChanges;
             }
             List<CkanModule> allAvail = new List<CkanModule>();
+            int index = 0;
             foreach (KeyValuePair<string, Repository> repository in sortedRepositories)
             {
-                log.InfoFormat("About to update {0}", repository.Value.name);
+                user.RaiseProgress($"Updating {repository.Value.name}",
+                    10 + 80 * index / sortedRepositories.Count);
                 SortedDictionary<string, int> downloadCounts;
                 string newETag;
                 List<CkanModule> avail = UpdateRegistry(repository.Value.uri, ksp, user, out downloadCounts, out newETag);
@@ -58,18 +62,24 @@ namespace CKAN
                 }
                 else
                 {
-                    log.InfoFormat("Updated {0}", repository.Value.name);
                     // Merge all the lists
                     allAvail.AddRange(avail);
                     repository.Value.last_server_etag = newETag;
+                    user.RaiseMessage("Updated {0}", repository.Value.name);
                 }
+                ++index;
             }
             // Save allAvail to the registry if we found anything
             if (allAvail.Count > 0)
             {
-                registry_manager.registry.SetAllAvailable(allAvail);
-                // Save our changes.
-                registry_manager.Save(enforce_consistency: false);
+                user.RaiseProgress("Saving modules to registry", 90);
+                using (var transaction = CkanTransaction.CreateTransactionScope())
+                {
+                    // Save our changes.
+                    registry_manager.registry.SetAllAvailable(allAvail);
+                    registry_manager.Save(enforce_consistency: false);
+                    transaction.Complete();
+                }
 
                 ShowUserInconsistencies(registry_manager.registry, user);
 
@@ -81,6 +91,8 @@ namespace CKAN
 
                 // Registry.CompatibleModules is slow, just return success,
                 // caller can check it if it's really needed
+                user.RaiseProgress("Registry saved", 100);
+                user.RaiseMessage("Repositories updated");
                 return RepoUpdateResult.Updated;
             }
             else
@@ -110,7 +122,7 @@ namespace CKAN
             }
             catch (System.Net.WebException ex)
             {
-                user.RaiseMessage("Failed to download {0}: {1}", repo, ex.ToString());
+                user.RaiseError("Failed to download {0}: {1}", repo, ex.Message);
                 currentETag = null;
                 return null;
             }

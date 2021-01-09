@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [GUI] Fix screen clamping logic (#3255 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Repo update usability fixes (#3249 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

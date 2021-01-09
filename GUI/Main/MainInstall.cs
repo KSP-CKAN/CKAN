@@ -373,6 +373,12 @@ namespace CKAN
                         currentUser.RaiseError(dlcMsg);
                         break;
 
+                    case TransactionalKraken exc:
+                        // Want to see the stack trace for this one
+                        currentUser.RaiseMessage(exc.ToString());
+                        currentUser.RaiseError(exc.ToString());
+                        break;
+
                     default:
                         currentUser.RaiseMessage(e.Error.Message);
                         break;
