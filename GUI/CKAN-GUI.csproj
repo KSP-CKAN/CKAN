@@ -62,23 +62,23 @@
     <Compile Include="Dialogs\AskUserForAutoUpdatesDialog.Designer.cs">
       <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\ManageKspInstancesDialog.cs">
+    <Compile Include="Dialogs\ManageGameInstancesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\ManageKspInstancesDialog.Designer.cs">
-      <DependentUpon>ManageKspInstancesDialog.cs</DependentUpon>
+    <Compile Include="Dialogs\ManageGameInstancesDialog.Designer.cs">
+      <DependentUpon>ManageGameInstancesDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\CloneFakeKspDialog.cs">
+    <Compile Include="Dialogs\CloneFakeGameDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\CloneFakeKspDialog.Designer.cs">
-      <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>
+    <Compile Include="Dialogs\CloneFakeGameDialog.Designer.cs">
+      <DependentUpon>CloneFakeGameDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\CompatibleKspVersionsDialog.cs">
+    <Compile Include="Dialogs\CompatibleGameVersionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\CompatibleKspVersionsDialog.Designer.cs">
-      <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
+    <Compile Include="Dialogs\CompatibleGameVersionsDialog.Designer.cs">
+      <DependentUpon>CompatibleGameVersionsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\EditLabelsDialog.cs">
       <SubType>Form</SubType>
@@ -92,11 +92,11 @@
     <Compile Include="Dialogs\ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\KSPCommandLineOptionsDialog.cs">
+    <Compile Include="Dialogs\GameCommandLineOptionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\KSPCommandLineOptionsDialog.Designer.cs">
-      <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    <Compile Include="Dialogs\GameCommandLineOptionsDialog.Designer.cs">
+      <DependentUpon>GameCommandLineOptionsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\NewRepoDialog.cs">
       <SubType>Form</SubType>
@@ -343,23 +343,23 @@
     <EmbeddedResource Include="Localization\zh-CN\AskUserForAutoUpdatesDialog.zh-CN.resx">
       <DependentUpon>..\..\Dialogs\AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\CloneFakeKspDialog.resx">
-      <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogs\CloneFakeGameDialog.resx">
+      <DependentUpon>CloneFakeGameDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\de-DE\CloneFakeKspDialog.de-DE.resx">
-      <DependentUpon>..\..\Dialogs\CloneFakeKspDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\de-DE\CloneFakeGameDialog.de-DE.resx">
+      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\zh-CN\CloneFakeKspDialog.zh-CN.resx">
-      <DependentUpon>..\..\Dialogs\CloneFakeKspDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\zh-CN\CloneFakeGameDialog.zh-CN.resx">
+      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\CompatibleKspVersionsDialog.resx">
-      <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogs\CompatibleGameVersionsDialog.resx">
+      <DependentUpon>CompatibleGameVersionsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\de-DE\CompatibleKspVersionsDialog.de-DE.resx">
-      <DependentUpon>..\..\Dialogs\CompatibleKspVersionsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\de-DE\CompatibleGameVersionsDialog.de-DE.resx">
+      <DependentUpon>..\..\Dialogs\CompatibleGameVersionsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\zh-CN\CompatibleKspVersionsDialog.zh-CN.resx">
-      <DependentUpon>..\..\Dialogs\CompatibleKspVersionsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\zh-CN\CompatibleGameVersionsDialog.zh-CN.resx">
+      <DependentUpon>..\..\Dialogs\CompatibleGameVersionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Changeset.resx">
       <DependentUpon>Changeset.cs</DependentUpon>
@@ -439,14 +439,14 @@
     <EmbeddedResource Include="Controls\HintTextBox.resx">
       <DependentUpon>HintTextBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\KSPCommandLineOptionsDialog.resx">
-      <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogs\GameCommandLineOptionsDialog.resx">
+      <DependentUpon>GameCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\de-DE\KSPCommandLineOptionsDialog.de-DE.resx">
-      <DependentUpon>..\..\Dialogs\KSPCommandLineOptionsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\de-DE\GameCommandLineOptionsDialog.de-DE.resx">
+      <DependentUpon>..\..\Dialogs\GameCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\zh-CN\KSPCommandLineOptionsDialog.zh-CN.resx">
-      <DependentUpon>..\..\Dialogs\KSPCommandLineOptionsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\zh-CN\GameCommandLineOptionsDialog.zh-CN.resx">
+      <DependentUpon>..\..\Dialogs\GameCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -506,14 +506,14 @@
     <EmbeddedResource Include="Localization\en-US\ModInfo.en-US.resx">
       <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\ManageKSPInstancesDialog.resx">
-      <DependentUpon>ManageKspInstancesDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogs\ManageGameInstancesDialog.resx">
+      <DependentUpon>ManageGameInstancesDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\de-DE\ManageKSPInstancesDialog.de-DE.resx">
-      <DependentUpon>..\..\Dialogs\ManageKspInstancesDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\de-DE\ManageGameInstancesDialog.de-DE.resx">
+      <DependentUpon>..\..\Dialogs\ManageGameInstancesDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\zh-CN\ManageKSPInstancesDialog.zh-CN.resx">
-      <DependentUpon>..\..\Dialogs\ManageKspInstancesDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\zh-CN\ManageGameInstancesDialog.zh-CN.resx">
+      <DependentUpon>..\..\Dialogs\ManageGameInstancesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\NewRepoDialog.resx">
       <DependentUpon>NewRepoDialog.cs</DependentUpon>

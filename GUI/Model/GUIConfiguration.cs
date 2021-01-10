@@ -108,9 +108,7 @@ namespace CKAN
                 var configuration = new GUIConfiguration
                 {
                     path = path,
-                    CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64 -single-instance" :
-                            Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP" :
-                            "KSP_x64.exe -single-instance"
+                    CommandLineArguments = Main.Instance.CurrentInstance.game.DefaultCommandLine
                 };
 
                 SaveConfiguration(configuration);

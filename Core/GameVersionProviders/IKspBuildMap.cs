@@ -3,19 +3,12 @@ using System.Collections.Generic;
 
 namespace CKAN.GameVersionProviders
 {
-    public enum BuildMapSource
-    {
-        Embedded,
-        Remote,
-        Cache,
-    };
-
     public interface IKspBuildMap
     {
-        KspVersion this[string buildId] { get; }
+        GameVersion this[string buildId] { get; }
 
-        List<KspVersion> KnownVersions { get; }
+        List<GameVersion> KnownVersions { get; }
 
-        void Refresh(BuildMapSource source = BuildMapSource.Remote);
+        void Refresh();
     }
 }

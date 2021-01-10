@@ -11,14 +11,14 @@ namespace CKAN.CmdLine
         private static readonly ILog log = LogManager.GetLogger(typeof(Upgrade));
 
         public IUser User { get; set; }
-        private KSPManager manager;
+        private GameInstanceManager manager;
 
         /// <summary>
         /// Initialize the upgrade command object
         /// </summary>
-        /// <param name="mgr">KSPManager containing our instances</param>
+        /// <param name="mgr">GameInstanceManager containing our instances</param>
         /// <param name="user">IUser object for interaction</param>
-        public Upgrade(KSPManager mgr, IUser user)
+        public Upgrade(GameInstanceManager mgr, IUser user)
         {
             manager   = mgr;
             User = user;
@@ -32,7 +32,7 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code for shell environment
         /// </returns>
-        public int RunCommand(CKAN.KSP ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
         {
             UpgradeOptions options = (UpgradeOptions) raw_options;
 

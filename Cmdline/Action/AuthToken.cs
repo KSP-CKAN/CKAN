@@ -27,7 +27,7 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code
         /// </returns>
-        public int RunSubCommand(KSPManager manager, CommonOptions opts, SubCommandOptions unparsed)
+        public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
         {
             string[] args     = unparsed.options.ToArray();
             int      exitCode = Exit.OK;
@@ -41,7 +41,7 @@ namespace CKAN.CmdLine
                     user                  = new ConsoleUser(options.Headless);
                     if (manager == null)
                     {
-                        manager           = new KSPManager(user);
+                        manager           = new GameInstanceManager(user);
                     }
                     exitCode              = options.Handle(manager, user);
                     if (exitCode == Exit.OK)

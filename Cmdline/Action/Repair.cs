@@ -39,7 +39,7 @@ namespace CKAN.CmdLine
             }
         }
 
-        public int RunSubCommand(KSPManager manager, CommonOptions opts, SubCommandOptions unparsed)
+        public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
         {
             int exitCode = Exit.OK;
             // Parse and process our sub-verbs
@@ -53,7 +53,7 @@ namespace CKAN.CmdLine
                     User = new ConsoleUser(options.Headless);
                     if (manager == null)
                     {
-                        manager = new KSPManager(User);
+                        manager = new GameInstanceManager(User);
                     }
                     exitCode = options.Handle(manager, User);
                     if (exitCode != Exit.OK)
@@ -80,7 +80,7 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Try to repair our registry.
         /// </summary>
-        private int Registry(CKAN.KSP ksp)
+        private int Registry(CKAN.GameInstance ksp)
         {
             RegistryManager manager = RegistryManager.Instance(ksp);
             manager.registry.Repair();

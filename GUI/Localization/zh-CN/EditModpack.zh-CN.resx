@@ -121,7 +121,7 @@
   <data name="NameLabel.Text" xml:space="preserve"><value>名称:</value></data>
   <data name="AbstractLabel.Text" xml:space="preserve"><value>概要:</value></data>
   <data name="VersionLabel.Text" xml:space="preserve"><value>版本:</value></data>
-  <data name="KspVersionLabel.Text" xml:space="preserve"><value>KSP版本:</value></data>
+  <data name="GameVersionLabel.Text" xml:space="preserve"><value>游戏版本:</value></data>
   <data name="LicenseLabel.Text" xml:space="preserve"><value>协议:</value></data>
   <data name="IncludeVersionsCheckbox.Text" xml:space="preserve"><value>保存mod版本</value></data>
   <data name="ModNameColumn.Text" xml:space="preserve"><value>Mod</value></data>

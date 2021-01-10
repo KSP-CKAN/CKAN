@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Net;
 using Newtonsoft.Json;
+using CKAN.Games;
 
 namespace CKAN
 {
     public class Repository
     {
         [JsonIgnore] public static readonly string default_ckan_repo_name = "default";
-        [JsonIgnore] public static readonly Uri default_ckan_repo_uri = new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.tar.gz");
-        [JsonIgnore] public static readonly Uri default_repo_master_list = new Uri("https://raw.githubusercontent.com/KSP-CKAN/CKAN-meta/master/repositories.json");
 
         public string  name;
         public Uri     uri;
@@ -49,12 +48,12 @@ namespace CKAN
     {
         public Repository[] repositories;
 
-        public static RepositoryList DefaultRepositories()
+        public static RepositoryList DefaultRepositories(IGame game)
         {
             try
             {
                 return JsonConvert.DeserializeObject<RepositoryList>(
-                    Net.DownloadText(Repository.default_repo_master_list)
+                    Net.DownloadText(game.RepositoryListURL)
                 );
             }
             catch

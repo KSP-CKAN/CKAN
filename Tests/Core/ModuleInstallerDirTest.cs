@@ -18,7 +18,7 @@ namespace Tests.Core
     [TestFixture]
     public class ModuleInstallerDirTest
     {
-        private KSPManager           _manager;
+        private GameInstanceManager           _manager;
         private DisposableKSP        _instance;
         private FakeConfiguration    _config;
         private CKAN.RegistryManager _registryManager;
@@ -41,13 +41,13 @@ namespace Tests.Core
             _instance  = new DisposableKSP();
             _nullUser  = new NullUser();
             _config    = new FakeConfiguration(_instance.KSP, _instance.KSP.Name);
-            _manager   = new KSPManager(_nullUser, _config);
+            _manager   = new GameInstanceManager(_nullUser, _config);
             _registryManager = CKAN.RegistryManager.Instance(_instance.KSP);
             _registry  = _registryManager.registry;
             _installer = CKAN.ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _nullUser);
 
             _gameDir = _instance.KSP.GameDir();
-            _gameDataDir = _instance.KSP.GameData();
+            _gameDataDir = _instance.KSP.game.PrimaryModDirectory(_instance.KSP);
             _registry.AddAvailable(_testModule);
             var testModFile = TestData.DogeCoinFlagZip();
             _manager.Cache.Store(_testModule, testModFile);
@@ -118,7 +118,7 @@ namespace Tests.Core
         public void TestSlashVariants()
         {
             var rawInstallDir = Path.Combine(_gameDataDir, _testModule.identifier);
-            var normalizedInstallDir = CKAN.KSPPathUtils.NormalizePath(rawInstallDir);
+            var normalizedInstallDir = CKAN.CKANPathUtils.NormalizePath(rawInstallDir);
             var windowsInstallDir = normalizedInstallDir.Replace('/', '\\');
 
             Assert.DoesNotThrow(delegate ()

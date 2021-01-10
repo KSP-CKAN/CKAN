@@ -34,14 +34,14 @@ namespace CKAN
 
         public PluginController pluginController;
 
-        public volatile KSPManager manager;
+        public volatile GameInstanceManager manager;
 
-        public KSP CurrentInstance
+        public GameInstance CurrentInstance
         {
             get { return manager.CurrentInstance; }
         }
 
-        public KSPManager Manager
+        public GameInstanceManager Manager
         {
             get { return manager; }
             set { manager = value; }
@@ -56,7 +56,7 @@ namespace CKAN
         private bool enableTrayIcon;
         private bool minimizeToTray;
 
-        public Main(string[] cmdlineArgs, KSPManager mgr, bool showConsole)
+        public Main(string[] cmdlineArgs, GameInstanceManager mgr, bool showConsole)
         {
             log.Info("Starting the GUI");
             commandLineArgs = cmdlineArgs;
@@ -82,7 +82,7 @@ namespace CKAN
             Instance = this;
 
             currentUser = new GUIUser(this, this.Wait);
-            manager = mgr ?? new KSPManager(currentUser);
+            manager = mgr ?? new GameInstanceManager(currentUser);
 
             controlFactory = new ControlFactory();
 
@@ -108,7 +108,7 @@ namespace CKAN
             {
                 Hide();
 
-                var result = new ManageKspInstancesDialog(!actuallyVisible, currentUser).ShowDialog();
+                var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog();
                 if (result == DialogResult.Cancel || result == DialogResult.Abort)
                 {
                     Application.Exit();
@@ -314,7 +314,7 @@ namespace CKAN
 
             pluginController = new PluginController(pluginsPath);
 
-            CurrentInstance.RebuildKSPSubDir();
+            CurrentInstance.game.RebuildSubdirectories(CurrentInstance);
 
             log.Info("GUI started");
             base.OnLoad(e);
@@ -376,13 +376,14 @@ namespace CKAN
         /// <param name="allowRepoUpdate">true if a repo update is allowed if needed (e.g. on initial load), false otherwise</param>
         private void CurrentInstanceUpdated(bool allowRepoUpdate)
         {
-            CurrentInstance.ScanGameData();
+            CurrentInstance.Scan();
             Util.Invoke(this, () =>
             {
-                Text = $"CKAN {Meta.GetVersion()} - KSP {CurrentInstance.Version()}    --    {CurrentInstance.GameDir().Replace('/', Path.DirectorySeparatorChar)}";
+                Text = $"CKAN {Meta.GetVersion()} - {CurrentInstance.game.ShortName} {CurrentInstance.Version()}    --    {CurrentInstance.GameDir().Replace('/', Path.DirectorySeparatorChar)}";
                 StatusInstanceLabel.Text = string.Format(
                     Properties.Resources.StatusInstanceLabelText,
                     CurrentInstance.Name,
+                    CurrentInstance.game.ShortName,
                     CurrentInstance.Version()?.ToString()
                 );
             });
@@ -391,9 +392,9 @@ namespace CKAN
                 Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml")
             );
 
-            if (CurrentInstance.CompatibleVersionsAreFromDifferentKsp)
+            if (CurrentInstance.CompatibleVersionsAreFromDifferentGameVersion)
             {
-                new CompatibleKspVersionsDialog(CurrentInstance, !actuallyVisible)
+                new CompatibleGameVersionsDialog(CurrentInstance, !actuallyVisible)
                     .ShowDialog();
             }
 
@@ -466,10 +467,10 @@ namespace CKAN
             new AboutDialog().ShowDialog();
         }
 
-        private void KSPCommandlineToolStripMenuItem_Click(object sender, EventArgs e)
+        private void GameCommandlineToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialog = new KSPCommandLineOptionsDialog();
-            if (dialog.ShowKSPCommandLineOptionsDialog(configuration.CommandLineArguments) == DialogResult.OK)
+            var dialog = new GameCommandLineOptionsDialog();
+            if (dialog.ShowGameCommandLineOptionsDialog(configuration.CommandLineArguments) == DialogResult.OK)
             {
                 configuration.CommandLineArguments = dialog.GetResult();
                 configuration.Save();
@@ -540,10 +541,10 @@ namespace CKAN
             }
         }
 
-        private void manageKspInstancesMenuItem_Click(object sender, EventArgs e)
+        private void manageGameInstancesMenuItem_Click(object sender, EventArgs e)
         {
             var old_instance = Instance.CurrentInstance;
-            var result = new ManageKspInstancesDialog(!actuallyVisible, currentUser).ShowDialog();
+            var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog();
             if (result == DialogResult.OK && !Equals(old_instance, Instance.CurrentInstance))
             {
                 ManageMods.ModGrid.ClearSelection();
@@ -551,9 +552,9 @@ namespace CKAN
             }
         }
 
-        private void CompatibleKspVersionsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CompatibleGameVersionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CompatibleKspVersionsDialog dialog = new CompatibleKspVersionsDialog(
+            CompatibleGameVersionsDialog dialog = new CompatibleGameVersionsDialog(
                 Instance.manager.CurrentInstance,
                 !actuallyVisible
             );
@@ -661,17 +662,17 @@ namespace CKAN
             UpdateTrayState();
         }
 
-        private void openKspDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openGameDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Utilities.ProcessStartURL(Instance.manager.CurrentInstance.GameDir());
         }
 
-        private void openKSPToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LaunchKSP();
+            LaunchGame();
         }
 
-        public void LaunchKSP()
+        public void LaunchGame()
         {
             var split = configuration.CommandLineArguments.Split(' ');
             if (split.Length == 0)
@@ -681,9 +682,9 @@ namespace CKAN
             var incomp   = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria());
             if (incomp.Any())
             {
-                // Warn that it might not be safe to run KSP with incompatible modules installed
+                // Warn that it might not be safe to run Game with incompatible modules installed
                 string incompatDescrip = incomp
-                    .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(m.Module)})")
+                    .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(CurrentInstance.game, m.Module)})")
                     .Aggregate((a, b) => $"{a}, {b}");
                 if (!YesNoDialog(string.Format(Properties.Resources.MainLaunchWithIncompatible, incompatDescrip),
                     Properties.Resources.MainLaunch,
@@ -693,17 +694,8 @@ namespace CKAN
                 }
             }
 
-            // -single-instance crashes KSP 1.8 to KSP 1.9 on Linux
-            // https://issuetracker.unity3d.com/issues/linux-segmentation-fault-when-running-a-built-project-with-single-instance-argument
-            if (Platform.IsUnix)
-            {
-                var brokenVersionRange = new KspVersionRange(
-                    new KspVersion(1, 8),
-                    new KspVersion(1, 11)
-                );
-                split = filterCmdLineArgs(split, brokenVersionRange, "-single-instance");
-            }
-
+            split = CurrentInstance.game.AdjustCommandLine(split,
+                Main.Instance.CurrentInstance.Version());
             var binary = split[0];
             var args = string.Join(" ", split.Skip(1));
 
@@ -716,32 +708,6 @@ namespace CKAN
             {
                 currentUser.RaiseError(Properties.Resources.MainLaunchFailed, exception.Message);
             }
-        }
-
-        /// <summary>
-        /// If the installed game version is in the given range,
-        /// return the given array without the given parameter,
-        /// otherwise return the array as-is.
-        /// </summary>
-        /// <param name="args">Command line parameters to check</param>
-        /// <param name="crashyKspRange">Game versions that should not use this parameter</param>
-        /// <param name="parameter">The parameter to remove on version match</param>
-        /// <returns>
-        /// args or args minus parameter
-        /// </returns>
-        private string[] filterCmdLineArgs(string[] args, KspVersionRange crashyKspRange, string parameter)
-        {
-            var installedRange = Main.Instance.CurrentInstance.Version().ToVersionRange();
-            if (crashyKspRange.IntersectWith(installedRange) != null
-                && args.Contains(parameter))
-            {
-                log.DebugFormat(
-                    "Parameter {0} found on incompatible KSP version {1}, pruning",
-                    parameter,
-                    Main.Instance.CurrentInstance.Version().ToString());
-                return args.Where(s => s != parameter).ToArray();
-            }
-            return args;
         }
 
         private void ManageMods_StartChangeSet(List<ModChange> changeset)

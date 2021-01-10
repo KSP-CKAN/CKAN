@@ -123,7 +123,7 @@
   <data name="MetadataIdentifierTextBox.Text" xml:space="preserve"><value>-</value></data>
   <data name="ReplacementLabel.Text" xml:space="preserve"><value>Replaced by:</value></data>
   <data name="ReplacementTextBox.Text" xml:space="preserve"><value>-</value></data>
-  <data name="KSPCompatibilityLabel.Text" xml:space="preserve"><value>Max KSP ver.:</value></data>
+  <data name="GameCompatibilityLabel.Text" xml:space="preserve"><value>Max game ver.:</value></data>
   <data name="ReleaseLabel.Text" xml:space="preserve"><value>Release status:</value></data>
   <data name="AuthorLabel.Text" xml:space="preserve"><value>Author:</value></data>
   <data name="LicenseLabel.Text" xml:space="preserve"><value>Licence:</value></data>
@@ -132,7 +132,7 @@
   <data name="MetadataModuleAuthorTextBox.Text" xml:space="preserve"><value>Nobody</value></data>
   <data name="VersionLabel.Text" xml:space="preserve"><value>Version:</value></data>
   <data name="MetadataModuleReleaseStatusTextBox.Text" xml:space="preserve"><value>Stable</value></data>
-  <data name="MetadataModuleKSPCompatibilityTextBox.Text" xml:space="preserve"><value>0.0.0</value></data>
+  <data name="MetadataModuleGameCompatibilityTextBox.Text" xml:space="preserve"><value>0.0.0</value></data>
   <data name="RelationshipTabPage.Text" xml:space="preserve"><value>Relationships</value></data>
   <data name="LegendDependsLabel.Text" xml:space="preserve"><value>Depends</value></data>
   <data name="LegendRecommendsLabel.Text" xml:space="preserve"><value>Recommends</value></data>

@@ -105,7 +105,7 @@ namespace CKAN
             }
 
             // Normalize paths on load (note, doesn't cover assignment like in tests)
-            install_to = KSPPathUtils.NormalizePath(install_to);
+            install_to = CKANPathUtils.NormalizePath(install_to);
         }
 
         #endregion
@@ -152,13 +152,13 @@ namespace CKAN
             if (otherStanza == null)
                 // Not even the right type!
                 return false;
-            if (KSPPathUtils.NormalizePath(file) != KSPPathUtils.NormalizePath(otherStanza.file))
+            if (CKANPathUtils.NormalizePath(file) != CKANPathUtils.NormalizePath(otherStanza.file))
                 return false;
-            if (KSPPathUtils.NormalizePath(find) != KSPPathUtils.NormalizePath(otherStanza.find))
+            if (CKANPathUtils.NormalizePath(find) != CKANPathUtils.NormalizePath(otherStanza.find))
                 return false;
             if (find_regexp != otherStanza.find_regexp)
                 return false;
-            if (KSPPathUtils.NormalizePath(install_to) != KSPPathUtils.NormalizePath(otherStanza.install_to))
+            if (CKANPathUtils.NormalizePath(install_to) != CKANPathUtils.NormalizePath(otherStanza.install_to))
                 return false;
             if (@as != otherStanza.@as)
                 return false;
@@ -231,13 +231,13 @@ namespace CKAN
             {
                 if (file != null)
                 {
-                    file = KSPPathUtils.NormalizePath(file);
+                    file = CKANPathUtils.NormalizePath(file);
                     inst_pattern = new Regex(@"^" + Regex.Escape(file) + @"(/|$)",
                         RegexOptions.IgnoreCase | RegexOptions.Compiled);
                 }
                 else if (find != null)
                 {
-                    find = KSPPathUtils.NormalizePath(find);
+                    find = CKANPathUtils.NormalizePath(find);
                     inst_pattern = new Regex(@"(?:^|/)" + Regex.Escape(find) + @"(/|$)",
                         RegexOptions.IgnoreCase | RegexOptions.Compiled);
                 }
@@ -330,78 +330,50 @@ namespace CKAN
         /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
         /// <exception cref="BadInstallLocationKraken">Thrown when the installation path is not valid according to the spec.</exception>
-        public List<InstallableFile> FindInstallableFiles(ZipFile zipfile, KSP ksp)
+        public List<InstallableFile> FindInstallableFiles(ZipFile zipfile, GameInstance ksp)
         {
             string installDir;
             var files = new List<InstallableFile>();
 
             // Normalize the path before doing everything else
-            string install_to = KSPPathUtils.NormalizePath(this.install_to);
+            string install_to = CKANPathUtils.NormalizePath(this.install_to);
 
-            if (install_to == "GameData" || install_to.StartsWith("GameData/"))
+            // The installation path cannot contain updirs
+            if (install_to.Contains("/../") || install_to.EndsWith("/.."))
+                throw new BadInstallLocationKraken("Invalid installation path: " + install_to);
+
+            if (ksp == null)
+            {
+                installDir = null;
+            }
+            else if (install_to == ksp.game.PrimaryModDirectoryRelative
+                || install_to.StartsWith($"{ksp.game.PrimaryModDirectoryRelative}/"))
             {
                 // The installation path can be either "GameData" or a sub-directory of "GameData"
-                // but it cannot contain updirs
-                if (install_to.Contains("/../") || install_to.EndsWith("/.."))
-                    throw new BadInstallLocationKraken("Invalid installation path: " + install_to);
-
-                string subDir = install_to.Substring("GameData".Length);    // remove "GameData"
+                string subDir = install_to.Substring(ksp.game.PrimaryModDirectoryRelative.Length);    // remove "GameData"
                 subDir = subDir.StartsWith("/") ? subDir.Substring(1) : subDir;    // remove a "/" at the beginning, if present
 
                 // Add the extracted subdirectory to the path of KSP's GameData
-                installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + subDir));
-            }
-            else if (install_to.StartsWith("Ships"))
-            {
-                switch (install_to)
-                {
-                    case "Ships":
-                        installDir = ksp?.Ships();
-                        break;
-                    case "Ships/VAB":
-                        installDir = ksp?.ShipsVab();
-                        break;
-                    case "Ships/SPH":
-                        installDir = ksp?.ShipsSph();
-                        break;
-                    case "Ships/@thumbs":
-                        installDir = ksp?.ShipsThumbs();
-                        break;
-                    case "Ships/@thumbs/VAB":
-                        installDir = ksp?.ShipsThumbsVAB();
-                        break;
-                    case "Ships/@thumbs/SPH":
-                        installDir = ksp?.ShipsThumbsSPH();
-                        break;
-                    case "Ships/Script":
-                        installDir = ksp?.ShipsScript();
-                        break;
-                    default:
-                        throw new BadInstallLocationKraken("Unknown install_to " + install_to);
-                }
+                installDir = CKANPathUtils.NormalizePath(ksp.game.PrimaryModDirectory(ksp) + "/" + subDir);
             }
             else
             {
                 switch (install_to)
                 {
-                    case "Tutorial":
-                        installDir = ksp?.Tutorial();
-                        break;
-
-                    case "Scenarios":
-                        installDir = ksp?.Scenarios();
-                        break;
-
-                    case "Missions":
-                        installDir = ksp?.Missions();
-                        break;
-
                     case "GameRoot":
-                        installDir = ksp?.GameDir();
+                        installDir = ksp.GameDir();
                         break;
 
                     default:
-                        throw new BadInstallLocationKraken("Unknown install_to " + install_to);
+                        if (ksp.game.AllowInstallationIn(install_to, out string path))
+                        {
+                            installDir = ksp.ToAbsoluteGameDir(path);
+                        }
+                        else
+                        {
+                            throw new BadInstallLocationKraken("Unknown install_to " + install_to);
+                        }
+                        break;
                 }
             }
 
@@ -524,7 +496,7 @@ namespace CKAN
             }
 
             // Return our snipped, normalised, and ready to go output filename!
-            return KSPPathUtils.NormalizePath(
+            return CKANPathUtils.NormalizePath(
                 Path.Combine(installDir, outputName)
             );
         }

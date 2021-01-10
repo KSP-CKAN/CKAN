@@ -5,3 +5,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyDescription("CKAN Core")]
 
 [assembly: InternalsVisibleTo("Tests")]
+[assembly: InternalsVisibleTo("CKAN.Tests")]

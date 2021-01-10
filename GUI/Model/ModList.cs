@@ -109,11 +109,11 @@ namespace CKAN
         /// </summary>
         /// <param name="registry"></param>
         /// <param name="changeSet"></param>
-        /// <param name="installer">A module installer for the current KSP install</param>
-        /// <param name="version">The version of the current KSP install</param>
+        /// <param name="installer">A module installer for the current game instance</param>
+        /// <param name="version">The version of the current game instance</param>
         public IEnumerable<ModChange> ComputeChangeSetFromModList(
             IRegistryQuerier registry, HashSet<ModChange> changeSet, ModuleInstaller installer,
-            KspVersionCriteria version)
+            GameVersionCriteria version)
         {
             var modules_to_install = new HashSet<CkanModule>();
             var modules_to_remove = new HashSet<CkanModule>();
@@ -342,7 +342,7 @@ namespace CKAN
             };
 
             var downloadCount = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"       };
-            var compat        = new DataGridViewTextBoxCell { Value = mod.KSPCompatibility            };
+            var compat        = new DataGridViewTextBoxCell { Value = mod.GameCompatibility           };
             var size          = new DataGridViewTextBoxCell { Value = mod.DownloadSize                };
             var releaseDate   = new DataGridViewTextBoxCell { Value = mod.ToModule().release_date     };
             var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate                 };
@@ -429,7 +429,7 @@ namespace CKAN
         }
 
         public static Dictionary<GUIMod, string> ComputeConflictsFromModList(IRegistryQuerier registry,
-            IEnumerable<ModChange> change_set, KspVersionCriteria ksp_version)
+            IEnumerable<ModChange> change_set, GameVersionCriteria ksp_version)
         {
             var modules_to_install = new HashSet<string>();
             var modules_to_remove = new HashSet<string>();

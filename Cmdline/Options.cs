@@ -64,7 +64,7 @@ namespace CKAN.CmdLine
         [VerbOption("available", HelpText = "List available mods")]
         public AvailableOptions Available { get; set; }
 
-        [VerbOption("install", HelpText = "Install a KSP mod")]
+        [VerbOption("install", HelpText = "Install a mod")]
         public InstallOptions Install { get; set; }
 
         [VerbOption("remove", HelpText = "Remove an installed mod")]
@@ -73,7 +73,7 @@ namespace CKAN.CmdLine
         [VerbOption("import", HelpText = "Import manually downloaded mods")]
         public ImportOptions Import { get; set; }
 
-        [VerbOption("scan", HelpText = "Scan for manually installed KSP mods")]
+        [VerbOption("scan", HelpText = "Scan for manually installed mods")]
         public ScanOptions Scan { get; set; }
 
         [VerbOption("list", HelpText = "List installed modules")]
@@ -97,8 +97,8 @@ namespace CKAN.CmdLine
         [VerbOption("mark", HelpText = "Edit flags on modules")]
         public SubCommandOptions Mark { get; set; }
 
-        [VerbOption("ksp", HelpText = "Manage KSP installs")]
-        public SubCommandOptions KSP { get; set; }
+        [VerbOption("instance", HelpText = "Manage game instances")]
+        public SubCommandOptions Instance { get; set; }
 
         [VerbOption("authtoken", HelpText = "Manage authentication tokens")]
         public AuthTokenSubOptions AuthToken { get; set; }
@@ -106,7 +106,7 @@ namespace CKAN.CmdLine
         [VerbOption("cache", HelpText = "Manage download cache path")]
         public SubCommandOptions Cache { get; set; }
 
-        [VerbOption("compat", HelpText = "Manage KSP version compatibility")]
+        [VerbOption("compat", HelpText = "Manage game version compatibility")]
         public SubCommandOptions Compat { get; set; }
 
         [VerbOption("compare", HelpText = "Compare version strings")]
@@ -216,7 +216,7 @@ namespace CKAN.CmdLine
             return HelpText.AutoBuild(this, verb);
         }
 
-        public virtual int Handle(KSPManager manager, IUser user)
+        public virtual int Handle(GameInstanceManager manager, IUser user)
         {
             CheckMonoVersion(user, 3, 1, 0);
 
@@ -316,45 +316,45 @@ namespace CKAN.CmdLine
 
     public class InstanceSpecificOptions : CommonOptions
     {
-        [Option("ksp", HelpText = "KSP install to use")]
-        public string KSP { get; set; }
+        [Option("instance", HelpText = "Game instance to use")]
+        public string Instance { get; set; }
 
-        [Option("kspdir", HelpText = "KSP dir to use")]
-        public string KSPdir { get; set; }
+        [Option("gamedir", HelpText = "Game dir to use")]
+        public string Gamedir { get; set; }
 
-        public override int Handle(KSPManager manager, IUser user)
+        public override int Handle(GameInstanceManager manager, IUser user)
         {
             int exitCode = base.Handle(manager, user);
             if (exitCode == Exit.OK)
             {
-                // User provided KSP instance
-                if (KSPdir != null && KSP != null)
+                // User provided game instance
+                if (Gamedir != null && Instance != null)
                 {
-                    user.RaiseMessage("--ksp and --kspdir can't be specified at the same time");
+                    user.RaiseMessage("--instance and --gamedir can't be specified at the same time");
                     return Exit.BADOPT;
                 }
 
                 try
                 {
-                    if (!string.IsNullOrEmpty(KSP))
+                    if (!string.IsNullOrEmpty(Instance))
                     {
-                        // Set a KSP directory by its alias.
-                        manager.SetCurrentInstance(KSP);
+                        // Set a game directory by its alias.
+                        manager.SetCurrentInstance(Instance);
                     }
-                    else if (!string.IsNullOrEmpty(KSPdir))
+                    else if (!string.IsNullOrEmpty(Gamedir))
                     {
-                        // Set a KSP directory by its path
-                        manager.SetCurrentInstanceByPath(KSPdir);
+                        // Set a game directory by its path
+                        manager.SetCurrentInstanceByPath(Gamedir);
                     }
                 }
                 catch (NotKSPDirKraken k)
                 {
-                    user.RaiseMessage("Sorry, {0} does not appear to be a KSP directory", k.path);
+                    user.RaiseMessage("Sorry, {0} does not appear to be a game instance", k.path);
                     return Exit.BADOPT;
                 }
                 catch (InvalidKSPInstanceKraken k)
                 {
-                    user.RaiseMessage("Invalid KSP installation specified \"{0}\", use '--kspdir' to specify by path, or 'ksp list' to see known KSP installations", k.instance);
+                    user.RaiseMessage("Invalid game instance specified \"{0}\", use '--gamedir' to specify by path, or 'instance list' to see known game instances", k.instance);
                     return Exit.BADOPT;
                 }
             }
@@ -363,7 +363,7 @@ namespace CKAN.CmdLine
     }
 
     /// <summary>
-    /// For things which are subcommands ('ksp', 'repair' etc), we just grab a list
+    /// For things which are subcommands ('instance', 'repair' etc), we just grab a list
     /// we can pass on.
     /// </summary>
     public class SubCommandOptions : CommonOptions
@@ -375,7 +375,7 @@ namespace CKAN.CmdLine
 
         public SubCommandOptions(string[] args)
         {
-            options = new System.Collections.Generic.List<string>(args).GetRange(1, args.Length - 1);
+            options = new List<string>(args).GetRange(1, args.Length - 1);
         }
     }
 

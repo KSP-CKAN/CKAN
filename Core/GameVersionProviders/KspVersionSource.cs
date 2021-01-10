@@ -1,6 +1,6 @@
 ﻿namespace CKAN.GameVersionProviders
 {
-    public enum KspVersionSource
+    public enum GameVersionSource
     {
         BuildId = 1,
         Readme  = 2

@@ -163,8 +163,8 @@
     <value>True</value>
   </data>
   <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>文件</value></data>
-  <data name="manageKspInstancesMenuItem.Text" xml:space="preserve"><value>管理KSP实例</value></data>
-  <data name="openKspDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>打开KSP目录</value></data>
+  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve"><value>管理游戏实例</value></data>
+  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>打开游戏目录</value></data>
   <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>从.ckan安装...</value></data>
   <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;保存已安装的Mod列表...</value></data>
   <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>导出Mod包...</value></data>
@@ -174,8 +174,8 @@
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>设置</value></data>
   <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN设置</value></data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN插件</value></data>
-  <data name="kSPCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>KSP启动选项</value></data>
-  <data name="compatibleKSPVersionsToolStripMenuItem.Text" xml:space="preserve"><value>兼容的KSP版本</value></data>
+  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>游戏启动选项</value></data>
+  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>兼容的游戏版本</value></data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>帮助</value></data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>报告CKAN客户端的问题</value></data>
   <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>报告Mod元数据的问题</value></data>
@@ -192,8 +192,8 @@
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>刷新</value></data>
   <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>暂停</value></data>
   <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>打开CKAN</value></data>
-  <data name="openKSPToolStripMenuItem.Text" xml:space="preserve"><value>启动KSP</value></data>
-  <data name="openKSPDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>打开KSP目录</value></data>
+  <data name="openGameToolStripMenuItem.Text" xml:space="preserve"><value>启动游戏</value></data>
+  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>打开游戏目录</value></data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>CKAN设置</value></data>
   <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>退出</value></data>
 </root>

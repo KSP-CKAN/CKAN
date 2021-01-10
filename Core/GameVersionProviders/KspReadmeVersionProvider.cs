@@ -12,7 +12,7 @@ namespace CKAN.GameVersionProviders
             RegexOptions.IgnoreCase | RegexOptions.Compiled
         );
 
-        public bool TryGetVersion(string directory, out KspVersion result)
+        public bool TryGetVersion(string directory, out GameVersion result)
         {
             var readmePath = Path.Combine(directory, "readme.txt");
 
@@ -25,12 +25,12 @@ namespace CKAN.GameVersionProviders
 
                 if (match != null)
                 {
-                    result = KspVersion.Parse(match.Groups["version"].Value);
+                    result = GameVersion.Parse(match.Groups["version"].Value);
                     return true;
                 }
             }
 
-            result = default(KspVersion);
+            result = default(GameVersion);
             return false;
         }
     }

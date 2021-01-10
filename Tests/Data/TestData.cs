@@ -719,14 +719,16 @@ namespace Tests.Data
         {
             return @"
             {
-              ""KspInstances"": [
+              ""GameInstances"": [
                 {
                   ""Name"": ""instance1"",
-                  ""Path"": ""instance1_path""
+                  ""Path"": ""instance1_path"",
+                  ""Game"": ""KSP""
                 },
                 {
                   ""Name"": ""instance2"",
-                  ""Path"": ""instance2_path""
+                  ""Path"": ""instance2_path"",
+                  ""Game"": ""KSP""
                 }
               ],
               ""AuthTokens"": {
@@ -751,14 +753,16 @@ namespace Tests.Data
         {
             return @"
             {
-              ""KspInstances"": [
+              ""GameInstances"": [
                 {
                   ""Name"": ""instance1"",
-                  ""Path"": ""instance1_path""
+                  ""Path"": ""instance1_path"",
+                  ""Game"": ""KSP""
                 },
                 {
                   ""Name"": ""instance2"",
-                  ""Path"": ""instance2_path""
+                  ""Path"": ""instance2_path"",
+                  ""Game"": ""KSP""
                 }
               ],
               ""RefreshRate"": 4,
@@ -775,14 +779,16 @@ namespace Tests.Data
         {
             return @"
             {
-              ""KspInstances"": [
+              ""GameInstances"": [
                 {
                   ""Name"": ""instance1"",
-                  ""Path"": ""instance1_path""
+                  ""Path"": ""instance1_path"",
+                  ""Game"": ""KSP""
                 },
                 {
                   ""Name"": ""instance2"",
-                  ""Path"": ""instance2_path""
+                  ""Path"": ""instance2_path"",
+                  ""Game"": ""KSP""
                 }
               ],
               ""AuthTokens"": {
@@ -810,14 +816,16 @@ namespace Tests.Data
         {
             return @"
             {
-              ""KspInstances"":
+              ""GameInstances"":
                 {
                   ""Name"": ""instance1"",
-                  ""Path"": ""instance1_path""
+                  ""Path"": ""instance1_path"",
+                  ""Game"": ""KSP""
                 },
                 {
                   ""Name"": ""instance2"",
-                  ""Path"": ""instance2_path""
+                  ""Path"": ""instance2_path"",
+                  ""Game"": ""KSP""
                 }
               ],
               ""AuthTokens"": {
@@ -849,7 +857,7 @@ namespace Tests.Data
         }
 
         public CkanModule GeneratorRandomModule(
-            KspVersion ksp_version = null,
+            GameVersion ksp_version = null,
             List<RelationshipDescriptor> conflicts = null,
             List<RelationshipDescriptor> depends = null,
             List<RelationshipDescriptor> suggests = null,
@@ -863,7 +871,7 @@ namespace Tests.Data
                 @abstract = Generator.Next().ToString(CultureInfo.InvariantCulture),
                 identifier = identifier ?? Generator.Next().ToString(CultureInfo.InvariantCulture),
                 spec_version = new ModuleVersion(1.ToString(CultureInfo.InvariantCulture)),
-                ksp_version = ksp_version ?? KspVersion.Parse("0." + Generator.Next()),
+                ksp_version = ksp_version ?? GameVersion.Parse("0." + Generator.Next()),
                 version = version ?? new ModuleVersion(Generator.Next().ToString(CultureInfo.InvariantCulture))
             };
             mod.ksp_version_max = mod.ksp_version_min = null;

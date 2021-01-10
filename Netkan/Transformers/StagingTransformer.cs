@@ -6,6 +6,7 @@ using Autofac;
 using CKAN.Extensions;
 using CKAN.GameVersionProviders;
 using CKAN.Versioning;
+using CKAN.Games;
 using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Transformers
@@ -14,9 +15,7 @@ namespace CKAN.NetKAN.Transformers
     {
         public StagingTransformer()
         {
-            IKspBuildMap builds = ServiceLocator.Container.Resolve<IKspBuildMap>();
-            builds.Refresh(BuildMapSource.Embedded);
-            currentRelease = builds.KnownVersions.Max().ToVersionRange();
+            currentRelease = new KerbalSpaceProgram().KnownVersions.Max().ToVersionRange();
         }
 
         public string Name { get { return "staging"; } }
@@ -38,11 +37,12 @@ namespace CKAN.NetKAN.Transformers
             JObject json = metadata.Json();
             var minStr = json["ksp_version_min"] ?? json["ksp_version"];
             var maxStr = json["ksp_version_max"] ?? json["ksp_version"];
-            var minVer = minStr == null ? KspVersion.Any : KspVersion.Parse((string)minStr);
-            var maxVer = maxStr == null ? KspVersion.Any : KspVersion.Parse((string)maxStr);
-            if (currentRelease.IntersectWith(new KspVersionRange(minVer, maxVer)) == null)
+            var minVer = minStr == null ? GameVersion.Any : GameVersion.Parse((string)minStr);
+            var maxVer = maxStr == null ? GameVersion.Any : GameVersion.Parse((string)maxStr);
+            if (currentRelease.IntersectWith(new GameVersionRange(minVer, maxVer)) == null)
             {
-                reason = $"Hard-coded game versions not compatible with current release: {KspVersionRange.VersionSpan(minVer, maxVer)}\r\nPlease check that they match the forum thread.";
+                var game = new KerbalSpaceProgram();
+                reason = $"Hard-coded game versions not compatible with current release: {GameVersionRange.VersionSpan(game, minVer, maxVer)}\r\nPlease check that they match the forum thread.";
                 return true;
             }
             else
@@ -53,7 +53,7 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private static KspVersionRange currentRelease;
+        private static GameVersionRange currentRelease;
         private static readonly ILog Log = LogManager.GetLogger(typeof(StagingTransformer));
     }
 }

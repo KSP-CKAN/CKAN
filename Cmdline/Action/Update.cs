@@ -6,14 +6,14 @@ namespace CKAN.CmdLine
     public class Update : ICommand
     {
         public IUser user { get; set; }
-        private KSPManager manager;
+        private GameInstanceManager manager;
 
         /// <summary>
         /// Initialize the update command object
         /// </summary>
-        /// <param name="mgr">KSPManager containing our instances</param>
+        /// <param name="mgr">GameInstanceManager containing our instances</param>
         /// <param name="user">IUser object for interaction</param>
-        public Update(KSPManager mgr, IUser user)
+        public Update(GameInstanceManager mgr, IUser user)
         {
             manager   = mgr;
             this.user = user;
@@ -27,7 +27,7 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code for shell environment
         /// </returns>
-        public int RunCommand(CKAN.KSP ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
         {
             UpdateOptions options = (UpdateOptions) raw_options;
 
@@ -143,7 +143,7 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <param name="ksp">The KSP instance to work on.</param>
         /// <param name="repository">Repository to update. If null all repositories are used.</param>
-        private void UpdateRepository(CKAN.KSP ksp, string repository = null)
+        private void UpdateRepository(CKAN.GameInstance ksp, string repository = null)
         {
             RegistryManager registry_manager = RegistryManager.Instance(ksp);
 

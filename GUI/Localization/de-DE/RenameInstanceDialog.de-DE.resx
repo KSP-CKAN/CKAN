@@ -119,5 +119,5 @@
   </resheader>
   <data name="OKButton.Text" xml:space="preserve"><value>OK</value></data>
   <data name="CancelRenameInstanceButton.Text" xml:space="preserve"><value>Abbrechen</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>KSP-Instanz umbenennen</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Spielinstanz umbenennen</value></data>
 </root>

@@ -34,7 +34,7 @@ namespace Tests.Core.Net
             CKAN.Repo.Update(manager, ksp.KSP, new NullUser(), TestData.TestKANTarGz());
 
             // Test we've got an expected module.
-            CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new KspVersionCriteria(KspVersion.Parse("0.25.0")));
+            CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new GameVersionCriteria(GameVersion.Parse("0.25.0")));
 
             Assert.AreEqual("v0.14.3.2", far.version.ToString());
         }
@@ -45,7 +45,7 @@ namespace Tests.Core.Net
             CKAN.Repo.Update(manager, ksp.KSP, new NullUser(), TestData.TestKANZip());
 
             // Test we've got an expected module.
-            CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new KspVersionCriteria(KspVersion.Parse("0.25.0")));
+            CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new GameVersionCriteria(GameVersion.Parse("0.25.0")));
 
             Assert.AreEqual("v0.14.3.2", far.version.ToString());
         }

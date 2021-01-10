@@ -11,14 +11,14 @@ namespace CKAN.CmdLine
         private static readonly ILog log = LogManager.GetLogger(typeof(Remove));
 
         public IUser user { get; set; }
-        private KSPManager manager;
+        private GameInstanceManager manager;
 
         /// <summary>
         /// Initialize the remove command object
         /// </summary>
-        /// <param name="mgr">KSPManager containing our instances</param>
+        /// <param name="mgr">GameInstanceManager containing our instances</param>
         /// <param name="user">IUser object for interaction</param>
-        public Remove(KSPManager mgr, IUser user)
+        public Remove(GameInstanceManager mgr, IUser user)
         {
             manager   = mgr;
             this.user = user;
@@ -32,7 +32,7 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code for shell environment
         /// </returns>
-        public int RunCommand(CKAN.KSP ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
         {
             RemoveOptions options = (RemoveOptions) raw_options;
             RegistryManager regMgr = RegistryManager.Instance(ksp);

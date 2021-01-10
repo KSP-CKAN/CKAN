@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using CKAN.Versioning;
+using CKAN.Games;
 
 namespace CKAN.DLC
 {
@@ -16,21 +17,23 @@ namespace CKAN.DLC
     /// </remarks>
     public abstract class StandardDlcDetectorBase : IDlcDetector
     {
-        public KspVersion ReleaseGameVersion { get; }
+        public GameVersion ReleaseGameVersion { get; }
         public string IdentifierBaseName { get; }
 
         private readonly string DirectoryBaseName;
         private readonly Dictionary<string, string> CanonicalVersions;
+
+        private IGame game;
 
         private static readonly Regex VersionPattern = new Regex(
             @"^Version\s+(?<version>\S+)$",
             RegexOptions.Compiled | RegexOptions.IgnoreCase
         );
 
-        protected StandardDlcDetectorBase(string identifierBaseName, KspVersion releaseGameVersion, Dictionary<string, string> canonicalVersions = null)
-            : this(identifierBaseName, identifierBaseName, releaseGameVersion, canonicalVersions) { }
+        protected StandardDlcDetectorBase(IGame game, string identifierBaseName, GameVersion releaseGameVersion, Dictionary<string, string> canonicalVersions = null)
+            : this(game, identifierBaseName, identifierBaseName, releaseGameVersion, canonicalVersions) { }
 
-        protected StandardDlcDetectorBase(string identifierBaseName, string directoryBaseName, KspVersion releaseGameVersion, Dictionary<string, string> canonicalVersions = null)
+        protected StandardDlcDetectorBase(IGame game, string identifierBaseName, string directoryBaseName, GameVersion releaseGameVersion, Dictionary<string, string> canonicalVersions = null)
         {
             if (string.IsNullOrWhiteSpace(identifierBaseName))
                 throw new ArgumentException("Value must be provided.", nameof(identifierBaseName));
@@ -38,18 +41,19 @@ namespace CKAN.DLC
             if (string.IsNullOrWhiteSpace(directoryBaseName))
                 throw new ArgumentException("Value must be provided.", nameof(directoryBaseName));
 
+            this.game = game;
             IdentifierBaseName = identifierBaseName;
             DirectoryBaseName = directoryBaseName;
             ReleaseGameVersion = releaseGameVersion;
             CanonicalVersions = canonicalVersions ?? new Dictionary<string, string>();
         }
 
-        public virtual bool IsInstalled(KSP ksp, out string identifier, out UnmanagedModuleVersion version)
+        public virtual bool IsInstalled(GameInstance ksp, out string identifier, out UnmanagedModuleVersion version)
         {
             identifier = $"{IdentifierBaseName}-DLC";
             version = null;
 
-            var directoryPath = Path.Combine(ksp.GameData(), "SquadExpansion", DirectoryBaseName);
+            var directoryPath = Path.Combine(game.PrimaryModDirectory(ksp), "SquadExpansion", DirectoryBaseName);
             if (Directory.Exists(directoryPath))
             {
                 var readmeFilePath = Path.Combine(directoryPath, "readme.txt");
@@ -86,7 +90,7 @@ namespace CKAN.DLC
             return Path.Combine("GameData", "SquadExpansion", DirectoryBaseName);
         }
 
-        public bool AllowedOnBaseVersion(KspVersion baseVersion)
+        public bool AllowedOnBaseVersion(GameVersion baseVersion)
         {
             return baseVersion >= ReleaseGameVersion;
         }

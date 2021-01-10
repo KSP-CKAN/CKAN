@@ -31,7 +31,7 @@ namespace CKAN
             ));
         }
 
-        private void AuditRecommendations(IRegistryQuerier registry, KspVersionCriteria versionCriteria)
+        private void AuditRecommendations(IRegistryQuerier registry, GameVersionCriteria versionCriteria)
         {
             var installer = ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, currentUser);
             if (installer.FindRecommendations(

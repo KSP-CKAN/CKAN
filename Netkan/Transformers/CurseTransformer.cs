@@ -72,8 +72,8 @@ namespace CKAN.NetKAN.Transformers
             // Only pre-fill version info if there's none already. GH #199
             if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
             {
-                KspVersion minVer = latestVersion.versions.Min();
-                KspVersion maxVer = latestVersion.versions.Max();
+                GameVersion minVer = latestVersion.versions.Min();
+                GameVersion maxVer = latestVersion.versions.Max();
                 if (minVer == maxVer)
                 {
                     Log.DebugFormat("Writing ksp_version from Curse: {0}", latestVersion.version);

@@ -19,7 +19,7 @@ namespace Tests.GUI
     {
         private CkanModule _anyVersionModule;
         private DisposableKSP _instance;
-        private KSPManager _manager;
+        private GameInstanceManager _manager;
         private FakeConfiguration _config;
         private RegistryManager _registryManager;
         private Registry _registry;
@@ -57,7 +57,7 @@ namespace Tests.GUI
             _registryManager = RegistryManager.Instance(_instance.KSP);
             _registry = Registry.Empty();
             _config = new FakeConfiguration(_instance.KSP, _instance.KSP.Name);
-            _manager = new KSPManager(
+            _manager = new GameInstanceManager(
                 new NullUser(),
                 _config
             );

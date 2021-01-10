@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Autofac;
 using CKAN.GameVersionProviders;
 using CKAN.Versioning;
+using CKAN.Games;
 using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Validators
@@ -10,21 +11,21 @@ namespace CKAN.NetKAN.Validators
     {
         public MatchesKnownGameVersionsValidator()
         {
-            buildMap = ServiceLocator.Container.Resolve<IKspBuildMap>();
-            buildMap.Refresh(BuildMapSource.Embedded);
+            knownVersions = new KerbalSpaceProgram().KnownVersions;
         }
 
         public void Validate(Metadata metadata)
         {
             var mod = CkanModule.FromJson(metadata.Json().ToString());
-            if (!mod.IsCompatibleKSP(new KspVersionCriteria(null, buildMap.KnownVersions)))
+            if (!mod.IsCompatibleKSP(new GameVersionCriteria(null, knownVersions)))
             {
-                KspVersion minKsp = null, maxKsp = null;
+                GameVersion minKsp = null, maxKsp = null;
                 Registry.GetMinMaxVersions(new List<CkanModule>() {mod}, out _, out _, out minKsp, out maxKsp);
-                throw new Kraken($"{metadata.Identifier} doesn't match any valid game version: {KspVersionRange.VersionSpan(minKsp, maxKsp)}");
+                var game = new KerbalSpaceProgram();
+                throw new Kraken($"{metadata.Identifier} doesn't match any valid game version: {GameVersionRange.VersionSpan(game, minKsp, maxKsp)}");
             }
         }
 
-        private IKspBuildMap buildMap;
+        private List<GameVersion> knownVersions;
     }
 }

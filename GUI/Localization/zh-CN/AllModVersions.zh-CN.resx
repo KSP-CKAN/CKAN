@@ -119,11 +119,11 @@
   </resheader>
   <data name="label1.Text" xml:space="preserve"><value>选中Mod的所有可用版本</value></data>
   <data name="ModVersion.Text" xml:space="preserve"><value>Mod版本</value></data>
-  <data name="CompatibleKSPVersion.Text" xml:space="preserve"><value>兼容的KSP版本</value></data>
+  <data name="CompatibleGameVersion.Text" xml:space="preserve"><value>兼容的游戏版本</value></data>
   <data name="label2.Text" xml:space="preserve"><value>绿色</value></data>
   <data name="label3.Text" xml:space="preserve"><value>浅绿色</value></data>
   <data name="label4.Text" xml:space="preserve"><value>粗体</value></data>
   <data name="label5.Text" xml:space="preserve"><value>- 最新的兼容版本（很可能安装）</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>- 兼容您的KSP的版本</value></data>
+  <data name="label6.Text" xml:space="preserve"><value>- 兼容您的游戏的版本</value></data>
   <data name="label7.Text" xml:space="preserve"><value>- 当前已安装版本</value></data>
 </root>

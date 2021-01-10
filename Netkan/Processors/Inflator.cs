@@ -19,7 +19,7 @@ namespace CKAN.NetKAN.Processors
         {
             log.Debug("Initializing inflator");
             cache = FindCache(
-                new KSPManager(new ConsoleUser(false)),
+                new GameInstanceManager(new ConsoleUser(false)),
                 ServiceLocator.Container.Resolve<IConfiguration>(),
                 cacheDir
             );
@@ -68,7 +68,7 @@ namespace CKAN.NetKAN.Processors
             ckanValidator.Validate(ckan);
         }
 
-        private static NetFileCache FindCache(KSPManager kspManager, IConfiguration cfg, string cacheDir)
+        private static NetFileCache FindCache(GameInstanceManager kspManager, IConfiguration cfg, string cacheDir)
         {
             if (cacheDir != null)
             {

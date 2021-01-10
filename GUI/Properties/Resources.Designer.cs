@@ -258,8 +258,8 @@ namespace CKAN.Properties {
             get { return (string)(ResourceManager.GetObject("AboutDialogLabel2Text", resourceCulture)); }
         }
 
-        internal static string CloneFakeKspDialogOpenFilter {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogOpenFilter", resourceCulture)); }
+        internal static string BuildIDFilterDescription {
+            get { return (string)(ResourceManager.GetObject("BuildIDFilterDescription", resourceCulture)); }
         }
         internal static string CloneFakeKspDialogEnterName {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogEnterName", resourceCulture)); }
@@ -298,20 +298,20 @@ namespace CKAN.Properties {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogSuccessfulCreate", resourceCulture)); }
         }
 
-        internal static string CompatibleKspVersionsDialogNone {
-            get { return (string)(ResourceManager.GetObject("CompatibleKspVersionsDialogNone", resourceCulture)); }
+        internal static string CompatibleGameVersionsDialogNone {
+            get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogNone", resourceCulture)); }
         }
-        internal static string CompatibleKspVersionsDialogKSPUpdated {
-            get { return (string)(ResourceManager.GetObject("CompatibleKspVersionsDialogKSPUpdated", resourceCulture)); }
+        internal static string CompatibleGameVersionsDialogGameUpdated {
+            get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogGameUpdated", resourceCulture)); }
         }
-        internal static string CompatibleKspVersionsDialogVersionDetails {
-            get { return (string)(ResourceManager.GetObject("CompatibleKspVersionsDialogVersionDetails", resourceCulture)); }
+        internal static string CompatibleGameVersionsDialogVersionDetails {
+            get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogVersionDetails", resourceCulture)); }
         }
-        internal static string CompatibleKspVersionsDialogInvalidFormat {
-            get { return (string)(ResourceManager.GetObject("CompatibleKspVersionsDialogInvalidFormat", resourceCulture)); }
+        internal static string CompatibleGameVersionsDialogInvalidFormat {
+            get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogInvalidFormat", resourceCulture)); }
         }
-        internal static string CompatibleKspVersionsDialogErrorTitle {
-            get { return (string)(ResourceManager.GetObject("CompatibleKspVersionsDialogErrorTitle", resourceCulture)); }
+        internal static string CompatibleGameVersionsDialogErrorTitle {
+            get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogErrorTitle", resourceCulture)); }
         }
 
         internal static string ConfigurationParseError {
@@ -327,8 +327,8 @@ namespace CKAN.Properties {
         internal static string GUIModMethodNotCKAN {
             get { return (string)(ResourceManager.GetObject("GUIModMethodNotCKAN", resourceCulture)); }
         }
-        internal static string GUIModKSPCompatibilityLong {
-            get { return (string)(ResourceManager.GetObject("GUIModKSPCompatibilityLong", resourceCulture)); }
+        internal static string GUIModGameCompatibilityLong {
+            get { return (string)(ResourceManager.GetObject("GUIModGameCompatibilityLong", resourceCulture)); }
         }
 
         internal static string MainAutoUpdateFailed {
@@ -722,12 +722,12 @@ namespace CKAN.Properties {
             get { return (string)(ResourceManager.GetObject("MainWaitDone", resourceCulture)); }
         }
 
-        internal static string ManageKspInstancesNotValid {
-            get { return (string)(ResourceManager.GetObject("ManageKspInstancesNotValid", resourceCulture)); }
+        internal static string ManageGameInstancesNotValid {
+            get { return (string)(ResourceManager.GetObject("ManageGameInstancesNotValid", resourceCulture)); }
         }
 
-        internal static string ManageKspInstancesDirectoryDeleted {
-            get { return (string)(ResourceManager.GetObject("ManageKspInstancesDirectoryDeleted", resourceCulture)); }
+        internal static string ManageGameInstancesDirectoryDeleted {
+            get { return (string)(ResourceManager.GetObject("ManageGameInstancesDirectoryDeleted", resourceCulture)); }
         }
 
         internal static string NewRepoDialogFailed {
@@ -875,8 +875,8 @@ namespace CKAN.Properties {
         internal static string EditModpackBadVersion {
             get { return (string)(ResourceManager.GetObject("EditModpackBadVersion", resourceCulture)); }
         }
-        internal static string EditModpackBadKspVersions {
-            get { return (string)(ResourceManager.GetObject("EditModpackBadKspVersions", resourceCulture)); }
+        internal static string EditModpackBadGameVersions {
+            get { return (string)(ResourceManager.GetObject("EditModpackBadGameVersions", resourceCulture)); }
         }
         internal static string EditModpackTooltipIdentifier {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipIdentifier", resourceCulture)); }
@@ -890,11 +890,11 @@ namespace CKAN.Properties {
         internal static string EditModpackTooltipVersion {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipVersion", resourceCulture)); }
         }
-        internal static string EditModpackTooltipKspVersionMin {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipKspVersionMin", resourceCulture)); }
+        internal static string EditModpackTooltipGameVersionMin {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipGameVersionMin", resourceCulture)); }
         }
-        internal static string EditModpackTooltipKspVersionMax {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipKspVersionMax", resourceCulture)); }
+        internal static string EditModpackTooltipGameVersionMax {
+            get { return (string)(ResourceManager.GetObject("EditModpackTooltipGameVersionMax", resourceCulture)); }
         }
         internal static string EditModpackTooltipLicense {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipLicense", resourceCulture)); }

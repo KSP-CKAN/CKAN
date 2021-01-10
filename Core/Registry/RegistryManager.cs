@@ -9,7 +9,6 @@ using CKAN.DLC;
 using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace CKAN
 {
@@ -29,13 +28,13 @@ namespace CKAN
         // when deserialising, and *it* only needs it to do registry upgrades.
         // We could get rid of all of this if we declare we no longer wish to support
         // older registry formats.
-        private readonly KSP ksp;
+        private readonly GameInstance ksp;
 
         public Registry registry;
 
         // We require our constructor to be private so we can
         // enforce this being an instance (via Instance() above)
-        private RegistryManager(string path, KSP ksp)
+        private RegistryManager(string path, GameInstance ksp)
         {
             this.ksp = ksp;
 
@@ -245,7 +244,7 @@ namespace CKAN
         /// Returns an instance of the registry manager for the KSP install.
         /// The file `registry.json` is assumed.
         /// </summary>
-        public static RegistryManager Instance(KSP ksp)
+        public static RegistryManager Instance(GameInstance ksp)
         {
             string directory = ksp.CkanDir();
             if (!registryCache.ContainsKey(directory))
@@ -333,7 +332,7 @@ namespace CKAN
             if (repositories.Count == 0)
             {
                 repositories.Add(Repository.default_ckan_repo_name,
-                    new Repository(Repository.default_ckan_repo_name, Repository.default_ckan_repo_uri));
+                    new Repository(Repository.default_ckan_repo_name, ksp.game.DefaultRepositoryURL));
             }
 
             registry.Repositories = repositories;

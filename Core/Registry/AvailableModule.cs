@@ -81,7 +81,7 @@ namespace CKAN
         /// <param name="toInstall">Modules that are planned to be installed</param>
         /// <returns></returns>
         public CkanModule Latest(
-            KspVersionCriteria      ksp_version  = null,
+            GameVersionCriteria      ksp_version  = null,
             RelationshipDescriptor  relationship = null,
             IEnumerable<CkanModule> installed    = null,
             IEnumerable<CkanModule> toInstall    = null
@@ -142,12 +142,12 @@ namespace CKAN
         /// Returns the latest game version that is compatible with this mod.
         /// Checks all versions of the mod.
         /// </summary>
-        public KspVersion LatestCompatibleKSP()
+        public GameVersion LatestCompatibleKSP()
         {
-            KspVersion best = null;
+            GameVersion best = null;
             foreach (var pair in module_version)
             {
-                KspVersion v = pair.Value.LatestCompatibleKSP();
+                GameVersion v = pair.Value.LatestCompatibleKSP();
                 if (v.IsAny)
                     // Can't get later than Any, so stop
                     return v;

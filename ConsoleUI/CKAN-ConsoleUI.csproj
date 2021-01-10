@@ -60,10 +60,10 @@
     <Compile Include="DownloadImportDialog.cs" />
     <Compile Include="ExitScreen.cs" />
     <Compile Include="InstallScreen.cs" />
-    <Compile Include="KSPAddScreen.cs" />
-    <Compile Include="KSPEditScreen.cs" />
-    <Compile Include="KSPListScreen.cs" />
-    <Compile Include="KSPScreen.cs" />
+    <Compile Include="GameInstanceAddScreen.cs" />
+    <Compile Include="GameInstanceEditScreen.cs" />
+    <Compile Include="GameInstanceListScreen.cs" />
+    <Compile Include="GameInstanceScreen.cs" />
     <Compile Include="ModInfoScreen.cs" />
     <Compile Include="ModListHelpDialog.cs" />
     <Compile Include="ModListScreen.cs" />

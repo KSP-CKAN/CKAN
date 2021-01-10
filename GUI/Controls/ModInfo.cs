@@ -80,7 +80,7 @@ namespace CKAN
 
         public event Action<GUIMod> OnDownloadClick;
 
-        private KSPManager manager
+        private GameInstanceManager manager
         {
             get
             {
@@ -139,7 +139,7 @@ namespace CKAN
             Util.Invoke(MetadataIdentifierTextBox, () => MetadataIdentifierTextBox.Text = gui_module.Identifier);
 
             Util.Invoke(MetadataModuleReleaseStatusTextBox, () => MetadataModuleReleaseStatusTextBox.Text = module.release_status?.ToString() ?? Properties.Resources.ModInfoNSlashA);
-            Util.Invoke(MetadataModuleKSPCompatibilityTextBox, () => MetadataModuleKSPCompatibilityTextBox.Text = gui_module.KSPCompatibilityLong);
+            Util.Invoke(MetadataModuleGameCompatibilityTextBox, () => MetadataModuleGameCompatibilityTextBox.Text = gui_module.GameCompatibilityLong);
             Util.Invoke(ReplacementTextBox, () => ReplacementTextBox.Text = gui_module.ToModule()?.replaced_by?.ToString() ?? Properties.Resources.ModInfoNSlashA);
 
             Util.Invoke(MetaDataLowerLayoutPanel, () =>
@@ -428,7 +428,7 @@ namespace CKAN
             }
         }
 
-        private TreeNode findDependencyShallow(IRegistryQuerier registry, RelationshipDescriptor relDescr, RelationshipType relationship, KspVersionCriteria crit)
+        private TreeNode findDependencyShallow(IRegistryQuerier registry, RelationshipDescriptor relDescr, RelationshipType relationship, GameVersionCriteria crit)
         {
             // Maybe it's a DLC?
             if (relDescr.MatchesAny(
@@ -476,7 +476,7 @@ namespace CKAN
         {
             int icon = (int)relationship + 1;
             string suffix = compatible ? ""
-                : $" ({registry.CompatibleGameVersions(module.identifier)})";
+                : $" ({registry.CompatibleGameVersions(manager.CurrentInstance.game, module.identifier)})";
             return new TreeNode($"{module.name} {module.version}{suffix}", icon, icon)
             {
                 Name        = module.identifier,

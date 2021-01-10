@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using CKAN.Games;
 
 namespace CKAN.Configuration
 {
@@ -11,6 +12,7 @@ namespace CKAN.Configuration
 
         #region JSON Structures
 
+        [JsonConverter(typeof(ConfigConverter))]
         private class Config
         {
             public string AutoStartInstance { get; set; }
@@ -18,15 +20,29 @@ namespace CKAN.Configuration
             public long? CacheSizeLimit { get; set; }
             public int? RefreshRate { get; set; }
             public string Language { get; set; }
-            public JBuilds KSPBuilds { get; set; }
-            public IList<KspInstance> KspInstances = new List<KspInstance>();
-            public IDictionary<string, string> AuthTokens = new Dictionary<string, string>();
+            public IList<GameInstanceEntry> GameInstances { get; set; } = new List<GameInstanceEntry>();
+            public IDictionary<string, string> AuthTokens { get; set; } = new Dictionary<string, string>();
         }
 
-        private class KspInstance
+        public class ConfigConverter : JsonPropertyNamesChangedConverter
+        {
+            protected override Dictionary<string, string> mapping
+            {
+                get
+                {
+                    return new Dictionary<string, string>
+                    {
+                        { "KspInstances", "GameInstances" }
+                    };
+                }
+            }
+        }
+
+        private class GameInstanceEntry
         {
             public string Name { get; set; }
             public string Path { get; set; }
+            public string Game { get; set; }
         }
 
         #endregion
@@ -208,22 +224,6 @@ namespace CKAN.Configuration
         }
 
         // <summary>
-        // Create a new instance of JsonConfiguration. ServiceLocator maintains a
-        // singleton instance, so in general you should use that. However, the
-        // core state is static, so creating multiple instances is not an issue.
-        // </summary>
-        public JsonConfiguration()
-        {
-            lock (_lock)
-            {
-                if (config != null)
-                    return;
-
-                LoadConfig();
-            }
-        }
-
-        // <summary>
         // For testing purposes only. This constructor discards the global configuration
         // state, and recreates it from the specified file.
         // </summary>
@@ -233,52 +233,38 @@ namespace CKAN.Configuration
         // doesn't get loaded from the default location first, as that might end up
         // creating files and directories that the user is trying to avoid creating by
         // specifying the configuration file on the command line.
-        public JsonConfiguration(string newConfig)
+        public JsonConfiguration(string newConfig = null)
         {
             lock (_lock)
             {
-                configFile = newConfig;
-
+                configFile = newConfig ?? defaultConfigFile;
                 LoadConfig();
             }
         }
 
 
-        public JBuilds GetKSPBuilds()
+        public IEnumerable<Tuple<string, string, string>> GetInstances()
         {
             lock (_lock)
             {
-                return config.KSPBuilds;
+                return config.GameInstances.Select(instance =>
+                    new Tuple<string, string, string>(
+                        instance.Name,
+                        instance.Path,
+                        instance.Game)
+                );
             }
         }
 
-        public void SetKSPBuilds(JBuilds buildMap)
+        public void SetRegistryToInstances(SortedList<string, GameInstance> instances)
         {
             lock (_lock)
             {
-                config.KSPBuilds = buildMap;
-
-                SaveConfig();
-            }
-        }
-
-        public IEnumerable<Tuple<string, string>> GetInstances()
-        {
-            lock (_lock)
-            {
-                return config.KspInstances.Select(instance =>
-                    new Tuple<string, string>(instance.Name, instance.Path));
-            }
-        }
-
-        public void SetRegistryToInstances(SortedList<string, KSP> instances)
-        {
-            lock (_lock)
-            {
-                config.KspInstances = instances.Select(instance => new KspInstance
+                config.GameInstances = instances.Select(instance => new GameInstanceEntry
                 {
                     Name = instance.Key,
-                    Path = instance.Value.GameDir()
+                    Path = instance.Value.GameDir(),
+                    Game = instance.Value.game.ShortName
                 }).ToList();
 
                 SaveConfig();
@@ -351,9 +337,20 @@ namespace CKAN.Configuration
                         config = new Config();
                     }
 
-                    if (config.KspInstances == null)
+                    if (config.GameInstances == null)
                     {
-                        config.KspInstances = new List<KspInstance>();
+                        config.GameInstances = new List<GameInstanceEntry>();
+                    }
+                    else
+                    {
+                        var game = new KerbalSpaceProgram();
+                        foreach (GameInstanceEntry e in config.GameInstances)
+                        {
+                            if (e.Game == null)
+                            {
+                                e.Game = game.ShortName;
+                            }
+                        }
                     }
 
                     if (config.AuthTokens == null)
@@ -396,13 +393,12 @@ namespace CKAN.Configuration
             lock (_lock)
             {
                 var instances = registry.GetInstances();
-                config.KspInstances = instances.Select(instance => new KspInstance
+                config.GameInstances = instances.Select(instance => new GameInstanceEntry
                 {
                     Name = instance.Item1,
-                    Path = instance.Item2
+                    Path = instance.Item2,
+                    Game = instance.Item3
                 }).ToList();
-
-                config.KSPBuilds = registry.GetKSPBuilds();
 
                 config.AutoStartInstance = registry.AutoStartInstance;
                 config.DownloadCacheDir = registry.DownloadCacheDir;

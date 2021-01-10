@@ -9,6 +9,21 @@ using CKAN.Configuration;
 
 namespace CKAN.GameVersionProviders
 {
+    // <summary>
+    // THIS IS NOT THE BUILD MAP! If you are trying to access the build map,
+    // you want to use IKspBuildMap.
+    //
+    // This class represents the internal JSON structure of the build map,
+    // and should only be used by implementations of IKspBuildMap and
+    // IConfiguration.
+    // </summary>
+    public sealed class JBuilds
+    {
+        [JsonProperty("builds")]
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
+        public Dictionary<string, string> Builds { get; set; }
+    }
+
     // ReSharper disable once ClassNeverInstantiated.Global
     public sealed class KspBuildMap : IKspBuildMap
     {
@@ -22,26 +37,26 @@ namespace CKAN.GameVersionProviders
         private readonly IConfiguration _configuration;
         private JBuilds _jBuilds;
 
-        public KspVersion this[string buildId]
+        public GameVersion this[string buildId]
         {
             get
             {
                 EnsureBuildMap();
 
                 string version;
-                return _jBuilds.Builds.TryGetValue(buildId, out version) ? KspVersion.Parse(version) : null;
+                return _jBuilds.Builds.TryGetValue(buildId, out version) ? GameVersion.Parse(version) : null;
             }
         }
 
-        public List<KspVersion> KnownVersions
+        public List<GameVersion> KnownVersions
         {
             get
             {
                 EnsureBuildMap();
-                List<KspVersion> knownVersions = new List<KspVersion>();
+                List<GameVersion> knownVersions = new List<GameVersion>();
                 foreach (var version in _jBuilds.Builds)
                 {
-                    knownVersions.Add(KspVersion.Parse(version.Value));
+                    knownVersions.Add(GameVersion.Parse(version.Value));
                 }
                 return knownVersions;
             }
@@ -60,7 +75,7 @@ namespace CKAN.GameVersionProviders
                 {
                     if (ReferenceEquals(_jBuilds, null))
                     {
-                        Refresh(BuildMapSource.Cache);
+                        Refresh();
                     }
                 }
             }
@@ -69,21 +84,9 @@ namespace CKAN.GameVersionProviders
         /// <summary>
         /// Load a build map
         /// </summary>
-        /// <param name="source">Remote to download builds.json from GitHub (default), Cache to use the data from the last remote refresh, Embedded to use the builds.json built into the exe</param>
-        public void Refresh(BuildMapSource source = BuildMapSource.Remote)
+        public void Refresh()
         {
-            switch (source)
-            {
-                case BuildMapSource.Cache:
-                    if (TrySetRegistryBuildMap()) return;
-                    if (TrySetRemoteBuildMap())   return;
-                    break;
-
-                case BuildMapSource.Remote:
-                    if (TrySetRemoteBuildMap())   return;
-                    if (TrySetRegistryBuildMap()) return;
-                    break;
-            }
+            if (TrySetRemoteBuildMap())   return;
             if (TrySetEmbeddedBuildMap()) return;
 
             Log.Warn("Could not refresh the build map from any source");
@@ -111,7 +114,6 @@ namespace CKAN.GameVersionProviders
 
                 if (TrySetBuildMap(json))
                 {
-                    _configuration.SetKSPBuilds(_jBuilds);
                     return true;
                 }
                 else
@@ -122,29 +124,6 @@ namespace CKAN.GameVersionProviders
             catch (Exception e)
             {
                 Log.WarnFormat("Could not retrieve latest build map from: {0}", BuildMapUri);
-                Log.Debug(e);
-                return false;
-            }
-        }
-
-        private bool TrySetRegistryBuildMap()
-        {
-            try
-            {
-                var json = _configuration.GetKSPBuilds();
-                if (json != null)
-                {
-                    _jBuilds = json;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception e)
-            {
-                Log.WarnFormat("Could not retrieve build map from configuration");
                 Log.Debug(e);
                 return false;
             }

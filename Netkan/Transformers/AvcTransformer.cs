@@ -126,8 +126,8 @@ namespace CKAN.NetKAN.Transformers
             var existingKspMinStr = (string)json["ksp_version_min"] ?? (string)json["ksp_version"];
             var existingKspMaxStr = (string)json["ksp_version_max"] ?? (string)json["ksp_version"];
 
-            var existingKspMin = existingKspMinStr == null ? null : KspVersion.Parse(existingKspMinStr);
-            var existingKspMax = existingKspMaxStr == null ? null : KspVersion.Parse(existingKspMaxStr);
+            var existingKspMin = existingKspMinStr == null ? null : GameVersion.Parse(existingKspMinStr);
+            var existingKspMax = existingKspMaxStr == null ? null : GameVersion.Parse(existingKspMaxStr);
 
             // Get the minimum and maximum KSP versions that are in the AVC file.
             // https://github.com/linuxgurugamer/KSPAddonVersionChecker/blob/master/KSP-AVC.schema.json
@@ -136,7 +136,7 @@ namespace CKAN.NetKAN.Transformers
             // its equivalent properties as mutually exclusive.
             // Only fallback if neither min nor max are defined,
             // for open ranges.
-            KspVersion avcKspMin, avcKspMax;
+            GameVersion avcKspMin, avcKspMax;
             if (avc.ksp_version_min == null && avc.ksp_version_max == null)
             {
                 // Use specific KSP version if min/max don't exist
@@ -150,19 +150,19 @@ namespace CKAN.NetKAN.Transformers
 
             // Now calculate the minimum and maximum KSP versions between both the existing metadata and the
             // AVC file.
-            var kspMins  = new List<KspVersion>();
-            var kspMaxes = new List<KspVersion>();
+            var kspMins  = new List<GameVersion>();
+            var kspMaxes = new List<GameVersion>();
 
-            if (!KspVersion.IsNullOrAny(existingKspMin))
+            if (!GameVersion.IsNullOrAny(existingKspMin))
                 kspMins.Add(existingKspMin);
 
-            if (!KspVersion.IsNullOrAny(avcKspMin))
+            if (!GameVersion.IsNullOrAny(avcKspMin))
                 kspMins.Add(avcKspMin);
 
-            if (!KspVersion.IsNullOrAny(existingKspMax))
+            if (!GameVersion.IsNullOrAny(existingKspMax))
                 kspMaxes.Add(existingKspMax);
 
-            if (!KspVersion.IsNullOrAny(avcKspMax))
+            if (!GameVersion.IsNullOrAny(avcKspMax))
                 kspMaxes.Add(avcKspMax);
 
             var kspMin = kspMins.Any()  ? kspMins.Min()  : null;

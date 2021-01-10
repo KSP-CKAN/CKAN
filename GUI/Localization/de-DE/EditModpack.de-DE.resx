@@ -121,7 +121,7 @@
   <data name="NameLabel.Text" xml:space="preserve"><value>Name:</value></data>
   <data name="AbstractLabel.Text" xml:space="preserve"><value>Abstrakt:</value></data>
   <data name="VersionLabel.Text" xml:space="preserve"><value>Modpack-Version:</value></data>
-  <data name="KspVersionLabel.Text" xml:space="preserve"><value>KSP-Versionen:</value></data>
+  <data name="GameVersionLabel.Text" xml:space="preserve"><value>Spielversionen:</value></data>
   <data name="LicenseLabel.Text" xml:space="preserve"><value>Lizenz:</value></data>
   <data name="IncludeVersionsCheckbox.Text" xml:space="preserve"><value>Mod-Versionen im Pack auf die hier angezeigten festsetzen</value></data>
   <data name="ModNameColumn.Text" xml:space="preserve"><value>Mod</value></data>

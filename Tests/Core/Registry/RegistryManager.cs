@@ -71,7 +71,7 @@ namespace Tests.Core.RegistryManager
             // Arrange
             string registryPath = TestData.DataDir("zero-byte-registry.json");
             DisposableKSP dispksp;
-            CKAN.KSP      ksp;
+            CKAN.GameInstance      ksp;
 
             // Act
             dispksp = new DisposableKSP(null, registryPath);

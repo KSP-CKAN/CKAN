@@ -40,61 +40,61 @@ namespace Tests.NetKAN
         [Test]
         public void WildcardMajor_OutputsAnyVersion()
         {
-            var converter = new JsonAvcToKspVersion();
+            var converter = new JsonAvcToGameVersion();
             string json = @"{""MAJOR"":-1, ""MINOR"":-1, ""PATCH"":-1}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (KspVersion) converter.ReadJson(reader, null, null, null);
+            var result = (GameVersion) converter.ReadJson(reader, null, null, null);
             Assert.That(!result.IsMajorDefined);
         }
 
         [Test]
         public void WildcardMinor_VersionOnlyHasMajor()
         {
-            var converter = new JsonAvcToKspVersion();
+            var converter = new JsonAvcToGameVersion();
             string json = @"{""MAJOR"":1, ""MINOR"":-1, ""PATCH"":-1}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (KspVersion) converter.ReadJson(reader, null, null, null);
-            Assert.That(result, Is.EqualTo(KspVersion.Parse("1")));
+            var result = (GameVersion) converter.ReadJson(reader, null, null, null);
+            Assert.That(result, Is.EqualTo(GameVersion.Parse("1")));
         }
 
         [Test]
         public void WildcardPatch_VersionOnlyHasMajorMinor()
         {
-            var converter = new JsonAvcToKspVersion();
+            var converter = new JsonAvcToGameVersion();
             string json = @"{""MAJOR"":1, ""MINOR"":5, ""PATCH"":-1}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (KspVersion)converter.ReadJson(reader, null, null, null);
-            Assert.That(result, Is.EqualTo(KspVersion.Parse("1.5")));
+            var result = (GameVersion)converter.ReadJson(reader, null, null, null);
+            Assert.That(result, Is.EqualTo(GameVersion.Parse("1.5")));
         }
 
         [Test]
         public void MissingMajor_OutputsAnyVersion()
         {
-            var converter = new JsonAvcToKspVersion();
+            var converter = new JsonAvcToGameVersion();
             string json = @"{}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (KspVersion) converter.ReadJson(reader, null, null, null);
+            var result = (GameVersion) converter.ReadJson(reader, null, null, null);
             Assert.That(!result.IsMajorDefined);
         }
 
         [Test]
         public void MissingMinor_VersionOnlyHasMajor()
         {
-            var converter = new JsonAvcToKspVersion();
+            var converter = new JsonAvcToGameVersion();
             string json = @"{""MAJOR"":1}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (KspVersion) converter.ReadJson(reader, null, null, null);
-            Assert.That(result, Is.EqualTo(KspVersion.Parse("1")));
+            var result = (GameVersion) converter.ReadJson(reader, null, null, null);
+            Assert.That(result, Is.EqualTo(GameVersion.Parse("1")));
         }
 
         [Test]
         public void MissingPatch_VersionOnlyHasMajorMinor()
         {
-            var converter = new JsonAvcToKspVersion();
+            var converter = new JsonAvcToGameVersion();
             string json = @"{""MAJOR"":1, ""MINOR"":5}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (KspVersion)converter.ReadJson(reader, null, null, null);
-            Assert.That(result, Is.EqualTo(KspVersion.Parse("1.5")));
+            var result = (GameVersion)converter.ReadJson(reader, null, null, null);
+            Assert.That(result, Is.EqualTo(GameVersion.Parse("1.5")));
         }
 
     }

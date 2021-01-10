@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Multiple] Store remote version file URL in metadata resources (#3259 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Abstract out game-specific logic (#3223 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

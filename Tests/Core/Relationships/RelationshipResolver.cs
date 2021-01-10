@@ -710,7 +710,7 @@ namespace Tests.Core.Relationships
         {
             var list = new List<string>();
             var mod = generator.GeneratorRandomModule();
-            mod.ksp_version = KspVersion.Parse("0.10");
+            mod.ksp_version = GameVersion.Parse("0.10");
             list.Add(mod.identifier);
             registry.AddAvailable(mod);
             registry.RemoveAvailable(mod);
@@ -896,7 +896,7 @@ namespace Tests.Core.Relationships
         {
             using (var ksp = new DisposableKSP ())
             {
-                registry.RegisterDll(ksp.KSP, Path.Combine(ksp.KSP.GameData(), "ModuleManager.dll"));
+                registry.RegisterDll(ksp.KSP, Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), "ModuleManager.dll"));
 
                 var depends = new List<CKAN.RelationshipDescriptor>();
                 depends.Add(new CKAN.ModuleRelationshipDescriptor { name = "ModuleManager" });
@@ -908,7 +908,7 @@ namespace Tests.Core.Relationships
                     null,
                     RelationshipResolver.DefaultOpts(),
                     registry,
-                    new KspVersionCriteria (KspVersion.Parse("1.0.0"))
+                    new GameVersionCriteria (GameVersion.Parse("1.0.0"))
                 );
             }
         }

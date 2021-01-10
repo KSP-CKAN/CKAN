@@ -10,10 +10,10 @@ namespace CKAN
     public class GrasGameComparator : BaseGameComparator
     {
         static readonly StrictGameComparator strict = new StrictGameComparator();
-        static readonly KspVersion v103 = KspVersion.Parse("1.0.3");
-        static readonly KspVersion v104 = KspVersion.Parse("1.0.4");
+        static readonly GameVersion v103 = GameVersion.Parse("1.0.3");
+        static readonly GameVersion v104 = GameVersion.Parse("1.0.4");
 
-        public override bool Compatible(KspVersionCriteria gameVersionCriteria, CkanModule module)
+        public override bool Compatible(GameVersionCriteria gameVersionCriteria, CkanModule module)
         {
             // If it's strictly compatible, then it's compatible.
             if (strict.Compatible(gameVersionCriteria, module))
@@ -27,7 +27,7 @@ namespace CKAN
             return base.Compatible(gameVersionCriteria, module);
         }
 
-        public override bool SingleVersionsCompatible (KspVersion gameVersion, CkanModule module)
+        public override bool SingleVersionsCompatible (GameVersion gameVersion, CkanModule module)
         {
 
             // Otherwise, check if it's "generally recognise as safe".

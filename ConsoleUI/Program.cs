@@ -29,7 +29,7 @@ namespace CKAN.ConsoleUI
         /// <returns>
         /// Process exit status
         /// </returns>
-        public static int Main_(string[] args, KSPManager manager, bool debug = false)
+        public static int Main_(string[] args, GameInstanceManager manager, bool debug = false)
         {
             Logging.Initialize();
 

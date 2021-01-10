@@ -65,7 +65,7 @@ namespace CKAN.CmdLine
             }
         }
 
-        public static int Execute(KSPManager manager, CommonOptions opts, string[] args)
+        public static int Execute(GameInstanceManager manager, CommonOptions opts, string[] args)
         {
             // We shouldn't instantiate Options if it's a subcommand.
             // It breaks command-specific help, for starters.
@@ -76,8 +76,8 @@ namespace CKAN.CmdLine
                     case "repair":
                         return (new Repair()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
-                    case "ksp":
-                        return (new KSP()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                    case "instance":
+                        return (new GameInstance()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
                     case "compat":
                         return (new Compat()).RunSubCommand(manager, opts, new SubCommandOptions(args));
@@ -124,7 +124,7 @@ namespace CKAN.CmdLine
             IUser user = new ConsoleUser(options.Headless);
             if (manager == null)
             {
-                manager = new KSPManager(user);
+                manager = new GameInstanceManager(user);
             }
             else
             {
@@ -152,22 +152,22 @@ namespace CKAN.CmdLine
             return Exit.BADOPT;
         }
 
-        public static CKAN.KSP GetGameInstance(KSPManager manager)
+        public static CKAN.GameInstance GetGameInstance(GameInstanceManager manager)
         {
-            CKAN.KSP ksp = manager.CurrentInstance
+            CKAN.GameInstance inst = manager.CurrentInstance
                 ?? manager.GetPreferredInstance();
-            if (ksp == null)
+            if (inst == null)
             {
                 throw new NoGameInstanceKraken();
             }
-            return ksp;
+            return inst;
         }
 
         /// <summary>
         /// Run whatever action the user has provided
         /// </summary>
         /// <returns>The exit status that should be returned to the system.</returns>
-        private static int RunSimpleAction(Options cmdline, CommonOptions options, string[] args, IUser user, KSPManager manager)
+        private static int RunSimpleAction(Options cmdline, CommonOptions options, string[] args, IUser user, GameInstanceManager manager)
         {
             try
             {
@@ -244,7 +244,7 @@ namespace CKAN.CmdLine
             }
         }
 
-        internal static CkanModule LoadCkanFromFile(CKAN.KSP current_instance, string ckan_file)
+        internal static CkanModule LoadCkanFromFile(CKAN.GameInstance current_instance, string ckan_file)
         {
             CkanModule module = CkanModule.FromFile(ckan_file);
 
@@ -262,12 +262,12 @@ namespace CKAN.CmdLine
 
         private static int printMissingInstanceError(IUser user)
         {
-            user.RaiseMessage("I don't know where KSP is installed.");
-            user.RaiseMessage("Use 'ckan ksp help' for assistance in setting this.");
+            user.RaiseMessage("I don't know where a game instance is installed.");
+            user.RaiseMessage("Use 'ckan instance help' for assistance in setting this.");
             return Exit.ERROR;
         }
 
-        private static int Gui(KSPManager manager, GuiOptions options, string[] args)
+        private static int Gui(GameInstanceManager manager, GuiOptions options, string[] args)
         {
             // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
             // but trying to catch it here doesn't seem to help. Dunno why.
@@ -277,7 +277,7 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static int ConsoleUi(KSPManager manager, CommonOptions opts, string[] args)
+        private static int ConsoleUi(GameInstanceManager manager, CommonOptions opts, string[] args)
         {
             // Debug/verbose output just messes up the screen
             LogManager.GetRepository().Threshold = Level.Warn;
@@ -292,17 +292,17 @@ namespace CKAN.CmdLine
         }
 
         /// <summary>
-        /// Scans the ksp instance. Detects installed mods to mark as auto-detected and checks the consistency
+        /// Scans the game instance. Detects installed mods to mark as auto-detected and checks the consistency
         /// </summary>
-        /// <param name="ksp_instance">The instance to scan</param>
+        /// <param name="inst">The instance to scan</param>
         /// <param name="user"></param>
         /// <param name="next_command">Changes the output message if set.</param>
         /// <returns>Exit.OK if instance is consistent, Exit.ERROR otherwise </returns>
-        private static int Scan(CKAN.KSP ksp_instance, IUser user, string next_command = null)
+        private static int Scan(CKAN.GameInstance inst, IUser user, string next_command = null)
         {
             try
             {
-                ksp_instance.ScanGameData();
+                inst.Scan();
                 return Exit.OK;
             }
             catch (InconsistentKraken kraken)

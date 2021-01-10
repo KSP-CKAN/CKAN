@@ -7,6 +7,7 @@ using log4net;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
 using CKAN.Extensions;
+using CKAN.Games;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -30,9 +31,8 @@ namespace CKAN.NetKAN.Validators
                 if (!string.IsNullOrEmpty(package))
                 {
                     ZipFile zip = new ZipFile(package);
-                    var     ksp = new KSP("/", "dummy", null, false);
-
-                    var mmConfigs = _moduleService.GetConfigFiles(mod, zip, ksp)
+                    GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
+                    var mmConfigs = _moduleService.GetConfigFiles(mod, zip, inst)
                         .Where(cfg => moduleManagerRegex.IsMatch(
                             new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd()))
                         .Memoize();

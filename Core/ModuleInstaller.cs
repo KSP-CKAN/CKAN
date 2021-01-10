@@ -33,14 +33,14 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
-        private KSP ksp;
+        private GameInstance ksp;
 
         private NetModuleCache Cache;
 
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
 
         // Constructor
-        private ModuleInstaller(KSP ksp, NetModuleCache cache, IUser user)
+        private ModuleInstaller(GameInstance ksp, NetModuleCache cache, IUser user)
         {
             User = user;
             Cache = cache;
@@ -54,7 +54,7 @@ namespace CKAN
         /// <returns>The ModuleInstaller instance.</returns>
         /// <param name="ksp_instance">Current KSP instance.</param>
         /// <param name="user">IUser implementation.</param>
-        public static ModuleInstaller GetInstance(KSP ksp_instance, NetModuleCache cache, IUser user)
+        public static ModuleInstaller GetInstance(GameInstance ksp_instance, NetModuleCache cache, IUser user)
         {
             ModuleInstaller instance;
 
@@ -224,7 +224,7 @@ namespace CKAN
                 // leaves everything consistent, and this is just gravy. (And ScanGameData
                 // acts as a Tx, anyway, so we don't need to provide our own.)
                 User.RaiseProgress("Rescanning GameData", 90);
-                ksp.ScanGameData();
+                ksp.Scan();
             }
 
             User.RaiseProgress("Done!", 100);
@@ -486,22 +486,6 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Checks the path against a list of reserved game directories
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private bool IsReservedDirectory(string path)
-        {
-            return path == ksp.Tutorial() || path == ksp.ShipsVab()
-                    || path == ksp.ShipsSph() || path == ksp.Ships()
-                    || path == ksp.Scenarios() || path == ksp.GameData()
-                    || path == ksp.GameDir() || path == ksp.CkanDir()
-                    || path == ksp.ShipsThumbs() || path == ksp.ShipsThumbsVAB()
-                    || path == ksp.ShipsThumbsSPH() || path == ksp.ShipsScript()
-                    || path == ksp.Missions();
-        }
-
-        /// <summary>
         /// Given a module and an open zipfile, return all the files that would be installed
         /// for this module.
         ///
@@ -509,7 +493,7 @@ namespace CKAN
         ///
         /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
-        public static List<InstallableFile> FindInstallableFiles(CkanModule module, ZipFile zipfile, KSP ksp)
+        public static List<InstallableFile> FindInstallableFiles(CkanModule module, ZipFile zipfile, GameInstance ksp)
         {
             var files = new List<InstallableFile>();
 
@@ -552,7 +536,7 @@ namespace CKAN
         /// If a KSP instance is provided, it will be used to generate output paths, otherwise these will be null.
         /// </summary>
         // TODO: Document which exception!
-        public static List<InstallableFile> FindInstallableFiles(CkanModule module, string zip_filename, KSP ksp)
+        public static List<InstallableFile> FindInstallableFiles(CkanModule module, string zip_filename, GameInstance ksp)
         {
             // `using` makes sure our zipfile gets closed when we exit this block.
             using (ZipFile zipfile = new ZipFile(zip_filename))
@@ -789,7 +773,7 @@ namespace CKAN
                     // It is bad if any of this directories gets removed
                     // So we protect them
                     // A few string comparisons will be cheaper than hitting the disk, so do this first
-                    if (IsReservedDirectory(directory))
+                    if (ksp.game.IsReservedDirectory(ksp, directory))
                     {
                         log.DebugFormat("Directory {0} is reserved, skipping", directory);
                         continue;
@@ -847,11 +831,11 @@ namespace CKAN
                 return new HashSet<string>();
             }
 
-            var gameDir = KSPPathUtils.NormalizePath(ksp.GameDir());
+            var gameDir = CKANPathUtils.NormalizePath(ksp.GameDir());
             return directories
                 .Where(dir => !string.IsNullOrWhiteSpace(dir))
                 // Normalize all paths before deduplicate
-                .Select(KSPPathUtils.NormalizePath)
+                .Select(CKANPathUtils.NormalizePath)
                 // Remove any duplicate paths
                 .Distinct()
                 .SelectMany(dir =>
@@ -871,11 +855,11 @@ namespace CKAN
 
                     if (!dir.StartsWith(gameDir, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        dir = KSPPathUtils.ToAbsolute(dir, gameDir);
+                        dir = CKANPathUtils.ToAbsolute(dir, gameDir);
                     }
 
                     // Remove the system paths, leaving the path under the instance directory
-                    var relativeHead = KSPPathUtils.ToRelative(dir, gameDir);
+                    var relativeHead = CKANPathUtils.ToRelative(dir, gameDir);
                     // Don't try to remove GameRoot
                     if (!string.IsNullOrEmpty(relativeHead))
                     {
@@ -884,13 +868,13 @@ namespace CKAN
                         foreach (var path in pathArray)
                         {
                             builtPath += path + '/';
-                            results.Add(KSPPathUtils.ToAbsolute(builtPath, gameDir));
+                            results.Add(CKANPathUtils.ToAbsolute(builtPath, gameDir));
                         }
                     }
 
                     return results;
                 })
-                .Where(dir => !IsReservedDirectory(dir))
+                .Where(dir => !ksp.game.IsReservedDirectory(ksp, dir))
                 .ToHashSet();
         }
 

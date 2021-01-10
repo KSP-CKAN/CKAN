@@ -21,7 +21,7 @@ namespace CKAN
         /// <param name="dlls">Collection of found dlls</param>
         /// <param name="dlc">Collection of installed DLCs</param>
         public CompatibilitySorter(
-            KspVersionCriteria crit,
+            GameVersionCriteria crit,
             Dictionary<string, AvailableModule> available,
             Dictionary<string, HashSet<AvailableModule>> providers,
             Dictionary<string, InstalledModule> installed,
@@ -39,7 +39,7 @@ namespace CKAN
         /// <summary>
         /// Version criteria that this partition represents
         /// </summary>
-        public readonly KspVersionCriteria CompatibleVersions;
+        public readonly GameVersionCriteria CompatibleVersions;
 
         /// <summary>
         /// Mods that are compatible with our versions
@@ -76,7 +76,7 @@ namespace CKAN
         /// <returns>
         /// Mapping from identifiers to compatible mods providing those identifiers
         /// </returns>
-        private Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(KspVersionCriteria crit, Dictionary<string, HashSet<AvailableModule>> providers)
+        private Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(GameVersionCriteria crit, Dictionary<string, HashSet<AvailableModule>> providers)
         {
             var compat = new Dictionary<string, HashSet<AvailableModule>>();
             foreach (var kvp in providers)

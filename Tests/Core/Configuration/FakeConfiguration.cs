@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CKAN.Configuration;
+using CKAN.GameVersionProviders;
 using Tests.Data;
 
 namespace Tests.Core.Configuration
 {
     public class FakeConfiguration : IConfiguration, IDisposable
     {
-        public FakeConfiguration(CKAN.KSP instance, string autostart)
+        public FakeConfiguration(CKAN.GameInstance instance, string autostart)
             : this(
-                new List<Tuple<string, string>>
+                new List<Tuple<string, string, string>>
                 {
-                    new Tuple<string, string>("test", instance.GameDir())
+                    new Tuple<string, string, string>("test", instance.GameDir(), "KSP")
                 },
                 autostart
             )
@@ -25,7 +26,7 @@ namespace Tests.Core.Configuration
         /// </summary>
         /// <param name="instances">List of name/path pairs for the instances</param>
         /// <param name="auto_start_instance">The auto start instance to use</param>
-        public FakeConfiguration(List<Tuple<string, string>> instances, string auto_start_instance)
+        public FakeConfiguration(List<Tuple<string, string, string>> instances, string auto_start_instance)
         {
             Instances         = instances;
             AutoStartInstance = auto_start_instance;
@@ -35,7 +36,7 @@ namespace Tests.Core.Configuration
         /// <summary>
         /// The instances in the fake registry
         /// </summary>
-        public List<Tuple<string, string>> Instances        { get; set; }
+        public List<Tuple<string, string, string>> Instances        { get; set; }
         /// <summary>
         /// Build map for the fake registry
         /// </summary>
@@ -82,7 +83,7 @@ namespace Tests.Core.Configuration
         /// <returns>
         /// Name/path pair for the requested instance
         /// </returns>
-        public Tuple<string, string> GetInstance(int i)
+        public Tuple<string, string, string> GetInstance(int i)
         {
             return Instances[i];
         }
@@ -95,16 +96,16 @@ namespace Tests.Core.Configuration
         /// <returns>
         /// Returns
         /// </returns>
-        public void SetRegistryToInstances(SortedList<string, CKAN.KSP> instances)
+        public void SetRegistryToInstances(SortedList<string, CKAN.GameInstance> instances)
         {
             Instances =
-                instances.Select(kvpair => new Tuple<string, string>(kvpair.Key, kvpair.Value.GameDir())).ToList();
+                instances.Select(kvpair => new Tuple<string, string, string>(kvpair.Key, kvpair.Value.GameDir(), "KSP")).ToList();
         }
 
         /// <summary>
         /// The instances in the fake registry
         /// </summary>
-        public IEnumerable<Tuple<string, string>> GetInstances()
+        public IEnumerable<Tuple<string, string, string>> GetInstances()
         {
             return Instances;
         }

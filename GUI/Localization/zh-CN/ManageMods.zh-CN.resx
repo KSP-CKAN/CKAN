@@ -147,7 +147,7 @@
   <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="launchKSPToolStripMenuItem.Text" xml:space="preserve"><value>启动KSP</value></data>
+  <data name="launchGameToolStripMenuItem.Text" xml:space="preserve"><value>启动游戏</value></data>
   <data name="RefreshToolButton.Text" xml:space="preserve"><value>刷新</value></data>
   <data name="UpdateAllToolButton.Text" xml:space="preserve"><value>添加可用更新</value></data>
   <data name="ApplyToolButton.Text" xml:space="preserve"><value>应用更改</value></data>
@@ -174,7 +174,7 @@
   <data name="Author.HeaderText" xml:space="preserve"><value>作者</value></data>
   <data name="InstalledVersion.HeaderText" xml:space="preserve"><value>已安装版本</value></data>
   <data name="LatestVersion.HeaderText" xml:space="preserve"><value>最新版本</value></data>
-  <data name="KSPCompatibility.HeaderText" xml:space="preserve"><value>最高KSP版本</value></data>
+  <data name="GameCompatibility.HeaderText" xml:space="preserve"><value>最高游戏版本</value></data>
   <data name="SizeCol.HeaderText" xml:space="preserve"><value>下载大小</value></data>
   <data name="InstallDate.HeaderText" xml:space="preserve"><value>安装日期</value></data>
   <data name="DownloadCount.HeaderText" xml:space="preserve"><value>下载量</value></data>

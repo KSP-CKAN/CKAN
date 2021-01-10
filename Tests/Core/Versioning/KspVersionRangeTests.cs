@@ -1,41 +1,42 @@
-﻿using CKAN.Versioning;
+using CKAN.Versioning;
+﻿using CKAN.Games;
 using NUnit.Framework;
 
 #pragma warning disable 414
 
 namespace Tests.Core.Versioning
 {
-    public sealed class KspVersionRangeTests
+    public sealed class GameVersionRangeTests
     {
         private static readonly object[] EqualityCases =
         {
             new object[]
             {
-                new KspVersionRange(new KspVersionBound(), new KspVersionBound()),
-                new KspVersionRange(new KspVersionBound(), new KspVersionBound()),
+                new GameVersionRange(new GameVersionBound(), new GameVersionBound()),
+                new GameVersionRange(new GameVersionBound(), new GameVersionBound()),
                 true
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false)
                 ),
                 true
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
-                    new KspVersionBound(new KspVersion(5, 6, 7, 8), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
+                    new GameVersionBound(new GameVersion(5, 6, 7, 8), true)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
-                    new KspVersionBound(new KspVersion(5, 6, 7, 8), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
+                    new GameVersionBound(new GameVersion(5, 6, 7, 8), true)
                 ),
                 true
             }
@@ -45,28 +46,28 @@ namespace Tests.Core.Versioning
         {
             new object[]
             {
-                new KspVersionRange(new KspVersionBound(), new KspVersionBound()),
+                new GameVersionRange(new GameVersionBound(), new GameVersionBound()),
                 "[,]"
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
-                    new KspVersionBound()),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
+                    new GameVersionBound()),
                 "(1.2.3.4,]"
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
-                    new KspVersionBound(new KspVersion(5, 6, 7, 8), false)),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
+                    new GameVersionBound(new GameVersion(5, 6, 7, 8), false)),
                 "(1.2.3.4,5.6.7.8)"
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true),
-                    new KspVersionBound(new KspVersion(5, 6, 7, 8), true)),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), true),
+                    new GameVersionBound(new GameVersion(5, 6, 7, 8), true)),
                 "[1.2.3.4,5.6.7.8]"
             }
         };
@@ -75,245 +76,245 @@ namespace Tests.Core.Versioning
         {
             new object[]
             {
-                new KspVersionRange(new KspVersionBound(), new KspVersionBound()),
-                new KspVersionRange(new KspVersionBound(), new KspVersionBound()),
-                new KspVersionRange(new KspVersionBound(), new KspVersionBound()),
+                new GameVersionRange(new GameVersionBound(), new GameVersionBound()),
+                new GameVersionRange(new GameVersionBound(), new GameVersionBound()),
+                new GameVersionRange(new GameVersionBound(), new GameVersionBound()),
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true),
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), true),
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), true)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true),
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), true),
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), true)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true),
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), true),
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), true)
                 ),
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false)
                 ),
                 null
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true),
-                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true)
-                ),
-                null
-            },
-            new object[]
-            {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
-                ),
-            },
-            new object[]
-            {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), true),
+                    new GameVersionBound(new GameVersion(1, 2, 3, 4), true)
                 ),
                 null
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 5, 0), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 5, 0), false)
                 ),
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1235), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1235), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 2, 0, 0), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 5, 0), false)
                 ),
                 null
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
-                ),
-            },
-            new object[]
-            {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true)
                 ),
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1235), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1235), true)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true)
-                ),
-            },
-            new object[]
-            {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
-                ),
-            },
-            new object[]
-            {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
-                ),
-            },
-            new object[]
-            {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true)
                 ),
                 null
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 5, 0), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
-                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true)
+                ),
+            },
+            new object[]
+            {
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 5, 0), false)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 1234), true)
+                ),
+            },
+            new object[]
+            {
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 5, 0), false)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true)
+                ),
+            },
+            new object[]
+            {
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), false)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), false)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), false)
+                ),
+            },
+            new object[]
+            {
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 2, 0, 0), false)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 2, 0, 0), false)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 2, 0, 0), false)
+                ),
+            },
+            new object[]
+            {
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 2, 0, 0), false)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), false)
                 ),
                 null
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound()
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 1, 0, 0), true),
+                    new GameVersionBound(new GameVersion(1, 2, 0, 0), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                null
+            },
+            new object[]
+            {
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound()
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 5, 0), false)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 5, 0), false)
                 )
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true)
+                new GameVersionRange(
+                    new GameVersionBound(),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 5, 0), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), true)
                 )
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 3, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 3, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 3, 0), true),
-                    new KspVersionBound(new KspVersion(1, 0, 4, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 3, 0), true),
+                    new GameVersionBound(new GameVersion(1, 0, 4, 0), false)
                 )
             }
         };
@@ -322,103 +323,103 @@ namespace Tests.Core.Versioning
         {
             new object[]
             {
-                new KspVersionRange(new KspVersionBound(), new KspVersionBound()),
-                new KspVersionRange(new KspVersionBound(), new KspVersionBound()),
+                new GameVersionRange(new GameVersionBound(), new GameVersionBound()),
+                new GameVersionRange(new GameVersionBound(), new GameVersionBound()),
                 true
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), true)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), true)
-                ),
-                true
-            },
-            new object[]
-            {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), true)
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), false),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), true)
                 ),
                 true
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), false),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), true)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), false),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), false),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), false)
                 ),
                 true
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), false),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), false),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), false)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), false),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), false)
+                ),
+                true
+            },
+            new object[]
+            {
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), false),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), false)
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), true)
                 ),
                 false
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(3, 0, 0, 0), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(3, 0, 0, 0), true)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), false),
-                    new KspVersionBound(new KspVersion(4, 0, 0, 0), false)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), false),
+                    new GameVersionBound(new GameVersion(4, 0, 0, 0), false)
                 ),
                 false
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(),
-                    new KspVersionBound(new KspVersion(3, 0, 0, 0), true)
+                new GameVersionRange(
+                    new GameVersionBound(),
+                    new GameVersionBound(new GameVersion(3, 0, 0, 0), true)
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), true)
-                ),
-                true
-            },
-            new object[]
-            {
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound()
-                ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), true)
                 ),
                 true
             },
             new object[]
             {
-                new KspVersionRange(
-                    new KspVersionBound(),
-                    new KspVersionBound()
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound()
                 ),
-                new KspVersionRange(
-                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
-                    new KspVersionBound(new KspVersion(2, 0, 0, 0), true)
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), true)
+                ),
+                true
+            },
+            new object[]
+            {
+                new GameVersionRange(
+                    new GameVersionBound(),
+                    new GameVersionBound()
+                ),
+                new GameVersionRange(
+                    new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
+                    new GameVersionBound(new GameVersion(2, 0, 0, 0), true)
                 ),
                 true
             },
@@ -428,11 +429,11 @@ namespace Tests.Core.Versioning
         public void CtorWorksCorrectly()
         {
             // Arrange
-            var lower = new KspVersionBound(new KspVersion(1, 2, 3, 4), false);
-            var upper = new KspVersionBound(new KspVersion(5, 6, 7, 8), true);
+            var lower = new GameVersionBound(new GameVersion(1, 2, 3, 4), false);
+            var upper = new GameVersionBound(new GameVersion(5, 6, 7, 8), true);
 
             // Act
-            var result = new KspVersionRange(lower, upper);
+            var result = new GameVersionRange(lower, upper);
 
             // Assert
             Assert.That(result.Lower, Is.EqualTo(lower));
@@ -443,14 +444,14 @@ namespace Tests.Core.Versioning
         public void RangeFromVersionsEqualsRangeFromBounds()
         {
             // Arrange
-            var lowerBound = new KspVersionBound(new KspVersion(1, 2, 0, 0), true);
-            var upperBound = new KspVersionBound(new KspVersion(2, 4, 7, 0), false);
-            var lowerVersion = new KspVersion(1, 2);
-            var upperVersion = new KspVersion(2, 4, 6);
+            var lowerBound = new GameVersionBound(new GameVersion(1, 2, 0, 0), true);
+            var upperBound = new GameVersionBound(new GameVersion(2, 4, 7, 0), false);
+            var lowerVersion = new GameVersion(1, 2);
+            var upperVersion = new GameVersion(2, 4, 6);
 
             // Act
-            var resultFromBounds = new KspVersionRange(lowerBound, upperBound);
-            var resultFromVersions = new KspVersionRange(lowerVersion, upperVersion);
+            var resultFromBounds = new GameVersionRange(lowerBound, upperBound);
+            var resultFromVersions = new GameVersionRange(lowerVersion, upperVersion);
 
             // Assert
             Assert.That(resultFromBounds.Lower, Is.EqualTo(resultFromVersions.Lower));
@@ -463,7 +464,7 @@ namespace Tests.Core.Versioning
             // Act
             // ReSharper disable once ObjectCreationAsStatement
             TestDelegate act =
-                () => new KspVersionRange(null, new KspVersionBound(new KspVersion(1, 2, 3, 4), false));
+                () => new GameVersionRange(null, new GameVersionBound(new GameVersion(1, 2, 3, 4), false));
 
             // Assert
             Assert.That(act, Throws.Exception);
@@ -475,14 +476,14 @@ namespace Tests.Core.Versioning
             // Act
             // ReSharper disable once ObjectCreationAsStatement
             TestDelegate act =
-                () => new KspVersionRange(new KspVersionBound(new KspVersion(1, 2, 3, 4), false), null);
+                () => new GameVersionRange(new GameVersionBound(new GameVersion(1, 2, 3, 4), false), null);
 
             // Assert
             Assert.That(act, Throws.Exception);
         }
 
         [TestCaseSource("ToStringCases")]
-        public void ToStringWorksCorrectly(KspVersionRange vr, string expected)
+        public void ToStringWorksCorrectly(GameVersionRange vr, string expected)
         {
             // Act
             var result = vr.ToString();
@@ -492,7 +493,7 @@ namespace Tests.Core.Versioning
         }
 
         [TestCaseSource("IntersectWithCases")]
-        public void IntersectWithWorksCorrectly(KspVersionRange left, KspVersionRange right, KspVersionRange expected)
+        public void IntersectWithWorksCorrectly(GameVersionRange left, GameVersionRange right, GameVersionRange expected)
         {
             // Act
             var result = left.IntersectWith(right);
@@ -502,7 +503,7 @@ namespace Tests.Core.Versioning
         }
 
         [TestCaseSource("IsSupersetOfCases")]
-        public void IsSupersetOfWorksCorrectly(KspVersionRange left, KspVersionRange right, bool expected)
+        public void IsSupersetOfWorksCorrectly(GameVersionRange left, GameVersionRange right, bool expected)
         {
             // Act
             var result = left.IsSupersetOf(right);
@@ -515,7 +516,7 @@ namespace Tests.Core.Versioning
         public void IsSupersetOfThrowsOnNullParameter()
         {
             // Arrange
-            var sut = new KspVersionRange(new KspVersionBound(), new KspVersionBound());
+            var sut = new GameVersionRange(new GameVersionBound(), new GameVersionBound());
 
             // Act
             TestDelegate act = () => sut.IsSupersetOf(null);
@@ -525,7 +526,7 @@ namespace Tests.Core.Versioning
         }
 
         [TestCaseSource("EqualityCases")]
-        public void EqualityWorksCorrectly(KspVersionRange vr1, KspVersionRange vr2, bool areEqual)
+        public void EqualityWorksCorrectly(GameVersionRange vr1, GameVersionRange vr2, bool areEqual)
         {
             // Act
             var genericEquals = vr1.Equals(vr2);
@@ -548,7 +549,7 @@ namespace Tests.Core.Versioning
         public void NullEqualityWorksCorrectly()
         {
             // Arrange
-            var sut = new KspVersionRange(new KspVersionBound(), new KspVersionBound());
+            var sut = new GameVersionRange(new GameVersionBound(), new GameVersionBound());
 
             // Act
             // ReSharper disable ConditionIsAlwaysTrueOrFalse
@@ -573,7 +574,7 @@ namespace Tests.Core.Versioning
         public void ReferenceEqualityWorksCorrectly()
         {
             // Arrange
-            var sut = new KspVersionRange(new KspVersionBound(), new KspVersionBound());
+            var sut = new GameVersionRange(new GameVersionBound(), new GameVersionBound());
 
             // Act
             var genericEquals = sut.Equals(sut);
@@ -599,19 +600,19 @@ namespace Tests.Core.Versioning
         )
         {
             // Arrange
-            var lower = new KspVersionBound(
-                new KspVersion(lowerMajor, lowerMinor, lowerPatch, lowerBuilder),
+            var lower = new GameVersionBound(
+                new GameVersion(lowerMajor, lowerMinor, lowerPatch, lowerBuilder),
                 lowerInclusive
             );
 
-            var upper = new KspVersionBound(
-                new KspVersion(upperMajor, upperMinor, upperPatch, upperBuilder),
+            var upper = new GameVersionBound(
+                new GameVersion(upperMajor, upperMinor, upperPatch, upperBuilder),
                 upperInclusive
             );
 
             // Act
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            TestDelegate act = () => new KspVersionRange(lower, upper).GetHashCode();
+            TestDelegate act = () => new GameVersionRange(lower, upper).GetHashCode();
 
             // Assert
             Assert.That(act, Throws.Nothing);
@@ -621,10 +622,11 @@ namespace Tests.Core.Versioning
         public void VersionSpan_AllVersions_CorrectString()
         {
             // Arrange
-            KspVersion min = KspVersion.Any;
-            KspVersion max = KspVersion.Any;
+            IGame game = new KerbalSpaceProgram();
+            GameVersion min = GameVersion.Any;
+            GameVersion max = GameVersion.Any;
             // Act
-            string s = KspVersionRange.VersionSpan(min, max);
+            string s = GameVersionRange.VersionSpan(game, min, max);
             // Assert
             Assert.AreEqual("KSP all versions", s);
         }
@@ -633,10 +635,11 @@ namespace Tests.Core.Versioning
         public void VersionSpan_MinOnly_CorrectString()
         {
             // Arrange
-            KspVersion min = new KspVersion(1, 0, 0);
-            KspVersion max = KspVersion.Any;
+            IGame game = new KerbalSpaceProgram();
+            GameVersion min = new GameVersion(1, 0, 0);
+            GameVersion max = GameVersion.Any;
             // Act
-            string s = KspVersionRange.VersionSpan(min, max);
+            string s = GameVersionRange.VersionSpan(game, min, max);
             // Assert
             Assert.AreEqual("KSP 1.0.0 and later", s);
         }
@@ -645,10 +648,11 @@ namespace Tests.Core.Versioning
         public void VersionSpan_MaxOnly_CorrectString()
         {
             // Arrange
-            KspVersion min = KspVersion.Any;
-            KspVersion max = new KspVersion(1, 0, 0);
+            IGame game = new KerbalSpaceProgram();
+            GameVersion min = GameVersion.Any;
+            GameVersion max = new GameVersion(1, 0, 0);
             // Act
-            string s = KspVersionRange.VersionSpan(min, max);
+            string s = GameVersionRange.VersionSpan(game, min, max);
             // Assert
             Assert.AreEqual("KSP 1.0.0 and earlier", s);
         }
@@ -657,10 +661,11 @@ namespace Tests.Core.Versioning
         public void VersionSpan_OneOnly_CorrectString()
         {
             // Arrange
-            KspVersion min = new KspVersion(1, 0, 0);
-            KspVersion max = new KspVersion(1, 0, 0);
+            IGame game = new KerbalSpaceProgram();
+            GameVersion min = new GameVersion(1, 0, 0);
+            GameVersion max = new GameVersion(1, 0, 0);
             // Act
-            string s = KspVersionRange.VersionSpan(min, max);
+            string s = GameVersionRange.VersionSpan(game, min, max);
             // Assert
             Assert.AreEqual("KSP 1.0.0", s);
         }
@@ -669,10 +674,11 @@ namespace Tests.Core.Versioning
         public void VersionSpan_FiniteRange_CorrectString()
         {
             // Arrange
-            KspVersion min = new KspVersion(1, 0, 0);
-            KspVersion max = new KspVersion(1, 1, 1);
+            IGame game = new KerbalSpaceProgram();
+            GameVersion min = new GameVersion(1, 0, 0);
+            GameVersion max = new GameVersion(1, 1, 1);
             // Act
-            string s = KspVersionRange.VersionSpan(min, max);
+            string s = GameVersionRange.VersionSpan(game, min, max);
             // Assert
             Assert.AreEqual("KSP 1.0.0 - 1.1.1", s);
         }

@@ -18,8 +18,8 @@ namespace CKAN
         /// <summary>
         /// Initialize the cache
         /// </summary>
-        /// <param name="mgr">KSPManager containing instances that might have legacy caches</param>
-        public NetModuleCache(KSPManager mgr, string path)
+        /// <param name="mgr">GameInstanceManager containing instances that might have legacy caches</param>
+        public NetModuleCache(GameInstanceManager mgr, string path)
         {
             cache = new NetFileCache(mgr, path);
         }

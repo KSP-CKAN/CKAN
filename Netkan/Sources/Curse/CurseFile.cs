@@ -9,11 +9,11 @@ namespace CKAN.NetKAN.Sources.Curse
 {
     public class CurseFile
     {
-        [JsonConverter(typeof(JsonConvertKSPVersion))]
-        [JsonProperty] public KspVersion version;
+        [JsonConverter(typeof(JsonConvertGameVersion))]
+        [JsonProperty] public GameVersion version;
 
-        [JsonConverter(typeof(JsonConvertKSPVersion))]
-        [JsonProperty] public KspVersion[] versions;
+        [JsonConverter(typeof(JsonConvertGameVersion))]
+        [JsonProperty] public GameVersion[] versions;
 
         [JsonProperty] public string name = "";
         [JsonProperty] public string type;
@@ -102,7 +102,7 @@ namespace CKAN.NetKAN.Sources.Curse
         /// Curse has versions that don't play nicely with CKAN, for example "1.1-prerelease".
         /// This transformer strips out the dash and anything after it.
         /// </summary>
-        internal class JsonConvertKSPVersion : JsonConverter
+        internal class JsonConvertGameVersion : JsonConverter
         {
             public override object ReadJson(
                 JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer
@@ -112,7 +112,7 @@ namespace CKAN.NetKAN.Sources.Curse
                 {
                     return JArray.Load(reader)
                         .Values<string>()
-                        .Select(v => KspVersion.Parse(Regex.Replace(v, @"-.*$", "")))
+                        .Select(v => GameVersion.Parse(Regex.Replace(v, @"-.*$", "")))
                         .ToArray();
                 }
                 else
@@ -120,7 +120,7 @@ namespace CKAN.NetKAN.Sources.Curse
                     if (reader.Value == null)
                         return null;
                     string raw_version = reader.Value.ToString();
-                    return KspVersion.Parse(Regex.Replace(raw_version, @"-.*$", ""));
+                    return GameVersion.Parse(Regex.Replace(raw_version, @"-.*$", ""));
                 }
             }
 

@@ -48,7 +48,7 @@ namespace Tests.GUI
             {
                 var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name);
 
-                KSPManager manager = new KSPManager(
+                GameInstanceManager manager = new GameInstanceManager(
                     new NullUser(),
                     config
                 ) {
@@ -88,7 +88,7 @@ namespace Tests.GUI
             {
                 var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name);
 
-                KSPManager manager = new KSPManager(
+                GameInstanceManager manager = new GameInstanceManager(
                     new NullUser(),
                     config
                 ) {

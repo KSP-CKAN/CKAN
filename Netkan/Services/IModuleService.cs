@@ -11,9 +11,9 @@ namespace CKAN.NetKAN.Services
         JObject GetInternalCkan(string filePath);
         bool HasInstallableFiles(CkanModule module, string filePath);
 
-        IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip, KSP ksp);
-        IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip, KSP ksp);
-        IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, KSP ksp);
+        IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip, GameInstance inst);
+        IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip, GameInstance inst);
+        IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, GameInstance ksp);
 
         IEnumerable<string> FileDestinations(CkanModule module, string filePath);
     }

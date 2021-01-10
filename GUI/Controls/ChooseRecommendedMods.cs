@@ -17,14 +17,14 @@ namespace CKAN
         }
 
         public void LoadRecommendations(
-            IRegistryQuerier registry, KspVersionCriteria kspVersion, NetModuleCache cache,
+            IRegistryQuerier registry, GameVersionCriteria GameVersion, NetModuleCache cache,
             Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
             Dictionary<CkanModule, List<string>> suggestions,
             Dictionary<CkanModule, HashSet<string>> supporters
         )
         {
             this.registry   = registry;
-            this.kspVersion = kspVersion;
+            this.GameVersion = GameVersion;
             Util.Invoke(this, () =>
             {
                 RecommendedModsToggleCheckbox.Checked = true;
@@ -118,7 +118,7 @@ namespace CKAN
                     .Select(item => item.Tag as CkanModule)
                     .Distinct(),
                 new CkanModule[] { },
-                conflictOptions, registry, kspVersion
+                conflictOptions, registry, GameVersion
             ).ConflictList;
         }
 
@@ -196,7 +196,7 @@ namespace CKAN
         }
 
         private IRegistryQuerier   registry;
-        private KspVersionCriteria kspVersion;
+        private GameVersionCriteria GameVersion;
 
         private TaskCompletionSource<HashSet<CkanModule>> task;
     }

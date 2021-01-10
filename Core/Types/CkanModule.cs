@@ -144,13 +144,13 @@ namespace CKAN
         public string identifier;
 
         [JsonProperty("ksp_version", Order = 9, NullValueHandling = NullValueHandling.Ignore)]
-        public KspVersion ksp_version;
+        public GameVersion ksp_version;
 
         [JsonProperty("ksp_version_max", Order = 11, NullValueHandling = NullValueHandling.Ignore)]
-        public KspVersion ksp_version_max;
+        public GameVersion ksp_version_max;
 
         [JsonProperty("ksp_version_min", Order = 10, NullValueHandling = NullValueHandling.Ignore)]
-        public KspVersion ksp_version_min;
+        public GameVersion ksp_version_min;
 
         [JsonProperty("ksp_version_strict", Order = 12, DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
@@ -392,7 +392,7 @@ namespace CKAN
         /// <param name="ksp_version">The current KSP version criteria to consider</param>
         /// <returns>A CkanModule</returns>
         /// <exception cref="ModuleNotFoundKraken">Thrown if no matching module could be found</exception>
-        public static CkanModule FromIDandVersion(IRegistryQuerier registry, string mod, KspVersionCriteria ksp_version)
+        public static CkanModule FromIDandVersion(IRegistryQuerier registry, string mod, GameVersionCriteria ksp_version)
         {
             CkanModule module;
 
@@ -496,7 +496,7 @@ namespace CKAN
         /// <summary>
         /// Returns true if our mod is compatible with the KSP version specified.
         /// </summary>
-        public bool IsCompatibleKSP(KspVersionCriteria version)
+        public bool IsCompatibleKSP(GameVersionCriteria version)
         {
             log.DebugFormat("Testing if {0} is compatible with KSP {1}", this, version.ToString());
 
@@ -514,7 +514,7 @@ namespace CKAN
         /// </summary>
         public string HighestCompatibleKSP()
         {
-            KspVersion v = LatestCompatibleKSP();
+            GameVersion v = LatestCompatibleKSP();
             if (v.IsAny)
                 return "All versions";
             else
@@ -525,7 +525,7 @@ namespace CKAN
         /// Returns machine readable object indicating the highest compatible
         /// version of KSP this module will run with.
         /// </summary>
-        public KspVersion LatestCompatibleKSP()
+        public GameVersion LatestCompatibleKSP()
         {
             // Find the highest compatible KSP version
             if (ksp_version_max != null)
@@ -534,14 +534,14 @@ namespace CKAN
                 return ksp_version;
             else
                 // No upper limit.
-                return KspVersion.Any;
+                return GameVersion.Any;
         }
 
         /// <summary>
         /// Returns machine readable object indicating the lowest compatible
         /// version of KSP this module will run with.
         /// </summary>
-        public KspVersion EarliestCompatibleKSP()
+        public GameVersion EarliestCompatibleKSP()
         {
             // Find the lowest compatible KSP version
             if (ksp_version_min != null)
@@ -550,7 +550,7 @@ namespace CKAN
                 return ksp_version;
             else
                 // No lower limit.
-                return KspVersion.Any;
+                return GameVersion.Any;
         }
 
         /// <summary>

@@ -31,15 +31,15 @@ namespace CKAN
         // hash => full file path
         private Dictionary<string, string> cachedFiles;
         private string cachePath;
-        private KSPManager manager;
+        private GameInstanceManager manager;
         private static readonly Regex cacheFileRegex = new Regex("^[0-9A-F]{8}-", RegexOptions.Compiled);
         private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
 
         /// <summary>
-        /// Initialize a cache given a KSPManager
+        /// Initialize a cache given a GameInstanceManager
         /// </summary>
-        /// <param name="mgr">KSPManager object containing the Instances that might have old caches</param>
-        public NetFileCache(KSPManager mgr, string path)
+        /// <param name="mgr">GameInstanceManager object containing the Instances that might have old caches</param>
+        public NetFileCache(GameInstanceManager mgr, string path)
             : this(path)
         {
             manager = mgr;
@@ -308,12 +308,12 @@ namespace CKAN
             if (curBytes > bytes)
             {
                 // This object will let us determine whether a module is compatible with any of our instances
-                KspVersionCriteria aggregateCriteria = manager?.Instances.Values
+                GameVersionCriteria aggregateCriteria = manager?.Instances.Values
                     .Where(ksp => ksp.Valid)
                     .Select(ksp => ksp.VersionCriteria())
                     .Aggregate(
                         manager?.CurrentInstance?.VersionCriteria()
-                            ?? new KspVersionCriteria(null),
+                            ?? new GameVersionCriteria(null),
                         (combinedCrit, nextCrit) => combinedCrit.Union(nextCrit)
                     );
 
@@ -352,7 +352,7 @@ namespace CKAN
             }
         }
 
-        private int compareFiles(Dictionary<string, List<CkanModule>> hashMap, KspVersionCriteria crit, FileInfo a, FileInfo b)
+        private int compareFiles(Dictionary<string, List<CkanModule>> hashMap, GameVersionCriteria crit, FileInfo a, FileInfo b)
         {
             // Compatible modules for file A
             List<CkanModule> modulesA;

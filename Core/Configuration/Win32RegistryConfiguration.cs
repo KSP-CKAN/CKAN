@@ -109,13 +109,16 @@ namespace CKAN.Configuration
             ConstructKey(CKAN_KEY_NO_PREFIX);
         }
 
-        private Tuple<string, string> GetInstance(int i)
+        private Tuple<string, string, string> GetInstance(int i)
         {
-            return new Tuple<string, string>(GetRegistryValue("KSPInstanceName_" + i, string.Empty),
-                GetRegistryValue("KSPInstancePath_" + i, string.Empty));
+            return new Tuple<string, string, string>(
+                GetRegistryValue("KSPInstanceName_" + i, string.Empty),
+                GetRegistryValue("KSPInstancePath_" + i, string.Empty),
+                GetRegistryValue("KSPInstanceGame_" + i, string.Empty)
+            );
         }
 
-        public void SetRegistryToInstances(SortedList<string, KSP> instances)
+        public void SetRegistryToInstances(SortedList<string, GameInstance> instances)
         {
             SetNumberOfInstances(instances.Count);
 
@@ -126,30 +129,9 @@ namespace CKAN.Configuration
             }
         }
 
-        public IEnumerable<Tuple<string, string>> GetInstances()
+        public IEnumerable<Tuple<string, string, string>> GetInstances()
         {
             return Enumerable.Range(0, InstanceCount).Select(GetInstance).ToList();
-        }
-
-        public JBuilds GetKSPBuilds()
-        {
-            var raw = GetRegistryValue("KSPBuilds", null as string);
-            try
-            {
-                return JsonConvert.DeserializeObject<JBuilds>(raw);
-            }
-            catch (Exception e)
-            {
-                Log.WarnFormat("Could not parse cached build map");
-                Log.DebugFormat("{0}\n{1}", raw, e);
-                return null;
-            }
-        }
-
-        public void SetKSPBuilds(JBuilds buildMap)
-        {
-            string json = JsonConvert.SerializeObject(buildMap);
-            SetRegistryValue(@"KSPBuilds", json);
         }
 
         public bool TryGetAuthToken(string host, out string token)
@@ -232,7 +214,7 @@ namespace CKAN.Configuration
             SetRegistryValue(@"KSPInstanceCount", count);
         }
 
-        private void SetInstanceKeysTo(int instanceIndex, string name, KSP ksp)
+        private void SetInstanceKeysTo(int instanceIndex, string name, GameInstance ksp)
         {
             SetRegistryValue(@"KSPInstanceName_" + instanceIndex, name);
             SetRegistryValue(@"KSPInstancePath_" + instanceIndex, ksp.GameDir());

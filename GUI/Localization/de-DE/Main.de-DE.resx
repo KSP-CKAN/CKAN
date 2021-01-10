@@ -164,8 +164,8 @@
     <value>True</value>
   </data>
   <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>Datei</value></data>
-  <data name="manageKspInstancesMenuItem.Text" xml:space="preserve"><value>KSP-Instanzen verwalten</value></data>
-  <data name="openKspDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>Spieleverzeichnis öffnen</value></data>
+  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve"><value>Spielinstanzen verwalten</value></data>
+  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>Spieleverzeichnis öffnen</value></data>
   <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>Von .ckan installieren</value></data>
   <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>Liste installierter Mods speichern...</value></data>
   <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>Modpack exportieren ...</value></data>
@@ -175,8 +175,8 @@
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>Einstellungen</value></data>
   <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN Einstellungen</value></data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN Plugins</value></data>
-  <data name="kSPCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>KSP Befehlszeile</value></data>
-  <data name="compatibleKSPVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Kompatible KSP-Versionen</value></data>
+  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>Spielstart-Befehlszeile</value></data>
+  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Kompatible Spielversionen</value></data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Hilfe</value></data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>Fehler mit dem CKAN Client melden</value></data>
   <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>Fehler mit Mod-Metadaten melden</value></data>
@@ -191,8 +191,8 @@
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Aktualisieren</value></data>
   <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>Anhalten</value></data>
   <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>CKAN öffnen</value></data>
-  <data name="openKSPToolStripMenuItem.Text" xml:space="preserve"><value>KSP starten</value></data>
-  <data name="openKSPDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>KSP-Verzeichnis öffnen</value></data>
+  <data name="openGameToolStripMenuItem.Text" xml:space="preserve"><value>Spiel starten</value></data>
+  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>Spielverzeichnis öffnen</value></data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>CKAN Einstellungen</value></data>
   <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>Beenden</value></data>
 </root>

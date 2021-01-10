@@ -123,18 +123,16 @@
   <data name="MetadataIdentifierTextBox.Text" xml:space="preserve"><value>-</value></data>
   <data name="ReplacementLabel.Text" xml:space="preserve"><value>替换为:</value></data>
   <data name="ReplacementTextBox.Text" xml:space="preserve"><value>-</value></data>
-  <data name="KSPCompatibilityLabel.Text" xml:space="preserve"><value>最高KSP版本:</value></data>
+  <data name="GameCompatibilityLabel.Text" xml:space="preserve"><value>最高游戏版本:</value></data>
   <data name="ReleaseLabel.Text" xml:space="preserve"><value>发布状态:</value></data>
   <data name="GitHubLabel.Text" xml:space="preserve"><value>源代码:</value></data>
   <data name="HomePageLabel.Text" xml:space="preserve"><value>主页:</value></data>
   <data name="AuthorLabel.Text" xml:space="preserve"><value>作者:</value></data>
   <data name="LicenseLabel.Text" xml:space="preserve"><value>协议:</value></data>
-  <data name="MetadataModuleVersionTextBox.Text" xml:space="preserve"><value>0.0.0</value></data>
   <data name="MetadataModuleLicenseTextBox.Text" xml:space="preserve"><value>无协议</value></data>
   <data name="MetadataModuleAuthorTextBox.Text" xml:space="preserve"><value>无作者</value></data>
   <data name="VersionLabel.Text" xml:space="preserve"><value>版本:</value></data>
   <data name="MetadataModuleReleaseStatusTextBox.Text" xml:space="preserve"><value>稳定</value></data>
-  <data name="MetadataModuleKSPCompatibilityTextBox.Text" xml:space="preserve"><value>0.0.0</value></data>
   <data name="RelationshipTabPage.Text" xml:space="preserve"><value>关系</value></data>
   <data name="LegendDependsLabel.Text" xml:space="preserve"><value>依赖</value></data>
   <data name="LegendRecommendsLabel.Text" xml:space="preserve"><value>推荐</value></data>

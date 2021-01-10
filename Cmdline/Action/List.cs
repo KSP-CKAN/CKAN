@@ -18,7 +18,7 @@ namespace CKAN.CmdLine
             this.user = user;
         }
 
-        public int RunCommand(CKAN.KSP ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
         {
             ListOptions options = (ListOptions) raw_options;
 

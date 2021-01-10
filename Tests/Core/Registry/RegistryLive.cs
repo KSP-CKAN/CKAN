@@ -37,7 +37,7 @@ namespace Tests.Core.Registry
         public void LatestAvailable()
         {
             CkanModule module =
-                registry.LatestAvailable("AGExt", new KspVersionCriteria (temp_ksp.KSP.Version()));
+                registry.LatestAvailable("AGExt", new GameVersionCriteria (temp_ksp.KSP.Version()));
 
             Assert.AreEqual("AGExt", module.identifier);
             Assert.AreEqual("1.24a", module.version.ToString());

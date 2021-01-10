@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CKAN.ConsoleUI.Toolkit;
+using CKAN.Games;
 
 namespace CKAN.ConsoleUI {
 
@@ -12,12 +13,14 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Construct the screens
         /// </summary>
+        /// <param name="game">Game from which to get repos</param>
         /// <param name="reps">Collection of Repository objects</param>
         /// <param name="initName">Initial value of the Name field</param>
         /// <param name="initUrl">Iniital value of the URL field</param>
-        protected RepoScreen(SortedDictionary<string, Repository> reps, string initName, string initUrl) : base()
+        protected RepoScreen(IGame game, SortedDictionary<string, Repository> reps, string initName, string initUrl) : base()
         {
             editList = reps;
+            defaultRepos = RepositoryList.DefaultRepositories(game);
 
             name = new ConsoleField(labelWidth, nameRow, -1, initName) {
                 GhostText = () => "<Enter the name to use for this repository>"
@@ -149,7 +152,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected SortedDictionary<string, Repository> editList;
 
-        private static RepositoryList defaultRepos = RepositoryList.DefaultRepositories();
+        private RepositoryList defaultRepos;
 
         private const int labelWidth = 8;
         private const int nameRow    = 3;

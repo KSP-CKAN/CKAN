@@ -37,7 +37,7 @@ namespace Tests.NetKAN.Transformers
                 }"
             )
         ]
-        public void Transform_SimpleVersionFile_PropertiesSet(string remoteUrl, string version, string kspVersion, string download, string remoteAvc)
+        public void Transform_SimpleVersionFile_PropertiesSet(string remoteUrl, string version, string GameVersion, string download, string remoteAvc)
         {
             // Arrange
             var mHttp = new Mock<IHttpService>();
@@ -51,7 +51,7 @@ namespace Tests.NetKAN.Transformers
             // Assert
             var json = m.Json();
             Assert.AreEqual((string)json["version"],     version);
-            Assert.AreEqual((string)json["ksp_version"], kspVersion);
+            Assert.AreEqual((string)json["ksp_version"], GameVersion);
             Assert.AreEqual((string)json["download"],    download);
         }
 

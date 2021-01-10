@@ -11,14 +11,14 @@ namespace CKAN.CmdLine
         private static readonly ILog log = LogManager.GetLogger(typeof(Install));
 
         public IUser user { get; set; }
-        private KSPManager manager;
+        private GameInstanceManager manager;
 
         /// <summary>
         /// Initialize the install command object
         /// </summary>
-        /// <param name="mgr">KSPManager containing our instances</param>
+        /// <param name="mgr">GameInstanceManager containing our instances</param>
         /// <param name="user">IUser object for interaction</param>
-        public Install(KSPManager mgr, IUser user)
+        public Install(GameInstanceManager mgr, IUser user)
         {
             manager   = mgr;
             this.user = user;
@@ -32,7 +32,7 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code for shell environment
         /// </returns>
-        public int RunCommand(CKAN.KSP ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
         {
             InstallOptions options = (InstallOptions) raw_options;
 

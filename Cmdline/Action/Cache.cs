@@ -83,13 +83,13 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Execute a cache subcommand
         /// </summary>
-        /// <param name="mgr">KSPManager object containing our instances and cache</param>
+        /// <param name="mgr">GameInstanceManager object containing our instances and cache</param>
         /// <param name="opts">Command line options object</param>
         /// <param name="unparsed">Raw command line options</param>
         /// <returns>
         /// Exit code for shell environment
         /// </returns>
-        public int RunSubCommand(KSPManager mgr, CommonOptions opts, SubCommandOptions unparsed)
+        public int RunSubCommand(GameInstanceManager mgr, CommonOptions opts, SubCommandOptions unparsed)
         {
             string[] args = unparsed.options.ToArray();
 
@@ -103,7 +103,7 @@ namespace CKAN.CmdLine
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
                     user     = new ConsoleUser(options.Headless);
-                    manager  = mgr ?? new KSPManager(user);
+                    manager  = mgr ?? new GameInstanceManager(user);
                     exitCode = options.Handle(manager, user);
                     if (exitCode != Exit.OK)
                         return;
@@ -235,7 +235,7 @@ namespace CKAN.CmdLine
             user.RaiseMessage($"{fileCount} files, {CkanModule.FmtSize(bytes)}");
         }
 
-        private KSPManager manager;
+        private GameInstanceManager manager;
         private IUser      user;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Cache));
