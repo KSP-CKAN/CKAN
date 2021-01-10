@@ -35,7 +35,7 @@ namespace CKAN
         public string[] AllBuildIDFiles => knownGames
             .SelectMany(g => g.BuildIDFiles)
             .Distinct()
-            .ToArray();            
+            .ToArray();
 
         public string AutoStartInstance
         {
@@ -68,7 +68,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns the prefered KSP instance, or null if none can be found.
+        /// Returns the preferred KSP instance, or null if none can be found.
         ///
         /// This works by checking to see if we're in a KSP dir first, then the
         /// registry for an autostart instance, then will try to auto-populate
@@ -243,8 +243,9 @@ namespace CKAN
         /// <summary>
         /// Create a new fake KSP instance
         /// </summary>
+        /// <param name="game">The game of the new instance.</param>
         /// <param name="newName">The name for the new instance.</param>
-        /// <param name="newPath">The loaction of the new instance.</param>
+        /// <param name="newPath">The location of the new instance.</param>
         /// <param name="version">The version of the new instance. Should have a build number.</param>
         /// <param name="dlcs">The IDlcDetector implementations for the DLCs that should be faked and the requested dlc version as a dictionary.</param>
         /// <exception cref="InstanceNameTakenKraken">Thrown if the instance name is already in use.</exception>
@@ -524,6 +525,7 @@ namespace CKAN
         /// Switch to using a download cache in a new location
         /// </summary>
         /// <param name="path">Location of folder for new cache</param>
+        /// <param name="failureReason">Contains a human readable failure message if the setup failed</param>
         /// <returns>
         /// true if successful, false otherwise
         /// </returns>
@@ -565,12 +567,12 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Releases all resource used by the <see cref="CKAN.KSP"/> object.
+        /// Releases all resource used by the <see cref="CKAN.GameInstance"/> object.
         /// </summary>
-        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="CKAN.KSP"/>. The <see cref="Dispose"/>
-        /// method leaves the <see cref="CKAN.KSP"/> in an unusable state. After calling <see cref="Dispose"/>, you must
-        /// release all references to the <see cref="CKAN.KSP"/> so the garbage collector can reclaim the memory that
-        /// the <see cref="CKAN.KSP"/> was occupying.</remarks>
+        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="CKAN.GameInstance"/>. The <see cref="Dispose"/>
+        /// method leaves the <see cref="CKAN.GameInstance"/> in an unusable state. After calling <see cref="Dispose"/>, you must
+        /// release all references to the <see cref="CKAN.GameInstance"/> so the garbage collector can reclaim the memory that
+        /// the <see cref="CKAN.GameInstance"/> was occupying.</remarks>
         public void Dispose()
         {
             if (Cache != null)

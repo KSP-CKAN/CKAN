@@ -32,7 +32,7 @@ namespace CKAN.Games
                 return null;
             }
 
-            // Default steam libary
+            // Default steam library
             string installPath = KSPDirectory(steamPath);
             if (installPath != null)
             {
@@ -252,7 +252,7 @@ namespace CKAN.Games
                 Path.Combine(inst.GameDir(), "saves", "scenarios"));
         }
 
-        private Dictionary<string, string> allowedFolders = new Dictionary<string, string>
+        private readonly Dictionary<string, string> allowedFolders = new Dictionary<string, string>
         {
             { "Tutorial",          "saves/training"    },
             { "Scenarios",         "saves/scenarios"   },
@@ -267,9 +267,9 @@ namespace CKAN.Games
         };
 
         /// <summary>
-        /// Finds the KSP path under a Steam Libary. Returns null if the folder cannot be located.
+        /// Finds the KSP path under a Steam Library. Returns null if the folder cannot be located.
         /// </summary>
-        /// <param name="steamPath">Steam Libary Path</param>
+        /// <param name="steamPath">Steam Library Path</param>
         /// <returns>The KSP path.</returns>
         private static string KSPDirectory(string steamPath)
         {

@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Transactions;
-using Autofac;
 using ChinhDo.Transactions.FileManager;
 using log4net;
 using Newtonsoft.Json;
 
 using CKAN.Games;
-using CKAN.GameVersionProviders;
 using CKAN.Versioning;
 
 namespace CKAN
@@ -39,6 +36,7 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(GameInstance));
 
         #endregion
+
         #region Construction and Initialisation
 
         /// <summary>

@@ -9,7 +9,6 @@ using CKAN.DLC;
 using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace CKAN
 {
