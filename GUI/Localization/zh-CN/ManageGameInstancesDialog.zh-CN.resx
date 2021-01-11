@@ -112,6 +112,7 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="openDirectoryMenuItem.Text" xml:space="preserve"><value>打开目录</value></data>
   <data name="GameInstallName.Text" xml:space="preserve"><value>名称</value></data>
+  <data name="Game.Text" xml:space="preserve"><value>游戏</value></data>
   <data name="GameInstallVersion.Text" xml:space="preserve"><value>版本</value></data>
   <data name="GameInstallPath.Text" xml:space="preserve"><value>路径</value></data>
   <data name="SelectButton.Text" xml:space="preserve"><value>选择</value></data>
