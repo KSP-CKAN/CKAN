@@ -49,7 +49,7 @@ namespace Tests.NetKAN.Transformers
                 "AvcTransformer should add the version specified in the AVC version file."
             );
             Assert.That((string)transformedJson["ksp_version"], Is.EqualTo("1.0.4"),
-                "AvcTransformer should add the KSP version specified in the AVC version file."
+                "AvcTransformer should add the game version specified in the AVC version file."
             );
         }
 

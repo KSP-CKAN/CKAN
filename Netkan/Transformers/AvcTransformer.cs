@@ -40,7 +40,7 @@ namespace CKAN.NetKAN.Transformers
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             _vrefValidator.Validate(metadata);
-            
+
             if (metadata.Vref != null && metadata.Vref.Source == "ksp-avc")
             {
                 var json = metadata.Json();
@@ -121,87 +121,7 @@ namespace CKAN.NetKAN.Transformers
 
         public static void ApplyVersions(JObject json, AvcVersion avc)
         {
-            // Get the minimum and maximum KSP versions that already exist in the metadata.
-            // Use specific KSP version if min/max don't exist.
-            var existingKspMinStr = (string)json["ksp_version_min"] ?? (string)json["ksp_version"];
-            var existingKspMaxStr = (string)json["ksp_version_max"] ?? (string)json["ksp_version"];
-
-            var existingKspMin = existingKspMinStr == null ? null : GameVersion.Parse(existingKspMinStr);
-            var existingKspMax = existingKspMaxStr == null ? null : GameVersion.Parse(existingKspMaxStr);
-
-            // Get the minimum and maximum KSP versions that are in the AVC file.
-            // https://github.com/linuxgurugamer/KSPAddonVersionChecker/blob/master/KSP-AVC.schema.json
-            // KSP-AVC allows KSP_VERSION to be set
-            // when KSP_VERSION_MIN/_MAX are set, but CKAN treats
-            // its equivalent properties as mutually exclusive.
-            // Only fallback if neither min nor max are defined,
-            // for open ranges.
-            GameVersion avcKspMin, avcKspMax;
-            if (avc.ksp_version_min == null && avc.ksp_version_max == null)
-            {
-                // Use specific KSP version if min/max don't exist
-                avcKspMin = avcKspMax = avc.ksp_version;
-            }
-            else
-            {
-                avcKspMin = avc.ksp_version_min;
-                avcKspMax = avc.ksp_version_max;
-            }
-
-            // Now calculate the minimum and maximum KSP versions between both the existing metadata and the
-            // AVC file.
-            var kspMins  = new List<GameVersion>();
-            var kspMaxes = new List<GameVersion>();
-
-            if (!GameVersion.IsNullOrAny(existingKspMin))
-                kspMins.Add(existingKspMin);
-
-            if (!GameVersion.IsNullOrAny(avcKspMin))
-                kspMins.Add(avcKspMin);
-
-            if (!GameVersion.IsNullOrAny(existingKspMax))
-                kspMaxes.Add(existingKspMax);
-
-            if (!GameVersion.IsNullOrAny(avcKspMax))
-                kspMaxes.Add(avcKspMax);
-
-            var kspMin = kspMins.Any()  ? kspMins.Min()  : null;
-            var kspMax = kspMaxes.Any() ? kspMaxes.Max() : null;
-
-            if (kspMin != null || kspMax != null)
-            {
-                // If we have either a minimum or maximum KSP version, remove all existing KSP version
-                // information from the metadata.
-                json.Remove("ksp_version");
-                json.Remove("ksp_version_min");
-                json.Remove("ksp_version_max");
-
-                if (kspMin != null && kspMax != null)
-                {
-                    // If we have both a minimum and maximum KSP version...
-                    if (kspMin.Equals(kspMax))
-                    {
-                        // ...and they are equal, then just set ksp_version
-                        json["ksp_version"] = kspMin.ToString();
-                    }
-                    else
-                    {
-                        // ...otherwise set both ksp_version_min and ksp_version_max
-                        json["ksp_version_min"] = kspMin.ToString();
-                        json["ksp_version_max"] = kspMax.ToString();
-                    }
-                }
-                else
-                {
-                    // If we have only one or the other then set which ever is applicable
-
-                    if (kspMin != null)
-                        json["ksp_version_min"] = kspMin.ToString();
-
-                    if (kspMax != null)
-                        json["ksp_version_max"] = kspMax.ToString();
-                }
-            }
+            ModuleService.ApplyVersions(json, avc.ksp_version, avc.ksp_version_min, avc.ksp_version_max);
 
             if (avc.version != null)
             {

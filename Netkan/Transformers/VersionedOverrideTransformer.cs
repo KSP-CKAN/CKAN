@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using CKAN.NetKAN.Model;
-using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json.Linq;
+using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Services;
+using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -149,7 +150,27 @@ namespace CKAN.NetKAN.Transformers
 
                 if (overrideStanza.TryGetValue("override", out overrideBlock))
                 {
-                    foreach (var property in ((JObject)overrideBlock).Properties())
+                    var overrides = overrideBlock as JObject;
+                    if (gameVersionProperties.Any(p => overrides.ContainsKey(p)))
+                    {
+                        ModuleService.ApplyVersions(
+                            metadata,
+                            overrides.ContainsKey("ksp_version")
+                                ? GameVersion.Parse((string)overrides["ksp_version"])
+                                : null,
+                            overrides.ContainsKey("ksp_version_min")
+                                ? GameVersion.Parse((string)overrides["ksp_version_min"])
+                                : null,
+                            overrides.ContainsKey("ksp_version_max")
+                                ? GameVersion.Parse((string)overrides["ksp_version_max"])
+                                : null
+                        );
+                        foreach (var p in gameVersionProperties)
+                        {
+                            overrides.Remove(p);
+                        }
+                    }
+                    foreach (var property in overrides.Properties())
                     {
                         metadata[property.Name] = property.Value;
                     }
@@ -167,6 +188,11 @@ namespace CKAN.NetKAN.Transformers
                 }
             }
         }
+        
+        private string[] gameVersionProperties = new string[]
+        {
+            "ksp_version", "ksp_version_min", "ksp_version_max"
+        };
 
         /// <summary>
         /// Walks through a list of constraints, and returns true if they're all satisifed
