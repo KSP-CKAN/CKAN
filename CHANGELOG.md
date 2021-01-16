@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - [Cmdline] Format installation errors for GitHub Actions in headless mode (#3239 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Fix Netkan timezones again (#3246 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Better version overrides in Netkan (#3265 by: HebaruSan; reviewed: DasSkelett)
+- [Tooling] Pull request merge script (#3263 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.29.2 (Freedman)
 

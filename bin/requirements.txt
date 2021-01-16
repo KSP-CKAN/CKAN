@@ -1,2 +1,5 @@
 requests
 jsonschema
+click
+git
+github
