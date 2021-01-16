@@ -138,6 +138,8 @@ namespace CKAN.ConsoleUI {
                         RaiseError($"Module {ex.module} required but it is not listed in the index, or not available for your version of the game.\r\n{ex.Message}");
                     } catch (ModNotInstalledKraken ex) {
                         RaiseError($"{ex.mod} is not installed, can't remove");
+                    } catch (DllLocationMismatchKraken ex) {
+                        RaiseError(ex.Message);
                     }
                 } while (retry);
             }
