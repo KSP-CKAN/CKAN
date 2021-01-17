@@ -680,7 +680,7 @@ namespace Tests.Core.Versioning
             // Act
             string s = GameVersionRange.VersionSpan(game, min, max);
             // Assert
-            Assert.AreEqual("KSP 1.0.0 - 1.1.1", s);
+            Assert.AreEqual("KSP 1.0.0–1.1.1", s);
         }
 
     }
