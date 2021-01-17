@@ -109,7 +109,7 @@ namespace CKAN.Versioning
             return minKsp == maxKsp ? $"{game.ShortName} {SameVersionString(minKsp)}"
                 :  minKsp.IsAny     ? $"{game.ShortName} {maxKsp} and earlier"
                 :  maxKsp.IsAny     ? $"{game.ShortName} {minKsp} and later"
-                :                     $"{game.ShortName} {minKsp} - {maxKsp}";
+                :                     $"{game.ShortName} {minKsp}–{maxKsp}";
         }
 
     }
