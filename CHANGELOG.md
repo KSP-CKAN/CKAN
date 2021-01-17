@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Fix screen clamping logic (#3255 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Repo update usability fixes (#3249 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Added null checks in ManageMods.cs to prevent crash on an empty filter (#3266 by: Hydroxa; reviewed: HebaruSan)
 
 ### Internal
 
