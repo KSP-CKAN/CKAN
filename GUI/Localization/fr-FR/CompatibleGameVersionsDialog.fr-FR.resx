@@ -121,10 +121,10 @@
   <data name="label2.Text" xml:space="preserve"><value>Version du jeu:</value></data>
   <data name="label3.Text" xml:space="preserve"><value>Attention! Il n'y a aucun moyen de vérifier si un mod est réellement compatible avec les versions sélectionnées ici! Faîtes attention.</value></data>
   <data name="GameVersionLabel.Text" xml:space="preserve"><value>&lt;version&gt;</value></data>
-  <data name="ClearSelectionButton.Text" xml:space="preserve"><value>Effacer la selection</value></data>
+  <data name="ClearSelectionButton.Text" xml:space="preserve"><value>Effacer</value></data>
   <data name="AddVersionToListButton.Text" xml:space="preserve"><value>Ajouter</value></data>
-  <data name="label5.Text" xml:space="preserve"><value>Ajouter une version à la liste:</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>Note: si vous ajouter une version comme la "1.2", vous allez forcer tous les mods compatibles avec la 1.2.xx (1.2.0, 1.2.1, etc) à être compatibles avec cette instance de jeu.</value></data>
+  <data name="label5.Text" xml:space="preserve"><value>Ajouter une version:</value></data>
+  <data name="label6.Text" xml:space="preserve"><value>Note: si vous ajouter une version comme la "1.2", vous allez forcer tous les mods compatibles avec la 1.2.xx (1.2.0, 1.2.1, etc) à être compatibles avec cette instance.</value></data>
   <data name="label7.Text" xml:space="preserve"><value>Si le jeu est mis à jour, cette fenêtre de dialogue apparaîtra de nouveau pour que vous puissiez ajustez vos réglages.</value></data>
   <data name="SaveButton.Text" xml:space="preserve"><value>Accepter</value></data>
   <data name="label8.Text" xml:space="preserve"><value>Installation:</value></data>

@@ -115,8 +115,8 @@
   <data name="Game.Text" xml:space="preserve"><value>Jeu</value></data>
   <data name="GameInstallVersion.Text" xml:space="preserve"><value>Version</value></data>
   <data name="GameInstallPath.Text" xml:space="preserve"><value>Chemin</value></data>
-  <data name="SelectButton.Text" xml:space="preserve"><value>Selectionner</value></data>
-  <data name="AddNewButton.Text" xml:space="preserve"><value>Nouvelle instance de jeu</value></data>
+  <data name="SelectButton.Text" xml:space="preserve"><value>Choisir</value></data>
+  <data name="AddNewButton.Text" xml:space="preserve"><value>Nouvelle instance</value></data>
   <data name="AddToCKANMenuItem.Text" xml:space="preserve"><value>Ajouter une instance à CKAN</value></data>
   <data name="CloneFakeInstanceMenuItem.Text" xml:space="preserve"><value>Cloner ou falsifier une nouvelle instance</value></data>
   <data name="RenameButton.Text" xml:space="preserve"><value>Renommer</value></data>

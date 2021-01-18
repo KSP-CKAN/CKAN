@@ -140,7 +140,7 @@
   <data name="arrow_forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="arrow_upward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_upward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="AboutDialogLabel2Text" xml:space="preserve"><value>Version {0}</value></data>
-  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Construire le fichier de métadonnés</value></data>
+  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Fichier de métadonnés/Build</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Veuillez entrer un nom pour la nouvelle instance.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Veuillez entrer un chemin pour la nouvelle instance.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"Clonage de l'instance..."</value></data>
@@ -310,8 +310,8 @@ Si vous suspectez un problème client: https://github.com/KSP-CKAN/CKAN/issues/n
   <data name="MainModListUpdatingTray" xml:space="preserve"><value>Mise à jour de la miniature...</value></data>
   <data name="MainModListAutoDetected" xml:space="preserve"><value>AD</value></data>
   <data name="MainModListUnknownFilter" xml:space="preserve"><value>Type de filtre inconnu {0} dans IsModInFilter</value></data>
-  <data name="MainRecommendationsTitle" xml:space="preserve"><value>Choisissez les mods recommendés, suggérés, ou supportés</value></data>
-  <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>Aucun mod recommendé, suggéré, ou supporté trouvé.</value></data>
+  <data name="MainRecommendationsTitle" xml:space="preserve"><value>Choisissez les mods recommandés, suggérés, ou supportés</value></data>
+  <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>Aucun mod recommandé, suggéré, ou supporté trouvé.</value></data>
   <data name="MainRepoWaitTitle" xml:space="preserve"><value>Mise à jour des répertoires</value></data>
   <data name="MainRepoScanning" xml:space="preserve"><value>Détection des DLC et des modules installés manuellement...</value></data>
   <data name="MainRepoContacting" xml:space="preserve"><value>Contact du répertoire...</value></data>

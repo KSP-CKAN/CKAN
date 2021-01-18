@@ -119,11 +119,11 @@
   </resheader>
   <data name="label1.Text" xml:space="preserve"><value>Toutes les versions disponibles du mod sélectionné</value></data>
   <data name="ModVersion.Text" xml:space="preserve"><value>Version du Mod</value></data>
-  <data name="CompatibleGameVersion.Text" xml:space="preserve"><value>Compatible Game Versions</value></data>
+  <data name="CompatibleGameVersion.Text" xml:space="preserve"><value>Versions de Jeu Compatibles</value></data>
   <data name="label2.Text" xml:space="preserve"><value>Vert</value></data>
   <data name="label3.Text" xml:space="preserve"><value>Vert Clair</value></data>
   <data name="label4.Text" xml:space="preserve"><value>Gras</value></data>
-  <data name="label5.Text" xml:space="preserve"><value>- version compatible la plus récente (sera probablement installée)</value></data>
+  <data name="label5.Text" xml:space="preserve"><value>- version compatible la plus récente (préférence)</value></data>
   <data name="label6.Text" xml:space="preserve"><value>- version compatible avec votre jeu</value></data>
   <data name="label7.Text" xml:space="preserve"><value>- version actuellement installée</value></data>
 </root>

@@ -123,7 +123,7 @@
   <data name="licenseLabel.Text" xml:space="preserve"><value>Licence</value></data>
   <data name="authorsLabel.Text" xml:space="preserve"><value>Auteurs</value></data>
   <data name="sourceLabel.Text" xml:space="preserve"><value>Source</value></data>
-  <data name="forumthreadLabel.Text" xml:space="preserve"><value>Forum de discussion</value></data>
+  <data name="forumthreadLabel.Text" xml:space="preserve"><value>Forum discussion</value></data>
   <data name="homepageLabel.Text" xml:space="preserve"><value>Page principale</value></data>
   <data name="$this.Text" xml:space="preserve"><value>A propos</value></data>
 </root>

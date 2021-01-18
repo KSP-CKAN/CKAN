@@ -134,13 +134,13 @@
   <data name="MetadataModuleReleaseStatusTextBox.Text" xml:space="preserve"><value>Stable</value></data>
   <data name="MetadataModuleGameCompatibilityTextBox.Text" xml:space="preserve"><value>0.0.0</value></data>
   <data name="RelationshipTabPage.Text" xml:space="preserve"><value>Relations</value></data>
-  <data name="LegendDependsLabel.Text" xml:space="preserve"><value>Dépendance</value></data>
-  <data name="LegendRecommendsLabel.Text" xml:space="preserve"><value>Recommandation</value></data>
+  <data name="LegendDependsLabel.Text" xml:space="preserve"><value>Dépendances</value></data>
+  <data name="LegendRecommendsLabel.Text" xml:space="preserve"><value>Recommandations</value></data>
   <data name="LegendSuggestsLabel.Text" xml:space="preserve"><value>Suggestions</value></data>
   <data name="LegendSupportsLabel.Text" xml:space="preserve"><value>Supports</value></data>
   <data name="LegendConflictsLabel.Text" xml:space="preserve"><value>Conflits</value></data>
   <data name="ContentTabPage.Text" xml:space="preserve"><value>Contenu</value></data>
-  <data name="ContentsDownloadButton.Text" xml:space="preserve"><value>Téléchargement</value></data>
+  <data name="ContentsDownloadButton.Text" xml:space="preserve"><value>Télécharger</value></data>
   <data name="ContentsOpenButton.Text" xml:space="preserve"><value>Ouvrir le ZIP</value></data>
   <data name="NotCachedLabel.Text" xml:space="preserve"><value>Ce mod n'est pas dans le cache, cliquez "télécharger" pour visionner son contenu</value></data>
   <data name="AllModVersionsTabPage.Text" xml:space="preserve"><value>Versions</value></data>

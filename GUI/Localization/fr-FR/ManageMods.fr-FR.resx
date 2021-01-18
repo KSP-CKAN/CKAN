@@ -175,10 +175,10 @@
   <data name="InstalledVersion.HeaderText" xml:space="preserve"><value>Version installée</value></data>
   <data name="LatestVersion.HeaderText" xml:space="preserve"><value>Dernière version</value></data>
   <data name="GameCompatibility.HeaderText" xml:space="preserve"><value>Version de jeu maximale</value></data>
-  <data name="SizeCol.HeaderText" xml:space="preserve"><value>Taille de téléchargement</value></data>
+  <data name="SizeCol.HeaderText" xml:space="preserve"><value>Taille</value></data>
   <data name="ReleaseDate.HeaderText" xml:space="preserve"><value>Date de publication</value></data>
   <data name="InstallDate.HeaderText" xml:space="preserve"><value>Date d'installation</value></data>
-  <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Nombre de téléchargements</value></data>
+  <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Téléchargements (nombre)</value></data>
   <data name="Description.HeaderText" xml:space="preserve"><value>Description</value></data>
   <data name="reinstallToolStripMenuItem.Text" xml:space="preserve"><value>Réinstaller</value></data>
   <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>Télécharger le contenu</value></data>
