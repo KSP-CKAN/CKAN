@@ -53,6 +53,14 @@ jobs:
       - name: Run tests
         run: xvfb-run ./build test+only --configuration=${{ matrix.configuration }} --where="Category!=FlakyNetwork"
 
+      - name: Upload ckan.exe artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ckan.exe
+          path: _build/repack/Release/ckan.exe
+          retention-days: 7
+        if: matrix.configuration == 'release' && matrix.mono == 'latest' && github.event_name == 'pull_request'
+
       - name: Send Discord Notification
         env:
           JOB_STATUS: ${{ job.status }}
