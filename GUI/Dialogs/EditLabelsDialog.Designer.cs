@@ -45,6 +45,7 @@ namespace CKAN
             this.RemoveOnChangesCheckBox = new System.Windows.Forms.CheckBox();
             this.AlertOnInstallCheckBox = new System.Windows.Forms.CheckBox();
             this.RemoveOnInstallCheckBox = new System.Windows.Forms.CheckBox();
+            this.HoldVersionCheckBox = new System.Windows.Forms.CheckBox();
             this.CreateButton = new System.Windows.Forms.Button();
             this.CloseButton = new System.Windows.Forms.Button();
             this.SaveButton = new System.Windows.Forms.Button();
@@ -81,9 +82,10 @@ namespace CKAN
             this.LabelSelectionTree.HideSelection = false;
             this.LabelSelectionTree.Indent = 16;
             this.LabelSelectionTree.ItemHeight = 24;
+            this.LabelSelectionTree.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             this.LabelSelectionTree.Location = new System.Drawing.Point(10, 43);
             this.LabelSelectionTree.Name = "LabelSelectionTree";
-            this.LabelSelectionTree.Size = new System.Drawing.Size(125, 320);
+            this.LabelSelectionTree.Size = new System.Drawing.Size(125, 350);
             this.LabelSelectionTree.ShowPlusMinus = false;
             this.LabelSelectionTree.ShowRootLines = false;
             this.LabelSelectionTree.ShowLines = false;
@@ -115,12 +117,13 @@ namespace CKAN
             this.EditDetailsPanel.Controls.Add(this.RemoveOnChangesCheckBox);
             this.EditDetailsPanel.Controls.Add(this.AlertOnInstallCheckBox);
             this.EditDetailsPanel.Controls.Add(this.RemoveOnInstallCheckBox);
+            this.EditDetailsPanel.Controls.Add(this.HoldVersionCheckBox);
             this.EditDetailsPanel.Controls.Add(this.SaveButton);
             this.EditDetailsPanel.Controls.Add(this.CancelEditButton);
             this.EditDetailsPanel.Controls.Add(this.DeleteButton);
             this.EditDetailsPanel.Location = new System.Drawing.Point(135, 43);
             this.EditDetailsPanel.Name = "EditDetailsPanel";
-            this.EditDetailsPanel.Size = new System.Drawing.Size(350, 320);
+            this.EditDetailsPanel.Size = new System.Drawing.Size(350, 350);
             this.EditDetailsPanel.TabIndex = 1;
             this.EditDetailsPanel.Visible = false;
             // 
@@ -220,11 +223,19 @@ namespace CKAN
             this.RemoveOnInstallCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.RemoveOnInstallCheckBox, "RemoveOnInstallCheckBox");
             // 
+            // HoldVersionCheckBox
+            // 
+            this.HoldVersionCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.HoldVersionCheckBox.Location = new System.Drawing.Point(90, 250);
+            this.HoldVersionCheckBox.Name = "HoldVersionCheckBox";
+            this.HoldVersionCheckBox.Size = new System.Drawing.Size(200, 23);
+            resources.ApplyResources(this.HoldVersionCheckBox, "HoldVersionCheckBox");
+            // 
             // SaveButton
             // 
             this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
-            this.SaveButton.Location = new System.Drawing.Point(10, 290);
+            this.SaveButton.Location = new System.Drawing.Point(10, 320);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
             this.SaveButton.TabIndex = 0;
@@ -236,7 +247,7 @@ namespace CKAN
             // 
             this.CancelEditButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
-            this.CancelEditButton.Location = new System.Drawing.Point(90, 290);
+            this.CancelEditButton.Location = new System.Drawing.Point(90, 320);
             this.CancelEditButton.Name = "CancelEditButton";
             this.CancelEditButton.Size = new System.Drawing.Size(75, 23);
             this.CancelEditButton.TabIndex = 0;
@@ -248,7 +259,7 @@ namespace CKAN
             // 
             this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
-            this.DeleteButton.Location = new System.Drawing.Point(170, 290);
+            this.DeleteButton.Location = new System.Drawing.Point(170, 320);
             this.DeleteButton.Name = "DeleteButton";
             this.DeleteButton.Size = new System.Drawing.Size(75, 23);
             this.DeleteButton.TabIndex = 0;
@@ -260,7 +271,7 @@ namespace CKAN
             // 
             this.CloseButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
-            this.CloseButton.Location = new System.Drawing.Point(10, 367);
+            this.CloseButton.Location = new System.Drawing.Point(10, 397);
             this.CloseButton.Name = "CloseButton";
             this.CloseButton.Size = new System.Drawing.Size(75, 23);
             this.CloseButton.TabIndex = 2;
@@ -272,7 +283,7 @@ namespace CKAN
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(500, 400);
+            this.ClientSize = new System.Drawing.Size(500, 430);
             this.Controls.Add(this.CreateButton);
             this.Controls.Add(this.LabelSelectionTree);
             this.Controls.Add(this.SelectOrCreateLabel);
@@ -304,6 +315,7 @@ namespace CKAN
         private System.Windows.Forms.CheckBox RemoveOnChangesCheckBox;
         private System.Windows.Forms.CheckBox AlertOnInstallCheckBox;
         private System.Windows.Forms.CheckBox RemoveOnInstallCheckBox;
+        private System.Windows.Forms.CheckBox HoldVersionCheckBox;
         private System.Windows.Forms.Label ColorLabel;
         private System.Windows.Forms.Button ColorButton;
         private System.Windows.Forms.Button CreateButton;

@@ -41,6 +41,12 @@ namespace CKAN
                         Hide  = true,
                         Color = Color.PaleVioletRed,
                     },
+                    new ModuleLabel()
+                    {
+                        Name        = Properties.Resources.ModuleLabelListHeld,
+                        HoldVersion = true,
+                        Color       = Color.FromArgb(255, 255, 176),
+                    }
                 }
             };
         }

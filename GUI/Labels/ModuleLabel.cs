@@ -37,6 +37,10 @@ namespace CKAN
         [DefaultValue(false)]
         public bool    RemoveOnInstall;
 
+        [JsonProperty("hold_version", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
+        public bool    HoldVersion;
+
         [JsonProperty("module_identifiers", NullValueHandling = NullValueHandling.Ignore)]
         public HashSet<string> ModuleIdentifiers = new HashSet<string>();
 

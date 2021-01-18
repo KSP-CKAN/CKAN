@@ -130,6 +130,7 @@
   <data name="RemoveOnChangesCheckBox.Text" xml:space="preserve"><value>Label nach Updates entfernen</value></data>
   <data name="AlertOnInstallCheckBox.Text" xml:space="preserve"><value>Vor Installation warnen</value></data>
   <data name="RemoveOnInstallCheckBox.Text" xml:space="preserve"><value>Label nach der Installation entfernen</value></data>
+  <data name="HoldVersionCheckBox.Text" xml:space="preserve"><value>Aktualisierungen zurückhalten</value></data>
   <data name="CloseButton.Text" xml:space="preserve"><value>Schließen</value></data>
   <data name="SaveButton.Text" xml:space="preserve"><value>Speichern</value></data>
   <data name="CancelEditButton.Text" xml:space="preserve"><value>Abbrechen</value></data>
