@@ -45,3 +45,4 @@ bld/
 *.nuget.targets
 
 quotes.txt.dat
+*.ini
