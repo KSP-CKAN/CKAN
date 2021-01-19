@@ -120,7 +120,7 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="RepositoryGroupBox.Text" xml:space="preserve"><value>Répertoires officiels</value></data>
   <data name="RepoCancel.Text" xml:space="preserve"><value>&amp;Annuler</value></data>
-  <data name="RepoOK.Text" xml:space="preserve"><value>&amp;Ajouter</value></data>
+  <data name="RepoOK.Text" xml:space="preserve"><value>&amp;Rajouter</value></data>
   <data name="RepoNameHeader.Text" xml:space="preserve"><value>Nom</value></data>
   <data name="RepoURLHeader.Text" xml:space="preserve"><value>URL</value></data>
   <data name="RepoNameLabel.Text" xml:space="preserve"><value>Nom:</value></data>

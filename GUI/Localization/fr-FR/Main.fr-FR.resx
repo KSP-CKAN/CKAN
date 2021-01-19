@@ -152,7 +152,7 @@
   <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Aide</value></data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>Signaler un problème avec le client CKAN</value></data>
   <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>Signaler un problème avec les métadonnés de mod</value></data>
-  <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>A propos</value></data>
+  <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>À propos</value></data>
   <data name="ManageModsTabPage.Text" xml:space="preserve"><value>Gérer les mods</value></data>
   <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Résumé des changements</value></data>
   <data name="WaitTabPage.Text" xml:space="preserve"><value>Registre</value></data>
