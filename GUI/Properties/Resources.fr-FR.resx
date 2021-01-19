@@ -186,8 +186,8 @@ Essayez de déplacer {2} en dehors de {3} et redémarrez CKAN.</value></data>
   <data name="MainFilterNotInstalled" xml:space="preserve"><value>Filtre (Pas installé)</value></data>
   <data name="MainFilterCompatible" xml:space="preserve"><value>Filtre (Compatible)</value></data>
   <data name="MainFilterLabel" xml:space="preserve"><value>Label ({0})</value></data>
-  <data name="MainFilterTag" xml:space="preserve"><value>Etiquette ({0})</value></data>
-  <data name="MainFilterUntagged" xml:space="preserve"><value>Etiquette (sans étiquette)</value></data>
+  <data name="MainFilterTag" xml:space="preserve"><value>Étiquette ({0})</value></data>
+  <data name="MainFilterUntagged" xml:space="preserve"><value>Étiquette (sans étiquette)</value></data>
   <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>Certains modules installés sont incompatibles! Il pourrait être dangereux de lancer le jeu. Voulez-vous vraiment le lancer?
 
 {0}</value></data>
@@ -340,7 +340,7 @@ Si vous suspectez un problème client: https://github.com/KSP-CKAN/CKAN/issues/n
   <data name="AddAuthTokenTitle" xml:space="preserve"><value>Ajouter un jeton d'authentification</value></data>
   <data name="AddAuthTokenHost" xml:space="preserve"><value>Hôte:</value></data>
   <data name="AddAuthTokenToken" xml:space="preserve"><value>Jeton:</value></data>
-  <data name="AddAuthTokenAccept" xml:space="preserve"><value>&amp;Accepter</value></data>
+  <data name="AddAuthTokenAccept" xml:space="preserve"><value>&amp;Confirmer</value></data>
   <data name="AddAuthTokenCancel" xml:space="preserve"><value>&amp;Annuler</value></data>
   <data name="AddAuthTokenHostRequired" xml:space="preserve"><value>Le champ de l'hôte est requis.</value></data>
   <data name="AddAuthTokenTokenRequired" xml:space="preserve"><value>Le champ du jeton est requis.</value></data>
