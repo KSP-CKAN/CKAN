@@ -134,7 +134,7 @@
             this.NewRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.NewRepoButton.Location = new System.Drawing.Point(12, 93);
             this.NewRepoButton.Name = "NewRepoButton";
-            this.NewRepoButton.Size = new System.Drawing.Size(56, 25);
+            this.NewRepoButton.Size = new System.Drawing.Size(63, 25);
             this.NewRepoButton.TabIndex = 1;
             this.NewRepoButton.Click += new System.EventHandler(this.NewRepoButton_Click);
             resources.ApplyResources(this.NewRepoButton, "NewRepoButton");
@@ -143,9 +143,9 @@
             //
             this.UpRepoButton.Enabled = false;
             this.UpRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.UpRepoButton.Location = new System.Drawing.Point(74, 93);
+            this.UpRepoButton.Location = new System.Drawing.Point(81, 93);
             this.UpRepoButton.Name = "UpRepoButton";
-            this.UpRepoButton.Size = new System.Drawing.Size(56, 25);
+            this.UpRepoButton.Size = new System.Drawing.Size(63, 25);
             this.UpRepoButton.TabIndex = 2;
             this.UpRepoButton.Click += new System.EventHandler(this.UpRepoButton_Click);
             resources.ApplyResources(this.UpRepoButton, "UpRepoButton");
@@ -154,9 +154,9 @@
             //
             this.DownRepoButton.Enabled = false;
             this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DownRepoButton.Location = new System.Drawing.Point(136, 93);
+            this.DownRepoButton.Location = new System.Drawing.Point(150, 93);
             this.DownRepoButton.Name = "DownRepoButton";
-            this.DownRepoButton.Size = new System.Drawing.Size(56, 25);
+            this.DownRepoButton.Size = new System.Drawing.Size(63, 25);
             this.DownRepoButton.TabIndex = 3;
             this.DownRepoButton.Click += new System.EventHandler(this.DownRepoButton_Click);
             resources.ApplyResources(this.DownRepoButton, "DownRepoButton");
@@ -165,9 +165,9 @@
             //
             this.DeleteRepoButton.Enabled = false;
             this.DeleteRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteRepoButton.Location = new System.Drawing.Point(408, 93);
+            this.DeleteRepoButton.Location = new System.Drawing.Point(394, 93);
             this.DeleteRepoButton.Name = "DeleteRepoButton";
-            this.DeleteRepoButton.Size = new System.Drawing.Size(56, 25);
+            this.DeleteRepoButton.Size = new System.Drawing.Size(70, 25);
             this.DeleteRepoButton.TabIndex = 4;
             this.DeleteRepoButton.Click += new System.EventHandler(this.DeleteRepoButton_Click);
             resources.ApplyResources(this.DeleteRepoButton, "DeleteRepoButton");
@@ -215,7 +215,7 @@
             this.NewAuthTokenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.NewAuthTokenButton.Location = new System.Drawing.Point(12, 93);
             this.NewAuthTokenButton.Name = "NewAuthTokenButton";
-            this.NewAuthTokenButton.Size = new System.Drawing.Size(56, 25);
+            this.NewAuthTokenButton.Size = new System.Drawing.Size(63, 25);
             this.NewAuthTokenButton.TabIndex = 1;
             this.NewAuthTokenButton.Click += new System.EventHandler(this.NewAuthTokenButton_Click);
             resources.ApplyResources(this.NewAuthTokenButton, "NewAuthTokenButton");
@@ -224,9 +224,9 @@
             //
             this.DeleteAuthTokenButton.Enabled = false;
             this.DeleteAuthTokenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteAuthTokenButton.Location = new System.Drawing.Point(408, 93);
+            this.DeleteAuthTokenButton.Location = new System.Drawing.Point(394, 93);
             this.DeleteAuthTokenButton.Name = "DeleteAuthTokenButton";
-            this.DeleteAuthTokenButton.Size = new System.Drawing.Size(56, 25);
+            this.DeleteAuthTokenButton.Size = new System.Drawing.Size(70, 25);
             this.DeleteAuthTokenButton.TabIndex = 2;
             this.DeleteAuthTokenButton.Click += new System.EventHandler(this.DeleteAuthTokenButton_Click);
             resources.ApplyResources(this.DeleteAuthTokenButton, "DeleteAuthTokenButton");
@@ -492,7 +492,7 @@
             // RefreshTextBox
             //
             this.RefreshTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.RefreshTextBox.Location = new System.Drawing.Point(122, 64);
+            this.RefreshTextBox.Location = new System.Drawing.Point(125, 64);
             this.RefreshTextBox.Name = "RefreshTextBox";
             this.RefreshTextBox.Size = new System.Drawing.Size(25, 20);
             this.RefreshTextBox.TabIndex = 3;
@@ -503,7 +503,7 @@
             // RefreshPostLabel
             //
             this.RefreshPostLabel.AutoSize = true;
-            this.RefreshPostLabel.Location = new System.Drawing.Point(150, 66);
+            this.RefreshPostLabel.Location = new System.Drawing.Point(153, 66);
             this.RefreshPostLabel.Name = "RefreshPostLabel";
             this.RefreshPostLabel.Size = new System.Drawing.Size(49, 13);
             this.RefreshPostLabel.TabIndex = 4;

@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AppIcon" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\..\assets\ckan.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="apply" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\apply.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="ksp" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\ksp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="settings" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="CKANFileFilter" xml:space="preserve"><value>métadonnés CKAN (*.ckan)|*.ckan</value></data>
+  <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>Exporter la Liste de Mods</value></data>
+  <data name="update" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\update.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="backward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\backward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="filter" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\filter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="textClear" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\textClear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="star" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\star.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="thumbup" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\thumbup.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\info.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="smile" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\smile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="alert" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\alert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="arrow_forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="arrow_upward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_upward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="AboutDialogLabel2Text" xml:space="preserve"><value>Version {0}</value></data>
+  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Fichier de métadonnés/Build</value></data>
+  <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Veuillez entrer un nom pour la nouvelle instance.</value></data>
+  <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Veuillez entrer un chemin pour la nouvelle instance.</value></data>
+  <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"Clonage de l'instance..."</value></data>
+  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve"><value>La version pour le DLC {0} est mal malformatée. Essayez "1.0.0" par exemple.</value></data>
+  <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>L'instance que vous voulez cloner n'est pas valide: {0}</value></data>
+  <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>Le dossier de destination n'est pas vide: {0}</value></data>
+  <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>Echec du clonage: {0}</value></data>
+  <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>Instance clonée avec succès.</value></data>
+  <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>Création de la nouvelle instance...</value></data>
+  <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>Ce nom est déjà utilisé.</value></data>
+  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>Echec de la création d'une fausse instance: {0}</value></data>
+  <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>Instance créée avec succès.</value></data>
+  <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;AUCUNE&gt;</value></data>
+  <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>Le jeu a été mis à jour depuis que vous avez défini les versions de jeu compatibles. Veuillez vérifier ces paramètres.</value></data>
+  <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (version de jeu précédente: {1})</value></data>
+  <data name="CompatibleGameVersionsDialogInvalidFormat" xml:space="preserve"><value>La version a un format invalide</value></data>
+  <data name="CompatibleGameVersionsDialogErrorTitle" xml:space="preserve"><value>Erreur</value></data>
+  <data name="ConfigurationParseError" xml:space="preserve"><value>Erreur en essayant d'interpréter "{0}"{1}
+Essayez de déplacer {2} en dehors de {3} et redémarrez CKAN.</value></data>
+  <data name="GUIModNSlashA" xml:space="preserve"><value>N/A</value></data>
+  <data name="GUIModUnknown" xml:space="preserve"><value>Inconnue</value></data>
+  <data name="GUIModMethodNotCKAN" xml:space="preserve"><value>Cette Méthode ne peut pas être appelée sauf si IsCKAN</value></data>
+  <data name="GUIModGameCompatibilityLong" xml:space="preserve"><value>{0} (en utlisant la version du mod {1})</value></data>
+  <data name="MainAutoUpdateFailed" xml:space="preserve"><value>Erreur durant la mis à jour auto:&#xD;&#xA;{0}</value></data>
+  <data name="MainQuitWithConflicts" xml:space="preserve"><value>Il y a des conflits. Voulez-vous vraiment quitter?&#xD;&#xA;&#xD;&#xA;{0}</value></data>
+  <data name="MainQuit" xml:space="preserve"><value>Quitter</value></data>
+  <data name="MainGoBack" xml:space="preserve"><value>Revenir</value></data>
+  <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>Il y a des dépendances non-satisfaites. Voulez-vous vraiment quitter?</value></data>
+  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve"><value>Il y a des changements non pris en compte. Voulez-vous vraiment quitter?
+
+{0}</value></data>
+  <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>Mis à jour de CKAN</value></data>
+  <data name="MainUpgradingTo" xml:space="preserve"><value>Mise à niveau de CKAN vers la {0}</value></data>
+  <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0} dépend de {1}, qui n'est pas compatible avec la version du jeu installée actuellement</value></data>
+  <data name="MainFilterAll" xml:space="preserve"><value>Filtre (Tout)</value></data>
+  <data name="MainFilterIncompatible" xml:space="preserve"><value>Filtre (Incompatible)</value></data>
+  <data name="MainFilterInstalled" xml:space="preserve"><value>Filtre (Installé)</value></data>
+  <data name="MainFilterUpgradeable" xml:space="preserve"><value>Filtre (À mettre à jour)</value></data>
+  <data name="MainFilterReplaceable" xml:space="preserve"><value>Filtre (Remplacable)</value></data>
+  <data name="MainFilterCached" xml:space="preserve"><value>Filtre (En cache)</value></data>
+  <data name="MainFilterUncached" xml:space="preserve"><value>Filtre (Pas en cache)</value></data>
+  <data name="MainFilterNew" xml:space="preserve"><value>Filtre (Nouveau)</value></data>
+  <data name="MainFilterNotInstalled" xml:space="preserve"><value>Filtre (Pas installé)</value></data>
+  <data name="MainFilterCompatible" xml:space="preserve"><value>Filtre (Compatible)</value></data>
+  <data name="MainFilterLabel" xml:space="preserve"><value>Label ({0})</value></data>
+  <data name="MainFilterTag" xml:space="preserve"><value>Étiquette ({0})</value></data>
+  <data name="MainFilterUntagged" xml:space="preserve"><value>Étiquette (sans étiquette)</value></data>
+  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>Certains modules installés sont incompatibles! Il pourrait être dangereux de lancer le jeu. Voulez-vous vraiment le lancer?
+
+{0}</value></data>
+  <data name="MainLaunch" xml:space="preserve"><value>Lancement</value></data>
+  <data name="MainLaunchFailed" xml:space="preserve"><value>Impossible de démarrer le jeu.
+
+{0}</value></data>
+  <data name="MainModPack" xml:space="preserve"><value>Modpack CKAN (*.ckan)</value></data>
+  <data name="MainPlainText" xml:space="preserve"><value>Texte (*.txt)</value></data>
+  <data name="MainMarkdown" xml:space="preserve"><value>Notes (*.md)</value></data>
+  <data name="MainBBCode" xml:space="preserve"><value>BBCode (*.txt)</value></data>
+  <data name="MainCSV" xml:space="preserve"><value>Comma-separated values (*.csv)</value></data>
+  <data name="MainTSV" xml:space="preserve"><value>Tab-separated values (*.tsv)</value></data>
+  <data name="MainNotFound" xml:space="preserve"><value>Impossible de trouver.</value></data>
+  <data name="MainReinstallConfirm" xml:space="preserve"><value>Voulez-vous réinstaller {0}?</value></data>
+  <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN ne peut pas installer l'extension {0}!</value></data>
+  <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} n'est pas supporté par votre version de jeu actuelle and pourraît ne pas marcher du tout. Si vous avez des problème avec, vous NE devez PAS demander de l'aide à ses développeurs.
+
+Voulez-vous vraiment l'installer?</value></data>
+  <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Installer</value></data>
+  <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Annuler</value></data>
+  <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (méta-paquet)</value></data>
+  <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (en cache)</value></data>
+  <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
+  <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Mis à jour sélectionnée par l'utilisateur à la version {0}.</value></data>
+  <data name="MainChangesetNewInstall" xml:space="preserve"><value>Nouvelle installation de mod sélectionnée par l'utilisateur.</value></data>
+  <data name="MainImportTitle" xml:space="preserve"><value>Importer des Mods</value></data>
+  <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
+  <data name="MainImportWaitTitle" xml:space="preserve"><value>Registre</value></data>
+  <data name="MainInstallWaitTitle" xml:space="preserve"><value>Registre</value></data>
+  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} requiert {1} mais il n'est pas listé dans l'index, ou non-disponible pour votre version de jeu.</value></data>
+  <data name="MainInstallNotFound" xml:space="preserve"><value>Le module {0} est requis mais il n'est pas listé dans l'index, ou non-disponible pour votre version de jeu.</value></data>
+  <data name="MainInstallBadMetadata" xml:space="preserve"><value>Mauvaises métadonnés détectées pour le module {0}: {1}</value></data>
+  <data name="MainInstallFileExists" xml:space="preserve"><value>Oh non! Nous avons essayé de remplacer un fichier appartenant à un autre mod!
+Veuillez essayer de mettre à jour CKAN puis de réessayer.
+
+Si ce problème se produit de nouveau, il pourrait s'agir d'un bug d'empaquètement.
+Veuillez le signaler à:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+
+Veuillez inclure les informations suivantes dans votre rapport:
+
+Fichier      : {0}
+Mod en cours d'installation: {1}
+Mod propriétaire: {2}
+Version CKAN   : {3}</value></data>
+  <data name="MainInstallUnownedFileExists" xml:space="preserve"><value>Oh non!
+
+On dirait que vous essayez d'installer un mod qui est déjà installé,
+ou qui est en conflit avec un autre mod déjà installé.
+
+Par précaution, CKAN ne va *jamais* remplacer ou modifier un fichier
+qu'il n'a pas installé lui-même.
+
+Si vous souhaitez installer {0} via CKAN,
+alors veuillez désinstaller manuellement le mod qui possède:
+
+{1}
+
+et essayez de nouveau.</value></data>
+  <data name="MainInstallGameDataReverted" xml:space="preserve"><value>Votre dossier GameData a été remis dans son état initial.</value></data>
+  <data name="MainInstallOpenSettingsPrompt" xml:space="preserve"><value>{0}
+
+Ouvrir les paramètres maintenant?</value></data>
+  <data name="MainInstallOpenSettings" xml:space="preserve"><value>Ouvrir les paramètres</value></data>
+  <data name="MainInstallNo" xml:space="preserve"><value>Non</value></data>
+  <data name="MainInstallModSuccess" xml:space="preserve"><value>Le module "{0}" a été installé avec succès</value></data>
+  <data name="MainInstallSuccess" xml:space="preserve"><value>Succès!</value></data>
+  <data name="MainInstallCancelTooLate" xml:space="preserve"><value>Annulation trop tardive, le processus est terminé!</value></data>
+  <data name="MainInstallCancelAfterInstall" xml:space="preserve"><value>L'utilisateur a annulé le processus manuellement, mais tous les mods ont déjà été (Dés)installés/mis à niveau.</value></data>
+  <data name="MainInstallProcessComplete" xml:space="preserve"><value>Processus terminé!</value></data>
+  <data name="MainInstallProcessCanceled" xml:space="preserve"><value>Processus annulé par l'utilisateur!</value></data>
+  <data name="MainInstallCanceledManually" xml:space="preserve"><value>L'utilisateur a annulé le processus manuellement!</value></data>
+  <data name="MainInstallInstallCanceled" xml:space="preserve"><value>(Dés)Installation/Mise à niveau annulée!</value></data>
+  <data name="MainInstallErrorInstalling" xml:space="preserve"><value>Erreur lors de l'installation!</value></data>
+  <data name="MainInstallUnknownError" xml:space="preserve"><value>Une erreur inconnue s'est produite, veuillez réessayer!</value></data>
+  <data name="MainInstallKnownError" xml:space="preserve"><value>Si le message ci-dessus indique une erreur de téléchargement, veuillez réessayer. Sinon, veuillez signaler le problème pour que nous puissions investiguer.
+Si vous suspectez un problème de métadonnés: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+Si vous suspectez un problème client: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
+  <data name="MainInstallFailed" xml:space="preserve"><value>Echec de l'installation!</value></data>
+  <data name="MainInstallProvidedBy" xml:space="preserve"><value>Le module {0} est fourni par plus qu'un seul module, veuillez choisir l'un des mods suivants:</value></data>
+  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN ne peut pas installer l'extension "{0}" pour vous.</value></data>
+  <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
+  <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (virtuel)</value></data>
+  <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (non indexé)</value></data>
+  <data name="ModInfoNotCached" xml:space="preserve"><value>Ce mod n'est pas dans le cache, cliquez "télécharger" pour voir son contenu</value></data>
+  <data name="ModInfoCached" xml:space="preserve"><value>Le module est dans le cache, aperçu disponible</value></data>
+  <data name="ModInfoHomepageLabel" xml:space="preserve"><value>Page principale:</value></data>
+  <data name="ModInfoSpaceDockLabel" xml:space="preserve"><value>SpaceDock:</value></data>
+  <data name="ModInfoCurseLabel" xml:space="preserve"><value>Curse:</value></data>
+  <data name="ModInfoRepositoryLabel" xml:space="preserve"><value>Répertoire:</value></data>
+  <data name="ModInfoBugTrackerLabel" xml:space="preserve"><value>Traqueur de bogues:</value></data>
+  <data name="ModInfoContinuousIntegrationLabel" xml:space="preserve"><value>Intégration continue:</value></data>
+  <data name="ModInfoLicenseLabel" xml:space="preserve"><value>Licence:</value></data>
+  <data name="ModInfoManualLabel" xml:space="preserve"><value>Manuel:</value></data>
+  <data name="ModInfoMetanetkanLabel" xml:space="preserve"><value>Métanetkan:</value></data>
+  <data name="ModInfoRemoteAvcLabel" xml:space="preserve"><value>Fichier version distant:</value></data>
+  <data name="ModInfoStoreLabel" xml:space="preserve"><value>Magasin:</value></data>
+  <data name="ModInfoSteamStoreLabel" xml:space="preserve"><value>Magasin Steam:</value></data>
+  <data name="MainModListWaitTitle" xml:space="preserve"><value>Chargement des modules</value></data>
+  <data name="MainModListLoadingRegistry" xml:space="preserve"><value>Chargement du registre...</value></data>
+  <data name="MainModListLoadingInstalled" xml:space="preserve"><value>Chargement des modules installés...</value></data>
+  <data name="MainModListLoadingAvailable" xml:space="preserve"><value>Chargement des modules disponibles...</value></data>
+  <data name="MainModListLoadingIncompatible" xml:space="preserve"><value>Chargement des modules incompatibles...</value></data>
+  <data name="MainModListRestoringChangeset" xml:space="preserve"><value>Restauration du résumé des changements...</value></data>
+  <data name="MainModListPreservingNew" xml:space="preserve"><value>Préservation des nouveaux drapeaux...</value></data>
+  <data name="MainModListPopulatingList" xml:space="preserve"><value>Remplissage de la liste de mod...</value></data>
+  <data name="MainModListUpdatingFilters" xml:space="preserve"><value>Mise à jour des filtres...</value></data>
+  <data name="MainModListCompatible" xml:space="preserve"><value>Compatible ({0})</value></data>
+  <data name="MainModListInstalled" xml:space="preserve"><value>Installé ({0})</value></data>
+  <data name="MainModListUpgradeable" xml:space="preserve"><value>À mettre à jour ({0})</value></data>
+  <data name="MainModListReplaceable" xml:space="preserve"><value>Remplacable ({0})</value></data>
+  <data name="MainModListCached" xml:space="preserve"><value>En cache ({0})</value></data>
+  <data name="MainModListUncached" xml:space="preserve"><value>Pas en cache ({0})</value></data>
+  <data name="MainModListNewlyCompatible" xml:space="preserve"><value>Nouvellement compatible ({0})</value></data>
+  <data name="MainModListNotInstalled" xml:space="preserve"><value>Non installé ({0})</value></data>
+  <data name="MainModListIncompatible" xml:space="preserve"><value>Incompatible ({0})</value></data>
+  <data name="MainModListAll" xml:space="preserve"><value>Tout ({0})</value></data>
+  <data name="MainModListUpdatingTray" xml:space="preserve"><value>Mise à jour de la miniature...</value></data>
+  <data name="MainModListAutoDetected" xml:space="preserve"><value>AD</value></data>
+  <data name="MainModListUnknownFilter" xml:space="preserve"><value>Type de filtre inconnu {0} dans IsModInFilter</value></data>
+  <data name="MainRecommendationsTitle" xml:space="preserve"><value>Choisissez les mods recommandés, suggérés, ou supportés</value></data>
+  <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>Aucun mod recommandé, suggéré, ou supporté trouvé.</value></data>
+  <data name="MainRepoWaitTitle" xml:space="preserve"><value>Mise à jour des répertoires</value></data>
+  <data name="MainRepoScanning" xml:space="preserve"><value>Détection des DLC et des modules installés manuellement...</value></data>
+  <data name="MainRepoContacting" xml:space="preserve"><value>Contact du répertoire...</value></data>
+  <data name="MainRepoUpdating" xml:space="preserve"><value>Mise à jour des répertoires...</value></data>
+  <data name="MainRepoFailedToConnect" xml:space="preserve"><value>Echec de la connection au répertoire. Exception: {0}</value></data>
+  <data name="MainRepoUpToDate" xml:space="preserve"><value>Répertoire déjà à jour.</value></data>
+  <data name="MainRepoFailed" xml:space="preserve"><value>Echec de la mise à jour du répertoire!</value></data>
+  <data name="MainRepoSuccess" xml:space="preserve"><value>Répertoires mis à jour avec succès.</value></data>
+  <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>Voulez-vous que CKAN rafraîchisse la liste de mod au lancement? (Vous pouvez toujours rafraîchir manuellement en utilisant le bouton en haut)</value></data>
+  <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>{0} mise(s) à jour disponible(s)</value></data>
+  <data name="MainRepoBalloonTipTooltip" xml:space="preserve"><value>Cliquer pour mettre à niveau</value></data>
+  <data name="MainTrayIconResume" xml:space="preserve"><value>Reprendre</value></data>
+  <data name="MainTrayIconPause" xml:space="preserve"><value>Pause</value></data>
+  <data name="MainTrayNoUpdates" xml:space="preserve"><value>Aucune mise à jour disponible</value></data>
+  <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>{0} mise(s) à jour disponible(s)</value></data>
+  <data name="MainWaitPleaseWait" xml:space="preserve"><value>Veuillez patientez</value></data>
+  <data name="MainWaitDone" xml:space="preserve"><value>Terminé!</value></data>
+  <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>Le répertoire {0} n'est pas un répertoire de jeu valide.</value></data>
+  <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Le répertoire "{0}" n'existe pas.</value></data>
+  <data name="NewRepoDialogFailed" xml:space="preserve"><value>Echec de la récupation de la liste maître.</value></data>
+  <data name="PluginsDialogFilter" xml:space="preserve"><value>Plugins CKAN (*.dll)|*.dll</value></data>
+  <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} fichiers, {1}</value></data>
+  <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Chemin invalide: {0}</value></data>
+  <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>Choisissez un dossier pour stocker les téléchargemnts de mods de CKAN:</value></data>
+  <data name="SettingsDialogDeleteConfirm" xml:space="preserve"><value>Voulez-vous vraiment supprimer {0} fichiers en cache, libérant {1}?</value></data>
+  <data name="AddAuthTokenTitle" xml:space="preserve"><value>Ajouter un jeton d'authentification</value></data>
+  <data name="AddAuthTokenHost" xml:space="preserve"><value>Hôte:</value></data>
+  <data name="AddAuthTokenToken" xml:space="preserve"><value>Jeton:</value></data>
+  <data name="AddAuthTokenAccept" xml:space="preserve"><value>&amp;Ajouter</value></data>
+  <data name="AddAuthTokenCancel" xml:space="preserve"><value>An&amp;nuler</value></data>
+  <data name="AddAuthTokenHostRequired" xml:space="preserve"><value>Le champ de l'hôte est requis.</value></data>
+  <data name="AddAuthTokenTokenRequired" xml:space="preserve"><value>Le champ du jeton est requis.</value></data>
+  <data name="AddAuthTokenInvalidHost" xml:space="preserve"><value>{0} n'est pas un nom d'hôte valide.</value></data>
+  <data name="AddAuthTokenDupHost" xml:space="preserve"><value>{0} a déjà un jeton d'authentification.</value></data>
+  <data name="SettingsDialogUpdateFailed" xml:space="preserve"><value>Erreur durant la mise à jour.
+Impossible de mettre à jour, car ckan.exe est en lecture-seule ou nous ne sommes pas autorisé à le remplacer. Veuillez mettre à jour manuellement via https://github.com/KSP-CKAN/CKAN/releases/latest.</value></data>
+  <data name="URLHandlersPrompt" xml:space="preserve"><value>CKAN requiert la permission d'ajouter un handler pour les URL ckan://
+Voulez-vous autoriser à faire cela? Si vous cliquer non, vous ne verrez plus ce message.</value></data>
+  <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Copier l'adresse du lien</value></data>
+  <data name="StatusInstanceLabelText" xml:space="preserve"><value>Instance de jeu: {0} ({1} {2})</value></data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favoris</value></data>
+  <data name="ModuleLabelListHidden" xml:space="preserve"><value>Caché</value></data>
+  <data name="ModuleLabelListGlobal" xml:space="preserve"><value>Global</value></data>
+  <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>Etes-vous sûr de vouloir supprimer {0}? Il sera ensuite impossible de retourner en arrière!</value></data>
+  <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>Sauvegarder les changements?</value></data>
+  <data name="EditLabelsDialogNoRecord" xml:space="preserve"><value>Aucun registre en édition!</value></data>
+  <data name="EditLabelsDialogNameRequired" xml:space="preserve"><value>Nom requis!</value></data>
+  <data name="EditLabelsDialogAlreadyExists" xml:space="preserve"><value>{0} existe déjà dans {1}!</value></data>
+  <data name="EditLabelsDialogDelete" xml:space="preserve"><value>Supprimer</value></data>
+  <data name="EditLabelsDialogCancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="EditLabelsDialogSave" xml:space="preserve"><value>Sauvegarder</value></data>
+  <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>Abandonner</value></data>
+  <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>ATTENTION: INSTALLATION D'UN MODULE AVEC LABEL {0} ({1})</value></data>
+  <data name="EditLabelsToolTipName" xml:space="preserve"><value>Ce label apparaîtra dans le menu Labels avec ce nom, il doit être unique dans cette installation</value></data>
+  <data name="EditLabelsToolTipColor" xml:space="preserve"><value>Les colonnes des modules portant ce label seront affichés avec cette couleur de fond</value></data>
+  <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>Les instances pour lesquelles ce label sera disponible, laissez vide pour toutes</value></data>
+  <data name="EditLabelsToolTipHide" xml:space="preserve"><value>Si coché, les modules avec ce label seront cachés des filtres standards</value></data>
+  <data name="EditLabelsToolTipNotifyOnChanges" xml:space="preserve"><value>Si coché, une notification sera affichée si ce mod passe de incompatible à compatible</value></data>
+  <data name="EditLabelsToolTipRemoveOnChanges" xml:space="preserve"><value>Si coché, un module passant de incompatible à compatible sera retiré de ce label</value></data>
+  <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve"><value>Si coché, le résumé des changements vous avertira si un mod s'apprête à être installé</value></data>
+  <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve"><value>Si coché, les modules seront retirés de ce label si ils sont installés</value></data>
+  <data name="MainLabelsUpdateMessage" xml:space="preserve"><value>Certains de vos modes surveillés ont été mis à jour:
+
+{0}</value></data>
+  <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>Notifications de mis à jour</value></data>
+  <data name="MainLabelsUntagged" xml:space="preserve"><value>Sans étiquette ({0})</value></data>
+  <data name="EditModpackBadIdentifier" xml:space="preserve"><value>L'identifiant doit contenir UNIQUEMENT des letters, des nombres et des tirets, et doit commencer par une lettre ou un nombre</value></data>
+  <data name="EditModpackBadName" xml:space="preserve"><value>Nom requis</value></data>
+  <data name="EditModpackBadVersion" xml:space="preserve"><value>Version requise</value></data>
+  <data name="EditModpackBadGameVersions" xml:space="preserve"><value>Version de jeu minimum doit être inférieure ou égale à la version de jeu maximale</value></data>
+  <data name="EditModpackTooltipIdentifier" xml:space="preserve"><value>Nom interne de ce modpack; lettres, nombres et tirets uniquement</value></data>
+  <data name="EditModpackTooltipName" xml:space="preserve"><value>Nom visible publiquement de ce modpack</value></data>
+  <data name="EditModpackTooltipAbstract" xml:space="preserve"><value>Courte description de ce modpack</value></data>
+  <data name="EditModpackTooltipVersion" xml:space="preserve"><value>Le numéro de version de ce modpack</value></data>
+  <data name="EditModpackTooltipGameVersionMin" xml:space="preserve"><value>Plus ancienne version de jeu compatible, vide pour toutes</value></data>
+  <data name="EditModpackTooltipGameVersionMax" xml:space="preserve"><value>Dernière version de jeu compatible, vide pour toutes</value></data>
+  <data name="EditModpackTooltipLicense" xml:space="preserve"><value>La licence de ce modpack</value></data>
+  <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>Si coché, le modpack incluera les versions exactes des mods affichés, sinon n'importe quelle version fera l'affaire</value></data>
+  <data name="EditModpackTooltipDepends" xml:space="preserve"><value>Déplacer les mods sélectionnés dans le groupe dépendance. Ces mods seront certainement installés.</value></data>
+  <data name="EditModpackTooltipRecommends" xml:space="preserve"><value>Déplacer les mods sélectionnés dans le groupe recommandation. Un utilisateur peut refuser ces mods lors de l'installation.</value></data>
+  <data name="EditModpackTooltipSuggests" xml:space="preserve"><value>Déplacer les mods sélectionnés dans le groupe suggestion. Ces mods seront disponibles à l'installation, mais devront être sélectionnés explicitement.</value></data>
+  <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>Déplacer les mods sélectionnés dans le groupe ignoré. Ces mods ne seront pas inclus dans le modpack. </value></data>
+  <data name="EditModpackTooltipCancel" xml:space="preserve"><value>Annuler la création du modpack</value></data>
+  <data name="EditModpackTooltipExport" xml:space="preserve"><value>Choisir un nom de fichier et sauvegarder le modpack</value></data>
+  <data name="ModSearchDescriptionPrefix" xml:space="preserve"><value>desc:</value></data>
+  <data name="ModSearchLanguagePrefix" xml:space="preserve"><value>lang:</value></data>
+  <data name="ModSearchDependsPrefix" xml:space="preserve"><value>dep:</value></data>
+  <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>rec:</value></data>
+  <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>sug:</value></data>
+  <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>conf:</value></data>
+  <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Etendre ou réduire la taille du champ de recherche détaillé (Ctrl-Shift-F)</value></data>
+</root>
