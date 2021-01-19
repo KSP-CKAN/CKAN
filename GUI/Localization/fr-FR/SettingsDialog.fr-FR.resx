@@ -132,7 +132,7 @@
   <data name="UpRepoButton.Text" xml:space="preserve"><value>Haut</value></data>
   <data name="DownRepoButton.Text" xml:space="preserve"><value>Bas</value></data>
   <data name="DeleteRepoButton.Text" xml:space="preserve"><value>Supprimer</value></data>
-  <data name="AuthTokensGroupBox.Text" xml:space="preserve"><value>Jeton d'authentification</value></data>
+  <data name="AuthTokensGroupBox.Text" xml:space="preserve"><value>Jetons d'authentification</value></data>
   <data name="NewAuthTokenButton.Text" xml:space="preserve"><value>Nouveau</value></data>
   <data name="DeleteAuthTokenButton.Text" xml:space="preserve"><value>Supprimer</value></data>
   <data name="CacheGroupBox.Text" xml:space="preserve"><value>Cache des téléchargements</value></data>

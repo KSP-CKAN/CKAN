@@ -178,7 +178,7 @@ Essayez de déplacer {2} en dehors de {3} et redémarrez CKAN.</value></data>
   <data name="MainFilterAll" xml:space="preserve"><value>Filtre (Tout)</value></data>
   <data name="MainFilterIncompatible" xml:space="preserve"><value>Filtre (Incompatible)</value></data>
   <data name="MainFilterInstalled" xml:space="preserve"><value>Filtre (Installé)</value></data>
-  <data name="MainFilterUpgradeable" xml:space="preserve"><value>Filtre (Mises à jour)</value></data>
+  <data name="MainFilterUpgradeable" xml:space="preserve"><value>Filtre (À mettre à jour)</value></data>
   <data name="MainFilterReplaceable" xml:space="preserve"><value>Filtre (Remplacable)</value></data>
   <data name="MainFilterCached" xml:space="preserve"><value>Filtre (En cache)</value></data>
   <data name="MainFilterUncached" xml:space="preserve"><value>Filtre (Pas en cache)</value></data>
@@ -299,7 +299,7 @@ Si vous suspectez un problème client: https://github.com/KSP-CKAN/CKAN/issues/n
   <data name="MainModListUpdatingFilters" xml:space="preserve"><value>Mise à jour des filtres...</value></data>
   <data name="MainModListCompatible" xml:space="preserve"><value>Compatible ({0})</value></data>
   <data name="MainModListInstalled" xml:space="preserve"><value>Installé ({0})</value></data>
-  <data name="MainModListUpgradeable" xml:space="preserve"><value>Mis à jour ({0})</value></data>
+  <data name="MainModListUpgradeable" xml:space="preserve"><value>À mettre à jour ({0})</value></data>
   <data name="MainModListReplaceable" xml:space="preserve"><value>Remplacable ({0})</value></data>
   <data name="MainModListCached" xml:space="preserve"><value>En cache ({0})</value></data>
   <data name="MainModListUncached" xml:space="preserve"><value>Pas en cache ({0})</value></data>
