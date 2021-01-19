@@ -138,12 +138,12 @@
   <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>Fichier</value></data>
   <data name="manageGameInstancesMenuItem.Text" xml:space="preserve"><value>Gérer les instances de jeu</value></data>
   <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>Ouvrir le répertoire du jeu</value></data>
-  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>Installer depuis .ckan...</value></data>
+  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Installer depuis .ckan...</value></data>
   <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Sauvegarder la liste des mods installés...</value></data>
   <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>Exporter modpack...</value></data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Importer des mods téléchargés...</value></data>
+  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>Importer des &amp;mods téléchargés...</value></data>
   <data name="auditRecommendationsMenuItem.Text" xml:space="preserve"><value>Auditionner les recommendations</value></data>
-  <data name="ExitToolButton.Text" xml:space="preserve"><value>Q&amp;uitter</value></data>
+  <data name="ExitToolButton.Text" xml:space="preserve"><value>&amp;Quitter</value></data>
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>Options</value></data>
   <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>Options CKAN</value></data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>Plugins CKAN</value></data>
