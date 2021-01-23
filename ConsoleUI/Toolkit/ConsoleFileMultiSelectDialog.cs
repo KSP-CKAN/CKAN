@@ -35,8 +35,8 @@ namespace CKAN.ConsoleUI.Toolkit {
             AddObject(new ConsoleLabel(
                 left + 2, top + 2, left + 2 + labelW - 1,
                 () => $"Directory:",
-                () => ConsoleTheme.Current.PopupBg,
-                () => ConsoleTheme.Current.PopupFg
+                th => th.PopupBg,
+                th => th.PopupFg
             ));
 
             pathField = new ConsoleField(
@@ -49,8 +49,8 @@ namespace CKAN.ConsoleUI.Toolkit {
             AddObject(new ConsoleLabel(
                 left + 2, bottom - 1, right - 2,
                 () => $"{chosenFiles.Count} selected, {CkanModule.FmtSize(totalChosenSize())}",
-                () => ConsoleTheme.Current.PopupBg,
-                () => ConsoleTheme.Current.PopupFg
+                th => th.PopupBg,
+                th => th.PopupFg
             ));
 
             // ListBox showing zip files in current dir
@@ -90,25 +90,25 @@ namespace CKAN.ConsoleUI.Toolkit {
             AddObject(fileList);
 
             AddTip("Esc", "Cancel");
-            AddBinding(Keys.Escape, (object sender) => {
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 chosenFiles.Clear();
                 return false;
             });
 
             AddTip("F10", "Sort");
-            AddBinding(Keys.F10, (object sender) => {
-                fileList.SortMenu().Run(right - 2, top + 2);
-                DrawBackground();
+            AddBinding(Keys.F10, (object sender, ConsoleTheme theme) => {
+                fileList.SortMenu().Run(theme, right - 2, top + 2);
+                DrawBackground(theme);
                 return true;
             });
 
             AddTip("Enter", "Change directory", () => fileList.Selection != null &&  isDir(fileList.Selection));
             AddTip("Enter", "Select",           () => fileList.Selection != null && !isDir(fileList.Selection));
-            AddBinding(Keys.Enter, (object sender) => selectRow());
-            AddBinding(Keys.Space, (object sender) => selectRow());
+            AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => selectRow());
+            AddBinding(Keys.Space, (object sender, ConsoleTheme theme) => selectRow());
 
             AddTip("Ctrl+A", "Select all");
-            AddBinding(Keys.CtrlA, (object sender) => {
+            AddBinding(Keys.CtrlA, (object sender, ConsoleTheme theme) => {
                 foreach (FileSystemInfo fi in contents) {
                     if (!isDir(fi)) {
                         FileInfo file = fi as FileInfo;
@@ -121,7 +121,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             });
 
             AddTip("Ctrl+D", "Deselect all", () => chosenFiles.Count > 0);
-            AddBinding(Keys.CtrlD, (object sender) => {
+            AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) => {
                 if (chosenFiles.Count > 0) {
                     chosenFiles.Clear();
                 }
@@ -129,7 +129,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             });
 
             AddTip("F9", "Import", () => chosenFiles.Count > 0);
-            AddBinding(Keys.F9, (object sender) => {
+            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
                 return false;
             });
         }
@@ -170,13 +170,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Display the dialog and handle its interaction
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="process">Function to control the dialog, default is normal user interaction</param>
         /// <returns>
         /// Files user selected
         /// </returns>
-        public new HashSet<FileInfo> Run(Action process = null)
+        public new HashSet<FileInfo> Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
         {
-            base.Run(process);
+            base.Run(theme, process);
             return chosenFiles;
         }
 

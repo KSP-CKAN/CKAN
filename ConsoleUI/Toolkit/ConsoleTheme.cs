@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace CKAN.ConsoleUI.Toolkit {
 
@@ -10,209 +11,364 @@ namespace CKAN.ConsoleUI.Toolkit {
     public class ConsoleTheme {
 
         /// <summary>
+        /// Background color for splash screen, null for transparent
+        /// </summary>
+        public ConsoleColor? SplashBg;
+
+        /// <summary>
+        /// Foreground color for splash screen
+        /// </summary>
+        public ConsoleColor SplashNormalFg;
+
+        /// <summary>
+        /// Foreground color for logo on splash screen
+        /// </summary>
+        public ConsoleColor SplashAccentFg;
+
+        /// <summary>
+        /// Background color for exit screen
+        /// </summary>
+        public ConsoleColor? ExitOuterBg;
+        
+        /// <summary>
+        /// Background color for info pane of exit screen
+        /// </summary>
+        public ConsoleColor ExitInnerBg;
+        
+        /// <summary>
+        /// Foreground color for normal text on exit screen
+        /// </summary>
+        public ConsoleColor ExitNormalFg;
+        
+        /// <summary>
+        /// Foreground color for highlighted text on exit screen
+        /// </summary>
+        public ConsoleColor ExitHighlightFg;
+        
+        /// <summary>
+        /// Foreground color for links on exit screen
+        /// </summary>
+        public ConsoleColor ExitLinkFg;
+
+        /// <summary>
         /// Background color for normal screen
         /// </summary>
-        public readonly ConsoleColor MainBg   = ConsoleColor.DarkBlue;
+        public ConsoleColor MainBg;
 
         /// <summary>
         /// Background for top header row
         /// </summary>
-        public readonly ConsoleColor HeaderBg = ConsoleColor.Gray;
+        public ConsoleColor HeaderBg;
         /// <summary>
         /// Foreground for top header row
         /// </summary>
-        public readonly ConsoleColor HeaderFg = ConsoleColor.Black;
+        public ConsoleColor HeaderFg;
 
         /// <summary>
         /// Background for bottom footer row
         /// </summary>
-        public readonly ConsoleColor FooterBg            = ConsoleColor.Gray;
+        public ConsoleColor FooterBg;
         /// <summary>
         /// Foreground for vertical separator bars between footer sections
         /// </summary>
-        public readonly ConsoleColor FooterSeparatorFg   = ConsoleColor.DarkGray;
+        public ConsoleColor FooterSeparatorFg;
         /// <summary>
         /// Foreground for names of keys in footer
         /// </summary>
-        public readonly ConsoleColor FooterKeyFg         = ConsoleColor.DarkRed;
+        public ConsoleColor FooterKeyFg;
         /// <summary>
         /// Foreground for descriptions of key functions in footer
         /// </summary>
-        public readonly ConsoleColor FooterDescriptionFg = ConsoleColor.Black;
+        public ConsoleColor FooterDescriptionFg;
 
         /// <summary>
         /// Default background for labels
         /// </summary>
-        public readonly ConsoleColor LabelBg    = ConsoleColor.DarkBlue;
+        public ConsoleColor LabelBg;
         /// <summary>
         /// Default foreground for labels
         /// </summary>
-        public readonly ConsoleColor LabelFg    = ConsoleColor.Gray;
+        public ConsoleColor LabelFg;
         /// <summary>
         /// Foreground for de-emphasized labels
         /// </summary>
-        public readonly ConsoleColor DimLabelFg = ConsoleColor.DarkCyan;
+        public ConsoleColor DimLabelFg;
 
         /// <summary>
         /// Background for text editing field
         /// </summary>
-        public readonly ConsoleColor FieldBg        = ConsoleColor.Black;
+        public ConsoleColor FieldBg;
         /// <summary>
         /// Foreground for ghost text displayed in empty text editing field
         /// </summary>
-        public readonly ConsoleColor FieldGhostFg   = ConsoleColor.DarkGray;
+        public ConsoleColor FieldGhostFg;
         /// <summary>
         /// Foreground for text in text editing field with focus
         /// </summary>
-        public readonly ConsoleColor FieldFocusedFg = ConsoleColor.Cyan;
+        public ConsoleColor FieldFocusedFg;
         /// <summary>
         /// Foreground for text in text editing field without focus
         /// </summary>
-        public readonly ConsoleColor FieldBlurredFg = ConsoleColor.DarkCyan;
+        public ConsoleColor FieldBlurredFg;
 
         /// <summary>
         /// Background for list box header row
         /// </summary>
-        public readonly ConsoleColor ListBoxHeaderBg     = ConsoleColor.Gray;
+        public ConsoleColor ListBoxHeaderBg;
         /// <summary>
         /// Foreground for list box header row
         /// </summary>
-        public readonly ConsoleColor ListBoxHeaderFg     = ConsoleColor.Black;
+        public ConsoleColor ListBoxHeaderFg;
         /// <summary>
         /// Background for list box data row when not selected
         /// </summary>
-        public readonly ConsoleColor ListBoxUnselectedBg = ConsoleColor.DarkCyan;
+        public ConsoleColor ListBoxUnselectedBg;
         /// <summary>
         /// Foreground for list box data row when not selected
         /// </summary>
-        public readonly ConsoleColor ListBoxUnselectedFg = ConsoleColor.Black;
+        public ConsoleColor ListBoxUnselectedFg;
         /// <summary>
         /// Background for list box selected row
         /// </summary>
-        public readonly ConsoleColor ListBoxSelectedBg   = ConsoleColor.DarkGreen;
+        public ConsoleColor ListBoxSelectedBg;
         /// <summary>
         /// Foreground for list box selected row
         /// </summary>
-        public readonly ConsoleColor ListBoxSelectedFg   = ConsoleColor.White;
+        public ConsoleColor ListBoxSelectedFg;
 
         /// <summary>
         /// Background for scroll bars
         /// </summary>
-        public readonly ConsoleColor ScrollBarBg = ConsoleColor.DarkBlue;
+        public ConsoleColor ScrollBarBg;
         /// <summary>
         /// Foreground for scroll bars
         /// </summary>
-        public readonly ConsoleColor ScrollBarFg = ConsoleColor.DarkCyan;
+        public ConsoleColor ScrollBarFg;
 
         /// <summary>
         /// Background for popup menus
         /// </summary>
-        public readonly ConsoleColor MenuBg         = ConsoleColor.Gray;
+        public ConsoleColor MenuBg;
         /// <summary>
         /// Foreground for popup menus
         /// </summary>
-        public readonly ConsoleColor MenuFg         = ConsoleColor.Black;
+        public ConsoleColor MenuFg;
         /// <summary>
         /// Foreground for disabled popup menu options
         /// </summary>
-        public readonly ConsoleColor MenuDisabledFg = ConsoleColor.DarkGray;
+        public ConsoleColor MenuDisabledFg;
         /// <summary>
         /// Background for selected menu option
         /// </summary>
-        public readonly ConsoleColor MenuSelectedBg = ConsoleColor.DarkGreen;
+        public ConsoleColor MenuSelectedBg;
 
         /// <summary>
         /// Foreground for text indicating registry was updated recently
         /// </summary>
-        public readonly ConsoleColor RegistryUpToDate  = ConsoleColor.DarkGray;
+        public ConsoleColor RegistryUpToDate;
         /// <summary>
         /// Foreground for text indicating registry was updated a while ago
         /// </summary>
-        public readonly ConsoleColor RegistryStale     = ConsoleColor.Yellow;
+        public ConsoleColor RegistryStale;
         /// <summary>
         /// Foreground for text indicating registry was updated dangerously long ago
         /// </summary>
-        public readonly ConsoleColor RegistryVeryStale = ConsoleColor.Red;
+        public ConsoleColor RegistryVeryStale;
 
         /// <summary>
         /// Background for popup dialogs
         /// </summary>
-        public readonly ConsoleColor PopupBg               = ConsoleColor.Gray;
+        public ConsoleColor PopupBg;
         /// <summary>
         /// Foreground for popup dialog text
         /// </summary>
-        public readonly ConsoleColor PopupFg               = ConsoleColor.Black;
+        public ConsoleColor PopupFg;
         /// <summary>
         /// Foreground for popup dialog outlines
         /// </summary>
-        public readonly ConsoleColor PopupOutlineFg        = ConsoleColor.White;
+        public ConsoleColor PopupOutlineFg;
         /// <summary>
         /// Color for shadow drawn to bottom and right of popup dialogs
         /// </summary>
-        public readonly ConsoleColor PopupShadow           = ConsoleColor.Black;
+        public ConsoleColor? PopupShadow;
         /// <summary>
         /// Background for buttons
         /// </summary>
-        public readonly ConsoleColor PopupButtonBg         = ConsoleColor.DarkGreen;
+        public ConsoleColor PopupButtonBg;
         /// <summary>
         /// Foreground for buttons without focus
         /// </summary>
-        public readonly ConsoleColor PopupButtonFg         = ConsoleColor.Black;
+        public ConsoleColor PopupButtonFg;
         /// <summary>
         /// Foreground for buttons with focus
         /// </summary>
-        public readonly ConsoleColor PopupButtonSelectedFg = ConsoleColor.Cyan;
+        public ConsoleColor PopupButtonSelectedFg;
         /// <summary>
         /// Color for shadow drawn to bottom and right of buttons
         /// </summary>
-        public readonly ConsoleColor PopupButtonShadow     = ConsoleColor.Black;
+        public ConsoleColor? PopupButtonShadow;
 
         /// <summary>
         /// Default background for multi line text box
         /// </summary>
-        public readonly ConsoleColor TextBoxBg = ConsoleColor.DarkCyan;
+        public ConsoleColor TextBoxBg;
         /// <summary>
         /// Default foreground for multi line text box
         /// </summary>
-        public readonly ConsoleColor TextBoxFg = ConsoleColor.Yellow;
+        public ConsoleColor TextBoxFg;
 
         /// <summary>
         /// Background for non-completed part of progress bars
         /// </summary>
-        public readonly ConsoleColor ProgressBarBg          = ConsoleColor.DarkCyan;
+        public ConsoleColor ProgressBarBg;
         /// <summary>
         /// Foreground for non-completed part of progress bars
         /// </summary>
-        public readonly ConsoleColor ProgressBarFg          = ConsoleColor.Black;
+        public ConsoleColor ProgressBarFg;
         /// <summary>
         /// Background for completed part of progress bars
         /// </summary>
-        public readonly ConsoleColor ProgressBarHighlightBg = ConsoleColor.DarkGreen;
+        public ConsoleColor ProgressBarHighlightBg;
         /// <summary>
         /// Foreground for completed part of progress bars
         /// </summary>
-        public readonly ConsoleColor ProgressBarHighlightFg = ConsoleColor.Yellow;
+        public ConsoleColor ProgressBarHighlightFg;
 
         /// <summary>
         /// Foreground for normal box frames
         /// </summary>
-        public readonly ConsoleColor NormalFrameFg = ConsoleColor.Gray;
+        public ConsoleColor NormalFrameFg;
         /// <summary>
         /// Foreground for active/highlighted box frames
         /// </summary>
-        public readonly ConsoleColor ActiveFrameFg = ConsoleColor.White;
+        public ConsoleColor ActiveFrameFg;
         /// <summary>
         /// Foreground for important/abnormal box frames
         /// </summary>
-        public readonly ConsoleColor AlertFrameFg  = ConsoleColor.Yellow;
-
+        public ConsoleColor AlertFrameFg;
+        
         /// <summary>
-        /// Singleton instance for current theme.
-        /// Default values are as per above.
+        /// Available themes
         /// </summary>
-        public static   ConsoleTheme Current = new ConsoleTheme();
-
-        private ConsoleTheme() { }
+        public static readonly Dictionary<string, ConsoleTheme> Themes = new Dictionary<string, ConsoleTheme>() {
+            {
+                "default",
+                new ConsoleTheme() {
+                    SplashBg               = null,
+                    SplashNormalFg         = ConsoleColor.Gray,
+                    SplashAccentFg         = ConsoleColor.Blue,
+                    ExitOuterBg            = ConsoleColor.Black,
+                    ExitInnerBg            = ConsoleColor.DarkRed,
+                    ExitNormalFg           = ConsoleColor.Yellow,
+                    ExitHighlightFg        = ConsoleColor.White,
+                    ExitLinkFg             = ConsoleColor.Cyan,
+                    MainBg                 = ConsoleColor.DarkBlue,
+                    HeaderBg               = ConsoleColor.Gray,
+                    HeaderFg               = ConsoleColor.Black,
+                    FooterBg               = ConsoleColor.Gray,
+                    FooterSeparatorFg      = ConsoleColor.DarkGray,
+                    FooterKeyFg            = ConsoleColor.DarkRed,
+                    FooterDescriptionFg    = ConsoleColor.Black,
+                    LabelBg                = ConsoleColor.DarkBlue,
+                    LabelFg                = ConsoleColor.Gray,
+                    DimLabelFg             = ConsoleColor.DarkCyan,
+                    FieldBg                = ConsoleColor.Black,
+                    FieldGhostFg           = ConsoleColor.DarkGray,
+                    FieldFocusedFg         = ConsoleColor.Cyan,
+                    FieldBlurredFg         = ConsoleColor.DarkCyan,
+                    ListBoxHeaderBg        = ConsoleColor.Gray,
+                    ListBoxHeaderFg        = ConsoleColor.Black,
+                    ListBoxUnselectedBg    = ConsoleColor.DarkCyan,
+                    ListBoxUnselectedFg    = ConsoleColor.Black,
+                    ListBoxSelectedBg      = ConsoleColor.DarkGreen,
+                    ListBoxSelectedFg      = ConsoleColor.White,
+                    ScrollBarBg            = ConsoleColor.DarkBlue,
+                    ScrollBarFg            = ConsoleColor.DarkCyan,
+                    MenuBg                 = ConsoleColor.Gray,
+                    MenuFg                 = ConsoleColor.Black,
+                    MenuDisabledFg         = ConsoleColor.DarkGray,
+                    MenuSelectedBg         = ConsoleColor.DarkGreen,
+                    RegistryUpToDate       = ConsoleColor.DarkGray,
+                    RegistryStale          = ConsoleColor.Yellow,
+                    RegistryVeryStale      = ConsoleColor.Red,
+                    PopupBg                = ConsoleColor.Gray,
+                    PopupFg                = ConsoleColor.Black,
+                    PopupOutlineFg         = ConsoleColor.White,
+                    PopupShadow            = ConsoleColor.Black,
+                    PopupButtonBg          = ConsoleColor.DarkGreen,
+                    PopupButtonFg          = ConsoleColor.Black,
+                    PopupButtonSelectedFg  = ConsoleColor.Cyan,
+                    PopupButtonShadow      = ConsoleColor.Black,
+                    TextBoxBg              = ConsoleColor.DarkCyan,
+                    TextBoxFg              = ConsoleColor.Yellow,
+                    ProgressBarBg          = ConsoleColor.DarkCyan,
+                    ProgressBarFg          = ConsoleColor.Black,
+                    ProgressBarHighlightBg = ConsoleColor.DarkGreen,
+                    ProgressBarHighlightFg = ConsoleColor.Yellow,
+                    NormalFrameFg          = ConsoleColor.Gray,
+                    ActiveFrameFg          = ConsoleColor.White,
+                    AlertFrameFg           = ConsoleColor.Yellow,
+                }
+            }, {
+                "dark",
+                new ConsoleTheme() {
+                    SplashBg               = ConsoleColor.Black,
+                    SplashNormalFg         = ConsoleColor.DarkGreen,
+                    SplashAccentFg         = ConsoleColor.Green,
+                    ExitOuterBg            = null,
+                    ExitInnerBg            = ConsoleColor.Black,
+                    ExitNormalFg           = ConsoleColor.DarkGreen,
+                    ExitHighlightFg        = ConsoleColor.Green,
+                    ExitLinkFg             = ConsoleColor.Green,
+                    MainBg                 = ConsoleColor.Black,
+                    HeaderBg               = ConsoleColor.DarkGreen,
+                    HeaderFg               = ConsoleColor.Black,
+                    FooterBg               = ConsoleColor.DarkGreen,
+                    FooterSeparatorFg      = ConsoleColor.Black,
+                    FooterKeyFg            = ConsoleColor.Green,
+                    FooterDescriptionFg    = ConsoleColor.Black,
+                    LabelBg                = ConsoleColor.Black,
+                    LabelFg                = ConsoleColor.DarkGreen,
+                    DimLabelFg             = ConsoleColor.DarkGreen,
+                    FieldBg                = ConsoleColor.Black,
+                    FieldGhostFg           = ConsoleColor.DarkGreen,
+                    FieldFocusedFg         = ConsoleColor.Green,
+                    FieldBlurredFg         = ConsoleColor.DarkGreen,
+                    ListBoxHeaderBg        = ConsoleColor.DarkGreen,
+                    ListBoxHeaderFg        = ConsoleColor.Black,
+                    ListBoxUnselectedBg    = ConsoleColor.Black,
+                    ListBoxUnselectedFg    = ConsoleColor.DarkGreen,
+                    ListBoxSelectedBg      = ConsoleColor.Black,
+                    ListBoxSelectedFg      = ConsoleColor.Green,
+                    ScrollBarBg            = ConsoleColor.Black,
+                    ScrollBarFg            = ConsoleColor.DarkGreen,
+                    MenuBg                 = ConsoleColor.DarkGreen,
+                    MenuFg                 = ConsoleColor.Black,
+                    MenuDisabledFg         = ConsoleColor.Black,
+                    MenuSelectedBg         = ConsoleColor.Green,
+                    RegistryUpToDate       = ConsoleColor.DarkGreen,
+                    RegistryStale          = ConsoleColor.Green,
+                    RegistryVeryStale      = ConsoleColor.Green,
+                    PopupBg                = ConsoleColor.Black,
+                    PopupFg                = ConsoleColor.Green,
+                    PopupOutlineFg         = ConsoleColor.Green,
+                    PopupShadow            = null,
+                    PopupButtonBg          = ConsoleColor.DarkGreen,
+                    PopupButtonFg          = ConsoleColor.Black,
+                    PopupButtonSelectedFg  = ConsoleColor.Green,
+                    PopupButtonShadow      = null,
+                    TextBoxBg              = ConsoleColor.Black,
+                    TextBoxFg              = ConsoleColor.DarkGreen,
+                    ProgressBarBg          = ConsoleColor.Black,
+                    ProgressBarFg          = ConsoleColor.DarkGreen,
+                    ProgressBarHighlightBg = ConsoleColor.DarkGreen,
+                    ProgressBarHighlightFg = ConsoleColor.Black,
+                    NormalFrameFg          = ConsoleColor.DarkGreen,
+                    ActiveFrameFg          = ConsoleColor.Green,
+                    AlertFrameFg           = ConsoleColor.Green,
+                }
+            }
+        };
     }
 
 }

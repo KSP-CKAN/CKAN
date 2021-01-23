@@ -477,7 +477,11 @@ namespace CKAN.CmdLine
         public bool ShowConsole { get; set; }
     }
 
-    internal class ConsoleUIOptions : InstanceSpecificOptions { }
+    internal class ConsoleUIOptions : InstanceSpecificOptions
+    {
+        [Option("theme", HelpText = "Name of color scheme to use, falls back to environment variable CKAN_CONSOLEUI_THEME")]
+        public string Theme { get; set; }
+    }
 
     internal class UpdateOptions : InstanceSpecificOptions
     {

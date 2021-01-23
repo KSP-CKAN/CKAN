@@ -18,9 +18,9 @@ namespace CKAN.ConsoleUI {
         /// Show the screen.
         /// Luckily we don't have any interaction to do.
         /// </summary>
-        public void Run()
+        public void Run(ConsoleTheme theme)
         {
-            Draw();
+            Draw(theme);
 
             // Try to return the terminal to normal
             Console.SetCursorPosition(0, Console.WindowHeight - 2);
@@ -32,18 +32,76 @@ namespace CKAN.ConsoleUI {
         /// Draw a cool retro exit screen like Id used to do.
         /// This is a composite of the exit screens of ULTIMATE DOOM and DOOM II.
         /// </summary>
-        private void Draw()
+        private void Draw(ConsoleTheme theme)
         {
             Console.CursorVisible   = false;
-            Console.BackgroundColor = outerBg;
+            if (theme.ExitOuterBg.HasValue)
+            {
+                Console.BackgroundColor = theme.ExitOuterBg.Value;
+            }
+            else
+            {
+                Console.ResetColor();                
+            }
             Console.Clear();
 
+            FancyLinePiece ckanPiece = new FancyLinePiece("CKAN", theme.ExitInnerBg, theme.ExitHighlightFg);
+    
+            FancyLinePiece[][] lines = new FancyLinePiece[][] {
+                new FancyLinePiece[] {
+                    ckanPiece,
+                    new FancyLinePiece(", the Comprehensive Kerbal Archive Network", theme.ExitInnerBg, theme.ExitNormalFg)
+                }, new FancyLinePiece[] {
+                    new FancyLinePiece(
+                        new string(Symbols.horizLine, Console.WindowWidth - 2 -2 * horizMargin),
+                        theme.ExitInnerBg, theme.ExitNormalFg)
+                }, new FancyLinePiece[] {
+                    new FancyLinePiece("YOU ARE USING ", theme.ExitInnerBg, theme.ExitNormalFg),
+                    new FancyLinePiece($"CKAN {Meta.GetVersion()}", theme.ExitInnerBg, theme.ExitHighlightFg),
+                    new FancyLinePiece(".", theme.ExitInnerBg, theme.ExitNormalFg)
+                }, new FancyLinePiece[] {
+                }, new FancyLinePiece[] {
+                    new FancyLinePiece("Thanks for downloading ", theme.ExitInnerBg, theme.ExitNormalFg),
+                    ckanPiece,
+                    new FancyLinePiece(". We hope you have as", theme.ExitInnerBg, theme.ExitNormalFg)
+                }, new FancyLinePiece[] {
+                    new FancyLinePiece("much fun using it as we had (and have) making it.", theme.ExitInnerBg, theme.ExitNormalFg)
+                }, new FancyLinePiece[] {
+                }, new FancyLinePiece[] {
+                    new FancyLinePiece("If you have paid for ", theme.ExitInnerBg, theme.ExitNormalFg),
+                    ckanPiece,
+                    new FancyLinePiece(", try to get your money back,", theme.ExitInnerBg, theme.ExitNormalFg)
+                }, new FancyLinePiece[] {
+                    new FancyLinePiece("because you can download ", theme.ExitInnerBg, theme.ExitNormalFg),
+                    ckanPiece,
+                    new FancyLinePiece(" for free from", theme.ExitInnerBg, theme.ExitNormalFg)
+                }, new FancyLinePiece[] {
+                    new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/releases/latest", theme.ExitInnerBg, theme.ExitLinkFg)
+                }, new FancyLinePiece[] {
+                }, new FancyLinePiece[] {
+                    new FancyLinePiece("If you have any problems using ", theme.ExitInnerBg, theme.ExitNormalFg),
+                    ckanPiece,
+                    new FancyLinePiece(", please send us an issue at", theme.ExitInnerBg, theme.ExitNormalFg)
+                }, new FancyLinePiece[] {
+                    new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/issues", theme.ExitInnerBg, theme.ExitLinkFg)
+                }, new FancyLinePiece[] {
+                }, new FancyLinePiece[] {
+                    ckanPiece,
+                    new FancyLinePiece(" WAS CREATED BY THE ", theme.ExitInnerBg, theme.ExitNormalFg),
+                    ckanPiece,
+                    new FancyLinePiece(" AUTHORS:", theme.ExitInnerBg, theme.ExitNormalFg)
+                }, new FancyLinePiece[] {
+                    new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/graphs/contributors", theme.ExitInnerBg, theme.ExitLinkFg)
+                }, new FancyLinePiece[] {
+                }
+            };
+
             for (int i = 0; i < lines.Length; ++i) {
-                drawLine(i, lines[i]);
+                drawLine(theme, i, lines[i]);
             }
         }
 
-        private void drawLine(int y, FancyLinePiece[] pieces)
+        private void drawLine(ConsoleTheme theme, int y, FancyLinePiece[] pieces)
         {
             // First we need to know how long the text is for centering
             int textLen = 0;
@@ -62,7 +120,7 @@ namespace CKAN.ConsoleUI {
 
             // Left padding
             Console.SetCursorPosition(horizMargin, y);
-            Console.BackgroundColor = innerBg;
+            Console.BackgroundColor = theme.ExitInnerBg;
             Console.Write(new string(' ', leftPad));
             foreach (FancyLinePiece p in pieces) {
                 p.Draw();
@@ -71,62 +129,6 @@ namespace CKAN.ConsoleUI {
         }
 
         private const  int          horizMargin = 6;
-        private static ConsoleColor outerBg     = ConsoleColor.Black;
-        private static ConsoleColor innerBg     = ConsoleColor.DarkRed;
-        private static ConsoleColor mainFg      = ConsoleColor.Yellow;
-        private static ConsoleColor hiliteFg    = ConsoleColor.White;
-        private static ConsoleColor linkFg      = ConsoleColor.Cyan;
-
-        private static FancyLinePiece ckanPiece = new FancyLinePiece("CKAN", innerBg, hiliteFg);
-
-        private static FancyLinePiece[][] lines = new FancyLinePiece[][] {
-            new FancyLinePiece[] {
-                ckanPiece,
-                new FancyLinePiece(", the Comprehensive Kerbal Archive Network", innerBg, mainFg)
-            }, new FancyLinePiece[] {
-                new FancyLinePiece(
-                    new string(Symbols.horizLine, Console.WindowWidth - 2 -2 * horizMargin),
-                    innerBg, mainFg)
-            }, new FancyLinePiece[] {
-                new FancyLinePiece("YOU ARE USING ", innerBg, mainFg),
-                new FancyLinePiece($"CKAN {Meta.GetVersion()}", innerBg, hiliteFg),
-                new FancyLinePiece(".", innerBg, mainFg)
-            }, new FancyLinePiece[] {
-            }, new FancyLinePiece[] {
-                new FancyLinePiece("Thanks for downloading ", innerBg, mainFg),
-                ckanPiece,
-                new FancyLinePiece(". We hope you have as", innerBg, mainFg)
-            }, new FancyLinePiece[] {
-                new FancyLinePiece("much fun using it as we had (and have) making it.", innerBg, mainFg)
-            }, new FancyLinePiece[] {
-            }, new FancyLinePiece[] {
-                new FancyLinePiece("If you have paid for ", innerBg, mainFg),
-                ckanPiece,
-                new FancyLinePiece(", try to get your money back,", innerBg, mainFg)
-            }, new FancyLinePiece[] {
-                new FancyLinePiece("because you can download ", innerBg, mainFg),
-                ckanPiece,
-                new FancyLinePiece(" for free from", innerBg, mainFg)
-            }, new FancyLinePiece[] {
-                new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/releases/latest", innerBg, linkFg)
-            }, new FancyLinePiece[] {
-            }, new FancyLinePiece[] {
-                new FancyLinePiece("If you have any problems using ", innerBg, mainFg),
-                ckanPiece,
-                new FancyLinePiece(", please send us an issue at", innerBg, mainFg)
-            }, new FancyLinePiece[] {
-                new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/issues", innerBg, linkFg)
-            }, new FancyLinePiece[] {
-            }, new FancyLinePiece[] {
-                ckanPiece,
-                new FancyLinePiece(" WAS CREATED BY THE ", innerBg, mainFg),
-                ckanPiece,
-                new FancyLinePiece(" AUTHORS:", innerBg, mainFg)
-            }, new FancyLinePiece[] {
-                new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/graphs/contributors", innerBg, linkFg)
-            }, new FancyLinePiece[] {
-            }
-        };
     }
 
     /// <summary>

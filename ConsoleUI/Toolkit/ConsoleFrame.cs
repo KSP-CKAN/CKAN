@@ -18,7 +18,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="borderColor">Function returning foreground color for border</param>
         /// <param name="dblBorder">If true, draw a double line border, else single line</param>
         public ConsoleFrame(int l, int t, int r, int b, Func<string> title,
-                Func<ConsoleColor> borderColor, bool dblBorder = false)
+                Func<ConsoleTheme, ConsoleColor> borderColor, bool dblBorder = false)
             : base(l, t, r, b)
         {
             getTitle     = title;
@@ -29,15 +29,16 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw a frame
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="focused">Framework parameter not relevant to this control</param>
-        public override void Draw(bool focused)
+        public override void Draw(ConsoleTheme theme, bool focused)
         {
             int l = GetLeft(), t = GetTop(), r = GetRight(), b = GetBottom();
             int w = r - l + 1;
             string title = getTitle();
 
-            Console.BackgroundColor = ConsoleTheme.Current.MainBg;
-            Console.ForegroundColor = getColor();
+            Console.BackgroundColor = theme.MainBg;
+            Console.ForegroundColor = getColor(theme);
             Console.SetCursorPosition(l, t);
             Console.Write(doubleBorder ? Symbols.upperLeftCornerDouble  : Symbols.upperLeftCorner);
             if (title.Length > 0) {
@@ -75,7 +76,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public override bool Focusable() { return false; }
 
         private Func<string>       getTitle;
-        private Func<ConsoleColor> getColor;
+        private Func<ConsoleTheme, ConsoleColor> getColor;
         private bool               doubleBorder;
     }
 

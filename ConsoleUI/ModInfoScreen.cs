@@ -34,7 +34,7 @@ namespace CKAN.ConsoleUI {
                 1, 1, -1,
                 () => mod.name == mod.identifier ? mod.name : $"{mod.name} ({mod.identifier})",
                 null,
-                () => ConsoleTheme.Current.ActiveFrameFg
+                th => th.ActiveFrameFg
             ));
             AddObject(new ConsoleLabel(
                 1, 2, -1,
@@ -44,14 +44,14 @@ namespace CKAN.ConsoleUI {
             AddObject(new ConsoleFrame(
                 1, 3, midL, 7,
                 () => "",
-                () => ConsoleTheme.Current.NormalFrameFg,
+                th => th.NormalFrameFg,
                 false
             ));
             AddObject(new ConsoleLabel(
                 3, 4, 11,
                 () => "License:",
                 null,
-                () => ConsoleTheme.Current.DimLabelFg
+                th => th.DimLabelFg
             ));
             AddObject(new ConsoleLabel(
                 13, 4, midL - 2,
@@ -62,7 +62,7 @@ namespace CKAN.ConsoleUI {
                 3, 5, 12,
                 () => "Download:",
                 null,
-                () => ConsoleTheme.Current.DimLabelFg
+                th => th.DimLabelFg
             ));
             AddObject(new ConsoleLabel(
                 13, 5, midL - 2,
@@ -79,14 +79,14 @@ namespace CKAN.ConsoleUI {
             AddObject(new ConsoleFrame(
                 1, Math.Max(depsBot, versBot) + 1, -1, -1,
                 () => "Description",
-                () => ConsoleTheme.Current.NormalFrameFg,
+                th => th.NormalFrameFg,
                 false
             ));
             ConsoleTextBox tb = new ConsoleTextBox(
                 3, Math.Max(depsBot, versBot) + 2, -3, -2, false,
                 TextAlign.Left,
-                () => ConsoleTheme.Current.MainBg,
-                () => ConsoleTheme.Current.LabelFg
+                th => th.MainBg,
+                th => th.LabelFg
             );
             tb.AddLine(mod.@abstract);
             if (!string.IsNullOrEmpty(mod.description)
@@ -101,15 +101,15 @@ namespace CKAN.ConsoleUI {
             tb.AddScrollBindings(this);
 
             AddTip("Esc", "Back");
-            AddBinding(Keys.Escape, (object sender) => false);
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
 
             AddTip("Ctrl+D", "Download",
                 () => !manager.Cache.IsMaybeCachedZip(mod) && !mod.IsDLC
             );
-            AddBinding(Keys.CtrlD, (object sender) => {
+            AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) => {
                 if (!mod.IsDLC)
                 {
-                    Download();
+                    Download(theme);
                 }
                 return true;
             });
@@ -121,49 +121,49 @@ namespace CKAN.ConsoleUI {
                     opts.Add(new ConsoleMenuOption(
                         "Home page",  "", "Open the home page URL in a browser",
                         true,
-                        () => LaunchURL(mod.resources.homepage)
+                        th => LaunchURL(th, mod.resources.homepage)
                     ));
                 }
                 if (mod.resources.repository != null) {
                     opts.Add(new ConsoleMenuOption(
                         "Repository", "", "Open the repository URL in a browser",
                         true,
-                        () => LaunchURL(mod.resources.repository)
+                        th => LaunchURL(th, mod.resources.repository)
                     ));
                 }
                 if (mod.resources.bugtracker != null) {
                     opts.Add(new ConsoleMenuOption(
                         "Bugtracker", "", "Open the bug tracker URL in a browser",
                         true,
-                        () => LaunchURL(mod.resources.bugtracker)
+                        th => LaunchURL(th, mod.resources.bugtracker)
                     ));
                 }
                 if (mod.resources.spacedock != null) {
                     opts.Add(new ConsoleMenuOption(
                         "SpaceDock",  "", "Open the SpaceDock URL in a browser",
                         true,
-                        () => LaunchURL(mod.resources.spacedock)
+                        th => LaunchURL(th, mod.resources.spacedock)
                     ));
                 }
                 if (mod.resources.curse != null) {
                     opts.Add(new ConsoleMenuOption(
                         "Curse",      "", "Open the Curse URL in a browser",
                         true,
-                        () => LaunchURL(mod.resources.curse)
+                        th => LaunchURL(th, mod.resources.curse)
                     ));
                 }
                 if (mod.resources.store != null) {
                     opts.Add(new ConsoleMenuOption(
                         "Store",      "", "Open the Store URL in a browser",
                         true,
-                        () => LaunchURL(mod.resources.store)
+                        th => LaunchURL(th, mod.resources.store)
                     ));
                 }
                 if (mod.resources.steamstore != null) {
                     opts.Add(new ConsoleMenuOption(
                         "Steam Store", "", "Open the Steam Store URL in a browser",
                         true,
-                        () => LaunchURL(mod.resources.steamstore)
+                        th => LaunchURL(th, mod.resources.steamstore)
                     ));
                 }
                 if (debug) {
@@ -205,7 +205,7 @@ namespace CKAN.ConsoleUI {
             return "Links";
         }
 
-        private bool ViewMetadata()
+        private bool ViewMetadata(ConsoleTheme theme)
         {
             ConsoleMessageDialog md = new ConsoleMessageDialog(
                 $"\"{mod.identifier}\": {registry.GetAvailableMetadata(mod.identifier)}",
@@ -213,19 +213,20 @@ namespace CKAN.ConsoleUI {
                 () => $"{mod.name} Metadata",
                 TextAlign.Left
             );
-            md.Run();
-            DrawBackground();
+            md.Run(theme);
+            DrawBackground(theme);
             return true;
         }
 
         /// <summary>
         /// Launch a URL in the system browser.
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="u">URL to launch</param>
         /// <returns>
         /// True.
         /// </returns>
-        public static bool LaunchURL(Uri u)
+        public static bool LaunchURL(ConsoleTheme theme, Uri u)
         {
             // I'm getting error output on Linux, because this runs xdg-open which
             // calls chromium-browser which prints a bunch of stuff about plugins that
@@ -235,7 +236,7 @@ namespace CKAN.ConsoleUI {
             // So instead we display a popup dialog for the garbage to print all over,
             // then wait 1.5 seconds and refresh the screen when it closes.
             ConsoleMessageDialog d = new ConsoleMessageDialog("Launching...", new List<string>());
-            d.Run(() => {
+            d.Run(theme, (ConsoleTheme th) => {
                 Utilities.ProcessStartURL(u.ToString());
                 System.Threading.Thread.Sleep(1500);
             });
@@ -256,7 +257,7 @@ namespace CKAN.ConsoleUI {
                 AddObject(new ConsoleFrame(
                     1, top, midL, top + h - 1,
                     () => "Dependencies",
-                    () => ConsoleTheme.Current.NormalFrameFg,
+                    th => th.NormalFrameFg,
                     false
                 ));
                 if (numDeps > 0) {
@@ -264,13 +265,13 @@ namespace CKAN.ConsoleUI {
                         3, top + 1, 3 + lblW - 1,
                         () => $"Required ({numDeps}):",
                         null,
-                        () => ConsoleTheme.Current.DimLabelFg
+                        th => th.DimLabelFg
                     ));
                     ConsoleTextBox tb = new ConsoleTextBox(
                         3 + lblW, top + 1, midL - 2, top + 1 + numDeps - 1, false,
                         TextAlign.Left,
-                        () => ConsoleTheme.Current.MainBg,
-                        () => ConsoleTheme.Current.LabelFg
+                        th => th.MainBg,
+                        th => th.LabelFg
                     );
                     AddObject(tb);
                     foreach (RelationshipDescriptor rd in mod.depends) {
@@ -287,13 +288,13 @@ namespace CKAN.ConsoleUI {
                         3, top + 1 + numDeps, 3 + lblW - 1,
                         () => $"Conflicts ({numConfs}):",
                         null,
-                        () => ConsoleTheme.Current.DimLabelFg
+                        th => th.DimLabelFg
                     ));
                     ConsoleTextBox tb = new ConsoleTextBox(
                         3 + lblW, top + 1 + numDeps, midL - 2, top + h - 2, false,
                         TextAlign.Left,
-                        () => ConsoleTheme.Current.MainBg,
-                        () => ConsoleTheme.Current.LabelFg
+                        th => th.MainBg,
+                        th => th.LabelFg
                     );
                     AddObject(tb);
                     // FUTURE: Find mods that conflict with this one
@@ -354,7 +355,7 @@ namespace CKAN.ConsoleUI {
                             addVersionBox(
                                 boxLeft, boxTop, boxRight, boxTop + boxH - 1,
                                 () => $"Replaced by {mr.ReplaceWith.identifier}",
-                                () => ConsoleTheme.Current.AlertFrameFg,
+                                th => th.AlertFrameFg,
                                 false,
                                 new List<CkanModule>() {mr.ReplaceWith}
                             );
@@ -363,7 +364,7 @@ namespace CKAN.ConsoleUI {
                             addVersionBox(
                                 boxLeft, boxTop, boxRight, boxTop + boxH - 1,
                                 () => $"Installed {instTime?.ToString("d") ?? "manually"}",
-                                () => ConsoleTheme.Current.ActiveFrameFg,
+                                th => th.ActiveFrameFg,
                                 true,
                                 new List<CkanModule>() {inst}
                             );
@@ -374,7 +375,7 @@ namespace CKAN.ConsoleUI {
                             addVersionBox(
                                 boxLeft, boxTop, boxRight, boxTop + boxH - 1,
                                 () => $"Latest/Installed {instTime?.ToString("d") ?? "manually"}",
-                                () => ConsoleTheme.Current.ActiveFrameFg,
+                                th => th.ActiveFrameFg,
                                 true,
                                 new List<CkanModule>() {inst}
                             );
@@ -388,7 +389,7 @@ namespace CKAN.ConsoleUI {
                         addVersionBox(
                             boxLeft, boxTop, boxRight, boxTop + boxH - 1,
                             () => "Latest Version",
-                            () => ConsoleTheme.Current.AlertFrameFg,
+                            th => th.AlertFrameFg,
                             false,
                             new List<CkanModule>() {latest}
                         );
@@ -397,7 +398,7 @@ namespace CKAN.ConsoleUI {
                         addVersionBox(
                             boxLeft, boxTop, boxRight, boxTop + boxH - 1,
                             () => $"Installed {instTime?.ToString("d") ?? "manually"}",
-                            () => ConsoleTheme.Current.ActiveFrameFg,
+                            th => th.ActiveFrameFg,
                             true,
                             new List<CkanModule>() {inst}
                         );
@@ -409,7 +410,7 @@ namespace CKAN.ConsoleUI {
                     addVersionBox(
                         boxLeft, boxTop, boxRight, boxTop + boxH - 1,
                         () => "Latest Version",
-                        () => ConsoleTheme.Current.NormalFrameFg,
+                        th => th.NormalFrameFg,
                         false,
                         new List<CkanModule>() {latest}
                     );
@@ -422,7 +423,7 @@ namespace CKAN.ConsoleUI {
                     addVersionBox(
                         boxLeft, boxTop, boxRight, boxTop + boxH - 1,
                         () => "Other Versions",
-                        () => ConsoleTheme.Current.NormalFrameFg,
+                        th => th.NormalFrameFg,
                         false,
                         others
                     );
@@ -438,7 +439,7 @@ namespace CKAN.ConsoleUI {
                 addVersionBox(
                     boxLeft, boxTop, boxRight, boxTop + boxH - 1,
                     () => $"UNAVAILABLE/Installed {instTime?.ToString("d") ?? "manually"}",
-                    () => ConsoleTheme.Current.AlertFrameFg,
+                    th => th.AlertFrameFg,
                     true,
                     new List<CkanModule>() {mod}
                 );
@@ -449,7 +450,7 @@ namespace CKAN.ConsoleUI {
             return boxTop - 1;
         }
 
-        private void addVersionBox(int l, int t, int r, int b, Func<string> title, Func<ConsoleColor> color, bool doubleLine, List<CkanModule> releases)
+        private void addVersionBox(int l, int t, int r, int b, Func<string> title, Func<ConsoleTheme, ConsoleColor> color, bool doubleLine, List<CkanModule> releases)
         {
             AddObject(new ConsoleFrame(
                 l, t, r, b,
@@ -475,7 +476,7 @@ namespace CKAN.ConsoleUI {
                     l + 2, t + 2, r - 2,
                     () => "Compatible with:",
                     null,
-                    () => ConsoleTheme.Current.DimLabelFg
+                    th => th.DimLabelFg
                 ));
                 AddObject(new ConsoleLabel(
                     l + 4, t + 3, r - 2,
@@ -535,14 +536,15 @@ namespace CKAN.ConsoleUI {
             return mod.download?.Host ?? "";
         }
 
-        private void Download()
+        private void Download(ConsoleTheme theme)
         {
             ProgressScreen            ps   = new ProgressScreen($"Downloading {mod.identifier}");
             NetAsyncModulesDownloader dl   = new NetAsyncModulesDownloader(ps, manager.Cache);
             ModuleInstaller           inst = ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, ps);
             LaunchSubScreen(
+                theme,
                 ps,
-                () => {
+                (ConsoleTheme th) => {
                     try {
                         dl.DownloadModules(new List<CkanModule> {mod});
                         if (!manager.Cache.IsMaybeCachedZip(mod)) {

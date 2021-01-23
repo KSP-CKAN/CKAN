@@ -23,8 +23,8 @@ namespace CKAN.ConsoleUI.Toolkit {
                 int l, int t, int r, int b,
                 bool autoScroll = true,
                 TextAlign ta = TextAlign.Left,
-                Func<ConsoleColor> bgFunc = null,
-                Func<ConsoleColor> fgFunc = null)
+                Func<ConsoleTheme, ConsoleColor> bgFunc = null,
+                Func<ConsoleTheme, ConsoleColor> fgFunc = null)
             : base(l, t, r, b)
         {
             scrollToBottom = autoScroll;
@@ -95,8 +95,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw the text box
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="focused">Framework parameter not relevant to this object</param>
-        public override void Draw(bool focused)
+        public override void Draw(ConsoleTheme theme, bool focused)
         {
             int l     = GetLeft();
             int h     = GetBottom() - GetTop() + 1;
@@ -105,14 +106,14 @@ namespace CKAN.ConsoleUI.Toolkit {
             int w     = GetRight() - l + 1 + (lines.Count > h ? -1 : 0);
 
             if (getBgColor != null) {
-                Console.BackgroundColor = getBgColor();
+                Console.BackgroundColor = getBgColor(theme);
             } else {
-                Console.BackgroundColor = ConsoleTheme.Current.TextBoxBg;
+                Console.BackgroundColor = theme.TextBoxBg;
             }
             if (getFgColor != null) {
-                Console.ForegroundColor = getFgColor();
+                Console.ForegroundColor = getFgColor(theme);
             } else {
-                Console.ForegroundColor = ConsoleTheme.Current.TextBoxFg;
+                Console.ForegroundColor = theme.TextBoxFg;
             }
             for (int y = GetTop(); y <= GetBottom(); ++y, ++index) {
                 Console.SetCursorPosition(l, y);
@@ -136,6 +137,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             // Scrollbar
             if (lines.Count > h) {
                 DrawScrollbar(
+                    theme,
                     GetRight(), GetTop(), GetBottom(),
                     GetTop() + 1 + (h - 3) * topLine / (lines.Count - h)
                 );
@@ -150,58 +152,58 @@ namespace CKAN.ConsoleUI.Toolkit {
         public void AddScrollBindings(ScreenContainer cont, bool drawMore = false)
         {
             if (drawMore) {
-                cont.AddBinding(Keys.Home,      (object sender) => {
+                cont.AddBinding(Keys.Home,      (object sender, ConsoleTheme theme) => {
                     ScrollToTop();
-                    Draw(false);
+                    Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.End,       (object sender) => {
+                cont.AddBinding(Keys.End,       (object sender, ConsoleTheme theme) => {
                     ScrollToBottom();
-                    Draw(false);
+                    Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.PageUp,    (object sender) => {
+                cont.AddBinding(Keys.PageUp,    (object sender, ConsoleTheme theme) => {
                     ScrollUp();
-                    Draw(false);
+                    Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.PageDown,  (object sender) => {
+                cont.AddBinding(Keys.PageDown,  (object sender, ConsoleTheme theme) => {
                     ScrollDown();
-                    Draw(false);
+                    Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.UpArrow,   (object sender) => {
+                cont.AddBinding(Keys.UpArrow,   (object sender, ConsoleTheme theme) => {
                     ScrollUp(1);
-                    Draw(false);
+                    Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.DownArrow, (object sender) => {
+                cont.AddBinding(Keys.DownArrow, (object sender, ConsoleTheme theme) => {
                     ScrollDown(1);
-                    Draw(false);
+                    Draw(theme, false);
                     return true;
                 });
             } else {
-                cont.AddBinding(Keys.Home,      (object sender) => {
+                cont.AddBinding(Keys.Home,      (object sender, ConsoleTheme theme) => {
                     ScrollToTop();
                     return true;
                 });
-                cont.AddBinding(Keys.End,       (object sender) => {
+                cont.AddBinding(Keys.End,       (object sender, ConsoleTheme theme) => {
                     ScrollToBottom();
                     return true;
                 });
-                cont.AddBinding(Keys.PageUp,    (object sender) => {
+                cont.AddBinding(Keys.PageUp,    (object sender, ConsoleTheme theme) => {
                     ScrollUp();
                     return true;
                 });
-                cont.AddBinding(Keys.PageDown,  (object sender) => {
+                cont.AddBinding(Keys.PageDown,  (object sender, ConsoleTheme theme) => {
                     ScrollDown();
                     return true;
                 });
-                cont.AddBinding(Keys.UpArrow,   (object sender) => {
+                cont.AddBinding(Keys.UpArrow,   (object sender, ConsoleTheme theme) => {
                     ScrollUp(1);
                     return true;
                 });
-                cont.AddBinding(Keys.DownArrow, (object sender) => {
+                cont.AddBinding(Keys.DownArrow, (object sender, ConsoleTheme theme) => {
                     ScrollDown(1);
                     return true;
                 });
@@ -217,8 +219,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         private int          topLine;
         private TextAlign    align;
         private SynchronizedCollection<string> lines = new SynchronizedCollection<string>();
-        private Func<ConsoleColor> getBgColor;
-        private Func<ConsoleColor> getFgColor;
+        private Func<ConsoleTheme, ConsoleColor> getBgColor;
+        private Func<ConsoleTheme, ConsoleColor> getFgColor;
     }
 
     /// <summary>

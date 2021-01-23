@@ -67,8 +67,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw the field
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="focused">If true, draw with focus, else without focus</param>
-        public override void Draw(bool focused)
+        public override void Draw(ConsoleTheme theme, bool focused)
         {
             int w = GetRight() - GetLeft() + 1;
 
@@ -83,15 +84,15 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
 
             Console.SetCursorPosition(GetLeft(), GetTop());
-            Console.BackgroundColor = ConsoleTheme.Current.FieldBg;
+            Console.BackgroundColor = theme.FieldBg;
             if (string.IsNullOrEmpty(Value)) {
-                Console.ForegroundColor = ConsoleTheme.Current.FieldGhostFg;
+                Console.ForegroundColor = theme.FieldGhostFg;
                 Console.Write(GhostText().PadRight(w));
             } else {
                 if (focused) {
-                    Console.ForegroundColor = ConsoleTheme.Current.FieldFocusedFg;
+                    Console.ForegroundColor = theme.FieldFocusedFg;
                 } else {
-                    Console.ForegroundColor = ConsoleTheme.Current.FieldBlurredFg;
+                    Console.ForegroundColor = theme.FieldBlurredFg;
                 }
                 Console.Write(FormatExactWidth(Value.Substring(leftPos), w));
             }

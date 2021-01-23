@@ -38,8 +38,8 @@ namespace CKAN.ConsoleUI.Toolkit {
                 l + 2, t + 2, r - 2, t + 2 + msgLines.Count - 1,
                 false,
                 TextAlign.Left,
-                () => ConsoleTheme.Current.PopupBg,
-                () => ConsoleTheme.Current.PopupFg
+                th => th.PopupBg,
+                th => th.PopupFg
             );
             AddObject(tb);
             tb.AddLine(m);
@@ -60,12 +60,12 @@ namespace CKAN.ConsoleUI.Toolkit {
             );
 
             choices.AddTip("Enter", "Accept");
-            choices.AddBinding(Keys.Enter, (object sender) => {
+            choices.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 return false;
             });
 
             choices.AddTip("Esc", "Cancel");
-            choices.AddBinding(Keys.Escape, (object sender) => {
+            choices.AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 cancelled = true;
                 return false;
             });
@@ -76,13 +76,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Display the dialog and handle its interaction
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="process">Function to control the dialog, default is normal user interaction</param>
         /// <returns>
         /// Row user selected
         /// </returns>
-        public new ChoiceT Run(Action process = null)
+        public new ChoiceT Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
         {
-            base.Run(process);
+            base.Run(theme, process);
             return cancelled ? default(ChoiceT) : choices.Selection;
         }
 

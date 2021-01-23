@@ -123,33 +123,33 @@ namespace CKAN.ConsoleUI {
             AddObject(searchBox);
             AddObject(moduleList);
 
-            AddBinding(Keys.CtrlQ, (object sender) => false);
-            AddBinding(Keys.AltX,  (object sender) => false);
-            AddBinding(Keys.F1,    (object sender) => Help());
-            AddBinding(Keys.AltH,  (object sender) => Help());
-            AddBinding(Keys.F5,    (object sender) => UpdateRegistry());
-            AddBinding(Keys.CtrlR, (object sender) => UpdateRegistry());
-            AddBinding(Keys.CtrlU, (object sender) => UpgradeAll());
+            AddBinding(Keys.CtrlQ, (object sender, ConsoleTheme theme) => false);
+            AddBinding(Keys.AltX,  (object sender, ConsoleTheme theme) => false);
+            AddBinding(Keys.F1,    (object sender, ConsoleTheme theme) => Help(theme));
+            AddBinding(Keys.AltH,  (object sender, ConsoleTheme theme) => Help(theme));
+            AddBinding(Keys.F5,    (object sender, ConsoleTheme theme) => UpdateRegistry(theme));
+            AddBinding(Keys.CtrlR, (object sender, ConsoleTheme theme) => UpdateRegistry(theme));
+            AddBinding(Keys.CtrlU, (object sender, ConsoleTheme theme) => UpgradeAll(theme));
 
             // Now a bunch of convenience shortcuts so you don't get stuck in the search box
-            searchBox.AddBinding(Keys.PageUp, (object sender) => {
+            searchBox.AddBinding(Keys.PageUp, (object sender, ConsoleTheme theme) => {
                 SetFocus(moduleList);
                 return true;
             });
-            searchBox.AddBinding(Keys.PageDown, (object sender) => {
+            searchBox.AddBinding(Keys.PageDown, (object sender, ConsoleTheme theme) => {
                 SetFocus(moduleList);
                 return true;
             });
-            searchBox.AddBinding(Keys.Enter, (object sender) => {
+            searchBox.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 SetFocus(moduleList);
                 return true;
             });
 
-            moduleList.AddBinding(Keys.CtrlF, (object sender) => {
+            moduleList.AddBinding(Keys.CtrlF, (object sender, ConsoleTheme theme) => {
                 SetFocus(searchBox);
                 return true;
             });
-            moduleList.AddBinding(Keys.Escape, (object sender) => {
+            moduleList.AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 searchBox.Clear();
                 return true;
             });
@@ -157,9 +157,9 @@ namespace CKAN.ConsoleUI {
             moduleList.AddTip("Enter", "Details",
                 () => moduleList.Selection != null
             );
-            moduleList.AddBinding(Keys.Enter, (object sender) => {
+            moduleList.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 if (moduleList.Selection != null) {
-                    LaunchSubScreen(new ModInfoScreen(manager, plan, moduleList.Selection, debug));
+                    LaunchSubScreen(theme, new ModInfoScreen(manager, plan, moduleList.Selection, debug));
                 }
                 return true;
             });
@@ -178,7 +178,7 @@ namespace CKAN.ConsoleUI {
                 () => moduleList.Selection != null
                     && registry.GetReplacement(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()) != null
             );
-            moduleList.AddBinding(Keys.Plus, (object sender) => {
+            moduleList.AddBinding(Keys.Plus, (object sender, ConsoleTheme theme) => {
                 if (moduleList.Selection != null && !moduleList.Selection.IsDLC) {
                     if (!registry.IsInstalled(moduleList.Selection.identifier, false)) {
                         plan.ToggleInstall(moduleList.Selection);
@@ -197,7 +197,7 @@ namespace CKAN.ConsoleUI {
                     && registry.IsInstalled(moduleList.Selection.identifier, false)
                     && !registry.IsAutodetected(moduleList.Selection.identifier)
             );
-            moduleList.AddBinding(Keys.Minus, (object sender) => {
+            moduleList.AddBinding(Keys.Minus, (object sender, ConsoleTheme theme) => {
                 if (moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && registry.IsInstalled(moduleList.Selection.identifier, false)
                     && !registry.IsAutodetected(moduleList.Selection.identifier)) {
@@ -214,7 +214,7 @@ namespace CKAN.ConsoleUI {
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && (registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
             );
-            moduleList.AddBinding(Keys.F8, (object sender) => {
+            moduleList.AddBinding(Keys.F8, (object sender, ConsoleTheme theme) => {
                 InstalledModule im = registry.InstalledModule(moduleList.Selection.identifier);
                 if (im != null && !moduleList.Selection.IsDLC) {
                     im.AutoInstalled = !im.AutoInstalled;
@@ -224,8 +224,8 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip("F9", "Apply changes", plan.NonEmpty);
-            AddBinding(Keys.F9, (object sender) => {
-                ApplyChanges();
+            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
+                ApplyChanges(theme);
                 return true;
             });
 
@@ -234,7 +234,7 @@ namespace CKAN.ConsoleUI {
                 1, -1, searchWidth,
                 () => $"{CkanModule.FmtSize(totalInstalledDownloadSize())} installed",
                 null,
-                () => ConsoleTheme.Current.DimLabelFg
+                th => th.DimLabelFg
             ));
 
             AddObject(new ConsoleLabel(
@@ -246,14 +246,14 @@ namespace CKAN.ConsoleUI {
                         :              $"Updated at least {days} days ago";
                 },
                 null,
-                () => {
+                (ConsoleTheme th) => {
                     int daysSince = daysSinceUpdated(registryFilePath());
                     if (daysSince < daysTillStale) {
-                        return ConsoleTheme.Current.RegistryUpToDate;
+                        return th.RegistryUpToDate;
                     } else if (daysSince < daystillVeryStale) {
-                        return ConsoleTheme.Current.RegistryStale;
+                        return th.RegistryStale;
                     } else {
-                        return ConsoleTheme.Current.RegistryVeryStale;
+                        return th.RegistryVeryStale;
                     }
                 }
             ));
@@ -292,7 +292,7 @@ namespace CKAN.ConsoleUI {
                 null,
                 new ConsoleMenuOption("Quit",                 "Ctrl+Q",
                     "Exit to DOS",
-                    true, () => false)
+                    true, (ConsoleTheme th) => false)
             };
             if (debug) {
                 opts.Add(null);
@@ -325,25 +325,25 @@ namespace CKAN.ConsoleUI {
             ? "F1"
             : "F1, Alt+H";
 
-        private bool ImportDownloads()
+        private bool ImportDownloads(ConsoleTheme theme)
         {
-            DownloadImportDialog.ImportDownloads(manager.CurrentInstance, manager.Cache, plan);
+            DownloadImportDialog.ImportDownloads(theme, manager.CurrentInstance, manager.Cache, plan);
             RefreshList();
             return true;
         }
 
-        private bool CaptureKey()
+        private bool CaptureKey(ConsoleTheme theme)
         {
             ConsoleKeyInfo k = default(ConsoleKeyInfo);
             ConsoleMessageDialog keyprompt = new ConsoleMessageDialog("Press a key", new List<string>());
-            keyprompt.Run(() => {
+            keyprompt.Run(theme, (ConsoleTheme th) => {
                 k = Console.ReadKey(true);
             });
             ConsoleMessageDialog output = new ConsoleMessageDialog(
                 $"Key: {k.Key,18}\nKeyChar:           0x{(int)k.KeyChar:x2}\nModifiers: {k.Modifiers,12}",
                 new List<string> {"OK"}
             );
-            output.Run();
+            output.Run(theme);
             return true;
         }
 
@@ -357,7 +357,7 @@ namespace CKAN.ConsoleUI {
             return false;
         }
 
-        private bool UpgradeAll()
+        private bool UpgradeAll(ConsoleTheme theme)
         {
             foreach (string identifier in registry.Installed(true).Select(kvp => kvp.Key)) {
                 if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria())) {
@@ -367,7 +367,7 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
-        private bool ViewSuggestions()
+        private bool ViewSuggestions(ConsoleTheme theme)
         {
             ChangePlan reinstall = new ChangePlan();
             foreach (InstalledModule im in registry.InstalledModules) {
@@ -383,7 +383,7 @@ namespace CKAN.ConsoleUI {
             try {
                 DependencyScreen ds = new DependencyScreen(manager, reinstall, new HashSet<string>(), debug);
                 if (ds.HaveOptions()) {
-                    LaunchSubScreen(ds);
+                    LaunchSubScreen(theme, ds);
                     bool needRefresh = false;
                     // Copy the right ones into our real plan
                     foreach (CkanModule mod in reinstall.Install) {
@@ -414,10 +414,10 @@ namespace CKAN.ConsoleUI {
             return (DateTime.Now - File.GetLastWriteTime(filename)).Days;
         }
 
-        private bool UpdateRegistry()
+        private bool UpdateRegistry(ConsoleTheme theme)
         {
             ProgressScreen ps = new ProgressScreen("Updating Registry", "Checking for updates");
-            LaunchSubScreen(ps, () => {
+            LaunchSubScreen(theme, ps, (ConsoleTheme th) => {
                 HashSet<string> availBefore = new HashSet<string>(
                     Array.ConvertAll<CkanModule, string>(
                         registry.CompatibleModules(
@@ -473,10 +473,10 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
-        private bool SelectInstall()
+        private bool SelectInstall(ConsoleTheme theme)
         {
             GameInstance prevInst = manager.CurrentInstance;
-            LaunchSubScreen(new GameInstanceListScreen(manager));
+            LaunchSubScreen(theme, new GameInstanceListScreen(manager));
             // Abort if same instance as before
             if (!prevInst.Equals(manager.CurrentInstance)) {
                 plan.Reset();
@@ -486,9 +486,9 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
-        private bool EditAuthTokens()
+        private bool EditAuthTokens(ConsoleTheme theme)
         {
-            LaunchSubScreen(new AuthTokenScreen());
+            LaunchSubScreen(theme, new AuthTokenScreen());
             return true;
         }
 
@@ -518,7 +518,7 @@ namespace CKAN.ConsoleUI {
             return allMods;
         }
 
-        private bool ExportInstalled()
+        private bool ExportInstalled(ConsoleTheme theme)
         {
             try {
                 // Save the mod list as "depends" without the installed versions.
@@ -535,17 +535,17 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
-        private bool Help()
+        private bool Help(ConsoleTheme theme)
         {
             ModListHelpDialog hd = new ModListHelpDialog();
-            hd.Run();
-            DrawBackground();
+            hd.Run(theme);
+            DrawBackground(theme);
             return true;
         }
 
-        private bool ApplyChanges()
+        private bool ApplyChanges(ConsoleTheme theme)
         {
-            LaunchSubScreen(new InstallScreen(manager, plan, debug));
+            LaunchSubScreen(theme, new InstallScreen(manager, plan, debug));
             RefreshList();
             return true;
         }

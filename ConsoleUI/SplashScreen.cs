@@ -21,18 +21,19 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Show the splash screen and wait for a key press.
         /// </summary>
-        public bool Run()
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
+        public bool Run(ConsoleTheme theme)
         {
             // If there's a default instance, try to get the lock for it.
             GameInstance ksp = manager.CurrentInstance ?? manager.GetPreferredInstance();
-            if (ksp != null && !GameInstanceListScreen.TryGetInstance(ksp, () => Draw(false))) {
+            if (ksp != null && !GameInstanceListScreen.TryGetInstance(theme, ksp, (ConsoleTheme th) => Draw(th, false))) {
                 Console.ResetColor();
                 Console.Clear();
                 Console.CursorVisible = true;
                 return false;
             }
             // Draw screen with press any key
-            Draw(true);
+            Draw(theme, true);
             // Wait for a key
             Console.ReadKey(true);
             return true;
@@ -41,14 +42,22 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Draw a cool retro splash screen like IBM used to do.
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="pressAny">If true, ask user to press any key, otherwise say loading</param>
-        private void Draw(bool pressAny = false)
+        private void Draw(ConsoleTheme theme, bool pressAny = false)
         {
             Console.CursorVisible = false;
-            Console.ResetColor();
+            if (theme.SplashBg.HasValue)
+            {
+                Console.BackgroundColor = theme.SplashBg.Value;
+            }
+            else
+            {
+                Console.ResetColor();
+            }
             Console.Clear();
 
-            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = theme.SplashAccentFg;
 
             string block = $"{Symbols.lowerHalfBlock}";
 
@@ -63,7 +72,7 @@ namespace CKAN.ConsoleUI {
 
             drawCentered(10, "Comprehensive Kerbal Archive Network");
 
-            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.ForegroundColor = theme.SplashNormalFg;
 
             string horiz = $"{Symbols.horizLineDouble}";
             drawCentered(12, $"{Symbols.upperLeftCornerDouble}##################################################{Symbols.upperRightCornerDouble}".Replace("#", horiz));

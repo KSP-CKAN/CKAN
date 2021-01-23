@@ -58,22 +58,22 @@ namespace CKAN.ConsoleUI {
 
             if (first) {
                 AddTip("Ctrl+Q", "Quit");
-                AddBinding(Keys.AltX,  (object sender) => false);
-                AddBinding(Keys.CtrlQ, (object sender) => false);
+                AddBinding(Keys.AltX,  (object sender, ConsoleTheme theme) => false);
+                AddBinding(Keys.CtrlQ, (object sender, ConsoleTheme theme) => false);
             } else {
                 AddTip("Esc", "Quit");
-                AddBinding(Keys.Escape, (object sender) => false);
+                AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
             }
 
             AddTip("Enter", "Select");
-            AddBinding(Keys.Enter, (object sender) => {
+            AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
 
                 ConsoleMessageDialog d = new ConsoleMessageDialog(
                     $"Loading instance {instanceList.Selection.Name}...",
                     new List<string>()
                 );
 
-                if (TryGetInstance(instanceList.Selection, () => { d.Run(() => {}); })) {
+                if (TryGetInstance(theme, instanceList.Selection, (ConsoleTheme th) => { d.Run(th, (ConsoleTheme thm) => {}); })) {
                     try {
                         manager.SetCurrentInstance(instanceList.Selection.Name);
                     } catch (Exception ex) {
@@ -88,34 +88,34 @@ namespace CKAN.ConsoleUI {
             });
 
             instanceList.AddTip("A", "Add");
-            instanceList.AddBinding(Keys.A, (object sender) => {
-                LaunchSubScreen(new GameInstanceAddScreen(manager));
+            instanceList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
+                LaunchSubScreen(theme, new GameInstanceAddScreen(manager));
                 instanceList.SetData(manager.Instances.Values);
                 return true;
             });
             instanceList.AddTip("R", "Remove");
-            instanceList.AddBinding(Keys.R, (object sender) => {
+            instanceList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
                 manager.RemoveInstance(instanceList.Selection.Name);
                 instanceList.SetData(manager.Instances.Values);
                 return true;
             });
             instanceList.AddTip("E", "Edit");
-            instanceList.AddBinding(Keys.E, (object sender) => {
+            instanceList.AddBinding(Keys.E, (object sender, ConsoleTheme theme) => {
 
                 ConsoleMessageDialog d = new ConsoleMessageDialog(
                     $"Loading instance {instanceList.Selection.Name}...",
                     new List<string>()
                 );
-                TryGetInstance(instanceList.Selection, () => { d.Run(() => {}); });
+                TryGetInstance(theme, instanceList.Selection, (ConsoleTheme th) => { d.Run(theme, (ConsoleTheme thm) => {}); });
                 // Still launch the screen even if the load fails,
                 // because you need to be able to fix the name/path.
-                LaunchSubScreen(new GameInstanceEditScreen(manager, instanceList.Selection));
+                LaunchSubScreen(theme, new GameInstanceEditScreen(manager, instanceList.Selection));
 
                 return true;
             });
 
             instanceList.AddTip("D", "Default");
-            instanceList.AddBinding(Keys.D, (object sender) => {
+            instanceList.AddBinding(Keys.D, (object sender, ConsoleTheme theme) => {
                 string name = instanceList.Selection.Name;
                 if (name == manager.AutoStartInstance) {
                     manager.ClearAutoStart();
@@ -127,7 +127,7 @@ namespace CKAN.ConsoleUI {
                             $"Error loading {k.path}:\n{k.Message}",
                             new List<string>() {"OK"}
                         );
-                        errd.Run();
+                        errd.Run(theme);
                     }
                 }
                 return true;
@@ -164,12 +164,13 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Try to load the registry of an instance
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="ksp">Game instance</param>
         /// <param name="render">Function that shows a loading message</param>
         /// <returns>
         /// True if successfully loaded, false if it's locked or the registry was corrupted, etc.
         /// </returns>
-        public static bool TryGetInstance(GameInstance ksp, Action render)
+        public static bool TryGetInstance(ConsoleTheme theme, GameInstance ksp, Action<ConsoleTheme> render)
         {
             bool retry;
             do {
@@ -177,7 +178,7 @@ namespace CKAN.ConsoleUI {
 
                     retry = false;
                     // Show loading message
-                    render();
+                    render(theme);
                     // Try to get the lock; this will throw if another instance is in there
                     RegistryManager.Instance(ksp);
 
@@ -190,7 +191,7 @@ namespace CKAN.ConsoleUI {
                         + "Do you want to delete this lock file to force access?",
                         new List<string>() {"Cancel", "Force"}
                     );
-                    if (md.Run() == 1) {
+                    if (md.Run(theme) == 1) {
                         // Delete it
                         File.Delete(k.lockfilePath);
                         retry = true;
@@ -205,7 +206,7 @@ namespace CKAN.ConsoleUI {
                         $"Error loading {ksp.GameDir()}:\n{k.Message}",
                         new List<string>() {"OK"}
                     );
-                    errd.Run();
+                    errd.Run(theme);
                     return false;
 
                 } catch (Exception e) {
@@ -214,7 +215,7 @@ namespace CKAN.ConsoleUI {
                         $"Error loading {Path.Combine(ksp.CkanDir(), "registry.json")}:\n{e.Message}",
                         new List<string>() {"OK"}
                     );
-                    errd.Run();
+                    errd.Run(theme);
                     return false;
 
                 }

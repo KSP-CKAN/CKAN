@@ -23,8 +23,8 @@ namespace CKAN.ConsoleUI {
                 GetLeft() + 2, GetTop() + 2, Console.WindowWidth / 2 - 1, GetBottom() - 4,
                 false,
                 TextAlign.Center,
-                () => ConsoleTheme.Current.PopupBg,
-                () => ConsoleTheme.Current.PopupFg
+                th => th.PopupBg,
+                th => th.PopupFg
             );
             AddObject(symbolTb);
             symbolTb.AddLine("Status Symbols");
@@ -46,8 +46,8 @@ namespace CKAN.ConsoleUI {
                 Console.WindowWidth / 2 + 1, GetTop() + 3, GetRight() - 2, GetBottom() - 4,
                 false,
                 TextAlign.Center,
-                () => ConsoleTheme.Current.PopupBg,
-                () => ConsoleTheme.Current.PopupFg
+                th => th.PopupBg,
+                th => th.PopupFg
             );
             AddObject(searchTb);
             searchTb.AddLine("Special Searches");

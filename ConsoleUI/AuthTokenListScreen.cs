@@ -56,23 +56,23 @@ namespace CKAN.ConsoleUI {
                 3, -1, -1,
                 () => "NOTE: These values are private! Do not share screenshots of this screen!",
                 null,
-                () => ConsoleTheme.Current.AlertFrameFg
+                th => th.AlertFrameFg
             ));
 
             AddTip("Esc", "Back");
-            AddBinding(Keys.Escape, (object sender) => false);
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
 
             tokenList.AddTip("A", "Add");
-            tokenList.AddBinding(Keys.A, (object sender) => {
+            tokenList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
                 AuthTokenAddDialog ad = new AuthTokenAddDialog();
-                ad.Run();
-                DrawBackground();
+                ad.Run(theme);
+                DrawBackground(theme);
                 tokenList.SetData(new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts()));
                 return true;
             });
 
             tokenList.AddTip("R", "Remove", () => tokenList.Selection != null);
-            tokenList.AddBinding(Keys.R, (object sender) => {
+            tokenList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
                 if (tokenList.Selection != null) {
                     ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(tokenList.Selection, null);
                     tokenList.SetData(new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts()));
@@ -97,9 +97,9 @@ namespace CKAN.ConsoleUI {
             return "Authentication Tokens";
         }
 
-        private bool openGitHubURL()
+        private bool openGitHubURL(ConsoleTheme theme)
         {
-            ModInfoScreen.LaunchURL(githubTokenURL);
+            ModInfoScreen.LaunchURL(theme, githubTokenURL);
             return true;
         }
 

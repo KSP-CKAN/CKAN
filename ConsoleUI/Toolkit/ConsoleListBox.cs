@@ -100,8 +100,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw the list box
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="focused">Framework parameter not relevant to this object</param>
-        public override void Draw(bool focused)
+        public override void Draw(ConsoleTheme theme, bool focused)
         {
             int l = GetLeft(), r = GetRight(),
                 t = GetTop(),  b = GetBottom(), h = b - t + 1;
@@ -140,8 +141,8 @@ namespace CKAN.ConsoleUI.Toolkit {
             for (int y = 0, index = topRow - 1; y < h; ++y, ++index) {
                 Console.SetCursorPosition(l, t + y);
                 if (y == 0) {
-                    Console.BackgroundColor = ConsoleTheme.Current.ListBoxHeaderBg;
-                    Console.ForegroundColor = ConsoleTheme.Current.ListBoxHeaderFg;
+                    Console.BackgroundColor = theme.ListBoxHeaderBg;
+                    Console.ForegroundColor = theme.ListBoxHeaderFg;
                     Console.Write(" ");
                     for (int i = 0; i < columns.Count; ++i) {
                         ConsoleListBoxColumn<RowT> col = columns[i];
@@ -159,11 +160,11 @@ namespace CKAN.ConsoleUI.Toolkit {
                     }
                 } else if (index >= 0 && index < sortedFilteredData.Count) {
                     if (topRow + y - 1 == selectedRow) {
-                        Console.BackgroundColor = ConsoleTheme.Current.ListBoxSelectedBg;
-                        Console.ForegroundColor = ConsoleTheme.Current.ListBoxSelectedFg;
+                        Console.BackgroundColor = theme.ListBoxSelectedBg;
+                        Console.ForegroundColor = theme.ListBoxSelectedFg;
                     } else {
-                        Console.BackgroundColor = ConsoleTheme.Current.ListBoxUnselectedBg;
-                        Console.ForegroundColor = ConsoleTheme.Current.ListBoxUnselectedFg;
+                        Console.BackgroundColor = theme.ListBoxUnselectedBg;
+                        Console.ForegroundColor = theme.ListBoxUnselectedFg;
                     }
                     Console.Write(" ");
                     for (int i = 0; i < columns.Count; ++i) {
@@ -181,8 +182,8 @@ namespace CKAN.ConsoleUI.Toolkit {
                         }
                     }
                 } else {
-                    Console.BackgroundColor = ConsoleTheme.Current.ListBoxUnselectedBg;
-                    Console.ForegroundColor = ConsoleTheme.Current.ListBoxUnselectedFg;
+                    Console.BackgroundColor = theme.ListBoxUnselectedBg;
+                    Console.ForegroundColor = theme.ListBoxUnselectedFg;
                 }
                 try {
                     if (y == 0) {
@@ -197,6 +198,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             // Now draw the scrollbar
             if (needScrollbar) {
                 DrawScrollbar(
+                    theme,
                     r, t + scrollTop, b,
                     sortedFilteredData.Count > 0
                         ? t + 1 + scrollTop + (h - 2 - scrollTop) * selectedRow / sortedFilteredData.Count
@@ -295,14 +297,14 @@ namespace CKAN.ConsoleUI.Toolkit {
                         "Ascending", "",
                         "Sort the list in ascending order",
                         true,
-                        () => { SortDirection  =  ListSortDirection.Ascending; return true; },
+                        (ConsoleTheme theme) => { SortDirection  =  ListSortDirection.Ascending; return true; },
                         () => { return sortDir == ListSortDirection.Ascending;              }
                     ),
                     new ConsoleMenuOption(
                         "Descending", "",
                         "Sort the list in descending order",
                         true,
-                        () => { SortDirection  =  ListSortDirection.Descending; return true;},
+                        (ConsoleTheme theme) => { SortDirection  =  ListSortDirection.Descending; return true;},
                         () => { return sortDir == ListSortDirection.Descending;             }
                     ),
                     null
@@ -319,7 +321,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                             ? $"Sort the list by column #{i+1}"
                             : $"Sort the list by the {columns[i].Header} column",
                         true,
-                        () => { SortColumnIndex = newIndex; return true; },
+                        (ConsoleTheme theme) => { SortColumnIndex = newIndex; return true; },
                         () => { return sortColIndex == newIndex;         }
                     ));
                 }
