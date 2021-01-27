@@ -242,6 +242,9 @@
     <Compile Include="Main\Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="Main\MainAutoUpdate.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Main\MainChangeset.cs">
       <SubType>Form</SubType>
     </Compile>

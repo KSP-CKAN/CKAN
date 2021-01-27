@@ -168,12 +168,14 @@ namespace CKAN
             {
                 Verb      = "runas",
                 FileName  = updaterFilename,
-                Arguments = String.Format(@"{0} ""{1}"" ""{2}"" {3}", pid, exePath, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch"),
-                UseShellExecute = false
+                Arguments = String.Format(@"{0} ""{1}"" ""{2}"" {3}", -pid, exePath, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch"),
+                UseShellExecute = false,
+                // Make child's stdin a pipe so it can tell when we exit
+                RedirectStandardInput = true,
+                CreateNoWindow = true,
             });
 
-            // exit this ckan instance
-            Environment.Exit(0);
+            // Caller should now exit. Let them do it safely.
         }
 
         public static void SetExecutable(string fileName)

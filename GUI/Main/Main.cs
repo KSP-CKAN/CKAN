@@ -245,36 +245,7 @@ namespace CKAN
                 configuration.Save();
             }
 
-            bool autoUpdating = false;
-
-            if (configuration.CheckForUpdatesOnLaunch && AutoUpdate.CanUpdate)
-            {
-                try
-                {
-                    log.Info("Making auto-update call");
-                    AutoUpdate.Instance.FetchLatestReleaseInfo();
-                    var latest_version = AutoUpdate.Instance.latestUpdate.Version;
-                    var current_version = new ModuleVersion(Meta.GetVersion());
-
-                    if (AutoUpdate.Instance.IsFetched() && latest_version.IsGreaterThan(current_version))
-                    {
-                        log.Debug("Found higher ckan version");
-                        var release_notes = AutoUpdate.Instance.latestUpdate.ReleaseNotes;
-                        var dialog = new NewUpdateDialog(latest_version.ToString(), release_notes);
-                        if (dialog.ShowDialog() == DialogResult.OK)
-                        {
-                            UpdateCKAN();
-                            autoUpdating = true;
-                        }
-                    }
-                }
-                catch (Exception exception)
-                {
-                    currentUser.RaiseError(Properties.Resources.MainAutoUpdateFailed, exception.Message);
-                    log.Error("Error in auto-update", exception);
-                }
-            }
-
+            bool autoUpdating = CheckForCKANUpdate();
             CheckTrayState();
             InitRefreshTimer();
 
@@ -403,53 +374,42 @@ namespace CKAN
 
             bool repoUpdateNeeded = configuration.RefreshOnStartup
                 || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
-            if (allowRepoUpdate && repoUpdateNeeded)
+            if (allowRepoUpdate)
             {
-                // Update the filters after UpdateRepo() completed.
-                // Since this happens with a backgroundworker, Filter() is added as callback for RunWorkerCompleted.
-                // Remove it again after it ran, else it stays there and is added again and again.
-                void filterUpdate(object sender, RunWorkerCompletedEventArgs e)
+                // If not allowing, don't do anything
+                if (repoUpdateNeeded)
                 {
+                    // Update the filters after UpdateRepo() completed.
+                    // Since this happens with a backgroundworker, Filter() is added as callback for RunWorkerCompleted.
+                    // Remove it again after it ran, else it stays there and is added again and again.
+                    void filterUpdate(object sender, RunWorkerCompletedEventArgs e)
+                    {
+                        ManageMods.Filter(
+                            (GUIModFilter)configuration.ActiveFilter,
+                            ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
+                            ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                                .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
+                        );
+                        m_UpdateRepoWorker.RunWorkerCompleted -= filterUpdate;
+                    }
+
+                    m_UpdateRepoWorker.RunWorkerCompleted += filterUpdate;
+
+                    ManageMods.ModGrid.Rows.Clear();
+                    UpdateRepo();
+                }
+                else
+                {
+                    ManageMods.UpdateModsList();
                     ManageMods.Filter(
                         (GUIModFilter)configuration.ActiveFilter,
                         ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
                         ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                             .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
                     );
-                    m_UpdateRepoWorker.RunWorkerCompleted -= filterUpdate;
                 }
-
-                m_UpdateRepoWorker.RunWorkerCompleted += filterUpdate;
-
-                ManageMods.ModGrid.Rows.Clear();
-                UpdateRepo();
-            }
-            else
-            {
-                ManageMods.UpdateModsList();
-                ManageMods.Filter(
-                    (GUIModFilter)configuration.ActiveFilter,
-                    ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
-                    ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                        .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
-                );
             }
             ManageMods.InstanceUpdated(CurrentInstance);
-        }
-
-        public void UpdateCKAN()
-        {
-            ResetProgress();
-            ShowWaitDialog(false);
-            SwitchEnabledState();
-            Wait.ClearLog();
-            tabController.RenameTab("WaitTabPage", Properties.Resources.MainUpgradingWaitTitle);
-            Wait.SetDescription(string.Format(Properties.Resources.MainUpgradingTo, AutoUpdate.Instance.latestUpdate.Version));
-
-            log.Info("Start ckan update");
-            BackgroundWorker updateWorker = new BackgroundWorker();
-            updateWorker.DoWork += (sender, args) => AutoUpdate.Instance.StartUpdateProcess(true, currentUser);
-            updateWorker.RunWorkerAsync();
         }
 
         public void UpdateModContentsTree(CkanModule module, bool force = false)

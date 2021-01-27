@@ -1,5 +1,3 @@
-﻿using System.Windows.Forms;
-
 namespace CKAN
 {
     partial class NewUpdateDialog
@@ -64,6 +62,8 @@ namespace CKAN
             this.ReleaseNotesTextbox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.ReleaseNotesTextbox.BackColor = System.Drawing.SystemColors.Control;
+            this.ReleaseNotesTextbox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ReleaseNotesTextbox.Location = new System.Drawing.Point(12, 25);
             this.ReleaseNotesTextbox.Name = "ReleaseNotesTextbox";
             this.ReleaseNotesTextbox.ReadOnly = true;
@@ -99,6 +99,7 @@ namespace CKAN
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.ClientSize = new System.Drawing.Size(426, 310);
             this.Controls.Add(this.CancelUpdateButton);
             this.Controls.Add(this.InstallUpdateButton);
@@ -118,7 +119,7 @@ namespace CKAN
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label VersionLabel;
-        private RichTextBox ReleaseNotesTextbox;
+        private System.Windows.Forms.RichTextBox ReleaseNotesTextbox;
         private System.Windows.Forms.Button InstallUpdateButton;
         private System.Windows.Forms.Button CancelUpdateButton;
     }
