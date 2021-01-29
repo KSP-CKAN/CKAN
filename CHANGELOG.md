@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Better version overrides in Netkan (#3265 by: HebaruSan; reviewed: DasSkelett)
 - [Tooling] Pull request merge script (#3263 by: HebaruSan; reviewed: DasSkelett)
 - [Build] Upload ckan.exe artifact on pull requests (#3273 by: DasSkelett; reviewed: HebaruSan)
+- [Build] Bump log4net from 2.0.8 to 2.0.10 (#3281 by: dependabot[bot]; reviewed: HebaruSan)
 
 ## v1.29.2 (Freedman)
 
