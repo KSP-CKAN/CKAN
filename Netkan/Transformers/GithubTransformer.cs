@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Github;
+using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -72,12 +74,43 @@ namespace CKAN.NetKAN.Transformers
                 bool returnedAny = false;
                 foreach (GithubRelease rel in versions)
                 {
-                    returnedAny = true;
-                    yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel);
+                    if (ghRef.VersionFromAsset != null)
+                    {
+                        Log.DebugFormat("Found version_from_asset regex, inflating all assets");
+                        foreach (var asset in rel.Assets)
+                        {
+                            var match = ghRef.VersionFromAsset.Match(asset.Name);
+                            if (!match.Success)
+                                continue;
+
+                            var extractedVersion = match.Groups["version"];
+                            if (!extractedVersion.Success)
+                                throw new Exception("version_from_asset contains no 'version' capturing group");
+
+                            returnedAny = true;
+                            yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel, asset, extractedVersion.Value);
+                        }
+                    }
+                    else
+                    {
+                        returnedAny = true;
+                        yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel, rel.Assets.FirstOrDefault(), rel.Tag.ToString());
+                    }
                 }
                 if (!returnedAny)
                 {
-                    Log.WarnFormat("No releases found for {0}", ghRef.Repository);
+                    if (ghRef.Filter != Constants.DefaultAssetMatchPattern)
+                    {
+                        Log.WarnFormat("No releases found for {0} with asset_match {1}", ghRef.Repository, ghRef.Filter);
+                    }
+                    else if (ghRef.VersionFromAsset != null)
+                    {
+                        Log.WarnFormat("No releases found for {0} with version_from_asset {1}", ghRef.Repository, ghRef.VersionFromAsset);
+                    }
+                    else
+                    {
+                        Log.WarnFormat("No releases found for {0}", ghRef.Repository);
+                    }
                     yield return metadata;
                 }
             }
@@ -87,7 +120,10 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private Metadata TransformOne(Metadata metadata, JObject json, GithubRef ghRef, GithubRepo ghRepo, GithubRelease ghRelease)
+        private Metadata TransformOne(
+            Metadata metadata, JObject json, GithubRef ghRef, GithubRepo ghRepo, GithubRelease ghRelease,
+            GithubReleaseAsset ghAsset, String version
+        )
         {
             if (!string.IsNullOrWhiteSpace(ghRepo.Description))
                 json.SafeAdd("abstract", ghRepo.Description);
@@ -114,11 +150,11 @@ namespace CKAN.NetKAN.Transformers
 
             if (ghRelease != null)
             {
-                json.SafeAdd("version",  ghRelease.Version.ToString());
+                json.SafeAdd("version",  version);
                 json.SafeAdd("author",   () => getAuthors(ghRepo, ghRelease));
                 json.Remove("$kref");
-                json.SafeAdd("download", ghRelease.Download.ToString());
-                json.SafeAdd(Metadata.UpdatedPropertyName, ghRelease.AssetUpdated);
+                json.SafeAdd("download", ghAsset.Download.ToString());
+                json.SafeAdd(Metadata.UpdatedPropertyName, ghAsset.Updated);
 
                 if (ghRef.Project.Contains("_"))
                 {

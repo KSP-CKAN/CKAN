@@ -6,7 +6,7 @@ namespace CKAN.NetKAN.Sources.Github
     internal sealed class GithubRef : RemoteRef
     {
         private static readonly Regex Pattern = new Regex(
-            @"^(?<account>[^/]+)/(?<project>[^/]+)(?:/asset_match/(?<filter>.+))?$",
+            @"^(?<account>[^/]+)/(?<project>[^/]+)(?:(/asset_match/(?<filter>.+))|(/version_from_asset/(?<versionFromAsset>.+)))?$",
             RegexOptions.Compiled
         );
 
@@ -14,6 +14,7 @@ namespace CKAN.NetKAN.Sources.Github
         public string Project { get; private set; }
         public string Repository { get; private set; }
         public Regex Filter { get; private set; }
+        public Regex VersionFromAsset { get; private set; }
         public bool UseSourceArchive { get; private set; }
         public bool UsePrerelease { get; private set; }
 
@@ -34,6 +35,10 @@ namespace CKAN.NetKAN.Sources.Github
                 Filter = match.Groups["filter"].Success ?
                     new Regex(match.Groups["filter"].Value, RegexOptions.Compiled) :
                     Constants.DefaultAssetMatchPattern;
+
+                VersionFromAsset = match.Groups["versionFromAsset"].Success ?
+                    new Regex(match.Groups["versionFromAsset"].Value, RegexOptions.Compiled) :
+                    null;
 
                 UseSourceArchive = useSourceArchive;
                 UsePrerelease = usePrerelease;

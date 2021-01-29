@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -30,8 +31,14 @@ namespace Tests.NetKAN.Transformers
                 .Returns(new GithubRelease(
                     "ExampleProject",
                     new ModuleVersion("1.0"),
-                    new Uri("http://github.example/download"),
-                    null
+                    new List<GithubReleaseAsset>
+                    {
+                        new GithubReleaseAsset(
+                            "download",
+                            new Uri("http://github.example/download"),
+                            null
+                        )
+                    }
                 ));
 
             mApi.Setup(i => i.GetAllReleases(It.IsAny<GithubRef>()))
@@ -39,18 +46,41 @@ namespace Tests.NetKAN.Transformers
                     new GithubRelease(
                         "ExampleProject",
                         new ModuleVersion("1.0"),
-                        new Uri("http://github.example/download/1.0"),
-                        null
+                        new List<GithubReleaseAsset>
+                        {
+                            new GithubReleaseAsset(
+                                "download",
+                                new Uri("http://github.example/download/1.0"),
+                                null
+                            )
+                        }
                     ),
                     new GithubRelease("ExampleProject",
                         new ModuleVersion("1.1"),
-                        new Uri("http://github.example/download/1.1"),
-                        null
+                        new List<GithubReleaseAsset>
+                        {
+                            new GithubReleaseAsset(
+                                "download",
+                                new Uri("http://github.example/download/1.1"),
+                                null
+                            )
+                        }
                     ),
                     new GithubRelease("ExampleProject",
                         new ModuleVersion("1.2"),
-                        new Uri("http://github.example/download/1.2"),
-                        null
+                        new List<GithubReleaseAsset>
+                        {
+                            new GithubReleaseAsset(
+                                "ExampleProject_1.2-1.8.1.zip",
+                                new Uri("http://github.example/download/1.2/ExampleProject_1.2-1.8.1.zip"),
+                                null
+                            ),
+                            new GithubReleaseAsset(
+                                "ExampleProject_1.2-1.9.1.zip",
+                                new Uri("http://github.example/download/1.2/ExampleProject_1.2-1.9.1.zip"),
+                                null
+                            )
+                        }
                     ),
                 });
 
@@ -97,16 +127,28 @@ namespace Tests.NetKAN.Transformers
                 .Returns(new GithubRelease(
                     "DestructionEffects",
                     new ModuleVersion("v1.8,0"),
-                    new Uri("https://github.com/jrodrigv/DestructionEffects/releases/download/v1.8%2C0/DestructionEffects.1.8.0_0412018.zip"),
-                    null
+                    new List<GithubReleaseAsset>
+                    {
+                        new GithubReleaseAsset(
+                            "DestructionEffects.1.8.0_0412018.zip",
+                            new Uri("https://github.com/jrodrigv/DestructionEffects/releases/download/v1.8%2C0/DestructionEffects.1.8.0_0412018.zip"),
+                            null
+                        )
+                    }
                 ));
 
             mApi.Setup(i => i.GetAllReleases(It.IsAny<GithubRef>()))
                 .Returns(new GithubRelease[] { new GithubRelease(
                     "DestructionEffects",
                     new ModuleVersion("v1.8,0"),
-                    new Uri("https://github.com/jrodrigv/DestructionEffects/releases/download/v1.8%2C0/DestructionEffects.1.8.0_0412018.zip"),
-                    null
+                    new List<GithubReleaseAsset>
+                    {
+                        new GithubReleaseAsset(
+                            "DestructionEffects.1.8.0_0412018.zip",
+                            new Uri("https://github.com/jrodrigv/DestructionEffects/releases/download/v1.8%2C0/DestructionEffects.1.8.0_0412018.zip"),
+                            null
+                        )
+                    }
                 )});
 
             ITransformer sut = new GithubTransformer(mApi.Object, false);
@@ -151,6 +193,43 @@ namespace Tests.NetKAN.Transformers
         }
 
         [Test]
+        public void Transform_MultipleAssets_TransformsAll()
+        {
+            // Arrange
+            var json = new JObject();
+            json["spec_version"] = 1;
+            json["$kref"] = "#/ckan/github/ExampleAccount/ExampleProject/version_from_asset/^.+_(?<version>.+)\\.zip$";
+
+            var sut = new GithubTransformer(apiMockUp.Object, false);
+
+            // Act
+            var results = sut.Transform(
+                new Metadata(json),
+                new TransformOptions(1, 2, null)
+            );
+            var transformedJsons = results.Select(result => result.Json()).ToArray();
+
+            // Assert
+            Assert.AreEqual(
+                "http://github.example/download/1.2/ExampleProject_1.2-1.8.1.zip",
+                (string)transformedJsons[0]["download"]
+            );
+            Assert.AreEqual(
+                "http://github.example/download/1.2/ExampleProject_1.2-1.9.1.zip",
+                (string)transformedJsons[1]["download"]
+            );
+
+            Assert.AreEqual(
+                "1.2-1.8.1",
+                (string)transformedJsons[0]["version"]
+            );
+            Assert.AreEqual(
+                "1.2-1.9.1",
+                (string)transformedJsons[1]["version"]
+            );
+        }
+
+        [Test]
         public void Transform_SkipReleases_SkipsCorrectly()
         {
             // Arrange
@@ -165,7 +244,6 @@ namespace Tests.NetKAN.Transformers
                 new Metadata(json),
                 new TransformOptions(3, 1, null)
             ).ToArray();
-            // var transformedJsons = results.Select(result => result.Json()).ToArray();
 
             // Assert
             Assert.AreEqual(
