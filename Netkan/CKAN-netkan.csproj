@@ -42,7 +42,7 @@
     <PackageReference Include="AWSSDK.SQS" Version="3.3.102.31" />
     <PackageReference Include="CommandLineParser" Version="1.9.71" />
     <PackageReference Include="ICSharpCode.SharpZipLib.Patched" Version="0.86.5.1" />
-    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="log4net" Version="2.0.10" />
     <PackageReference Include="Namotion.Reflection" Version="1.0.7" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NJsonSchema" Version="10.0.27" />
