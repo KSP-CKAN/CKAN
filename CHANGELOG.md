@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Upload ckan.exe artifact on pull requests (#3273 by: DasSkelett; reviewed: HebaruSan)
 - [Build] Bump log4net from 2.0.8 to 2.0.10 (#3281 by: dependabot[bot]; reviewed: HebaruSan)
 - [Netkan] Support indexing mulitple release assets on GitHub  (#3279 by: DasSkelett; reviewed: HebaruSan)
+- [Netkan] Netkan warning for multiple assets (#3286 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.29.2 (Freedman)
 

@@ -62,17 +62,17 @@ namespace CKAN.NetKAN.Transformers
                 {
                     Log.Warn("Repo is archived, consider freezing");
                 }
-                var versions = _api.GetAllReleases(ghRef);
+                var releases = _api.GetAllReleases(ghRef);
                 if (opts.SkipReleases.HasValue)
                 {
-                    versions = versions.Skip(opts.SkipReleases.Value);
+                    releases = releases.Skip(opts.SkipReleases.Value);
                 }
                 if (opts.Releases.HasValue)
                 {
-                    versions = versions.Take(opts.Releases.Value);
+                    releases = releases.Take(opts.Releases.Value);
                 }
                 bool returnedAny = false;
-                foreach (GithubRelease rel in versions)
+                foreach (GithubRelease rel in releases)
                 {
                     if (ghRef.VersionFromAsset != null)
                     {
@@ -93,6 +93,11 @@ namespace CKAN.NetKAN.Transformers
                     }
                     else
                     {
+                        if (rel.Assets.Count > 1)
+                        {
+                            Log.WarnFormat("Multiple assets found for {0} {1} without `version_from_asset`",
+                                metadata.Identifier, rel.Tag);
+                        }
                         returnedAny = true;
                         yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel, rel.Assets.FirstOrDefault(), rel.Tag.ToString());
                     }
