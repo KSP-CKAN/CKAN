@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Model;
+using Newtonsoft.Json;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -29,8 +31,25 @@ namespace CKAN.NetKAN.Transformers
                 var findRegex = new Regex(versionEditInfo.Find);
                 if (findRegex.IsMatch(versionEditInfo.Version))
                 {
-                    json["version"] = new Regex(versionEditInfo.Find)
+                    string version = new Regex(versionEditInfo.Find)
                         .Replace(versionEditInfo.Version, versionEditInfo.Replace);
+
+                    var versionPieces = json["x_netkan_version_pieces"]?.Value<JObject>()
+                        .ToObject<Dictionary<string, string>>();
+
+                    if (versionPieces != null)
+                    {
+                        version = versionPieces.Aggregate(
+                            version,
+                            (v, kvp) =>
+                            {
+                                Log.Debug($"Replacing ${{{kvp.Key}}} with {kvp.Value} in {v}");
+                                return v.Replace($"${{{kvp.Key}}}", kvp.Value);
+                            });
+                    }
+
+
+                    json["version"] = version;
                 }
                 else if (versionEditInfo.Strict)
                 {

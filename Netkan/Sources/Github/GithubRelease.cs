@@ -1,21 +1,20 @@
 using System;
+using System.Collections.Generic;
 using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Sources.Github
 {
     public sealed class GithubRelease
     {
-        public string           Author       { get; }
-        public ModuleVersion    Version      { get; }
-        public Uri              Download     { get; }
-        public DateTime?        AssetUpdated { get; }
+        public string        Author { get; }
+        public ModuleVersion Tag    { get; }
+        public List<GithubReleaseAsset> Assets { get; }
 
-        public GithubRelease(string author, ModuleVersion version, Uri download, DateTime? updated)
+        public GithubRelease(string author, ModuleVersion tag, List<GithubReleaseAsset> assets)
         {
             Author       = author;
-            Version      = version;
-            Download     = download;
-            AssetUpdated = updated;
+            Tag          = tag;
+            Assets       = assets;
         }
     }
 }

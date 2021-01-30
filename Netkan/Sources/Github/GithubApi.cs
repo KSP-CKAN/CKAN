@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -80,31 +80,36 @@ namespace CKAN.NetKAN.Sources.Github
                         var version = new ModuleVersion((string)release["tag_name"]);
                         var author = (string)release["author"]["login"];
 
-                        Uri       download = null;
-                        DateTime? updated  = null;
+                        List<GithubReleaseAsset> allAssets;
 
                         if (reference.UseSourceArchive)
                         {
                             Log.Debug("Using GitHub source archive");
-                            download = new Uri((string)release["zipball_url"]);
-                            updated = (DateTime)release["published_at"];
+                            Uri download = new Uri((string)release["zipball_url"]);
+                            DateTime?  updated = (DateTime)release["published_at"];
+                            allAssets = new List<GithubReleaseAsset> { new GithubReleaseAsset(version.ToString(), download, updated) };
                         }
                         else
                         {
+                            allAssets = new List<GithubReleaseAsset>();
                             var assets = (JArray)release["assets"];
 
                             foreach (var asset in assets.Where(asset => reference.Filter.IsMatch((string)asset["name"])))
                             {
                                 Log.DebugFormat("Using GitHub asset: {0}", asset["name"]);
-                                download = new Uri((string)asset["browser_download_url"]);
-                                updated = (DateTime)asset["updated_at"];
-                                break;
+                                Uri download = new Uri((string)asset["browser_download_url"]);
+                                DateTime? updated = (DateTime)asset["updated_at"];
+
+                                allAssets.Add(new GithubReleaseAsset(
+                                        (string)asset["name"], download, updated
+                                    )
+                                );
                             }
                         }
 
-                        if (download != null)
+                        if (allAssets.Any())
                         {
-                            yield return new GithubRelease(author, version, download, updated);
+                            yield return new GithubRelease(author, version, allAssets);
                         }
                     }
                 }
@@ -116,13 +121,13 @@ namespace CKAN.NetKAN.Sources.Github
                 }
             }
         }
-        
+
         public List<GithubUser> getOrgMembers(GithubUser organization)
         {
             return JsonConvert.DeserializeObject<List<GithubUser>>(
                 Call($"orgs/{organization.Login}/public_members")
             );
-        }        
+        }
 
         /// <summary>
         /// Download a URL via the GitHubAPI.

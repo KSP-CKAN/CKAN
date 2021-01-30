@@ -731,7 +731,7 @@ When used, the following fields will be auto-filled if not already present:
 - `resources.curse`
 - `ksp_version`
 
-###### `#/ckan/github/:user/:repo[/asset_match/:filter_regexp]`
+###### `#/ckan/github/:user/:repo[(/asset_match/:filter_regexp)|(/version_from_asset/:version_regexp)]`
 
 Indicates that data should be fetched from GitHub, using the `:user` and `:repo` provided.
 For example: `#/ckan/github/pjf/DogeCoinFlag`.
@@ -749,10 +749,21 @@ When used, the following fields will be auto-filled if not already present:
 - `download_content_type`
 - `resources.repository`
 
-Optionally, one asset `:filter_regexp` directive *may* be provided:
+Optionally, one of `asset_match` with `:filter_regexp` *or* `version_from_asset` with `:version_regexp` *may* be provided:
 
-- `filter_regexp`: A string which is treated as  case-sensitive C# regular expressions which are matched against the
+- `asset_match` with `filter_regexp`: A string which is treated as case-sensitive C# regular expressions which are matched against the
   name of the released artifact.
+- `version_from_asset` with `:version_regexp`: A string which is treated as case-sensitive C# regular expressions which are matched
+  against the names of all release artifacts. Every matching artifact will result in a separate metadata output. The `:version_regexp`
+  must have a named capturing group `version`, which is used as the `version` of each asset's module.
+
+An example `.netkan` excerpt:
+
+```json
+{
+    "$kref": "#/ckan/github/pjf/DogeCoinFlag/version_from_asset/^DogeCoinFlag-(?<version>.+).zip$"
+}
+```
 
 An `x_netkan_github` field may be provided to customize how the metadata is fetched from GitHub. It is an `object` with the following fields:
 
@@ -954,6 +965,8 @@ an `object` with the following fields:
 - `replace` (type: `string`, regex substitution) (default: `"${version}"`)<br/>
   Specifies a [regex substitution string](https://msdn.microsoft.com/en-us/library/ewy2t5e0%28v=vs.110%29.aspx) which
   will be used as the value of the new `version` field.
+  The following special variables are supported and will be filled in by various metadata aggregated during inflation:
+  - `${tag}` (`$kref #/ckan/github` only): Replaced with the release tag from GitHub.
 - `strict` (type: `boolean`, default: `true`)<br/>
   Specifies if NetKAN should produce an error if `find` fails to produce a match against the `version` field.
 

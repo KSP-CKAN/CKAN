@@ -1,5 +1,5 @@
 ﻿using System;
-﻿using System.Linq;
+using System.Linq;
 using CKAN.Versioning;
 using Newtonsoft.Json.Linq;
 

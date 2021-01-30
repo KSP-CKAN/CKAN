@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using CKAN;
 using CKAN.NetKAN.Services;
@@ -48,8 +49,9 @@ namespace Tests.NetKAN.Sources.Github
 
             // Assert
             Assert.IsNotNull(githubRelease.Author);
-            Assert.IsNotNull(githubRelease.Download);
-            Assert.IsNotNull(githubRelease.Version);
+            Assert.IsNotNull(githubRelease.Tag);
+            Assert.IsNotNull(githubRelease.Assets.FirstOrDefault());
+            Assert.IsNotNull(githubRelease.Assets.FirstOrDefault()?.Download);
         }
     }
 }
