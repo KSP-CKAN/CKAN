@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Allow label to pin installed mod version (#3220 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] language: fr-FR (#3272 by: vinix38; reviewed: HebaruSan)
 - [ConsoleUI] Dark theme for ConsoleUI (#3226 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Visual cues for incompatibility reasons (#3271 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

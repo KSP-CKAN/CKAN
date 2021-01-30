@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
 using CKAN.Versioning;
@@ -140,7 +141,27 @@ namespace CKAN
 
             Util.Invoke(MetadataModuleReleaseStatusTextBox, () => MetadataModuleReleaseStatusTextBox.Text = module.release_status?.ToString() ?? Properties.Resources.ModInfoNSlashA);
             Util.Invoke(MetadataModuleGameCompatibilityTextBox, () => MetadataModuleGameCompatibilityTextBox.Text = gui_module.GameCompatibilityLong);
-            Util.Invoke(ReplacementTextBox, () => ReplacementTextBox.Text = gui_module.ToModule()?.replaced_by?.ToString() ?? Properties.Resources.ModInfoNSlashA);
+            Util.Invoke(ReplacementTextBox, () => ReplacementTextBox.Text = module?.replaced_by?.ToString() ?? Properties.Resources.ModInfoNSlashA);
+
+            Util.Invoke(ModInfoTabControl, () =>
+            {
+                // Mono doesn't draw TabPage.ImageIndex, so fake it
+                const string fakeStopSign = "<!> ";
+                ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ModInfo));
+                resources.ApplyResources(RelationshipTabPage,   "RelationshipTabPage");
+                resources.ApplyResources(AllModVersionsTabPage, "AllModVersionsTabPage");
+                if (gui_module.IsIncompatible)
+                {
+                    if (!module.IsCompatibleKSP(manager.CurrentInstance.VersionCriteria()))
+                    {
+                        AllModVersionsTabPage.Text = fakeStopSign + AllModVersionsTabPage.Text;
+                    }
+                    else
+                    {
+                        RelationshipTabPage.Text = fakeStopSign + RelationshipTabPage.Text;
+                    }
+                }
+            });
 
             Util.Invoke(MetaDataLowerLayoutPanel, () =>
             {
