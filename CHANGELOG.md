@@ -21,10 +21,10 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [GUI] Make Mono 6 builds work on Windows (#3218, #3219 by: HebaruSan; reviewed: DasSkelett)
-- [Cmdline] Format installation errors for GitHub Actions in headless mode (#3239 by: HebaruSan; reviewed: DasSkelett)
+- [CLI] Format installation errors for GitHub Actions in headless mode (#3239 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Fix Netkan timezones again (#3246 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Better version overrides in Netkan (#3265 by: HebaruSan; reviewed: DasSkelett)
-- [Tooling] Pull request merge script (#3263 by: HebaruSan; reviewed: DasSkelett)
+- [Tooling] Pull request merge script (#3263, #3276 by: HebaruSan; reviewed: DasSkelett)
 - [Build] Upload ckan.exe artifact on pull requests (#3273 by: DasSkelett; reviewed: HebaruSan)
 - [Build] Bump log4net from 2.0.8 to 2.0.10 (#3281 by: dependabot[bot]; reviewed: HebaruSan)
 - [Netkan] Support indexing mulitple release assets on GitHub  (#3279 by: DasSkelett; reviewed: HebaruSan)
@@ -35,7 +35,7 @@ All notable changes to this project will be documented in this file.
 
 - [Multiple] Allow upgrading manually installed modules (#3190 by: HebaruSan; reviewed: DasSkelett)
 - [Build] Generate APT repo for releases and under dev builds (#3197, #3201, #3202, #3203, #3208, #3215 by: HebaruSan, techman83; reviewed: DasSkelett, HebaruSan)
-- [Cmdline] Confirmation prompt for Cmdline upgrades (#3204 by: HebaruSan; reviewed: DasSkelett)
+- [CLI] Confirmation prompt for Cmdline upgrades (#3204 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Allow sort by multiple columns (#3205 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
@@ -183,7 +183,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
-- [DLL] Filter compatible modules by compatibility (#2980 by: HebaruSan; reviewed: politas)
+- [Core] Filter compatible modules by compatibility (#2980 by: HebaruSan; reviewed: politas)
 
 ### Internal
 
@@ -204,7 +204,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Don't launch KSP 1.8 with -single-instance (#2931 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Handle multiple errors in same ErrorDialog (#2933 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Multiple manual downloads, uncached filter, purge option (#2930 by: HebaruSan; reviewed: DasSkelett)
-- [Cmdline] Return failure on failed commands for headless prompt (#2941 by: HebaruSan; reviewed: DasSkelett)
+- [CLI] Return failure on failed commands for headless prompt (#2941 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Obey system colors for dark theme support (#2937 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Workaround to launch URLs (#2958 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Memoize lazily evaluated sequences (#2953 by: HebaruSan; reviewed: DasSkelett)
@@ -273,7 +273,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Add scrollbars to metadata tab (#2759 by: DasSkelett; reviewed: HebaruSan)
 - [Core] Detect Breaking Ground DLC (#2768 by: dbent; reviewed: Olympic1, HebaruSan)
 - [GUI] Internationalize the GUI (#2749 by: HebaruSan, DasSkelett; reviewed: DasSkelett, Olympic1)
-- [NetKAN] Extract locales from downloads (#2760 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Extract locales from downloads (#2760 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Add menu option to report issues in the CKAN repo (#2801 by: DasSkelett; reviewed: HebaruSan)
 - [Netkan] Migrate Perl validation checks into netkan.exe (#2788 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Open ZIP button, instance name in status bar, description scroll bar (#2813 by: HebaruSan; reviewed: DasSkelett)
@@ -477,7 +477,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
-- [core] Ignore conflicts between versions of same mod (#2430 by: HebaruSan; reviewed: politas)
+- [Core] Ignore conflicts between versions of same mod (#2430 by: HebaruSan; reviewed: politas)
 - [GUI] Don't Force Apply button active when no update selected (#2429 by: DasSkelett; reviewed: politas)
 - [Core] Improve handling of missing game version (#2444 by: HebaruSan; reviewed: politas)
 - [Core] Handle zero byte registry.json file (#2435 by: HebaruSan; reviewed: politas)
@@ -501,7 +501,7 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Splitter and tabstrip visual improvements (#2413 by: HebaruSan; reviewed: politas)
 - [GUI] Fix "Collection was modified" exception for redundant optional dependencies (#2423 by: HebaruSan; reviewed: politas)
-- [core] Treat installed DLC as compatible dependency (#2424 by: HebaruSan; reviewed: politas)
+- [Core] Treat installed DLC as compatible dependency (#2424 by: HebaruSan; reviewed: politas)
 - [GUI] Ignore splitter exceptions (#2426 by: HebaruSan; reviewed: politas)
 
 ### Internal
@@ -604,7 +604,7 @@ All notable changes to this project will be documented in this file.
 
 - [Build] Add skip_deploy to GitHub release deploy provider (#2151 by: dbent; reviewed: politas)
 - [Build] Fix build errors for UpdateCol (#2153 by: politas; reviewed: Olympic1)
-- [Auto-updater] Move AskForAutoUpdates dialog to center of screen (#2165 by: politas; reviewed: Olympic1)
+- [Updater] Move AskForAutoUpdates dialog to center of screen (#2165 by: politas; reviewed: Olympic1)
 - [Core] Clean up registry lock file after parse failure (#2175 by: HebaruSan; reviewed: politas)
 - [Core] Purge 6 MB of bloat from `registry.json` (#2179 by: HebaruSan; reviewed: politas)
 - [Build] Only check first three segments of version in ci (#2192, #2195 by: HebaruSan; reviewed: techman83, Olympic1)
@@ -636,7 +636,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Remove unnecessary using directives (#2181 by: HebaruSan; reviewed: politas)
 - [Build] Cleanup project (#2182 by: Olympic1; reviewed: HebaruSan, politas, dbent)
 - [Core] Simplify IUser (#2163 by: HebaruSan; reviewed: politas)
-- [NetKAN] Adapt Curse API to new widget (#2189 by: HebaruSan; reviewed: Olympic1)
+- [Netkan] Adapt Curse API to new widget (#2189 by: HebaruSan; reviewed: Olympic1)
 - [Reporting] Improvement of issues template to help with bug reporting (#2201 by: HebaruSan; reviewed: Olympic1)
 
 ## v1.22.6 (Guiana)
@@ -645,7 +645,7 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Fix search box tab order (#2141 by: HebaruSan; reviewed: politas)
 - [Core] Check for stale lock files (#2139 by: HebaruSan; reviewed: politas)
-- [NetKAN] Improve error output (#2144 by: HebaruSan; reviewed: Olympic1)
+- [Netkan] Improve error output (#2144 by: HebaruSan; reviewed: Olympic1)
 - [GUI] REVERT #1929: Allow uninstall of incompatible mods in GUI (#2150 by: politas)
 
 ## v1.22.5 (Xichang)
@@ -686,7 +686,7 @@ All notable changes to this project will be documented in this file.
 
 - [CLI] Removed non-functioning code on available command (#1966 by: politas; reviewed: dbent)
 - [Core] Switch Linux and MacOS to native C# downloads (#2023 by: politas; reviewed: pjf)
-- [NetKAN] Convert spaces to %20 in Curse URLs (#2041 by: politas; reviewed: -)
+- [Netkan] Convert spaces to %20 in Curse URLs (#2041 by: politas; reviewed: -)
 
 ### Features
 
@@ -696,7 +696,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Update Build for Mono 5.0.0 (#2049 by: dbent; reviewed: politas)
 - [Build] Update Update build (#2050 by: dbent; reviewed: politas)
 - [Core] Update KSP builds (#2056 by: Olympic1; reviewed: linuxgurugamer)
-- [NetKAN] Canonicalize non-raw GitHub URIs (#2054 by: dbent; reviewed: politas)
+- [Netkan] Canonicalize non-raw GitHub URIs (#2054 by: dbent; reviewed: politas)
 
 ## v1.22.1 (Georgy)
 
@@ -718,7 +718,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Multiple] Add log4net.xml, refactor logging init and log to file by default (#1881 by: ayan4m1; reviewed: politas)
-- [NetKAN] Add regexp second test for filespecs (#1919 by: politas; reviewed: ayan4m1)
+- [Netkan] Add regexp second test for filespecs (#1919 by: politas; reviewed: ayan4m1)
 - [Core] Changed name of registry lock file to registry.lock (#1944 by: politas; reviewed: ayan4m1)
 - [GUI] Modlist hides epochs by default (#1942 by: politas; reviewed: ayan4m1)
 - [Core/GUI] Let users select compatible KSP versions (#1957 by: grzegrzk; reviewed: dbent, politas)
@@ -743,7 +743,7 @@ All notable changes to this project will be documented in this file.
 
 - [GUI/CLI] Replace /n with /r/n in text messages, replaced CKAN-meta/issues links (#1846 by: DinCahill; reviewed: politas)
 - [GUI] Fix FIPS-mode exceptions on Domain-connected Windows PCs (#1845 by: politas, #1850 by: ayan4m1; reviewed: politas)
-- [All] Refactoring variables per project guidelines, Add Report Issue link in Help Menu, make SafeAdd safer, cleanup some Doco wording (#1849 by: ayan4m1; reviewed: politas)
+- [Multiple] Refactoring variables per project guidelines, Add Report Issue link in Help Menu, make SafeAdd safer, cleanup some Doco wording (#1849 by: ayan4m1; reviewed: politas)
 - [GUI] Resize KSP Version Label to keep in window (#1837 by: Telanor, #1854 by: politas; reviewed: ayan4m1)
 - [GUI] Fix GUI exceptions when installing/uninstalling after sorting by KSP max version (#1882, #1887 by: ayan4m1; reviewed: politas)
 - [Core] Fix Windows-only NullReferenceException and add more ModuleInstaller tests (#1880 by: ayan4m1; reviewed: politas)
@@ -751,12 +751,12 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Add Back and Forward buttons to the GUI to jump to selected mods (#1841 by: b-w; reviewed: politas)
-- [NetKAN] GitHub Transformer now extracts the repository name and transforms it to a usable ckan name (#1613 by: Olympic1; reviewed: pjf)
+- [Netkan] GitHub Transformer now extracts the repository name and transforms it to a usable ckan name (#1613 by: Olympic1; reviewed: pjf)
 - [GUI] Don't show suggested/recommended for mods that can't be installed (#1427 by: Postremus; reviewed: politas)
 - [Core] Remove empty directories when uninstalling mods (#1873 by: politas; reviewed: ayan4m1)
 - [Core] Users are less able to run two copies of CKAN at the same time. (#1265 by: mgsdk, #1357 by: pjf, #1828 by: politas; reviewed: ayan4m1)
-- [NetKAN] Add Curse as a $kref source (#1608 by: airminer, Olympic1; reviewed: dbent, pjf, techman83, ayan4m1)
-- [All] Relationship changes now prompt reinstalling (#1730 by: dbent, #1885 by: ayan4m1; reviewed: plague006, pjf)
+- [Netkan] Add Curse as a $kref source (#1608 by: airminer, Olympic1; reviewed: dbent, pjf, techman83, ayan4m1)
+- [Multiple] Relationship changes now prompt reinstalling (#1730 by: dbent, #1885 by: ayan4m1; reviewed: plague006, pjf)
 - [GUI] Add "X" icon to filter text boxes that clears the control (#1883 by: ayan4m1; reviewed: politas)
 
 ## v1.18.1 (StarTrammier)
@@ -804,14 +804,14 @@ All notable changes to this project will be documented in this file.
 - [Spec] Clarified the `install_to` directive. (#1771 by: politas; reviewed: plague006)
 - [Spec] Clarified example of a complete metanetkan file (#1753 by: plague006; reviewed: politas)
 - [Spec] Removed stray comma (#1736 by: plague006; reviewed: politas)
-- [NetKAN] Catch ValueErrors rather than printing the trace (#1648 by: techman83; reviewed: Daz)
-- [NetKAN] Catch `ksp_version` from SpaceDocks newly implemented `game_version` (#1655 by: dbent; reviewed: -)
-- [NetKAN] Allow specifying when an override is executed (#1684 by: dbent; reviewed: techman83)
-- [NetKAN] Redirects to the download file are now resolved when using HTTP $krefs (#1696 by: dbent; reviewed: techman83)
-- [NetKAN] Remote AVC files will be used in preference to ones stored in the archive if they have the same version (#1701 by: dbent; reviewed: techman83)
-- [NetKAN] Sensible defaults are used when fetching abstract and homepage from github. (#1726, #1723 by: dbent; reviewed: politas)
-- [NetKAN] Add Download Attribute Transformer (#1710 by: techman83; reviewed: dbent)
-- [NetKAN] Add ksp_version_strict to property sort order (#1722 by: dbent; reviewed: plague006)
+- [Netkan] Catch ValueErrors rather than printing the trace (#1648 by: techman83; reviewed: Daz)
+- [Netkan] Catch `ksp_version` from SpaceDocks newly implemented `game_version` (#1655 by: dbent; reviewed: -)
+- [Netkan] Allow specifying when an override is executed (#1684 by: dbent; reviewed: techman83)
+- [Netkan] Redirects to the download file are now resolved when using HTTP $krefs (#1696 by: dbent; reviewed: techman83)
+- [Netkan] Remote AVC files will be used in preference to ones stored in the archive if they have the same version (#1701 by: dbent; reviewed: techman83)
+- [Netkan] Sensible defaults are used when fetching abstract and homepage from github. (#1726, #1723 by: dbent; reviewed: politas)
+- [Netkan] Add Download Attribute Transformer (#1710 by: techman83; reviewed: dbent)
+- [Netkan] Add ksp_version_strict to property sort order (#1722 by: dbent; reviewed: plague006)
 - [Docs] Updated `CONTRIBUTING.md` and `README.md` documentation. (#1748 by: plague006; reviewed: politas)
 - [Build] Support for mono 3.2.8 deprecated (#1715 by: dbent; reviewed: techman83)
 - [Build] Added support for building the CKAN client into a docker container. (#1747 by: mathuin; reviewed: pjf)
@@ -836,13 +836,13 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
-- [General] General code tidy-up. (#1582, #1602 by: ChucklesTheBeard; reviewed: plague006, Olympic1)
+- [GUI] General code tidy-up. (#1582, #1602 by: ChucklesTheBeard; reviewed: plague006, Olympic1)
 - [GUI] Avoidance of a future bug involving how we query users regarding choices. (#1538 by: pjf, RichardLake; reviewed: Postremus)
 - [GUI] Fixed mispellings in the word "directory". (#1624 by: tonygambone; reviewed: pjf)
 - [Spec] Updated Spec with newer `netkan.exe` features. (#1581 by: dbent; reviewed: Dazpoet)
-- [NetKAN] `netkan.exe` now has support for downloading GitHub sources of a release. (#1587 by: dbent; reviewed: Olympic1)
-- [NetKAN] `netkan.exe` checks for malformed url's and prevents them from being added to the metadata. (#1580 by: dbent; reviewed: Olympic1)
-- [NetKAN] `netkan.exe` will now add all authors listed on SpaceDock (#1600, #1620 by: dbent; reviewed: techman83)
+- [Netkan] `netkan.exe` now has support for downloading GitHub sources of a release. (#1587 by: dbent; reviewed: Olympic1)
+- [Netkan] `netkan.exe` checks for malformed url's and prevents them from being added to the metadata. (#1580 by: dbent; reviewed: Olympic1)
+- [Netkan] `netkan.exe` will now add all authors listed on SpaceDock (#1600, #1620 by: dbent; reviewed: techman83)
 - [Core] Spelling mistake in documentation fixed (#1623 by: Dazpoet; reviewed: pjf)
 - [Reporting] Creation of an issues template to help with bug reporting. (#1596, #1598 by: plague006, Shuudoushi; reviewed: Dazpoet, Olympic1)
 
@@ -862,8 +862,8 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
-- [NetKAN] `netkan.exe` will now sort `conflicts` relationships next to other relationships. (dbent, #1496)
-- [NetKAN] `netkan.exe` now has much better support for Jenkins CI servers, allowing full automation. (dbent, #1512)
+- [Netkan] `netkan.exe` will now sort `conflicts` relationships next to other relationships. (dbent, #1496)
+- [Netkan] `netkan.exe` now has much better support for Jenkins CI servers, allowing full automation. (dbent, #1512)
 
 ## v1.14.3 (Haumea)
 
@@ -915,12 +915,12 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-- [All] When installing and uninstalling mods, the mod name and version will be used rather than the internal identifier. (Postremus, #1401)
+- [Multiple] When installing and uninstalling mods, the mod name and version will be used rather than the internal identifier. (Postremus, #1401)
 - [GUI] The GUI changeset screen now provides explanations as to why changes are being made. (Postremus, #1412)
 
 ### Internal
 
-- [NetKAN] `netkan.exe` will now report its version and exit if run with the `--version` switch. (pjf, #1415)
+- [Netkan] `netkan.exe` will now report its version and exit if run with the `--version` switch. (pjf, #1415)
 
 ## v1.14.0 (Mimas)
 
@@ -931,7 +931,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Pressing a key with an empty modlist will no longer crash the client. (Postremus, #1329)
 - [GUI] The 'mark for update' button no longer highlights when the only upgrade candidates are autodetected mods we can't actually upgrade. (Postremus, #1392)
 - [Core] Installing from `.ckan` files (such as exported modlists) is more likely to succeed even when dependencies are complex. (#1337, Postremus)
-- [Cmdline] `ckan.exe --verbose` and `ckan.exe --debug` now start the GUI with the appropriate logging mode. (#1403, Postremus)
+- [CLI] `ckan.exe --verbose` and `ckan.exe --debug` now start the GUI with the appropriate logging mode. (#1403, Postremus)
 - [Updater] We'll no longer try to download a CKAN release that hasn't finished building its assets yet. (Postremus, #1397)
 
 ### Features
@@ -948,11 +948,11 @@ All notable changes to this project will be documented in this file.
 
 - [Core] Additional tests against autodetected mods in the RelationshipResolver. (Postremus and pjf, #1226 and #1355)
 - [GUI] Removed a spurious warning when building. (pjf, #1343)
-- [NetKAN] Reading of information from `.version` files greatly improved, especially when mixing metadata from other sources like github and kerbalstuff. (dbent, #1299)
+- [Netkan] Reading of information from `.version` files greatly improved, especially when mixing metadata from other sources like github and kerbalstuff. (dbent, #1299)
 - [Core] Files can now be installed to `saves/scenarios` using the `Scenarios` target. (pjf, #1360)
 - [Spec] Grammar corrections. (Postremus, #1400)
-- [NetKAN] Files produced by `netkan.exe` have more stable field ordering. (dbent, #1304)
-- [NetKAN] `netkan.exe` can use regexps to manipulate version strings. (dbent, #1321)
+- [Netkan] Files produced by `netkan.exe` have more stable field ordering. (dbent, #1304)
+- [Netkan] `netkan.exe` can use regexps to manipulate version strings. (dbent, #1321)
 - [GUI] Refactoring to remove duplicated code. (Postremus, #1362)
 
 ## v1.12.0 (Veil Nebula)
@@ -961,8 +961,8 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Hitting `cancel` is much more likely to actually cancel an install-in-progress (Postremus, #1325)
 - [GUI] Fewer crashes when double-clicking on an auto-detected mod (Postremus, #1237)
-- [Cmdline] `ckan compare` fails more gracefully when called without arguments (Postremus, #1283)
-- [Cmdline] `ckan show` more accurately displays the cached filename (mgsdk, #1266)
+- [CLI] `ckan compare` fails more gracefully when called without arguments (Postremus, #1283)
+- [CLI] `ckan show` more accurately displays the cached filename (mgsdk, #1266)
 - [Core] We fail more gracefully when mod metadata can't be downloaded (Postremus, #1291)
 
 ### Features
@@ -979,8 +979,8 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
-- [NetKAN] Cached files have more descriptive file extensions (dbent, #1308)
-- [NetKAN] A warning is generated if a file without a `.netkan` extension is processed (dbent, #1308)
-- [NetKAN] We better handle null values in retrieved metadata (dbent, #1324)
-- [NetKAN] Better handling of license strings with leading and trailing spaces (dbent, #1305)
+- [Netkan] Cached files have more descriptive file extensions (dbent, #1308)
+- [Netkan] A warning is generated if a file without a `.netkan` extension is processed (dbent, #1308)
+- [Netkan] We better handle null values in retrieved metadata (dbent, #1324)
+- [Netkan] Better handling of license strings with leading and trailing spaces (dbent, #1305)
 - [Core] We no longer try to use `libcurl` on systems where the .NET web classes are sufficient (dbent, #1294)
