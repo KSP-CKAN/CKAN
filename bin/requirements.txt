@@ -1,5 +1,5 @@
-requests
-jsonschema
 click
-git
-github
+gitpython
+jsonschema
+pygithub
+requests
