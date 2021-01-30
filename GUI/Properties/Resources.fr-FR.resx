@@ -125,7 +125,7 @@
   <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="settings" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
-  <data name="CKANFileFilter" xml:space="preserve"><value>métadonnés CKAN (*.ckan)|*.ckan</value></data>
+  <data name="CKANFileFilter" xml:space="preserve"><value>métadonnées CKAN (*.ckan)|*.ckan</value></data>
   <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>Exporter la Liste de Mods</value></data>
   <data name="update" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\update.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="backward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\backward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
@@ -140,18 +140,18 @@
   <data name="arrow_forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="arrow_upward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_upward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="AboutDialogLabel2Text" xml:space="preserve"><value>Version {0}</value></data>
-  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Fichier de métadonnés/Build</value></data>
+  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Fichier de métadonnées/Build</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Veuillez entrer un nom pour la nouvelle instance.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Veuillez entrer un chemin pour la nouvelle instance.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"Clonage de l'instance..."</value></data>
-  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve"><value>La version pour le DLC {0} est mal malformatée. Essayez "1.0.0" par exemple.</value></data>
+  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve"><value>La version pour le DLC {0} est mal mal-formatée. Essayez "1.0.0" par exemple.</value></data>
   <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>L'instance que vous voulez cloner n'est pas valide: {0}</value></data>
   <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>Le dossier de destination n'est pas vide: {0}</value></data>
-  <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>Echec du clonage: {0}</value></data>
+  <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>Échec du clonage: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>Instance clonée avec succès.</value></data>
   <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>Création de la nouvelle instance...</value></data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>Ce nom est déjà utilisé.</value></data>
-  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>Echec de la création d'une fausse instance: {0}</value></data>
+  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>Échec de la création d'une fausse instance: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>Instance créée avec succès.</value></data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;AUCUNE&gt;</value></data>
   <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>Le jeu a été mis à jour depuis que vous avez défini les versions de jeu compatibles. Veuillez vérifier ces paramètres.</value></data>
@@ -163,7 +163,7 @@ Essayez de déplacer {2} en dehors de {3} et redémarrez CKAN.</value></data>
   <data name="GUIModNSlashA" xml:space="preserve"><value>N/A</value></data>
   <data name="GUIModUnknown" xml:space="preserve"><value>Inconnue</value></data>
   <data name="GUIModMethodNotCKAN" xml:space="preserve"><value>Cette Méthode ne peut pas être appelée sauf si IsCKAN</value></data>
-  <data name="GUIModGameCompatibilityLong" xml:space="preserve"><value>{0} (en utlisant la version du mod {1})</value></data>
+  <data name="GUIModGameCompatibilityLong" xml:space="preserve"><value>{0} (en utilisant la version du mod {1})</value></data>
   <data name="MainAutoUpdateFailed" xml:space="preserve"><value>Erreur durant la mis à jour auto:&#xD;&#xA;{0}</value></data>
   <data name="MainQuitWithConflicts" xml:space="preserve"><value>Il y a des conflits. Voulez-vous vraiment quitter?&#xD;&#xA;&#xD;&#xA;{0}</value></data>
   <data name="MainQuit" xml:space="preserve"><value>Quitter</value></data>
@@ -179,7 +179,7 @@ Essayez de déplacer {2} en dehors de {3} et redémarrez CKAN.</value></data>
   <data name="MainFilterIncompatible" xml:space="preserve"><value>Filtre (Incompatible)</value></data>
   <data name="MainFilterInstalled" xml:space="preserve"><value>Filtre (Installé)</value></data>
   <data name="MainFilterUpgradeable" xml:space="preserve"><value>Filtre (À mettre à jour)</value></data>
-  <data name="MainFilterReplaceable" xml:space="preserve"><value>Filtre (Remplacable)</value></data>
+  <data name="MainFilterReplaceable" xml:space="preserve"><value>Filtre (Remplaçable)</value></data>
   <data name="MainFilterCached" xml:space="preserve"><value>Filtre (En cache)</value></data>
   <data name="MainFilterUncached" xml:space="preserve"><value>Filtre (Pas en cache)</value></data>
   <data name="MainFilterNew" xml:space="preserve"><value>Filtre (Nouveau)</value></data>
@@ -220,11 +220,11 @@ Voulez-vous vraiment l'installer?</value></data>
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>Registre</value></data>
   <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} requiert {1} mais il n'est pas listé dans l'index, ou non-disponible pour votre version de jeu.</value></data>
   <data name="MainInstallNotFound" xml:space="preserve"><value>Le module {0} est requis mais il n'est pas listé dans l'index, ou non-disponible pour votre version de jeu.</value></data>
-  <data name="MainInstallBadMetadata" xml:space="preserve"><value>Mauvaises métadonnés détectées pour le module {0}: {1}</value></data>
+  <data name="MainInstallBadMetadata" xml:space="preserve"><value>Mauvaises métadonnées détectées pour le module {0}: {1}</value></data>
   <data name="MainInstallFileExists" xml:space="preserve"><value>Oh non! Nous avons essayé de remplacer un fichier appartenant à un autre mod!
 Veuillez essayer de mettre à jour CKAN puis de réessayer.
 
-Si ce problème se produit de nouveau, il pourrait s'agir d'un bug d'empaquètement.
+Si ce problème se produit de nouveau, il pourrait s'agir d'un bug d'empaquettement.
 Veuillez le signaler à:
 
 https://github.com/KSP-CKAN/NetKAN/issues/new/choose
@@ -266,9 +266,9 @@ Ouvrir les paramètres maintenant?</value></data>
   <data name="MainInstallErrorInstalling" xml:space="preserve"><value>Erreur lors de l'installation!</value></data>
   <data name="MainInstallUnknownError" xml:space="preserve"><value>Une erreur inconnue s'est produite, veuillez réessayer!</value></data>
   <data name="MainInstallKnownError" xml:space="preserve"><value>Si le message ci-dessus indique une erreur de téléchargement, veuillez réessayer. Sinon, veuillez signaler le problème pour que nous puissions investiguer.
-Si vous suspectez un problème de métadonnés: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+Si vous suspectez un problème de métadonnées: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 Si vous suspectez un problème client: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
-  <data name="MainInstallFailed" xml:space="preserve"><value>Echec de l'installation!</value></data>
+  <data name="MainInstallFailed" xml:space="preserve"><value>Échec de l'installation!</value></data>
   <data name="MainInstallProvidedBy" xml:space="preserve"><value>Le module {0} est fourni par plus qu'un seul module, veuillez choisir l'un des mods suivants:</value></data>
   <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN ne peut pas installer l'extension "{0}" pour vous.</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
@@ -300,7 +300,7 @@ Si vous suspectez un problème client: https://github.com/KSP-CKAN/CKAN/issues/n
   <data name="MainModListCompatible" xml:space="preserve"><value>Compatible ({0})</value></data>
   <data name="MainModListInstalled" xml:space="preserve"><value>Installé ({0})</value></data>
   <data name="MainModListUpgradeable" xml:space="preserve"><value>À mettre à jour ({0})</value></data>
-  <data name="MainModListReplaceable" xml:space="preserve"><value>Remplacable ({0})</value></data>
+  <data name="MainModListReplaceable" xml:space="preserve"><value>Remplaçable ({0})</value></data>
   <data name="MainModListCached" xml:space="preserve"><value>En cache ({0})</value></data>
   <data name="MainModListUncached" xml:space="preserve"><value>Pas en cache ({0})</value></data>
   <data name="MainModListNewlyCompatible" xml:space="preserve"><value>Nouvellement compatible ({0})</value></data>
@@ -316,9 +316,9 @@ Si vous suspectez un problème client: https://github.com/KSP-CKAN/CKAN/issues/n
   <data name="MainRepoScanning" xml:space="preserve"><value>Détection des DLC et des modules installés manuellement...</value></data>
   <data name="MainRepoContacting" xml:space="preserve"><value>Contact du répertoire...</value></data>
   <data name="MainRepoUpdating" xml:space="preserve"><value>Mise à jour des répertoires...</value></data>
-  <data name="MainRepoFailedToConnect" xml:space="preserve"><value>Echec de la connection au répertoire. Exception: {0}</value></data>
+  <data name="MainRepoFailedToConnect" xml:space="preserve"><value>Échec de la connection au répertoire. Exception: {0}</value></data>
   <data name="MainRepoUpToDate" xml:space="preserve"><value>Répertoire déjà à jour.</value></data>
-  <data name="MainRepoFailed" xml:space="preserve"><value>Echec de la mise à jour du répertoire!</value></data>
+  <data name="MainRepoFailed" xml:space="preserve"><value>Échec de la mise à jour du répertoire!</value></data>
   <data name="MainRepoSuccess" xml:space="preserve"><value>Répertoires mis à jour avec succès.</value></data>
   <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>Voulez-vous que CKAN rafraîchisse la liste de mod au lancement? (Vous pouvez toujours rafraîchir manuellement en utilisant le bouton en haut)</value></data>
   <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>{0} mise(s) à jour disponible(s)</value></data>
@@ -331,11 +331,11 @@ Si vous suspectez un problème client: https://github.com/KSP-CKAN/CKAN/issues/n
   <data name="MainWaitDone" xml:space="preserve"><value>Terminé!</value></data>
   <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>Le répertoire {0} n'est pas un répertoire de jeu valide.</value></data>
   <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Le répertoire "{0}" n'existe pas.</value></data>
-  <data name="NewRepoDialogFailed" xml:space="preserve"><value>Echec de la récupation de la liste maître.</value></data>
+  <data name="NewRepoDialogFailed" xml:space="preserve"><value>Échec de la récupération de la liste maître.</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>Plugins CKAN (*.dll)|*.dll</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} fichiers, {1}</value></data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Chemin invalide: {0}</value></data>
-  <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>Choisissez un dossier pour stocker les téléchargemnts de mods de CKAN:</value></data>
+  <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>Choisissez un dossier pour stocker les téléchargements de mods de CKAN:</value></data>
   <data name="SettingsDialogDeleteConfirm" xml:space="preserve"><value>Voulez-vous vraiment supprimer {0} fichiers en cache, libérant {1}?</value></data>
   <data name="AddAuthTokenTitle" xml:space="preserve"><value>Ajouter un jeton d'authentification</value></data>
   <data name="AddAuthTokenHost" xml:space="preserve"><value>Hôte:</value></data>
@@ -355,7 +355,7 @@ Voulez-vous autoriser à faire cela? Si vous cliquer non, vous ne verrez plus ce
   <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favoris</value></data>
   <data name="ModuleLabelListHidden" xml:space="preserve"><value>Caché</value></data>
   <data name="ModuleLabelListGlobal" xml:space="preserve"><value>Global</value></data>
-  <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>Etes-vous sûr de vouloir supprimer {0}? Il sera ensuite impossible de retourner en arrière!</value></data>
+  <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>Êtes-vous sûr de vouloir supprimer {0}? Il sera ensuite impossible de retourner en arrière!</value></data>
   <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>Sauvegarder les changements?</value></data>
   <data name="EditLabelsDialogNoRecord" xml:space="preserve"><value>Aucun registre en édition!</value></data>
   <data name="EditLabelsDialogNameRequired" xml:space="preserve"><value>Nom requis!</value></data>
@@ -389,7 +389,7 @@ Voulez-vous autoriser à faire cela? Si vous cliquer non, vous ne verrez plus ce
   <data name="EditModpackTooltipGameVersionMin" xml:space="preserve"><value>Plus ancienne version de jeu compatible, vide pour toutes</value></data>
   <data name="EditModpackTooltipGameVersionMax" xml:space="preserve"><value>Dernière version de jeu compatible, vide pour toutes</value></data>
   <data name="EditModpackTooltipLicense" xml:space="preserve"><value>La licence de ce modpack</value></data>
-  <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>Si coché, le modpack incluera les versions exactes des mods affichés, sinon n'importe quelle version fera l'affaire</value></data>
+  <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>Si coché, le modpack inclura les versions exactes des mods affichés, sinon n'importe quelle version fera l'affaire</value></data>
   <data name="EditModpackTooltipDepends" xml:space="preserve"><value>Déplacer les mods sélectionnés dans le groupe dépendance. Ces mods seront certainement installés.</value></data>
   <data name="EditModpackTooltipRecommends" xml:space="preserve"><value>Déplacer les mods sélectionnés dans le groupe recommandation. Un utilisateur peut refuser ces mods lors de l'installation.</value></data>
   <data name="EditModpackTooltipSuggests" xml:space="preserve"><value>Déplacer les mods sélectionnés dans le groupe suggestion. Ces mods seront disponibles à l'installation, mais devront être sélectionnés explicitement.</value></data>
@@ -402,5 +402,5 @@ Voulez-vous autoriser à faire cela? Si vous cliquer non, vous ne verrez plus ce
   <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>rec:</value></data>
   <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>sug:</value></data>
   <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>conf:</value></data>
-  <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Etendre ou réduire la taille du champ de recherche détaillé (Ctrl-Shift-F)</value></data>
+  <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Étendre ou réduire la taille du champ de recherche détaillé (Ctrl-Shift-F)</value></data>
 </root>

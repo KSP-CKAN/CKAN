@@ -122,7 +122,7 @@
   <data name="FilterByDescriptionLabel.Text" xml:space="preserve"><value>Description:</value></data>
   <data name="FilterByLanguageLabel.Text" xml:space="preserve"><value>Langue:</value></data>
   <data name="FilterByDependsLabel.Text" xml:space="preserve"><value>Dépend de:</value></data>
-  <data name="FilterByRecommendsLabel.Text" xml:space="preserve"><value>Recommende:</value></data>
+  <data name="FilterByRecommendsLabel.Text" xml:space="preserve"><value>Recommande:</value></data>
   <data name="FilterBySuggestsLabel.Text" xml:space="preserve"><value>Suggère:</value></data>
   <data name="FilterByConflictsLabel.Text" xml:space="preserve"><value>Conflits avec:</value></data>
 </root>
