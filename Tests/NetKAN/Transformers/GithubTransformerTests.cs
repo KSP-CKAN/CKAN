@@ -190,6 +190,15 @@ namespace Tests.NetKAN.Transformers
                 "http://github.example/download/1.1",
                 (string)transformedJsons[1]["download"]
             );
+
+            Assert.AreEqual(
+                "1.0",
+                (string)transformedJsons[0]["x_netkan_version_pieces"]["tag"]
+            );
+            Assert.AreEqual(
+                "1.1",
+                (string)transformedJsons[1]["x_netkan_version_pieces"]["tag"]
+            );
         }
 
         [Test]

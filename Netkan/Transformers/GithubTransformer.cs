@@ -182,6 +182,11 @@ namespace CKAN.NetKAN.Transformers
                     json.SafeAdd("name", repoName);
                 }
 
+                json.SafeMerge(
+                    "x_netkan_version_pieces",
+                    JObject.FromObject(new Dictionary<string, string>{ {"tag", ghRelease.Tag.ToString()} })
+                );
+
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
                 return new Metadata(json);

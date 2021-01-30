@@ -965,6 +965,8 @@ an `object` with the following fields:
 - `replace` (type: `string`, regex substitution) (default: `"${version}"`)<br/>
   Specifies a [regex substitution string](https://msdn.microsoft.com/en-us/library/ewy2t5e0%28v=vs.110%29.aspx) which
   will be used as the value of the new `version` field.
+  The following special variables are supported and will be filled in by various metadata aggregated during inflation:
+  - `${tag}` (`$kref #/ckan/github` only): Replaced with the release tag from GitHub.
 - `strict` (type: `boolean`, default: `true`)<br/>
   Specifies if NetKAN should produce an error if `find` fails to produce a match against the `version` field.
 
