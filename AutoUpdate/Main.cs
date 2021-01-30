@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Windows.Forms;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * CKAN AUTO-UPDATE TOOL
@@ -17,73 +18,116 @@ using System.Threading;
 
 namespace AutoUpdater
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static int Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
+
             if (args.Length != 4)
             {
-                return;
+                ReportError("Usage: AutoUpdater.exe pid oldPath newPath [no]launch");
+                return ExitBADOPT;
             }
 
-            var pid = int.Parse(args[0]);
-            var local_path = args[1];
-            var updated_path = args[2];
+            // Yes, it's a global variable, but we're an ephemeral singleton so :shrug:
+            fromGui = (args[3] == "launch");
+
+            int    pid          = int.Parse(args[0]);
+            string local_path   = args[1];
+            string updated_path = args[2];
 
             if (!File.Exists(updated_path))
             {
-                return;
+                ReportError($"Downloaded ckan.exe not found at: {updated_path}");
+                return ExitBADOPT;
             }
 
-            // wait for CKAN to close
+            // Wait for CKAN to close
             try
             {
-                var process = Process.GetProcessById(pid);
-
-                if (!process.HasExited)
+                if (IsOnWindows())
                 {
-                    process.WaitForExit();
+                    // On Unix you can only wait for CHILD processes to exit
+                    var process = Process.GetProcessById(Math.Abs(pid));
+                    if (!process.HasExited)
+                    {
+                        process.WaitForExit();
+                    }
+                }
+                else if (pid < 0)
+                {
+                    // v1.29.2 and earlier will send positive, releases after will send negative
+                    // AND redirect stdin so it closes at exit
+                    while (Console.ReadLine() != null)
+                    {
+                        // Do nothing (shouldn't hit this because it doesn't send us anything)
+                    }
                 }
             }
-            catch (Exception) {}
+            catch (ArgumentException)
+            {
+                // Process already exited, we're fine
+            }
+            catch (Exception exc)
+            {
+                ReportError($"Failed to wait for CKAN to close: {exc.Message}");
+                return ExitERROR;
+            }
 
-            int retries = 8;
-
-            while (File.Exists(local_path))
+            for (int retry = 0; retry < maxRetries && File.Exists(local_path); ++retry)
             {
                 try
                 {
-                    // delete the old ckan.exe
+                    // Delete the old ckan.exe
                     File.Delete(local_path);
                 }
-                catch (Exception)
+                catch (Exception exc)
                 {
-                    Thread.Sleep(1000);
-                }
-
-                retries--;
-                if (retries == 0)
-                {
-                    return;
+                    if (retry == maxRetries - 1)
+                    {
+                        ReportError($"Failed to delete {local_path}: {exc.Message}");
+                        if (fromGui)
+                        {
+                            // Launch the old EXE that we can't delete
+                            StartCKAN(local_path);
+                        }
+                        return ExitERROR;
+                    }
+                    else
+                    {
+                        // Double sleep every time, starting at 100 ms, ending at 25 sec
+                        Thread.Sleep(100 * (int)Math.Pow(2, retry));
+                    }
                 }
             }
 
-            // replace ckan.exe
+            // Replace ckan.exe
             File.Move(updated_path, local_path);
 
             MakeExecutable(local_path);
 
-            if (args[3] == "launch")
+            if (fromGui)
             {
-                //Start CKAN
-                if (IsOnMono())
-                {
-                    Process.Start("mono", String.Format("\"{0}\"", local_path));
-                }
-                else
-                {
-                    Process.Start(local_path);
-                }
+                StartCKAN(local_path);
+            }
+            return ExitOK;
+        }
+
+        /// <summary>
+        /// Run the CKAN EXE at the given path
+        /// </summary>
+        /// <param name="path">Location of our CKAN EXE</param>
+        private static void StartCKAN(string path)
+        {
+            // Start CKAN
+            if (IsOnMono())
+            {
+                Process.Start("mono", String.Format("\"{0}\"", path));
+            }
+            else
+            {
+                Process.Start(path);
             }
         }
 
@@ -120,5 +164,36 @@ namespace AutoUpdater
             return platform != PlatformID.MacOSX &&
                 platform != PlatformID.Unix && platform != PlatformID.Xbox;
         }
+
+        /// <summary>
+        /// Display unexpected exceptions to user
+        /// </summary>
+        /// <param name="sender">Source of unhandled exception</param>
+        /// <param name="e">Info about the exception</param>
+        private static void UnhandledExceptionEventHandler(Object sender, UnhandledExceptionEventArgs e)
+        {
+            ReportError($"Unhandled exception:\r\n{e.ExceptionObject}");
+        }
+
+        /// <summary>
+        /// It's nice to tell the user when something goes wrong!
+        /// </summary>
+        /// <param name="err">Description of the problem that happened</param>
+        private static void ReportError(string err)
+        {
+            Console.Error.WriteLine(err);
+            if (fromGui)
+            {
+                // Show a popup in case the console isn't open
+                MessageBox.Show(err, "Fatal AutoUpdater Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private const  int  maxRetries = 8;
+        private static bool fromGui    = false;
+
+        private const int ExitOK     = 0;
+        private const int ExitBADOPT = 1;
+        private const int ExitERROR  = 2;
     }
 }
