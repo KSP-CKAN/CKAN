@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Store remote version file URL in metadata resources (#3259 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Abstract out game-specific logic (#3223 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Allow label to pin installed mod version (#3220 by: HebaruSan; reviewed: DasSkelett)
-- [GUI] language: fr-FR (#3272 by: vinix38; reviewed: HebaruSan)
+- [GUI] language: fr-FR (#3272, #3285 by: vinix38; reviewed: HebaruSan)
 - [ConsoleUI] Dark theme for ConsoleUI (#3226 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Visual cues for incompatibility reasons (#3271 by: HebaruSan; reviewed: DasSkelett)
 

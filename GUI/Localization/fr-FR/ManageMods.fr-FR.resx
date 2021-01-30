@@ -155,7 +155,7 @@
   <data name="FilterCompatibleButton.Text" xml:space="preserve"><value>Compatible</value></data>
   <data name="FilterInstalledButton.Text" xml:space="preserve"><value>Installé</value></data>
   <data name="FilterInstalledUpdateButton.Text" xml:space="preserve"><value>Installé (MàJ disponible)</value></data>
-  <data name="FilterReplaceableButton.Text" xml:space="preserve"><value>Remplacable</value></data>
+  <data name="FilterReplaceableButton.Text" xml:space="preserve"><value>Remplaçable</value></data>
   <data name="FilterCachedButton.Text" xml:space="preserve"><value>En Cache</value></data>
   <data name="FilterUncachedButton.Text" xml:space="preserve"><value>Pas en Cache</value></data>
   <data name="FilterNewButton.Text" xml:space="preserve"><value>Nouvellement compatible</value></data>

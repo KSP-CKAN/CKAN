@@ -127,7 +127,7 @@
     <value>48</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="RepositoryGroupBox.Text" xml:space="preserve"><value>Répertoires des métadonnés</value></data>
+  <data name="RepositoryGroupBox.Text" xml:space="preserve"><value>Répertoires des métadonnées</value></data>
   <data name="NewRepoButton.Text" xml:space="preserve"><value>Nouveau</value></data>
   <data name="UpRepoButton.Text" xml:space="preserve"><value>Haut</value></data>
   <data name="DownRepoButton.Text" xml:space="preserve"><value>Bas</value></data>
@@ -143,7 +143,7 @@
   <data name="ClearCacheButton.Text" xml:space="preserve"><value>Purger</value></data>
   <data name="PurgeToLimitMenuItem.Text" xml:space="preserve"><value>Purger jusqu'à la limite</value></data>
   <data name="PurgeAllMenuItem.Text" xml:space="preserve"><value>Purger tout</value></data>
-  <data name="ResetCacheButton.Text" xml:space="preserve"><value>Rénitialiser</value></data>
+  <data name="ResetCacheButton.Text" xml:space="preserve"><value>Réinitialiser</value></data>
   <data name="OpenCacheButton.Text" xml:space="preserve"><value>Ouvrir</value></data>
   <data name="AutoUpdateGroupBox.Text" xml:space="preserve"><value>Mises à jour auto</value></data>
   <data name="LocalVersionPreLabel.Text" xml:space="preserve"><value>Version locale:</value></data>
