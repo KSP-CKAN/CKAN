@@ -26,6 +26,10 @@ namespace CKAN.NetKAN.Validators
                     {
                         throw new Kraken("spec_version v1.18+ required for license 'Unlicense'");
                     }
+                    if (metadata.SpecVersion < v1p30 && (string)lic == "MPL-2.0")
+                    {
+                        throw new Kraken("spec_version v1.30+ required for license 'MPL-2.0'");
+                    }
                 }
             }
             var kref = (string)json["$kref"] ?? "";
@@ -56,5 +60,6 @@ namespace CKAN.NetKAN.Validators
         );
         private static readonly ModuleVersion v1p2  = new ModuleVersion("v1.2");
         private static readonly ModuleVersion v1p18 = new ModuleVersion("v1.18");
+        private static readonly ModuleVersion v1p30 = new ModuleVersion("v1.30");
     }
 }
