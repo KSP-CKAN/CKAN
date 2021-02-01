@@ -333,6 +333,7 @@ namespace CKAN
         /// <summary>
         /// Installs the module from the zipfile provided.
         /// Returns a list of files installed.
+        /// Propagates a DllLocationMismatchKraken if the user has a bad manual install.
         /// Propagates a BadMetadataKraken if our install metadata is bad.
         /// Propagates a CancelledActionKraken if the user decides not to overwite unowned files.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
@@ -348,9 +349,27 @@ namespace CKAN
                 try
                 {
                     var dll = registry.DllPath(module.identifier);
-                    if (dll != null && !files.Any(f => ksp.ToRelativeGameDir(f.destination) == dll))
+                    if (!string.IsNullOrEmpty(dll))
                     {
-                        throw new DllLocationMismatchKraken(dll, $"DLL for module {module.identifier} found at {dll}, but it's not where CKAN would install it. Aborting to prevent multiple copies of the same mod being installed. To install this module, uninstall it manually and try again.");
+                        // Find where we're installing identifier.optionalversion.dll
+                        // (file name might not be an exact match with manually installed)
+                        var dllFolders = files.Where(f =>
+                                Path.GetFileName(f.destination).StartsWith(module.identifier)
+                                    && f.destination.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
+                            .Select(f => Path.GetDirectoryName(ksp.ToRelativeGameDir(f.destination)))
+                            .ToHashSet();
+                        if (!dllFolders.Contains(Path.GetDirectoryName(dll)))
+                        {
+                            // Manually installed DLL is somewhere else where we're not installing files,
+                            // probable bad install, alert user and abort
+                            throw new DllLocationMismatchKraken(dll, $"DLL for module {module.identifier} found at {dll}, but it's not where CKAN would install it. Aborting to prevent multiple copies of the same mod being installed. To install this module, uninstall it manually and try again.");
+                        }
+                        // Delete the manually installed DLL transaction-style because we believe we'll be replacing it
+                        var toDelete = ksp.ToAbsoluteGameDir(dll);
+                        log.DebugFormat("Deleting manually installed DLL {0}", toDelete);
+                        TxFileManager file_transaction = new TxFileManager();
+                        file_transaction.Snapshot(toDelete);
+                        file_transaction.Delete(toDelete);
                     }
 
                     // Look for overwritable files if session is interactive
@@ -474,14 +493,10 @@ namespace CKAN
         private void DeleteConflictingFiles(IEnumerable<InstallableFile> files)
         {
             TxFileManager file_transaction = new TxFileManager();
-            using (var transaction = CkanTransaction.CreateTransactionScope())
+            foreach (InstallableFile file in files)
             {
-                foreach (InstallableFile file in files)
-                {
-                    log.DebugFormat("Trying to delete {0}", file.destination);
-                    file_transaction.Delete(file.destination);
-                }
-                transaction.Complete();
+                log.DebugFormat("Trying to delete {0}", file.destination);
+                file_transaction.Delete(file.destination);
             }
         }
 
@@ -585,8 +600,8 @@ namespace CKAN
                 }
 
                 // Snapshot whatever was there before. If there's nothing, this will just
-                // remove our file on rollback. We still need this even thought we won't
-                // overwite files, as it ensures deletiion on rollback.
+                // remove our file on rollback. We still need this even though we won't
+                // overwite files, as it ensures deletion on rollback.
                 file_transaction.Snapshot(fullPath);
 
                 try
