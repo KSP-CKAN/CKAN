@@ -341,7 +341,7 @@ namespace CKAN
                 // The least evil is to walk it once, and filter it ourselves.
                 IEnumerable<string> files = Directory
                     .EnumerateFiles(game.PrimaryModDirectory(this), "*", SearchOption.AllDirectories)
-                    .Where(file => dllRegex.IsMatch(file))
+                    .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
                     .Select(CKANPathUtils.NormalizePath)
                     .Where(absPath => !game.StockFolders.Any(f =>
                         ToRelativeGameDir(absPath).StartsWith($"{f}/")));
@@ -364,8 +364,6 @@ namespace CKAN
                 return dllChanged || dlcChanged;
             }
         }
-
-        private static readonly Regex dllRegex = new Regex(@"\.dll$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         #endregion
 

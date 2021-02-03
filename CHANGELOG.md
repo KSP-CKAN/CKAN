@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Repo update usability fixes (#3249 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Added null checks in ManageMods.cs to prevent crash on an empty filter (#3266 by: Hydroxa; reviewed: HebaruSan)
 - [Updater] Report AutoUpdater errors to user, fix rare failure (#3250 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Upgrade AD mods with mismatched version in filename (#3287 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

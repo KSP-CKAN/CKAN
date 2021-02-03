@@ -836,9 +836,9 @@ namespace CKAN
 
             // http://xkcd.com/208/
             // This regex works great for things like GameData/Foo/Foo-1.2.dll
-            Match match = Regex.Match(
-                relative_path, @"
-                    ^GameData/            # DLLs only live in GameData
+            Match match = Regex.Match(relative_path,
+                // DLLs only live in the primary mod directory
+                $"^{ksp.game.PrimaryModDirectoryRelative}/" + @"
                     (?:.*/)?              # Intermediate paths (ending with /)
                     (?<modname>[^.]+)     # Our DLL name, up until the first dot.
                     .*\.dll$              # Everything else, ending in dll
