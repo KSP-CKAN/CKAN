@@ -441,11 +441,13 @@ namespace CKAN
                 spec_version = new ModuleVersion("v1.18"),
                 identifier   = Identifier.Sanitize(name),
                 name         = name,
+                author       = new List<string>() { System.Environment.UserName },
                 @abstract    = $"A list of modules installed on the {kspInstanceName} KSP instance",
                 kind         = "metapackage",
                 version      = new ModuleVersion(DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss")),
                 license      = new List<License>() { new License("unknown") },
                 download_content_type = "application/zip",
+                release_date = DateTime.Now,
             };
 
             List<RelationshipDescriptor> mods = registry.Installed(false, false)

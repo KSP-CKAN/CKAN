@@ -412,7 +412,8 @@ namespace CKAN
             // only sort by Update column if checkbox in settings checked
             if (Main.Instance.configuration.AutoSortByUpdate)
             {
-                SetSort(UpdateCol);
+                // Retain their current sort as secondaries
+                AddSort(UpdateCol, true);
                 UpdateFilters();
                 // Select the top row and scroll the list to it.
                 if (ModGrid.Rows.Count > 0)
@@ -460,7 +461,7 @@ namespace CKAN
             NavGoForward();
         }
 
-        private void ModList_SelectedIndexChanged(object sender, EventArgs e)
+        private void ModList_SelectionChanged(object sender, EventArgs e)
         {
             // Skip if already disposed (i.e. after the form has been closed).
             // Needed for TransparentTextBoxes
@@ -470,12 +471,12 @@ namespace CKAN
             }
 
             var module = SelectedModule;
-            if (OnSelectedModuleChanged != null)
-            {
-                OnSelectedModuleChanged(module);
-            }
             if (module != null)
             {
+                if (OnSelectedModuleChanged != null)
+                {
+                    OnSelectedModuleChanged(module);
+                }
                 NavSelectMod(module);
             }
         }
@@ -881,8 +882,8 @@ namespace CKAN
                 // Set the menu options.
                 var guiMod = (GUIMod)ModGrid.Rows[rowIndex].Tag;
 
-                downloadContentsToolStripMenuItem.Enabled = !guiMod.IsCached;
-                purgeContentsToolStripMenuItem.Enabled = guiMod.IsCached;
+                downloadContentsToolStripMenuItem.Enabled = !guiMod.ToModule().IsMetapackage &&  !guiMod.IsCached;
+                purgeContentsToolStripMenuItem.Enabled = !guiMod.ToModule().IsMetapackage && guiMod.IsCached;
                 reinstallToolStripMenuItem.Enabled = guiMod.IsInstalled && !guiMod.IsAutodetected;
             }
         }
@@ -1185,7 +1186,7 @@ namespace CKAN
             }
         }
 
-        private void AddSort(DataGridViewColumn col)
+        private void AddSort(DataGridViewColumn col, bool atStart = false)
         {
             if (sortColumns.Count > 0 && sortColumns[sortColumns.Count - 1] == col.Name)
             {
@@ -1199,8 +1200,16 @@ namespace CKAN
                     sortColumns.RemoveAt(middlePosition);
                     descending.RemoveAt(middlePosition);
                 }
-                sortColumns.Add(col.Name);
-                descending.Add(false);
+                if (atStart)
+                {
+                    sortColumns.Insert(0, col.Name);
+                    descending.Insert(0, false);
+                }
+                else
+                {
+                    sortColumns.Add(col.Name);
+                    descending.Add(false);
+                }
             }
         }
 

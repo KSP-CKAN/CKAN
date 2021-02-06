@@ -186,7 +186,7 @@ namespace CKAN
                 resolver.ModList()
                     .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonFor(m))));
 
-            return changeSet;
+            return changeSet.Where(m => !m.Mod.IsMetapackage);
         }
 
         public bool IsVisible(GUIMod mod, string instanceName)

@@ -36,21 +36,22 @@ namespace CKAN
         {
             set
             {
-                this.selectedModule = value;
-                if (value == null)
+                var module = value?.ToModule();
+                if (value != selectedModule)
                 {
-                    ModInfoTabControl.Enabled = false;
-                }
-                else
-                {
-                    var module = value.ToModule();
-                    ModInfoTabControl.Enabled = module != null;
-                    if (module == null) return;
-
-                    UpdateModInfo(value);
-                    UpdateModDependencyGraph(module);
-                    UpdateModContentsTree(module);
-                    AllModVersions.SelectedModule = value;
+                    if (module == null)
+                    {
+                        ModInfoTabControl.Enabled = false;
+                    }
+                    else
+                    {
+                        ModInfoTabControl.Enabled = true;
+                        UpdateModInfo(value);
+                        UpdateModDependencyGraph(module);
+                        UpdateModContentsTree(module);
+                        AllModVersions.SelectedModule = value;
+                    }
+                    selectedModule = value;
                 }
             }
             get
@@ -121,15 +122,15 @@ namespace CKAN
         {
             CkanModule module = gui_module.ToModule();
 
-            Util.Invoke(MetadataModuleNameTextBox, () => MetadataModuleNameTextBox.Text = gui_module.Name);
-            UpdateTagsAndLabels(gui_module.ToModule());
-            Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = gui_module.Abstract);
+            Util.Invoke(MetadataModuleNameTextBox, () => MetadataModuleNameTextBox.Text = module.name);
+            UpdateTagsAndLabels(module);
+            Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
             Util.Invoke(MetadataModuleDescriptionTextBox, () =>
             {
-                MetadataModuleDescriptionTextBox.Text = gui_module.Description
+                MetadataModuleDescriptionTextBox.Text = module.description
                     ?.Replace("\r\n", "\n").Replace("\n", Environment.NewLine);
                 MetadataModuleDescriptionTextBox.ScrollBars =
-                    string.IsNullOrWhiteSpace(gui_module.Description)
+                    string.IsNullOrWhiteSpace(module.description)
                         ? ScrollBars.None
                         : ScrollBars.Vertical;
             });
@@ -137,11 +138,25 @@ namespace CKAN
             Util.Invoke(MetadataModuleVersionTextBox, () => MetadataModuleVersionTextBox.Text = gui_module.LatestVersion.ToString());
             Util.Invoke(MetadataModuleLicenseTextBox, () => MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license));
             Util.Invoke(MetadataModuleAuthorTextBox, () => MetadataModuleAuthorTextBox.Text = gui_module.Authors);
-            Util.Invoke(MetadataIdentifierTextBox, () => MetadataIdentifierTextBox.Text = gui_module.Identifier);
+            Util.Invoke(MetadataIdentifierTextBox, () => MetadataIdentifierTextBox.Text = module.identifier);
 
-            Util.Invoke(MetadataModuleReleaseStatusTextBox, () => MetadataModuleReleaseStatusTextBox.Text = module.release_status?.ToString() ?? Properties.Resources.ModInfoNSlashA);
+            Util.Invoke(MetadataModuleReleaseStatusTextBox, () => 
+            {
+                if (module.release_status == null)
+                {
+                    ReleaseLabel.Visible = false;
+                    MetadataModuleReleaseStatusTextBox.Visible = false;
+                    MetaDataLowerLayoutPanel.LayoutSettings.RowStyles[3].Height = 0;
+                }
+                else
+                {
+                    ReleaseLabel.Visible = true;
+                    MetadataModuleReleaseStatusTextBox.Visible = true;
+                    MetaDataLowerLayoutPanel.LayoutSettings.RowStyles[3].Height = 30;
+                    MetadataModuleReleaseStatusTextBox.Text = module.release_status.ToString();
+                }
+            });
             Util.Invoke(MetadataModuleGameCompatibilityTextBox, () => MetadataModuleGameCompatibilityTextBox.Text = gui_module.GameCompatibilityLong);
-            Util.Invoke(ReplacementTextBox, () => ReplacementTextBox.Text = module?.replaced_by?.ToString() ?? Properties.Resources.ModInfoNSlashA);
 
             Util.Invoke(ModInfoTabControl, () =>
             {
@@ -160,6 +175,22 @@ namespace CKAN
                     {
                         RelationshipTabPage.Text = fakeStopSign + RelationshipTabPage.Text;
                     }
+                }
+            });
+            Util.Invoke(ReplacementTextBox, () =>
+            {
+                if (module.replaced_by == null)
+                {
+                    ReplacementLabel.Visible = false;
+                    ReplacementTextBox.Visible = false;
+                    MetaDataLowerLayoutPanel.LayoutSettings.RowStyles[6].Height = 0;
+                }
+                else
+                {
+                    ReplacementLabel.Visible = true;
+                    ReplacementTextBox.Visible = true;
+                    MetaDataLowerLayoutPanel.LayoutSettings.RowStyles[6].Height = 30;
+                    ReplacementTextBox.Text = module.replaced_by.ToString();
                 }
             });
 
@@ -251,6 +282,7 @@ namespace CKAN
         {
             Util.Invoke(MetadataTagsLabelsPanel, () =>
             {
+                MetadataTagsLabelsPanel.SuspendLayout();
                 MetadataTagsLabelsPanel.Controls.Clear();
                 var tags = ModuleTags?.Tags
                     .Where(t => t.Value.ModuleIdentifiers.Contains(mod.identifier))
@@ -277,6 +309,7 @@ namespace CKAN
                         ));
                     }
                 }
+                MetadataTagsLabelsPanel.ResumeLayout();
             });
         }
 
@@ -365,13 +398,11 @@ namespace CKAN
             {
                 return;
             }
-            Util.Invoke(DependsGraphTree, _UpdateModDependencyGraph);
+            Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(ModInfoTabControl.Tag as CkanModule));
         }
 
-        private void _UpdateModDependencyGraph()
+        private void _UpdateModDependencyGraph(CkanModule module)
         {
-            CkanModule module = (CkanModule)ModInfoTabControl.Tag;
-
             DependsGraphTree.BeginUpdate();
             DependsGraphTree.BackColor = SystemColors.Window;
             DependsGraphTree.LineColor = SystemColors.WindowText;
@@ -562,19 +593,14 @@ namespace CKAN
             {
                 return;
             }
-            Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(force));
+            Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(ModInfoTabControl.Tag as CkanModule, force));
         }
 
-        private void _UpdateModContentsTree(bool force = false)
+        private void _UpdateModContentsTree(CkanModule module, bool force = false)
         {
             ContentsPreviewTree.BackColor = SystemColors.Window;
             ContentsPreviewTree.LineColor = SystemColors.WindowText;
-            GUIMod guiMod = SelectedModule;
-            if (!guiMod.IsCKAN)
-            {
-                return;
-            }
-            CkanModule module = guiMod.ToCkanModule();
+
             if (Equals(module, currentModContentsModule) && !force)
             {
                 return;
@@ -583,36 +609,52 @@ namespace CKAN
             {
                 currentModContentsModule = module;
             }
-            if (!guiMod.IsCached)
+            if (module.IsMetapackage)
             {
-                NotCachedLabel.Text = Properties.Resources.ModInfoNotCached;
-                ContentsDownloadButton.Enabled = true;
-                ContentsOpenButton.Enabled = false;
+                NotCachedLabel.Text = Properties.Resources.ModInfoNoDownload;
                 ContentsPreviewTree.Enabled = false;
+                ContentsDownloadButton.Enabled = false;
+                ContentsOpenButton.Enabled = false;
+                ContentsPreviewTree.Nodes.Clear();
             }
             else
             {
-                NotCachedLabel.Text = Properties.Resources.ModInfoCached;
-                ContentsDownloadButton.Enabled = false;
-                ContentsOpenButton.Enabled = true;
                 ContentsPreviewTree.Enabled = true;
+                ContentsPreviewTree.Nodes.Clear();
+                ContentsPreviewTree.Nodes.Add(module.name);
+                if (!Main.Instance.Manager.Cache.IsMaybeCachedZip(module))
+                {
+                    NotCachedLabel.Text = Properties.Resources.ModInfoNotCached;
+                    ContentsDownloadButton.Enabled = true;
+                    ContentsOpenButton.Enabled = false;
+                    ContentsPreviewTree.Enabled = false;
+                }
+                else
+                {
+                    NotCachedLabel.Text = Properties.Resources.ModInfoCached;
+                    ContentsDownloadButton.Enabled = false;
+                    ContentsOpenButton.Enabled = true;
+                    ContentsPreviewTree.Enabled = true;
+
+                    // Get all the data; can put this in bg if slow
+                    var contents = ModuleInstaller.GetInstance(
+                            manager.CurrentInstance,
+                            Main.Instance.Manager.Cache,
+                            Main.Instance.currentUser)
+                        .GetModuleContentsList(module)?.ToList();
+
+                    // Update UI; must be in fg
+                    if (contents != null)
+                    {
+                        foreach (string item in contents)
+                        {
+                            ContentsPreviewTree.Nodes[0].Nodes.Add(
+                                item.Replace('/', Path.DirectorySeparatorChar));
+                        }
+                        ContentsPreviewTree.Nodes[0].ExpandAll();
+                    }
+                }
             }
-
-            ContentsPreviewTree.Nodes.Clear();
-            ContentsPreviewTree.Nodes.Add(module.name);
-
-            IEnumerable<string> contents = ModuleInstaller.GetInstance(manager.CurrentInstance, Main.Instance.Manager.Cache, Main.Instance.currentUser).GetModuleContentsList(module);
-            if (contents == null)
-            {
-                return;
-            }
-
-            foreach (string item in contents)
-            {
-                ContentsPreviewTree.Nodes[0].Nodes.Add(item.Replace('/', Path.DirectorySeparatorChar));
-            }
-
-            ContentsPreviewTree.Nodes[0].ExpandAll();
         }
 
         /// <summary>
@@ -627,15 +669,15 @@ namespace CKAN
 
             if (File.Exists(location))
             {
-                //We need the Folder of the file
-                //Otherwise the OS would try to open the file in its default application
+                // We need the Folder of the file
+                // Otherwise the OS would try to open the file in its default application
                 location = Path.GetDirectoryName(location);
             }
 
             if (!Directory.Exists(location))
             {
-                //User either selected the parent node
-                //or he clicked on the tree node of a cached, but not installed mod
+                // User either selected the parent node
+                // or he clicked on the tree node of a cached, but not installed mod
                 return;
             }
 

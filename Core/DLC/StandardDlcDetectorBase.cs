@@ -26,7 +26,7 @@ namespace CKAN.DLC
         private IGame game;
 
         private static readonly Regex VersionPattern = new Regex(
-            @"^Version\s+(?<version>\S+)$",
+            @"^Version\s+(?<version>\S+)",
             RegexOptions.Compiled | RegexOptions.IgnoreCase
         );
 

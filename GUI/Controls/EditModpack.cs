@@ -40,6 +40,7 @@ namespace CKAN
                 IdentifierTextBox.Text = module.identifier;
                 NameTextBox.Text       = module.name;
                 AbstractTextBox.Text   = module.@abstract;
+                AuthorTextBox.Text     = string.Join(", ", module.author);
                 VersionTextBox.Text    = module.version.ToString();
                 var options = new string[] { "" }.Concat(Main.Instance.CurrentInstance.game.KnownVersions
                     .SelectMany(v => new GameVersion[] {
@@ -175,6 +176,8 @@ namespace CKAN
             module.identifier = IdentifierTextBox.Text;
             module.name       = NameTextBox.Text;
             module.@abstract  = AbstractTextBox.Text;
+            module.author     = AuthorTextBox.Text
+                .Split(',').Select(a => a.Trim()).ToList();
             module.version    = new ModuleVersion(VersionTextBox.Text);
             module.license    = new List<License>() { new License(LicenseComboBox.Text) };
             module.ksp_version_min = string.IsNullOrEmpty(GameVersionMinComboBox.Text)

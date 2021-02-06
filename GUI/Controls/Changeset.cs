@@ -42,6 +42,16 @@ namespace CKAN
             }
         }
 
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            if (Visible && Platform.IsMono)
+            {
+                // Workaround: make sure the ListView headers are drawn
+                Util.Invoke(ChangesListView, () => ChangesListView.EndUpdate());
+            }
+        }
+
         public ListView.SelectedListViewItemCollection SelectedItems
         {
             get
@@ -53,7 +63,7 @@ namespace CKAN
         public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
 
         public event Action OnConfirmChanges;
-        public event Action OnCancelChanges;
+        public event Action<bool> OnCancelChanges;
 
         private void ChangesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -75,7 +85,15 @@ namespace CKAN
         {
             if (OnCancelChanges != null)
             {
-                OnCancelChanges();
+                OnCancelChanges(true);
+            }
+        }
+
+        private void BackButton_Click(object sender, EventArgs e)
+        {
+            if (OnCancelChanges != null)
+            {
+                OnCancelChanges(false);
             }
         }
 

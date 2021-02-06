@@ -49,38 +49,25 @@ namespace CKAN
             }
         }
 
-        private bool installable(CkanModule module)
+        private bool installable(ModuleInstaller installer, CkanModule module, IRegistryQuerier registry)
         {
-            var currentInstance = Main.Instance.Manager.CurrentInstance;
-            var version = currentInstance.VersionCriteria();
-            if (!module.IsCompatibleKSP(version))
-            {
-                return false;
-            }
-            try
-            {
-                RelationshipResolver resolver = new RelationshipResolver(
-                    new CkanModule[] { module },
-                    null,
-                    new RelationshipResolverOptions()
-                    {
-                        with_recommends = false,
-                        without_toomanyprovides_kraken = true,
-                    },
-                    RegistryManager.Instance(currentInstance).registry,
-                    version
-                );
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            return true;
+            return module.IsCompatibleKSP(Main.Instance.CurrentInstance.VersionCriteria())
+                && installer.CanInstall(
+                    RelationshipResolver.DependsOnlyOpts(),
+                    new List<CkanModule>() { module },
+                    registry);
         }
 
         private bool allowInstall(CkanModule module)
         {
-            return installable(module)
+            GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
+            IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
+            var installer = ModuleInstaller.GetInstance(
+                currentInstance,
+                Main.Instance.Manager.Cache,
+                Main.Instance.currentUser);
+
+            return installable(installer, module, registry)
                 || Main.Instance.YesNoDialog(
                     string.Format(Properties.Resources.AllModVersionsInstallPrompt, module.ToString()),
                     Properties.Resources.AllModVersionsInstallYes,
@@ -122,7 +109,6 @@ namespace CKAN
         {
             set
             {
-                ignoreItemCheck = true;
                 if (!(visibleGuiModule?.Equals(value) ?? value?.Equals(visibleGuiModule) ?? true))
                 {
                     // Listen for property changes (we only care about GUIMod.SelectedMod)
@@ -136,31 +122,41 @@ namespace CKAN
                         visibleGuiModule.PropertyChanged += visibleGuiModule_PropertyChanged;
                     }
                 }
-                VersionsListView.Items.Clear();
-                // Only show checkboxes for non-DLC modules
-                VersionsListView.CheckBoxes = !value.ToModule().IsDLC;
 
+                // Get all the data; can put this in bg if slow
                 GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
                 IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
-
-                List<CkanModule> allAvailableVersions;
+                var installer = ModuleInstaller.GetInstance(
+                    currentInstance,
+                    Main.Instance.Manager.Cache,
+                    Main.Instance.currentUser);
+                Dictionary<CkanModule, bool> allAvailableVersions = null;
                 try
                 {
                     allAvailableVersions = registry.AvailableByIdentifier(value.Identifier)
-                        .OrderByDescending(m => m.version)
-                        .ToList();
+                        .ToDictionary(m => m,
+                            m => installable(installer, m, registry));
                 }
                 catch (ModuleNotFoundKraken)
                 {
                     // No versions to be shown, abort and hope an auto refresh happens
                     return;
                 }
-
                 ModuleVersion installedVersion = registry.InstalledVersion(value.Identifier);
 
+                // Update UI; must be in fg
+                ignoreItemCheck = true;
                 bool latestCompatibleVersionAlreadyFound = false;
-                VersionsListView.Items.AddRange(allAvailableVersions.Select(module =>
+
+                VersionsListView.Items.Clear();
+                // Only show checkboxes for non-DLC modules
+                VersionsListView.CheckBoxes = !value.ToModule().IsDLC;
+
+                VersionsListView.Items.AddRange(allAvailableVersions
+                    .OrderByDescending(kvp => kvp.Key.version)
+                    .Select(kvp =>
                 {
+                    CkanModule module = kvp.Key;
                     ModuleVersion minMod = null, maxMod = null;
                     GameVersion   minKsp = null, maxKsp = null;
                     Registry.GetMinMaxVersions(new List<CkanModule>() {module}, out minMod, out maxMod, out minKsp, out maxKsp);
@@ -173,7 +169,7 @@ namespace CKAN
                         Tag  = module
                     };
 
-                    if (installable(module))
+                    if (kvp.Value)
                     {
                         if (!latestCompatibleVersionAlreadyFound)
                         {

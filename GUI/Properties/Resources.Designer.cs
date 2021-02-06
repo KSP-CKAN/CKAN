@@ -558,6 +558,9 @@ namespace CKAN.Properties {
         internal static string ModInfoCached {
             get { return (string)(ResourceManager.GetObject("ModInfoCached", resourceCulture)); }
         }
+        internal static string ModInfoNoDownload {
+            get { return (string)(ResourceManager.GetObject("ModInfoNoDownload", resourceCulture)); }
+        }
         internal static string ModInfoHomepageLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoHomepageLabel", resourceCulture)); }
         }

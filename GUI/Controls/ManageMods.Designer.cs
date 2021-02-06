@@ -312,7 +312,7 @@
             this.ModGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
             this.ModGrid.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_CellMouseDoubleClick);
             this.ModGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
-            this.ModGrid.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
+            this.ModGrid.SelectionChanged += new System.EventHandler(this.ModList_SelectionChanged);
             this.ModGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
             this.ModGrid.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
             this.ModGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ModList_MouseDown);

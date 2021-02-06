@@ -20,10 +20,13 @@ namespace CKAN
             ShowSelectionModInfo(items);
         }
 
-        private void Changeset_OnCancelChanges()
+        private void Changeset_OnCancelChanges(bool reset)
         {
-            ManageMods.ClearChangeSet();
-            UpdateChangesDialog(null);
+            if (reset)
+            {
+                ManageMods.ClearChangeSet();
+                UpdateChangesDialog(null);
+            }
             tabController.ShowTab("ManageModsTabPage");
         }
 

@@ -533,7 +533,7 @@ namespace CKAN
         private GUIMod ActiveModInfo
         {
             set {
-                if (value == null)
+                if (value?.ToModule() == null)
                 {
                     splitContainer1.Panel2Collapsed = true;
                 }

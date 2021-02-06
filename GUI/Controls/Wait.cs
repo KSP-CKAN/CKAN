@@ -62,7 +62,10 @@ namespace CKAN
             {
                 if (moduleBars.TryGetValue(module, out ProgressBar pb))
                 {
-                    pb.Value = (int) (100 * (total - remaining) / total);
+                    // download_size is allowed to be 0
+                    pb.Value = Math.Max(pb.Minimum, Math.Min(pb.Maximum,
+                        (int) (100 * (total - remaining) / total)
+                    ));
                 }
                 else
                 {
@@ -87,7 +90,10 @@ namespace CKAN
                         Size     = new Size(TopPanel.Width - labelWidth - 5 * padding, progressHeight),
                         Minimum  = 0,
                         Maximum  = 100,
-                        Value    = (int) (100 * (total - remaining) / total),
+                        // download_size is allowed to be 0
+                        Value    = Math.Max(0, Math.Min(100,
+                                       (int) (100 * (total - remaining) / total)
+                                   )),
                         Style    = ProgressBarStyle.Continuous,
                     };
                     moduleBars.Add(module, newPb);

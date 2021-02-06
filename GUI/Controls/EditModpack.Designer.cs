@@ -38,6 +38,8 @@ namespace CKAN
             this.NameTextBox = new System.Windows.Forms.TextBox();
             this.AbstractLabel = new System.Windows.Forms.Label();
             this.AbstractTextBox = new System.Windows.Forms.TextBox();
+            this.AuthorLabel = new System.Windows.Forms.Label();
+            this.AuthorTextBox = new System.Windows.Forms.TextBox();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.VersionTextBox = new System.Windows.Forms.TextBox();
             this.GameVersionLabel = new System.Windows.Forms.Label();
@@ -78,6 +80,8 @@ namespace CKAN
             this.TopEditPanel.Controls.Add(this.NameTextBox);
             this.TopEditPanel.Controls.Add(this.AbstractLabel);
             this.TopEditPanel.Controls.Add(this.AbstractTextBox);
+            this.TopEditPanel.Controls.Add(this.AuthorLabel);
+            this.TopEditPanel.Controls.Add(this.AuthorTextBox);
             this.TopEditPanel.Controls.Add(this.VersionLabel);
             this.TopEditPanel.Controls.Add(this.VersionTextBox);
             this.TopEditPanel.Controls.Add(this.GameVersionLabel);
@@ -88,7 +92,7 @@ namespace CKAN
             this.TopEditPanel.Controls.Add(this.IncludeVersionsCheckbox);
             this.TopEditPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.TopEditPanel.Name = "TopEditPanel";
-            this.TopEditPanel.Size = new System.Drawing.Size(500, 130);
+            this.TopEditPanel.Size = new System.Drawing.Size(500, 160);
             // 
             // IdentifierLabel
             // 
@@ -147,6 +151,25 @@ namespace CKAN
             this.AbstractTextBox.Size = new System.Drawing.Size(250, 50);
             this.AbstractTextBox.TabIndex = 5;
             resources.ApplyResources(this.AbstractTextBox, "AbstractTextBox");
+            // 
+            // AuthorLabel
+            // 
+            this.AuthorLabel.AutoSize = true;
+            this.AuthorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.AuthorLabel.Location = new System.Drawing.Point(10, 130);
+            this.AuthorLabel.Name = "AuthorLabel";
+            this.AuthorLabel.Size = new System.Drawing.Size(75, 23);
+            this.AuthorLabel.TabIndex = 4;
+            resources.ApplyResources(this.AuthorLabel, "AuthorLabel");
+            // 
+            // AuthorTextBox
+            // 
+            this.AuthorTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.AuthorTextBox.Location = new System.Drawing.Point(125, 130);
+            this.AuthorTextBox.Name = "AbstractTextBox";
+            this.AuthorTextBox.Size = new System.Drawing.Size(250, 23);
+            this.AuthorTextBox.TabIndex = 5;
+            resources.ApplyResources(this.AuthorTextBox, "AuthorTextBox");
             // 
             // VersionLabel
             // 
@@ -411,6 +434,8 @@ namespace CKAN
         private System.Windows.Forms.TextBox NameTextBox;
         private System.Windows.Forms.Label AbstractLabel;
         private System.Windows.Forms.TextBox AbstractTextBox;
+        private System.Windows.Forms.Label AuthorLabel;
+        private System.Windows.Forms.TextBox AuthorTextBox;
         private System.Windows.Forms.Label VersionLabel;
         private System.Windows.Forms.TextBox VersionTextBox;
         private System.Windows.Forms.Label GameVersionLabel;
