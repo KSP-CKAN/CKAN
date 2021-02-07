@@ -171,6 +171,16 @@ namespace CKAN
                             modules.Add(module);
                         }
                     }
+                    else if (filename.EndsWith(".cfan"))
+                    {
+                        log.DebugFormat("Reading CFAN data from {0}", filename);
+                        string metadata_json = tarStreamString(tarStream, entry);
+                        CkanModule module = ProcessFactorioMetadataFromJSON(metadata_json, filename);
+                        if (module != null)
+                        {
+                            modules.Add(module);
+                        }
+                    }
                     else
                     {
                         // Skip things we don't want
@@ -239,6 +249,21 @@ namespace CKAN
                         }
 
                         CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
+                        if (module != null)
+                        {
+                            modules.Add(module);
+                        }
+                    }
+                    else if (filename.EndsWith(".cfan"))
+                    {
+                        log.DebugFormat("Reading CFAN data from {0}", filename);
+                        string metadata_json;
+                        using (var stream = new StreamReader(zipfile.GetInputStream(entry)))
+                        {
+                            metadata_json = stream.ReadToEnd();
+                            stream.Close();
+                        }
+                        CkanModule module = ProcessFactorioMetadataFromJSON(metadata_json, filename);
                         if (module != null)
                         {
                             modules.Add(module);
@@ -451,6 +476,11 @@ namespace CKAN
                 }
                 return null;
             }
+        }
+
+        private static CkanModule ProcessFactorioMetadataFromJSON(string metadata, string filename)
+        {
+            return JsonConvert.DeserializeObject<Games.FactorioModule>(metadata).ToCkan();
         }
 
         private static void ShowUserInconsistencies(Registry registry, IUser user)
