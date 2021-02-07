@@ -65,7 +65,8 @@ namespace CKAN
                     // Merge all the lists
                     allAvail.AddRange(avail);
                     repository.Value.last_server_etag = newETag;
-                    user.RaiseMessage("Updated {0}", repository.Value.name);
+                    user.RaiseMessage("Updated {0} ({1} modules)",
+                        repository.Value.name, avail.Count);
                 }
                 ++index;
             }
@@ -98,6 +99,7 @@ namespace CKAN
             else
             {
                 // Return failure
+                user.RaiseMessage("No modules found!");
                 return RepoUpdateResult.Failed;
             }
         }
@@ -381,19 +383,9 @@ Do you wish to reinstall now?", sb)))
                     // Create a handle for the tar stream.
                     using (TarInputStream tarStream = new TarInputStream(gzipStream))
                     {
-                        // Walk the archive, looking for .ckan files.
-                        const string filter = @"\.ckan$";
-
-                        while (true)
+                        TarEntry entry;
+                        while ((entry = tarStream.GetNextEntry()) != null)
                         {
-                            TarEntry entry = tarStream.GetNextEntry();
-
-                            // Check for EOF.
-                            if (entry == null)
-                            {
-                                break;
-                            }
-
                             string filename = entry.Name;
 
                             if (filename.EndsWith("download_counts.json"))
@@ -401,24 +393,24 @@ Do you wish to reinstall now?", sb)))
                                 downloadCounts = JsonConvert.DeserializeObject<SortedDictionary<string, int>>(
                                     tarStreamString(tarStream, entry)
                                 );
-                                continue;
                             }
-                            else if (!Regex.IsMatch(filename, filter))
+                            else if (filename.EndsWith(".ckan"))
+                            {
+                                log.DebugFormat("Reading CKAN data from {0}", filename);
+
+                                // Read each file into a buffer.
+                                string metadata_json = tarStreamString(tarStream, entry);
+
+                                CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
+                                if (module != null)
+                                {
+                                    modules.Add(module);
+                                }
+                            }
+                            else
                             {
                                 // Skip things we don't want.
                                 log.DebugFormat("Skipping archive entry {0}", filename);
-                                continue;
-                            }
-
-                            log.DebugFormat("Reading CKAN data from {0}", filename);
-
-                            // Read each file into a buffer.
-                            string metadata_json = tarStreamString(tarStream, entry);
-
-                            CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
-                            if (module != null)
-                            {
-                                modules.Add(module);
                             }
                         }
                     }
@@ -460,35 +452,35 @@ Do you wish to reinstall now?", sb)))
             List<CkanModule> modules = new List<CkanModule>();
             using (var zipfile = new ZipFile(path))
             {
-                // Walk the archive, looking for .ckan files.
-                const string filter = @"\.ckan$";
-
                 foreach (ZipEntry entry in zipfile)
                 {
                     string filename = entry.Name;
 
-                    // Skip things we don't want.
-                    if (! Regex.IsMatch(filename, filter))
+                    if (filename.EndsWith(".ckan"))
                     {
+                        log.DebugFormat("Reading CKAN data from {0}", filename);
+
+                        // Read each file into a string.
+                        string metadata_json;
+                        using (var stream = new StreamReader(zipfile.GetInputStream(entry)))
+                        {
+                            metadata_json = stream.ReadToEnd();
+                            stream.Close();
+                        }
+
+                        CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
+                        if (module != null)
+                        {
+                            modules.Add(module);
+                        }
+                    }
+                    else
+                    {
+                        // Skip things we don't want.
                         log.DebugFormat("Skipping archive entry {0}", filename);
                         continue;
                     }
 
-                    log.DebugFormat("Reading CKAN data from {0}", filename);
-
-                    // Read each file into a string.
-                    string metadata_json;
-                    using (var stream = new StreamReader(zipfile.GetInputStream(entry)))
-                    {
-                        metadata_json = stream.ReadToEnd();
-                        stream.Close();
-                    }
-
-                    CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
-                    if (module != null)
-                    {
-                        modules.Add(module);
-                    }
                 }
 
                 zipfile.Close();

@@ -107,6 +107,16 @@ namespace CKAN.Games
             "GameData/SquadExpansion"
         };
 
+        public string[] ReservedPaths => new string[]
+        {
+            "GameData", "Ships", "Missions"
+        };
+
+        public string[] CreateableDirs => new string[]
+        {
+            "GameData", "Tutorial", "Scenarios", "Missions", "Ships/Script"
+        };
+
         /// <summary>
         /// Checks the path against a list of reserved game directories
         /// </summary>

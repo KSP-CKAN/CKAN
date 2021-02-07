@@ -11,6 +11,8 @@ using System.Runtime.CompilerServices;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 
+using CKAN.Games;
+
 [assembly: InternalsVisibleTo("CKAN.Tests")]
 
 namespace CKAN
@@ -66,11 +68,6 @@ namespace CKAN
 
         private static Regex trailingSlashPattern = new Regex("/$",
             RegexOptions.Compiled);
-
-        private static string[] ReservedPaths = new string[]
-        {
-            "GameData", "Ships", "Missions"
-        };
 
         [OnDeserialized]
         internal void DeSerialisationFixes(StreamingContext like_i_could_care)
@@ -411,8 +408,9 @@ namespace CKAN
                     // Get the full name of the file.
                     // Update our file info with the install location
                     file_info.destination = TransformOutputName(
-                        entry.Name, installDir, @as);
+                        ksp.game, entry.Name, installDir, @as);
                     file_info.makedir = AllowDirectoryCreation(
+                        ksp.game,
                         ksp?.ToRelativeGameDir(file_info.destination)
                             ?? file_info.destination);
                 }
@@ -430,13 +428,9 @@ namespace CKAN
             return files;
         }
 
-        private static string[] CreateableDirs = {
-            "GameData", "Tutorial", "Scenarios", "Missions", "Ships/Script"
-        };
-
-        private bool AllowDirectoryCreation(string relativePath)
+        private bool AllowDirectoryCreation(IGame game, string relativePath)
         {
-            return CreateableDirs.Any(dir =>
+            return game.CreateableDirs.Any(dir =>
                 relativePath == dir || relativePath.StartsWith($"{dir}/"));
         }
 
@@ -449,7 +443,7 @@ namespace CKAN
         /// <param name="outputName">The name of the file to transform</param>
         /// <param name="installDir">The installation dir where the file should end up with</param>
         /// <returns>The output name</returns>
-        internal string TransformOutputName(string outputName, string installDir, string @as)
+        internal string TransformOutputName(IGame game, string outputName, string installDir, string @as)
         {
             string leadingPathToRemove = Path
                 .GetDirectoryName(ShortestMatchingPrefix(outputName))
@@ -484,7 +478,7 @@ namespace CKAN
             }
             else
             {
-                var reservedPrefix = ReservedPaths.FirstOrDefault(prefix =>
+                var reservedPrefix = game.ReservedPaths.FirstOrDefault(prefix =>
                     outputName.StartsWith(prefix + "/", StringComparison.InvariantCultureIgnoreCase));
                 if (reservedPrefix != null)
                 {
