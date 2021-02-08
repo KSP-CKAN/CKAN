@@ -23,12 +23,11 @@ namespace CKAN
             Dictionary<CkanModule, HashSet<string>> supporters
         )
         {
-            this.registry   = registry;
+            this.registry    = registry;
             this.GameVersion = GameVersion;
             Util.Invoke(this, () =>
             {
                 RecommendedModsToggleCheckbox.Checked = true;
-                RecommendedModsListView.Items.Clear();
                 RecommendedModsListView.Items.AddRange(
                     getRecSugRows(cache, recommendations, suggestions, supporters).ToArray());
                 MarkConflicts();
@@ -184,6 +183,7 @@ namespace CKAN
         private void RecommendedModsCancelButton_Click(object sender, EventArgs e)
         {
             task?.SetResult(null);
+            RecommendedModsListView.Items.Clear();
         }
 
         private void RecommendedModsContinueButton_Click(object sender, EventArgs e)
@@ -193,9 +193,10 @@ namespace CKAN
                     .Select(item => item.Tag as CkanModule)
                     .ToHashSet()
             );
+            RecommendedModsListView.Items.Clear();
         }
 
-        private IRegistryQuerier   registry;
+        private IRegistryQuerier    registry;
         private GameVersionCriteria GameVersion;
 
         private TaskCompletionSource<HashSet<CkanModule>> task;
