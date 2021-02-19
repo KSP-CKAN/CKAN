@@ -1246,6 +1246,15 @@ namespace CKAN
             return CompareColumn(a, b, ModName);
         }
 
+        /// <summary>
+        /// Compare two rows based on one of their columns
+        /// </summary>
+        /// <param name="a">First row</param>
+        /// <param name="b">Second row</param>
+        /// <param name="col">The column to compare</param>
+        /// <returns>
+        /// -1 if a&lt;b, 1 if a&gt;b, 0 if a==b
+        /// </returns>
         private int CompareColumn(DataGridViewRow a, DataGridViewRow b, DataGridViewColumn col)
         {
             GUIMod gmodA = a.Tag as GUIMod;
@@ -1256,15 +1265,21 @@ namespace CKAN
             var cellB = b.Cells[col.Index];
             if (col is DataGridViewCheckBoxColumn cbcol)
             {
+                // Checked < non-"-" text < unchecked < "-" text
                 if (cellA is DataGridViewCheckBoxCell checkboxA)
                 {
                     return cellB is DataGridViewCheckBoxCell checkboxB
-                        ? -((bool)checkboxA.Value).CompareTo((bool)checkboxB.Value)
-                        : -1;
+                            ? -((bool)checkboxA.Value).CompareTo((bool)checkboxB.Value)
+                        : (bool)checkboxA.Value || ((string)cellB.Value == "-") ? -1
+                        : 1;
                 }
                 else
                 {
-                    return cellB is DataGridViewCheckBoxCell ? 1: 0;
+                    return cellB is DataGridViewCheckBoxCell ? -CompareColumn(b, a, col)
+                        : (string)cellA.Value == (string)cellB.Value ? 0
+                        : (string)cellA.Value == "-" ? 1
+                        : (string)cellB.Value == "-" ? -1
+                        : ((string)cellA.Value).CompareTo((string)cellB.Value);
                 }
             }
             else
