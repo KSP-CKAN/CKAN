@@ -13,6 +13,14 @@ namespace CKAN.CmdLine
         public int RunCommand(GameInstanceManager manager, object raw_options)
         {
             CommonOptions opts = raw_options as CommonOptions;
+            // Print an intro if not in headless mode
+            if (!(opts?.Headless ?? false))
+            {
+                Console.WriteLine("Welcome to CKAN!");
+                Console.WriteLine("");
+                Console.WriteLine("To get help, type help and press enter.");
+                Console.WriteLine("");
+            }
             bool done = false;
             while (!done)
             {
