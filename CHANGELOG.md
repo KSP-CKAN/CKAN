@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [Updater] Report AutoUpdater errors to user, fix rare failure (#3250 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Upgrade AD mods with mismatched version in filename (#3287 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Modpack usability fixes (#3243 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Fix crashes in audit recommendations (#3292 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

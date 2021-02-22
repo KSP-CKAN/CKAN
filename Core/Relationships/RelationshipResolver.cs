@@ -534,11 +534,19 @@ namespace CKAN
 
             log.DebugFormat("Adding {0} {1}", module.identifier, module.version);
 
-            if (modlist.ContainsKey(module.identifier))
+            if (modlist.TryGetValue(module.identifier, out CkanModule possibleDup))
             {
-                // We should never be adding something twice!
-                log.ErrorFormat("Assertion failed: Adding {0} twice in relationship resolution", module.identifier);
-                throw new ArgumentException("Already contains module: " + module.identifier);
+                if (possibleDup.identifier == module.identifier)
+                {
+                    // We should never add the same module twice!
+                    log.ErrorFormat("Assertion failed: Adding {0} twice in relationship resolution", module.identifier);
+                    throw new ArgumentException("Already contains module: " + module.identifier);
+                }
+                else
+                {
+                    // Duplicates via "provides" are OK though, we'll just replace it
+                    modlist.Remove(module.identifier);
+                }
             }
             modlist.Add(module.identifier, module);
             if (!reasons.ContainsKey(module))

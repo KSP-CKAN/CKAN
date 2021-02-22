@@ -165,6 +165,11 @@ namespace CKAN
             ExpandButton.Checked = false;
         }
 
+        private void FilterTextBox_Enter(object sender, EventArgs e)
+        {
+            (sender as TextBox)?.SelectAll();
+        }
+
         private void FilterTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             // Switch focus from filters to mod list on enter, down, or pgdn
