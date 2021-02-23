@@ -128,7 +128,9 @@ namespace CKAN
         public IEnumerable<InstalledModule> IncompatibleInstalled(GameVersionCriteria crit)
         {
             return installed_modules.Values
-                .Where(im => !im.Module.IsCompatibleKSP(crit));
+                .Where(im => !im.Module.IsCompatibleKSP(crit)
+                    && !(GetModuleByVersion(im.identifier, im.Module.version)?.IsCompatibleKSP(crit)
+                        ?? false));
         }
 
         #region Registry Upgrades

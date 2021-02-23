@@ -157,7 +157,8 @@ namespace CKAN
         /// <summary>
         /// Ensures all files for this module have relative paths.
         /// Called when upgrading registry versions. Should be a no-op
-        /// if called on newer registries.</summary>
+        /// if called on newer registries.
+        /// </summary>
         public void Renormalise(GameInstance ksp)
         {
             var normalised_installed_files = new Dictionary<string, InstalledModuleFile>();
