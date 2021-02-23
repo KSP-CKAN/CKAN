@@ -639,7 +639,8 @@ namespace CKAN
                 return;
 
             var registry = RegistryManager.Instance(CurrentInstance).registry;
-            var incomp   = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria());
+            var incomp   = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria())
+                .Where(m => !m.Module.IsDLC).ToList();
             if (incomp.Any())
             {
                 // Warn that it might not be safe to run Game with incompatible modules installed
