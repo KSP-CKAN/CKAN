@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Modpack usability fixes (#3243 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Fix crashes in audit recommendations (#3292 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Fix checkbox sorting (#3297 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Handle incompatible force-installed dependencies of recommendations (#3305 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

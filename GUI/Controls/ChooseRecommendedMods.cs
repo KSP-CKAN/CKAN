@@ -17,13 +17,17 @@ namespace CKAN
         }
 
         public void LoadRecommendations(
-            IRegistryQuerier registry, GameVersionCriteria GameVersion, NetModuleCache cache,
+            IRegistryQuerier registry,
+            HashSet<CkanModule> toInstall, HashSet<CkanModule> toUninstall,
+            GameVersionCriteria GameVersion, NetModuleCache cache,
             Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
             Dictionary<CkanModule, List<string>> suggestions,
             Dictionary<CkanModule, HashSet<string>> supporters
         )
         {
             this.registry    = registry;
+            this.toInstall   = toInstall;
+            this.toUninstall = toUninstall;
             this.GameVersion = GameVersion;
             Util.Invoke(this, () =>
             {
@@ -83,22 +87,36 @@ namespace CKAN
         
         private void MarkConflicts()
         {
-            var conflicts = FindConflicts();
-            foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
-                // Apparently ListView handes AddRange by:
-                //   1. Expanding the Items list to the new size by filling it with nulls
-                //   2. One by one, replace each null with a real item and call _ItemChecked
-                // ... so the Items list can contain null!!
-                .Where(it => it != null))
+            try
             {
-                item.BackColor = conflicts.ContainsKey(item.Tag as CkanModule)
-                    ? Color.LightCoral
-                    : Color.Empty;
+                var conflicts = FindConflicts();
+                foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
+                    // Apparently ListView handes AddRange by:
+                    //   1. Expanding the Items list to the new size by filling it with nulls
+                    //   2. One by one, replace each null with a real item and call _ItemChecked
+                    // ... so the Items list can contain null!!
+                    .Where(it => it != null))
+                {
+                    item.BackColor = conflicts.ContainsKey(item.Tag as CkanModule)
+                        ? Color.LightCoral
+                        : Color.Empty;
+                }
+                RecommendedModsContinueButton.Enabled = !conflicts.Any();
+                if (OnConflictFound != null)
+                {
+                    OnConflictFound(conflicts.Any() ? conflicts.First().Value : "");
+                }
             }
-            RecommendedModsContinueButton.Enabled = !conflicts.Any();
-            if (OnConflictFound != null)
+            catch (DependencyNotSatisfiedKraken k)
             {
-                OnConflictFound(conflicts.Any() ? conflicts.First().Value : "");
+                var row = RecommendedModsListView.Items.Cast<ListViewItem>()
+                    .FirstOrDefault(it => (it?.Tag as CkanModule) == k.parent);
+                if (row != null)
+                {
+                    row.BackColor = Color.LightCoral;
+                }
+                RecommendedModsContinueButton.Enabled = false;
+                OnConflictFound?.Invoke(k.Message);
             }
         }
 
@@ -115,8 +133,9 @@ namespace CKAN
             return new RelationshipResolver(
                 RecommendedModsListView.CheckedItems.Cast<ListViewItem>()
                     .Select(item => item.Tag as CkanModule)
+                    .Concat(toInstall)
                     .Distinct(),
-                new CkanModule[] { },
+                toUninstall,
                 conflictOptions, registry, GameVersion
             ).ConflictList;
         }
@@ -197,6 +216,8 @@ namespace CKAN
         }
 
         private IRegistryQuerier    registry;
+        private HashSet<CkanModule> toInstall;
+        private HashSet<CkanModule> toUninstall;
         private GameVersionCriteria GameVersion;
 
         private TaskCompletionSource<HashSet<CkanModule>> task;

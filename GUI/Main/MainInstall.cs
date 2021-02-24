@@ -79,7 +79,7 @@ namespace CKAN
 
             // this will be the final list of mods we want to install
             HashSet<CkanModule> toInstall = new HashSet<CkanModule>();
-            var toUninstall = new HashSet<string>();
+            var toUninstall = new HashSet<CkanModule>();
             var toUpgrade   = new HashSet<CkanModule>();
 
             // First compose sets of what the user wants installed, upgraded, and removed.
@@ -88,7 +88,7 @@ namespace CKAN
                 switch (change.ChangeType)
                 {
                     case GUIModChangeType.Remove:
-                        toUninstall.Add(change.Mod.identifier);
+                        toUninstall.Add(change.Mod);
                         break;
                     case GUIModChangeType.Update:
                         toUpgrade.Add(change is ModUpgrade mu
@@ -102,7 +102,7 @@ namespace CKAN
                         ModuleReplacement repl = registry.GetReplacement(change.Mod, CurrentInstance.VersionCriteria());
                         if (repl != null)
                         {
-                            toUninstall.Add(repl.ToReplace.identifier);
+                            toUninstall.Add(repl.ToReplace);
                             toInstall.Add(repl.ReplaceWith);
                         }
                         break;
@@ -123,8 +123,9 @@ namespace CKAN
             {
                 tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
                 ChooseRecommendedMods.LoadRecommendations(
-                    registry, CurrentInstance.VersionCriteria(),
-                    Manager.Cache, recommendations, suggestions, supporters);
+                    registry, toInstall, toUninstall,
+                    CurrentInstance.VersionCriteria(), Manager.Cache,
+                    recommendations, suggestions, supporters);
                 tabController.SetTabLock(true);
                 var result = ChooseRecommendedMods.Wait();
                 if (result == null)
@@ -181,7 +182,8 @@ namespace CKAN
                         processSuccessful = false;
                         if (!installCanceled)
                         {
-                            installer.UninstallList(toUninstall, ref possibleConfigOnlyDirs, registry_manager, false, toInstall);
+                            installer.UninstallList(toUninstall.Select(m => m.identifier),
+                                ref possibleConfigOnlyDirs, registry_manager, false, toInstall);
                             processSuccessful = true;
                         }
                     }

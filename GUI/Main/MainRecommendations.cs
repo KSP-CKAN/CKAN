@@ -45,8 +45,9 @@ namespace CKAN
             {
                 tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
                 ChooseRecommendedMods.LoadRecommendations(
-                    registry, versionCriteria,
-                    Manager.Cache, recommendations, suggestions, supporters);
+                    registry, new HashSet<CkanModule>(), new HashSet<CkanModule>(),
+                    versionCriteria, Manager.Cache,
+                    recommendations, suggestions, supporters);
                 var result = ChooseRecommendedMods.Wait();
                 tabController.HideTab("ChooseRecommendedModsTabPage");
                 if (result != null && result.Any())
