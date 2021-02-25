@@ -431,8 +431,8 @@ namespace CKAN
         public static Dictionary<GUIMod, string> ComputeConflictsFromModList(IRegistryQuerier registry,
             IEnumerable<ModChange> change_set, GameVersionCriteria ksp_version)
         {
-            var modules_to_install = new HashSet<string>();
-            var modules_to_remove = new HashSet<string>();
+            var modules_to_install = new HashSet<CkanModule>();
+            var modules_to_remove  = new HashSet<CkanModule>();
             var options = new RelationshipResolverOptions
             {
                 without_toomanyprovides_kraken = true,
@@ -448,10 +448,10 @@ namespace CKAN
                     case GUIModChangeType.None:
                         break;
                     case GUIModChangeType.Install:
-                        modules_to_install.Add(change.Mod.identifier);
+                        modules_to_install.Add(change.Mod);
                         break;
                     case GUIModChangeType.Remove:
-                        modules_to_remove.Add(change.Mod.identifier);
+                        modules_to_remove.Add(change.Mod);
                         break;
                     case GUIModChangeType.Update:
                         break;
@@ -459,8 +459,8 @@ namespace CKAN
                         ModuleReplacement repl = registry.GetReplacement(change.Mod, ksp_version);
                         if (repl != null)
                         {
-                            modules_to_remove.Add(repl.ToReplace.identifier);
-                            modules_to_install.Add(repl.ReplaceWith.identifier);
+                            modules_to_remove.Add(repl.ToReplace);
+                            modules_to_install.Add(repl.ReplaceWith);
                         }
                         break;
                     default:
@@ -468,26 +468,15 @@ namespace CKAN
                 }
             }
 
-            // Only check mods that would exist after the changes are made.
-            IEnumerable<CkanModule> installed = registry.InstalledModules.Where(
-                im => !modules_to_remove.Contains(im.Module.identifier)
-            ).Select(im => im.Module);
-
-            // Convert ONLY modules_to_install with CkanModule.FromIDandVersion,
-            // because it may not find already-installed modules.
-            IEnumerable<CkanModule> mods_to_check = installed.Union(
-                modules_to_install.Except(modules_to_remove).Select(
-                    name => CkanModule.FromIDandVersion(registry, name, ksp_version)
-                )
-            );
             var resolver = new RelationshipResolver(
-                mods_to_check,
-                change_set.Where(ch => ch.ChangeType == GUIModChangeType.Remove)
-                    .Select(ch => ch.Mod),
+                modules_to_install.Except(modules_to_remove),
+                modules_to_remove,
                 options, registry, ksp_version
             );
-            return resolver.ConflictList.ToDictionary(item => new GUIMod(item.Key, registry, ksp_version),
-                item => item.Value);
+            return resolver.ConflictList.ToDictionary(
+                item => new GUIMod(item.Key, registry, ksp_version),
+                item => item.Value
+            );
         }
 
         public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier registry)
