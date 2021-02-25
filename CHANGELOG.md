@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] language: fr-FR (#3272, #3285 by: vinix38; reviewed: HebaruSan)
 - [ConsoleUI] Dark theme for ConsoleUI (#3226 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Visual cues for incompatibility reasons (#3271 by: HebaruSan; reviewed: DasSkelett)
+- [CLI] Greeting for ckan prompt (#3300 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 
