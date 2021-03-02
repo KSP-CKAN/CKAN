@@ -247,9 +247,9 @@ namespace CKAN
             {
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", module.identifier, module.version);
 
-                //Need to check against installed mods and those to install.
-                var mods = modlist.Values.Concat(installed_modules).Where(listed_mod => listed_mod.ConflictsWith(module));
-                foreach (CkanModule listed_mod in mods)
+                // Need to check against installed mods and those to install.
+                var conflictingModules = modlist.Values.Concat(installed_modules).Where(listed_mod => listed_mod.ConflictsWith(module));
+                foreach (CkanModule listed_mod in conflictingModules)
                 {
                     if (options.proceed_with_inconsistencies)
                     {
