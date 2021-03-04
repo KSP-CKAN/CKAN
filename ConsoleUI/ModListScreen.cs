@@ -17,7 +17,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         /// <param name="mgr">Game instance manager object containing the current instance</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public ModListScreen(GameInstanceManager mgr, bool dbg)
+        public ModListScreen(GameInstanceManager mgr, bool dbg, ConsoleTheme _theme)
         {
             debug    = dbg;
             manager  = mgr;
@@ -25,7 +25,7 @@ namespace CKAN.ConsoleUI {
 
             moduleList = new ConsoleListBox<CkanModule>(
                 1, 4, -1, -2,
-                GetAllMods(),
+                GetAllMods(_theme),
                 new List<ConsoleListBoxColumn<CkanModule>>() {
                     new ConsoleListBoxColumn<CkanModule>() {
                         Header   = "",
@@ -205,7 +205,7 @@ namespace CKAN.ConsoleUI {
                 }
                 return true;
             });
-            
+
             moduleList.AddTip("F8", "Mark auto-installed",
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && (!registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
@@ -265,7 +265,7 @@ namespace CKAN.ConsoleUI {
                 null,
                 new ConsoleMenuOption("Refresh mod list", "F5, Ctrl+R",
                     "Refresh the list of mods",
-                    true, UpdateRegistry),
+                    true, (ConsoleTheme th) => UpdateRegistry(th)),
                 new ConsoleMenuOption("Upgrade all",          "Ctrl+U",
                     "Mark all available updates for installation",
                     true, UpgradeAll, null, null, HasAnyUpgradeable()),
@@ -328,7 +328,7 @@ namespace CKAN.ConsoleUI {
         private bool ImportDownloads(ConsoleTheme theme)
         {
             DownloadImportDialog.ImportDownloads(theme, manager.CurrentInstance, manager.Cache, plan);
-            RefreshList();
+            RefreshList(theme);
             return true;
         }
 
@@ -393,7 +393,7 @@ namespace CKAN.ConsoleUI {
                         }
                     }
                     if (needRefresh) {
-                        RefreshList();
+                        RefreshList(theme);
                     }
                 } else {
                     RaiseError("Installed mods have no unsatisfied recommendations or suggestions.");
@@ -414,7 +414,7 @@ namespace CKAN.ConsoleUI {
             return (DateTime.Now - File.GetLastWriteTime(filename)).Days;
         }
 
-        private bool UpdateRegistry(ConsoleTheme theme)
+        private bool UpdateRegistry(ConsoleTheme theme, bool showNewModsPrompt = true)
         {
             ProgressScreen ps = new ProgressScreen("Updating Registry", "Checking for updates");
             LaunchSubScreen(theme, ps, (ConsoleTheme th) => {
@@ -447,11 +447,11 @@ namespace CKAN.ConsoleUI {
                     }
                 }
             });
-            if (recent.Count > 0 && RaiseYesNoDialog(newModPrompt(recent.Count))) {
+            if (showNewModsPrompt && recent.Count > 0 && RaiseYesNoDialog(newModPrompt(recent.Count))) {
                 searchBox.Clear();
                 moduleList.FilterString = searchBox.Value = "~n";
             }
-            RefreshList();
+            RefreshList(theme);
             return true;
         }
 
@@ -481,7 +481,7 @@ namespace CKAN.ConsoleUI {
             if (!prevInst.Equals(manager.CurrentInstance)) {
                 plan.Reset();
                 registry = RegistryManager.Instance(manager.CurrentInstance).registry;
-                RefreshList();
+                RefreshList(theme);
             }
             return true;
         }
@@ -492,17 +492,23 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
-        private void RefreshList()
+        private void RefreshList(ConsoleTheme theme)
         {
-            moduleList.SetData(GetAllMods(true));
+            // In the constructor this is called while moduleList is being populated, just do nothing in this case.
+            // ModListScreen -> moduleList = (GetAllMods ...) -> UpdateRegistry -> RefreshList
+            moduleList?.SetData(GetAllMods(theme,true));
         }
 
         private List<CkanModule> allMods = null;
 
-        private List<CkanModule> GetAllMods(bool force = false)
+        private List<CkanModule> GetAllMods(ConsoleTheme theme, bool force = false)
         {
             ScanForMods();
             if (allMods == null || force) {
+                if (!registry?.HasAnyAvailable() ?? false)
+                {
+                    UpdateRegistry(theme, false);
+                }
                 allMods = new List<CkanModule>(registry.CompatibleModules(manager.CurrentInstance.VersionCriteria()));
                 foreach (InstalledModule im in registry.InstalledModules) {
                     CkanModule m = null;
@@ -546,7 +552,7 @@ namespace CKAN.ConsoleUI {
         private bool ApplyChanges(ConsoleTheme theme)
         {
             LaunchSubScreen(theme, new InstallScreen(manager, plan, debug));
-            RefreshList();
+            RefreshList(theme);
             return true;
         }
 
@@ -598,9 +604,9 @@ namespace CKAN.ConsoleUI {
             return total;
         }
 
-        private GameInstanceManager       manager;
-        private IRegistryQuerier registry;
-        private bool             debug;
+        private GameInstanceManager manager;
+        private Registry            registry;
+        private bool                debug;
 
         private ConsoleField               searchBox;
         private ConsoleListBox<CkanModule> moduleList;
@@ -839,7 +845,7 @@ namespace CKAN.ConsoleUI {
         /// This mod is installed and not upgradeable or planned to be removed
         /// </summary>
         Installed,
-        
+
         /// <summary>
         /// Like Installed, but can be auto-removed if depending mods are removed
         /// </summary>

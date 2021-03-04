@@ -16,7 +16,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         public ConsoleCKAN(GameInstanceManager mgr, string themeName, bool debug)
         {
-            if (ConsoleTheme.Themes.TryGetValue(themeName, out ConsoleTheme theme))
+            if (ConsoleTheme.Themes.TryGetValue(themeName ?? "default", out ConsoleTheme theme))
             {
                 // GameInstanceManager only uses its IUser object to construct game instance objects,
                 // which only use it to inform the user about the creation of the CKAN/ folder.
@@ -40,7 +40,7 @@ namespace CKAN.ConsoleUI {
                         }
                     }
                     if (manager.CurrentInstance != null) {
-                        new ModListScreen(manager, debug).Run(theme);
+                        new ModListScreen(manager, debug, theme).Run(theme);
                     }
 
                     new ExitScreen().Run(theme);
