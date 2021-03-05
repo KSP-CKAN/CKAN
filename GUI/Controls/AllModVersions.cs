@@ -122,6 +122,11 @@ namespace CKAN
                         visibleGuiModule.PropertyChanged += visibleGuiModule_PropertyChanged;
                     }
                 }
+                VersionsListView.Items.Clear();
+                if (value == null)
+                {
+                    return;
+                }
 
                 // Get all the data; can put this in bg if slow
                 GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
@@ -139,16 +144,28 @@ namespace CKAN
                 }
                 catch (ModuleNotFoundKraken)
                 {
-                    // No versions to be shown, abort and hope an auto refresh happens
+                    // Identifier unknown to registry, maybe installed from local .ckan
+                    allAvailableVersions = new Dictionary<CkanModule, bool>();
+                }
+
+                // Take the module associated with GUIMod, if any, and append it to the list if it's not already there.
+                var installedModule = value.InstalledMod?.Module;
+                if (installedModule != null && !allAvailableVersions.ContainsKey(installedModule))
+                {
+                    allAvailableVersions.Add(installedModule, installable(installer, installedModule, registry));
+                }
+
+                if (!allAvailableVersions.Any())
+                {
                     return;
                 }
+
                 ModuleVersion installedVersion = registry.InstalledVersion(value.Identifier);
 
                 // Update UI; must be in fg
                 ignoreItemCheck = true;
                 bool latestCompatibleVersionAlreadyFound = false;
 
-                VersionsListView.Items.Clear();
                 // Only show checkboxes for non-DLC modules
                 VersionsListView.CheckBoxes = !value.ToModule().IsDLC;
 

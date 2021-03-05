@@ -6,6 +6,7 @@ namespace CKAN
     public partial class Main
     {
         private Action cancelCallback;
+        private Action okCallback;
 
         public void ShowWaitDialog(bool cancelable = true)
         {
@@ -86,6 +87,17 @@ namespace CKAN
             {
                 cancelCallback();
             }
+        }
+
+        public void Wait_OnOk()
+        {
+            if (okCallback != null)
+            {
+                okCallback();
+            }
+            Util.Invoke(this, () => Enabled = true);
+            Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
+            tabController.SetTabLock(false);
         }
     }
 }

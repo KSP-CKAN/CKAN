@@ -119,5 +119,6 @@
   </resheader>
   <data name="CancelCurrentActionButton.Text" xml:space="preserve"><value>Cancel</value></data>
   <data name="RetryCurrentActionButton.Text" xml:space="preserve"><value>Retry</value></data>
+  <data name="OkButton.Text" xml:space="preserve"><value>OK</value></data>
   <data name="MessageTextBox.Text" xml:space="preserve"><value>Waiting for operation to complete</value></data>
 </root>

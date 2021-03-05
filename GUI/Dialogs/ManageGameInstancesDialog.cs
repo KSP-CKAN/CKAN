@@ -19,7 +19,7 @@ namespace CKAN
             Filter           = GameFolderFilter(Main.Instance.Manager),
             Multiselect      = false
         };
-        
+
         /// <summary>
         /// Generate filter string for OpenFileDialog
         /// </summary>
@@ -213,7 +213,7 @@ namespace CKAN
 
         private void OpenDirectoryMenuItem_Click(object sender, EventArgs e)
         {
-            string path = GameInstancesListView.SelectedItems[0].SubItems[2].Text;
+            string path = _manager.Instances[(string) GameInstancesListView.SelectedItems[0].Tag].GameDir();
 
             if (!Directory.Exists(path))
             {
