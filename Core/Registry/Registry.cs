@@ -881,18 +881,18 @@ namespace CKAN
             if (dlcModule == null)
             {
                 // Don't have the real thing, make a fake one
-                dlcModule = new CkanModule()
-                {
-                    spec_version = new ModuleVersion("v1.28"),
-                    identifier   = identifier,
-                    name         = identifier,
-                    @abstract    = "An official expansion pack for KSP",
-                    author       = new List<string>() { "SQUAD" },
-                    version      = version,
-                    kind         = "dlc",
-                    license      = new List<License>() { new License("restricted") },
-                };
-                dlcModule.CalculateSearchables();
+                dlcModule = new CkanModule(
+                    new ModuleVersion("v1.28"),
+                    identifier,
+                    identifier,
+                    "An official expansion pack for KSP",
+                    null,
+                    new List<string>() { "SQUAD" },
+                    new List<License>() { new License("restricted") },
+                    version,
+                    null,
+                    "dlc"
+                );
             }
             installed_modules.Add(
                 identifier,

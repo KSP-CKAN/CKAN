@@ -279,12 +279,53 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Initialize a CkanModule
+        /// </summary>
+        /// <param name="spec_version">The version of the spec obeyed by this module</param>
+        /// <param name="identifier">This module's machine-readable identifier</param>
+        /// <param name="name">This module's user-visible display name</param>
+        /// <param name="@abstract">Short description of this module</param>
+        /// <param name="description">Long description of this module</param>
+        /// <param name="author">Authors of this module</param>
+        /// <param name="license">Licenses of this module</param>
+        /// <param name="version">Version number of this release</param>
+        /// <param name="download">Where to download this module</param>
+        /// <param name="kind">package, metapackage, or dlc</param>
+        /// <param name="comparator">Object used for checking compatibility of this module</param>
+        public CkanModule(
+            ModuleVersion spec_version,
+            string        identifier,
+            string        name,
+            string        @abstract,
+            string        description,
+            List<string>  author,
+            List<License> license,
+            ModuleVersion version,
+            Uri           download,
+            string        kind = null,
+            IGameComparator comparator = null
+        )
+        {
+            this.spec_version = spec_version;
+            this.identifier   = identifier;
+            this.name         = name;
+            this.@abstract    = @abstract;
+            this.description  = description;
+            this.author       = author;
+            this.license      = license;
+            this.version      = version;
+            this.download     = download;
+            this.kind         = kind;
+            this._comparator  = comparator ?? ServiceLocator.Container.Resolve<IGameComparator>();
+            CheckHealth();
+            CalculateSearchables();
+        }
+
+        /// <summary>
         /// Inflates a CKAN object from a JSON string.
         /// </summary>
         public CkanModule(string json, IGameComparator comparator)
         {
-            _comparator = comparator;
-
             try
             {
                 // Use the json string to populate our object
@@ -294,21 +335,22 @@ namespace CKAN
             {
                 throw new BadMetadataKraken(null, string.Format("JSON deserialization error: {0}", ex.Message), ex);
             }
+            _comparator = comparator;
+            CheckHealth();
+            CalculateSearchables();
+        }
 
-            // NOTE: Many of these tests may be better in our Deserialisation handler.
+        /// <summary>
+        /// Throw an exception if there's anything wrong with this module
+        /// </summary>
+        private void CheckHealth()
+        {
             if (!IsSpecSupported())
             {
-                throw new UnsupportedKraken(
-                    String.Format(
-                        "{0} requires CKAN {1}, we can't read it.",
-                        this,
-                        spec_version
-                    )
-                );
+                throw new UnsupportedKraken($"{this} requires CKAN {spec_version}, we can't read it.");
             }
 
             // Check everything in the spec is defined.
-            // TODO: This *can* and *should* be done with JSON attributes!
             foreach (string field in required_fields[kind ?? "package"])
             {
                 object value = null;
@@ -324,20 +366,15 @@ namespace CKAN
 
                 if (value == null)
                 {
-                    string error = String.Format("{0} missing required field {1}", identifier, field);
-
-                    throw new BadMetadataKraken(null, error);
+                    throw new BadMetadataKraken(null, $"{identifier} missing required field {field}");
                 }
             }
-
-            // Calculate the Searchables.
-            CalculateSearchables();
         }
 
         /// <summary>
         /// Calculate the mod properties used for searching via Regex.
         /// </summary>
-        public void CalculateSearchables()
+        private void CalculateSearchables()
         {
             SearchableIdentifier  = identifier  == null ? string.Empty : CkanModule.nonAlphaNums.Replace(identifier, "");
             SearchableName        = name        == null ? string.Empty : CkanModule.nonAlphaNums.Replace(name, "");
@@ -498,8 +535,7 @@ namespace CKAN
         /// </summary>
         public bool IsCompatibleKSP(GameVersionCriteria version)
         {
-            log.DebugFormat("Testing if {0} is compatible with KSP {1}", this, version.ToString());
-
+            log.DebugFormat("Testing if {0} is compatible with game versions {1}", this, version.ToString());
 
             return _comparator.Compatible(version, this);
         }
@@ -606,12 +642,12 @@ namespace CKAN
         /// <summary>
         /// Returns true if we support at least spec_version of the CKAN spec.
         /// </summary>
-        internal static bool IsSpecSupported(ModuleVersion spec_vesion)
+        internal static bool IsSpecSupported(ModuleVersion spec_version)
         {
             // This could be a read-only state variable; do we have those in C#?
             ModuleVersion release = new ModuleVersion(Meta.GetVersion(VersionFormat.Short));
 
-            return release == null || release.IsGreaterThan(spec_vesion);
+            return release == null || release.IsGreaterThan(spec_version);
         }
 
         /// <summary>

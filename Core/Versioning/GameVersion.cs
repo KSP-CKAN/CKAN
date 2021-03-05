@@ -198,16 +198,16 @@ namespace CKAN.Versioning
         public GameVersion(int major, int minor, int patch, int build)
         {
             if (major < 0)
-                throw new ArgumentOutOfRangeException("major");
+                throw new ArgumentOutOfRangeException("major", major, $"{major}");
 
             if (minor < 0)
-                throw new ArgumentOutOfRangeException("minor");
+                throw new ArgumentOutOfRangeException("minor", minor, $"{minor}");
 
             if (patch < 0)
-                throw new ArgumentOutOfRangeException("patch");
+                throw new ArgumentOutOfRangeException("patch", patch, $"{patch}");
 
             if (build < 0)
-                throw new ArgumentOutOfRangeException("build");
+                throw new ArgumentOutOfRangeException("build", build, $"{build}");
 
             _major = major;
             _minor = minor;
@@ -415,20 +415,36 @@ namespace CKAN.Versioning
                 var buildGroup = match.Groups["build"];
 
                 if (majorGroup.Success)
+                {
                     if (!int.TryParse(majorGroup.Value, out major))
                         return false;
+                    if (major < 0 || major == Int32.MaxValue)
+                        major = Undefined;
+                }
 
                 if (minorGroup.Success)
+                {
                     if (!int.TryParse(minorGroup.Value, out minor))
                         return false;
+                    if (minor < 0 || minor == Int32.MaxValue)
+                        minor = Undefined;
+                }
 
                 if (patchGroup.Success)
+                {
                     if (!int.TryParse(patchGroup.Value, out patch))
                         return false;
+                    if (patch < 0 || patch == Int32.MaxValue)
+                        patch = Undefined;
+                }
 
                 if (buildGroup.Success)
+                {
                     if (!int.TryParse(buildGroup.Value, out build))
                         return false;
+                    if (build < 0 || build == Int32.MaxValue)
+                        build = Undefined;
+                }
 
                 if (minor == Undefined)
                     result = new GameVersion(major);

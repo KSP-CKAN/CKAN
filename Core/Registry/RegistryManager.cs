@@ -314,7 +314,6 @@ namespace CKAN
                 log.ErrorFormat("Uncaught exception loading registry: {0}", ex.ToString());
                 throw;
             }
-
             AscertainDefaultRepo();
         }
 
@@ -322,6 +321,7 @@ namespace CKAN
         {
             log.InfoFormat("Creating new CKAN registry at {0}", path);
             registry = Registry.Empty();
+            AscertainDefaultRepo();
             Save();
         }
 
@@ -435,17 +435,20 @@ namespace CKAN
         {
             string kspInstanceName = ksp.Name;
             string name = $"installed-{kspInstanceName}";
-            var module = new CkanModule()
-            {
+            var module = new CkanModule(
                 // v1.18 to allow Unlicense
-                spec_version = new ModuleVersion("v1.18"),
-                identifier   = Identifier.Sanitize(name),
-                name         = name,
-                author       = new List<string>() { System.Environment.UserName },
-                @abstract    = $"A list of modules installed on the {kspInstanceName} KSP instance",
-                kind         = "metapackage",
-                version      = new ModuleVersion(DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss")),
-                license      = new List<License>() { new License("unknown") },
+                new ModuleVersion("v1.18"),
+                Identifier.Sanitize(name),
+                name,
+                $"A list of modules installed on the {kspInstanceName} KSP instance",
+                null,
+                new List<string>() { System.Environment.UserName },
+                new List<License>() { new License("unknown") },
+                new ModuleVersion(DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss")),
+                null,
+                "metapackage"
+            )
+            {
                 download_content_type = "application/zip",
                 release_date = DateTime.Now,
             };

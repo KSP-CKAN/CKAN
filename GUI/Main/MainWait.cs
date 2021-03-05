@@ -62,7 +62,9 @@ namespace CKAN
             Wait.ProgressIndeterminate = false;
             Util.Invoke(statusStrip1, () =>
             {
-                StatusProgress.Value = progress;
+                StatusProgress.Value =
+                    Math.Max(StatusProgress.Minimum,
+                        Math.Min(StatusProgress.Maximum, progress));
                 StatusProgress.Style = ProgressBarStyle.Continuous;
             });
         }

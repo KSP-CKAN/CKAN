@@ -1,10 +1,11 @@
 using System.Collections.Generic;
-using CKAN;
 using NUnit.Framework;
 using Tests.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ICSharpCode.SharpZipLib.Zip;
+using CKAN;
+using CKAN.Games;
 
 namespace Tests.Core.Types
 {
@@ -65,7 +66,7 @@ namespace Tests.Core.Types
                 $"{{\"file\": \"{file}\"}}");
 
             // Act
-            var result = stanza.TransformOutputName(outputName, installDir, @as);
+            var result = stanza.TransformOutputName(new KerbalSpaceProgram(), outputName, installDir, @as);
 
             // Assert
             Assert.That(result, Is.EqualTo(expected));
@@ -81,7 +82,7 @@ namespace Tests.Core.Types
                 $"{{\"file\": \"{file}\"}}");
 
             // Act
-            TestDelegate act = () => stanza.TransformOutputName(outputName, installDir, @as);
+            TestDelegate act = () => stanza.TransformOutputName(new KerbalSpaceProgram(), outputName, installDir, @as);
 
             // Assert
             Assert.That(act, Throws.Exception);
