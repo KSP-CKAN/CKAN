@@ -17,6 +17,7 @@ namespace CKAN
 
         public event Action OnRetry;
         public event Action OnCancel;
+        public event Action OnOk;
 
         public bool RetryEnabled
         {
@@ -199,6 +200,7 @@ namespace CKAN
                 ProgressIndeterminate = true;
                 RetryCurrentActionButton.Enabled = false;
                 CancelCurrentActionButton.Enabled = cancelable;
+                OkButton.Enabled = false;
                 MessageTextBox.Text = Properties.Resources.MainWaitPleaseWait;
             });
         }
@@ -212,6 +214,7 @@ namespace CKAN
                 ProgressIndeterminate = false;
                 RetryCurrentActionButton.Enabled = !success;
                 CancelCurrentActionButton.Enabled = false;
+                OkButton.Enabled = true;
             });
         }
 
@@ -249,6 +252,14 @@ namespace CKAN
             }
             Util.Invoke(this, () =>
                 CancelCurrentActionButton.Enabled = false);
+        }
+
+        private void OkButton_Click(object sender, EventArgs e)
+        {
+            if (OnOk != null)
+            {
+                OnOk();
+            }
         }
     }
 }

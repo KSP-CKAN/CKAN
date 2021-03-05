@@ -356,6 +356,8 @@ namespace CKAN
 
             foreach (NetAsyncDownloaderDownloadPart t in downloads.ToList())
             {
+                if (t == null)
+                    continue;
                 if (t.bytesLeft > 0)
                 {
                     totalBytesPerSecond += t.bytesPerSecond;
@@ -366,6 +368,9 @@ namespace CKAN
             }
             foreach (Net.DownloadTarget t in queuedDownloads.ToList())
             {
+                // Somehow managed to get a NullRef for t here
+                if (t == null)
+                    continue;
                 totalBytesLeft += t.size;
                 totalSize += t.size;
             }

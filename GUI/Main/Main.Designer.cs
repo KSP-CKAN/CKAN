@@ -401,9 +401,9 @@
             this.ManageModsTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ManageModsTabPage.TabIndex = 3;
             resources.ApplyResources(this.ManageModsTabPage, "ManageModsTabPage");
-            // 
+            //
             // ManageMods
-            // 
+            //
             this.ManageMods.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ManageMods.Location = new System.Drawing.Point(0, 0);
             this.ManageMods.Margin = new System.Windows.Forms.Padding(0,0,0,0);
@@ -467,6 +467,7 @@
             this.Wait.TabIndex = 32;
             this.Wait.OnRetry += Wait_OnRetry;
             this.Wait.OnCancel += Wait_OnCancel;
+            this.Wait.OnOk += Wait_OnOk;
             //
             // ChooseRecommendedModsTabPage
             //

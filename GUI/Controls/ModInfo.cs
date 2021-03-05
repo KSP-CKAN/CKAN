@@ -140,7 +140,7 @@ namespace CKAN
             Util.Invoke(MetadataModuleAuthorTextBox, () => MetadataModuleAuthorTextBox.Text = gui_module.Authors);
             Util.Invoke(MetadataIdentifierTextBox, () => MetadataIdentifierTextBox.Text = module.identifier);
 
-            Util.Invoke(MetadataModuleReleaseStatusTextBox, () => 
+            Util.Invoke(MetadataModuleReleaseStatusTextBox, () =>
             {
                 if (module.release_status == null)
                 {

@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix checkbox sorting (#3297 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Handle incompatible force-installed dependencies of recommendations (#3305 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Don't warn about incompatible DLCs, fix conflict highlighting with DLC installed (#3304 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Fixes for GUI and .ckan-installed modules (#3307 by: DasSkelett; reviewed: HebaruSan)
 
 ### Internal
 

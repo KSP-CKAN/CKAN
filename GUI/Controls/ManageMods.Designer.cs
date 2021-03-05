@@ -1,4 +1,6 @@
-﻿namespace CKAN
+﻿using System.Windows.Forms;
+
+namespace CKAN
 {
     partial class ManageMods
     {
@@ -98,6 +100,7 @@
             this.FilterToolButton,
             this.NavBackwardToolButton,
             this.NavForwardToolButton});
+            this.menuStrip2.CanOverflow = true;
             this.menuStrip2.Location = new System.Drawing.Point(0, 0);
             this.menuStrip2.Name = "menuStrip2";
             this.menuStrip2.Size = new System.Drawing.Size(5876, 48);
@@ -110,6 +113,7 @@
             this.launchGameToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.launchGameToolStripMenuItem.Name = "launchGameToolStripMenuItem";
             this.launchGameToolStripMenuItem.Size = new System.Drawing.Size(146, 56);
+            this.launchGameToolStripMenuItem.Overflow = ToolStripItemOverflow.AsNeeded;
             this.launchGameToolStripMenuItem.Click += new System.EventHandler(this.launchGameToolStripMenuItem_Click);
             resources.ApplyResources(this.launchGameToolStripMenuItem, "launchGameToolStripMenuItem");
             //
@@ -119,6 +123,7 @@
             this.RefreshToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.RefreshToolButton.Name = "RefreshToolButton";
             this.RefreshToolButton.Size = new System.Drawing.Size(114, 56);
+            this.RefreshToolButton.Overflow = ToolStripItemOverflow.AsNeeded;
             this.RefreshToolButton.Click += new System.EventHandler(this.RefreshToolButton_Click);
             resources.ApplyResources(this.RefreshToolButton, "RefreshToolButton");
             //
@@ -128,6 +133,7 @@
             this.UpdateAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.UpdateAllToolButton.Name = "UpdateAllToolButton";
             this.UpdateAllToolButton.Size = new System.Drawing.Size(232, 56);
+            this.UpdateAllToolButton.Overflow = ToolStripItemOverflow.AsNeeded;
             this.UpdateAllToolButton.Click += new System.EventHandler(this.MarkAllUpdatesToolButton_Click);
             resources.ApplyResources(this.UpdateAllToolButton, "UpdateAllToolButton");
             //
@@ -137,6 +143,7 @@
             this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ApplyToolButton.Name = "ApplyToolButton";
             this.ApplyToolButton.Size = new System.Drawing.Size(173, 56);
+            this.ApplyToolButton.Overflow = ToolStripItemOverflow.AsNeeded;
             this.ApplyToolButton.Click += new System.EventHandler(this.ApplyToolButton_Click);
             resources.ApplyResources(this.ApplyToolButton, "ApplyToolButton");
             //
@@ -161,6 +168,7 @@
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
             this.FilterToolButton.Size = new System.Drawing.Size(201, 56);
+            this.FilterToolButton.Overflow = ToolStripItemOverflow.AsNeeded;
             resources.ApplyResources(this.FilterToolButton, "FilterToolButton");
             //
             // FilterCompatibleButton
@@ -253,6 +261,7 @@
             this.NavBackwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.NavBackwardToolButton.Name = "NavBackwardToolButton";
             this.NavBackwardToolButton.Size = new System.Drawing.Size(44, 56);
+            this.NavBackwardToolButton.Overflow = ToolStripItemOverflow.AsNeeded;
             this.NavBackwardToolButton.Click += new System.EventHandler(this.NavBackwardToolButton_Click);
             resources.ApplyResources(this.NavBackwardToolButton, "NavBackwardToolButton");
             //
@@ -262,6 +271,7 @@
             this.NavForwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.NavForwardToolButton.Name = "NavForwardToolButton";
             this.NavForwardToolButton.Size = new System.Drawing.Size(44, 56);
+            this.NavForwardToolButton.Overflow = ToolStripItemOverflow.AsNeeded;
             this.NavForwardToolButton.Click += new System.EventHandler(this.NavForwardToolButton_Click);
             resources.ApplyResources(this.NavForwardToolButton, "NavForwardToolButton");
             //

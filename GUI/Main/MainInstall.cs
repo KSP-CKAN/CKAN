@@ -142,6 +142,8 @@ namespace CKAN
 
             if (installCanceled)
             {
+                Util.Invoke(this, () => Enabled = true);
+                Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
                 tabController.ShowTab("ManageModsTabPage");
                 e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
                 return;
@@ -236,6 +238,8 @@ namespace CKAN
                     {
                         // User cancelled, get out
                         tabController.ShowTab("ManageModsTabPage");
+                        Util.Invoke(this, () => Enabled = true);
+                        Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
                         e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
                         return;
                     }
@@ -291,7 +295,11 @@ namespace CKAN
 
         private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
         {
-            tabController.SetTabLock(false);
+            okCallback = () =>
+            {
+                ManageMods.UpdateModsList(null);
+                okCallback = null;
+            };
 
             if (e.Error != null)
             {
@@ -410,7 +418,10 @@ namespace CKAN
                         }
                     }
 
-                    // install successful
+                    Util.Invoke(this, () => Enabled = true);
+                    Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
+                    tabController.SetTabLock(false);
+
                     AddStatusMessage(Properties.Resources.MainInstallSuccess);
                     HideWaitDialog(true);
                 }
@@ -434,9 +445,6 @@ namespace CKAN
                     }
                 }
             }
-
-            Util.Invoke(this, () => Enabled = true);
-            Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
         }
     }
 }

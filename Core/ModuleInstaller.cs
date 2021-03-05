@@ -1347,7 +1347,7 @@ namespace CKAN
             {
                 RelationshipResolver resolver = new RelationshipResolver(
                     toInstall,
-                    null,
+                    toInstall.Select(m => registry.InstalledModule(m.identifier)?.Module).Where(m => m != null),
                     opts, registry, ksp.VersionCriteria()
                 );
 

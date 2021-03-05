@@ -12,7 +12,7 @@ namespace CKAN
     {
         private CkanModule      Mod                 { get; set; }
         private CkanModule      LatestCompatibleMod { get; set; }
-        private InstalledModule InstalledMod        { get; set; }
+        public  InstalledModule InstalledMod        { get; private set; }
 
         /// <summary>
         /// The module of the checkbox that is checked in the MainAllModVersions list if any,
@@ -141,6 +141,8 @@ namespace CKAN
             {
                 LatestVersion = InstalledVersion;
             }
+            // For mods not known to the registry LatestCompatibleMod is null, however the installed module might be compatible
+            IsIncompatible   = incompatible ?? LatestCompatibleMod == null && !instMod.Module.IsCompatibleKSP(current_game_version);
         }
 
         /// <summary>
@@ -268,6 +270,12 @@ namespace CKAN
             IsCached = Main.Instance.Manager.Cache.IsMaybeCachedZip(Mod);
         }
 
+        /// <summary>
+        /// Get the CkanModule associated with this GUIMod.
+        /// See <see cref="ToModule"/> for a method that doesn't throw.
+        /// </summary>
+        /// <returns>The CkanModule associated with this GUIMod</returns>
+        /// <exception cref="InvalidCastException">Thrown if no CkanModule is associated</exception>
         public CkanModule ToCkanModule()
         {
             if (!IsCKAN)
@@ -276,6 +284,10 @@ namespace CKAN
             return mod;
         }
 
+        /// <summary>
+        /// Get the CkanModule associated with this GUIMod.
+        /// </summary>
+        /// <returns>The CkanModule associated with this GUIMod or null if there is none</returns>
         public CkanModule ToModule()
         {
             return Mod;

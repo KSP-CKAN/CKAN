@@ -194,7 +194,7 @@ namespace CKAN
             {
                 RelationshipResolver resolver = new RelationshipResolver(
                     new CkanModule[] { newest_version },
-                    null,
+                    new CkanModule[] { querier.InstalledModule(identifier).Module },
                     new RelationshipResolverOptions()
                     {
                         with_recommends = false,

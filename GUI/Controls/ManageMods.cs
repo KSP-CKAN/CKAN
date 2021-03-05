@@ -786,8 +786,21 @@ namespace CKAN
                 {
                     mod.SetInstallChecked(row, Installed, mod.IsInstalled);
                 }
+                else if (mod.SelectedMod != mod.InstalledMod?.Module)
+                {
+                    mod.SelectedMod = mod.InstalledMod?.Module;
+                }
                 mod.SetUpgradeChecked(row, UpdateCol, false);
                 mod.SetReplaceChecked(row, ReplaceCol, false);
+                // Marking a mod as AutoInstalled can immediately queue it for removal if there is no dependent mod.
+                // Reset the state of the AutoInstalled checkbox for these by deducing it from the changeset.
+                if (mod.InstalledMod != null &&
+                    ChangeSet.Contains(new ModChange(mod.InstalledMod?.Module, GUIModChangeType.Remove,
+                        new SelectionReason.NoLongerUsed()))
+                )
+                {
+                    mod.SetAutoInstallChecked(row, AutoInstalled, false);
+                }
             }
         }
 
