@@ -17,7 +17,8 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         /// <param name="mgr">Game instance manager object containing the current instance</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public ModListScreen(GameInstanceManager mgr, bool dbg, ConsoleTheme _theme)
+        /// <param name="regTheme">The theme to use for the registry update flow, if needed</param>
+        public ModListScreen(GameInstanceManager mgr, bool dbg, ConsoleTheme regTheme)
         {
             debug    = dbg;
             manager  = mgr;
@@ -25,7 +26,7 @@ namespace CKAN.ConsoleUI {
 
             moduleList = new ConsoleListBox<CkanModule>(
                 1, 4, -1, -2,
-                GetAllMods(_theme),
+                GetAllMods(regTheme),
                 new List<ConsoleListBoxColumn<CkanModule>>() {
                     new ConsoleListBoxColumn<CkanModule>() {
                         Header   = "",

@@ -192,9 +192,11 @@ namespace CKAN
             // All quick checks pass. Now check the relationships.
             try
             {
+                var instMod = querier.InstalledModule(identifier);
                 RelationshipResolver resolver = new RelationshipResolver(
                     new CkanModule[] { newest_version },
-                    new CkanModule[] { querier.InstalledModule(identifier).Module },
+                    // Remove the old module when installing the new one
+                    instMod == null ? null : new CkanModule[] { instMod.Module },
                     new RelationshipResolverOptions()
                     {
                         with_recommends = false,

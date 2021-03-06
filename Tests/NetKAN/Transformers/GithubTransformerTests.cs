@@ -74,6 +74,17 @@ namespace Tests.NetKAN.Transformers
                                 "ExampleProject_1.2-1.8.1.zip",
                                 new Uri("http://github.example/download/1.2/ExampleProject_1.2-1.8.1.zip"),
                                 null
+                            )
+                        }
+                    ),
+                    new GithubRelease("ExampleProject",
+                        new ModuleVersion("1.3"),
+                        new List<GithubReleaseAsset>
+                        {
+                            new GithubReleaseAsset(
+                                "ExampleProject_1.2-1.8.1.zip",
+                                new Uri("http://github.example/download/1.2/ExampleProject_1.2-1.8.1.zip"),
+                                null
                             ),
                             new GithubReleaseAsset(
                                 "ExampleProject_1.2-1.9.1.zip",
@@ -94,6 +105,7 @@ namespace Tests.NetKAN.Transformers
             var json = new JObject();
             json["spec_version"] = 1;
             json["$kref"] = "#/ckan/github/ExampleAccount/ExampleProject";
+            json["identifier"] = "ExampleProject1";
 
             var sut = new GithubTransformer(apiMockUp.Object, false);
 
@@ -115,6 +127,7 @@ namespace Tests.NetKAN.Transformers
             JObject json = new JObject();
             json["spec_version"] = 1;
             json["$kref"] = "#/ckan/github/jrodrigv/DestructionEffects";
+            json["identifier"] = "ExampleProject2";
 
             var mApi = new Mock<IGithubApi>();
             mApi.Setup(i => i.GetRepo(It.IsAny<GithubRef>()))
@@ -171,6 +184,7 @@ namespace Tests.NetKAN.Transformers
             var json = new JObject();
             json["spec_version"] = 1;
             json["$kref"] = "#/ckan/github/ExampleAccount/ExampleProject";
+            json["identifier"] = "ExampleProject3";
 
             var sut = new GithubTransformer(apiMockUp.Object, false);
 
@@ -208,13 +222,14 @@ namespace Tests.NetKAN.Transformers
             var json = new JObject();
             json["spec_version"] = 1;
             json["$kref"] = "#/ckan/github/ExampleAccount/ExampleProject/version_from_asset/^.+_(?<version>.+)\\.zip$";
+            json["identifier"] = "ExampleProject4";
 
             var sut = new GithubTransformer(apiMockUp.Object, false);
 
             // Act
             var results = sut.Transform(
                 new Metadata(json),
-                new TransformOptions(1, 2, null)
+                new TransformOptions(1, 3, null)
             );
             var transformedJsons = results.Select(result => result.Json()).ToArray();
 
@@ -245,13 +260,14 @@ namespace Tests.NetKAN.Transformers
             var json = new JObject();
             json["spec_version"] = 1;
             json["$kref"] = "#/ckan/github/ExampleAccount/ExampleProject";
+            json["identifier"] = "ExampleProject5";
 
             var sut = new GithubTransformer(apiMockUp.Object, false);
 
             // Act
             var results = sut.Transform(
                 new Metadata(json),
-                new TransformOptions(3, 1, null)
+                new TransformOptions(2, 1, null)
             ).ToArray();
 
             // Assert
