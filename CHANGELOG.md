@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.30.1
 
+### Bugfixes
+
+- [GUI] Update dialog was too small for French localization (#3313 by: vinix38; reviewed: HebaruSan)
+
 ## v1.30.0 (Glenn)
 
 ### Features

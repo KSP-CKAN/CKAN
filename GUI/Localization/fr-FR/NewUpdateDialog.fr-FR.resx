@@ -121,6 +121,6 @@
   <data name="label1.Text" xml:space="preserve"><value>Version:</value></data>
   <data name="VersionLabel.Text" xml:space="preserve"><value>v0.0.0</value></data>
   <data name="InstallUpdateButton.Text" xml:space="preserve"><value>Installer</value></data>
-  <data name="CancelUpdateButton.Text" xml:space="preserve"><value>Pas maintenant</value></data>
+  <data name="CancelUpdateButton.Text" xml:space="preserve"><value>Plus tard</value></data>
   <data name="$this.Text" xml:space="preserve"><value>Une nouvelle version de CKAN est disponible</value></data>
 </root>
