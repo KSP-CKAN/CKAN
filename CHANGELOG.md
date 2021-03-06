@@ -2,7 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.30.0
+## v1.30.1
+
+## v1.30.0 (Glenn)
 
 ### Features
 
