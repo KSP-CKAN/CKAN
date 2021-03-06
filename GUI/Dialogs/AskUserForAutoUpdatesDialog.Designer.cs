@@ -29,19 +29,18 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(AskUserForAutoUpdatesDialog));
-            this.label1 = new System.Windows.Forms.Label();
+            this.autoCheckLabel = new System.Windows.Forms.Label();
             this.YesButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.NoButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             //
-            // label1
+            // autoCheckLabel
             //
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(511, 13);
-            this.label1.TabIndex = 0;
-            resources.ApplyResources(this.label1, "label1");
+            this.autoCheckLabel.Location = new System.Drawing.Point(12, 9);
+            this.autoCheckLabel.Name = "autoCheckLabel";
+            this.autoCheckLabel.Size = new System.Drawing.Size(538, 50);
+            this.autoCheckLabel.TabIndex = 0;
+            resources.ApplyResources(this.autoCheckLabel, "autoCheckLabel");
             //
             // YesButton
             //
@@ -53,24 +52,24 @@
             this.YesButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.YesButton, "YesButton");
             //
-            // button1
+            // NoButton
             //
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.No;
-            this.button1.Location = new System.Drawing.Point(323, 44);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(72, 23);
-            this.button1.TabIndex = 2;
-            this.button1.UseVisualStyleBackColor = true;
-            resources.ApplyResources(this.button1, "button1");
+            this.NoButton.Location = new System.Drawing.Point(323, 44);
+            this.NoButton.Size = new System.Drawing.Size(72, 23);
+            this.NoButton.DialogResult = System.Windows.Forms.DialogResult.No;
+            this.NoButton.Name = "NoButton";
+            this.NoButton.TabIndex = 2;
+            this.NoButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.NoButton, "NoButton");
             //
             // AskUserForAutoUpdatesDialog
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(562, 79);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.NoButton);
             this.Controls.Add(this.YesButton);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.autoCheckLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = Properties.Resources.AppIcon;
             this.Name = "AskUserForAutoUpdatesDialog";
@@ -83,8 +82,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label autoCheckLabel;
         private System.Windows.Forms.Button YesButton;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button NoButton;
     }
 }

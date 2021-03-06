@@ -75,10 +75,9 @@ namespace CKAN
             //
             this.InstallUpdateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.InstallUpdateButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.InstallUpdateButton.Location = new System.Drawing.Point(339, 277);
+            this.InstallUpdateButton.Location = new System.Drawing.Point(314, 277);
             this.InstallUpdateButton.Name = "InstallUpdateButton";
-            this.InstallUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.InstallUpdateButton.Size = new System.Drawing.Size(100, 23);
             this.InstallUpdateButton.TabIndex = 4;
             this.InstallUpdateButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.InstallUpdateButton, "InstallUpdateButton");
@@ -87,10 +86,9 @@ namespace CKAN
             //
             this.CancelUpdateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelUpdateButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelUpdateButton.Location = new System.Drawing.Point(258, 277);
+            this.CancelUpdateButton.Location = new System.Drawing.Point(208, 277);
             this.CancelUpdateButton.Name = "CancelUpdateButton";
-            this.CancelUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelUpdateButton.Size = new System.Drawing.Size(100, 23);
             this.CancelUpdateButton.TabIndex = 5;
             this.CancelUpdateButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.CancelUpdateButton, "CancelUpdateButton");
