@@ -32,19 +32,17 @@ namespace CKAN
         //identifier, row
         internal Dictionary<string, DataGridViewRow> full_list_of_mod_rows;
 
-        public ModList(ModFiltersUpdatedEvent onModFiltersUpdated)
+        public ModList(Action<ModList> onModFiltersUpdated)
         {
             Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
             ModFiltersUpdated += onModFiltersUpdated ?? (source => { });
             ModFiltersUpdated(this);
         }
 
-        public delegate void ModFiltersUpdatedEvent(ModList source);
-
         //TODO Move to relationship resolver and have it use this.
         public delegate Task<CkanModule> HandleTooManyProvides(TooManyModsProvideKraken kraken);
 
-        public event ModFiltersUpdatedEvent ModFiltersUpdated;
+        public event Action<ModList> ModFiltersUpdated;
         public ReadOnlyCollection<GUIMod> Modules { get; set; }
 
         public GUIModFilter ModFilter
@@ -94,10 +92,10 @@ namespace CKAN
             }
         }
 
-        private GUIModFilter _modFilter = GUIModFilter.Compatible;
-        private ModSearch activeSearch = null;
+        private GUIModFilter    _modFilter = GUIModFilter.Compatible;
+        private List<ModSearch> activeSearch = null;
 
-        public void SetSearch(ModSearch newSearch)
+        public void SetSearch(List<ModSearch> newSearch)
         {
             activeSearch = newSearch;
             ModFiltersUpdated(this);
@@ -191,7 +189,7 @@ namespace CKAN
 
         public bool IsVisible(GUIMod mod, string instanceName)
         {
-            return (activeSearch?.Matches(mod) ?? true)
+            return (activeSearch?.Any(s => s?.Matches(mod) ?? true) ?? true)
                 && IsModInFilter(ModFilter, TagFilter, CustomLabelFilter, mod)
                 && !HiddenByTagsOrLabels(ModFilter, TagFilter, CustomLabelFilter, mod, instanceName);
         }

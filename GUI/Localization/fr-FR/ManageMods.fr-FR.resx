@@ -166,7 +166,7 @@
   <data name="FilterLabelsToolButton.Text" xml:space="preserve"><value>Labels</value></data>
   <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve"><value>Mod sélectionné précédent...</value></data>
   <data name="NavForwardToolButton.ToolTipText" xml:space="preserve"><value>Mod sélectionné suivant...</value></data>
-  <data name="Installed.HeaderText" xml:space="preserve"><value>    Inst</value></data>
+  <data name="Installed.HeaderText" xml:space="preserve"><value>Inst</value></data>
   <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>Auto-installé</value></data>
   <data name="UpdateCol.HeaderText" xml:space="preserve"><value>MàJ</value></data>
   <data name="ReplaceCol.HeaderText" xml:space="preserve"><value>Remplace</value></data>

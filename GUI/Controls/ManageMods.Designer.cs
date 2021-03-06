@@ -32,6 +32,7 @@ namespace CKAN
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ManageMods));
+            this.ToolTip = new System.Windows.Forms.ToolTip();
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
             this.launchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,7 +53,7 @@ namespace CKAN
             this.FilterTagsToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NavBackwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NavForwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.EditModSearch = new CKAN.EditModSearch();
+            this.EditModSearches = new CKAN.EditModSearches();
             this.ModGrid = new System.Windows.Forms.DataGridView();
             this.InstallAllCheckbox = new System.Windows.Forms.CheckBox();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -86,6 +87,13 @@ namespace CKAN
             this.ModListContextMenuStrip.SuspendLayout();
             this.ModListHeaderContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // Tooltip
+            // 
+            this.ToolTip.AutoPopDelay = 10000;
+            this.ToolTip.InitialDelay = 250;
+            this.ToolTip.ReshowDelay = 250;
+            this.ToolTip.ShowAlways = true;
             //
             // menuStrip2
             //
@@ -275,11 +283,11 @@ namespace CKAN
             this.NavForwardToolButton.Click += new System.EventHandler(this.NavForwardToolButton_Click);
             resources.ApplyResources(this.NavForwardToolButton, "NavForwardToolButton");
             //
-            // EditModSearch
+            // EditModSearches
             //
-            this.EditModSearch.Dock = System.Windows.Forms.DockStyle.Top;
-            this.EditModSearch.ApplySearch += EditModSearch_ApplySearch;
-            this.EditModSearch.SurrenderFocus += EditModSearch_SurrenderFocus;
+            this.EditModSearches.Dock = System.Windows.Forms.DockStyle.Top;
+            this.EditModSearches.ApplySearches += EditModSearches_ApplySearches;
+            this.EditModSearches.SurrenderFocus += EditModSearches_SurrenderFocus;
             //
             // ModGrid
             //
@@ -330,6 +338,7 @@ namespace CKAN
             this.ModGrid.LostFocus += new System.EventHandler(this.ModList_LostFocus);
             this.ModGrid.CurrentCellDirtyStateChanged += new System.EventHandler(this.ModList_CurrentCellDirtyStateChanged);
             this.ModGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellValueChanged);
+            this.ModGrid.Resize += new System.EventHandler(this.ModList_Resize);
             //
             // Installed
             //
@@ -507,7 +516,7 @@ namespace CKAN
             //
             // InstallAllCheckbox
             //
-            this.InstallAllCheckbox.Location = new System.Drawing.Point(2, 86);
+            this.InstallAllCheckbox.Location = new System.Drawing.Point(18, 57);
             this.InstallAllCheckbox.Size = new System.Drawing.Size(20, 20);
             this.InstallAllCheckbox.Checked = true;
             this.InstallAllCheckbox.CheckedChanged += new System.EventHandler(this.InstallAllCheckbox_CheckChanged);
@@ -519,7 +528,7 @@ namespace CKAN
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.InstallAllCheckbox);
             this.Controls.Add(this.ModGrid);
-            this.Controls.Add(this.EditModSearch);
+            this.Controls.Add(this.EditModSearches);
             this.Controls.Add(this.menuStrip2);
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ManageMods";
@@ -537,6 +546,7 @@ namespace CKAN
 
         #endregion
 
+        private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.MenuStrip menuStrip2;
         private System.Windows.Forms.ToolStripMenuItem launchGameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RefreshToolButton;
@@ -585,6 +595,6 @@ namespace CKAN
         private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem purgeContentsToolStripMenuItem;
-        private CKAN.EditModSearch EditModSearch;
+        private CKAN.EditModSearches EditModSearches;
     }
 }

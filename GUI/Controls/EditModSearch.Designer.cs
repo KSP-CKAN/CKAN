@@ -49,7 +49,7 @@
             //
             this.FilterCombinedLabel.AutoSize = true;
             this.FilterCombinedLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterCombinedLabel.Location = new System.Drawing.Point(80, 9);
+            this.FilterCombinedLabel.Location = new System.Drawing.Point(80, 4);
             this.FilterCombinedLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterCombinedLabel.Name = "FilterCombinedLabel";
             this.FilterCombinedLabel.Size = new System.Drawing.Size(147, 20);
@@ -62,7 +62,7 @@
             this.FilterCombinedTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.FilterCombinedTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterCombinedTextBox.Name = "FilterCombinedTextBox";
-            this.FilterCombinedTextBox.Location = new System.Drawing.Point(154, 7);
+            this.FilterCombinedTextBox.Location = new System.Drawing.Point(154, 2);
             this.FilterCombinedTextBox.MinimumSize = new System.Drawing.Size(60, 20);
             this.FilterCombinedTextBox.Size = new System.Drawing.Size(247, 26);
             this.FilterCombinedTextBox.TabIndex = 17;
@@ -77,7 +77,7 @@
             this.ExpandButton.Appearance = System.Windows.Forms.Appearance.Button;
             this.ExpandButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ExpandButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ExpandButton.Location = new System.Drawing.Point(400, 5);
+            this.ExpandButton.Location = new System.Drawing.Point(400, 0);
             this.ExpandButton.Name = "ExpandButton";
             this.ExpandButton.Size = new System.Drawing.Size(20, 26);
             this.ExpandButton.TabIndex = 18;
@@ -101,7 +101,7 @@
             this.Controls.Add(this.ExpandButton);
             this.Controls.Add(this.FilterCombinedTextBox);
             this.Name = "EditModSearch";
-            this.Size = new System.Drawing.Size(500, 34);
+            this.Size = new System.Drawing.Size(500, 29);
             resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();

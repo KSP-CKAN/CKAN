@@ -951,5 +951,12 @@ namespace CKAN.Properties {
         internal static string EditModSearchTooltipExpandButton {
             get { return (string)(ResourceManager.GetObject("EditModSearchTooltipExpandButton", resourceCulture)); }
         }
-   }
+        internal static string EditModSearchesTooltipAddSearchButton {
+            get { return (string)(ResourceManager.GetObject("EditModSearchesTooltipAddSearchButton", resourceCulture)); }
+        }
+
+        internal static string ManageModsInstallAllCheckboxTooltip {
+            get { return (string)(ResourceManager.GetObject("ManageModsInstallAllCheckboxTooltip", resourceCulture)); }
+        }
+    }
 }

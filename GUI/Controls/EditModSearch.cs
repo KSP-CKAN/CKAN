@@ -21,7 +21,7 @@ namespace CKAN
         {
             InitializeComponent();
 
-            this.ToolTip.SetToolTip(ExpandButton, Properties.Resources.EditModSearchTooltipExpandButton);
+            ToolTip.SetToolTip(ExpandButton, Properties.Resources.EditModSearchTooltipExpandButton);
 
             // TextBox resizes unpredictably at runtime, so we need special logic
             // to line up the button with it
@@ -48,12 +48,22 @@ namespace CKAN
         /// <summary>
         /// Event fired when a search needs to be executed.
         /// </summary>
-        public event Action<ModSearch> ApplySearch;
+        public event Action<EditModSearch, ModSearch> ApplySearch;
 
         /// <summary>
         /// Event fired when user wants to switch focus away from this control.
         /// </summary>
         public event Action SurrenderFocus;
+
+        public ModSearch Search => currentSearch;
+
+        public bool ShowLabel
+        {
+            set
+            {
+                FilterCombinedLabel.Visible = value;
+            }
+        }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(EditModSearch));
         private Timer filterTimer;
@@ -242,10 +252,7 @@ namespace CKAN
 
         private void TriggerSearch()
         {
-            if (ApplySearch != null)
-            {
-                ApplySearch(currentSearch);
-            }
+            ApplySearch?.Invoke(this, currentSearch);
         }
 
     }

@@ -199,6 +199,12 @@
     <Compile Include="Controls\ModInfo.Designer.cs">
       <DependentUpon>ModInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\EditModSearches.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\EditModSearches.Designer.cs">
+      <DependentUpon>EditModSearches.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\EditModSearch.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -580,6 +586,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\EditModSearch.resx">
       <DependentUpon>EditModSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EditModSearches.resx">
+      <DependentUpon>EditModSearches.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\EditModSearch.de-DE.resx">
       <DependentUpon>..\..\Controls\EditModSearch.cs</DependentUpon>

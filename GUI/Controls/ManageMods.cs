@@ -16,6 +16,8 @@ namespace CKAN
         {
             InitializeComponent();
 
+            ToolTip.SetToolTip(InstallAllCheckbox, Properties.Resources.ManageModsInstallAllCheckboxTooltip);
+
             mainModList = new ModList(source => UpdateFilters());
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchGameToolStripMenuItem.MouseHover += (sender, args) => launchGameToolStripMenuItem.ShowDropDown();
@@ -910,6 +912,11 @@ namespace CKAN
             }
         }
 
+        private void ModList_Resize(object sender, EventArgs e)
+        {
+            InstallAllCheckbox.Top = ModGrid.Top - InstallAllCheckbox.Height;
+        }
+
         private void reinstallToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GUIMod module = SelectedModule;
@@ -972,12 +979,12 @@ namespace CKAN
             Main.Instance.StartDownload(SelectedModule);
         }
 
-        private void EditModSearch_ApplySearch(ModSearch search)
+        private void EditModSearches_ApplySearches(List<ModSearch> search)
         {
             mainModList.SetSearch(search);
         }
 
-        private void EditModSearch_SurrenderFocus()
+        private void EditModSearches_SurrenderFocus()
         {
             Util.Invoke(this, () => ModGrid.Focus());
         }
@@ -1425,7 +1432,7 @@ namespace CKAN
 
         public void ResetFilterAndSelectModOnList(string key)
         {
-            EditModSearch.Clear();
+            EditModSearches.Clear();
             FocusMod(key, true);
         }
 
@@ -1494,12 +1501,12 @@ namespace CKAN
             switch (keyData)
             {
                 case Keys.Control | Keys.F:
-                    ActiveControl = EditModSearch;
+                    ActiveControl = EditModSearches;
                     return true;
 
                 case Keys.Control | Keys.Shift | Keys.F:
-                    EditModSearch.ExpandCollapse();
-                    ActiveControl = EditModSearch;
+                    EditModSearches.ExpandCollapse();
+                    ActiveControl = EditModSearches;
                     return true;
 
                 case Keys.Control | Keys.S:
