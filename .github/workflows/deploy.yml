@@ -17,6 +17,7 @@ jobs:
 
       - name: Check version
         id: check_version
+        shell: bash
         run: |
           VERSION=$(egrep '^\s*\#\#\s+v.*$' CHANGELOG.md | head -1 | sed -e 's/^\s*\#\#\s\+v//' -e 's/-.*$//')
           if [[ $VERSION =~ [13579]$ ]]
