@@ -1,3 +1,4 @@
+using System.IO;
 using System.Transactions;
 using System.Collections.Generic;
 using System.Linq;
@@ -218,6 +219,82 @@ namespace Tests.Core.Registry
             Assert.IsFalse(compat.Contains(modFor161));
             Assert.IsTrue(compat.Contains(modFor173));
             Assert.IsFalse(compat.Contains(modFor181));
+        }
+
+        [Test]
+        public void HasUpdate_WithUpgradeableManuallyInstalledMod_ReturnsTrue()
+        {
+            // Arrange
+            using (var gameInstWrapper = new DisposableKSP())
+            {
+                CkanModule mod = CkanModule.FromJson(@"{
+                    ""spec_version"": ""v1.4"",
+                    ""identifier"":   ""AutoDetectedMod"",
+                    ""version"":      ""1.0"",
+                    ""ksp_version"":  ""1.11.1"",
+                    ""download"":     ""https://mymods/AD/1.0""
+                }");
+                registry.AddAvailable(mod);
+                GameInstance gameInst = gameInstWrapper.KSP;
+                registry.RegisterDll(gameInst, Path.Combine(
+                    gameInst.GameDir(), "GameData", $"{mod.identifier}.dll"));
+                GameVersionCriteria crit = new GameVersionCriteria(mod.ksp_version);
+
+                // Act
+                bool has = registry.HasUpdate(mod.identifier, crit);
+
+                // Assert
+                Assert.IsTrue(has, "Can't upgrade manually installed DLL");
+            }
+        }
+
+        [Test]
+        public void HasUpdate_OtherModDependsOnCurrent_ReturnsFalse()
+        {
+            // Arrange
+            using (var gameInstWrapper = new DisposableKSP())
+            {
+                CkanModule olderDepMod = CkanModule.FromJson(@"{
+                    ""spec_version"": ""v1.4"",
+                    ""identifier"":   ""DependencyMod"",
+                    ""version"":      ""1.0"",
+                    ""ksp_version"":  ""1.11.1"",
+                    ""download"":     ""https://mymods/DM/1.0""
+                }");
+                CkanModule newerDepMod = CkanModule.FromJson(@"{
+                    ""spec_version"": ""v1.4"",
+                    ""identifier"":   ""DependencyMod"",
+                    ""version"":      ""2.0"",
+                    ""ksp_version"":  ""1.11.1"",
+                    ""download"":     ""https://mymods/DM/2.0""
+                }");
+                CkanModule dependingMod = CkanModule.FromJson(@"{
+                    ""spec_version"": ""v1.4"",
+                    ""identifier"":   ""DependingMod"",
+                    ""version"":      ""1.0"",
+                    ""ksp_version"":  ""1.11.1"",
+                    ""download"":     ""https://mymods/DM/2.0"",
+                    ""depends"": [
+                        {
+                            ""name"":    ""DependencyMod"",
+                            ""version"": ""1.0""
+                        }
+                    ]
+                }");
+                registry.AddAvailable(olderDepMod);
+                registry.AddAvailable(newerDepMod);
+                registry.AddAvailable(dependingMod);
+                GameInstance gameInst = gameInstWrapper.KSP;
+                registry.RegisterModule(olderDepMod,  new string[0], gameInst, false);
+                registry.RegisterModule(dependingMod, new string[0], gameInst, false);
+                GameVersionCriteria crit = new GameVersionCriteria(olderDepMod.ksp_version);
+
+                // Act
+                bool has = registry.HasUpdate(olderDepMod.identifier, crit);
+
+                // Assert
+                Assert.IsFalse(has, "Upgrade allowed that would break another mod's dependency");
+            }
         }
 
         [Test]

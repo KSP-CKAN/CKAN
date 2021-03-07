@@ -12,8 +12,6 @@ namespace Tests.GUI
     [TestFixture]
     public class GUIModTests
     {
-
-        // TODO: Work out what mocking framework the project uses and write some more tests.
         [Test]
         public void NewGuiModsAreNotSelectedForUpgrade()
         {
