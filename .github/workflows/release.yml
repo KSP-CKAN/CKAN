@@ -2,7 +2,8 @@ name: Create Release Assets
 
 on:
   release:
-    types: [created]
+    types:
+      - created
 
 jobs:
   release:
@@ -18,26 +19,6 @@ jobs:
         run: apt-get update && apt-get install -y git make sed libplist-utils xorriso gzip fakeroot lintian rpm wget jq dpkg-dev
       - name: Installing runtime dependencies
         run: apt-get install -y xvfb
-      - name: Restore cache for _build/tools
-        uses: actions/cache@v1
-        with:
-          path: _build/tools
-          key: build-tools-${{ hashFiles('build', 'build.ps1', 'build.cake') }}
-      - name: Restore cache for _build/cake
-        uses: actions/cache@v1
-        with:
-          path: _build/cake
-          key: build-cake-${{ hashFiles('build.cake') }}
-      - name: Restore cache for _build/lib/nuget
-        uses: actions/cache@v1
-        with:
-          path: _build/lib/nuget
-          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
-      - name: Restore cache for ~/.nuget/packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.nuget/packages
-          key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
 
       - name: Build ckan.exe and netkan.exe
         run: ./build --configuration=Release
@@ -73,6 +54,32 @@ jobs:
           echo "::set-output name=rpm_version::$RPM_VERSION"
           DEB_VERSION=${VERSION}.$(date +'%g%j')
           echo "::set-output name=deb_version::$DEB_VERSION"
+      - name: Push deb to S3
+        # Send deb file to https://ksp-ckan.s3-us-west-2.amazonaws.com/
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --follow-symlinks
+        env:
+          AWS_S3_BUCKET: ksp-ckan
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          SOURCE_DIR: _build/deb/apt-repo-root
+          DEST_DIR: deb
+        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
+      - name: Push Release file to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --follow-symlinks
+        env:
+          AWS_S3_BUCKET: ksp-ckan
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          SOURCE_DIR: _build/deb/apt-repo-dist
+          DEST_DIR: deb/dists/stable
+        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
+
       - name: Upload ckan.exe
         uses: actions/upload-release-asset@v1.0.1
         env:
@@ -118,31 +125,6 @@ jobs:
           asset_path: _build/out/AutoUpdater/Release/bin/AutoUpdater.exe
           asset_name: AutoUpdater.exe
           asset_content_type: application/vnd.microsoft.portable-executable
-      - name: Push deb to S3
-        # Send deb file to https://ksp-ckan.s3-us-west-2.amazonaws.com/
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --follow-symlinks
-        env:
-          AWS_S3_BUCKET: ksp-ckan
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
-          SOURCE_DIR: _build/deb/apt-repo-root
-          DEST_DIR: deb
-        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
-      - name: Push Release file to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --follow-symlinks
-        env:
-          AWS_S3_BUCKET: ksp-ckan
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
-          SOURCE_DIR: _build/deb/apt-repo-dist
-          DEST_DIR: deb/dists/stable
-        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
 
       - name: Send Discord Notification
         env:

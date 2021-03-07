@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [GUI] Update dialog was too small for French localization (#3313 by: vinix38; reviewed: HebaruSan)
+- [Build] Suppress nightly debs with even builds, push release debs to s3 first (#3317 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.30.0 (Glenn)
 
