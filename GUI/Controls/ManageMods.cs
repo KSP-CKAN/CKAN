@@ -55,7 +55,16 @@ namespace CKAN
         {
             get
             {
-                return Main.Instance.configuration.SortColumns;
+                var configuration = Main.Instance.configuration;
+                // Make sure we don't return any column the GUI doesn't know about.
+                var unknownCols = configuration.SortColumns.Where(col => !ModGrid.Columns.Contains(col)).ToList();
+                foreach (var unknownCol in unknownCols)
+                {
+                    int index = configuration.SortColumns.IndexOf(unknownCol);
+                    configuration.SortColumns.RemoveAt(index);
+                    configuration.MultiSortDescending.RemoveAt(index);
+                }
+                return configuration.SortColumns;
             }
         }
 
@@ -1241,6 +1250,11 @@ namespace CKAN
             }
             for (int i = 0; i < sortColumns.Count; ++i)
             {
+                if (!ModGrid.Columns.Contains(sortColumns[i]))
+                {
+                    // Shouldn't be possible, but better safe than sorry.
+                    continue;
+                }
                 ModGrid.Columns[sortColumns[i]].HeaderCell.SortGlyphDirection = descending[i]
                     ? SortOrder.Descending : SortOrder.Ascending;
             }
