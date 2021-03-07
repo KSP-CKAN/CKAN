@@ -27,6 +27,8 @@ namespace CKAN
         public ModSearch(
             string byName, string byAuthor, string byDescription, string localization,
             string depends, string recommends, string suggests, string conflicts,
+            bool? compatible, bool? installed, bool? cached, bool? newlyCompatible,
+            bool? upgradeable, bool? replaceable,
             string combined = null)
         {
             Name         = CkanModule.nonAlphaNums.Replace(byName, "");
@@ -38,6 +40,13 @@ namespace CKAN
             Recommends    = recommends;
             Suggests      = suggests;
             ConflictsWith = conflicts;
+
+            Compatible      = compatible;
+            Installed       = installed;
+            Cached          = cached;
+            NewlyCompatible = newlyCompatible;
+            Upgradeable     = upgradeable;
+            Replaceable     = replaceable;
 
             Combined = combined ?? getCombined();
         }
@@ -87,6 +96,13 @@ namespace CKAN
         /// </summary>
         public readonly string Combined;
 
+        public readonly bool? Compatible;
+        public readonly bool? Installed;
+        public readonly bool? Cached;
+        public readonly bool? NewlyCompatible;
+        public readonly bool? Upgradeable;
+        public readonly bool? Replaceable;
+
         /// <summary>
         /// Generate a full formatted search string from the parameters.
         /// MUST be the inverse of Parse!
@@ -129,9 +145,41 @@ namespace CKAN
             {
                 pieces.Add($"{Properties.Resources.ModSearchConflictsPrefix}{ConflictsWith}");
             }
+            if (Compatible.HasValue)
+            {
+                pieces.Add(triStateString(Compatible.Value, Properties.Resources.ModSearchCompatibleSuffix));
+            }
+            if (Installed.HasValue)
+            {
+                pieces.Add(triStateString(Installed.Value, Properties.Resources.ModSearchInstalledSuffix));
+            }
+            if (Cached.HasValue)
+            {
+                pieces.Add(triStateString(Cached.Value, Properties.Resources.ModSearchCachedSuffix));
+            }
+            if (NewlyCompatible.HasValue)
+            {
+                pieces.Add(triStateString(NewlyCompatible.Value, Properties.Resources.ModSearchNewlyCompatibleSuffix));
+            }
+            if (Upgradeable.HasValue)
+            {
+                pieces.Add(triStateString(Upgradeable.Value, Properties.Resources.ModSearchUpgradeableSuffix));
+            }
+            if (Replaceable.HasValue)
+            {
+                pieces.Add(triStateString(Replaceable.Value, Properties.Resources.ModSearchReplaceableSuffix));
+            }
             return pieces.Count == 0
                 ? null
                 : string.Join(" ", pieces);
+        }
+
+        private static string triStateString(bool val, string suffix)
+        {
+            string prefix = val
+                ? Properties.Resources.ModSearchYesPrefix
+                : Properties.Resources.ModSearchNoPrefix;
+            return prefix + suffix;
         }
 
         /// <summary>
@@ -158,6 +206,13 @@ namespace CKAN
             string recommends = "";
             string suggests   = "";
             string conflicts  = "";
+
+            bool? compatible      = null;
+            bool? installed       = null;
+            bool? cached          = null;
+            bool? newlyCompatible = null;
+            bool? upgradeable     = null;
+            bool? replaceable     = null;
 
             var pieces = combined.Split(' ');
             foreach (string s in pieces)
@@ -197,6 +252,60 @@ namespace CKAN
                 {
                     conflicts += conf;
                 }
+                else if (TryPrefix(s, Properties.Resources.ModSearchYesPrefix, out string yesSuffix))
+                {
+                    if (yesSuffix == Properties.Resources.ModSearchCompatibleSuffix)
+                    {
+                        compatible = true;
+                    }
+                    else if (yesSuffix == Properties.Resources.ModSearchInstalledSuffix)
+                    {
+                        installed = true;
+                    }
+                    else if (yesSuffix == Properties.Resources.ModSearchCachedSuffix)
+                    {
+                        cached = true;
+                    }
+                    else if (yesSuffix == Properties.Resources.ModSearchNewlyCompatibleSuffix)
+                    {
+                        newlyCompatible = true;
+                    }
+                    else if (yesSuffix == Properties.Resources.ModSearchUpgradeableSuffix)
+                    {
+                        upgradeable = true;
+                    }
+                    else if (yesSuffix == Properties.Resources.ModSearchReplaceableSuffix)
+                    {
+                        replaceable = true;
+                    }
+                }
+                else if (TryPrefix(s, Properties.Resources.ModSearchNoPrefix, out string noSuffix))
+                {
+                    if (noSuffix == Properties.Resources.ModSearchCompatibleSuffix)
+                    {
+                        compatible = false;
+                    }
+                    else if (noSuffix == Properties.Resources.ModSearchInstalledSuffix)
+                    {
+                        installed = false;
+                    }
+                    else if (noSuffix == Properties.Resources.ModSearchCachedSuffix)
+                    {
+                        cached = false;
+                    }
+                    else if (noSuffix == Properties.Resources.ModSearchNewlyCompatibleSuffix)
+                    {
+                        newlyCompatible = false;
+                    }
+                    else if (noSuffix == Properties.Resources.ModSearchUpgradeableSuffix)
+                    {
+                        upgradeable = false;
+                    }
+                    else if (noSuffix == Properties.Resources.ModSearchReplaceableSuffix)
+                    {
+                        replaceable = false;
+                    }
+                }
                 else
                 {
                     // No special format = search names and identifiers
@@ -206,6 +315,8 @@ namespace CKAN
             return new ModSearch(
                 byName, byAuthor, byDescription, byLocalization,
                 depends, recommends, suggests, conflicts,
+                compatible, installed, cached, newlyCompatible,
+                upgradeable, replaceable,
                 combined
             );
         }
@@ -240,7 +351,13 @@ namespace CKAN
                 && MatchesDepends(mod)
                 && MatchesRecommends(mod)
                 && MatchesSuggests(mod)
-                && MatchesConflicts(mod);
+                && MatchesConflicts(mod)
+                && MatchesCompatible(mod)
+                && MatchesInstalled(mod)
+                && MatchesCached(mod)
+                && MatchesNewlyCompatible(mod)
+                && MatchesUpgradeable(mod)
+                && MatchesReplaceable(mod);
         }
 
         private bool MatchesName(GUIMod mod)
@@ -298,5 +415,34 @@ namespace CKAN
                 || (rels != null && rels.Any(r => r.StartsWith(toFind)));
         }
 
+        private bool MatchesCompatible(GUIMod mod)
+        {
+            return !Compatible.HasValue || Compatible.Value == !mod.IsIncompatible;
+        }
+
+        private bool MatchesInstalled(GUIMod mod)
+        {
+            return !Installed.HasValue || Installed.Value == mod.IsInstalled;
+        }
+
+        private bool MatchesCached(GUIMod mod)
+        {
+            return !Cached.HasValue || Cached.Value == mod.IsCached;
+        }
+
+        private bool MatchesNewlyCompatible(GUIMod mod)
+        {
+            return !NewlyCompatible.HasValue || NewlyCompatible.Value == mod.IsNew;
+        }
+
+        private bool MatchesUpgradeable(GUIMod mod)
+        {
+            return !Upgradeable.HasValue || Upgradeable.Value == mod.HasUpdate;
+        }
+
+        private bool MatchesReplaceable(GUIMod mod)
+        {
+            return !Replaceable.HasValue || Replaceable.Value == mod.HasReplacement;
+        }
     }
 }

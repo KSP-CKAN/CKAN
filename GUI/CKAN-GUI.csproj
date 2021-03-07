@@ -232,6 +232,9 @@
     <Compile Include="Controls\TransparentTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TriStateToggle.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\GUIConfiguration.cs" />

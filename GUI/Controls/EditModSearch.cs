@@ -125,6 +125,12 @@ namespace CKAN
                     SearchDetails.FilterByRecommendsTextBox.Text  = currentSearch?.Recommends    ?? "";
                     SearchDetails.FilterByConflictsTextBox.Text   = currentSearch?.ConflictsWith ?? "";
                     SearchDetails.FilterBySuggestsTextBox.Text    = currentSearch?.Suggests      ?? "";
+                    SearchDetails.CompatibleToggle.Value      = currentSearch?.Compatible;
+                    SearchDetails.InstalledToggle.Value       = currentSearch?.Installed;
+                    SearchDetails.CachedToggle.Value          = currentSearch?.Cached;
+                    SearchDetails.NewlyCompatibleToggle.Value = currentSearch?.NewlyCompatible;
+                    SearchDetails.UpgradeableToggle.Value     = currentSearch?.Upgradeable;
+                    SearchDetails.ReplaceableToggle.Value     = currentSearch?.Replaceable;
                 suppressSearch = false;
                 TriggerSearchOrTimer();
             }
@@ -147,7 +153,13 @@ namespace CKAN
                 SearchDetails.FilterByDependsTextBox.Text,
                 SearchDetails.FilterByRecommendsTextBox.Text,
                 SearchDetails.FilterBySuggestsTextBox.Text,
-                SearchDetails.FilterByConflictsTextBox.Text
+                SearchDetails.FilterByConflictsTextBox.Text,
+                SearchDetails.CompatibleToggle.Value,
+                SearchDetails.InstalledToggle.Value,
+                SearchDetails.CachedToggle.Value,
+                SearchDetails.NewlyCompatibleToggle.Value,
+                SearchDetails.UpgradeableToggle.Value,
+                SearchDetails.ReplaceableToggle.Value
             );
             suppressSearch = true;
                 FilterCombinedTextBox.Text = currentSearch?.Combined ?? "";
