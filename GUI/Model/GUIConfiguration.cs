@@ -155,7 +155,37 @@ namespace CKAN
             }
 
             configuration.path = path;
+            if (DeserializationFixes(configuration))
+            {
+                SaveConfiguration(configuration);
+            }
             return configuration;
+        }
+
+        /// <summary>
+        /// Apply fixes and migrations after deserialization.
+        /// </summary>
+        /// <param name="configuration">The current configuration to apply the fixes on</param>
+        /// <returns>A bool indicating whether something changed and the configuration should be saved to disk</returns>
+        private static bool DeserializationFixes(GUIConfiguration configuration)
+        {
+            bool needsSave = false;
+
+            // KSPCompatibility column got renamed to GameCompatibility
+            int kspCompatibilitySortIndex = configuration.SortColumns.IndexOf("KSPCompatibility");
+            if (kspCompatibilitySortIndex > -1)
+            {
+                configuration.SortColumns[kspCompatibilitySortIndex] = "GameCompatibility";
+                needsSave = true;
+            }
+            int kspCompatibilityHiddenIndex = configuration.HiddenColumnNames.IndexOf("KSPCompatibility");
+            if (kspCompatibilityHiddenIndex > -1)
+            {
+                configuration.HiddenColumnNames[kspCompatibilityHiddenIndex] = "GameCompatibility";
+                needsSave = true;
+            }
+
+            return needsSave;
         }
 
         private static void SaveConfiguration(GUIConfiguration configuration)
