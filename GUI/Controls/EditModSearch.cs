@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
@@ -115,7 +116,9 @@ namespace CKAN
 
             try
             {
-                currentSearch = ModSearch.Parse(FilterCombinedTextBox.Text);
+                currentSearch = ModSearch.Parse(FilterCombinedTextBox.Text,
+                    Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList()
+                );
                 suppressSearch = true;
                     SearchDetails.FilterByNameTextBox.Text        = currentSearch?.Name          ?? "";
                     SearchDetails.FilterByAuthorTextBox.Text      = currentSearch?.Author        ?? "";
@@ -125,6 +128,14 @@ namespace CKAN
                     SearchDetails.FilterByRecommendsTextBox.Text  = currentSearch?.Recommends    ?? "";
                     SearchDetails.FilterByConflictsTextBox.Text   = currentSearch?.ConflictsWith ?? "";
                     SearchDetails.FilterBySuggestsTextBox.Text    = currentSearch?.Suggests      ?? "";
+
+                    SearchDetails.FilterByTagsTextBox.Text   = currentSearch?.TagNames.Aggregate("", combinePieces)
+                                                                   ?? "";
+                    SearchDetails.FilterByLabelsTextBox.Text = currentSearch?.Labels
+                                                                   .Select(lb => lb.Name)
+                                                                   .Aggregate("", combinePieces)
+                                                                   ?? "";
+
                     SearchDetails.CompatibleToggle.Value      = currentSearch?.Compatible;
                     SearchDetails.InstalledToggle.Value       = currentSearch?.Installed;
                     SearchDetails.CachedToggle.Value          = currentSearch?.Cached;
@@ -140,10 +151,17 @@ namespace CKAN
             }
         }
 
+        private static string combinePieces(string joined, string piece)
+        {
+            return string.IsNullOrEmpty(joined) ? piece : $"{joined} {piece}";
+        }
+
         private void SearchDetails_ApplySearch(bool immediately)
         {
             if (suppressSearch)
                 return;
+
+            var knownLabels = Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList();
 
             currentSearch = new ModSearch(
                 SearchDetails.FilterByNameTextBox.Text,
@@ -154,6 +172,12 @@ namespace CKAN
                 SearchDetails.FilterByRecommendsTextBox.Text,
                 SearchDetails.FilterBySuggestsTextBox.Text,
                 SearchDetails.FilterByConflictsTextBox.Text,
+                SearchDetails.FilterByTagsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries)
+                    .ToList(),
+                SearchDetails.FilterByLabelsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries)
+                    .Select(ln => knownLabels.FirstOrDefault(lb => lb.Name == ln))
+                    .Where(lb => lb != null)
+                    .ToList(),
                 SearchDetails.CompatibleToggle.Value,
                 SearchDetails.InstalledToggle.Value,
                 SearchDetails.CachedToggle.Value,

@@ -986,6 +986,12 @@ namespace CKAN.Properties {
         internal static string ModSearchConflictsPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchConflictsPrefix", resourceCulture)); }
         }
+        internal static string ModSearchTagPrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchTagPrefix", resourceCulture)); }
+        }
+        internal static string ModSearchLabelPrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchLabelPrefix", resourceCulture)); }
+        }
         internal static string ModSearchYesPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchYesPrefix", resourceCulture)); }
         }

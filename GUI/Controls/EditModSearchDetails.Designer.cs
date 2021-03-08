@@ -46,6 +46,10 @@
             this.FilterBySuggestsTextBox = new CKAN.HintTextBox();
             this.FilterByConflictsLabel = new System.Windows.Forms.Label();
             this.FilterByConflictsTextBox = new CKAN.HintTextBox();
+            this.FilterByTagsLabel = new System.Windows.Forms.Label();
+            this.FilterByTagsTextBox = new CKAN.HintTextBox();
+            this.FilterByLabelsLabel = new System.Windows.Forms.Label();
+            this.FilterByLabelsTextBox = new CKAN.HintTextBox();
             this.CompatibleLabel = new System.Windows.Forms.Label();
             this.CompatibleToggle = new CKAN.TriStateToggle();
             this.InstalledLabel = new System.Windows.Forms.Label();
@@ -252,11 +256,59 @@
             this.FilterByConflictsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByConflictsTextBox, "FilterByConflictsTextBox");
             //
+            // FilterByTagsLabel
+            //
+            this.FilterByTagsLabel.AutoSize = true;
+            this.FilterByTagsLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterByTagsLabel.Location = new System.Drawing.Point(6, 217);
+            this.FilterByTagsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.FilterByTagsLabel.Name = "FilterByTagsLabel";
+            this.FilterByTagsLabel.Size = new System.Drawing.Size(149, 20);
+            this.FilterByTagsLabel.TabIndex = 14;
+            resources.ApplyResources(this.FilterByTagsLabel, "FilterByTagsLabel");
+            //
+            // FilterByTagsTextBox
+            //
+            this.FilterByTagsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.FilterByTagsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FilterByTagsTextBox.Location = new System.Drawing.Point(120, 215);
+            this.FilterByTagsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.FilterByTagsTextBox.Name = "FilterByTagsTextBox";
+            this.FilterByTagsTextBox.Size = new System.Drawing.Size(170, 26);
+            this.FilterByTagsTextBox.TabIndex = 15;
+            this.FilterByTagsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
+            this.FilterByTagsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
+            resources.ApplyResources(this.FilterByTagsTextBox, "FilterByTagsTextBox");
+            //
+            // FilterByLabelsLabel
+            //
+            this.FilterByLabelsLabel.AutoSize = true;
+            this.FilterByLabelsLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterByLabelsLabel.Location = new System.Drawing.Point(6, 243);
+            this.FilterByLabelsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.FilterByLabelsLabel.Name = "FilterByLabelsLabel";
+            this.FilterByLabelsLabel.Size = new System.Drawing.Size(149, 20);
+            this.FilterByLabelsLabel.TabIndex = 14;
+            resources.ApplyResources(this.FilterByLabelsLabel, "FilterByLabelsLabel");
+            //
+            // FilterByLabelsTextBox
+            //
+            this.FilterByLabelsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.FilterByLabelsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FilterByLabelsTextBox.Location = new System.Drawing.Point(120, 241);
+            this.FilterByLabelsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.FilterByLabelsTextBox.Name = "FilterByLabelsTextBox";
+            this.FilterByLabelsTextBox.Size = new System.Drawing.Size(170, 26);
+            this.FilterByLabelsTextBox.TabIndex = 15;
+            this.FilterByLabelsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
+            this.FilterByLabelsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
+            resources.ApplyResources(this.FilterByLabelsTextBox, "FilterByLabelsTextBox");
+            //
             // CompatibleLabel
             //
             this.CompatibleLabel.AutoSize = true;
             this.CompatibleLabel.BackColor = System.Drawing.Color.Transparent;
-            this.CompatibleLabel.Location = new System.Drawing.Point(6, 217);
+            this.CompatibleLabel.Location = new System.Drawing.Point(6, 269);
             this.CompatibleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.CompatibleLabel.Name = "CompatibleLabel";
             this.CompatibleLabel.Size = new System.Drawing.Size(149, 20);
@@ -265,14 +317,14 @@
             //
             // CompatibleToggle
             //
-            this.CompatibleToggle.Location = new System.Drawing.Point(120, 215);
+            this.CompatibleToggle.Location = new System.Drawing.Point(120, 267);
             this.CompatibleToggle.Changed += TriStateChanged;
             //
             // InstalledLabel
             //
             this.InstalledLabel.AutoSize = true;
             this.InstalledLabel.BackColor = System.Drawing.Color.Transparent;
-            this.InstalledLabel.Location = new System.Drawing.Point(6, 243);
+            this.InstalledLabel.Location = new System.Drawing.Point(6, 295);
             this.InstalledLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.InstalledLabel.Name = "InstalledLabel";
             this.InstalledLabel.Size = new System.Drawing.Size(149, 20);
@@ -281,14 +333,14 @@
             //
             // InstalledToggle
             //
-            this.InstalledToggle.Location = new System.Drawing.Point(120, 241);
+            this.InstalledToggle.Location = new System.Drawing.Point(120, 293);
             this.InstalledToggle.Changed += TriStateChanged;
             //
             // CachedLabel
             //
             this.CachedLabel.AutoSize = true;
             this.CachedLabel.BackColor = System.Drawing.Color.Transparent;
-            this.CachedLabel.Location = new System.Drawing.Point(6, 269);
+            this.CachedLabel.Location = new System.Drawing.Point(6, 321);
             this.CachedLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.CachedLabel.Name = "CachedLabel";
             this.CachedLabel.Size = new System.Drawing.Size(149, 20);
@@ -297,14 +349,14 @@
             //
             // CachedToggle
             //
-            this.CachedToggle.Location = new System.Drawing.Point(120, 267);
+            this.CachedToggle.Location = new System.Drawing.Point(120, 319);
             this.CachedToggle.Changed += TriStateChanged;
             //
             // NewlyCompatibleLabel
             //
             this.NewlyCompatibleLabel.AutoSize = true;
             this.NewlyCompatibleLabel.BackColor = System.Drawing.Color.Transparent;
-            this.NewlyCompatibleLabel.Location = new System.Drawing.Point(6, 295);
+            this.NewlyCompatibleLabel.Location = new System.Drawing.Point(6, 347);
             this.NewlyCompatibleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.NewlyCompatibleLabel.Name = "NewlyCompatibleLabel";
             this.NewlyCompatibleLabel.Size = new System.Drawing.Size(149, 20);
@@ -313,14 +365,14 @@
             //
             // NewlyCompatibleToggle
             //
-            this.NewlyCompatibleToggle.Location = new System.Drawing.Point(120, 293);
+            this.NewlyCompatibleToggle.Location = new System.Drawing.Point(120, 345);
             this.NewlyCompatibleToggle.Changed += TriStateChanged;
             //
             // UpgradeableLabel
             //
             this.UpgradeableLabel.AutoSize = true;
             this.UpgradeableLabel.BackColor = System.Drawing.Color.Transparent;
-            this.UpgradeableLabel.Location = new System.Drawing.Point(6, 321);
+            this.UpgradeableLabel.Location = new System.Drawing.Point(6, 373);
             this.UpgradeableLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.UpgradeableLabel.Name = "UpgradeableLabel";
             this.UpgradeableLabel.Size = new System.Drawing.Size(149, 20);
@@ -329,14 +381,14 @@
             //
             // UpgradeableToggle
             //
-            this.UpgradeableToggle.Location = new System.Drawing.Point(120, 319);
+            this.UpgradeableToggle.Location = new System.Drawing.Point(120, 371);
             this.UpgradeableToggle.Changed += TriStateChanged;
             //
             // ReplaceableLabel
             //
             this.ReplaceableLabel.AutoSize = true;
             this.ReplaceableLabel.BackColor = System.Drawing.Color.Transparent;
-            this.ReplaceableLabel.Location = new System.Drawing.Point(6, 347);
+            this.ReplaceableLabel.Location = new System.Drawing.Point(6, 399);
             this.ReplaceableLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ReplaceableLabel.Name = "ReplaceableLabel";
             this.ReplaceableLabel.Size = new System.Drawing.Size(149, 20);
@@ -345,7 +397,7 @@
             //
             // ReplaceableToggle
             //
-            this.ReplaceableToggle.Location = new System.Drawing.Point(120, 345);
+            this.ReplaceableToggle.Location = new System.Drawing.Point(120, 397);
             this.ReplaceableToggle.Changed += TriStateChanged;
             //
             // EditModSearchDetails
@@ -369,6 +421,10 @@
             this.Controls.Add(this.FilterBySuggestsTextBox);
             this.Controls.Add(this.FilterByConflictsLabel);
             this.Controls.Add(this.FilterByConflictsTextBox);
+            this.Controls.Add(this.FilterByTagsLabel);
+            this.Controls.Add(this.FilterByTagsTextBox);
+            this.Controls.Add(this.FilterByLabelsLabel);
+            this.Controls.Add(this.FilterByLabelsTextBox);
             this.Controls.Add(this.CompatibleLabel);
             this.Controls.Add(this.CompatibleToggle);
             this.Controls.Add(this.InstalledLabel);
@@ -382,7 +438,7 @@
             this.Controls.Add(this.ReplaceableLabel);
             this.Controls.Add(this.ReplaceableToggle);
             this.Name = "EditModSearchDetails";
-            this.Size = new System.Drawing.Size(300, 382);
+            this.Size = new System.Drawing.Size(300, 434);
             resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -407,6 +463,10 @@
         internal CKAN.HintTextBox FilterBySuggestsTextBox;
         private System.Windows.Forms.Label FilterByConflictsLabel;
         internal CKAN.HintTextBox FilterByConflictsTextBox;
+        private System.Windows.Forms.Label FilterByTagsLabel;
+        internal CKAN.HintTextBox FilterByTagsTextBox;
+        private System.Windows.Forms.Label FilterByLabelsLabel;
+        internal CKAN.HintTextBox FilterByLabelsTextBox;
         private System.Windows.Forms.Label CompatibleLabel;
         internal CKAN.TriStateToggle CompatibleToggle;
         private System.Windows.Forms.Label InstalledLabel;

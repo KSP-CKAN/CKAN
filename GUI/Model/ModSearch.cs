@@ -27,6 +27,7 @@ namespace CKAN
         public ModSearch(
             string byName, string byAuthor, string byDescription, string localization,
             string depends, string recommends, string suggests, string conflicts,
+            List<string> tagNames, List<ModuleLabel> labels,
             bool? compatible, bool? installed, bool? cached, bool? newlyCompatible,
             bool? upgradeable, bool? replaceable,
             string combined = null)
@@ -40,6 +41,15 @@ namespace CKAN
             Recommends    = recommends;
             Suggests      = suggests;
             ConflictsWith = conflicts;
+
+            if (tagNames?.Any() ?? false)
+            {
+                TagNames.AddRange(tagNames);
+            }
+            if (labels?.Any() ?? false)
+            {
+                Labels.AddRange(labels);
+            }
 
             Compatible      = compatible;
             Installed       = installed;
@@ -96,6 +106,9 @@ namespace CKAN
         /// </summary>
         public readonly string Combined;
 
+        public readonly List<string>      TagNames = new List<string>();
+        public readonly List<ModuleLabel> Labels   = new List<ModuleLabel>();
+
         public readonly bool? Compatible;
         public readonly bool? Installed;
         public readonly bool? Cached;
@@ -145,6 +158,14 @@ namespace CKAN
             {
                 pieces.Add($"{Properties.Resources.ModSearchConflictsPrefix}{ConflictsWith}");
             }
+            foreach (var tagName in TagNames)
+            {
+                pieces.Add($"{Properties.Resources.ModSearchTagPrefix}{tagName}");
+            }
+            foreach (var label in Labels)
+            {
+                pieces.Add($"{Properties.Resources.ModSearchLabelPrefix}{label.Name}");
+            }
             if (Compatible.HasValue)
             {
                 pieces.Add(triStateString(Compatible.Value, Properties.Resources.ModSearchCompatibleSuffix));
@@ -191,7 +212,7 @@ namespace CKAN
         /// <returns>
         /// New search object, or null if no search terms defined
         /// </returns>
-        public static ModSearch Parse(string combined)
+        public static ModSearch Parse(string combined, List<ModuleLabel> knownLabels)
         {
             if (string.IsNullOrWhiteSpace(combined))
             {
@@ -206,6 +227,9 @@ namespace CKAN
             string recommends = "";
             string suggests   = "";
             string conflicts  = "";
+
+            List<string>      tagNames = new List<string>();
+            List<ModuleLabel> labels   = new List<ModuleLabel>();
 
             bool? compatible      = null;
             bool? installed       = null;
@@ -251,6 +275,14 @@ namespace CKAN
                 else if (TryPrefix(s, Properties.Resources.ModSearchConflictsPrefix, out string conf))
                 {
                     conflicts += conf;
+                }
+                else if (TryPrefix(s, Properties.Resources.ModSearchTagPrefix, out string tagName))
+                {
+                    tagNames.Add(tagName);
+                }
+                else if (TryPrefix(s, Properties.Resources.ModSearchLabelPrefix, out string labelName))
+                {
+                    labels.AddRange(knownLabels.Where(lb => lb.Name == labelName));
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchYesPrefix, out string yesSuffix))
                 {
@@ -315,6 +347,7 @@ namespace CKAN
             return new ModSearch(
                 byName, byAuthor, byDescription, byLocalization,
                 depends, recommends, suggests, conflicts,
+                tagNames, labels,
                 compatible, installed, cached, newlyCompatible,
                 upgradeable, replaceable,
                 combined
@@ -352,6 +385,8 @@ namespace CKAN
                 && MatchesRecommends(mod)
                 && MatchesSuggests(mod)
                 && MatchesConflicts(mod)
+                && MatchesTags(mod)
+                && MatchesLabels(mod)
                 && MatchesCompatible(mod)
                 && MatchesInstalled(mod)
                 && MatchesCached(mod)
@@ -413,6 +448,20 @@ namespace CKAN
         {
             return string.IsNullOrWhiteSpace(toFind)
                 || (rels != null && rels.Any(r => r.StartsWith(toFind)));
+        }
+
+        private bool MatchesTags(GUIMod mod)
+        {
+            var tagsInMod = mod.ToModule().Tags;
+            return TagNames.Count < 1
+                || ((tagsInMod?.Any() ?? false)
+                    && TagNames.All(tn => tagsInMod.Contains(tn)));
+        }
+
+        private bool MatchesLabels(GUIMod mod)
+        {
+            // Every label in Labels must contain this mod
+            return Labels.Count < 1 || Labels.All(lb => lb.ModuleIdentifiers.Contains(mod.Identifier));
         }
 
         private bool MatchesCompatible(GUIMod mod)
