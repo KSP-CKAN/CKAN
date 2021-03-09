@@ -151,7 +151,7 @@
   <data name="RefreshToolButton.Text" xml:space="preserve"><value>Aktualisieren</value></data>
   <data name="UpdateAllToolButton.Text" xml:space="preserve"><value>Verfügbare Updates auswählen</value></data>
   <data name="ApplyToolButton.Text" xml:space="preserve"><value>Annehmen</value></data>
-  <data name="FilterToolButton.Text" xml:space="preserve"><value>Filter (Kompatibel)</value></data>
+  <data name="FilterToolButton.Text" xml:space="preserve"><value>Filter</value></data>
   <data name="FilterCompatibleButton.Text" xml:space="preserve"><value>Kompatibel</value></data>
   <data name="FilterInstalledButton.Text" xml:space="preserve"><value>Installiert</value></data>
   <data name="FilterInstalledUpdateButton.Text" xml:space="preserve"><value>Aktualisierbar</value></data>

@@ -16,25 +16,6 @@ namespace Tests.GUI
     public class ModListTests
     {
         [Test]
-        public void OnCreation_HasDefaultFilters()
-        {
-            var item = new ModList(delegate { });
-            Assert.AreEqual(GUIModFilter.Compatible, item.ModFilter, "ModFilter");
-        }
-
-        [Test]
-        public void OnModTypeFilterChanges_CallsEventHandler()
-        {
-            var called_n = 0;
-            var item = new ModList(delegate { called_n++; });
-            Assert.That(called_n == 1);
-            item.ModFilter = GUIModFilter.Installed;
-            Assert.That(called_n == 2);
-            item.ModFilter = GUIModFilter.Installed;
-            Assert.That(called_n == 2);
-        }
-
-        [Test]
         public void ComputeChangeSetFromModList_WithEmptyList_HasEmptyChangeSet()
         {
             var item = new ModList(delegate { });

@@ -15,6 +15,9 @@ namespace CKAN
             ActiveControl = AddSearch();
         }
 
+        public event Action                  SurrenderFocus;
+        public event Action<List<ModSearch>> ApplySearches;
+
         public void Clear()
         {
             for (int i = editors.Count - 1; i >= 0; --i)
@@ -27,6 +30,27 @@ namespace CKAN
         public void ExpandCollapse()
         {
             (ActiveControl as EditModSearch)?.ExpandCollapse();
+        }
+
+        public void SetSearches(List<ModSearch> searches)
+        {
+            while (editors.Count > searches.Count && editors.Count > 1)
+            {
+                RemoveSearch(editors[editors.Count - 1]);
+            }
+            if (searches.Count < 1)
+            {
+                editors[0].Clear();
+            }
+            else
+            {
+                for (int i = 0; i < searches.Count; ++i)
+                {
+                    var editor = i >= editors.Count ? AddSearch() : editors[i];
+                    editor.Search = searches[i];
+                }
+            }
+            Apply();
         }
 
         private void AddSearchButton_Click(object sender, EventArgs e)
@@ -91,6 +115,11 @@ namespace CKAN
             {
                 RemoveSearch(source);
             }
+            Apply();
+        }
+
+        private void Apply()
+        {
             var searches = editors.Select(ems => ems.Search)
                                   .Where(s => s != null)
                                   .ToList();
@@ -102,9 +131,6 @@ namespace CKAN
         {
             SurrenderFocus?.Invoke();
         }
-
-        public event Action                  SurrenderFocus;
-        public event Action<List<ModSearch>> ApplySearches;
 
         private List<EditModSearch> editors = new List<EditModSearch>();
     }

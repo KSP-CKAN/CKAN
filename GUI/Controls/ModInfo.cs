@@ -328,25 +328,19 @@ namespace CKAN
             return link;
         }
 
-        public delegate void ChangeFilter(GUIModFilter filter, ModuleTag tag, ModuleLabel label);
+        public delegate void ChangeFilter(SavedSearch search);
         public event ChangeFilter OnChangeFilter;
 
         private void TagLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var link = sender as LinkLabel;
-            if (OnChangeFilter != null)
-            {
-                OnChangeFilter(GUIModFilter.Tag, link.Tag as ModuleTag, null);
-            }
+            OnChangeFilter?.Invoke(ModList.FilterToSavedSearch(GUIModFilter.Tag, link.Tag as ModuleTag, null));
         }
 
         private void LabelLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var link = sender as LinkLabel;
-            if (OnChangeFilter != null)
-            {
-                OnChangeFilter(GUIModFilter.CustomLabel, null, link.Tag as ModuleLabel);
-            }
+            OnChangeFilter?.Invoke(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, link.Tag as ModuleLabel));
         }
 
         private void BeforeExpand(object sender, TreeViewCancelEventArgs args)

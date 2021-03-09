@@ -1,5 +1,6 @@
-﻿using System.Drawing;
 using System.IO;
+using System.Linq;
+﻿using System.Drawing;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 
@@ -38,6 +39,9 @@ namespace CKAN
         /// Name of the label filter the user chose, if any
         /// </summary>
         public string CustomLabelFilter = null;
+
+        [XmlArray, XmlArrayItem(ElementName = "Search")]
+        public List<string> DefaultSearches = null;
 
         public List<string> SortColumns = new List<string>();
         public List<bool> MultiSortDescending = new List<bool>();
@@ -199,4 +203,13 @@ namespace CKAN
             }
         }
     }
+
+    [XmlRootAttribute("SavedSearch")]
+    public class SavedSearch
+    {
+        public string Name;
+        [XmlArray, XmlArrayItem(ElementName = "Search")]
+        public List<string> Values;
+    }
+
 }

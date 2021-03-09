@@ -35,8 +35,11 @@ namespace CKAN
         public ModList(Action<ModList> onModFiltersUpdated)
         {
             Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
-            ModFiltersUpdated += onModFiltersUpdated ?? (source => { });
-            ModFiltersUpdated(this);
+            if (onModFiltersUpdated != null)
+            {
+                ModFiltersUpdated += onModFiltersUpdated;
+                ModFiltersUpdated(this);
+            }
         }
 
         //TODO Move to relationship resolver and have it use this.
@@ -45,60 +48,54 @@ namespace CKAN
         public event Action<ModList> ModFiltersUpdated;
         public ReadOnlyCollection<GUIMod> Modules { get; set; }
 
-        public GUIModFilter ModFilter
-        {
-            get { return _modFilter; }
-            set
-            {
-                var old = _modFilter;
-                _modFilter = value;
-                if (!old.Equals(value)) ModFiltersUpdated(this);
-            }
-        }
-
         public readonly ModuleLabelList ModuleLabels = ModuleLabelList.Load(ModuleLabelList.DefaultPath)
             ?? ModuleLabelList.GetDefaultLabels();
 
         public readonly ModuleTagList ModuleTags = ModuleTagList.Load(ModuleTagList.DefaultPath)
             ?? new ModuleTagList();
 
-        private ModuleTag _tagFilter;
-        public ModuleTag TagFilter
+        private List<ModSearch> activeSearches = null;
+
+        public void SetSearches(List<ModSearch> newSearches)
         {
-            get { return _tagFilter; }
-            set
-            {
-                var old = _tagFilter;
-                _tagFilter = value;
-                if (!old?.Equals(value) ?? !value?.Equals(old) ?? false)
-                {
-                    ModFiltersUpdated(this);
-                }
-            }
+            activeSearches = newSearches;
+
+            Main.Instance.configuration.DefaultSearches = activeSearches?.Select(s => s?.Combined ?? "").ToList()
+                ?? new List<string>() { "" };
+
+            ModFiltersUpdated?.Invoke(this);
         }
 
-        private ModuleLabel _customLabelFilter;
-        public ModuleLabel CustomLabelFilter
+        private static string FilterName(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
         {
-            get { return _customLabelFilter; }
-            set
+            switch (filter)
             {
-                var old = _customLabelFilter;
-                _customLabelFilter = value;
-                if (!old?.Equals(value) ?? !value?.Equals(old) ?? false)
-                {
-                    ModFiltersUpdated(this);
-                }
+                case GUIModFilter.Compatible:               return Properties.Resources.MainFilterCompatible;
+                case GUIModFilter.Incompatible:             return Properties.Resources.MainFilterIncompatible;
+                case GUIModFilter.Installed:                return Properties.Resources.MainFilterInstalled;
+                case GUIModFilter.NotInstalled:             return Properties.Resources.MainFilterNotInstalled;
+                case GUIModFilter.InstalledUpdateAvailable: return Properties.Resources.MainFilterUpgradeable;
+                case GUIModFilter.Replaceable:              return Properties.Resources.MainFilterReplaceable;
+                case GUIModFilter.Cached:                   return Properties.Resources.MainFilterCached;
+                case GUIModFilter.Uncached:                 return Properties.Resources.MainFilterUncached;
+                case GUIModFilter.NewInRepository:          return Properties.Resources.MainFilterNew;
+                case GUIModFilter.All:                      return Properties.Resources.MainFilterAll;
+                case GUIModFilter.CustomLabel:              return string.Format(Properties.Resources.MainFilterLabel, label?.Name ?? "CUSTOM");
+                case GUIModFilter.Tag:
+                    return tag == null
+                        ? Properties.Resources.MainFilterUntagged
+                        : string.Format(Properties.Resources.MainFilterTag, tag.Name);
             }
+            return "";
         }
 
-        private GUIModFilter    _modFilter = GUIModFilter.Compatible;
-        private List<ModSearch> activeSearch = null;
-
-        public void SetSearch(List<ModSearch> newSearch)
+        public static SavedSearch FilterToSavedSearch(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
         {
-            activeSearch = newSearch;
-            ModFiltersUpdated(this);
+            return new SavedSearch()
+            {
+                Name   = FilterName(filter, tag, label),
+                Values = new List<string>() { new ModSearch(filter, tag, label).Combined },
+            };
         }
 
         /// <summary>
@@ -189,43 +186,48 @@ namespace CKAN
 
         public bool IsVisible(GUIMod mod, string instanceName)
         {
-            return (activeSearch?.Any(s => s?.Matches(mod) ?? true) ?? true)
-                && IsModInFilter(ModFilter, TagFilter, CustomLabelFilter, mod)
-                && !HiddenByTagsOrLabels(ModFilter, TagFilter, CustomLabelFilter, mod, instanceName);
+            return (activeSearches?.Any(s => s?.Matches(mod) ?? true) ?? true)
+                && !HiddenByTagsOrLabels(mod, instanceName);
         }
 
-        private bool HiddenByTagsOrLabels(GUIModFilter filter, ModuleTag tag, ModuleLabel label, GUIMod m, string instanceName)
+        private bool TagInSearches(ModuleTag tag)
         {
-            if (filter != GUIModFilter.CustomLabel)
+            return activeSearches?.Any(s => s?.TagNames.Contains(tag.Name) ?? false) ?? false;
+        }
+
+        private bool LabelInSearches(ModuleLabel label)
+        {
+            return activeSearches?.Any(s => s?.Labels.Contains(label) ?? false) ?? false;
+        }
+
+        private bool HiddenByTagsOrLabels(GUIMod m, string instanceName)
+        {
+            // "Hide" labels apply to all non-custom filters
+            if (ModuleLabels?.LabelsFor(instanceName)
+                .Where(l => !LabelInSearches(l) && l.Hide)
+                .Any(l => l.ModuleIdentifiers.Contains(m.Identifier))
+                ?? false)
             {
-                // "Hide" labels apply to all non-custom filters
-                if (ModuleLabels?.LabelsFor(instanceName)
-                    .Where(l => l != label && l.Hide)
-                    .Any(l => l.ModuleIdentifiers.Contains(m.Identifier))
-                    ?? false)
-                {
-                    return true;
-                }
-                if (ModuleTags?.Tags?.Values
-                    .Where(t => t != tag && t.Visible == false)
-                    .Any(t => t.ModuleIdentifiers.Contains(m.Identifier))
-                    ?? false)
-                {
-                    return true;
-                }
+                return true;
+            }
+            if (ModuleTags?.Tags?.Values
+                .Where(t => !TagInSearches(t) && t.Visible == false)
+                .Any(t => t.ModuleIdentifiers.Contains(m.Identifier))
+                ?? false)
+            {
+                return true;
             }
             return false;
         }
 
+        public int CountModsBySearches(List<ModSearch> searches)
+        {
+            return Modules.Count(mod => searches?.Any(s => s?.Matches(mod) ?? true) ?? true);
+        }
+
         public int CountModsByFilter(GUIModFilter filter)
         {
-            if (filter == GUIModFilter.All)
-            {
-                // Don't check each one
-                return Modules.Count;
-            }
-            // Tags and Labels are not counted here
-            return Modules.Count(m => IsModInFilter(filter, null, null, m));
+            return CountModsBySearches(new List<ModSearch>() { new ModSearch(filter, null, null) });
         }
 
         /// <summary>
@@ -303,7 +305,7 @@ namespace CKAN
                     Value = "-"
                 };
 
-            var replacing = IsModInFilter(GUIModFilter.Replaceable, null, null, mod)
+            var replacing = (mod.IsInstalled && mod.HasReplacement)
                 ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                 {
                     Value = myChange == null ? false
@@ -404,27 +406,6 @@ namespace CKAN
 
         private static readonly Regex ContainsEpoch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
         private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
-
-        private bool IsModInFilter(GUIModFilter filter, ModuleTag tag, ModuleLabel label, GUIMod m)
-        {
-            switch (filter)
-            {
-                case GUIModFilter.Compatible:               return !m.IsIncompatible;
-                case GUIModFilter.Installed:                return m.IsInstalled;
-                case GUIModFilter.InstalledUpdateAvailable: return m.IsInstalled && m.HasUpdate;
-                case GUIModFilter.Cached:                   return m.IsCached;
-                case GUIModFilter.Uncached:                 return !m.IsCached;
-                case GUIModFilter.NewInRepository:          return m.IsNew;
-                case GUIModFilter.NotInstalled:             return !m.IsInstalled;
-                case GUIModFilter.Incompatible:             return m.IsIncompatible;
-                case GUIModFilter.Replaceable:              return m.IsInstalled && m.HasReplacement;
-                case GUIModFilter.All:                      return true;
-                case GUIModFilter.Tag:                      return tag?.ModuleIdentifiers.Contains(m.Identifier)
-                    ?? ModuleTags.Untagged.Contains(m.Identifier);
-                case GUIModFilter.CustomLabel:              return label?.ModuleIdentifiers?.Contains(m.Identifier) ?? false;
-                default:                                    throw new Kraken(string.Format(Properties.Resources.MainModListUnknownFilter, filter));
-            }
-        }
 
         public static Dictionary<GUIMod, string> ComputeConflictsFromModList(IRegistryQuerier registry,
             IEnumerable<ModChange> change_set, GameVersionCriteria ksp_version)
