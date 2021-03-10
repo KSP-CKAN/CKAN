@@ -50,15 +50,16 @@ namespace Tests.GUI
             }
         }
 
-        [Test]
-        public void CountModsByFilter_EmptyModList_ReturnsZeroForAllFilters()
+        public static Array GetFilters()
+        {
+            return Enum.GetValues(typeof(GUIModFilter));
+        }
+
+        [TestCaseSource("GetFilters")]
+        public void CountModsByFilter_EmptyModList_ReturnsZero(GUIModFilter filter)
         {
             var item = new ModList(delegate { });
-            foreach (GUIModFilter filter in Enum.GetValues(typeof(GUIModFilter)))
-            {
-                Assert.That(item.CountModsByFilter(filter), Is.EqualTo(0));
-            }
-
+            Assert.That(item.CountModsByFilter(filter), Is.EqualTo(0));
         }
 
         [Test]

@@ -79,8 +79,13 @@ namespace CKAN
                 case GUIModFilter.Cached:                   Cached          = true;  break;
                 case GUIModFilter.Uncached:                 Cached          = false; break;
                 case GUIModFilter.NewInRepository:          NewlyCompatible = true;  break;
-                case GUIModFilter.CustomLabel:              Labels.Add(label);       break;
-                case GUIModFilter.Tag:                      TagNames.Add(tag.Name);  break;
+                case GUIModFilter.Tag:                      TagNames.Add(tag?.Name); break;
+                case GUIModFilter.CustomLabel:
+                    if (label != null)
+                    {
+                        Labels.Add(label);
+                    }
+                    break;
                 default:
                 case GUIModFilter.All:                                               break;
             }
@@ -186,7 +191,7 @@ namespace CKAN
             }
             foreach (var tagName in TagNames)
             {
-                pieces.Add($"{Properties.Resources.ModSearchTagPrefix}{tagName}");
+                pieces.Add($"{Properties.Resources.ModSearchTagPrefix}{tagName ?? ""}");
             }
             foreach (var label in Labels)
             {
@@ -474,8 +479,9 @@ namespace CKAN
         {
             var tagsInMod = mod.ToModule().Tags;
             return TagNames.Count < 1
-                || ((tagsInMod?.Any() ?? false)
-                    && TagNames.All(tn => tagsInMod.Contains(tn)));
+                || TagNames.All(tn => string.IsNullOrEmpty(tn)
+                    ? tagsInMod == null
+                    : tagsInMod.Contains(tn));
         }
 
         private bool MatchesLabels(GUIMod mod)
