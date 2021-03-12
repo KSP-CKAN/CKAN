@@ -106,7 +106,7 @@ namespace CKAN.NetKAN.Services
                         downloadedFile,
                         $"netkan-{identifier}.{extension}",
                         move: true
-                    );                    
+                    );
                 }
                 catch (IOException exc)
                 {
@@ -120,11 +120,11 @@ namespace CKAN.NetKAN.Services
 
         public string DownloadText(Uri url)
         {
-            return TryGetCached(url, () => Net.DownloadText(url));
+            return TryGetCached(url, () => Net.DownloadText(url, timeout:10000));
         }
         public string DownloadText(Uri url, string authToken, string mimeType = null)
         {
-            return TryGetCached(url, () => Net.DownloadText(url, authToken, mimeType));
+            return TryGetCached(url, () => Net.DownloadText(url, authToken, mimeType, 10000));
         }
 
         private string TryGetCached(Uri url, Func<string> uncached)

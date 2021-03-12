@@ -194,11 +194,20 @@ namespace CKAN
             }.DownloadAndWait(downloadTargets);
         }
 
-        public static string DownloadText(Uri url, string authToken = "", string mimeType = null)
+        /// <summary>
+        /// Download a string from a URL
+        /// </summary>
+        /// <param name="url">URL to download from</param>
+        /// <param name="authToken">An authentication token sent with the "Authorization" header.
+        ///                         Attempted to be looked up from the configuraiton if not specified</param>
+        /// <param name="mimeType">A mime type sent with the "Accept" header</param>
+        /// <param name="timeout">Timeout for the request in milliseconds, defaulting to 100 000 (=100 seconds)</param>
+        /// <returns>The text content returned by the server</returns>
+        public static string DownloadText(Uri url, string authToken = "", string mimeType = null, int timeout = 100000)
         {
             log.DebugFormat("About to download {0}", url.OriginalString);
 
-            WebClient agent = MakeDefaultHttpClient();
+            WebClient agent = MakeDefaultHttpClient(timeout);
 
             // Check whether to use an auth token for this host
             if (!string.IsNullOrEmpty(authToken)
@@ -351,11 +360,42 @@ namespace CKAN
             }
         }
 
-        private static WebClient MakeDefaultHttpClient()
+        /// <summary>
+        /// Create a WebClient with some CKAN-sepcific adjustments, like a user agent string.
+        /// </summary>
+        /// <param name="timeout">Timeout for the request in milliseconds, defaulting to 100 000 (=100 seconds)</param>
+        /// <returns>A custom WebClient</returns>
+        private static WebClient MakeDefaultHttpClient(int timeout = 100000)
         {
-            var client = new WebClient();
+            var client = new TimeoutWebClient(timeout);
             client.Headers.Add("User-Agent", UserAgentString);
             return client;
+        }
+
+        /// <summary>
+        /// A WebClient that times out after a specified amount of time in milliseconds, 100 000 milliseconds (=100 seconds) by default.
+        /// Taken from https://stackoverflow.com/a/3052637
+        /// </summary>
+        private sealed class TimeoutWebClient : WebClient
+        {
+            public int Timeout { get; set; }
+
+            public TimeoutWebClient() : this (100000) { }
+
+            public TimeoutWebClient(int timeout)
+            {
+                Timeout = timeout;
+            }
+
+            protected override WebRequest GetWebRequest(Uri address)
+            {
+                var request = base.GetWebRequest(address);
+                if (request != null)
+                {
+                    request.Timeout = this.Timeout;
+                }
+                return request;
+            }
         }
 
         // HACK: The ancient WebClient doesn't support setting the request type to HEAD and WebRequest doesn't support
