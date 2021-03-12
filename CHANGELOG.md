@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 - [GUI] Handle renamed modlist columns in sort list gracefully (#3319 by: DasSkelett; reviewed: HebaruSan)
 - [Core] Fix AD mod upgrading, add tests, and fix all warnings (#3315 by: HebaruSan; reviewed: DasSkelett)
 
+### Internal
+- [Netkan] Time out after 10 seconds on text downloads in NetKAN (#3325 by: DasSkelett; reviewed: HebaruSan)
+
 ## v1.30.0 (Glenn)
 
 ### Features
