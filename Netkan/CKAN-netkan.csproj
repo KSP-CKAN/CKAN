@@ -127,6 +127,7 @@
     <Compile Include="Validators\CraftsInShipsValidator.cs" />
     <Compile Include="Validators\DownloadVersionValidator.cs" />
     <Compile Include="Validators\HasIdentifierValidator.cs" />
+    <Compile Include="Validators\HarmonyValidator.cs" />
     <Compile Include="Validators\InstallsFilesValidator.cs" />
     <Compile Include="Validators\InstallValidator.cs" />
     <Compile Include="Validators\IsCkanModuleValidator.cs" />

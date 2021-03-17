@@ -12,7 +12,9 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix AD mod upgrading, add tests, and fix all warnings (#3315 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
+
 - [Netkan] Time out after 10 seconds on text downloads in NetKAN (#3325 by: DasSkelett; reviewed: HebaruSan)
+- [Netkan] Netkan errors and warnings for Harmony bundlers (#3326 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.30.0 (Glenn)
 
