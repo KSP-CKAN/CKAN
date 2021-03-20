@@ -19,11 +19,11 @@ namespace CKAN.NetKAN.Services
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ModuleService));
 
-        public AvcVersion GetInternalAvc(CkanModule module, string filePath, string internalFilePath = null)
+        public AvcVersion GetInternalAvc(CkanModule module, string zipFilePath, string internalFilePath = null)
         {
-            using (var zipfile = new ZipFile(filePath))
+            using (var zipfile = new ZipFile(zipFilePath))
             {
-                return GetInternalAvc(module, zipfile, internalFilePath);
+                return GetInternalAvc(zipfile, FindInternalAvc(module, zipfile, internalFilePath)?.Item1);
             }
         }
 
@@ -208,26 +208,34 @@ namespace CKAN.NetKAN.Services
         }
 
         /// <summary>
-        /// Locates a version file in the zipfile specified, and returns an AVC object.
+        /// Locate a version file in an archive.
         /// This requires a module object as we *first* search files we might install,
         /// falling back to a search of all files in the archive.
-        ///
         /// Returns null if no version is found.
         /// Throws a Kraken if too many versions are found.
         /// </summary>
-        private static AvcVersion GetInternalAvc(CkanModule module, ZipFile zipfile, string internalFilePath)
+        /// <param name="module">The metadata associated with this module, used to find installable files</param>
+        /// <param name="zipfile">The archive containing the module's files</param>
+        /// <param name="internalFilePath">Filter for selecting a version file, either exact match or regular expression</param>
+        /// <returns>
+        /// Tuple consisting of the chosen file's entry in the archive plus a boolean
+        /// indicating whether it's a file would be extracted to disk at installation
+        /// </returns>
+        public Tuple<ZipEntry, bool> FindInternalAvc(CkanModule module, ZipFile zipfile, string internalFilePath)
         {
             Log.DebugFormat("Finding AVC .version file for {0}", module);
 
             const string versionExt = ".version";
 
-            // Get all our version files.
+            // Get all our version files
             var ksp = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
             var files = ModuleInstaller.FindInstallableFiles(module, zipfile, ksp)
                 .Select(x => x.source)
                 .Where(source => source.Name.EndsWith(versionExt,
                     StringComparison.InvariantCultureIgnoreCase))
                 .ToList();
+            // By default, we look for ones we can install
+            var installable = true;
 
             if (files.Count == 0)
             {
@@ -241,14 +249,14 @@ namespace CKAN.NetKAN.Services
                     // Okay, there's *really* nothing there.
                     return null;
                 }
+                // Tell calling code that it may not be a "real" version file
+                installable = false;
             }
-
-            ZipEntry avcEntry = null;
 
             if (!string.IsNullOrWhiteSpace(internalFilePath))
             {
                 Regex internalRE = new Regex(internalFilePath, RegexOptions.Compiled);
-                avcEntry = files
+                ZipEntry avcEntry = files
                     .Where(f => f.Name == internalFilePath || internalRE.IsMatch(f.Name))
                     .FirstOrDefault();
                 if (avcEntry == null)
@@ -259,6 +267,7 @@ namespace CKAN.NetKAN.Services
                         string.Join(", ", files.Select(f => f.Name))
                     ));
                 }
+                return new Tuple<ZipEntry, bool>(avcEntry, installable);
             }
             else if (files.Count > 1)
             {
@@ -268,9 +277,19 @@ namespace CKAN.NetKAN.Services
             }
             else
             {
-                avcEntry = files.First();
+                return new Tuple<ZipEntry, bool>(files.First(), installable);
             }
+        }
 
+        /// <summary>
+        /// Returns an AVC object for the given file in the archive, if any.
+        /// </summary>
+        private static AvcVersion GetInternalAvc(ZipFile zipfile, ZipEntry avcEntry)
+        {
+            if (avcEntry == null)
+            {
+                return null;
+            }
             Log.DebugFormat("Using AVC data from {0}", avcEntry.Name);
 
             // Hooray, found our entry. Extract and return it.
