@@ -284,7 +284,7 @@ namespace CKAN.NetKAN.Services
         /// <summary>
         /// Returns an AVC object for the given file in the archive, if any.
         /// </summary>
-        private static AvcVersion GetInternalAvc(ZipFile zipfile, ZipEntry avcEntry)
+        public static AvcVersion GetInternalAvc(ZipFile zipfile, ZipEntry avcEntry)
         {
             if (avcEntry == null)
             {
