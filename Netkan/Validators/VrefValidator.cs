@@ -41,12 +41,17 @@ namespace CKAN.NetKAN.Validators
                     bool   installable = false;
                     try
                     {
-                        // Pass a regex that matches anything so it returns the first if found
                         using (var zipfile = new ZipFile(zipFilePath))
                         {
+                            // Pass a regex that matches anything so it returns the first if found
                             var verFileAndInstallable = _moduleService.FindInternalAvc(mod, zipfile, ".");
-                            path        = verFileAndInstallable?.Item1.Name;
-                            installable = verFileAndInstallable?.Item2 ?? false;
+                            if (verFileAndInstallable != null)
+                            {
+                                // This will throw if there's a syntax error
+                                var avc = ModuleService.GetInternalAvc(zipfile, verFileAndInstallable.Item1);
+                                path        = verFileAndInstallable.Item1.Name;
+                                installable = verFileAndInstallable.Item2;
+                            }
                         }
                     }
                     catch (BadMetadataKraken)
@@ -60,7 +65,6 @@ namespace CKAN.NetKAN.Validators
                         // This shouldn't cause the inflation to fail, but it does deprive us of the path.
                         path = "";
                         installable = false;
-                        Log.Warn(k.Message);
                     }
 
                     bool hasVersionFile = (path != null);
