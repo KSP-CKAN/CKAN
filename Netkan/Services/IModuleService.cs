@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CKAN.NetKAN.Sources.Avc;
 using ICSharpCode.SharpZipLib.Zip;
@@ -7,6 +8,7 @@ namespace CKAN.NetKAN.Services
 {
     internal interface IModuleService
     {
+        Tuple<ZipEntry, bool> FindInternalAvc(CkanModule module, ZipFile zipfile, string internalFilePath);
         AvcVersion GetInternalAvc(CkanModule module, string filePath, string internalFilePath = null);
         JObject GetInternalCkan(string filePath);
         bool HasInstallableFiles(CkanModule module, string filePath);

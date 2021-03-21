@@ -1,5 +1,6 @@
 using log4net;
 using Newtonsoft.Json.Linq;
+using ICSharpCode.SharpZipLib.Zip;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
 
@@ -31,17 +32,22 @@ namespace CKAN.NetKAN.Validators
 
             if (!mod.IsDLC)
             {
-                var file = _http.DownloadModule(metadata);
-                if (!string.IsNullOrEmpty(file))
+                var zipFilePath = _http.DownloadModule(metadata);
+                if (!string.IsNullOrEmpty(zipFilePath))
                 {
                     bool hasVref = (metadata.Vref != null);
 
-                    bool hasVersionFile = false;
+                    string path        = null;
+                    bool   installable = false;
                     try
                     {
                         // Pass a regex that matches anything so it returns the first if found
-                        var avc = _moduleService.GetInternalAvc(mod, file, ".");
-                        hasVersionFile = (avc != null);
+                        using (var zipfile = new ZipFile(zipFilePath))
+                        {
+                            var verFileAndInstallable = _moduleService.FindInternalAvc(mod, zipfile, ".");
+                            path        = verFileAndInstallable?.Item1.Name;
+                            installable = verFileAndInstallable?.Item2 ?? false;
+                        }
                     }
                     catch (BadMetadataKraken)
                     {
@@ -50,19 +56,22 @@ namespace CKAN.NetKAN.Validators
                     }
                     catch (Kraken k)
                     {
-                        // If GetInternalAvc throws anything else, then there's a version file with a syntax error.
-                        // This shouldn't cause the inflation to fail.
-                        hasVersionFile = true;
+                        // If FindInternalAvc throws anything else, then there's a version file with a syntax error.
+                        // This shouldn't cause the inflation to fail, but it does deprive us of the path.
+                        path = "";
+                        installable = false;
                         Log.Warn(k.Message);
                     }
+
+                    bool hasVersionFile = (path != null);
 
                     if (hasVref && !hasVersionFile)
                     {
                         Log.Warn("$vref present, version file missing");
                     }
-                    else if (!hasVref && hasVersionFile)
+                    else if (!hasVref && hasVersionFile && installable)
                     {
-                        Log.Warn("$vref absent, version file present");
+                        Log.WarnFormat("$vref absent, version file present: {0}", path);
                     }
                 }
             }
