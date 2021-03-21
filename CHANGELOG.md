@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Time out after 10 seconds on text downloads in NetKAN (#3325 by: DasSkelett; reviewed: HebaruSan)
 - [Netkan] Netkan errors and warnings for Harmony bundlers (#3326 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Print path of unused version file (#3327, #3328 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Switch from outdated SharpZipLib.Patched to newer SharpZipLib (#3329 by: DasSkelett; reviewed: HebaruSan)
 
 ## v1.30.0 (Glenn)
 
