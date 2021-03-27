@@ -72,6 +72,7 @@ namespace CKAN
             set
             {
                 FilterCombinedLabel.Visible = value;
+                FilterOrLabel.Visible = !value;
             }
         }
 

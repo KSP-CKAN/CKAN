@@ -18,49 +18,17 @@ namespace CKAN
                 ShowAlways   = true,
             };
 
-            YesRadioButton = new RadioButton()
-            {
-                Appearance = Appearance.Button,
-                FlatStyle  = FlatStyle.Flat,
-                Location   = new Point(0, 0),
-                Size       = new Size(33, 20),
-                Image      = Properties.Resources.triToggleYes,
-                UseVisualStyleBackColor = false,
-            };
-            YesRadioButton.CheckedChanged += RadioButtonChanged;
-            ToolTip.SetToolTip(YesRadioButton, Properties.Resources.TriStateToggleYesTooltip);
-
-            BothRadioButton = new RadioButton()
-            {
-                Appearance = Appearance.Button,
-                BackColor  = SystemColors.Highlight,
-                FlatStyle  = FlatStyle.Flat,
-                Location   = new Point(33, 0),
-                Size       = new Size(33, 20),
-                Image      = Properties.Resources.triToggleBoth,
-                Checked    = true,
-                UseVisualStyleBackColor = false,
-            };
-            BothRadioButton.CheckedChanged += RadioButtonChanged;
-            ToolTip.SetToolTip(BothRadioButton, Properties.Resources.TriStateToggleBothTooltip);
-
-            NoRadioButton = new RadioButton()
-            {
-                Appearance = Appearance.Button,
-                FlatStyle  = FlatStyle.Flat,
-                Location   = new Point(66, 0),
-                Size       = new Size(33, 20),
-                Image      = Properties.Resources.triToggleNo,
-                UseVisualStyleBackColor = false,
-            };
-            NoRadioButton.CheckedChanged += RadioButtonChanged;
-            ToolTip.SetToolTip(NoRadioButton, Properties.Resources.TriStateToggleNoTooltip);
-
+            YesRadioButton  = MakeRadioButton(0, Properties.Resources.triToggleYes,
+                Properties.Resources.TriStateToggleYesTooltip);
+            BothRadioButton = MakeRadioButton(1, Properties.Resources.triToggleBoth,
+                Properties.Resources.TriStateToggleBothTooltip, true);
+            NoRadioButton   = MakeRadioButton(2, Properties.Resources.triToggleNo,
+                Properties.Resources.TriStateToggleNoTooltip);
             Controls.Add(YesRadioButton);
             Controls.Add(BothRadioButton);
             Controls.Add(NoRadioButton);
 
-            Size = new Size(99, 20);
+            Size = new Size(3 * buttonXOffset + 1, 20);
 
             ResumeLayout(false);
             PerformLayout();
@@ -93,6 +61,24 @@ namespace CKAN
 
         public event Action<bool?> Changed;
 
+        private RadioButton MakeRadioButton(int index, Bitmap icon, string tooltip, bool check = false)
+        {
+            var rb = new RadioButton()
+            {
+                Appearance = Appearance.Button,
+                BackColor  = check ? SystemColors.Highlight : RadioButton.DefaultBackColor,
+                FlatStyle  = FlatStyle.Flat,
+                Location   = new Point(index * buttonXOffset, 0),
+                Size       = new Size(buttonWidth, 20),
+                Image      = icon,
+                Checked    = check,
+                UseVisualStyleBackColor = false,
+            };
+            rb.CheckedChanged += RadioButtonChanged;
+            ToolTip.SetToolTip(rb, tooltip);
+            return rb;
+        }
+
         private void RadioButtonChanged(object sender, EventArgs e)
         {
             var butt = sender as RadioButton;
@@ -107,6 +93,9 @@ namespace CKAN
                 butt.BackColor = RadioButton.DefaultBackColor;
             }
         }
+
+        private const int buttonWidth   = 33;
+        private const int buttonXOffset = buttonWidth - 1;
 
         private ToolTip     ToolTip;
         private RadioButton YesRadioButton;

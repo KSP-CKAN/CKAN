@@ -33,6 +33,7 @@
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(EditModSearch));
             this.ToolTip = new System.Windows.Forms.ToolTip();
             this.FilterCombinedLabel = new System.Windows.Forms.Label();
+            this.FilterOrLabel = new System.Windows.Forms.Label();
             this.FilterCombinedTextBox = new CKAN.HintTextBox();
             this.ExpandButton = new System.Windows.Forms.CheckBox();
             this.SearchDetails = new CKAN.EditModSearchDetails();
@@ -55,6 +56,18 @@
             this.FilterCombinedLabel.Size = new System.Drawing.Size(147, 20);
             this.FilterCombinedLabel.TabIndex = 16;
             resources.ApplyResources(this.FilterCombinedLabel, "FilterCombinedLabel");
+            //
+            // FilterOrLabel
+            //
+            this.FilterOrLabel.AutoSize = true;
+            this.FilterOrLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterOrLabel.Location = new System.Drawing.Point(80, 4);
+            this.FilterOrLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.FilterOrLabel.Name = "FilterOrLabel";
+            this.FilterOrLabel.Size = new System.Drawing.Size(147, 20);
+            this.FilterOrLabel.TabIndex = 16;
+            this.FilterOrLabel.Visible = false;
+            resources.ApplyResources(this.FilterOrLabel, "FilterOrLabel");
             //
             // FilterCombinedTextBox
             //
@@ -98,6 +111,7 @@
             //
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.FilterCombinedLabel);
+            this.Controls.Add(this.FilterOrLabel);
             this.Controls.Add(this.ExpandButton);
             this.Controls.Add(this.FilterCombinedTextBox);
             this.Name = "EditModSearch";
@@ -112,6 +126,7 @@
 
         private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.Label FilterCombinedLabel;
+        private System.Windows.Forms.Label FilterOrLabel;
         private CKAN.HintTextBox FilterCombinedTextBox;
         private System.Windows.Forms.CheckBox ExpandButton;
         private CKAN.EditModSearchDetails SearchDetails;
