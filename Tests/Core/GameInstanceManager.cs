@@ -10,7 +10,7 @@ using CKAN.Games;
 
 namespace Tests.Core
 {
-    [TestFixture] public class KSPManagerTests
+    [TestFixture] public class GameInstanceManagerTests
     {
         private DisposableKSP tidy;
         private const string nameInReg = "testing";
@@ -265,12 +265,13 @@ namespace Tests.Core
         {
             using (var tidy2 = new DisposableKSP())
             {
-                cfg.Instances.Add(new Tuple<string, string, string>("tidy2",tidy2.KSP.GameDir(), "KSP"));
-                manager.LoadInstancesFromRegistry();
-                manager.ClearAutoStart();
-                Assert.That(manager.GetPreferredInstance(), Is.Null);
+                cfg.Instances.Add(new Tuple<string, string, string>("tidy2", tidy2.KSP.GameDir(), "KSP"));
+                // Make a new manager with the updated config
+                var multiMgr = new GameInstanceManager(new NullUser(), cfg);
+                multiMgr.ClearAutoStart();
+                Assert.That(multiMgr.GetPreferredInstance(), Is.Null);
+                multiMgr.Dispose();
             }
-
         }
 
         [Test]

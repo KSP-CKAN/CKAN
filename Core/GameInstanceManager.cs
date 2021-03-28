@@ -64,19 +64,20 @@ namespace CKAN
         {
             User = user;
             Configuration = configuration ?? ServiceLocator.Container.Resolve<IConfiguration>();
-            LoadInstancesFromRegistry();
+            LoadInstances();
+            LoadCacheSettings();
         }
 
         /// <summary>
         /// Returns the preferred KSP instance, or null if none can be found.
         ///
         /// This works by checking to see if we're in a KSP dir first, then the
-        /// registry for an autostart instance, then will try to auto-populate
+        /// config for an autostart instance, then will try to auto-populate
         /// by scanning for the game.
         ///
-        /// This *will not* touch the registry if we find a portable install.
+        /// This *will not* touch the config if we find a portable install.
         ///
-        /// This *will* run KSP instance autodetection if the registry is empty.
+        /// This *will* run KSP instance autodetection if the config is empty.
         ///
         /// This *will* set the current instance, or throw an exception if it's already set.
         ///
@@ -96,7 +97,7 @@ namespace CKAN
                 // TODO: Check which ones match, prompt user if >1
 
                 // First check if we're part of a portable install
-                // Note that this *does not* register in the registry.
+                // Note that this *does not* register in the config.
                 string path = GameInstance.PortableDir(game);
 
                 if (path != null)
@@ -116,8 +117,8 @@ namespace CKAN
             }
 
             // Return the autostart, if we can find it.
-            // We check both null and "" as we can't write NULL to the registry, so we write an empty string instead
-            // This is necessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the windows registry keys!
+            // We check both null and "" as we can't write NULL to the config, so we write an empty string instead
+            // This is necessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the config!
             if (!string.IsNullOrEmpty(AutoStartInstance)
                     && instances[AutoStartInstance].Valid)
             {
@@ -141,7 +142,7 @@ namespace CKAN
         {
             if (instances.Any())
             {
-                throw new KSPManagerKraken("Attempted to scan for defaults with instances in registry");
+                throw new KSPManagerKraken("Attempted to scan for defaults with instances");
             }
             GameInstance val = null;
             foreach (IGame game in knownGames)
@@ -169,7 +170,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Adds a KSP instance to registry.
+        /// Adds a KSP instance to config.
         /// Returns the resulting KSP object.
         /// </summary>
         public GameInstance AddInstance(GameInstance ksp_instance)
@@ -235,7 +236,7 @@ namespace CKAN
             log.Debug("Copying directory.");
             Utilities.CopyDirectory(existingInstance.GameDir(), newPath, true);
 
-            // Add the new instance to the registry
+            // Add the new instance to the config
             GameInstance new_instance = new GameInstance(existingInstance.game, newPath, newName, User);
             AddInstance(new_instance);
         }
@@ -319,7 +320,7 @@ namespace CKAN
                     }
                 }
 
-                // Add the new instance to the registry
+                // Add the new instance to the config
                 GameInstance new_instance = new GameInstance(game, newPath, newName, User, false);
                 AddInstance(new_instance);
                 transaction.Complete();
@@ -374,7 +375,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Removes the instance from the registry and saves.
+        /// Removes the instance from the config and saves.
         /// </summary>
         public void RemoveInstance(string name)
         {
@@ -383,7 +384,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Renames an instance in the registry and saves.
+        /// Renames an instance in the config and saves.
         /// </summary>
         public void RenameInstance(string from, string to)
         {
@@ -470,7 +471,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Sets the autostart instance in the registry and saves it.
+        /// Sets the autostart instance in the config and saves it.
         /// </summary>
         public void SetAutoStart(string name)
         {
@@ -495,9 +496,9 @@ namespace CKAN
             Configuration.AutoStartInstance = null;
         }
 
-        public void LoadInstancesFromRegistry()
+        private void LoadInstances()
         {
-            log.Info("Loading KSP instances from registry");
+            log.Info("Loading KSP instances");
 
             instances.Clear();
 
@@ -512,11 +513,24 @@ namespace CKAN
                 // Add unconditionally, sort out invalid instances downstream
                 instances.Add(name, new GameInstance(game, path, name, User));
             }
+        }
 
+        private void LoadCacheSettings()
+        {
             if (!Directory.Exists(Configuration.DownloadCacheDir))
             {
-                Directory.CreateDirectory(Configuration.DownloadCacheDir);
+                try
+                {
+                    Directory.CreateDirectory(Configuration.DownloadCacheDir);
+                }
+                catch
+                {
+                    // Can't create the configured directory, try reverting it to the default
+                    Configuration.DownloadCacheDir = null;
+                    Directory.CreateDirectory(Configuration.DownloadCacheDir);
+                }
             }
+
             string failReason;
             TrySetupCache(Configuration.DownloadCacheDir, out failReason);
         }
