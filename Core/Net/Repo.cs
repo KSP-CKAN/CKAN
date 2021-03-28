@@ -381,7 +381,7 @@ Do you wish to reinstall now?", sb)))
                 using (GZipInputStream gzipStream = new GZipInputStream(inputStream))
                 {
                     // Create a handle for the tar stream.
-                    using (TarInputStream tarStream = new TarInputStream(gzipStream))
+                    using (TarInputStream tarStream = new TarInputStream(gzipStream, Encoding.UTF8))
                     {
                         TarEntry entry;
                         while ((entry = tarStream.GetNextEntry()) != null)

@@ -108,7 +108,10 @@ namespace CKAN
             {
                 _user.RaiseError(Properties.Resources.ManageGameInstancesNotValid,
                     new object[] { k.path });
-                return;
+            }
+            catch (Exception exc)
+            {
+                _user.RaiseError(exc.Message);
             }
         }
 
