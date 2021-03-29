@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Tests.Core
 {
     [TestFixture]
-    public class CKANPathUtils
+    public class CKANPathUtilsTests
     {
         [Test]
         public void NormalizePath()

@@ -9,7 +9,7 @@ using CKAN.Games;
 namespace Tests.Core
 {
     [TestFixture]
-    public class KSP
+    public class GameInstanceTests
     {
         private CKAN.GameInstance ksp;
         private string ksp_dir;
