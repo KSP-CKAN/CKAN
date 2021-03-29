@@ -59,7 +59,7 @@ namespace CKAN.NetKAN.Validators
                         // This means the install stanzas don't match any files.
                         // That's not our problem; someone else will report it.
                     }
-                    catch (Kraken k)
+                    catch (Kraken)
                     {
                         // If FindInternalAvc throws anything else, then there's a version file with a syntax error.
                         // This shouldn't cause the inflation to fail, but it does deprive us of the path.

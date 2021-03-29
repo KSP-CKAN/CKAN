@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Handle renamed modlist columns in sort list gracefully (#3319 by: DasSkelett; reviewed: HebaruSan)
 - [Core] Fix AD mod upgrading, add tests, and fix all warnings (#3315 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Reset cache dir to default if creation fails (#3334 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Tell user if instance addition fails (#3332 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
