@@ -372,7 +372,7 @@
             this.AutoUpdateGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AutoUpdateGroupBox.Location = new System.Drawing.Point(12, 404);
             this.AutoUpdateGroupBox.Name = "AutoUpdateGroupBox";
-            this.AutoUpdateGroupBox.Size = new System.Drawing.Size(254, 119);
+            this.AutoUpdateGroupBox.Size = new System.Drawing.Size(254, 132);
             this.AutoUpdateGroupBox.TabIndex = 3;
             this.AutoUpdateGroupBox.TabStop = false;
             resources.ApplyResources(this.AutoUpdateGroupBox, "AutoUpdateGroupBox");
@@ -428,7 +428,7 @@
             this.CheckForUpdatesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CheckForUpdatesButton.Location = new System.Drawing.Point(12, 84);
             this.CheckForUpdatesButton.Name = "CheckForUpdatesButton";
-            this.CheckForUpdatesButton.Size = new System.Drawing.Size(112, 25);
+            this.CheckForUpdatesButton.Size = new System.Drawing.Size(112, 38);
             this.CheckForUpdatesButton.TabIndex = 5;
             this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
             resources.ApplyResources(this.CheckForUpdatesButton, "CheckForUpdatesButton");
@@ -439,7 +439,7 @@
             this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.InstallUpdateButton.Location = new System.Drawing.Point(130, 84);
             this.InstallUpdateButton.Name = "InstallUpdateButton";
-            this.InstallUpdateButton.Size = new System.Drawing.Size(112, 25);
+            this.InstallUpdateButton.Size = new System.Drawing.Size(112, 38);
             this.InstallUpdateButton.TabIndex = 6;
             this.InstallUpdateButton.Click += new System.EventHandler(this.InstallUpdateButton_Click);
             resources.ApplyResources(this.InstallUpdateButton, "InstallUpdateButton");
@@ -455,7 +455,7 @@
             this.BehaviourGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BehaviourGroupBox.Location = new System.Drawing.Point(278, 404);
             this.BehaviourGroupBox.Name = "BehaviourGroupBox";
-            this.BehaviourGroupBox.Size = new System.Drawing.Size(210, 119);
+            this.BehaviourGroupBox.Size = new System.Drawing.Size(210, 132);
             this.BehaviourGroupBox.TabIndex = 4;
             this.BehaviourGroupBox.TabStop = false;
             resources.ApplyResources(this.BehaviourGroupBox, "BehaviourGroupBox");
@@ -482,10 +482,10 @@
             //
             // RefreshPreLabel
             //
-            this.RefreshPreLabel.AutoSize = true;
+            this.RefreshPreLabel.AutoSize = false;
             this.RefreshPreLabel.Location = new System.Drawing.Point(9, 66);
             this.RefreshPreLabel.Name = "RefreshPreLabel";
-            this.RefreshPreLabel.Size = new System.Drawing.Size(108, 13);
+            this.RefreshPreLabel.Size = new System.Drawing.Size(114, 26);
             this.RefreshPreLabel.TabIndex = 2;
             resources.ApplyResources(this.RefreshPreLabel, "RefreshPreLabel");
             //
@@ -512,7 +512,7 @@
             // PauseRefreshCheckBox
             //
             this.PauseRefreshCheckBox.AutoSize = true;
-            this.PauseRefreshCheckBox.Location = new System.Drawing.Point(12, 90);
+            this.PauseRefreshCheckBox.Location = new System.Drawing.Point(12, 103);
             this.PauseRefreshCheckBox.Name = "PauseRefreshCheckBox";
             this.PauseRefreshCheckBox.Size = new System.Drawing.Size(105, 17);
             this.PauseRefreshCheckBox.TabIndex = 5;
@@ -528,9 +528,9 @@
             this.MoreSettingsGroupBox.Controls.Add(this.HideEpochsCheckbox);
             this.MoreSettingsGroupBox.Controls.Add(this.HideVCheckbox);
             this.MoreSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.MoreSettingsGroupBox.Location = new System.Drawing.Point(12, 529);
+            this.MoreSettingsGroupBox.Location = new System.Drawing.Point(12, 542);
             this.MoreSettingsGroupBox.Name = "MoreSettingsGroupBox";
-            this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 139);
+            this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 150);
             this.MoreSettingsGroupBox.TabIndex = 5;
             this.MoreSettingsGroupBox.TabStop = false;
             resources.ApplyResources(this.MoreSettingsGroupBox, "MoreSettingsGroupBox");
@@ -586,10 +586,12 @@
             //
             // AutoSortUpdateCheckBox
             //
-            this.AutoSortUpdateCheckBox.AutoSize = true;
+            this.AutoSortUpdateCheckBox.AutoSize = false;
+            this.AutoSortUpdateCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.AutoSortUpdateCheckBox.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.AutoSortUpdateCheckBox.Location = new System.Drawing.Point(12, 110);
             this.AutoSortUpdateCheckBox.Name = "AutoSortUpdateCheckBox";
-            this.AutoSortUpdateCheckBox.Size = new System.Drawing.Size(393, 17);
+            this.AutoSortUpdateCheckBox.Size = new System.Drawing.Size(452, 32);
             this.AutoSortUpdateCheckBox.TabIndex = 4;
             this.AutoSortUpdateCheckBox.CheckedChanged += new System.EventHandler(this.AutoSortUpdateCheckBox_CheckedChanged);
             resources.ApplyResources(this.AutoSortUpdateCheckBox, "AutoSortUpdateCheckBox");
@@ -599,7 +601,7 @@
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(500, 680);
+            this.ClientSize = new System.Drawing.Size(500, 703);
             this.Controls.Add(this.RepositoryGroupBox);
             this.Controls.Add(this.AuthTokensGroupBox);
             this.Controls.Add(this.CacheGroupBox);

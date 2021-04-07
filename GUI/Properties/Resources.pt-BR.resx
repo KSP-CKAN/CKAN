@@ -290,7 +290,7 @@ Se você suspeita de um problema com no CKAN: https://github.com/KSP-CKAN/CKAN/i
   <data name="MainModListAll" xml:space="preserve"><value>Todos ({0})</value></data>
   <data name="MainModListUpdatingTray" xml:space="preserve"><value>Atualizando bandeja...</value></data>
   <data name="MainModListAutoDetected" xml:space="preserve"><value>AD</value></data>
-  <data name="MainModListUnknownFilter" xml:space="preserve"><value>Tipo de filtro desconhecido em IsModInFilter. {0}.</value></data>
+  <data name="MainModListUnknownFilter" xml:space="preserve"><value>Tipo de filtro desconhecido em IsModInFilter: {0}</value></data>
   <data name="MainRecommendationsTitle" xml:space="preserve"><value>Escolha entre recomendados, sugeridos, ou mods suportados</value></data>
   <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>Não foram encontrados mods recomendados, sugeridos ou suportados.</value></data>
   <data name="MainRepoWaitTitle" xml:space="preserve"><value>Atualizando repositórios</value></data>
