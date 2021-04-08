@@ -117,57 +117,56 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="ClearCacheMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>220, 17</value>
+  <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>126, 17</value>
+  </metadata>
+  <metadata name="minimizeNotifyIcon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>546, 17</value>
+  </metadata>
+  <metadata name="minimizedContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>704, 17</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>48</value>
+    <value>32</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="RepositoryGroupBox.Text" xml:space="preserve"><value>Répertoires des métadonnées</value></data>
-  <data name="NewRepoButton.Text" xml:space="preserve"><value>Nouveau</value></data>
-  <data name="UpRepoButton.Text" xml:space="preserve"><value>Haut</value></data>
-  <data name="DownRepoButton.Text" xml:space="preserve"><value>Bas</value></data>
-  <data name="DeleteRepoButton.Text" xml:space="preserve"><value>Supprimer</value></data>
-  <data name="AuthTokensGroupBox.Text" xml:space="preserve"><value>Jetons d'authentification</value></data>
-  <data name="NewAuthTokenButton.Text" xml:space="preserve"><value>Nouveau</value></data>
-  <data name="DeleteAuthTokenButton.Text" xml:space="preserve"><value>Supprimer</value></data>
-  <data name="CacheGroupBox.Text" xml:space="preserve"><value>Cache des téléchargements</value></data>
-  <data name="CacheSummary.Text" xml:space="preserve"><value>N fichiers, M Mo</value></data>
-  <data name="CacheLimitPreLabel.Text" xml:space="preserve"><value>Taille de cache max:</value></data>
-  <data name="CacheLimitPostLabel.Text" xml:space="preserve"><value>Mo (vide pour illimité)</value></data>
-  <data name="ChangeCacheButton.Text" xml:space="preserve"><value>Changer...</value></data>
-  <data name="ClearCacheButton.Text" xml:space="preserve"><value>Purger</value></data>
-  <data name="PurgeToLimitMenuItem.Text" xml:space="preserve"><value>Purger jusqu'à la limite</value></data>
-  <data name="PurgeAllMenuItem.Text" xml:space="preserve"><value>Purger tout</value></data>
-  <data name="ResetCacheButton.Text" xml:space="preserve"><value>Réinitialiser</value></data>
-  <data name="OpenCacheButton.Text" xml:space="preserve"><value>Ouvrir</value></data>
-  <data name="AutoUpdateGroupBox.Text" xml:space="preserve"><value>Mises à jour auto</value></data>
-  <data name="LocalVersionPreLabel.Text" xml:space="preserve"><value>Version locale:</value></data>
-  <data name="LocalVersionLabel.Text" xml:space="preserve"><value>v0.0.0</value></data>
-  <data name="LatestVersionPreLabel.Text" xml:space="preserve"><value>Dernière version:</value></data>
-  <data name="LatestVersionLabel.Text" xml:space="preserve"><value>???</value></data>
-  <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve"><value>Vérifier les mises à jour CKAN au lancement</value></data>
-  <data name="CheckForUpdatesButton.Text" xml:space="preserve"><value>Vérifier MàJ</value></data>
-  <data name="InstallUpdateButton.Text" xml:space="preserve"><value>Installer MàJ</value></data>
-  <data name="BehaviourGroupBox.Text" xml:space="preserve"><value>Comportement</value></data>
-  <data name="EnableTrayIconCheckBox.Text" xml:space="preserve"><value>Activer l'icône réduite</value></data>
-  <data name="MinimizeToTrayCheckBox.Text" xml:space="preserve"><value>Minimiser dans la barre des tâches</value></data>
-  <data name="RefreshPreLabel.Text" xml:space="preserve"><value>Rafraîchir la liste toutes les</value></data>
-  <data name="RefreshPostLabel.Text" xml:space="preserve"><value>minutes</value></data>
-  <data name="PauseRefreshCheckBox.Text" xml:space="preserve"><value>Mettre le rafraîchissement en pause</value></data>
-  <data name="MoreSettingsGroupBox.Text" xml:space="preserve"><value>Plus d'options</value></data>
-  <data name="LanguageSelectionLabel.Text" xml:space="preserve"><value>Langue (redémarrage requis):</value></data>
-  <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve"><value>Mettre à jour les répertoires au lancement</value></data>
-  <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>Cacher les nombres epoch (temps POSIX) dans la liste de mods (redémarrage requis)</value></data>
-  <data name="HideVCheckbox.Text" xml:space="preserve"><value>Cacher "v" dans la liste de mods (redémarrage requis)</value></data>
-  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>Trier avec la colonne "MàJ" lorsque le bouton "Ajouter les mises à jour disponibles" est cliqué</value></data>
-  <data name="RepoNameHeader.Text" xml:space="preserve"><value>Nom</value></data>
-  <data name="RepoURLHeader.Text" xml:space="preserve"><value>URL</value></data>
-  <data name="AuthHostHeader.Text" xml:space="preserve"><value>Hôte</value></data>
-  <data name="AuthTokenHeader.Text" xml:space="preserve"><value>Jeton</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Options</value></data>
+  <data name="$this.Localizable" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>Arquivo</value></data>
+  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve"><value>Gerenciar instâncias do jogo</value></data>
+  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>Abrir diretório do jogo</value></data>
+  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>Instalar mods do arquivo .ckan...</value></data>
+  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Salvar lista de mods instalados...</value></data>
+  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>Exportar pacote de mods...</value></data>
+  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Importar mods baixados...</value></data>
+  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve"><value>Auditar recomendações</value></data>
+  <data name="ExitToolButton.Text" xml:space="preserve"><value>S&amp;air</value></data>
+  <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>Configurações</value></data>
+  <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>Configurações do CKAN</value></data>
+  <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>Configurações de Plugin</value></data>
+  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>Linha de comando do jogo</value></data>
+  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Versões do jogo compatíveis</value></data>
+  <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Ajuda</value></data>
+  <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>Reportar um problema com o CKAN</value></data>
+  <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>Reportar um problema com os metadados do mod</value></data>
+  <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>Sobre</value></data>
+  <data name="ManageModsTabPage.Text" xml:space="preserve"><value>Gerenciar mods</value></data>
+  <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Lista de alterações</value></data>
+  <data name="WaitTabPage.Text" xml:space="preserve"><value>Log de Status</value></data>
+  <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Mods escolhidos</value></data>
+  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Escolha mods recomendados, sugeridos ou suportados</value></data>
+  <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>Apagar diretórios</value></data>
+  <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Editar pacote de mods</value></data>
+  <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
+  <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>Nenhuma atualização disponível</value></data>
+  <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Atualizar</value></data>
+  <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>Pausar</value></data>
+  <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>Abrir CKAN</value></data>
+  <data name="openGameToolStripMenuItem.Text" xml:space="preserve"><value>Iniciar Jogo</value></data>
+  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>Abrir diretório do Jogo</value></data>
+  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>Configurações do CKAN</value></data>
+  <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>Sair</value></data>
 </root>

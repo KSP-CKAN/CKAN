@@ -121,7 +121,7 @@
             //
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(107, 216);
+            this.label5.Location = new System.Drawing.Point(111, 216);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(93, 13);
             this.label5.TabIndex = 7;
@@ -130,9 +130,9 @@
             // addVersionToListTextBox
             //
             this.AddVersionToListTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddVersionToListTextBox.Location = new System.Drawing.Point(211, 211);
+            this.AddVersionToListTextBox.Location = new System.Drawing.Point(242, 211);
             this.AddVersionToListTextBox.Name = "addVersionToListTextBox";
-            this.AddVersionToListTextBox.Size = new System.Drawing.Size(131, 15);
+            this.AddVersionToListTextBox.Size = new System.Drawing.Size(100, 15);
             this.AddVersionToListTextBox.TabIndex = 8;
             //
             // label6

@@ -124,15 +124,15 @@
             this.textBoxClonePath.AllowDrop = true;
             this.textBoxClonePath.Location = new System.Drawing.Point(168, 49);
             this.textBoxClonePath.Name = "textBoxClonePath";
-            this.textBoxClonePath.Size = new System.Drawing.Size(163, 20);
+            this.textBoxClonePath.Size = new System.Drawing.Size(158, 20);
             this.textBoxClonePath.TabIndex = 5;
             this.textBoxClonePath.Text = "";
             //
             // buttonInstancePathSelection
             //
-            this.buttonInstancePathSelection.Location = new System.Drawing.Point(331, 48);
+            this.buttonInstancePathSelection.Location = new System.Drawing.Point(326, 48);
             this.buttonInstancePathSelection.Name = "buttonInstancePathSelection";
-            this.buttonInstancePathSelection.Size = new System.Drawing.Size(55, 22);
+            this.buttonInstancePathSelection.Size = new System.Drawing.Size(60, 22);
             this.buttonInstancePathSelection.TabIndex = 6;
             this.buttonInstancePathSelection.UseVisualStyleBackColor = true;
             this.buttonInstancePathSelection.Click += new System.EventHandler(this.buttonInstancePathSelection_Click);
@@ -259,14 +259,14 @@
             //
             this.textBoxNewPath.Location = new System.Drawing.Point(181, 275);
             this.textBoxNewPath.Name = "textBoxNewPath";
-            this.textBoxNewPath.Size = new System.Drawing.Size(163, 20);
+            this.textBoxNewPath.Size = new System.Drawing.Size(158, 20);
             this.textBoxNewPath.TabIndex = 17;
             //
             // buttonPathBrowser
             //
-            this.buttonPathBrowser.Location = new System.Drawing.Point(344, 274);
+            this.buttonPathBrowser.Location = new System.Drawing.Point(339, 274);
             this.buttonPathBrowser.Name = "buttonPathBrowser";
-            this.buttonPathBrowser.Size = new System.Drawing.Size(55, 22);
+            this.buttonPathBrowser.Size = new System.Drawing.Size(60, 22);
             this.buttonPathBrowser.TabIndex = 18;
             this.buttonPathBrowser.UseVisualStyleBackColor = true;
             this.buttonPathBrowser.Click += new System.EventHandler(this.buttonPathBrowser_Click);

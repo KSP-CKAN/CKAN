@@ -9,7 +9,10 @@ namespace CKAN
 {
     public static class Utilities
     {
-        public static readonly string[] AvailableLanguages = { "en-GB", "en-US", "de-DE", "zh-CN", "fr-FR" };
+        public static readonly string[] AvailableLanguages =
+        {
+            "en-GB", "en-US", "de-DE", "zh-CN", "fr-FR", "pt-BR"
+        };
 
         /// <summary>
         /// Copies a directory and optionally its subdirectories as a transaction.

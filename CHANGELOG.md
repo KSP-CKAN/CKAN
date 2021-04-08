@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.30.1
 
+### Features
+
+- [GUI] Add pt-BR localization (#3340 by: gsantos9489; reviewed: DasSkelett, HebaruSan)
+
 ### Bugfixes
 
 - [GUI] Update dialog was too small for French localization (#3313 by: vinix38; reviewed: HebaruSan)
