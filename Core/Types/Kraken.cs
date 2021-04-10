@@ -582,4 +582,17 @@ namespace CKAN
             this.instance = instance;
         }
     }
+
+    public class ReinstallModuleKraken : Kraken
+    {
+        public readonly List<CkanModule> Modules;
+
+        public ReinstallModuleKraken(List<CkanModule> modules)
+            : base(string.Format("Metadata changed, reinstallation recommended: {0}",
+                string.Join(", ", modules)))
+        {
+            Modules = modules;
+        }
+    }
+
 }

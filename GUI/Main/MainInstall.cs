@@ -189,21 +189,21 @@ namespace CKAN
                             processSuccessful = true;
                         }
                     }
-                    if (toUpgrade.Count > 0)
-                    {
-                        processSuccessful = false;
-                        if (!installCanceled)
-                        {
-                            installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, true, false);
-                            processSuccessful = true;
-                        }
-                    }
                     if (toInstall.Count > 0)
                     {
                         processSuccessful = false;
                         if (!installCanceled)
                         {
                             installer.InstallList(toInstall, opts.Value, registry_manager, ref possibleConfigOnlyDirs, downloader, false);
+                            processSuccessful = true;
+                        }
+                    }
+                    if (toUpgrade.Count > 0)
+                    {
+                        processSuccessful = false;
+                        if (!installCanceled)
+                        {
+                            installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, true, false);
                             processSuccessful = true;
                         }
                     }

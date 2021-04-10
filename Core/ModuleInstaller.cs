@@ -968,7 +968,6 @@ namespace CKAN
         public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true, bool resolveRelationships = false, bool ConfirmPrompt = true)
         {
             modules = modules.Memoize();
-            User.RaiseMessage("About to upgrade:\r\n");
 
             if (resolveRelationships)
             {
@@ -981,6 +980,8 @@ namespace CKAN
                 );
                 modules = resolver.ModList();
             }
+
+            User.RaiseMessage("About to upgrade:\r\n");
 
             // Our upgrade involves removing everything that's currently installed, then
             // adding everything that needs installing (which may involve new mods to
