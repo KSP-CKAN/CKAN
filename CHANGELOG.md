@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix AD mod upgrading, add tests, and fix all warnings (#3315 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Reset cache dir to default if creation fails (#3334 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Tell user if instance addition fails (#3332 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Tell SharpZipLib to use Unicode when opening zips (#3345 by: DasSkelett; reviewed: HebaruSan)
 
 ### Internal
 

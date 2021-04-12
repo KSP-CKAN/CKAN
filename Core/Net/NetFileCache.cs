@@ -35,6 +35,13 @@ namespace CKAN
         private static readonly Regex cacheFileRegex = new Regex("^[0-9A-F]{8}-", RegexOptions.Compiled);
         private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
 
+        static NetFileCache()
+        {
+            // SharpZibLib 1.1.0 changed this to default to false, but we depend on it for international mods.
+            // https://github.com/icsharpcode/SharpZipLib/issues/591
+            ZipStrings.UseUnicode = true;
+        }
+
         /// <summary>
         /// Initialize a cache given a GameInstanceManager
         /// </summary>
