@@ -15,6 +15,7 @@ namespace Tests.GUI
     /// which involves sorting the GUI table by Max KSP Version and then performing a repo operation.
     /// </summary>
     [TestFixture]
+    [NUnit.Framework.Category("Display")]
     public class GH1866
     {
         private CkanModule _anyVersionModule;

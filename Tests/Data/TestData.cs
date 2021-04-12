@@ -124,6 +124,11 @@ namespace Tests.Data
         /// </summary>
         public static readonly string ZipWithBadChars = DataDir("ZipWithBadChars.zip");
 
+        /// <summary>
+        /// Contains files with names that differ in their Unicode and "original" representation.
+        /// </summary>
+        public static readonly string ZipWithUnicodeChars = DataDir("ZipWithUnicodeChars.zip");
+
         ///<summary>
         /// DogeCoinFlag 1.01 info. This contains a bug where the
         /// install stanza doesn't actually refer to any files.
