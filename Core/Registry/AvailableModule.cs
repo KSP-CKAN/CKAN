@@ -9,6 +9,7 @@ using CKAN.Extensions;
 using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace CKAN
 {
@@ -50,6 +51,14 @@ namespace CKAN
         [JsonProperty]
         internal SortedDictionary<ModuleVersion, CkanModule> module_version =
             new SortedDictionary<ModuleVersion, CkanModule>();
+
+        [OnError]
+        private void OnError(StreamingContext context, ErrorContext errorContext)
+        {
+            log.WarnFormat("Discarding CkanModule, failed to parse {0}: {1}",
+                errorContext.Path, errorContext.Error.GetBaseException().Message);
+            errorContext.Handled = true;
+        }
 
         /// <summary>
         /// Record the given module version as being available.
