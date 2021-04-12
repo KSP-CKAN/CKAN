@@ -647,7 +647,7 @@ namespace CKAN
                 // Warn that it might not be safe to run Game with incompatible modules installed
                 string incompatDescrip = incomp
                     .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(CurrentInstance.game, m.Module)})")
-                    .Aggregate((a, b) => $"{a}, {b}");
+                    .Aggregate((a, b) => $"{a}{Environment.NewLine}{b}");
                 if (!YesNoDialog(string.Format(Properties.Resources.MainLaunchWithIncompatible, incompatDescrip),
                     Properties.Resources.MainLaunch,
                     Properties.Resources.MainGoBack))
