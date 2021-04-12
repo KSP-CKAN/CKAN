@@ -188,7 +188,7 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainFilterLabel" xml:space="preserve"><value>Label ({0})</value></data>
   <data name="MainFilterTag" xml:space="preserve"><value>Tag ({0})</value></data>
   <data name="MainFilterUntagged" xml:space="preserve"><value>Tag (Untagged)</value></data>
-  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>Some installed modules are incompatible! It might not be safe to launch game. Really launch?
+  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>Some installed modules are incompatible! It might not be safe to launch the game. Really launch?
 
 {0}</value></data>
   <data name="MainLaunch" xml:space="preserve"><value>Launch</value></data>
