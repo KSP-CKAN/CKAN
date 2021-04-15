@@ -458,10 +458,16 @@ namespace CKAN
             const int bufLen = 1024;
             byte[] bytes1 = new byte[bufLen];
             byte[] bytes2 = new byte[bufLen];
-            for (int bytesChecked = 0; bytesChecked < s1.Length; )
+            int bytesChecked = 0;
+            while (true)
             {
                 int bytesFrom1 = s1.Read(bytes1, 0, bufLen);
                 int bytesFrom2 = s2.Read(bytes2, 0, bufLen);
+                if (bytesFrom1 == 0 && bytesFrom2 == 0)
+                {
+                    // Boths streams finished, all bytes are equal
+                    return true;
+                }
                 if (bytesFrom1 != bytesFrom2)
                 {
                     // One ended early, not equal.
@@ -479,8 +485,6 @@ namespace CKAN
                 }
                 bytesChecked += bytesFrom1;
             }
-            // Same bytes, they're equal.
-            return true;
         }
 
         /// <summary>
