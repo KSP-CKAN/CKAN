@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Tell SharpZipLib to use Unicode when opening zips (#3345 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Make incompatible mods warning dialog use newlines instead of commas (#3346 by: DeltaDizzy; reviewed: DasSkelett)
 - [Core] Fix crash when overwriting manually installed files (#3349 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Skip modules with parse errors in deserialization (#3347 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
