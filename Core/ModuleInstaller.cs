@@ -485,8 +485,6 @@ namespace CKAN
                 }
                 bytesChecked += bytesFrom1;
             }
-            // Same bytes, they're equal.
-            return true;
         }
 
         /// <summary>
