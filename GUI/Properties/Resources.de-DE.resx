@@ -146,7 +146,7 @@ Versuche {2} aus {3} zu verschieben und CKAN neu zu starten.</value></data>
   <data name="MainQuit" xml:space="preserve"><value>Beenden</value></data>
   <data name="MainGoBack" xml:space="preserve"><value>Zurück</value></data>
   <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>Es gibt unerfüllte Abhängigkeiten. Trotzdem beenden?</value></data>
-  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve">
+  <data name="MainQuitWithUnappliedChanges" xml:space="preserve">
     <value>Du hast noch nicht übernommene Änderungen. Trotzdem beenden?
 
 {0}</value>

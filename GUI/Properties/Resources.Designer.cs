@@ -346,8 +346,8 @@ namespace CKAN.Properties {
         internal static string MainQuitWithUnmetDeps {
             get { return (string)(ResourceManager.GetObject("MainQuitWithUnmetDeps", resourceCulture)); }
         }
-        internal static string MainQuitWIthUnappliedChanges {
-            get { return (string)(ResourceManager.GetObject("MainQuitWIthUnappliedChanges", resourceCulture)); }
+        internal static string MainQuitWithUnappliedChanges {
+            get { return (string)(ResourceManager.GetObject("MainQuitWithUnappliedChanges", resourceCulture)); }
         }
         internal static string MainUpgradingWaitTitle {
             get { return (string)(ResourceManager.GetObject("MainUpgradingWaitTitle", resourceCulture)); }
@@ -432,6 +432,9 @@ namespace CKAN.Properties {
         }
         internal static string MainCantInstallDLC {
             get { return (string)(ResourceManager.GetObject("MainCantInstallDLC", resourceCulture)); }
+        }
+        internal static string MainCorruptedRegistry {
+            get { return (string)(ResourceManager.GetObject("MainCorruptedRegistry", resourceCulture)); }
         }
 
         internal static string AllModVersionsInstallPrompt {

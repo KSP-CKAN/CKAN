@@ -127,7 +127,15 @@ namespace CKAN
             try
             {
 #pragma warning disable 219
-                var lockedReg = RegistryManager.Instance(CurrentInstance).registry;
+                var regMgr = RegistryManager.Instance(CurrentInstance);
+                var lockedReg = regMgr.registry;
+                // Tell the user their registry was reset if it was corrupted
+                if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
+                    && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
+                {
+                    errorDialog.ShowErrorDialog(Properties.Resources.MainCorruptedRegistry,
+                        regMgr.previousCorruptedPath, regMgr.previousCorruptedMessage);
+                }
 #pragma warning restore 219
             }
             catch (RegistryInUseKraken kraken)

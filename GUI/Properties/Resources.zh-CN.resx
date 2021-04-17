@@ -149,7 +149,7 @@
   <data name="MainQuit" xml:space="preserve"><value>退出</value></data>
   <data name="MainGoBack" xml:space="preserve"><value>返回</value></data>
   <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>有未满足的依赖. 真的要退出吗？</value></data>
-  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve"><value>您有未应用的更改. 真的要退出吗？
+  <data name="MainQuitWithUnappliedChanges" xml:space="preserve"><value>您有未应用的更改. 真的要退出吗？
 
 {0}</value></data>
   <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>正在更新CKAN</value></data>

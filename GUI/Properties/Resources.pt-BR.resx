@@ -149,7 +149,7 @@ Tentando mover {2} de {3} e reiniciar o CKAN.</value></data>
   <data name="MainQuit" xml:space="preserve"><value>Sair</value></data>
   <data name="MainGoBack" xml:space="preserve"><value>Voltar</value></data>
   <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>Existem dependências não atendidas. Deseja realmente sair?</value></data>
-  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve"><value>Você tem alterações não aplicadas. Deseja realmente sair?
+  <data name="MainQuitWithUnappliedChanges" xml:space="preserve"><value>Você tem alterações não aplicadas. Deseja realmente sair?
 
 {0}</value></data>
   <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>Atualizando o  CKAN</value></data>

@@ -169,7 +169,7 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainQuit" xml:space="preserve"><value>Quit</value></data>
   <data name="MainGoBack" xml:space="preserve"><value>Go Back</value></data>
   <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>There are unmet dependencies. Really quit?</value></data>
-  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve"><value>You have unapplied changes. Really quit?
+  <data name="MainQuitWithUnappliedChanges" xml:space="preserve"><value>You have unapplied changes. Really quit?
 
 {0}</value></data>
   <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>Updating CKAN</value></data>
@@ -204,6 +204,7 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Not found.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Do you want to reinstall {0}?</value></data>
   <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN can't install expansion {0}!</value></data>
+  <data name="MainCorruptedRegistry" xml:space="preserve"><value>Corrupted registry archived to {0}: {1}</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} is not supported on your current game version and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
 
 Do you really want to install it?</value></data>
