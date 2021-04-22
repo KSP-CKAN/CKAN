@@ -36,7 +36,7 @@ namespace CKAN
             initStringList(Authors, byAuthors);
             Description  = CkanModule.nonAlphaNums.Replace(byDescription, "");
             initStringList(Localizations, localizations);
-            
+
             initStringList(DependsOn,     depends);
             initStringList(Recommends,    recommends);
             initStringList(Suggests,      suggests);
@@ -481,7 +481,7 @@ namespace CKAN
             return TagNames.Count < 1
                 || TagNames.All(tn => string.IsNullOrEmpty(tn)
                     ? tagsInMod == null
-                    : tagsInMod.Contains(tn));
+                    : tagsInMod?.Contains(tn) ?? false);
         }
 
         private bool MatchesLabels(GUIMod mod)

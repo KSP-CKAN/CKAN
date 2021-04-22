@@ -30,20 +30,19 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(EditModSearches));
             this.ToolTip = new System.Windows.Forms.ToolTip();
             this.AddSearchButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
+            //
             // ToolTip
-            // 
+            //
             this.ToolTip.AutoPopDelay = 10000;
             this.ToolTip.InitialDelay = 250;
             this.ToolTip.ReshowDelay = 250;
             this.ToolTip.ShowAlways = true;
-            // 
+            //
             // AddSearchButton
-            // 
+            //
             this.AddSearchButton.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Right
             | System.Windows.Forms.AnchorStyles.Top);
             this.AddSearchButton.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -53,19 +52,17 @@
             this.AddSearchButton.Name = "AddSearchButton";
             this.AddSearchButton.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.AddSearchButton.Size = new System.Drawing.Size(20, 20);
-            this.AddSearchButton.TabIndex = 18;
+            this.AddSearchButton.TabIndex = 1;
             this.AddSearchButton.Text = "+";
             this.AddSearchButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.AddSearchButton.UseVisualStyleBackColor = true;
             this.AddSearchButton.Click += new System.EventHandler(this.AddSearchButton_Click);
-            resources.ApplyResources(this.AddSearchButton, "AddSearchButton");
-            // 
+            //
             // EditModSearches
-            // 
+            //
             this.Controls.Add(this.AddSearchButton);
             this.Name = "EditModSearches";
             this.Size = new System.Drawing.Size(500, 54);
-            resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
         }

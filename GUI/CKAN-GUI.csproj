@@ -590,9 +590,6 @@
     <EmbeddedResource Include="Controls\EditModSearch.resx">
       <DependentUpon>EditModSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\EditModSearches.resx">
-      <DependentUpon>EditModSearches.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\EditModSearch.de-DE.resx">
       <DependentUpon>..\..\Controls\EditModSearch.cs</DependentUpon>
     </EmbeddedResource>

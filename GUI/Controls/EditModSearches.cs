@@ -1,11 +1,13 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace CKAN
 {
+    /// <summary>
+    /// A container control for the individual EditModSearch controls
+    /// </summary>
     public partial class EditModSearches : UserControl
     {
         public EditModSearches()
@@ -66,8 +68,9 @@ namespace CKAN
             var ctl = new EditModSearch()
             {
                 // Dock handles the layout for us
-                Dock      = System.Windows.Forms.DockStyle.Top,
+                Dock      = DockStyle.Top,
                 ShowLabel = editors.Count < 1,
+                TabIndex  = editors.Count * 2
             };
             ctl.ApplySearch    += EditModSearch_ApplySearch;
             ctl.SurrenderFocus += EditModSearch_SurrenderFocus;

@@ -355,7 +355,7 @@ namespace CKAN
         /// <summary>
         /// Called when the ModGrid filter (all, compatible, incompatible...) is changed.
         /// </summary>
-        /// <param name="filter">Filter.</param>
+        /// <param name="search">Search string</param>
         public void Filter(SavedSearch search)
         {
             var searches = search.Values.Select(s => ModSearch.Parse(s,
@@ -373,8 +373,8 @@ namespace CKAN
                 }
             }
 
-            ModGrid.Columns["InstalledVersion"].Visible = ModGrid.Columns["InstallDate"].Visible = 
-                ModGrid.Columns["AutoInstalled"].Visible = !SearchesExcludeInstalled(searches);
+            // If these columns aren't hidden by the user, show them if the search includes installed modules
+            setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
         }
 
         public void SetSearches(List<ModSearch> searches)
@@ -382,8 +382,31 @@ namespace CKAN
             mainModList.SetSearches(searches);
             EditModSearches.SetSearches(searches);
 
-            ModGrid.Columns["InstalledVersion"].Visible = ModGrid.Columns["InstallDate"].Visible = 
-                ModGrid.Columns["AutoInstalled"].Visible = !SearchesExcludeInstalled(searches);
+            // Ask the configuration which columns to show.
+            foreach (DataGridViewColumn col in ModGrid.Columns)
+            {
+                // Some columns are always shown, and others are handled by UpdateModsList()
+                if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
+                {
+                    col.Visible = !Main.Instance.configuration.HiddenColumnNames.Contains(col.Name);
+                }
+            }
+
+            setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
+        }
+
+        private static readonly string[] installedColumnNames = new string[]
+        {
+            "AutoInstalled", "InstalledVersion", "InstallDate"
+        };
+
+        private void setInstalledColumnsVisible(bool visible)
+        {
+            var hiddenColumnNames = Main.Instance.configuration.HiddenColumnNames;
+            foreach (var colName in installedColumnNames.Where(nm => ModGrid.Columns.Contains(nm)))
+            {
+                ModGrid.Columns[colName].Visible = visible && !hiddenColumnNames.Contains(colName);
+            }
         }
 
         private static bool SearchesExcludeInstalled(List<ModSearch> searches)
@@ -967,8 +990,9 @@ namespace CKAN
         private void EditModSearches_ApplySearches(List<ModSearch> searches)
         {
             mainModList.SetSearches(searches);
-            ModGrid.Columns["InstalledVersion"].Visible = ModGrid.Columns["InstallDate"].Visible = 
-                ModGrid.Columns["AutoInstalled"].Visible = !SearchesExcludeInstalled(searches);
+
+            // If these columns aren't hidden by the user, show them if the search includes installed modules
+            setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
         }
 
         private void EditModSearches_SurrenderFocus()
