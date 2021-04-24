@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Make incompatible mods warning dialog use newlines instead of commas (#3346 by: DeltaDizzy; reviewed: DasSkelett)
 - [Core] Fix crash when overwriting manually installed files (#3349 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Skip modules with parse errors in deserialization (#3347 by: HebaruSan; reviewed: DasSkelett)
+- [ConsoleUI] Update or refresh ConsoleUI mod list after repo or compat changes (#3353 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
