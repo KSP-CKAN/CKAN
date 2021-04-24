@@ -9,7 +9,7 @@
     /// </summary>
     public class TransparentTextBox : System.Windows.Forms.TextBox
     {
-        public TransparentTextBox ()
+        public TransparentTextBox()
         {
             SetStyle(
                 System.Windows.Forms.ControlStyles.SupportsTransparentBackColor |

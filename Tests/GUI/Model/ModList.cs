@@ -16,25 +16,6 @@ namespace Tests.GUI
     public class ModListTests
     {
         [Test]
-        public void OnCreation_HasDefaultFilters()
-        {
-            var item = new ModList(delegate { });
-            Assert.AreEqual(GUIModFilter.Compatible, item.ModFilter, "ModFilter");
-        }
-
-        [Test]
-        public void OnModTypeFilterChanges_CallsEventHandler()
-        {
-            var called_n = 0;
-            var item = new ModList(delegate { called_n++; });
-            Assert.That(called_n == 1);
-            item.ModFilter = GUIModFilter.Installed;
-            Assert.That(called_n == 2);
-            item.ModFilter = GUIModFilter.Installed;
-            Assert.That(called_n == 2);
-        }
-
-        [Test]
         public void ComputeChangeSetFromModList_WithEmptyList_HasEmptyChangeSet()
         {
             var item = new ModList(delegate { });
@@ -69,15 +50,16 @@ namespace Tests.GUI
             }
         }
 
-        [Test]
-        public void CountModsByFilter_EmptyModList_ReturnsZeroForAllFilters()
+        public static Array GetFilters()
+        {
+            return Enum.GetValues(typeof(GUIModFilter));
+        }
+
+        [TestCaseSource("GetFilters")]
+        public void CountModsByFilter_EmptyModList_ReturnsZero(GUIModFilter filter)
         {
             var item = new ModList(delegate { });
-            foreach (GUIModFilter filter in Enum.GetValues(typeof(GUIModFilter)))
-            {
-                Assert.That(item.CountModsByFilter(filter), Is.EqualTo(0));
-            }
-
+            Assert.That(item.CountModsByFilter(filter), Is.EqualTo(0));
         }
 
         [Test]

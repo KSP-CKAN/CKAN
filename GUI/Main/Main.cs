@@ -322,10 +322,6 @@ namespace CKAN
             // Copy metadata panel split height to app settings
             configuration.ModInfoPosition = ModInfo.ModMetaSplitPosition;
 
-            // Save the active filter
-            configuration.ActiveFilter = (int)ManageMods.mainModList.ModFilter;
-            configuration.CustomLabelFilter = ManageMods.mainModList.CustomLabelFilter?.Name;
-
             // Save settings.
             configuration.Save();
 
@@ -385,12 +381,7 @@ namespace CKAN
                     // Remove it again after it ran, else it stays there and is added again and again.
                     void filterUpdate(object sender, RunWorkerCompletedEventArgs e)
                     {
-                        ManageMods.Filter(
-                            (GUIModFilter)configuration.ActiveFilter,
-                            ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
-                            ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                                .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
-                        );
+                        SetupDefaultSearch();
                         m_UpdateRepoWorker.RunWorkerCompleted -= filterUpdate;
                     }
 
@@ -401,16 +392,34 @@ namespace CKAN
                 }
                 else
                 {
+                    SetupDefaultSearch();
                     ManageMods.UpdateModsList();
-                    ManageMods.Filter(
-                        (GUIModFilter)configuration.ActiveFilter,
-                        ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
-                        ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                            .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
-                    );
                 }
             }
             ManageMods.InstanceUpdated(CurrentInstance);
+        }
+
+        private void SetupDefaultSearch()
+        {
+            var def = configuration.DefaultSearches;
+            if (def == null || def.Count < 1)
+            {
+                // Fall back to old setting
+                ManageMods.Filter(ModList.FilterToSavedSearch(
+                    (GUIModFilter)configuration.ActiveFilter,
+                    ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
+                    ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                        .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
+                ));
+                // Clear the old filter so it doesn't get pulled forward again
+                configuration.ActiveFilter = (int)GUIModFilter.All;
+            }
+            else
+            {
+                var labels = ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name).ToList();
+                var searches = def.Select(s => ModSearch.Parse(s, labels)).ToList();
+                ManageMods.SetSearches(searches);
+            }
         }
 
         public void UpdateModContentsTree(CkanModule module, bool force = false)

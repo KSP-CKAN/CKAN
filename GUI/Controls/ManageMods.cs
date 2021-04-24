@@ -16,6 +16,8 @@ namespace CKAN
         {
             InitializeComponent();
 
+            ToolTip.SetToolTip(InstallAllCheckbox, Properties.Resources.ManageModsInstallAllCheckboxTooltip);
+
             mainModList = new ModList(source => UpdateFilters());
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchGameToolStripMenuItem.MouseHover += (sender, args) => launchGameToolStripMenuItem.ShowDropDown();
@@ -227,18 +229,6 @@ namespace CKAN
             }
         }
 
-        private void tagFilterButton_Click(object sender, EventArgs e)
-        {
-            var clicked = sender as ToolStripMenuItem;
-            Filter(GUIModFilter.Tag, clicked.Tag as ModuleTag, null);
-        }
-
-        private void customFilterButton_Click(object sender, EventArgs e)
-        {
-            var clicked = sender as ToolStripMenuItem;
-            Filter(GUIModFilter.CustomLabel, null, clicked.Tag as ModuleLabel);
-        }
-
         #endregion
 
         #region Filter right click menu
@@ -300,72 +290,78 @@ namespace CKAN
 
         #endregion
 
+        private void tagFilterButton_Click(object sender, EventArgs e)
+        {
+            var clicked = sender as ToolStripMenuItem;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Tag, clicked.Tag as ModuleTag, null));
+        }
+
+        private void customFilterButton_Click(object sender, EventArgs e)
+        {
+            var clicked = sender as ToolStripMenuItem;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, clicked.Tag as ModuleLabel));
+        }
+
         private void FilterCompatibleButton_Click(object sender, EventArgs e)
         {
-            Filter(GUIModFilter.Compatible);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Compatible));
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
         {
-            Filter(GUIModFilter.Installed);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Installed));
         }
 
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
-            Filter(GUIModFilter.InstalledUpdateAvailable);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.InstalledUpdateAvailable));
         }
 
         private void FilterReplaceableButton_Click(object sender, EventArgs e)
         {
-            Filter(GUIModFilter.Replaceable);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Replaceable));
         }
 
         private void FilterCachedButton_Click(object sender, EventArgs e)
         {
-            Filter(GUIModFilter.Cached);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Cached));
         }
 
         private void FilterUncachedButton_Click(object sender, EventArgs e)
         {
-            Filter(GUIModFilter.Uncached);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Uncached));
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
-            Filter(GUIModFilter.NewInRepository);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.NewInRepository));
         }
 
         private void FilterNotInstalledButton_Click(object sender, EventArgs e)
         {
-            Filter(GUIModFilter.NotInstalled);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.NotInstalled));
         }
 
         private void FilterIncompatibleButton_Click(object sender, EventArgs e)
         {
-            Filter(GUIModFilter.Incompatible);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Incompatible));
         }
 
         private void FilterAllButton_Click(object sender, EventArgs e)
         {
-            Filter(GUIModFilter.All);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.All));
         }
 
         /// <summary>
         /// Called when the ModGrid filter (all, compatible, incompatible...) is changed.
         /// </summary>
-        /// <param name="filter">Filter.</param>
-        public void Filter(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
+        /// <param name="search">Search string</param>
+        public void Filter(SavedSearch search)
         {
-            // Triggers mainModList.ModFiltersUpdated()
-            mainModList.TagFilter = tag;
-            mainModList.CustomLabelFilter = label;
-            mainModList.ModFilter = filter;
-
-            // Save new filter to the configuration.
-            Main.Instance.configuration.ActiveFilter = (int)mainModList.ModFilter;
-            Main.Instance.configuration.CustomLabelFilter = label?.Name;
-            Main.Instance.configuration.TagFilter = tag?.Name;
-            Main.Instance.configuration.Save();
+            var searches = search.Values.Select(s => ModSearch.Parse(s,
+                Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList()
+            )).ToList();
+            EditModSearches.SetSearches(searches);
 
             // Ask the configuration which columns to show.
             foreach (DataGridViewColumn col in ModGrid.Columns)
@@ -377,31 +373,45 @@ namespace CKAN
                 }
             }
 
-            switch (filter)
+            // If these columns aren't hidden by the user, show them if the search includes installed modules
+            setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
+        }
+
+        public void SetSearches(List<ModSearch> searches)
+        {
+            mainModList.SetSearches(searches);
+            EditModSearches.SetSearches(searches);
+
+            // Ask the configuration which columns to show.
+            foreach (DataGridViewColumn col in ModGrid.Columns)
             {
-                // Some columns really do / don't make sense to be visible on certain filter settings.
-                // Hide / Show them, without writing to config, so once the user changes tab again,
-                // they are shown / hidden again, as before.
-                case GUIModFilter.All:                      FilterToolButton.Text = Properties.Resources.MainFilterAll;          break;
-                case GUIModFilter.Incompatible:             FilterToolButton.Text = Properties.Resources.MainFilterIncompatible; break;
-                case GUIModFilter.Installed:                FilterToolButton.Text = Properties.Resources.MainFilterInstalled;    break;
-                case GUIModFilter.InstalledUpdateAvailable: FilterToolButton.Text = Properties.Resources.MainFilterUpgradeable;  break;
-                case GUIModFilter.Replaceable:              FilterToolButton.Text = Properties.Resources.MainFilterReplaceable;  break;
-                case GUIModFilter.Cached:                   FilterToolButton.Text = Properties.Resources.MainFilterCached;       break;
-                case GUIModFilter.Uncached:                 FilterToolButton.Text = Properties.Resources.MainFilterUncached;     break;
-                case GUIModFilter.NewInRepository:          FilterToolButton.Text = Properties.Resources.MainFilterNew;          break;
-                case GUIModFilter.NotInstalled:             ModGrid.Columns["InstalledVersion"].Visible = false;
-                                                            ModGrid.Columns["InstallDate"].Visible      = false;
-                                                            ModGrid.Columns["AutoInstalled"].Visible    = false;
-                                                            FilterToolButton.Text = Properties.Resources.MainFilterNotInstalled; break;
-                case GUIModFilter.CustomLabel:              FilterToolButton.Text = string.Format(Properties.Resources.MainFilterLabel, label?.Name ?? "CUSTOM"); break;
-                case GUIModFilter.Tag:
-                    FilterToolButton.Text = tag == null
-                        ? Properties.Resources.MainFilterUntagged
-                        : string.Format(Properties.Resources.MainFilterTag, tag.Name);
-                    break;
-                default:                                    FilterToolButton.Text = Properties.Resources.MainFilterCompatible;   break;
+                // Some columns are always shown, and others are handled by UpdateModsList()
+                if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
+                {
+                    col.Visible = !Main.Instance.configuration.HiddenColumnNames.Contains(col.Name);
+                }
             }
+
+            setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
+        }
+
+        private static readonly string[] installedColumnNames = new string[]
+        {
+            "AutoInstalled", "InstalledVersion", "InstallDate"
+        };
+
+        private void setInstalledColumnsVisible(bool visible)
+        {
+            var hiddenColumnNames = Main.Instance.configuration.HiddenColumnNames;
+            foreach (var colName in installedColumnNames.Where(nm => ModGrid.Columns.Contains(nm)))
+            {
+                ModGrid.Columns[colName].Visible = visible && !hiddenColumnNames.Contains(colName);
+            }
+        }
+
+        private static bool SearchesExcludeInstalled(List<ModSearch> searches)
+        {
+            return searches?.All(s => s != null && s.Installed == false) ?? false;
         }
 
         public void MarkAllUpdates()
@@ -910,6 +920,11 @@ namespace CKAN
             }
         }
 
+        private void ModList_Resize(object sender, EventArgs e)
+        {
+            InstallAllCheckbox.Top = ModGrid.Top - InstallAllCheckbox.Height;
+        }
+
         private void reinstallToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GUIMod module = SelectedModule;
@@ -972,12 +987,15 @@ namespace CKAN
             Main.Instance.StartDownload(SelectedModule);
         }
 
-        private void EditModSearch_ApplySearch(ModSearch search)
+        private void EditModSearches_ApplySearches(List<ModSearch> searches)
         {
-            mainModList.SetSearch(search);
+            mainModList.SetSearches(searches);
+
+            // If these columns aren't hidden by the user, show them if the search includes installed modules
+            setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
         }
 
-        private void EditModSearch_SurrenderFocus()
+        private void EditModSearches_SurrenderFocus()
         {
             Util.Invoke(this, () => ModGrid.Focus());
         }
@@ -1425,7 +1443,7 @@ namespace CKAN
 
         public void ResetFilterAndSelectModOnList(string key)
         {
-            EditModSearch.Clear();
+            EditModSearches.Clear();
             FocusMod(key, true);
         }
 
@@ -1494,12 +1512,12 @@ namespace CKAN
             switch (keyData)
             {
                 case Keys.Control | Keys.F:
-                    ActiveControl = EditModSearch;
+                    ActiveControl = EditModSearches;
                     return true;
 
                 case Keys.Control | Keys.Shift | Keys.F:
-                    EditModSearch.ExpandCollapse();
-                    ActiveControl = EditModSearch;
+                    EditModSearches.ExpandCollapse();
+                    ActiveControl = EditModSearches;
                     return true;
 
                 case Keys.Control | Keys.S:

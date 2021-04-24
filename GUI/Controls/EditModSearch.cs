@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
@@ -21,7 +22,7 @@ namespace CKAN
         {
             InitializeComponent();
 
-            this.ToolTip.SetToolTip(ExpandButton, Properties.Resources.EditModSearchTooltipExpandButton);
+            ToolTip.SetToolTip(ExpandButton, Properties.Resources.EditModSearchTooltipExpandButton);
 
             // TextBox resizes unpredictably at runtime, so we need special logic
             // to line up the button with it
@@ -48,12 +49,32 @@ namespace CKAN
         /// <summary>
         /// Event fired when a search needs to be executed.
         /// </summary>
-        public event Action<ModSearch> ApplySearch;
+        public event Action<EditModSearch, ModSearch> ApplySearch;
 
         /// <summary>
         /// Event fired when user wants to switch focus away from this control.
         /// </summary>
         public event Action SurrenderFocus;
+
+        public ModSearch Search
+        {
+            get => currentSearch;
+            set
+            {
+                currentSearch = value;
+                SearchToEditor();
+                FilterCombinedTextBox.Text = currentSearch?.Combined ?? "";
+            }
+        }
+
+        public bool ShowLabel
+        {
+            set
+            {
+                FilterCombinedLabel.Visible = value;
+                FilterOrLabel.Visible = !value;
+            }
+        }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(EditModSearch));
         private Timer filterTimer;
@@ -105,17 +126,10 @@ namespace CKAN
 
             try
             {
-                currentSearch = ModSearch.Parse(FilterCombinedTextBox.Text);
-                suppressSearch = true;
-                    SearchDetails.FilterByNameTextBox.Text        = currentSearch?.Name          ?? "";
-                    SearchDetails.FilterByAuthorTextBox.Text      = currentSearch?.Author        ?? "";
-                    SearchDetails.FilterByDescriptionTextBox.Text = currentSearch?.Description   ?? "";
-                    SearchDetails.FilterByLanguageTextBox.Text    = currentSearch?.Localization  ?? "";
-                    SearchDetails.FilterByDependsTextBox.Text     = currentSearch?.DependsOn     ?? "";
-                    SearchDetails.FilterByRecommendsTextBox.Text  = currentSearch?.Recommends    ?? "";
-                    SearchDetails.FilterByConflictsTextBox.Text   = currentSearch?.ConflictsWith ?? "";
-                    SearchDetails.FilterBySuggestsTextBox.Text    = currentSearch?.Suggests      ?? "";
-                suppressSearch = false;
+                currentSearch = ModSearch.Parse(FilterCombinedTextBox.Text,
+                    Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList()
+                );
+                SearchToEditor();
                 TriggerSearchOrTimer();
             }
             catch (Kraken k)
@@ -124,20 +138,73 @@ namespace CKAN
             }
         }
 
+        private void SearchToEditor()
+        {
+            suppressSearch = true;
+                SearchDetails.FilterByNameTextBox.Text        = currentSearch?.Name
+                                                                    ?? "";
+                SearchDetails.FilterByAuthorTextBox.Text      = currentSearch?.Authors.Aggregate("", combinePieces)
+                                                                    ?? "";
+                SearchDetails.FilterByDescriptionTextBox.Text = currentSearch?.Description
+                                                                    ?? "";
+                SearchDetails.FilterByLanguageTextBox.Text    = currentSearch?.Localizations.Aggregate("", combinePieces)
+                                                                    ?? "";
+                SearchDetails.FilterByDependsTextBox.Text     = currentSearch?.DependsOn.Aggregate("", combinePieces)
+                                                                    ?? "";
+                SearchDetails.FilterByRecommendsTextBox.Text  = currentSearch?.Recommends.Aggregate("", combinePieces)
+                                                                    ?? "";
+                SearchDetails.FilterByConflictsTextBox.Text   = currentSearch?.ConflictsWith.Aggregate("", combinePieces)
+                                                                    ?? "";
+                SearchDetails.FilterBySuggestsTextBox.Text    = currentSearch?.Suggests.Aggregate("", combinePieces)
+                                                                    ?? "";
+                SearchDetails.FilterByTagsTextBox.Text        = currentSearch?.TagNames.Aggregate("", combinePieces)
+                                                                    ?? "";
+                SearchDetails.FilterByLabelsTextBox.Text      = currentSearch?.Labels
+                                                                    .Select(lb => lb.Name)
+                                                                    .Aggregate("", combinePieces)
+                                                                    ?? "";
+
+                SearchDetails.CompatibleToggle.Value      = currentSearch?.Compatible;
+                SearchDetails.InstalledToggle.Value       = currentSearch?.Installed;
+                SearchDetails.CachedToggle.Value          = currentSearch?.Cached;
+                SearchDetails.NewlyCompatibleToggle.Value = currentSearch?.NewlyCompatible;
+                SearchDetails.UpgradeableToggle.Value     = currentSearch?.Upgradeable;
+                SearchDetails.ReplaceableToggle.Value     = currentSearch?.Replaceable;
+            suppressSearch = false;
+        }
+
+        private static string combinePieces(string joined, string piece)
+        {
+            return string.IsNullOrEmpty(joined) ? piece : $"{joined} {piece}";
+        }
+
         private void SearchDetails_ApplySearch(bool immediately)
         {
             if (suppressSearch)
                 return;
 
+            var knownLabels = Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList();
+
             currentSearch = new ModSearch(
                 SearchDetails.FilterByNameTextBox.Text,
-                SearchDetails.FilterByAuthorTextBox.Text,
+                SearchDetails.FilterByAuthorTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
                 SearchDetails.FilterByDescriptionTextBox.Text,
-                SearchDetails.FilterByLanguageTextBox.Text,
-                SearchDetails.FilterByDependsTextBox.Text,
-                SearchDetails.FilterByRecommendsTextBox.Text,
-                SearchDetails.FilterBySuggestsTextBox.Text,
-                SearchDetails.FilterByConflictsTextBox.Text
+                SearchDetails.FilterByLanguageTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                SearchDetails.FilterByDependsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                SearchDetails.FilterByRecommendsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                SearchDetails.FilterBySuggestsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                SearchDetails.FilterByConflictsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                SearchDetails.FilterByTagsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                SearchDetails.FilterByLabelsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries)
+                    .Select(ln => knownLabels.FirstOrDefault(lb => lb.Name == ln))
+                    .Where(lb => lb != null)
+                    .ToList(),
+                SearchDetails.CompatibleToggle.Value,
+                SearchDetails.InstalledToggle.Value,
+                SearchDetails.CachedToggle.Value,
+                SearchDetails.NewlyCompatibleToggle.Value,
+                SearchDetails.UpgradeableToggle.Value,
+                SearchDetails.ReplaceableToggle.Value
             );
             suppressSearch = true;
                 FilterCombinedTextBox.Text = currentSearch?.Combined ?? "";
@@ -242,10 +309,7 @@ namespace CKAN
 
         private void TriggerSearch()
         {
-            if (ApplySearch != null)
-            {
-                ApplySearch(currentSearch);
-            }
+            ApplySearch?.Invoke(this, currentSearch);
         }
 
     }

@@ -117,6 +117,11 @@ namespace CKAN
             }
         }
 
+        private void TriStateChanged(bool? val)
+        {
+            ApplySearch?.Invoke(true);
+        }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             switch (keyData)

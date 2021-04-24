@@ -254,6 +254,34 @@ namespace CKAN.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap triToggleYes {
+            get {
+                object obj = ResourceManager.GetObject("triToggleYes", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap triToggleBoth {
+            get {
+                object obj = ResourceManager.GetObject("triToggleBoth", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap triToggleNo {
+            get {
+                object obj = ResourceManager.GetObject("triToggleNo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         internal static string AboutDialogLabel2Text {
             get { return (string)(ResourceManager.GetObject("AboutDialogLabel2Text", resourceCulture)); }
         }
@@ -930,6 +958,16 @@ namespace CKAN.Properties {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipExport", resourceCulture)); }
         }
 
+        internal static string TriStateToggleYesTooltip {
+            get { return (string)(ResourceManager.GetObject("TriStateToggleYesTooltip", resourceCulture)); }
+        }
+        internal static string TriStateToggleBothTooltip {
+            get { return (string)(ResourceManager.GetObject("TriStateToggleBothTooltip", resourceCulture)); }
+        }
+        internal static string TriStateToggleNoTooltip {
+            get { return (string)(ResourceManager.GetObject("TriStateToggleNoTooltip", resourceCulture)); }
+        }
+
         internal static string ModSearchDescriptionPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchDescriptionPrefix", resourceCulture)); }
         }
@@ -948,8 +986,45 @@ namespace CKAN.Properties {
         internal static string ModSearchConflictsPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchConflictsPrefix", resourceCulture)); }
         }
+        internal static string ModSearchTagPrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchTagPrefix", resourceCulture)); }
+        }
+        internal static string ModSearchLabelPrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchLabelPrefix", resourceCulture)); }
+        }
+        internal static string ModSearchYesPrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchYesPrefix", resourceCulture)); }
+        }
+        internal static string ModSearchNoPrefix {
+            get { return (string)(ResourceManager.GetObject("ModSearchNoPrefix", resourceCulture)); }
+        }
+        internal static string ModSearchCompatibleSuffix {
+            get { return (string)(ResourceManager.GetObject("ModSearchCompatibleSuffix", resourceCulture)); }
+        }
+        internal static string ModSearchInstalledSuffix {
+            get { return (string)(ResourceManager.GetObject("ModSearchInstalledSuffix", resourceCulture)); }
+        }
+        internal static string ModSearchCachedSuffix {
+            get { return (string)(ResourceManager.GetObject("ModSearchCachedSuffix", resourceCulture)); }
+        }
+        internal static string ModSearchNewlyCompatibleSuffix {
+            get { return (string)(ResourceManager.GetObject("ModSearchNewlyCompatibleSuffix", resourceCulture)); }
+        }
+        internal static string ModSearchUpgradeableSuffix {
+            get { return (string)(ResourceManager.GetObject("ModSearchUpgradeableSuffix", resourceCulture)); }
+        }
+        internal static string ModSearchReplaceableSuffix {
+            get { return (string)(ResourceManager.GetObject("ModSearchReplaceableSuffix", resourceCulture)); }
+        }
         internal static string EditModSearchTooltipExpandButton {
             get { return (string)(ResourceManager.GetObject("EditModSearchTooltipExpandButton", resourceCulture)); }
         }
-   }
+        internal static string EditModSearchesTooltipAddSearchButton {
+            get { return (string)(ResourceManager.GetObject("EditModSearchesTooltipAddSearchButton", resourceCulture)); }
+        }
+
+        internal static string ManageModsInstallAllCheckboxTooltip {
+            get { return (string)(ResourceManager.GetObject("ManageModsInstallAllCheckboxTooltip", resourceCulture)); }
+        }
+    }
 }

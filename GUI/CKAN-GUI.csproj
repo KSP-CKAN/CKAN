@@ -199,6 +199,12 @@
     <Compile Include="Controls\ModInfo.Designer.cs">
       <DependentUpon>ModInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\EditModSearches.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\EditModSearches.Designer.cs">
+      <DependentUpon>EditModSearches.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\EditModSearch.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -224,6 +230,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\TransparentTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TriStateToggle.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>

@@ -125,4 +125,12 @@
   <data name="FilterByRecommendsLabel.Text" xml:space="preserve"><value>Empfiehlt:</value></data>
   <data name="FilterBySuggestsLabel.Text" xml:space="preserve"><value>Schlägt vor:</value></data>
   <data name="FilterByConflictsLabel.Text" xml:space="preserve"><value>Hat einen Konflikt mit:</value></data>
+  <data name="FilterByTagsLabel.Text" xml:space="preserve"><value>Kategorien:</value></data>
+  <data name="FilterByLabelsLabel.Text" xml:space="preserve"><value>Label:</value></data>
+  <data name="CompatibleLabel.Text" xml:space="preserve"><value>Kompatibel:</value></data>
+  <data name="InstalledLabel.Text" xml:space="preserve"><value>Installiert:</value></data>
+  <data name="CachedLabel.Text" xml:space="preserve"><value>Im Cache:</value></data>
+  <data name="NewlyCompatibleLabel.Text" xml:space="preserve"><value>Neu kompatibel:</value></data>
+  <data name="UpgradeableLabel.Text" xml:space="preserve"><value>Aktualisierbar:</value></data>
+  <data name="ReplaceableLabel.Text" xml:space="preserve"><value>Ersetzbar:</value></data>
 </root>
