@@ -39,7 +39,7 @@ class CkanRepo(Repo):
 
     def user_edit_file(self, path: Path) -> None:
         editor=self.config_reader().get('core', 'editor')
-        run([editor, path])
+        run([editor, str(path)])
 
 class CkanPullRequest:
 
