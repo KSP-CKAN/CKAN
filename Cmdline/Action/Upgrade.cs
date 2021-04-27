@@ -178,7 +178,7 @@ namespace CKAN.CmdLine
         }
 
         /// <summary>
-        /// Upgrade some modules by their CkanModules
+        /// Upgrade some modules by their identifier and (optional) version
         /// </summary>
         /// <param name="manager">Game instance manager to use</param>
         /// <param name="user">IUser object for output</param>
