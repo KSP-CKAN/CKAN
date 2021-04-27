@@ -197,6 +197,17 @@ namespace CKAN.CmdLine
         // System.Action<ref T> isn't allowed
         private delegate void AttemptUpgradeAction(ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs);
 
+        /// <summary>
+        /// The core of the module upgrading logic, with callbacks to
+        /// support different input formats managed by the calling code.
+        /// Handles transactions, creating commonly required objects,
+        /// looping logic, prompting for TooManyModsProvideKraken resolution.
+        /// </summary>
+        /// <param name="manager">Game instance manager to use</param>
+        /// <param name="user">IUser object for output</param>
+        /// <param name="ksp">Game instance to use</param>
+        /// <param name="attemptUpgradeCallback">Function to call to try to perform the actual upgrade, may throw TooManyModsProvideKraken</param>
+        /// <param name="addUserChoiceCallback">Function to call when the user has requested a new module added to the change set in response to TooManyModsProvideKraken</param>
         private static void UpgradeModules(
             GameInstanceManager manager, IUser user, CKAN.GameInstance ksp,
             AttemptUpgradeAction attemptUpgradeCallback,
