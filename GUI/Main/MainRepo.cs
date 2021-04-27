@@ -97,6 +97,11 @@ namespace CKAN
             {
                 errorDialog.ShowErrorDialog(ex.ToString());
             }
+            catch (ReinstallModuleKraken)
+            {
+                // Bypass the generic error dialog so the Post can handle this
+                throw;
+            }
             catch (Exception ex)
             {
                 errorDialog.ShowErrorDialog(string.Format(Properties.Resources.MainRepoFailedToConnect, ex.Message));
@@ -105,6 +110,27 @@ namespace CKAN
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (e.Error != null)
+            {
+                switch (e.Error)
+                {
+                    case ReinstallModuleKraken rmk:
+                        // Re-enable the UI for the install flow
+                        Util.Invoke(this, SwitchEnabledState);
+                        // Hand off to the full installer flow
+                        installWorker.RunWorkerAsync(
+                            new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
+                                rmk.Modules
+                                    .Select(m => new ModChange(m, GUIModChangeType.Update, null))
+                                    .ToList(),
+                                RelationshipResolver.DependsOnlyOpts()
+                            )
+                        );
+                        // Don't mess with the UI, let the install flow control it
+                        return;
+                }
+            }
+
             var resultPair = e.Result as KeyValuePair<RepoUpdateResult, Dictionary<string, bool>>?;
             RepoUpdateResult? result = resultPair?.Key;
             Dictionary<string, bool> oldModules = resultPair?.Value;

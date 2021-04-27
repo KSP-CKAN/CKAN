@@ -57,6 +57,10 @@ namespace CKAN.CmdLine
                     UpdateRepository(ksp, options.repo);
                 }
             }
+            catch (ReinstallModuleKraken rmk)
+            {
+                Upgrade.UpgradeModules(manager, user, ksp, false, rmk.Modules);
+            }
             catch (MissingCertificateKraken kraken)
             {
                 // Handling the kraken means we have prettier output.

@@ -210,40 +210,7 @@ You should reinstall them in order to preserve consistency with the repository.
 
 Do you wish to reinstall now?", sb)))
             {
-                ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, cache, new NullUser());
-                // New upstream metadata may break the consistency of already installed modules
-                // e.g. if user installs modules A and B and then later up A is made to conflict with B
-                // This is perfectly normal and shouldn't produce an error, therefore we skip enforcing
-                // consistency. However, we will show the user any inconsistencies later on.
-
-                // Do each changed module one at a time so a failure of one doesn't cause all the others to fail
-                foreach (CkanModule mod in metadataChanges)
-                {
-                    try
-                    {
-                        HashSet<string> possibleConfigOnlyDirs = null;
-                        installer.Upgrade(
-                            new CkanModule[] { mod },
-                            new NetAsyncModulesDownloader(new NullUser(), cache),
-                            ref possibleConfigOnlyDirs,
-                            registry_manager,
-                            enforceConsistency: false,
-                            resolveRelationships: true
-                        );
-                    }
-                    // Thrown when a dependency couldn't be satisfied
-                    catch (ModuleNotFoundKraken)
-                    {
-                        log.WarnFormat("Skipping installation of {0} due to relationship error.", mod.identifier);
-                        user.RaiseMessage("Skipping installation of {0} due to relationship error.", mod.identifier);
-                    }
-                    // Thrown when a conflicts relationship is violated
-                    catch (InconsistentKraken)
-                    {
-                        log.WarnFormat("Skipping installation of {0} due to relationship error.", mod.identifier);
-                        user.RaiseMessage("Skipping installation of {0} due to relationship error.", mod.identifier);
-                    }
-                }
+                throw new ReinstallModuleKraken(metadataChanges);
             }
         }
 

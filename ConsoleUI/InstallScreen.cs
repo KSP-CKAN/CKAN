@@ -66,14 +66,14 @@ namespace CKAN.ConsoleUI {
                             plan.Remove.Clear();
                         }
                         NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache);
-                        if (plan.Upgrade.Count > 0) {
-                            inst.Upgrade(plan.Upgrade, dl, ref possibleConfigOnlyDirs, regMgr);
-                            plan.Upgrade.Clear();
-                        }
                         if (plan.Install.Count > 0) {
                             List<CkanModule> iList = new List<CkanModule>(plan.Install);
                             inst.InstallList(iList, resolvOpts, regMgr, ref possibleConfigOnlyDirs, dl);
                             plan.Install.Clear();
+                        }
+                        if (plan.Upgrade.Count > 0) {
+                            inst.Upgrade(plan.Upgrade, dl, ref possibleConfigOnlyDirs, regMgr);
+                            plan.Upgrade.Clear();
                         }
                         if (plan.Replace.Count > 0) {
                             inst.Replace(AllReplacements(plan.Replace), resolvOpts, dl, ref possibleConfigOnlyDirs, regMgr, true);

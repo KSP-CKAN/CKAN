@@ -435,6 +435,12 @@ namespace CKAN.ConsoleUI {
                         manager.Cache,
                         ps
                     );
+                } catch (ReinstallModuleKraken rmk) {
+                    ChangePlan reinstPlan = new ChangePlan();
+                    foreach (CkanModule m in rmk.Modules) {
+                        reinstPlan.ToggleUpgrade(m);
+                    }
+                    LaunchSubScreen(theme, new InstallScreen(manager, reinstPlan, debug));
                 } catch (Exception ex) {
                     // There can be errors while you re-install mods with changed metadata
                     ps.RaiseError(ex.Message + ex.StackTrace);

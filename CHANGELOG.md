@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix crash when overwriting manually installed files (#3349 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Skip modules with parse errors in deserialization (#3347 by: HebaruSan; reviewed: DasSkelett)
 - [ConsoleUI] Update or refresh ConsoleUI mod list after repo or compat changes (#3353 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Replace repo-reinst with kraken, handle in UIs (#3344 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
