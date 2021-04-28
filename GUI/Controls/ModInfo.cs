@@ -631,7 +631,7 @@ namespace CKAN
                     ContentsPreviewTree.Enabled = true;
 
                     // Get all the data; can put this in bg if slow
-                    var contents = ModuleInstaller.GetInstance(
+                    var contents = new ModuleInstaller(
                             manager.CurrentInstance,
                             Main.Instance.Manager.Cache,
                             Main.Instance.currentUser)

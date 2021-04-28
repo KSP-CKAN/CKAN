@@ -59,7 +59,7 @@ namespace CKAN.ConsoleUI {
                         HashSet<string> possibleConfigOnlyDirs = null;
 
                         RegistryManager regMgr = RegistryManager.Instance(manager.CurrentInstance);
-                        ModuleInstaller inst = ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, this);
+                        ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
                         inst.onReportModInstalled = OnModInstalled;
                         if (plan.Remove.Count > 0) {
                             inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, plan.Install);

@@ -71,7 +71,7 @@ namespace CKAN
 
             RegistryManager registry_manager = RegistryManager.Instance(manager.CurrentInstance);
             Registry registry = registry_manager.registry;
-            ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, currentUser);
+            ModuleInstaller installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
             // Avoid accumulating multiple event handlers
             installer.onReportModInstalled -= OnModInstalled;
             installer.onReportModInstalled += OnModInstalled;

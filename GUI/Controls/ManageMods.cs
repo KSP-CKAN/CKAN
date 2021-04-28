@@ -1591,7 +1591,7 @@ namespace CKAN
             var user_change_set = mainModList.ComputeUserChangeSet(registry);
             try
             {
-                var module_installer = ModuleInstaller.GetInstance(inst, Main.Instance.Manager.Cache, Main.Instance.currentUser);
+                var module_installer = new ModuleInstaller(inst, Main.Instance.Manager.Cache, Main.Instance.currentUser);
                 full_change_set = mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, inst.VersionCriteria());
             }
             catch (InconsistentKraken k)
