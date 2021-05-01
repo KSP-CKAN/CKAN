@@ -540,7 +540,7 @@ namespace CKAN.ConsoleUI {
         {
             ProgressScreen            ps   = new ProgressScreen($"Downloading {mod.identifier}");
             NetAsyncModulesDownloader dl   = new NetAsyncModulesDownloader(ps, manager.Cache);
-            ModuleInstaller           inst = ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, ps);
+            ModuleInstaller           inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, ps);
             LaunchSubScreen(
                 theme,
                 ps,

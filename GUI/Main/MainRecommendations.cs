@@ -33,7 +33,7 @@ namespace CKAN
 
         private void AuditRecommendations(IRegistryQuerier registry, GameVersionCriteria versionCriteria)
         {
-            var installer = ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, currentUser);
+            var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
             if (installer.FindRecommendations(
                 registry.InstalledModules.Select(im => im.Module).ToHashSet(),
                 new HashSet<CkanModule>(),

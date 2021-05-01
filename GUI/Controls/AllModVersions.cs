@@ -62,7 +62,7 @@ namespace CKAN
         {
             GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
             IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
-            var installer = ModuleInstaller.GetInstance(
+            var installer = new ModuleInstaller(
                 currentInstance,
                 Main.Instance.Manager.Cache,
                 Main.Instance.currentUser);
@@ -131,7 +131,7 @@ namespace CKAN
                 // Get all the data; can put this in bg if slow
                 GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
                 IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
-                var installer = ModuleInstaller.GetInstance(
+                var installer = new ModuleInstaller(
                     currentInstance,
                     Main.Instance.Manager.Cache,
                     Main.Instance.currentUser);

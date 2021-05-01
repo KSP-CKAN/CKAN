@@ -40,39 +40,12 @@ namespace CKAN
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
 
         // Constructor
-        private ModuleInstaller(GameInstance ksp, NetModuleCache cache, IUser user)
+        public ModuleInstaller(GameInstance ksp, NetModuleCache cache, IUser user)
         {
             User = user;
             Cache = cache;
             this.ksp = ksp;
             log.DebugFormat("Creating ModuleInstaller for {0}", ksp.GameDir());
-        }
-
-        /// <summary>
-        /// Gets the ModuleInstaller instance associated with the passed KSP instance. Creates a new ModuleInstaller instance if none exists.
-        /// </summary>
-        /// <returns>The ModuleInstaller instance.</returns>
-        /// <param name="ksp_instance">Current KSP instance.</param>
-        /// <param name="user">IUser implementation.</param>
-        public static ModuleInstaller GetInstance(GameInstance ksp_instance, NetModuleCache cache, IUser user)
-        {
-            ModuleInstaller instance;
-
-            // Check in the list of instances if we have already created a ModuleInstaller instance for this KSP instance.
-            if (!instances.TryGetValue(ksp_instance.GameDir(), out instance))
-            {
-                // Create a new instance and insert it in the static list.
-                instance = new ModuleInstaller(ksp_instance, cache, user);
-
-                instances.Add(ksp_instance.GameDir(), instance);
-            }
-            else if (user != null)
-            {
-                // Caller passed in a valid IUser. Let's use it.
-                instance.User = user;
-            }
-
-            return instance;
         }
 
         /// <summary>
