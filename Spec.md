@@ -309,7 +309,7 @@ In addition, any number of optional directives *may* be provided:
   be installed. These are treated as literal things which must match a
   file name or directory. Examples of filters may be `Thumbs.db`,
   or `Source`. Filters are considered case-insensitive.
-- `filter_regexp` : A string, or list of strings, which are treated as
+- `filter_regexp` : (**v1.10**) A string, or list of strings, which are treated as
   case-sensitive C# regular expressions which are matched against the
   full paths from the installing zip-file. If a file matches the regular
   expression, it is *not* installed.
