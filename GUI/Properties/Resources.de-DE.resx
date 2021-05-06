@@ -182,6 +182,10 @@ Versuche {2} aus {3} zu verschieben und CKAN neu zu starten.</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>Klartext (*.txt)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Nicht gefunden.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Möchtest du {0} neu installieren?</value></data>
+  <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN kann die Erweiterung {0} nicht installieren!</value></data>
+  <data name="MainCorruptedRegistry" xml:space="preserve"><value>Beschädigte Registry wurde nach {0} archiviert: {1}
+
+Das bedeuted, dass CKAN alle installierten Mods vergessen hat, sie befinden sich aber immer noch in GameData. Du kannst sie durch Importieren folgender Datei erneut installieren: {2}</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} wird von Ihrer aktuellen Spielversion nicht unterstützt und funktioniert möglicherweise überhaupt nicht. Wenn Sie Probleme damit haben, sollten Sie die Betreuer NICHT um Hilfe bitten.
 
 Möchten Sie es wirklich installieren?</value></data>

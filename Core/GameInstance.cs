@@ -30,6 +30,10 @@ namespace CKAN
         private List<GameVersion> _compatibleVersions = new List<GameVersion>();
 
         public string Name { get; set; }
+        /// <summary>
+        /// Returns a file system safe version of the instance name that can be used within file names.
+        /// </summary>
+        public string SanitizedName => string.Join("", Name.Split(Path.GetInvalidFileNameChars()));
         public GameVersion GameVersionWhenCompatibleVersionsWereStored { get; private set; }
         public bool CompatibleVersionsAreFromDifferentGameVersion { get { return _compatibleVersions.Count > 0 && GameVersionWhenCompatibleVersionsWereStored != Version(); } }
 

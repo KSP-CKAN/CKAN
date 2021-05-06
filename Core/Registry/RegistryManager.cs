@@ -400,10 +400,8 @@ namespace CKAN
 
             file_transaction.WriteAllText(path, Serialize());
 
-            string sanitizedName = string.Join("", ksp.Name.Split(Path.GetInvalidFileNameChars()));
-
             ExportInstalled(
-                Path.Combine(directoryPath, $"installed-{sanitizedName}.ckan"),
+                Path.Combine(directoryPath, LatestInstalledExportFilename()),
                 false, true
             );
             if (!Directory.Exists(ksp.InstallHistoryDir()))
@@ -411,13 +409,13 @@ namespace CKAN
                 Directory.CreateDirectory(ksp.InstallHistoryDir());
             }
             ExportInstalled(
-                Path.Combine(
-                    ksp.InstallHistoryDir(),
-                    $"installed-{sanitizedName}-{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.ckan"
-                ),
+                Path.Combine(ksp.InstallHistoryDir(), HistoricInstalledExportFilename()),
                 false, true
             );
         }
+
+        public string LatestInstalledExportFilename() => $"installed-{ksp.SanitizedName}.ckan";
+        public string HistoricInstalledExportFilename() => $"installed-{ksp.SanitizedName}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.ckan";
 
         /// <summary>
         /// Save a custom .ckan file that contains all the currently
