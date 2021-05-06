@@ -1566,7 +1566,7 @@ namespace CKAN
                     .Select(grp => $"{grp.Key}: "
                         + grp.Aggregate((a, b) => $"{a}, {b}"))
                     .Aggregate((a, b) => $"{a}\r\n{b}");
-                if (!Main.Instance.YesNoDialog(string.Format(Properties.Resources.MainQuitWIthUnappliedChanges, changeDescrip),
+                if (!Main.Instance.YesNoDialog(string.Format(Properties.Resources.MainQuitWithUnappliedChanges, changeDescrip),
                     Properties.Resources.MainQuit,
                     Properties.Resources.MainGoBack))
                 {

@@ -23,7 +23,6 @@ namespace CKAN
         private FileStream lockfileStream = null;
         private StreamWriter lockfileWriter = null;
 
-
         // The only reason we have a KSP field is so we can pass it to the registry
         // when deserialising, and *it* only needs it to do registry upgrades.
         // We could get rid of all of this if we declare we no longer wish to support
@@ -31,6 +30,15 @@ namespace CKAN
         private readonly GameInstance ksp;
 
         public Registry registry;
+
+        /// <summary>
+        /// If loading the registry failed, the parsing error text, else null.
+        /// </summary>
+        public string previousCorruptedMessage;
+        /// <summary>
+        /// If loading the registry failed, the location to which we moved it, else null.
+        /// </summary>
+        public string previousCorruptedPath;
 
         // We require our constructor to be private so we can
         // enforce this being an instance (via Instance() above)
@@ -309,6 +317,16 @@ namespace CKAN
                 Create();
                 Load();
             }
+            catch (JsonException exc)
+            {
+                previousCorruptedMessage = exc.Message;
+                previousCorruptedPath    = path + "_CORRUPTED_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                log.ErrorFormat("{0} is corrupted, archiving to {1}: {2}",
+                    path, previousCorruptedPath, previousCorruptedMessage);
+                File.Move(path, previousCorruptedPath);
+                Create();
+                Load();
+            }
             catch (Exception ex)
             {
                 log.ErrorFormat("Uncaught exception loading registry: {0}", ex.ToString());
@@ -382,10 +400,8 @@ namespace CKAN
 
             file_transaction.WriteAllText(path, Serialize());
 
-            string sanitizedName = string.Join("", ksp.Name.Split(Path.GetInvalidFileNameChars()));
-
             ExportInstalled(
-                Path.Combine(directoryPath, $"installed-{sanitizedName}.ckan"),
+                Path.Combine(directoryPath, LatestInstalledExportFilename()),
                 false, true
             );
             if (!Directory.Exists(ksp.InstallHistoryDir()))
@@ -393,13 +409,13 @@ namespace CKAN
                 Directory.CreateDirectory(ksp.InstallHistoryDir());
             }
             ExportInstalled(
-                Path.Combine(
-                    ksp.InstallHistoryDir(),
-                    $"installed-{sanitizedName}-{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.ckan"
-                ),
+                Path.Combine(ksp.InstallHistoryDir(), HistoricInstalledExportFilename()),
                 false, true
             );
         }
+
+        public string LatestInstalledExportFilename() => $"installed-{ksp.SanitizedName}.ckan";
+        public string HistoricInstalledExportFilename() => $"installed-{ksp.SanitizedName}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.ckan";
 
         /// <summary>
         /// Save a custom .ckan file that contains all the currently

@@ -149,7 +149,7 @@ Essayez de déplacer {2} en dehors de {3} et redémarrez CKAN.</value></data>
   <data name="MainQuit" xml:space="preserve"><value>Quitter</value></data>
   <data name="MainGoBack" xml:space="preserve"><value>Revenir</value></data>
   <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>Il y a des dépendances non-satisfaites. Voulez-vous vraiment quitter?</value></data>
-  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve"><value>Il y a des changements non pris en compte. Voulez-vous vraiment quitter?
+  <data name="MainQuitWithUnappliedChanges" xml:space="preserve"><value>Il y a des changements non pris en compte. Voulez-vous vraiment quitter?
 
 {0}</value></data>
   <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>Mis à jour de CKAN</value></data>

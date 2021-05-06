@@ -7,12 +7,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using CKAN.Versioning;
 using CKAN.Extensions;
-using CKAN.Properties;
-using CKAN.Types;
 using log4net;
 using Timer = System.Windows.Forms.Timer;
 using Autofac;
@@ -127,7 +123,18 @@ namespace CKAN
             try
             {
 #pragma warning disable 219
-                var lockedReg = RegistryManager.Instance(CurrentInstance).registry;
+                var regMgr = RegistryManager.Instance(CurrentInstance);
+                var lockedReg = regMgr.registry;
+                // Tell the user their registry was reset if it was corrupted
+                if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
+                    && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
+                {
+                    errorDialog.ShowErrorDialog(Properties.Resources.MainCorruptedRegistry,
+                        regMgr.previousCorruptedPath, regMgr.previousCorruptedMessage,
+                        Path.Combine(Path.GetDirectoryName(regMgr.previousCorruptedPath) ?? "", regMgr.LatestInstalledExportFilename()));
+                    regMgr.previousCorruptedMessage = null;
+                    regMgr.previousCorruptedPath = null;
+                }
 #pragma warning restore 219
             }
             catch (RegistryInUseKraken kraken)
@@ -366,8 +373,18 @@ namespace CKAN
                     .ShowDialog();
             }
 
-            (RegistryManager.Instance(CurrentInstance).registry as Registry)
-                ?.BuildTagIndex(ManageMods.mainModList.ModuleTags);
+            var regMgr = RegistryManager.Instance(CurrentInstance);
+            var registry = regMgr.registry;
+            if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
+                                                && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
+            {
+                errorDialog.ShowErrorDialog(Properties.Resources.MainCorruptedRegistry,
+                    regMgr.previousCorruptedPath, regMgr.previousCorruptedMessage,
+                    Path.Combine(Path.GetDirectoryName(regMgr.previousCorruptedPath) ?? "", regMgr.LatestInstalledExportFilename()));
+                regMgr.previousCorruptedMessage = null;
+                regMgr.previousCorruptedPath = null;
+            }
+            registry?.BuildTagIndex(ManageMods.mainModList.ModuleTags);
 
             bool repoUpdateNeeded = configuration.RefreshOnStartup
                 || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
@@ -466,7 +483,7 @@ namespace CKAN
         {
             OpenFileDialog open_file_dialog = new OpenFileDialog()
             {
-                Filter      = Resources.CKANFileFilter,
+                Filter      = Properties.Resources.CKANFileFilter,
                 Multiselect = true,
             };
 
