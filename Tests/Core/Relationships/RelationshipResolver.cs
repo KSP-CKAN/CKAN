@@ -6,7 +6,6 @@ using NUnit.Framework;
 using Tests.Data;
 using System.IO;
 using CKAN.Versioning;
-using Tests.Core.Types;
 using RelationshipDescriptor = CKAN.RelationshipDescriptor;
 
 namespace Tests.Core.Relationships
@@ -72,7 +71,6 @@ namespace Tests.Core.Relationships
 
         [Test]
         [Category("Version")]
-
         public void Constructor_WithConflictingModulesVersion_Throws()
         {
             var list = new List<string>();
@@ -836,7 +834,7 @@ namespace Tests.Core.Relationships
         }
 
         [Test]
-        public void ReasonFor_WithSugestedMods_GivesCorrectParent()
+        public void ReasonFor_WithSuggestedMods_GivesCorrectParent()
         {
             var list = new List<string>();
             var suggested = generator.GeneratorRandomModule();
@@ -910,6 +908,94 @@ namespace Tests.Core.Relationships
                     registry,
                     new GameVersionCriteria (GameVersion.Parse("1.0.0"))
                 );
+            }
+        }
+
+        // Models the EVE - EVE-Config - AVP - AVP-Textures relationship
+        [Test]
+        public void UninstallingConflictingModule_InstallingRecursiveDependencies_ResolvesSuccessfully()
+        {
+            using (var ksp = new DisposableKSP())
+            {
+                // Arrange: create dummy modules that resemble the relationship entanglement, and make them available
+                var eve = generator.GeneratorRandomModule(
+                    identifier: "EnvironmentalVisualEnhancements",
+                    depends: new List<RelationshipDescriptor>
+                        {new ModuleRelationshipDescriptor {name = "EnvironmentalVisualEnhancements-Config"}}
+                );
+                var eveDefaultConfig = generator.GeneratorRandomModule(
+                    identifier: "EnvironmentalVisualEnhancements-Config-stock",
+                    provides: new List<string> {"EnvironmentalVisualEnhancements-Config"},
+                    conflicts: new List<RelationshipDescriptor>
+                        {new ModuleRelationshipDescriptor {name = "EnvironmentalVisualEnhancements-Config"}}
+                );
+                var avp = generator.GeneratorRandomModule(
+                    identifier: "AstronomersVisualPack",
+                    provides: new List<string> {"EnvironmentalVisualEnhancements-Config"},
+                    depends: new List<RelationshipDescriptor>
+                    {
+                        new ModuleRelationshipDescriptor {name = "AVP-Textures"},
+                        new ModuleRelationshipDescriptor {name = "EnvironmentalVisualEnhancements"}
+                    },
+                    conflicts: new List<RelationshipDescriptor>
+                            {new ModuleRelationshipDescriptor {name = "EnvironmentalVisualEnhancements-Config"}}
+                );
+                var avp2kTextures = generator.GeneratorRandomModule(
+                    identifier: "AVP-2kTextures",
+                    provides: new List<string> {"AVP-Textures"},
+                    depends: new List<RelationshipDescriptor>
+                        {new ModuleRelationshipDescriptor {name = "AstronomersVisualPack"}},
+                    conflicts: new List<RelationshipDescriptor>
+                        {new ModuleRelationshipDescriptor {name = "AVP-Textures"}}
+                );
+
+                AddToRegistry(eve, eveDefaultConfig, avp, avp2kTextures);
+
+                // Start with eve and eveDefaultConfig installed
+                registry.RegisterModule(eve, new string[0], ksp.KSP, false);
+                registry.RegisterModule(eveDefaultConfig, new string[0], ksp.KSP, false);
+
+                Assert.DoesNotThrow(() => registry.CheckSanity());
+
+                List<CkanModule> modulesToInstall;
+                List<CkanModule> modulesToRemove;
+                RelationshipResolver resolver;
+
+                // Act and assert: play through different possible user interactions
+                // Scenario 1 - Try installing AVP, expect an exception for proceed_with_inconsistencies=false
+
+                modulesToInstall = new List<CkanModule> { avp };
+                modulesToRemove = new List<CkanModule>();
+
+                options.proceed_with_inconsistencies = false;
+                Assert.Throws<InconsistentKraken>(() =>
+                {
+                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, null);
+                });
+
+                // Scenario 2 - Try installing AVP, expect no exception for proceed_with_inconsistencies=true, but a conflict list
+
+                resolver = null;
+                options.proceed_with_inconsistencies = true;
+                Assert.DoesNotThrow(() =>
+                {
+                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, null);
+                });
+                CollectionAssert.AreEquivalent(new List<CkanModule> {avp, eveDefaultConfig}, resolver.ConflictList.Keys);
+
+                // Scenario 3 - Try uninstalling eveDefaultConfig and installing avp, should work and result in no conflicts
+
+                modulesToInstall = new List<CkanModule> { avp };
+                modulesToRemove = new List<CkanModule> { eveDefaultConfig };
+
+                resolver = null;
+                options.proceed_with_inconsistencies = false;
+                Assert.DoesNotThrow(() =>
+                {
+                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, null);
+                });
+                Assert.IsEmpty(resolver.ConflictList);
+                CollectionAssert.AreEquivalent(new List<CkanModule> {avp, avp2kTextures}, resolver.ModList());
             }
         }
 
