@@ -186,6 +186,7 @@ namespace CKAN
                         {
                             installer.UninstallList(toUninstall.Select(m => m.identifier),
                                 ref possibleConfigOnlyDirs, registry_manager, false, toInstall);
+                            toUninstall.Clear();
                             processSuccessful = true;
                         }
                     }
@@ -195,6 +196,7 @@ namespace CKAN
                         if (!installCanceled)
                         {
                             installer.InstallList(toInstall, opts.Value, registry_manager, ref possibleConfigOnlyDirs, downloader, false);
+                            toInstall.Clear();
                             processSuccessful = true;
                         }
                     }
@@ -204,6 +206,7 @@ namespace CKAN
                         if (!installCanceled)
                         {
                             installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, true, false);
+                            toUpgrade.Clear();
                             processSuccessful = true;
                         }
                     }
