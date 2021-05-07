@@ -645,7 +645,9 @@ namespace CKAN
                 )).Memoize();
             var goners = revdep.Union(
                     registry_manager.registry.FindRemovableAutoInstalled(
-                        registry_manager.registry.InstalledModules.Where(im => !revdep.Contains(im.identifier)))
+                        registry_manager.registry.InstalledModules
+                            .Where(im => !revdep.Contains(im.identifier))
+                            .Concat(installing?.Select(m => new InstalledModule(null, m, new string[0], false)) ?? new InstalledModule[0]))
                     .Select(im => im.identifier))
                 .ToList();
 

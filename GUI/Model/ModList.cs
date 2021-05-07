@@ -163,6 +163,7 @@ namespace CKAN
             foreach (var im in registry.FindRemovableAutoInstalled(
                 registry.InstalledModules
                     .Where(im => modules_to_remove.All(m => m.identifier != im.identifier) || modules_to_install.Any(m => m.identifier == im.identifier))
+                    .Concat(modules_to_install.Select(m => new InstalledModule(null, m, new string[0], false)))
             ))
             {
                 // TODO this removes modules that a newly installed mod will depend on, and gets readded as module to install in the RelationshipResolver
