@@ -108,8 +108,15 @@ namespace CKAN
         public void InstallList(List<string> modules, RelationshipResolverOptions options, RegistryManager registry_manager, ref HashSet<string> possibleConfigOnlyDirs, IDownloader downloader = null)
         {
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
-            // Only pass the CkanModules of the parameters, so we can tell which are auto
-            InstallList(resolver.ModList().Where(m => resolver.ReasonFor(m) is SelectionReason.UserRequested).ToList(), options, registry_manager, ref possibleConfigOnlyDirs, downloader);
+            // Only pass the CkanModules of the parameters, so we can tell which are auto-installed,
+            // and relationships of metapackages, since metapackages aren't included in the RR modlist.
+            var list = resolver.ModList().Where(
+                m =>
+                {
+                    var reason = resolver.ReasonFor(m);
+                    return reason is SelectionReason.UserRequested || (reason.Parent?.IsMetapackage ?? false);
+                }).ToList();
+            InstallList(list, options, registry_manager, ref possibleConfigOnlyDirs, downloader);
         }
 
         /// <summary>
@@ -123,6 +130,11 @@ namespace CKAN
         public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, RegistryManager registry_manager, ref HashSet<string> possibleConfigOnlyDirs, IDownloader downloader = null, bool ConfirmPrompt = true)
         {
             // TODO: Break this up into smaller pieces! It's huge!
+            if (modules.Count == 0)
+            {
+                User.RaiseProgress("Nothing to install.", 100);
+                return;
+            }
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
             var modsToInstall = resolver.ModList().ToList();
             List<CkanModule> downloads = new List<CkanModule>();
