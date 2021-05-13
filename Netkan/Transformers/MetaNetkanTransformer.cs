@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using log4net;
 using Newtonsoft.Json.Linq;
+
 using CKAN.Versioning;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
@@ -51,7 +52,7 @@ namespace CKAN.NetKAN.Transformers
 
                 Log.DebugFormat("Target netkan:{0}{1}", Environment.NewLine, targetFileText);
 
-                var targetJson = JObject.Parse(targetFileText);
+                var targetJson = YamlExtensions.Parse(targetFileText).ToJObject();
                 var targetMetadata = new Metadata(targetJson);
 
                 if (targetMetadata.Kref == null || targetMetadata.Kref.Source != "netkan")

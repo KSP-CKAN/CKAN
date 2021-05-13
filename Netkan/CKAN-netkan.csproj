@@ -45,6 +45,7 @@
     <PackageReference Include="log4net" Version="2.0.10" />
     <PackageReference Include="Namotion.Reflection" Version="1.0.7" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="YamlDotNet" Version="9.1.0" />
     <PackageReference Include="NJsonSchema" Version="10.0.27" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +63,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\JObjectExtensions.cs" />
     <Compile Include="Extensions\VersionExtensions.cs" />
+    <Compile Include="Extensions\YamlExtensions.cs" />
     <Compile Include="Model\Metadata.cs" />
     <Compile Include="Model\RemoteRef.cs" />
     <Compile Include="Processors\Inflator.cs" />
