@@ -22,7 +22,7 @@ namespace CKAN.NetKAN.Validators
                 new KindValidator(),
                 new HarmonyValidator(downloader, moduleService),
                 new ModuleManagerDependsValidator(downloader, moduleService),
-                new PluginCompatibilityValidator(downloader, moduleService),
+                new PluginsValidator(downloader, moduleService),
                 new CraftsInShipsValidator(downloader, moduleService),
             };
         }
