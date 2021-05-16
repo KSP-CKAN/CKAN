@@ -35,6 +35,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Switch from outdated SharpZipLib.Patched to newer SharpZipLib (#3329 by: DasSkelett; reviewed: HebaruSan)
 - [Tooling] Use git cmd to add CHANGELOG.md in merge script (#3350 by: DasSkelett; reviewed: HebaruSan)
 - [Tooling] Merge script fix for Windows (#3354 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Warn if a module with plugins can't be auto-detected (#3370 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.30.0 (Glenn)
 

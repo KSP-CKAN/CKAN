@@ -142,7 +142,7 @@
     <Compile Include="Validators\NetkanValidator.cs" />
     <Compile Include="Validators\ObeysCKANSchemaValidator.cs" />
     <Compile Include="Validators\OverrideValidator.cs" />
-    <Compile Include="Validators\PluginCompatibilityValidator.cs" />
+    <Compile Include="Validators\PluginsValidator.cs" />
     <Compile Include="Validators\RelationshipsValidator.cs" />
     <Compile Include="Validators\ReplacedByValidator.cs" />
     <Compile Include="Validators\SpecVersionFormatValidator.cs" />
