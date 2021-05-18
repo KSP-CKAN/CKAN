@@ -76,7 +76,9 @@ namespace CKAN.NetKAN.Extensions
                 case "null":  return JValue.CreateNull();
                 case "true":  return new JValue(true);
                 case "false": return new JValue(false);
-                default:      return new JValue(yaml.Value);
+                default:      return int.TryParse(yaml.Value, out int intVal)
+                                  ? new JValue(intVal)
+                                  : new JValue(yaml.Value);
             }
         }
 
