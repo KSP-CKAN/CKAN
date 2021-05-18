@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using log4net;
+using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 using Newtonsoft.Json.Linq;
 
@@ -76,9 +77,11 @@ namespace CKAN.NetKAN.Extensions
                 case "null":  return JValue.CreateNull();
                 case "true":  return new JValue(true);
                 case "false": return new JValue(false);
-                default:      return int.TryParse(yaml.Value, out int intVal)
-                                  ? new JValue(intVal)
-                                  : new JValue(yaml.Value);
+                // Convert unquoted integers to int type
+                default:      return yaml.Style == ScalarStyle.Plain
+                                     && int.TryParse(yaml.Value, out int intVal)
+                                         ? new JValue(intVal)
+                                         : new JValue(yaml.Value);
             }
         }
 
