@@ -669,10 +669,12 @@ namespace CKAN
         /// <see cref="IRegistryQuerier.LatestAvailableWithProvides" />
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(
-            string                  identifier,
-            GameVersionCriteria      ksp_version,
-            RelationshipDescriptor  relationship_descriptor = null,
-            IEnumerable<CkanModule> toInstall               = null)
+            string identifier,
+            GameVersionCriteria ksp_version,
+            RelationshipDescriptor relationship_descriptor = null,
+            IEnumerable<CkanModule> installed = null,
+            IEnumerable<CkanModule> toInstall = null
+        )
         {
             if (providers.TryGetValue(identifier, out HashSet<AvailableModule> provs))
             {
@@ -681,7 +683,7 @@ namespace CKAN
                     .Select(am => am.Latest(
                         ksp_version,
                         relationship_descriptor,
-                        InstalledModules.Select(im => im.Module),
+                        installed ?? InstalledModules.Select(im => im.Module),
                         toInstall
                     ))
                     .Where(m => m?.ProvidesList?.Contains(identifier) ?? false)

@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Make ModuleInstaller a non-singleton (#3356 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Better recovery when registry.json is corrupted (#3351 by: HebaruSan; reviewed: DasSkelett)
 - [CLI] Fix installation of metapackages on cmdline (#3362 by: DasSkelett; reviewed: HebaruSan)
+- [Multiple] Fix installation of AVP while removing EVE default configs (#3366 by: DasSkelett; reviewed: HebaruSan)
 
 ### Internal
 
