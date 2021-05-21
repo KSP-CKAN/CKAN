@@ -2,7 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.30.2
+## v1.30.3
+
+## v1.30.2 (Hawking)
 
 ### Features
 
