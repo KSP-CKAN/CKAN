@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Add pt-BR localization (#3340 by: gsantos9489; reviewed: DasSkelett, HebaruSan)
-- [GUI] Multiple search boxes with OR logic in GUI (#3323 by: HebaruSan; reviewed: Olympic1, DasSkelett)
+- [GUI] Multiple search boxes with OR logic in GUI (#3323, #3374 by: HebaruSan; reviewed: Olympic1, DasSkelett)
 
 ### Bugfixes
 

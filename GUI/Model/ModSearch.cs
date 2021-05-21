@@ -195,7 +195,7 @@ namespace CKAN
             }
             foreach (var label in Labels)
             {
-                pieces.Add($"{Properties.Resources.ModSearchLabelPrefix}{label.Name}");
+                pieces.Add($"{Properties.Resources.ModSearchLabelPrefix}{label.Name.Replace(" ", "")}");
             }
             if (Compatible.HasValue)
             {
@@ -306,7 +306,13 @@ namespace CKAN
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchLabelPrefix, out string labelName))
                 {
-                    labels.AddRange(knownLabels.Where(lb => lb.Name == labelName));
+                    labels.AddRange(
+                        // Label searches exclude spaces, but label names can include them
+                        knownLabels.Where(lb => lb.Name.Replace(" ", "") == labelName)
+                            // If label doesn't exist, maybe it will be created later or the user is still typing.
+                            // Make an unofficial label object to accurately reflect the search.
+                            .DefaultIfEmpty(new ModuleLabel() { Name = labelName })
+                    );
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchYesPrefix, out string yesSuffix))
                 {
