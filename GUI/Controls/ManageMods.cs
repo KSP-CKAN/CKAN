@@ -361,38 +361,45 @@ namespace CKAN
             var searches = search.Values.Select(s => ModSearch.Parse(s,
                 Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList()
             )).ToList();
-            EditModSearches.SetSearches(searches);
 
-            // Ask the configuration which columns to show.
-            foreach (DataGridViewColumn col in ModGrid.Columns)
+            Util.Invoke(ModGrid, () =>
             {
-                // Some columns are always shown, and others are handled by UpdateModsList()
-                if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
-                {
-                    col.Visible = !Main.Instance.configuration.HiddenColumnNames.Contains(col.Name);
-                }
-            }
+                EditModSearches.SetSearches(searches);
 
-            // If these columns aren't hidden by the user, show them if the search includes installed modules
-            setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
+                // Ask the configuration which columns to show.
+                foreach (DataGridViewColumn col in ModGrid.Columns)
+                {
+                    // Some columns are always shown, and others are handled by UpdateModsList()
+                    if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
+                    {
+                        col.Visible = !Main.Instance.configuration.HiddenColumnNames.Contains(col.Name);
+                    }
+                }
+
+                // If these columns aren't hidden by the user, show them if the search includes installed modules
+                setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
+            });
         }
 
         public void SetSearches(List<ModSearch> searches)
         {
-            mainModList.SetSearches(searches);
-            EditModSearches.SetSearches(searches);
-
-            // Ask the configuration which columns to show.
-            foreach (DataGridViewColumn col in ModGrid.Columns)
+            Util.Invoke(ModGrid, () =>
             {
-                // Some columns are always shown, and others are handled by UpdateModsList()
-                if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
-                {
-                    col.Visible = !Main.Instance.configuration.HiddenColumnNames.Contains(col.Name);
-                }
-            }
+                mainModList.SetSearches(searches);
+                EditModSearches.SetSearches(searches);
 
-            setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
+                // Ask the configuration which columns to show.
+                foreach (DataGridViewColumn col in ModGrid.Columns)
+                {
+                    // Some columns are always shown, and others are handled by UpdateModsList()
+                    if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
+                    {
+                        col.Visible = !Main.Instance.configuration.HiddenColumnNames.Contains(col.Name);
+                    }
+                }
+
+                setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
+            });
         }
 
         private static readonly string[] installedColumnNames = new string[]
