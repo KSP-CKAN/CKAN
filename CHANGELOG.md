@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.30.3
 
+### Bugfixes
+
+- [GUI] Invoke GUI update calls in SetupDefaultSearch() descendants (#3380 by: DasSkelett; reviewed: HebaruSan)
+
 ## v1.30.2 (Hawking)
 
 ### Features
