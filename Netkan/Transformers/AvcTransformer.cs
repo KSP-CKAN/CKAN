@@ -82,14 +82,34 @@ namespace CKAN.NetKAN.Transformers
                         {
                             var remoteJson = _github?.DownloadText(remoteUri)
                                 ?? _http.DownloadText(remoteUri);
-                            var remoteAvc = JsonConvert.DeserializeObject<AvcVersion>(remoteJson);
 
-                            if (avc.version.CompareTo(remoteAvc.version) == 0)
+                            var rootToken = JToken.Parse(remoteJson, new JsonLoadSettings { CommentHandling = CommentHandling.Ignore });
+
+                            if (rootToken.Type == JTokenType.Object)
                             {
-                                // Local AVC and Remote AVC describe the same version, prefer
-                                Log.Info("Remote AVC version file describes same version as local AVC version file, using it preferrentially.");
-                                avc = remoteAvc;
+                                var remoteAvc = rootToken.ToObject<AvcVersion>();
+                                if (avc.version.CompareTo(remoteAvc.version) == 0)
+                                {
+                                    // Local AVC and Remote AVC describe the same version, prefer
+                                    Log.Info("Remote AVC version file describes same version as local AVC version file, using it preferrentially.");
+                                    avc = remoteAvc;
+                                }
                             }
+                            else if (rootToken.Type == JTokenType.Array)
+                            {
+                                var remoteAvcs = rootToken.ToObject<AvcVersion[]>();
+                                AvcVersion matchedVersion = null;
+                                foreach (var remoteAvc in remoteAvcs)
+                                {
+                                    if (avc.version.CompareTo(remoteAvc.version) != 0) continue;
+                                    if (matchedVersion != null) throw new InvalidOperationException("More than one matching version found in remote AVC file");
+                                    matchedVersion = remoteAvc;
+                                }
+                                if (matchedVersion == null) throw new InvalidOperationException("No matching version found in remote AVC file");
+                                avc = matchedVersion;
+                            }
+                            else
+                                throw new InvalidOperationException("Invalid root token in remote AVC: " + rootToken.Type.ToString());
                         }
                         catch (JsonReaderException e)
                         {
