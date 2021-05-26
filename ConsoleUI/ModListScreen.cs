@@ -280,6 +280,9 @@ namespace CKAN.ConsoleUI {
                     "Save your mod list",
                     true, ExportInstalled),
                 null,
+                new ConsoleMenuOption("Game instance settings...",    "",
+                    "Configure the current game instance",
+                    true, InstanceSettings),
                 new ConsoleMenuOption("Select game instance...",      "",
                     "Switch to a different game instance",
                     true, SelectInstall),
@@ -476,6 +479,22 @@ namespace CKAN.ConsoleUI {
             } catch (InconsistentKraken ex) {
                 // Warn about inconsistent state
                 RaiseError(ex.InconsistenciesPretty + " The repo has not been saved.");
+            }
+            return true;
+        }
+
+        private bool InstanceSettings(ConsoleTheme theme)
+        {
+            var prevRepos   = new SortedDictionary<string, Repository>(registry.Repositories);
+            var prevVerCrit = manager.CurrentInstance.VersionCriteria();
+            LaunchSubScreen(theme, new GameInstanceEditScreen(manager, manager.CurrentInstance));
+            if (!SortedDictionaryEquals(registry.Repositories, prevRepos)) {
+                // Repos changed, need to fetch them
+                UpdateRegistry(theme, false);
+                RefreshList(theme);
+            } else if (!manager.CurrentInstance.VersionCriteria().Equals(prevVerCrit)) {
+                // VersionCriteria changed, need to re-check what is compatible
+                RefreshList(theme);
             }
             return true;
         }
