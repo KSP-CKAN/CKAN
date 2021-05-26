@@ -86,7 +86,16 @@ namespace CKAN
             }
             catch (InconsistentKraken kraken)
             {
-                log.ErrorFormat("Loaded registry with inconsistencies:\r\n\r\n{0}", kraken.InconsistenciesPretty);
+                // Only log an error for this if user-interactive,
+                // automated tools do not care that no one picked a Scatterer config
+                if (ksp.User.Headless)
+                {
+                    log.InfoFormat("Loaded registry with inconsistencies:\r\n\r\n{0}", kraken.InconsistenciesPretty);
+                }
+                else
+                {
+                    log.ErrorFormat("Loaded registry with inconsistencies:\r\n\r\n{0}", kraken.InconsistenciesPretty);
+                }
             }
         }
 
