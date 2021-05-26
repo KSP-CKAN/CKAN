@@ -121,7 +121,7 @@
   <data name="ModVersion.Text" xml:space="preserve"><value>Версия</value></data>
   <data name="CompatibleGameVersion.Text" xml:space="preserve"><value>Совместимые версии игры</value></data>
   <data name="label2.Text" xml:space="preserve"><value>Зелёный</value></data>
-  <data name="label3.Text" xml:space="preserve"><value>Светло-зелёный</value></data>
+  <data name="label3.Text" xml:space="preserve"><value>Св.-зел.</value></data>
   <data name="label4.Text" xml:space="preserve"><value>Жирный</value></data>
   <data name="label5.Text" xml:space="preserve"><value>— последняя совместимая версия (будет установлена)</value></data>
   <data name="label6.Text" xml:space="preserve"><value>— совместима с установленной игрой</value></data>

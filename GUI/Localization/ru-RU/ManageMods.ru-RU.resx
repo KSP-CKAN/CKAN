@@ -155,9 +155,9 @@
   <data name="FilterCompatibleButton.Text" xml:space="preserve"><value>Совместимые</value></data>
   <data name="FilterInstalledButton.Text" xml:space="preserve"><value>Установленные</value></data>
   <data name="FilterInstalledUpdateButton.Text" xml:space="preserve"><value>Установленные (доступны обновления)</value></data>
-  <data name="FilterReplaceableButton.Text" xml:space="preserve"><value>Заменимые</value></data>
+  <data name="FilterReplaceableButton.Text" xml:space="preserve"><value>Заменяемые</value></data>
   <data name="FilterCachedButton.Text" xml:space="preserve"><value>Загруженные</value></data>
-  <data name="FilterUncachedButton.Text" xml:space="preserve"><value>Незагруженные</value></data>
+  <data name="FilterUncachedButton.Text" xml:space="preserve"><value>Не загруженные</value></data>
   <data name="FilterNewButton.Text" xml:space="preserve"><value>Совместимые с недавнего времени</value></data>
   <data name="FilterNotInstalledButton.Text" xml:space="preserve"><value>Не установленные</value></data>
   <data name="FilterIncompatibleButton.Text" xml:space="preserve"><value>Несовместимые</value></data>
@@ -167,7 +167,7 @@
   <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve"><value>Предыдущий выбранный...</value></data>
   <data name="NavForwardToolButton.ToolTipText" xml:space="preserve"><value>Следующий выбранный...</value></data>
   <data name="Installed.HeaderText" xml:space="preserve"><value>Установлено</value></data>
-  <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>Автоустановка</value></data>
+  <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>Авто</value></data>
   <data name="UpdateCol.HeaderText" xml:space="preserve"><value>Обновление</value></data>
   <data name="ReplaceCol.HeaderText" xml:space="preserve"><value>Замена</value></data>
   <data name="ModName.HeaderText" xml:space="preserve"><value>Название</value></data>
@@ -178,7 +178,7 @@
   <data name="SizeCol.HeaderText" xml:space="preserve"><value>Размер</value></data>
   <data name="ReleaseDate.HeaderText" xml:space="preserve"><value>Дата выпуска</value></data>
   <data name="InstallDate.HeaderText" xml:space="preserve"><value>Дата установки</value></data>
-  <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Загрузок</value></data>
+  <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Загрузки</value></data>
   <data name="Description.HeaderText" xml:space="preserve"><value>Описание</value></data>
   <data name="reinstallToolStripMenuItem.Text" xml:space="preserve"><value>Переустановить</value></data>
   <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>Загрузить</value></data>

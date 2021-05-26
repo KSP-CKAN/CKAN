@@ -132,10 +132,10 @@
   <data name="RecommendationsGroup.Header" xml:space="preserve"><value>Рекомендованные</value></data>
   <data name="SuggestionsGroup.Header" xml:space="preserve"><value>Предложенные</value></data>
   <data name="IgnoredGroup.Header" xml:space="preserve"><value>Игнорирующиеся</value></data>
-  <data name="DependsRadioButton.Text" xml:space="preserve"><value>В обязательные</value></data>
-  <data name="RecommendsRadioButton.Text" xml:space="preserve"><value>в рекомендованные</value></data>
-  <data name="SuggestsRadioButton.Text" xml:space="preserve"><value>В предложенные</value></data>
-  <data name="IgnoreRadioButton.Text" xml:space="preserve"><value>В игнорирующиеся</value></data>
+  <data name="DependsRadioButton.Text" xml:space="preserve"><value>Обязательно</value></data>
+  <data name="RecommendsRadioButton.Text" xml:space="preserve"><value>Рекомендовать</value></data>
+  <data name="SuggestsRadioButton.Text" xml:space="preserve"><value>Предлагать</value></data>
+  <data name="IgnoreRadioButton.Text" xml:space="preserve"><value>Игнорировать</value></data>
   <data name="CancelExportButton.Text" xml:space="preserve"><value>Отмена</value></data>
   <data name="ExportModpackButton.Text" xml:space="preserve"><value>Экспортировать</value></data>
 </root>

@@ -130,7 +130,7 @@
   <data name="CompatibleLabel.Text" xml:space="preserve"><value>Совместимо:</value></data>
   <data name="InstalledLabel.Text" xml:space="preserve"><value>Установлено:</value></data>
   <data name="CachedLabel.Text" xml:space="preserve"><value>Кэшировано:</value></data>
-  <data name="NewlyCompatibleLabel.Text" xml:space="preserve"><value>Совместимо с недавнего времени:</value></data>
-  <data name="UpgradeableLabel.Text" xml:space="preserve"><value>Возможно обновление:</value></data>
-  <data name="ReplaceableLabel.Text" xml:space="preserve"><value>Возможна замена:</value></data>
+  <data name="NewlyCompatibleLabel.Text" xml:space="preserve"><value>Недавно совм.:</value></data>
+  <data name="UpgradeableLabel.Text" xml:space="preserve"><value>Есть обновление:</value></data>
+  <data name="ReplaceableLabel.Text" xml:space="preserve"><value>Есть замена:</value></data>
 </root>

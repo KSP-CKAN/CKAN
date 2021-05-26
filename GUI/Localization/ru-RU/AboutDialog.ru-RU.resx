@@ -124,6 +124,6 @@
   <data name="authorsLabel.Text" xml:space="preserve"><value>Авторы</value></data>
   <data name="sourceLabel.Text" xml:space="preserve"><value>Исходный код</value></data>
   <data name="forumthreadLabel.Text" xml:space="preserve"><value>Форум</value></data>
-  <data name="homepageLabel.Text" xml:space="preserve"><value>Домашняя страница</value></data>
+  <data name="homepageLabel.Text" xml:space="preserve"><value>Страница</value></data>
   <data name="$this.Text" xml:space="preserve"><value>О программе</value></data>
 </root>

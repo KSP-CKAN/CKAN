@@ -119,5 +119,5 @@
   </resheader>/>
   <data name="OKButton.Text" xml:space="preserve"><value>OK</value></data>
   <data name="CancelRenameInstanceButton.Text" xml:space="preserve"><value>Отмена</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Переименование установки</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Переименование сборки игры</value></data>
 </root>

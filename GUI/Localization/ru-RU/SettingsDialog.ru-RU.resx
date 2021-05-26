@@ -137,32 +137,32 @@
   <data name="DeleteAuthTokenButton.Text" xml:space="preserve"><value>Удалить</value></data>
   <data name="CacheGroupBox.Text" xml:space="preserve"><value>Папка загрузок</value></data>
   <data name="CacheSummary.Text" xml:space="preserve"><value>N файлов, M МиБ</value></data>
-  <data name="CacheLimitPreLabel.Text" xml:space="preserve"><value>Максимальный размер кэша:</value></data>
-  <data name="CacheLimitPostLabel.Text" xml:space="preserve"><value>МБ (пусто = неограничено)</value></data>
+  <data name="CacheLimitPreLabel.Text" xml:space="preserve"><value>Макс. размер:</value></data>
+  <data name="CacheLimitPostLabel.Text" xml:space="preserve"><value>МБ (пусто = без ограничений)</value></data>
   <data name="ChangeCacheButton.Text" xml:space="preserve"><value>Изменить...</value></data>
   <data name="ClearCacheButton.Text" xml:space="preserve"><value>Очистить</value></data>
-  <data name="PurgeToLimitMenuItem.Text" xml:space="preserve"><value>Очистить до лимита</value></data>
+  <data name="PurgeToLimitMenuItem.Text" xml:space="preserve"><value>Очистить до макс. размера</value></data>
   <data name="PurgeAllMenuItem.Text" xml:space="preserve"><value>Очистить полностью</value></data>
   <data name="ResetCacheButton.Text" xml:space="preserve"><value>Сбросить</value></data>
   <data name="OpenCacheButton.Text" xml:space="preserve"><value>Открыть</value></data>
-  <data name="AutoUpdateGroupBox.Text" xml:space="preserve"><value>Обновление</value></data>
-  <data name="LocalVersionPreLabel.Text" xml:space="preserve"><value>Установлнная версия:</value></data>
+  <data name="AutoUpdateGroupBox.Text" xml:space="preserve"><value>Обновление программы</value></data>
+  <data name="LocalVersionPreLabel.Text" xml:space="preserve"><value>Установлена:</value></data>
   <data name="LocalVersionLabel.Text" xml:space="preserve"><value>v0.0.0</value></data>
-  <data name="LatestVersionPreLabel.Text" xml:space="preserve"><value>Последняя версия:</value></data>
+  <data name="LatestVersionPreLabel.Text" xml:space="preserve"><value>Последняя:</value></data>
   <data name="LatestVersionLabel.Text" xml:space="preserve"><value>???</value></data>
   <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve"><value>Проверять обновления CKAN при запуске</value></data>
   <data name="CheckForUpdatesButton.Text" xml:space="preserve"><value>Проверить обновления</value></data>
   <data name="InstallUpdateButton.Text" xml:space="preserve"><value>Установить</value></data>
   <data name="BehaviourGroupBox.Text" xml:space="preserve"><value>Поведение</value></data>
   <data name="EnableTrayIconCheckBox.Text" xml:space="preserve"><value>Иконка в панели уведомлений</value></data>
-  <data name="MinimizeToTrayCheckBox.Text" xml:space="preserve"><value>Минимизировать в панель уведомлений</value></data>
-  <data name="RefreshPreLabel.Text" xml:space="preserve"><value>Обновлять список модификаций каждые</value></data>
+  <data name="MinimizeToTrayCheckBox.Text" xml:space="preserve"><value>Сворачивать в панель увед.</value></data>
+  <data name="RefreshPreLabel.Text" xml:space="preserve"><value>Обновлять список каждые</value></data>
   <data name="RefreshPostLabel.Text" xml:space="preserve"><value>минут(-ы)</value></data>
   <data name="PauseRefreshCheckBox.Text" xml:space="preserve"><value>Приостановить обновление</value></data>
-  <data name="MoreSettingsGroupBox.Text" xml:space="preserve"><value>Пррочие настройки</value></data>
+  <data name="MoreSettingsGroupBox.Text" xml:space="preserve"><value>Прочие настройки</value></data>
   <data name="LanguageSelectionLabel.Text" xml:space="preserve"><value>Язык (необходим перезапуск):</value></data>
   <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve"><value>Обновлять репозитории при запуске</value></data>
-  <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>Скрывать номер эпохи (время POSIX) в списке модификаций (необходим перезапуск)</value></data>
+  <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>Скрывать POSIX-время в списке модификаций (необходим перезапуск)</value></data>
   <data name="HideVCheckbox.Text" xml:space="preserve"><value>Скрывать "v" в списке модификаций (необходим перезапуск)</value></data>
   <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>Автоматически сортировать по столбцу «Обновления» по нажатию на «Выбрать доступные обновления»</value></data>
   <data name="RepoNameHeader.Text" xml:space="preserve"><value>Название</value></data>
