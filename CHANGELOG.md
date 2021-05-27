@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.30.3
 
+### Features
+
+- [ConsoleUI] Make current instance settings easier to find in ConsoleUI (#3385 by: HebaruSan; reviewed: DasSkelett)
+
 ### Bugfixes
 
 - [GUI] Invoke GUI update calls in SetupDefaultSearch() descendants (#3380 by: DasSkelett; reviewed: HebaruSan)
