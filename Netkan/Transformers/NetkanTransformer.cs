@@ -35,7 +35,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 new StagingTransformer(),
                 new MetaNetkanTransformer(http, ghApi),
-                new SpacedockTransformer(new SpacedockApi(http)),
+                new SpacedockTransformer(new SpacedockApi(http), ghApi),
                 new CurseTransformer(new CurseApi(http)),
                 new GithubTransformer(ghApi, prerelease),
                 new HttpTransformer(),

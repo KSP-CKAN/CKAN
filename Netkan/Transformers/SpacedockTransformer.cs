@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using log4net;
+using Newtonsoft.Json.Linq;
+
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Spacedock;
-using log4net;
-using Newtonsoft.Json.Linq;
+using CKAN.NetKAN.Sources.Github;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -18,12 +20,14 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(SpacedockTransformer));
 
         private readonly ISpacedockApi _api;
+        private readonly IGithubApi    _githubApi;
 
         public string Name { get { return "spacedock"; } }
 
-        public SpacedockTransformer(ISpacedockApi api)
+        public SpacedockTransformer(ISpacedockApi api, IGithubApi githubApi)
         {
-            _api      = api;
+            _api       = api;
+            _githubApi = githubApi;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
@@ -123,6 +127,7 @@ namespace CKAN.NetKAN.Transformers
 
             TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
             TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
+            TryAddResourceURL(metadata.Identifier, resourcesJson, "bugtracker", getBugtracker(sdMod.source_code));
             resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
 
             if (sdMod.background != null)
@@ -200,5 +205,43 @@ namespace CKAN.NetKAN.Transformers
 
             return result;
         }
+
+        private string getBugtracker(string repoUrl)
+        {
+            if (!string.IsNullOrEmpty(repoUrl))
+            {
+                try
+                {
+                    var uri = new Uri(repoUrl);
+                    if (uri.Host == "github.com")
+                    {
+                        var match = githubUrlPathPattern.Match(uri.AbsolutePath);
+                        if (match.Success)
+                        {
+                            var owner = match.Groups["owner"].Value;
+                            var repo  = match.Groups["repo"].Value;
+                            var repoInfo = _githubApi.GetRepo(new GithubRef(
+                                $"#/ckan/github/{owner}/{repo}", false, false
+                            ));
+                            if (repoInfo.HasIssues)
+                            {
+                                return $"{repoInfo.HtmlUrl}/issues";
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // Just give up, it's fine
+                }
+            }
+            return null;
+        }
+
+        private static readonly Regex githubUrlPathPattern = new Regex(
+            "^/(?<owner>[^/]+)/(?<repo>[^/]+)",
+            RegexOptions.Compiled
+        );
+
     }
 }

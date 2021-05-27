@@ -12,6 +12,10 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Invoke GUI update calls in SetupDefaultSearch() descendants (#3380 by: DasSkelett; reviewed: HebaruSan)
 
+### Internal
+
+- [Netkan] Set bugtracker resource for SpaceDock mods with GitHub repos (#3384 by: HebaruSan; reviewed: DasSkelett)
+
 ## v1.30.2 (Hawking)
 
 ### Features
