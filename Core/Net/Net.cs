@@ -95,7 +95,7 @@ namespace CKAN
 
             try
             {
-                var agent = MakeDefaultHttpClient();
+                var agent = new RedirectingTimeoutWebClient();
                 agent.DownloadFile(url, filename);
                 etag = agent.ResponseHeaders.Get("ETag")?.Replace("\"", "");
             }
@@ -207,7 +207,7 @@ namespace CKAN
         {
             log.DebugFormat("About to download {0}", url.OriginalString);
 
-            WebClient agent = MakeDefaultHttpClient(timeout);
+            WebClient agent = new RedirectingTimeoutWebClient(timeout, mimeType);
 
             // Check whether to use an auth token for this host
             if (!string.IsNullOrEmpty(authToken)
@@ -217,11 +217,6 @@ namespace CKAN
                 log.InfoFormat("Using auth token for {0}", url.Host);
                 // Send our auth token to the GitHub API (or whoever else needs one)
                 agent.Headers.Add("Authorization", $"token {authToken}");
-            }
-            if (!string.IsNullOrEmpty(mimeType))
-            {
-                log.InfoFormat("Setting MIME type {0}", mimeType);
-                agent.Headers.Add("Accept", mimeType);
             }
 
             for (int whichAttempt = 0; whichAttempt < MaxRetries + 1; ++whichAttempt)
@@ -361,41 +356,75 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Create a WebClient with some CKAN-sepcific adjustments, like a user agent string.
+        /// A WebClient with some CKAN-sepcific adjustments:
+        /// - A user agent string (required by GitHub API policy)
+        /// - Sets the Accept header to a given MIME type (needed to get raw files from GitHub API)
+        /// - Times out after a specified amount of time in milliseconds, 100 000 milliseconds (=100 seconds) by default (https://stackoverflow.com/a/3052637)
+        /// - Handles permanent redirects to the same host without clearing the Authorization header (needed to get files from renamed GitHub repositories via API)
         /// </summary>
-        /// <param name="timeout">Timeout for the request in milliseconds, defaulting to 100 000 (=100 seconds)</param>
-        /// <returns>A custom WebClient</returns>
-        private static WebClient MakeDefaultHttpClient(int timeout = 100000)
+        private sealed class RedirectingTimeoutWebClient : WebClient
         {
-            var client = new TimeoutWebClient(timeout);
-            client.Headers.Add("User-Agent", UserAgentString);
-            return client;
-        }
-
-        /// <summary>
-        /// A WebClient that times out after a specified amount of time in milliseconds, 100 000 milliseconds (=100 seconds) by default.
-        /// Taken from https://stackoverflow.com/a/3052637
-        /// </summary>
-        private sealed class TimeoutWebClient : WebClient
-        {
-            public int Timeout { get; set; }
-
-            public TimeoutWebClient() : this (100000) { }
-
-            public TimeoutWebClient(int timeout)
+            /// <summary>
+            /// Initialize our special web client
+            /// </summary>
+            /// <param name="timeout">Timeout for the request in milliseconds, defaulting to 100 000 (=100 seconds)</param>
+            /// <param name="mimeType">A mime type sent with the "Accept" header</param>
+            public RedirectingTimeoutWebClient(int timeout = 100000, string mimeType = "")
             {
-                Timeout = timeout;
+                this.timeout  = timeout;
+                this.mimeType = mimeType;
             }
 
             protected override WebRequest GetWebRequest(Uri address)
             {
-                var request = base.GetWebRequest(address);
-                if (request != null)
+                // Set user agent and MIME type for every request. including redirects
+                Headers.Add("User-Agent", UserAgentString);
+                if (!string.IsNullOrEmpty(mimeType))
                 {
-                    request.Timeout = this.Timeout;
+                    log.InfoFormat("Setting MIME type {0}", mimeType);
+                    Headers.Add("Accept", mimeType);
+                }
+                var request = base.GetWebRequest(address);
+                if (request is HttpWebRequest hwr)
+                {
+                    // GitHub API tokens cannot be passed via auto-redirect
+                    hwr.AllowAutoRedirect = false;
+                    hwr.Timeout           = timeout;
                 }
                 return request;
             }
+
+            protected override WebResponse GetWebResponse(WebRequest request)
+            {
+                if (request == null)
+                    return null;
+                var response = base.GetWebResponse(request);
+                if (response == null)
+                    return null;
+
+                if (response is HttpWebResponse hwr)
+                {
+                    int statusCode = (int)hwr.StatusCode;
+                    var location = hwr.Headers["Location"];
+                    if (statusCode >= 300 && statusCode <= 399 && location != null)
+                    {
+                        log.InfoFormat("Redirecting to {0}", location);
+                        hwr.Close();
+                        var redirUri = new Uri(request.RequestUri, location);
+                        if (Headers.AllKeys.Contains("Authorization")
+                            && request.RequestUri.Host != redirUri.Host)
+                        {
+                            log.InfoFormat("Host mismatch, purging token for redirect");
+                            Headers.Remove("Authorization");
+                        }
+                        return GetWebResponse(GetWebRequest(redirUri));
+                    }
+                }
+                return response;
+            }
+
+            private int    timeout;
+            private string mimeType;
         }
 
         // HACK: The ancient WebClient doesn't support setting the request type to HEAD and WebRequest doesn't support
