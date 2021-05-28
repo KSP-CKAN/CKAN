@@ -338,6 +338,8 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="MainWaitDone" xml:space="preserve"><value>All done!</value></data>
   <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>Directory {0} is not a valid game directory.</value></data>
   <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Directory "{0}" doesn't exist.</value></data>
+  <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (INVALID)</value></data>
+  <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (LOCKED)</value></data>
   <data name="NewRepoDialogFailed" xml:space="preserve"><value>Failed to fetch master list.</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>CKAN Plugins (*.dll)|*.dll</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} files, {1}</value></data>

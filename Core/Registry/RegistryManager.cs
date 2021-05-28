@@ -40,6 +40,16 @@ namespace CKAN
         /// </summary>
         public string previousCorruptedPath;
 
+        private static string InstanceRegistryLockPath(string path)
+        {
+            return Path.Combine(path, "registry.locked");
+        }
+
+        public static bool IsInstanceMaybeLocked(string path)
+        {
+            return File.Exists(InstanceRegistryLockPath(path));
+        }
+
         // We require our constructor to be private so we can
         // enforce this being an instance (via Instance() above)
         private RegistryManager(string path, GameInstance ksp)
@@ -47,7 +57,7 @@ namespace CKAN
             this.ksp = ksp;
 
             this.path    = Path.Combine(path, "registry.json");
-            lockfilePath = Path.Combine(path, "registry.locked");
+            lockfilePath = InstanceRegistryLockPath(path);
 
             // Create a lock for this registry, so we cannot touch it again.
             if (!GetLock())
@@ -146,7 +156,7 @@ namespace CKAN
         private void CheckStaleLock()
         {
             log.DebugFormat("Checking for stale lock file at {0}", lockfilePath);
-            if (File.Exists(lockfilePath))
+            if (IsInstanceMaybeLocked(path))
             {
                 log.DebugFormat("Lock file found at {0}", lockfilePath);
                 string contents;

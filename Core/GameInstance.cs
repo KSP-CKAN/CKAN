@@ -72,14 +72,20 @@ namespace CKAN
             }
         }
 
-        public bool Valid
-        {
-            get
-            {
-                return game.GameInFolder(new DirectoryInfo(gameDir))
-                    && Version() != null;
-            }
-        }
+        /// <returns>
+        /// true if the game seems to be here and a version is found,
+        /// false otherwise
+        /// </returns>
+        public bool Valid => game.GameInFolder(new DirectoryInfo(gameDir)) && Version() != null;
+
+        /// <returns>
+        /// true if the instance may be locked, false otherwise.
+        /// Note that this is a tentative value; if it's true,
+        /// we still need to try to acquire the lock to confirm it isn't stale.
+        /// NOTE: Will throw NotKSPDirKraken if the instance isn't valid!
+        ///       Either be prepared to catch that exception, or check Valid first to avoid it.
+        /// </returns>
+        public bool IsMaybeLocked => RegistryManager.IsInstanceMaybeLocked(CkanDir());
 
         /// <summary>
         /// Create the CKAN directory and any supporting files.
