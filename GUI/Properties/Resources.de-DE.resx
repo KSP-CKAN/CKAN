@@ -310,6 +310,8 @@ Wenn du ein Fehler mit dem CKAN Client vermutest: https://github.com/KSP-CKAN/CK
   <data name="MainWaitDone" xml:space="preserve"><value>Alles erledigt!</value></data>
   <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>"{0}" ist kein gültiges Spielverzeichnis.</value></data>
   <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Das Verzeichnis "{0}" existiert nicht.</value></data>
+  <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (UNGÜLTIG)</value></data>
+  <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (GESPERRT)</value></data>
   <data name="NewRepoDialogFailed" xml:space="preserve"><value>Die Master-Liste konnte nicht abgerufen werden.</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} Dateien, {1}</value></data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Ungültiger Pfad: "{0}"</value></data>

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [ConsoleUI] Make current instance settings easier to find in ConsoleUI (#3385 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Show game instance selection dialog if default is locked (#3382 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

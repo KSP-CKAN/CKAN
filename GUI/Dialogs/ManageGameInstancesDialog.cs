@@ -43,6 +43,7 @@ namespace CKAN
         {
             _user = user;
             InitializeComponent();
+            DialogResult = DialogResult.Cancel;
 
             if (centerScreen)
             {
@@ -74,7 +75,11 @@ namespace CKAN
                 .OrderByDescending(instance => instance.Value.Version())
                 .Select(instance => new ListViewItem(new string[]
                 {
-                    instance.Key,
+                    !instance.Value.Valid 
+                        ? string.Format(Properties.Resources.ManageGameInstancesNameColumnInvalid, instance.Key)
+                        : _manager.CurrentInstance != instance.Value && instance.Value.IsMaybeLocked
+                            ? string.Format(Properties.Resources.ManageGameInstancesNameColumnLocked, instance.Key)
+                            : instance.Key,
                     instance.Value.game.ShortName,
                     instance.Value.Version()?.ToString() ?? Properties.Resources.CompatibleGameVersionsDialogNone,
                     instance.Value.GameDir().Replace('/', Path.DirectorySeparatorChar)

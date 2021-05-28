@@ -34,6 +34,9 @@ namespace CKAN
                 );
                 if (!Visible)
                 {
+                    StartPosition = Main.Instance.actuallyVisible
+                        ? FormStartPosition.CenterParent
+                        : FormStartPosition.CenterScreen;
                     ShowDialog(Main.Instance);
                 }
             });

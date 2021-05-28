@@ -764,6 +764,13 @@ namespace CKAN.Properties {
             get { return (string)(ResourceManager.GetObject("ManageGameInstancesDirectoryDeleted", resourceCulture)); }
         }
 
+        internal static string ManageGameInstancesNameColumnInvalid {
+            get { return (string)(ResourceManager.GetObject("ManageGameInstancesNameColumnInvalid", resourceCulture)); }
+        }
+        internal static string ManageGameInstancesNameColumnLocked {
+            get { return (string)(ResourceManager.GetObject("ManageGameInstancesNameColumnLocked", resourceCulture)); }
+        }
+
         internal static string NewRepoDialogFailed {
             get { return (string)(ResourceManager.GetObject("NewRepoDialogFailed", resourceCulture)); }
         }
