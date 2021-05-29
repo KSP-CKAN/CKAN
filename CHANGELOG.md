@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Netkan] Set bugtracker resource for SpaceDock mods with GitHub repos (#3384 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Pass token for moved files on GitHub (#3387 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.30.2 (Hawking)
 
