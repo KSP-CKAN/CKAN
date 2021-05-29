@@ -2,7 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.30.4
+## v1.30.5
+
+## v1.30.4 (Hubble)
 
 ### Features
 
