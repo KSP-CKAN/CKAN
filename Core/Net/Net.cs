@@ -384,6 +384,11 @@ namespace CKAN
                     log.InfoFormat("Setting MIME type {0}", mimeType);
                     Headers.Add("Accept", mimeType);
                 }
+                if (permanentRedirects.TryGetValue(address, out Uri redirUri))
+                {
+                    // Obey a previously received permanent redirect
+                    address = redirUri;
+                }
                 var request = base.GetWebRequest(address);
                 if (request is HttpWebRequest hwr)
                 {
@@ -417,6 +422,11 @@ namespace CKAN
                             log.InfoFormat("Host mismatch, purging token for redirect");
                             Headers.Remove("Authorization");
                         }
+                        // Moved or PermanentRedirect
+                        if (statusCode == 301 || statusCode == 308)
+                        {
+                            permanentRedirects.Add(request.RequestUri, redirUri);
+                        }
                         return GetWebResponse(GetWebRequest(redirUri));
                     }
                 }
@@ -425,6 +435,7 @@ namespace CKAN
 
             private int    timeout;
             private string mimeType;
+            private static readonly Dictionary<Uri, Uri> permanentRedirects = new Dictionary<Uri, Uri>();
         }
 
         // HACK: The ancient WebClient doesn't support setting the request type to HEAD and WebRequest doesn't support
