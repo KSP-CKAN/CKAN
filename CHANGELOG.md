@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Multiple] Cache permanent redirects (#3389 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Allow YAML for human-edited metadata (YAMLKAN) (#3367 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.30.4 (Hubble)
 

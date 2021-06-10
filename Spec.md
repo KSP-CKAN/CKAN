@@ -688,6 +688,23 @@ NetKAN is the name the tool which is used to automatically generate CKAN files f
 consumes `.netkan` files to produce `.ckan` files. `.netkan` files are a *strict superset* of `.ckan` files. Every
 `.ckan` file is a valid `.netkan` file but not vice versa. NetKAN uses the following fields to produce `.ckan` files.
 
+##### YAML Option
+
+A `.netkan` file may be in either JSON or YAML format. All examples shown below assume JSON, but the YAML equivalents will work the same way.
+
+Note that `#` is the comment character in YAML, so even if you choose YAML syntax, you still can't omit the quotes around a value that includes `#`, such as typical values of `$kref` and `$vref`:
+
+```yaml
+$kref: "#/ckan/spacedock/1234"
+$vref: "#/ckan/ksp-avc"
+```
+
+##### Internal `.ckan` files
+
+If a module's download contains a file with a `.ckan` extension, this file will be parsed and its contents added to the module's metadata. This can be a convenient way to handle metadata values that can change from one version to the next, such as dependencies.
+
+An internal `.ckan` file may be in either JSON or YAML format.
+
 ##### `$kref`
 
 The `$kref` field indicates that data should be filled in from an external service provider. The following `$kref`
@@ -856,6 +873,8 @@ For example: `#/ckan/netkan/https://www.kspmods.example/AwesomeMod.netkan`.
 The remote `.netkan` file is downloaded and used as if it were the original. `.netkan` files which contain such a
 reference are known as *recursive netkans* or *metanetkans*. They are primarily used so that mod authors can provide
 authoritative metadata.
+
+A metanetkan may be in either JSON or YAML format.
 
 The following conditions apply:
 - A metanekan may not reference another metanetkan, otherwise an error is produced.

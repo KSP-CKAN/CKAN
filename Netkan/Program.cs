@@ -15,6 +15,7 @@ using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Processors;
 using CKAN.NetKAN.Transformers;
+using CKAN.NetKAN.Extensions;
 
 namespace CKAN.NetKAN
 {
@@ -174,7 +175,7 @@ namespace CKAN.NetKAN
                 Log.WarnFormat("Input is not a .netkan file");
             }
 
-            return new Metadata(JObject.Parse(File.ReadAllText(Options.File)));
+            return new Metadata(YamlExtensions.Parse(File.OpenText(Options.File)));
         }
 
         internal static string CkanFileName(Metadata metadata)
