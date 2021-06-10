@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AboutDialogLabel2Text" xml:space="preserve"><value>Версия {0}</value></data>
+  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Файл метаданных сборки</value></data>
+  <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Введите название новой сборки.</value></data>
+  <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Введите путь к папке новой сборки.</value></data>
+  <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>«Клонирование...»</value></data>
+  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve"><value>Неверный формат версии DLC {0}. Пример оформления версии: «1.0.0».</value></data>
+  <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>Сборка, которую вы пытаетесь клонировать, не является пригодной сборкой игры: {0}</value></data>
+  <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>Конечная папка не пуста: {0}</value></data>
+  <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>Клонирование не удалось: {0}</value></data>
+  <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>Клонирование успешно завершено.</value></data>
+  <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>Создание новой сборки...</value></data>
+  <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>Это название уже используется.</value></data>
+  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>Не удалось создать псевдо-сборку: {0}</value></data>
+  <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>Создание успешно завершено.</value></data>
+  <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;НЕТ&gt;</value></data>
+  <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>Игра была обновлена с последнего изменения данных настроек. Убедитесь в их правильности.</value></data>
+  <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (предыдущая версия игры: {1})</value></data>
+  <data name="CompatibleGameVersionsDialogInvalidFormat" xml:space="preserve"><value>Неверный формат версии</value></data>
+  <data name="CompatibleGameVersionsDialogErrorTitle" xml:space="preserve"><value>Ошибка</value></data>
+  <data name="ConfigurationParseError" xml:space="preserve"><value>Ошибка парсинга "{0}"{1}
+По возможности уберите {2} из {3} и перезапустите CKAN.</value></data>
+  <data name="GUIModNSlashA" xml:space="preserve"><value>Н/Д</value></data>
+  <data name="GUIModUnknown" xml:space="preserve"><value>Неизвестно</value></data>
+  <data name="GUIModMethodNotCKAN" xml:space="preserve"><value>Метод не может быть вызван, если он не является IsCKAN</value></data>
+  <data name="GUIModGameCompatibilityLong" xml:space="preserve"><value>{0} (используется версия {1})</value></data>
+  <data name="MainAutoUpdateFailed" xml:space="preserve"><value>Ошибка авто-обновления:&#xD;&#xA;{0}</value></data>
+  <data name="MainQuitWithConflicts" xml:space="preserve"><value>Существуют неразрешённые конфликты. Выйти?&#xD;&#xA;&#xD;&#xA;{0}</value></data>
+  <data name="MainQuit" xml:space="preserve"><value>Выйти</value></data>
+  <data name="MainGoBack" xml:space="preserve"><value>Вернуться</value></data>
+  <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>Найдены неустановленные зависимости. Выйти?</value></data>
+  <data name="MainQuitWithUnappliedChanges" xml:space="preserve"><value>Некоторые изменения не применены. Выйти?
+
+{0}</value></data>
+  <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>Обновление CKAN</value></data>
+  <data name="MainUpgradingTo" xml:space="preserve"><value>Обновление CKAN до {0}</value></data>
+  <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0} зависит {1}, который несовместим с установленной версией игры</value></data>
+  <data name="MainFilterAll" xml:space="preserve"><value>Фильтр (Все)</value></data>
+  <data name="MainFilterIncompatible" xml:space="preserve"><value>Фильтр (Несовместимые)</value></data>
+  <data name="MainFilterInstalled" xml:space="preserve"><value>Фильтр (Установленные)</value></data>
+  <data name="MainFilterUpgradeable" xml:space="preserve"><value>Фильтр (Обновляемые)</value></data>
+  <data name="MainFilterReplaceable" xml:space="preserve"><value>Фильтр (Заменяемые)</value></data>
+  <data name="MainFilterCached" xml:space="preserve"><value>Фильтр (Загруженные)</value></data>
+  <data name="MainFilterUncached" xml:space="preserve"><value>Фильтр (Незагруженные)</value></data>
+  <data name="MainFilterNew" xml:space="preserve"><value>Фильтр (Новые)</value></data>
+  <data name="MainFilterNotInstalled" xml:space="preserve"><value>Фильтр (Не установленные)</value></data>
+  <data name="MainFilterCompatible" xml:space="preserve"><value>Фильтр (Совместимые)</value></data>
+  <data name="MainFilterLabel" xml:space="preserve"><value>Ярлык ({0})</value></data>
+  <data name="MainFilterTag" xml:space="preserve"><value>Тег ({0})</value></data>
+  <data name="MainFilterUntagged" xml:space="preserve"><value>Тег (Не тегированные)</value></data>
+  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>Некоторые из установленных модулей несовместимы! Запуск игры может привести к нежелательным последствиям. Запустить игру?
+
+{0}</value></data>
+  <data name="MainLaunch" xml:space="preserve"><value>Запустить</value></data>
+  <data name="MainLaunchFailed" xml:space="preserve"><value>Не удалось запустить игру.
+
+{0}</value></data>
+  <data name="MainModPack" xml:space="preserve"><value>Пакет модификаций CKAN (*.ckan)</value></data>
+  <data name="MainPlainText" xml:space="preserve"><value>Текст (*.txt)</value></data>
+  <data name="MainMarkdown" xml:space="preserve"><value>Markdown (*.md)</value></data>
+  <data name="MainBBCode" xml:space="preserve"><value>BBCode (*.txt)</value></data>
+  <data name="MainCSV" xml:space="preserve"><value>Значения, разделённые запятыми (*.csv)</value></data>
+  <data name="MainTSV" xml:space="preserve"><value>Значения, разделённые табуляцией (*.tsv)</value></data>
+  <data name="MainNotFound" xml:space="preserve"><value>Не найдено.</value></data>
+  <data name="MainReinstallConfirm" xml:space="preserve"><value>Хотите ли вы переустановить {0}?</value></data>
+  <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN не может установить дополнение {0}!</value></data>
+  <data name="MainCorruptedRegistry" xml:space="preserve"><value>Повреждение реестра, архивированного в {0}: {1}
+
+Это означает, что CKAN «забыл» о всех установленных модификациях, но сами они продолжают находиться в GameData. Вы можете переустановить их, импортировав файлы {2}.</value></data>
+  <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} не поддерживается установленной версией игры и может не заработать.
+
+Вы действительно хотите установить его?</value></data>
+  <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Установить</value></data>
+  <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Отмена</value></data>
+  <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (метапакет)</value></data>
+  <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (загружено)</value></data>
+  <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
+  <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Обновить выбранное пользователем до версии {0}.</value></data>
+  <data name="MainChangesetNewInstall" xml:space="preserve"><value>Установка выбранной пользователем модификации.</value></data>
+  <data name="MainImportTitle" xml:space="preserve"><value>Импортировать модификации</value></data>
+  <data name="MainImportFilter" xml:space="preserve"><value>Модификации (*.zip)|*.zip</value></data>
+  <data name="MainImportWaitTitle" xml:space="preserve"><value>Журнал</value></data>
+  <data name="MainInstallWaitTitle" xml:space="preserve"><value>Журнал</value></data>
+  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} требует {1}, которого нет в списке, или он недоступен для установленной версии игры.</value></data>
+  <data name="MainInstallNotFound" xml:space="preserve"><value>Требуется модуль {0}, которого нет в списке, или он недоступен для установленной версии игры.</value></data>
+  <data name="MainInstallBadMetadata" xml:space="preserve"><value>Для модуля {0} обнаружены некорректные метаданные: {1}</value></data>
+  <data name="MainInstallFileExists" xml:space="preserve"><value>О нет!
+
+Была совершена попытка перезаписать файл другой модификации!
+
+Пожалуйста, совершите `ckan update` и попробуйте заново.
+
+Если эта проблема возникает снова, возможно, это ошибка упаковки.
+Пожалуйста, отправьте отчёт о ней на:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+
+Включите в отчёт следующую информацию:
+
+Файл (File)      : {0}
+Устанавливаемая модификация (Installing Mod) : {1}
+Модификация-владелец (Owning Mod): {2}
+Версия CKAN (CKAN Version)   : {3}</value></data>
+  <data name="MainInstallUnownedFileExists" xml:space="preserve"><value>О нет!
+
+Похоже, что модификация, которую вы пытаетесь установить, уже
+установлена или конфликтует с уже установленной модификацией.
+
+В качестве меры безопасности CKAN *никогда* не перезаписывает 
+или изменяет файлы, которые не установил сам.
+
+Если вы хотите установить {0} с помощью CKAN,
+пожалуйста, вручную удалите модификацию, владеющую
+
+{1}
+
+и попробуйте ещё раз.</value></data>
+  <data name="MainInstallGameDataReverted" xml:space="preserve"><value>Папка «GameData» возвращена в изначальное состояние.</value></data>
+  <data name="MainInstallOpenSettingsPrompt" xml:space="preserve"><value>{0}
+
+Открыть настройки сейчас?</value></data>
+  <data name="MainInstallOpenSettings" xml:space="preserve"><value>Открыть настройки</value></data>
+  <data name="MainInstallNo" xml:space="preserve"><value>Нет</value></data>
+  <data name="MainInstallModSuccess" xml:space="preserve"><value>Модуль «{0}» успешно установлен</value></data>
+  <data name="MainInstallSuccess" xml:space="preserve"><value>Успех!</value></data>
+  <data name="MainInstallCancelTooLate" xml:space="preserve"><value>Отмена совершена слишком поздно, процесс завершён!</value></data>
+  <data name="MainInstallCancelAfterInstall" xml:space="preserve"><value>Пользователь отменил процесс, однако модификации уже были установлены/удалены.</value></data>
+  <data name="MainInstallProcessComplete" xml:space="preserve"><value>Процесс завершён!</value></data>
+  <data name="MainInstallProcessCanceled" xml:space="preserve"><value>Процесс отменён пользователем!</value></data>
+  <data name="MainInstallCanceledManually" xml:space="preserve"><value>Пользователь отменил процесс!</value></data>
+  <data name="MainInstallInstallCanceled" xml:space="preserve"><value>Установка/удаление отменены!</value></data>
+  <data name="MainInstallErrorInstalling" xml:space="preserve"><value>Ошибка в процессе установки!</value></data>
+  <data name="MainInstallUnknownError" xml:space="preserve"><value>Возникла неизвестная ошибка, попробуйте ещё раз!</value></data>
+  <data name="MainInstallKnownError" xml:space="preserve"><value>Если сообщение выше сообщает об ошибке загрузки, попробуйте ещё раз. В противном случае отправьте отчёт об ошибке.
+Если вы подозреваете ошибку в метаданных: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+Если вы подозреваете ошибку в клиенте: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
+  <data name="MainInstallFailed" xml:space="preserve"><value>Установка не удалась!</value></data>
+  <data name="MainInstallProvidedBy" xml:space="preserve"><value>Модуль {0} содержится в нескольких модулях, выберите один из них:</value></data>
+  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN не может установить дополнение '{0}'.</value></data>
+  <data name="ModInfoNSlashA" xml:space="preserve"><value>Н/Д</value></data>
+  <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (виртуальный)</value></data>
+  <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (не индексирован)</value></data>
+  <data name="ModInfoNotCached" xml:space="preserve"><value>Модификация не загружена, нажмите «Загрузить» для просмотра содержимого</value></data>
+  <data name="ModInfoCached" xml:space="preserve"><value>Модуль загружен, достуен предпросмотр</value></data>
+  <data name="ModInfoNoDownload" xml:space="preserve"><value>Модуль не имеет загрузок</value></data>
+  <data name="ModInfoHomepageLabel" xml:space="preserve"><value>Страница:</value></data>
+  <data name="ModInfoSpaceDockLabel" xml:space="preserve"><value>SpaceDock:</value></data>
+  <data name="ModInfoCurseLabel" xml:space="preserve"><value>Curse:</value></data>
+  <data name="ModInfoRepositoryLabel" xml:space="preserve"><value>Репозиторий:</value></data>
+  <data name="ModInfoBugTrackerLabel" xml:space="preserve"><value>Баг-трекер:</value></data>
+  <data name="ModInfoContinuousIntegrationLabel" xml:space="preserve"><value>Постоянная интеграция:</value></data>
+  <data name="ModInfoLicenseLabel" xml:space="preserve"><value>Лицензия:</value></data>
+  <data name="ModInfoManualLabel" xml:space="preserve"><value>Инструкция:</value></data>
+  <data name="ModInfoMetanetkanLabel" xml:space="preserve"><value>Метаданные NetKAN:</value></data>
+  <data name="ModInfoRemoteAvcLabel" xml:space="preserve"><value>Файл версии:</value></data>
+  <data name="ModInfoStoreLabel" xml:space="preserve"><value>Магазин:</value></data>
+  <data name="ModInfoSteamStoreLabel" xml:space="preserve"><value>Steam:</value></data>
+  <data name="MainModListWaitTitle" xml:space="preserve"><value>Загрузка модулей</value></data>
+  <data name="MainModListLoadingRegistry" xml:space="preserve"><value>Загрузка реестра...</value></data>
+  <data name="MainModListLoadingInstalled" xml:space="preserve"><value>Загрузка установленных модулей...</value></data>
+  <data name="MainModListLoadingAvailable" xml:space="preserve"><value>Загрузка доступных модулей...</value></data>
+  <data name="MainModListLoadingIncompatible" xml:space="preserve"><value>Загрузка несовместимых модулей...</value></data>
+  <data name="MainModListRestoringChangeset" xml:space="preserve"><value>Восстановление списка изменений...</value></data>
+  <data name="MainModListPreservingNew" xml:space="preserve"><value>Сохранение новых флагов...</value></data>
+  <data name="MainModListPopulatingList" xml:space="preserve"><value>Заполнение списка модификаций...</value></data>
+  <data name="MainModListUpdatingFilters" xml:space="preserve"><value>Обновление фильтров...</value></data>
+  <data name="MainModListCompatible" xml:space="preserve"><value>Совместимые ({0})</value></data>
+  <data name="MainModListInstalled" xml:space="preserve"><value>Установленные ({0})</value></data>
+  <data name="MainModListUpgradeable" xml:space="preserve"><value>Обновляемые ({0})</value></data>
+  <data name="MainModListReplaceable" xml:space="preserve"><value>Заменяемые ({0})</value></data>
+  <data name="MainModListCached" xml:space="preserve"><value>Загруженные ({0})</value></data>
+  <data name="MainModListUncached" xml:space="preserve"><value>Не загруженные ({0})</value></data>
+  <data name="MainModListNewlyCompatible" xml:space="preserve"><value>Совместимые с недавнего времени ({0})</value></data>
+  <data name="MainModListNotInstalled" xml:space="preserve"><value>Не установленные ({0})</value></data>
+  <data name="MainModListIncompatible" xml:space="preserve"><value>Несовместимые ({0})</value></data>
+  <data name="MainModListAll" xml:space="preserve"><value>Все ({0})</value></data>
+  <data name="MainModListUpdatingTray" xml:space="preserve"><value>Обновление панели...</value></data>
+  <data name="MainModListAutoDetected" xml:space="preserve"><value>АВ</value></data>
+  <data name="MainModListUnknownFilter" xml:space="preserve"><value>Неизвестный тип фильтра {0} в IsModInFilter</value></data>
+  <data name="MainRecommendationsTitle" xml:space="preserve"><value>Выберите рекомендованные, предложенные или вспомогательные модификации</value></data>
+  <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>Не найдено рекомендованных, предложенных или вспомогательных модификаций.</value></data>
+  <data name="MainRepoWaitTitle" xml:space="preserve"><value>Обновление репозиториев</value></data>
+  <data name="MainRepoScanning" xml:space="preserve"><value>Поиск DLC и вручную установленных модулей...</value></data>
+  <data name="MainRepoContacting" xml:space="preserve"><value>Соединение с репозиторием...</value></data>
+  <data name="MainRepoUpdating" xml:space="preserve"><value>Обновление репозиториев...</value></data>
+  <data name="MainRepoFailedToConnect" xml:space="preserve"><value>Не удалось подключиться к репозиторию. Исключение: {0}</value></data>
+  <data name="MainRepoUpToDate" xml:space="preserve"><value>Репозитории уже обновлены.</value></data>
+  <data name="MainRepoFailed" xml:space="preserve"><value>Не удалось обновить репозитории!</value></data>
+  <data name="MainRepoSuccess" xml:space="preserve"><value>Репозитории успешно обновлены.</value></data>
+  <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>Хотите ли вы, чтобы CKAN обновлял список модификаций при каждом запуске? Вы всегда сможете вручную обновлять список.</value></data>
+  <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>Доступно {0} обновлений</value></data>
+  <data name="MainRepoBalloonTipTooltip" xml:space="preserve"><value>Нажмите, чтобы обновить</value></data>
+  <data name="MainTrayIconResume" xml:space="preserve"><value>Возобновить</value></data>
+  <data name="MainTrayIconPause" xml:space="preserve"><value>Приостановить</value></data>
+  <data name="MainTrayNoUpdates" xml:space="preserve"><value>Нет доступных обновлений</value></data>
+  <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>Доступно {0} обновлений</value></data>
+  <data name="MainWaitPleaseWait" xml:space="preserve"><value>Пожалуйста, подождите</value></data>
+  <data name="MainWaitDone" xml:space="preserve"><value>Готово!</value></data>
+  <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>Папка «{0}» не является папкой игры.</value></data>
+  <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Папка «{0}» не существует.</value></data>
+  <data name="NewRepoDialogFailed" xml:space="preserve"><value>не удалось получить список.</value></data>
+  <data name="PluginsDialogFilter" xml:space="preserve"><value>Плагины CKAN (*.dll)|*.dll</value></data>
+  <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} файлов, {1}</value></data>
+  <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Неверный путь: {0}</value></data>
+  <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>Выберите папку для хранения загрузок CKAN:</value></data>
+  <data name="SettingsDialogDeleteConfirm" xml:space="preserve"><value>Вы действительно хотите удалить {0} загруженных файлов? Это освободит {1}.</value></data>
+  <data name="AddAuthTokenTitle" xml:space="preserve"><value>Добавить токен аутентификации</value></data>
+  <data name="AddAuthTokenHost" xml:space="preserve"><value>Хост:</value></data>
+  <data name="AddAuthTokenToken" xml:space="preserve"><value>Токен:</value></data>
+  <data name="AddAuthTokenAccept" xml:space="preserve"><value>&amp;Принять</value></data>
+  <data name="AddAuthTokenCancel" xml:space="preserve"><value>&amp;Отмена</value></data>
+  <data name="AddAuthTokenHostRequired" xml:space="preserve"><value>Необходимо заполнить поле «Хост».</value></data>
+  <data name="AddAuthTokenTokenRequired" xml:space="preserve"><value>Необходимо заполнить поле «Токен».</value></data>
+  <data name="AddAuthTokenInvalidHost" xml:space="preserve"><value>{0} не является именем хоста.</value></data>
+  <data name="AddAuthTokenDupHost" xml:space="preserve"><value>{0} уже имеет токен аутентификации.</value></data>
+  <data name="SettingsDialogUpdateFailed" xml:space="preserve"><value>Ошибка в процессе обновления.
+Не удаётся автоматически обновить программу, так как файл «ckan.exe» помечен как «только для чтения». Обновите CKAN вручную из https://github.com/KSP-CKAN/CKAN/releases/latest.</value></data>
+  <data name="URLHandlersPrompt" xml:space="preserve"><value>CKAN нуждается в разрешении для добавления обработчика ссылок вида «ckan://».
+Хотите ли вы разрешить CKAN это делать? При выборе «Нет» вы не увидите это сообщение снова.</value></data>
+  <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Скопировать адрес ссылки</value></data>
+  <data name="StatusInstanceLabelText" xml:space="preserve"><value>Сборка игры: {0} ({1} {2})</value></data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Избранные</value></data>
+  <data name="ModuleLabelListHidden" xml:space="preserve"><value>Скрытые</value></data>
+  <data name="ModuleLabelListHeld" xml:space="preserve"><value>Без обновления</value></data>
+  <data name="ModuleLabelListGlobal" xml:space="preserve"><value>Глобальные</value></data>
+  <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>Вы уверены, что хотите удалить {0}? Это действие не может быть отменено!</value></data>
+  <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>Сохранить изменения?</value></data>
+  <data name="EditLabelsDialogNoRecord" xml:space="preserve"><value>Нет изменяемых записей!</value></data>
+  <data name="EditLabelsDialogNameRequired" xml:space="preserve"><value>Необходимо заполнить поле «Название».</value></data>
+  <data name="EditLabelsDialogAlreadyExists" xml:space="preserve"><value>{0} уже существует в {1}!</value></data>
+  <data name="EditLabelsDialogDelete" xml:space="preserve"><value>Удалить</value></data>
+  <data name="EditLabelsDialogCancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="EditLabelsDialogSave" xml:space="preserve"><value>Сохранить</value></data>
+  <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>Отменить</value></data>
+  <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>ВНИМАНИЕ: УСТАНАВЛИВАЕТСЯ МОДУЛЬ С ЯРЛЫКОМ {0} ({1})</value></data>
+  <data name="EditLabelsToolTipName" xml:space="preserve"><value>Ярлык появится в меню «Ярлыки»</value></data>
+  <data name="EditLabelsToolTipColor" xml:space="preserve"><value>Модули с данным ярлыком будут обладать этим фоновым цветом</value></data>
+  <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>Сборка игры, для которой будет доступен данный ярлык (пусто = без ограничений)</value></data>
+  <data name="EditLabelsToolTipHide" xml:space="preserve"><value>Если выбрано, модули с этим ярлыком будут скрыты из стандартных фильтров поиска</value></data>
+  <data name="EditLabelsToolTipNotifyOnChanges" xml:space="preserve"><value>Если выбрано, при изменении состояния модулей с данным ярлыком с «несовместимо» на «совместимо» будет показано уведомление</value></data>
+  <data name="EditLabelsToolTipRemoveOnChanges" xml:space="preserve"><value>Если выбрано, при изменении состояния модулей с «несовместимо» на «совместимо» данный ярлык будет с них снят</value></data>
+  <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve"><value>Если выбрано, при установке модификаций с данным ярлыком будет показано отдельное уведомление</value></data>
+  <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve"><value>Если выбрано, при установке модулей данный ярлык будет с них снят</value></data>
+  <data name="EditLabelsToolTipHoldVersion" xml:space="preserve"><value>Если выбрано, для модулей с данным ярлыком будут отключены обновления</value></data>
+  <data name="MainLabelsUpdateMessage" xml:space="preserve"><value>Обновлены некоторые из отслеживаемых модификаций:
+
+{0}</value></data>
+  <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>Уведомление об обновлениях</value></data>
+  <data name="MainLabelsUntagged" xml:space="preserve"><value>Без тегов ({0})</value></data>
+  <data name="EditModpackBadIdentifier" xml:space="preserve"><value>Идентификатор должен содержать ТОЛЬКО латинские буквы, цифры и дефисы и начинаться с буквы или цифры</value></data>
+  <data name="EditModpackBadName" xml:space="preserve"><value>Необходимо заполнить поле «Название».</value></data>
+  <data name="EditModpackBadVersion" xml:space="preserve"><value>Необходимо заполнить поле «Версия».</value></data>
+  <data name="EditModpackBadGameVersions" xml:space="preserve"><value>Первая версия игры должна быть меньше чем либо равна последней версии</value></data>
+  <data name="EditModpackTooltipIdentifier" xml:space="preserve"><value>Идентификатор пакета модификаций; должен содержать только латинские буквы, цифры и дефисы</value></data>
+  <data name="EditModpackTooltipName" xml:space="preserve"><value>Публично видимое имя пакета модификаций</value></data>
+  <data name="EditModpackTooltipAbstract" xml:space="preserve"><value>Короткое описание пакета модификаций</value></data>
+  <data name="EditModpackTooltipVersion" xml:space="preserve"><value>Номер версии пакета модификаций</value></data>
+  <data name="EditModpackTooltipGameVersionMin" xml:space="preserve"><value>Первая совместимая версия игры (пусто = любая версия)</value></data>
+  <data name="EditModpackTooltipGameVersionMax" xml:space="preserve"><value>Последняя совместимая версия игры (пусто = любая версия)</value></data>
+  <data name="EditModpackTooltipLicense" xml:space="preserve"><value>Лицензия на пакет модификаций</value></data>
+  <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>Если выбрано, в пакет будут включены только указанные версии модификаций; в противном случае используется любая подходящая версия</value></data>
+  <data name="EditModpackTooltipDepends" xml:space="preserve"><value>Перемещает выбранные модификации в группу «Зависимости». Эти модификации обязательны к установке.</value></data>
+  <data name="EditModpackTooltipRecommends" xml:space="preserve"><value>Перемещает выбранные модификации в группу «Рекомендованные». Пользователь сможет отказаться от их установки.</value></data>
+  <data name="EditModpackTooltipSuggests" xml:space="preserve"><value>Перемещает выбранные модификации в группу «Предложенные». Они будут включены в состав пакета, однако пользователь должен будет выбрать их для установки.</value></data>
+  <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>Перемещает выбранные модификации в группу «Игнорирующиеся». Они не будут включены в состав пакета. </value></data>
+  <data name="EditModpackTooltipCancel" xml:space="preserve"><value>Отменить создание пакета</value></data>
+  <data name="EditModpackTooltipExport" xml:space="preserve"><value>Выбрать имя и сохранить пакет модификаций</value></data>
+  <data name="TriStateToggleYesTooltip" xml:space="preserve"><value>Да</value></data>
+  <data name="TriStateToggleBothTooltip" xml:space="preserve"><value>Да или Нет</value></data>
+  <data name="TriStateToggleNoTooltip" xml:space="preserve"><value>Нет</value></data>
+  <data name="ModSearchDescriptionPrefix" xml:space="preserve"><value>desc:</value></data>
+  <data name="ModSearchLanguagePrefix" xml:space="preserve"><value>lang:</value></data>
+  <data name="ModSearchDependsPrefix" xml:space="preserve"><value>dep:</value></data>
+  <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>rec:</value></data>
+  <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>sug:</value></data>
+  <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>conf:</value></data>
+  <data name="ModSearchTagPrefix" xml:space="preserve"><value>tag:</value></data>
+  <data name="ModSearchLabelPrefix" xml:space="preserve"><value>label:</value></data>
+  <data name="ModSearchYesPrefix" xml:space="preserve"><value>is:</value></data>
+  <data name="ModSearchNoPrefix" xml:space="preserve"><value>not:</value></data>
+  <data name="ModSearchCompatibleSuffix" xml:space="preserve"><value>compatible</value></data>
+  <data name="ModSearchInstalledSuffix" xml:space="preserve"><value>installed</value></data>
+  <data name="ModSearchCachedSuffix" xml:space="preserve"><value>cached</value></data>
+  <data name="ModSearchNewlyCompatibleSuffix" xml:space="preserve"><value>newly-compatible</value></data>
+  <data name="ModSearchUpgradeableSuffix" xml:space="preserve"><value>upgradeable</value></data>
+  <data name="ModSearchReplaceableSuffix" xml:space="preserve"><value>replaceable</value></data>
+  <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Раскрыть/закрыть поля расширенного поиска (Ctrl+Shift+F)</value></data>
+  <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>Сложить результаты текущего и нового поисков</value></data>
+  <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>Снимите выделение для удаления всех модификаций, выберите для очищения списка изменений</value></data>
+</root>

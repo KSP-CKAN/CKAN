@@ -3,6 +3,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 
+using CKAN.Versioning;
+
 namespace CKAN
 {
     public partial class ManageGameInstancesDialog : Form
@@ -81,7 +83,7 @@ namespace CKAN
                             ? string.Format(Properties.Resources.ManageGameInstancesNameColumnLocked, instance.Key)
                             : instance.Key,
                     instance.Value.game.ShortName,
-                    instance.Value.Version()?.ToString() ?? Properties.Resources.CompatibleGameVersionsDialogNone,
+                    FormatVersion(instance.Value.Version()),
                     instance.Value.GameDir().Replace('/', Path.DirectorySeparatorChar)
                 })
                 {
@@ -89,6 +91,17 @@ namespace CKAN
                 })
                 .ToArray()
             );
+
+            GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
+        private static string FormatVersion(GameVersion v)
+        {
+            return v == null
+                ? Properties.Resources.CompatibleGameVersionsDialogNone
+                // The BUILD component is not useful visually
+                : new GameVersion(v.Major, v.Minor, v.Patch).ToString();
         }
 
         private void AddToCKANMenuItem_Click(object sender, EventArgs e)

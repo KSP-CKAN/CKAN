@@ -134,7 +134,7 @@
             this.NewRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.NewRepoButton.Location = new System.Drawing.Point(12, 93);
             this.NewRepoButton.Name = "NewRepoButton";
-            this.NewRepoButton.Size = new System.Drawing.Size(63, 25);
+            this.NewRepoButton.Size = new System.Drawing.Size(73, 25);
             this.NewRepoButton.TabIndex = 1;
             this.NewRepoButton.Click += new System.EventHandler(this.NewRepoButton_Click);
             resources.ApplyResources(this.NewRepoButton, "NewRepoButton");
@@ -143,9 +143,9 @@
             //
             this.UpRepoButton.Enabled = false;
             this.UpRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.UpRepoButton.Location = new System.Drawing.Point(81, 93);
+            this.UpRepoButton.Location = new System.Drawing.Point(91, 93);
             this.UpRepoButton.Name = "UpRepoButton";
-            this.UpRepoButton.Size = new System.Drawing.Size(63, 25);
+            this.UpRepoButton.Size = new System.Drawing.Size(73, 25);
             this.UpRepoButton.TabIndex = 2;
             this.UpRepoButton.Click += new System.EventHandler(this.UpRepoButton_Click);
             resources.ApplyResources(this.UpRepoButton, "UpRepoButton");
@@ -154,9 +154,9 @@
             //
             this.DownRepoButton.Enabled = false;
             this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DownRepoButton.Location = new System.Drawing.Point(150, 93);
+            this.DownRepoButton.Location = new System.Drawing.Point(170, 93);
             this.DownRepoButton.Name = "DownRepoButton";
-            this.DownRepoButton.Size = new System.Drawing.Size(63, 25);
+            this.DownRepoButton.Size = new System.Drawing.Size(73, 25);
             this.DownRepoButton.TabIndex = 3;
             this.DownRepoButton.Click += new System.EventHandler(this.DownRepoButton_Click);
             resources.ApplyResources(this.DownRepoButton, "DownRepoButton");
@@ -215,7 +215,7 @@
             this.NewAuthTokenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.NewAuthTokenButton.Location = new System.Drawing.Point(12, 93);
             this.NewAuthTokenButton.Name = "NewAuthTokenButton";
-            this.NewAuthTokenButton.Size = new System.Drawing.Size(63, 25);
+            this.NewAuthTokenButton.Size = new System.Drawing.Size(73, 25);
             this.NewAuthTokenButton.TabIndex = 1;
             this.NewAuthTokenButton.Click += new System.EventHandler(this.NewAuthTokenButton_Click);
             resources.ApplyResources(this.NewAuthTokenButton, "NewAuthTokenButton");

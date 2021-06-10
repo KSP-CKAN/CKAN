@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.30.5
 
+### Features
+
+- [GUI] ru-RU translation (#3383 by: nt0g; reviewed: HebaruSan)
+
 ### Internal
 
 - [Multiple] Cache permanent redirects (#3389 by: HebaruSan; reviewed: DasSkelett)

@@ -162,9 +162,9 @@
             //
             this.RenameButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RenameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RenameButton.Location = new System.Drawing.Point(236, 320);
+            this.RenameButton.Location = new System.Drawing.Point(216, 320);
             this.RenameButton.Name = "RenameButton";
-            this.RenameButton.Size = new System.Drawing.Size(85, 23);
+            this.RenameButton.Size = new System.Drawing.Size(105, 23);
             this.RenameButton.TabIndex = 3;
             this.RenameButton.UseVisualStyleBackColor = true;
             this.RenameButton.Click += new System.EventHandler(this.RenameButton_Click);
@@ -187,7 +187,7 @@
             //
             this.ForgetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ForgetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ForgetButton.Location = new System.Drawing.Point(160, 320);
+            this.ForgetButton.Location = new System.Drawing.Point(140, 320);
             this.ForgetButton.Name = "ForgetButton";
             this.ForgetButton.Size = new System.Drawing.Size(70, 23);
             this.ForgetButton.TabIndex = 5;
