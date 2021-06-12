@@ -125,6 +125,7 @@ namespace CKAN.NetKAN.Transformers
 
             var resourcesJson = (JObject)json["resources"];
             resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
+            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
 
             if (sdMod.background != null)
             {
@@ -170,7 +171,6 @@ namespace CKAN.NetKAN.Transformers
                     // Just give up, it's fine
                 }
             }
-            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
             TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
 
             Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
