@@ -207,27 +207,27 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>見つかりませんでした。</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>{0}を再インストールしますか？</value></data>
   <data name="MainCantInstallDLC" xml:space="preserve"><value>CKANは拡張{0}をインストールできません。</value></data>
-  <data name="MainCorruptedRegistry" xml:space="preserve"><value>Corrupted registry archived to {0}: {1}
+  <data name="MainCorruptedRegistry" xml:space="preserve"><value>破損したレジストリは次にアーカイブされます {0}: {1}
 
-This means that CKAN forgot about all your installed mods, but they are still in GameData. You can reinstall them by importing the {2} file.</value></data>
+これはCKANが全てのインストール済みのModを忘れる事を意味します、しかしそれらのModは未だゲームデータ内にに存在します。ファイル {2} をインポートすることで再インストール出来ます。</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} is not supported on your current game version and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
 
 本当にインストールしたいですか？</value></data>
-  <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Install</value></data>
-  <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Cancel</value></data>
-  <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (metapackage)</value></data>
-  <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (cached)</value></data>
+  <data name="AllModVersionsInstallYes" xml:space="preserve"><value>インストール</value></data>
+  <data name="AllModVersionsInstallNo" xml:space="preserve"><value>取消</value></data>
+  <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (メタパッケージ)</value></data>
+  <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (キャッシュ済)</value></data>
   <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
-  <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Update selected by user to version {0}.</value></data>
+  <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>選択されたものをバージョン{0}にアップデートする。</value></data>
   <data name="MainChangesetNewInstall" xml:space="preserve"><value>New mod install selected by user.</value></data>
-  <data name="MainImportTitle" xml:space="preserve"><value>Import Mods</value></data>
-  <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
-  <data name="MainImportWaitTitle" xml:space="preserve"><value>Status log</value></data>
-  <data name="MainInstallWaitTitle" xml:space="preserve"><value>Status log</value></data>
-  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} requires {1} but it is not listed in the index, or not available for your game version.</value></data>
-  <data name="MainInstallNotFound" xml:space="preserve"><value>Module {0} required but it is not listed in the index, or not available for your game version.</value></data>
-  <data name="MainInstallBadMetadata" xml:space="preserve"><value>Bad metadata detected for module {0}: {1}</value></data>
-  <data name="MainInstallFileExists" xml:space="preserve"><value>Oh no! We tried to overwrite a file owned by another mod!
+  <data name="MainImportTitle" xml:space="preserve"><value>Modインポート</value></data>
+  <data name="MainImportFilter" xml:space="preserve"><value>Mod (*.zip)|*.zip</value></data>
+  <data name="MainImportWaitTitle" xml:space="preserve"><value>ステータスログ</value></data>
+  <data name="MainInstallWaitTitle" xml:space="preserve"><value>ステータスログ</value></data>
+  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0}は{1}が必要ですがインデックスにリストされていません、または現在のゲームバージョンに対応していません。</value></data>
+  <data name="MainInstallNotFound" xml:space="preserve"><value>Mod{0}が必要ですがインデックスにリストされていません、または現在のゲームバージョンに対応していません。</value></data>
+  <data name="MainInstallBadMetadata" xml:space="preserve"><value>悪いメタデータが検出されました。Mod {0}: {1}</value></data>
+  <data name="MainInstallFileExists" xml:space="preserve"><value>他のModが所有しているファイルに上書きしようとしました！
 CKANをアップデート後にもう一度お試しください。
 
 もしこの問題が再び発生するのであれば、パッケージ中のバグの可能性があります。
@@ -262,20 +262,20 @@ CKAN バージョン   : {3}</value></data>
   <data name="MainInstallNo" xml:space="preserve"><value>いいえ</value></data>
   <data name="MainInstallModSuccess" xml:space="preserve"><value>Mod "{0}" は無事にインストールされました。</value></data>
   <data name="MainInstallSuccess" xml:space="preserve"><value>成功!</value></data>
-  <data name="MainInstallCancelTooLate" xml:space="preserve"><value>Cancellation too late, process complete!</value></data>
-  <data name="MainInstallCancelAfterInstall" xml:space="preserve"><value>User canceled the process manually, but all mods already (un)installed/upgraded.</value></data>
-  <data name="MainInstallProcessComplete" xml:space="preserve"><value>Process complete!</value></data>
-  <data name="MainInstallProcessCanceled" xml:space="preserve"><value>Process canceled by user!</value></data>
-  <data name="MainInstallCanceledManually" xml:space="preserve"><value>User canceled the process manually!</value></data>
-  <data name="MainInstallInstallCanceled" xml:space="preserve"><value>(Un)Install/Upgrade canceled!</value></data>
-  <data name="MainInstallErrorInstalling" xml:space="preserve"><value>Error during installation!</value></data>
-  <data name="MainInstallUnknownError" xml:space="preserve"><value>An unknown error occurred, please try again!</value></data>
-  <data name="MainInstallKnownError" xml:space="preserve"><value>If the above message indicates a download error, please try again. Otherwise, please open an issue for us to investigate.
+  <data name="MainInstallCancelTooLate" xml:space="preserve"><value>キャンセルが遅すぎたため、プロセスは完了しました！</value></data>
+  <data name="MainInstallCancelAfterInstall" xml:space="preserve"><value>ユーザーが手動でプロセスを中止しましたが、全てのModは既に(アン)インストール/更新されました。</value></data>
+  <data name="MainInstallProcessComplete" xml:space="preserve"><value>プロセスが完了しました！</value></data>
+  <data name="MainInstallProcessCanceled" xml:space="preserve"><value>プロセスがユーザーにより中止されました！</value></data>
+  <data name="MainInstallCanceledManually" xml:space="preserve"><value>ユーザーが手動でプロセスを中止しました！</value></data>
+  <data name="MainInstallInstallCanceled" xml:space="preserve"><value>(アン)インストール/更新は中止されました！</value></data>
+  <data name="MainInstallErrorInstalling" xml:space="preserve"><value>インストール中にエラーが発生しました！</value></data>
+  <data name="MainInstallUnknownError" xml:space="preserve"><value>不明なエラーが発生しました、もう一度お試しください！</value></data>
+  <data name="MainInstallKnownError" xml:space="preserve"><value>上記のメッセージがダウンロード関連のエラーを示すのであれば、もう一度お試しください。そうでない場合は、問題解決に協力してくださる方は、問題提起をお願いします。
 メタデータの問題だと疑うのであれば: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 クライアントのバグが疑わしい時は: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>インストール失敗！</value></data>
   <data name="MainInstallProvidedBy" xml:space="preserve"><value>Mod {0} は1つ以上の利用可能なModで提供されています、次のうちの一つを選んでください。:</value></data>
-  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN can't install expansion '{0}' for you.</value></data>
+  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN は拡張 '{0}' をインストールできません。</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (仮想)</value></data>
   <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (非インデックス)</value></data>
@@ -291,7 +291,7 @@ CKAN バージョン   : {3}</value></data>
   <data name="ModInfoLicenseLabel" xml:space="preserve"><value>ライセンス:</value></data>
   <data name="ModInfoManualLabel" xml:space="preserve"><value>マニュアル:</value></data>
   <data name="ModInfoMetanetkanLabel" xml:space="preserve"><value>Metanetkan:</value></data>
-  <data name="ModInfoRemoteAvcLabel" xml:space="preserve"><value>Remote version file:</value></data>
+  <data name="ModInfoRemoteAvcLabel" xml:space="preserve"><value>リモートバージョンファイル:</value></data>
   <data name="ModInfoStoreLabel" xml:space="preserve"><value>ストア:</value></data>
   <data name="ModInfoSteamStoreLabel" xml:space="preserve"><value>Steamストア:</value></data>
   <data name="MainModListWaitTitle" xml:space="preserve"><value>Modのロード中</value></data>
@@ -299,7 +299,7 @@ CKAN バージョン   : {3}</value></data>
   <data name="MainModListLoadingInstalled" xml:space="preserve"><value>インストールしたModをロード中...</value></data>
   <data name="MainModListLoadingAvailable" xml:space="preserve"><value>利用可能なModをロード中...</value></data>
   <data name="MainModListLoadingIncompatible" xml:space="preserve"><value>非対応のModをロード中...</value></data>
-  <data name="MainModListRestoringChangeset" xml:space="preserve"><value>Restoring change set...</value></data>
+  <data name="MainModListRestoringChangeset" xml:space="preserve"><value>変更セットをリストア中...</value></data>
   <data name="MainModListPreservingNew" xml:space="preserve"><value>Preserving new flags...</value></data>
   <data name="MainModListPopulatingList" xml:space="preserve"><value>Populating mod list...</value></data>
   <data name="MainModListUpdatingFilters" xml:space="preserve"><value>Updating フィルターs...</value></data>
@@ -326,53 +326,53 @@ CKAN バージョン   : {3}</value></data>
   <data name="MainRepoUpToDate" xml:space="preserve"><value>リポジトリは既に最新です。</value></data>
   <data name="MainRepoFailed" xml:space="preserve"><value>リポジトリの更新に失敗!</value></data>
   <data name="MainRepoSuccess" xml:space="preserve"><value>リポジトリを更新しました。</value></data>
-  <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>Would you like CKAN to refresh the modlist every time it is loaded? (You can always manually refresh using the button up top.)</value></data>
-  <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>{0} update(s) available</value></data>
-  <data name="MainRepoBalloonTipTooltip" xml:space="preserve"><value>Click to upgrade</value></data>
+  <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>読み込みのたびにCKANにModリストを更新させますか？(上部のボタンを使って常に手動で更新することが出来ます。)</value></data>
+  <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>{0} 個の更新が利用可能</value></data>
+  <data name="MainRepoBalloonTipTooltip" xml:space="preserve"><value>クリックで更新</value></data>
   <data name="MainTrayIconResume" xml:space="preserve"><value>続ける</value></data>
   <data name="MainTrayIconPause" xml:space="preserve"><value>一時停止</value></data>
   <data name="MainTrayNoUpdates" xml:space="preserve"><value>利用可能なアップデートがありません</value></data>
-  <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>{0} available update(s)</value></data>
+  <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>{0} 個の有効な更新</value></data>
   <data name="MainWaitPleaseWait" xml:space="preserve"><value>お待ちください</value></data>
   <data name="MainWaitDone" xml:space="preserve"><value>完了しました!</value></data>
-  <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>Directory {0} is not a valid game directory.</value></data>
-  <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Directory "{0}" doesn't exist.</value></data>
-  <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (INVALID)</value></data>
-  <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (LOCKED)</value></data>
-  <data name="NewRepoDialogFailed" xml:space="preserve"><value>Failed to fetch master list.</value></data>
-  <data name="PluginsDialogFilter" xml:space="preserve"><value>CKAN Plugins (*.dll)|*.dll</value></data>
-  <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} files, {1}</value></data>
-  <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Invalid path: {0}</value></data>
-  <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>Choose a folder for storing CKAN's mod downloads:</value></data>
-  <data name="SettingsDialogDeleteConfirm" xml:space="preserve"><value>Do you really want to delete {0} cached files, freeing {1}?</value></data>
-  <data name="AddAuthTokenTitle" xml:space="preserve"><value>Add Authentication Token</value></data>
-  <data name="AddAuthTokenHost" xml:space="preserve"><value>Host:</value></data>
-  <data name="AddAuthTokenToken" xml:space="preserve"><value>Token:</value></data>
-  <data name="AddAuthTokenAccept" xml:space="preserve"><value>&amp;Accept</value></data>
-  <data name="AddAuthTokenCancel" xml:space="preserve"><value>&amp;Cancel</value></data>
-  <data name="AddAuthTokenHostRequired" xml:space="preserve"><value>Host field is required.</value></data>
-  <data name="AddAuthTokenTokenRequired" xml:space="preserve"><value>Token field is required.</value></data>
-  <data name="AddAuthTokenInvalidHost" xml:space="preserve"><value>{0} is not a valid host name.</value></data>
-  <data name="AddAuthTokenDupHost" xml:space="preserve"><value>{0} already has an authentication token.</value></data>
-  <data name="SettingsDialogUpdateFailed" xml:space="preserve"><value>Error during update.
-Can't update automatically, because ckan.exe is read-only or we are not allowed to overwrite it. Please update manually via https://github.com/KSP-CKAN/CKAN/releases/latest.</value></data>
-  <data name="URLHandlersPrompt" xml:space="preserve"><value>CKAN requires permission to add a handler for ckan:// URLs.
-Do you want to allow CKAN to do this? If you click no you won't see this message again.</value></data>
+  <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>フォルダ {0} は正しいゲームフォルダではありません。</value></data>
+  <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>フォルダ "{0}" は存在しません。</value></data>
+  <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (不正)</value></data>
+  <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (ロック)</value></data>
+  <data name="NewRepoDialogFailed" xml:space="preserve"><value>リストのフェッチに失敗しました。</value></data>
+  <data name="PluginsDialogFilter" xml:space="preserve"><value>CKANプラグイン (*.dll)|*.dll</value></data>
+  <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} 個のファイル、 {1}</value></data>
+  <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>不正な場所: {0}</value></data>
+  <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>CKANのModのファイルを保存する場所を選んでください:</value></data>
+  <data name="SettingsDialogDeleteConfirm" xml:space="preserve"><value>本当に {0} 個のキャッシュ済みModを削除しますか？{1}のキャッシュが解放されます</value></data>
+  <data name="AddAuthTokenTitle" xml:space="preserve"><value>認証トークンを追加</value></data>
+  <data name="AddAuthTokenHost" xml:space="preserve"><value>ホスト:</value></data>
+  <data name="AddAuthTokenToken" xml:space="preserve"><value>トークン:</value></data>
+  <data name="AddAuthTokenAccept" xml:space="preserve"><value>&amp;承認</value></data>
+  <data name="AddAuthTokenCancel" xml:space="preserve"><value>&amp;取消</value></data>
+  <data name="AddAuthTokenHostRequired" xml:space="preserve"><value>ホストフィールドが必要です。</value></data>
+  <data name="AddAuthTokenTokenRequired" xml:space="preserve"><value>トークンフィールドが必要です。</value></data>
+  <data name="AddAuthTokenInvalidHost" xml:space="preserve"><value>{0}は正しいホストの名前ではありません。</value></data>
+  <data name="AddAuthTokenDupHost" xml:space="preserve"><value>{0}には既に認証トークンがあります。 </value></data>
+  <data name="SettingsDialogUpdateFailed" xml:space="preserve"><value>更新中にエラーが発生しました。
+自動更新できません、何故ならckan.exeが読み取り専用になっているか、書き込みの権限がありません。https://github.com/KSP-CKAN/CKAN/releases/latest から手動で更新してください。</value></data>
+  <data name="URLHandlersPrompt" xml:space="preserve"><value>CKANはckan:// URLsハンドラを追加する権限が必要です。
+CKANにこの動作をする許可を与えますか？ いいえをクリックした場合はこのメッセージは再び表示されません。</value></data>
   <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Copy link address</value></data>
-  <data name="StatusInstanceLabelText" xml:space="preserve"><value>Game instance: {0} ({1} {2})</value></data>
+  <data name="StatusInstanceLabelText" xml:space="preserve"><value>ゲームインスタンス: {0} ({1} {2})</value></data>
   <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favourites</value></data>
   <data name="ModuleLabelListHidden" xml:space="preserve"><value>Hidden</value></data>
   <data name="ModuleLabelListHeld" xml:space="preserve"><value>Held</value></data>
   <data name="ModuleLabelListGlobal" xml:space="preserve"><value>Global</value></data>
-  <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>Are you sure you want to delete {0}? This can't be undone!</value></data>
-  <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>Save changes?</value></data>
+  <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>本当に {0}を消去しますか？ この操作は取消できません！</value></data>
+  <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>変更を保存しますか？</value></data>
   <data name="EditLabelsDialogNoRecord" xml:space="preserve"><value>No record being edited!</value></data>
-  <data name="EditLabelsDialogNameRequired" xml:space="preserve"><value>Name is required!</value></data>
-  <data name="EditLabelsDialogAlreadyExists" xml:space="preserve"><value>{0} already exists in {1}!</value></data>
-  <data name="EditLabelsDialogDelete" xml:space="preserve"><value>Delete</value></data>
-  <data name="EditLabelsDialogCancel" xml:space="preserve"><value>Cancel</value></data>
-  <data name="EditLabelsDialogSave" xml:space="preserve"><value>Save</value></data>
-  <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>Discard</value></data>
+  <data name="EditLabelsDialogNameRequired" xml:space="preserve"><value>名前が必要です！</value></data>
+  <data name="EditLabelsDialogAlreadyExists" xml:space="preserve"><value>{0}は{1}に既に存在します！</value></data>
+  <data name="EditLabelsDialogDelete" xml:space="preserve"><value>消去</value></data>
+  <data name="EditLabelsDialogCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="EditLabelsDialogSave" xml:space="preserve"><value>保存</value></data>
+  <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>破棄</value></data>
   <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>WARNING: INSTALLING MODULE WITH LABEL {0} ({1})</value></data>
   <data name="EditLabelsToolTipName" xml:space="preserve"><value>The label will appear in the Labels menu under this name, must be unique per install</value></data>
   <data name="EditLabelsToolTipColor" xml:space="preserve"><value>Rows for modules with this label will be drawn with this background color</value></data>
