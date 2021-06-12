@@ -124,9 +124,6 @@ namespace CKAN.NetKAN.Transformers
             }
 
             var resourcesJson = (JObject)json["resources"];
-
-            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
-            TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
             resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
 
             if (sdMod.background != null)
@@ -152,9 +149,6 @@ namespace CKAN.NetKAN.Transformers
 
                             if (sdMod.source_code != repoInfo.HtmlUrl)
                             {
-                                // Overwrite resources.repository with GitHub API's report of the true URL,
-                                // in case it has been moved or renamed
-                                resourcesJson.Remove("repository");
                                 TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", repoInfo.HtmlUrl);
                             }
                             // Fall back to homepage from GitHub
@@ -176,6 +170,8 @@ namespace CKAN.NetKAN.Transformers
                     // Just give up, it's fine
                 }
             }
+            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
+            TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
 
             Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
