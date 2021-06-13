@@ -11,7 +11,7 @@ namespace CKAN
     {
         public static readonly string[] AvailableLanguages =
         {
-            "en-GB", "en-US", "de-DE", "zh-CN", "fr-FR", "pt-BR", "ru-RU"
+            "en-GB", "en-US", "de-DE", "zh-CN", "fr-FR", "pt-BR", "ru-RU", "ja-JP"
         };
 
         /// <summary>
