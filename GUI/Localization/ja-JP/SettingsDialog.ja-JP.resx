@@ -164,7 +164,7 @@
   <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve"><value>起動時にリポジトリを更新</value></data>
   <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>Hide epoch numbers in mod list (再起動が必要)</value></data>
   <data name="HideVCheckbox.Text" xml:space="preserve"><value>Modリストの"v"を隠す (再起動が必要)</value></data>
-  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>"利用可能なアップデートを追加"をクリックしている時は自動的に"更新"列でソートする</value></data>
+  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>"利用可能なアップデートを追加"ボタンを押した際に自動的に"更新"列でソートする</value></data>
   <data name="RepoNameHeader.Text" xml:space="preserve"><value>名前</value></data>
   <data name="RepoURLHeader.Text" xml:space="preserve"><value>URL</value></data>
   <data name="AuthHostHeader.Text" xml:space="preserve"><value>ホスト</value></data>

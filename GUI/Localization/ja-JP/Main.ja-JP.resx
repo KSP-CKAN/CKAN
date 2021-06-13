@@ -152,12 +152,12 @@
   <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>ヘルプ</value></data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>CKANクライアントに関する問題を報告</value></data>
   <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>メタデータに関する問題を報告</value></data>
-  <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>About</value></data>
+  <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>CKANについて</value></data>
   <data name="ManageModsTabPage.Text" xml:space="preserve"><value>Modの管理</value></data>
-  <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Changeset</value></data>
-  <data name="WaitTabPage.Text" xml:space="preserve"><value>Status log</value></data>
+  <data name="ChangesetTabPage.Text" xml:space="preserve"><value>変更セット</value></data>
+  <data name="WaitTabPage.Text" xml:space="preserve"><value>ステータスログ</value></data>
   <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Modを選ぶ</value></data>
-  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Choose recommended, suggested, or supporting mods</value></data>
+  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>推奨、提案、サポートするModを選ぶ</value></data>
   <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>フォルダの削除</value></data>
   <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Modパックの編集</value></data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>

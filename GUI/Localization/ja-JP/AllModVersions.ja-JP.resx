@@ -124,6 +124,6 @@
   <data name="label3.Text" xml:space="preserve"><value>黄緑</value></data>
   <data name="label4.Text" xml:space="preserve"><value>太字</value></data>
   <data name="label5.Text" xml:space="preserve"><value>- 最新の対応するバージョン (推奨)</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>- 現在インストールされているゲームに対応する</value></data>
+  <data name="label6.Text" xml:space="preserve"><value>- 現在インストールされているゲームに対応するバージョン</value></data>
   <data name="label7.Text" xml:space="preserve"><value>- 現在インストールされているバージョン</value></data>
 </root>

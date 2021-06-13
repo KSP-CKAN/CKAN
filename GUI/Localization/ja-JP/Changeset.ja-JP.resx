@@ -119,8 +119,8 @@
   </resheader>
   <data name="Mod.Text" xml:space="preserve"><value>Mod</value></data>
   <data name="ChangeType.Text" xml:space="preserve"><value>変更</value></data>
-  <data name="Reason.Text" xml:space="preserve"><value>動作の理由</value></data>
+  <data name="Reason.Text" xml:space="preserve"><value>変更の理由</value></data>
   <data name="BackButton.Text" xml:space="preserve"><value>戻る</value></data>
-  <data name="CancelChangesButton.Text" xml:space="preserve"><value>取り消し</value></data>
+  <data name="CancelChangesButton.Text" xml:space="preserve"><value>取消</value></data>
   <data name="ConfirmChangesButton.Text" xml:space="preserve"><value>適用</value></data>
 </root>

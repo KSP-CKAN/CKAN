@@ -123,7 +123,7 @@
   <data name="RecommendedDialogLabel.Text" xml:space="preserve"><value>選択されているModは次のModに推奨、提案、またはサポートされています：</value></data>
   <data name="RecommendationsGroup.Header" xml:space="preserve"><value>推奨</value></data>
   <data name="SuggestionsGroup.Header" xml:space="preserve"><value>提案</value></data>
-  <data name="SupportedByGroup.Header" xml:space="preserve"><value>サポートされている (選択したModが推奨するわけではありません)</value></data>
+  <data name="SupportedByGroup.Header" xml:space="preserve"><value>サポートされている (選択済みのModが推奨しているわけではありません)</value></data>
   <data name="ModNameHeader.Text" xml:space="preserve"><value>Mod</value></data>
   <data name="SourceModulesHeader.Text" xml:space="preserve"><value>関係するMod</value></data>
   <data name="DescriptionHeader.Text" xml:space="preserve"><value>Mod詳細</value></data>

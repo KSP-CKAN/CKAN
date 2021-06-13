@@ -156,8 +156,8 @@
   <data name="FilterInstalledButton.Text" xml:space="preserve"><value>インストール済</value></data>
   <data name="FilterInstalledUpdateButton.Text" xml:space="preserve"><value>インストール済 (更新が利用可能)</value></data>
   <data name="FilterReplaceableButton.Text" xml:space="preserve"><value>置換可能</value></data>
-  <data name="FilterCachedButton.Text" xml:space="preserve"><value>キャッシュ済み</value></data>
-  <data name="FilterUncachedButton.Text" xml:space="preserve"><value>キャッシュを削除済み</value></data>
+  <data name="FilterCachedButton.Text" xml:space="preserve"><value>キャッシュされた</value></data>
+  <data name="FilterUncachedButton.Text" xml:space="preserve"><value>キャッシュされていない</value></data>
   <data name="FilterNewButton.Text" xml:space="preserve"><value>新規対応</value></data>
   <data name="FilterNotInstalledButton.Text" xml:space="preserve"><value>未インストール</value></data>
   <data name="FilterIncompatibleButton.Text" xml:space="preserve"><value>非対応</value></data>

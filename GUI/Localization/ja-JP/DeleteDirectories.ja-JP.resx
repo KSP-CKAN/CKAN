@@ -123,6 +123,6 @@
   <data name="FileColumn.Text" xml:space="preserve"><value>フォルダ内容</value></data>
   <data name="SelectDirPrompt.Text" xml:space="preserve"><value>フォルダの内容を確認する為には左側をクリック</value></data>
   <data name="OpenDirectoryButton.Text" xml:space="preserve"><value>フォルダを開く</value></data>
-  <data name="DeleteButton.Text" xml:space="preserve"><value>チェック済のみ消去</value></data>
+  <data name="DeleteButton.Text" xml:space="preserve"><value>チェックされたフォルダを削除</value></data>
   <data name="KeepAllButton.Text" xml:space="preserve"><value>全て保持</value></data>
 </root>
