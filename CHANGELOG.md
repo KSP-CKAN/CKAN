@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] ru-RU translation (#3383 by: nt0g; reviewed: HebaruSan)
+- [GUI] Japanese Localization (#3394 by: utah239; reviewed: HebaruSan)
 
 ### Internal
 
