@@ -124,16 +124,54 @@ namespace CKAN.NetKAN.Transformers
             }
 
             var resourcesJson = (JObject)json["resources"];
-
-            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
-            TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
-            TryAddResourceURL(metadata.Identifier, resourcesJson, "bugtracker", getBugtracker(sdMod.source_code));
             resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
+            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
 
             if (sdMod.background != null)
             {
                 TryAddResourceURL(metadata.Identifier, resourcesJson, "x_screenshot", sdMod.background.ToString());
             }
+
+            if (!string.IsNullOrEmpty(sdMod.source_code))
+            {
+                try
+                {
+                    var uri = new Uri(sdMod.source_code);
+                    if (uri.Host == "github.com")
+                    {
+                        var match = githubUrlPathPattern.Match(uri.AbsolutePath);
+                        if (match.Success)
+                        {
+                            var owner = match.Groups["owner"].Value;
+                            var repo  = match.Groups["repo"].Value;
+                            var repoInfo = _githubApi.GetRepo(new GithubRef(
+                                $"#/ckan/github/{owner}/{repo}", false, false
+                            ));
+
+                            if (sdMod.source_code != repoInfo.HtmlUrl)
+                            {
+                                TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", repoInfo.HtmlUrl);
+                            }
+                            // Fall back to homepage from GitHub
+                            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage", repoInfo.Homepage);
+                            if (repoInfo.HasIssues)
+                            {
+                                // Set bugtracker if repo has issues list
+                                TryAddResourceURL(metadata.Identifier, resourcesJson, "bugtracker", $"{repoInfo.HtmlUrl}/issues");
+                            }
+                            if (repoInfo.Archived)
+                            {
+                                Log.Warn("Repo is archived, consider freezing");
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // Just give up, it's fine
+                }
+            }
+            TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
 
             Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
@@ -204,38 +242,6 @@ namespace CKAN.NetKAN.Transformers
                 result.AddRange(mod.shared_authors.Select(i => i.Username));
 
             return result;
-        }
-
-        private string getBugtracker(string repoUrl)
-        {
-            if (!string.IsNullOrEmpty(repoUrl))
-            {
-                try
-                {
-                    var uri = new Uri(repoUrl);
-                    if (uri.Host == "github.com")
-                    {
-                        var match = githubUrlPathPattern.Match(uri.AbsolutePath);
-                        if (match.Success)
-                        {
-                            var owner = match.Groups["owner"].Value;
-                            var repo  = match.Groups["repo"].Value;
-                            var repoInfo = _githubApi.GetRepo(new GithubRef(
-                                $"#/ckan/github/{owner}/{repo}", false, false
-                            ));
-                            if (repoInfo.HasIssues)
-                            {
-                                return $"{repoInfo.HtmlUrl}/issues";
-                            }
-                        }
-                    }
-                }
-                catch
-                {
-                    // Just give up, it's fine
-                }
-            }
-            return null;
         }
 
         private static readonly Regex githubUrlPathPattern = new Regex(
