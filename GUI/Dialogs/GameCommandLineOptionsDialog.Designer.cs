@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(GameCommandLineOptionsDialog));
-            this.AdditionalArguments = new System.Windows.Forms.TextBox();
+            this.AdditionalArguments = new CommonTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.AcceptChangesButton = new System.Windows.Forms.Button();
             this.CancelChangesButton = new System.Windows.Forms.Button();
@@ -100,6 +100,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button AcceptChangesButton;
         private System.Windows.Forms.Button CancelChangesButton;
-        public System.Windows.Forms.TextBox AdditionalArguments;
+        public CommonTextBox AdditionalArguments;
     }
 }

@@ -31,9 +31,9 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Wait));
             this.TopPanel = new System.Windows.Forms.Panel();
-            this.MessageTextBox = new System.Windows.Forms.TextBox();
+            this.MessageTextBox = new CommonTextBox();
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
-            this.LogTextBox = new System.Windows.Forms.TextBox();
+            this.LogTextBox = new CommonTextBox();
             this.BottomButtonPanel = new System.Windows.Forms.Panel();
             this.CancelCurrentActionButton = new System.Windows.Forms.Button();
             this.RetryCurrentActionButton = new System.Windows.Forms.Button();
@@ -154,9 +154,9 @@
         #endregion
 
         private System.Windows.Forms.Panel TopPanel;
-        private System.Windows.Forms.TextBox MessageTextBox;
+        private CommonTextBox MessageTextBox;
         private System.Windows.Forms.ProgressBar DialogProgressBar;
-        private System.Windows.Forms.TextBox LogTextBox;
+        private CommonTextBox LogTextBox;
         private System.Windows.Forms.Panel BottomButtonPanel;
         private System.Windows.Forms.Button RetryCurrentActionButton;
         private System.Windows.Forms.Button CancelCurrentActionButton;

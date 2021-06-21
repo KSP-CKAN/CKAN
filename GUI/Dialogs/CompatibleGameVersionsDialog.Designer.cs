@@ -38,7 +38,7 @@
             this.ClearSelectionButton = new System.Windows.Forms.Button();
             this.AddVersionToListButton = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
-            this.AddVersionToListTextBox = new System.Windows.Forms.TextBox();
+            this.AddVersionToListTextBox = new CommonTextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.SaveButton = new System.Windows.Forms.Button();
@@ -238,7 +238,7 @@
         private System.Windows.Forms.Button ClearSelectionButton;
         private System.Windows.Forms.Button AddVersionToListButton;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox AddVersionToListTextBox;
+        private CommonTextBox AddVersionToListTextBox;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button SaveButton;

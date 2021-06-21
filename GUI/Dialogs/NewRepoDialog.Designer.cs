@@ -32,9 +32,9 @@
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(NewRepoDialog));
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
             this.RepoNameLabel = new System.Windows.Forms.Label();
-            this.RepoNameTextBox = new System.Windows.Forms.TextBox();
+            this.RepoNameTextBox = new CommonTextBox();
             this.RepoUrlLabel = new System.Windows.Forms.Label();
-            this.RepoUrlTextBox = new System.Windows.Forms.TextBox();
+            this.RepoUrlTextBox = new CommonTextBox();
             this.BottomButtonPanel = new System.Windows.Forms.Panel();
             this.RepoCancel = new System.Windows.Forms.Button();
             this.RepoOK = new System.Windows.Forms.Button();
@@ -180,9 +180,9 @@
         private System.Windows.Forms.ColumnHeader RepoNameHeader;
         private System.Windows.Forms.ColumnHeader RepoURLHeader;
         private System.Windows.Forms.Label RepoNameLabel;
-        private System.Windows.Forms.TextBox RepoNameTextBox;
+        private CommonTextBox RepoNameTextBox;
         private System.Windows.Forms.Label RepoUrlLabel;
-        private System.Windows.Forms.TextBox RepoUrlTextBox;
+        private CommonTextBox RepoUrlTextBox;
         private System.Windows.Forms.Panel BottomButtonPanel;
         private System.Windows.Forms.Button RepoOK;
         private System.Windows.Forms.Button RepoCancel;

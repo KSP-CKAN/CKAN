@@ -7,7 +7,7 @@
     /// Multiline is set to true.
     /// Used in <see cref="MainModInfo"/>.</para>
     /// </summary>
-    public class TransparentTextBox : System.Windows.Forms.TextBox
+    public class TransparentTextBox : CommonTextBox
     {
         public TransparentTextBox()
         {

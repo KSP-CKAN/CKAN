@@ -371,7 +371,7 @@ namespace CKAN
                 Size     = new Size(65, 13),
                 Text     = Properties.Resources.AddAuthTokenHost
             };
-            TextBox hostTextBox = new TextBox()
+            CommonTextBox hostTextBox = new CommonTextBox()
             {
                 Location = new Point(3 + 65 + 3, 6),
                 Size     = new Size(newAuthTokenPopup.ClientSize.Width - 65 - 10, 23),
@@ -384,7 +384,7 @@ namespace CKAN
                 Size     = new Size(65, 13),
                 Text     = Properties.Resources.AddAuthTokenToken
             };
-            TextBox tokenTextBox = new TextBox()
+            CommonTextBox tokenTextBox = new CommonTextBox()
             {
                 Location = new Point(3 + 65 + 3, 35),
                 Size     = new Size(newAuthTokenPopup.ClientSize.Width - 65 - 10, 23),
