@@ -11,8 +11,9 @@ namespace CKAN
             {
                 if (SelectionStart > 0)
                 {
-                    int i;
-                    for (i = SelectionStart - 2; i > 0; i--)
+                    int i = SelectionStart - 1;
+                    for (; i > 0 && char.IsWhiteSpace(Text, i); i--);
+                    for (; i > 0; i--)
                         if (char.IsPunctuation(Text, i) || char.IsSeparator(Text, i) || char.IsWhiteSpace(Text, i))
                         {
                             i++;
