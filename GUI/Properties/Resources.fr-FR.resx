@@ -184,6 +184,9 @@ Essayez de déplacer {2} en dehors de {3} et redémarrez CKAN.</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Impossible de trouver.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Voulez-vous réinstaller {0}?</value></data>
   <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN ne peut pas installer l'extension {0}!</value></data>
+  <data name="MainCorruptedRegistry" xml:space="preserve"><value>Registre corrompu archivé à {0}: {1}
+
+Cela veut dire que CKAN a oublié tous les mods que vous avez installé, mais ceux-ci sont toujours présents dans le dossier GameData. Vous pouvez les réinstaller en important le fichier {2}</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} n'est pas supporté par votre version de jeu actuelle and pourraît ne pas marcher du tout. Si vous avez des problème avec, vous NE devez PAS demander de l'aide à ses développeurs.
 
 Voulez-vous vraiment l'installer?</value></data>
@@ -311,6 +314,8 @@ Si vous suspectez un problème client: https://github.com/KSP-CKAN/CKAN/issues/n
   <data name="MainWaitDone" xml:space="preserve"><value>Terminé!</value></data>
   <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>Le répertoire {0} n'est pas un répertoire de jeu valide.</value></data>
   <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Le répertoire "{0}" n'existe pas.</value></data>
+    <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (INVALIDE)</value></data>
+  <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (VERROUILLÉE)</value></data>
   <data name="NewRepoDialogFailed" xml:space="preserve"><value>Échec de la récupération de la liste maître.</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>Plugins CKAN (*.dll)|*.dll</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} fichiers, {1}</value></data>
@@ -376,11 +381,27 @@ Voulez-vous autoriser à faire cela? Si vous cliquer non, vous ne verrez plus ce
   <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>Déplacer les mods sélectionnés dans le groupe ignoré. Ces mods ne seront pas inclus dans le modpack. </value></data>
   <data name="EditModpackTooltipCancel" xml:space="preserve"><value>Annuler la création du modpack</value></data>
   <data name="EditModpackTooltipExport" xml:space="preserve"><value>Choisir un nom de fichier et sauvegarder le modpack</value></data>
+  <data name="TriStateToggleYesTooltip" xml:space="preserve"><value>Oui</value></data>
+  <data name="TriStateToggleBothTooltip" xml:space="preserve"><value>Oui ou Non</value></data>
+  <data name="TriStateToggleNoTooltip" xml:space="preserve"><value>Non</value></data>
   <data name="ModSearchDescriptionPrefix" xml:space="preserve"><value>desc:</value></data>
   <data name="ModSearchLanguagePrefix" xml:space="preserve"><value>lang:</value></data>
   <data name="ModSearchDependsPrefix" xml:space="preserve"><value>dep:</value></data>
   <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>rec:</value></data>
   <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>sug:</value></data>
   <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>conf:</value></data>
+  <data name="ModSearchTagPrefix" xml:space="preserve"><value>étiquette:</value></data>
+  <data name="ModSearchLabelPrefix" xml:space="preserve"><value>label:</value></data>
+  <data name="ModSearchYesPrefix" xml:space="preserve"><value>est:</value></data>
+  <data name="ModSearchNoPrefix" xml:space="preserve"><value>pas:</value></data>
+  <data name="ModSearchCompatibleSuffix" xml:space="preserve"><value>compatible</value></data>
+  <data name="ModSearchInstalledSuffix" xml:space="preserve"><value>installé</value></data>
+  <data name="ModSearchCachedSuffix" xml:space="preserve"><value>cache</value></data>
+  <data name="ModSearchNewlyCompatibleSuffix" xml:space="preserve"><value>nouveau</value></data>
+  <data name="ModSearchUpgradeableSuffix" xml:space="preserve"><value>MàJ</value></data>
+  <data name="ModSearchReplaceableSuffix" xml:space="preserve"><value>remplacable</value></data>
+
   <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Étendre ou réduire la taille du champ de recherche détaillé (Ctrl-Shift-F)</value></data>
+  <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>Combiner une nouvelle recherche avec vos recherches actuelles</value></data>
+  <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>Décocher pour désinstaller tous les mods, cocher pour annuler les changements</value></data>
 </root>
