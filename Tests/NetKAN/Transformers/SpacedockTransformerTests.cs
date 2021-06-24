@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Linq;
+using Moq;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+
 using CKAN.Versioning;
 using CKAN.NetKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Spacedock;
+using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Transformers;
-using Moq;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -38,8 +40,15 @@ namespace Tests.NetKAN.Transformers
                         }
                     }
                 });
+            
+            var mGhApi = new Mock<IGithubApi>();
+            mGhApi.Setup(i => i.GetRepo(It.IsAny<GithubRef>()))
+                .Returns(new GithubRepo
+                {
+                    HtmlUrl = "https://github.com/ExampleAccount/ExampleProject"
+                });
 
-            ITransformer sut = new SpacedockTransformer(mApi.Object);
+            ITransformer sut = new SpacedockTransformer(mApi.Object, mGhApi.Object);
 
             JObject json            = new JObject();
             json["spec_version"]    = 1;

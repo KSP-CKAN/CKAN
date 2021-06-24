@@ -9,6 +9,7 @@ using log4net;
 using Newtonsoft.Json;
 using CKAN.Extensions;
 using CKAN.Versioning;
+using CKAN.Games;
 
 namespace CKAN
 {
@@ -668,10 +669,12 @@ namespace CKAN
         /// <see cref="IRegistryQuerier.LatestAvailableWithProvides" />
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(
-            string                  identifier,
-            GameVersionCriteria      ksp_version,
-            RelationshipDescriptor  relationship_descriptor = null,
-            IEnumerable<CkanModule> toInstall               = null)
+            string identifier,
+            GameVersionCriteria ksp_version,
+            RelationshipDescriptor relationship_descriptor = null,
+            IEnumerable<CkanModule> installed = null,
+            IEnumerable<CkanModule> toInstall = null
+        )
         {
             if (providers.TryGetValue(identifier, out HashSet<AvailableModule> provs))
             {
@@ -680,7 +683,7 @@ namespace CKAN
                     .Select(am => am.Latest(
                         ksp_version,
                         relationship_descriptor,
-                        InstalledModules.Select(im => im.Module),
+                        installed ?? InstalledModules.Select(im => im.Module),
                         toInstall
                     ))
                     .Where(m => m?.ProvidesList?.Contains(identifier) ?? false)
@@ -814,6 +817,24 @@ namespace CKAN
         }
 
         /// <summary>
+        /// http://xkcd.com/208/
+        /// This regex works great for things like GameData/Foo/Foo-1.2.dll
+        /// Would be nice to make it persistent, but it depends on the game
+        /// </summary>
+        public static Regex DllPattern(IGame game)
+        {
+            return new Regex(
+                // DLLs only live in the primary mod directory
+                $"^{game.PrimaryModDirectoryRelative}/" + @"
+                    (?:.*/)?              # Intermediate paths (ending with /)
+                    (?<modname>[^.]+)     # Our DLL name, up until the first dot.
+                    .*\.dll$              # Everything else, ending in dll
+                ",
+                RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled
+            );
+        }
+
+        /// <summary>
         /// Registers the given DLL as having been installed. This provides some support
         /// for pre-CKAN modules.
         ///
@@ -836,25 +857,13 @@ namespace CKAN
                 return;
             }
 
-            // http://xkcd.com/208/
-            // This regex works great for things like GameData/Foo/Foo-1.2.dll
-            Match match = Regex.Match(relative_path,
-                // DLLs only live in the primary mod directory
-                $"^{ksp.game.PrimaryModDirectoryRelative}/" + @"
-                    (?:.*/)?              # Intermediate paths (ending with /)
-                    (?<modname>[^.]+)     # Our DLL name, up until the first dot.
-                    .*\.dll$              # Everything else, ending in dll
-                ",
-                RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
-            );
-
-            string modName = match.Groups["modname"].Value;
-
-            if (modName.Length == 0)
+            Match match = DllPattern(ksp.game).Match(relative_path);
+            if (!match.Success)
             {
                 log.WarnFormat("Attempted to index {0} which is not a DLL", relative_path);
                 return;
             }
+            string modName = match.Groups["modname"].Value;
 
             log.InfoFormat("Registering {0} from {1}", modName, relative_path);
 

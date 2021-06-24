@@ -40,39 +40,12 @@ namespace CKAN
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
 
         // Constructor
-        private ModuleInstaller(GameInstance ksp, NetModuleCache cache, IUser user)
+        public ModuleInstaller(GameInstance ksp, NetModuleCache cache, IUser user)
         {
             User = user;
             Cache = cache;
             this.ksp = ksp;
             log.DebugFormat("Creating ModuleInstaller for {0}", ksp.GameDir());
-        }
-
-        /// <summary>
-        /// Gets the ModuleInstaller instance associated with the passed KSP instance. Creates a new ModuleInstaller instance if none exists.
-        /// </summary>
-        /// <returns>The ModuleInstaller instance.</returns>
-        /// <param name="ksp_instance">Current KSP instance.</param>
-        /// <param name="user">IUser implementation.</param>
-        public static ModuleInstaller GetInstance(GameInstance ksp_instance, NetModuleCache cache, IUser user)
-        {
-            ModuleInstaller instance;
-
-            // Check in the list of instances if we have already created a ModuleInstaller instance for this KSP instance.
-            if (!instances.TryGetValue(ksp_instance.GameDir(), out instance))
-            {
-                // Create a new instance and insert it in the static list.
-                instance = new ModuleInstaller(ksp_instance, cache, user);
-
-                instances.Add(ksp_instance.GameDir(), instance);
-            }
-            else if (user != null)
-            {
-                // Caller passed in a valid IUser. Let's use it.
-                instance.User = user;
-            }
-
-            return instance;
         }
 
         /// <summary>
@@ -135,8 +108,15 @@ namespace CKAN
         public void InstallList(List<string> modules, RelationshipResolverOptions options, RegistryManager registry_manager, ref HashSet<string> possibleConfigOnlyDirs, IDownloader downloader = null)
         {
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
-            // Only pass the CkanModules of the parameters, so we can tell which are auto
-            InstallList(resolver.ModList().Where(m => resolver.ReasonFor(m) is SelectionReason.UserRequested).ToList(), options, registry_manager, ref possibleConfigOnlyDirs, downloader);
+            // Only pass the CkanModules of the parameters, so we can tell which are auto-installed,
+            // and relationships of metapackages, since metapackages aren't included in the RR modlist.
+            var list = resolver.ModList().Where(
+                m =>
+                {
+                    var reason = resolver.ReasonFor(m);
+                    return reason is SelectionReason.UserRequested || (reason.Parent?.IsMetapackage ?? false);
+                }).ToList();
+            InstallList(list, options, registry_manager, ref possibleConfigOnlyDirs, downloader);
         }
 
         /// <summary>
@@ -150,6 +130,11 @@ namespace CKAN
         public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, RegistryManager registry_manager, ref HashSet<string> possibleConfigOnlyDirs, IDownloader downloader = null, bool ConfirmPrompt = true)
         {
             // TODO: Break this up into smaller pieces! It's huge!
+            if (modules.Count == 0)
+            {
+                User.RaiseProgress("Nothing to install.", 100);
+                return;
+            }
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
             var modsToInstall = resolver.ModList().ToList();
             List<CkanModule> downloads = new List<CkanModule>();
@@ -458,10 +443,16 @@ namespace CKAN
             const int bufLen = 1024;
             byte[] bytes1 = new byte[bufLen];
             byte[] bytes2 = new byte[bufLen];
-            for (int bytesChecked = 0; bytesChecked < s1.Length; )
+            int bytesChecked = 0;
+            while (true)
             {
                 int bytesFrom1 = s1.Read(bytes1, 0, bufLen);
                 int bytesFrom2 = s2.Read(bytes2, 0, bufLen);
+                if (bytesFrom1 == 0 && bytesFrom2 == 0)
+                {
+                    // Boths streams finished, all bytes are equal
+                    return true;
+                }
                 if (bytesFrom1 != bytesFrom2)
                 {
                     // One ended early, not equal.
@@ -479,8 +470,6 @@ namespace CKAN
                 }
                 bytesChecked += bytesFrom1;
             }
-            // Same bytes, they're equal.
-            return true;
         }
 
         /// <summary>
@@ -656,7 +645,9 @@ namespace CKAN
                 )).Memoize();
             var goners = revdep.Union(
                     registry_manager.registry.FindRemovableAutoInstalled(
-                        registry_manager.registry.InstalledModules.Where(im => !revdep.Contains(im.identifier)))
+                        registry_manager.registry.InstalledModules
+                            .Where(im => !revdep.Contains(im.identifier))
+                            .Concat(installing?.Select(m => new InstalledModule(null, m, new string[0], false)) ?? new InstalledModule[0]))
                     .Select(im => im.identifier))
                 .ToList();
 
@@ -968,7 +959,6 @@ namespace CKAN
         public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true, bool resolveRelationships = false, bool ConfirmPrompt = true)
         {
             modules = modules.Memoize();
-            User.RaiseMessage("About to upgrade:\r\n");
 
             if (resolveRelationships)
             {
@@ -981,6 +971,8 @@ namespace CKAN
                 );
                 modules = resolver.ModList();
             }
+
+            User.RaiseMessage("About to upgrade:\r\n");
 
             // Our upgrade involves removing everything that's currently installed, then
             // adding everything that needs installing (which may involve new mods to

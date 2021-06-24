@@ -146,7 +146,7 @@ Versuche {2} aus {3} zu verschieben und CKAN neu zu starten.</value></data>
   <data name="MainQuit" xml:space="preserve"><value>Beenden</value></data>
   <data name="MainGoBack" xml:space="preserve"><value>Zurück</value></data>
   <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>Es gibt unerfüllte Abhängigkeiten. Trotzdem beenden?</value></data>
-  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve">
+  <data name="MainQuitWithUnappliedChanges" xml:space="preserve">
     <value>Du hast noch nicht übernommene Änderungen. Trotzdem beenden?
 
 {0}</value>
@@ -182,6 +182,10 @@ Versuche {2} aus {3} zu verschieben und CKAN neu zu starten.</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>Klartext (*.txt)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Nicht gefunden.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Möchtest du {0} neu installieren?</value></data>
+  <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN kann die Erweiterung {0} nicht installieren!</value></data>
+  <data name="MainCorruptedRegistry" xml:space="preserve"><value>Beschädigte Registry wurde nach {0} archiviert: {1}
+
+Das bedeuted, dass CKAN alle installierten Mods vergessen hat, sie befinden sich aber immer noch in GameData. Du kannst sie durch Importieren folgender Datei erneut installieren: {2}</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} wird von Ihrer aktuellen Spielversion nicht unterstützt und funktioniert möglicherweise überhaupt nicht. Wenn Sie Probleme damit haben, sollten Sie die Betreuer NICHT um Hilfe bitten.
 
 Möchten Sie es wirklich installieren?</value></data>
@@ -264,13 +268,12 @@ Wenn du ein Fehler mit dem CKAN Client vermutest: https://github.com/KSP-CKAN/CK
   <data name="ModInfoRemoteAvcLabel" xml:space="preserve"><value>Online Versionsdatei:</value></data>
   <data name="ModInfoStoreLabel" xml:space="preserve"><value>Shop:</value></data>
   <data name="ModInfoSteamStoreLabel" xml:space="preserve"><value>Steam Shop:</value></data>
-  <data name="ModInfoLicenseLabel" xml:space="preserve"><value>Lizenz:</value></data>
   <data name="MainModListWaitTitle" xml:space="preserve"><value>Module laden</value></data>
   <data name="MainModListLoadingRegistry" xml:space="preserve"><value>Lade Registry...</value></data>
   <data name="MainModListLoadingInstalled" xml:space="preserve"><value>Lade installierte Module...</value></data>
   <data name="MainModListLoadingAvailable" xml:space="preserve"><value>Lade kompatible Module...</value></data>
   <data name="MainModListLoadingIncompatible" xml:space="preserve"><value>Lade inkompatible Module...</value></data>
-  <data name="MainModListRestoringChangeset" xml:space="preserve"><value>Stelle Änderungsset wieder her...</value></data>
+  <data name="MainModListRestoringChangeset" xml:space="preserve"><value>Stelle Änderungsliste wieder her...</value></data>
   <data name="MainModListPreservingNew" xml:space="preserve"><value>"Neu"-Flaggen beibehalten...</value></data>
   <data name="MainModListPopulatingList" xml:space="preserve"><value>Modliste füllen...</value></data>
   <data name="MainModListUpdatingFilters" xml:space="preserve"><value>Aktualisiere Filter...</value></data>
@@ -307,6 +310,8 @@ Wenn du ein Fehler mit dem CKAN Client vermutest: https://github.com/KSP-CKAN/CK
   <data name="MainWaitDone" xml:space="preserve"><value>Alles erledigt!</value></data>
   <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>"{0}" ist kein gültiges Spielverzeichnis.</value></data>
   <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Das Verzeichnis "{0}" existiert nicht.</value></data>
+  <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (UNGÜLTIG)</value></data>
+  <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (GESPERRT)</value></data>
   <data name="NewRepoDialogFailed" xml:space="preserve"><value>Die Master-Liste konnte nicht abgerufen werden.</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} Dateien, {1}</value></data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Ungültiger Pfad: "{0}"</value></data>
@@ -377,5 +382,10 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>Speichere die ausgewählten Mods NICHT im Modpack. Diese Mods werden nicht sichtbar sein.</value></data>
   <data name="EditModpackTooltipCancel" xml:space="preserve"><value>Brich die Modpackerstellung ab</value></data>
   <data name="EditModpackTooltipExport" xml:space="preserve"><value>Wähle einen Dateinamen und speichere das Modpack</value></data>
+  <data name="TriStateToggleYesTooltip" xml:space="preserve"><value>Ja</value></data>
+  <data name="TriStateToggleBothTooltip" xml:space="preserve"><value>Ja oder Nein</value></data>
+  <data name="TriStateToggleNoTooltip" xml:space="preserve"><value>Nein</value></data>
   <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Detailierte Suchfelder ein-/ausklappen (Strg-Shift-F)</value></data>
+  <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>Füge eine weitere Suche hinzu</value></data>
+  <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>Abwählen um alle Mods zu deinstallieren, anwählen um die Änderungsliste zu leeren</value></data>
 </root>

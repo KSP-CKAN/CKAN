@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 ﻿using System.Collections.Generic;
+using System.Transactions;
 using log4net;
 using CKAN.Versioning;
 
@@ -83,7 +84,6 @@ namespace CKAN.CmdLine
 
             try
             {
-                HashSet<string> possibleConfigOnlyDirs = null;
                 var regMgr = RegistryManager.Instance(ksp);
                 var registry = regMgr.registry;
                 if (options.upgrade_all)
@@ -119,13 +119,12 @@ namespace CKAN.CmdLine
                                 mod.Key);
                         }
                     }
-
-                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(to_upgrade, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs, regMgr, true, true);
+                    UpgradeModules(manager, User, ksp, true, to_upgrade);
                 }
                 else
                 {
                     Search.AdjustModulesCase(ksp, options.modules);
-                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(options.modules, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
+                    UpgradeModules(manager, User, ksp, options.modules);
                 }
                 User.RaiseMessage("");
             }
@@ -160,5 +159,91 @@ namespace CKAN.CmdLine
 
             return Exit.OK;
         }
+
+        /// <summary>
+        /// Upgrade some modules by their CkanModules
+        /// </summary>
+        /// <param name="manager">Game instance manager to use</param>
+        /// <param name="user">IUser object for output</param>
+        /// <param name="ksp">Game instance to use</param>
+        /// <param name="modules">List of modules to upgrade</param>
+        public static void UpgradeModules(GameInstanceManager manager, IUser user, CKAN.GameInstance ksp, bool ConfirmPrompt, List<CkanModule> modules)
+        {
+            UpgradeModules(manager, user, ksp,
+                (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs) =>
+                    installer.Upgrade(modules, downloader,
+                        ref possibleConfigOnlyDirs, regMgr, true, true, ConfirmPrompt),
+                m => modules.Add(m)
+            );
+        }
+
+        /// <summary>
+        /// Upgrade some modules by their identifier and (optional) version
+        /// </summary>
+        /// <param name="manager">Game instance manager to use</param>
+        /// <param name="user">IUser object for output</param>
+        /// <param name="ksp">Game instance to use</param>
+        /// <param name="identsAndVersions">List of identifier[=version] to upgrade</param>
+        public static void UpgradeModules(GameInstanceManager manager, IUser user, CKAN.GameInstance ksp, List<string> identsAndVersions)
+        {
+            UpgradeModules(manager, user, ksp,
+                (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs) =>
+                    installer.Upgrade(identsAndVersions, downloader,
+                        ref possibleConfigOnlyDirs, regMgr, true),
+                m => identsAndVersions.Add(m.identifier)
+            );
+        }
+
+        // System.Action<ref T> isn't allowed
+        private delegate void AttemptUpgradeAction(ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs);
+
+        /// <summary>
+        /// The core of the module upgrading logic, with callbacks to
+        /// support different input formats managed by the calling code.
+        /// Handles transactions, creating commonly required objects,
+        /// looping logic, prompting for TooManyModsProvideKraken resolution.
+        /// </summary>
+        /// <param name="manager">Game instance manager to use</param>
+        /// <param name="user">IUser object for output</param>
+        /// <param name="ksp">Game instance to use</param>
+        /// <param name="attemptUpgradeCallback">Function to call to try to perform the actual upgrade, may throw TooManyModsProvideKraken</param>
+        /// <param name="addUserChoiceCallback">Function to call when the user has requested a new module added to the change set in response to TooManyModsProvideKraken</param>
+        private static void UpgradeModules(
+            GameInstanceManager manager, IUser user, CKAN.GameInstance ksp,
+            AttemptUpgradeAction attemptUpgradeCallback,
+            System.Action<CkanModule> addUserChoiceCallback)
+        {
+            using (TransactionScope transact = CkanTransaction.CreateTransactionScope()) {
+                var installer  = new ModuleInstaller(ksp, manager.Cache, user);
+                var downloader = new NetAsyncModulesDownloader(user, manager.Cache);
+                var regMgr     = RegistryManager.Instance(ksp);
+                HashSet<string> possibleConfigOnlyDirs = null;
+                bool done = false;
+                while (!done)
+                {
+                    try
+                    {
+                        attemptUpgradeCallback?.Invoke(installer, downloader, regMgr, ref possibleConfigOnlyDirs);
+                        transact.Complete();
+                        done = true;
+                    }
+                    catch (TooManyModsProvideKraken k)
+                    {
+                        int choice = user.RaiseSelectionDialog(
+                            $"Choose a module to provide {k.requested}:",
+                            k.modules.Select(m => $"{m.identifier} ({m.name})").ToArray());
+                        if (choice < 0)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            addUserChoiceCallback?.Invoke(k.modules[choice]);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

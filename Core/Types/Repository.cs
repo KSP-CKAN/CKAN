@@ -5,7 +5,7 @@ using CKAN.Games;
 
 namespace CKAN
 {
-    public class Repository
+    public class Repository : IEquatable<Repository>
     {
         [JsonIgnore] public static readonly string default_ckan_repo_name = "default";
 
@@ -13,7 +13,6 @@ namespace CKAN
         public Uri     uri;
         public string  last_server_etag;
         public int     priority = 0;
-        public Boolean ckan_mirror = false;
 
         public Repository()
         {
@@ -36,6 +35,24 @@ namespace CKAN
         {
             this.name = name;
             this.uri = uri;
+        }
+
+        public override bool Equals(Object other)
+        {
+            return Equals(other as Repository);
+        }
+
+        public bool Equals(Repository other)
+        {
+            return other    != null
+                && name     == other.name
+                && uri      == other.uri
+                && priority == other.priority;
+        }
+
+        public override int GetHashCode()
+        {
+            return name.GetHashCode();
         }
 
         public override string ToString()

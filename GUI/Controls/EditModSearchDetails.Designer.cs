@@ -46,6 +46,22 @@
             this.FilterBySuggestsTextBox = new CKAN.HintTextBox();
             this.FilterByConflictsLabel = new System.Windows.Forms.Label();
             this.FilterByConflictsTextBox = new CKAN.HintTextBox();
+            this.FilterByTagsLabel = new System.Windows.Forms.Label();
+            this.FilterByTagsTextBox = new CKAN.HintTextBox();
+            this.FilterByLabelsLabel = new System.Windows.Forms.Label();
+            this.FilterByLabelsTextBox = new CKAN.HintTextBox();
+            this.CompatibleLabel = new System.Windows.Forms.Label();
+            this.CompatibleToggle = new CKAN.TriStateToggle();
+            this.InstalledLabel = new System.Windows.Forms.Label();
+            this.InstalledToggle = new CKAN.TriStateToggle();
+            this.CachedLabel = new System.Windows.Forms.Label();
+            this.CachedToggle = new CKAN.TriStateToggle();
+            this.NewlyCompatibleLabel = new System.Windows.Forms.Label();
+            this.NewlyCompatibleToggle = new CKAN.TriStateToggle();
+            this.UpgradeableLabel = new System.Windows.Forms.Label();
+            this.UpgradeableToggle = new CKAN.TriStateToggle();
+            this.ReplaceableLabel = new System.Windows.Forms.Label();
+            this.ReplaceableToggle = new CKAN.TriStateToggle();
             this.SuspendLayout();
             //
             // FilterByNameLabel
@@ -63,10 +79,10 @@
             //
             this.FilterByNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByNameTextBox.Location = new System.Drawing.Point(110, 7);
+            this.FilterByNameTextBox.Location = new System.Drawing.Point(130, 7);
             this.FilterByNameTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByNameTextBox.Name = "FilterByNameTextBox";
-            this.FilterByNameTextBox.Size = new System.Drawing.Size(180, 26);
+            this.FilterByNameTextBox.Size = new System.Drawing.Size(160, 26);
             this.FilterByNameTextBox.TabIndex = 1;
             this.FilterByNameTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByNameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -87,10 +103,10 @@
             //
             this.FilterByAuthorTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByAuthorTextBox.Location = new System.Drawing.Point(110, 33);
+            this.FilterByAuthorTextBox.Location = new System.Drawing.Point(130, 33);
             this.FilterByAuthorTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByAuthorTextBox.Name = "FilterByAuthorTextBox";
-            this.FilterByAuthorTextBox.Size = new System.Drawing.Size(180, 26);
+            this.FilterByAuthorTextBox.Size = new System.Drawing.Size(160, 26);
             this.FilterByAuthorTextBox.TabIndex = 3;
             this.FilterByAuthorTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByAuthorTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -111,10 +127,10 @@
             //
             this.FilterByDescriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByDescriptionTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByDescriptionTextBox.Location = new System.Drawing.Point(110, 59);
+            this.FilterByDescriptionTextBox.Location = new System.Drawing.Point(130, 59);
             this.FilterByDescriptionTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByDescriptionTextBox.Name = "FilterByDescriptionTextBox";
-            this.FilterByDescriptionTextBox.Size = new System.Drawing.Size(180, 26);
+            this.FilterByDescriptionTextBox.Size = new System.Drawing.Size(160, 26);
             this.FilterByDescriptionTextBox.TabIndex = 5;
             this.FilterByDescriptionTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByDescriptionTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -135,10 +151,10 @@
             //
             this.FilterByLanguageTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByLanguageTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByLanguageTextBox.Location = new System.Drawing.Point(110, 85);
+            this.FilterByLanguageTextBox.Location = new System.Drawing.Point(130, 85);
             this.FilterByLanguageTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByLanguageTextBox.Name = "FilterByLanguageTextBox";
-            this.FilterByLanguageTextBox.Size = new System.Drawing.Size(180, 26);
+            this.FilterByLanguageTextBox.Size = new System.Drawing.Size(160, 26);
             this.FilterByLanguageTextBox.TabIndex = 7;
             this.FilterByLanguageTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByLanguageTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -159,10 +175,10 @@
             //
             this.FilterByDependsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByDependsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByDependsTextBox.Location = new System.Drawing.Point(110, 111);
+            this.FilterByDependsTextBox.Location = new System.Drawing.Point(130, 111);
             this.FilterByDependsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByDependsTextBox.Name = "FilterByDependsTextBox";
-            this.FilterByDependsTextBox.Size = new System.Drawing.Size(180, 26);
+            this.FilterByDependsTextBox.Size = new System.Drawing.Size(160, 26);
             this.FilterByDependsTextBox.TabIndex = 9;
             this.FilterByDependsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByDependsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -183,10 +199,10 @@
             //
             this.FilterByRecommendsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByRecommendsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByRecommendsTextBox.Location = new System.Drawing.Point(110, 137);
+            this.FilterByRecommendsTextBox.Location = new System.Drawing.Point(130, 137);
             this.FilterByRecommendsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByRecommendsTextBox.Name = "FilterByRecommendsTextBox";
-            this.FilterByRecommendsTextBox.Size = new System.Drawing.Size(180, 26);
+            this.FilterByRecommendsTextBox.Size = new System.Drawing.Size(160, 26);
             this.FilterByRecommendsTextBox.TabIndex = 11;
             this.FilterByRecommendsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByRecommendsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -207,10 +223,10 @@
             //
             this.FilterBySuggestsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterBySuggestsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterBySuggestsTextBox.Location = new System.Drawing.Point(110, 163);
+            this.FilterBySuggestsTextBox.Location = new System.Drawing.Point(130, 163);
             this.FilterBySuggestsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterBySuggestsTextBox.Name = "FilterBySuggestsTextBox";
-            this.FilterBySuggestsTextBox.Size = new System.Drawing.Size(180, 26);
+            this.FilterBySuggestsTextBox.Size = new System.Drawing.Size(160, 26);
             this.FilterBySuggestsTextBox.TabIndex = 13;
             this.FilterBySuggestsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterBySuggestsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
@@ -231,14 +247,158 @@
             //
             this.FilterByConflictsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByConflictsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByConflictsTextBox.Location = new System.Drawing.Point(110, 189);
+            this.FilterByConflictsTextBox.Location = new System.Drawing.Point(130, 189);
             this.FilterByConflictsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByConflictsTextBox.Name = "FilterByConflictsTextBox";
-            this.FilterByConflictsTextBox.Size = new System.Drawing.Size(180, 26);
+            this.FilterByConflictsTextBox.Size = new System.Drawing.Size(160, 26);
             this.FilterByConflictsTextBox.TabIndex = 15;
             this.FilterByConflictsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByConflictsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByConflictsTextBox, "FilterByConflictsTextBox");
+            //
+            // FilterByTagsLabel
+            //
+            this.FilterByTagsLabel.AutoSize = true;
+            this.FilterByTagsLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterByTagsLabel.Location = new System.Drawing.Point(6, 217);
+            this.FilterByTagsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.FilterByTagsLabel.Name = "FilterByTagsLabel";
+            this.FilterByTagsLabel.Size = new System.Drawing.Size(149, 20);
+            this.FilterByTagsLabel.TabIndex = 14;
+            resources.ApplyResources(this.FilterByTagsLabel, "FilterByTagsLabel");
+            //
+            // FilterByTagsTextBox
+            //
+            this.FilterByTagsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.FilterByTagsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FilterByTagsTextBox.Location = new System.Drawing.Point(130, 215);
+            this.FilterByTagsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.FilterByTagsTextBox.Name = "FilterByTagsTextBox";
+            this.FilterByTagsTextBox.Size = new System.Drawing.Size(160, 26);
+            this.FilterByTagsTextBox.TabIndex = 15;
+            this.FilterByTagsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
+            this.FilterByTagsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
+            resources.ApplyResources(this.FilterByTagsTextBox, "FilterByTagsTextBox");
+            //
+            // FilterByLabelsLabel
+            //
+            this.FilterByLabelsLabel.AutoSize = true;
+            this.FilterByLabelsLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterByLabelsLabel.Location = new System.Drawing.Point(6, 243);
+            this.FilterByLabelsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.FilterByLabelsLabel.Name = "FilterByLabelsLabel";
+            this.FilterByLabelsLabel.Size = new System.Drawing.Size(149, 20);
+            this.FilterByLabelsLabel.TabIndex = 14;
+            resources.ApplyResources(this.FilterByLabelsLabel, "FilterByLabelsLabel");
+            //
+            // FilterByLabelsTextBox
+            //
+            this.FilterByLabelsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.FilterByLabelsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FilterByLabelsTextBox.Location = new System.Drawing.Point(130, 241);
+            this.FilterByLabelsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.FilterByLabelsTextBox.Name = "FilterByLabelsTextBox";
+            this.FilterByLabelsTextBox.Size = new System.Drawing.Size(160, 26);
+            this.FilterByLabelsTextBox.TabIndex = 15;
+            this.FilterByLabelsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
+            this.FilterByLabelsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
+            resources.ApplyResources(this.FilterByLabelsTextBox, "FilterByLabelsTextBox");
+            //
+            // CompatibleLabel
+            //
+            this.CompatibleLabel.AutoSize = true;
+            this.CompatibleLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CompatibleLabel.Location = new System.Drawing.Point(6, 269);
+            this.CompatibleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.CompatibleLabel.Name = "CompatibleLabel";
+            this.CompatibleLabel.Size = new System.Drawing.Size(149, 20);
+            this.CompatibleLabel.TabIndex = 14;
+            resources.ApplyResources(this.CompatibleLabel, "CompatibleLabel");
+            //
+            // CompatibleToggle
+            //
+            this.CompatibleToggle.Location = new System.Drawing.Point(130, 267);
+            this.CompatibleToggle.Changed += TriStateChanged;
+            //
+            // InstalledLabel
+            //
+            this.InstalledLabel.AutoSize = true;
+            this.InstalledLabel.BackColor = System.Drawing.Color.Transparent;
+            this.InstalledLabel.Location = new System.Drawing.Point(6, 295);
+            this.InstalledLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InstalledLabel.Name = "InstalledLabel";
+            this.InstalledLabel.Size = new System.Drawing.Size(149, 20);
+            this.InstalledLabel.TabIndex = 14;
+            resources.ApplyResources(this.InstalledLabel, "InstalledLabel");
+            //
+            // InstalledToggle
+            //
+            this.InstalledToggle.Location = new System.Drawing.Point(130, 293);
+            this.InstalledToggle.Changed += TriStateChanged;
+            //
+            // CachedLabel
+            //
+            this.CachedLabel.AutoSize = true;
+            this.CachedLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CachedLabel.Location = new System.Drawing.Point(6, 321);
+            this.CachedLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.CachedLabel.Name = "CachedLabel";
+            this.CachedLabel.Size = new System.Drawing.Size(149, 20);
+            this.CachedLabel.TabIndex = 14;
+            resources.ApplyResources(this.CachedLabel, "CachedLabel");
+            //
+            // CachedToggle
+            //
+            this.CachedToggle.Location = new System.Drawing.Point(130, 319);
+            this.CachedToggle.Changed += TriStateChanged;
+            //
+            // NewlyCompatibleLabel
+            //
+            this.NewlyCompatibleLabel.AutoSize = true;
+            this.NewlyCompatibleLabel.BackColor = System.Drawing.Color.Transparent;
+            this.NewlyCompatibleLabel.Location = new System.Drawing.Point(6, 347);
+            this.NewlyCompatibleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.NewlyCompatibleLabel.Name = "NewlyCompatibleLabel";
+            this.NewlyCompatibleLabel.Size = new System.Drawing.Size(149, 20);
+            this.NewlyCompatibleLabel.TabIndex = 14;
+            resources.ApplyResources(this.NewlyCompatibleLabel, "NewlyCompatibleLabel");
+            //
+            // NewlyCompatibleToggle
+            //
+            this.NewlyCompatibleToggle.Location = new System.Drawing.Point(130, 345);
+            this.NewlyCompatibleToggle.Changed += TriStateChanged;
+            //
+            // UpgradeableLabel
+            //
+            this.UpgradeableLabel.AutoSize = true;
+            this.UpgradeableLabel.BackColor = System.Drawing.Color.Transparent;
+            this.UpgradeableLabel.Location = new System.Drawing.Point(6, 373);
+            this.UpgradeableLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.UpgradeableLabel.Name = "UpgradeableLabel";
+            this.UpgradeableLabel.Size = new System.Drawing.Size(149, 20);
+            this.UpgradeableLabel.TabIndex = 14;
+            resources.ApplyResources(this.UpgradeableLabel, "UpgradeableLabel");
+            //
+            // UpgradeableToggle
+            //
+            this.UpgradeableToggle.Location = new System.Drawing.Point(130, 371);
+            this.UpgradeableToggle.Changed += TriStateChanged;
+            //
+            // ReplaceableLabel
+            //
+            this.ReplaceableLabel.AutoSize = true;
+            this.ReplaceableLabel.BackColor = System.Drawing.Color.Transparent;
+            this.ReplaceableLabel.Location = new System.Drawing.Point(6, 399);
+            this.ReplaceableLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ReplaceableLabel.Name = "ReplaceableLabel";
+            this.ReplaceableLabel.Size = new System.Drawing.Size(149, 20);
+            this.ReplaceableLabel.TabIndex = 14;
+            resources.ApplyResources(this.ReplaceableLabel, "ReplaceableLabel");
+            //
+            // ReplaceableToggle
+            //
+            this.ReplaceableToggle.Location = new System.Drawing.Point(130, 397);
+            this.ReplaceableToggle.Changed += TriStateChanged;
             //
             // EditModSearchDetails
             //
@@ -261,8 +421,24 @@
             this.Controls.Add(this.FilterBySuggestsTextBox);
             this.Controls.Add(this.FilterByConflictsLabel);
             this.Controls.Add(this.FilterByConflictsTextBox);
+            this.Controls.Add(this.FilterByTagsLabel);
+            this.Controls.Add(this.FilterByTagsTextBox);
+            this.Controls.Add(this.FilterByLabelsLabel);
+            this.Controls.Add(this.FilterByLabelsTextBox);
+            this.Controls.Add(this.CompatibleLabel);
+            this.Controls.Add(this.CompatibleToggle);
+            this.Controls.Add(this.InstalledLabel);
+            this.Controls.Add(this.InstalledToggle);
+            this.Controls.Add(this.CachedLabel);
+            this.Controls.Add(this.CachedToggle);
+            this.Controls.Add(this.NewlyCompatibleLabel);
+            this.Controls.Add(this.NewlyCompatibleToggle);
+            this.Controls.Add(this.UpgradeableLabel);
+            this.Controls.Add(this.UpgradeableToggle);
+            this.Controls.Add(this.ReplaceableLabel);
+            this.Controls.Add(this.ReplaceableToggle);
             this.Name = "EditModSearchDetails";
-            this.Size = new System.Drawing.Size(300, 218);
+            this.Size = new System.Drawing.Size(300, 434);
             resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -287,5 +463,21 @@
         internal CKAN.HintTextBox FilterBySuggestsTextBox;
         private System.Windows.Forms.Label FilterByConflictsLabel;
         internal CKAN.HintTextBox FilterByConflictsTextBox;
+        private System.Windows.Forms.Label FilterByTagsLabel;
+        internal CKAN.HintTextBox FilterByTagsTextBox;
+        private System.Windows.Forms.Label FilterByLabelsLabel;
+        internal CKAN.HintTextBox FilterByLabelsTextBox;
+        private System.Windows.Forms.Label CompatibleLabel;
+        internal CKAN.TriStateToggle CompatibleToggle;
+        private System.Windows.Forms.Label InstalledLabel;
+        internal CKAN.TriStateToggle InstalledToggle;
+        private System.Windows.Forms.Label CachedLabel;
+        internal CKAN.TriStateToggle CachedToggle;
+        private System.Windows.Forms.Label NewlyCompatibleLabel;
+        internal CKAN.TriStateToggle NewlyCompatibleToggle;
+        private System.Windows.Forms.Label UpgradeableLabel;
+        internal CKAN.TriStateToggle UpgradeableToggle;
+        private System.Windows.Forms.Label ReplaceableLabel;
+        internal CKAN.TriStateToggle ReplaceableToggle;
     }
 }

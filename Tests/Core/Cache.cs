@@ -31,7 +31,7 @@ namespace Tests.Core
             cache.Dispose();
             cache = null;
             module_cache.Dispose();
-            module_cache = null;            
+            module_cache = null;
             Directory.Delete(cache_dir, true);
         }
 
@@ -204,6 +204,17 @@ namespace Tests.Core
 
             // Switch back to the original locale
             Thread.CurrentThread.CurrentUICulture = origUICulture;
+        }
+
+        [Test]
+        public void ZipValid_ContainsFilenameWithUnicodeChars_Valid()
+        {
+            bool valid = false;
+            string reason = null;
+
+            Assert.DoesNotThrow(() =>
+                valid = NetFileCache.ZipValid(TestData.ZipWithUnicodeChars, out reason));
+            Assert.IsTrue(valid, reason);
         }
 
         [Test]

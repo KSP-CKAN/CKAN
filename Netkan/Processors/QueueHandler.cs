@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using CKAN.Versioning;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Extensions;
 
 namespace CKAN.NetKAN.Processors
 {
@@ -127,7 +128,7 @@ namespace CKAN.NetKAN.Processors
         private IEnumerable<SendMessageBatchRequestEntry> Inflate(Message msg)
         {
             log.DebugFormat("Metadata returned: {0}", msg.Body);
-            var netkan = new Metadata(JObject.Parse(msg.Body));
+            var netkan = new Metadata(YamlExtensions.Parse(msg.Body));
 
             int releases = 1;
             MessageAttributeValue releasesAttr;

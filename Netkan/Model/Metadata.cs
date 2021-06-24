@@ -2,6 +2,8 @@
 using System.Linq;
 using CKAN.Versioning;
 using Newtonsoft.Json.Linq;
+using YamlDotNet.RepresentationModel;
+using CKAN.NetKAN.Extensions;
 
 namespace CKAN.NetKAN.Model
 {
@@ -115,6 +117,10 @@ namespace CKAN.NetKAN.Model
                 DateTime t = (DateTime)updatedToken;
                 RemoteTimestamp = t.ToUniversalTime();
             }
+        }
+
+        public Metadata(YamlMappingNode yaml) : this(yaml?.ToJObject())
+        {
         }
 
         public string[] Licenses

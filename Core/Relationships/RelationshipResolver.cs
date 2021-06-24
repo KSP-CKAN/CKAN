@@ -86,8 +86,10 @@ namespace CKAN
     /// </remarks>
     public class RelationshipResolver
     {
-        // A list of all the mods we're going to install.
         private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
+        /// <summary>
+        /// The list of all additional mods that need to be installed to satisfy all relationships.
+        /// </summary>
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
         private readonly List<CkanModule> user_requested_mods = new List<CkanModule>();
 
@@ -101,6 +103,9 @@ namespace CKAN
         private readonly IRegistryQuerier registry;
         private readonly GameVersionCriteria GameVersion;
         private readonly RelationshipResolverOptions options;
+        /// <summary>
+        /// The list of already installed modules.
+        /// </summary>
         private readonly HashSet<CkanModule> installed_modules;
 
         /// <summary>
@@ -360,7 +365,8 @@ namespace CKAN
         /// See RelationshipResolverOptions for further adjustments that can be made.
         /// </summary>
         private void ResolveStanza(IEnumerable<RelationshipDescriptor> stanza, SelectionReason reason,
-            RelationshipResolverOptions options, bool soft_resolve = false, IEnumerable<RelationshipDescriptor> old_stanza = null)
+            RelationshipResolverOptions options, bool soft_resolve = false,
+            IEnumerable<RelationshipDescriptor> old_stanza = null)
         {
             if (stanza == null)
             {
@@ -424,24 +430,24 @@ namespace CKAN
                 // Pass mod list in case an older version of a module is conflict-free while later versions have conflicts
                 var descriptor1 = descriptor;
                 List<CkanModule> candidates = descriptor
-                    .LatestAvailableWithProvides(registry, GameVersion, modlist.Values)
+                    .LatestAvailableWithProvides(registry, GameVersion, installed_modules, modlist.Values)
                     .Where(mod => !modlist.ContainsKey(mod.identifier)
                         && descriptor1.WithinBounds(mod)
-                        && MightBeInstallable(mod))
+                        && MightBeInstallable(mod, reason.Parent, installed_modules))
                     .ToList();
-                if (candidates.Count == 0)
+                if (!candidates.Any())
                 {
-                    // Nothing found, try again without mod list
-                    // (conflicts will still be caught below)
+                    // Nothing found, try again while simulating an empty mod list
+                    // Necessary for e.g. proceed_with_inconsistencies, conflicts will still be caught below
                     candidates = descriptor
-                        .LatestAvailableWithProvides(registry, GameVersion)
+                        .LatestAvailableWithProvides(registry, GameVersion, new CkanModule[0])
                         .Where(mod => !modlist.ContainsKey(mod.identifier)
                             && descriptor1.WithinBounds(mod)
-                            && MightBeInstallable(mod))
+                            && MightBeInstallable(mod, null, new CkanModule[0]))
                         .ToList();
                 }
 
-                if (candidates.Count == 0)
+                if (!candidates.Any())
                 {
                     if (!soft_resolve)
                     {
@@ -454,8 +460,7 @@ namespace CKAN
                 if (candidates.Count > 1)
                 {
                     // Oh no, too many to pick from!
-                    // TODO: It would be great if instead we picked the one with the
-                    // most recommendations.
+                    // TODO: It would be great if instead we picked the one with the most recommendations.
                     if (options.without_toomanyprovides_kraken)
                     {
                         continue;
@@ -579,9 +584,12 @@ namespace CKAN
         /// exist for current version.
         /// </summary>
         /// <param name="module">The module to consider</param>
+        /// <param name="stanzaSource">The source of the relationship stanza we're investigating the candidate for</param>
+        /// <param name="installed">The list of installed modules in the current resolver state</param>
         /// <param name="compatible">For internal use</param>
-        /// <returns>If it has dependencies compatible for the current version</returns>
-        private bool MightBeInstallable(CkanModule module, List<string> compatible = null)
+        /// <returns>Whether its dependencies are compatible with the current game version</returns>
+        private bool MightBeInstallable(CkanModule module, CkanModule stanzaSource = null,
+            IEnumerable<CkanModule> installed = null, List<string> compatible = null)
         {
             if (module.IsDLC)
                 return false;
@@ -599,18 +607,21 @@ namespace CKAN
             // in case a dependent depends on it
             compatible.Add(module.identifier);
 
+            var toInstall = stanzaSource != null ? new List<CkanModule> {stanzaSource} : null;
+
             // Get list of lists of dependency choices
             var needed = module.depends
                 // Skip dependencies satisfied by installed modules
-                .Where(depend => !depend.MatchesAny(installed_modules, null, null))
-                .Select(depend => depend.LatestAvailableWithProvides(registry, GameVersion));
+                .Where(depend => !depend.MatchesAny(installed, null, null))
+                // ... or by modules that are about to be installed
+                .Select(depend => depend.LatestAvailableWithProvides(registry, GameVersion, installed, toInstall)).ToList();
 
             log.DebugFormat("Trying to satisfy: {0}",
                 string.Join("; ", needed.Select(need =>
                     string.Join(", ", need.Select(mod => mod.identifier)))));
 
-            //We need every dependency to have at least one possible module
-            var installable = needed.All(need => need.Any(mod => MightBeInstallable(mod, compatible)));
+            // We need every dependency to have at least one possible module
+            var installable = needed.All(need => need.Any(mod => MightBeInstallable(mod, stanzaSource, installed, compatible)));
             compatible.Remove(module.identifier);
             return installable;
         }

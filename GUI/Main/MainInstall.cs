@@ -71,7 +71,7 @@ namespace CKAN
 
             RegistryManager registry_manager = RegistryManager.Instance(manager.CurrentInstance);
             Registry registry = registry_manager.registry;
-            ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, currentUser);
+            ModuleInstaller installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
             // Avoid accumulating multiple event handlers
             installer.onReportModInstalled -= OnModInstalled;
             installer.onReportModInstalled += OnModInstalled;
@@ -186,15 +186,7 @@ namespace CKAN
                         {
                             installer.UninstallList(toUninstall.Select(m => m.identifier),
                                 ref possibleConfigOnlyDirs, registry_manager, false, toInstall);
-                            processSuccessful = true;
-                        }
-                    }
-                    if (toUpgrade.Count > 0)
-                    {
-                        processSuccessful = false;
-                        if (!installCanceled)
-                        {
-                            installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, true, false);
+                            toUninstall.Clear();
                             processSuccessful = true;
                         }
                     }
@@ -204,6 +196,17 @@ namespace CKAN
                         if (!installCanceled)
                         {
                             installer.InstallList(toInstall, opts.Value, registry_manager, ref possibleConfigOnlyDirs, downloader, false);
+                            toInstall.Clear();
+                            processSuccessful = true;
+                        }
+                    }
+                    if (toUpgrade.Count > 0)
+                    {
+                        processSuccessful = false;
+                        if (!installCanceled)
+                        {
+                            installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, true, false);
+                            toUpgrade.Clear();
                             processSuccessful = true;
                         }
                     }

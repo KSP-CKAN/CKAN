@@ -139,6 +139,9 @@
   <data name="alert" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\alert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="arrow_forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="arrow_upward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_upward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="triToggleYes" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\triToggleYes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="triToggleNo" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\triToggleNo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="triToggleBoth" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\triToggleBoth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="AboutDialogLabel2Text" xml:space="preserve"><value>Version {0}</value></data>
   <data name="BuildIDFilterDescription" xml:space="preserve"><value>Build metadata file</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Please enter a name for the new instance.</value></data>
@@ -169,7 +172,7 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainQuit" xml:space="preserve"><value>Quit</value></data>
   <data name="MainGoBack" xml:space="preserve"><value>Go Back</value></data>
   <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>There are unmet dependencies. Really quit?</value></data>
-  <data name="MainQuitWIthUnappliedChanges" xml:space="preserve"><value>You have unapplied changes. Really quit?
+  <data name="MainQuitWithUnappliedChanges" xml:space="preserve"><value>You have unapplied changes. Really quit?
 
 {0}</value></data>
   <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>Updating CKAN</value></data>
@@ -188,7 +191,7 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainFilterLabel" xml:space="preserve"><value>Label ({0})</value></data>
   <data name="MainFilterTag" xml:space="preserve"><value>Tag ({0})</value></data>
   <data name="MainFilterUntagged" xml:space="preserve"><value>Tag (Untagged)</value></data>
-  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>Some installed modules are incompatible! It might not be safe to launch game. Really launch?
+  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>Some installed modules are incompatible! It might not be safe to launch the game. Really launch?
 
 {0}</value></data>
   <data name="MainLaunch" xml:space="preserve"><value>Launch</value></data>
@@ -204,6 +207,9 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Not found.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Do you want to reinstall {0}?</value></data>
   <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN can't install expansion {0}!</value></data>
+  <data name="MainCorruptedRegistry" xml:space="preserve"><value>Corrupted registry archived to {0}: {1}
+
+This means that CKAN forgot about all your installed mods, but they are still in GameData. You can reinstall them by importing the {2} file.</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} is not supported on your current game version and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
 
 Do you really want to install it?</value></data>
@@ -332,6 +338,8 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="MainWaitDone" xml:space="preserve"><value>All done!</value></data>
   <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>Directory {0} is not a valid game directory.</value></data>
   <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Directory "{0}" doesn't exist.</value></data>
+  <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (INVALID)</value></data>
+  <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (LOCKED)</value></data>
   <data name="NewRepoDialogFailed" xml:space="preserve"><value>Failed to fetch master list.</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>CKAN Plugins (*.dll)|*.dll</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} files, {1}</value></data>
@@ -399,11 +407,26 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>Move selected mods to the Ignored group. These mods won't be included in the modpack. </value></data>
   <data name="EditModpackTooltipCancel" xml:space="preserve"><value>Abort modpack creation</value></data>
   <data name="EditModpackTooltipExport" xml:space="preserve"><value>Choose a filename and save the modpack</value></data>
+  <data name="TriStateToggleYesTooltip" xml:space="preserve"><value>Yes</value></data>
+  <data name="TriStateToggleBothTooltip" xml:space="preserve"><value>Yes or No</value></data>
+  <data name="TriStateToggleNoTooltip" xml:space="preserve"><value>No</value></data>
   <data name="ModSearchDescriptionPrefix" xml:space="preserve"><value>desc:</value></data>
   <data name="ModSearchLanguagePrefix" xml:space="preserve"><value>lang:</value></data>
   <data name="ModSearchDependsPrefix" xml:space="preserve"><value>dep:</value></data>
   <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>rec:</value></data>
   <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>sug:</value></data>
   <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>conf:</value></data>
+  <data name="ModSearchTagPrefix" xml:space="preserve"><value>tag:</value></data>
+  <data name="ModSearchLabelPrefix" xml:space="preserve"><value>label:</value></data>
+  <data name="ModSearchYesPrefix" xml:space="preserve"><value>is:</value></data>
+  <data name="ModSearchNoPrefix" xml:space="preserve"><value>not:</value></data>
+  <data name="ModSearchCompatibleSuffix" xml:space="preserve"><value>compatible</value></data>
+  <data name="ModSearchInstalledSuffix" xml:space="preserve"><value>installed</value></data>
+  <data name="ModSearchCachedSuffix" xml:space="preserve"><value>cached</value></data>
+  <data name="ModSearchNewlyCompatibleSuffix" xml:space="preserve"><value>newly-compatible</value></data>
+  <data name="ModSearchUpgradeableSuffix" xml:space="preserve"><value>upgradeable</value></data>
+  <data name="ModSearchReplaceableSuffix" xml:space="preserve"><value>replaceable</value></data>
   <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Expand or collapse the detailed search fields (Ctrl-Shift-F)</value></data>
+  <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>Combine a new search with your current searches</value></data>
+  <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>Uncheck to uninstall all mods, check to clear change set</value></data>
 </root>

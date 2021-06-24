@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using log4net;
+using Newtonsoft.Json.Linq;
+
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Spacedock;
-using log4net;
-using Newtonsoft.Json.Linq;
+using CKAN.NetKAN.Sources.Github;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -18,12 +20,14 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(SpacedockTransformer));
 
         private readonly ISpacedockApi _api;
+        private readonly IGithubApi    _githubApi;
 
         public string Name { get { return "spacedock"; } }
 
-        public SpacedockTransformer(ISpacedockApi api)
+        public SpacedockTransformer(ISpacedockApi api, IGithubApi githubApi)
         {
-            _api      = api;
+            _api       = api;
+            _githubApi = githubApi;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
@@ -120,15 +124,54 @@ namespace CKAN.NetKAN.Transformers
             }
 
             var resourcesJson = (JObject)json["resources"];
-
-            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
-            TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
             resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
+            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
 
             if (sdMod.background != null)
             {
                 TryAddResourceURL(metadata.Identifier, resourcesJson, "x_screenshot", sdMod.background.ToString());
             }
+
+            if (!string.IsNullOrEmpty(sdMod.source_code))
+            {
+                try
+                {
+                    var uri = new Uri(sdMod.source_code);
+                    if (uri.Host == "github.com")
+                    {
+                        var match = githubUrlPathPattern.Match(uri.AbsolutePath);
+                        if (match.Success)
+                        {
+                            var owner = match.Groups["owner"].Value;
+                            var repo  = match.Groups["repo"].Value;
+                            var repoInfo = _githubApi.GetRepo(new GithubRef(
+                                $"#/ckan/github/{owner}/{repo}", false, false
+                            ));
+
+                            if (sdMod.source_code != repoInfo.HtmlUrl)
+                            {
+                                TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", repoInfo.HtmlUrl);
+                            }
+                            // Fall back to homepage from GitHub
+                            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage", repoInfo.Homepage);
+                            if (repoInfo.HasIssues)
+                            {
+                                // Set bugtracker if repo has issues list
+                                TryAddResourceURL(metadata.Identifier, resourcesJson, "bugtracker", $"{repoInfo.HtmlUrl}/issues");
+                            }
+                            if (repoInfo.Archived)
+                            {
+                                Log.Warn("Repo is archived, consider freezing");
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // Just give up, it's fine
+                }
+            }
+            TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
 
             Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
@@ -200,5 +243,11 @@ namespace CKAN.NetKAN.Transformers
 
             return result;
         }
+
+        private static readonly Regex githubUrlPathPattern = new Regex(
+            "^/(?<owner>[^/]+)/(?<repo>[^/]+)",
+            RegexOptions.Compiled
+        );
+
     }
 }

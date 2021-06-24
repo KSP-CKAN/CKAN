@@ -2,7 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.30.1
+## v1.30.5
+
+### Features
+
+- [GUI] ru-RU translation (#3383 by: nt0g; reviewed: HebaruSan)
+- [GUI] Japanese Localization (#3394 by: utah239; reviewed: HebaruSan)
+
+### Internal
+
+- [Multiple] Cache permanent redirects (#3389 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Allow YAML for human-edited metadata (YAMLKAN) (#3367 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Fill more info from GitHub for SpaceDock mods (#3390 by: HebaruSan; reviewed: DasSkelett)
+
+## v1.30.4 (Hubble)
+
+### Features
+
+- [ConsoleUI] Make current instance settings easier to find in ConsoleUI (#3385 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Show game instance selection dialog if default is locked (#3382 by: HebaruSan; reviewed: DasSkelett)
+
+### Bugfixes
+
+- [GUI] Invoke GUI update calls in SetupDefaultSearch() descendants (#3380 by: DasSkelett; reviewed: HebaruSan)
+
+### Internal
+
+- [Netkan] Set bugtracker resource for SpaceDock mods with GitHub repos (#3384 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Pass token for moved files on GitHub (#3387 by: HebaruSan; reviewed: DasSkelett)
+
+## v1.30.2 (Hawking)
+
+### Features
+
+- [GUI] Add pt-BR localization (#3340 by: gsantos9489; reviewed: DasSkelett, HebaruSan)
+- [GUI] Multiple search boxes with OR logic in GUI (#3323, #3374 by: HebaruSan; reviewed: Olympic1, DasSkelett)
 
 ### Bugfixes
 
@@ -12,6 +46,16 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix AD mod upgrading, add tests, and fix all warnings (#3315 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Reset cache dir to default if creation fails (#3334 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Tell user if instance addition fails (#3332 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Tell SharpZipLib to use Unicode when opening zips (#3345 by: DasSkelett; reviewed: HebaruSan)
+- [GUI] Make incompatible mods warning dialog use newlines instead of commas (#3346 by: DeltaDizzy; reviewed: DasSkelett)
+- [Core] Fix crash when overwriting manually installed files (#3349 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Skip modules with parse errors in deserialization (#3347 by: HebaruSan; reviewed: DasSkelett)
+- [ConsoleUI] Update or refresh ConsoleUI mod list after repo or compat changes (#3353 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Replace repo-reinst with kraken, handle in UIs (#3344 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Make ModuleInstaller a non-singleton (#3356 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Better recovery when registry.json is corrupted (#3351 by: HebaruSan; reviewed: DasSkelett)
+- [CLI] Fix installation of metapackages on cmdline (#3362 by: DasSkelett; reviewed: HebaruSan)
+- [Multiple] Fix installation of AVP while removing EVE default configs (#3366 by: DasSkelett; reviewed: HebaruSan)
 
 ### Internal
 
@@ -19,6 +63,9 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Netkan errors and warnings for Harmony bundlers (#3326 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Print path of unused version file (#3327, #3328 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Switch from outdated SharpZipLib.Patched to newer SharpZipLib (#3329 by: DasSkelett; reviewed: HebaruSan)
+- [Tooling] Use git cmd to add CHANGELOG.md in merge script (#3350 by: DasSkelett; reviewed: HebaruSan)
+- [Tooling] Merge script fix for Windows (#3354 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Warn if a module with plugins can't be auto-detected (#3370 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.30.0 (Glenn)
 

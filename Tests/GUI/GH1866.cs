@@ -15,6 +15,7 @@ namespace Tests.GUI
     /// which involves sorting the GUI table by Max KSP Version and then performing a repo operation.
     /// </summary>
     [TestFixture]
+    [NUnit.Framework.Category("Display")]
     public class GH1866
     {
         private CkanModule _anyVersionModule;
@@ -43,7 +44,7 @@ namespace Tests.GUI
                 .Select((change) => change.Mod.ToCkanModule()).ToList();
 
             // do the install
-            ModuleInstaller.GetInstance(_instance.KSP, main.currentUser).InstallList(
+            new ModuleInstaller(_instance.KSP, main.currentUser).InstallList(
                 changeList,
                 new RelationshipResolverOptions(),
                 new NetAsyncModulesDownloader(main.currentUser)
@@ -71,7 +72,7 @@ namespace Tests.GUI
             _registry.AddAvailable(_anyVersionModule);
 
             HashSet<string> possibleConfigOnlyDirs = null;
-            ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
+            new ModuleInstaller(_instance.KSP, _manager.Cache, _manager.User).InstallList(
                 new List<CkanModule> { { _anyVersionModule } },
                 new RelationshipResolverOptions(),
                 _registryManager,
@@ -144,7 +145,7 @@ namespace Tests.GUI
             {
                 HashSet<string> possibleConfigOnlyDirs = null;
                 // perform the install of the "other" module - now we need to sort
-                ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
+                new ModuleInstaller(_instance.KSP, _manager.Cache, _manager.User).InstallList(
                     _modList.ComputeUserChangeSet(null).Select(change => change.Mod).ToList(),
                     new RelationshipResolverOptions(),
                     _registryManager,

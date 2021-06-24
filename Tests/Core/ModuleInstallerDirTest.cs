@@ -44,7 +44,7 @@ namespace Tests.Core
             _manager   = new GameInstanceManager(_nullUser, _config);
             _registryManager = CKAN.RegistryManager.Instance(_instance.KSP);
             _registry  = _registryManager.registry;
-            _installer = CKAN.ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _nullUser);
+            _installer = new CKAN.ModuleInstaller(_instance.KSP, _manager.Cache, _nullUser);
 
             _gameDir = _instance.KSP.GameDir();
             _gameDataDir = _instance.KSP.game.PrimaryModDirectory(_instance.KSP);

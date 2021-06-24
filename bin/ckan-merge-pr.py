@@ -39,7 +39,7 @@ class CkanRepo(Repo):
 
     def user_edit_file(self, path: Path) -> None:
         editor=self.config_reader().get('core', 'editor')
-        run([editor, path])
+        run([editor, str(path)])
 
 class CkanPullRequest:
 
@@ -101,7 +101,8 @@ class CkanPullRequest:
         repo.git.merge(branch, no_commit=True, no_ff=True)
         repo.prepend_line(repo.changelog_path(), self.changelog_entry())
         repo.user_edit_file(repo.changelog_path())
-        repo.index.add([repo.changelog_path().as_posix()])
+        # repo.index.add() doesn't respect core.autocrlf
+        repo.git.add(str(repo.changelog_path()))
         # repo.index.commit doesn't properly resolve a merge started via repo.git.merge
         repo.git.commit(m=self.merge_commit_message())
         return True

@@ -8,6 +8,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using CKAN.NetKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.Extensions;
 using CKAN.NetKAN.Sources.Avc;
@@ -200,10 +201,7 @@ namespace CKAN.NetKAN.Services
         {
             using (var sr = new StreamReader(stream))
             {
-                using (var jsonTextReader = new JsonTextReader(sr))
-                {
-                    return (JObject)JToken.ReadFrom(jsonTextReader);
-                }
+                return YamlExtensions.Parse(sr).ToJObject();
             }
         }
 

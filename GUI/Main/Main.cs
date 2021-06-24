@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using CKAN.Versioning;
-using CKAN.Extensions;
-using CKAN.Properties;
-using CKAN.Types;
-using log4net;
 using Timer = System.Windows.Forms.Timer;
+using log4net;
 using Autofac;
+
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -56,6 +54,8 @@ namespace CKAN
         private bool enableTrayIcon;
         private bool minimizeToTray;
 
+        public static Main Instance { get; private set; }
+
         public Main(string[] cmdlineArgs, GameInstanceManager mgr, bool showConsole)
         {
             log.Info("Starting the GUI");
@@ -74,7 +74,7 @@ namespace CKAN
             }
             else
             {
-                Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(mainConfig.Language);
+                CultureInfo.DefaultThreadCurrentUICulture = Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(mainConfig.Language);
             }
 
             InitializeComponent();
@@ -102,44 +102,64 @@ namespace CKAN
             // Initialize all user interaction dialogs.
             RecreateDialogs();
 
-            // We want to check if our current instance is null first,
-            // as it may have already been set by a command-line option.
-            if (CurrentInstance == null && manager.GetPreferredInstance() == null)
+            // Make sure we have an instance
+            if (CurrentInstance == null)
             {
-                Hide();
-
-                var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog();
-                if (result == DialogResult.Cancel || result == DialogResult.Abort)
+                // Maybe we can find an instance automatically (e.g., portable, only, default)
+                manager.GetPreferredInstance();
+            }
+            // A loop that ends when we have a valid instance or the user gives up
+            do
+            {
+                if (CurrentInstance == null && !InstancePromptAtStart())
                 {
-                    Application.Exit();
+                    // User cancelled, give up
                     return;
                 }
-            }
+                // We now have a tentative instance. Check if it's locked.
+                try
+                {
+                    // This will throw RegistryInUseKraken if locked by another process
+                    var regMgr = RegistryManager.Instance(CurrentInstance);
+                    // Tell the user their registry was reset if it was corrupted
+                    if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
+                        && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
+                    {
+                        errorDialog.ShowErrorDialog(Properties.Resources.MainCorruptedRegistry,
+                            regMgr.previousCorruptedPath, regMgr.previousCorruptedMessage,
+                            Path.Combine(Path.GetDirectoryName(regMgr.previousCorruptedPath) ?? "", regMgr.LatestInstalledExportFilename()));
+                        regMgr.previousCorruptedMessage = null;
+                        regMgr.previousCorruptedPath    = null;
+                        // But the instance is actually fine because a new registry was just created
+                    }
+                }
+                catch (RegistryInUseKraken kraken)
+                {
+                    errorDialog.ShowErrorDialog(kraken.ToString());
+                    // Couldn't get the lock, there is no current instance
+                    manager.CurrentInstance = null;
+                    if (manager.Instances.All(inst => !inst.Value.Valid || inst.Value.IsMaybeLocked))
+                    {
+                        // Everything's invalid or locked, give up
+                        Application.Exit();
+                        return;
+                    }
+                }
+            } while (CurrentInstance == null);
+            // We can only reach this point if CurrentInstance is not null
+            // AND we acquired the lock for it successfully
 
-            configuration = GUIConfiguration.LoadOrCreateConfiguration
-                (
-                    Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml")
-                );
-
-            // Check if there is any other instances already running.
-            // This is not entirely necessary, but we can show a nicer error message this way.
-            try
-            {
-#pragma warning disable 219
-                var lockedReg = RegistryManager.Instance(CurrentInstance).registry;
-#pragma warning restore 219
-            }
-            catch (RegistryInUseKraken kraken)
-            {
-                errorDialog.ShowErrorDialog(kraken.ToString());
-                return;
-            }
+            // Get the instance's GUI onfig
+            configuration = GUIConfiguration.LoadOrCreateConfiguration(
+                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"));
 
             tabController = new TabController(MainTabControl);
             tabController.ShowTab("ManageModsTabPage");
 
             if (!showConsole)
+            {
                 Util.HideConsoleWindow();
+            }
 
             // Disable the modinfo controls until a mod has been choosen. This has an effect if the modlist is empty.
             ActiveModInfo = null;
@@ -163,17 +183,122 @@ namespace CKAN
 
             Application.Run(this);
 
-            var registry = RegistryManager.Instance(Manager.CurrentInstance);
-            registry?.Dispose();
+            if (CurrentInstance != null)
+            {
+                var registry = RegistryManager.Instance(Manager.CurrentInstance);
+                registry?.Dispose();
+            }
         }
 
-        public static Main Instance { get; private set; }
+        private bool InstancePromptAtStart()
+        {
+            Hide();
+            var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog();
+            if (result != DialogResult.OK)
+            {
+                Application.Exit();
+                return false;
+            }
+            return true;
+        }
+
+        private void manageGameInstancesMenuItem_Click(object sender, EventArgs e)
+        {
+            var old_instance = CurrentInstance;
+            var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog();
+            if (result == DialogResult.OK && !Equals(old_instance, CurrentInstance))
+            {
+                try
+                {
+                    ManageMods.ModGrid.ClearSelection();
+                    CurrentInstanceUpdated(true);
+                }
+                catch (RegistryInUseKraken kraken)
+                {
+                    // Couldn't get the lock, revert to previous instance
+                    errorDialog.ShowErrorDialog(kraken.ToString());
+                    manager.CurrentInstance = old_instance;
+                    CurrentInstanceUpdated(false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// React to switching to a new game instance
+        /// </summary>
+        /// <param name="allowRepoUpdate">true if a repo update is allowed if needed (e.g. on initial load), false otherwise</param>
+        private void CurrentInstanceUpdated(bool allowRepoUpdate)
+        {
+            CurrentInstance.Scan();
+            Util.Invoke(this, () =>
+            {
+                Text = $"CKAN {Meta.GetVersion()} - {CurrentInstance.game.ShortName} {CurrentInstance.Version()}    --    {CurrentInstance.GameDir().Replace('/', Path.DirectorySeparatorChar)}";
+                StatusInstanceLabel.Text = string.Format(
+                    Properties.Resources.StatusInstanceLabelText,
+                    CurrentInstance.Name,
+                    CurrentInstance.game.ShortName,
+                    CurrentInstance.Version()?.ToString()
+                );
+            });
+
+            if (CurrentInstance.CompatibleVersionsAreFromDifferentGameVersion)
+            {
+                new CompatibleGameVersionsDialog(CurrentInstance, !actuallyVisible)
+                    .ShowDialog();
+            }
+
+            // This will throw RegistryInUseKraken if locked by another process
+            var regMgr   = RegistryManager.Instance(CurrentInstance);
+            var registry = regMgr.registry;
+            if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
+                                                && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
+            {
+                errorDialog.ShowErrorDialog(Properties.Resources.MainCorruptedRegistry,
+                    regMgr.previousCorruptedPath, regMgr.previousCorruptedMessage,
+                    Path.Combine(Path.GetDirectoryName(regMgr.previousCorruptedPath) ?? "", regMgr.LatestInstalledExportFilename()));
+                regMgr.previousCorruptedMessage = null;
+                regMgr.previousCorruptedPath = null;
+            }
+            registry.BuildTagIndex(ManageMods.mainModList.ModuleTags);
+
+            configuration = GUIConfiguration.LoadOrCreateConfiguration(
+                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"));
+
+            bool repoUpdateNeeded = configuration.RefreshOnStartup
+                || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
+            if (allowRepoUpdate)
+            {
+                // If not allowing, don't do anything
+                if (repoUpdateNeeded)
+                {
+                    // Update the filters after UpdateRepo() completed.
+                    // Since this happens with a backgroundworker, Filter() is added as callback for RunWorkerCompleted.
+                    // Remove it again after it ran, else it stays there and is added again and again.
+                    void filterUpdate(object sender, RunWorkerCompletedEventArgs e)
+                    {
+                        SetupDefaultSearch();
+                        m_UpdateRepoWorker.RunWorkerCompleted -= filterUpdate;
+                    }
+
+                    m_UpdateRepoWorker.RunWorkerCompleted += filterUpdate;
+
+                    ManageMods.ModGrid.Rows.Clear();
+                    UpdateRepo();
+                }
+                else
+                {
+                    SetupDefaultSearch();
+                    ManageMods.UpdateModsList();
+                }
+            }
+            ManageMods.InstanceUpdated(CurrentInstance);
+        }
 
         /// <summary>
         /// Form.Visible says true even when the form hasn't shown yet.
         /// This value will tell the truth.
         /// </summary>
-        private static bool actuallyVisible = false;
+        public bool actuallyVisible { get; private set; } = false;
 
         protected override void OnShown(EventArgs e)
         {
@@ -260,7 +385,10 @@ namespace CKAN
 
             URLHandlers.RegisterURLHandler(configuration, currentUser);
 
-            CurrentInstanceUpdated(!autoUpdating);
+            if (CurrentInstance != null)
+            {
+                CurrentInstanceUpdated(!autoUpdating);
+            }
 
             if (commandLineArgs.Length >= 2)
             {
@@ -279,13 +407,16 @@ namespace CKAN
                 log.Debug("Failed to select mod from startup parameters");
             }
 
-            var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
-            if (!Directory.Exists(pluginsPath))
-                Directory.CreateDirectory(pluginsPath);
+            if (CurrentInstance != null)
+            {
+                var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
+                if (!Directory.Exists(pluginsPath))
+                    Directory.CreateDirectory(pluginsPath);
 
-            pluginController = new PluginController(pluginsPath);
+                pluginController = new PluginController(pluginsPath);
 
-            CurrentInstance.game.RebuildSubdirectories(CurrentInstance);
+                CurrentInstance.game.RebuildSubdirectories(CurrentInstance);
+            }
 
             log.Info("GUI started");
             base.OnLoad(e);
@@ -321,10 +452,6 @@ namespace CKAN
             // Copy metadata panel split height to app settings
             configuration.ModInfoPosition = ModInfo.ModMetaSplitPosition;
 
-            // Save the active filter
-            configuration.ActiveFilter = (int)ManageMods.mainModList.ModFilter;
-            configuration.CustomLabelFilter = ManageMods.mainModList.CustomLabelFilter?.Name;
-
             // Save settings.
             configuration.Save();
 
@@ -341,75 +468,27 @@ namespace CKAN
             base.OnFormClosing(e);
         }
 
-        /// <summary>
-        /// React to switching to a new game instance
-        /// </summary>
-        /// <param name="allowRepoUpdate">true if a repo update is allowed if needed (e.g. on initial load), false otherwise</param>
-        private void CurrentInstanceUpdated(bool allowRepoUpdate)
+        private void SetupDefaultSearch()
         {
-            CurrentInstance.Scan();
-            Util.Invoke(this, () =>
+            var def = configuration.DefaultSearches;
+            if (def == null || def.Count < 1)
             {
-                Text = $"CKAN {Meta.GetVersion()} - {CurrentInstance.game.ShortName} {CurrentInstance.Version()}    --    {CurrentInstance.GameDir().Replace('/', Path.DirectorySeparatorChar)}";
-                StatusInstanceLabel.Text = string.Format(
-                    Properties.Resources.StatusInstanceLabelText,
-                    CurrentInstance.Name,
-                    CurrentInstance.game.ShortName,
-                    CurrentInstance.Version()?.ToString()
-                );
-            });
-
-            configuration = GUIConfiguration.LoadOrCreateConfiguration(
-                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml")
-            );
-
-            if (CurrentInstance.CompatibleVersionsAreFromDifferentGameVersion)
-            {
-                new CompatibleGameVersionsDialog(CurrentInstance, !actuallyVisible)
-                    .ShowDialog();
+                // Fall back to old setting
+                ManageMods.Filter(ModList.FilterToSavedSearch(
+                    (GUIModFilter)configuration.ActiveFilter,
+                    ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
+                    ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                        .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
+                ));
+                // Clear the old filter so it doesn't get pulled forward again
+                configuration.ActiveFilter = (int)GUIModFilter.All;
             }
-
-            (RegistryManager.Instance(CurrentInstance).registry as Registry)
-                ?.BuildTagIndex(ManageMods.mainModList.ModuleTags);
-
-            bool repoUpdateNeeded = configuration.RefreshOnStartup
-                || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
-            if (allowRepoUpdate)
+            else
             {
-                // If not allowing, don't do anything
-                if (repoUpdateNeeded)
-                {
-                    // Update the filters after UpdateRepo() completed.
-                    // Since this happens with a backgroundworker, Filter() is added as callback for RunWorkerCompleted.
-                    // Remove it again after it ran, else it stays there and is added again and again.
-                    void filterUpdate(object sender, RunWorkerCompletedEventArgs e)
-                    {
-                        ManageMods.Filter(
-                            (GUIModFilter)configuration.ActiveFilter,
-                            ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
-                            ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                                .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
-                        );
-                        m_UpdateRepoWorker.RunWorkerCompleted -= filterUpdate;
-                    }
-
-                    m_UpdateRepoWorker.RunWorkerCompleted += filterUpdate;
-
-                    ManageMods.ModGrid.Rows.Clear();
-                    UpdateRepo();
-                }
-                else
-                {
-                    ManageMods.UpdateModsList();
-                    ManageMods.Filter(
-                        (GUIModFilter)configuration.ActiveFilter,
-                        ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
-                        ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                            .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
-                    );
-                }
+                var labels = ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name).ToList();
+                var searches = def.Select(s => ModSearch.Parse(s, labels)).ToList();
+                ManageMods.SetSearches(searches);
             }
-            ManageMods.InstanceUpdated(CurrentInstance);
         }
 
         public void UpdateModContentsTree(CkanModule module, bool force = false)
@@ -456,7 +535,7 @@ namespace CKAN
         {
             OpenFileDialog open_file_dialog = new OpenFileDialog()
             {
-                Filter      = Resources.CKANFileFilter,
+                Filter      = Properties.Resources.CKANFileFilter,
                 Multiselect = true,
             };
 
@@ -498,17 +577,6 @@ namespace CKAN
                     InstallModuleDriver(registry_manager.registry, module);
                 }
                 registry_manager.Save(true);
-            }
-        }
-
-        private void manageGameInstancesMenuItem_Click(object sender, EventArgs e)
-        {
-            var old_instance = Instance.CurrentInstance;
-            var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog();
-            if (result == DialogResult.OK && !Equals(old_instance, Instance.CurrentInstance))
-            {
-                ManageMods.ModGrid.ClearSelection();
-                CurrentInstanceUpdated(true);
             }
         }
 
@@ -646,7 +714,7 @@ namespace CKAN
                 // Warn that it might not be safe to run Game with incompatible modules installed
                 string incompatDescrip = incomp
                     .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(CurrentInstance.game, m.Module)})")
-                    .Aggregate((a, b) => $"{a}, {b}");
+                    .Aggregate((a, b) => $"{a}{Environment.NewLine}{b}");
                 if (!YesNoDialog(string.Format(Properties.Resources.MainLaunchWithIncompatible, incompatDescrip),
                     Properties.Resources.MainLaunch,
                     Properties.Resources.MainGoBack))

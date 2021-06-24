@@ -280,6 +280,9 @@ namespace CKAN.ConsoleUI {
                     "Save your mod list",
                     true, ExportInstalled),
                 null,
+                new ConsoleMenuOption("Game instance settings...",    "",
+                    "Configure the current game instance",
+                    true, InstanceSettings),
                 new ConsoleMenuOption("Select game instance...",      "",
                     "Switch to a different game instance",
                     true, SelectInstall),
@@ -435,6 +438,12 @@ namespace CKAN.ConsoleUI {
                         manager.Cache,
                         ps
                     );
+                } catch (ReinstallModuleKraken rmk) {
+                    ChangePlan reinstPlan = new ChangePlan();
+                    foreach (CkanModule m in rmk.Modules) {
+                        reinstPlan.ToggleUpgrade(m);
+                    }
+                    LaunchSubScreen(theme, new InstallScreen(manager, reinstPlan, debug));
                 } catch (Exception ex) {
                     // There can be errors while you re-install mods with changed metadata
                     ps.RaiseError(ex.Message + ex.StackTrace);
@@ -474,17 +483,51 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
-        private bool SelectInstall(ConsoleTheme theme)
+        private bool InstanceSettings(ConsoleTheme theme)
         {
-            GameInstance prevInst = manager.CurrentInstance;
-            LaunchSubScreen(theme, new GameInstanceListScreen(manager));
-            // Abort if same instance as before
-            if (!prevInst.Equals(manager.CurrentInstance)) {
-                plan.Reset();
-                registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+            var prevRepos   = new SortedDictionary<string, Repository>(registry.Repositories);
+            var prevVerCrit = manager.CurrentInstance.VersionCriteria();
+            LaunchSubScreen(theme, new GameInstanceEditScreen(manager, manager.CurrentInstance));
+            if (!SortedDictionaryEquals(registry.Repositories, prevRepos)) {
+                // Repos changed, need to fetch them
+                UpdateRegistry(theme, false);
+                RefreshList(theme);
+            } else if (!manager.CurrentInstance.VersionCriteria().Equals(prevVerCrit)) {
+                // VersionCriteria changed, need to re-check what is compatible
                 RefreshList(theme);
             }
             return true;
+        }
+
+        private bool SelectInstall(ConsoleTheme theme)
+        {
+            GameInstance prevInst = manager.CurrentInstance;
+            var prevRepos = new SortedDictionary<string, Repository>(registry.Repositories);
+            var prevVerCrit = prevInst.VersionCriteria();
+            LaunchSubScreen(theme, new GameInstanceListScreen(manager));
+            if (!prevInst.Equals(manager.CurrentInstance)) {
+                // Game instance changed, reset everything
+                plan.Reset();
+                registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+                RefreshList(theme);
+            } else if (!SortedDictionaryEquals(registry.Repositories, prevRepos)) {
+                // Repos changed, need to fetch them
+                UpdateRegistry(theme, false);
+                RefreshList(theme);
+            } else if (!manager.CurrentInstance.VersionCriteria().Equals(prevVerCrit)) {
+                // VersionCriteria changed, need to re-check what is compatible
+                RefreshList(theme);
+            }
+            return true;
+        }
+
+        private bool SortedDictionaryEquals<K, V>(SortedDictionary<K, V> a, SortedDictionary<K, V> b)
+        {
+            return a == null ? b == null
+                 : b == null ? false
+                 : a.Count == b.Count
+                    && a.Keys.All(k => b.ContainsKey(k))
+                    && b.Keys.All(k => a.ContainsKey(k) && a[k].Equals(b[k]));
         }
 
         private bool EditAuthTokens(ConsoleTheme theme)
@@ -497,7 +540,7 @@ namespace CKAN.ConsoleUI {
         {
             // In the constructor this is called while moduleList is being populated, just do nothing in this case.
             // ModListScreen -> moduleList = (GetAllMods ...) -> UpdateRegistry -> RefreshList
-            moduleList?.SetData(GetAllMods(theme,true));
+            moduleList?.SetData(GetAllMods(theme, true));
         }
 
         private List<CkanModule> allMods = null;

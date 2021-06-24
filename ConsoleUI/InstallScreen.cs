@@ -59,21 +59,21 @@ namespace CKAN.ConsoleUI {
                         HashSet<string> possibleConfigOnlyDirs = null;
 
                         RegistryManager regMgr = RegistryManager.Instance(manager.CurrentInstance);
-                        ModuleInstaller inst = ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, this);
+                        ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
                         inst.onReportModInstalled = OnModInstalled;
                         if (plan.Remove.Count > 0) {
                             inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, plan.Install);
                             plan.Remove.Clear();
                         }
                         NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache);
-                        if (plan.Upgrade.Count > 0) {
-                            inst.Upgrade(plan.Upgrade, dl, ref possibleConfigOnlyDirs, regMgr);
-                            plan.Upgrade.Clear();
-                        }
                         if (plan.Install.Count > 0) {
                             List<CkanModule> iList = new List<CkanModule>(plan.Install);
                             inst.InstallList(iList, resolvOpts, regMgr, ref possibleConfigOnlyDirs, dl);
                             plan.Install.Clear();
+                        }
+                        if (plan.Upgrade.Count > 0) {
+                            inst.Upgrade(plan.Upgrade, dl, ref possibleConfigOnlyDirs, regMgr);
+                            plan.Upgrade.Clear();
                         }
                         if (plan.Replace.Count > 0) {
                             inst.Replace(AllReplacements(plan.Replace), resolvOpts, dl, ref possibleConfigOnlyDirs, regMgr, true);

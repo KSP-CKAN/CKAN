@@ -61,10 +61,11 @@ namespace CKAN
         /// If no KSP version is provided, the latest module for *any* KSP version is given.
         /// </summary>
         List<CkanModule> LatestAvailableWithProvides(
-            string                  identifier,
-            GameVersionCriteria      ksp_version,
-            RelationshipDescriptor  relationship_descriptor = null,
-            IEnumerable<CkanModule> toInstall               = null
+            string identifier,
+            GameVersionCriteria ksp_version,
+            RelationshipDescriptor relationship_descriptor = null,
+            IEnumerable<CkanModule> installed = null,
+            IEnumerable<CkanModule> toInstall = null
         );
 
         /// <summary>

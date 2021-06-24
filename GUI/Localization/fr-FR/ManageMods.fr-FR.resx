@@ -151,7 +151,7 @@
   <data name="RefreshToolButton.Text" xml:space="preserve"><value>Rafraîchir</value></data>
   <data name="UpdateAllToolButton.Text" xml:space="preserve"><value>Ajouter les mises à jour disponibles</value></data>
   <data name="ApplyToolButton.Text" xml:space="preserve"><value>Appliquer les changements</value></data>
-  <data name="FilterToolButton.Text" xml:space="preserve"><value>Filtre (Compatible)</value></data>
+  <data name="FilterToolButton.Text" xml:space="preserve"><value>Filtres</value></data>
   <data name="FilterCompatibleButton.Text" xml:space="preserve"><value>Compatible</value></data>
   <data name="FilterInstalledButton.Text" xml:space="preserve"><value>Installé</value></data>
   <data name="FilterInstalledUpdateButton.Text" xml:space="preserve"><value>Installé (MàJ disponible)</value></data>
@@ -166,7 +166,7 @@
   <data name="FilterLabelsToolButton.Text" xml:space="preserve"><value>Labels</value></data>
   <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve"><value>Mod sélectionné précédent...</value></data>
   <data name="NavForwardToolButton.ToolTipText" xml:space="preserve"><value>Mod sélectionné suivant...</value></data>
-  <data name="Installed.HeaderText" xml:space="preserve"><value>    Inst</value></data>
+  <data name="Installed.HeaderText" xml:space="preserve"><value>Inst</value></data>
   <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>Auto-installé</value></data>
   <data name="UpdateCol.HeaderText" xml:space="preserve"><value>MàJ</value></data>
   <data name="ReplaceCol.HeaderText" xml:space="preserve"><value>Remplace</value></data>

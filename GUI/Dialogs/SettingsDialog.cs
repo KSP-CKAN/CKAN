@@ -367,27 +367,27 @@ namespace CKAN
             Label hostLabel = new Label()
             {
                 AutoSize = true,
-                Location = new Point(3, 6),
-                Size     = new Size(271, 13),
+                Location = new Point(3, 8),
+                Size     = new Size(65, 13),
                 Text     = Properties.Resources.AddAuthTokenHost
             };
             TextBox hostTextBox = new TextBox()
             {
-                Location = new Point(45, 6),
-                Size     = new Size(newAuthTokenPopup.ClientSize.Width - 40 - 10, 23),
+                Location = new Point(3 + 65 + 3, 6),
+                Size     = new Size(newAuthTokenPopup.ClientSize.Width - 65 - 10, 23),
                 Text     = ""
             };
             Label tokenLabel = new Label()
             {
                 AutoSize = true,
-                Location = new Point(3, 35),
-                Size     = new Size(271, 13),
+                Location = new Point(3, 38),
+                Size     = new Size(65, 13),
                 Text     = Properties.Resources.AddAuthTokenToken
             };
             TextBox tokenTextBox = new TextBox()
             {
-                Location = new Point(45, 35),
-                Size     = new Size(newAuthTokenPopup.ClientSize.Width - 40 - 10, 23),
+                Location = new Point(3 + 65 + 3, 35),
+                Size     = new Size(newAuthTokenPopup.ClientSize.Width - 65 - 10, 23),
                 Text     = ""
             };
             Button acceptButton = new Button()

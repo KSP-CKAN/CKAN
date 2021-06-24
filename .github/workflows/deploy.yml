@@ -23,8 +23,6 @@ jobs:
           if [[ $VERSION =~ [13579]$ ]]
           then
             echo '::set-output name=odd_build::true'
-          else
-            echo '::set-output name=odd_build::false'
           fi
 
       - name: Installing build dependencies

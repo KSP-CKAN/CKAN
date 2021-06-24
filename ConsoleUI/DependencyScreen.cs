@@ -25,7 +25,7 @@ namespace CKAN.ConsoleUI {
             manager   = mgr;
             plan      = cp;
             registry  = RegistryManager.Instance(manager.CurrentInstance).registry;
-            installer = ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, this);
+            installer = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
             rejected  = rej;
 
             AddObject(new ConsoleLabel(

@@ -57,7 +57,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Open an file dialog to search for a KSP instance, like in <code>ManageKspInstances</code>.
+        /// Open an file dialog to search for a game instance, like in <code>ManageGameInstancesDialog</code>.
         /// </summary>
         private void buttonInstancePathSelection_Click(object sender, EventArgs e)
         {
@@ -72,7 +72,7 @@ namespace CKAN
                 Multiselect      = false
             };
 
-            // Show the FileDialog and let the user search for the KSP directory.
+            // Show the FileDialog and let the user search for the game directory.
 		    if (instanceDialog.ShowDialog() != DialogResult.OK || !File.Exists(instanceDialog.FileName))
 			    return;
 
