@@ -383,4 +383,6 @@ Voulez-vous autoriser à faire cela? Si vous cliquer non, vous ne verrez plus ce
   <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>sug:</value></data>
   <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>conf:</value></data>
   <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Étendre ou réduire la taille du champ de recherche détaillé (Ctrl-Shift-F)</value></data>
+  <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>Combiner une nouvelle recherche avec vos recherches actuelles</value></data>
+  <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>Décocher pour désinstaller tous les mods, cocher pour annuler les changements</value></data>
 </root>
