@@ -99,6 +99,17 @@ namespace CKAN
         }
     }
 
+    public class NoGameInstanceKraken : Kraken
+    {
+        public readonly string path;
+
+        public NoGameInstanceKraken(string path, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
+        {
+            this.path = path;
+        }
+    }
+
     public class NotKSPDirKraken : Kraken
     {
         public string path;

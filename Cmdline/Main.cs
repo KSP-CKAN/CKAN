@@ -6,25 +6,27 @@
 using System;
 using System.Net;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using CKAN.CmdLine.Action;
+using CommandLine;
+using CommandLine.Text;
 using log4net;
 using log4net.Core;
 
 namespace CKAN.CmdLine
 {
-    internal class MainClass
+    public class MainClass
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(MainClass));
+
+        private static GameInstanceManager _manager;
+        private static IUser _user;
 
         /*
          * When the STAThread is applied, it changes the apartment state of the current thread to be single threaded.
          * Without getting into a huge discussion about COM and threading,
-         * this attribute ensures the communication mechanism between the current thread an
+         * this attribute ensures the communication mechanism between the current thread and
          * other threads that may want to talk to it via COM.  When you're using Windows Forms,
          * depending on the feature you're using, it may be using COM interop in order to communicate with
          * operating system components.  Good examples of this are the Clipboard and the File Dialogs.
@@ -32,325 +34,328 @@ namespace CKAN.CmdLine
         [STAThread]
         public static int Main(string[] args)
         {
-            // Launch debugger if the "--debugger" flag is present in the command line arguments.
-            // We want to do this as early as possible so just check the flag manually, rather than doing the
-            // more robust argument parsing.
-            if (args.Any(i => i == "--debugger"))
-            {
-                Debugger.Launch();
-            }
-
-            // Default to GUI if there are no command line args or if the only args are flags rather than commands.
-            if (args.All(a => a == "--verbose" || a == "--debug" || a == "--asroot" || a == "--show-console"))
-            {
-                var guiCommand = args.ToList();
-                guiCommand.Insert(0, "gui");
-                args = guiCommand.ToArray();
-            }
-
-            Logging.Initialize();
-            log.Info("CKAN started.");
-
-            // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
-            // This is on by default in .NET 4.6, but not in 4.5.
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-
             try
             {
-                return Execute(null, null, args);
+                // Launch debugger if the "--debugger" flag is present in the command line arguments.
+                // We want to do this as early as possible so just check the flag manually, rather than doing the
+                // more robust argument parsing.
+                if (args.Any(i => i == "--debugger"))
+                {
+                    Debugger.Launch();
+                }
+
+                // Default to GUI if there are no command line args or if the only args are flags rather than commands.
+                if (args.All(a => a == "-v" || a == "--verbose" || a == "-d" || a == "--debug" || a == "--asroot" || a == "--show-console" || a == "--debugger"))
+                {
+                    var guiCommand = args.ToList();
+                    guiCommand.Insert(0, "gui");
+                    args = guiCommand.ToArray();
+                }
+
+                var types = LoadVerbs();
+                var parser = new Parser(c => c.HelpWriter = null).ParseVerbs(args, types);
+                var result = parser.MapResult(opts => Execute(_manager, opts, args), errs =>
+                {
+                    if (errs.IsVersion())
+                    {
+                        Console.WriteLine(Meta.GetVersion(VersionFormat.Full));
+                    }
+                    else
+                    {
+                        var ht = HelpText.AutoBuild(parser, h =>
+                        {
+                            h.AddDashesToOption = true;                                // Add dashes to options
+                            h.AddNewLineBetweenHelpSections = true;                    // Add blank line between heading and usage
+                            h.AutoHelp = false;                                        // Hide built-in help option
+                            h.AutoVersion = false;                                     // Hide built-in version option
+                            h.Heading = $"CKAN {Meta.GetVersion(VersionFormat.Full)}"; // Create custom heading
+                            h.Copyright = $"Copyright © 2014-{DateTime.Now.Year}";     // Create custom copyright
+                            h.AddPreOptionsLine(GetUsage(args));                       // Show usage
+                            return HelpText.DefaultParsingErrorsHandler(parser, h);
+                        }, e => e, true);
+
+                        Console.WriteLine(ht);
+                    }
+
+                    return Exit.Ok;
+                });
+
+                return result;
             }
             finally
             {
                 RegistryManager.DisposeAll();
             }
-        }
-
-        public static int Execute(GameInstanceManager manager, CommonOptions opts, string[] args)
-        {
-            // We shouldn't instantiate Options if it's a subcommand.
-            // It breaks command-specific help, for starters.
-            try
-            {
-                switch (args[0])
-                {
-                    case "repair":
-                        return (new Repair()).RunSubCommand(manager, opts, new SubCommandOptions(args));
-
-                    case "instance":
-                        return (new GameInstance()).RunSubCommand(manager, opts, new SubCommandOptions(args));
-
-                    case "compat":
-                        return (new Compat()).RunSubCommand(manager, opts, new SubCommandOptions(args));
-
-                    case "repo":
-                        return (new Repo()).RunSubCommand(manager, opts, new SubCommandOptions(args));
-
-                    case "authtoken":
-                        return (new AuthToken()).RunSubCommand(manager, opts, new SubCommandOptions(args));
-
-                    case "cache":
-                        return (new Cache()).RunSubCommand(manager, opts, new SubCommandOptions(args));
-                        
-                    case "mark":
-                        return (new Mark()).RunSubCommand(manager, opts, new SubCommandOptions(args));
-                }
-            }
-            catch (NoGameInstanceKraken)
-            {
-                return printMissingInstanceError(new ConsoleUser(false));
-            }
-            finally
-            {
-                log.Info("CKAN exiting.");
-            }
-
-            Options cmdline;
-            try
-            {
-                cmdline = new Options(args);
-            }
-            catch (BadCommandKraken)
-            {
-                return AfterHelp();
-            }
-            finally
-            {
-                log.Info("CKAN exiting.");
-            }
-
-            // Process commandline options.
-            CommonOptions options = (CommonOptions)cmdline.options;
-            options.Merge(opts);
-            IUser user = new ConsoleUser(options.Headless);
-            if (manager == null)
-            {
-                manager = new GameInstanceManager(user);
-            }
-            else
-            {
-                manager.User = user;
-            }
-
-            try
-            {
-                int exitCode = options.Handle(manager, user);
-                if (exitCode != Exit.OK)
-                    return exitCode;
-                // Don't bother with instances or registries yet because some commands don't need them.
-                return RunSimpleAction(cmdline, options, args, user, manager);
-            }
-            finally
-            {
-                log.Info("CKAN exiting.");
-            }
-        }
-
-        public static int AfterHelp()
-        {
-            // Our help screen will already be shown. Let's add some extra data.
-            new ConsoleUser(false).RaiseMessage("You are using CKAN version {0}", Meta.GetVersion(VersionFormat.Full));
-            return Exit.BADOPT;
-        }
-
-        public static CKAN.GameInstance GetGameInstance(GameInstanceManager manager)
-        {
-            CKAN.GameInstance inst = manager.CurrentInstance
-                ?? manager.GetPreferredInstance();
-            if (inst == null)
-            {
-                throw new NoGameInstanceKraken();
-            }
-            return inst;
         }
 
         /// <summary>
-        /// Run whatever action the user has provided
+        /// This is purely made for the tests to be able to pass over a <see cref="CKAN.GameInstanceManager"/>.
+        /// ONLY FOR INTERNAL USE !!!
         /// </summary>
-        /// <returns>The exit status that should be returned to the system.</returns>
-        private static int RunSimpleAction(Options cmdline, CommonOptions options, string[] args, IUser user, GameInstanceManager manager)
+        /// <param name="args">The command line arguments handled by the parser.</param>
+        /// <param name="manager">The dummy manager to provide dummy game instances.</param>
+        /// <returns>An <see cref="CKAN.Exit"/> code.</returns>
+        public static int MainForTests(string[] args, GameInstanceManager manager = null)
         {
+            _manager = manager;
+            return Main(args);
+        }
+
+        private static Type[] LoadVerbs()
+        {
+            return Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => t.GetCustomAttribute<VerbAttribute>() != null)
+                .Except(Assembly.GetExecutingAssembly().GetTypes()
+                    .Where(t => t.GetCustomAttribute<VerbExclude>() != null)
+                    .ToArray())
+                .ToArray();
+        }
+
+        /// <summary>
+        /// Executes the provided command.
+        /// </summary>
+        /// <param name="manager">The manager to provide game instances.</param>
+        /// <param name="args">The command line arguments handled by the parser.</param>
+        /// <returns>An <see cref="CKAN.Exit"/> code.</returns>
+        public static int Execute(GameInstanceManager manager, object args, string[] argStrings)
+        {
+            var s = args.ToString();
+            var opts = s.Replace(s.Substring(0, s.LastIndexOf('.') + 1), "").Split('+');
+
             try
             {
-                switch (cmdline.action)
+                Logging.Initialize();
+                Log.Info("CKAN started.");
+
+                // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
+                // This is on by default in .NET 4.6, but not in 4.5.
+                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+
+                switch (opts[0])
                 {
-                    case "gui":
-                        return Gui(manager, (GuiOptions)options, args);
-
-                    case "consoleui":
-                        return ConsoleUi(manager, (ConsoleUIOptions)options, args);
-
-                    case "prompt":
-                        return new Prompt().RunCommand(manager, cmdline.options);
-
-                    case "version":
-                        return Version(user);
-
-                    case "update":
-                        return (new Update(manager, user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "available":
-                        return (new Available(user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "add":
-                    case "install":
-                        Scan(GetGameInstance(manager), user, cmdline.action);
-                        return (new Install(manager, user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "scan":
-                        return Scan(GetGameInstance(manager), user);
-
-                    case "list":
-                        return (new List(user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "show":
-                        return (new Show(user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "replace":
-                        Scan(GetGameInstance(manager), user, cmdline.action);
-                        return (new Replace(manager, user)).RunCommand(GetGameInstance(manager), (ReplaceOptions)cmdline.options);
-
-                    case "upgrade":
-                        Scan(GetGameInstance(manager), user, cmdline.action);
-                        return (new Upgrade(manager, user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "search":
-                        return (new Search(user)).RunCommand(GetGameInstance(manager), options);
-
-                    case "uninstall":
-                    case "remove":
-                        return (new Remove(manager, user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "import":
-                        return (new Import(manager, user)).RunCommand(GetGameInstance(manager), options);
-
-                    case "clean":
-                        return Clean(manager.Cache);
-
-                    case "compare":
-                        return (new Compare(user)).RunCommand(cmdline.options);
-
-                    default:
-                        user.RaiseMessage("Unknown command, try --help");
-                        return Exit.BADOPT;
+                    case "AuthTokenOptions":
+                        return new AuthToken().RunCommand(manager, args);
+                    case "CacheOptions":
+                        return new Cache().RunCommand(manager, args);
+                    case "CompatOptions":
+                        return new Compat().RunCommand(manager, args);
+                    case "KspOptions":
+                        return new Action.GameInstance().RunCommand(manager, args);
+                    case "MarkOptions":
+                        return new Mark().RunCommand(manager, args);
+                    case "RepairOptions":
+                        return new Repair().RunCommand(manager, args);
+                    case "RepoOptions":
+                        return new Action.Repo().RunCommand(manager, args);
                 }
             }
             catch (NoGameInstanceKraken)
             {
-                return printMissingInstanceError(user);
+                return PrintMissingInstanceError(new ConsoleUser(false));
             }
             finally
             {
-                RegistryManager.DisposeAll();
+                Log.Info("CKAN exiting.");
+            }
+
+            CommonOptions options = new CommonOptions();
+            _user = new ConsoleUser(options.Headless);
+            if (manager == null)
+            {
+                manager = new GameInstanceManager(_user);
+            }
+            else
+            {
+                manager.User = _user;
+            }
+
+            try
+            {
+                var exitCode = options.Handle(manager, _user);
+                if (exitCode != Exit.Ok)
+                    return exitCode;
+
+                var instance = GetGameInstance(manager);
+                switch (opts[0])
+                {
+                    case "AvailableOptions":
+                        return new Available(_user).RunCommand(instance, args);
+                    case "CompareOptions":
+                        return new Compare(_user).RunCommand(instance, args);
+                    case "ConsoleUiOptions":
+                        return ConsoleUi(manager, args);
+                    case "GuiOptions":
+                        return Gui(manager, args, argStrings);
+                    case "ImportOptions":
+                        return new Import(manager, _user).RunCommand(instance, args);
+                    case "InstallOptions":
+                        Scan(instance, _user, "install");
+                        return new Install(manager, _user).RunCommand(instance, args);
+                    case "ListOptions":
+                        return new List(_user).RunCommand(instance, args);
+                    case "PromptOptions":
+                        return new Prompt().RunCommand(manager, args, argStrings);
+                    case "RemoveOptions":
+                        return new Remove(manager, _user).RunCommand(instance, args);
+                    case "ReplaceOptions":
+                        Scan(instance, _user, "replace");
+                        return new Replace(manager, _user).RunCommand(instance, args);
+                    case "ScanOptions":
+                        return Scan(instance, _user);
+                    case "SearchOptions":
+                        return new Search(_user).RunCommand(instance, args);
+                    case "ShowOptions":
+                        return new Show(_user).RunCommand(instance, args);
+                    case "UpdateOptions":
+                        return new Update(manager, _user).RunCommand(instance, args);
+                    case "UpgradeOptions":
+                        Scan(instance, _user, "upgrade");
+                        return new Upgrade(manager, _user).RunCommand(instance, args);
+                    default:
+                        return Exit.BadOpt;
+                }
+            }
+            finally
+            {
+                Log.Info("CKAN exiting.");
             }
         }
 
-        internal static CkanModule LoadCkanFromFile(CKAN.GameInstance current_instance, string ckan_file)
+        private static string GetUsage(string[] args)
         {
-            CkanModule module = CkanModule.FromFile(ckan_file);
-
-            // We'll need to make some registry changes to do this.
-            RegistryManager registry_manager = RegistryManager.Instance(current_instance);
-
-            // Remove this version of the module in the registry, if it exists.
-            registry_manager.registry.RemoveAvailable(module);
-
-            // Sneakily add our version in...
-            registry_manager.registry.AddAvailable(module);
-
-            return module;
+            const string prefix = "USAGE:\r\n  ckan";
+            switch (args[0])
+            {
+                case "authtoken":
+                    return new AuthToken().GetUsage(prefix, args);
+                case "cache":
+                    return new Cache().GetUsage(prefix, args);
+                case "compat":
+                    return new Compat().GetUsage(prefix, args);
+                case "ksp":
+                    return new Action.GameInstance().GetUsage(prefix, args);
+                case "mark":
+                    return new Mark().GetUsage(prefix, args);
+                case "repair":
+                    return new Repair().GetUsage(prefix, args);
+                case "repo":
+                    return new Action.Repo().GetUsage(prefix, args);
+                case "install":
+                case "remove":
+                case "replace":
+                case "upgrade":
+                    return $"{prefix} {args[0]} [options] <mod> [<mod2> ...]";
+                case "show":
+                    return $"{prefix} {args[0]} [options] <mod>";
+                case "compare":
+                    return $"{prefix} {args[0]} [options] <version1> <version2>";
+                case "import":
+                    return $"{prefix} {args[0]} [options] <path> [<path2> ...]";
+                case "search":
+                    return $"{prefix} {args[0]} [options] <string>";
+                case "available":
+                case "consoleui":
+                case "gui":
+                case "list":
+                case "prompt":
+                case "scan":
+                case "update":
+                    return $"{prefix} {args[0]} [options]";
+                default:
+                    return $"{prefix} <command> [options]";
+            }
         }
 
-        private static int printMissingInstanceError(IUser user)
+        private static int PrintMissingInstanceError(IUser user)
         {
-            user.RaiseMessage("I don't know where a game instance is installed.");
-            user.RaiseMessage("Use 'ckan instance help' for assistance in setting this.");
-            return Exit.ERROR;
+            user.RaiseMessage("I don't know where KSP is installed.");
+            user.RaiseMessage("Use 'ckan ksp --help' for assistance in setting this.");
+            return Exit.Error;
         }
 
-        private static int Gui(GameInstanceManager manager, GuiOptions options, string[] args)
+        /// <summary>
+        /// Gets the current, or preferred, game instance to manipulate.
+        /// </summary>
+        /// <param name="manager">The manager to provide game instances.</param>
+        /// <returns>The current <see cref="CKAN.GameInstance"/> instance.</returns>
+        /// <exception cref="CKAN.NoGameInstanceKraken">Throws if no valid <see cref="CKAN.GameInstance"/> instance was found.</exception>
+        public static GameInstance GetGameInstance(GameInstanceManager manager)
+        {
+            GameInstance instance = manager.CurrentInstance ?? manager.GetPreferredInstance();
+            if (instance == null)
+            {
+                throw new NoGameInstanceKraken(null);
+            }
+
+            return instance;
+        }
+
+        private static int ConsoleUi(GameInstanceManager manager, object args)
+        {
+            // Debug/verbose output just messes up the screen
+            LogManager.GetRepository().Threshold = Level.Warn;
+
+            var opts = (ConsoleUiOptions)args;
+            _user.RaiseMessage("Starting ConsoleUI, please wait...");
+            return ConsoleUI.ConsoleUI.Main_(args.ToString().Split(), manager, opts.Theme ?? Environment.GetEnvironmentVariable("CKAN_CONSOLEUI_THEME") ?? "default", opts.Debug);
+        }
+
+        private static int Gui(GameInstanceManager manager, object args, string[] argStrings)
         {
             // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
             // but trying to catch it here doesn't seem to help. Dunno why.
 
-            GUI.Main_(args, manager, options.ShowConsole);
-
-            return Exit.OK;
+            var opts = (GuiOptions)args;
+            _user.RaiseMessage("Starting GUI, please wait...");
+            GUI.Main_(argStrings, manager, opts.ShowConsole);
+            return Exit.Ok;
         }
 
-        private static int ConsoleUi(GameInstanceManager manager, ConsoleUIOptions opts, string[] args)
-        {
-            // Debug/verbose output just messes up the screen
-            LogManager.GetRepository().Threshold = Level.Warn;
-            return CKAN.ConsoleUI.ConsoleUI.Main_(args, manager,
-                opts.Theme ?? Environment.GetEnvironmentVariable("CKAN_CONSOLEUI_THEME") ?? "default",
-                opts.Debug);
-        }
-
-        private static int Version(IUser user)
-        {
-            user.RaiseMessage(Meta.GetVersion(VersionFormat.Full));
-
-            return Exit.OK;
-        }
-
-        /// <summary>
-        /// Scans the game instance. Detects installed mods to mark as auto-detected and checks the consistency
-        /// </summary>
-        /// <param name="inst">The instance to scan</param>
-        /// <param name="user"></param>
-        /// <param name="next_command">Changes the output message if set.</param>
-        /// <returns>Exit.OK if instance is consistent, Exit.ERROR otherwise </returns>
-        private static int Scan(CKAN.GameInstance inst, IUser user, string next_command = null)
+        private static int Scan(GameInstance instance, IUser user, string nextCommand = null)
         {
             try
             {
-                inst.Scan();
-                return Exit.OK;
+                instance.Scan();
+                return Exit.Ok;
             }
             catch (InconsistentKraken kraken)
             {
-
-                if (next_command == null)
+                if (nextCommand == null)
                 {
                     user.RaiseError(kraken.InconsistenciesPretty);
                     user.RaiseError("The repo has not been saved.");
                 }
                 else
                 {
-                    user.RaiseMessage("Preliminary scanning shows that the install is in a inconsistent state.");
-                    user.RaiseMessage("Use ckan.exe scan for more details");
-                    user.RaiseMessage("Proceeding with {0} in case it fixes it.\r\n", next_command);
+                    user.RaiseMessage("Preliminary scanning shows that the install is in an inconsistent state.");
+                    user.RaiseMessage("Use 'ckan scan --help' for more details.");
+                    user.RaiseMessage("Proceeding with {0} in case it fixes it.\r\n", nextCommand);
                 }
 
-                return Exit.ERROR;
+                return Exit.Error;
             }
         }
 
-        private static int Clean(NetModuleCache cache)
+        /// <summary>
+        /// Loads a .ckan file from the given path, reads it and creates a <see cref="CKAN.CkanModule"/> from it.
+        /// </summary>
+        /// <param name="currentInstance">The current <see cref="CKAN.GameInstance"/> instance to modify the module.</param>
+        /// <param name="ckanFile">The path to the .ckan file.</param>
+        /// <returns>A <see cref="CKAN.CkanModule"/>.</returns>
+        internal static CkanModule LoadCkanFromFile(GameInstance currentInstance, string ckanFile)
         {
-            cache.RemoveAll();
-            return Exit.OK;
+            CkanModule module = CkanModule.FromFile(ckanFile);
+
+            // We'll need to make some registry changes to do this
+            RegistryManager registryManager = RegistryManager.Instance(currentInstance);
+
+            // Remove this version of the module in the registry, if it exists
+            registryManager.registry.RemoveAvailable(module);
+
+            // Sneakily add our version in...
+            registryManager.registry.AddAvailable(module);
+
+            return module;
         }
-    }
-
-    public class NoGameInstanceKraken : Kraken
-    {
-        public NoGameInstanceKraken() { }
-    }
-
-    public class CmdLineUtil
-    {
-        public static uint GetUID()
-        {
-            if (Platform.IsUnix || Platform.IsMac)
-            {
-                return getuid();
-            }
-
-            return 1;
-        }
-
-        [DllImport("libc")]
-        private static extern uint getuid();
     }
 }

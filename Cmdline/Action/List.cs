@@ -3,63 +3,71 @@ using System.Collections.Generic;
 using CKAN.Exporters;
 using CKAN.Types;
 using CKAN.Versioning;
+using CommandLine;
 using log4net;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
+    /// <summary>
+    /// Class for listing the installed mods.
+    /// </summary>
     public class List : ICommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(List));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(List));
 
-        public IUser user { get; set; }
+        private readonly IUser _user;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CKAN.CmdLine.Action.List"/> class.
+        /// </summary>
+        /// <param name="user">The current <see cref="CKAN.IUser"/> to raise messages to the user.</param>
         public List(IUser user)
         {
-            this.user = user;
+            _user = user;
         }
 
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        /// <summary>
+        /// Run the 'list' command.
+        /// </summary>
+        /// <inheritdoc cref="ICommand.RunCommand"/>
+        public int RunCommand(CKAN.GameInstance inst, object args)
         {
-            ListOptions options = (ListOptions) raw_options;
-
-            IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
-
+            var opts = (ListOptions)args;
+            IRegistryQuerier registry = RegistryManager.Instance(inst).registry;
             ExportFileType? exportFileType = null;
 
-            if (!string.IsNullOrWhiteSpace(options.export))
+            if (!string.IsNullOrWhiteSpace(opts.Export))
             {
-                exportFileType = GetExportFileType(options.export);
-
+                exportFileType = GetExportFileType(opts.Export);
                 if (exportFileType == null)
                 {
-                    user.RaiseError("Unknown export format: {0}", options.export);
+                    _user.RaiseError("Unknown export format: {0}", opts.Export);
                 }
             }
 
-            if (!(options.porcelain) && exportFileType == null)
+            if (!opts.Porcelain && exportFileType == null)
             {
-                user.RaiseMessage("\r\nKSP found at {0}\r\n", ksp.GameDir());
-                user.RaiseMessage("KSP Version: {0}\r\n", ksp.Version());
-
-                user.RaiseMessage("Installed Modules:\r\n");
+                _user.RaiseMessage("\r\nFound {0} at \"{1}\"", inst.game.ShortName, inst.GameDir());
+                _user.RaiseMessage("\r\n{0} version: \"{1}\"", inst.game.ShortName, inst.Version());
+                _user.RaiseMessage("\r\nInstalled Modules:\r\n");
             }
 
             if (exportFileType == null)
             {
-                var installed = new SortedDictionary<string, ModuleVersion>(registry.Installed());
-
-                foreach (KeyValuePair<string, ModuleVersion> mod in installed)
+                var mods = new SortedDictionary<string, ModuleVersion>(registry.Installed());
+                foreach (var mod in mods)
                 {
-                    ModuleVersion current_version = mod.Value;
-                    string modInfo = string.Format("{0} {1}", mod.Key, mod.Value);
-                    string bullet = "*";
+                    var currentVersion = mod.Value;
+                    var modInfo = string.Format("{0} {1}", mod.Key, mod.Value);
+                    var bullet = "*";
 
-                    if (current_version is ProvidesModuleVersion)
+                    if (currentVersion is ProvidesModuleVersion)
                     {
-                        // Skip virtuals for now.
+                        // Skip virtuals for now
                         continue;
                     }
-                    else if (current_version is UnmanagedModuleVersion)
+
+                    if (currentVersion is UnmanagedModuleVersion)
                     {
                         // Autodetected dll
                         bullet = "A";
@@ -68,23 +76,26 @@ namespace CKAN.CmdLine
                     {
                         try
                         {
-                            // Check if upgrades are available, and show appropriately.
-                            log.DebugFormat("Check if upgrades are available for {0}", mod.Key);
-                            CkanModule latest = registry.LatestAvailable(mod.Key, ksp.VersionCriteria());
-                            CkanModule current = registry.GetInstalledVersion(mod.Key);
-                            InstalledModule inst = registry.InstalledModule(mod.Key);
+                            // Check if upgrades are available, and show appropriately
+                            Log.DebugFormat("Checking if upgrades are available for \"{0}\"...", mod.Key);
+                            var latest = registry.LatestAvailable(mod.Key, inst.VersionCriteria());
+                            var current = registry.GetInstalledVersion(mod.Key);
+                            var installed = registry.InstalledModule(mod.Key);
 
                             if (latest == null)
                             {
                                 // Not compatible!
-                                log.InfoFormat("Latest {0} is not compatible", mod.Key);
+                                Log.InfoFormat("Latest \"{0}\" is not compatible.", mod.Key);
                                 bullet = "X";
-                                if ( current == null ) log.DebugFormat( " {0} installed version not found in registry", mod.Key);
-                                    
+                                if (current == null)
+                                {
+                                    Log.DebugFormat("No installed version of \"{0}\" found in the registry.", mod.Key);
+                                }
+
                                 // Check if mod is replaceable
                                 if (current.replaced_by != null)
                                 {
-                                    ModuleReplacement replacement = registry.GetReplacement(mod.Key, ksp.VersionCriteria());
+                                    var replacement = registry.GetReplacement(mod.Key, inst.VersionCriteria());
                                     if (replacement != null)
                                     {
                                         // Replaceable!
@@ -93,15 +104,16 @@ namespace CKAN.CmdLine
                                     }
                                 }
                             }
-                            else if (latest.version.IsEqualTo(current_version))
+                            else if (latest.version.IsEqualTo(currentVersion))
                             {
                                 // Up to date
-                                log.InfoFormat("Latest {0} is {1}", mod.Key, latest.version);
-                                bullet = (inst?.AutoInstalled ?? false) ? "+" : "-";
+                                Log.InfoFormat("Latest \"{0}\" is {1}", mod.Key, latest.version);
+                                bullet = installed?.AutoInstalled ?? false ? "+" : "-";
+
                                 // Check if mod is replaceable
                                 if (current.replaced_by != null)
                                 {
-                                    ModuleReplacement replacement = registry.GetReplacement(latest.identifier, ksp.VersionCriteria());
+                                    var replacement = registry.GetReplacement(latest.identifier, inst.VersionCriteria());
                                     if (replacement != null)
                                     {
                                         // Replaceable!
@@ -118,12 +130,12 @@ namespace CKAN.CmdLine
                         }
                         catch (ModuleNotFoundKraken)
                         {
-                            log.InfoFormat("{0} is installed, but no longer in the registry", mod.Key);
+                            Log.InfoFormat("\"{0}\" is installed, but no longer in the registry.", mod.Key);
                             bullet = "?";
                         }
                     }
 
-                    user.RaiseMessage("{0} {1}", bullet, modInfo);
+                    _user.RaiseMessage("{0} {1}", bullet, modInfo);
                 }
             }
             else
@@ -133,13 +145,13 @@ namespace CKAN.CmdLine
                 stream.Flush();
             }
 
-            if (!(options.porcelain) && exportFileType == null)
+            if (!opts.Porcelain && exportFileType == null)
             {
-                user.RaiseMessage("\r\nLegend: -: Up to date. +:Auto-installed. X: Incompatible. ^: Upgradable. >: Replaceable\r\n        A: Autodetected. ?: Unknown. *: Broken. ");
                 // Broken mods are in a state that CKAN doesn't understand, and therefore can't handle automatically
+                _user.RaiseMessage("\r\nLegend: -: Up to date. +: Auto-installed. X: Incompatible. ^: Upgradable. >: Replaceable\r\n        A: Autodetected. ?: Unknown. *: Broken. ");
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         private static ExportFileType? GetExportFileType(string export)
@@ -148,13 +160,29 @@ namespace CKAN.CmdLine
 
             switch (export)
             {
-                case "text":     return ExportFileType.PlainText;
-                case "markdown": return ExportFileType.Markdown;
-                case "bbcode":   return ExportFileType.BbCode;
-                case "csv":      return ExportFileType.Csv;
-                case "tsv":      return ExportFileType.Tsv;
-                default:         return null;
+                case "text":
+                    return ExportFileType.PlainText;
+                case "markdown":
+                    return ExportFileType.Markdown;
+                case "bbcode":
+                    return ExportFileType.BbCode;
+                case "csv":
+                    return ExportFileType.Csv;
+                case "tsv":
+                    return ExportFileType.Tsv;
+                default:
+                    return null;
             }
         }
+    }
+
+    [Verb("list", HelpText = "List installed mods")]
+    internal class ListOptions : InstanceSpecificOptions
+    {
+        [Option("porcelain", HelpText = "Dump a raw list of mods, good for shell scripting")]
+        public bool Porcelain { get; set; }
+
+        [Option("export", HelpText = "Export a list of mods in specified format to stdout")]
+        public string Export { get; set; }
     }
 }

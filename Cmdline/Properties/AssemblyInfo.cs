@@ -1,4 +1,7 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("CKAN")] // TODO: Does not match assembly name
+[assembly: AssemblyTitle("CmdLine")]
 [assembly: AssemblyDescription("CKAN CLI Client")]
+
+[assembly: InternalsVisibleTo("CKAN.Tests")]

@@ -1,119 +1,135 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using CommandLine;
 using log4net;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
+    /// <summary>
+    /// Class for managing the removal of mods.
+    /// </summary>
     public class Remove : ICommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(Remove));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Remove));
 
-        public IUser user { get; set; }
-        private GameInstanceManager manager;
+        private readonly GameInstanceManager _manager;
+        private readonly IUser _user;
 
         /// <summary>
-        /// Initialize the remove command object
+        /// Initializes a new instance of the <see cref="CKAN.CmdLine.Action.Remove"/> class.
         /// </summary>
-        /// <param name="mgr">GameInstanceManager containing our instances</param>
-        /// <param name="user">IUser object for interaction</param>
-        public Remove(GameInstanceManager mgr, IUser user)
+        /// <param name="manager">The manager to provide game instances.</param>
+        /// <param name="user">The current <see cref="CKAN.IUser"/> to raise messages to the user.</param>
+        public Remove(GameInstanceManager manager, IUser user)
         {
-            manager   = mgr;
-            this.user = user;
+            _manager = manager;
+            _user = user;
         }
 
         /// <summary>
-        /// Uninstalls a module, if it exists.
+        /// Run the 'remove' command.
         /// </summary>
-        /// <param name="ksp">Game instance from which to remove</param>
-        /// <param name="raw_options">Command line options object</param>
-        /// <returns>
-        /// Exit code for shell environment
-        /// </returns>
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        /// <inheritdoc cref="ICommand.RunCommand"/>
+        public int RunCommand(CKAN.GameInstance inst, object args)
         {
-            RemoveOptions options = (RemoveOptions) raw_options;
-            RegistryManager regMgr = RegistryManager.Instance(ksp);
+            var opts = (RemoveOptions)args;
+            if (!opts.Mods.Any())
+            {
+                _user.RaiseMessage("remove <mod> [<mod2> ...] - argument(s) missing, perhaps you forgot it?");
+                return Exit.BadOpt;
+            }
+
+            var regMgr = RegistryManager.Instance(inst);
 
             // Use one (or more!) regex to select the modules to remove
-            if (options.regex)
+            if (opts.Regex)
             {
-                log.Debug("Attempting Regex");
+                Log.Debug("Attempting Regex...");
+
                 // Parse every "module" as a grumpy regex
-                var justins = options.modules.Select(s => new Regex(s));
+                var justins = opts.Mods.Select(s => new Regex(s));
 
                 // Modules that have been selected by one regex
-                List<string> selectedModules = new List<string>();
+                var selectedModules = new List<string>();
 
                 // Get the list of installed modules
                 // Try every regex on every installed module:
                 // if it matches, select for removal
-                foreach (string mod in regMgr.registry.InstalledModules.Select(mod => mod.identifier))
+                foreach (var mod in regMgr.registry.InstalledModules.Select(mod => mod.identifier))
                 {
                     if (justins.Any(re => re.IsMatch(mod)))
+                    {
                         selectedModules.Add(mod);
+                    }
                 }
 
                 // Replace the regular expressions with the selected modules
                 // and continue removal as usual
-                options.modules = selectedModules;
+                opts.Mods = selectedModules;
             }
 
-            if (options.rmall)
+            if (opts.All)
             {
-                log.Debug("Removing all mods");
+                Log.Debug("Removing all mods...");
+
                 // Add the list of installed modules to the list that should be uninstalled
-                options.modules.AddRange(
+                opts.Mods.ToList().AddRange(
                     regMgr.registry.InstalledModules
                         .Where(mod => !mod.Module.IsDLC)
                         .Select(mod => mod.identifier)
                 );
             }
 
-            if (options.modules != null && options.modules.Count > 0)
+            try
             {
-                try
-                {
-                    HashSet<string> possibleConfigOnlyDirs = null;
-                    var installer = new ModuleInstaller(ksp, manager.Cache, user);
-                    Search.AdjustModulesCase(ksp, options.modules);
-                    installer.UninstallList(options.modules, ref possibleConfigOnlyDirs, regMgr);
-                    user.RaiseMessage("");
-                }
-                catch (ModNotInstalledKraken kraken)
-                {
-                    user.RaiseMessage("I can't do that, {0} isn't installed.", kraken.mod);
-                    user.RaiseMessage("Try `ckan list` for a list of installed mods.");
-                    return Exit.BADOPT;
-                }
-                catch (ModuleIsDLCKraken kraken)
-                {
-                    user.RaiseMessage($"CKAN can't remove expansion '{kraken.module.name}' for you.");
-                    var res = kraken?.module?.resources;
-                    var storePagesMsg = new Uri[] { res?.store, res?.steamstore }
-                        .Where(u => u != null)
-                        .Aggregate("", (a, b) => $"{a}\r\n- {b}");
-                    if (!string.IsNullOrEmpty(storePagesMsg))
-                    {
-                        user.RaiseMessage($"To remove this expansion, follow the instructions for the store page from which you purchased it:\r\n{storePagesMsg}");
-                    }
-                    return Exit.BADOPT;
-                }
-                catch (CancelledActionKraken k)
-                {
-                    user.RaiseMessage("Remove aborted: {0}", k.Message);
-                    return Exit.ERROR;
-                }
+                HashSet<string> possibleConfigOnlyDirs = null;
+                var installer = new ModuleInstaller(inst, _manager.Cache, _user);
+                Search.AdjustModulesCase(inst, opts.Mods.ToList());
+                installer.UninstallList(opts.Mods, ref possibleConfigOnlyDirs, regMgr);
+                _user.RaiseMessage("");
             }
-            else
+            catch (ModNotInstalledKraken kraken)
             {
-                user.RaiseMessage("No mod selected, nothing to do");
-                return Exit.BADOPT;
+                _user.RaiseMessage("Can't remove \"{0}\" because it isn't installed.\r\nTry 'ckan list' for a list of installed mods.", kraken.mod);
+                return Exit.Error;
+            }
+            catch (ModuleIsDLCKraken kraken)
+            {
+                _user.RaiseMessage("Can't remove the expansion \"{0}\".", kraken.module.name);
+                var res = kraken?.module?.resources;
+                var storePagesMsg = new[] { res?.store, res?.steamstore }
+                    .Where(u => u != null)
+                    .Aggregate("", (a, b) => $"{a}\r\n- {b}");
+
+                if (!string.IsNullOrEmpty(storePagesMsg))
+                {
+                    _user.RaiseMessage("To remove this expansion, follow the instructions for the store page from which you purchased it:\r\n   {0}", storePagesMsg);
+                }
+
+                return Exit.Error;
+            }
+            catch (CancelledActionKraken kraken)
+            {
+                _user.RaiseMessage("Remove aborted: {0}", kraken.Message);
+                return Exit.Error;
             }
 
-            return Exit.OK;
+            _user.RaiseMessage("Successfully removed requested mods.");
+            return Exit.Ok;
         }
+    }
+
+    [Verb("remove", HelpText = "Remove an installed mod")]
+    internal class RemoveOptions : InstanceSpecificOptions
+    {
+        [Option("re", HelpText = "Parse arguments as regular expressions")]
+        public bool Regex { get; set; }
+
+        [Option("all", HelpText = "Remove all installed mods")]
+        public bool All { get; set; }
+
+        [Value(0, MetaName = "Mod name(s)", HelpText = "The mod name(s) to remove")]
+        public IEnumerable<string> Mods { get; set; }
     }
 }

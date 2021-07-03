@@ -1,92 +1,76 @@
 ﻿using CommandLine;
-using CommandLine.Text;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
+    /// <summary>
+    /// Class for managing repair tasks.
+    /// </summary>
     public class Repair : ISubCommand
     {
-        public Repair() { }
+        private GameInstanceManager _manager;
+        private IUser _user;
 
-        internal class RepairSubOptions : VerbCommandOptions
+        /// <summary>
+        /// Run the 'repair' command.
+        /// </summary>
+        /// <inheritdoc cref="ISubCommand.RunCommand"/>
+        public int RunCommand(GameInstanceManager manager, object args)
         {
-            [VerbOption("registry", HelpText = "Try to repair the CKAN registry")]
-            public InstanceSpecificOptions Registry { get; set; }
+            var s = args.ToString();
+            var opts = s.Replace(s.Substring(0, s.LastIndexOf('.') + 1), "").Split('+');
 
-            [HelpVerbOption]
-            public string GetUsage(string verb)
+            CommonOptions options = new CommonOptions();
+            _user = new ConsoleUser(options.Headless);
+            _manager = manager ?? new GameInstanceManager(_user);
+            var exitCode = options.Handle(_manager, _user);
+
+            if (exitCode != Exit.Ok)
+                return exitCode;
+
+            switch (opts[1])
             {
-                HelpText ht = HelpText.AutoBuild(this, verb);
-                // Add a usage prefix line
-                ht.AddPreOptionsLine(" ");
-                if (string.IsNullOrEmpty(verb))
-                {
-                    ht.AddPreOptionsLine("ckan repair - Attempt various automatic repairs");
-                    ht.AddPreOptionsLine($"Usage: ckan repair <command> [options]");
-                }
-                else
-                {
-                    ht.AddPreOptionsLine("repair " + verb + " - " + GetDescription(verb));
-                    switch (verb)
-                    {
-                        // Commands with only --flag type options
-                        case "registry":
-                        default:
-                            ht.AddPreOptionsLine($"Usage: ckan repair {verb} [options]");
-                            break;
-                    }
-                }
-                return ht;
+                case "RepairRegistry":
+                    exitCode = Registry(MainClass.GetGameInstance(_manager));
+                    break;
+                default:
+                    exitCode = Exit.BadOpt;
+                    break;
             }
-        }
 
-        public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
-        {
-            int exitCode = Exit.OK;
-            // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(unparsed.options.ToArray(), new RepairSubOptions(), (string option, object suboptions) =>
-            {
-                // ParseArgumentsStrict calls us unconditionally, even with bad arguments
-                if (!string.IsNullOrEmpty(option) && suboptions != null)
-                {
-                    CommonOptions options = (CommonOptions)suboptions;
-                    options.Merge(opts);
-                    User = new ConsoleUser(options.Headless);
-                    if (manager == null)
-                    {
-                        manager = new GameInstanceManager(User);
-                    }
-                    exitCode = options.Handle(manager, User);
-                    if (exitCode != Exit.OK)
-                        return;
-
-                    switch (option)
-                    {
-                        case "registry":
-                            exitCode = Registry(MainClass.GetGameInstance(manager));
-                            break;
-
-                        default:
-                            User.RaiseMessage("Unknown command: repair {0}", option);
-                            exitCode = Exit.BADOPT;
-                            break;
-                    }
-                }
-            }, () => { exitCode = MainClass.AfterHelp(); });
             return exitCode;
         }
 
-        private IUser User { get; set; }
-
-        /// <summary>
-        /// Try to repair our registry.
-        /// </summary>
-        private int Registry(CKAN.GameInstance ksp)
+        /// <inheritdoc cref="ISubCommand.GetUsage"/>
+        public string GetUsage(string prefix, string[] args)
         {
-            RegistryManager manager = RegistryManager.Instance(ksp);
+            if (args.Length == 1)
+                return $"{prefix} {args[0]} <command> [options]";
+
+            switch (args[1])
+            {
+                case "registry":
+                    return $"{prefix} {args[0]} {args[1]} [options]";
+                default:
+                    return $"{prefix} {args[0]} <command> [options]";
+            }
+        }
+
+        private int Registry(CKAN.GameInstance inst)
+        {
+            var manager = RegistryManager.Instance(inst);
             manager.registry.Repair();
             manager.Save();
-            User.RaiseMessage("Registry repairs attempted. Hope it helped.");
-            return Exit.OK;
+            _user.RaiseMessage("Attempted various registry repairs. Hope it helped.");
+            return Exit.Ok;
         }
+    }
+
+    [Verb("repair", HelpText = "Attempt various automatic repairs")]
+    [ChildVerbs(typeof(RepairRegistry))]
+    internal class RepairOptions
+    {
+        [VerbExclude]
+        [Verb("registry", HelpText = "Try to repair the CKAN registry")]
+        internal class RepairRegistry : InstanceSpecificOptions { }
     }
 }

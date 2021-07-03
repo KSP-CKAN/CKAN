@@ -1,345 +1,283 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using Newtonsoft.Json;
 using CommandLine;
-using CommandLine.Text;
 using log4net;
+using Newtonsoft.Json;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
-
+    /// <summary>
+    /// Class for managing CKAN repositories.
+    /// </summary>
     public class Repo : ISubCommand
     {
-        public Repo() { }
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Repo));
 
-        internal class RepoSubOptions : VerbCommandOptions
+        private GameInstanceManager _manager;
+        private IUser _user;
+
+        /// <summary>
+        /// Run the 'repo' command.
+        /// </summary>
+        /// <inheritdoc cref="ISubCommand.RunCommand"/>
+        public int RunCommand(GameInstanceManager manager, object args)
         {
-            [VerbOption("available", HelpText = "List (canonical) available repositories")]
-            public AvailableOptions AvailableOptions { get; set; }
+            var s = args.ToString();
+            var opts = s.Replace(s.Substring(0, s.LastIndexOf('.') + 1), "").Split('+');
 
-            [VerbOption("list",      HelpText = "List repositories")]
-            public ListOptions ListOptions { get; set; }
+            CommonOptions options = new CommonOptions();
+            _user = new ConsoleUser(options.Headless);
+            _manager = manager ?? new GameInstanceManager(_user);
+            var exitCode = options.Handle(_manager, _user);
 
-            [VerbOption("add",       HelpText = "Add a repository")]
-            public AddOptions AddOptions { get; set; }
+            if (exitCode != Exit.Ok)
+                return exitCode;
 
-            [VerbOption("forget",    HelpText = "Forget a repository")]
-            public ForgetOptions ForgetOptions { get; set; }
-
-            [VerbOption("default",   HelpText = "Set the default repository")]
-            public DefaultOptions DefaultOptions { get; set; }
-
-            [HelpVerbOption]
-            public string GetUsage(string verb)
+            switch (opts[1])
             {
-                HelpText ht = HelpText.AutoBuild(this, verb);
-                // Add a usage prefix line
-                ht.AddPreOptionsLine(" ");
-                if (string.IsNullOrEmpty(verb))
-                {
-                    ht.AddPreOptionsLine("ckan repo - Manage CKAN repositories");
-                    ht.AddPreOptionsLine($"Usage: ckan repo <command> [options]");
-                }
-                else
-                {
-                    ht.AddPreOptionsLine("repo " + verb + " - " + GetDescription(verb));
-                    switch (verb)
-                    {
-                        // First the commands with two arguments
-                        case "add":
-                            ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options] name url");
-                            break;
-
-                        // Then the commands with one argument
-                        case "remove":
-                        case "forget":
-                        case "default":
-                            ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options] name");
-                            break;
-
-                        // Now the commands with only --flag type options
-                        case "available":
-                        case "list":
-                        default:
-                            ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options]");
-                            break;
-                    }
-                }
-                return ht;
-            }
-        }
-
-        internal class AvailableOptions : CommonOptions { }
-        internal class ListOptions      : InstanceSpecificOptions { }
-
-        internal class AddOptions : InstanceSpecificOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-            [ValueOption(1)] public string uri { get; set; }
-        }
-
-        internal class DefaultOptions : InstanceSpecificOptions
-        {
-            [ValueOption(0)] public string uri { get; set; }
-        }
-
-        internal class ForgetOptions : InstanceSpecificOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-        }
-
-        // This is required by ISubCommand
-        public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
-        {
-            string[] args = unparsed.options.ToArray();
-
-            #region Aliases
-
-            for (int i = 0; i < args.Length; i++)
-            {
-                switch (args[i])
-                {
-                    case "remove":
-                        args[i] = "forget";
-                        break;
-                }
+                case "AddRepo":
+                    exitCode = AddRepository(args);
+                    break;
+                case "AvailableRepo":
+                    exitCode = AvailableRepositories();
+                    break;
+                case "DefaultRepo":
+                    exitCode = DefaultRepository(args);
+                    break;
+                case "ForgetRepo":
+                    exitCode = ForgetRepository(args);
+                    break;
+                case "ListRepo":
+                    exitCode = ListRepositories();
+                    break;
+                case "ResetRepo":
+                    exitCode = ResetRepository();
+                    break;
+                default:
+                    exitCode = Exit.BadOpt;
+                    break;
             }
 
-            #endregion
-
-            int exitCode = Exit.OK;
-
-            // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new RepoSubOptions(), (string option, object suboptions) =>
-            {
-                // ParseArgumentsStrict calls us unconditionally, even with bad arguments
-                if (!string.IsNullOrEmpty(option) && suboptions != null)
-                {
-                    CommonOptions options = (CommonOptions)suboptions;
-                    options.Merge(opts);
-                    User     = new ConsoleUser(options.Headless);
-                    Manager  = manager ?? new GameInstanceManager(User);
-                    exitCode = options.Handle(Manager, User);
-                    if (exitCode != Exit.OK)
-                        return;
-
-                    switch (option)
-                    {
-                        case "available":
-                            exitCode = AvailableRepositories();
-                            break;
-
-                        case "list":
-                            exitCode = ListRepositories();
-                            break;
-
-                        case "add":
-                            exitCode = AddRepository((AddOptions)suboptions);
-                            break;
-
-                        case "remove":
-                        case "forget":
-                            exitCode = ForgetRepository((ForgetOptions)suboptions);
-                            break;
-
-                        case "default":
-                            exitCode = DefaultRepository((DefaultOptions)suboptions);
-                            break;
-
-                        default:
-                            User.RaiseMessage("Unknown command: repo {0}", option);
-                            exitCode = Exit.BADOPT;
-                            break;
-                    }
-                }
-            }, () => { exitCode = MainClass.AfterHelp(); });
             return exitCode;
         }
 
-        private RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
+        /// <inheritdoc cref="ISubCommand.GetUsage"/>
+        public string GetUsage(string prefix, string[] args)
         {
-            if (master_uri == null)
-            {
-                master_uri = MainClass.GetGameInstance(Manager).game.RepositoryListURL;
-            }
+            if (args.Length == 1)
+                return $"{prefix} {args[0]} <command> [options]";
 
-            string json = Net.DownloadText(master_uri);
-            return JsonConvert.DeserializeObject<RepositoryList>(json);
+            switch (args[1])
+            {
+                case "add":
+                    return $"{prefix} {args[0]} {args[1]} [options] <name> <url>";
+                case "default":
+                    return $"{prefix} {args[0]} {args[1]} [options] <url>";
+                case "forget":
+                    return $"{prefix} {args[0]} {args[1]} [options] <name>";
+                case "available":
+                case "list":
+                case "reset":
+                    return $"{prefix} {args[0]} {args[1]} [options]";
+                default:
+                    return $"{prefix} {args[0]} <command> [options]";
+            }
         }
 
-        private int AvailableRepositories()
+        private int AddRepository(object args)
         {
-            User.RaiseMessage("Listing all (canonical) available CKAN repositories:");
-            RepositoryList repositories;
-
-            try
+            var opts = (RepoOptions.AddRepo)args;
+            if (opts.Name == null)
             {
-                repositories = FetchMasterRepositoryList();
-            }
-            catch
-            {
-                User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
-                return Exit.ERROR;
+                _user.RaiseMessage("add <name> <url> - argument(s) missing, perhaps you forgot it?");
+                return Exit.BadOpt;
             }
 
-            int maxNameLen = 0;
-            foreach (Repository repository in repositories.repositories)
-            {
-                maxNameLen = Math.Max(maxNameLen, repository.name.Length);
-            }
-
-            foreach (Repository repository in repositories.repositories)
-            {
-                User.RaiseMessage("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.uri);
-            }
-
-            return Exit.OK;
-        }
-
-        private int ListRepositories()
-        {
-            var manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
-            User.RaiseMessage("Listing all known repositories:");
-            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
-
-            int maxNameLen = 0;
-            foreach (Repository repository in repositories.Values)
-            {
-                maxNameLen = Math.Max(maxNameLen, repository.name.Length);
-            }
-
-            foreach (Repository repository in repositories.Values)
-            {
-                User.RaiseMessage("  {0}: {1}: {2}", repository.name.PadRight(maxNameLen), repository.priority, repository.uri);
-            }
-
-            return Exit.OK;
-        }
-
-        private int AddRepository(AddOptions options)
-        {
-            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
-
-            if (options.name == null)
-            {
-                User.RaiseMessage("add <name> [ <uri> ] - argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
-            }
-
-            if (options.uri == null)
+            if (opts.Url == null)
             {
                 RepositoryList repositoryList;
-
                 try
                 {
                     repositoryList = FetchMasterRepositoryList();
                 }
                 catch
                 {
-                    User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Manager.CurrentInstance.game.RepositoryListURL.ToString());
-                    return Exit.ERROR;
+                    _user.RaiseError("Couldn't fetch CKAN repositories master list from \"{0}\".", _manager.CurrentInstance.game.RepositoryListURL.ToString());
+                    return Exit.Error;
                 }
 
-                foreach (Repository candidate in repositoryList.repositories)
+                foreach (var candidate in repositoryList.repositories)
                 {
-                    if (String.Equals(candidate.name, options.name, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(candidate.name, opts.Name, StringComparison.OrdinalIgnoreCase))
                     {
-                        options.name = candidate.name;
-                        options.uri = candidate.uri.ToString();
+                        opts.Name = candidate.name;
+                        opts.Url = candidate.uri.ToString();
                     }
                 }
 
                 // Nothing found in the master list?
-                if (options.uri == null)
+                if (opts.Url == null)
                 {
-                    User.RaiseMessage("Name {0} not found in master list, please provide name and uri.", options.name);
-                    return Exit.BADOPT;
+                    _user.RaiseMessage("add <name> <url> - argument(s) missing, perhaps you forgot it?");
+                    return Exit.BadOpt;
                 }
             }
 
-            log.DebugFormat("About to add repository '{0}' - '{1}'", options.name, options.uri);
-            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
+            Log.DebugFormat("About to add the repository \"{0}\" - \"{1}\".", opts.Name, opts.Url);
+            var manager = RegistryManager.Instance(MainClass.GetGameInstance(_manager));
+            var repositories = manager.registry.Repositories;
 
-            if (repositories.ContainsKey(options.name))
+            if (repositories.ContainsKey(opts.Name))
             {
-                User.RaiseMessage("Repository with name \"{0}\" already exists, aborting..", options.name);
-                return Exit.BADOPT;
+                _user.RaiseMessage("A repository with the name \"{0}\" already exists, aborting...", opts.Name);
+                return Exit.BadOpt;
             }
 
-            repositories.Add(options.name, new Repository(options.name, options.uri));
+            repositories.Add(opts.Name, new Repository(opts.Name, opts.Url));
 
-            User.RaiseMessage("Added repository '{0}' - '{1}'", options.name, options.uri);
+            _user.RaiseMessage("Successfully added the repository \"{0}\" - \"{1}\".", opts.Name, opts.Url);
             manager.Save();
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
-        private int ForgetRepository(ForgetOptions options)
+        private int AvailableRepositories()
         {
-            if (options.name == null)
+            _user.RaiseMessage("Listing all (canonical) available CKAN repositories:");
+            RepositoryList repositories;
+            try
             {
-                User.RaiseError("forget <name> - argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
+                repositories = FetchMasterRepositoryList();
+            }
+            catch
+            {
+                _user.RaiseError("Couldn't fetch CKAN repositories master list from \"{0}\"", MainClass.GetGameInstance(_manager).game.RepositoryListURL.ToString());
+                return Exit.Error;
             }
 
-            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
-            var registry = manager.registry;
-            log.DebugFormat("About to forget repository '{0}'", options.name);
-
-            var repos = registry.Repositories;
-
-            string name = options.name;
-            if (!repos.ContainsKey(options.name))
+            var maxNameLen = 0;
+            foreach (var repository in repositories.repositories)
             {
-                name = repos.Keys.FirstOrDefault(repo => repo.Equals(options.name, StringComparison.OrdinalIgnoreCase));
-                if (name == null)
-                {
-                    User.RaiseMessage("Couldn't find repository with name \"{0}\", aborting..", options.name);
-                    return Exit.BADOPT;
-                }
-                User.RaiseMessage("Removing insensitive match \"{0}\"", name);
+                maxNameLen = Math.Max(maxNameLen, repository.name.Length);
             }
 
-            registry.Repositories.Remove(name);
-            User.RaiseMessage("Successfully removed \"{0}\"", options.name);
-            manager.Save();
+            foreach (var repository in repositories.repositories)
+            {
+                _user.RaiseMessage("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.uri);
+            }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
-        private int DefaultRepository(DefaultOptions options)
+        private int DefaultRepository(object args)
         {
-            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
-
-            if (options.uri == null)
+            var opts = (RepoOptions.DefaultRepo)args;
+            if (opts.Url == null)
             {
-                User.RaiseMessage("default <uri> - argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
+                _user.RaiseMessage("default <url> - argument missing, perhaps you forgot it?");
+                return Exit.BadOpt;
             }
 
-            log.DebugFormat("About to add repository '{0}' - '{1}'", Repository.default_ckan_repo_name, options.uri);
-            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
+            Log.DebugFormat("About to set \"{0}\" as the {1} repository.", opts.Url, Repository.default_ckan_repo_name);
+            var manager = RegistryManager.Instance(MainClass.GetGameInstance(_manager));
+            var repositories = manager.registry.Repositories;
 
             if (repositories.ContainsKey(Repository.default_ckan_repo_name))
             {
                 repositories.Remove(Repository.default_ckan_repo_name);
             }
 
-            repositories.Add(Repository.default_ckan_repo_name, new Repository(
-                    Repository.default_ckan_repo_name, options.uri));
+            repositories.Add(Repository.default_ckan_repo_name, new Repository(Repository.default_ckan_repo_name, opts.Url));
 
-            User.RaiseMessage("Set {0} repository to '{1}'", Repository.default_ckan_repo_name, options.uri);
+            _user.RaiseMessage("Set the {0} repository to \"{1}\".", Repository.default_ckan_repo_name, opts.Url);
             manager.Save();
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
-        private GameInstanceManager Manager { get; set; }
-        private IUser               User    { get; set; }
+        private int ForgetRepository(object args)
+        {
+            var opts = (RepoOptions.ForgetRepo)args;
+            if (opts.Name == null)
+            {
+                _user.RaiseMessage("forget <name> - argument missing, perhaps you forgot it?");
+                return Exit.BadOpt;
+            }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
+            Log.DebugFormat("About to forget the repository \"{0}\".", opts.Name);
+            var manager = RegistryManager.Instance(MainClass.GetGameInstance(_manager));
+            var repositories = manager.registry.Repositories;
+
+            var name = opts.Name;
+            if (!repositories.ContainsKey(opts.Name))
+            {
+                name = repositories.Keys.FirstOrDefault(repo => repo.Equals(opts.Name, StringComparison.OrdinalIgnoreCase));
+                if (name == null)
+                {
+                    _user.RaiseMessage("Couldn't find a repository with the name \"{0}\", aborting...", opts.Name);
+                    return Exit.BadOpt;
+                }
+
+                _user.RaiseMessage("Removing insensitive match \"{0}\".", name);
+            }
+
+            repositories.Remove(name);
+
+            _user.RaiseMessage("Successfully removed \"{0}\".", opts.Name);
+            manager.Save();
+
+            return Exit.Ok;
+        }
+
+        private int ListRepositories()
+        {
+            _user.RaiseMessage("Listing all known repositories:");
+            var manager = RegistryManager.Instance(MainClass.GetGameInstance(_manager));
+            var repositories = manager.registry.Repositories;
+
+            var maxNameLen = 0;
+            foreach (var repository in repositories.Values)
+            {
+                maxNameLen = Math.Max(maxNameLen, repository.name.Length);
+            }
+
+            foreach (var repository in repositories.Values)
+            {
+                _user.RaiseMessage("  {0}: {1}: {2}", repository.name.PadRight(maxNameLen), repository.priority, repository.uri);
+            }
+
+            return Exit.Ok;
+        }
+
+        private int ResetRepository()
+        {
+            Log.DebugFormat("About to reset the {0} repository.", Repository.default_ckan_repo_name);
+            var manager = RegistryManager.Instance(MainClass.GetGameInstance(_manager));
+            var repositories = manager.registry.Repositories;
+
+            if (repositories.ContainsKey(Repository.default_ckan_repo_name))
+            {
+                repositories.Remove(Repository.default_ckan_repo_name);
+            }
+
+            repositories.Add(Repository.default_ckan_repo_name, new Repository(Repository.default_ckan_repo_name, MainClass.GetGameInstance(_manager).game.DefaultRepositoryURL));
+
+            _user.RaiseMessage("Reset the {0} repository to \"{1}\".", Repository.default_ckan_repo_name, MainClass.GetGameInstance(_manager).game.DefaultRepositoryURL);
+            manager.Save();
+
+            return Exit.Ok;
+        }
+
+        private RepositoryList FetchMasterRepositoryList(Uri masterUrl = null)
+        {
+            if (masterUrl == null)
+            {
+                masterUrl = MainClass.GetGameInstance(_manager).game.RepositoryListURL;
+            }
+
+            var json = Net.DownloadText(masterUrl);
+            return JsonConvert.DeserializeObject<RepositoryList>(json);
+        }
     }
 
     public struct RepositoryList
@@ -347,4 +285,47 @@ namespace CKAN.CmdLine
         public Repository[] repositories;
     }
 
+    [Verb("repo", HelpText = "Manage CKAN repositories")]
+    [ChildVerbs(typeof(AddRepo), typeof(AvailableRepo), typeof(DefaultRepo), typeof(ForgetRepo), typeof(ListRepo), typeof(ResetRepo))]
+    internal class RepoOptions
+    {
+        [VerbExclude]
+        [Verb("add", HelpText = "Add a repository")]
+        internal class AddRepo : InstanceSpecificOptions
+        {
+            [Value(0, MetaName = "Name", HelpText = "The name of the new repository")]
+            public string Name { get; set; }
+
+            [Value(1, MetaName = "Url", HelpText = "The url of the new repository")]
+            public string Url { get; set; }
+        }
+
+        [VerbExclude]
+        [Verb("available", HelpText = "List (canonical) available repositories")]
+        internal class AvailableRepo : CommonOptions { }
+
+        [VerbExclude]
+        [Verb("default", HelpText = "Set the default repository")]
+        internal class DefaultRepo : InstanceSpecificOptions
+        {
+            [Value(0, MetaName = "Url", HelpText = "The url of the repository to make the default")]
+            public string Url { get; set; }
+        }
+
+        [VerbExclude]
+        [Verb("forget", HelpText = "Forget a repository")]
+        internal class ForgetRepo : InstanceSpecificOptions
+        {
+            [Value(0, MetaName = "Name", HelpText = "The name of the repository to remove")]
+            public string Name { get; set; }
+        }
+
+        [VerbExclude]
+        [Verb("list", HelpText = "List repositories")]
+        internal class ListRepo : InstanceSpecificOptions { }
+
+        [VerbExclude]
+        [Verb("reset", HelpText = "Set the default repository to the default")]
+        internal class ResetRepo : InstanceSpecificOptions { }
+    }
 }

@@ -1,61 +1,73 @@
 ﻿using CKAN.Versioning;
+using CommandLine;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
-    // Does not need an instance, so this is not an ICommand
-    public class Compare
+    /// <summary>
+    /// Class for comparing version strings.
+    /// </summary>
+    public class Compare : ICommand
     {
-        private IUser user;
+        private readonly IUser _user;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CKAN.CmdLine.Action.Compare"/> class.
+        /// </summary>
+        /// <param name="user">The current <see cref="CKAN.IUser"/> to raise messages to the user.</param>
         public Compare(IUser user)
         {
-            this.user = user;
+            _user = user;
         }
 
-        public int RunCommand(object rawOptions)
+        /// <summary>
+        /// Run the 'compare' command.
+        /// </summary>
+        /// <inheritdoc cref="ICommand.RunCommand"/>
+        public int RunCommand(CKAN.GameInstance inst, object args)
         {
-            var options = (CompareOptions)rawOptions;
-
-            if (options.Left != null && options.Right != null)
+            var opts = (CompareOptions)args;
+            if (string.IsNullOrWhiteSpace(opts.Left) || string.IsNullOrWhiteSpace(opts.Right))
             {
-                var leftVersion = new ModuleVersion(options.Left);
-                var rightVersion = new ModuleVersion(options.Right);
+                _user.RaiseMessage("compare <version1> <version2> - argument(s) missing, perhaps you forgot it?");
+                return Exit.BadOpt;
+            }
 
-                int compareResult = leftVersion.CompareTo(rightVersion);
+            var leftVersion = new ModuleVersion(opts.Left);
+            var rightVersion = new ModuleVersion(opts.Right);
 
-                if (options.machine_readable)
-                {
-                    user.RaiseMessage(compareResult.ToString());
-                }
-                else if (compareResult == 0)
-                {
-                    user.RaiseMessage(
-                        "\"{0}\" and \"{1}\" are the same versions.", leftVersion, rightVersion);
-                }
-                else if (compareResult < 0)
-                {
-                    user.RaiseMessage(
-                        "\"{0}\" is lower than \"{1}\".", leftVersion, rightVersion);
-                }
-                else if (compareResult > 0)
-                {
-                    user.RaiseMessage(
-                        "\"{0}\" is higher than \"{1}\".", leftVersion, rightVersion);
-                }
-                else
-                {
-                    user.RaiseMessage(
-                        "Usage: ckan compare version1 version2");
-                }
+            var compareResult = leftVersion.CompareTo(rightVersion);
+
+            if (opts.MachineReadable)
+            {
+                _user.RaiseMessage(compareResult.ToString());
+            }
+            else if (compareResult == 0)
+            {
+                _user.RaiseMessage("\"{0}\" and \"{1}\" are the same versions.", leftVersion, rightVersion);
+            }
+            else if (compareResult < 0)
+            {
+                _user.RaiseMessage("\"{0}\" is lower than \"{1}\".", leftVersion, rightVersion);
             }
             else
             {
-                user.RaiseMessage(
-                    "Usage: ckan compare version1 version2");
-                return Exit.BADOPT;
+                _user.RaiseMessage("\"{0}\" is higher than \"{1}\".", leftVersion, rightVersion);
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
+    }
+
+    [Verb("compare", HelpText = "Compare version strings")]
+    internal class CompareOptions : CommonOptions
+    {
+        [Option("machine-readable", HelpText = "Output in a machine readable format: -1, 0 or 1")]
+        public bool MachineReadable { get; set; }
+
+        [Value(0, MetaName = "version1", HelpText = "The first version to compare")]
+        public string Left { get; set; }
+
+        [Value(1, MetaName = "version2", HelpText = "The second version to compare")]
+        public string Right { get; set; }
     }
 }

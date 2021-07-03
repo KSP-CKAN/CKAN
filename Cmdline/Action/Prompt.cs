@@ -1,18 +1,24 @@
 using System;
 using CommandLine;
-using CommandLine.Text;
-using log4net;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
-
+    /// <summary>
+    /// Class for managing multiple commands.
+    /// </summary>
     public class Prompt
     {
-        public Prompt() { }
+        private const string ExitCommand = "exit";
 
-        public int RunCommand(GameInstanceManager manager, object raw_options)
+        /// <summary>
+        /// Run the 'prompt' command.
+        /// </summary>
+        /// <param name="manager">The manager to provide game instances.</param>
+        /// <param name="args">The command line arguments handled by the parser.</param>
+        /// <returns>An <see cref="CKAN.Exit"/> code.</returns>
+        public int RunCommand(GameInstanceManager manager, object args, string[] argStrings)
         {
-            CommonOptions opts = raw_options as CommonOptions;
+            var opts = (PromptOptions)args;
             // Print an intro if not in headless mode
             if (!(opts?.Headless ?? false))
             {
@@ -29,22 +35,27 @@ namespace CKAN.CmdLine
                 {
                     Console.Write(
                         manager.CurrentInstance != null
-                            ? $"CKAN {Meta.GetVersion()}: {manager.CurrentInstance.game.ShortName} {manager.CurrentInstance.Version()} ({manager.CurrentInstance.Name})> "
-                            : $"CKAN {Meta.GetVersion()}> "
+                            ? string.Format("CKAN {0}: {1} {2} ({3})> ",
+                                Meta.GetVersion(),
+                                manager.CurrentInstance.game.ShortName,
+                                manager.CurrentInstance.Version(),
+                                manager.CurrentInstance.Name)
+                            : string.Format("CKAN {0}> ", Meta.GetVersion())
                     );
                 }
+
                 // Get input
-                string command = Console.ReadLine();
-                if (command == null || command == exitCommand)
+                var command = Console.ReadLine();
+                if (command == null || command == ExitCommand)
                 {
                     done = true;
                 }
-                else if (command != "")
+                else if (command != string.Empty)
                 {
                     // Parse input as if it was a normal command line,
-                    // but with a persistent GameInstanceManager object.
-                    int cmdExitCode = MainClass.Execute(manager, opts, command.Split(' '));
-                    if ((opts?.Headless ?? false) && cmdExitCode != Exit.OK)
+                    // but with a persistent GameInstanceManager object
+                    var cmdExitCode = MainClass.Execute(manager, command.Split(' '), argStrings);
+                    if ((opts?.Headless ?? false) && cmdExitCode != Exit.Ok)
                     {
                         // Pass failure codes to calling process in headless mode
                         // (in interactive mode the user can see the error and try again)
@@ -52,10 +63,11 @@ namespace CKAN.CmdLine
                     }
                 }
             }
-            return Exit.OK;
-        }
 
-        private const string exitCommand = "exit";
+            return Exit.Ok;
+        }
     }
 
+    [Verb("prompt", HelpText = "Run CKAN prompt for executing multiple commands in a row")]
+    internal class PromptOptions : CommonOptions { }
 }

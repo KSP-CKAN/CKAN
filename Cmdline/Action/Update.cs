@@ -1,127 +1,116 @@
 using System.Collections.Generic;
 using System.Linq;
+using CommandLine;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
+    /// <summary>
+    /// Class for updating the list of mods.
+    /// </summary>
     public class Update : ICommand
     {
-        public IUser user { get; set; }
-        private GameInstanceManager manager;
+        private readonly GameInstanceManager _manager;
+        private readonly IUser _user;
 
         /// <summary>
-        /// Initialize the update command object
+        /// Initializes a new instance of the <see cref="CKAN.CmdLine.Action.Update"/> class.
         /// </summary>
-        /// <param name="mgr">GameInstanceManager containing our instances</param>
-        /// <param name="user">IUser object for interaction</param>
-        public Update(GameInstanceManager mgr, IUser user)
+        /// <param name="manager">The manager to provide game instances.</param>
+        /// <param name="user">The current <see cref="CKAN.IUser"/> to raise messages to the user.</param>
+        public Update(GameInstanceManager manager, IUser user)
         {
-            manager   = mgr;
-            this.user = user;
+            _manager = manager;
+            _user = user;
         }
 
         /// <summary>
-        /// Update the registry
+        /// Run the 'update' command.
         /// </summary>
-        /// <param name="ksp">Game instance to update</param>
-        /// <param name="raw_options">Command line options object</param>
-        /// <returns>
-        /// Exit code for shell environment
-        /// </returns>
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        /// <inheritdoc cref="ICommand.RunCommand"/>
+        public int RunCommand(CKAN.GameInstance inst, object args)
         {
-            UpdateOptions options = (UpdateOptions) raw_options;
+            var opts = (UpdateOptions)args;
 
-            List<CkanModule> compatible_prior = null;
+            List<CkanModule> compatiblePrior = null;
 
-            if (options.list_changes)
+            if (opts.ListChanges)
             {
-                // Get a list of compatible modules prior to the update.
-                var registry = RegistryManager.Instance(ksp).registry;
-                compatible_prior = registry.CompatibleModules(ksp.VersionCriteria()).ToList();
+                // Get a list of compatible modules prior to the update
+                var registry = RegistryManager.Instance(inst).registry;
+                compatiblePrior = registry.CompatibleModules(inst.VersionCriteria()).ToList();
             }
 
-            // If no repository is selected, select all.
-            if (options.repo == null)
+            // If no repository is selected, select all
+            if (opts.Repo == null)
             {
-                options.update_all = true;
+                opts.All = true;
             }
 
             try
             {
-                if (options.update_all)
+                if (opts.All)
                 {
-                    UpdateRepository(ksp);
+                    UpdateRepository(inst);
                 }
                 else
                 {
-                    UpdateRepository(ksp, options.repo);
+                    UpdateRepository(inst, opts.Repo);
                 }
             }
             catch (ReinstallModuleKraken rmk)
             {
-                Upgrade.UpgradeModules(manager, user, ksp, false, rmk.Modules);
+                Upgrade.UpgradeModules(_manager, _user, inst, false, rmk.Modules);
             }
             catch (MissingCertificateKraken kraken)
             {
-                // Handling the kraken means we have prettier output.
-                user.RaiseMessage(kraken.ToString());
-                return Exit.ERROR;
+                // Handling the kraken means we have prettier output
+                _user.RaiseMessage(kraken.ToString());
+                return Exit.Error;
             }
 
-            if (options.list_changes)
+            if (opts.ListChanges)
             {
-                var registry = RegistryManager.Instance(ksp).registry;
-                PrintChanges(compatible_prior, registry.CompatibleModules(ksp.VersionCriteria()).ToList());
+                var registry = RegistryManager.Instance(inst).registry;
+                PrintChanges(compatiblePrior, registry.CompatibleModules(inst.VersionCriteria()).ToList());
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
-        /// <summary>
-        /// Locates the changes between the prior and post state of the modules..
-        /// </summary>
-        /// <param name="modules_prior">List of the compatible modules prior to the update.</param>
-        /// <param name="modules_post">List of the compatible modules after the update.</param>
-        private void PrintChanges(List<CkanModule> modules_prior, List<CkanModule> modules_post)
+        private void PrintChanges(List<CkanModule> modulesPrior, List<CkanModule> modulesPost)
         {
-            var prior = new HashSet<CkanModule>(modules_prior, new NameComparer());
-            var post = new HashSet<CkanModule>(modules_post, new NameComparer());
-
+            var prior = new HashSet<CkanModule>(modulesPrior, new NameComparer());
+            var post = new HashSet<CkanModule>(modulesPost, new NameComparer());
 
             var added = new HashSet<CkanModule>(post.Except(prior, new NameComparer()));
             var removed = new HashSet<CkanModule>(prior.Except(post, new NameComparer()));
 
-
-            var unchanged = post.Intersect(prior);//Default compare includes versions
+            // Default compare includes versions
+            var unchanged = post.Intersect(prior);
             var updated = post.Except(unchanged).Except(added).Except(removed).ToList();
 
-            // Print the changes.
-            user.RaiseMessage("Found {0} new modules, {1} removed modules and {2} updated modules.", added.Count(), removed.Count(), updated.Count());
+            // Print the changes
+            _user.RaiseMessage("Found {0} new mods, {1} removed mods and {2} updated mods.", added.Count, removed.Count, updated.Count);
 
             if (added.Count > 0)
             {
-                PrintModules("New modules [Name (CKAN identifier)]:", added);
+                PrintModules("New mods [Name (CKAN identifier)]:", added);
             }
 
             if (removed.Count > 0)
             {
-                PrintModules("Removed modules [Name (CKAN identifier)]:", removed);
+                PrintModules("Removed mods [Name (CKAN identifier)]:", removed);
             }
 
             if (updated.Count > 0)
             {
-                PrintModules("Updated modules [Name (CKAN identifier)]:", updated);
+                PrintModules("Updated mods [Name (CKAN identifier)]:", updated);
             }
         }
 
-        /// <summary>
-        /// Prints a message and a list of modules. Ends with a blank line.
-        /// </summary>
-        /// <param name="message">The message to print.</param>
-        /// <param name="modules">The modules to list.</param>
         private void PrintModules(string message, IEnumerable<CkanModule> modules)
         {
-            // Check input.
+            // Check input
             if (message == null)
             {
                 throw new BadCommandKraken("Message cannot be null.");
@@ -132,30 +121,38 @@ namespace CKAN.CmdLine
                 throw new BadCommandKraken("List of modules cannot be null.");
             }
 
-            user.RaiseMessage(message);
+            _user.RaiseMessage(message);
 
-            foreach (CkanModule module in modules)
+            foreach (var module in modules)
             {
-                user.RaiseMessage("{0} ({1})", module.name, module.identifier);
+                _user.RaiseMessage("{0} ({1})", module.name, module.identifier);
             }
 
-            user.RaiseMessage("");
+            _user.RaiseMessage("");
         }
 
-        /// <summary>
-        /// Updates the repository.
-        /// </summary>
-        /// <param name="ksp">The KSP instance to work on.</param>
-        /// <param name="repository">Repository to update. If null all repositories are used.</param>
-        private void UpdateRepository(CKAN.GameInstance ksp, string repository = null)
+        private void UpdateRepository(CKAN.GameInstance inst, string repository = null)
         {
-            RegistryManager registry_manager = RegistryManager.Instance(ksp);
+            var registryManager = RegistryManager.Instance(inst);
 
-            var updated = repository == null
-                ? CKAN.Repo.UpdateAllRepositories(registry_manager, ksp, manager.Cache, user) != CKAN.RepoUpdateResult.Failed
-                : CKAN.Repo.Update(registry_manager, ksp, user, repository);
+            _ = repository == null
+                ? CKAN.Repo.UpdateAllRepositories(registryManager, inst, _manager.Cache, _user) != RepoUpdateResult.Failed
+                : CKAN.Repo.Update(registryManager, inst, _user, repository);
 
-            user.RaiseMessage("Updated information on {0} compatible modules", registry_manager.registry.CompatibleModules(ksp.VersionCriteria()).Count());
+            _user.RaiseMessage("Updated information on {0} compatible mods.", registryManager.registry.CompatibleModules(inst.VersionCriteria()).Count());
         }
+    }
+
+    [Verb("update", HelpText = "Update list of available mods")]
+    internal class UpdateOptions : InstanceSpecificOptions
+    {
+        [Option('r', "repo", HelpText = "CKAN repository to use (experimental!)")]
+        public string Repo { get; set; }
+
+        [Option("all", HelpText = "Upgrade all available updated modules")]
+        public bool All { get; set; }
+
+        [Option("list-changes", HelpText = "List new and removed modules")]
+        public bool ListChanges { get; set; }
     }
 }
