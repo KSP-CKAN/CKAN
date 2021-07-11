@@ -177,7 +177,7 @@
   <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Downloadanzahl</value></data>
   <data name="Description.HeaderText" xml:space="preserve"><value>Kurzbeschreibung</value></data>
   <data name="reinstallToolStripMenuItem.Text" xml:space="preserve"><value>Neu installieren</value></data>
-  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>Inhalt herunterladen</value></data>
-  <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve"><value>Inhalt löschen</value></data>
+  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>In den Cache herunterladen (wird nicht installiert)</value></data>
+  <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve"><value>Aus dem Cache löschen</value></data>
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve"><value>Labels bearbeiten...</value></data>
 </root>
