@@ -863,7 +863,7 @@ namespace CKAN
                 log.WarnFormat("Attempted to index {0} which is not a DLL", relative_path);
                 return;
             }
-            string modName = match.Groups["modname"].Value;
+            string modName = match.Groups["modname"].Value.Replace("_", "-");
 
             log.InfoFormat("Registering {0} from {1}", modName, relative_path);
 
