@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(RenameInstanceDialog));
-            this.NameTextBox = new System.Windows.Forms.TextBox();
+            this.NameTextBox = new CommonTextBox();
             this.OKButton = new System.Windows.Forms.Button();
             this.CancelRenameInstanceButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -86,7 +86,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox NameTextBox;
+        private CommonTextBox NameTextBox;
         private System.Windows.Forms.Button OKButton;
         private System.Windows.Forms.Button CancelRenameInstanceButton;
     }

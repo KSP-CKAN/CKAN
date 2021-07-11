@@ -35,7 +35,7 @@ namespace CKAN
             this.SelectOrCreateLabel = new System.Windows.Forms.Label();
             this.EditDetailsPanel = new System.Windows.Forms.Panel();
             this.NameLabel = new System.Windows.Forms.Label();
-            this.NameTextBox = new System.Windows.Forms.TextBox();
+            this.NameTextBox = new CommonTextBox();
             this.ColorLabel = new System.Windows.Forms.Label();
             this.ColorButton = new System.Windows.Forms.Button();
             this.InstanceNameLabel = new System.Windows.Forms.Label();
@@ -307,7 +307,7 @@ namespace CKAN
         private System.Windows.Forms.Label SelectOrCreateLabel;
         private System.Windows.Forms.Panel EditDetailsPanel;
         private System.Windows.Forms.Label NameLabel;
-        private System.Windows.Forms.TextBox NameTextBox;
+        private CommonTextBox NameTextBox;
         private System.Windows.Forms.Label InstanceNameLabel;
         private System.Windows.Forms.ComboBox InstanceNameComboBox;
         private System.Windows.Forms.CheckBox HideFromOtherFiltersCheckBox;

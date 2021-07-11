@@ -45,10 +45,10 @@
             this.NewAuthTokenButton = new System.Windows.Forms.Button();
             this.DeleteAuthTokenButton = new System.Windows.Forms.Button();
             this.CacheGroupBox = new System.Windows.Forms.GroupBox();
-            this.CachePath = new System.Windows.Forms.TextBox();
+            this.CachePath = new CommonTextBox();
             this.CacheSummary = new System.Windows.Forms.Label();
             this.CacheLimitPreLabel = new System.Windows.Forms.Label();
-            this.CacheLimit = new System.Windows.Forms.TextBox();
+            this.CacheLimit = new CommonTextBox();
             this.CacheLimitPostLabel = new System.Windows.Forms.Label();
             this.ChangeCacheButton = new System.Windows.Forms.Button();
             this.ClearCacheButton = new CKAN.DropdownMenuButton();
@@ -69,7 +69,7 @@
             this.EnableTrayIconCheckBox = new System.Windows.Forms.CheckBox();
             this.MinimizeToTrayCheckBox = new System.Windows.Forms.CheckBox();
             this.RefreshPreLabel = new System.Windows.Forms.Label();
-            this.RefreshTextBox = new System.Windows.Forms.TextBox();
+            this.RefreshTextBox = new CommonTextBox();
             this.RefreshPostLabel = new System.Windows.Forms.Label();
             this.PauseRefreshCheckBox = new System.Windows.Forms.CheckBox();
             this.MoreSettingsGroupBox = new System.Windows.Forms.GroupBox();
@@ -648,10 +648,10 @@
         private System.Windows.Forms.Button NewAuthTokenButton;
         private System.Windows.Forms.Button DeleteAuthTokenButton;
         private System.Windows.Forms.GroupBox CacheGroupBox;
-        private System.Windows.Forms.TextBox CachePath;
+        private CommonTextBox CachePath;
         private System.Windows.Forms.Label CacheSummary;
         private System.Windows.Forms.Label CacheLimitPreLabel;
-        private System.Windows.Forms.TextBox CacheLimit;
+        private CommonTextBox CacheLimit;
         private System.Windows.Forms.Label CacheLimitPostLabel;
         private System.Windows.Forms.Button ChangeCacheButton;
         private CKAN.DropdownMenuButton ClearCacheButton;
@@ -672,7 +672,7 @@
         private System.Windows.Forms.CheckBox MinimizeToTrayCheckBox;
         private System.Windows.Forms.CheckBox EnableTrayIconCheckBox;
         private System.Windows.Forms.Label RefreshPreLabel;
-        private System.Windows.Forms.TextBox RefreshTextBox;
+        private CommonTextBox RefreshTextBox;
         private System.Windows.Forms.Label RefreshPostLabel;
         private System.Windows.Forms.CheckBox PauseRefreshCheckBox;
         private System.Windows.Forms.GroupBox MoreSettingsGroupBox;

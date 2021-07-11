@@ -8,7 +8,7 @@ namespace CKAN
     /// A textbox which shows a "clear text" icon on the right side
     /// whenever data is present.
     /// </summary>
-    public partial class HintTextBox : TextBox
+    public partial class HintTextBox : CommonTextBox
     {
 
         /// <summary>
