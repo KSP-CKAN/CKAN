@@ -41,7 +41,7 @@ namespace CKAN.NetKAN.Validators
                         var dllIdentifiers = dllPaths
                             .Select(p => pattern.Match(p))
                             .Where(m => m.Success)
-                            .Select(m => m.Groups["modname"].Value)
+                            .Select(m => m.Groups["modname"].Value.Replace("_", "-"))
                             .Where(ident => !identifiersToIgnore.Contains(ident))
                             .ToList();
                         if (dllIdentifiers.Any() && !dllIdentifiers.Contains(metadata.Identifier))
