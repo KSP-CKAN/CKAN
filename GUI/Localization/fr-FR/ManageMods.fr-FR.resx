@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -166,7 +166,7 @@
   <data name="FilterLabelsToolButton.Text" xml:space="preserve"><value>Labels</value></data>
   <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve"><value>Mod sélectionné précédent...</value></data>
   <data name="NavForwardToolButton.ToolTipText" xml:space="preserve"><value>Mod sélectionné suivant...</value></data>
-  <data name="Installed.HeaderText" xml:space="preserve"><value>Inst</value></data>
+  <data name="Installed.HeaderText" xml:space="preserve"><value>Installé</value></data>
   <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>Auto-installé</value></data>
   <data name="UpdateCol.HeaderText" xml:space="preserve"><value>MàJ</value></data>
   <data name="ReplaceCol.HeaderText" xml:space="preserve"><value>Remplace</value></data>
@@ -178,11 +178,11 @@
   <data name="SizeCol.HeaderText" xml:space="preserve"><value>Taille</value></data>
   <data name="ReleaseDate.HeaderText" xml:space="preserve"><value>Date de publication</value></data>
   <data name="InstallDate.HeaderText" xml:space="preserve"><value>Date d'installation</value></data>
-  <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Téléchargements (nombre)</value></data>
+  <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Nombre de téléchargements</value></data>
   <data name="Description.HeaderText" xml:space="preserve"><value>Description</value></data>
   <data name="reinstallToolStripMenuItem.Text" xml:space="preserve"><value>Réinstaller</value></data>
-  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>Télécharger le contenu</value></data>
-  <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve"><value>Purger le contenu</value></data>
+  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>Télécharger dans le cache (sans installer)</value></data>
+  <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve"><value>Effacer du cache</value></data>
   <data name="labelsToolStripMenuItem.Text" xml:space="preserve"><value>Labels</value></data>
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve"><value>Modifier les labels...</value></data>
 </root>

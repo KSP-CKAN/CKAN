@@ -103,12 +103,11 @@ namespace CKAN.ConsoleUI {
             AddTip("Esc", "Back");
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
 
-            AddTip("Ctrl+D", "Download",
+            AddTip("Ctrl+D", "Download to cache (does not install)",
                 () => !manager.Cache.IsMaybeCachedZip(mod) && !mod.IsDLC
             );
             AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) => {
-                if (!mod.IsDLC)
-                {
+                if (!mod.IsDLC) {
                     Download(theme);
                 }
                 return true;
