@@ -19,7 +19,8 @@ namespace CKAN
     {
         private static IGame[] knownGames = new IGame[]
         {
-            new KerbalSpaceProgram()
+            new KerbalSpaceProgram(),
+            new Factorio()
         };
 
         public IUser User { get; set; }
