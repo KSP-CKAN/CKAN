@@ -516,7 +516,11 @@ namespace CKAN.CmdLine
 
     internal class ShowOptions : InstanceSpecificOptions
     {
-        [ValueOption(0)] public string Modname { get; set; }
+        [Option("with-versions")]
+        public bool with_versions { get; set; }
+
+        [ValueList(typeof(List<string>))]
+        public List<string> modules { get; set; }
     }
 
     internal class SearchOptions : InstanceSpecificOptions

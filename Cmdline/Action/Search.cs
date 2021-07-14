@@ -122,6 +122,8 @@ namespace CKAN.CmdLine
         /// <returns>List of matching modules.</returns>
         /// <param name="ksp">The KSP instance to perform the search for.</param>
         /// <param name="term">The search term. Case insensitive.</param>
+        /// <param name="author">Name of author to find</param>
+        /// <param name="searchIncompatible">True to look for incompatible modules, false (default) to look for compatible</param>
         public List<CkanModule> PerformSearch(CKAN.GameInstance ksp, string term, string author = null, bool searchIncompatible = false)
         {
             // Remove spaces and special characters from the search term.
@@ -134,29 +136,25 @@ namespace CKAN.CmdLine
             {
                 return registry
                     .CompatibleModules(ksp.VersionCriteria())
-                    .Where((module) =>
-                {
                     // Look for a match in each string.
-                    return (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                        || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                        || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                        || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
-                        && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1);
-                }).ToList();
+                    .Where(module => (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                            || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                            || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                            || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
+                            && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1))
+                    .ToList();
             }
             else
             {
                 return registry
                     .IncompatibleModules(ksp.VersionCriteria())
-                    .Where((module) =>
-                {
                     // Look for a match in each string.
-                    return (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                        || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                        || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                        || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
-                        && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1);
-                }).ToList();
+                    .Where(module => (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                            || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                            || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                            || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
+                            && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1))
+                    .ToList();
             }
         }
 
