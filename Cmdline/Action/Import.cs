@@ -1,112 +1,118 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using CommandLine;
 using log4net;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
-
     /// <summary>
-    /// Handler for "ckan import" command.
-    /// Imports manually downloaded ZIP files into the cache.
+    /// Class for managing the importing of mods.
     /// </summary>
     public class Import : ICommand
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Import));
+
+        private readonly GameInstanceManager _manager;
+        private readonly IUser _user;
 
         /// <summary>
-        /// Initialize the command
+        /// Initializes a new instance of the <see cref="CKAN.CmdLine.Action.Import"/> class.
         /// </summary>
-        /// <param name="user">IUser object for user interaction</param>
-        public Import(GameInstanceManager mgr, IUser user)
+        /// <param name="manager">The manager to provide game instances.</param>
+        /// <param name="user">The current <see cref="CKAN.IUser"/> to raise messages to the user.</param>
+        public Import(GameInstanceManager manager, IUser user)
         {
-            manager   = mgr;
-            this.user = user;
+            _manager = manager;
+            _user = user;
         }
 
         /// <summary>
-        /// Execute an import command
+        /// Run the 'import' command.
         /// </summary>
-        /// <param name="ksp">Game instance into which to import</param>
-        /// <param name="options">Command line parameters from the user</param>
-        /// <returns>
-        /// Process exit code
-        /// </returns>
-        public int RunCommand(CKAN.GameInstance ksp, object options)
+        /// <inheritdoc cref="ICommand.RunCommand"/>
+        public int RunCommand(CKAN.GameInstance inst, object args)
         {
+            var opts = (ImportOptions)args;
+            if (!opts.Paths.Any())
+            {
+                _user.RaiseMessage("import <path> [<path2> ...] - argument(s) missing, perhaps you forgot it?");
+                return Exit.BadOpt;
+            }
+
+            var toImport = GetFiles(opts);
             try
             {
-                ImportOptions opts = options as ImportOptions;
-                HashSet<FileInfo> toImport = GetFiles(opts);
-                if (toImport.Count < 1)
+                Log.InfoFormat("Importing {0} files...", toImport.Count);
+                var toInstall = new List<string>();
+                var regMgr = RegistryManager.Instance(inst);
+                var installer = new ModuleInstaller(inst, _manager.Cache, _user);
+
+                installer.ImportFiles(toImport, _user, mod => toInstall.Add(mod.identifier), regMgr.registry, !opts.Headless);
+
+                HashSet<string> possibleConfigOnlyDirs = null;
+                if (toInstall.Count > 0)
                 {
-                    user.RaiseMessage("Usage: ckan import path [path2, ...]");
-                    return Exit.ERROR;
-                }
-                else
-                {
-                    log.InfoFormat("Importing {0} files", toImport.Count);
-                    List<string>    toInstall = new List<string>();
-                    RegistryManager regMgr = RegistryManager.Instance(ksp);
-                    ModuleInstaller inst      = new ModuleInstaller(ksp, manager.Cache, user);
-                    inst.ImportFiles(toImport, user, mod => toInstall.Add(mod.identifier), regMgr.registry, !opts.Headless);
-                    HashSet<string> possibleConfigOnlyDirs = null;
-                    if (toInstall.Count > 0)
-                    {
-                        inst.InstallList(
-                            toInstall,
-                            new RelationshipResolverOptions(),
-                            regMgr,
-                            ref possibleConfigOnlyDirs
-                        );
-                    }
-                    return Exit.OK;
+                    installer.InstallList(
+                        toInstall,
+                        new RelationshipResolverOptions(),
+                        regMgr,
+                        ref possibleConfigOnlyDirs
+                    );
                 }
             }
             catch (Exception ex)
             {
-                user.RaiseError("Import error: {0}", ex.Message);
-                return Exit.ERROR;
+                _user.RaiseError("Import error: {0}", ex.Message);
+                return Exit.Error;
             }
+
+            _user.RaiseMessage("Successfully imported {0} files.", toImport.Count);
+            return Exit.Ok;
         }
 
         private HashSet<FileInfo> GetFiles(ImportOptions options)
         {
-            HashSet<FileInfo> files = new HashSet<FileInfo>();
-            foreach (string filename in options.paths)
+            var files = new HashSet<FileInfo>();
+            foreach (var fileName in options.Paths)
             {
-                if (Directory.Exists(filename))
+                if (Directory.Exists(fileName))
                 {
                     // Import everything in this folder
-                    log.InfoFormat("{0} is a directory", filename);
-                    foreach (string dirfile in Directory.EnumerateFiles(filename))
+                    Log.InfoFormat("{0} is a directory. Adding contents...", fileName);
+                    foreach (var dirFile in Directory.EnumerateFiles(fileName))
                     {
-                        AddFile(files, dirfile);
+                        AddFile(files, dirFile);
                     }
                 }
                 else
                 {
-                    AddFile(files, filename);
+                    AddFile(files, fileName);
                 }
             }
+
             return files;
         }
 
-        private void AddFile(HashSet<FileInfo> files, string filename)
+        private void AddFile(HashSet<FileInfo> files, string fileName)
         {
-            if (File.Exists(filename))
+            if (File.Exists(fileName))
             {
-                log.InfoFormat("Attempting import of {0}", filename);
-                files.Add(new FileInfo(filename));
+                Log.InfoFormat("Attempting import of \"{0}\".", fileName);
+                files.Add(new FileInfo(fileName));
             }
             else
             {
-                user.RaiseMessage("File not found: {0}", filename);
+                _user.RaiseMessage("File not found: \"{0}\".", fileName);
             }
         }
-
-        private        readonly GameInstanceManager manager;
-        private        readonly IUser      user;
-        private static readonly ILog       log = LogManager.GetLogger(typeof(Import));
     }
 
+    [Verb("import", HelpText = "Import manually downloaded mods")]
+    internal class ImportOptions : InstanceSpecificOptions
+    {
+        [Value(0, MetaName = "File path(s)", HelpText = "The path(s) of the files to import (can also be a directory)")]
+        public IEnumerable<string> Paths { get; set; }
+    }
 }

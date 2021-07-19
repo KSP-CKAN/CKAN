@@ -1,166 +1,193 @@
 using System.Collections.Generic;
+using System.Linq;
 using CommandLine;
-using CommandLine.Text;
-using log4net;
 
-namespace CKAN.CmdLine
+namespace CKAN.CmdLine.Action
 {
     /// <summary>
-    /// Subcommand for setting flags on modules,
-    /// currently the auto-installed flag
+    /// Class for setting flags on mods, currently the auto-installed flag.
     /// </summary>
     public class Mark : ISubCommand
     {
-        /// <summary>
-        /// Initialize the subcommand
-        /// </summary>
-        public Mark() { }
+        private GameInstanceManager _manager;
+        private IUser _user;
 
         /// <summary>
-        /// Run the subcommand
+        /// Run the 'mark' command.
         /// </summary>
-        /// <param name="mgr">Manager to provide game instances</param>
-        /// <param name="opts">Command line parameters paritally handled by parser</param>
-        /// <param name="unparsed">Command line parameters not yet handled by parser</param>
-        /// <returns>
-        /// Exit code
-        /// </returns>
-        public int RunSubCommand(GameInstanceManager mgr, CommonOptions opts, SubCommandOptions unparsed)
+        /// <inheritdoc cref="ISubCommand.RunCommand"/>
+        public int RunCommand(GameInstanceManager manager, object args)
         {
-            string[] args = unparsed.options.ToArray();
-            int exitCode = Exit.OK;
-            // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new MarkSubOptions(), (string option, object suboptions) =>
+            var s = args.ToString();
+            var opts = s.Replace(s.Substring(0, s.LastIndexOf('.') + 1), "").Split('+');
+
+            CommonOptions options = new CommonOptions();
+            _user = new ConsoleUser(options.Headless);
+            _manager = manager ?? new GameInstanceManager(_user);
+            var exitCode = options.Handle(_manager, _user);
+
+            if (exitCode != Exit.Ok)
+                return exitCode;
+
+            switch (opts[1])
             {
-                // ParseArgumentsStrict calls us unconditionally, even with bad arguments
-                if (!string.IsNullOrEmpty(option) && suboptions != null)
-                {
-                    CommonOptions options = (CommonOptions)suboptions;
-                    options.Merge(opts);
-                    user     = new ConsoleUser(options.Headless);
-                    manager  = mgr ?? new GameInstanceManager(user);
-                    exitCode = options.Handle(manager, user);
-                    if (exitCode != Exit.OK)
-                        return;
+                case "MarkAuto":
+                    exitCode = MarkAuto(args);
+                    break;
+                case "MarkUser":
+                    exitCode = MarkUser(args);
+                    break;
+                default:
+                    exitCode = Exit.BadOpt;
+                    break;
+            }
 
-                    switch (option)
-                    {
-                        case "auto":
-                            exitCode = MarkAuto((MarkAutoOptions)suboptions, true, option, "auto-installed");
-                            break;
-
-                        case "user":
-                            exitCode = MarkAuto((MarkAutoOptions)suboptions, false, option, "user-selected");
-                            break;
-
-                        default:
-                            user.RaiseMessage("Unknown command: mark {0}", option);
-                            exitCode = Exit.BADOPT;
-                            break;
-                    }
-                }
-            }, () => { exitCode = MainClass.AfterHelp(); });
             return exitCode;
         }
 
-        private int MarkAuto(MarkAutoOptions opts, bool value, string verb, string descrip)
+        /// <inheritdoc cref="ISubCommand.GetUsage"/>
+        public string GetUsage(string prefix, string[] args)
         {
-            if (opts.modules.Count < 1)
+            if (args.Length == 1)
+                return $"{prefix} {args[0]} <command> [options]";
+
+            switch (args[1])
             {
-                user.RaiseMessage("Usage: ckan mark {0} Mod [Mod2 ...]", verb);
-                return Exit.BADOPT;
+                case "auto":
+                case "user":
+                    return $"{prefix} {args[0]} {args[1]} [options] <mod> [<mod2> ...]";
+                default:
+                    return $"{prefix} {args[0]} <command> [options]";
+            }
+        }
+
+        private int MarkAuto(object args)
+        {
+            var opts = (MarkOptions.MarkAuto)args;
+            if (!opts.Mods.Any())
+            {
+                _user.RaiseMessage("auto <mod> [<mod2> ...] - argument(s) missing, perhaps you forgot it?");
+                return Exit.BadOpt;
             }
 
-            int exitCode = opts.Handle(manager, user);
-            if (exitCode != Exit.OK)
-            {
+            var exitCode = opts.Handle(_manager, _user);
+            if (exitCode != Exit.Ok)
                 return exitCode;
-            }
 
-            var  ksp      = MainClass.GetGameInstance(manager);
-            var  regMgr   = RegistryManager.Instance(ksp);
-            bool needSave = false;
-            Search.AdjustModulesCase(ksp, opts.modules);
-            foreach (string id in opts.modules)
+            var inst = MainClass.GetGameInstance(_manager);
+            var regMgr = RegistryManager.Instance(inst);
+            var needSave = false;
+            Search.AdjustModulesCase(inst, opts.Mods.ToList());
+
+            foreach (var id in opts.Mods)
             {
-                InstalledModule im = regMgr.registry.InstalledModule(id);
-                if (im == null)
+                var mod = regMgr.registry.InstalledModule(id);
+                if (mod == null)
                 {
-                    user.RaiseError("{0} is not installed.", id);
+                    _user.RaiseError("\"{0}\" is not installed.", id);
                 }
-                else if (im.AutoInstalled == value)
+                else if (mod.AutoInstalled)
                 {
-                    user.RaiseError("{0} is already marked as {1}.", id, descrip);
+                    _user.RaiseError("\"{0}\" is already marked as auto-installed.", id);
                 }
                 else
                 {
-                    user.RaiseMessage("Marking {0} as {1}...", id, descrip);
+                    _user.RaiseMessage("Marking \"{0}\" as auto-installed...", id);
                     try
                     {
-                        im.AutoInstalled = value;
+                        mod.AutoInstalled = true;
                         needSave = true;
                     }
                     catch (ModuleIsDLCKraken kraken)
                     {
-                        user.RaiseMessage($"Can't mark expansion '{kraken.module.name}' as auto-installed.");
-                        return Exit.BADOPT;
+                        _user.RaiseMessage("Can't mark expansion \"{0}\" as auto-installed.", kraken.module.name);
+                        return Exit.BadOpt;
                     }
                 }
             }
+
             if (needSave)
             {
                 regMgr.Save(false);
-                user.RaiseMessage("Changes made!");
+                _user.RaiseMessage("Successfully applied changes.");
             }
-            return Exit.OK;
+
+            return Exit.Ok;
         }
 
-        private GameInstanceManager manager { get; set; }
-        private IUser      user    { get; set; }
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(Mark));
-    }
-
-    internal class MarkSubOptions : VerbCommandOptions
-    {
-        [VerbOption("auto", HelpText = "Mark modules as auto installed")]
-        public MarkAutoOptions MarkAutoOptions { get; set; }
-
-        [VerbOption("user", HelpText = "Mark modules as user selected (opposite of auto installed)")]
-        public MarkAutoOptions MarkUserOptions { get; set; }
-
-        [HelpVerbOption]
-        public string GetUsage(string verb)
+        private int MarkUser(object args)
         {
-            HelpText ht = HelpText.AutoBuild(this, verb);
-            // Add a usage prefix line
-            ht.AddPreOptionsLine(" ");
-            if (string.IsNullOrEmpty(verb))
+            var opts = (MarkOptions.MarkUser)args;
+            if (!opts.Mods.Any())
             {
-                ht.AddPreOptionsLine("ckan mark - Edit flags on modules");
-                ht.AddPreOptionsLine($"Usage: ckan mark <command> [options]");
+                _user.RaiseMessage("user <mod> [<mod2> ...] - argument(s) missing, perhaps you forgot it?");
+                return Exit.BadOpt;
             }
-            else
-            {
-                ht.AddPreOptionsLine("ksp " + verb + " - " + GetDescription(verb));
-                switch (verb)
-                {
-                    case "auto":
-                        ht.AddPreOptionsLine($"Usage: ckan mark {verb} [options] Mod [Mod2 ...]");
-                        break;
 
-                    case "user":
-                        ht.AddPreOptionsLine($"Usage: ckan mark {verb} [options] Mod [Mod2 ...]");
-                        break;
+            var exitCode = opts.Handle(_manager, _user);
+            if (exitCode != Exit.Ok)
+                return exitCode;
+
+            var inst = MainClass.GetGameInstance(_manager);
+            var regMgr = RegistryManager.Instance(inst);
+            var needSave = false;
+            Search.AdjustModulesCase(inst, opts.Mods.ToList());
+
+            foreach (var id in opts.Mods)
+            {
+                var mod = regMgr.registry.InstalledModule(id);
+                if (mod == null)
+                {
+                    _user.RaiseError("\"{0}\" is not installed.", id);
+                }
+                else if (!mod.AutoInstalled)
+                {
+                    _user.RaiseError("\"{0}\" is already marked as user-selected.", id);
+                }
+                else
+                {
+                    _user.RaiseMessage("Marking \"{0}\" as user-selected...", id);
+                    try
+                    {
+                        mod.AutoInstalled = false;
+                        needSave = true;
+                    }
+                    catch (ModuleIsDLCKraken kraken)
+                    {
+                        _user.RaiseMessage("Can't mark expansion \"{0}\" as auto-installed.", kraken.module.name);
+                        return Exit.BadOpt;
+                    }
                 }
             }
-            return ht;
+
+            if (needSave)
+            {
+                regMgr.Save(false);
+                _user.RaiseMessage("Successfully applied changes.");
+            }
+
+            return Exit.Ok;
         }
     }
 
-    internal class MarkAutoOptions : InstanceSpecificOptions
+    [Verb("mark", HelpText = "Edit flags on mods")]
+    [ChildVerbs(typeof(MarkAuto), typeof(MarkUser))]
+    internal class MarkOptions
     {
-        [ValueList(typeof(List<string>))]
-        public List<string> modules { get; set; }
+        [VerbExclude]
+        [Verb("auto", HelpText = "Mark mods as auto installed")]
+        internal class MarkAuto : InstanceSpecificOptions
+        {
+            [Value(0, MetaName = "Mod name(s)", HelpText = "The mod name(s) to mark as auto-installed")]
+            public IEnumerable<string> Mods { get; set; }
+        }
+
+        [VerbExclude]
+        [Verb("user", HelpText = "Mark mods as user selected (opposite of auto installed)")]
+        internal class MarkUser : InstanceSpecificOptions
+        {
+            [Value(0, MetaName = "Mod name(s)", HelpText = "The mod name(s) to mark as user-installed")]
+            public IEnumerable<string> Mods { get; set; }
+        }
     }
 }
