@@ -494,7 +494,7 @@ namespace CKAN
                     try
                     {
                         var avail = registry.LatestAvailable(kvp.Key, null, null);
-                        return true;
+                        return !avail.IsDLC;
                     }
                     catch
                     {
