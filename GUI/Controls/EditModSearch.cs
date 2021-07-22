@@ -130,7 +130,7 @@ namespace CKAN
                     Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList()
                 );
                 SearchToEditor();
-                TriggerSearchOrTimer();
+                QueueTriggerSearch();
             }
             catch (Kraken k)
             {
@@ -215,7 +215,7 @@ namespace CKAN
             }
             else
             {
-                TriggerSearchOrTimer();
+                QueueTriggerSearch();
             }
         }
 
@@ -246,8 +246,7 @@ namespace CKAN
                     // Bypass the timer for immediate update
                     e.Handled = true;
                     e.SuppressKeyPress = true;
-                    filterTimer?.Stop();
-                    TriggerSearch();
+                    QueueTriggerSearch();
                     break;
 
                 case Keys.Up:
@@ -263,9 +262,10 @@ namespace CKAN
             }
         }
 
-        private void TriggerSearchOrTimer()
+        private void QueueTriggerSearch()
         {
-            if (Platform.IsMono && !string.IsNullOrEmpty(FilterCombinedTextBox.Text))
+            filterTimer?.Stop();
+            if (!string.IsNullOrEmpty(FilterCombinedTextBox.Text))
             {
                 // Delay updating to improve typing performance on OS X and Linux
                 RunFilterUpdateTimer();
@@ -303,8 +303,8 @@ namespace CKAN
         /// </summary>
         private void OnFilterUpdateTimer(object source, EventArgs e)
         {
+            filterTimer?.Stop();
             TriggerSearch();
-            filterTimer.Stop();
         }
 
         private void TriggerSearch()
