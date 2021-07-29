@@ -254,7 +254,7 @@ namespace CKAN.CmdLine
                 }
                 if (module.resources.manual != null)
                 {
-                    user.RaiseMessage("  Manual: {0}", Uri.EscapeUriString(module.resources.manual.ToString()));
+                    user.RaiseMessage("  Manual:\t{0}", Uri.EscapeUriString(module.resources.manual.ToString()));
                 }
                 if (module.resources.spacedock != null)
                 {
@@ -270,7 +270,7 @@ namespace CKAN.CmdLine
                 }
                 if (module.resources.curse != null)
                 {
-                    user.RaiseMessage("  Curse: {0}", Uri.EscapeUriString(module.resources.curse.ToString()));
+                    user.RaiseMessage("  Curse:\t{0}", Uri.EscapeUriString(module.resources.curse.ToString()));
                 }
                 if (module.resources.store != null)
                 {
@@ -282,7 +282,7 @@ namespace CKAN.CmdLine
                 }
                 if (module.resources.remoteAvc != null)
                 {
-                    user.RaiseMessage("  Version file: {0}", Uri.EscapeUriString(module.resources.remoteAvc.ToString()));
+                    user.RaiseMessage("  Version file:\t{0}", Uri.EscapeUriString(module.resources.remoteAvc.ToString()));
                 }
             }
 
