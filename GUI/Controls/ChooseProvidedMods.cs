@@ -13,14 +13,11 @@ namespace CKAN
             InitializeComponent();
         }
 
-        public void LoadProviders(string requested, List<CkanModule> modules, NetModuleCache cache)
+        public void LoadProviders(string message, List<CkanModule> modules, NetModuleCache cache)
         {
             Util.Invoke(this, () =>
             {
-                ChooseProvidedModsLabel.Text = String.Format(
-                    Properties.Resources.MainInstallProvidedBy,
-                    requested
-                );
+                ChooseProvidedModsLabel.Text = message;
     
                 ChooseProvidedModsListView.Items.Clear();
                 ChooseProvidedModsListView.Items.AddRange(modules

@@ -224,7 +224,7 @@ namespace CKAN
                 {
                     // Prompt user to choose which mod to use
                     tabController.ShowTab("ChooseProvidedModsTabPage", 3);
-                    ChooseProvidedMods.LoadProviders(k.requested, k.modules, Manager.Cache);
+                    ChooseProvidedMods.LoadProviders(k.Message, k.modules, Manager.Cache);
                     tabController.SetTabLock(true);
                     CkanModule chosen = ChooseProvidedMods.Wait();
                     // Close the selection prompt

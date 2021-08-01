@@ -28,6 +28,9 @@ namespace CKAN
 
         public abstract bool StartsWith(string prefix);
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string choice_help_text;
+
         // virtual ToString() already present in 'object'
     }
 
@@ -41,7 +44,6 @@ namespace CKAN
         public /* required */ string name;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ModuleVersion version;
-
 
         public override bool WithinBounds(CkanModule otherModule)
         {
@@ -168,7 +170,6 @@ namespace CKAN
         {
             return name.IndexOf(prefix, StringComparison.CurrentCultureIgnoreCase) == 0;
         }
-
 
         /// <summary>
         /// A user friendly message for what versions satisfies this descriptor.

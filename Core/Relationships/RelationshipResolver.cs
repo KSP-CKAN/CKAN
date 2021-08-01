@@ -477,13 +477,13 @@ namespace CKAN
                         {
                             //We still have either nothing, or too many to pick from
                             //Just throw the TMP now
-                            throw new TooManyModsProvideKraken(descriptor.ToString(), candidates);
+                            throw new TooManyModsProvideKraken(descriptor.ToString(), candidates, descriptor.choice_help_text);
                         }
                         candidates[0] = provide.First();
                     }
                     else
                     {
-                        throw new TooManyModsProvideKraken(descriptor.ToString(), candidates);
+                        throw new TooManyModsProvideKraken(descriptor.ToString(), candidates, descriptor.choice_help_text);
                     }
                 }
 

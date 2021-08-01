@@ -149,20 +149,24 @@ namespace CKAN
 
     public class TooManyModsProvideKraken : Kraken
     {
-        public List<CkanModule> modules;
-        public string requested;
+        public readonly List<CkanModule> modules;
+        public readonly string requested;
+        public readonly string choice_help_text;
 
-        public TooManyModsProvideKraken(string requested, List<CkanModule> modules, Exception innerException = null)
-            : base(FormatMessage(requested, modules), innerException)
+        public TooManyModsProvideKraken(string requested, List<CkanModule> modules, string choice_help_text = null, Exception innerException = null)
+            : base(FormatMessage(requested, modules, choice_help_text), innerException)
         {
-            this.modules = modules;
-            this.requested = requested;
+            this.requested        = requested;
+            this.modules          = modules;
+            this.choice_help_text = choice_help_text;
         }
 
-        internal static string FormatMessage(string requested, List<CkanModule> modules)
+        private static string FormatMessage(string requested, List<CkanModule> modules, string choice_help_text = null)
         {
-            string oops = string.Format("Too many mods provide {0}:\r\n", requested);
-            return oops + String.Join("\r\n", modules.Select(m => $"* {m}"));
+            return choice_help_text
+                ?? string.Format(
+                    "Module {0} is provided by more than one available module. Please choose one of the following:",
+                    requested);
         }
     }
 
