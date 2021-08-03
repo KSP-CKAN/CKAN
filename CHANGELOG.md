@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [Multiple] Clarify that downloading to cache does not install (#3400 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Don't include DLC in modpacks by default (#3417 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
