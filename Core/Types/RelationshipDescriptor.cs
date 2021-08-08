@@ -245,7 +245,7 @@ namespace CKAN
             IEnumerable<CkanModule> toInstall = null
         )
         {
-            return any_of?.SelectMany(r => r.LatestAvailableWithProvides(registry, crit, installed, toInstall)).ToList();
+            return any_of?.SelectMany(r => r.LatestAvailableWithProvides(registry, crit, installed, toInstall)).Distinct().ToList();
         }
 
         public override bool Equals(RelationshipDescriptor other)
