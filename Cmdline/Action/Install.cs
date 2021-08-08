@@ -174,33 +174,25 @@ namespace CKAN.CmdLine
                 }
                 catch (TooManyModsProvideKraken ex)
                 {
-                    // Request the user selects one of the mods.
-                    string[] mods = new string[ex.modules.Count];
-
-                    for (int i = 0; i < ex.modules.Count; i++)
-                    {
-                        mods[i] = String.Format("{0} ({1})", ex.modules[i].identifier, ex.modules[i].name);
-                    }
-
-                    string message = String.Format("Too many mods provide {0}. Please pick from the following:\r\n", ex.requested);
-
+                    // Request the user selects one of the mods
                     int result;
-
                     try
                     {
-                        result = user.RaiseSelectionDialog(message, mods);
+                        result = user.RaiseSelectionDialog(
+                            ex.Message,
+                            ex.modules
+                                .Select(m => string.Format("{0} ({1})", m.identifier, m.name))
+                                .ToArray());
                     }
                     catch (Kraken e)
                     {
                         user.RaiseMessage(e.Message);
-
                         return Exit.ERROR;
                     }
 
                     if (result < 0)
                     {
-                        user.RaiseMessage(String.Empty); // Looks tidier.
-
+                        user.RaiseMessage("");
                         return Exit.ERROR;
                     }
 

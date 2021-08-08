@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Japanese Localization (#3394 by: utah239; reviewed: HebaruSan)
 - [Multiple] Match underscore in DLL to dash in identifier (#3412 by: HebaruSan; reviewed: DasSkelett)
 - [CLI] Add versions table option to ckan show command (#3414 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Override provides prompt with relationship property, check first recommendation in any_of group (#3426 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

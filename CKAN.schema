@@ -384,6 +384,10 @@
                             "max_version" : {
                                 "description" : "Optional maximum version",
                                 "$ref"        : "#/definitions/version"
+                            },
+                            "choice_help_text": {
+                                "description" : "Optional help text shown when user has to choose among multiple modules",
+                                "type"        : "string"
                             }
                         },
                         "required" : [ "name" ]
@@ -394,6 +398,10 @@
                             "any_of": {
                                 "description": "List of modules that can satisfy this relationship",
                                 "$ref": "#/definitions/relationship"
+                            },
+                            "choice_help_text": {
+                                "description" : "Optional help text shown when user has to choose among multiple modules",
+                                "type"        : "string"
                             }
                         },
                         "required": [ "any_of" ]

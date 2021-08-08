@@ -28,6 +28,9 @@ namespace CKAN
 
         public abstract bool StartsWith(string prefix);
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string choice_help_text;
+
         // virtual ToString() already present in 'object'
     }
 
@@ -41,7 +44,6 @@ namespace CKAN
         public /* required */ string name;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ModuleVersion version;
-
 
         public override bool WithinBounds(CkanModule otherModule)
         {
@@ -169,7 +171,6 @@ namespace CKAN
             return name.IndexOf(prefix, StringComparison.CurrentCultureIgnoreCase) == 0;
         }
 
-
         /// <summary>
         /// A user friendly message for what versions satisfies this descriptor.
         /// </summary>
@@ -215,6 +216,14 @@ namespace CKAN
         [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> any_of;
 
+        public static readonly List<string> ForbiddenPropertyNames = new List<string>()
+        {
+            "name",
+            "version",
+            "min_version",
+            "max_version"
+        };
+
         public override bool WithinBounds(CkanModule otherModule)
         {
             return any_of?.Any(r => r.WithinBounds(otherModule))
@@ -236,7 +245,7 @@ namespace CKAN
             IEnumerable<CkanModule> toInstall = null
         )
         {
-            return any_of?.SelectMany(r => r.LatestAvailableWithProvides(registry, crit, installed, toInstall)).ToList();
+            return any_of?.SelectMany(r => r.LatestAvailableWithProvides(registry, crit, installed, toInstall)).Distinct().ToList();
         }
 
         public override bool Equals(RelationshipDescriptor other)

@@ -230,7 +230,7 @@ namespace CKAN.CmdLine
                     catch (TooManyModsProvideKraken k)
                     {
                         int choice = user.RaiseSelectionDialog(
-                            $"Choose a module to provide {k.requested}:",
+                            k.Message,
                             k.modules.Select(m => $"{m.identifier} ({m.name})").ToArray());
                         if (choice < 0)
                         {

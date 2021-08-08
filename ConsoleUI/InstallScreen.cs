@@ -118,7 +118,7 @@ namespace CKAN.ConsoleUI {
                     } catch (TooManyModsProvideKraken ex) {
 
                         ConsoleChoiceDialog<CkanModule> ch = new ConsoleChoiceDialog<CkanModule>(
-                            $"Module {ex.requested} is provided by multiple modules. Which would you like to install?",
+                            ex.Message,
                             "Name",
                             ex.modules,
                             (CkanModule mod) => mod.ToString()

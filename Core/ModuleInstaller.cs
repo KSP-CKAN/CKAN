@@ -1183,6 +1183,7 @@ namespace CKAN
         )
         {
             Dictionary<CkanModule, List<string>> dependersIndex = getDependersIndex(sourceModules, registry, toInstall);
+            var instList = toInstall.ToList();
             recommendations = new Dictionary<CkanModule, Tuple<bool, List<string>>>();
             suggestions = new Dictionary<CkanModule, List<string>>();
             supporters = new Dictionary<CkanModule, HashSet<string>>();
@@ -1194,21 +1195,23 @@ namespace CKAN
                         registry,
                         ksp.VersionCriteria()
                     );
+                    int i = 0;
                     foreach (CkanModule provider in providers)
                     {
                         if (!registry.IsInstalled(provider.identifier)
                             && !toInstall.Any(m => m.identifier == provider.identifier)
                             && dependersIndex.TryGetValue(provider, out List<string> dependers)
                             && (provider.IsDLC || CanInstall(RelationshipResolver.DependsOnlyOpts(),
-                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList(), registry)))
+                                instList.Concat(new List<CkanModule>() { provider }).ToList(), registry)))
                         {
                             dependersIndex.Remove(provider);
                             recommendations.Add(
                                 provider,
                                 new Tuple<bool, List<string>>(
-                                    !provider.IsDLC && (providers.Count <= 1 || provider.identifier == (rel as ModuleRelationshipDescriptor)?.name),
+                                    !provider.IsDLC && (i == 0 || provider.identifier == (rel as ModuleRelationshipDescriptor)?.name),
                                     dependers)
                             );
+                            ++i;
                         }
                     }
                 }
@@ -1227,7 +1230,7 @@ namespace CKAN
                             && !toInstall.Any(m => m.identifier == provider.identifier)
                             && dependersIndex.TryGetValue(provider, out List<string> dependers)
                             && (provider.IsDLC || CanInstall(RelationshipResolver.DependsOnlyOpts(),
-                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList(), registry)))
+                                instList.Concat(new List<CkanModule>() { provider }).ToList(), registry)))
                         {
                             dependersIndex.Remove(provider);
                             suggestions.Add(provider, dependers);
@@ -1267,7 +1270,7 @@ namespace CKAN
             }
             supporters.RemoveWhere(kvp => !CanInstall(
                 RelationshipResolver.DependsOnlyOpts(),
-                toInstall.ToList().Concat(new List<CkanModule>() { kvp.Key }).ToList(),
+                instList.Concat(new List<CkanModule>() { kvp.Key }).ToList(),
                 registry
             ));
 
