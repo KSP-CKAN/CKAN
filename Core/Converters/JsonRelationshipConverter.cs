@@ -26,9 +26,12 @@ namespace CKAN
                     if (child["any_of"] != null)
                     {
                         // Catch confused/invalid metadata
-                        if (child.Properties().Count() > 1)
+                        foreach (string forbiddenPropertyName in AnyOfRelationshipDescriptor.ForbiddenPropertyNames)
                         {
-                            throw new Kraken("`any_of` should not be combined with other properties");
+                            if (child.Property(forbiddenPropertyName) != null)
+                            {
+                                throw new Kraken($"`any_of` should not be combined with `{forbiddenPropertyName}`");
+                            }
                         }
                         rels.Add(child.ToObject<AnyOfRelationshipDescriptor>());
                     }

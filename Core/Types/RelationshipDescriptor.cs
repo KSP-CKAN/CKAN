@@ -216,6 +216,14 @@ namespace CKAN
         [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> any_of;
 
+        public static readonly List<string> ForbiddenPropertyNames = new List<string>()
+        {
+            "name",
+            "version",
+            "min_version",
+            "max_version"
+        };
+
         public override bool WithinBounds(CkanModule otherModule)
         {
             return any_of?.Any(r => r.WithinBounds(otherModule))
