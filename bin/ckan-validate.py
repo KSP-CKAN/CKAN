@@ -33,7 +33,7 @@ def ckan_validates(ckan_paths):
                 except ValueError as error:
                     yield print(
                         "Failed! This error will be cryptic,\n",
-                        "but often a JSOqN or property error", error)
+                        "but often a JSON or property error", error)
         else:
             print(f"File '{ckan_path}' does not exist, skipping..")
 
@@ -45,6 +45,5 @@ def main(ckan_paths):
 if __name__ == "__main__":
     if len(argv) == 1: exit(print(f"Usage: {argv[0]} <.ckan files>"))
     else: exit(main(argv[1:]))
-
 
 
