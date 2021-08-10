@@ -131,16 +131,31 @@ namespace CKAN
                     }
                 }
             }
+            var othersMinusSelf = others.Where(m => m.identifier != module.identifier).Memoize();
             if (module.conflicts != null)
             {
                 // Skip self-conflicts (but catch other modules providing self)
-                var othersMinusSelf = others.Where(m => m.identifier != module.identifier).Memoize();
                 foreach (RelationshipDescriptor rel in module.conflicts)
                 {
                     // If any of the conflicts are present, fail
                     if (rel.MatchesAny(othersMinusSelf, null, null))
                     {
                         return false;
+                    }
+                }
+            }
+            // Check reverse conflicts so user isn't prompted to choose modules that will error out immediately
+            var selfArray = new CkanModule[] { module };
+            foreach (CkanModule other in othersMinusSelf)
+            {
+                if (other.conflicts != null)
+                {
+                    foreach (RelationshipDescriptor rel in other.conflicts)
+                    {
+                        if (rel.MatchesAny(selfArray, null, null))
+                        {
+                            return false;
+                        }
                     }
                 }
             }
