@@ -1,58 +1,50 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import os, sys
+from os.path import exists
+from sys import argv, exit
 
-import json
+from json import load
 from jsonschema import validate, ValidationError
 
-def main():
-    if len(sys.argv) == 1:
-        print 'Usage:'
-        print sys.argv[0] + ' <.ckan files>'
-        sys.exit(0)
-        
-    SCHEMA_PATH = "CKAN.schema"
-    if not os.path.exists(SCHEMA_PATH):
-        print 'Cannot find JSON schema at %s' % SCHEMA_PATH
-        SCHEMA_PATH = "../" + SCHEMA_PATH
-        if not os.path.exists(SCHEMA_PATH):
-            print 'Cannot find JSON schema at %s' % SCHEMA_PATH
-            sys.exit(1)
-        
-    schema = None
-        
-    with open(SCHEMA_PATH, 'r') as schema_file:
-        schema = json.load(schema_file)
-        
-    if schema == None:
-        print 'Could not parse JSON schema, exiting..'
-        sys.exit(1)
-        
-    files = sys.argv[1:]
-    error = 0
+def get_schema(schema_path = "CKAN.schema"):
+    if not exists(schema_path):
+        schema_path = f"../{schema_path}"
+        if not exists(schema_path):
+            return not print(f"Cannot find JSON schema in the usual places")
     
-    for ckan_path in files:
-        if not os.path.exists(ckan_path):
-            print 'File "%s" does not exist, skipping..' % ckan_path
-            continue
-        
-        with open(ckan_path, 'r') as ckan_file:
-            print 'Validating %s..' % ckan_path,
-            try:
-                validate(json.load(ckan_file), schema)
-            except ValidationError as e:
-                print 'Failed! See below for error description.'
-                print e
-                error = 1
-                continue
-            except ValueError as e:
-                print 'Failed! This error will be cryptic, but often a JSON or property error'
-                print e
-                error = 1
-                continue
-            print 'Success!'
+    with open(schema_path, 'r') as schema_file:
+        schema = load(schema_file)
+        if schema == None:
+            return print("Could not parse JSON schema, exiting..")
+        else:
+            return schema
 
-    sys.exit(error)
+def ckan_validates(ckan_paths):
+    for ckan_path in ckan_paths:
+        if exists(ckan_path):
+            with open(ckan_path, 'r') as ckan_file:
+                print(f"Validating {ckan_path}..")
+                try:
+                    validate(load(ckan_file), schema)
+                    yield not print(f"Success!")
+                except ValidationError as error:
+                    yield print(
+                        "Failed! See below for error description.\n", error)
+                except ValueError as error:
+                    yield print(
+                        "Failed! This error will be cryptic,\n",
+                        "but often a JSOqN or property error", error)
+        else:
+            print(f"File '{ckan_path}' does not exist, skipping..")
+
+def main(ckan_paths):
+    schema = get_schema()
+    if not schema: return 1
+    return all(ckan_validates(ckan_paths, schema))
 
 if __name__ == "__main__":
-    main()
+    if len(argv) == 1: exit(print(f"Usage: {argv[0]} <.ckan files>"))
+    else: exit(main(argv[1:]))
+
+
+
