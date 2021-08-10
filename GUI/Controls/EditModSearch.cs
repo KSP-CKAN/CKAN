@@ -267,7 +267,6 @@ namespace CKAN
             filterTimer?.Stop();
             if (!string.IsNullOrEmpty(FilterCombinedTextBox.Text))
             {
-                // Delay updating to improve typing performance on OS X and Linux
                 RunFilterUpdateTimer();
             }
             else
@@ -277,9 +276,9 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Start or restart a timer to update the filter after an interval since the last keypress.
-        /// On Mac OS X, this prevents the search field from locking up due to DataGridViews being
-        /// slow and key strokes being interpreted incorrectly when slowed down:
+        /// Start or reset a timer to allow multiple changes to the filter criteria before automatically
+		/// refreshing the display. Refresh may take longer than the time between key strokes,
+		/// which makes the UI seem unresponsive or buggy:
         /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
         /// </summary>
         private void RunFilterUpdateTimer()
@@ -289,13 +288,12 @@ namespace CKAN
                 filterTimer = new Timer();
                 filterTimer.Tick += OnFilterUpdateTimer;
                 filterTimer.Interval = 500;
-                filterTimer.Start();
             }
             else
             {
                 filterTimer.Stop();
-                filterTimer.Start();
             }
+            filterTimer.Start();
         }
 
         /// <summary>
