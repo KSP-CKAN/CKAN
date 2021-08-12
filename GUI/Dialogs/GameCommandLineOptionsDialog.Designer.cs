@@ -41,6 +41,8 @@ namespace CKAN.GUI
             this.AdditionalArguments.Location = new System.Drawing.Point(15, 25);
             this.AdditionalArguments.Name = "AdditionalArguments";
             this.AdditionalArguments.Size = new System.Drawing.Size(457, 20);
+            this.AdditionalArguments.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.AdditionalArguments.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.AdditionalArguments.TabIndex = 1;
             //
             // label1

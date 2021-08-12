@@ -132,6 +132,8 @@ namespace CKAN.GUI
             // addVersionToListTextBox
             //
             this.AddVersionToListTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.AddVersionToListTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.AddVersionToListTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.AddVersionToListTextBox.Location = new System.Drawing.Point(242, 211);
             this.AddVersionToListTextBox.Name = "addVersionToListTextBox";
             this.AddVersionToListTextBox.Size = new System.Drawing.Size(100, 15);
