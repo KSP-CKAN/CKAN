@@ -58,12 +58,22 @@ namespace CKAN
 
         public void SetSearches(List<ModSearch> newSearches)
         {
-            activeSearches = newSearches;
+            if (!SearchesEqual(activeSearches, newSearches))
+            {
+                activeSearches = newSearches;
+                
+                Main.Instance.configuration.DefaultSearches = activeSearches?.Select(s => s?.Combined ?? "").ToList()
+                    ?? new List<string>() { "" };
+                
+                ModFiltersUpdated?.Invoke(this);
+            }
+        }
 
-            Main.Instance.configuration.DefaultSearches = activeSearches?.Select(s => s?.Combined ?? "").ToList()
-                ?? new List<string>() { "" };
-
-            ModFiltersUpdated?.Invoke(this);
+        private static bool SearchesEqual(List<ModSearch> a, List<ModSearch> b)
+        {
+            return a == null ? b == null
+                 : b == null ? false
+                 : a.SequenceEqual(b);
         }
 
         private static string FilterName(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
