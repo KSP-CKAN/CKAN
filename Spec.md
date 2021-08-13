@@ -542,6 +542,20 @@ which are not in themselves mutually compatible enough to use the `"provides"` p
     ]
 ```
 
+(**v1.31**) Clients implementing version `v1.31` or later of the spec *must* support
+the `choice_help_text` property in a relationship. This string is presented to the user
+if they must be prompted to choose between two or more mods to satisfy the relationship.
+
+```yaml
+depends:
+  - name: VirtualIdentifier1
+    choice_help_text: Choose the HR option for high resolution
+  - any_of:
+    - name: ModA
+    - name: ModB
+    choice_help_text: Pick ModA if you prefer polka dots, ModB otherwise
+```
+
 ##### depends
 
 A list of mods which are *required* for the current mod to operate.

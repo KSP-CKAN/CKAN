@@ -22,12 +22,23 @@ namespace CKAN.NetKAN.Validators
                             {
                                 throw new Kraken("spec_version v1.26+ required for 'any_of'");
                             }
+                            foreach (string forbiddenPropertyName in AnyOfRelationshipDescriptor.ForbiddenPropertyNames)
+                            {
+                                if (rel.ContainsKey(forbiddenPropertyName))
+                                {
+                                    throw new Kraken($"{forbiddenPropertyName} is not valid in the same relationship as 'any_of'");
+                                }
+                            }
+                            if (rel.ContainsKey("choice_help_text") && metadata.SpecVersion < v1p31)
+                            {
+                                throw new Kraken("spec_version v1.31+ required for choice_help_text in same relationship as 'any_of'");
+                            }
                             foreach (JObject opt in rel["any_of"])
                             {
                                 string name = (string)opt["name"];
                                 if (!Identifier.ValidIdentifierPattern.IsMatch(name))
                                 {
-                                    throw new Kraken($"{name} in {relName} any_of is not a valid CKAN identifier");
+                                    throw new Kraken($"{name} in {relName} 'any_of' is not a valid CKAN identifier");
                                 }
                             }
                         }
@@ -54,5 +65,6 @@ namespace CKAN.NetKAN.Validators
             "supports"
         };
         private static readonly ModuleVersion v1p26 = new ModuleVersion("v1.26");
+        private static readonly ModuleVersion v1p31 = new ModuleVersion("v1.31");
     }
 }
