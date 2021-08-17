@@ -82,26 +82,6 @@ namespace CKAN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap arrow_forward {
-            get {
-                object obj = ResourceManager.GetObject("arrow_forward", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap arrow_upward {
-            get {
-                object obj = ResourceManager.GetObject("arrow_upward", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap backward {
             get {
                 object obj = ResourceManager.GetObject("backward", resourceCulture);
@@ -902,6 +882,12 @@ namespace CKAN.Properties {
         }
         internal static string EditLabelsToolTipHoldVersion {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipHoldVersion", resourceCulture)); }
+        }
+        internal static string EditLabelsToolTipMoveUp {
+            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipMoveUp", resourceCulture)); }
+        }
+        internal static string EditLabelsToolTipMoveDown {
+            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipMoveDown", resourceCulture)); }
         }
         internal static string MainLabelsUpdateMessage {
             get { return (string)(ResourceManager.GetObject("MainLabelsUpdateMessage", resourceCulture)); }

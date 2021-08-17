@@ -51,6 +51,8 @@ namespace CKAN
             this.SaveButton = new System.Windows.Forms.Button();
             this.CancelEditButton = new System.Windows.Forms.Button();
             this.DeleteButton = new System.Windows.Forms.Button();
+            this.MoveUpButton = new System.Windows.Forms.Button();
+            this.MoveDownButton = new System.Windows.Forms.Button();
             this.EditDetailsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -121,17 +123,45 @@ namespace CKAN
             this.EditDetailsPanel.Controls.Add(this.SaveButton);
             this.EditDetailsPanel.Controls.Add(this.CancelEditButton);
             this.EditDetailsPanel.Controls.Add(this.DeleteButton);
+            this.EditDetailsPanel.Controls.Add(this.MoveUpButton);
+            this.EditDetailsPanel.Controls.Add(this.MoveDownButton);
             this.EditDetailsPanel.Location = new System.Drawing.Point(135, 43);
             this.EditDetailsPanel.Name = "EditDetailsPanel";
             this.EditDetailsPanel.Size = new System.Drawing.Size(350, 350);
             this.EditDetailsPanel.TabIndex = 1;
             this.EditDetailsPanel.Visible = false;
             // 
+            // MoveUpButton
+            // 
+            this.MoveUpButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Left));
+            this.MoveUpButton.Location = new System.Drawing.Point(3, 0);
+            this.MoveUpButton.Name = "MoveUpButton";
+            this.MoveUpButton.Size = new System.Drawing.Size(18, 23);
+            this.MoveUpButton.TabIndex = 0;
+            this.MoveUpButton.Text = "▴";
+            this.MoveUpButton.UseVisualStyleBackColor = true;
+            this.MoveUpButton.Click += new System.EventHandler(this.MoveUpButton_Click);
+            resources.ApplyResources(this.MoveUpButton, "MoveUpButton");
+            // 
+            // MoveDownButton
+            // 
+            this.MoveDownButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Left));
+            this.MoveDownButton.Location = new System.Drawing.Point(3, 25);
+            this.MoveDownButton.Name = "MoveDownButton";
+            this.MoveDownButton.Size = new System.Drawing.Size(18, 23);
+            this.MoveDownButton.TabIndex = 0;
+            this.MoveDownButton.Text = "▾";
+            this.MoveDownButton.UseVisualStyleBackColor = true;
+            this.MoveDownButton.Click += new System.EventHandler(this.MoveDownButton_Click);
+            resources.ApplyResources(this.MoveDownButton, "MoveDownButton");
+            // 
             // NameLabel
             // 
             this.NameLabel.AutoSize = true;
             this.NameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.NameLabel.Location = new System.Drawing.Point(10, 13);
+            this.NameLabel.Location = new System.Drawing.Point(38, 13);
             this.NameLabel.Name = "NameLabel";
             this.NameLabel.Size = new System.Drawing.Size(75, 23);
             resources.ApplyResources(this.NameLabel, "NameLabel");
@@ -139,7 +169,7 @@ namespace CKAN
             // NameTextBox
             // 
             this.NameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.NameTextBox.Location = new System.Drawing.Point(90, 10);
+            this.NameTextBox.Location = new System.Drawing.Point(118, 10);
             this.NameTextBox.Name = "NameTextBox";
             this.NameTextBox.Size = new System.Drawing.Size(125, 23);
             resources.ApplyResources(this.NameTextBox, "NameTextBox");
@@ -148,7 +178,7 @@ namespace CKAN
             // 
             this.ColorLabel.AutoSize = true;
             this.ColorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.ColorLabel.Location = new System.Drawing.Point(10, 43);
+            this.ColorLabel.Location = new System.Drawing.Point(38, 43);
             this.ColorLabel.Name = "ColorLabel";
             this.ColorLabel.Size = new System.Drawing.Size(75, 23);
             resources.ApplyResources(this.ColorLabel, "ColorLabel");
@@ -158,7 +188,7 @@ namespace CKAN
             this.ColorButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
             this.ColorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ColorButton.Location = new System.Drawing.Point(90, 40);
+            this.ColorButton.Location = new System.Drawing.Point(118, 40);
             this.ColorButton.Name = "ColorButton";
             this.ColorButton.Size = new System.Drawing.Size(50, 20);
             this.ColorButton.UseVisualStyleBackColor = false;
@@ -169,7 +199,7 @@ namespace CKAN
             // 
             this.InstanceNameLabel.AutoSize = true;
             this.InstanceNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.InstanceNameLabel.Location = new System.Drawing.Point(10, 73);
+            this.InstanceNameLabel.Location = new System.Drawing.Point(38, 73);
             this.InstanceNameLabel.Name = "InstanceNameLabel";
             this.InstanceNameLabel.Size = new System.Drawing.Size(75, 23);
             resources.ApplyResources(this.InstanceNameLabel, "InstanceNameLabel");
@@ -178,7 +208,7 @@ namespace CKAN
             // 
             this.InstanceNameComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
             this.InstanceNameComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.InstanceNameComboBox.Location = new System.Drawing.Point(90, 70);
+            this.InstanceNameComboBox.Location = new System.Drawing.Point(118, 70);
             this.InstanceNameComboBox.Name = "InstanceNameComboBox";
             this.InstanceNameComboBox.Size = new System.Drawing.Size(125, 23);
             resources.ApplyResources(this.InstanceNameComboBox, "InstanceNameComboBox");
@@ -186,7 +216,7 @@ namespace CKAN
             // HideFromOtherFiltersCheckBox
             // 
             this.HideFromOtherFiltersCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.HideFromOtherFiltersCheckBox.Location = new System.Drawing.Point(90, 100);
+            this.HideFromOtherFiltersCheckBox.Location = new System.Drawing.Point(118, 100);
             this.HideFromOtherFiltersCheckBox.Name = "HideFromOtherFiltersCheckBox";
             this.HideFromOtherFiltersCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.HideFromOtherFiltersCheckBox, "HideFromOtherFiltersCheckBox");
@@ -194,7 +224,7 @@ namespace CKAN
             // NotifyOnChangesCheckBox
             // 
             this.NotifyOnChangesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.NotifyOnChangesCheckBox.Location = new System.Drawing.Point(90, 130);
+            this.NotifyOnChangesCheckBox.Location = new System.Drawing.Point(118, 130);
             this.NotifyOnChangesCheckBox.Name = "NotifyOnChangesCheckBox";
             this.NotifyOnChangesCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.NotifyOnChangesCheckBox, "NotifyOnChangesCheckBox");
@@ -202,7 +232,7 @@ namespace CKAN
             // RemoveOnChangesCheckBox
             // 
             this.RemoveOnChangesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.RemoveOnChangesCheckBox.Location = new System.Drawing.Point(90, 160);
+            this.RemoveOnChangesCheckBox.Location = new System.Drawing.Point(118, 160);
             this.RemoveOnChangesCheckBox.Name = "RemoveOnChangesCheckBox";
             this.RemoveOnChangesCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.RemoveOnChangesCheckBox, "RemoveOnChangesCheckBox");
@@ -210,7 +240,7 @@ namespace CKAN
             // AlertOnInstallCheckBox
             // 
             this.AlertOnInstallCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.AlertOnInstallCheckBox.Location = new System.Drawing.Point(90, 190);
+            this.AlertOnInstallCheckBox.Location = new System.Drawing.Point(118, 190);
             this.AlertOnInstallCheckBox.Name = "AlertOnInstallCheckBox";
             this.AlertOnInstallCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.AlertOnInstallCheckBox, "AlertOnInstallCheckBox");
@@ -218,7 +248,7 @@ namespace CKAN
             // RemoveOnInstallCheckBox
             // 
             this.RemoveOnInstallCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.RemoveOnInstallCheckBox.Location = new System.Drawing.Point(90, 220);
+            this.RemoveOnInstallCheckBox.Location = new System.Drawing.Point(118, 220);
             this.RemoveOnInstallCheckBox.Name = "RemoveOnInstallCheckBox";
             this.RemoveOnInstallCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.RemoveOnInstallCheckBox, "RemoveOnInstallCheckBox");
@@ -226,7 +256,7 @@ namespace CKAN
             // HoldVersionCheckBox
             // 
             this.HoldVersionCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.HoldVersionCheckBox.Location = new System.Drawing.Point(90, 250);
+            this.HoldVersionCheckBox.Location = new System.Drawing.Point(118, 250);
             this.HoldVersionCheckBox.Name = "HoldVersionCheckBox";
             this.HoldVersionCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.HoldVersionCheckBox, "HoldVersionCheckBox");
@@ -235,7 +265,7 @@ namespace CKAN
             // 
             this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
-            this.SaveButton.Location = new System.Drawing.Point(10, 320);
+            this.SaveButton.Location = new System.Drawing.Point(38, 320);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
             this.SaveButton.TabIndex = 0;
@@ -247,7 +277,7 @@ namespace CKAN
             // 
             this.CancelEditButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
-            this.CancelEditButton.Location = new System.Drawing.Point(90, 320);
+            this.CancelEditButton.Location = new System.Drawing.Point(118, 320);
             this.CancelEditButton.Name = "CancelEditButton";
             this.CancelEditButton.Size = new System.Drawing.Size(75, 23);
             this.CancelEditButton.TabIndex = 0;
@@ -259,7 +289,7 @@ namespace CKAN
             // 
             this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
-            this.DeleteButton.Location = new System.Drawing.Point(170, 320);
+            this.DeleteButton.Location = new System.Drawing.Point(198, 320);
             this.DeleteButton.Name = "DeleteButton";
             this.DeleteButton.Size = new System.Drawing.Size(75, 23);
             this.DeleteButton.TabIndex = 0;
@@ -323,5 +353,7 @@ namespace CKAN
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.Button CancelEditButton;
         private System.Windows.Forms.Button DeleteButton;
+        private System.Windows.Forms.Button MoveUpButton;
+        private System.Windows.Forms.Button MoveDownButton;
     }
 }
