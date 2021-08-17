@@ -36,7 +36,8 @@ namespace CKAN
             LabelSelectionTree.Nodes.Clear();
             var groups = this.labels.Labels
                 .GroupBy(l => l.InstanceName)
-                .OrderBy(g => g.Key);
+                .OrderBy(g => g.Key == null)
+                .ThenBy(g => g.Key);
             foreach (var group in groups)
             {
                 string groupName = string.IsNullOrEmpty(group.Key)
@@ -271,12 +272,6 @@ namespace CKAN
         {
             if (EditingValid(out errMsg))
             {
-                if (!labels.Labels.Contains(currentlyEditing))
-                {
-                    labels.Labels = labels.Labels
-                        .Concat(new ModuleLabel[] { currentlyEditing })
-                        .ToArray();
-                }
                 currentlyEditing.Name         = NameTextBox.Text;
                 currentlyEditing.Color        = ColorButton.BackColor;
                 currentlyEditing.InstanceName =
@@ -289,6 +284,14 @@ namespace CKAN
                 currentlyEditing.AlertOnInstall  = AlertOnInstallCheckBox.Checked;
                 currentlyEditing.RemoveOnInstall = RemoveOnInstallCheckBox.Checked;
                 currentlyEditing.HoldVersion     = HoldVersionCheckBox.Checked;
+                if (!labels.Labels.Contains(currentlyEditing))
+                {
+                    labels.Labels = labels.Labels
+                        .Concat(new ModuleLabel[] { currentlyEditing })
+                        .OrderBy(l => l.InstanceName == null)
+                        .ThenBy(l => l.InstanceName)
+                        .ToArray();
+                }
 
                 EditDetailsPanel.Visible = false;
                 currentlyEditing = null;
