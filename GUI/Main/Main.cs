@@ -675,6 +675,11 @@ namespace CKAN
             }
         }
 
+        private void userGuideToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Utilities.ProcessStartURL("https://github.com/KSP-CKAN/CKAN/wiki/User-guide");
+        }
+
         private void reportClientIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Utilities.ProcessStartURL("https://github.com/KSP-CKAN/CKAN/issues/new/choose");
