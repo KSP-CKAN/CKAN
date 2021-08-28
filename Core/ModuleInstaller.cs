@@ -514,7 +514,7 @@ namespace CKAN
                 else
                 {
                     files.AddRange(ModuleInstallDescriptor
-                        .DefaultInstallStanza(module.identifier)
+                        .DefaultInstallStanza(ksp.game, module.identifier)
                         .FindInstallableFiles(zipfile, ksp));
                 }
             }

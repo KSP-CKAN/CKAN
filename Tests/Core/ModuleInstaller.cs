@@ -9,6 +9,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.Games;
 using Tests.Core.Configuration;
 using Tests.Data;
 
@@ -73,13 +74,13 @@ namespace Tests.Core
             string filename = TestData.DogeCoinFlagZip();
             using (var zipfile = new ZipFile(filename))
             {
-                ModuleInstallDescriptor stanza = ModuleInstallDescriptor.DefaultInstallStanza("DogeCoinFlag");
+                ModuleInstallDescriptor stanza = ModuleInstallDescriptor.DefaultInstallStanza(new KerbalSpaceProgram(), "DogeCoinFlag");
 
                 Assert.AreEqual("GameData", stanza.install_to);
                 Assert.AreEqual("DogeCoinFlag", stanza.find);
 
                 // Same again, but screwing up the case (we see this *all the time*)
-                ModuleInstallDescriptor stanza2 = ModuleInstallDescriptor.DefaultInstallStanza("DogecoinFlag");
+                ModuleInstallDescriptor stanza2 = ModuleInstallDescriptor.DefaultInstallStanza(new KerbalSpaceProgram(), "DogecoinFlag");
 
                 Assert.AreEqual("GameData", stanza2.install_to);
                 Assert.AreEqual("DogecoinFlag", stanza2.find);
@@ -362,7 +363,7 @@ namespace Tests.Core
             using (var zipfile = new ZipFile(corrupt_dogezip))
             {
                 // GenerateDefault Install
-                ModuleInstallDescriptor.DefaultInstallStanza("DogeCoinFlag");
+                ModuleInstallDescriptor.DefaultInstallStanza(new KerbalSpaceProgram(), "DogeCoinFlag");
 
                 // FindInstallableFiles
                 CkanModule dogemod = TestData.DogeCoinFlag_101_module();

@@ -10,6 +10,7 @@ using Autofac;
 using log4net;
 using Newtonsoft.Json;
 using CKAN.Versioning;
+using CKAN.Games;
 
 namespace CKAN
 {
@@ -683,7 +684,7 @@ namespace CKAN
             return string.Format("{0} {1}", identifier, version);
         }
 
-        public string DescribeInstallStanzas()
+        public string DescribeInstallStanzas(IGame game)
         {
             List<string> descriptions = new List<string>();
             if (install != null)
@@ -695,7 +696,7 @@ namespace CKAN
             }
             else
             {
-                descriptions.Add(ModuleInstallDescriptor.DefaultInstallStanza(identifier).DescribeMatch());
+                descriptions.Add(ModuleInstallDescriptor.DefaultInstallStanza(game, identifier).DescribeMatch());
             }
             return string.Join(", ", descriptions);
         }

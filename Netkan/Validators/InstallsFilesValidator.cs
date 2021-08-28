@@ -3,6 +3,7 @@ using System.Linq;
 ﻿using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.Extensions;
+using CKAN.Games;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -29,7 +30,7 @@ namespace CKAN.NetKAN.Validators
                 {
                     throw new Kraken(string.Format(
                         "Module contains no files matching: {0}",
-                        mod.DescribeInstallStanzas()
+                        mod.DescribeInstallStanzas(new KerbalSpaceProgram())
                     ));
                 }
 
