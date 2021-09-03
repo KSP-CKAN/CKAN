@@ -318,7 +318,9 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
   <data name="MainWaitDone" xml:space="preserve"><value>Готово!</value></data>
   <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>Папка «{0}» не является папкой игры.</value></data>
   <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Папка «{0}» не существует.</value></data>
-  <data name="NewRepoDialogFailed" xml:space="preserve"><value>не удалось получить список.</value></data>
+  <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (НЕВЕРНО)</value></data>
+  <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (ЗАБЛОКИРОВАНО)</value></data>
+  <data name="NewRepoDialogFailed" xml:space="preserve"><value>Не удалось получить список.</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>Плагины CKAN (*.dll)|*.dll</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} файлов, {1}</value></data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Неверный путь: {0}</value></data>
@@ -388,22 +390,22 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
   <data name="TriStateToggleYesTooltip" xml:space="preserve"><value>Да</value></data>
   <data name="TriStateToggleBothTooltip" xml:space="preserve"><value>Да или Нет</value></data>
   <data name="TriStateToggleNoTooltip" xml:space="preserve"><value>Нет</value></data>
-  <data name="ModSearchDescriptionPrefix" xml:space="preserve"><value>desc:</value></data>
-  <data name="ModSearchLanguagePrefix" xml:space="preserve"><value>lang:</value></data>
-  <data name="ModSearchDependsPrefix" xml:space="preserve"><value>dep:</value></data>
-  <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>rec:</value></data>
-  <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>sug:</value></data>
-  <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>conf:</value></data>
-  <data name="ModSearchTagPrefix" xml:space="preserve"><value>tag:</value></data>
-  <data name="ModSearchLabelPrefix" xml:space="preserve"><value>label:</value></data>
-  <data name="ModSearchYesPrefix" xml:space="preserve"><value>is:</value></data>
-  <data name="ModSearchNoPrefix" xml:space="preserve"><value>not:</value></data>
-  <data name="ModSearchCompatibleSuffix" xml:space="preserve"><value>compatible</value></data>
-  <data name="ModSearchInstalledSuffix" xml:space="preserve"><value>installed</value></data>
-  <data name="ModSearchCachedSuffix" xml:space="preserve"><value>cached</value></data>
-  <data name="ModSearchNewlyCompatibleSuffix" xml:space="preserve"><value>newly-compatible</value></data>
-  <data name="ModSearchUpgradeableSuffix" xml:space="preserve"><value>upgradeable</value></data>
-  <data name="ModSearchReplaceableSuffix" xml:space="preserve"><value>replaceable</value></data>
+  <data name="ModSearchDescriptionPrefix" xml:space="preserve"><value>описание:</value></data>
+  <data name="ModSearchLanguagePrefix" xml:space="preserve"><value>язык:</value></data>
+  <data name="ModSearchDependsPrefix" xml:space="preserve"><value>зависимость:</value></data>
+  <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>рекомендуют:</value></data>
+  <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>предлагают:</value></data>
+  <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>конфликтуют:</value></data>
+  <data name="ModSearchTagPrefix" xml:space="preserve"><value>тег:</value></data>
+  <data name="ModSearchLabelPrefix" xml:space="preserve"><value>ярлык:</value></data>
+  <data name="ModSearchYesPrefix" xml:space="preserve"><value>есть:</value></data>
+  <data name="ModSearchNoPrefix" xml:space="preserve"><value>нет:</value></data>
+  <data name="ModSearchCompatibleSuffix" xml:space="preserve"><value>совместимые</value></data>
+  <data name="ModSearchInstalledSuffix" xml:space="preserve"><value>установленные</value></data>
+  <data name="ModSearchCachedSuffix" xml:space="preserve"><value>кэшированные</value></data>
+  <data name="ModSearchNewlyCompatibleSuffix" xml:space="preserve"><value>недавно-совместимые</value></data>
+  <data name="ModSearchUpgradeableSuffix" xml:space="preserve"><value>обновляемые</value></data>
+  <data name="ModSearchReplaceableSuffix" xml:space="preserve"><value>заменяемые</value></data>
   <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Раскрыть/закрыть поля расширенного поиска (Ctrl+Shift+F)</value></data>
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>Сложить результаты текущего и нового поисков</value></data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>Снимите выделение для удаления всех модификаций, выберите для очищения списка изменений</value></data>

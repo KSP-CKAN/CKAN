@@ -142,6 +142,6 @@
   <data name="ContentTabPage.Text" xml:space="preserve"><value>Содержимое</value></data>
   <data name="ContentsDownloadButton.Text" xml:space="preserve"><value>Загрузить</value></data>
   <data name="ContentsOpenButton.Text" xml:space="preserve"><value>Открыть ZIP</value></data>
-  <data name="NotCachedLabel.Text" xml:space="preserve"><value>Модификация не загружена, нажмите «Загрузить» для просмотра содержимого</value></data>
+  <data name="NotCachedLabel.Text" xml:space="preserve"><value>Модификация не загружена в кэш. Нажмите «Загрузить» для просмотра содержимого</value></data>
   <data name="AllModVersionsTabPage.Text" xml:space="preserve"><value>Версии</value></data>
 </root>
