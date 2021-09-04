@@ -118,6 +118,17 @@ namespace CKAN
             Util.HandleLinkClicked((sender as LinkLabel).Text, e);
         }
 
+        private void LinkLabel_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Apps:
+                    Util.LinkContextMenu((sender as LinkLabel).Text);
+                    e.Handled = true;
+                    break;
+            }
+        }
+
         private void UpdateModInfo(GUIMod gui_module)
         {
             CkanModule module = gui_module.ToModule();
@@ -254,6 +265,7 @@ namespace CKAN
                     Text     = link.ToString(),
                 };
                 llbl.LinkClicked += new LinkLabelLinkClickedEventHandler(LinkLabel_LinkClicked);
+                llbl.KeyDown += new KeyEventHandler(LinkLabel_KeyDown);
                 int row = MetaDataLowerLayoutPanel.RowCount;
                 MetaDataLowerLayoutPanel.Controls.Add(lbl,  0, row);
                 MetaDataLowerLayoutPanel.Controls.Add(llbl, 1, row);

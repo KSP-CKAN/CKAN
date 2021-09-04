@@ -17,5 +17,17 @@ namespace CKAN
             string url = (sender as LinkLabel).Text;
             Util.HandleLinkClicked(url, e);
         }
+
+        private void linkLabel_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Apps:
+                    Util.LinkContextMenu((sender as LinkLabel).Text);
+                    e.Handled = true;
+                    break;
+            }
+        }
+
     }
 }
