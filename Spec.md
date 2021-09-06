@@ -843,7 +843,11 @@ x_netkan_jenkins:
 
 ###### `#/ckan/http/:url`
 
-Indicates data should be fetched from a HTTP server, using the `:url` provided. For example: `#/ckan/http/https://ksp.marce.at/Home/DownloadMod?modId=2`.
+Indicates data should be fetched from a HTTP server, using the `:url` provided. For example:
+
+```yaml
+$kref: '#/ckan/http/https://mysite.com/download_my_mod'
+```
 
 When used, the following fields will be auto-filled if not already present:
 
