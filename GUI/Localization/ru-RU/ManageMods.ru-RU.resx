@@ -181,8 +181,8 @@
   <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Загрузки</value></data>
   <data name="Description.HeaderText" xml:space="preserve"><value>Описание</value></data>
   <data name="reinstallToolStripMenuItem.Text" xml:space="preserve"><value>Переустановить</value></data>
-  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>Загрузить</value></data>
-  <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve"><value>Очистить</value></data>
+  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>Загрузить в кэш без установки</value></data>
+  <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve"><value>Удалить из кэша</value></data>
   <data name="labelsToolStripMenuItem.Text" xml:space="preserve"><value>Ярлыки</value></data>
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve"><value>Изменить ярлыки...</value></data>
 </root>
