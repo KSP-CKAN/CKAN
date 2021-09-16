@@ -69,13 +69,17 @@ namespace CKAN.NetKAN.Transformers
                 {
                     Log.Info("Found internal AVC version file");
 
-                    var remoteUri = GetRemoteAvcUri(avc);
+                    var resourcesJson = (JObject)json["resources"];
+                    var remoteUri = resourcesJson?["remote-avc"] != null
+                        ? new Uri((string)resourcesJson["remote-avc"])
+                        : GetRemoteAvcUri(avc);
 
                     if (remoteUri != null)
                     {
-                        if (json["resources"] == null)
-                            json["resources"] = new JObject();
-                        var resourcesJson = (JObject)json["resources"];
+                        if (resourcesJson == null)
+                        {
+                            json["resources"] = resourcesJson = new JObject();
+                        }
                         resourcesJson.SafeAdd("remote-avc", remoteUri.OriginalString);
 
                         try
