@@ -14,6 +14,10 @@ namespace CKAN.NetKAN.Validators
                 foreach (JObject stanza in json["install"])
                 {
                     string install_to = (string)stanza["install_to"];
+                    if (string.IsNullOrEmpty(install_to))
+                    {
+                        throw new Kraken("install stanza missing `install_to`");
+                    }
                     if (metadata.SpecVersion < v1p2 && install_to.StartsWith("GameData/"))
                     {
                         throw new Kraken("spec_version v1.2+ required for GameData with path");

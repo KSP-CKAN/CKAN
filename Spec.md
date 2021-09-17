@@ -326,15 +326,14 @@ In addition, any number of optional directives *may* be provided:
 
 If no install sections are provided, a CKAN client *must* find the
 top-most directory in the archive that matches the module identifier,
-and install that with a target of `GameData`.
-
-A typical install directive only has `file` and `install_to` sections:
+and install that with a target of `GameData`. In other words, the
+default install section is:
 
 ```json
-    "install" : [
+    "install": [
         {
-            "file"       : "GameData/ExampleMod",
-            "install_to" : "GameData"
+            "find": "<identifier>",
+            "install_to": "GameData"
         }
     ]
 ```

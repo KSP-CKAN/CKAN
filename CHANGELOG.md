@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Clarify that downloading to cache does not install (#3400 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Don't include DLC in modpacks by default (#3417 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Set GNOME single window property (#3425 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Default install stanza multi-game support, catch missing install_to (#3441 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

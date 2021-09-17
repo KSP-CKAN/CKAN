@@ -211,12 +211,12 @@ namespace CKAN
         /// <returns>
         /// { "find": "ident", "install_to": "GameData" }
         /// </returns>
-        public static ModuleInstallDescriptor DefaultInstallStanza(string ident)
+        public static ModuleInstallDescriptor DefaultInstallStanza(IGame game, string ident)
         {
             return new ModuleInstallDescriptor()
             {
                 find       = ident,
-                install_to = "GameData",
+                install_to = game.PrimaryModDirectoryRelative,
             };
         }
 
