@@ -680,6 +680,11 @@ namespace CKAN
             Utilities.ProcessStartURL("https://github.com/KSP-CKAN/CKAN/wiki/User-guide");
         }
 
+        private void discordToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Utilities.ProcessStartURL("https://discord.gg/Mb4nXQD");
+        }
+
         private void reportClientIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Utilities.ProcessStartURL("https://github.com/KSP-CKAN/CKAN/issues/new/choose");
