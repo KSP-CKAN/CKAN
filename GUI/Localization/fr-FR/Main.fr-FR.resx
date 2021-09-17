@@ -150,6 +150,7 @@
   <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>Ligne de commande du jeu</value></data>
   <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Versions de jeu compatibles</value></data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Aide</value></data>
+  <data name="userGuideToolStripMenuItem.Text" xml:space="preserve"><value>Guide d'utilisation</value></data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>Signaler un problème avec le client CKAN</value></data>
   <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>Signaler un problème avec les métadonnées de mod</value></data>
   <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>À propos</value></data>

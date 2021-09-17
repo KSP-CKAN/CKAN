@@ -49,6 +49,8 @@
             this.GameCommandlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compatibleGameVersionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.userGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.discordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportClientIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportMetadataIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -262,12 +264,28 @@
             // helpToolStripMenuItem
             //
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.userGuideToolStripMenuItem,
+            this.discordToolStripMenuItem,
             this.reportClientIssueToolStripMenuItem,
             this.reportMetadataIssueToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(61, 29);
             resources.ApplyResources(this.helpToolStripMenuItem, "helpToolStripMenuItem");
+            //
+            // userGuideToolStripMenuItem
+            //
+            this.userGuideToolStripMenuItem.Name = "userGuideToolStripMenuItem";
+            this.userGuideToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
+            this.userGuideToolStripMenuItem.Click += new System.EventHandler(this.userGuideToolStripMenuItem_Click);
+            resources.ApplyResources(this.userGuideToolStripMenuItem, "userGuideToolStripMenuItem");
+            //
+            // discordToolStripMenuItem
+            //
+            this.discordToolStripMenuItem.Name = "discordToolStripMenuItem";
+            this.discordToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
+            this.discordToolStripMenuItem.Click += new System.EventHandler(this.discordToolStripMenuItem_Click);
+            resources.ApplyResources(this.discordToolStripMenuItem, "discordToolStripMenuItem");
             //
             // reportClientIssueToolStripMenuItem
             //
@@ -725,6 +743,8 @@
         private System.Windows.Forms.ToolStripMenuItem GameCommandlineToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem compatibleGameVersionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem userGuideToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem discordToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportClientIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportMetadataIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;

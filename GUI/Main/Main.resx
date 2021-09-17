@@ -150,6 +150,8 @@
   <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>Game command-line</value></data>
   <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Compatible game versions</value></data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Help</value></data>
+  <data name="userGuideToolStripMenuItem.Text" xml:space="preserve"><value>User guide</value></data>
+  <data name="discordToolStripMenuItem.Text" xml:space="preserve"><value>Discord</value></data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>Report an issue with the CKAN client</value></data>
   <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>Report an issue with mod metadata</value></data>
   <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>About</value></data>
