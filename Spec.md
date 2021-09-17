@@ -704,7 +704,7 @@ consumes `.netkan` files to produce `.ckan` files. `.netkan` files are a *strict
 
 ##### YAML Option
 
-A `.netkan` file may be in either JSON or YAML format. All examples shown below assume JSON, but the YAML equivalents will work the same way.
+A `.netkan` file may be in either JSON or YAML format. All examples shown below assume YAML, but the JSON equivalents will work the same way.
 
 Note that `#` is the comment character in YAML, so even if you choose YAML syntax, you still can't omit the quotes around a value that includes `#`, such as typical values of `$kref` and `$vref`:
 
@@ -790,10 +790,8 @@ Optionally, one of `asset_match` with `:filter_regexp` *or* `version_from_asset`
 
 An example `.netkan` excerpt:
 
-```json
-{
-    "$kref": "#/ckan/github/pjf/DogeCoinFlag/version_from_asset/^DogeCoinFlag-(?<version>.+).zip$"
-}
+```yaml
+$kref: '#/ckan/github/pjf/DogeCoinFlag/version_from_asset/^DogeCoinFlag-(?<version>.+).zip$'
 ```
 
 An `x_netkan_github` field may be provided to customize how the metadata is fetched from GitHub. It is an `object` with the following fields:
@@ -822,7 +820,7 @@ an `object` with the following fields:
    Specifies the type of build to use. Possible values are `"any"`, `"completed"`, `"failed"`, `"stable"`,
    `"successful"`, `"unstable"`, or `"unsuccessful"`. Many of these values do not make sense to use in practice but
    are provided for completeness.
-- `asset_match` (type: `string`, regex) (default: `"\\.zip$"`)<br/>
+- `asset_match` (type: `string`, regex) (default: `\.zip$`)<br/>
   Specifies a regex which selects which artifact to use by filename (case-insensitively). Not having exactly one
   matching asset is an error.
 - `use_filename_version` (type: `boolean`, default: `false`)<br/>
@@ -835,20 +833,21 @@ If any options are not present their default values are used.
 
 An example `.netkan` excerpt:
 
-```json
-{
-    "$kref": "#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/",
-    "x_netkan_jenkins": {
-        "build": "stable",
-        "asset_match": "\\.zip$",
-        "use_filename_version": false
-    }
-}
+```yaml
+$kref: '#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/'
+x_netkan_jenkins:
+  build: stable
+  asset_match: \.zip$
+  use_filename_version: false
 ```
 
 ###### `#/ckan/http/:url`
 
-Indicates data should be fetched from a HTTP server, using the `:url` provided. For example: `#/ckan/http/https://ksp.marce.at/Home/DownloadMod?modId=2`.
+Indicates data should be fetched from a HTTP server, using the `:url` provided. For example:
+
+```yaml
+$kref: '#/ckan/http/https://mysite.com/download_my_mod'
+```
 
 When used, the following fields will be auto-filled if not already present:
 
@@ -896,12 +895,10 @@ The following conditions apply:
 
 An example `.netkan` including all required fields for a valid metanetkan:
 
-```json
-{
-    "spec_version": 1,
-    "identifier": "AwesomeMod",
-    "$kref": "#/ckan/netkan/https://www.kspmods.example/AwesomeMod.netkan"
-}
+```yaml
+spec_version: 1,
+identifier: AwesomeMod
+$kref: '#/ckan/netkan/https://www.kspmods.example/AwesomeMod.netkan'
 ```
 
 ##### `$vref`
@@ -949,10 +946,8 @@ release.
 
 An example `.netkan` excerpt:
 
-```json
-{
-    "x_netkan_epoch": 1
-}
+```yaml
+x_netkan_epoch: 1
 ```
 
 ##### `x_netkan_allow_out_of_order`
@@ -966,10 +961,8 @@ of order version.
 
 An example `.netkan` excerpt:
 
-```json
-{
-    "x_netkan_allow_out_of_order": true
-}
+```yaml
+x_netkan_allow_out_of_order: true
 ```
 
 ##### `x_netkan_force_v`
@@ -982,10 +975,8 @@ field *only* contains the actual version string.
 
 An example `.netkan` excerpt:
 
-```json
-{
-    "x_netkan_force_v": true
-}
+```yaml
+x_netkan_force_v: true
 ```
 
 ##### `x_netkan_version_edit`
@@ -1008,15 +999,12 @@ the default values for the `replace` and `strict` fields are used.
 
 An example `.netkan` excerpt:
 
-```json
-{
-    "$kref": "#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/",
-    "x_netkan_version_edit": {
-        "find": "^[vV]?(?<version>.+)$",
-        "replace": "${version}",
-        "strict": true
-    }
-}
+```yaml
+$kref: '#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/'
+x_netkan_version_edit:
+  find: ^[vV]?(?<version>.+)$
+  replace: ${version}
+  strict: true
 ```
 
 ##### `x_netkan_override`
