@@ -124,7 +124,7 @@ namespace CKAN
 
             Util.Invoke(MetadataModuleNameTextBox, () => MetadataModuleNameTextBox.Text = module.name);
             UpdateTagsAndLabels(module);
-            Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
+            Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract.Replace("&", "&&"));
             Util.Invoke(MetadataModuleDescriptionTextBox, () =>
             {
                 MetadataModuleDescriptionTextBox.Text = module.description
