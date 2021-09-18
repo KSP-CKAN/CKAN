@@ -17,15 +17,17 @@ namespace CKAN
                 .Concat(manager.Instances.Keys).ToArray();
             LoadTree();
 
-            this.ToolTip.SetToolTip(NameTextBox, Properties.Resources.EditLabelsToolTipName);
-            this.ToolTip.SetToolTip(ColorButton, Properties.Resources.EditLabelsToolTipColor);
-            this.ToolTip.SetToolTip(InstanceNameComboBox, Properties.Resources.EditLabelsToolTipInstance);
-            this.ToolTip.SetToolTip(HideFromOtherFiltersCheckBox, Properties.Resources.EditLabelsToolTipHide);
-            this.ToolTip.SetToolTip(NotifyOnChangesCheckBox, Properties.Resources.EditLabelsToolTipNotifyOnChanges);
-            this.ToolTip.SetToolTip(RemoveOnChangesCheckBox, Properties.Resources.EditLabelsToolTipRemoveOnChanges);
-            this.ToolTip.SetToolTip(AlertOnInstallCheckBox, Properties.Resources.EditLabelsToolTipAlertOnInstall);
-            this.ToolTip.SetToolTip(RemoveOnInstallCheckBox, Properties.Resources.EditLabelsToolTipRemoveOnInstall);
-            this.ToolTip.SetToolTip(HoldVersionCheckBox, Properties.Resources.EditLabelsToolTipHoldVersion);
+            ToolTip.SetToolTip(NameTextBox, Properties.Resources.EditLabelsToolTipName);
+            ToolTip.SetToolTip(ColorButton, Properties.Resources.EditLabelsToolTipColor);
+            ToolTip.SetToolTip(InstanceNameComboBox, Properties.Resources.EditLabelsToolTipInstance);
+            ToolTip.SetToolTip(HideFromOtherFiltersCheckBox, Properties.Resources.EditLabelsToolTipHide);
+            ToolTip.SetToolTip(NotifyOnChangesCheckBox, Properties.Resources.EditLabelsToolTipNotifyOnChanges);
+            ToolTip.SetToolTip(RemoveOnChangesCheckBox, Properties.Resources.EditLabelsToolTipRemoveOnChanges);
+            ToolTip.SetToolTip(AlertOnInstallCheckBox, Properties.Resources.EditLabelsToolTipAlertOnInstall);
+            ToolTip.SetToolTip(RemoveOnInstallCheckBox, Properties.Resources.EditLabelsToolTipRemoveOnInstall);
+            ToolTip.SetToolTip(HoldVersionCheckBox, Properties.Resources.EditLabelsToolTipHoldVersion);
+            ToolTip.SetToolTip(MoveUpButton, Properties.Resources.EditLabelsToolTipMoveUp);
+            ToolTip.SetToolTip(MoveDownButton, Properties.Resources.EditLabelsToolTipMoveDown);
         }
 
         private void LoadTree()
@@ -34,7 +36,8 @@ namespace CKAN
             LabelSelectionTree.Nodes.Clear();
             var groups = this.labels.Labels
                 .GroupBy(l => l.InstanceName)
-                .OrderBy(g => g.Key);
+                .OrderBy(g => g.Key == null)
+                .ThenBy(g => g.Key);
             foreach (var group in groups)
             {
                 string groupName = string.IsNullOrEmpty(group.Key)
@@ -42,8 +45,7 @@ namespace CKAN
                     : group.Key;
                 LabelSelectionTree.Nodes.Add(new TreeNode(
                     groupName,
-                    group.OrderBy(mlbl => mlbl.Name)
-                        .Select(mlbl => new TreeNode(mlbl.Name)
+                    group.Select(mlbl => new TreeNode(mlbl.Name)
                         {
                             // Windows's TreeView has a bug where the node's visual
                             // width is based on the owning TreeView.Font rather
@@ -55,6 +57,16 @@ namespace CKAN
                         })
                         .ToArray()
                 ));
+            }
+            EnableDisableUpDownButtons();
+            if (currentlyEditing != null)
+            {
+                LabelSelectionTree.BeforeSelect -= LabelSelectionTree_BeforeSelect;
+                // Select the new node representing the label we're editing
+                LabelSelectionTree.SelectedNode = LabelSelectionTree.Nodes.Cast<TreeNode>()
+                    .SelectMany(nd => nd.Nodes.Cast<TreeNode>())
+                    .FirstOrDefault(nd => nd.Tag as ModuleLabel == currentlyEditing);
+                LabelSelectionTree.BeforeSelect += LabelSelectionTree_BeforeSelect;
             }
             LabelSelectionTree.ExpandAll();
             LabelSelectionTree.EndUpdate();
@@ -171,10 +183,68 @@ namespace CKAN
             HoldVersionCheckBox.Checked          = lbl.HoldVersion;
 
             DeleteButton.Enabled = labels.Labels.Contains(lbl);
+            EnableDisableUpDownButtons();
 
             EditDetailsPanel.Visible = true;
             EditDetailsPanel.BringToFront();
             NameTextBox.Focus();
+        }
+
+        private void EnableDisableUpDownButtons()
+        {
+            if (currentlyEditing == null)
+            {
+                MoveUpButton.Enabled = MoveDownButton.Enabled = false;
+            }
+            else
+            {
+                var group = labels.Labels
+                    .Where(lbl => lbl.InstanceName == currentlyEditing.InstanceName)
+                    .ToList();
+                int groupIndex = group.IndexOf(currentlyEditing);
+                MoveUpButton.Enabled   = groupIndex >  0;
+                MoveDownButton.Enabled = groupIndex >= 0 && groupIndex < group.Count - 1;
+            }
+        }
+
+        private void MoveUpButton_Click(object sender, EventArgs e)
+        {
+            if (currentlyEditing != null)
+            {
+                var group = labels.Labels
+                    .Where(lbl => lbl.InstanceName == currentlyEditing.InstanceName)
+                    .ToList();
+                int groupIndex = group.IndexOf(currentlyEditing);
+                if (groupIndex > 0)
+                {
+                    // Swap with previous node
+                    int mainIndex = Array.IndexOf(labels.Labels, currentlyEditing);
+                    int prevIndex = Array.IndexOf(labels.Labels, group[groupIndex - 1]);
+                    labels.Labels[mainIndex] = labels.Labels[prevIndex];
+                    labels.Labels[prevIndex] = currentlyEditing;
+                    LoadTree();
+                }
+            }
+        }
+
+        private void MoveDownButton_Click(object sender, EventArgs e)
+        {
+            if (currentlyEditing != null)
+            {
+                var group = labels.Labels
+                    .Where(lbl => lbl.InstanceName == currentlyEditing.InstanceName)
+                    .ToList();
+                int groupIndex = group.IndexOf(currentlyEditing);
+                if (groupIndex >= 0 && groupIndex < group.Count - 1)
+                {
+                    // Swap with next node
+                    int mainIndex = Array.IndexOf(labels.Labels, currentlyEditing);
+                    int nextIndex = Array.IndexOf(labels.Labels, group[groupIndex + 1]);
+                    labels.Labels[mainIndex] = labels.Labels[nextIndex];
+                    labels.Labels[nextIndex] = currentlyEditing;
+                    LoadTree();
+                }
+            }
         }
 
         private bool TryCloseEdit()
@@ -202,12 +272,6 @@ namespace CKAN
         {
             if (EditingValid(out errMsg))
             {
-                if (!labels.Labels.Contains(currentlyEditing))
-                {
-                    labels.Labels = labels.Labels
-                        .Concat(new ModuleLabel[] { currentlyEditing })
-                        .ToArray();
-                }
                 currentlyEditing.Name         = NameTextBox.Text;
                 currentlyEditing.Color        = ColorButton.BackColor;
                 currentlyEditing.InstanceName =
@@ -220,6 +284,14 @@ namespace CKAN
                 currentlyEditing.AlertOnInstall  = AlertOnInstallCheckBox.Checked;
                 currentlyEditing.RemoveOnInstall = RemoveOnInstallCheckBox.Checked;
                 currentlyEditing.HoldVersion     = HoldVersionCheckBox.Checked;
+                if (!labels.Labels.Contains(currentlyEditing))
+                {
+                    labels.Labels = labels.Labels
+                        .Concat(new ModuleLabel[] { currentlyEditing })
+                        .OrderBy(l => l.InstanceName == null)
+                        .ThenBy(l => l.InstanceName)
+                        .ToArray();
+                }
 
                 EditDetailsPanel.Visible = false;
                 currentlyEditing = null;

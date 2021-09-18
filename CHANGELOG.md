@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [CLI] Add versions table option to ckan show command (#3414 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Override provides prompt with relationship property, check first recommendation in any_of group (#3426, #3436 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Add user guide and Discord to GUI help menu (#3437 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Label ordering buttons (#3416 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

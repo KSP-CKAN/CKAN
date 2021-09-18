@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Drawing;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace CKAN
@@ -61,6 +62,15 @@ namespace CKAN
             {
                 return null;
             }
+        }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            // false < true
+            Labels = Labels.OrderBy(l => l.InstanceName == null)
+                           .ThenBy(l => l.InstanceName)
+                           .ToArray();
         }
 
         public bool Save(string path)

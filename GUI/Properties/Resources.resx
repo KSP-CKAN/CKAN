@@ -125,8 +125,6 @@
   <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="settings" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
-  <data name="CKANFileFilter" xml:space="preserve"><value>CKAN metadata (*.ckan)|*.ckan</value></data>
-  <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>Export Mod List</value></data>
   <data name="update" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\update.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="backward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\backward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="filter" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\filter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
@@ -137,11 +135,11 @@
   <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\info.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="smile" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\smile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="alert" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\alert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
-  <data name="arrow_forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
-  <data name="arrow_upward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\arrow_upward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="triToggleYes" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\triToggleYes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="triToggleNo" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\triToggleNo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="triToggleBoth" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\triToggleBoth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="CKANFileFilter" xml:space="preserve"><value>CKAN metadata (*.ckan)|*.ckan</value></data>
+  <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>Export Mod List</value></data>
   <data name="AboutDialogLabel2Text" xml:space="preserve"><value>Version {0}</value></data>
   <data name="BuildIDFilterDescription" xml:space="preserve"><value>Build metadata file</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Please enter a name for the new instance.</value></data>
@@ -384,6 +382,8 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve"><value>If checked, the change set screen will alert you if this mod is about to be installed</value></data>
   <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve"><value>If checked, modules will be removed from this label if they are installed</value></data>
   <data name="EditLabelsToolTipHoldVersion" xml:space="preserve"><value>If checked, modules will not be upgraded</value></data>
+  <data name="EditLabelsToolTipMoveUp" xml:space="preserve"><value>Move up</value></data>
+  <data name="EditLabelsToolTipMoveDown" xml:space="preserve"><value>Move down</value></data>
   <data name="MainLabelsUpdateMessage" xml:space="preserve"><value>Some of your watched mods have updated:
 
 {0}</value></data>
