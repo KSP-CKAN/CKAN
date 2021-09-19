@@ -75,6 +75,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
+        /// Representation of Apps for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo Apps = new ConsoleKeyInfo(
+            (System.Char)0, ConsoleKey.Applications, false, false, false
+        );
+
+        /// <summary>
         /// Representation of down arrow for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo DownArrow = new ConsoleKeyInfo(

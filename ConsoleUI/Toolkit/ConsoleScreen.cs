@@ -18,7 +18,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 "F10", MenuTip(),
                 () => mainMenu != null
             );
-            AddBinding(Keys.F10, (object sender, ConsoleTheme theme) => {
+            AddBinding(new ConsoleKeyInfo[] {Keys.F10, Keys.Apps}, (object sender, ConsoleTheme theme) => {
                 bool val = true;
                 if (mainMenu != null) {
                     DrawSelectedHamburger(theme);

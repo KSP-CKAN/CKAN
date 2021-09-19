@@ -76,6 +76,18 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         /// <summary>
+        /// Add custom key bindings
+        /// </summary>
+        /// <param name="keys">Keys to bind</param>
+        /// <param name="a">Action to bind to key</param>
+        public void AddBinding(IEnumerable<ConsoleKeyInfo> keys, KeyAction a)
+        {
+            foreach (ConsoleKeyInfo k in keys) {
+                AddBinding(k, a);
+            }
+        }
+
+        /// <summary>
         /// Add a screen tip to show in the FooterBg
         /// </summary>
         /// <param name="key">User readable description of the key</param>
@@ -247,7 +259,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 } while (!objects[focusIndex].Focusable());
             }
         }
-        
+
         private bool done = false;
 
         private List<ScreenObject> objects    = new List<ScreenObject>();
