@@ -38,6 +38,16 @@ namespace CKAN
             return yesNoDialog.ShowYesNoDialog(this, text, yesText, noText) == DialogResult.Yes;
         }
 
+        /// <summary>
+        /// Show a yes/no dialog with a "don't show again" checkbox
+        /// </summary>
+        /// <returns>A tuple of the dialog result and a bool indicating whether
+        /// the suppress-checkbox has been checked (true)</returns>
+        public Tuple<DialogResult, bool> SuppressableYesNoDialog(string text, string suppressText, string yesText = null, string noText = null)
+        {
+            return yesNoDialog.ShowSuppressableYesNoDialog(this, text, suppressText, yesText, noText);
+        }
+
         public int SelectionDialog(string message, params object[] args)
         {
             return selectionDialog.ShowSelectionDialog(message, args);

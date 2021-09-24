@@ -192,6 +192,7 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>Some installed modules are incompatible! It might not be safe to launch the game. Really launch?
 
 {0}</value></data>
+  <data name="MainLaunchDontShow" xml:space="preserve"><value>Don't show this again for these mods on {0} {1}</value></data>
   <data name="MainLaunch" xml:space="preserve"><value>Launch</value></data>
   <data name="MainLaunchFailed" xml:space="preserve"><value>Couldn't start game.
 

@@ -13,6 +13,7 @@ using log4net;
 using Autofac;
 
 using CKAN.Extensions;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -717,19 +718,35 @@ namespace CKAN
                 return;
 
             var registry = RegistryManager.Instance(CurrentInstance).registry;
-            var incomp   = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria())
-                .Where(m => !m.Module.IsDLC).ToList();
+
+            var suppressedIdentifiers = CurrentInstance.GetSuppressedCompatWarningIdentifiers;
+            var incomp = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria())
+                .Where(m => !m.Module.IsDLC && !suppressedIdentifiers.Contains(m.identifier))
+                .ToList();
             if (incomp.Any())
             {
                 // Warn that it might not be safe to run Game with incompatible modules installed
                 string incompatDescrip = incomp
                     .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(CurrentInstance.game, m.Module)})")
                     .Aggregate((a, b) => $"{a}{Environment.NewLine}{b}");
-                if (!YesNoDialog(string.Format(Properties.Resources.MainLaunchWithIncompatible, incompatDescrip),
+                var ver = CurrentInstance.Version();
+                var result = SuppressableYesNoDialog(
+                    string.Format(Properties.Resources.MainLaunchWithIncompatible, incompatDescrip),
+                    string.Format(Properties.Resources.MainLaunchDontShow,
+                        CurrentInstance.game.ShortName,
+                        new GameVersion(ver.Major, ver.Minor, ver.Patch)),
                     Properties.Resources.MainLaunch,
-                    Properties.Resources.MainGoBack))
+                    Properties.Resources.MainGoBack
+                );
+                if (result.Item1 != DialogResult.Yes)
                 {
                     return;
+                }
+                else if (result.Item2)
+                {
+                    CurrentInstance.AddSuppressedCompatWarningIdentifiers(
+                        incomp.Select(m => m.identifier).ToHashSet()
+                    );
                 }
             }
 

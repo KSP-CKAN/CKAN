@@ -132,6 +132,10 @@ namespace CKAN
             log.InfoFormat("Initialised {0}", CkanDir());
         }
 
+        #endregion
+
+        #region Settings
+
         public void SetCompatibleVersions(List<GameVersion> compatibleVersions)
         {
             this._compatibleVersions = compatibleVersions.Distinct().ToList();
@@ -177,6 +181,19 @@ namespace CKAN
         {
             return new List<GameVersion>(this._compatibleVersions);
         }
+
+        public HashSet<string> GetSuppressedCompatWarningIdentifiers =>
+            SuppressedCompatWarningIdentifiers.LoadFrom(Version(), SuppressedCompatWarningIdentifiersFile).Identifiers;
+
+        public void AddSuppressedCompatWarningIdentifiers(HashSet<string> idents)
+        {
+            var scwi = SuppressedCompatWarningIdentifiers.LoadFrom(Version(), SuppressedCompatWarningIdentifiersFile);
+            scwi.Identifiers.UnionWith(idents);
+            scwi.SaveTo(SuppressedCompatWarningIdentifiersFile);
+        }
+
+        private string SuppressedCompatWarningIdentifiersFile =>
+            Path.Combine(CkanDir(), "suppressed_compat_warning_identifiers.json");
 
         #endregion
 
