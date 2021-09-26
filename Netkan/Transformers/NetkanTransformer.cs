@@ -43,6 +43,7 @@ namespace CKAN.NetKAN.Transformers
                 new AvcKrefTransformer(http, ghApi),
                 new InternalCkanTransformer(http, moduleService),
                 new AvcTransformer(http, moduleService, ghApi),
+                new StagingLinksTransformer(),
                 new LocalizationsTransformer(http, moduleService),
                 new VersionEditTransformer(),
                 new ForcedVTransformer(),
