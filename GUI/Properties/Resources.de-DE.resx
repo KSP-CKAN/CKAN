@@ -173,6 +173,7 @@ Versuche {2} aus {3} zu verschieben und CKAN neu zu starten.</value></data>
 {0}</value>
   </data>
   <data name="MainLaunch" xml:space="preserve"><value>Starten</value></data>
+  <data name="MainLaunchDontShow" xml:space="preserve"><value>Für diese Mods und {0} {1} nicht mehr anzeigen</value></data>
   <data name="MainLaunchFailed" xml:space="preserve">
     <value>Das Spiel konnte nicht gestartet werden.
 
