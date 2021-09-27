@@ -617,7 +617,7 @@ are described. Unless specified otherwise, these are URLs:
 - `curse` :  (**v1.20**) The mod on Curse.
 - `manual` : The mod's manual, if it exists.
 - `metanetkan` :  (**v1.27**) URL of the module's remote hosted netkan
-- `remote-avc` : URL of remote version file
+- `remote-avc` : URL of remote version file. If set in the netkan file, will be used to find the online copy of the version file. Otherwise the `URL` property from the internal version file will be assigned to this field and used instead.
 - `store`:  (**v1.28**) URL where you can purchase a DLC
 - `steamstore`:  (**v1.28**) URL where you can purchase a DLC on Steam
 
