@@ -172,6 +172,7 @@ Essayez de déplacer {2} en dehors de {3} et redémarrez CKAN.</value></data>
 
 {0}</value></data>
   <data name="MainLaunch" xml:space="preserve"><value>Lancement</value></data>
+  <data name="MainLaunchDontShow" xml:space="preserve"><value>Ne plus demander pour ces mods sur {0} version {1}</value></data>
   <data name="MainLaunchFailed" xml:space="preserve"><value>Impossible de démarrer le jeu.
 
 {0}</value></data>
