@@ -121,6 +121,7 @@
     <Compile Include="Transformers\PropertySortTransformer.cs" />
     <Compile Include="Transformers\SpacedockTransformer.cs" />
     <Compile Include="Transformers\StagingTransformer.cs" />
+    <Compile Include="Transformers\StagingLinksTransformer.cs" />
     <Compile Include="Transformers\StripNetkanMetadataTransformer.cs" />
     <Compile Include="Transformers\VersionEditTransformer.cs" />
     <Compile Include="Transformers\VersionedOverrideTransformer.cs" />

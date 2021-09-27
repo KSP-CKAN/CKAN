@@ -28,6 +28,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Allow YAML for human-edited metadata (YAMLKAN) (#3367 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Fill more info from GitHub for SpaceDock mods (#3390 by: HebaruSan; reviewed: DasSkelett)
 - [Spec] YAMLize netkan spec (#3438 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Append resource links to staging PRs (#3454 by: HebaruSan; reviewed: techman83)
 
 ## v1.30.4 (Hubble)
 
