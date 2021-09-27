@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Set GNOME single window property (#3425 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Default install stanza multi-game support, catch missing install_to (#3441 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Escape ampersands in mod info abstract label (#3429 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Don't prompt user to choose conflicting modules (#3434 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
