@@ -52,6 +52,17 @@ jobs:
         run: ./build --configuration=${{ matrix.configuration}}
       - name: Run tests
         run: xvfb-run ./build test+only --configuration=${{ matrix.configuration }} --where="Category!=FlakyNetwork"
+      - name: Run inflator container smoke test
+        run: |
+          cd _build
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sh get-docker.sh
+          docker build --tag inflator --file ../Dockerfile.netkan .
+          docker run --rm --name inflator --entrypoint /bin/bash inflator -c "
+            curl -O https://raw.githubusercontent.com/KSP-CKAN/NetKAN/master/NetKAN/ZeroMiniAVC.netkan && \
+            mono netkan.exe ZeroMiniAVC.netkan
+          "
+        if: matrix.configuration == 'release' && ( matrix.mono == '6.8' || matrix.mono == 'latest' )
 
       - name: Upload ckan.exe artifact
         uses: actions/upload-artifact@v2

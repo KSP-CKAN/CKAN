@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Fill more info from GitHub for SpaceDock mods (#3390 by: HebaruSan; reviewed: DasSkelett)
 - [Spec] YAMLize netkan spec (#3438 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Append resource links to staging PRs (#3454 by: HebaruSan; reviewed: techman83)
+- [Infra] Remove expired Let's Encrypt root certificate from Mono containers (#3457 by: DasSkelett; reviewed: HebaruSan)
 
 ## v1.30.4 (Hubble)
 
