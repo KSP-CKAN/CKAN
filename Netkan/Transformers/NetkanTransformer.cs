@@ -43,11 +43,11 @@ namespace CKAN.NetKAN.Transformers
                 new AvcKrefTransformer(http, ghApi),
                 new InternalCkanTransformer(http, moduleService),
                 new AvcTransformer(http, moduleService, ghApi),
-                new StagingLinksTransformer(),
                 new LocalizationsTransformer(http, moduleService),
                 new VersionEditTransformer(),
                 new ForcedVTransformer(),
                 new EpochTransformer(),
+                new StagingLinksTransformer(),
                 // This is the "default" VersionedOverrideTransformer for compatibility with overrides that don't
                 // specify a before or after property.
                 new VersionedOverrideTransformer(before: new string[] { null }, after: new string[] { null }),
