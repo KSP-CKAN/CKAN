@@ -413,7 +413,8 @@ namespace CKAN
         {
             foreach (InstallableFile file in files)
             {
-                if (File.Exists(file.destination)
+                if (!file.source.IsDirectory
+                    && File.Exists(file.destination)
                     && registry.FileOwner(ksp.ToRelativeGameDir(file.destination)) == null)
                 {
                     log.DebugFormat("Comparing {0}", file.destination);
