@@ -252,6 +252,7 @@ namespace CKAN.ConsoleUI {
                 int h    = Math.Min(11, numDeps + numConfs + 2);
                 const int lblW = 16;
                 int nameW = midL - 2 - lblW - 2;
+                int depsH = (h - 2) * numDeps / (numDeps + numConfs);
 
                 AddObject(new ConsoleFrame(
                     1, top, midL, top + h - 1,
@@ -267,7 +268,7 @@ namespace CKAN.ConsoleUI {
                         th => th.DimLabelFg
                     ));
                     ConsoleTextBox tb = new ConsoleTextBox(
-                        3 + lblW, top + 1, midL - 2, top + 1 + numDeps - 1, false,
+                        3 + lblW, top + 1, midL - 2, top + 1 + depsH - 1, false,
                         TextAlign.Left,
                         th => th.MainBg,
                         th => th.LabelFg
@@ -284,13 +285,13 @@ namespace CKAN.ConsoleUI {
                 }
                 if (numConfs > 0) {
                     AddObject(new ConsoleLabel(
-                        3, top + 1 + numDeps, 3 + lblW - 1,
+                        3, top + 1 + depsH, 3 + lblW - 1,
                         () => $"Conflicts ({numConfs}):",
                         null,
                         th => th.DimLabelFg
                     ));
                     ConsoleTextBox tb = new ConsoleTextBox(
-                        3 + lblW, top + 1 + numDeps, midL - 2, top + h - 2, false,
+                        3 + lblW, top + 1 + depsH, midL - 2, top + h - 2, false,
                         TextAlign.Left,
                         th => th.MainBg,
                         th => th.LabelFg

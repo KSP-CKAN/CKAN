@@ -21,11 +21,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </returns>
         public static int ConvertCoord(int val, int max)
         {
-            if (val >= 0) {
-                return val;
-            } else {
-                return max + val - 1;
-            }
+            return val >= 0
+                ? Math.Min(max - 1, val)
+                : Math.Max(0, max - 1 + val);
         }
 
         /// <summary>
