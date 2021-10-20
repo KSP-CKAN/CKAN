@@ -17,7 +17,6 @@ namespace CKAN.NetKAN.Sources.Spacedock
         [JsonProperty] public string source_code;
         [JsonProperty] public int default_version_id;
         [JsonProperty] public SpacedockUser[] shared_authors;
-        [JsonConverter(typeof(SDVersion.JsonConvertFromRelativeSdUri))]
         public Uri background;
 
         public SDVersion Latest()
@@ -46,7 +45,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
         /// <returns>The home.</returns>
         public Uri GetPageUrl()
         {
-            return SpacedockApi.ExpandPath(string.Format("/mod/{0}/{1}", id, name));
+            return new Uri($"{SpacedockApi.SpacedockBase}mod/{id}/{name.Replace(" ", "%20")}");
         }
 
         public override string ToString()

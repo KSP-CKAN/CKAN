@@ -33,7 +33,10 @@ namespace Tests.NetKAN
         // GH #816: Ensure URLs with & are encoded correctly.
         public string SD_URL_encode_816(string path)
         {
-            return SpacedockApi.ExpandPath(path).OriginalString;
+            return SpacedockMod.FromJson(string.Format(
+                @"{{""name"":""Mod"",""id"":69420,""game"":""Kerbal Space Program"",""game_id"":3102,""short_description"":""A mod"",""description"":""A mod"",""downloads"":0,""followers"":0,""author"":""linuxgurugamer"",""default_version_id"":1,""shared_authors"":[],""background"":null,""bg_offset_y"":null,""license"":""MIT"",""website"":null,""donations"":null,""source_code"":null,""url"":""/mod/69420/Mod"",""versions"":[{{""friendly_version"":""1"",""game_version"":""1.12.2"",""id"":1,""created"":""2021-07-16T20:46:12.309009+00:00"",""download_path"":""{0}"",""changelog"":"""",""downloads"":0}}]}}",
+                path
+            )).versions[0].download_path.OriginalString;
         }
 
         [Test]
