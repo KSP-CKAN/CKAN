@@ -69,31 +69,5 @@ namespace CKAN.NetKAN.Sources.Spacedock
                 throw new NotImplementedException();
             }
         }
-
-        /// <summary>
-        /// A simple helper class to prepend SpaceDock URLs.
-        /// </summary>
-        internal class JsonConvertFromRelativeSdUri : JsonConverter
-        {
-            public override object ReadJson(
-                JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer
-            )
-            {
-                if (reader.Value != null)
-                    return SpacedockApi.ExpandPath(reader.Value.ToString());
-                return null;
-
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override bool CanConvert(Type objectType)
-            {
-                throw new NotImplementedException();
-            }
-        }
     }
 }
