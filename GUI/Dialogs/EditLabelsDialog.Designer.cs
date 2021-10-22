@@ -190,7 +190,7 @@ namespace CKAN
             this.ColorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ColorButton.Location = new System.Drawing.Point(118, 40);
             this.ColorButton.Name = "ColorButton";
-            this.ColorButton.Size = new System.Drawing.Size(50, 20);
+            this.ColorButton.Size = new System.Drawing.Size(80, 20);
             this.ColorButton.UseVisualStyleBackColor = false;
             this.ColorButton.Click += new System.EventHandler(this.ColorButton_Click);
             resources.ApplyResources(this.ColorButton, "ColorButton");

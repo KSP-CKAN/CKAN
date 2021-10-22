@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Don't prompt user to choose conflicting modules (#3434 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Don't prompt to overwrite dirs (#3464 by: HebaruSan; reviewed: DasSkelett)
 - [ConsoleUI] Keep dependencies in the box in ConsoleUI (#3459 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] French translation bits in label dialog (#3465 by: vinix38; reviewed: HebaruSan)
 
 ### Internal
 
