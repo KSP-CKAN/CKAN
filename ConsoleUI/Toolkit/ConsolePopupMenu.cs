@@ -76,6 +76,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                         break;
                     case ConsoleKey.F10:
                     case ConsoleKey.Escape:
+                    case ConsoleKey.Applications:
                         done = true;
                         break;
                 }

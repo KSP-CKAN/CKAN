@@ -87,6 +87,7 @@ namespace CKAN
             this.licenseLinkLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.licenseLinkLabel.UseCompatibleTextRendering = true;
             this.licenseLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+            this.licenseLinkLabel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.linkLabel_KeyDown);
             //
             // authorsLabel
             //
@@ -108,6 +109,7 @@ namespace CKAN
             this.authorsLinkLabel.TabStop = true;
             this.authorsLinkLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.authorsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+            this.authorsLinkLabel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.linkLabel_KeyDown);
             //
             // sourceLabel
             //
@@ -129,6 +131,7 @@ namespace CKAN
             this.sourceLinkLabel.TabStop = true;
             this.sourceLinkLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.sourceLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+            this.sourceLinkLabel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.linkLabel_KeyDown);
             //
             // forumthreadLabel
             //
@@ -151,6 +154,7 @@ namespace CKAN
             this.forumthreadLinkLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.forumthreadLinkLabel.UseCompatibleTextRendering = true;
             this.forumthreadLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+            this.forumthreadLinkLabel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.linkLabel_KeyDown);
             //
             // homepageLabel
             //
@@ -172,6 +176,7 @@ namespace CKAN
             this.homepageLinkLabel.TabStop = true;
             this.homepageLinkLabel.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.homepageLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+            this.homepageLinkLabel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.linkLabel_KeyDown);
             //
             // AboutDialog
             //

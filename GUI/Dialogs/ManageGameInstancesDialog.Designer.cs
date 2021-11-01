@@ -77,6 +77,7 @@
             this.GameInstancesListView.SelectedIndexChanged += new System.EventHandler(this.GameInstancesListView_SelectedIndexChanged);
             this.GameInstancesListView.DoubleClick += new System.EventHandler(this.GameInstancesListView_DoubleClick);
             this.GameInstancesListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.GameInstancesListView_Click);
+            this.GameInstancesListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameInstancesListView_KeyDown);
             //
             // InstanceListContextMenuStrip
             //

@@ -232,6 +232,17 @@ namespace CKAN
             }
         }
 
+        private void GameInstancesListView_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Apps:
+                    InstanceListContextMenuStrip.Show(Cursor.Position);
+                    e.Handled = true;
+                    break;
+            }
+        }
+
         private void OpenDirectoryMenuItem_Click(object sender, EventArgs e)
         {
             string path = _manager.Instances[(string) GameInstancesListView.SelectedItems[0].Tag].GameDir();

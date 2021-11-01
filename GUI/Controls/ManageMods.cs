@@ -643,6 +643,11 @@ namespace CKAN
                         }
                     }
                     break;
+
+                case Keys.Apps:
+                    ShowModContextMenu();
+                    e.Handled = true;
+                    break;
             }
         }
 
@@ -908,23 +913,31 @@ namespace CKAN
         {
             var rowIndex = ModGrid.HitTest(e.X, e.Y).RowIndex;
 
-            // Ignore header column to prevent errors.
+            // Ignore header column to prevent errors
             if (rowIndex != -1 && e.Button == MouseButtons.Right)
             {
-                // Detect the clicked cell and select the row.
+                // Detect the clicked cell and select the row
                 ModGrid.ClearSelection();
                 ModGrid.Rows[rowIndex].Selected = true;
 
-                // Show the context menu.
-                ModListContextMenuStrip.Show(ModGrid, new Point(e.X, e.Y));
+                // Show the context menu
+                ShowModContextMenu();
+            }
+        }
 
-                // Set the menu options.
-                var guiMod = (GUIMod)ModGrid.Rows[rowIndex].Tag;
-
+        private bool ShowModContextMenu()
+        {
+            var guiMod = SelectedModule;
+            if (guiMod != null)
+            {
+                ModListContextMenuStrip.Show(Cursor.Position);
+                // Set the menu options
                 downloadContentsToolStripMenuItem.Enabled = !guiMod.ToModule().IsMetapackage &&  !guiMod.IsCached;
                 purgeContentsToolStripMenuItem.Enabled = !guiMod.ToModule().IsMetapackage && guiMod.IsCached;
                 reinstallToolStripMenuItem.Enabled = guiMod.IsInstalled && !guiMod.IsAutodetected;
+                return true;
             }
+            return false;
         }
 
         private void ModList_Resize(object sender, EventArgs e)
