@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(YesNoDialog));
             this.panel1 = new System.Windows.Forms.Panel();
             this.DescriptionLabel = new TransparentTextBox();
+            this.SuppressCheckbox = new System.Windows.Forms.CheckBox();
             this.YesButton = new System.Windows.Forms.Button();
             this.NoButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
@@ -63,6 +64,18 @@
             this.DescriptionLabel.BorderStyle = System.Windows.Forms.BorderStyle.None;
             resources.ApplyResources(this.DescriptionLabel, "DescriptionLabel");
             // 
+            // SuppressCheckbox
+            // 
+            this.SuppressCheckbox.AutoSize = false;
+            this.SuppressCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.SuppressCheckbox.Location = new System.Drawing.Point(13, 80);
+            this.SuppressCheckbox.Name = "SuppressCheckbox";
+            this.SuppressCheckbox.Size = new System.Drawing.Size(225, 50);
+            this.SuppressCheckbox.TabIndex = 1;
+            this.SuppressCheckbox.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.SuppressCheckbox, "SuppressCheckbox");
+            // 
             // YesButton
             // 
             this.YesButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
@@ -71,7 +84,7 @@
             this.YesButton.Location = new System.Drawing.Point(250, 92);
             this.YesButton.Name = "YesButton";
             this.YesButton.Size = new System.Drawing.Size(75, 23);
-            this.YesButton.TabIndex = 1;
+            this.YesButton.TabIndex = 2;
             this.YesButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.YesButton, "YesButton");
             // 
@@ -83,7 +96,7 @@
             this.NoButton.Location = new System.Drawing.Point(331, 92);
             this.NoButton.Name = "NoButton";
             this.NoButton.Size = new System.Drawing.Size(75, 23);
-            this.NoButton.TabIndex = 2;
+            this.NoButton.TabIndex = 3;
             this.NoButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.NoButton, "NoButton");
             // 
@@ -92,6 +105,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(418, 127);
+            this.Controls.Add(this.SuppressCheckbox);
             this.Controls.Add(this.NoButton);
             this.Controls.Add(this.YesButton);
             this.Controls.Add(this.panel1);
@@ -109,6 +123,7 @@
 
         private System.Windows.Forms.Panel panel1;
         private TransparentTextBox DescriptionLabel;
+        private System.Windows.Forms.CheckBox SuppressCheckbox;
         private System.Windows.Forms.Button YesButton;
         private System.Windows.Forms.Button NoButton;
     }

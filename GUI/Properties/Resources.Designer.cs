@@ -408,6 +408,9 @@ namespace CKAN.Properties {
         internal static string MainLaunchWithIncompatible {
             get { return (string)(ResourceManager.GetObject("MainLaunchWithIncompatible", resourceCulture)); }
         }
+        internal static string MainLaunchDontShow {
+            get { return (string)(ResourceManager.GetObject("MainLaunchDontShow", resourceCulture)); }
+        }
         internal static string MainLaunch {
             get { return (string)(ResourceManager.GetObject("MainLaunch", resourceCulture)); }
         }
