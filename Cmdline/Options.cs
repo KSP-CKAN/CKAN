@@ -516,7 +516,22 @@ namespace CKAN.CmdLine
 
     internal class ShowOptions : InstanceSpecificOptions
     {
-        [Option("with-versions")]
+        [Option("without-description", HelpText = "Don't show the name, abstract, or description")]
+        public bool without_description { get; set; }
+
+        [Option("without-module-info", HelpText = "Don't show the version, authors, status, license, tags, languages")]
+        public bool without_module_info { get; set; }
+
+        [Option("without-relationships", HelpText = "Don't show dependencies or conflicts")]
+        public bool without_relationships { get; set; }
+
+        [Option("without-resources", HelpText = "Don't show home page, etc.")]
+        public bool without_resources { get; set; }
+
+        [Option("without-files", HelpText = "Don't show contained files")]
+        public bool without_files { get; set; }
+
+        [Option("with-versions", HelpText = "Print table of all versions of the mod and their compatible game versions")]
         public bool with_versions { get; set; }
 
         [ValueList(typeof(List<string>))]

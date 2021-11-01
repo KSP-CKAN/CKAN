@@ -35,7 +35,7 @@ namespace CKAN.CmdLine
                     // Show the installed module.
                     combined_exit_code = CombineExitCodes(
                         combined_exit_code,
-                        ShowMod(installedModuleToShow)
+                        ShowMod(installedModuleToShow, options)
                     );
                     if (options.with_versions)
                     {
@@ -105,7 +105,7 @@ namespace CKAN.CmdLine
 
                 combined_exit_code = CombineExitCodes(
                     combined_exit_code,
-                    ShowMod(moduleToShow)
+                    ShowMod(moduleToShow, options)
                 );
                 if (options.with_versions)
                 {
@@ -121,12 +121,12 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <returns>Success status.</returns>
         /// <param name="module">The module to show.</param>
-        public int ShowMod(InstalledModule module)
+        private int ShowMod(InstalledModule module, ShowOptions opts)
         {
             // Display the basic info.
-            int return_value = ShowMod(module.Module);
+            int return_value = ShowMod(module.Module, opts);
 
-            if (!module.Module.IsDLC)
+            if (!opts.without_files && !module.Module.IsDLC)
             {
                 // Display InstalledModule specific information.
                 ICollection<string> files = module.Files as ICollection<string>;
@@ -151,100 +151,109 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <returns>Success status.</returns>
         /// <param name="module">The module to show.</param>
-        public int ShowMod(CkanModule module)
+        private int ShowMod(CkanModule module, ShowOptions opts)
         {
-            #region Abstract and description
-            if (!string.IsNullOrEmpty(module.@abstract))
+            if (!opts.without_description)
             {
-                user.RaiseMessage("{0}: {1}", module.name, module.@abstract);
-            }
-            else
-            {
-                user.RaiseMessage("{0}", module.name);
-            }
-
-            if (!string.IsNullOrEmpty(module.description))
-            {
-                user.RaiseMessage("");
-                user.RaiseMessage("{0}", module.description);
-            }
-            #endregion
-
-            #region General info (author, version...)
-            user.RaiseMessage("");
-            user.RaiseMessage("Module info:");
-            user.RaiseMessage("  Version:\t{0}", module.version);
-
-            if (module.author != null)
-            {
-                user.RaiseMessage("  Authors:\t{0}", string.Join(", ", module.author));
-            }
-            else
-            {
-                // Did you know that authors are optional in the spec?
-                // You do now. #673.
-                user.RaiseMessage("  Authors:\tUNKNOWN");
-            }
-
-            if (module.release_status != null)
-            {
-                user.RaiseMessage("  Status:\t{0}", module.release_status);
-            }
-            user.RaiseMessage("  License:\t{0}", string.Join(", ", module.license));
-            if (module.Tags != null && module.Tags.Count > 0)
-            {
-                // Need an extra space before the tab to line up with other fields
-                user.RaiseMessage("  Tags: \t{0}", string.Join(", ", module.Tags));
-            }
-            if (module.localizations != null && module.localizations.Length > 0)
-            {
-                user.RaiseMessage("  Languages:\t{0}", string.Join(", ", module.localizations.OrderBy(l => l)));
-            }
-            #endregion
-
-            #region Relationships
-            if (module.depends != null && module.depends.Count > 0)
-            {
-                user.RaiseMessage("");
-                user.RaiseMessage("Depends:");
-                foreach (RelationshipDescriptor dep in module.depends)
+                #region Abstract and description
+                if (!string.IsNullOrEmpty(module.@abstract))
                 {
-                    user.RaiseMessage("  - {0}", RelationshipToPrintableString(dep));
+                    user.RaiseMessage("{0}: {1}", module.name, module.@abstract);
                 }
-            }
-
-            if (module.recommends != null && module.recommends.Count > 0)
-            {
-                user.RaiseMessage("");
-                user.RaiseMessage("Recommends:");
-                foreach (RelationshipDescriptor dep in module.recommends)
+                else
                 {
-                    user.RaiseMessage("  - {0}", RelationshipToPrintableString(dep));
+                    user.RaiseMessage("{0}", module.name);
                 }
-            }
-
-            if (module.suggests != null && module.suggests.Count > 0)
-            {
-                user.RaiseMessage("");
-                user.RaiseMessage("Suggests:");
-                foreach (RelationshipDescriptor dep in module.suggests)
+                
+                if (!string.IsNullOrEmpty(module.description))
                 {
-                    user.RaiseMessage("  - {0}", RelationshipToPrintableString(dep));
+                    user.RaiseMessage("");
+                    user.RaiseMessage("{0}", module.description);
                 }
+                #endregion
             }
 
-            if (module.provides != null && module.provides.Count > 0)
+            if (!opts.without_module_info)
             {
+                #region General info (author, version...)
                 user.RaiseMessage("");
-                user.RaiseMessage("Provides:");
-                foreach (string prov in module.provides)
+                user.RaiseMessage("Module info:");
+                user.RaiseMessage("  Version:\t{0}", module.version);
+                
+                if (module.author != null)
                 {
-                    user.RaiseMessage("  - {0}", prov);
+                    user.RaiseMessage("  Authors:\t{0}", string.Join(", ", module.author));
                 }
+                else
+                {
+                    // Did you know that authors are optional in the spec?
+                    // You do now. #673.
+                    user.RaiseMessage("  Authors:\tUNKNOWN");
+                }
+                
+                if (module.release_status != null)
+                {
+                    user.RaiseMessage("  Status:\t{0}", module.release_status);
+                }
+                user.RaiseMessage("  License:\t{0}", string.Join(", ", module.license));
+                if (module.Tags != null && module.Tags.Count > 0)
+                {
+                    // Need an extra space before the tab to line up with other fields
+                    user.RaiseMessage("  Tags: \t{0}", string.Join(", ", module.Tags));
+                }
+                if (module.localizations != null && module.localizations.Length > 0)
+                {
+                    user.RaiseMessage("  Languages:\t{0}", string.Join(", ", module.localizations.OrderBy(l => l)));
+                }
+                #endregion
             }
-            #endregion
 
-            if (module.resources != null)
+            if (!opts.without_relationships)
+            {
+                #region Relationships
+                if (module.depends != null && module.depends.Count > 0)
+                {
+                    user.RaiseMessage("");
+                    user.RaiseMessage("Depends:");
+                    foreach (RelationshipDescriptor dep in module.depends)
+                    {
+                        user.RaiseMessage("  - {0}", RelationshipToPrintableString(dep));
+                    }
+                }
+
+                if (module.recommends != null && module.recommends.Count > 0)
+                {
+                    user.RaiseMessage("");
+                    user.RaiseMessage("Recommends:");
+                    foreach (RelationshipDescriptor dep in module.recommends)
+                    {
+                        user.RaiseMessage("  - {0}", RelationshipToPrintableString(dep));
+                    }
+                }
+
+                if (module.suggests != null && module.suggests.Count > 0)
+                {
+                    user.RaiseMessage("");
+                    user.RaiseMessage("Suggests:");
+                    foreach (RelationshipDescriptor dep in module.suggests)
+                    {
+                        user.RaiseMessage("  - {0}", RelationshipToPrintableString(dep));
+                    }
+                }
+
+                if (module.provides != null && module.provides.Count > 0)
+                {
+                    user.RaiseMessage("");
+                    user.RaiseMessage("Provides:");
+                    foreach (string prov in module.provides)
+                    {
+                        user.RaiseMessage("  - {0}", prov);
+                    }
+                }
+                #endregion
+            }
+
+            if (!opts.without_resources && module.resources != null)
             {
                 user.RaiseMessage("");
                 user.RaiseMessage("Resources:");
@@ -286,7 +295,7 @@ namespace CKAN.CmdLine
                 }
             }
 
-            if (!module.IsDLC)
+            if (!opts.without_files && !module.IsDLC)
             {
                 // Compute the CKAN filename.
                 string file_uri_hash = NetFileCache.CreateURLHash(module.download);
