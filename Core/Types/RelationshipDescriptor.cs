@@ -9,10 +9,20 @@ namespace CKAN
 {
     public abstract class RelationshipDescriptor : IEquatable<RelationshipDescriptor>
     {
-        public abstract bool MatchesAny(
+        public bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
             IDictionary<string, ModuleVersion> dlc
+        )
+        {
+            return MatchesAny(modules, dlls, dlc, out CkanModule _);
+        }
+
+        public abstract bool MatchesAny(
+            IEnumerable<CkanModule> modules,
+            HashSet<string> dlls,
+            IDictionary<string, ModuleVersion> dlc,
+            out CkanModule matched
         );
 
         public abstract bool WithinBounds(CkanModule otherModule);
@@ -99,7 +109,8 @@ namespace CKAN
         public override bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc,
+            out CkanModule matched
         )
         {
             modules = modules?.AsCollection();
@@ -107,6 +118,7 @@ namespace CKAN
             // DLLs are considered to match any version
             if (dlls != null && dlls.Contains(name))
             {
+                matched = null;
                 return true;
             }
 
@@ -114,8 +126,15 @@ namespace CKAN
             {
                 // See if anyone else "provides" the target name
                 // Note that versions can't be checked for "provides" clauses
-                if (modules.Any(m => m.identifier != name && m.provides != null && m.provides.Contains(name)))
+                var matches = modules
+                    .Where(m =>
+                        m.identifier != name
+                        && m.provides != null
+                        && m.provides.Contains(name))
+                    .ToList();
+                if (matches.Any())
                 {
+                    matched = matches.FirstOrDefault();
                     return true;
                 }
 
@@ -124,6 +143,7 @@ namespace CKAN
                 {
                     if (WithinBounds(m))
                     {
+                        matched = m;
                         return true;
                     }
                 }
@@ -135,11 +155,13 @@ namespace CKAN
                 {
                     if (WithinBounds(d.Value))
                     {
+                        matched = null;
                         return true;
                     }
                 }
             }
 
+            matched = null;
             return false;
         }
 
@@ -233,11 +255,23 @@ namespace CKAN
         public override bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc,
+            out CkanModule matched
         )
         {
-            return any_of?.Any(r => r.MatchesAny(modules, dlls, dlc))
-                ?? false;
+            if (any_of != null)
+            {
+                foreach (RelationshipDescriptor rel in any_of)
+                {
+                    if (rel.MatchesAny(modules, dlls, dlc, out CkanModule whatMatched))
+                    {
+                        matched = whatMatched;
+                        return true;
+                    }
+                }
+            }
+            matched = null;
+            return false;
         }
 
         public override List<CkanModule> LatestAvailableWithProvides(

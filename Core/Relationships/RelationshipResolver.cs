@@ -108,6 +108,8 @@ namespace CKAN
         /// </summary>
         private readonly HashSet<CkanModule> installed_modules;
 
+        private HashSet<CkanModule> alreadyResolved = new HashSet<CkanModule>();
+
         /// <summary>
         /// Creates a new Relationship resolver.
         /// </summary>
@@ -327,6 +329,16 @@ namespace CKAN
         /// </summary>
         private void Resolve(CkanModule module, RelationshipResolverOptions options, IEnumerable<RelationshipDescriptor> old_stanza = null)
         {
+            if (alreadyResolved.Contains(module))
+            {
+                return;
+            }
+            else
+            {
+                // Mark this module as resolved so we don't recurse here again
+                alreadyResolved.Add(module);
+            }
+
             // Even though we may resolve top-level suggests for our module,
             // we don't install suggestions all the down unless with_all_suggests
             // is true.
@@ -378,9 +390,17 @@ namespace CKAN
             {
                 log.DebugFormat("Considering {0}", descriptor.ToString());
 
-                // If we already have this dependency covered, skip.
-                if (descriptor.MatchesAny(modlist.Values, null, null))
+                // If we already have this dependency covered,
+                // resolve its relationships if we haven't already.
+                if (descriptor.MatchesAny(modlist.Values, null, null, out CkanModule installingCandidate))
                 {
+                    if (installingCandidate != null)
+                    {
+                        // Resolve the relationships of the matching module here
+                        // because that's when it would happen if non-virtual
+                        Resolve(installingCandidate, options, stanza);
+                    }
+                    // If null, it's a DLL or DLC, which we can't resolve
                     continue;
                 }
                 else if (descriptor.ContainsAny(modlist.Keys))
