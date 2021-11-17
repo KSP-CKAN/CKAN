@@ -38,7 +38,7 @@ namespace CKAN
         // name => path
         [JsonProperty] private  Dictionary<string, string>          installed_dlls;
         [JsonProperty] private  Dictionary<string, InstalledModule> installed_modules;
-        // filename => module
+        // filename (case insensitive on Windows) => module
         [JsonProperty] private  Dictionary<string, string>          installed_files;
 
         [JsonProperty] public readonly SortedDictionary<string, int> download_counts = new SortedDictionary<string, int>();
@@ -157,7 +157,10 @@ namespace CKAN
             {
                 log.Warn("Older registry format detected, normalising paths...");
 
-                var normalised_installed_files = new Dictionary<string, string>();
+                // We need case insensitive path matching on Windows
+                var normalised_installed_files = Platform.IsWindows
+                    ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                    : new Dictionary<string, string>();
 
                 foreach (KeyValuePair<string,string> tuple in installed_files)
                 {
@@ -189,6 +192,12 @@ namespace CKAN
                 // because that needs a registry, and we chicken-egg.)
 
                 log.Warn("Registry upgrade complete");
+            }
+            else if (Platform.IsWindows)
+            {
+                // We need case insensitive path matching on Windows
+                // (already done when replacing this object in the above block, hence the 'else')
+                installed_files = new Dictionary<string, string>(installed_files, StringComparer.OrdinalIgnoreCase);
             }
 
             // Fix control lock, which previously was indexed with an invalid identifier.
@@ -254,7 +263,10 @@ namespace CKAN
         /// </summary>
         public void ReindexInstalled()
         {
-            installed_files = new Dictionary<string, string>();
+            // We need case insensitive path matching on Windows
+            installed_files = Platform.IsWindows
+                ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                : new Dictionary<string, string>();
 
             foreach (InstalledModule module in installed_modules.Values)
             {

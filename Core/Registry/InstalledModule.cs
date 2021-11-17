@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace CKAN
@@ -128,7 +129,10 @@ namespace CKAN
         {
             install_time = DateTime.Now;
             source_module = module;
-            installed_files = new Dictionary<string, InstalledModuleFile>();
+            // We need case insensitive path matching on Windows
+            installed_files = Platform.IsWindows
+                ? new Dictionary<string, InstalledModuleFile>(StringComparer.OrdinalIgnoreCase)
+                : new Dictionary<string, InstalledModuleFile>();
             auto_installed = autoInstalled;
 
             foreach (string file in relative_files)
@@ -154,6 +158,16 @@ namespace CKAN
 
         #region Serialisation Fixes
 
+        [OnDeserialized]
+        private void DeSerialisationFixes(StreamingContext context)
+        {
+            if (Platform.IsWindows)
+            {
+                // We need case insensitive path matching on Windows
+                installed_files = new Dictionary<string, InstalledModuleFile>(installed_files, StringComparer.OrdinalIgnoreCase);
+            }
+        }
+
         /// <summary>
         /// Ensures all files for this module have relative paths.
         /// Called when upgrading registry versions. Should be a no-op
@@ -161,7 +175,10 @@ namespace CKAN
         /// </summary>
         public void Renormalise(GameInstance ksp)
         {
-            var normalised_installed_files = new Dictionary<string, InstalledModuleFile>();
+            // We need case insensitive path matching on Windows
+            var normalised_installed_files = Platform.IsWindows
+                ? new Dictionary<string, InstalledModuleFile>(StringComparer.OrdinalIgnoreCase)
+                : new Dictionary<string, InstalledModuleFile>();
 
             foreach (KeyValuePair<string, InstalledModuleFile> tuple in installed_files)
             {
