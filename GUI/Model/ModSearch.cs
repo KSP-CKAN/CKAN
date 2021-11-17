@@ -9,7 +9,7 @@ namespace CKAN
     /// An object representing a search to be performed of the mod list.
     /// Create one with the constructor or Parse(), and use it with Matches().
     /// </summary>
-    public sealed class ModSearch
+    public sealed class ModSearch : IEquatable<ModSearch>
     {
         /// <summary>
         /// Initialize a mod search object.
@@ -524,6 +524,32 @@ namespace CKAN
         private bool MatchesReplaceable(GUIMod mod)
         {
             return !Replaceable.HasValue || Replaceable.Value == (mod.IsInstalled && mod.HasReplacement);
+        }
+
+        public bool Equals(ModSearch other)
+        {
+            return other != null
+                && Name            == other.Name
+                && Description     == other.Description
+                && Compatible      == other.Compatible
+                && Installed       == other.Installed
+                && Cached          == other.Cached
+                && NewlyCompatible == other.NewlyCompatible
+                && Upgradeable     == other.Upgradeable
+                && Replaceable     == other.Replaceable
+                && Authors.SequenceEqual(other.Authors)
+                && Localizations.SequenceEqual(other.Localizations)
+                && DependsOn.SequenceEqual(other.DependsOn)
+                && Recommends.SequenceEqual(other.Recommends)
+                && Suggests.SequenceEqual(other.Suggests)
+                && ConflictsWith.SequenceEqual(other.ConflictsWith)
+                && TagNames.SequenceEqual(other.TagNames)
+                && Labels.SequenceEqual(other.Labels);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as ModSearch);
         }
     }
 }

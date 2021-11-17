@@ -28,6 +28,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Don't prompt to overwrite dirs (#3464 by: HebaruSan; reviewed: DasSkelett)
 - [ConsoleUI] Keep dependencies in the box in ConsoleUI (#3459 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] French translation bits in label dialog (#3465 by: vinix38; reviewed: HebaruSan)
+- [GUI] Suppress filter updates for unchanged semantic search meaning (#3435 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
