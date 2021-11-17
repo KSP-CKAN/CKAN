@@ -28,7 +28,7 @@
 *.config        text
 *.crt           text
 *.DotSettings   text
-*.resx          text
+*.resx          text eol=crlf
 *.settings      text
 
 # CKAN files
