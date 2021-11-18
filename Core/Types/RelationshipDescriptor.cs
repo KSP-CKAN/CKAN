@@ -194,22 +194,6 @@ namespace CKAN
         }
 
         /// <summary>
-        /// A user friendly message for what versions satisfies this descriptor.
-        /// </summary>
-        [JsonIgnore]
-        public string RequiredVersion
-        {
-            get
-            {
-                if (version != null)
-                    return version.ToString();
-                return string.Format("between {0} and {1} inclusive.",
-                    min_version != null ? min_version.ToString() : "any version",
-                    max_version != null ? max_version.ToString() : "any version");
-            }
-        }
-
-        /// <summary>
         /// Generate a user readable description of the relationship
         /// </summary>
         /// <returns>
@@ -224,9 +208,11 @@ namespace CKAN
         {
             return
                   version     != null                        ? $"{name} {version}"
-                : min_version != null && max_version != null ? $"{name} {min_version} -- {max_version}"
-                : min_version != null                        ? $"{name} {min_version} or later"
-                : max_version != null                        ? $"{name} {max_version} or earlier"
+                : min_version != null && max_version != null ? $"{name} {min_version}–{max_version}"
+                : min_version != null
+                    ? string.Format(Properties.Resources.RelationshipDescriptorMinVersionOnly, name, min_version)
+                : max_version != null
+                    ? string.Format(Properties.Resources.RelationshipDescriptorMaxVersionOnly, name, max_version)
                 : name;
         }
 
@@ -304,7 +290,8 @@ namespace CKAN
         public override string ToString()
         {
             return any_of?.Select(r => r.ToString())
-                .Aggregate((a, b) => $"{a} OR {b}");
+                .Aggregate((a, b) =>
+                    string.Format(Properties.Resources.RelationshipDescriptorAnyOfJoiner, a, b));
         }
     }
 }

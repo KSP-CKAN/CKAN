@@ -73,7 +73,7 @@ namespace CKAN
             // this check now that we're doing better json-fu above.
             if (install_to == null)
             {
-                throw new BadMetadataKraken(null, "Install stanzas must have an install_to");
+                throw new BadMetadataKraken(null, Properties.Resources.ModuleInstallDescriptorMustHaveInstallTo);
             }
 
             var setCount = new[] { file, find, find_regexp }.Count(i => i != null);
@@ -81,12 +81,12 @@ namespace CKAN
             // Make sure we have either a `file`, `find`, or `find_regexp` stanza.
             if (setCount == 0)
             {
-                throw new BadMetadataKraken(null, "Install stanzas require either a file, find, or find_regexp directive");
+                throw new BadMetadataKraken(null, Properties.Resources.ModuleInstallDescriptorRequireFileFind);
             }
 
             if (setCount > 1)
             {
-                throw new BadMetadataKraken(null, "Install stanzas must only include one of file, find, or find_regexp directives");
+                throw new BadMetadataKraken(null, Properties.Resources.ModuleInstallDescriptorTooManyFileFind);
             }
 
             // Make sure only filter or include_only fields exist but not both at the same time
@@ -95,7 +95,7 @@ namespace CKAN
 
             if (filterCount > 0 && includeOnlyCount > 0)
             {
-                throw new BadMetadataKraken(null, "Install stanzas can only contain filter or include_only directives, not both");
+                throw new BadMetadataKraken(null, Properties.Resources.ModuleInstallDescriptorTooManyFilterInclude);
             }
 
             // Normalize paths on load (note, doesn't cover assignment like in tests)
@@ -242,7 +242,7 @@ namespace CKAN
                 }
                 else
                 {
-                    throw new UnsupportedKraken("Install stanzas requires `file` or `find` or `find_regexp`.");
+                    throw new UnsupportedKraken(Properties.Resources.ModuleInstallDescriptorRequireFileFind);
                 }
             }
         }
@@ -328,7 +328,8 @@ namespace CKAN
 
             // The installation path cannot contain updirs
             if (install_to.Contains("/../") || install_to.EndsWith("/.."))
-                throw new BadInstallLocationKraken("Invalid installation path: " + install_to);
+                throw new BadInstallLocationKraken(string.Format(
+                    Properties.Resources.ModuleInstallDescriptorInvalidInstallPath, install_to));
 
             if (ksp == null)
             {
@@ -359,7 +360,8 @@ namespace CKAN
                         }
                         else
                         {
-                            throw new BadInstallLocationKraken("Unknown install_to " + install_to);
+                            throw new BadInstallLocationKraken(string.Format(
+                                Properties.Resources.ModuleInstallDescriptorUnknownInstallPath, install_to));
                         }
                         break;
                 }
@@ -413,7 +415,8 @@ namespace CKAN
             if (files.Count == 0)
             {
                 // We have null as the first argument here, because we don't know which module we're installing
-                throw new BadMetadataKraken(null, String.Format("No files found matching {0} to install!", DescribeMatch()));
+                throw new BadMetadataKraken(null, String.Format(
+                    Properties.Resources.ModuleInstallDescriptorNoFilesFound, DescribeMatch()));
             }
 
             return files;
@@ -462,7 +465,7 @@ namespace CKAN
             {
                 if (@as.Contains("/") || @as.Contains("\\"))
                 {
-                    throw new BadMetadataKraken(null, "`as` may not include path separators.");
+                    throw new BadMetadataKraken(null, Properties.Resources.ModuleInstallDescriptorAsNoPathSeparators);
                 }
                 // Replace first path component with @as
                 outputName = ReplaceFirstPiece(outputName, "/", @as);

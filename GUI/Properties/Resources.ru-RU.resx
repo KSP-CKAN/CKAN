@@ -196,7 +196,6 @@
   <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (загружено)</value></data>
   <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Обновить выбранное пользователем до версии {0}.</value></data>
-  <data name="MainChangesetNewInstall" xml:space="preserve"><value>Установка выбранной пользователем модификации.</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Импортировать модификации</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Модификации (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Журнал</value></data>
@@ -226,7 +225,7 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 Похоже, что модификация, которую вы пытаетесь установить, уже
 установлена или конфликтует с уже установленной модификацией.
 
-В качестве меры безопасности CKAN *никогда* не перезаписывает 
+В качестве меры безопасности CKAN *никогда* не перезаписывает
 или изменяет файлы, которые не установил сам.
 
 Если вы хотите установить {0} с помощью CKAN,

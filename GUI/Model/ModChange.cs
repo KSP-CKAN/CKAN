@@ -81,18 +81,7 @@ namespace CKAN.GUI
         {
             get
             {
-                switch (ChangeType)
-                {
-                    case GUIModChangeType.Install:
-                        if (Reason is SelectionReason.UserRequested)
-                        {
-                            return Properties.Resources.MainChangesetNewInstall;
-                        }
-                        else goto default;
-
-                    default:
-                        return Reason.Reason.Trim();
-                }
+                return Reason.Reason.Trim();
             }
         }
     }

@@ -68,7 +68,7 @@ namespace CKAN.Versioning
             {
                 versionList.Add(version.ToString());
             }
-            return "[Versions: " + String.Join( ", ", versionList) + "]";
+            return string.Format(Properties.Resources.GameVersionCriteriaToString, string.Join( ", ", versionList));
         }
     }
 }

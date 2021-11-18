@@ -268,6 +268,10 @@ Task("Repack-Ckan")
     assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-ConsoleUI.exe"));
     assemblyPaths.Add(GetFiles(string.Format(
         "{0}/*/*.resources.dll",
+        outDirectory.Combine("CKAN").Combine(configuration).Combine("bin").Combine(buildNetFramework)
+    )));
+    assemblyPaths.Add(GetFiles(string.Format(
+        "{0}/*/*.resources.dll",
         outDirectory.Combine("CKAN-GUI").Combine(configuration).Combine("bin")
     )));
 

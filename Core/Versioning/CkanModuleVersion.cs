@@ -22,7 +22,7 @@ namespace CKAN.Versioning
             : base(version)
         {
             Name = name;
-            _string = $"{base.ToString()} aka {Name}";
+            _string = string.Format(Properties.Resources.CkanModuleVersionToString, base.ToString(), Name);
         }
 
         /// <summary>

@@ -60,14 +60,17 @@ namespace CKAN
 
         // TODO: Is there a way to set the stringify version of this?
         public ModuleNotFoundKraken(string module, string version, string reason, Exception innerException = null)
-            : base(reason ?? $"Dependency on {module} version {version} not satisfied", innerException)
+            : base(
+                reason ?? string.Format(Properties.Resources.KrakenDependencyNotSatisfied, module, version),
+                innerException)
         {
             this.module  = module;
             this.version = version;
         }
 
         public ModuleNotFoundKraken(string module, string version = null)
-            : this(module, version, $"Module not found: {module} {version ?? ""}")
+            : this(module, version,
+                string.Format(Properties.Resources.KrakenDependencyModuleNotFound, module, version ?? ""))
         { }
 
     }
@@ -92,7 +95,8 @@ namespace CKAN
         public DependencyNotSatisfiedKraken(CkanModule parentModule,
             string module, string version = null, string reason = null, Exception innerException = null)
             : base(module, version,
-                reason ?? $"{parentModule.identifier} dependency on {module} version {version ?? "(any)"} not satisfied",
+                reason ?? string.Format(Properties.Resources.KrakenParentDependencyNotSatisfied,
+                    parentModule.identifier, module, version ?? Properties.Resources.KrakenAny),
                 innerException)
         {
             parent = parentModule;
@@ -165,7 +169,7 @@ namespace CKAN
         {
             return choice_help_text
                 ?? string.Format(
-                    "Module {0} is provided by more than one available module. Please choose one of the following:",
+                    Properties.Resources.KrakenProvidedByMoreThanOne,
                     requested);
         }
     }
@@ -182,7 +186,9 @@ namespace CKAN
         {
             get
             {
-                return header + String.Join("\r\n", inconsistencies.Select(msg => $"* {msg}"));
+                return String.Join("\r\n",
+                    new string[] { Properties.Resources.KrakenInconsistenciesHeader }
+                    .Concat(inconsistencies.Select(msg => $"* {msg}")));
             }
         }
 
@@ -210,8 +216,6 @@ namespace CKAN
         {
             return InconsistenciesPretty + "\r\n\r\n" + StackTrace;
         }
-
-        private const string header = "The following inconsistencies were found:\r\n";
     }
 
     /// <summary>
@@ -223,10 +227,10 @@ namespace CKAN
             ICollection<KeyValuePair<CkanModule, RelationshipDescriptor>> depends,
             ICollection<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts
         ) : base(
-            (depends?.Select(dep => $"{dep.Key} missing dependency {dep.Value}")
+            (depends?.Select(dep => string.Format(Properties.Resources.KrakenMissingDependency, dep.Key, dep.Value))
                 ?? new string[] {}
             ).Concat(
-                conflicts?.Select(conf => $"{conf.Key} conflicts with {conf.Value}")
+                conflicts?.Select(conf => string.Format(Properties.Resources.KrakenConflictsWith, conf.Key, conf.Value))
                 ?? new string[] {}
             ).ToArray()
         )
@@ -278,7 +282,9 @@ namespace CKAN
 
         public override string ToString()
         {
-            return "Uh oh, the following things went wrong when downloading...\r\n\r\n" + String.Join("\r\n", exceptions);
+            return String.Join("\r\n",
+                new string[] { Properties.Resources.KrakenDownloadErrorsHeader, "" }
+                .Concat(exceptions.Select(e => e.ToString())));
         }
     }
 
@@ -318,13 +324,12 @@ namespace CKAN
             if (builder == null)
             {
                 builder = new StringBuilder();
-                builder.AppendLine("One or more downloads were unsuccessful:");
+                builder.AppendLine(Properties.Resources.KrakenModuleDownloadErrorsHeader);
                 builder.AppendLine("");
                 foreach (KeyValuePair<CkanModule, Exception> kvp in exceptions)
                 {
-                    builder.AppendLine(
-                        $"Error downloading {kvp.Key.ToString()}: {kvp.Value.Message}"
-                    );
+                    builder.AppendLine(string.Format(
+                        Properties.Resources.KrakenModuleDownloadError, kvp.Key.ToString(), kvp.Value.Message));
                 }
             }
             return builder.ToString();
@@ -385,7 +390,7 @@ namespace CKAN
 
         public override string Message
         {
-            get { return string.Format("Module {0} is not installed!", mod); }
+            get { return string.Format(Properties.Resources.KrakenNotInstalled, mod); }
         }
 
         // TODO: Since we override message, should we really allow users to pass in a reason
@@ -419,16 +424,9 @@ namespace CKAN
 
         public override string ToString()
         {
-            if (Platform.IsUnix)
-            {
-                return "Oh no! Our download failed with a certificate error!\r\n\r\n"
-                    + "Consult this page for help:\r\n\t"
-                    + HelpURLs.CertificateErrors;
-            }
-            else
-            {
-                return "Oh no! Our download failed with a certificate error!";
-            }
+            return Platform.IsUnix
+                ? string.Format(Properties.Resources.KrakenMissingCertificateUnix, HelpURLs.CertificateErrors)
+                : Properties.Resources.KrakenMissingCertificateNotUnix;
         }
     }
 
@@ -445,7 +443,7 @@ namespace CKAN
 
         public override string ToString()
         {
-            return $"Download from {throttledUrl.Host} was throttled.\r\nConsider adding an authentication token to increase the throtting limit.";
+            return string.Format(Properties.Resources.KrakenDownloadThrottled, throttledUrl.Host);
         }
     }
 
@@ -461,7 +459,7 @@ namespace CKAN
 
         public override string ToString()
         {
-            return String.Format("CKAN is already running for this instance!\n\nIf you're certain this is not the case, then delete:\n\"{0}\"\n", lockfilePath);
+            return String.Format(Properties.Resources.KrakenAlreadyRunning, lockfilePath);
         }
     }
 
@@ -592,7 +590,7 @@ namespace CKAN
         public readonly List<CkanModule> Modules;
 
         public ReinstallModuleKraken(List<CkanModule> modules)
-            : base(string.Format("Metadata changed, reinstallation recommended: {0}",
+            : base(string.Format(Properties.Resources.KrakenReinstallModule,
                 string.Join(", ", modules)))
         {
             Modules = modules;

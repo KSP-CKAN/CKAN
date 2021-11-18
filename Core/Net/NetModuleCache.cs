@@ -123,14 +123,16 @@ namespace CKAN
 
             // Check file size
             if (module.download_size > 0 && fi.Length != module.download_size)
-                throw new InvalidModuleFileKraken(module, path,
-                    $"{module}: {path} has length {fi.Length}, should be {module.download_size}");
+                throw new InvalidModuleFileKraken(module, path, string.Format(
+                    Properties.Resources.NetModuleCacheBadLength,
+                    module, path, fi.Length, module.download_size));
 
             // Check valid CRC
             string invalidReason;
             if (!NetFileCache.ZipValid(path, out invalidReason))
-                throw new InvalidModuleFileKraken(module, path,
-                    $"{module}: {path} is not a valid ZIP file: {invalidReason}");
+                throw new InvalidModuleFileKraken(module, path, string.Format(
+                    Properties.Resources.NetModuleCacheNotValidZIP,
+                    module, path, invalidReason));
 
             // Some older metadata doesn't have hashes
             if (module.download_hash != null)
@@ -138,14 +140,16 @@ namespace CKAN
                 // Check SHA1 match
                 string sha1 = GetFileHashSha1(path);
                 if (sha1 != module.download_hash.sha1)
-                    throw new InvalidModuleFileKraken(module, path,
-                        $"{module}: {path} has SHA1 {sha1}, should be {module.download_hash.sha1}");
+                    throw new InvalidModuleFileKraken(module, path, string.Format(
+                        Properties.Resources.NetModuleCacheMismatchSHA1,
+                        module, path, sha1, module.download_hash.sha1));
 
                 // Check SHA256 match
                 string sha256 = GetFileHashSha256(path);
                 if (sha256 != module.download_hash.sha256)
-                    throw new InvalidModuleFileKraken(module, path,
-                        $"{module}: {path} has SHA256 {sha256}, should be {module.download_hash.sha256}");
+                    throw new InvalidModuleFileKraken(module, path, string.Format(
+                        Properties.Resources.NetModuleCacheMismatchSHA256,
+                        module, path, sha256, module.download_hash.sha256));
             }
 
             // If no exceptions, then everything is fine

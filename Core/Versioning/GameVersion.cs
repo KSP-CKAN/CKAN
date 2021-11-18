@@ -280,7 +280,7 @@ namespace CKAN.Versioning
                 // 1.99.99
                 || (_major == VersionsMax[""].Major && VersionsMax.TryGetValue($"{_major}", out value) && _minor >= UptoNines(value.Minor)))
             {
-                return "any";
+                return Properties.Resources.GameVersionYalovAny;
             }
             else if (IsMinorDefined
                 && VersionsMax.TryGetValue($"{_major}.{_minor}", out value)
@@ -495,7 +495,7 @@ namespace CKAN.Versioning
         /// </summary>
         /// <returns>A complete GameVersion object</returns>
         /// <param name="user">A IUser instance, to raise the corresponding dialog.</param>
-        public GameVersion RaiseVersionSelectionDialog (IGame game, IUser user)
+        public GameVersion RaiseVersionSelectionDialog(IGame game, IUser user)
         {
             if (IsFullyDefined && InBuildMap(game))
             {
@@ -505,7 +505,7 @@ namespace CKAN.Versioning
             }
             else if (!IsMajorDefined || !IsMinorDefined)
             {
-                throw new BadGameVersionKraken("Needs at least Major and Minor");
+                throw new BadGameVersionKraken(Properties.Resources.GameVersionSelectNeedOne);
             }
             else
             {
@@ -514,7 +514,7 @@ namespace CKAN.Versioning
                 List<GameVersion> possibleVersions = new List<GameVersion>();
 
                 // Default message passed to RaiseSelectionDialog.
-                string message = "The specified version is not unique, please select one:";
+                string message = Properties.Resources.GameVersionSelectHeader;
 
                 // Find the versions which are part of the range.
                 foreach (GameVersion ver in knownVersions)
@@ -539,7 +539,7 @@ namespace CKAN.Versioning
                     // Only compare Major, Minor, Patch and adjust the message.
                     else
                     {
-                        message = "The build number is not known for this patch. Please select one:";
+                        message = Properties.Resources.GameVersionSelectBuildHeader;
                         if (Major == ver.Major && Minor == ver.Minor && Patch == ver.Patch)
                         {
                             possibleVersions.Add(ver);
@@ -551,7 +551,7 @@ namespace CKAN.Versioning
                 if (possibleVersions.Count == 0)
                 {
                     // No version found in the map. Happens for future or other unknown versions.
-                    throw new BadGameVersionKraken("The version is not known to CKAN.");
+                    throw new BadGameVersionKraken(Properties.Resources.GameVersionNotKnown);
                 }
                 else if (possibleVersions.Count == 1)
                 {

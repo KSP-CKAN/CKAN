@@ -470,9 +470,6 @@ namespace CKAN.GUI.Properties {
         internal static string MainChangesetUpdateSelected {
             get { return (string)(ResourceManager.GetObject("MainChangesetUpdateSelected", resourceCulture)); }
         }
-        internal static string MainChangesetNewInstall {
-            get { return (string)(ResourceManager.GetObject("MainChangesetNewInstall", resourceCulture)); }
-        }
 
         internal static string MainImportTitle {
             get { return (string)(ResourceManager.GetObject("MainImportTitle", resourceCulture)); }

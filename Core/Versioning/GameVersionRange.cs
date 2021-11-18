@@ -107,8 +107,10 @@ namespace CKAN.Versioning
         public static string VersionSpan(IGame game, GameVersion minKsp, GameVersion maxKsp)
         {
             return minKsp == maxKsp ? $"{game.ShortName} {SameVersionString(minKsp)}"
-                :  minKsp.IsAny     ? $"{game.ShortName} {maxKsp} and earlier"
-                :  maxKsp.IsAny     ? $"{game.ShortName} {minKsp} and later"
+                :  minKsp.IsAny
+                    ? string.Format(Properties.Resources.GameVersionRangeMinOnly, game.ShortName, maxKsp)
+                :  maxKsp.IsAny
+                    ? string.Format(Properties.Resources.GameVersionRangeMaxOnly, game.ShortName, minKsp)
                 :                     $"{game.ShortName} {minKsp}–{maxKsp}";
         }
 

@@ -194,7 +194,6 @@ Möchten Sie es wirklich installieren?</value></data>
   <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Abbrechen</value></data>
   <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (Metapacket)</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Mod-Update ausgewählt vom Nutzer {0}.</value></data>
-  <data name="MainChangesetNewInstall" xml:space="preserve"><value>Neue Mod-Installation ausgewählt vom Nutzer.</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Mod-Import</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Statuslog</value></data>
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>Statuslog</value></data>

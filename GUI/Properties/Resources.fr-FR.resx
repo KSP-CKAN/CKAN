@@ -197,7 +197,6 @@ Voulez-vous vraiment l'installer?</value></data>
   <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (en cache)</value></data>
   <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Mis à jour sélectionnée par l'utilisateur à la version {0}.</value></data>
-  <data name="MainChangesetNewInstall" xml:space="preserve"><value>Nouvelle installation de mod sélectionnée par l'utilisateur.</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Importer des Mods</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Registre</value></data>
