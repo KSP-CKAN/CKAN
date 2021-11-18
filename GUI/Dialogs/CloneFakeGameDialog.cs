@@ -9,7 +9,7 @@ using Autofac;
 using CKAN.Versioning;
 using CKAN.Games;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// The GUI implementation of clone and fake.

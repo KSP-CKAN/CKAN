@@ -2,7 +2,7 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class NewRepoDialog : Form
     {

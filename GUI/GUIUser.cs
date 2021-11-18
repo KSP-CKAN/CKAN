@@ -1,4 +1,4 @@
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// The GUI implementation of the IUser interface.

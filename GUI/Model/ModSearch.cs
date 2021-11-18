@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// An object representing a search to be performed of the mod list.

@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 using CKAN.Configuration;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class InstallFiltersDialog : Form
     {

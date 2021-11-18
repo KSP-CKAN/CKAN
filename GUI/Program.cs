@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public static class GUI
     {
@@ -42,7 +42,7 @@ namespace CKAN
 
             // Provide a stack backtrace, so our users and non-debugging devs can
             // see what's gone wrong.
-            CKAN.Main.Instance.ErrorDialog("Unhandled exception:\r\n{0} ", exception.ToString());
+            CKAN.GUI.Main.Instance.ErrorDialog("Unhandled exception:\r\n{0} ", exception.ToString());
         }
     }
 }

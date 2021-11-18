@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public sealed class GUIMod : INotifyPropertyChanged
     {

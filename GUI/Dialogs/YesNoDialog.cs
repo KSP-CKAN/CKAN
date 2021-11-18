@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class YesNoDialog : Form
     {

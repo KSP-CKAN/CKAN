@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using CKAN.Versioning;
 using CKAN.Extensions;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// Show the user's play time in each instance and allow editing

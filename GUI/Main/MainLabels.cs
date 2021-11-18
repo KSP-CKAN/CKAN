@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using CKAN.Extensions;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class Main
     {

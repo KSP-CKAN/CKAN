@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// Inheriting from this class ensures that forms are equally sized on Windows and on Linux/MacOSX

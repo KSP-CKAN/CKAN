@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     using System;
     using System.Collections.Generic;

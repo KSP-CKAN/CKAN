@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public enum GUIModChangeType
     {

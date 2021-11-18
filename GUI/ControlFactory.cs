@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// This class ensures that all controls are created from the same thread.

@@ -6,7 +6,7 @@ using System.Linq;
 using CKAN.Extensions;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     using ModChanges = List<ModChange>;
 

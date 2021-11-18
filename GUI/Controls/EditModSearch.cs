@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 using log4net;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// A control for displaying and editing a search of mods.

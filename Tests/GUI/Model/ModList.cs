@@ -10,6 +10,7 @@ using Tests.Core.Configuration;
 using Tests.Data;
 
 using CKAN;
+using CKAN.GUI;
 using CKAN.Versioning;
 
 namespace Tests.GUI

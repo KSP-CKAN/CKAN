@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using log4net;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public class PluginController
     {

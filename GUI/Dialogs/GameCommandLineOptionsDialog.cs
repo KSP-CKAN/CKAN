@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
 
     public partial class GameCommandLineOptionsDialog : Form

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using CKAN.Exporters;
 using CKAN.Types;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class Main
     {

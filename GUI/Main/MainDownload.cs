@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class Main
     {

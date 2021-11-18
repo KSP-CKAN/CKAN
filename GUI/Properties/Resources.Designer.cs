@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CKAN.Properties {
+namespace CKAN.GUI.Properties {
     using System;
 
 
@@ -39,7 +39,7 @@ namespace CKAN.Properties {
             get {
                 if (object.ReferenceEquals(resourceMan, null))
                 {
-                    resourceMan = new SingleAssemblyResourceManager("CKAN.Properties.Resources", typeof(Resources).Assembly);
+                    resourceMan = new SingleAssemblyResourceManager("CKAN.GUI.Properties.Resources", typeof(Resources).Assembly);
                 }
                 return resourceMan;
             }

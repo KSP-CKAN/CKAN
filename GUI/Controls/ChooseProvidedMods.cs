@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class ChooseProvidedMods : UserControl
     {

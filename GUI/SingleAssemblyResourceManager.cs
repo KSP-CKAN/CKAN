@@ -5,7 +5,7 @@ using System.Collections;
 using System.Reflection;
 using System.Collections.Generic;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     // Thanks and credit to this guy: https://stackoverflow.com/q/1952638/2422988
 

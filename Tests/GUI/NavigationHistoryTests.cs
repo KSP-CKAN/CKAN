@@ -1,9 +1,10 @@
+using System;
+using CKAN;
+using CKAN.GUI;
+using NUnit.Framework;
+
 ﻿namespace Tests.GUI
 {
-    using System;
-    using CKAN;
-    using NUnit.Framework;
-
     [TestFixture]
     public class NavigationHistoryTests
     {

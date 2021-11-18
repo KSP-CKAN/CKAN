@@ -276,7 +276,7 @@ namespace CKAN.CmdLine
             // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
             // but trying to catch it here doesn't seem to help. Dunno why.
 
-            GUI.Main_(args, manager, options.ShowConsole);
+            GUI.GUI.Main_(args, manager, options.ShowConsole);
 
             return Exit.OK;
         }
