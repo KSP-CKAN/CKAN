@@ -18,11 +18,11 @@ namespace CKAN.CmdLine
             this.user = user;
         }
 
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
             ListOptions options = (ListOptions) raw_options;
 
-            IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
+            IRegistryQuerier registry = RegistryManager.Instance(instance).registry;
 
             ExportFileType? exportFileType = null;
 
@@ -32,16 +32,19 @@ namespace CKAN.CmdLine
 
                 if (exportFileType == null)
                 {
-                    user.RaiseError("Unknown export format: {0}", options.export);
+                    user.RaiseError(Properties.Resources.ListUnknownFormat, options.export);
                 }
             }
 
             if (!(options.porcelain) && exportFileType == null)
             {
-                user.RaiseMessage("\r\nKSP found at {0}\r\n", ksp.GameDir());
-                user.RaiseMessage("KSP Version: {0}\r\n", ksp.Version());
-
-                user.RaiseMessage("Installed Modules:\r\n");
+                user.RaiseMessage("");
+                user.RaiseMessage(Properties.Resources.ListGameFound, instance.game.ShortName, instance.GameDir());
+                user.RaiseMessage("");
+                user.RaiseMessage(Properties.Resources.ListGameVersion, instance.game.ShortName, instance.Version());
+                user.RaiseMessage("");
+                user.RaiseMessage(Properties.Resources.ListGameModulesHeader);
+                user.RaiseMessage("");
             }
 
             if (exportFileType == null)
@@ -70,7 +73,7 @@ namespace CKAN.CmdLine
                         {
                             // Check if upgrades are available, and show appropriately.
                             log.DebugFormat("Check if upgrades are available for {0}", mod.Key);
-                            CkanModule latest = registry.LatestAvailable(mod.Key, ksp.VersionCriteria());
+                            CkanModule latest = registry.LatestAvailable(mod.Key, instance.VersionCriteria());
                             CkanModule current = registry.GetInstalledVersion(mod.Key);
                             InstalledModule inst = registry.InstalledModule(mod.Key);
 
@@ -79,12 +82,15 @@ namespace CKAN.CmdLine
                                 // Not compatible!
                                 log.InfoFormat("Latest {0} is not compatible", mod.Key);
                                 bullet = "X";
-                                if ( current == null ) log.DebugFormat( " {0} installed version not found in registry", mod.Key);
+                                if (current == null)
+                                {
+                                    log.DebugFormat(" {0} installed version not found in registry", mod.Key);
+                                }
                                     
                                 // Check if mod is replaceable
                                 if (current.replaced_by != null)
                                 {
-                                    ModuleReplacement replacement = registry.GetReplacement(mod.Key, ksp.VersionCriteria());
+                                    ModuleReplacement replacement = registry.GetReplacement(mod.Key, instance.VersionCriteria());
                                     if (replacement != null)
                                     {
                                         // Replaceable!
@@ -101,7 +107,7 @@ namespace CKAN.CmdLine
                                 // Check if mod is replaceable
                                 if (current.replaced_by != null)
                                 {
-                                    ModuleReplacement replacement = registry.GetReplacement(latest.identifier, ksp.VersionCriteria());
+                                    ModuleReplacement replacement = registry.GetReplacement(latest.identifier, instance.VersionCriteria());
                                     if (replacement != null)
                                     {
                                         // Replaceable!
@@ -135,7 +141,8 @@ namespace CKAN.CmdLine
 
             if (!(options.porcelain) && exportFileType == null)
             {
-                user.RaiseMessage("\r\nLegend: -: Up to date. +:Auto-installed. X: Incompatible. ^: Upgradable. >: Replaceable\r\n        A: Autodetected. ?: Unknown. *: Broken. ");
+                user.RaiseMessage("");
+                user.RaiseMessage(Properties.Resources.ListLegend);
                 // Broken mods are in a state that CKAN doesn't understand, and therefore can't handle automatically
             }
 

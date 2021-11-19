@@ -39,7 +39,7 @@ namespace CKAN.CmdLine
                 HashSet<FileInfo> toImport = GetFiles(opts);
                 if (toImport.Count < 1)
                 {
-                    user.RaiseMessage("Usage: ckan import path [path2, ...]");
+                    user.RaiseMessage($"{Properties.Resources.Usage}: ckan import {Properties.Resources.Path} [path2, ...]");
                     return Exit.ERROR;
                 }
                 else
@@ -64,7 +64,7 @@ namespace CKAN.CmdLine
             }
             catch (Exception ex)
             {
-                user.RaiseError("Import error: {0}", ex.Message);
+                user.RaiseError(Properties.Resources.ImportError, ex.Message);
                 return Exit.ERROR;
             }
         }
@@ -100,7 +100,7 @@ namespace CKAN.CmdLine
             }
             else
             {
-                user.RaiseMessage("File not found: {0}", filename);
+                user.RaiseMessage(Properties.Resources.ImportNotFound, filename);
             }
         }
 

@@ -20,7 +20,7 @@ namespace CKAN.CmdLine
         /// Initializes a new instance of the <see cref="T:CKAN.CmdLine.ConsoleUser"/> class.
         /// </summary>
         /// <param name="headless">If set to <c>true</c>, supress interactive dialogs like Yes/No-Dialog or SelectionDialog</param>
-        public ConsoleUser (bool headless)
+        public ConsoleUser(bool headless)
         {
             Headless = headless;
         }
@@ -42,7 +42,7 @@ namespace CKAN.CmdLine
                 return true;
             }
 
-            Console.Write("\r\n{0} [Y/n] ", question);
+            Console.Write("\r\n{0} {1} ", question, Properties.Resources.UserYesNoPromptSuffix);
             while (true)
             {
                 var input = Console.In.ReadLine();
@@ -55,11 +55,11 @@ namespace CKAN.CmdLine
 
                 input = input.ToLower().Trim();
 
-                if (input.Equals("y") || input.Equals("yes"))
+                if (input.Equals(Properties.Resources.UserYesNoY) || input.Equals(Properties.Resources.UserYesNoYes))
                 {
                     return true;
                 }
-                if (input.Equals("n") || input.Equals("no"))
+                if (input.Equals(Properties.Resources.UserYesNoN) || input.Equals(Properties.Resources.UserYesNoNo))
                 {
                     return false;
                 }
@@ -69,7 +69,7 @@ namespace CKAN.CmdLine
                     return true;
                 }
 
-                Console.Write("Invalid input. Please enter yes or no");
+                Console.Write(Properties.Resources.UserYesNoInvalid);
             }
         }
 
@@ -154,23 +154,16 @@ namespace CKAN.CmdLine
                 RaiseMessage(CurrentRow);
             }
 
-            // Create message string.
-            string output = String.Format("Enter a number between {0} and {1} (To cancel press \"c\" or \"n\".", 1, args.Length);
-
-            if (defaultSelection >= 0)
-            {
-                output += String.Format(" \"Enter\" will select {0}.", defaultSelection + 1);
-            }
-
-            output += "): ";
-
-            RaiseMessage(output);
-
             bool valid = false;
             int result = 0;
 
             while (!valid)
             {
+                // Print message string
+                RaiseMessage(defaultSelection >= 0
+                    ? string.Format(Properties.Resources.UserSelectionPromptWithDefault, 1, args.Length, defaultSelection + 1)
+                    : string.Format(Properties.Resources.UserSelectionPromptWithoutDefault,1, args.Length));
+
                 // Wait for input from the command line.
                 string input = Console.In.ReadLine();
 
@@ -183,56 +176,46 @@ namespace CKAN.CmdLine
                 input = input.Trim().ToLower();
 
                 // Check for default selection.
-                if (String.IsNullOrEmpty(input))
+                if (String.IsNullOrEmpty(input) && defaultSelection >= 0)
                 {
-                    if (defaultSelection >= 0)
-                    {
-                        return defaultSelection;
-                    }
+                    return defaultSelection;
                 }
 
                 // Check for cancellation characters.
-                if (input == "c" || input == "n")
+                if (input == Properties.Resources.UserSelectionC || input == Properties.Resources.UserSelectionN)
                 {
-                    RaiseMessage("Selection cancelled.");
-
+                    RaiseMessage(Properties.Resources.UserSelectionCancelled);
                     return return_cancel;
                 }
 
                 // Attempt to parse the input.
                 try
                 {
-                    result = Convert.ToInt32(input);
+                    // The list we provide is index 1 based, but the array is index 0 based.
+                    result = Convert.ToInt32(input) - 1;
                 }
                 catch (FormatException)
                 {
-                    RaiseMessage("The input is not a number.");
+                    RaiseMessage(Properties.Resources.UserSelectionNotNumber);
                     continue;
                 }
                 catch (OverflowException)
                 {
-                    RaiseMessage("The number in the input is too large.");
+                    RaiseMessage(Properties.Resources.UserSelectionTooLarge);
                     continue;
                 }
 
                 // Check the input against the boundaries.
-                if (result > args.Length)
+                if (result > args.Length - 1)
                 {
-                    RaiseMessage("The number in the input is too large.");
-                    RaiseMessage(output);
-
+                    RaiseMessage(Properties.Resources.UserSelectionTooLarge);
                     continue;
                 }
-                else if (result < 1)
+                else if (result < 0)
                 {
-                    RaiseMessage("The number in the input is too small.");
-                    RaiseMessage(output);
-
+                    RaiseMessage(Properties.Resources.UserSelectionTooSmall);
                     continue;
                 }
-
-                // The list we provide is index 1 based, but the array is index 0 based.
-                result--;
 
                 // We have checked for all errors and have gotten a valid result. Stop the input loop.
                 valid = true;
@@ -279,8 +262,7 @@ namespace CKAN.CmdLine
                 if (!Headless || percent != previousPercent)
                 {
                     // The \r at the front here causes download messages to *overwrite* each other.
-                    Console.Write(
-                        "\r{0} - {1}%           ", message, percent);
+                    Console.Write("\r{0} - {1}%           ", message, percent);
                     previousPercent = percent;
                 }
             }

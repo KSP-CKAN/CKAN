@@ -24,8 +24,8 @@ namespace CKAN.CmdLine
             ht.AddPreOptionsLine(" ");
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine("ckan compat - Manage KSP version compatibility");
-                ht.AddPreOptionsLine($"Usage: ckan compat <command> [options]");
+                ht.AddPreOptionsLine($"ckan compat - {Properties.Resources.CompatHelpSummary}");
+                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan compat <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
             }
             else
             {
@@ -35,13 +35,13 @@ namespace CKAN.CmdLine
                     // First the commands with one string argument
                     case "add":
                     case "forget":
-                        ht.AddPreOptionsLine($"Usage: ckan compat {verb} [options] version");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan compat {verb} [{Properties.Resources.Options}] version");
                         break;
 
                     // Now the commands with only --flag type options
                     case "list":
                     default:
-                        ht.AddPreOptionsLine($"Usage: ckan compat {verb} [options]");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan compat {verb} [{Properties.Resources.Options}]");
                         break;
                 }
             }
@@ -86,12 +86,12 @@ namespace CKAN.CmdLine
                     {
                         case "list":
                             {
-                                var ksp = MainClass.GetGameInstance(_kspManager);
+                                var instance = MainClass.GetGameInstance(_kspManager);
 
-                                const string versionHeader = "Version";
-                                const string actualHeader  = "Actual";
+                                string versionHeader = Properties.Resources.CompatVersionHeader;
+                                string actualHeader  = Properties.Resources.CompatActualHeader;
 
-                                var output = ksp
+                                var output = instance
                                     .GetCompatibleVersions()
                                     .Select(i => new
                                     {
@@ -102,7 +102,7 @@ namespace CKAN.CmdLine
 
                                 output.Add(new
                                 {
-                                    Version = ksp.Version(),
+                                    Version = instance.Version(),
                                     Actual = true
                                 });
 
@@ -135,29 +135,29 @@ namespace CKAN.CmdLine
 
                                 foreach (var line in output)
                                 {
-                                    _user.RaiseMessage(string.Format(columnFormat,
+                                    _user.RaiseMessage(columnFormat,
                                        line.Version.ToString().PadRight(versionWidth),
                                        line.Actual.ToString().PadRight(actualWidth)
-                                   ));
+                                    );
                                 }
                             }
                             break;
 
                         case "add":
                             {
-                                var ksp = MainClass.GetGameInstance(_kspManager);
+                                var instance = MainClass.GetGameInstance(_kspManager);
                                 var addOptions = (CompatAddOptions)suboptions;
 
                                 GameVersion GameVersion;
                                 if (GameVersion.TryParse(addOptions.Version, out GameVersion))
                                 {
-                                    var newCompatibleVersion = ksp.GetCompatibleVersions();
+                                    var newCompatibleVersion = instance.GetCompatibleVersions();
                                     newCompatibleVersion.Add(GameVersion);
-                                    ksp.SetCompatibleVersions(newCompatibleVersion);
+                                    instance.SetCompatibleVersions(newCompatibleVersion);
                                 }
                                 else
                                 {
-                                    _user.RaiseError("ERROR: Invalid KSP version.");
+                                    _user.RaiseError(Properties.Resources.CompatInvalid);
                                     exitCode = Exit.ERROR;
                                 }
                             }
@@ -165,27 +165,27 @@ namespace CKAN.CmdLine
 
                         case "forget":
                             {
-                                var ksp = MainClass.GetGameInstance(_kspManager);
+                                var instance = MainClass.GetGameInstance(_kspManager);
                                 var addOptions = (CompatForgetOptions)suboptions;
 
                                 GameVersion GameVersion;
                                 if (GameVersion.TryParse(addOptions.Version, out GameVersion))
                                 {
-                                    if (GameVersion != ksp.Version())
+                                    if (GameVersion != instance.Version())
                                     {
-                                        var newCompatibleVersion = ksp.GetCompatibleVersions();
+                                        var newCompatibleVersion = instance.GetCompatibleVersions();
                                         newCompatibleVersion.RemoveAll(i => i == GameVersion);
-                                        ksp.SetCompatibleVersions(newCompatibleVersion);
+                                        instance.SetCompatibleVersions(newCompatibleVersion);
                                     }
                                     else
                                     {
-                                        _user.RaiseError("ERROR: Cannot forget actual KSP version.");
+                                        _user.RaiseError(Properties.Resources.CompatCantForget);
                                         exitCode = Exit.ERROR;
                                     }
                                 }
                                 else
                                 {
-                                    _user.RaiseError("ERROR: Invalid KSP version.");
+                                    _user.RaiseError(Properties.Resources.CompatInvalid);
                                     exitCode = Exit.ERROR;
                                 }
                             }
@@ -200,7 +200,7 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
+        private IUser               _user;
         private GameInstanceManager _kspManager;
-        private IUser      _user;
     }
 }

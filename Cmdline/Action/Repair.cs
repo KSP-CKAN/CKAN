@@ -16,8 +16,8 @@ namespace CKAN.CmdLine
             ht.AddPreOptionsLine(" ");
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine("ckan repair - Attempt various automatic repairs");
-                ht.AddPreOptionsLine($"Usage: ckan repair <command> [options]");
+                ht.AddPreOptionsLine($"ckan repair - {Properties.Resources.RepairHelpSummary}");
+                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repair <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
             }
             else
             {
@@ -27,7 +27,7 @@ namespace CKAN.CmdLine
                     // Commands with only --flag type options
                     case "registry":
                     default:
-                        ht.AddPreOptionsLine($"Usage: ckan repair {verb} [options]");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repair {verb} [{Properties.Resources.Options}]");
                         break;
                 }
             }
@@ -66,7 +66,7 @@ namespace CKAN.CmdLine
                             break;
 
                         default:
-                            User.RaiseMessage("Unknown command: repair {0}", option);
+                            User.RaiseMessage(Properties.Resources.RepairUnknownCommand, option);
                             exitCode = Exit.BADOPT;
                             break;
                     }
@@ -85,7 +85,7 @@ namespace CKAN.CmdLine
             RegistryManager manager = RegistryManager.Instance(ksp);
             manager.registry.Repair();
             manager.Save();
-            User.RaiseMessage("Registry repairs attempted. Hope it helped.");
+            User.RaiseMessage(Properties.Resources.Repaired);
             return Exit.OK;
         }
     }

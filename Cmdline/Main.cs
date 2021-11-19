@@ -152,7 +152,8 @@ namespace CKAN.CmdLine
         public static int AfterHelp()
         {
             // Our help screen will already be shown. Let's add some extra data.
-            new ConsoleUser(false).RaiseMessage("You are using CKAN version {0}", Meta.GetVersion(VersionFormat.Full));
+            new ConsoleUser(false).RaiseMessage(
+                Properties.Resources.MainVersion, Meta.GetVersion(VersionFormat.Full));
             return Exit.BADOPT;
         }
 
@@ -234,7 +235,7 @@ namespace CKAN.CmdLine
                         return (new Compare(user)).RunCommand(cmdline.options);
 
                     default:
-                        user.RaiseMessage("Unknown command, try --help");
+                        user.RaiseMessage(Properties.Resources.MainUnknownCommand);
                         return Exit.BADOPT;
                 }
             }
@@ -266,8 +267,7 @@ namespace CKAN.CmdLine
 
         private static int printMissingInstanceError(IUser user)
         {
-            user.RaiseMessage("I don't know where a game instance is installed.");
-            user.RaiseMessage("Use 'ckan instance help' for assistance in setting this.");
+            user.RaiseMessage(Properties.Resources.MainMissingInstance);
             return Exit.ERROR;
         }
 
@@ -317,13 +317,11 @@ namespace CKAN.CmdLine
                 if (next_command == null)
                 {
                     user.RaiseError(kraken.InconsistenciesPretty);
-                    user.RaiseError("The repo has not been saved.");
+                    user.RaiseError(Properties.Resources.ScanNotSaved);
                 }
                 else
                 {
-                    user.RaiseMessage("Preliminary scanning shows that the install is in a inconsistent state.");
-                    user.RaiseMessage("Use ckan.exe scan for more details");
-                    user.RaiseMessage("Proceeding with {0} in case it fixes it.\r\n", next_command);
+                    user.RaiseMessage(Properties.Resources.ScanPreliminaryInconsistent, next_command);
                 }
 
                 return Exit.ERROR;

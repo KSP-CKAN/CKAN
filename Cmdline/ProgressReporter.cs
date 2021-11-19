@@ -16,10 +16,8 @@ namespace CKAN.CmdLine
         {
             if (Regex.IsMatch(message, "download", RegexOptions.IgnoreCase))
             {
-                user.RaiseMessage(
-                    // The \r at the front here causes download messages to *overwrite* each other.
-                    String.Format("\r{0} - {1}%           ", message, progress)
-                );
+                // The \r at the front causes download messages to *overwrite* each other.
+                user.RaiseMessage("\r{0} - {1}%           ", message, progress);
             }
             else
             {
@@ -31,4 +29,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

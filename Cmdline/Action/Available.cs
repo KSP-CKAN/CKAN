@@ -12,16 +12,17 @@ namespace CKAN.CmdLine
             this.user = user;
         }
 
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
             AvailableOptions opts       = (AvailableOptions)raw_options;
-            IRegistryQuerier registry   = RegistryManager.Instance(ksp).registry;
+            IRegistryQuerier registry   = RegistryManager.Instance(instance).registry;
             
             var compatible = registry
-                .CompatibleModules(ksp.VersionCriteria())
+                .CompatibleModules(instance.VersionCriteria())
                 .Where(m => !m.IsDLC);
 
-            user.RaiseMessage("Modules compatible with KSP {0}", ksp.Version());
+            user.RaiseMessage(string.Format(Properties.Resources.AvailableHeader,
+                instance.game.ShortName, instance.Version()));
             user.RaiseMessage("");
 
             if (opts.detail)

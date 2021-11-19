@@ -24,11 +24,7 @@ namespace CKAN.CmdLine
             // Print an intro if not in headless mode
             if (!headless)
             {
-                Console.WriteLine("Welcome to CKAN!");
-                Console.WriteLine("");
-                Console.WriteLine("To get help, type help and press enter.");
-                Console.WriteLine("Press tab to auto-complete commands and modules.");
-                Console.WriteLine("");
+                Console.WriteLine(Properties.Resources.PromptWelcome, exitCommand);
             }
             ReadLine.AutoCompletionHandler = GetSuggestions;
             bool done = false;
@@ -39,8 +35,9 @@ namespace CKAN.CmdLine
                 {
                     Console.Write(
                         manager.CurrentInstance != null
-                            ? $"CKAN {Meta.GetVersion()}: {manager.CurrentInstance.game.ShortName} {manager.CurrentInstance.Version()} ({manager.CurrentInstance.Name})> "
-                            : $"CKAN {Meta.GetVersion()}> "
+                            ? string.Format(Properties.Resources.PromptWithInstance,
+                                Meta.GetVersion(), manager.CurrentInstance.game.ShortName, manager.CurrentInstance.Version(), manager.CurrentInstance.Name)
+                            : string.Format(Properties.Resources.PromptWithoutInstance, Meta.GetVersion())
                     );
                 }
                 try
@@ -67,9 +64,7 @@ namespace CKAN.CmdLine
                 }
                 catch (NoGameInstanceKraken)
                 {
-                    Console.WriteLine("");
-                    Console.WriteLine("No game instance selected, identifier completion not available.");
-                    Console.WriteLine("Use the `instance default` command to choose an instance.");
+                    Console.WriteLine(Properties.Resources.CompletionNotAvailable);
                 }
             }
             return Exit.OK;

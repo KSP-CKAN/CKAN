@@ -20,19 +20,19 @@ namespace CKAN.CmdLine
 
         private GameInstanceManager manager;
 
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
             ReplaceOptions options = (ReplaceOptions) raw_options;
 
             if (options.ckan_file != null)
             {
-                options.modules.Add(MainClass.LoadCkanFromFile(ksp, options.ckan_file).identifier);
+                options.modules.Add(MainClass.LoadCkanFromFile(instance, options.ckan_file).identifier);
             }
 
             if (options.modules.Count == 0 && ! options.replace_all)
             {
                 // What? No mods specified?
-                User.RaiseMessage("Usage: ckan replace Mod [Mod2, ...]");
+                User.RaiseMessage("{0}: ckan replace Mod [Mod2, ...]", Properties.Resources.Usage);
                 User.RaiseMessage("  or   ckan replace --all");
                 return Exit.BADOPT;
             }
@@ -46,7 +46,7 @@ namespace CKAN.CmdLine
                     allow_incompatible = options.allow_incompatible
                 };
 
-            var regMgr = RegistryManager.Instance(ksp);
+            var regMgr = RegistryManager.Instance(instance);
             var registry = regMgr.registry;
             var to_replace = new List<ModuleReplacement>();
 
@@ -70,7 +70,7 @@ namespace CKAN.CmdLine
                             log.DebugFormat("Testing {0} {1} for possible replacement", mod.Key, mod.Value);
                             // Check if replacement is available
 
-                            ModuleReplacement replacement = registry.GetReplacement(mod.Key, ksp.VersionCriteria());
+                            ModuleReplacement replacement = registry.GetReplacement(mod.Key, instance.VersionCriteria());
                             if (replacement != null)
                             {
                                 // Replaceable
@@ -102,7 +102,7 @@ namespace CKAN.CmdLine
                             try
                             {
                                 // Check if replacement is available
-                                ModuleReplacement replacement = registry.GetReplacement(modToReplace.identifier, ksp.VersionCriteria());
+                                ModuleReplacement replacement = registry.GetReplacement(modToReplace.identifier, instance.VersionCriteria());
                                 if (replacement != null)
                                 {
                                     // Replaceable
@@ -131,25 +131,27 @@ namespace CKAN.CmdLine
                     }
                     catch (ModuleNotFoundKraken kraken)
                     {
-                        User.RaiseMessage("Module {0} not found", kraken.module);
+                        User.RaiseMessage(Properties.Resources.ReplaceModuleNotFound, kraken.module);
                     }
                 }
             }
             if (to_replace.Count() != 0)
             {
-                User.RaiseMessage("\r\nReplacing modules...\r\n");
+                User.RaiseMessage("");
+                User.RaiseMessage(Properties.Resources.Replacing);
+                User.RaiseMessage("");
                 foreach (ModuleReplacement r in to_replace)
                 {
-                    User.RaiseMessage("Replacement {0} {1} found for {2} {3}",
+                    User.RaiseMessage(Properties.Resources.ReplaceFound,
                         r.ReplaceWith.identifier, r.ReplaceWith.version,
                         r.ToReplace.identifier, r.ToReplace.version);
                 }
 
-                bool ok = User.RaiseYesNoDialog("Continue?");
+                bool ok = User.RaiseYesNoDialog(Properties.Resources.ReplaceContinuePrompt);
 
                 if (!ok)
                 {
-                    User.RaiseMessage("Replacements canceled at user request.");
+                    User.RaiseMessage(Properties.Resources.ReplaceCancelled);
                     return Exit.ERROR;
                 }
 
@@ -157,17 +159,18 @@ namespace CKAN.CmdLine
                 try
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
-                    new ModuleInstaller(ksp, manager.Cache, User).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
+                    new ModuleInstaller(instance, manager.Cache, User).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
                     User.RaiseMessage("");
                 }
                 catch (DependencyNotSatisfiedKraken ex)
                 {
-                    User.RaiseMessage("Dependencies not satisfied for replacement, {0} requires {1} {2} but it is not listed in the index, or not available for your version of KSP.", ex.parent, ex.module, ex.version);
+                    User.RaiseMessage(Properties.Resources.ReplaceDependencyNotSatisfied,
+                        ex.parent, ex.module, ex.version, instance.game.ShortName);
                 }
             }
             else
             {
-                User.RaiseMessage("No replacements found.");
+                User.RaiseMessage(Properties.Resources.ReplaceNotFound);
                 return Exit.OK;
             }
 

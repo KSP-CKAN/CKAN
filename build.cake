@@ -262,20 +262,16 @@ Task("Repack-Ckan")
     .IsDependentOn("Build-DotNet")
     .Does(() =>
 {
-    var cmdLineBinDirectory = outDirectory.Combine("CmdLine").Combine(configuration).Combine("bin");
+    var cmdLineBinDirectory = outDirectory.Combine("CKAN-CmdLine").Combine(configuration).Combine("bin").Combine(buildNetFramework);
     var assemblyPaths = GetFiles(string.Format("{0}/*.dll", cmdLineBinDirectory));
     assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-GUI.exe"));
     assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-ConsoleUI.exe"));
     assemblyPaths.Add(GetFiles(string.Format(
         "{0}/*/*.resources.dll",
-        outDirectory.Combine("CKAN").Combine(configuration).Combine("bin").Combine(buildNetFramework)
-    )));
-    assemblyPaths.Add(GetFiles(string.Format(
-        "{0}/*/*.resources.dll",
-        outDirectory.Combine("CKAN-GUI").Combine(configuration).Combine("bin")
+        outDirectory.Combine("CKAN-CmdLine").Combine(configuration).Combine("bin").Combine(buildNetFramework)
     )));
 
-    ILRepack(ckanFile, cmdLineBinDirectory.CombineWithFilePath("CmdLine.exe"), assemblyPaths,
+    ILRepack(ckanFile, cmdLineBinDirectory.CombineWithFilePath("CKAN-CmdLine.exe"), assemblyPaths,
         new ILRepackSettings
         {
             Libs = new List<DirectoryPath> { cmdLineBinDirectory.ToString() },

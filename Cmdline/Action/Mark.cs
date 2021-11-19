@@ -46,15 +46,15 @@ namespace CKAN.CmdLine
                     switch (option)
                     {
                         case "auto":
-                            exitCode = MarkAuto((MarkAutoOptions)suboptions, true, option, "auto-installed");
+                            exitCode = MarkAuto((MarkAutoOptions)suboptions, true, option, Properties.Resources.MarkAutoInstalled);
                             break;
 
                         case "user":
-                            exitCode = MarkAuto((MarkAutoOptions)suboptions, false, option, "user-selected");
+                            exitCode = MarkAuto((MarkAutoOptions)suboptions, false, option, Properties.Resources.MarkUserSelected);
                             break;
 
                         default:
-                            user.RaiseMessage("Unknown command: mark {0}", option);
+                            user.RaiseMessage(Properties.Resources.MarkUnknownCommand, option);
                             exitCode = Exit.BADOPT;
                             break;
                     }
@@ -67,7 +67,7 @@ namespace CKAN.CmdLine
         {
             if (opts.modules.Count < 1)
             {
-                user.RaiseMessage("Usage: ckan mark {0} Mod [Mod2 ...]", verb);
+                user.RaiseMessage("{0}: ckan mark {1} Mod [Mod2 ...]", Properties.Resources.Usage, verb);
                 return Exit.BADOPT;
             }
 
@@ -86,15 +86,15 @@ namespace CKAN.CmdLine
                 InstalledModule im = regMgr.registry.InstalledModule(id);
                 if (im == null)
                 {
-                    user.RaiseError("{0} is not installed.", id);
+                    user.RaiseError(Properties.Resources.MarkNotInstalled, id);
                 }
                 else if (im.AutoInstalled == value)
                 {
-                    user.RaiseError("{0} is already marked as {1}.", id, descrip);
+                    user.RaiseError(Properties.Resources.MarkAlready, id, descrip);
                 }
                 else
                 {
-                    user.RaiseMessage("Marking {0} as {1}...", id, descrip);
+                    user.RaiseMessage(Properties.Resources.Marking, id, descrip);
                     try
                     {
                         im.AutoInstalled = value;
@@ -102,7 +102,7 @@ namespace CKAN.CmdLine
                     }
                     catch (ModuleIsDLCKraken kraken)
                     {
-                        user.RaiseMessage($"Can't mark expansion '{kraken.module.name}' as auto-installed.");
+                        user.RaiseMessage(Properties.Resources.MarkDLC, kraken.module.name);
                         return Exit.BADOPT;
                     }
                 }
@@ -110,13 +110,13 @@ namespace CKAN.CmdLine
             if (needSave)
             {
                 regMgr.Save(false);
-                user.RaiseMessage("Changes made!");
+                user.RaiseMessage(Properties.Resources.MarkChanged);
             }
             return Exit.OK;
         }
 
+        private IUser               user    { get; set; }
         private GameInstanceManager manager { get; set; }
-        private IUser      user    { get; set; }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Mark));
     }
@@ -137,20 +137,20 @@ namespace CKAN.CmdLine
             ht.AddPreOptionsLine(" ");
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine("ckan mark - Edit flags on modules");
-                ht.AddPreOptionsLine($"Usage: ckan mark <command> [options]");
+                ht.AddPreOptionsLine($"ckan mark - {Properties.Resources.MarkHelpSummary}");
+                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan mark <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
             }
             else
             {
-                ht.AddPreOptionsLine("ksp " + verb + " - " + GetDescription(verb));
+                ht.AddPreOptionsLine("mark " + verb + " - " + GetDescription(verb));
                 switch (verb)
                 {
                     case "auto":
-                        ht.AddPreOptionsLine($"Usage: ckan mark {verb} [options] Mod [Mod2 ...]");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan mark {verb} [{Properties.Resources.Options}] Mod [Mod2 ...]");
                         break;
 
                     case "user":
-                        ht.AddPreOptionsLine($"Usage: ckan mark {verb} [options] Mod [Mod2 ...]");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan mark {verb} [{Properties.Resources.Options}] Mod [Mod2 ...]");
                         break;
                 }
             }
