@@ -34,7 +34,7 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             AddObject(new ConsoleLabel(
                 left + 2, top + 2, left + 2 + labelW - 1,
-                () => $"Directory:",
+                () => Properties.Resources.FileSelectDirectory,
                 th => th.PopupBg,
                 th => th.PopupFg
             ));
@@ -48,7 +48,7 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             AddObject(new ConsoleLabel(
                 left + 2, bottom - 1, right - 2,
-                () => $"{chosenFiles.Count} selected, {CkanModule.FmtSize(totalChosenSize())}",
+                () => string.Format(Properties.Resources.FileSelectCountFooter, chosenFiles.Count, CkanModule.FmtSize(totalChosenSize())),
                 th => th.PopupBg,
                 th => th.PopupFg
             ));
@@ -63,12 +63,12 @@ namespace CKAN.ConsoleUI.Toolkit {
                         Width    = 8,
                         Renderer = getRowSymbol
                     }, new ConsoleListBoxColumn<FileSystemInfo>() {
-                        Header   = "Name",
+                        Header   = Properties.Resources.FileSelectNameHeader,
                         Width    = 36,
                         Renderer = getRowName,
                         Comparer = compareNames
                     }, new ConsoleListBoxColumn<FileSystemInfo>() {
-                        Header   = "Size",
+                        Header   = Properties.Resources.FileSelectSizeHeader,
                         // Longest: "1023.1 KB"
                         Width    = 9,
                         Renderer = (FileSystemInfo fi) => getLength(fi),
@@ -79,7 +79,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                                 : (fb == null ? 1 : fa.Length.CompareTo(fb.Length));
                         }
                     }, new ConsoleListBoxColumn<FileSystemInfo>() {
-                        Header   = "Accessed",
+                        Header   = Properties.Resources.FileSelectTimestampHeader,
                         Width    = 10,
                         Renderer = (FileSystemInfo fi) => fi.LastWriteTime.ToString("yyyy-MM-dd"),
                         Comparer = (a, b) => a.LastWriteTime.CompareTo(b.LastWriteTime)
@@ -89,25 +89,25 @@ namespace CKAN.ConsoleUI.Toolkit {
             );
             AddObject(fileList);
 
-            AddTip("Esc", "Cancel");
+            AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 chosenFiles.Clear();
                 return false;
             });
 
-            AddTip("F10", "Sort");
+            AddTip("F10", Properties.Resources.Sort);
             AddBinding(Keys.F10, (object sender, ConsoleTheme theme) => {
                 fileList.SortMenu().Run(theme, right - 2, top + 2);
                 DrawBackground(theme);
                 return true;
             });
 
-            AddTip("Enter", "Change directory", () => fileList.Selection != null &&  isDir(fileList.Selection));
-            AddTip("Enter", "Select",           () => fileList.Selection != null && !isDir(fileList.Selection));
+            AddTip(Properties.Resources.Enter, Properties.Resources.FileSelectChangeDirectory, () => fileList.Selection != null &&  isDir(fileList.Selection));
+            AddTip(Properties.Resources.Enter, Properties.Resources.FileSelectSelect,          () => fileList.Selection != null && !isDir(fileList.Selection));
             AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => selectRow());
             AddBinding(Keys.Space, (object sender, ConsoleTheme theme) => selectRow());
 
-            AddTip("Ctrl+A", "Select all");
+            AddTip($"{Properties.Resources.Ctrl}+A", Properties.Resources.SelectAll);
             AddBinding(Keys.CtrlA, (object sender, ConsoleTheme theme) => {
                 foreach (FileSystemInfo fi in contents) {
                     if (!isDir(fi)) {
@@ -120,7 +120,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 return true;
             });
 
-            AddTip("Ctrl+D", "Deselect all", () => chosenFiles.Count > 0);
+            AddTip($"{Properties.Resources.Ctrl}+D", Properties.Resources.DeselectAll, () => chosenFiles.Count > 0);
             AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) => {
                 if (chosenFiles.Count > 0) {
                     chosenFiles.Clear();
@@ -128,7 +128,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 return true;
             });
 
-            AddTip("F9", "Import", () => chosenFiles.Count > 0);
+            AddTip("F9", Properties.Resources.FileSelectImport, () => chosenFiles.Count > 0);
             AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
                 return false;
             });
@@ -228,13 +228,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         private string getLength(FileSystemInfo fi)
         {
             if (isDir(fi)) {
-                return dirSize;
+                return Properties.Resources.FileSelectDirSize;
             } else {
                 FileInfo file = fi as FileInfo;
                 if (file != null) {
                     return CkanModule.FmtSize(file.Length);
                 } else {
-                    return dirSize;
+                    return Properties.Resources.FileSelectDirSize;
                 }
             }
         }
@@ -308,10 +308,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         private string filePattern;
 
         private static readonly string chosen  = Symbols.checkmark;
-        private const           string dirSize = "<DIR>";
 
         private const int idealW = 76;
-        private const int labelW = 12;
+        private int labelW => Properties.Resources.FileSelectDirectory.Length;
         private const int hPad   = 2;
         private const int top    =  2;
         private const int bottom = -2;

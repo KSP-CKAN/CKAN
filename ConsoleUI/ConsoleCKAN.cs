@@ -48,8 +48,8 @@ namespace CKAN.ConsoleUI {
             }
             else
             {
-                Console.WriteLine("No such theme: {0}", themeName);
-                Console.WriteLine("Available themes: {0}", string.Join(", ",
+                Console.WriteLine(Properties.Resources.ThemeNotFound, themeName);
+                Console.WriteLine(Properties.Resources.ThemeList, string.Join(", ",
                     ConsoleTheme.Themes.Keys.OrderBy(th => th)));
             }
         }

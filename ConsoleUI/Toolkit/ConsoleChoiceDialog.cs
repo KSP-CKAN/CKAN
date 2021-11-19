@@ -59,12 +59,12 @@ namespace CKAN.ConsoleUI.Toolkit {
                 0, 0, ListSortDirection.Ascending
             );
 
-            choices.AddTip("Enter", "Accept");
+            choices.AddTip(Properties.Resources.Enter, Properties.Resources.Accept);
             choices.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 return false;
             });
 
-            choices.AddTip("Esc", "Cancel");
+            choices.AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
             choices.AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 cancelled = true;
                 return false;

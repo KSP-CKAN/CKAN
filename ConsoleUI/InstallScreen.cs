@@ -18,8 +18,8 @@ namespace CKAN.ConsoleUI {
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
         public InstallScreen(GameInstanceManager mgr, ChangePlan cp, bool dbg)
             : base(
-                "Installing, Updating, and Removing Mods",
-                "Calculating..."
+                Properties.Resources.InstallTitle,
+                Properties.Resources.InstallMessage
             )
         {
             debug   = dbg;
@@ -93,19 +93,17 @@ namespace CKAN.ConsoleUI {
                         RaiseError(ex.Message);
                     } catch (FileExistsKraken ex) {
                         if (ex.owningModule != null) {
-                            RaiseMessage($"{ex.installingModule} tried to install {ex.filename}, but {ex.owningModule} has already installed it.");
-                            RaiseMessage($"Please report this problem at https://github.com/KSP-CKAN/NetKAN/issues/new/choose");
+                            RaiseMessage(Properties.Resources.InstallOwnedFileConflict, ex.installingModule, ex.filename, ex.owningModule);
                         } else {
-                            RaiseMessage($"{ex.installingModule} tried to install {ex.filename}, but it is already installed.");
-                            RaiseMessage($"Please manually uninstall the mod that owns this file to install {ex.installingModule}.");
+                            RaiseMessage(Properties.Resources.InstallUnownedFileConflict, ex.installingModule, ex.filename, ex.installingModule);
                         }
-                        RaiseError("Game files reverted.");
+                        RaiseError(Properties.Resources.InstallFilesReverted);
                     } catch (DownloadErrorsKraken ex) {
                         RaiseError(ex.ToString());
                     } catch (ModuleDownloadErrorsKraken ex) {
                         RaiseError(ex.ToString());
                     } catch (DownloadThrottledKraken ex) {
-                        if (RaiseYesNoDialog($"{ex.ToString()}\n\nEdit authentication tokens now?")) {
+                        if (RaiseYesNoDialog(string.Format(Properties.Resources.InstallAuthTokenPrompt, ex.ToString()))) {
                             if (ex.infoUrl != null) {
                                 ModInfoScreen.LaunchURL(theme, ex.infoUrl);
                             }
@@ -119,7 +117,7 @@ namespace CKAN.ConsoleUI {
 
                         ConsoleChoiceDialog<CkanModule> ch = new ConsoleChoiceDialog<CkanModule>(
                             ex.Message,
-                            "Name",
+                            Properties.Resources.InstallTooManyModsNameHeader,
                             ex.modules,
                             (CkanModule mod) => mod.ToString()
                         );
@@ -132,13 +130,13 @@ namespace CKAN.ConsoleUI {
                         }
 
                     } catch (BadMetadataKraken ex) {
-                        RaiseError($"Bad metadata detected for {ex.module}: {ex.Message}");
+                        RaiseError(Properties.Resources.InstallBadMetadata, ex.module, ex.Message);
                     } catch (DependencyNotSatisfiedKraken ex) {
-                        RaiseError($"{ex.parent} requires {ex.module}, but it is not listed in the index, or not available for your version of the game.\r\n{ex.Message}");
+                        RaiseError(Properties.Resources.InstallUnsatisfiedDependency, ex.parent, ex.module, ex.Message);
                     } catch (ModuleNotFoundKraken ex) {
-                        RaiseError($"Module {ex.module} required but it is not listed in the index, or not available for your version of the game.\r\n{ex.Message}");
+                        RaiseError(Properties.Resources.InstallModuleNotFound, ex.module, ex.Message);
                     } catch (ModNotInstalledKraken ex) {
-                        RaiseError($"{ex.mod} is not installed, can't remove");
+                        RaiseError(Properties.Resources.InstallNotInstalled, ex.mod);
                     } catch (DllLocationMismatchKraken ex) {
                         RaiseError(ex.Message);
                     }
@@ -148,7 +146,7 @@ namespace CKAN.ConsoleUI {
 
         private void OnModInstalled(CkanModule mod)
         {
-            RaiseMessage($"{Symbols.checkmark} Successfully installed {mod.name} {ModuleInstaller.StripEpoch(mod.version)}");
+            RaiseMessage(Properties.Resources.InstallModInstalled, Symbols.checkmark, mod.name, ModuleInstaller.StripEpoch(mod.version));
         }
 
         private IEnumerable<ModuleReplacement> AllReplacements(IEnumerable<string> identifiers)

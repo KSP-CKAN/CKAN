@@ -28,22 +28,22 @@ namespace CKAN.ConsoleUI {
             manualEntry = new ConsoleField(
                 l + 2, b - 2, r - 2
             ) {
-                GhostText = () => "<Enter a filter>"
+                GhostText = () => Properties.Resources.FilterAddGhostText
             };
             AddObject(manualEntry);
-            manualEntry.AddTip("Enter", "Accept value");
+            manualEntry.AddTip(Properties.Resources.Enter, Properties.Resources.FilterAddAcceptTip);
             manualEntry.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 choice = manualEntry.Value;
                 return false;
             });
 
-            AddTip("Esc", "Cancel");
+            AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 choice = null;
                 return false;
             });
 
-            CenterHeader = () => "Add Filter";
+            CenterHeader = () => Properties.Resources.FilterAddTitle;
         }
 
         /// <summary>

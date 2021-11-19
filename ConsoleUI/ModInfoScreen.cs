@@ -38,7 +38,7 @@ namespace CKAN.ConsoleUI {
             ));
             AddObject(new ConsoleLabel(
                 1, 2, -1,
-                () => $"By {string.Join(", ", mod.author)}"
+                () => string.Format(Properties.Resources.ModInfoAuthors, string.Join(", ", mod.author))
             ));
 
             AddObject(new ConsoleFrame(
@@ -49,7 +49,7 @@ namespace CKAN.ConsoleUI {
             ));
             AddObject(new ConsoleLabel(
                 3, 4, 11,
-                () => "License:",
+                () => Properties.Resources.ModInfoLicence,
                 null,
                 th => th.DimLabelFg
             ));
@@ -60,7 +60,7 @@ namespace CKAN.ConsoleUI {
             ));
             AddObject(new ConsoleLabel(
                 3, 5, 12,
-                () => "Download:",
+                () => Properties.Resources.ModInfoDownload,
                 null,
                 th => th.DimLabelFg
             ));
@@ -91,7 +91,7 @@ namespace CKAN.ConsoleUI {
 
             AddObject(new ConsoleFrame(
                 1, Math.Max(depsBot, versBot) + 1, -1, -1,
-                () => "Description",
+                () => Properties.Resources.ModInfoDescriptionFrame,
                 th => th.NormalFrameFg,
                 false
             ));
@@ -108,15 +108,14 @@ namespace CKAN.ConsoleUI {
             }
             AddObject(tb);
             if (!ChangePlan.IsAnyAvailable(registry, mod.identifier)) {
-                tb.AddLine("\r\nNOTE: This mod is installed but no longer available.");
-                tb.AddLine("If you uninstall it, CKAN will not be able to re-install it.");
+                tb.AddLine(Properties.Resources.ModInfoUnavailableWarning);
             }
             tb.AddScrollBindings(this);
 
-            AddTip("Esc", "Back");
+            AddTip(Properties.Resources.Esc, Properties.Resources.Back);
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
 
-            AddTip("Ctrl+D", "Download to cache (does not install)",
+            AddTip($"{Properties.Resources.Ctrl}+D", Properties.Resources.ModInfoDownloadToCache,
                 () => !manager.Cache.IsMaybeCachedZip(mod) && !mod.IsDLC
             );
             AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) => {
@@ -131,49 +130,49 @@ namespace CKAN.ConsoleUI {
 
                 if (mod.resources.homepage != null) {
                     opts.Add(new ConsoleMenuOption(
-                        "Home page",  "", "Open the home page URL in a browser",
+                        Properties.Resources.ModInfoHomePage,  "", Properties.Resources.ModInfoHomePageTip,
                         true,
                         th => LaunchURL(th, mod.resources.homepage)
                     ));
                 }
                 if (mod.resources.repository != null) {
                     opts.Add(new ConsoleMenuOption(
-                        "Repository", "", "Open the repository URL in a browser",
+                        Properties.Resources.ModInfoRepository, "", Properties.Resources.ModInfoRepositoryTip,
                         true,
                         th => LaunchURL(th, mod.resources.repository)
                     ));
                 }
                 if (mod.resources.bugtracker != null) {
                     opts.Add(new ConsoleMenuOption(
-                        "Bugtracker", "", "Open the bug tracker URL in a browser",
+                        Properties.Resources.ModInfoBugtracker, "", Properties.Resources.ModInfoBugtrackerTip,
                         true,
                         th => LaunchURL(th, mod.resources.bugtracker)
                     ));
                 }
                 if (mod.resources.spacedock != null) {
                     opts.Add(new ConsoleMenuOption(
-                        "SpaceDock",  "", "Open the SpaceDock URL in a browser",
+                        Properties.Resources.ModInfoSpaceDock,  "", Properties.Resources.ModInfoSpaceDockTip,
                         true,
                         th => LaunchURL(th, mod.resources.spacedock)
                     ));
                 }
                 if (mod.resources.curse != null) {
                     opts.Add(new ConsoleMenuOption(
-                        "Curse",      "", "Open the Curse URL in a browser",
+                        Properties.Resources.ModInfoCurse,      "", Properties.Resources.ModInfoCurseTip,
                         true,
                         th => LaunchURL(th, mod.resources.curse)
                     ));
                 }
                 if (mod.resources.store != null) {
                     opts.Add(new ConsoleMenuOption(
-                        "Store",      "", "Open the Store URL in a browser",
+                        Properties.Resources.ModInfoStore,      "", Properties.Resources.ModInfoStoreTip,
                         true,
                         th => LaunchURL(th, mod.resources.store)
                     ));
                 }
                 if (mod.resources.steamstore != null) {
                     opts.Add(new ConsoleMenuOption(
-                        "Steam Store", "", "Open the Steam Store URL in a browser",
+                        Properties.Resources.ModInfoSteamStore, "", Properties.Resources.ModInfoSteamStoreTip,
                         true,
                         th => LaunchURL(th, mod.resources.steamstore)
                     ));
@@ -181,7 +180,7 @@ namespace CKAN.ConsoleUI {
                 if (debug) {
                     opts.Add(null);
                     opts.Add(new ConsoleMenuOption(
-                        "DEBUG: View metadata", "", "Display the full registry data for this mod",
+                        Properties.Resources.ModInfoViewMetadata, "", Properties.Resources.ModInfoViewMetadataTip,
                         true,
                         ViewMetadata
                     ));
@@ -206,7 +205,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override string CenterHeader()
         {
-            return "Mod Details";
+            return Properties.Resources.ModInfoTitle;
         }
 
         /// <summary>
@@ -214,15 +213,15 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override string MenuTip()
         {
-            return "Links";
+            return Properties.Resources.ModInfoMenuTip;
         }
 
         private bool ViewMetadata(ConsoleTheme theme)
         {
             ConsoleMessageDialog md = new ConsoleMessageDialog(
                 $"\"{mod.identifier}\": {registry.GetAvailableMetadata(mod.identifier)}",
-                new List<string> {"OK"},
-                () => $"{mod.name} Metadata",
+                new List<string> { Properties.Resources.OK },
+                () => string.Format(Properties.Resources.ModInfoViewMetadataTitle, mod.name),
                 TextAlign.Left
             );
             md.Run(theme);
@@ -247,7 +246,7 @@ namespace CKAN.ConsoleUI {
             // support launching URLs!  .NET's API design has painted us into a corner.
             // So instead we display a popup dialog for the garbage to print all over,
             // then wait 1.5 seconds and refresh the screen when it closes.
-            ConsoleMessageDialog d = new ConsoleMessageDialog("Launching...", new List<string>());
+            ConsoleMessageDialog d = new ConsoleMessageDialog(Properties.Resources.ModInfoURLLaunching, new List<string>());
             d.Run(theme, (ConsoleTheme th) => {
                 Utilities.ProcessStartURL(u.ToString());
                 System.Threading.Thread.Sleep(1500);
@@ -269,14 +268,14 @@ namespace CKAN.ConsoleUI {
 
                 AddObject(new ConsoleFrame(
                     1, top, midL, top + h - 1,
-                    () => "Dependencies",
+                    () => Properties.Resources.ModInfoDependenciesFrame,
                     th => th.NormalFrameFg,
                     false
                 ));
                 if (numDeps > 0) {
                     AddObject(new ConsoleLabel(
                         3, top + 1, 3 + lblW - 1,
-                        () => $"Required ({numDeps}):",
+                        () => string.Format(Properties.Resources.ModInfoRequiredLabel, numDeps),
                         null,
                         th => th.DimLabelFg
                     ));
@@ -299,7 +298,7 @@ namespace CKAN.ConsoleUI {
                 if (numConfs > 0) {
                     AddObject(new ConsoleLabel(
                         3, top + 1 + depsH, 3 + lblW - 1,
-                        () => $"Conflicts ({numConfs}):",
+                        () => string.Format(Properties.Resources.ModInfoConflictsLabel, numConfs),
                         null,
                         th => th.DimLabelFg
                     ));
@@ -367,7 +366,7 @@ namespace CKAN.ConsoleUI {
                             // Show replaced_by
                             addVersionBox(
                                 boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                                () => $"Replaced by {mr.ReplaceWith.identifier}",
+                                () => string.Format(Properties.Resources.ModInfoReplacedBy, mr.ReplaceWith.identifier),
                                 th => th.AlertFrameFg,
                                 false,
                                 new List<CkanModule>() {mr.ReplaceWith}
@@ -376,7 +375,9 @@ namespace CKAN.ConsoleUI {
 
                             addVersionBox(
                                 boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                                () => $"Installed {instTime?.ToString("d") ?? "manually"}",
+                                () => instTime.HasValue
+                                    ? string.Format(Properties.Resources.ModInfoInstalledOn, instTime.Value.ToString("d"))
+                                    : Properties.Resources.ModInfoInstalledManually,
                                 th => th.ActiveFrameFg,
                                 true,
                                 new List<CkanModule>() {inst}
@@ -387,7 +388,9 @@ namespace CKAN.ConsoleUI {
 
                             addVersionBox(
                                 boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                                () => $"Latest/Installed {instTime?.ToString("d") ?? "manually"}",
+                                () => instTime.HasValue
+                                    ? string.Format(Properties.Resources.ModInfoLatestInstalledOn, instTime.Value.ToString("d"))
+                                    : Properties.Resources.ModInfoLatestInstalledManually,
                                 th => th.ActiveFrameFg,
                                 true,
                                 new List<CkanModule>() {inst}
@@ -401,7 +404,7 @@ namespace CKAN.ConsoleUI {
 
                         addVersionBox(
                             boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                            () => "Latest Version",
+                            () => Properties.Resources.ModInfoLatestVersion,
                             th => th.AlertFrameFg,
                             false,
                             new List<CkanModule>() {latest}
@@ -410,7 +413,9 @@ namespace CKAN.ConsoleUI {
 
                         addVersionBox(
                             boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                            () => $"Installed {instTime?.ToString("d") ?? "manually"}",
+                                () => instTime.HasValue
+                                    ? string.Format(Properties.Resources.ModInfoInstalledOn, instTime.Value.ToString("d"))
+                                    : Properties.Resources.ModInfoInstalledManually,
                             th => th.ActiveFrameFg,
                             true,
                             new List<CkanModule>() {inst}
@@ -422,7 +427,7 @@ namespace CKAN.ConsoleUI {
 
                     addVersionBox(
                         boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                        () => "Latest Version",
+                            () => Properties.Resources.ModInfoLatestVersion,
                         th => th.NormalFrameFg,
                         false,
                         new List<CkanModule>() {latest}
@@ -435,7 +440,7 @@ namespace CKAN.ConsoleUI {
 
                     addVersionBox(
                         boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                        () => "Other Versions",
+                        () => Properties.Resources.ModInfoOtherVersions,
                         th => th.NormalFrameFg,
                         false,
                         others
@@ -451,7 +456,9 @@ namespace CKAN.ConsoleUI {
                 // of the old info about it from when we installed it
                 addVersionBox(
                     boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                    () => $"UNAVAILABLE/Installed {instTime?.ToString("d") ?? "manually"}",
+                    () => instTime.HasValue
+                        ? string.Format(Properties.Resources.ModInfoUnavailableInstalledOn, instTime.Value.ToString("d"))
+                        : Properties.Resources.ModInfoUnavailableInstalledManually,
                     th => th.AlertFrameFg,
                     true,
                     new List<CkanModule>() {mod}
@@ -487,7 +494,7 @@ namespace CKAN.ConsoleUI {
                 ));
                 AddObject(new ConsoleLabel(
                     l + 2, t + 2, r - 2,
-                    () => "Compatible with:",
+                    () => Properties.Resources.ModInfoCompatibleWith,
                     null,
                     th => th.DimLabelFg
                 ));
@@ -506,7 +513,7 @@ namespace CKAN.ConsoleUI {
             string dl = mod.download?.ToString() ?? "";
             foreach (var kvp in hostDomains) {
                 if (dl.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0) {
-                    return $"Hosted on {kvp.Value}";
+                    return string.Format(Properties.Resources.ModInfoHostedOn, kvp.Value);
                 }
             }
             if (mod.resources != null) {
@@ -514,7 +521,7 @@ namespace CKAN.ConsoleUI {
                     string bt = mod.resources.bugtracker.ToString();
                     foreach (var kvp in hostDomains) {
                         if (bt.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0) {
-                            return $"Report bugs on {kvp.Value}";
+                            return string.Format(Properties.Resources.ModInfoReportBugsOn, kvp.Value);
                         }
                     }
                 }
@@ -522,7 +529,7 @@ namespace CKAN.ConsoleUI {
                     string rep = mod.resources.repository.ToString();
                     foreach (var kvp in hostDomains) {
                         if (rep.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0) {
-                            return $"Repository on {kvp.Value}";
+                            return string.Format(Properties.Resources.ModInfoRepositoryOn, kvp.Value);
                         }
                     }
                 }
@@ -530,20 +537,15 @@ namespace CKAN.ConsoleUI {
                     string hp = mod.resources.homepage.ToString();
                     foreach (var kvp in hostDomains) {
                         if (hp.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0) {
-                            return $"Home page on {kvp.Value}";
+                            return string.Format(Properties.Resources.ModInfoHomePageOn, kvp.Value);
                         }
                     }
                 }
 
                 if (mod.resources.store != null || mod.resources.steamstore != null) {
-                    List<string> stores = new List<string>();
-                    if (mod.resources.store != null) {
-                        stores.Add("KSP store");
-                    }
-                    if (mod.resources.steamstore != null) {
-                        stores.Add("Steam store");
-                    }
-                    return $"Buy from {string.Join(" or ", stores)}";
+                    return mod.resources.steamstore == null ? Properties.Resources.ModInfoBuyFromKSPStore
+                        :  mod.resources.store      == null ? Properties.Resources.ModInfoBuyFromSteamStore
+                        :                                     Properties.Resources.ModInfoBuyFromKSPStoreOrSteamStore;
                 }
             }
             return mod.download?.Host ?? "";
@@ -551,7 +553,7 @@ namespace CKAN.ConsoleUI {
 
         private void Download(ConsoleTheme theme)
         {
-            ProgressScreen            ps   = new ProgressScreen($"Downloading {mod.identifier}");
+            ProgressScreen            ps   = new ProgressScreen(string.Format(Properties.Resources.ModInfoDownloading, mod.identifier));
             NetAsyncModulesDownloader dl   = new NetAsyncModulesDownloader(ps, manager.Cache);
             ModuleInstaller           inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, ps);
             LaunchSubScreen(
@@ -561,10 +563,10 @@ namespace CKAN.ConsoleUI {
                     try {
                         dl.DownloadModules(new List<CkanModule> {mod});
                         if (!manager.Cache.IsMaybeCachedZip(mod)) {
-                            ps.RaiseError("Download failed, file is corrupted");
+                            ps.RaiseError(Properties.Resources.ModInfoDownloadFailed);
                         }
                     } catch (Exception ex) {
-                        ps.RaiseError($"Download failed: {ex}");
+                        ps.RaiseError(Properties.Resources.ModInfoDownloadFailed, ex);
                     }
                 }
             );

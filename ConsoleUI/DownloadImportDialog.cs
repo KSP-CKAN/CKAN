@@ -21,15 +21,17 @@ namespace CKAN.ConsoleUI {
         public static void ImportDownloads(ConsoleTheme theme, GameInstance gameInst, NetModuleCache cache, ChangePlan cp)
         {
             ConsoleFileMultiSelectDialog cfmsd = new ConsoleFileMultiSelectDialog(
-                "Import Downloads",
+                Properties.Resources.ImportSelectTitle,
                 FindDownloadsPath(gameInst),
                 "*.zip",
-                "Import"
+                Properties.Resources.ImportSelectHeader
             );
             HashSet<FileInfo> files = cfmsd.Run(theme);
 
             if (files.Count > 0) {
-                ProgressScreen  ps   = new ProgressScreen("Importing Downloads", "Calculating...");
+                ProgressScreen  ps   = new ProgressScreen(
+                    Properties.Resources.ImportProgressTitle,
+                    Properties.Resources.ImportProgressMessage);
                 ModuleInstaller inst = new ModuleInstaller(gameInst, cache, ps);
                 ps.Run(theme, (ConsoleTheme th) => inst.ImportFiles(files, ps,
                     (CkanModule mod) => cp.Install.Add(mod), RegistryManager.Instance(gameInst).registry));
