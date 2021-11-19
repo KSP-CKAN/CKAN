@@ -120,6 +120,7 @@
   <data name="label1.Text" xml:space="preserve"><value>Все доступные версии выбранной модификации</value></data>
   <data name="ModVersion.Text" xml:space="preserve"><value>Версия</value></data>
   <data name="CompatibleGameVersion.Text" xml:space="preserve"><value>Совместимые версии игры</value></data>
+  <data name="ReleaseDate.Text" xml:space="preserve"><value>Дата выпуска</value></data>
   <data name="label2.Text" xml:space="preserve"><value>Зелёный</value></data>
   <data name="label3.Text" xml:space="preserve"><value>Св.-зел.</value></data>
   <data name="label4.Text" xml:space="preserve"><value>Жирный</value></data>

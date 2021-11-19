@@ -30,13 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(AllModVersions));
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
-            "",
-            "i1",
-            "i2"}, -1);
             this.label1 = new System.Windows.Forms.Label();
             this.ModVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.CompatibleGameVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ReleaseDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.VersionsListView = new ThemedListView();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -62,8 +59,13 @@
             //
             // CompatibleGameVersion
             //
-            this.CompatibleGameVersion.Width = 190;
+            this.CompatibleGameVersion.Width = 132;
             resources.ApplyResources(this.CompatibleGameVersion, "CompatibleGameVersion");
+            //
+            // ReleaseDate
+            //
+            this.ReleaseDate.Width = 140;
+            resources.ApplyResources(this.ReleaseDate, "ReleaseDate");
             //
             // VersionsListView
             //
@@ -72,11 +74,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.VersionsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ModVersion,
-            this.CompatibleGameVersion});
+            this.CompatibleGameVersion,
+            this.ReleaseDate});
             this.VersionsListView.CheckBoxes = true;
             this.VersionsListView.FullRowSelect = true;
-            this.VersionsListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem4});
             this.VersionsListView.Location = new System.Drawing.Point(3, 76);
             this.VersionsListView.Name = "VersionsListView";
             this.VersionsListView.Size = new System.Drawing.Size(348, 423);
@@ -165,6 +166,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ColumnHeader ModVersion;
         private System.Windows.Forms.ColumnHeader CompatibleGameVersion;
+        private System.Windows.Forms.ColumnHeader ReleaseDate;
         private System.Windows.Forms.ListView VersionsListView;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;

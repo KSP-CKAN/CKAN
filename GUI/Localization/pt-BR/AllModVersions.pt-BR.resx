@@ -120,6 +120,7 @@
   <data name="label1.Text" xml:space="preserve"><value>Todas as versões disponíveis do mod selecionado</value></data>
   <data name="ModVersion.Text" xml:space="preserve"><value>Versão do mod</value></data>
   <data name="CompatibleGameVersion.Text" xml:space="preserve"><value>Versões do jogo compatíveis</value></data>
+  <data name="ReleaseDate.Text" xml:space="preserve"><value>Data do lançamento</value></data>
   <data name="label2.Text" xml:space="preserve"><value>Verde</value></data>
   <data name="label3.Text" xml:space="preserve"><value>Verde claro</value></data>
   <data name="label4.Text" xml:space="preserve"><value>Negrito</value></data>
