@@ -22,7 +22,7 @@ The following are the minimum requirements to build CKAN and NetKAN from source:
 ### Unix-like Systems
 - A POSIX compliant shell interpreter at `/bin/sh`
 - [Mono](http://www.mono-project.com/) >= 4.0.0
-- [cURL](https://curl.haxx.se/) accessible in PATH 
+- [cURL](https://curl.haxx.se/) accessible in PATH
 
 ### Windows Systems
 - PowerShell
@@ -32,7 +32,7 @@ The following are the minimum requirements to build CKAN and NetKAN from source:
 ## Build Directory
 
 A core philosophy of the build system is that builds should be "clean", that is it should be easy to restore the source
-directory to its original state after a build. As such **ALL** build artifacts should be output to a top-level 
+directory to its original state after a build. As such **ALL** build artifacts should be output to a top-level
 directory named `_build`. This directory is listed in `.gitignore` so that is not committed to source control. Removing
 this directory (`rm -r _build`) should return the source directory to its original state. Therefore any build artifacts
 that are output outside this directory should be considered a bug.
@@ -195,13 +195,13 @@ The basic operation of the actual build process is as follows:
     - These are simple tests designed to make sure there isn't anything grossly wrong with the build. All they do is
       execute the repacked `ckan.exe` and `netkan.exe` and make sure their version output matches the expected output.
 
-## Travis
+## GitHub Workflows
 
-Travis is the continuous integration (CI) environment that is used to automatically build CKAN and NetKAN. Travis's
-configuration is controlled by `.travis.yml` in the top-level directory. Upon every push Travis will execute the cross
-product of mono versions and build configurations. As there are currently three specified mono versions (`4.6.2`,
-`4.2.4`, and `4.0.5`) and two specified build configurations (`Debug`, `Release`), Travis will execute *six* builds per
-push. Travis's operation is pretty simple:
+GitHub Workflows is the continuous integration (CI) environment that is used to automatically build CKAN and NetKAN. Its
+configuration is controlled by `build.yml` in the `.github/workflows` directory. Upon every push GitHub will execute the cross
+product of mono versions and build configurations. As there are currently five specified mono versions (`5.20`,
+`6.4`, `6.6`, `6.8` and `latest`) and two specified build configurations (`Debug`, `Release`), GitHub will execute *six* builds per
+push. GitHub's operation is pretty simple:
 
 - A bunch of packages are installed to make the build work.
 - Some commands are executed to simulate a graphical environment for testing.
@@ -211,11 +211,11 @@ push. Travis's operation is pretty simple:
       thus behave nondeterministically (frustrating behavior for a CI system).
 - The built executables (`ckan.exe` and `netkan.exe`) are uploaded to Amazon S3 if the following conditions are met:
     - All previous steps were successful
-    - Its on the `master` branch
+    - It's on the `master` branch
     - The build configuraton is `Release`
-    - The mono version used is the latest (currently `4.6.2`)
+    - The mono version used is the latest
 - A GitHub release is generated if the following conditions are met:
     - All previous steps were successful
     - The commit is tagged
     - The build configuration is `Release`
-    - The mono version used is the latest (currently `4.6.2`)
+    - The mono version used is the latest
