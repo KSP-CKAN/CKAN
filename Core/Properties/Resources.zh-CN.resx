@@ -117,5 +117,180 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RelationshipResolverUserReason" xml:space="preserve"><value>用户选择安装的新Mod</value></data>
+  <data name="AutoUpdateNotFetched" xml:space="preserve"><value>未能拉取到发布信息。无法更新。</value></data>
+  <data name="NetDownloading" xml:space="preserve"><value>正在下载 {0} </value></data>
+  <data name="NetMissingCertFailed" xml:space="preserve"><value>下载 {0} 失败</value></data>
+  <data name="NetInvalidLocation" xml:space="preserve"><value>Location Header含有无效URL: {0}</value></data>
+  <data name="NetAsyncDownloaderDownloading" xml:space="preserve"><value>正在下载 "{0}" </value></data>
+  <data name="NetAsyncDownloaderCancelled" xml:space="preserve"><value>用户取消下载</value></data>
+  <data name="NetAsyncDownloaderProgress" xml:space="preserve"><value>{0}/s - 下载中 - 剩余 {1} </value></data>
+  <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve"><value>下载 "{0}" 失败，尝试回滚到 "{1}"</value></data>
+  <data name="NetFileCacheCannotFind" xml:space="preserve"><value>无法找到缓存目录: {0}</value></data>
+  <data name="NetFileCacheZipError" xml:space="preserve"><value>在 {1} 的步骤 {0} 出现错误: {2}</value></data>
+  <data name="NetFileCacheZipTestArchiveFalse" xml:space="preserve"><value>ZipFile.TestArchive(true) 返回了 false</value></data>
+  <data name="NetFileCacheNullFileName" xml:space="preserve"><value>空文件名</value></data>
+  <data name="NetFileCacheMonoNotSupported" xml:space="preserve"><value>{0}
+
+请在您的操作系统安装 `mono-complete` 或其它等效应用。</value></data>
+  <data name="NetModuleCacheBadLength" xml:space="preserve"><value>{0}: {1} 的长度为 {2}，但应该为 {3}</value></data>
+  <data name="NetModuleCacheNotValidZIP" xml:space="preserve"><value>{0}: {1} 并不是一个有效的 ZIP 文件: {2}</value></data>
+  <data name="NetModuleCacheMismatchSHA1" xml:space="preserve"><value>{0}: {1} 的 SHA1 值为 {2}，但应该为 {3}</value></data>
+  <data name="NetModuleCacheMismatchSHA256" xml:space="preserve"><value>{0}: {1} 的 SHA256 值为 {2}，但应该为 {3}</value></data>
+  <data name="NetRepoCheckingForUpdates" xml:space="preserve"><value>检查更新中</value></data>
+  <data name="NetRepoAlreadyUpToDate" xml:space="preserve"><value>已是最新版本</value></data>
+  <data name="NetRepoNoChanges" xml:space="preserve"><value>自上次更新以来无更改</value></data>
+  <data name="NetRepoUpdating" xml:space="preserve"><value>正在更新 {0}</value></data>
+  <data name="NetRepoUpdated" xml:space="preserve"><value>已更新 {0} ({1} 个模组)</value></data>
+  <data name="NetRepoSaving" xml:space="preserve"><value>保存模组到注册表中</value></data>
+  <data name="NetRepoSaved" xml:space="preserve"><value>注册表已保存</value></data>
+  <data name="NetRepoUpdatedAll" xml:space="preserve"><value>数据库已更新</value></data>
+  <data name="NetRepoNoModules" xml:space="preserve"><value>没有找到模组!</value></data>
+  <data name="NetRepoFailedDownload" xml:space="preserve"><value>下载 {0} 失败: {1}</value></data>
+  <data name="NetRepoChangedModulesReinstallPrompt" xml:space="preserve"><value>以下模组自上次更新后更改了它们的元数据:
+
+{0}
+您应该重新安装它们以保持与数据库的一致性。
+
+您想要现在重新安装吗？</value></data>
+  <data name="NetRepoInconsistenciesHeader" xml:space="preserve"><value>发现以下冲突:</value></data>
+  <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve"><value>`any_of` 不应该与 `{0}` 结合使用</value></data>
+  <data name="RegistryFileConflict" xml:space="preserve"><value>{0} 想要安装 {1}，但该文件已被 {2} 注册</value></data>
+  <data name="RegistryFileNotRemoved" xml:space="preserve"><value>{0} 已被 {1} 注册但还未被删除！</value></data>
+  <data name="RegistryManagerDirectoryNotFound" xml:space="preserve"><value>无法在 {0} 找到目录</value></data>
+  <data name="RegistryManagerExportFilenamePrefix" xml:space="preserve"><value>已安装</value></data>
+  <data name="RegistryManagerDefaultModpackAbstract" xml:space="preserve"><value>已安装在 KSP 实例 {0} 的模组列表</value></data>
+  <data name="CkanModuleDeserialisationError" xml:space="preserve"><value>JSON 反序列化错误: {0}</value></data>
+  <data name="CkanModuleUnsupportedSpec" xml:space="preserve"><value>{0} 需要 CKAN {1}，我们无法读取它.</value></data>
+  <data name="CkanModuleMissingRequired" xml:space="preserve"><value>{0} 缺少需要的 field {1}</value></data>
+  <data name="CkanModuleKspVersionMixed" xml:space="preserve"><value>ksp_version 不能与 ksp_version_(min|max) 混用</value></data>
+  <data name="CkanModuleNotAvailable" xml:space="preserve"><value>模组 {0} 的版本 {1} 不可用</value></data>
+  <data name="CkanModuleNotInstalledOrAvailable" xml:space="preserve"><value>模组 {0} 未安装或不可用</value></data>
+  <data name="CkanModuleAllVersions" xml:space="preserve"><value>所有版本</value></data>
+  <data name="LicenceInvalid" xml:space="preserve"><value>许可 {0} 是无效的</value></data>
+  <data name="ModuleInstallDescriptorMustHaveInstallTo" xml:space="preserve"><value>Install 句法必须含有一个 install_to</value></data>
+  <data name="ModuleInstallDescriptorRequireFileFind" xml:space="preserve"><value>Install 句法必须含有 file, find, 或者 find_regexp 指令中的一个</value></data>
+  <data name="ModuleInstallDescriptorTooManyFileFind" xml:space="preserve"><value>Install 句法只能含有 file, find, 或者 find_regexp 指令中的一个</value></data>
+  <data name="ModuleInstallDescriptorTooManyFilterInclude" xml:space="preserve"><value>Install 句法只能含有 filter 或者 include_only 指令中的一个，而不是两个</value></data>
+  <data name="ModuleInstallDescriptorInvalidInstallPath" xml:space="preserve"><value>无效安装路径: {0}</value></data>
+  <data name="ModuleInstallDescriptorUnknownInstallPath" xml:space="preserve"><value>未知的 install_to: {0}</value></data>
+  <data name="ModuleInstallDescriptorNoFilesFound" xml:space="preserve"><value>没有找到匹配 {0} 的文件来安装！</value></data>
+  <data name="ModuleInstallDescriptorAsNoPathSeparators" xml:space="preserve"><value>`as` 不能含有路径分隔符</value></data>
+  <data name="RelationshipDescriptorMinVersionOnly" xml:space="preserve"><value>{0} {1} 或更新版本</value></data>
+  <data name="RelationshipDescriptorMaxVersionOnly" xml:space="preserve"><value>{0} {1} 或更旧版本</value></data>
+  <data name="RelationshipDescriptorAnyOfJoiner" xml:space="preserve"><value>{0} 或 {1}</value></data>
+  <data name="ReleaseStatusInvalid" xml:space="preserve"><value>{0} 不是有效的发布状态</value></data>
+  <data name="RepositoryDefaultName" xml:space="preserve"><value>默认数据库</value></data>
+  <data name="CkanModuleVersionToString" xml:space="preserve"><value>{0} aka {1}</value></data>
+  <data name="GameVersionYalovAny" xml:space="preserve"><value>任意版本</value></data>
+  <data name="GameVersionSelectNeedOne" xml:space="preserve"><value>需要 Major 和 Minor 中的至少一个</value></data>
+  <data name="GameVersionSelectHeader" xml:space="preserve"><value>选中的版本并不是独立的，请选择一个版本:</value></data>
+  <data name="GameVersionSelectBuildHeader" xml:space="preserve"><value>未在该版本中发现该 Build 版本号. 请选择一个 Build 版本:</value></data>
+  <data name="GameVersionNotKnown" xml:space="preserve"><value>CKAN 无法识别该版本</value></data>
+  <data name="GameVersionCriteriaToString" xml:space="preserve"><value>[版本: {0}]</value></data>
+  <data name="GameVersionRangeMinOnly" xml:space="preserve"><value>{0} {1} 及更旧版本</value></data>
+  <data name="GameVersionRangeMaxOnly" xml:space="preserve"><value>{0} {1} 及更新版本</value></data>
+  <data name="ProvidesModuleVersionToString" xml:space="preserve"><value>{0} (由 {1} 提供)</value></data>
+  <data name="UnmanagedModuleVersionUnknown" xml:space="preserve"><value>(未管理)</value></data>
+  <data name="UnmanagedModuleVersionKnown" xml:space="preserve"><value>{0} (未管理)</value></data>
+  <data name="PathUtilsNotAbsolute" xml:space="preserve"><value>{0} 并不是一个绝对路径</value></data>
+  <data name="PathUtilsNotInside" xml:space="preserve"><value> {0} 不在 {1} 中</value></data>
+  <data name="PathUtilsAlreadyAbsolute" xml:space="preserve"><value>{0} 已经是绝对路径</value></data>
+  <data name="PathUtilsNotRoot" xml:space="preserve"><value>{0} 不是绝对根路径</value></data>
+  <data name="GameInstanceSettingUp" xml:space="preserve"><value>首次配置 CKAN 中...</value></data>
+  <data name="GameInstanceCreatingDir" xml:space="preserve"><value>正在创建 {0}</value></data>
+  <data name="GameInstanceScanning" xml:space="preserve"><value>扫描已安装的模组中...</value></data>
+  <data name="GameInstanceVersionNotFound" xml:space="preserve"><value>未找到游戏版本</value></data>
+  <data name="GameInstanceToString" xml:space="preserve"><value>{0} 安装: {1}</value></data>
+  <data name="GameInstanceManagerPortable" xml:space="preserve"><value>可移动</value></data>
+  <data name="GameInstanceManagerAuto" xml:space="preserve"><value>自动 {0}</value></data>
+  <data name="GameInstanceCloneInvalid" xml:space="preserve"><value>所选实例并非有效的 {0} 实例</value></data>
+  <data name="GameInstanceFakeBadVersion" xml:space="preserve"><value>选中的 {0} 版本并非已知版本: {1}</value></data>
+  <data name="GameInstanceFakeNotEmpty" xml:space="preserve"><value>选中的文件夹已经存在且不是空文件夹</value></data>
+  <data name="GameInstanceFakeDLCNotAllowed" xml:space="preserve"><value>{0} 版本 {1} 或以上需要 {2} DLC</value></data>
+  <data name="GameInstanceNoValidName" xml:space="preserve"><value>无法为新实例返回有效的名称</value></data>
+  <data name="GameInstanceByPathName" xml:space="preserve"><value>自定义</value></data>
+  <data name="GameInstancePathNotFound" xml:space="preserve"><value>{0} 不存在</value></data>
+  <data name="ModuleInstallerDownloading" xml:space="preserve"><value>正在下载 "{0}"</value></data>
+  <data name="ModuleInstallerNothingToInstall" xml:space="preserve"><value>没有需要安装的</value></data>
+  <data name="ModuleInstallerAboutToInstall" xml:space="preserve"><value>中止安装:</value></data>
+  <data name="ModuleInstallerModuleCached" xml:space="preserve"><value> * {0} {1} (已缓存)</value></data>
+  <data name="ModuleInstallerUserDeclined" xml:space="preserve"><value>用户取消安装列表</value></data>
+  <data name="ModuleInstallerInstallingMod" xml:space="preserve"><value>安装模组 "{0}"</value></data>
+  <data name="ModuleInstallerUpdatingRegistry" xml:space="preserve"><value>正在更新注册表</value></data>
+  <data name="ModuleInstallerCommitting" xml:space="preserve"><value>正在提交文件系统更改</value></data>
+  <data name="ModuleInstallerRescanning" xml:space="preserve"><value>重新扫描 {0}</value></data>
+  <data name="ModuleInstallerDone" xml:space="preserve"><value>完成！</value></data>
+  <data name="ModuleInstallerAlreadyInstalled" xml:space="preserve"><value>{0} {1} 已经安装，跳过</value></data>
+  <data name="ModuleInstallerZIPNotInCache" xml:space="preserve"><value>尝试安装 {0}，但它没有被下载或下载被中断了</value></data>
+  <data name="ModuleInstallerMetapackage" xml:space="preserve"><value>元安装包无法安装！</value></data>
+  <data name="ModuleInstallerDLC" xml:space="preserve"><value>DLC 无法安装！</value></data>
+  <data name="ModuleInstallerBadDLLLocation" xml:space="preserve"><value>在 {1} 发现了模组 {0} 的 DLL 文件 ，但 CKAN 无法在该位置安装它。正在中止安装以避免安装多个重复的模组。请手动卸载该模组并重试以安装它。</value></data>
+  <data name="ModuleInstallerFileSame" xml:space="preserve"><value>相同</value></data>
+  <data name="ModuleInstallerFileDifferent" xml:space="preserve"><value>不相同</value></data>
+  <data name="ModuleInstallerOverwrite" xml:space="preserve"><value>模组 {0} 想要覆盖以下手动安装文件:
+
+{1}
+
+覆盖吗?</value></data>
+  <data name="ModuleInstallerOverwriteCancelled" xml:space="preserve"><value>取消覆盖手动安装文件，无法安装 {0}</value></data>
+  <data name="ModuleInstallerFileExists" xml:space="preserve"><value>尝试写入 {0} 但它已经存在</value></data>
+  <data name="ModuleInstallerAboutToRemove" xml:space="preserve"><value>中止删除:</value></data>
+  <data name="ModuleInstallerContinuePrompt" xml:space="preserve"><value>继续？</value></data>
+  <data name="ModuleInstallerRemoveAborted" xml:space="preserve"><value>用户请求中止删除模组</value></data>
+  <data name="ModuleInstallerRemovingMod" xml:space="preserve"><value>正在删除 {0}...</value></data>
+  <data name="ModuleInstallerAboutToUpgrade" xml:space="preserve"><value>中止升级:</value></data>
+  <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve"><value> * 安装: {0} {1} ({2}，{3})</value></data>
+  <data name="ModuleInstallerUpgradeInstallingCached" xml:space="preserve"><value> * 安装: {0} {1} (已缓存)</value></data>
+  <data name="ModuleInstallerUpgradeReinstalling" xml:space="preserve"><value> * 重新安装: {0} {1}</value></data>
+  <data name="ModuleInstallerUpgradeDowngrading" xml:space="preserve"><value> * 降级: {0} 从 {1} 到 {2}</value></data>
+  <data name="ModuleInstallerUpgradeUpgradingUncached" xml:space="preserve"><value> * 升级: {0} {1} 到 {2} ({3}，{4})</value></data>
+  <data name="ModuleInstallerUpgradeUpgradingCached" xml:space="preserve"><value> * 升级: {0} {1} 到 {2} (已缓存)</value></data>
+  <data name="ModuleInstallerUpgradeUserDeclined" xml:space="preserve"><value>用户取消升级列表</value></data>
+  <data name="ModuleInstallerReplaceAutodetected" xml:space="preserve"><value>无法替换 {0} 因为它并不是由 CKAN 安装的。请在尝试安装前手动删除它。</value></data>
+  <data name="ModuleInstallerReplaceNotInstalled" xml:space="preserve"><value>无法替换 {0} 因为它还未安装。请尝试安装 {1}。</value></data>
+  <data name="ModuleInstallerImporting" xml:space="preserve"><value>导入 {0}... ({1}%)</value></data>
+  <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve"><value>已缓存: {0}</value></data>
+  <data name="ModuleInstallerImportingMod" xml:space="preserve"><value>导入 {0} {1}...</value></data>
+  <data name="ModuleInstallerImportNotFound" xml:space="preserve"><value>未找到索引: {0}</value></data>
+  <data name="ModuleInstallerImportInstallPrompt" xml:space="preserve"><value>安装 {0} 个兼容的导入的模组到游戏实例 {1} ({2}) 吗？</value></data>
+  <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve"><value>导入完成。 删除 {0} 个旧文件吗？</value></data>
+  <data name="KrakenDependencyNotSatisfied" xml:space="preserve"><value> {0} 版本 {1} 的依赖项未满足</value></data>
+  <data name="KrakenDependencyModuleNotFound" xml:space="preserve"><value>模组未找到: {0} {1}</value></data>
+  <data name="KrakenParentDependencyNotSatisfied" xml:space="preserve"><value>{0} 的依赖项 {1} 版本 {2} 未满足</value></data>
+  <data name="KrakenAny" xml:space="preserve"><value>(任意)</value></data>
+  <data name="KrakenProvidedByMoreThanOne" xml:space="preserve"><value>模组 {0} 由多个可用模组提供。请从下列列表中选择一个:</value></data>
+  <data name="KrakenInconsistenciesHeader" xml:space="preserve"><value>发现以下冲突:</value></data>
+  <data name="KrakenMissingDependency" xml:space="preserve"><value>{0} 缺少依赖 {1}</value></data>
+  <data name="KrakenConflictsWith" xml:space="preserve"><value>{0} 与 {1} 冲突</value></data>
+  <data name="KrakenDownloadErrorsHeader" xml:space="preserve"><value>Uh oh，下载时以下东西出现了问题...</value></data>
+  <data name="KrakenModuleDownloadErrorsHeader" xml:space="preserve"><value>一个或多个下载未能成功:</value></data>
+  <data name="KrakenModuleDownloadError" xml:space="preserve"><value>下载错误 {0}: {1}</value></data>
+  <data name="KrakenNotInstalled" xml:space="preserve"><value>模组 {0} 未安装！</value></data>
+  <data name="KrakenMissingCertificateUnix" xml:space="preserve"><value>Oh no! 我们的下载由于证书错误失败了！
+
+查看以下页面以获得帮助:
+https://github.com/KSP-CKAN/CKAN/wiki/SSL-certificate-errors</value></data>
+  <data name="KrakenMissingCertificateNotUnix" xml:space="preserve"><value>Oh no! 我们的下载由于证书错误失败了！</value></data>
+  <data name="KrakenDownloadThrottled" xml:space="preserve"><value>从 {0} 下载时被限速了。
+请考虑添加一个验证 token 来提高限制速率。</value></data>
+  <data name="KrakenAlreadyRunning" xml:space="preserve"><value>CKAN 已经运行在该实例下了！
+
+如果您确定这里不是，请删除:
+"{0}"</value></data>
+  <data name="KrakenReinstallModule" xml:space="preserve"><value>元数据已更改，推荐重新安装: {0}</value></data>
+  <data name="RelationshipResolverConflictsWith" xml:space="preserve"><value>{0} 与 {1} 冲突</value></data>
+  <data name="RelationshipResolverRequiredButResolver" xml:space="preserve"><value>需要 {0} ，但解析器内有一个不兼容版本</value></data>
+  <data name="RelationshipResolverRequiredButInstalled" xml:space="preserve"><value>需要 {0} ，但有一个已安装的不兼容版本</value></data>
+  <data name="RelationshipResolverAnUnmanaged" xml:space="preserve"><value>一个未管理的 DLL 或 DLC</value></data>
+  <data name="RelationshipResolverUnmanaged" xml:space="preserve"><value>未管理</value></data>
+  <data name="RelationshipResolverModNotInList" xml:space="preserve"><value>模组 {0} 不在列表中</value></data>
+  <data name="RelationshipResolverInstalledReason" xml:space="preserve"><value>已安装</value></data>
+  <data name="RelationshipResolverUserReason" xml:space="preserve"><value>用户请求</value></data>
+  <data name="RelationshipResolverNoLongerUsedReason" xml:space="preserve"><value>已自动安装，已删除依赖模组</value></data>
+  <data name="RelationshipResolverReplacementReason" xml:space="preserve"><value>正在替换 {0}</value></data>
+  <data name="RelationshipResolverSuggestedReason" xml:space="preserve"><value>由 {0} 建议</value></data>
+  <data name="RelationshipResolverDependsReason" xml:space="preserve"><value>满足 {0} 的依赖项</value></data>
+  <data name="RelationshipResolverRecommendedReason" xml:space="preserve"><value>由 {0} 推荐</value></data>
+  <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve"><value>{0} 有一个未满足的依赖项: {1} 未安装</value></data>
+  <data name="SanityCheckerConflictsWith" xml:space="preserve"><value>{0} 与 {1} 冲突</value></data>
 </root>
