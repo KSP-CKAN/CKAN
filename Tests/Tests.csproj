@@ -30,7 +30,7 @@
     </Otherwise>
   </Choose>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-    <DefaultItemExcludes>$(DefaultItemExcludes);NetKAN\**;CmdLine\**;ConsoleUI\**;GUI\**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);NetKAN\**;CmdLine\**;ConsoleUI\**;GUI\**;AutoUpdate\**</DefaultItemExcludes>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug_NetCore' ">
     <DebugSymbols>true</DebugSymbols>
@@ -77,6 +77,7 @@
         <ProjectReference Include="..\Cmdline\CKAN-cmdline.csproj" />
         <ProjectReference Include="..\ConsoleUI\CKAN-ConsoleUI.csproj" />
         <ProjectReference Include="..\GUI\CKAN-GUI.csproj" />
+        <ProjectReference Include="..\AutoUpdate\CKAN-autoupdate.csproj" />
         <ProjectReference Include="..\Netkan\CKAN-netkan.csproj" />
       </ItemGroup>
     </When>

@@ -22,7 +22,7 @@ namespace Tests.Core.AutoUpdateTests
             // This is on by default in .NET 4.6, but not in 4.5.
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
-            var updater = AutoUpdate.Instance;
+            var updater = CKAN.AutoUpdate.Instance;
 
             // Is is a *really* basic test to just make sure we get release info
             // if we ask for it.
