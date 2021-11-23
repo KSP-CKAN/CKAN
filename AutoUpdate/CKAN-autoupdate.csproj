@@ -50,6 +50,7 @@
   <Target Name="ILRepack" AfterTargets="Build">
     <ItemGroup>
       <InputAssemblies Include="fr-FR\$(AssemblyName).resources.dll" />
+      <InputAssemblies Include="ru-RU\$(AssemblyName).resources.dll" />
     </ItemGroup>
     <ILRepack OutputAssembly="AutoUpdater.exe"
               MainAssembly="$(AssemblyName).exe"

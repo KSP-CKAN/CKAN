@@ -117,5 +117,181 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RelationshipResolverUserReason" xml:space="preserve"><value>Установка выбранной пользователем модификации</value></data>
+  <data name="AutoUpdateNotFetched" xml:space="preserve"><value>Не загружена информация об обновлении.</value></data>
+  <data name="NetDownloading" xml:space="preserve"><value>Загрузка {0}</value></data>
+  <data name="NetMissingCertFailed" xml:space="preserve"><value>Не удалось загрузить {0}</value></data>
+  <data name="NetInvalidLocation" xml:space="preserve"><value>Неверный URL в заголовке расположения: {0}</value></data>
+  <data name="NetAsyncDownloaderDownloading" xml:space="preserve"><value>Загрузка «{0}»</value></data>
+  <data name="NetAsyncDownloaderCancelled" xml:space="preserve"><value>Загрузка отменена пользователем</value></data>
+  <data name="NetAsyncDownloaderProgress" xml:space="preserve"><value>{0}/сек — загружается — осталось {1}</value></data>
+  <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve"><value>Не удалось загрузить «{0}», будет использоваться альтернативный источник "{1}"</value></data>
+  <data name="NetFileCacheCannotFind" xml:space="preserve"><value>Не удалось найти папку кэша: {0}</value></data>
+  <data name="NetFileCacheZipError" xml:space="preserve"><value>Ошибка в шаге {0} для {1}: {2}</value></data>
+  <data name="NetFileCacheZipTestArchiveFalse" xml:space="preserve"><value>ZipFile.TestArchive(true) вернуло false</value></data>
+  <data name="NetFileCacheNullFileName" xml:space="preserve"><value>Пустое имя файла</value></data>
+  <data name="NetFileCacheMonoNotSupported" xml:space="preserve"><value>{0}
+
+Установите пакет `mono-complete` или его эквивалент для вашей ОС.</value></data>
+  <data name="NetModuleCacheBadLength" xml:space="preserve"><value>{0}: {1} имеет длину {2}, должно быть {3}</value></data>
+  <data name="NetModuleCacheNotValidZIP" xml:space="preserve"><value>{0}: {1} не является корректным ZIP-файлом: {2}</value></data>
+  <data name="NetModuleCacheMismatchSHA1" xml:space="preserve"><value>{0}: SHA1 для {1} — {2}, должно быть {3}</value></data>
+  <data name="NetModuleCacheMismatchSHA256" xml:space="preserve"><value>{0}: SHA256 для {1} — {2}, должно быть {3}</value></data>
+  <data name="NetRepoCheckingForUpdates" xml:space="preserve"><value>Поиск обновлений</value></data>
+  <data name="NetRepoAlreadyUpToDate" xml:space="preserve"><value>Уже обновлено</value></data>
+  <data name="NetRepoNoChanges" xml:space="preserve"><value>Нет изменений с последнего обновления</value></data>
+  <data name="NetRepoUpdating" xml:space="preserve"><value>Обновление «{0}»</value></data>
+  <data name="NetRepoUpdated" xml:space="preserve"><value>Обновлён «{0}» ({1} модулей)</value></data>
+  <data name="NetRepoSaving" xml:space="preserve"><value>Сохранение модулей в реестр</value></data>
+  <data name="NetRepoSaved" xml:space="preserve"><value>Реестр сохранён</value></data>
+  <data name="NetRepoUpdatedAll" xml:space="preserve"><value>Репозитории обновлены</value></data>
+  <data name="NetRepoNoModules" xml:space="preserve"><value>Не найдено ни одного модуля!</value></data>
+  <data name="NetRepoFailedDownload" xml:space="preserve"><value>Не удалось загрузить «{0}»: {1}</value></data>
+  <data name="NetRepoChangedModulesReinstallPrompt" xml:space="preserve"><value>С последнего обновления были изменены метаданные следующих модификаций:
+
+{0}
+Ради сохранения согласованности с репозиторием рекомендуется их переустановка.
+
+Хотите ли вы переустановить их сейчас?</value></data>
+  <data name="NetRepoInconsistenciesHeader" xml:space="preserve"><value>Найдены следующие несоответствия:</value></data>
+  <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve"><value>`any_of` не должно сочетаться с `{0}`</value></data>
+  <data name="RegistryFileConflict" xml:space="preserve"><value>{0} желает установить {1}, который принадлежит {2}</value></data>
+  <data name="RegistryFileNotRemoved" xml:space="preserve"><value>{0} принадлежит {1}, но всё ещё не удалён!</value></data>
+  <data name="RegistryManagerDirectoryNotFound" xml:space="preserve"><value>Не удаётся найти папку в {0}</value></data>
+  <data name="RegistryManagerExportFilenamePrefix" xml:space="preserve"><value>установленные</value></data>
+  <data name="RegistryManagerDefaultModpackAbstract" xml:space="preserve"><value>Список модулей, установленных в сборке «{0}»</value></data>
+  <data name="CkanModuleDeserialisationError" xml:space="preserve"><value>Ошибка десериализации JSON: {0}</value></data>
+  <data name="CkanModuleUnsupportedSpec" xml:space="preserve"><value>{0} требует CKAN {1}, не удаётся прочитать.</value></data>
+  <data name="CkanModuleMissingRequired" xml:space="preserve"><value>В {0} не заполнено требуемое поле {1}</value></data>
+  <data name="CkanModuleKspVersionMixed" xml:space="preserve"><value>ksp_version используется вместе с ksp_version_(min|max)</value></data>
+  <data name="CkanModuleNotAvailable" xml:space="preserve"><value>Версия {1} модуля «{0}» недоступна</value></data>
+  <data name="CkanModuleNotInstalledOrAvailable" xml:space="preserve"><value>Модуль «{0}» не установлен или недоступен</value></data>
+  <data name="CkanModuleAllVersions" xml:space="preserve"><value>Все версии</value></data>
+  <data name="LicenceInvalid" xml:space="preserve"><value>Лицензия на {0} не является подлинной</value></data>
+  <data name="ModuleInstallDescriptorMustHaveInstallTo" xml:space="preserve"><value>Установочные записи должны включать в себя install_to</value></data>
+  <data name="ModuleInstallDescriptorRequireFileFind" xml:space="preserve"><value>Установочные записи должны включать в себя инструкцию file, find или find_regexp</value></data>
+  <data name="ModuleInstallDescriptorTooManyFileFind" xml:space="preserve"><value>Установочные записи должны включать в себя только одну из инструкций file, find или find_regexp</value></data>
+  <data name="ModuleInstallDescriptorTooManyFilterInclude" xml:space="preserve"><value>Установочные записи должны включать в себя только инструкцию filter либо include_only directives</value></data>
+  <data name="ModuleInstallDescriptorInvalidInstallPath" xml:space="preserve"><value>Неверный путь установки: {0}</value></data>
+  <data name="ModuleInstallDescriptorUnknownInstallPath" xml:space="preserve"><value>Не найдена install_to: {0}</value></data>
+  <data name="ModuleInstallDescriptorNoFilesFound" xml:space="preserve"><value>Не найдено файлов для установки, совпадающих с {0}!</value></data>
+  <data name="ModuleInstallDescriptorAsNoPathSeparators" xml:space="preserve"><value>`as` не может включать разделители пути</value></data>
+  <data name="RelationshipDescriptorMinVersionOnly" xml:space="preserve"><value>{0} {1} или позднее</value></data>
+  <data name="RelationshipDescriptorMaxVersionOnly" xml:space="preserve"><value>{0} {1} или ранее</value></data>
+  <data name="RelationshipDescriptorAnyOfJoiner" xml:space="preserve"><value>{0} ИЛИ {1}</value></data>
+  <data name="ReleaseStatusInvalid" xml:space="preserve"><value>{0} не является корректным статусом</value></data>
+  <data name="RepositoryDefaultName" xml:space="preserve"><value>стандартный</value></data>
+  <data name="CkanModuleVersionToString" xml:space="preserve"><value>{0} или {1}</value></data>
+  <data name="GameVersionYalovAny" xml:space="preserve"><value>любая</value></data>
+  <data name="GameVersionSelectNeedOne" xml:space="preserve"><value>Нужно указать как минимум наибольшую или наименьшую версию</value></data>
+  <data name="GameVersionSelectHeader" xml:space="preserve"><value>Указанная версия не является единственной, выберите подходящую:</value></data>
+  <data name="GameVersionSelectBuildHeader" xml:space="preserve"><value>Номер сборки не соответствует данной версии, выберите подходящий:</value></data>
+  <data name="GameVersionNotKnown" xml:space="preserve"><value>Версия не известна CKAN.</value></data>
+  <data name="GameVersionCriteriaToString" xml:space="preserve"><value>[Версии: {0}]</value></data>
+  <data name="GameVersionRangeMinOnly" xml:space="preserve"><value>{0} {1} и ранее</value></data>
+  <data name="GameVersionRangeMaxOnly" xml:space="preserve"><value>{0} {1} и позднее</value></data>
+  <data name="ProvidesModuleVersionToString" xml:space="preserve"><value>{0} (предоставлено {1})</value></data>
+  <data name="UnmanagedModuleVersionUnknown" xml:space="preserve"><value>(не управляется)</value></data>
+  <data name="UnmanagedModuleVersionKnown" xml:space="preserve"><value>{0} (не управляется)</value></data>
+  <data name="PathUtilsNotAbsolute" xml:space="preserve"><value>{0} не является абсолютным путём</value></data>
+  <data name="PathUtilsNotInside" xml:space="preserve"><value>Ой! {0} не находится внутри {1}</value></data>
+  <data name="PathUtilsAlreadyAbsolute" xml:space="preserve"><value>Путь {0} уже является абсолютным</value></data>
+  <data name="PathUtilsNotRoot" xml:space="preserve"><value>{0} не является абсолютным корнем</value></data>
+  <data name="GameInstanceSettingUp" xml:space="preserve"><value>Первичная настройка CKAN...</value></data>
+  <data name="GameInstanceCreatingDir" xml:space="preserve"><value>Создание {0}</value></data>
+  <data name="GameInstanceScanning" xml:space="preserve"><value>Поиск установленных модификаций...</value></data>
+  <data name="GameInstanceVersionNotFound" xml:space="preserve"><value>Не найдена сборка игры</value></data>
+  <data name="GameInstanceToString" xml:space="preserve"><value>{0} Установка: {1}</value></data>
+  <data name="GameInstanceManagerPortable" xml:space="preserve"><value>портативная</value></data>
+  <data name="GameInstanceManagerAuto" xml:space="preserve"><value>Авто {0}</value></data>
+  <data name="GameInstanceCloneInvalid" xml:space="preserve"><value>Указанная сборка не является корректной сборкой {0}</value></data>
+  <data name="GameInstanceFakeBadVersion" xml:space="preserve"><value>Указанная версия {0} не является известной версией: {1}</value></data>
+  <data name="GameInstanceFakeNotEmpty" xml:space="preserve"><value>Указанная папка уже существует и не является пустой</value></data>
+  <data name="GameInstanceFakeDLCNotAllowed" xml:space="preserve"><value>Для DLC «{2}» необходим {0} версии {1} или выше</value></data>
+  <data name="GameInstanceNoValidName" xml:space="preserve"><value>Не удалось вернуть корректное имя для новой сборки</value></data>
+  <data name="GameInstanceByPathName" xml:space="preserve"><value>своя</value></data>
+  <data name="GameInstancePathNotFound" xml:space="preserve"><value>{0} не существует</value></data>
+  <data name="ModuleInstallerDownloading" xml:space="preserve"><value>Загружается «{0}»</value></data>
+  <data name="ModuleInstallerNothingToInstall" xml:space="preserve"><value>Нечего устанавливать</value></data>
+  <data name="ModuleInstallerAboutToInstall" xml:space="preserve"><value>Будут установлены:</value></data>
+  <data name="ModuleInstallerModuleCached" xml:space="preserve"><value> * {0} {1} (кэшировано)</value></data>
+  <data name="ModuleInstallerUserDeclined" xml:space="preserve"><value>Пользователь отклонил установку</value></data>
+  <data name="ModuleInstallerInstallingMod" xml:space="preserve"><value>Установка модификации «{0}»</value></data>
+  <data name="ModuleInstallerUpdatingRegistry" xml:space="preserve"><value>Обновление реестра</value></data>
+  <data name="ModuleInstallerCommitting" xml:space="preserve"><value>Осуществление изменений файловой системы</value></data>
+  <data name="ModuleInstallerRescanning" xml:space="preserve"><value>Повторный поиск {0}</value></data>
+  <data name="ModuleInstallerDone" xml:space="preserve"><value>Готово!</value></data>
+  <data name="ModuleInstallerAlreadyInstalled" xml:space="preserve"><value>{0} {1} уже установлен, пропуск</value></data>
+  <data name="ModuleInstallerZIPNotInCache" xml:space="preserve"><value>Попытка установить {0}, но она не была загружена или оказалась повреждена</value></data>
+  <data name="ModuleInstallerMetapackage" xml:space="preserve"><value>Метапакеты не могут быть установлены!</value></data>
+  <data name="ModuleInstallerDLC" xml:space="preserve"><value>DLC не могут быть установлены!</value></data>
+  <data name="ModuleInstallerBadDLLLocation" xml:space="preserve"><value>DLL для модуля «{0}» найдена в {1}, но не там, где её бы установил CKAN. Во избежание установки нескольких копий модификации операция отменена. Вручную удалите модуль и попробуйте снова.</value></data>
+  <data name="ModuleInstallerFileSame" xml:space="preserve"><value>тот же</value></data>
+  <data name="ModuleInstallerFileDifferent" xml:space="preserve"><value>ДРУГОЙ</value></data>
+  <data name="ModuleInstallerOverwrite" xml:space="preserve"><value>Модуль «{0}» желает перезаписать следующие файлы, установленные вручную:
+
+{1}
+
+Перезаписать?</value></data>
+  <data name="ModuleInstallerOverwriteCancelled" xml:space="preserve"><value>Установленные вручную файлы не перезаписаны, установка невозможна {0}</value></data>
+  <data name="ModuleInstallerFileExists" xml:space="preserve"><value>Совершена попытка записать {0}, но файл уже существует</value></data>
+  <data name="ModuleInstallerAboutToRemove" xml:space="preserve"><value>Будут удалены:</value></data>
+  <data name="ModuleInstallerContinuePrompt" xml:space="preserve"><value>Продолжить?</value></data>
+  <data name="ModuleInstallerRemoveAborted" xml:space="preserve"><value>Пользователь отменил удаление</value></data>
+  <data name="ModuleInstallerRemovingMod" xml:space="preserve"><value>Удаление {0}...</value></data>
+  <data name="ModuleInstallerAboutToUpgrade" xml:space="preserve"><value>Будут обновлены:</value></data>
+  <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve"><value> * Установка: {0} {1} ({2}, {3})</value></data>
+  <data name="ModuleInstallerUpgradeInstallingCached" xml:space="preserve"><value> * Установка: {0} {1} (кэшировано)</value></data>
+  <data name="ModuleInstallerUpgradeReinstalling" xml:space="preserve"><value> * Переустановка: {0} {1}</value></data>
+  <data name="ModuleInstallerUpgradeDowngrading" xml:space="preserve"><value> * Откат: {0} от {1} к {2}</value></data>
+  <data name="ModuleInstallerUpgradeUpgradingUncached" xml:space="preserve"><value> * Обновление: {0} {1} до {2} ({3}, {4})</value></data>
+  <data name="ModuleInstallerUpgradeUpgradingCached" xml:space="preserve"><value> * Обновление: {0} {1} до {2} (кэшировано)</value></data>
+  <data name="ModuleInstallerUpgradeUserDeclined" xml:space="preserve"><value>Пользователь отменил список обновления</value></data>
+  <data name="ModuleInstallerReplaceAutodetected" xml:space="preserve"><value>Невозможно заменить {0}, так как он не был установлен CKAN.
+Удалите его вручную и попробуйте снова.</value></data>
+  <data name="ModuleInstallerReplaceNotInstalled" xml:space="preserve"><value>Невозможно заменить {0}, так как он не установлен. Сначала установите {1}.</value></data>
+  <data name="ModuleInstallerImporting" xml:space="preserve"><value>Импорт {0}... ({1}%)</value></data>
+  <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve"><value>Уже кэшировано: {0}</value></data>
+  <data name="ModuleInstallerImportingMod" xml:space="preserve"><value>Импорт {0} {1}...</value></data>
+  <data name="ModuleInstallerImportNotFound" xml:space="preserve"><value>Не найдено в указателе: {0}</value></data>
+  <data name="ModuleInstallerImportInstallPrompt" xml:space="preserve"><value>Установить {0} совместимых импортированных модификаций в сборку игры {1} ({2})?</value></data>
+  <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve"><value>Импортирование завершено. Удалить {0} старых файлов?</value></data>
+  <data name="KrakenDependencyNotSatisfied" xml:space="preserve"><value>Зависимость от {0} версии {1} не удовлетворена</value></data>
+  <data name="KrakenDependencyModuleNotFound" xml:space="preserve"><value>Модуль не найден: {0} {1}</value></data>
+  <data name="KrakenParentDependencyNotSatisfied" xml:space="preserve"><value>Зависимость {0} от {1} версии {2} не удовлетворена</value></data>
+  <data name="KrakenAny" xml:space="preserve"><value>(любая)</value></data>
+  <data name="KrakenProvidedByMoreThanOne" xml:space="preserve"><value>Модуль «{0}» предоставлен несколькими модулями. Выберите один из них:</value></data>
+  <data name="KrakenInconsistenciesHeader" xml:space="preserve"><value>Были найдены следующие несоответствия:</value></data>
+  <data name="KrakenMissingDependency" xml:space="preserve"><value>{0}: отсутствует зависимость {1}</value></data>
+  <data name="KrakenConflictsWith" xml:space="preserve"><value>{0} конфликтует с {1}</value></data>
+  <data name="KrakenDownloadErrorsHeader" xml:space="preserve"><value>Ой, при загрузке произошли следующие проблемы...</value></data>
+  <data name="KrakenModuleDownloadErrorsHeader" xml:space="preserve"><value>Одна или несколько загрузок завершились неудачно:</value></data>
+  <data name="KrakenModuleDownloadError" xml:space="preserve"><value>Ошибка загрузки {0}: {1}</value></data>
+  <data name="KrakenNotInstalled" xml:space="preserve"><value>Модуль «{0}» не установлен!</value></data>
+  <data name="KrakenMissingCertificateUnix" xml:space="preserve"><value>О нет! Загрузка не завершена из-за ошибки сертификата!
+
+Посетите эту страницу для получения справки:
+https://github.com/KSP-CKAN/CKAN/wiki/SSL-certificate-errors</value></data>
+  <data name="KrakenMissingCertificateNotUnix" xml:space="preserve"><value>О нет! Загрузка не завершена из-за ошибки сертификата!</value></data>
+  <data name="KrakenDownloadThrottled" xml:space="preserve"><value>Загрузка из {0} была ограничена.
+Для увеличения квоты добавьте токен аутентификации.</value></data>
+  <data name="KrakenAlreadyRunning" xml:space="preserve"><value>CKAN уже запущен для этой сборки!
+
+Если вы уверены, что это не так, удалите:
+"{0}"</value></data>
+  <data name="KrakenReinstallModule" xml:space="preserve"><value>Метаданные изменены, рекомендуется переустановка: {0}</value></data>
+  <data name="RelationshipResolverConflictsWith" xml:space="preserve"><value>{0} конфликтует с {1}</value></data>
+  <data name="RelationshipResolverRequiredButResolver" xml:space="preserve"><value>Необходима {0}, но в ресольвере несовместимая версия</value></data>
+  <data name="RelationshipResolverRequiredButInstalled" xml:space="preserve"><value>Необходима {0}, но установлена несовместимая версия</value></data>
+  <data name="RelationshipResolverAnUnmanaged" xml:space="preserve"><value>неуправляемая DLL или DLC</value></data>
+  <data name="RelationshipResolverUnmanaged" xml:space="preserve"><value>Не управляется</value></data>
+  <data name="RelationshipResolverModNotInList" xml:space="preserve"><value>Модификация «{0}» не в списке</value></data>
+  <data name="RelationshipResolverInstalledReason" xml:space="preserve"><value>Установлено в данный момент</value></data>
+  <data name="RelationshipResolverUserReason" xml:space="preserve"><value>Запрошено пользователем</value></data>
+  <data name="RelationshipResolverNoLongerUsedReason" xml:space="preserve"><value>Установлено автоматически, зависящие модули удалены</value></data>
+  <data name="RelationshipResolverReplacementReason" xml:space="preserve"><value>Заменяет {0}</value></data>
+  <data name="RelationshipResolverSuggestedReason" xml:space="preserve"><value>Предложено {0}</value></data>
+  <data name="RelationshipResolverDependsReason" xml:space="preserve"><value>Для удовлетворения зависимости {0}</value></data>
+  <data name="RelationshipResolverRecommendedReason" xml:space="preserve"><value>Рекомендуется {0}</value></data>
+  <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve"><value>{0} имеет неудовлетворённую зависимость: {1} не установлен</value></data>
+  <data name="SanityCheckerConflictsWith" xml:space="preserve"><value>{0} конфликтует с {1}</value></data>
 </root>
