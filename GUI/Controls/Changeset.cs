@@ -102,7 +102,7 @@ namespace CKAN.GUI
             return new ListViewItem(new string[]
             {
                 change.NameAndStatus,
-                change.ChangeType.ToString(),
+                change.ChangeType.ToI18nString(),
                 warnLbl != null
                     ? string.Format(
                         Properties.Resources.MainChangesetWarningInstallingModuleWithLabel,

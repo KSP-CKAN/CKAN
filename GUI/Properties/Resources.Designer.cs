@@ -1030,5 +1030,20 @@ namespace CKAN.GUI.Properties {
             get { return (string)(ResourceManager.GetObject("TotalPlayTime", resourceCulture)); }
         }
 
+        internal static string ChangeTypeNone {
+            get { return (string)(ResourceManager.GetObject("ChangeTypeNone", resourceCulture)); }
+        }
+        internal static string ChangeTypeInstall {
+            get { return (string)(ResourceManager.GetObject("ChangeTypeInstall", resourceCulture)); }
+        }
+        internal static string ChangeTypeRemove {
+            get { return (string)(ResourceManager.GetObject("ChangeTypeRemove", resourceCulture)); }
+        }
+        internal static string ChangeTypeUpdate {
+            get { return (string)(ResourceManager.GetObject("ChangeTypeUpdate", resourceCulture)); }
+        }
+        internal static string ChangeTypeReplace {
+            get { return (string)(ResourceManager.GetObject("ChangeTypeReplace", resourceCulture)); }
+        }
     }
 }

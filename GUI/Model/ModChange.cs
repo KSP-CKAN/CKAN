@@ -12,6 +12,22 @@ namespace CKAN.GUI
         Replace = 4
     }
 
+    public static class GUIModChangeTypeExtensions
+    {
+        public static string ToI18nString(this GUIModChangeType val)
+        {
+            switch (val)
+            {
+                case GUIModChangeType.None:    return Properties.Resources.ChangeTypeNone;
+                case GUIModChangeType.Install: return Properties.Resources.ChangeTypeInstall;
+                case GUIModChangeType.Remove:  return Properties.Resources.ChangeTypeRemove;
+                case GUIModChangeType.Update:  return Properties.Resources.ChangeTypeUpdate;
+                case GUIModChangeType.Replace: return Properties.Resources.ChangeTypeReplace;
+            }
+            throw new NotImplementedException(val.ToString());
+        }
+    }
+
     /// <summary>
     /// Everything the GUI needs to know about a change, including
     /// the mod itself, the change we're making, and the reason why.
@@ -56,7 +72,7 @@ namespace CKAN.GUI
 
         public override string ToString()
         {
-            return $"{ChangeType} {Mod} ({Reason})";
+            return $"{ChangeType.ToI18nString()} {Mod} ({Reason})";
         }
 
         protected string modNameAndStatus(CkanModule m)
