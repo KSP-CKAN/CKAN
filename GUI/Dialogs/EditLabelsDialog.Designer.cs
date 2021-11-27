@@ -67,6 +67,7 @@ namespace CKAN
             // 
             this.CreateButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.CreateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CreateButton.Location = new System.Drawing.Point(10, 10);
             this.CreateButton.Name = "CreateButton";
             this.CreateButton.Size = new System.Drawing.Size(75, 23);
@@ -135,6 +136,7 @@ namespace CKAN
             // 
             this.MoveUpButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.MoveUpButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MoveUpButton.Location = new System.Drawing.Point(3, 0);
             this.MoveUpButton.Name = "MoveUpButton";
             this.MoveUpButton.Size = new System.Drawing.Size(18, 23);
@@ -148,6 +150,7 @@ namespace CKAN
             // 
             this.MoveDownButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.MoveDownButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MoveDownButton.Location = new System.Drawing.Point(3, 25);
             this.MoveDownButton.Name = "MoveDownButton";
             this.MoveDownButton.Size = new System.Drawing.Size(18, 23);
@@ -216,6 +219,7 @@ namespace CKAN
             // HideFromOtherFiltersCheckBox
             // 
             this.HideFromOtherFiltersCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.HideFromOtherFiltersCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.HideFromOtherFiltersCheckBox.Location = new System.Drawing.Point(118, 100);
             this.HideFromOtherFiltersCheckBox.Name = "HideFromOtherFiltersCheckBox";
             this.HideFromOtherFiltersCheckBox.Size = new System.Drawing.Size(200, 23);
@@ -224,6 +228,7 @@ namespace CKAN
             // NotifyOnChangesCheckBox
             // 
             this.NotifyOnChangesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.NotifyOnChangesCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.NotifyOnChangesCheckBox.Location = new System.Drawing.Point(118, 130);
             this.NotifyOnChangesCheckBox.Name = "NotifyOnChangesCheckBox";
             this.NotifyOnChangesCheckBox.Size = new System.Drawing.Size(200, 23);
@@ -232,6 +237,7 @@ namespace CKAN
             // RemoveOnChangesCheckBox
             // 
             this.RemoveOnChangesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.RemoveOnChangesCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RemoveOnChangesCheckBox.Location = new System.Drawing.Point(118, 160);
             this.RemoveOnChangesCheckBox.Name = "RemoveOnChangesCheckBox";
             this.RemoveOnChangesCheckBox.Size = new System.Drawing.Size(200, 23);
@@ -240,6 +246,7 @@ namespace CKAN
             // AlertOnInstallCheckBox
             // 
             this.AlertOnInstallCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.AlertOnInstallCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AlertOnInstallCheckBox.Location = new System.Drawing.Point(118, 190);
             this.AlertOnInstallCheckBox.Name = "AlertOnInstallCheckBox";
             this.AlertOnInstallCheckBox.Size = new System.Drawing.Size(200, 23);
@@ -248,6 +255,7 @@ namespace CKAN
             // RemoveOnInstallCheckBox
             // 
             this.RemoveOnInstallCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.RemoveOnInstallCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RemoveOnInstallCheckBox.Location = new System.Drawing.Point(118, 220);
             this.RemoveOnInstallCheckBox.Name = "RemoveOnInstallCheckBox";
             this.RemoveOnInstallCheckBox.Size = new System.Drawing.Size(200, 23);
@@ -256,6 +264,7 @@ namespace CKAN
             // HoldVersionCheckBox
             // 
             this.HoldVersionCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.HoldVersionCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.HoldVersionCheckBox.Location = new System.Drawing.Point(118, 250);
             this.HoldVersionCheckBox.Name = "HoldVersionCheckBox";
             this.HoldVersionCheckBox.Size = new System.Drawing.Size(200, 23);
@@ -265,6 +274,7 @@ namespace CKAN
             // 
             this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.SaveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SaveButton.Location = new System.Drawing.Point(38, 320);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
@@ -277,6 +287,7 @@ namespace CKAN
             // 
             this.CancelEditButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.CancelEditButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelEditButton.Location = new System.Drawing.Point(118, 320);
             this.CancelEditButton.Name = "CancelEditButton";
             this.CancelEditButton.Size = new System.Drawing.Size(75, 23);
@@ -289,6 +300,7 @@ namespace CKAN
             // 
             this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.DeleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DeleteButton.Location = new System.Drawing.Point(198, 320);
             this.DeleteButton.Name = "DeleteButton";
             this.DeleteButton.Size = new System.Drawing.Size(75, 23);
@@ -301,6 +313,7 @@ namespace CKAN
             // 
             this.CloseButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.CloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CloseButton.Location = new System.Drawing.Point(10, 397);
             this.CloseButton.Name = "CloseButton";
             this.CloseButton.Size = new System.Drawing.Size(75, 23);

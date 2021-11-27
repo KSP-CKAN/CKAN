@@ -45,13 +45,14 @@
             //
             this.AddSearchButton.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Right
             | System.Windows.Forms.AnchorStyles.Top);
+            this.AddSearchButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddSearchButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.AddSearchButton.Enabled = false;
             this.AddSearchButton.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 8F, System.Drawing.FontStyle.Bold);
             this.AddSearchButton.Location = new System.Drawing.Point(426, 2);
             this.AddSearchButton.Name = "AddSearchButton";
             this.AddSearchButton.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
-            this.AddSearchButton.Size = new System.Drawing.Size(20, 20);
+            this.AddSearchButton.Size = new System.Drawing.Size(22, 22);
             this.AddSearchButton.TabIndex = 1;
             this.AddSearchButton.Text = "+";
             this.AddSearchButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

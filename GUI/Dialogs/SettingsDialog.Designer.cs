@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(SettingsDialog));
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
-            this.ReposListBox = new System.Windows.Forms.ListView();
+            this.ReposListBox = new ThemedListView();
             this.RepoNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.RepoURLHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.NewRepoButton = new System.Windows.Forms.Button();
@@ -39,7 +39,7 @@
             this.DownRepoButton = new System.Windows.Forms.Button();
             this.DeleteRepoButton = new System.Windows.Forms.Button();
             this.AuthTokensGroupBox = new System.Windows.Forms.GroupBox();
-            this.AuthTokensListBox = new System.Windows.Forms.ListView();
+            this.AuthTokensListBox = new ThemedListView();
             this.AuthHostHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.AuthTokenHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.NewAuthTokenButton = new System.Windows.Forms.Button();
@@ -96,6 +96,7 @@
             this.RepositoryGroupBox.Controls.Add(this.UpRepoButton);
             this.RepositoryGroupBox.Controls.Add(this.DownRepoButton);
             this.RepositoryGroupBox.Controls.Add(this.DeleteRepoButton);
+            this.RepositoryGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RepositoryGroupBox.Location = new System.Drawing.Point(12, 6);
             this.RepositoryGroupBox.Name = "RepositoryGroupBox";
@@ -177,6 +178,7 @@
             this.AuthTokensGroupBox.Controls.Add(this.AuthTokensListBox);
             this.AuthTokensGroupBox.Controls.Add(this.NewAuthTokenButton);
             this.AuthTokensGroupBox.Controls.Add(this.DeleteAuthTokenButton);
+            this.AuthTokensGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.AuthTokensGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AuthTokensGroupBox.Location = new System.Drawing.Point(12, 140);
             this.AuthTokensGroupBox.Name = "AuthTokensGroupBox";
@@ -242,6 +244,7 @@
             this.CacheGroupBox.Controls.Add(this.ClearCacheButton);
             this.CacheGroupBox.Controls.Add(this.ResetCacheButton);
             this.CacheGroupBox.Controls.Add(this.OpenCacheButton);
+            this.CacheGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CacheGroupBox.Location = new System.Drawing.Point(12, 274);
             this.CacheGroupBox.Name = "CacheGroupBox";
@@ -369,6 +372,7 @@
             this.AutoUpdateGroupBox.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
             this.AutoUpdateGroupBox.Controls.Add(this.CheckForUpdatesButton);
             this.AutoUpdateGroupBox.Controls.Add(this.InstallUpdateButton);
+            this.AutoUpdateGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.AutoUpdateGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AutoUpdateGroupBox.Location = new System.Drawing.Point(12, 404);
             this.AutoUpdateGroupBox.Name = "AutoUpdateGroupBox";
@@ -416,6 +420,7 @@
             // CheckUpdateOnLaunchCheckbox
             //
             this.CheckUpdateOnLaunchCheckbox.AutoSize = true;
+            this.CheckUpdateOnLaunchCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CheckUpdateOnLaunchCheckbox.Location = new System.Drawing.Point(12, 61);
             this.CheckUpdateOnLaunchCheckbox.Name = "CheckUpdateOnLaunchCheckbox";
             this.CheckUpdateOnLaunchCheckbox.Size = new System.Drawing.Size(195, 17);
@@ -452,6 +457,7 @@
             this.BehaviourGroupBox.Controls.Add(this.RefreshTextBox);
             this.BehaviourGroupBox.Controls.Add(this.RefreshPostLabel);
             this.BehaviourGroupBox.Controls.Add(this.PauseRefreshCheckBox);
+            this.BehaviourGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.BehaviourGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BehaviourGroupBox.Location = new System.Drawing.Point(278, 404);
             this.BehaviourGroupBox.Name = "BehaviourGroupBox";
@@ -463,6 +469,7 @@
             // EnableTrayIconCheckBox
             //
             this.EnableTrayIconCheckBox.AutoSize = true;
+            this.EnableTrayIconCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.EnableTrayIconCheckBox.Location = new System.Drawing.Point(12, 18);
             this.EnableTrayIconCheckBox.Name = "EnableTrayIconCheckBox";
             this.EnableTrayIconCheckBox.Size = new System.Drawing.Size(102, 17);
@@ -473,6 +480,7 @@
             // MinimizeToTrayCheckBox
             //
             this.MinimizeToTrayCheckBox.AutoSize = true;
+            this.MinimizeToTrayCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MinimizeToTrayCheckBox.Location = new System.Drawing.Point(12, 41);
             this.MinimizeToTrayCheckBox.Name = "MinimizeToTrayCheckBox";
             this.MinimizeToTrayCheckBox.Size = new System.Drawing.Size(98, 17);
@@ -512,6 +520,7 @@
             // PauseRefreshCheckBox
             //
             this.PauseRefreshCheckBox.AutoSize = true;
+            this.PauseRefreshCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.PauseRefreshCheckBox.Location = new System.Drawing.Point(12, 103);
             this.PauseRefreshCheckBox.Name = "PauseRefreshCheckBox";
             this.PauseRefreshCheckBox.Size = new System.Drawing.Size(105, 17);
@@ -527,6 +536,7 @@
             this.MoreSettingsGroupBox.Controls.Add(this.RefreshOnStartupCheckbox);
             this.MoreSettingsGroupBox.Controls.Add(this.HideEpochsCheckbox);
             this.MoreSettingsGroupBox.Controls.Add(this.HideVCheckbox);
+            this.MoreSettingsGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MoreSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MoreSettingsGroupBox.Location = new System.Drawing.Point(12, 542);
             this.MoreSettingsGroupBox.Name = "MoreSettingsGroupBox";
@@ -557,6 +567,7 @@
             // RefreshOnStartupCheckbox
             //
             this.RefreshOnStartupCheckbox.AutoSize = true;
+            this.RefreshOnStartupCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(12, 41);
             this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
             this.RefreshOnStartupCheckbox.Size = new System.Drawing.Size(167, 17);
@@ -567,6 +578,7 @@
             // HideEpochsCheckbox
             //
             this.HideEpochsCheckbox.AutoSize = true;
+            this.HideEpochsCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.HideEpochsCheckbox.Location = new System.Drawing.Point(12, 64);
             this.HideEpochsCheckbox.Name = "HideEpochsCheckbox";
             this.HideEpochsCheckbox.Size = new System.Drawing.Size(261, 17);
@@ -577,6 +589,7 @@
             // HideVCheckbox
             //
             this.HideVCheckbox.AutoSize = true;
+            this.HideVCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.HideVCheckbox.Location = new System.Drawing.Point(12, 87);
             this.HideVCheckbox.Name = "HideVCheckbox";
             this.HideVCheckbox.Size = new System.Drawing.Size(204, 17);
@@ -589,6 +602,7 @@
             this.AutoSortUpdateCheckBox.AutoSize = false;
             this.AutoSortUpdateCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.AutoSortUpdateCheckBox.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.AutoSortUpdateCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AutoSortUpdateCheckBox.Location = new System.Drawing.Point(12, 110);
             this.AutoSortUpdateCheckBox.Name = "AutoSortUpdateCheckBox";
             this.AutoSortUpdateCheckBox.Size = new System.Drawing.Size(452, 32);

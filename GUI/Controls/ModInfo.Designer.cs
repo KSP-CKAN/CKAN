@@ -563,6 +563,7 @@
             //
             // ContentsDownloadButton
             //
+            this.ContentsDownloadButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ContentsDownloadButton.Location = new System.Drawing.Point(6, 36);
             this.ContentsDownloadButton.Name = "ContentsDownloadButton";
             this.ContentsDownloadButton.Size = new System.Drawing.Size(103, 23);
@@ -573,6 +574,7 @@
             //
             // ContentsOpenButton
             //
+            this.ContentsOpenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ContentsOpenButton.Location = new System.Drawing.Point(115, 36);
             this.ContentsOpenButton.Name = "ContentsOpenButton";
             this.ContentsOpenButton.Size = new System.Drawing.Size(103, 23);

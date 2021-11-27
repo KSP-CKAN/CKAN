@@ -130,6 +130,7 @@
             //
             // buttonInstancePathSelection
             //
+            this.buttonInstancePathSelection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonInstancePathSelection.Location = new System.Drawing.Point(326, 48);
             this.buttonInstancePathSelection.Name = "buttonInstancePathSelection";
             this.buttonInstancePathSelection.Size = new System.Drawing.Size(60, 22);
@@ -264,6 +265,7 @@
             //
             // buttonPathBrowser
             //
+            this.buttonPathBrowser.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPathBrowser.Location = new System.Drawing.Point(339, 274);
             this.buttonPathBrowser.Name = "buttonPathBrowser";
             this.buttonPathBrowser.Size = new System.Drawing.Size(60, 22);
@@ -275,6 +277,7 @@
             // checkBoxSetAsDefault
             //
             this.checkBoxSetAsDefault.AutoSize = true;
+            this.checkBoxSetAsDefault.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBoxSetAsDefault.Location = new System.Drawing.Point(12, 310);
             this.checkBoxSetAsDefault.Name = "checkBoxSetAsDefault";
             this.checkBoxSetAsDefault.Size = new System.Drawing.Size(157, 17);
@@ -287,6 +290,7 @@
             this.checkBoxSwitchInstance.AutoSize = true;
             this.checkBoxSwitchInstance.Checked = true;
             this.checkBoxSwitchInstance.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxSwitchInstance.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBoxSwitchInstance.Location = new System.Drawing.Point(181, 310);
             this.checkBoxSwitchInstance.Name = "checkBoxSwitchInstance";
             this.checkBoxSwitchInstance.Size = new System.Drawing.Size(136, 17);
@@ -296,6 +300,7 @@
             //
             // buttonOK
             //
+            this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonOK.Location = new System.Drawing.Point(256, 336);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
@@ -306,6 +311,7 @@
             //
             // buttonCancel
             //
+            this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonCancel.Location = new System.Drawing.Point(337, 336);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
