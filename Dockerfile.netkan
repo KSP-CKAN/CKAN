@@ -6,4 +6,5 @@ USER netkan
 WORKDIR /home/netkan
 ADD netkan.exe .
 ENTRYPOINT /usr/bin/mono netkan.exe --queues $QUEUES \
+  --net-usergent 'Mozilla/5.0 (compatible; Netkanbot/1.0; CKAN; +https://github.com/KSP-CKAN/NetKAN-Infra)' \
   --github-token $GH_Token --cachedir ckan_cache -v
