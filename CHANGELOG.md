@@ -42,6 +42,7 @@ All notable changes to this project will be documented in this file.
 - [Infra] Remove expired Let's Encrypt root certificate from Mono containers (#3457 by: DasSkelett; reviewed: HebaruSan)
 - [Infra] Install libffi-dev to fix xKAN-meta_testing Docker image build (#3463 by: DasSkelett; reviewed: HebaruSan)
 - [Netkan] Fix double-absolute SpaceDock URLs (#3466 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Set bot useragent for Inflator (#3490 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.30.4 (Hubble)
 
