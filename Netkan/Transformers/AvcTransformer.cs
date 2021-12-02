@@ -87,7 +87,7 @@ namespace CKAN.NetKAN.Transformers
                             if (avc.version.CompareTo(remoteAvc.version) == 0)
                             {
                                 // Local AVC and Remote AVC describe the same version, prefer
-                                Log.Info("Remote AVC version file describes same version as local AVC version file, using it preferrentially.");
+                                Log.Info("Remote AVC version file describes same version as local AVC version file, using it preferentially.");
                                 avc = remoteAvc;
                             }
                         }

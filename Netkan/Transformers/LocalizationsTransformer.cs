@@ -64,6 +64,7 @@ namespace CKAN.NetKAN.Transformers
                         .Where(m => m.Groups["contents"].Value.Contains("="))
                         .Select(m => m.Groups["locale"].Value))
                     .Distinct()
+                    .OrderBy(l => l)
                     .Memoize();
                 log.Debug("Locales extracted");
 

@@ -39,9 +39,7 @@ namespace CKAN.NetKAN.Validators
                     {
                         Log.WarnFormat(
                             "Craft files installed outside Ships folder: {0}",
-                            string.Join(", ", badCrafts.Select(f =>
-                                inst.ToRelativeGameDir(f.destination)
-                            ))
+                            string.Join(", ", badCrafts.Select(f => inst.ToRelativeGameDir(f.destination)).OrderBy(f => f))
                         );
                     }
                 }

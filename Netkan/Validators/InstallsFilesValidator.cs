@@ -40,6 +40,7 @@ namespace CKAN.NetKAN.Validators
                 // Make sure no paths include GameData other than at the start
                 var gamedatas = allFiles
                     .Where(p => p.StartsWith("GameData") && p.LastIndexOf("/GameData/") > 0)
+                    .OrderBy(f => f)
                     .ToList();
                 if (gamedatas.Any())
                 {
@@ -50,7 +51,7 @@ namespace CKAN.NetKAN.Validators
                 // Make sure we won't try to overwrite our own files
                 var duplicates = allFiles
                     .GroupBy(f => f)
-                    .SelectMany(grp => grp.Skip(1))
+                    .SelectMany(grp => grp.Skip(1).OrderBy(f => f))
                     .ToList();
                 if (duplicates.Any())
                 {
