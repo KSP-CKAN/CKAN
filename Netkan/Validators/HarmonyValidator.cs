@@ -37,6 +37,7 @@ namespace CKAN.NetKAN.Validators
                     var harmonyDLLs = _moduleService.GetPlugins(mod, zip, inst)
                         .Select(instF => instF.source.Name)
                         .Where(f => f.IndexOf("Harmony", StringComparison.InvariantCultureIgnoreCase) != -1)
+                        .OrderBy(f => f)
                         .ToList();
                     bool bundlesHarmony   = harmonyDLLs.Any();
                     bool providesHarmony1 = mod.ProvidesList.Contains("Harmony1");

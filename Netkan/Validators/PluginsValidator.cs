@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using CKAN.Extensions;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
 using CKAN.Games;
@@ -36,14 +37,17 @@ namespace CKAN.NetKAN.Validators
                     bool hasPlugin = plugins.Any();
                     if (hasPlugin)
                     {
-                        var dllPaths = plugins.Select(f => inst.ToRelativeGameDir(f.destination)).ToList();
+                        var dllPaths = plugins
+                            .Select(f => inst.ToRelativeGameDir(f.destination))
+                            .OrderBy(f => f)
+                            .ToList();
                         var pattern = Registry.DllPattern(inst.game);
                         var dllIdentifiers = dllPaths
                             .Select(p => pattern.Match(p))
                             .Where(m => m.Success)
                             .Select(m => m.Groups["modname"].Value.Replace("_", "-"))
                             .Where(ident => !identifiersToIgnore.Contains(ident))
-                            .ToList();
+                            .ToHashSet();
                         if (dllIdentifiers.Any() && !dllIdentifiers.Contains(metadata.Identifier))
                         {
                             Log.WarnFormat(

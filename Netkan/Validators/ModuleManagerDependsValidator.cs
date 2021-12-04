@@ -43,7 +43,7 @@ namespace CKAN.NetKAN.Validators
                     {
                         Log.WarnFormat(
                             "ModuleManager syntax used without ModuleManager dependency: {0}",
-                            string.Join(", ", mmConfigs.Select(cfg => cfg.source))
+                            string.Join(", ", mmConfigs.Select(cfg => cfg.source).OrderBy(f => f))
                         );
                     }
                     else if (dependsOnMM && !mmConfigs.Any())
