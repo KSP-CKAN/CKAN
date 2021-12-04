@@ -521,6 +521,7 @@ namespace CKAN
             this.InstallAllCheckbox.Size = new System.Drawing.Size(20, 20);
             this.InstallAllCheckbox.Checked = true;
             this.InstallAllCheckbox.CheckedChanged += new System.EventHandler(this.InstallAllCheckbox_CheckChanged);
+            this.InstallAllCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.InstallAllCheckbox.TabIndex = 11;
             this.InstallAllCheckbox.TabStop = false;
             //

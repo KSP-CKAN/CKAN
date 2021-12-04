@@ -38,7 +38,7 @@
             this.BottomButtonPanel = new System.Windows.Forms.Panel();
             this.RepoCancel = new System.Windows.Forms.Button();
             this.RepoOK = new System.Windows.Forms.Button();
-            this.ReposListBox = new System.Windows.Forms.ListView();
+            this.ReposListBox = new ThemedListView();
             this.RepoNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.RepoURLHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.RepositoryGroupBox.SuspendLayout();
@@ -48,6 +48,7 @@
             //
             this.RepositoryGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.RepositoryGroupBox.Controls.Add(this.ReposListBox);
+            this.RepositoryGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RepositoryGroupBox.Location = new System.Drawing.Point(12, 12);
             this.RepositoryGroupBox.Name = "RepositoryGroupBox";

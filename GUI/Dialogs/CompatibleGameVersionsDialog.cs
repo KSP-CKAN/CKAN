@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using Autofac;
@@ -30,7 +31,7 @@ namespace CKAN
             List<GameVersion> compatibleVersions = inst.GetCompatibleVersions();
 
             GameVersionLabel.Text  = inst.Version()?.ToString() ?? Properties.Resources.CompatibleGameVersionsDialogNone;
-            GameLocationLabel.Text = inst.GameDir();
+            GameLocationLabel.Text = inst.GameDir().Replace('/', Path.DirectorySeparatorChar);
             List<GameVersion> knownVersions = inst.game.KnownVersions;
             List<GameVersion> majorVersionsList = CreateMajorVersionsList(knownVersions);
             List<GameVersion> compatibleVersionsLeftOthers = new List<GameVersion>(compatibleVersions);

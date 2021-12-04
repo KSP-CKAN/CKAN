@@ -98,6 +98,7 @@
             // clearSelectionButton
             //
             this.ClearSelectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ClearSelectionButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ClearSelectionButton.Location = new System.Drawing.Point(12, 211);
             this.ClearSelectionButton.Name = "clearSelectionButton";
             this.ClearSelectionButton.Size = new System.Drawing.Size(95, 23);
@@ -109,6 +110,7 @@
             // addVersionToListButton
             //
             this.AddVersionToListButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.AddVersionToListButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddVersionToListButton.Location = new System.Drawing.Point(343, 209);
             this.AddVersionToListButton.Name = "addVersionToListButton";
             this.AddVersionToListButton.Size = new System.Drawing.Size(75, 23);
@@ -157,6 +159,7 @@
             // saveButton
             //
             this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.SaveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SaveButton.Location = new System.Drawing.Point(362, 350);
             this.SaveButton.Name = "saveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
@@ -186,6 +189,7 @@
             // cancelButton
             //
             this.CancelChooseCompatibleVersionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancelChooseCompatibleVersionsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelChooseCompatibleVersionsButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelChooseCompatibleVersionsButton.Location = new System.Drawing.Point(281, 350);
             this.CancelChooseCompatibleVersionsButton.Name = "cancelButton";

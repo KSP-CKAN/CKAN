@@ -81,6 +81,7 @@
             this.YesButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Right));
             this.YesButton.DialogResult = System.Windows.Forms.DialogResult.Yes;
+            this.YesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.YesButton.Location = new System.Drawing.Point(250, 92);
             this.YesButton.Name = "YesButton";
             this.YesButton.Size = new System.Drawing.Size(75, 23);
@@ -93,6 +94,7 @@
             this.NoButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Right));
             this.NoButton.DialogResult = System.Windows.Forms.DialogResult.No;
+            this.NoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.NoButton.Location = new System.Drawing.Point(331, 92);
             this.NoButton.Name = "NoButton";
             this.NoButton.Size = new System.Drawing.Size(75, 23);

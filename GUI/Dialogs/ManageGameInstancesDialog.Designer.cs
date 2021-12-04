@@ -176,6 +176,7 @@
             this.SetAsDefaultCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.SetAsDefaultCheckbox.AutoSize = true;
             this.SetAsDefaultCheckbox.AutoCheck = false;
+            this.SetAsDefaultCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SetAsDefaultCheckbox.Location = new System.Drawing.Point(12, 324);
             this.SetAsDefaultCheckbox.Name = "SetAsDefaultCheckbox";
             this.SetAsDefaultCheckbox.Size = new System.Drawing.Size(91, 17);

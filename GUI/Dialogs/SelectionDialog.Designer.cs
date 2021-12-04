@@ -76,6 +76,7 @@ namespace CKAN
             //
             // SelectButton
             //
+            this.SelectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SelectButton.Location = new System.Drawing.Point(325, 375);
             this.SelectButton.Size = new System.Drawing.Size(60, 20);
             this.SelectButton.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -86,6 +87,7 @@ namespace CKAN
             //
             // DefaultButton
             //
+            this.DefaultButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DefaultButton.Location = new System.Drawing.Point(160, 375);
             this.DefaultButton.Size = new System.Drawing.Size(60, 20);
             this.DefaultButton.DialogResult = System.Windows.Forms.DialogResult.Yes;
@@ -96,6 +98,7 @@ namespace CKAN
             //
             // CancelButton
             //
+            this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelButton.Location = new System.Drawing.Point(5, 375);
             this.CancelButton.Size = new System.Drawing.Size(60, 20);
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;

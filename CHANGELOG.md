@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Suppress incompatibility warning at game launch (#3453 by: HebaruSan; reviewed: DasSkelett)
 - [CLI] Options for ckan show to hide sections (#3461 by: HebaruSan; reviewed: DasSkelett)
 - [Multiple] Show context menu on menu key press (#3446 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Theme all buttons, checkboxes, groupboxes, and listboxes (#3489 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

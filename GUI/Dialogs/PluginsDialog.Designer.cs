@@ -51,6 +51,7 @@
             this.groupBox1.Controls.Add(this.ReloadPluginButton);
             this.groupBox1.Controls.Add(this.DeactivateButton);
             this.groupBox1.Controls.Add(this.ActivePluginsListBox);
+            this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
@@ -67,6 +68,7 @@
             this.groupBox2.Controls.Add(this.UnloadPluginButton);
             this.groupBox2.Controls.Add(this.ActivatePluginButton);
             this.groupBox2.Controls.Add(this.DormantPluginsListBox);
+            this.groupBox2.ForeColor = System.Drawing.SystemColors.ControlText;
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox2.Location = new System.Drawing.Point(12, 187);
             this.groupBox2.Name = "groupBox2";
@@ -89,6 +91,7 @@
             // DeactivateButton
             //
             this.DeactivateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DeactivateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DeactivateButton.Enabled = false;
             this.DeactivateButton.Location = new System.Drawing.Point(231, 17);
             this.DeactivateButton.Name = "DeactivateButton";
@@ -101,6 +104,7 @@
             // ReloadPluginButton
             //
             this.ReloadPluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ReloadPluginButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ReloadPluginButton.Enabled = false;
             this.ReloadPluginButton.Location = new System.Drawing.Point(231, 46);
             this.ReloadPluginButton.Name = "ReloadPluginButton";
@@ -125,6 +129,7 @@
             // ActivatePluginButton
             //
             this.ActivatePluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ActivatePluginButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ActivatePluginButton.Enabled = false;
             this.ActivatePluginButton.Location = new System.Drawing.Point(231, 19);
             this.ActivatePluginButton.Name = "ActivatePluginButton";
@@ -137,6 +142,7 @@
             // AddNewPluginButton
             //
             this.AddNewPluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddNewPluginButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddNewPluginButton.Location = new System.Drawing.Point(231, 75);
             this.AddNewPluginButton.Name = "AddNewPluginButton";
             this.AddNewPluginButton.Size = new System.Drawing.Size(124, 23);
@@ -148,6 +154,7 @@
             // UnloadPluginButton
             //
             this.UnloadPluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.UnloadPluginButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.UnloadPluginButton.Enabled = false;
             this.UnloadPluginButton.Location = new System.Drawing.Point(231, 48);
             this.UnloadPluginButton.Name = "UnloadPluginButton";
