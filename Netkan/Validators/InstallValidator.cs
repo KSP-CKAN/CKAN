@@ -42,6 +42,18 @@ namespace CKAN.NetKAN.Validators
                     {
                         throw new Kraken("spec_version v1.10+ required for install with 'find_regexp'");
                     }
+                    if (metadata.SpecVersion < v1p10 && stanza.ContainsKey("filter_regexp"))
+                    {
+                        throw new Kraken("spec_version v1.10+ required for install with 'filter_regexp'");
+                    }
+                    if (metadata.SpecVersion < v1p24 && stanza.ContainsKey("include_only"))
+                    {
+                        throw new Kraken("spec_version v1.24+ required for install with 'include_only'");
+                    }
+                    if (metadata.SpecVersion < v1p24 && stanza.ContainsKey("include_only_regexp"))
+                    {
+                        throw new Kraken("spec_version v1.24+ required for install with 'include_only_regexp'");
+                    }
                     if (metadata.SpecVersion < v1p16 && stanza.ContainsKey("find_matches_files"))
                     {
                         throw new Kraken("spec_version v1.16+ required for 'find_matches_files'");
@@ -73,6 +85,7 @@ namespace CKAN.NetKAN.Validators
         private static readonly ModuleVersion v1p12 = new ModuleVersion("v1.12");
         private static readonly ModuleVersion v1p16 = new ModuleVersion("v1.16");
         private static readonly ModuleVersion v1p18 = new ModuleVersion("v1.18");
+        private static readonly ModuleVersion v1p24 = new ModuleVersion("v1.24");
         private static readonly ModuleVersion v1p29 = new ModuleVersion("v1.29");
         private static readonly string[] pathProperties = {"find", "file", "install_to"};
     }
