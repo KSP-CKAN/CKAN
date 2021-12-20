@@ -83,7 +83,16 @@ namespace CKAN
             Instance = this;
 
             currentUser = new GUIUser(this, this.Wait);
-            manager = mgr ?? new GameInstanceManager(currentUser);
+            if (mgr != null)
+            {
+                // With a working GUI, assign a GUIUser to the GameInstanceManager to replace the ConsoleUser
+                mgr.User = currentUser;
+                manager = mgr;
+            }
+            else
+            {
+                manager = new GameInstanceManager(currentUser);
+            }
 
             controlFactory = new ControlFactory();
 

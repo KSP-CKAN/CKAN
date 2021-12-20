@@ -113,6 +113,7 @@ namespace CKAN
         /// </summary>
         private async void buttonOK_Click(object sender, EventArgs e)
         {
+            string existingPath = textBoxClonePath.Text;
             string newName = textBoxNewName.Text;
             string newPath = textBoxNewPath.Text;
 
@@ -144,13 +145,17 @@ namespace CKAN
 
                 try
                 {
+                    IGame guessedGame = manager.DetermineGame(new DirectoryInfo(existingPath), user);
                     await Task.Run(() =>
                     {
-                        GameInstance sourceInstance = manager.Instances.Values
-                            .FirstOrDefault(i => i.GameDir() == textBoxClonePath.Text);
+                        if (guessedGame == null)
+                        {
+                            throw new NotKSPDirKraken(existingPath);
+                        }
+
                         GameInstance instanceToClone = new GameInstance(
-                            sourceInstance.game,
-                            textBoxClonePath.Text,
+                            guessedGame,
+                            existingPath,
                             "irrelevant",
                             user
                         );
