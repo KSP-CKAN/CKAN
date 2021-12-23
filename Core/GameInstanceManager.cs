@@ -507,11 +507,20 @@ namespace CKAN
                 var name = instance.Item1;
                 var path = instance.Item2;
                 var gameName = instance.Item3;
-                var game = knownGames.FirstOrDefault(g => g.ShortName == gameName)
-                    ?? knownGames[0];
-                log.DebugFormat("Loading {0} from {1}", name, path);
-                // Add unconditionally, sort out invalid instances downstream
-                instances.Add(name, new GameInstance(game, path, name, User));
+                try
+                {
+                    var game = knownGames.FirstOrDefault(g => g.ShortName == gameName)
+                        ?? knownGames[0];
+                    log.DebugFormat("Loading {0} from {1}", name, path);
+                    // Add unconditionally, sort out invalid instances downstream
+                    instances.Add(name, new GameInstance(game, path, name, User));
+                }
+                catch (Exception exc)
+                {
+                    // Skip malformed instances (e.g. empty path)
+                    log.Error($"Failed to load game instance with name=\"{name}\" path=\"{path}\" game=\"{gameName}\"",
+                        exc);
+                }
             }
         }
 
