@@ -53,7 +53,7 @@ namespace CKAN
             string sel = comboBoxKnownInstance.SelectedItem as string;
             textBoxClonePath.Text = string.IsNullOrEmpty(sel)
                 ? ""
-                : manager.Instances[sel].GameDir();
+                : manager.Instances[sel].GameDir().Replace('/', Path.DirectorySeparatorChar);
         }
 
         /// <summary>
@@ -178,13 +178,13 @@ namespace CKAN
                 }
                 catch (NotKSPDirKraken kraken)
                 {
-                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogInstanceNotValid, kraken.path));
+                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogInstanceNotValid, kraken.path.Replace('/', Path.DirectorySeparatorChar)));
                     reactivateDialog();
                     return;
                 }
                 catch (PathErrorKraken kraken)
                 {
-                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty, kraken.path));
+                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty, kraken.path.Replace('/', Path.DirectorySeparatorChar)));
                     reactivateDialog();
                     return;
                 }
