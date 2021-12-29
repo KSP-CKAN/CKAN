@@ -206,7 +206,7 @@ namespace CKAN
         {
             var game = DetermineGame(new DirectoryInfo(path), user);
             if (game == null)
-                throw new NotKSPDirKraken(path);
+                return null;
 
             return AddInstance(new GameInstance(game, path, name, user));
         }
@@ -608,14 +608,15 @@ namespace CKAN
         /// </summary>
         /// <param name="path">A DirectoryInfo of the path to check</param>
         /// <param name="user">IUser object for interaction</param>
-        /// <returns>An instance of the matching game, or null if none could be found</returns>
+        /// <returns>An instance of the matching game or null if the user cancelled</returns>
+        /// <exception cref="NotKSPDirKraken">Thrown when no games found</exception>
         public IGame DetermineGame(DirectoryInfo path, IUser user)
         {
             var matchingGames = knownGames.Where(g => g.GameInFolder(path)).ToList();
             switch (matchingGames.Count)
             {
                 case 0:
-                    return null;
+                    throw new NotKSPDirKraken(path.FullName);
 
                 case 1:
                     return matchingGames.First();

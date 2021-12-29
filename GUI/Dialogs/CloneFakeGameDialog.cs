@@ -146,13 +146,14 @@ namespace CKAN
                 try
                 {
                     IGame guessedGame = manager.DetermineGame(new DirectoryInfo(existingPath), user);
+                    if (guessedGame == null)
+                    {
+                        // User cancelled, let them try again
+                        reactivateDialog();
+                        return;
+                    }
                     await Task.Run(() =>
                     {
-                        if (guessedGame == null)
-                        {
-                            throw new NotKSPDirKraken(existingPath);
-                        }
-
                         GameInstance instanceToClone = new GameInstance(
                             guessedGame,
                             existingPath,
