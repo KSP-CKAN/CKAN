@@ -145,22 +145,26 @@ namespace CKAN
 
                 try
                 {
-                    IGame guessedGame = manager.DetermineGame(new DirectoryInfo(existingPath), user);
-                    if (guessedGame == null)
+                    GameInstance instanceToClone = null;
+                    if (!manager.Instances.TryGetValue(comboBoxKnownInstance.SelectedItem as string, out instanceToClone)
+                        || existingPath != instanceToClone.GameDir().Replace('/', Path.DirectorySeparatorChar))
                     {
-                        // User cancelled, let them try again
-                        reactivateDialog();
-                        return;
-                    }
-                    await Task.Run(() =>
-                    {
-                        GameInstance instanceToClone = new GameInstance(
-                            guessedGame,
+                        IGame sourceGame = manager.DetermineGame(new DirectoryInfo(existingPath), user);
+                        if (sourceGame == null)
+                        {
+                            // User cancelled, let them try again
+                            reactivateDialog();
+                            return;
+                        }
+                        instanceToClone = new GameInstance(
+                            sourceGame,
                             existingPath,
                             "irrelevant",
                             user
                         );
-
+                    }
+                    await Task.Run(() =>
+                    {
                         if (instanceToClone.Valid)
                         {
                             manager.CloneInstance(instanceToClone, newName, newPath);
