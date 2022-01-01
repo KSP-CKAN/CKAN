@@ -80,7 +80,7 @@ namespace CKAN
                 if (defaultSelection == i)
                 {
                     Util.Invoke(OptionsList, () => OptionsList.Items.Add(String.Concat(args[i].ToString(), "  -- Default")));
-                    
+
                 }
                 else
                 {

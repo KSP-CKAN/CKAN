@@ -53,7 +53,7 @@ namespace CKAN
             string sel = comboBoxKnownInstance.SelectedItem as string;
             textBoxClonePath.Text = string.IsNullOrEmpty(sel)
                 ? ""
-                : manager.Instances[sel].GameDir();
+                : manager.Instances[sel].GameDir().Replace('/', Path.DirectorySeparatorChar);
         }
 
         /// <summary>
@@ -113,6 +113,7 @@ namespace CKAN
         /// </summary>
         private async void buttonOK_Click(object sender, EventArgs e)
         {
+            string existingPath = textBoxClonePath.Text;
             string newName = textBoxNewName.Text;
             string newPath = textBoxNewPath.Text;
 
@@ -144,17 +145,26 @@ namespace CKAN
 
                 try
                 {
-                    await Task.Run(() =>
+                    GameInstance instanceToClone = null;
+                    if (!manager.Instances.TryGetValue(comboBoxKnownInstance.SelectedItem as string, out instanceToClone)
+                        || existingPath != instanceToClone.GameDir().Replace('/', Path.DirectorySeparatorChar))
                     {
-                        GameInstance sourceInstance = manager.Instances.Values
-                            .FirstOrDefault(i => i.GameDir() == textBoxClonePath.Text);
-                        GameInstance instanceToClone = new GameInstance(
-                            sourceInstance.game,
-                            textBoxClonePath.Text,
+                        IGame sourceGame = manager.DetermineGame(new DirectoryInfo(existingPath), user);
+                        if (sourceGame == null)
+                        {
+                            // User cancelled, let them try again
+                            reactivateDialog();
+                            return;
+                        }
+                        instanceToClone = new GameInstance(
+                            sourceGame,
+                            existingPath,
                             "irrelevant",
                             user
                         );
-
+                    }
+                    await Task.Run(() =>
+                    {
                         if (instanceToClone.Valid)
                         {
                             manager.CloneInstance(instanceToClone, newName, newPath);
@@ -173,13 +183,13 @@ namespace CKAN
                 }
                 catch (NotKSPDirKraken kraken)
                 {
-                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogInstanceNotValid, kraken.path));
+                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogInstanceNotValid, kraken.path.Replace('/', Path.DirectorySeparatorChar)));
                     reactivateDialog();
                     return;
                 }
                 catch (PathErrorKraken kraken)
                 {
-                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty, kraken.path));
+                    user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty, kraken.path.Replace('/', Path.DirectorySeparatorChar)));
                     reactivateDialog();
                     return;
                 }

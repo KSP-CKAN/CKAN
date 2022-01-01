@@ -10,6 +10,13 @@ namespace CKAN
         bool Headless { get; }
 
         bool RaiseYesNoDialog(string question);
+
+        /// <summary>
+        /// Ask the user to select one of the elements of the array.
+        /// The output is index 0 based.
+        /// To supply a default option, make the first option an integer indicating the index of it.
+        /// </summary>
+        /// <returns>The index of the item selected from the array or -1 if cancelled</returns>
         int  RaiseSelectionDialog(string message, params object[] args);
         void RaiseError(string message, params object[] args);
 

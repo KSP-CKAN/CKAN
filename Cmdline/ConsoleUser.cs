@@ -78,7 +78,7 @@ namespace CKAN.CmdLine
         /// The output is index 0 based.
         /// To supply a default option, make the first option an integer indicating the index of it.
         /// </summary>
-        /// <returns>The selection dialog</returns>
+        /// <returns>The selected index or -1 if cancelled</returns>
         /// <param name="message">Message</param>
         /// <param name="args">Array of available options</param>
         public int RaiseSelectionDialog(string message, params object[] args)

@@ -22,6 +22,11 @@ namespace CKAN
             new KerbalSpaceProgram()
         };
 
+        /// <summary>
+        /// An IUser object for user interaction.
+        /// It is initialized during the startup with a ConsoleUser,
+        /// do not use in functions that could be called by the GUI.
+        /// </summary>
         public IUser User { get; set; }
         public IConfiguration Configuration { get; set; }
         public GameInstance CurrentInstance { get; set; }
@@ -69,7 +74,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns the preferred KSP instance, or null if none can be found.
+        /// Returns the preferred game instance, or null if none can be found.
         ///
         /// This works by checking to see if we're in a KSP dir first, then the
         /// config for an autostart instance, then will try to auto-populate
@@ -170,45 +175,40 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Adds a KSP instance to config.
-        /// Returns the resulting KSP object.
+        /// Adds a game instance to config.
         /// </summary>
-        public GameInstance AddInstance(GameInstance ksp_instance)
+        /// <returns>The resulting GameInstance object</returns>
+        /// <exception cref="NotKSPDirKraken">Thrown if the instance is not a valid game instance.</exception>
+        public GameInstance AddInstance(GameInstance instance)
         {
-            if (ksp_instance.Valid)
+            if (instance.Valid)
             {
-                string name = ksp_instance.Name;
-                instances.Add(name, ksp_instance);
+                string name = instance.Name;
+                instances.Add(name, instance);
                 Configuration.SetRegistryToInstances(instances);
             }
             else
             {
-                throw new NotKSPDirKraken(ksp_instance.GameDir());
+                throw new NotKSPDirKraken(instance.GameDir());
             }
-            return ksp_instance;
+            return instance;
         }
 
+        /// <summary>
+        /// Adds a game instance to config.
+        /// </summary>
+        /// <param name="path">The path of the instance</param>
+        /// <param name="name">The name of the instance</param>
+        /// <param name="user">IUser object for interaction</param>
+        /// <returns>The resulting GameInstance object</returns>
+        /// <exception cref="NotKSPDirKraken">Thrown if the instance is not a valid game instance.</exception>
         public GameInstance AddInstance(string path, string name, IUser user)
         {
-            var matchingGames = knownGames
-                .Where(g => g.GameInFolder(new DirectoryInfo(path)))
-                .ToList();
-            switch (matchingGames.Count)
-            {
-                case 0:
-                    throw new NotKSPDirKraken(path);
+            var game = DetermineGame(new DirectoryInfo(path), user);
+            if (game == null)
+                return null;
 
-                case 1:
-                    return AddInstance(new GameInstance(
-                        matchingGames.First(),
-                        path, name, user
-                    ));
-
-                default:
-                    // TODO: Prompt user to choose
-                    return null;
-
-            }
+            return AddInstance(new GameInstance(game, path, name, user));
         }
 
         /// <summary>
@@ -610,6 +610,33 @@ namespace CKAN
         public static bool IsGameInstanceDir(DirectoryInfo path)
         {
             return knownGames.Any(g => g.GameInFolder(path));
+        }
+
+        /// <summary>
+        /// Tries to determine the game that is installed at the given path
+        /// </summary>
+        /// <param name="path">A DirectoryInfo of the path to check</param>
+        /// <param name="user">IUser object for interaction</param>
+        /// <returns>An instance of the matching game or null if the user cancelled</returns>
+        /// <exception cref="NotKSPDirKraken">Thrown when no games found</exception>
+        public IGame DetermineGame(DirectoryInfo path, IUser user)
+        {
+            var matchingGames = knownGames.Where(g => g.GameInFolder(path)).ToList();
+            switch (matchingGames.Count)
+            {
+                case 0:
+                    throw new NotKSPDirKraken(path.FullName);
+
+                case 1:
+                    return matchingGames.First();
+
+                default:
+                    // Prompt user to choose
+                    int selection = user.RaiseSelectionDialog(
+                        $"Please select the game that is installed at {path.FullName.Replace('/', Path.DirectorySeparatorChar)}",
+                        matchingGames.Select(g => g.ShortName).ToArray());
+                    return selection >= 0 ? matchingGames[selection] : null;
+            }
         }
 
     }
