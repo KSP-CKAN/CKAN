@@ -22,6 +22,14 @@ namespace CKAN.NetKAN.Validators
                     {
                         throw new Kraken("spec_version v1.2+ required for GameData with path");
                     }
+                    if (metadata.SpecVersion < v1p14 && install_to.Equals("Scenarios"))
+                    {
+                        throw new Kraken("spec_version v1.14+ required to install to Scenarios");
+                    }
+                    if (metadata.SpecVersion < v1p25 && install_to.Equals("Missions"))
+                    {
+                        throw new Kraken("spec_version v1.25+ required to install to Missions");
+                    }
                     if (metadata.SpecVersion < v1p29 && install_to.StartsWith("Ships/Script"))
                     {
                         throw new Kraken("spec_version v1.29+ required to install to Ships/Script");
@@ -83,9 +91,11 @@ namespace CKAN.NetKAN.Validators
         private static readonly ModuleVersion v1p4  = new ModuleVersion("v1.4");
         private static readonly ModuleVersion v1p10 = new ModuleVersion("v1.10");
         private static readonly ModuleVersion v1p12 = new ModuleVersion("v1.12");
+        private static readonly ModuleVersion v1p14 = new ModuleVersion("v1.14");
         private static readonly ModuleVersion v1p16 = new ModuleVersion("v1.16");
         private static readonly ModuleVersion v1p18 = new ModuleVersion("v1.18");
         private static readonly ModuleVersion v1p24 = new ModuleVersion("v1.24");
+        private static readonly ModuleVersion v1p25 = new ModuleVersion("v1.25");
         private static readonly ModuleVersion v1p29 = new ModuleVersion("v1.29");
         private static readonly string[] pathProperties = {"find", "file", "install_to"};
     }
