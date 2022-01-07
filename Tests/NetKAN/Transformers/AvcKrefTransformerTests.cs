@@ -50,9 +50,9 @@ namespace Tests.NetKAN.Transformers
 
             // Assert
             var json = m.Json();
-            Assert.AreEqual((string)json["version"],     version);
-            Assert.AreEqual((string)json["ksp_version"], GameVersion);
-            Assert.AreEqual((string)json["download"],    download);
+            Assert.AreEqual(version,     (string)json["version"]);
+            Assert.AreEqual(GameVersion, (string)json["ksp_version"]);
+            Assert.AreEqual(download,    (string)json["download"]);
         }
 
         private Metadata TryKref(IHttpService http, string kref)
