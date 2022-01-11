@@ -41,12 +41,10 @@ namespace CKAN.NetKAN.Validators
                             .Select(f => inst.ToRelativeGameDir(f.destination))
                             .OrderBy(f => f)
                             .ToList();
-                        var pattern = Registry.DllPattern(inst.game);
                         var dllIdentifiers = dllPaths
-                            .Select(p => pattern.Match(p))
-                            .Where(m => m.Success)
-                            .Select(m => m.Groups["modname"].Value.Replace("_", "-"))
-                            .Where(ident => !identifiersToIgnore.Contains(ident))
+                            .Select(p => inst.DllPathToIdentifier(p))
+                            .Where(ident => !string.IsNullOrEmpty(ident)
+                                && !identifiersToIgnore.Contains(ident))
                             .ToHashSet();
                         if (dllIdentifiers.Any() && !dllIdentifiers.Contains(metadata.Identifier))
                         {

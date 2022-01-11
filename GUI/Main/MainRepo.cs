@@ -65,6 +65,7 @@ namespace CKAN
             try
             {
                 AddStatusMessage(Properties.Resources.MainRepoScanning);
+                log.Debug("Scanning before repo update");
                 bool scanChanged = CurrentInstance.Scan();
 
                 AddStatusMessage(Properties.Resources.MainRepoUpdating);
