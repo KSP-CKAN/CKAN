@@ -31,6 +31,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             align          = ta;
             getFgColor     = fgFunc;
             getBgColor     = bgFunc;
+            prevTextW      = r - l + 1;
         }
 
         /// <summary>
@@ -39,15 +40,44 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="line">String to add</param>
         public void AddLine(string line)
         {
+            lines.Add(line);
+            int w = GetRight() - GetLeft() + 1 + (needScroll ? -1 : 0);
             // AddRange isn't thread-safe, it temporarily pads with nulls
-            foreach (string subLine in Formatting.WordWrap(line, GetRight() - GetLeft() + 1)) {
-                lines.Add(subLine);
+            foreach (string subLine in Formatting.WordWrap(line, w)) {
+                displayLines.Add(subLine);
+            }
+            if (!needScroll) {
+                int h = GetBottom() - GetTop() + 1;
+                if (displayLines.Count > h) {
+                    // We just crossed over from non-scrollbar to scrollbar,
+                    // re-wrap the whole display including this line
+                    needScroll = true;
+                    rewrapLines();
+                }
             }
             if (scrollToBottom) {
                 ScrollToBottom();
             } else {
                 // No auto-scrolling
             }
+        }
+
+        private void rewrapLines()
+        {
+            int w = GetRight() - GetLeft() + 1 + (needScroll ? -1 : 0);
+            prevTextW = w;
+            int h = GetBottom() - GetTop() + 1;
+            float scrollFrac = displayLines.Count > h
+                ? (float)topLine / ((float)displayLines.Count - h)
+                : 0;
+            displayLines.Clear();
+            foreach (string line in lines) {
+                foreach (string subLine in Formatting.WordWrap(line, w)) {
+                    displayLines.Add(subLine);
+                }
+            }
+            topLine = (int)Math.Max(0,
+                scrollFrac * (displayLines.Count - h));
         }
 
         /// <summary>
@@ -64,7 +94,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public void ScrollToBottom()
         {
             int h   = GetBottom() - GetTop() + 1;
-            topLine = lines.Count - h;
+            topLine = displayLines.Count - h;
         }
 
         /// <summary>
@@ -85,7 +115,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             int h    = GetBottom() - GetTop() + 1;
             int diff = howFar ?? h;
-            if (topLine +  diff <= lines.Count - h) {
+            if (topLine +  diff <= displayLines.Count - h) {
                 topLine += diff;
             } else {
                 ScrollToBottom();
@@ -101,9 +131,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             int l     = GetLeft();
             int h     = GetBottom() - GetTop() + 1;
-            int index = lines.Count < h ? 0 : topLine;
+            int index = displayLines.Count < h ? 0 : topLine;
             // Chop one col off the right if we need a scrollbar
-            int w     = GetRight() - l + 1 + (lines.Count > h ? -1 : 0);
+            int w     = GetRight() - l + 1 + (needScroll ? -1 : 0);
+
+            if (w != prevTextW) {
+                // Width changed since last time, re-do the word wrap
+                rewrapLines();
+            }
 
             if (getBgColor != null) {
                 Console.BackgroundColor = getBgColor(theme);
@@ -117,16 +152,16 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
             for (int y = GetTop(); y <= GetBottom(); ++y, ++index) {
                 Console.SetCursorPosition(l, y);
-                if (index < lines.Count) {
+                if (index < displayLines.Count) {
                     switch (align) {
                         case TextAlign.Left:
-                            Console.Write(lines[index].PadRight(w));
+                            Console.Write(displayLines[index].PadRight(w));
                             break;
                         case TextAlign.Center:
-                            Console.Write(ScreenObject.PadCenter(lines[index], w));
+                            Console.Write(ScreenObject.PadCenter(displayLines[index], w));
                             break;
                         case TextAlign.Right:
-                            Console.Write(lines[index].PadLeft(w));
+                            Console.Write(displayLines[index].PadLeft(w));
                             break;
                     }
                 } else {
@@ -135,11 +170,11 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
 
             // Scrollbar
-            if (lines.Count > h) {
+            if (needScroll) {
                 DrawScrollbar(
                     theme,
                     GetRight(), GetTop(), GetBottom(),
-                    GetTop() + 1 + (h - 3) * topLine / (lines.Count - h)
+                    GetTop() + 1 + (h - 3) * topLine / (displayLines.Count - h)
                 );
             }
         }
@@ -215,10 +250,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public override bool Focusable() { return false; }
 
+        private bool         needScroll = false;
+        private int          prevTextW;
         private bool         scrollToBottom;
         private int          topLine;
         private TextAlign    align;
         private SynchronizedCollection<string> lines = new SynchronizedCollection<string>();
+        private SynchronizedCollection<string> displayLines = new SynchronizedCollection<string>();
         private Func<ConsoleTheme, ConsoleColor> getBgColor;
         private Func<ConsoleTheme, ConsoleColor> getFgColor;
     }
