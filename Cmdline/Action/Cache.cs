@@ -6,79 +6,79 @@ using Autofac;
 
 namespace CKAN.CmdLine
 {
+    public class CacheSubOptions : VerbCommandOptions
+    {
+        [VerbOption("list", HelpText = "List the download cache path")]
+        public CommonOptions ListOptions { get; set; }
+
+        [VerbOption("set", HelpText = "Set the download cache path")]
+        public SetOptions SetOptions { get; set; }
+
+        [VerbOption("clear", HelpText = "Clear the download cache directory")]
+        public CommonOptions ClearOptions { get; set; }
+
+        [VerbOption("reset", HelpText = "Set the download cache path to the default")]
+        public CommonOptions ResetOptions { get; set; }
+
+        [VerbOption("showlimit", HelpText = "Show the cache size limit")]
+        public CommonOptions ShowLimitOptions { get; set; }
+
+        [VerbOption("setlimit", HelpText = "Set the cache size limit")]
+        public SetLimitOptions SetLimitOptions { get; set; }
+
+        [HelpVerbOption]
+        public string GetUsage(string verb)
+        {
+            HelpText ht = HelpText.AutoBuild(this, verb);
+            // Add a usage prefix line
+            ht.AddPreOptionsLine(" ");
+            if (string.IsNullOrEmpty(verb))
+            {
+                ht.AddPreOptionsLine("ckan cache - Manage the download cache path of CKAN");
+                ht.AddPreOptionsLine($"Usage: ckan cache <command> [options]");
+            }
+            else
+            {
+                ht.AddPreOptionsLine("cache " + verb + " - " + GetDescription(verb));
+                switch (verb)
+                {
+                    // First the commands with one string argument
+                    case "set":
+                        ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options] path");
+                        break;
+                    case "setlimit":
+                        ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options] megabytes");
+                        break;
+
+                    // Now the commands with only --flag type options
+                    case "list":
+                    case "clear":
+                    case "reset":
+                    case "showlimit":
+                    default:
+                        ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options]");
+                        break;
+                }
+            }
+            return ht;
+        }
+    }
+
+    public class SetOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public string Path { get; set; }
+    }
+
+    public class SetLimitOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public long Megabytes { get; set; } = -1;
+    }
+
     public class Cache : ISubCommand
     {
         public Cache() { }
-
-        private class CacheSubOptions : VerbCommandOptions
-        {
-            [VerbOption("list", HelpText = "List the download cache path")]
-            public CommonOptions ListOptions { get; set; }
-
-            [VerbOption("set", HelpText = "Set the download cache path")]
-            public SetOptions SetOptions { get; set; }
-
-            [VerbOption("clear", HelpText = "Clear the download cache directory")]
-            public CommonOptions ClearOptions { get; set; }
-
-            [VerbOption("reset", HelpText = "Set the download cache path to the default")]
-            public CommonOptions ResetOptions { get; set; }
-
-            [VerbOption("showlimit", HelpText = "Show the cache size limit")]
-            public CommonOptions ShowLimitOptions { get; set; }
-
-            [VerbOption("setlimit", HelpText = "Set the cache size limit")]
-            public SetLimitOptions SetLimitOptions { get; set; }
-
-            [HelpVerbOption]
-            public string GetUsage(string verb)
-            {
-                HelpText ht = HelpText.AutoBuild(this, verb);
-                // Add a usage prefix line
-                ht.AddPreOptionsLine(" ");
-                if (string.IsNullOrEmpty(verb))
-                {
-                    ht.AddPreOptionsLine("ckan cache - Manage the download cache path of CKAN");
-                    ht.AddPreOptionsLine($"Usage: ckan cache <command> [options]");
-                }
-                else
-                {
-                    ht.AddPreOptionsLine("cache " + verb + " - " + GetDescription(verb));
-                    switch (verb)
-                    {
-                        // First the commands with one string argument
-                        case "set":
-                            ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options] path");
-                            break;
-                        case "setlimit":
-                            ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options] megabytes");
-                            break;
-
-                        // Now the commands with only --flag type options
-                        case "list":
-                        case "clear":
-                        case "reset":
-                        case "showlimit":
-                        default:
-                            ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options]");
-                            break;
-                    }
-                }
-                return ht;
-            }
-        }
-
-        private class SetOptions : CommonOptions
-        {
-            [ValueOption(0)]
-            public string Path { get; set; }
-        }
-
-        private class SetLimitOptions : CommonOptions
-        {
-            [ValueOption(0)]
-            public long Megabytes { get; set; } = -1;
-        }
 
         /// <summary>
         /// Execute a cache subcommand

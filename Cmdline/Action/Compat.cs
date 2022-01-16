@@ -3,67 +3,67 @@ using CKAN.Versioning;
 using CommandLine;
 using CommandLine.Text;
 
-namespace CKAN.CmdLine.Action
+namespace CKAN.CmdLine
 {
+    public class CompatOptions : VerbCommandOptions
+    {
+        [VerbOption("list", HelpText = "List compatible KSP versions")]
+        public CompatListOptions List { get; set; }
+
+        [VerbOption("add", HelpText = "Add version to KSP compatibility list")]
+        public CompatAddOptions Add { get; set; }
+
+        [VerbOption("forget", HelpText = "Forget version on KSP compatibility list")]
+        public CompatForgetOptions Forget { get; set; }
+
+        [HelpVerbOption]
+        public string GetUsage(string verb)
+        {
+            HelpText ht = HelpText.AutoBuild(this, verb);
+            // Add a usage prefix line
+            ht.AddPreOptionsLine(" ");
+            if (string.IsNullOrEmpty(verb))
+            {
+                ht.AddPreOptionsLine("ckan compat - Manage KSP version compatibility");
+                ht.AddPreOptionsLine($"Usage: ckan compat <command> [options]");
+            }
+            else
+            {
+                ht.AddPreOptionsLine("compat " + verb + " - " + GetDescription(verb));
+                switch (verb)
+                {
+                    // First the commands with one string argument
+                    case "add":
+                    case "forget":
+                        ht.AddPreOptionsLine($"Usage: ckan compat {verb} [options] version");
+                        break;
+
+                    // Now the commands with only --flag type options
+                    case "list":
+                    default:
+                        ht.AddPreOptionsLine($"Usage: ckan compat {verb} [options]");
+                        break;
+                }
+            }
+            return ht;
+        }
+    }
+
+    public class CompatListOptions : InstanceSpecificOptions { }
+
+    public class CompatAddOptions : InstanceSpecificOptions
+    {
+        [ValueOption(0)] public string Version { get; set; }
+    }
+
+    public class CompatForgetOptions : InstanceSpecificOptions
+    {
+        [ValueOption(0)] public string Version { get; set; }
+    }
+
     public class Compat : ISubCommand
     {
         public Compat() { }
-
-        public class CompatOptions : VerbCommandOptions
-        {
-            [VerbOption("list", HelpText = "List compatible KSP versions")]
-            public CompatListOptions List { get; set; }
-
-            [VerbOption("add", HelpText = "Add version to KSP compatibility list")]
-            public CompatAddOptions Add { get; set; }
-
-            [VerbOption("forget", HelpText = "Forget version on KSP compatibility list")]
-            public CompatForgetOptions Forget { get; set; }
-
-            [HelpVerbOption]
-            public string GetUsage(string verb)
-            {
-                HelpText ht = HelpText.AutoBuild(this, verb);
-                // Add a usage prefix line
-                ht.AddPreOptionsLine(" ");
-                if (string.IsNullOrEmpty(verb))
-                {
-                    ht.AddPreOptionsLine("ckan compat - Manage KSP version compatibility");
-                    ht.AddPreOptionsLine($"Usage: ckan compat <command> [options]");
-                }
-                else
-                {
-                    ht.AddPreOptionsLine("compat " + verb + " - " + GetDescription(verb));
-                    switch (verb)
-                    {
-                        // First the commands with one string argument
-                        case "add":
-                        case "forget":
-                            ht.AddPreOptionsLine($"Usage: ckan compat {verb} [options] version");
-                            break;
-
-                        // Now the commands with only --flag type options
-                        case "list":
-                        default:
-                            ht.AddPreOptionsLine($"Usage: ckan compat {verb} [options]");
-                            break;
-                    }
-                }
-                return ht;
-            }
-        }
-
-        public class CompatListOptions : InstanceSpecificOptions { }
-
-        public class CompatAddOptions : InstanceSpecificOptions
-        {
-            [ValueOption(0)] public string Version { get; set; }
-        }
-
-        public class CompatForgetOptions : InstanceSpecificOptions
-        {
-            [ValueOption(0)] public string Version { get; set; }
-        }
 
         public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions options)
         {

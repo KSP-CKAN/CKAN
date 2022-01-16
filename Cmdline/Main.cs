@@ -11,7 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using CKAN.CmdLine.Action;
+
 using log4net;
 using log4net.Core;
 
@@ -184,7 +184,7 @@ namespace CKAN.CmdLine
                         return ConsoleUi(manager, (ConsoleUIOptions)options, args);
 
                     case "prompt":
-                        return new Prompt().RunCommand(manager, cmdline.options);
+                        return new Prompt(manager).RunCommand(cmdline.options);
 
                     case "version":
                         return Version(user);

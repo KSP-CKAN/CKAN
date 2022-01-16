@@ -161,6 +161,7 @@ namespace CKAN.CmdLine
     internal class MarkAutoOptions : InstanceSpecificOptions
     {
         [ValueList(typeof(List<string>))]
+        [InstalledIdentifiers]
         public List<string> modules { get; set; }
     }
 }

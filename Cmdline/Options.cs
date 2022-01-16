@@ -86,28 +86,28 @@ namespace CKAN.CmdLine
         public CleanOptions Clean { get; set; }
 
         [VerbOption("repair", HelpText = "Attempt various automatic repairs")]
-        public SubCommandOptions Repair { get; set; }
+        public RepairSubOptions Repair { get; set; }
 
         [VerbOption("replace", HelpText = "Replace list of replaceable mods")]
         public ReplaceOptions Replace { get; set; }
 
         [VerbOption("repo", HelpText = "Manage CKAN repositories")]
-        public SubCommandOptions Repo { get; set; }
+        public RepoSubOptions Repo { get; set; }
 
         [VerbOption("mark", HelpText = "Edit flags on modules")]
-        public SubCommandOptions Mark { get; set; }
+        public MarkSubOptions Mark { get; set; }
 
         [VerbOption("instance", HelpText = "Manage game instances")]
-        public SubCommandOptions Instance { get; set; }
+        public InstanceSubOptions Instance { get; set; }
 
         [VerbOption("authtoken", HelpText = "Manage authentication tokens")]
         public AuthTokenSubOptions AuthToken { get; set; }
 
         [VerbOption("cache", HelpText = "Manage download cache path")]
-        public SubCommandOptions Cache { get; set; }
+        public CacheSubOptions Cache { get; set; }
 
         [VerbOption("compat", HelpText = "Manage game version compatibility")]
-        public SubCommandOptions Compat { get; set; }
+        public CompatOptions Compat { get; set; }
 
         [VerbOption("compare", HelpText = "Compare version strings")]
         public CompareOptions Compare { get; set; }
@@ -116,7 +116,7 @@ namespace CKAN.CmdLine
         public VersionOptions Version { get; set; }
 
         [VerbOption("filter", HelpText = "View or edit installation filters")]
-        public SubCommandOptions Filter { get; set; }
+        public FilterSubOptions Filter { get; set; }
 
         [HelpVerbOption]
         public string GetUsage(string verb)
@@ -403,6 +403,7 @@ namespace CKAN.CmdLine
         public bool allow_incompatible { get; set; }
 
         [ValueList(typeof(List<string>))]
+        [AvailableIdentifiers]
         public List<string> modules { get; set; }
     }
 
@@ -424,6 +425,7 @@ namespace CKAN.CmdLine
         public bool upgrade_all { get; set; }
 
         [ValueList(typeof (List<string>))]
+        [InstalledIdentifiers]
         public List<string> modules { get; set; }
     }
 
@@ -449,6 +451,7 @@ namespace CKAN.CmdLine
 
         // TODO: How do we provide helptext on this?
         [ValueList(typeof (List<string>))]
+        [InstalledIdentifiers]
         public List<string> modules { get; set; }
     }
 
@@ -505,6 +508,7 @@ namespace CKAN.CmdLine
         public bool regex { get; set; }
 
         [ValueList(typeof(List<string>))]
+        [InstalledIdentifiers]
         public List<string> modules { get; set; }
 
         [Option("all", DefaultValue = false, HelpText = "Remove all installed mods.")]
@@ -538,6 +542,7 @@ namespace CKAN.CmdLine
         public bool with_versions { get; set; }
 
         [ValueList(typeof(List<string>))]
+        [AvailableIdentifiers]
         public List<string> modules { get; set; }
     }
 
@@ -564,4 +569,13 @@ namespace CKAN.CmdLine
         [ValueOption(0)] public string Left  { get; set; }
         [ValueOption(1)] public string Right { get; set; }
     }
+
+    [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+    public class AvailableIdentifiersAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+    public class InstalledIdentifiersAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+    public class GameInstancesAttribute : Attribute { }
 }

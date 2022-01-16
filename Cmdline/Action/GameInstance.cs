@@ -10,130 +10,133 @@ using CKAN.Games;
 
 namespace CKAN.CmdLine
 {
+    internal class InstanceSubOptions : VerbCommandOptions
+    {
+        [VerbOption("list",    HelpText = "List game instances")]
+        public CommonOptions  ListOptions    { get; set; }
+
+        [VerbOption("add",     HelpText = "Add a game instance")]
+        public AddOptions     AddOptions     { get; set; }
+
+        [VerbOption("clone",   HelpText = "Clone an existing game instance")]
+        public CloneOptions   CloneOptions   { get; set; }
+
+        [VerbOption("rename",  HelpText = "Rename a game instance")]
+        public RenameOptions  RenameOptions  { get; set; }
+
+        [VerbOption("forget",  HelpText = "Forget a game instance")]
+        public ForgetOptions  ForgetOptions  { get; set; }
+
+        [VerbOption("default", HelpText = "Set the default game instance")]
+        public DefaultOptions DefaultOptions { get; set; }
+
+        [VerbOption("fake",    HelpText = "Fake a game instance")]
+        public FakeOptions    FakeOptions    { get; set; }
+
+        [HelpVerbOption]
+        public string GetUsage(string verb)
+        {
+            HelpText ht = HelpText.AutoBuild(this, verb);
+            // Add a usage prefix line
+            ht.AddPreOptionsLine(" ");
+            if (string.IsNullOrEmpty(verb))
+            {
+                ht.AddPreOptionsLine("ckan instance - Manage game instances");
+                ht.AddPreOptionsLine($"Usage: ckan instance <command> [options]");
+            }
+            else
+            {
+                ht.AddPreOptionsLine("instance " + verb + " - " + GetDescription(verb));
+                switch (verb)
+                {
+                    // First the commands with three string arguments
+                    case "fake":
+                        ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] name path version [--MakingHistory <version>] [--BreakingGround <version>]");
+                        break;
+
+                    case "clone":
+                        ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] instanceNameOrPath newname newpath");
+                        break;
+
+                    // Second the commands with two string arguments
+                    case "add":
+                        ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] name url");
+                        break;
+                    case "rename":
+                        ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] oldname newname");
+                        break;
+
+                    // Now the commands with one string argument
+                    case "remove":
+                    case "forget":
+                    case "use":
+                    case "default":
+                        ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] name");
+                        break;
+
+                    // Now the commands with only --flag type options
+                    case "list":
+                    default:
+                        ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options]");
+                        break;
+
+                }
+            }
+            return ht;
+        }
+    }
+
+    internal class AddOptions : CommonOptions
+    {
+        [ValueOption(0)] public string name { get; set; }
+        [ValueOption(1)] public string path { get; set; }
+    }
+
+    internal class CloneOptions : CommonOptions
+    {
+        [ValueOption(0)] public string nameOrPath { get; set; }
+        [ValueOption(1)] public string new_name { get; set; }
+        [ValueOption(2)] public string new_path { get; set; }
+    }
+
+    internal class RenameOptions : CommonOptions
+    {
+        [GameInstancesAttribute]
+        [ValueOption(0)] public string old_name { get; set; }
+        [ValueOption(1)] public string new_name { get; set; }
+    }
+
+    internal class ForgetOptions : CommonOptions
+    {
+        [GameInstancesAttribute]
+        [ValueOption(0)] public string name { get; set; }
+    }
+
+    internal class DefaultOptions : CommonOptions
+    {
+        [GameInstancesAttribute]
+        [ValueOption(0)] public string name { get; set; }
+    }
+
+    internal class FakeOptions : CommonOptions
+    {
+        [ValueOption(0)] public string name { get; set; }
+        [ValueOption(1)] public string path { get; set; }
+        [ValueOption(2)] public string version { get; set; }
+
+        [Option("MakingHistory", DefaultValue = "none", HelpText = "The version of the Making History DLC to be faked.")]
+        public string makingHistoryVersion { get; set; }
+        [Option("BreakingGround", DefaultValue = "none", HelpText = "The version of the Breaking Ground DLC to be faked.")]
+        public string breakingGroundVersion { get; set; }
+
+        [Option("set-default", DefaultValue = false, HelpText = "Set the new instance as the default one.")]
+        public bool setDefault { get; set; }
+    }
+
     public class GameInstance : ISubCommand
     {
         public GameInstance() { }
         protected static readonly ILog log = LogManager.GetLogger(typeof(GameInstance));
-
-        internal class InstanceSubOptions : VerbCommandOptions
-        {
-            [VerbOption("list",    HelpText = "List game instances")]
-            public CommonOptions  ListOptions    { get; set; }
-
-            [VerbOption("add",     HelpText = "Add a game instance")]
-            public AddOptions     AddOptions     { get; set; }
-
-            [VerbOption("clone",   HelpText = "Clone an existing game instance")]
-            public CloneOptions   CloneOptions   { get; set; }
-
-            [VerbOption("rename",  HelpText = "Rename a game instance")]
-            public RenameOptions  RenameOptions  { get; set; }
-
-            [VerbOption("forget",  HelpText = "Forget a game instance")]
-            public ForgetOptions  ForgetOptions  { get; set; }
-
-            [VerbOption("default", HelpText = "Set the default game instance")]
-            public DefaultOptions DefaultOptions { get; set; }
-
-            [VerbOption("fake",    HelpText = "Fake a game instance")]
-            public FakeOptions    FakeOptions    { get; set; }
-
-            [HelpVerbOption]
-            public string GetUsage(string verb)
-            {
-                HelpText ht = HelpText.AutoBuild(this, verb);
-                // Add a usage prefix line
-                ht.AddPreOptionsLine(" ");
-                if (string.IsNullOrEmpty(verb))
-                {
-                    ht.AddPreOptionsLine("ckan instance - Manage game instances");
-                    ht.AddPreOptionsLine($"Usage: ckan instance <command> [options]");
-                }
-                else
-                {
-                    ht.AddPreOptionsLine("instance " + verb + " - " + GetDescription(verb));
-                    switch (verb)
-                    {
-                        // First the commands with three string arguments
-                        case "fake":
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] name path version [--MakingHistory <version>] [--BreakingGround <version>]");
-                            break;
-
-                        case "clone":
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] instanceNameOrPath newname newpath");
-                            break;
-
-                        // Second the commands with two string arguments
-                        case "add":
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] name url");
-                            break;
-                        case "rename":
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] oldname newname");
-                            break;
-
-                        // Now the commands with one string argument
-                        case "remove":
-                        case "forget":
-                        case "use":
-                        case "default":
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] name");
-                            break;
-
-                        // Now the commands with only --flag type options
-                        case "list":
-                        default:
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options]");
-                            break;
-
-                    }
-                }
-                return ht;
-            }
-        }
-
-        internal class AddOptions : CommonOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-            [ValueOption(1)] public string path { get; set; }
-        }
-
-        internal class CloneOptions : CommonOptions
-        {
-            [ValueOption(0)] public string nameOrPath { get; set; }
-            [ValueOption(1)] public string new_name { get; set; }
-            [ValueOption(2)] public string new_path { get; set; }
-        }
-
-        internal class RenameOptions : CommonOptions
-        {
-            [ValueOption(0)] public string old_name { get; set; }
-            [ValueOption(1)] public string new_name { get; set; }
-        }
-
-        internal class ForgetOptions : CommonOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-        }
-
-        internal class DefaultOptions : CommonOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-        }
-
-        internal class FakeOptions : CommonOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-            [ValueOption(1)] public string path { get; set; }
-            [ValueOption(2)] public string version { get; set; }
-
-            [Option("MakingHistory", DefaultValue = "none", HelpText = "The version of the Making History DLC to be faked.")]
-            public string makingHistoryVersion { get; set; }
-            [Option("BreakingGround", DefaultValue = "none", HelpText = "The version of the Breaking Ground DLC to be faked.")]
-            public string breakingGroundVersion { get; set; }
-
-            [Option("set-default", DefaultValue = false, HelpText = "Set the new instance as the default one.")]
-            public bool setDefault { get; set; }
-        }
 
         // This is required by ISubCommand
         public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
