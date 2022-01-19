@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Use CRLF for resx files (#3471 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Case insensitive installed file lookup on Windows (#3479 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Properly determine the game when cloning instances (#3478 by: DasSkelett; reviewed: HebaruSan)
+- [ConsoleUI] Rewrap ConsoleUI textbox for scrollbar and resize (#3514 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
