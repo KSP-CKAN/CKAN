@@ -180,7 +180,8 @@ namespace CKAN
                     ListViewItem toRet = new ListViewItem(new string[]
                         {
                             module.version.ToString(),
-                            GameVersionRange.VersionSpan(currentInstance.game, minKsp, maxKsp)
+                            GameVersionRange.VersionSpan(currentInstance.game, minKsp, maxKsp),
+                            module.release_date?.ToString("g") ?? ""
                         })
                     {
                         Tag  = module
