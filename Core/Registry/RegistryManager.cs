@@ -501,6 +501,8 @@ namespace CKAN
                         return false;
                     }
                 })
+                // Case insensitive sort by identifier
+                .OrderBy(kvp => kvp.Key, StringComparer.OrdinalIgnoreCase)
                 .Select(kvp => (RelationshipDescriptor) new ModuleRelationshipDescriptor()
                     {
                         name    = kvp.Key,
