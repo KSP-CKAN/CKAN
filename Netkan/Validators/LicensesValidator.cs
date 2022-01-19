@@ -16,6 +16,10 @@ namespace CKAN.NetKAN.Validators
                     : new JArray() { json["license"] };
             if (licenses != null)
             {
+                if (metadata.SpecVersion < v1p8 && json["license"] is JArray)
+                {
+                    throw new Kraken("spec_version v1.8+ required for license as array");
+                }
                 foreach (var lic in licenses)
                 {
                     if (metadata.SpecVersion < v1p2 && (string)lic == "WTFPL")
@@ -59,6 +63,7 @@ namespace CKAN.NetKAN.Validators
             RegexOptions.Compiled
         );
         private static readonly ModuleVersion v1p2  = new ModuleVersion("v1.2");
+        private static readonly ModuleVersion v1p8  = new ModuleVersion("v1.8");
         private static readonly ModuleVersion v1p18 = new ModuleVersion("v1.18");
         private static readonly ModuleVersion v1p30 = new ModuleVersion("v1.30");
     }

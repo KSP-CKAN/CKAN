@@ -14,6 +14,10 @@ namespace CKAN.NetKAN.Validators
             {
                 if (json.ContainsKey(relName))
                 {
+                    if (metadata.SpecVersion < v1p2 && relName.Equals("supports"))
+                    {
+                        throw new Kraken("spec_version v1.2+ required for 'supports'");
+                    }
                     foreach (JObject rel in json[relName])
                     {
                         if (rel.ContainsKey("any_of"))
@@ -64,6 +68,7 @@ namespace CKAN.NetKAN.Validators
             "conflicts",
             "supports"
         };
+        private static readonly ModuleVersion v1p2  = new ModuleVersion("v1.2");
         private static readonly ModuleVersion v1p26 = new ModuleVersion("v1.26");
         private static readonly ModuleVersion v1p31 = new ModuleVersion("v1.31");
     }

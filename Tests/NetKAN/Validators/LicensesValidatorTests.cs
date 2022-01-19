@@ -11,7 +11,7 @@ namespace Tests.NetKAN.Validators
         [Test,
             TestCase("v1.2",  @"""WTFPL"""),
             TestCase("v1.18", @"""Unlicense"""),
-            TestCase("v1.4",  @"[ ""GPL-3.0"", ""MIT"" ]"),
+            TestCase("v1.8",  @"[ ""GPL-3.0"", ""MIT"" ]"),
         ]
         public void Validate_GoodSpecVersionLicense_DoesNotThrow(string spec_version, string license)
         {
@@ -22,6 +22,7 @@ namespace Tests.NetKAN.Validators
             TestCase("1",     @"""WTFPL"""),
             TestCase("v1.17", @"""Unlicense"""),
             TestCase("v1.4",  @"""NotARealLicense"""),
+            TestCase("v1.4",  @"[ ""GPL-3.0"", ""MIT"" ]"),
             TestCase("v1.4",  @"[ ""GPL-3.0"", ""Unlicense"" ]"),
             TestCase("v1.4",  @"[ ""GPL-3.0"", ""NotARealLicense"" ]"),
         ]
