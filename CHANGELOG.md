@@ -49,6 +49,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Set bot useragent for Inflator (#3490 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Sort Netkan warning lists (#3492 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Enforce spec version requirements for more install properties (#3494 by: HebaruSan; reviewed: techman83)
+- [Build] Rename GH1866 test, fix invalid char test, fix equality assertion order (#3509 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.30.4 (Hubble)
 

@@ -24,10 +24,10 @@ namespace Tests.Core.Types
         public void StandardName()
         {
             CkanModule module = CkanModule.FromJson(TestData.kOS_014());
-            Assert.AreEqual(module.StandardName(), "kOS-0.14.zip");
+            Assert.AreEqual("kOS-0.14.zip", module.StandardName());
 
             CkanModule module2 = CkanModule.FromJson(TestData.kOS_014_with_invalid_version_characters());
-            Assert.AreEqual(module2.StandardName(), "kOS-0-14-0.zip");
+            Assert.AreEqual("kOS-0-14-0.zip", module2.StandardName());
         }
 
         [Test]

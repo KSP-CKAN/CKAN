@@ -199,7 +199,10 @@ namespace Tests.Core
             // only check the reason if found invalid
             if (!valid)
             {
-                Assert.AreEqual(reason, "Illegal characters in path.");
+                Assert.AreEqual(
+                    @"Error in step EntryHeader for GameData/FlagPack/Flags/Weyland-Yutani from ""Alien"".png: Exception during test - 'Name is invalid'",
+                    reason
+                );
             }
 
             // Switch back to the original locale
