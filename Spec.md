@@ -741,8 +741,10 @@ When used, the following fields will be auto-filled if not already present:
 - `resources.homepage`
 - `resources.spacedock`
 - `resources.repository`
+- `resources.bugtracker`
 - `resources.x_screenshot`
 - `ksp_version`
+- `release_date`
 
 ###### `#/ckan/curse/:cid`
 
@@ -778,6 +780,8 @@ When used, the following fields will be auto-filled if not already present:
 - `download_hash`
 - `download_content_type`
 - `resources.repository`
+- `resources.bugtracker`
+- `release_date`
 
 Optionally, one of `asset_match` with `:filter_regexp` *or* `version_from_asset` with `:version_regexp` *may* be provided:
 
@@ -811,6 +815,7 @@ The following fields will be auto-filled if not already present:
 - `download_hash`
 - `download_content_type`
 - `resources.ci`
+- `release_date`
 
 An `x_netkan_jenkins` field may be provided to customize how the metadata is fetched from the Jenkins server. It is
 an `object` with the following fields:
@@ -891,6 +896,10 @@ A metanetkan may be in either JSON or YAML format.
 The following conditions apply:
 - A metanekan may not reference another metanetkan, otherwise an error is produced.
 - Any fields specified in the metanetkan will override any fields in the target netkan file.
+
+When used, the following fields will be auto-filled if not already present:
+
+- `resources.metanetkan`
 
 An example `.netkan` including all required fields for a valid metanetkan:
 
