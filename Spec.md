@@ -83,7 +83,7 @@ and the
         "release_status" : "stable",
         "ksp_version"    : "0.25",
         "resources" : {
-            "homepage"     : "http://forum.kerbalspaceprogram.com/threads/70008",
+            "homepage"     : "https://forum.kerbalspaceprogram.com/index.php?showtopic=139868",
             "repository"   : "https://github.com/camlost2/AJE"
         },
         "tags" : [
@@ -235,7 +235,7 @@ While the CKAN will accept *any* string as a `mod_version`, mod authors are
 encouraged to restrict version names to ASCII-letters, ASCII-digits, and the characters `.` `+` `-` `_`
 (full stop, plus, dash, underscore) and should start with a digit.
 
-###### version ordering
+###### Version ordering
 
 When comparing two version numbers, first the `epoch` of each are compared, then
 the `mod_version` if `epoch` is equal. `epoch` is compared numerically. The
@@ -804,7 +804,7 @@ An `x_netkan_github` field may be provided to customize how the metadata is fetc
 
 ###### `#/ckan/jenkins/:joburl`
 
-Indicates data should be fetched from a [Jenkins CI server](http://jenkins-ci.org/) using the `:joburl` provided. For
+Indicates data should be fetched from a [Jenkins CI server](https://jenkins-ci.org/) using the `:joburl` provided. For
 example: `#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/`.
 
 The following fields will be auto-filled if not already present:
@@ -867,7 +867,9 @@ to determine:
 
 ###### `#/ckan/ksp-avc/:url`
 
-Indicates that data should be fetched from a KSP-AVC .version file at the `:url` provided. The file should be in the KSP-AVC JSON file format, see [the KSP-AVC spec](http://ksp.cybutek.net/kspavc/Documents/README.htm). The `DOWNLOAD` property of the file is used to find the download. For example: `#/ckan/ksp-avc/http://taniwha.org/~bill/EL.version`
+Indicates that data should be fetched from a KSP-AVC .version file at the `:url` provided. The file should be in the KSP-AVC JSON file format, see [the KSP-AVC spec]. The `DOWNLOAD` property of the file is used to find the download. For example: `#/ckan/ksp-avc/http://taniwha.org/~bill/EL.version`
+
+[the KSP-AVC spec]: https://github.com/linuxgurugamer/KSPAddonVersionChecker/blob/master/Documents/MiniAVC/README.md
 
 When used, the following fields will be auto-filled if not already present:
 
@@ -923,7 +925,7 @@ file downloaded by the `download` field. The following conditions apply:
 * Only `.version` files that would be *installed* for this mod are considered. (In theory. Transformer ordering may cause files outside the installed folders being considered)
 * It is an error if more than one `.version` file would be considered.
 * It is an error if the `.version` file does not validate according to
-  [the KSP-AVC spec](http://ksp.cybutek.net/kspavc/Documents/README.htm).
+  [the KSP-AVC spec].
 * The `KSP_VERSION` field for the `.version` file will be ignored if the
   `KSP_VERSION_MIN` and `KSP_VERSION_MAX` fields are set.
 * Netkan will first attempt to use anything after `ksp-avc` as a literal
@@ -935,6 +937,7 @@ When used, the following fields are auto-generated:
 - `ksp_version`
 - `ksp_version_min`
 - `ksp_version_max`
+- `resources.remote-avc` (if the `URL` property is present in the version file)
 
 Version information is generated in such a way as to ensure maximum compatibility. For example if the `.version` file
 specifies that the mod is compatible with KSP version `1.0.2` but the existing `version` specifies `1.0.5` then the
