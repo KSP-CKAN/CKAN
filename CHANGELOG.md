@@ -52,6 +52,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Enforce spec version requirements for more install properties (#3494 by: HebaruSan; reviewed: techman83)
 - [Build] Rename GH1866 test, fix invalid char test, fix equality assertion order (#3509 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Enforce a few more spec version requirements (#3505 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Allow overriding resources.remote-avc (#3451 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.30.4 (Hubble)
 
