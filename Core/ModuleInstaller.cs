@@ -209,6 +209,7 @@ namespace CKAN
                 // leaves everything consistent, and this is just gravy. (And ScanGameData
                 // acts as a Tx, anyway, so we don't need to provide our own.)
                 User.RaiseProgress("Rescanning GameData", 90);
+                log.Debug("Scanning after install");
                 ksp.Scan();
             }
 

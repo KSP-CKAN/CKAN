@@ -427,9 +427,12 @@ namespace CKAN
                         throw new TransactionalKraken(
                             $"Registry already enlisted with tx {enlisted_tx}, can't enlist with tx {current_tx}");
                     }
-
-                    // If we're here, it's a transaction we're already participating in,
-                    // so do nothing.
+                    else
+                    {
+                        // If we're here, it's a transaction we're already participating in,
+                        // so do nothing.
+                        log.DebugFormat("Already enlisted with tx {0}", current_tx);
+                    }
                 }
             }
         }
@@ -438,6 +441,8 @@ namespace CKAN
 
         public void SetAllAvailable(IEnumerable<CkanModule> newAvail)
         {
+            log.DebugFormat(
+                "Setting all available modules, count {0}", newAvail);
             EnlistWithTransaction();
             // Clear current modules
             available_modules = new Dictionary<string, AvailableModule>();
@@ -465,6 +470,7 @@ namespace CKAN
         /// </summary>
         public void AddAvailable(CkanModule module)
         {
+            log.DebugFormat("Adding available module {0}", module);
             EnlistWithTransaction();
 
             var identifier = module.identifier;
@@ -493,6 +499,8 @@ namespace CKAN
             AvailableModule availableModule;
             if (available_modules.TryGetValue(identifier, out availableModule))
             {
+                log.DebugFormat("Removing available module {0} {1}",
+                    identifier, version);
                 EnlistWithTransaction();
                 availableModule.Remove(version);
             }
@@ -732,6 +740,7 @@ namespace CKAN
         /// </summary>
         public void RegisterModule(CkanModule mod, IEnumerable<string> absolute_files, GameInstance ksp, bool autoInstalled)
         {
+            log.DebugFormat("Registering module {0}", mod);
             EnlistWithTransaction();
 
             sorter = null;
@@ -794,6 +803,7 @@ namespace CKAN
         /// </summary>
         public void DeregisterModule(GameInstance ksp, string module)
         {
+            log.DebugFormat("Deregistering module {0}", module);
             EnlistWithTransaction();
 
             sorter = null;
@@ -829,24 +839,6 @@ namespace CKAN
         }
 
         /// <summary>
-        /// http://xkcd.com/208/
-        /// This regex works great for things like GameData/Foo/Foo-1.2.dll
-        /// Would be nice to make it persistent, but it depends on the game
-        /// </summary>
-        public static Regex DllPattern(IGame game)
-        {
-            return new Regex(
-                // DLLs only live in the primary mod directory
-                $"^{game.PrimaryModDirectoryRelative}/" + @"
-                    (?:.*/)?              # Intermediate paths (ending with /)
-                    (?<modname>[^.]+)     # Our DLL name, up until the first dot.
-                    .*\.dll$              # Everything else, ending in dll
-                ",
-                RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled
-            );
-        }
-
-        /// <summary>
         /// Registers the given DLL as having been installed. This provides some support
         /// for pre-CKAN modules.
         ///
@@ -854,9 +846,15 @@ namespace CKAN
         /// </summary>
         public void RegisterDll(GameInstance ksp, string absolute_path)
         {
-            EnlistWithTransaction();
-
+            log.DebugFormat("Registering DLL {0}", absolute_path);
             string relative_path = ksp.ToRelativeGameDir(absolute_path);
+
+            string dllIdentifier = ksp.DllPathToIdentifier(relative_path);
+            if (dllIdentifier == null)
+            {
+                log.WarnFormat("Attempted to index {0} which is not a DLL", relative_path);
+                return;
+            }
 
             string owner;
             if (installed_files.TryGetValue(relative_path, out owner))
@@ -869,18 +867,12 @@ namespace CKAN
                 return;
             }
 
-            Match match = DllPattern(ksp.game).Match(relative_path);
-            if (!match.Success)
-            {
-                log.WarnFormat("Attempted to index {0} which is not a DLL", relative_path);
-                return;
-            }
-            string modName = match.Groups["modname"].Value.Replace("_", "-");
+            EnlistWithTransaction();
 
-            log.InfoFormat("Registering {0} from {1}", modName, relative_path);
+            log.InfoFormat("Registering {0} from {1}", dllIdentifier, relative_path);
 
             // We're fine if we overwrite an existing key.
-            installed_dlls[modName] = relative_path;
+            installed_dlls[dllIdentifier] = relative_path;
         }
 
         /// <summary>
@@ -888,6 +880,7 @@ namespace CKAN
         /// </summary>
         public void ClearDlls()
         {
+            log.Debug("Clearing DLLs");
             EnlistWithTransaction();
             installed_dlls = new Dictionary<string, string>();
         }

@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Properly determine the game when cloning instances (#3478 by: DasSkelett; reviewed: HebaruSan)
 - [ConsoleUI] Rewrap ConsoleUI textbox for scrollbar and resize (#3514 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Sort exported modpack relationships by identifier (#3499 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Disable tx timeouts, add tx debug logging, static DLL pattern (#3512 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 

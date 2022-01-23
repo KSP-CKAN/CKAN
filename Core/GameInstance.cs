@@ -10,6 +10,7 @@ using log4net;
 using Newtonsoft.Json;
 
 using CKAN.Games;
+using CKAN.Extensions;
 using CKAN.Versioning;
 
 namespace CKAN
@@ -357,7 +358,9 @@ namespace CKAN
                 var manager = RegistryManager.Instance(this);
                 using (TransactionScope tx = CkanTransaction.CreateTransactionScope())
                 {
-                    var oldDlls = new HashSet<string>(manager.registry.InstalledDlls);
+                    log.DebugFormat("Scanning for DLLs in {0}",
+                        game.PrimaryModDirectory(this));
+                    var oldDlls = manager.registry.InstalledDlls.ToHashSet();
                     manager.registry.ClearDlls();
 
                     // TODO: It would be great to optimise this to skip .git directories and the like.
@@ -379,7 +382,7 @@ namespace CKAN
                     {
                         manager.registry.RegisterDll(this, dll);
                     }
-                    var newDlls = new HashSet<string>(manager.registry.InstalledDlls);
+                    var newDlls = manager.registry.InstalledDlls.ToHashSet();
                     bool dllChanged = !oldDlls.SetEquals(newDlls);
                     bool dlcChanged = manager.ScanDlc();
 
@@ -388,6 +391,7 @@ namespace CKAN
                         manager.Save(false);
                     }
 
+                    log.Debug("Scan completed, committing transaction");
                     tx.Complete();
 
                     return dllChanged || dlcChanged;
@@ -413,6 +417,39 @@ namespace CKAN
         public string ToAbsoluteGameDir(string path)
         {
             return CKANPathUtils.ToAbsolute(path, GameDir());
+        }
+
+        /// <summary>
+        /// https://xkcd.com/208/
+        /// This regex matches things like GameData/Foo/Foo.1.2.dll
+        /// </summary>
+        private static readonly Regex dllPattern = new Regex(
+            @"
+                ^(?:.*/)?             # Directories (ending with /)
+                (?<identifier>[^.]+)  # Our DLL name, up until the first dot.
+                .*\.dll$              # Everything else, ending in dll
+            ",
+            RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled
+        );
+
+        /// <summary>
+        /// Find the identifier associated with a manually installed DLL
+        /// </summary>
+        /// <param name="relative_path">Path of the DLL relative to game root</param>
+        /// <returns>
+        /// Identifier if found otherwise null
+        /// </returns>
+        public string DllPathToIdentifier(string relative_path)
+        {
+            if (!relative_path.StartsWith($"{game.PrimaryModDirectoryRelative}/", StringComparison.CurrentCultureIgnoreCase))
+            {
+                // DLLs only live in the primary mod directory
+                return null;
+            }
+            Match match = dllPattern.Match(relative_path);
+            return match.Success
+                ? Identifier.Sanitize(match.Groups["identifier"].Value)
+                : null;
         }
 
         public override string ToString()
