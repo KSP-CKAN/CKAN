@@ -25,12 +25,13 @@ namespace CKAN
     public class Registry : IEnlistmentNotification, IRegistryQuerier
     {
         [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 3;
-        [JsonIgnore] private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
+        [JsonIgnore] private static readonly ILog log = LogManager.GetLogger(typeof(Registry));
 
         [JsonProperty] private int registry_version;
 
+        // name => Repository
         [JsonProperty("sorted_repositories")]
-        private SortedDictionary<string, Repository> repositories; // name => Repository
+        private SortedDictionary<string, Repository> repositories;
 
         // TODO: These may be good as custom types, especially those which process
         // paths (and flip from absolute to relative, and vice-versa).

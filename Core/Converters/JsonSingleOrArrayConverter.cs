@@ -1,25 +1,17 @@
 using System;
 using System.Collections.Generic;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CKAN
 {
-
-    // With thanks to 
-    // https://stackoverflow.com/questions/18994685/how-to-handle-both-a-single-item-and-an-array-for-the-same-property-using-json-n
-
+    /// <summary>
+    /// With thanks to 
+    /// https://stackoverflow.com/questions/18994685/how-to-handle-both-a-single-item-and-an-array-for-the-same-property-using-json-n
+    /// </summary>
     public class JsonSingleOrArrayConverter<T> : JsonConverter
     {
-        public override bool CanConvert(Type object_type)
-        {
-            // We *only* want to be triggered for types that have explicitly
-            // set an attribute in their class saying they can be converted.
-            // By returning false here, we declare we're not interested in participating
-            // in any other conversions.
-            return false;
-        }
-
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             JToken token = JToken.Load(reader);
@@ -32,15 +24,25 @@ namespace CKAN
             return token.ToObject<T>() == null ? null : new List<T> { token.ToObject<T>() };
         }
 
-        public override bool CanWrite
-        {
-            get { return false; }
-        }
+        public override bool CanWrite => false;
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// We *only* want to be triggered for types that have explicitly
+        /// set an attribute in their class saying they can be converted.
+        /// By returning false here, we declare we're not interested in participating
+        /// in any other conversions.
+        /// </summary>
+        /// <returns>
+        /// false
+        /// </returns>
+        public override bool CanConvert(Type object_type)
+        {
+            return false;
+        }
     }
 }
-

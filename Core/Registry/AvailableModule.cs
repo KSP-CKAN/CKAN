@@ -5,11 +5,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
-using CKAN.Extensions;
-using CKAN.Versioning;
+
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+
+using CKAN.Extensions;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -32,10 +34,8 @@ namespace CKAN
         [OnDeserialized]
         internal void DeserialisationFixes(StreamingContext context)
         {
-            // Set identifier
-            var mod = module_version.Values.LastOrDefault();
-            identifier = mod.identifier;
-            Debug.Assert(module_version.Values.All(m=>identifier.Equals(m.identifier)));
+            identifier = module_version.Values.LastOrDefault()?.identifier;
+            Debug.Assert(module_version.Values.All(m => identifier.Equals(m.identifier)));
         }
 
         /// <param name="identifier">The module to keep track of</param>
@@ -49,6 +49,7 @@ namespace CKAN
         // The map of versions -> modules, that's what we're about!
         // First element is the oldest version, last is the newest.
         [JsonProperty]
+        [JsonConverter(typeof(JsonLeakySortedDictionaryConverter<ModuleVersion, CkanModule>))]
         internal SortedDictionary<ModuleVersion, CkanModule> module_version =
             new SortedDictionary<ModuleVersion, CkanModule>();
 

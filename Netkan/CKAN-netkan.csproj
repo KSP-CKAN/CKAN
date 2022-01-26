@@ -46,7 +46,6 @@
     <PackageReference Include="Namotion.Reflection" Version="1.0.7" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="YamlDotNet" Version="9.1.0" />
-    <PackageReference Include="NJsonSchema" Version="10.0.27" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -153,11 +152,6 @@
     <Compile Include="Validators\TagsValidator.cs" />
     <Compile Include="Validators\VersionStrictValidator.cs" />
     <Compile Include="Validators\VrefValidator.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\CKAN.schema">
-      <LogicalName>CKAN.NetKAN.CKAN.schema</LogicalName>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
