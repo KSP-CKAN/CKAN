@@ -716,7 +716,10 @@ namespace CKAN
                 // Walk our registry to find all files for this mod.
                 IEnumerable<string> files = mod.Files;
 
-                var directoriesToDelete = new HashSet<string>();
+                // We need case insensitive path matching on Windows
+                var directoriesToDelete = Platform.IsWindows
+                    ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                    : new HashSet<string>();
 
                 foreach (string file in files)
                 {

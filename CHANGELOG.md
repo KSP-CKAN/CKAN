@@ -37,6 +37,7 @@ All notable changes to this project will be documented in this file.
 - [ConsoleUI] Rewrap ConsoleUI textbox for scrollbar and resize (#3514 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Sort exported modpack relationships by identifier (#3499 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Disable tx timeouts, add tx debug logging, static DLL pattern (#3512 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Only delete diversely capitalized directories once on Windows (#3528 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
