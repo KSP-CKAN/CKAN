@@ -41,6 +41,7 @@
     <PackageReference Include="SharpZipLib" Version="1.3.3" />
     <PackageReference Include="log4net" Version="2.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NJsonSchema" Version="10.0.27" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <PackageReference Include="ChinhDo.Transactions.FileManager" Version="1.2.0" />
@@ -64,6 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="builds.json" />
+    <EmbeddedResource Include="..\CKAN.schema">
+      <LogicalName>CKAN.Core.CKAN.schema</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="log4net.xml">
