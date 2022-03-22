@@ -15,7 +15,7 @@ namespace CKAN.Extensions
             return source is ICollection<T> collection ? collection : source.ToArray();
         }
 
-#if NET45
+#if NETFRAMEWORK
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
         {
             if (source == null)

@@ -15,7 +15,7 @@
     <Deterministic>true</Deterministic>
     <Configurations>Debug;Release;Debug_NetCore;Release_NetCore</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <Choose>
     <When Condition="$(Configuration.EndsWith('NetCore'))">
@@ -25,7 +25,7 @@
     </When>
     <Otherwise>
       <PropertyGroup>
-        <TargetFramework>net45</TargetFramework>
+        <TargetFramework>net461</TargetFramework>
       </PropertyGroup>
     </Otherwise>
   </Choose>
@@ -50,7 +50,7 @@
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -72,7 +72,7 @@
     <ProjectReference Include="..\Core\CKAN-core.csproj" />
   </ItemGroup>
   <Choose>
-    <When Condition=" '$(TargetFramework)' == 'net45' ">
+    <When Condition=" '$(TargetFramework)' == 'net461' ">
       <ItemGroup>
         <ProjectReference Include="..\GUI\CKAN-GUI.csproj" />
         <ProjectReference Include="..\Netkan\CKAN-netkan.csproj" />

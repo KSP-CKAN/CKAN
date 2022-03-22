@@ -14,7 +14,7 @@
     <Deterministic>true</Deterministic>
     <Configurations>Debug;Release;Debug_NetCore;Release_NetCore</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <Choose>
     <When Condition="$(Configuration.EndsWith('NetCore'))">
@@ -24,7 +24,7 @@
     </When>
     <Otherwise>
       <PropertyGroup>
-        <TargetFramework>net45</TargetFramework>
+        <TargetFramework>net461</TargetFramework>
       </PropertyGroup>
     </Otherwise>
   </Choose>
@@ -43,7 +43,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NJsonSchema" Version="10.0.27" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <PackageReference Include="ChinhDo.Transactions.FileManager" Version="1.2.0" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
