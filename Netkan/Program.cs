@@ -16,6 +16,7 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Processors;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Extensions;
+using CKAN.Games;
 
 namespace CKAN.NetKAN
 {
@@ -47,6 +48,8 @@ namespace CKAN.NetKAN
                     return ExitOk;
                 }
 
+                var game = GameInstanceManager.GameByShortName(Options.Game);
+
                 if (!string.IsNullOrEmpty(Options.ValidateCkan))
                 {
                     var ckan = new Metadata(JObject.Parse(File.ReadAllText(Options.ValidateCkan)));
@@ -55,7 +58,8 @@ namespace CKAN.NetKAN
                         Options.OverwriteCache,
                         Options.GitHubToken,
                         Options.GitLabToken,
-                        Options.PreRelease
+                        Options.PreRelease,
+                        game
                     );
                     inf.ValidateCkan(ckan);
                     Console.WriteLine(QueueHandler.serializeCkan(
@@ -74,7 +78,8 @@ namespace CKAN.NetKAN
                         Options.OverwriteCache,
                         Options.GitHubToken,
                         Options.GitLabToken,
-                        Options.PreRelease
+                        Options.PreRelease,
+                        game
                     );
                     qh.Process();
                     return ExitOk;
@@ -92,7 +97,8 @@ namespace CKAN.NetKAN
                         Options.OverwriteCache,
                         Options.GitHubToken,
                         Options.GitLabToken,
-                        Options.PreRelease
+                        Options.PreRelease,
+                        game
                     );
                     var ckans = inf.Inflate(
                         Options.File,

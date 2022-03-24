@@ -32,7 +32,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 var json = metadata.Json();
 
-                Log.InfoFormat("Executing Download attribute transformation with {0}", metadata.Kref);
+                Log.Debug("Executing Download attribute transformation");
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 string file = _http.DownloadModule(metadata);

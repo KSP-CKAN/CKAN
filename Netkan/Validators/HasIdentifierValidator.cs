@@ -9,7 +9,7 @@ namespace CKAN.NetKAN.Validators
 
         public void Validate(Metadata metadata)
         {
-            Log.Info("Validating that metadata contains an identifier");
+            Log.Debug("Validating that metadata contains an identifier");
 
             if (string.IsNullOrWhiteSpace(metadata.Identifier))
             {

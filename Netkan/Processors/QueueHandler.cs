@@ -13,22 +13,25 @@ using log4net.Filter;
 using log4net.Repository.Hierarchy;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 using CKAN.Versioning;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Extensions;
+using CKAN.Games;
 
 namespace CKAN.NetKAN.Processors
 {
     public class QueueHandler
     {
-        public QueueHandler(string inputQueueName, string outputQueueName, string cacheDir, bool overwriteCache, string githubToken, string gitlabToken, bool prerelease)
+        public QueueHandler(string inputQueueName, string outputQueueName, string cacheDir, bool overwriteCache, string githubToken, string gitlabToken, bool prerelease, IGame game)
         {
             warningAppender = GetQueueLogAppender();
             (LogManager.GetRepository() as Hierarchy)?.Root.AddAppender(warningAppender);
+            this.game = game;
 
             log.Debug("Initializing SQS queue handler");
-            inflator = new Inflator(cacheDir, overwriteCache, githubToken, gitlabToken, prerelease);
+            inflator = new Inflator(cacheDir, overwriteCache, githubToken, gitlabToken, prerelease, game);
 
             inputQueueURL  = getQueueUrl(inputQueueName);
             outputQueueURL = getQueueUrl(outputQueueName);
@@ -211,6 +214,14 @@ namespace CKAN.NetKAN.Processors
                         DataType    = "String",
                         StringValue = DateTime.UtcNow.ToString("s", CultureInfo.InvariantCulture)
                     }
+                },
+                {
+                    "Game",
+                    new MessageAttributeValue()
+                    {
+                        DataType    = "String",
+                        StringValue = game.ShortName
+                    }
                 }
             };
             if (ckan != null)
@@ -298,8 +309,9 @@ namespace CKAN.NetKAN.Processors
             };
         }
 
-        private Inflator        inflator;
-        private AmazonSQSClient client = new AmazonSQSClient();
+        private readonly IGame           game;
+        private readonly Inflator        inflator;
+        private readonly AmazonSQSClient client = new AmazonSQSClient();
 
         private readonly string inputQueueURL;
         private readonly string outputQueueURL;

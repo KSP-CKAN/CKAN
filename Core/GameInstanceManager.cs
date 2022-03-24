@@ -22,7 +22,8 @@ namespace CKAN
     {
         private static IGame[] knownGames = new IGame[]
         {
-            new KerbalSpaceProgram()
+            new KerbalSpaceProgram(),
+            new KerbalSpaceProgram2(),
         };
 
         /// <summary>
@@ -645,6 +646,9 @@ namespace CKAN
                     return selection >= 0 ? matchingGames[selection] : null;
             }
         }
+
+        public static IGame GameByShortName(string shortName)
+            => knownGames.FirstOrDefault(g => g.ShortName == shortName);
 
     }
 }

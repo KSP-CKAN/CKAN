@@ -4,18 +4,20 @@ using System.IO;
 using System.Linq;
 using Autofac;
 using log4net;
+
 using CKAN.Configuration;
 using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Validators;
+using CKAN.Games;
 
 namespace CKAN.NetKAN.Processors
 {
     public class Inflator
     {
-        public Inflator(string cacheDir, bool overwriteCache, string githubToken, string gitlabToken, bool prerelease)
+        public Inflator(string cacheDir, bool overwriteCache, string githubToken, string gitlabToken, bool prerelease, IGame game)
         {
             log.Debug("Initializing inflator");
             cache = FindCache(
@@ -24,11 +26,11 @@ namespace CKAN.NetKAN.Processors
                 cacheDir
             );
 
-            IModuleService moduleService = new ModuleService();
+            IModuleService moduleService = new ModuleService(game);
             IFileService   fileService   = new FileService(cache);
             http          = new CachingHttpService(cache, overwriteCache);
-            ckanValidator = new CkanValidator(http, moduleService);
-            transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, gitlabToken, prerelease, netkanValidator);
+            ckanValidator = new CkanValidator(http, moduleService, game);
+            transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, gitlabToken, prerelease, game, netkanValidator);
         }
 
         internal IEnumerable<Metadata> Inflate(string filename, Metadata netkan, TransformOptions opts)
@@ -40,18 +42,18 @@ namespace CKAN.NetKAN.Processors
                 http.ClearRequestedURLs();
 
                 netkanValidator.ValidateNetkan(netkan, filename);
-                log.Info("Input successfully passed pre-validation");
+                log.Debug("Input successfully passed pre-validation");
 
                 IEnumerable<Metadata> ckans = transformer
                     .Transform(netkan, opts)
                     .ToList();
-                log.Info("Finished transformation");
+                log.Debug("Finished transformation");
 
                 foreach (Metadata ckan in ckans)
                 {
                     ckanValidator.ValidateCkan(ckan, netkan);
                 }
-                log.Info("Output successfully passed post-validation");
+                log.Debug("Output successfully passed post-validation");
                 return ckans;
             }
             catch (Exception)

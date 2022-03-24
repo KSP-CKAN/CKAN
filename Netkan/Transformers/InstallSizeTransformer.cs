@@ -13,10 +13,11 @@ namespace CKAN.NetKAN.Transformers
     {
         public string Name { get { return "install_size"; } }
 
-        public InstallSizeTransformer(IHttpService http, IModuleService moduleService)
+        public InstallSizeTransformer(IHttpService http, IModuleService moduleService, IGame game)
         {
             _http = http;
             _moduleService = moduleService;
+            _game = game;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
@@ -26,7 +27,7 @@ namespace CKAN.NetKAN.Transformers
                 var json = metadata.Json();
                 CkanModule mod = CkanModule.FromJson(json.ToString());
                 ZipFile    zip = new ZipFile(_http.DownloadModule(metadata));
-                GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
+                GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
                 json["install_size"] = _moduleService.FileSources(mod, zip, inst)
                                                      .Select(ze => ze.Size)
                                                      .Sum();
@@ -40,5 +41,6 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly IGame          _game;
     }
 }

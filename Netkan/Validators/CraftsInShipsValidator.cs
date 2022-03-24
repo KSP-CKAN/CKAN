@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
 using CKAN.Games;
@@ -12,15 +13,16 @@ namespace CKAN.NetKAN.Validators
 {
     internal sealed class CraftsInShipsValidator : IValidator
     {
-        public CraftsInShipsValidator(IHttpService http, IModuleService moduleService)
+        public CraftsInShipsValidator(IHttpService http, IModuleService moduleService, IGame game)
         {
             _http          = http;
             _moduleService = moduleService;
+            _game          = game;
         }
 
         public void Validate(Metadata metadata)
         {
-            Log.Info("Validating that craft files are installed into Ships");
+            Log.Debug("Validating that craft files are installed into Ships");
 
             JObject    json = metadata.Json();
             CkanModule mod  = CkanModule.FromJson(json.ToString());
@@ -30,7 +32,7 @@ namespace CKAN.NetKAN.Validators
                 if (!string.IsNullOrEmpty(package))
                 {
                     var zip       = new ZipFile(package);
-                    var inst      = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", null, false);
+                    var inst      = new GameInstance(_game, "/", "dummy", null, false);
                     var badCrafts = _moduleService.GetCrafts(mod, zip, inst)
                         .Where(f => !AllowedCraftPath(inst.ToRelativeGameDir(f.destination)))
                         .ToList();
@@ -55,6 +57,7 @@ namespace CKAN.NetKAN.Validators
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly IGame          _game;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(CraftsInShipsValidator));
     }

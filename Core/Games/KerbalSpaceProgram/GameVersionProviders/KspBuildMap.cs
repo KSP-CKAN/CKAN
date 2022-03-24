@@ -35,7 +35,7 @@ namespace CKAN.GameVersionProviders
             new Uri("https://raw.githubusercontent.com/KSP-CKAN/CKAN-meta/master/builds.json");
         private static readonly string cachedBuildMapPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "CKAN", "builds.json");
+            "CKAN", "builds-ksp.json");
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(KspBuildMap));
 
@@ -154,7 +154,7 @@ namespace CKAN.GameVersionProviders
             {
                 Log.Debug("Getting embedded build map");
                 var resourceStream = Assembly.GetExecutingAssembly()
-                    .GetManifestResourceStream("CKAN.builds.json");
+                    .GetManifestResourceStream("CKAN.builds-ksp.json");
 
                 if (resourceStream != null)
                 {

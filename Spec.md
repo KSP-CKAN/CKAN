@@ -293,8 +293,9 @@ three source directives:
 In addition a destination directive *must* be provided:
 
 - `install_to`: The target location where the matched file or directory should be installed.
-  -  Valid values for this entry are `GameData`, `Missions`(**v1.25**), `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Ships/@thumbs/VAB`(**v1.16**), `Ships/@thumbs/SPH`(**v1.16**), `Ships/Script`(**v1.29**), `Tutorial`, `Scenarios` (**v1.14**)
+  -  Valid values for this entry for KSP1 mods are `GameData`, `Missions`(**v1.25**), `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Ships/@thumbs/VAB`(**v1.16**), `Ships/@thumbs/SPH`(**v1.16**), `Ships/Script`(**v1.29**), `Tutorial`, `Scenarios` (**v1.14**),
   and `GameRoot` (which should be used sparingly, if at all).
+  - Valid values for this entry for KSP2 mods are `GameRoot`, `BepInEx/plugins` (**v1.32**), and `SpaceWarp/Mods` (**v1.32**)
   -  A path to a given subfolder location can be specified *only* under `GameData` (**v1.2**);
   for example: `GameData/MyMod/Plugins`. The client *must* check this path and abort the install
   if any attempts to traverse up directories are found (eg: `GameData/../Example`).
@@ -983,6 +984,22 @@ version information generated will give a `ksp_version_min` of `1.0.2` and a `ks
 
 If (and only if) no mod version number has been identified (eg a `#/ckan/http/:url`), then the following field will also be auto-generated:
 
+- `version`
+
+###### `#/ckan/space-warp[[/path]/swinfo.json]`
+
+If present, a `$vref` symbol of `#/ckan/space-warp` states that version
+information should be retrieved from an embedded SpaceWarp `swinfo.json` file in the
+file downloaded by the `download` field.
+
+When used, the following fields are auto-generated:
+
+- `ksp_version`
+- `ksp_version_min`
+- `ksp_version_max`
+- `name`
+- `author`
+- `abstract`
 - `version`
 
 ##### `x_netkan_epoch`

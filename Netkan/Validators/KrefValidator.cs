@@ -9,7 +9,7 @@ namespace CKAN.NetKAN.Validators
 
         public void Validate(Metadata metadata)
         {
-            Log.Info("Validating that metadata contains valid or null $kref");
+            Log.Debug("Validating that metadata contains valid or null $kref");
 
             switch (metadata.Kref?.Source)
             {

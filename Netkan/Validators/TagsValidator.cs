@@ -11,7 +11,7 @@ namespace CKAN.NetKAN.Validators
 
         public void Validate(Metadata metadata)
         {
-            Log.Info("Validating that metadata has tags");
+            Log.Debug("Validating that metadata has tags");
 
             JObject json = metadata.Json();
             JArray tags = !json.ContainsKey("tags") ? null : (JArray)json["tags"];

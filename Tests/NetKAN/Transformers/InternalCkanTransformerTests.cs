@@ -10,6 +10,7 @@ using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
+using CKAN.Games;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -39,7 +40,7 @@ namespace Tests.NetKAN.Transformers
                     It.IsAny<GameInstance>()))
                 .Returns(internalCkan);
 
-            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object);
+            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram());
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -78,7 +79,7 @@ namespace Tests.NetKAN.Transformers
                     It.IsAny<GameInstance>()))
                 .Returns(internalCkan);
 
-            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object);
+            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram());
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -120,7 +121,7 @@ namespace Tests.NetKAN.Transformers
                     It.IsAny<GameInstance>()))
                 .Returns(internalCkan);
 
-            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object);
+            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram());
 
             var json = new JObject();
             json["spec_version"] = specVersion;

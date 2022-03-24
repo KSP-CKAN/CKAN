@@ -21,10 +21,11 @@ namespace CKAN.NetKAN.Transformers
         /// </summary>
         /// <param name="http">HTTP service</param>
         /// <param name="moduleService">Module service</param>
-        public LocalizationsTransformer(IHttpService http, IModuleService moduleService)
+        public LocalizationsTransformer(IHttpService http, IModuleService moduleService, IGame game)
         {
             _http          = http;
             _moduleService = moduleService;
+            _game          = game;
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 CkanModule mod = CkanModule.FromJson(json.ToString());
                 ZipFile    zip = new ZipFile(_http.DownloadModule(metadata));
-                GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
+                GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
 
                 log.Debug("Extracting locales");
                 // Extract the locale names from the ZIP's cfg files
@@ -86,6 +87,7 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly IGame          _game;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(LocalizationsTransformer));
 

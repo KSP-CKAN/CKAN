@@ -73,7 +73,7 @@ namespace CKAN.NetKAN.Transformers
             var json = metadata.Json();
             var sortedJson = new JObject();
 
-            Log.InfoFormat("Executing property sort transformation");
+            Log.Debug("Executing property sort transformation");
             Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
             var sortedPropertyNames = json

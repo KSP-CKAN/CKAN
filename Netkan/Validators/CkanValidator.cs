@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.Games;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -8,7 +10,7 @@ namespace CKAN.NetKAN.Validators
     {
         private readonly List<IValidator> _validators;
 
-        public CkanValidator(IHttpService downloader, IModuleService moduleService)
+        public CkanValidator(IHttpService downloader, IModuleService moduleService, IGame game)
         {
             this.downloader    = downloader;
             this.moduleService = moduleService;
@@ -16,14 +18,14 @@ namespace CKAN.NetKAN.Validators
             {
                 new IsCkanModuleValidator(),
                 new TagsValidator(),
-                new InstallsFilesValidator(downloader, moduleService),
-                new MatchesKnownGameVersionsValidator(),
+                new InstallsFilesValidator(downloader, moduleService, game),
+                new MatchesKnownGameVersionsValidator(game),
                 new ObeysCKANSchemaValidator(),
                 new KindValidator(),
-                new HarmonyValidator(downloader, moduleService),
-                new ModuleManagerDependsValidator(downloader, moduleService),
-                new PluginsValidator(downloader, moduleService),
-                new CraftsInShipsValidator(downloader, moduleService),
+                new HarmonyValidator(downloader, moduleService, game),
+                new ModuleManagerDependsValidator(downloader, moduleService, game),
+                new PluginsValidator(downloader, moduleService, game),
+                new CraftsInShipsValidator(downloader, moduleService, game),
             };
         }
 

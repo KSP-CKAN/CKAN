@@ -170,6 +170,11 @@ namespace CKAN.Games
             return args;
         }
 
+        public void RefreshVersions()
+        {
+            ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh();
+        }
+
         public List<GameVersion> KnownVersions =>
             ServiceLocator.Container.Resolve<IKspBuildMap>().KnownVersions;
 

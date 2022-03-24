@@ -21,7 +21,7 @@ namespace Tests.NetKAN.Services
             var json = JObject.Parse(TestData.DogeCoinFlag_101());
             json["install"][0]["file"] = "DOES_NOT_EXIST";
 
-            var sut = new ModuleService();
+            var sut = new ModuleService(new KerbalSpaceProgram());
 
             // Act
             var result = sut.HasInstallableFiles(CkanModule.FromJson(json.ToString()), zip);
@@ -39,7 +39,7 @@ namespace Tests.NetKAN.Services
             var zip = TestData.DogeCoinFlagZip();
             var json = JObject.Parse(TestData.DogeCoinFlag_101());
 
-            var sut = new ModuleService();
+            var sut = new ModuleService(new KerbalSpaceProgram());
 
             // Act
             var result = sut.HasInstallableFiles(CkanModule.FromJson(json.ToString()), zip);
@@ -54,7 +54,7 @@ namespace Tests.NetKAN.Services
         public void GetsInternalCkanCorrectly()
         {
             // Arrange
-            var sut = new ModuleService();
+            var sut = new ModuleService(new KerbalSpaceProgram());
             CkanModule mod = CkanModule.FromJson(TestData.DogeCoinFlag_101());
             GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
 
@@ -80,7 +80,7 @@ namespace Tests.NetKAN.Services
             json["version"] = "1.0.0";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
-            var sut = new ModuleService();
+            var sut = new ModuleService(new KerbalSpaceProgram());
 
             // Act
             var result = sut.GetInternalAvc(CkanModule.FromJson(json.ToString()), TestData.DogeCoinFlagAvcZip());
