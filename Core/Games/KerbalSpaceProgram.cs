@@ -2,8 +2,14 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
 using Autofac;
 using log4net;
+using ParsecSharp;
+using KSPMMCfgParser;
+using static KSPMMCfgParser.KSPMMCfgParser;
+
 using CKAN.GameVersionProviders;
 using CKAN.Versioning;
 
@@ -327,6 +333,92 @@ namespace CKAN.Games
             }
             return args;
         }
+
+        /// <summary>
+        /// https://xkcd.com/208/
+        /// This regex matches things like GameData/Foo/Foo.1.2.dll
+        /// </summary>
+        private static readonly Regex dllPattern = new Regex(
+            @"
+                ^(?:.*/)?             # Directories (ending with /)
+                (?<identifier>[^.]+)  # Our DLL name, up until the first dot.
+                .*\.dll$              # Everything else, ending in dll
+            ",
+            RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled
+        );
+
+        /// <summary>
+        /// Find the identifier associated with a manually installed DLL
+        /// </summary>
+        /// <param name="relativePath">Path of the DLL relative to game root</param>
+        /// <returns>
+        /// Identifier if found otherwise null
+        /// </returns>
+        private string[] DllPathToIdentifiers(string relativePath)
+        {
+            if (!relativePath.StartsWith($"{PrimaryModDirectoryRelative}/",
+                Platform.IsWindows
+                    ? StringComparison.CurrentCultureIgnoreCase
+                    : StringComparison.CurrentCulture))
+            {
+                // DLLs only live in the primary mod directory
+                return new string[] { };
+            }
+            Match match = dllPattern.Match(relativePath);
+            return match.Success
+                ? new string[] { Identifier.Sanitize(match.Groups["identifier"].Value) }
+                : new string[] { };
+        }
+
+        public static IEnumerable<string> IdentifiersFromConfigNodes(IEnumerable<KSPConfigNode> nodes)
+            => nodes
+                .Select(node => node.For)
+                .Where(ident => !string.IsNullOrEmpty(ident))
+                .Concat(nodes.SelectMany(node => IdentifiersFromConfigNodes(node.Children)))
+                .Distinct();
+
+        /// <summary>
+        /// Find the identifiers associated with a .cfg file string
+        /// using ModuleManager's :FOR[identifier] pattern
+        /// </summary>
+        /// <param name="inst">Game instance containing the files</param>
+        /// <param name="absolutePath">Absolute path of the .cfg file</param>
+        /// <param name="cfgContents">Contents of the cfg file</param>
+        /// <returns>
+        /// Array of identifiers, if any found
+        /// </returns>
+        private static string[] CfgContentsToIdentifiers(GameInstance inst, string absolutePath, string cfgContents)
+            => ConfigFile.Parse(cfgContents)
+                         .CaseOf(failure =>
+                                 {
+                                     log.InfoFormat("{0}:{1}:{2}: {3}",
+                                                    inst.ToRelativeGameDir(absolutePath),
+                                                    failure.State.Position.Line,
+                                                    failure.State.Position.Column,
+                                                    failure.Message);
+                                     return Enumerable.Empty<string>();
+                                 },
+                                 success => IdentifiersFromConfigNodes(success.Value))
+                         .ToArray();
+
+        /// <summary>
+        /// Find the identifiers associated with a manually installed .cfg file
+        /// using ModuleManager's :FOR[identifier] pattern
+        /// </summary>
+        /// <param name="inst">Game instance containing the files</param>
+        /// <param name="absolutePath">Absolute path of the .cfg file</param>
+        /// <returns>
+        /// Array of identifiers, if any found
+        /// </returns>
+        private static string[] CfgPathToIdentifiers(GameInstance inst, string absolutePath)
+            => CfgContentsToIdentifiers(inst, absolutePath, File.ReadAllText(absolutePath));
+
+        public string[] IdentifiersFromFileName(GameInstance inst, string relativePath)
+            => relativePath.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase)
+                ? DllPathToIdentifiers(relativePath)
+                : relativePath.EndsWith(".cfg", StringComparison.CurrentCultureIgnoreCase)
+                    ? CfgPathToIdentifiers(inst, inst.ToAbsoluteGameDir(relativePath))
+                    : new string[] { };
 
         private static readonly ILog log = LogManager.GetLogger(typeof(KerbalSpaceProgram));
     }

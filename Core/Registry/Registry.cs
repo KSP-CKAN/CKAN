@@ -105,7 +105,10 @@ namespace CKAN
         /// </summary>
         public string DllPath(string identifier)
         {
-            return installed_dlls.TryGetValue(identifier, out string path) ? path : null;
+            return (installed_dlls.TryGetValue(identifier, out string path)
+                    && path.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
+                ? path
+                : null;
         }
 
         /// <summary>
@@ -620,7 +623,7 @@ namespace CKAN
         /// <param name="maxKsp">Return parameter for the highest game version</param>
         public static void GetMinMaxVersions(IEnumerable<CkanModule> modVersions,
                 out ModuleVersion minMod, out ModuleVersion maxMod,
-                out GameVersion    minKsp, out GameVersion    maxKsp)
+                out GameVersion   minKsp, out GameVersion   maxKsp)
         {
             minMod = maxMod = null;
             minKsp = maxKsp = null;
@@ -839,41 +842,14 @@ namespace CKAN
             installed_modules.Remove(module);
         }
 
-        /// <summary>
-        /// Registers the given DLL as having been installed. This provides some support
-        /// for pre-CKAN modules.
-        ///
-        /// Does nothing if the DLL is already part of an installed module.
-        /// </summary>
-        public void RegisterDll(GameInstance ksp, string absolute_path)
+        public void RegisterFile(string relativePath, string identifier)
         {
-            log.DebugFormat("Registering DLL {0}", absolute_path);
-            string relative_path = ksp.ToRelativeGameDir(absolute_path);
-
-            string dllIdentifier = ksp.DllPathToIdentifier(relative_path);
-            if (dllIdentifier == null)
+            if (!installed_dlls.ContainsKey(identifier))
             {
-                log.WarnFormat("Attempted to index {0} which is not a DLL", relative_path);
-                return;
+                EnlistWithTransaction();
+                log.InfoFormat("Registering {0} from {1}", identifier, relativePath);
+                installed_dlls[identifier] = relativePath;
             }
-
-            string owner;
-            if (installed_files.TryGetValue(relative_path, out owner))
-            {
-                log.InfoFormat(
-                    "Not registering {0}, it belongs to {1}",
-                    relative_path,
-                    owner
-                );
-                return;
-            }
-
-            EnlistWithTransaction();
-
-            log.InfoFormat("Registering {0} from {1}", dllIdentifier, relative_path);
-
-            // We're fine if we overwrite an existing key.
-            installed_dlls[dllIdentifier] = relative_path;
         }
 
         /// <summary>
@@ -1048,9 +1024,9 @@ namespace CKAN
         /// Returns the module which owns this file, or null if not known.
         /// Throws a PathErrorKraken if an absolute path is provided.
         /// </summary>
-        public string FileOwner(string file)
+        public string FileOwner(string relativePath)
         {
-            file = CKANPathUtils.NormalizePath(file);
+            var file = CKANPathUtils.NormalizePath(relativePath);
 
             if (Path.IsPathRooted(file))
             {

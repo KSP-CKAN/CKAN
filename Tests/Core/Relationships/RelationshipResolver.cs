@@ -892,9 +892,11 @@ namespace Tests.Core.Relationships
         [Test]
         public void AutodetectedCanSatisfyRelationships()
         {
-            using (var ksp = new DisposableKSP ())
+            using (var ksp = new DisposableKSP())
             {
-                registry.RegisterDll(ksp.KSP, Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), "ModuleManager.dll"));
+                registry.RegisterFile(
+                    Path.Combine(ksp.KSP.game.PrimaryModDirectoryRelative, "ModuleManager.dll"),
+                    "ModuleManager");
 
                 var depends = new List<CKAN.RelationshipDescriptor>();
                 depends.Add(new CKAN.ModuleRelationshipDescriptor { name = "ModuleManager" });
@@ -906,7 +908,7 @@ namespace Tests.Core.Relationships
                     null,
                     RelationshipResolver.DefaultOpts(),
                     registry,
-                    new GameVersionCriteria (GameVersion.Parse("1.0.0"))
+                    new GameVersionCriteria(GameVersion.Parse("1.0.0"))
                 );
             }
         }
