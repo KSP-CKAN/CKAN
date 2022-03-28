@@ -24,6 +24,7 @@ namespace CKAN.NetKAN.Transformers
             IHttpService http,
             IFileService fileService,
             IModuleService moduleService,
+            IConfigParser configParser,
             string githubToken,
             bool prerelease,
             IValidator validator
@@ -43,7 +44,7 @@ namespace CKAN.NetKAN.Transformers
                 new AvcKrefTransformer(http, ghApi),
                 new InternalCkanTransformer(http, moduleService),
                 new AvcTransformer(http, moduleService, ghApi),
-                new LocalizationsTransformer(http, moduleService),
+                new LocalizationsTransformer(http, moduleService, configParser),
                 new VersionEditTransformer(),
                 new ForcedVTransformer(),
                 new EpochTransformer(),

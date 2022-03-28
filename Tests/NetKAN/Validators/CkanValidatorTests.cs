@@ -33,11 +33,12 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
+            var mConfigParser = new Mock<IConfigParser>();
 
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(true);
 
-            var sut = new CkanValidator(mHttp.Object, mModuleService.Object);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, mConfigParser.Object);
             var json = (JObject)ValidCkan.DeepClone();
 
             // Act
@@ -58,11 +59,12 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
+            var mConfigParser = new Mock<IConfigParser>();
 
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(true);
 
-            var sut = new CkanValidator(mHttp.Object, mModuleService.Object);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, mConfigParser.Object);
             var json = (JObject)ValidCkan.DeepClone();
             json.Remove(propertyName);
 
@@ -81,11 +83,12 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
+            var mConfigParser = new Mock<IConfigParser>();
 
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(true);
 
-            var sut = new CkanValidator(mHttp.Object, mModuleService.Object);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, mConfigParser.Object);
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AmazingMod";
@@ -105,6 +108,7 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
+            var mConfigParser = new Mock<IConfigParser>();
 
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(false);
@@ -113,7 +117,7 @@ namespace Tests.NetKAN.Validators
             netkan["spec_version"] = 1;
             netkan["identifier"] = "AwesomeMod";
 
-            var sut = new CkanValidator(mHttp.Object, mModuleService.Object);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, mConfigParser.Object);
             var json = (JObject)ValidCkan.DeepClone();
 
             // Act

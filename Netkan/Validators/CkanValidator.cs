@@ -8,10 +8,8 @@ namespace CKAN.NetKAN.Validators
     {
         private readonly List<IValidator> _validators;
 
-        public CkanValidator(IHttpService downloader, IModuleService moduleService)
+        public CkanValidator(IHttpService downloader, IModuleService moduleService, IConfigParser configParser)
         {
-            this.downloader    = downloader;
-            this.moduleService = moduleService;
             _validators = new List<IValidator>
             {
                 new IsCkanModuleValidator(),
@@ -21,8 +19,9 @@ namespace CKAN.NetKAN.Validators
                 new ObeysCKANSchemaValidator(),
                 new KindValidator(),
                 new HarmonyValidator(downloader, moduleService),
-                new ModuleManagerDependsValidator(downloader, moduleService),
-                new PluginsValidator(downloader, moduleService),
+                new ModuleManagerDependsValidator(downloader, moduleService, configParser),
+                new PluginsValidator(downloader, moduleService, configParser),
+                new ForClauseValidator(downloader, moduleService, configParser),
                 new CraftsInShipsValidator(downloader, moduleService),
             };
         }
@@ -40,8 +39,5 @@ namespace CKAN.NetKAN.Validators
             Validate(metadata);
             new MatchingIdentifiersValidator(netkan.Identifier).Validate(metadata);
         }
-
-        private IHttpService   downloader;
-        private IModuleService moduleService;
     }
 }
