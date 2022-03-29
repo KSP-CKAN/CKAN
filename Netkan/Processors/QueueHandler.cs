@@ -148,7 +148,7 @@ namespace CKAN.NetKAN.Processors
             IEnumerable<Metadata> ckans = null;
             bool   caught        = false;
             string caughtMessage = null;
-            var    opts          = new TransformOptions(releases, null, highVer);
+            var    opts          = new TransformOptions(releases, null, highVer, netkan.Staged, netkan.StagingReason);
             try
             {
                 ckans = inflator.Inflate($"{netkan.Identifier}.netkan", netkan, opts);
@@ -178,11 +178,6 @@ namespace CKAN.NetKAN.Processors
 
         private SendMessageBatchRequestEntry inflationMessage(Metadata ckan, Metadata netkan, TransformOptions opts, bool success, string err = null)
         {
-            bool staged = netkan.Staged || opts.Staged;
-            string stagingReason =
-                  !string.IsNullOrEmpty(netkan.StagingReason) ? netkan.StagingReason
-                : !string.IsNullOrEmpty(opts.StagingReason)   ? opts.StagingReason
-                : null;
             var attribs = new Dictionary<string, MessageAttributeValue>()
             {
                 {
@@ -198,7 +193,7 @@ namespace CKAN.NetKAN.Processors
                     new MessageAttributeValue()
                     {
                         DataType    = "String",
-                        StringValue = staged.ToString()
+                        StringValue = opts.Staged.ToString()
                     }
                 },
                 {
@@ -252,14 +247,14 @@ namespace CKAN.NetKAN.Processors
                 );
                 warningAppender.Warnings.Clear();
             }
-            if (staged && stagingReason != null)
+            if (opts.Staged && opts.StagingReasons.Count > 0)
             {
                 attribs.Add(
                     "StagingReason",
                     new MessageAttributeValue()
                     {
                         DataType    = "String",
-                        StringValue = stagingReason,
+                        StringValue = string.Join("\r\n\r\n", opts.StagingReasons),
                     }
                 );
             }

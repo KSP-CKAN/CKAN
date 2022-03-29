@@ -14,7 +14,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class GithubTransformerTests
     {
-        private readonly TransformOptions opts = new TransformOptions(1, null, null);
+        private readonly TransformOptions opts = new TransformOptions(1, null, null, false, null);
 
         private Mock<IGithubApi> apiMockUp;
         [OneTimeSetUp]
@@ -191,7 +191,7 @@ namespace Tests.NetKAN.Transformers
             // Act
             var results = sut.Transform(
                 new Metadata(json),
-                new TransformOptions(2, null, null)
+                new TransformOptions(2, null, null, false, null)
             );
             var transformedJsons = results.Select(result => result.Json()).ToArray();
 
@@ -229,7 +229,7 @@ namespace Tests.NetKAN.Transformers
             // Act
             var results = sut.Transform(
                 new Metadata(json),
-                new TransformOptions(1, 3, null)
+                new TransformOptions(1, 3, null, false, null)
             );
             var transformedJsons = results.Select(result => result.Json()).ToArray();
 
@@ -267,7 +267,7 @@ namespace Tests.NetKAN.Transformers
             // Act
             var results = sut.Transform(
                 new Metadata(json),
-                new TransformOptions(2, 1, null)
+                new TransformOptions(2, 1, null, false, null)
             ).ToArray();
 
             // Assert

@@ -65,7 +65,7 @@ namespace CKAN.NetKAN.Transformers
                 {
                     // New file, tell the Indexer to be careful
                     opts.Staged = true;
-                    opts.StagingReason = $"Auto-epoching out of order version: {startV} < {opts.HighestVersion} < {currentV}";
+                    opts.StagingReasons.Add($"Auto-epoching out of order version: {startV} < {opts.HighestVersion} < {currentV}");
                 }
                 json["version"] = currentV.ToString();
             }

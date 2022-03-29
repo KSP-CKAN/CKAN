@@ -97,7 +97,9 @@ namespace CKAN.NetKAN
                         new TransformOptions(
                             ParseReleases(Options.Releases),
                             ParseSkipReleases(Options.SkipReleases),
-                            ParseHighestVersion(Options.HighestVersion)
+                            ParseHighestVersion(Options.HighestVersion),
+                            netkan.Staged,
+                            netkan.StagingReason
                         )
                     );
                     foreach (Metadata ckan in ckans)

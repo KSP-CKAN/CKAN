@@ -12,7 +12,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class CurseTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1, null, null);
+        private TransformOptions opts = new TransformOptions(1, null, null, false, null);
 
         // GH #199: Don't pre-fill KSP version fields if we see a ksp_min/max
         [Test]
