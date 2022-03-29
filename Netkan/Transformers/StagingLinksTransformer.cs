@@ -14,14 +14,14 @@ namespace CKAN.NetKAN.Transformers
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            if (opts.Staged && !string.IsNullOrEmpty(opts.StagingReason))
+            if (opts.Staged && opts.StagingReasons.Count > 0)
             {
                 var table = LinkTable(metadata);
                 if (!string.IsNullOrEmpty(table))
                 {
                     log.DebugFormat("Adding links to staging reason: {0}",
                         table);
-                    opts.StagingReason += table;
+                    opts.StagingReasons.Add(table);
                 }
             }
             // This transformer never changes the metadata
@@ -38,8 +38,6 @@ namespace CKAN.NetKAN.Transformers
             }
             StringBuilder table = new StringBuilder();
             // Blank lines to separate the table from the description
-            table.AppendLine("");
-            table.AppendLine("");
             table.AppendLine("Resource | URL");
             table.AppendLine(":-- | :--");
             foreach (var prop in resourcesJson.Properties().OrderBy(prop => prop.Name))

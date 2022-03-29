@@ -36,7 +36,9 @@ namespace Tests.NetKAN.Transformers
                 null,
                 string.IsNullOrEmpty(highVer)
                     ? null
-                    : new ModuleVersion(highVer)
+                    : new ModuleVersion(highVer),
+                false,
+                null
             );
 
             // Act

@@ -25,7 +25,7 @@ namespace CKAN.NetKAN.Transformers
             if (VersionsNeedManualReview(metadata, out string reason))
             {
                 Log.DebugFormat("Enabling staging, reason: {0}", reason);
-                opts.StagingReason = reason;
+                opts.StagingReasons.Add(reason);
                 opts.Staged = true;
             }
             // This transformer never changes the metadata
