@@ -96,19 +96,6 @@ namespace CKAN
             }
         }
 
-        /// <summary>
-        /// Downloads from hosts in this list will be done sequentially rather
-        /// than in parallel
-        /// </summary>
-        private static readonly HashSet<string> throttledHosts = new HashSet<string>()
-        {
-            /// GitHub returns a 403-Forbidden status sometimes if you try to download
-            /// too much in parallel, see https://github.com/KSP-CKAN/CKAN/issues/2210
-            "github.com",
-            "api.github.com",
-            "raw.githubusercontent.com",
-        };
-
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
 
         public readonly IUser User;
@@ -189,8 +176,8 @@ namespace CKAN
 
         /// <summary>
         /// Check whether a given download should be deferred to be started later.
-        /// Decision is made based on whether the host is throttled and whether
-        /// we're already downloading something else from it.
+        /// Decision is made based on whether we're already downloading something
+        /// else from the same host.
         /// </summary>
         /// <param name="target">Info about a requested download</param>
         /// <returns>
@@ -198,8 +185,7 @@ namespace CKAN
         /// </returns>
         private bool shouldQueue(Net.DownloadTarget target)
         {
-            return throttledHosts.Contains(target.url.Host)
-                && downloads.Any(dl =>
+            return downloads.Any(dl =>
                     dl.target.url.Host == target.url.Host
                     && dl.bytesLeft > 0);
         }
@@ -423,16 +409,13 @@ namespace CKAN
                 log.InfoFormat("Finished downloading {0}", downloads[index].target.url);
             }
 
-            if (throttledHosts.Contains(downloads[index].target.url.Host))
+            var next = queuedDownloads.FirstOrDefault(dl =>
+                dl.url.Host == downloads[index].target.url.Host);
+            if (next != null)
             {
-                var next = queuedDownloads.FirstOrDefault(dl =>
-                    dl.url.Host == downloads[index].target.url.Host);
-                if (next != null)
-                {
-                    // Start this host's next queued download
-                    queuedDownloads.Remove(next);
-                    DownloadModule(next);
-                }
+                // Start this host's next queued download
+                queuedDownloads.Remove(next);
+                DownloadModule(next);
             }
 
             onOneCompleted.Invoke(downloads[index].target.url, downloads[index].path, downloads[index].error);
