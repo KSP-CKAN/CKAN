@@ -20,19 +20,17 @@ namespace CKAN
             ChangesListView.Items.Clear();
             if (changes != null)
             {
-                // We're going to split our change-set into two parts: updated/removed mods,
-                // and everything else (which right now is replacing and installing mods, but we may have
+                // We're going to split our change-set into two parts: removed mods,
+                // and everything else (right now, replacing, upgrading, and installing mods, but we may have
                 // other types in the future).
 
                 sortedChangeSet.Clear();
                 sortedChangeSet.AddRange(changes.Where(change => change.ChangeType == GUIModChangeType.Remove));
-                sortedChangeSet.AddRange(changes.Where(change => change.ChangeType == GUIModChangeType.Update));
 
                 // Now make our list more human-friendly (dependencies for a mod are listed directly
                 // after it.)
                 CreateSortedModList(changes
-                    .Where(change => change.ChangeType != GUIModChangeType.Remove
-                                  && change.ChangeType != GUIModChangeType.Update)
+                    .Where(change => change.ChangeType != GUIModChangeType.Remove)
                     .ToList());
 
                 ChangesListView.Items.AddRange(sortedChangeSet
