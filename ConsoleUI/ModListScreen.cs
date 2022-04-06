@@ -1,9 +1,12 @@
 using System;
+using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
+
+using Autofac;
+
 using CKAN.ConsoleUI.Toolkit;
-using System.Linq;
 
 namespace CKAN.ConsoleUI {
 
@@ -289,6 +292,9 @@ namespace CKAN.ConsoleUI {
                 new ConsoleMenuOption("Authentication tokens...",     "",
                     "Edit authentication tokens sent to download servers",
                     true, EditAuthTokens),
+                new ConsoleMenuOption("Installation filters...",     "",
+                    "Edit list of files and folders to exclude from installation",
+                    true, EditInstallFilters),
                 null,
                 new ConsoleMenuOption("Help",                  helpKey,
                     "Tips & tricks",
@@ -533,6 +539,15 @@ namespace CKAN.ConsoleUI {
         private bool EditAuthTokens(ConsoleTheme theme)
         {
             LaunchSubScreen(theme, new AuthTokenScreen());
+            return true;
+        }
+
+        private bool EditInstallFilters(ConsoleTheme theme)
+        {
+            LaunchSubScreen(theme, new InstallFiltersScreen(
+                ServiceLocator.Container.Resolve<Configuration.IConfiguration>(),
+                manager.CurrentInstance
+            ));
             return true;
         }
 

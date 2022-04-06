@@ -117,58 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>126, 17</value>
-  </metadata>
-  <metadata name="minimizeNotifyIcon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>546, 17</value>
-  </metadata>
-  <metadata name="minimizedContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>704, 17</value>
-  </metadata>
-  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>32</value>
-  </metadata>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>Fichier</value></data>
-  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve"><value>Gérer les instances de jeu</value></data>
-  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>Ouvrir le répertoire du jeu</value></data>
-  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Installer depuis .ckan...</value></data>
-  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Sauvegarder la liste des mods installés...</value></data>
-  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>Exporter modpack...</value></data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>Importer des &amp;mods téléchargés...</value></data>
-  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve"><value>Auditionner les recommandations</value></data>
-  <data name="ExitToolButton.Text" xml:space="preserve"><value>&amp;Quitter</value></data>
-  <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>Options</value></data>
-  <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>Options CKAN</value></data>
-  <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>Plugins CKAN</value></data>
-  <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve"><value>Filtres d'Installation</value></data>
-  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>Ligne de commande du jeu</value></data>
-  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Versions de jeu compatibles</value></data>
-  <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Aide</value></data>
-  <data name="userGuideToolStripMenuItem.Text" xml:space="preserve"><value>Guide d'utilisation</value></data>
-  <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>Signaler un problème avec le client CKAN</value></data>
-  <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>Signaler un problème avec les métadonnées de mod</value></data>
-  <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>À propos</value></data>
-  <data name="ManageModsTabPage.Text" xml:space="preserve"><value>Gérer les mods</value></data>
-  <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Résumé des changements</value></data>
-  <data name="WaitTabPage.Text" xml:space="preserve"><value>Registre</value></data>
-  <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Choisir des mods</value></data>
-  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Choisir des mods recommandés, suggérés, ou supportés</value></data>
-  <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>Supprimer les dossiers</value></data>
-  <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Modifier le Modpack</value></data>
-  <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
-  <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>Aucune Mise à jour disponible</value></data>
-  <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Rafraîchir</value></data>
-  <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>Pause</value></data>
-  <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>Ouvrir CKAN</value></data>
-  <data name="openGameToolStripMenuItem.Text" xml:space="preserve"><value>Lancer le jeu</value></data>
-  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>Ouvrir le Répertoire du Jeu</value></data>
-  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>Options CKAN</value></data>
-  <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>Quitter</value></data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="GlobalFiltersGroupBox.Text" xml:space="preserve"><value>Filtres Globaux</value></data>
+  <data name="InstanceFiltersGroupBox.Text" xml:space="preserve"><value>Filtres de l'Instance</value></data>
+  <data name="AddMiniAVCButton.Text" xml:space="preserve"><value>Ajouter MiniAVC</value></data>
+  <data name="WarningLabel.Text" xml:space="preserve"><value>NOTE : Les changement de filtres prendront effet lors de l'installation des prochains mods ; les fichiers déjà présents ne sont pas affectés.</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Installer des Filtres</value></data>
 </root>

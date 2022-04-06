@@ -54,5 +54,10 @@ namespace CKAN.Configuration
 
         void SetRegistryToInstances(SortedList<string, GameInstance> instances);
         IEnumerable<Tuple<string, string, string>> GetInstances();
+
+        /// <summary>
+        /// Paths that should be excluded from all installations
+        /// </summary>
+        string[] GlobalInstallFilters { get; set; }
     }
 }

@@ -175,6 +175,7 @@
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>Einstellungen</value></data>
   <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN Einstellungen</value></data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN Plugins</value></data>
+  <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve"><value>Installationsfilter</value></data>
   <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>Spielstart-Befehlszeile</value></data>
   <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Kompatible Spielversionen</value></data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Hilfe</value></data>

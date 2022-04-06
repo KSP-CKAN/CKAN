@@ -127,17 +127,17 @@ namespace Tests.Core.Configuration
             BuildMap = buildMap;
         }
 
-        public IEnumerable<string> GetAuthTokenHosts ()
+        public IEnumerable<string> GetAuthTokenHosts()
         {
             throw new NotImplementedException();
         }
 
-        public void SetAuthToken (string host, string token)
+        public void SetAuthToken(string host, string token)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryGetAuthToken (string host, out string token)
+        public bool TryGetAuthToken(string host, out string token)
         {
             throw new NotImplementedException();
         }
@@ -157,7 +157,9 @@ namespace Tests.Core.Configuration
                     _Language = value;
                 }
             }
-         }
+        }
+
+        public string[] GlobalInstallFilters { get; set; } = new string[] { };
 
         public void Dispose()
         {

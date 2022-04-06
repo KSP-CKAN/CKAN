@@ -46,6 +46,7 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.installFiltersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GameCommandlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compatibleGameVersionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -228,7 +229,8 @@
             this.cKANSettingsToolStripMenuItem,
             this.pluginsToolStripMenuItem,
             this.GameCommandlineToolStripMenuItem,
-            this.compatibleGameVersionsToolStripMenuItem});
+            this.compatibleGameVersionsToolStripMenuItem,
+            this.installFiltersToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
             resources.ApplyResources(this.settingsToolStripMenuItem, "settingsToolStripMenuItem");
@@ -246,6 +248,13 @@
             this.pluginsToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
             this.pluginsToolStripMenuItem.Click += new System.EventHandler(this.pluginsToolStripMenuItem_Click);
             resources.ApplyResources(this.pluginsToolStripMenuItem, "pluginsToolStripMenuItem");
+            //
+            // installFiltersToolStripMenuItem
+            //
+            this.installFiltersToolStripMenuItem.Name = "installFiltersToolStripMenuItem";
+            this.installFiltersToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
+            this.installFiltersToolStripMenuItem.Click += new System.EventHandler(this.installFiltersToolStripMenuItem_Click);
+            resources.ApplyResources(this.installFiltersToolStripMenuItem, "installFiltersToolStripMenuItem");
             //
             // GameCommandlineToolStripMenuItem
             //
@@ -740,6 +749,7 @@
         public System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cKANSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pluginsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem installFiltersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem GameCommandlineToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem compatibleGameVersionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;

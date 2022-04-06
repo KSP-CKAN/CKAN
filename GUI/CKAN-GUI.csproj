@@ -98,6 +98,12 @@
     <Compile Include="Dialogs\GameCommandLineOptionsDialog.Designer.cs">
       <DependentUpon>GameCommandLineOptionsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\InstallFiltersDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\InstallFiltersDialog.Designer.cs">
+      <DependentUpon>InstallFiltersDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\NewRepoDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -615,6 +621,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\ja-JP\GameCommandLineOptionsDialog.ja-JP.resx">
       <DependentUpon>..\..\Dialogs\GameCommandLineOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\InstallFiltersDialog.resx">
+      <DependentUpon>InstallFiltersDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\InstallFiltersDialog.de-DE.resx">
+      <DependentUpon>..\..\Dialogs\InstallFiltersDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\fr-FR\InstallFiltersDialog.fr-FR.resx">
+      <DependentUpon>..\..\Dialogs\InstallFiltersDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>

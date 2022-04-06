@@ -115,6 +115,9 @@ namespace CKAN.CmdLine
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used")]
         public VersionOptions Version { get; set; }
 
+        [VerbOption("filter", HelpText = "View or edit installation filters")]
+        public SubCommandOptions Filter { get; set; }
+
         [HelpVerbOption]
         public string GetUsage(string verb)
         {
