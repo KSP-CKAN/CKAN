@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -16,9 +15,9 @@ namespace CKAN
         /// Null or empty parameters are treated as matching everything.
         /// </summary>
         /// <param name="byName">String to search for in mod names, identifiers, and abbreviations</param>
-        /// <param name="byAuthor">String to search for in author names</param>
+        /// <param name="byAuthors">String to search for in author names</param>
         /// <param name="byDescription">String to search for in mod descriptions</param>
-        /// <param name="localization">Language to search for in mod localizations</param>
+        /// <param name="localizations">Language to search for in mod localizations</param>
         /// <param name="depends">Identifier prefix to find in mod depends relationships</param>
         /// <param name="recommends">Identifier prefix to find in mod recommends relationships</param>
         /// <param name="suggests">Identifier prefix to find in mod suggests relationships</param>
@@ -32,9 +31,11 @@ namespace CKAN
             bool? upgradeable, bool? replaceable,
             string combined = null)
         {
-            Name         = CkanModule.nonAlphaNums.Replace(byName, "");
+            Name = (ShouldNegateTerm(byName, out string subName) ? "-" : "")
+                + CkanModule.nonAlphaNums.Replace(subName, "");
             initStringList(Authors, byAuthors);
-            Description  = CkanModule.nonAlphaNums.Replace(byDescription, "");
+            Description = (ShouldNegateTerm(byDescription, out string subDesc) ? "-" : "")
+                + CkanModule.nonAlphaNums.Replace(subDesc, "");
             initStringList(Localizations, localizations);
 
             initStringList(DependsOn,     depends);
@@ -163,35 +164,35 @@ namespace CKAN
             }
             foreach (var author in Authors.Where(auth => !string.IsNullOrEmpty(auth)))
             {
-                pieces.Add($"@{author}");
+                pieces.Add(AddTermPrefix("@", author));
             }
             if (!string.IsNullOrWhiteSpace(Description))
             {
-                pieces.Add($"{Properties.Resources.ModSearchDescriptionPrefix}{Description}");
+                pieces.Add(AddTermPrefix(Properties.Resources.ModSearchDescriptionPrefix, Description));
             }
             foreach (var localization in Localizations.Where(lang => !string.IsNullOrEmpty(lang)))
             {
-                pieces.Add($"{Properties.Resources.ModSearchLanguagePrefix}{localization}");
+                pieces.Add(AddTermPrefix(Properties.Resources.ModSearchLanguagePrefix, localization));
             }
             foreach (var dep in DependsOn.Where(d => !string.IsNullOrEmpty(d)))
             {
-                pieces.Add($"{Properties.Resources.ModSearchDependsPrefix}{dep}");
+                pieces.Add(AddTermPrefix(Properties.Resources.ModSearchDependsPrefix, dep));
             }
             foreach (var rec in Recommends.Where(r => !string.IsNullOrEmpty(r)))
             {
-                pieces.Add($"{Properties.Resources.ModSearchRecommendsPrefix}{rec}");
+                pieces.Add(AddTermPrefix(Properties.Resources.ModSearchRecommendsPrefix, rec));
             }
             foreach (var sug in Suggests.Where(s => !string.IsNullOrEmpty(s)))
             {
-                pieces.Add($"{Properties.Resources.ModSearchSuggestsPrefix}{sug}");
+                pieces.Add(AddTermPrefix(Properties.Resources.ModSearchSuggestsPrefix, sug));
             }
             foreach (var conf in ConflictsWith.Where(c => !string.IsNullOrEmpty(c)))
             {
-                pieces.Add($"{Properties.Resources.ModSearchConflictsPrefix}{conf}");
+                pieces.Add(AddTermPrefix(Properties.Resources.ModSearchConflictsPrefix, conf));
             }
             foreach (var tagName in TagNames)
             {
-                pieces.Add($"{Properties.Resources.ModSearchTagPrefix}{tagName ?? ""}");
+                pieces.Add(AddTermPrefix(Properties.Resources.ModSearchTagPrefix, tagName ?? ""));
             }
             foreach (var label in Labels)
             {
@@ -278,7 +279,7 @@ namespace CKAN
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchDescriptionPrefix, out string desc))
                 {
-                    byDescription += CkanModule.nonAlphaNums.Replace(desc, "");
+                    byDescription += (ShouldNegateTerm(desc, out string subDesc) ? "-" : "") + CkanModule.nonAlphaNums.Replace(subDesc, "");
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchLanguagePrefix, out string lang))
                 {
@@ -371,7 +372,7 @@ namespace CKAN
                 else
                 {
                     // No special format = search names and identifiers
-                    byName += CkanModule.nonAlphaNums.Replace(s, "");
+                    byName += (ShouldNegateTerm(s, out string subS) ? "-" : "") + CkanModule.nonAlphaNums.Replace(subS, "");
                 }
             }
             return new ModSearch(
@@ -391,9 +392,35 @@ namespace CKAN
                 remainder = container.Substring(prefix.Length);
                 return true;
             }
+            else if (container.StartsWith($"-{prefix}"))
+            {
+                remainder = $"-{container.Substring(prefix.Length + 1)}";
+                return true;
+            }
             else
             {
                 remainder = "";
+                return false;
+            }
+        }
+
+        private static string AddTermPrefix(string prefix, string term)
+        {
+            return term.StartsWith("-")
+                ? $"-{prefix}{term.Substring(1)}"
+                : $"{prefix}{term}";
+        }
+
+        private static bool ShouldNegateTerm(string term, out string subTerm)
+        {
+            if (term.StartsWith("-"))
+            {
+                subTerm = term.Substring(1);
+                return true;
+            }
+            else
+            {
+                subTerm = term;
                 return false;
             }
         }
@@ -428,23 +455,27 @@ namespace CKAN
         private bool MatchesName(GUIMod mod)
         {
             return string.IsNullOrWhiteSpace(Name)
-                || mod.Abbrevation.IndexOf(Name, StringComparison.InvariantCultureIgnoreCase) != -1
-                || mod.SearchableName.IndexOf(Name, StringComparison.InvariantCultureIgnoreCase) != -1
-                || mod.SearchableIdentifier.IndexOf(Name, StringComparison.InvariantCultureIgnoreCase) != -1;
+                || ShouldNegateTerm(Name, out string subName) ^ (
+                    mod.Abbrevation.IndexOf(subName, StringComparison.InvariantCultureIgnoreCase) != -1
+                    || mod.SearchableName.IndexOf(subName, StringComparison.InvariantCultureIgnoreCase) != -1
+                    || mod.SearchableIdentifier.IndexOf(subName, StringComparison.InvariantCultureIgnoreCase) != -1);
         }
 
         private bool MatchesAuthors(GUIMod mod)
         {
             return Authors.Count < 1
-                || Authors.All(searchAuth => mod.SearchableAuthors.Any(modAuth =>
-                    modAuth.StartsWith(searchAuth, StringComparison.InvariantCultureIgnoreCase)));
+                || Authors.All(searchAuth =>
+                    ShouldNegateTerm(searchAuth, out string subAuth)
+                    ^ mod.SearchableAuthors.Any(modAuth =>
+                        modAuth.StartsWith(subAuth, StringComparison.InvariantCultureIgnoreCase)));
         }
 
         private bool MatchesDescription(GUIMod mod)
         {
             return string.IsNullOrWhiteSpace(Description)
-                || mod.SearchableAbstract.IndexOf(Description, StringComparison.InvariantCultureIgnoreCase) != -1
-                || mod.SearchableDescription.IndexOf(Description, StringComparison.InvariantCultureIgnoreCase) != -1;
+                || ShouldNegateTerm(Description, out string subDesc) ^ (
+                    mod.SearchableAbstract.IndexOf(subDesc, StringComparison.InvariantCultureIgnoreCase) != -1
+                    || mod.SearchableDescription.IndexOf(subDesc, StringComparison.InvariantCultureIgnoreCase) != -1);
         }
 
         private bool MatchesLocalizations(GUIMod mod)
@@ -453,8 +484,10 @@ namespace CKAN
             return Localizations.Count < 1
                 || (
                     ckm.localizations != null
-                    && Localizations.All(searchLoc => ckm.localizations.Any(modLoc =>
-                        modLoc.StartsWith(searchLoc, StringComparison.InvariantCultureIgnoreCase)))
+                    && Localizations.All(searchLoc =>
+                        ShouldNegateTerm(searchLoc, out string subLoc)
+                        ^ ckm.localizations.Any(modLoc =>
+                            modLoc.StartsWith(subLoc, StringComparison.InvariantCultureIgnoreCase)))
                 );
         }
 
@@ -478,16 +511,19 @@ namespace CKAN
         {
             return toFind.Count < 1
                 || (rels != null && toFind.All(searchRel =>
-                    rels.Any(r => r.StartsWith(searchRel))));
+                    ShouldNegateTerm(searchRel, out string subRel)
+                    ^ rels.Any(r => r.StartsWith(subRel))));
         }
 
         private bool MatchesTags(GUIMod mod)
         {
             var tagsInMod = mod.ToModule().Tags;
             return TagNames.Count < 1
-                || TagNames.All(tn => string.IsNullOrEmpty(tn)
-                    ? tagsInMod == null
-                    : tagsInMod?.Contains(tn) ?? false);
+                || TagNames.All(tn =>
+                    ShouldNegateTerm(tn, out string subTag) ^ (
+                        string.IsNullOrEmpty(subTag)
+                            ? tagsInMod == null
+                            : tagsInMod?.Contains(subTag) ?? false));
         }
 
         private bool MatchesLabels(GUIMod mod)
