@@ -92,7 +92,7 @@
             this.DirectoriesListView.UseCompatibleStateImageBehavior = false;
             this.DirectoriesListView.View = System.Windows.Forms.View.Details;
             this.DirectoriesListView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.DirectoriesListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(DirectoriesListView_ItemSelectionChanged);
+            this.DirectoriesListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(DirectoriesListView_ItemSelectionChanged);
             // 
             // DirectoryColumn
             // 

@@ -73,8 +73,8 @@ namespace CKAN
             };
 
             // Show the FileDialog and let the user search for the game directory.
-		    if (instanceDialog.ShowDialog() != DialogResult.OK || !File.Exists(instanceDialog.FileName))
-			    return;
+            if (instanceDialog.ShowDialog() != DialogResult.OK || !File.Exists(instanceDialog.FileName))
+                return;
 
             // Write the path to the textbox
             textBoxClonePath.Text = Path.GetDirectoryName(instanceDialog.FileName);

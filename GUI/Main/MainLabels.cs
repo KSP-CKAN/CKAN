@@ -63,5 +63,5 @@ namespace CKAN
         }
 
         #endregion
-	}
+    }
 }

@@ -534,7 +534,7 @@ namespace CKAN.CmdLine
             if (options.name == null || options.path == null || options.version == null)
             {
                 User.RaiseMessage("instance fake <name> <path> <version> " +
-                	"[--MakingHistory <version>] [--BreakingGround <version>] - argument(s) missing");
+                    "[--MakingHistory <version>] [--BreakingGround <version>] - argument(s) missing");
                 return badArgument();
             }
 
@@ -592,7 +592,7 @@ namespace CKAN.CmdLine
             catch (BadGameVersionKraken)
             {
                 User.RaiseError("Couldn't find a valid game version for your input.\n" +
-                	"Make sure to enter the at least the version major and minor values in the form Maj.Min - e.g. 1.5");
+                    "Make sure to enter the at least the version major and minor values in the form Maj.Min - e.g. 1.5");
                 return badArgument();
             }
             catch (CancelledActionKraken)
