@@ -22,6 +22,7 @@ namespace CKAN.Configuration
             public string Language { get; set; }
             public IList<GameInstanceEntry> GameInstances { get; set; } = new List<GameInstanceEntry>();
             public IDictionary<string, string> AuthTokens { get; set; } = new Dictionary<string, string>();
+            public string[] GlobalInstallFilters { get; set; } = new string[] { };
         }
 
         public class ConfigConverter : JsonPropertyNamesChangedConverter
@@ -302,6 +303,26 @@ namespace CKAN.Configuration
                 }
 
                 SaveConfig();
+            }
+        }
+
+        public string[] GlobalInstallFilters
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return config.GlobalInstallFilters;
+                }
+            }
+
+            set
+            {
+                lock (_lock)
+                {
+                    config.GlobalInstallFilters = value;
+                    SaveConfig();
+                }
             }
         }
 

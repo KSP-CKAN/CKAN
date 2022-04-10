@@ -59,6 +59,8 @@
     <Compile Include="DependencyScreen.cs" />
     <Compile Include="DownloadImportDialog.cs" />
     <Compile Include="ExitScreen.cs" />
+    <Compile Include="InstallFilterAddDialog.cs" />
+    <Compile Include="InstallFiltersScreen.cs" />
     <Compile Include="InstallScreen.cs" />
     <Compile Include="GameInstanceAddScreen.cs" />
     <Compile Include="GameInstanceEditScreen.cs" />

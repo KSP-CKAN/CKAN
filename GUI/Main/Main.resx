@@ -147,6 +147,7 @@
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>Settings</value></data>
   <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN settings</value></data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN plugins</value></data>
+  <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve"><value>Installation filters</value></data>
   <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>Game command-line</value></data>
   <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Compatible game versions</value></data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Help</value></data>

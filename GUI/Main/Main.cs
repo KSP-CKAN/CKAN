@@ -542,6 +542,14 @@ namespace CKAN
             Enabled = true;
         }
 
+        private void installFiltersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Enabled = false;
+            var dlg = new InstallFiltersDialog(ServiceLocator.Container.Resolve<Configuration.IConfiguration>(), CurrentInstance);
+            dlg.ShowDialog(this);
+            Enabled = true;
+        }
+
         private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog open_file_dialog = new OpenFileDialog()

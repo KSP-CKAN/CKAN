@@ -330,7 +330,13 @@ namespace CKAN
 
             using (ZipFile zipfile = new ZipFile(zip_filename))
             {
-                IEnumerable<InstallableFile> files = FindInstallableFiles(module, zipfile, ksp);
+                var filters = ServiceLocator.Container.Resolve<IConfiguration>().GlobalInstallFilters
+                    .Concat(ksp.InstallFilters)
+                    .ToHashSet();
+                var files = FindInstallableFiles(module, zipfile, ksp)
+                    .Where(instF => !filters.Any(filt =>
+                        instF.destination.Contains(filt)))
+                    .ToList();
 
                 try
                 {

@@ -90,9 +90,13 @@ namespace CKAN.CmdLine
 
                     case "cache":
                         return (new Cache()).RunSubCommand(manager, opts, new SubCommandOptions(args));
-                        
+
                     case "mark":
                         return (new Mark()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+
+                    case "filter":
+                        return (new Filter()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+
                 }
             }
             catch (NoGameInstanceKraken)

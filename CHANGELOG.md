@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Show context menu on menu key press (#3446 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Theme all buttons, checkboxes, groupboxes, and listboxes (#3489 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Add Release Date column to GUI modinfo versions list (#3481 by: HebaruSan; reviewed: DasSkelett)
+- [Multiple] Global install filters (#3458 by: HebaruSan; reviewed: DasSkelett)
 
 ### Bugfixes
 

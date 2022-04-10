@@ -58,6 +58,7 @@
     <Compile Include="Action\Cache.cs" />
     <Compile Include="Action\Compare.cs" />
     <Compile Include="Action\Compat.cs" />
+    <Compile Include="Action\Filter.cs" />
     <Compile Include="Action\ICommand.cs" />
     <Compile Include="Action\Import.cs" />
     <Compile Include="Action\Install.cs" />

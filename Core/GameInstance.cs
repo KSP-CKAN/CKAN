@@ -196,6 +196,23 @@ namespace CKAN
         private string SuppressedCompatWarningIdentifiersFile =>
             Path.Combine(CkanDir(), "suppressed_compat_warning_identifiers.json");
 
+        public string[] InstallFilters
+        {
+            get
+            {
+                return File.Exists(InstallFiltersFile)
+                    ? JsonConvert.DeserializeObject<string[]>(File.ReadAllText(InstallFiltersFile))
+                    : new string[] { };
+            }
+
+            set
+            {
+                File.WriteAllText(InstallFiltersFile, JsonConvert.SerializeObject(value));
+            }
+        }
+
+        private string InstallFiltersFile => Path.Combine(CkanDir(), "install_filters.json");
+
         #endregion
 
         #region KSP Directory Detection and Versioning
