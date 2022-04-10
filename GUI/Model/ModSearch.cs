@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -16,9 +15,9 @@ namespace CKAN
         /// Null or empty parameters are treated as matching everything.
         /// </summary>
         /// <param name="byName">String to search for in mod names, identifiers, and abbreviations</param>
-        /// <param name="byAuthor">String to search for in author names</param>
+        /// <param name="byAuthors">String to search for in author names</param>
         /// <param name="byDescription">String to search for in mod descriptions</param>
-        /// <param name="localization">Language to search for in mod localizations</param>
+        /// <param name="localizations">Language to search for in mod localizations</param>
         /// <param name="depends">Identifier prefix to find in mod depends relationships</param>
         /// <param name="recommends">Identifier prefix to find in mod recommends relationships</param>
         /// <param name="suggests">Identifier prefix to find in mod suggests relationships</param>
