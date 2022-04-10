@@ -130,6 +130,8 @@ namespace CKAN
                     case GUIModChangeType.None:
                         break;
                     case GUIModChangeType.Update:
+                        modules_to_install.Add((change as ModUpgrade)?.targetMod ?? change.Mod);
+                        break;
                     case GUIModChangeType.Install:
                         modules_to_install.Add(change.Mod);
                         break;
