@@ -61,6 +61,11 @@ namespace CKAN
                     continue;
                 }
 
+                else if (file.Name == "playtime.json")
+                {
+                    continue;
+                }
+
                 string temppath = Path.Combine(destDirPath, file.Name);
                 file_transaction.Copy(file.FullName, temppath, false);
             }

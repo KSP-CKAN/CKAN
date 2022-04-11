@@ -73,17 +73,25 @@ namespace CKAN
             GameInstancesListView.Items.Clear();
             UpdateButtonState();
 
+            if (!GameInstancesListView.Columns.Contains(GamePlayTime))
+            {
+                // Always show the play time column so our rows load correctly
+                GameInstancesListView.Columns.Insert(
+                    GameInstallPath.Index, GamePlayTime);
+            }
+
             GameInstancesListView.Items.AddRange(_manager.Instances
                 .OrderByDescending(instance => instance.Value.Version())
                 .Select(instance => new ListViewItem(new string[]
                 {
-                    !instance.Value.Valid 
+                    !instance.Value.Valid
                         ? string.Format(Properties.Resources.ManageGameInstancesNameColumnInvalid, instance.Key)
                         : _manager.CurrentInstance != instance.Value && instance.Value.IsMaybeLocked
                             ? string.Format(Properties.Resources.ManageGameInstancesNameColumnLocked, instance.Key)
                             : instance.Key,
                     instance.Value.game.ShortName,
                     FormatVersion(instance.Value.Version()),
+                    instance.Value.playTime?.ToString() ?? "",
                     instance.Value.GameDir().Replace('/', Path.DirectorySeparatorChar)
                 })
                 {
@@ -94,6 +102,13 @@ namespace CKAN
 
             GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+            var hasPlayTime = _manager.Instances.Any(instance => (instance.Value.playTime?.Time ?? TimeSpan.Zero) > TimeSpan.Zero);
+            if (!hasPlayTime && GameInstancesListView.Columns.Contains(GamePlayTime))
+            {
+                // Hide the play time column if not in use
+                GameInstancesListView.Columns.Remove(GamePlayTime);
+            }
         }
 
         private static string FormatVersion(GameVersion v)

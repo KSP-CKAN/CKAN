@@ -161,6 +161,7 @@
   <data name="WaitTabPage.Text" xml:space="preserve"><value>Status log</value></data>
   <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Choose mods</value></data>
   <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Choose recommended, suggested, or supporting mods</value></data>
+  <data name="PlayTimeTabPage.Text" xml:space="preserve"><value>Play Time</value></data>
   <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>Delete Directories</value></data>
   <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Edit Modpack</value></data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
@@ -172,4 +173,5 @@
   <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>Open Game Directory</value></data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>CKAN Settings</value></data>
   <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>Quit</value></data>
+  <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve"><value>Play time...</value></data>
 </root>

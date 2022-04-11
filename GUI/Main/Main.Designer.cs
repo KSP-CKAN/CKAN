@@ -76,6 +76,8 @@
             this.Wait = new CKAN.Wait();
             this.ChooseRecommendedModsTabPage = new System.Windows.Forms.TabPage();
             this.ChooseRecommendedMods = new CKAN.ChooseRecommendedMods();
+            this.PlayTimeTabPage = new System.Windows.Forms.TabPage();
+            this.PlayTime = new CKAN.PlayTime();
             this.ChooseProvidedModsTabPage = new System.Windows.Forms.TabPage();
             this.ChooseProvidedMods = new CKAN.ChooseProvidedMods();
             this.minimizeNotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
@@ -91,7 +93,9 @@
             this.cKANSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewPlayTimeStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteDirectoriesTabPage = new System.Windows.Forms.TabPage();
             this.DeleteDirectories = new CKAN.DeleteDirectories();
             this.EditModpackTabPage = new System.Windows.Forms.TabPage();
@@ -108,6 +112,8 @@
             this.WaitTabPage.SuspendLayout();
             this.ChooseRecommendedModsTabPage.SuspendLayout();
             this.ChooseProvidedModsTabPage.SuspendLayout();
+            this.PlayTimeTabPage.SuspendLayout();
+            this.PlayTime.SuspendLayout();
             this.minimizedContextMenuStrip.SuspendLayout();
             this.DeleteDirectoriesTabPage.SuspendLayout();
             this.EditModpackTabPage.SuspendLayout();
@@ -141,6 +147,8 @@
             this.toolStripSeparator3,
             this.auditRecommendationsMenuItem,
             this.toolStripSeparator7,
+            this.viewPlayTimeStripMenuItem,
+            this.toolStripSeparator8,
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
@@ -207,6 +215,11 @@
             //
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(278, 6);
+            //
+            // toolStripSeparator8
+            //
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(278, 6);
             //
             // auditRecommendationsMenuItem
             //
@@ -405,6 +418,7 @@
             this.MainTabControl.Controls.Add(this.ChangesetTabPage);
             this.MainTabControl.Controls.Add(this.WaitTabPage);
             this.MainTabControl.Controls.Add(this.ChooseRecommendedModsTabPage);
+            this.MainTabControl.Controls.Add(this.PlayTimeTabPage);
             this.MainTabControl.Controls.Add(this.ChooseProvidedModsTabPage);
             this.MainTabControl.Controls.Add(this.DeleteDirectoriesTabPage);
             this.MainTabControl.Controls.Add(this.EditModpackTabPage);
@@ -519,6 +533,29 @@
             this.ChooseRecommendedMods.TabIndex = 32;
             this.ChooseRecommendedMods.OnSelectedItemsChanged += ChooseRecommendedMods_OnSelectedItemsChanged;
             this.ChooseRecommendedMods.OnConflictFound += ChooseRecommendedMods_OnConflictFound;
+            //
+            // PlayTimeTabPage
+            //
+            this.PlayTimeTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.PlayTimeTabPage.Controls.Add(this.PlayTime);
+            this.PlayTimeTabPage.Location = new System.Drawing.Point(4, 29);
+            this.PlayTimeTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.PlayTimeTabPage.Name = "PlayTimeTabPage";
+            this.PlayTimeTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.PlayTimeTabPage.Size = new System.Drawing.Size(1536, 948);
+            this.PlayTimeTabPage.TabIndex = 24;
+            resources.ApplyResources(this.PlayTimeTabPage, "PlayTimeTabPage");
+            //
+            // PlayTime
+            //
+            this.PlayTime.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PlayTime.Location = new System.Drawing.Point(0, 0);
+            this.PlayTime.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.PlayTime.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.PlayTime.Name = "PlayTime";
+            this.PlayTime.Size = new System.Drawing.Size(500, 500);
+            this.PlayTime.TabIndex = 32;
+            this.PlayTime.Done += PlayTime_Done;
             //
             // ChooseProvidedModsTabPage
             //
@@ -685,6 +722,13 @@
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolButton_Click);
             resources.ApplyResources(this.quitToolStripMenuItem, "quitToolStripMenuItem");
             //
+            // viewPlayTimeStripMenuItem
+            //
+            this.viewPlayTimeStripMenuItem.Name = "viewPlayTimeStripMenuItem";
+            this.viewPlayTimeStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewPlayTimeStripMenuItem.Click += new System.EventHandler(this.viewPlayTimeStripMenuItem_Click);
+            resources.ApplyResources(this.viewPlayTimeStripMenuItem, "viewPlayTimeStripMenuItem");
+            //
             // Main
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -721,6 +765,10 @@
             this.ChooseRecommendedModsTabPage.PerformLayout();
             this.ChooseProvidedModsTabPage.ResumeLayout(false);
             this.ChooseProvidedModsTabPage.PerformLayout();
+            this.PlayTimeTabPage.ResumeLayout(false);
+            this.PlayTimeTabPage.PerformLayout();
+            this.PlayTime.ResumeLayout(false);
+            this.PlayTime.PerformLayout();
             this.DeleteDirectoriesTabPage.ResumeLayout(false);
             this.DeleteDirectoriesTabPage.PerformLayout();
             this.EditModpackTabPage.ResumeLayout(false);
@@ -778,7 +826,9 @@
         private System.Windows.Forms.TabPage WaitTabPage;
         public CKAN.Wait Wait;
         private System.Windows.Forms.TabPage ChooseRecommendedModsTabPage;
+        private System.Windows.Forms.TabPage PlayTimeTabPage;
         private CKAN.ChooseRecommendedMods ChooseRecommendedMods;
+        private CKAN.PlayTime PlayTime;
         private System.Windows.Forms.TabPage ChooseProvidedModsTabPage;
         private CKAN.ChooseProvidedMods ChooseProvidedMods;
         private System.Windows.Forms.TabPage DeleteDirectoriesTabPage;
@@ -798,6 +848,8 @@
         private System.Windows.Forms.ToolStripMenuItem cKANSettingsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewPlayTimeStripMenuItem;
     }
 }

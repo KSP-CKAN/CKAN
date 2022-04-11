@@ -38,6 +38,7 @@
             this.GameInstallName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Game = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.GameInstallVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.GamePlayTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.GameInstallPath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SelectButton = new System.Windows.Forms.Button();
             this.AddNewButton = new CKAN.DropdownMenuButton();
@@ -62,6 +63,7 @@
             this.GameInstallName,
             this.Game,
             this.GameInstallVersion,
+            this.GamePlayTime,
             this.GameInstallPath});
             this.GameInstancesListView.FullRowSelect = true;
             this.GameInstancesListView.HideSelection = false;
@@ -106,6 +108,12 @@
             //
             this.GameInstallVersion.Width = 70;
             resources.ApplyResources(this.GameInstallVersion, "GameInstallVersion");
+            //
+            // GamePlayTime
+            //
+            this.GamePlayTime.Width = 120;
+            this.GamePlayTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            resources.ApplyResources(this.GamePlayTime, "GamePlayTime");
             //
             // GameInstallPath
             //
@@ -227,6 +235,7 @@
         private System.Windows.Forms.ColumnHeader GameInstallName;
         private System.Windows.Forms.ColumnHeader Game;
         private System.Windows.Forms.ColumnHeader GameInstallVersion;
+        private System.Windows.Forms.ColumnHeader GamePlayTime;
         private System.Windows.Forms.ColumnHeader GameInstallPath;
         private System.Windows.Forms.Button SelectButton;
         private DropdownMenuButton AddNewButton;
