@@ -160,6 +160,7 @@
   <data name="WaitTabPage.Text" xml:space="preserve"><value>Registre</value></data>
   <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Choisir des mods</value></data>
   <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Choisir des mods recommandés, suggérés, ou supportés</value></data>
+  <data name="PlayTimeTabPage.Text" xml:space="preserve"><value>Temps de Jeu</value></data>
   <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>Supprimer les dossiers</value></data>
   <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Modifier le Modpack</value></data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>

@@ -405,4 +405,5 @@ Voulez-vous autoriser à faire cela? Si vous cliquer non, vous ne verrez plus ce
   <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Étendre ou réduire la taille du champ de recherche détaillé (Ctrl-Shift-F)</value></data>
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>Combiner une nouvelle recherche avec vos recherches actuelles</value></data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>Décocher pour désinstaller tous les mods, cocher pour annuler les changements</value></data>
+  <data name="TotalPlayTime" xml:space="preserve"><value>Votre Temps de Jeu Total: {0} Heures</value></data>
 </root>
