@@ -817,6 +817,9 @@ namespace CKAN.Properties {
         internal static string StatusInstanceLabelText {
             get { return (string)(ResourceManager.GetObject("StatusInstanceLabelText", resourceCulture)); }
         }
+        internal static string StatusInstanceLabelTextWithPlayTime {
+            get { return (string)(ResourceManager.GetObject("StatusInstanceLabelTextWithPlayTime", resourceCulture)); }
+        }
         internal static string ModuleLabelListFavourites {
             get { return (string)(ResourceManager.GetObject("ModuleLabelListFavourites", resourceCulture)); }
         }
@@ -1025,5 +1028,10 @@ namespace CKAN.Properties {
         internal static string ManageModsInstallAllCheckboxTooltip {
             get { return (string)(ResourceManager.GetObject("ManageModsInstallAllCheckboxTooltip", resourceCulture)); }
         }
+
+        internal static string TotalPlayTime {
+            get { return (string)(ResourceManager.GetObject("TotalPlayTime", resourceCulture)); }
+        }
+
     }
 }

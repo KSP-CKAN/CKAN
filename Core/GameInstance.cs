@@ -30,6 +30,8 @@ namespace CKAN
         private GameVersion version;
         private List<GameVersion> _compatibleVersions = new List<GameVersion>();
 
+        public TimeLog playTime;
+
         public string Name { get; set; }
         /// <summary>
         /// Returns a file system safe version of the instance name that can be used within file names.
@@ -110,6 +112,8 @@ namespace CKAN
                     Scan();
                 }
             }
+
+            playTime = TimeLog.Load(TimeLog.GetPath(CkanDir())) ?? new TimeLog();
 
             if (!Directory.Exists(InstallHistoryDir()))
             {

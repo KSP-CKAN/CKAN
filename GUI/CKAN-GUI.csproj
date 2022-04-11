@@ -44,6 +44,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
@@ -229,6 +230,12 @@
     <Compile Include="Controls\ManageMods.Designer.cs">
       <DependentUpon>ManageMods.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PlayTime.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PlayTime.Designer.cs">
+      <DependentUpon>PlayTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ThemedTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -239,7 +246,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\TriStateToggle.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +299,9 @@
     </Compile>
     <Compile Include="Main\MainTabControl.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Main\MainTime.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main\MainTrayIcon.cs">
       <SubType>Form</SubType>
@@ -676,6 +686,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ModInfo.resx">
       <DependentUpon>ModInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PlayTime.resx">
+      <DependentUpon>PlayTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\fr-FR\PlayTime.fr-FR.resx">
+      <DependentUpon>..\..\Controls\PlayTime.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ManageMods.resx">
       <DependentUpon>ManageMods.cs</DependentUpon>

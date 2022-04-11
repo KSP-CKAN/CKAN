@@ -55,6 +55,18 @@ namespace CKAN.Extensions
                 }
             }
         }
+
+        /// <summary>
+        /// Sum a sequence of TimeSpans.
+        /// Mysteriously not defined standardly.
+        /// </summary>
+        /// <param name="source">Sequence of TimeSpans to sum</param>
+        /// <returns>
+        /// Sum of the TimeSpans
+        /// </returns>
+        public static TimeSpan Sum(this IEnumerable<TimeSpan> source)
+            => source.Aggregate(TimeSpan.Zero,
+                                (a, b) => a + b);
     }
 
     /// <summary>

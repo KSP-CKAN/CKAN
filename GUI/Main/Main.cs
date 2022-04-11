@@ -233,6 +233,18 @@ namespace CKAN
             }
         }
 
+        private void UpdateStatusBar()
+        {
+            StatusInstanceLabel.Text = string.Format(
+                CurrentInstance.playTime.Time > TimeSpan.Zero
+                    ? Properties.Resources.StatusInstanceLabelTextWithPlayTime
+                    : Properties.Resources.StatusInstanceLabelText,
+                CurrentInstance.Name,
+                CurrentInstance.game.ShortName,
+                CurrentInstance.Version()?.ToString(),
+                CurrentInstance.playTime.ToString());
+        }
+
         /// <summary>
         /// React to switching to a new game instance
         /// </summary>
@@ -244,12 +256,7 @@ namespace CKAN
             Util.Invoke(this, () =>
             {
                 Text = $"CKAN {Meta.GetVersion()} - {CurrentInstance.game.ShortName} {CurrentInstance.Version()}    --    {CurrentInstance.GameDir().Replace('/', Path.DirectorySeparatorChar)}";
-                StatusInstanceLabel.Text = string.Format(
-                    Properties.Resources.StatusInstanceLabelText,
-                    CurrentInstance.Name,
-                    CurrentInstance.game.ShortName,
-                    CurrentInstance.Version()?.ToString()
-                );
+                UpdateStatusBar();
             });
 
             if (CurrentInstance.CompatibleVersionsAreFromDifferentGameVersion)
@@ -331,6 +338,14 @@ namespace CKAN
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            // Stop all running play time timers
+            foreach (var inst in manager.Instances.Values)
+            {
+                if (inst.Valid)
+                {
+                    inst.playTime.Stop(inst.CkanDir());
+                }
+            }
             actuallyVisible = false;
             base.OnFormClosed(e);
         }
@@ -775,13 +790,35 @@ namespace CKAN
 
             try
             {
+
                 Directory.SetCurrentDirectory(CurrentInstance.GameDir());
-                Process.Start(binary, args);
+
+                Process p = new Process()
+                {
+                    StartInfo = new ProcessStartInfo()
+                    {
+                        FileName = binary,
+                        Arguments = args
+                    },
+                    EnableRaisingEvents = true
+                };
+
+                GameInstance inst = CurrentInstance;
+                p.Exited += (sender, e) => GameExit(inst);
+
+                p.Start();
+                CurrentInstance.playTime.Start();
             }
             catch (Exception exception)
             {
                 currentUser.RaiseError(Properties.Resources.MainLaunchFailed, exception.Message);
             }
+        }
+
+        private void GameExit(GameInstance inst)
+        {
+            inst.playTime.Stop(inst.CkanDir());
+            UpdateStatusBar();
         }
 
         private void ManageMods_StartChangeSet(List<ModChange> changeset)
@@ -813,6 +850,5 @@ namespace CKAN
             tabController.ShowTab("ManageModsTabPage");
             Util.Invoke(this, SwitchEnabledState);
         }
-
     }
 }
