@@ -46,7 +46,7 @@ namespace CKAN.ConsoleUI {
                         Comparer = (a, b) => a.version.CompareTo(b.version)
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = Properties.Resources.ModListMaxGameVersionHeader,
-                        Width    = 17,
+                        Width    = 20,
                         Renderer = m => registry.LatestCompatibleKSP(m.identifier)?.ToString() ?? "",
                         Comparer = (a, b) => registry.LatestCompatibleKSP(a.identifier).CompareTo(registry.LatestCompatibleKSP(b.identifier))
                     }
