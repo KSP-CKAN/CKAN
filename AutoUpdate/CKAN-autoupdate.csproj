@@ -48,8 +48,12 @@
     <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
   </Target>
   <Target Name="ILRepack" AfterTargets="Build">
+    <ItemGroup>
+      <InputAssemblies Include="fr-FR\$(AssemblyName).resources.dll" />
+    </ItemGroup>
     <ILRepack OutputAssembly="AutoUpdater.exe"
               MainAssembly="$(AssemblyName).exe"
+              InputAssemblies="@(InputAssemblies)"
               OutputType="$(OutputType)"
               WorkingDirectory="$(OutputPath)"
               Internalize="true"
