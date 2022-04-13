@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Drawing;
+using System.ComponentModel;
 using System.Windows.Forms;
 using log4net;
 
@@ -70,6 +71,22 @@ namespace CKAN
             }
             LabelSelectionTree.ExpandAll();
             LabelSelectionTree.EndUpdate();
+        }
+
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.Labels);
+        }
+
+        /// <summary>
+        /// Open the user guide when the user clicks the help button
+        /// </summary>
+        protected override void OnHelpButtonClicked(CancelEventArgs evt)
+        {
+            evt.Cancel = Util.TryOpenWebPage(HelpURLs.Labels);
         }
 
         private void LabelSelectionTree_BeforeSelect(Object sender, TreeViewCancelEventArgs e)

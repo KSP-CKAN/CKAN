@@ -217,6 +217,9 @@
             this.Controls.Add(this.AddNewButton);
             this.Controls.Add(this.SelectButton);
             this.Controls.Add(this.GameInstancesListView);
+            this.MinimizeBox = false;
+            this.MaximizeBox = false;
+            this.HelpButton = true;
             this.Icon = Properties.Resources.AppIcon;
             this.MinimumSize = new System.Drawing.Size(560, 200);
             this.Name = "ManageGameInstancesDialog";

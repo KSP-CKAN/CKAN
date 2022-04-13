@@ -42,6 +42,14 @@ namespace CKAN
         /// </summary>
         public event Action Done;
 
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.PlayTime);
+        }
+
         private void ShowTotal()
         {
             if (rows != null)

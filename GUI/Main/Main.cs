@@ -336,6 +336,14 @@ namespace CKAN
             base.OnShown(e);
         }
 
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.UserGuide);
+        }
+
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             // Stop all running play time timers
@@ -711,12 +719,12 @@ namespace CKAN
 
         private void userGuideToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Utilities.ProcessStartURL("https://github.com/KSP-CKAN/CKAN/wiki/User-guide");
+            Utilities.ProcessStartURL(HelpURLs.UserGuide);
         }
 
         private void discordToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Utilities.ProcessStartURL("https://discord.gg/Mb4nXQD");
+            Utilities.ProcessStartURL(HelpURLs.Discord);
         }
 
         private void reportClientIssueToolStripMenuItem_Click(object sender, EventArgs e)

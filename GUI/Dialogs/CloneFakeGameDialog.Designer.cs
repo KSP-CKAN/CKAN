@@ -358,6 +358,7 @@
             this.Icon = Properties.Resources.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.HelpButton = true;
             this.Name = "CloneFakeKspDialog";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
