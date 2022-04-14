@@ -250,7 +250,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\GUIConfiguration.cs" />
     <Compile Include="Model\ExportOption.cs" />
     <Compile Include="Model\GUIMod.cs" />
     <Compile Include="Model\ModChange.cs" />

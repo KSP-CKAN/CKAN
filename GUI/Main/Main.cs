@@ -745,7 +745,7 @@ namespace CKAN
             if (args.Length == 0)
                 return;
 
-            CurrentInstance.LaunchGame(args, currentUser, SuppressableYesNoDialog);
+            CurrentInstance.LaunchGame(currentUser);//, SuppressableYesNo);
         }
 
         public void LaunchGame()

@@ -34,6 +34,8 @@ namespace CKAN
 
         public TimeLog playTime;
 
+        public GUIConfiguration configuration;
+
         public string Name { get; set; }
         /// <summary>
         /// Returns a file system safe version of the instance name that can be used within file names.
@@ -74,6 +76,7 @@ namespace CKAN
             {
                 SetupCkanDirectories(scan);
                 LoadCompatibleVersions();
+                configuration = GUIConfiguration.LoadOrCreateConfiguration(Path.Combine(CkanDir(), "GUIConfig.xml"));
             }
         }
 
@@ -361,8 +364,10 @@ namespace CKAN
             return new GameVersionCriteria(Version(), _compatibleVersions);
         }
 
-        public void LaunchGame(String[] arguments, IUser user, Func<string, string, string, string, Tuple<DialogResult, bool>> SuppressableYesNoDialog)
+        public void LaunchGame(IUser user)//, Func<string, string, string, string, Tuple<int, bool>> SuppressableYesNoDialog)
         {
+            string[] arguments = configuration.CommandLineArguments.Split(' ');
+
             var registry = RegistryManager.Instance(this).registry;
 
             var suppressedIdentifiers = this.GetSuppressedCompatWarningIdentifiers;
@@ -378,6 +383,7 @@ namespace CKAN
                 var ver = this.Version();
                 
                 // Need to internationalize this
+                /*
                 var result = SuppressableYesNoDialog(
                     string.Format("Some installed modules are incompatible! It might not be safe to launch the game. Really launch?\n\n{0}", incompatDescrip),
                     string.Format("Don't show this again for these mods on {0} {1}",
@@ -386,7 +392,7 @@ namespace CKAN
                     "Launch",
                     "Go Back"
                 );
-                if (result.Item1 != DialogResult.Yes)
+                if (result.Item1 != 6)
                 {
                     return;
                 }
@@ -396,9 +402,11 @@ namespace CKAN
                         incomp.Select(m => m.identifier).ToHashSet()
                     );
                 }
+                */
             }
 
             arguments = this.game.AdjustCommandLine(arguments, this.Version());
+            Console.WriteLine("Executing: {0}", string.Join(" ", arguments));
             var binary = arguments[0];
             var args = string.Join(" ", arguments.Skip(1));
 

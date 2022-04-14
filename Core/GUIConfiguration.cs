@@ -3,6 +3,8 @@ using System.Drawing;
 using System.IO;
 using System.Xml.Serialization;
 
+using CKAN.Games;
+
 namespace CKAN
 {
     [XmlRootAttribute("Configuration")]
@@ -111,7 +113,8 @@ namespace CKAN
                 var configuration = new GUIConfiguration
                 {
                     path = path,
-                    CommandLineArguments = Main.Instance.CurrentInstance.game.DefaultCommandLine
+                    // Get Default Command Line from Current Game Instance
+                    CommandLineArguments = new KerbalSpaceProgram().DefaultCommandLine,
                 };
 
                 SaveConfiguration(configuration);
@@ -151,7 +154,7 @@ namespace CKAN
 
                     var fi = new FileInfo(path);
                     string message = string.Format(
-                        Properties.Resources.ConfigurationParseError,
+                        "Error trying to parse \"{0}\"{1} Try to move {2} out of {3} and restart CKAN.",
                         fi.FullName, additionalErrorData, fi.Name, fi.DirectoryName);
                     throw new Kraken(message);
                 }
