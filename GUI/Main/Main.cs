@@ -741,7 +741,11 @@ namespace CKAN
 
         private void openGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LaunchGame();
+            string[] args = configuration.CommandLineArguments.Split(' ');
+            if (args.Length == 0)
+                return;
+
+            CurrentInstance.LaunchGame(args, currentUser, SuppressableYesNoDialog);
         }
 
         public void LaunchGame()
