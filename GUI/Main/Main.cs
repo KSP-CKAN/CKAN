@@ -741,90 +741,16 @@ namespace CKAN
 
         private void openGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string[] args = configuration.CommandLineArguments.Split(' ');
-            if (args.Length == 0)
-                return;
-
-            CurrentInstance.LaunchGame(currentUser);//, SuppressableYesNo);
+            CurrentInstance.LaunchGame(currentUser, launchAnyWay);
         }
 
-        public void LaunchGame()
+        public bool launchAnyWay(string text, string suppressText)
         {
-            var split = configuration.CommandLineArguments.Split(' ');
-            if (split.Length == 0)
-                return;
-
-            var registry = RegistryManager.Instance(CurrentInstance).registry;
-
-            var suppressedIdentifiers = CurrentInstance.GetSuppressedCompatWarningIdentifiers;
-            var incomp = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria())
-                .Where(m => !m.Module.IsDLC && !suppressedIdentifiers.Contains(m.identifier))
-                .ToList();
-            if (incomp.Any())
-            {
-                // Warn that it might not be safe to run Game with incompatible modules installed
-                string incompatDescrip = incomp
-                    .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(CurrentInstance.game, m.Module)})")
-                    .Aggregate((a, b) => $"{a}{Environment.NewLine}{b}");
-                var ver = CurrentInstance.Version();
-                var result = SuppressableYesNoDialog(
-                    string.Format(Properties.Resources.MainLaunchWithIncompatible, incompatDescrip),
-                    string.Format(Properties.Resources.MainLaunchDontShow,
-                        CurrentInstance.game.ShortName,
-                        new GameVersion(ver.Major, ver.Minor, ver.Patch)),
-                    Properties.Resources.MainLaunch,
-                    Properties.Resources.MainGoBack
-                );
-                if (result.Item1 != DialogResult.Yes)
-                {
-                    return;
-                }
-                else if (result.Item2)
-                {
-                    CurrentInstance.AddSuppressedCompatWarningIdentifiers(
-                        incomp.Select(m => m.identifier).ToHashSet()
-                    );
-                }
-            }
-
-            split = CurrentInstance.game.AdjustCommandLine(split,
-                Main.Instance.CurrentInstance.Version());
-            var binary = split[0];
-            var args = string.Join(" ", split.Skip(1));
-
-            try
-            {
-
-                Directory.SetCurrentDirectory(CurrentInstance.GameDir());
-
-                Process p = new Process()
-                {
-                    StartInfo = new ProcessStartInfo()
-                    {
-                        FileName = binary,
-                        Arguments = args
-                    },
-                    EnableRaisingEvents = true
-                };
-
-                GameInstance inst = CurrentInstance;
-                p.Exited += (sender, e) => GameExit(inst);
-
-                p.Start();
-                CurrentInstance.playTime.Start();
-            }
-            catch (Exception exception)
-            {
-                currentUser.RaiseError(Properties.Resources.MainLaunchFailed, exception.Message);
-            }
+            var result = SuppressableYesNoDialog(text, suppressText,
+            Properties.Resources.MainLaunch, Properties.Resources.MainGoBack);
+            
+            return (result.Item1 == DialogResult.Yes || result.Item2);
         }
-
-        private void GameExit(GameInstance inst)
-        {
-            inst.playTime.Stop(inst.CkanDir());
-            UpdateStatusBar();
-        }
-
         private void ManageMods_StartChangeSet(List<ModChange> changeset)
         {
             // Hand off to centralized [un]installer code

@@ -364,7 +364,7 @@ namespace CKAN
             return new GameVersionCriteria(Version(), _compatibleVersions);
         }
 
-        public void LaunchGame(IUser user)//, Func<string, string, string, string, Tuple<int, bool>> SuppressableYesNoDialog)
+        public void LaunchGame(IUser user, Func<string, string, bool> launchAnyWay)
         {
             string[] arguments = configuration.CommandLineArguments.Split(' ');
 
@@ -383,30 +383,26 @@ namespace CKAN
                 var ver = this.Version();
                 
                 // Need to internationalize this
-                /*
-                var result = SuppressableYesNoDialog(
+                bool result = launchAnyWay(
                     string.Format("Some installed modules are incompatible! It might not be safe to launch the game. Really launch?\n\n{0}", incompatDescrip),
                     string.Format("Don't show this again for these mods on {0} {1}",
                         this.game.ShortName,
-                        new GameVersion(ver.Major, ver.Minor, ver.Patch)),
-                    "Launch",
-                    "Go Back"
+                        new GameVersion(ver.Major, ver.Minor, ver.Patch))
                 );
-                if (result.Item1 != 6)
+                Console.WriteLine(result);
+                if (!result)
                 {
                     return;
                 }
-                else if (result.Item2)
+                else if (result)
                 {
                     this.AddSuppressedCompatWarningIdentifiers(
                         incomp.Select(m => m.identifier).ToHashSet()
                     );
                 }
-                */
             }
 
             arguments = this.game.AdjustCommandLine(arguments, this.Version());
-            Console.WriteLine("Executing: {0}", string.Join(" ", arguments));
             var binary = arguments[0];
             var args = string.Join(" ", arguments.Skip(1));
 
@@ -424,7 +420,7 @@ namespace CKAN
                     EnableRaisingEvents = true
                 };
 
-                p.Exited += (sender, e) => this.GameExit();
+                p.Exited += (sender, e) => this.playTime.Stop(this.CkanDir());
 
                 p.Start();
                 this.playTime.Start();
@@ -434,11 +430,6 @@ namespace CKAN
                 // Need to internationalize this.
                 user.RaiseError("Couldn't start game. \n\n {0}", exception.Message);
             }
-        }
-
-        private void GameExit()
-        {
-            this.playTime.Stop(this.CkanDir());
         }
 
         #endregion

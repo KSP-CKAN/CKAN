@@ -113,8 +113,7 @@ namespace CKAN
                 var configuration = new GUIConfiguration
                 {
                     path = path,
-                    // Get Default Command Line from Current Game Instance
-                    CommandLineArguments = new KerbalSpaceProgram().DefaultCommandLine,
+                    CommandLineArguments = new GameInstanceManager(new NullUser()).CurrentInstance.game.DefaultCommandLine
                 };
 
                 SaveConfiguration(configuration);

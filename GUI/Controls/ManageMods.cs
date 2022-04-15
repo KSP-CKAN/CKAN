@@ -474,7 +474,7 @@ namespace CKAN
 
         private void launchGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Main.Instance.LaunchGame();
+            Main.Instance.CurrentInstance.LaunchGame(Main.Instance.currentUser, Main.Instance.launchAnyWay);
         }
 
         private void NavBackwardToolButton_Click(object sender, EventArgs e)

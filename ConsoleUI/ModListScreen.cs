@@ -160,7 +160,7 @@ namespace CKAN.ConsoleUI {
 
             moduleList.AddTip("F2", "Launch KSP");
             moduleList.AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
-                manager.CurrentInstance.LaunchGame(this);//, this.SuppressableYesNoDialog);
+                manager.CurrentInstance.LaunchGame(this, launchAnyWay);
                 return true;
             });
 
@@ -663,6 +663,11 @@ namespace CKAN.ConsoleUI {
                 total += im.Module.download_size;
             }
             return total;
+        }
+
+        public bool launchAnyWay(string text, string suppressText)
+        {
+            return RaiseYesNoDialog(text);
         }
 
         private GameInstanceManager manager;
