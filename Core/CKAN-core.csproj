@@ -56,9 +56,6 @@
     <PackageReference Include="TxFileManager.NETStandard" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">
       <Link>Properties\GlobalAssemblyVersionInfo.cs</Link>
     </Compile>

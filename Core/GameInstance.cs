@@ -5,7 +5,6 @@ using System.Linq;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using System.Transactions;
 using ChinhDo.Transactions.FileManager;
 using log4net;
