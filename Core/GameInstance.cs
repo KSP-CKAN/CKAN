@@ -389,7 +389,7 @@ namespace CKAN
                         this.game.ShortName,
                         new GameVersion(ver.Major, ver.Minor, ver.Patch))
                 );
-                Console.WriteLine(result);
+                
                 if (!result)
                 {
                     return;
