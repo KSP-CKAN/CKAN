@@ -665,9 +665,19 @@ namespace CKAN.ConsoleUI {
             return total;
         }
 
-        public bool launchAnyWay(string text, string suppressText)
+        /// <summary>
+        /// Asks the user is they want to continue with launching the game.
+        /// </summary>
+        public Tuple<bool, bool> launchAnyWay(string text, string suppressText)
         {
-            return RaiseYesNoDialog(text);
+            int result = RaiseSelectionDialog(text, "Cancel", "Launch", "Launch and Don't Ask Again");
+            if (result == 0) {
+                return new Tuple<bool, bool>(false, false);
+            } else if (result == 2) {
+                return new Tuple<bool, bool>(true, true);
+            } else {
+                return new Tuple<bool, bool>(true, false);
+            }
         }
 
         private GameInstanceManager manager;

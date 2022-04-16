@@ -363,7 +363,7 @@ namespace CKAN
             return new GameVersionCriteria(Version(), _compatibleVersions);
         }
 
-        public void LaunchGame(IUser user, Func<string, string, bool> launchAnyWay)
+        public void LaunchGame(IUser user, Func<string, string, Tuple<bool, bool>> launchAnyWay)
         {
             string[] arguments = configuration.CommandLineArguments.Split(' ');
 
@@ -382,18 +382,18 @@ namespace CKAN
                 var ver = this.Version();
                 
                 // Need to internationalize this
-                bool result = launchAnyWay(
+                var result = launchAnyWay(
                     string.Format("Some installed modules are incompatible! It might not be safe to launch the game. Really launch?\n\n{0}", incompatDescrip),
                     string.Format("Don't show this again for these mods on {0} {1}",
                         this.game.ShortName,
                         new GameVersion(ver.Major, ver.Minor, ver.Patch))
                 );
                 
-                if (!result)
+                if (!result.Item1)
                 {
                     return;
                 }
-                else if (result)
+                else if (result.Item2)
                 {
                     this.AddSuppressedCompatWarningIdentifiers(
                         incomp.Select(m => m.identifier).ToHashSet()

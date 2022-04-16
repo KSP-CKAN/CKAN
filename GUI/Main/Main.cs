@@ -744,12 +744,13 @@ namespace CKAN
             CurrentInstance.LaunchGame(currentUser, launchAnyWay);
         }
 
-        public bool launchAnyWay(string text, string suppressText)
+        public Tuple<bool, bool> launchAnyWay(string text, string suppressText)
         {
             var result = SuppressableYesNoDialog(text, suppressText,
             Properties.Resources.MainLaunch, Properties.Resources.MainGoBack);
             
-            return (result.Item1 == DialogResult.Yes || result.Item2);
+            return new Tuple<bool, bool>(true, false);
+            //return (result.Item1 == DialogResult.Yes || result.Item2);
         }
         private void ManageMods_StartChangeSet(List<ModChange> changeset)
         {
