@@ -18,7 +18,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="mgr">Game instance manager containing the instances</param>
         /// <param name="k">Instance to edit</param>
         public GameInstanceEditScreen(GameInstanceManager mgr, GameInstance k)
-            : base(mgr, k.Name, k.GameDir())
+            : base(mgr, k.Name, k.GameDir(), k.configuration.CommandLineArguments)
         {
             ksp = k;
             try {
@@ -197,6 +197,10 @@ namespace CKAN.ConsoleUI {
                     && !pathValid()) {
                 return false;
             }
+
+            if (!argsValid()) {
+                return false;
+            }
             return true;
         }
 
@@ -226,6 +230,12 @@ namespace CKAN.ConsoleUI {
                 // If only the name changed, there's an API for that.
                 manager.RenameInstance(ksp.Name, name.Value);
             }
+
+            string oldArgs = ksp.configuration.CommandLineArguments;
+            if (args.Value != oldArgs) {
+                ksp.configuration.CommandLineArguments = args.Value;
+                ksp.configuration.Save();
+            }
         }
 
         private GameInstance ksp;
@@ -236,7 +246,7 @@ namespace CKAN.ConsoleUI {
         private List<GameVersion>                     compatEditList;
         private ConsoleListBox<GameVersion>           compatList;
 
-        private const int repoFrameTop      = pathRow           + 2;
+        private const int repoFrameTop      = cmdRow           + 2;
         private const int repoListTop       = repoFrameTop      + 2;
         private const int repoFrameHeight   = 9;
         private const int repoFrameBottom   = repoFrameTop      + repoFrameHeight - 1;

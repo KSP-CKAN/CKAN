@@ -14,7 +14,8 @@ namespace CKAN.ConsoleUI {
         /// <param name="mgr">Game instance manager containing the instances, needed for saving changes</param>
         /// <param name="initName">Initial value of name field</param>
         /// <param name="initPath">Initial value of path field</param>
-        protected GameInstanceScreen(GameInstanceManager mgr, string initName = "", string initPath = "") : base()
+        /// <param name="initCmdArgs">Initial value of command-line args field</param>
+        protected GameInstanceScreen(GameInstanceManager mgr, string initName = "", string initPath = "", string initCmdArgs = "") : base()
         {
             manager = mgr;
 
@@ -42,11 +43,16 @@ namespace CKAN.ConsoleUI {
             path = new ConsoleField(labelWidth, pathRow, -1, initPath) {
                 GhostText = () => "<Enter the location of this game instance on disk>"
             };
+            args = new ConsoleField(labelWidth, cmdRow, -1, initCmdArgs) {
+                GhostText = () => "<Enter the command-line arguments>"
+            };
 
             AddObject(new ConsoleLabel(1, nameRow, labelWidth, () => "Name:"));
             AddObject(name);
             AddObject(new ConsoleLabel(1, pathRow, labelWidth, () => "Path to game instance:"));
             AddObject(path);
+            AddObject(new ConsoleLabel(1, cmdRow, labelWidth, () => "Command line arguments:"));
+            AddObject(args);
         }
 
         /// <summary>
@@ -114,6 +120,21 @@ namespace CKAN.ConsoleUI {
         }
 
         /// <summary>
+        /// Return whether the command-line arguments are valid
+        /// </summary>
+        protected bool argsValid()
+        {
+            if (string.IsNullOrEmpty(args.Value)) {
+                // Complain about empty args
+                RaiseError("Command line arguments cannot be empty!");
+                SetFocus(args);
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// ScreenObject that edits the name
         /// </summary>
         protected ConsoleField name;
@@ -121,6 +142,10 @@ namespace CKAN.ConsoleUI {
         /// ScreenObject that edits the path
         /// </summary>
         protected ConsoleField path;
+        /// <summary>
+        /// ScreenObject that edits the args
+        /// </summary>
+        protected ConsoleField args;
 
         /// <summary>
         /// Game instance manager object that contains the instances
@@ -136,6 +161,10 @@ namespace CKAN.ConsoleUI {
         /// Y coordinate of path field
         /// </summary>
         protected const int pathRow    = 4;
+        /// <summary>
+        /// Y coordinate of command line arguments field
+        /// </summary>
+        protected const int cmdRow     = 6;
     }
 
 }
