@@ -749,8 +749,7 @@ namespace CKAN
             var result = SuppressableYesNoDialog(text, suppressText,
             Properties.Resources.MainLaunch, Properties.Resources.MainGoBack);
             
-            return new Tuple<bool, bool>(true, false);
-            //return (result.Item1 == DialogResult.Yes || result.Item2);
+            return new Tuple<bool, bool>(result.Item1 == DialogResult.Yes, result.Item2);
         }
         private void ManageMods_StartChangeSet(List<ModChange> changeset)
         {
