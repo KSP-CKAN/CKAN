@@ -52,6 +52,7 @@ namespace CKAN.NetKAN.Transformers
                 // specify a before or after property.
                 new VersionedOverrideTransformer(before: new string[] { null }, after: new string[] { null }),
                 new DownloadAttributeTransformer(http, fileService),
+                new InstallSizeTransformer(http, moduleService),
                 new GeneratedByTransformer(),
                 new OptimusPrimeTransformer(),
                 new StripNetkanMetadataTransformer(),

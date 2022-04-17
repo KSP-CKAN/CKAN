@@ -658,7 +658,9 @@ namespace CKAN.ConsoleUI {
         {
             long total = 0;
             foreach (InstalledModule im in registry.InstalledModules) {
-                total += im.Module.download_size;
+                total += im.Module.install_size > 0
+                    ? im.Module.install_size
+                    : im.Module.download_size;
             }
             return total;
         }

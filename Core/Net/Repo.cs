@@ -230,6 +230,10 @@ Do you wish to reinstall now?", sb)))
                         return false;
                 }
             }
+            if (metadata.install_size != oldMetadata.install_size)
+            {
+                return false;
+            }
 
             if (!RelationshipsAreEquivalent(metadata.conflicts,  oldMetadata.conflicts))
                 return false;

@@ -175,20 +175,25 @@ namespace CKAN
             bool needsSave = false;
 
             // KSPCompatibility column got renamed to GameCompatibility
-            int kspCompatibilitySortIndex = configuration.SortColumns.IndexOf("KSPCompatibility");
-            if (kspCompatibilitySortIndex > -1)
-            {
-                configuration.SortColumns[kspCompatibilitySortIndex] = "GameCompatibility";
-                needsSave = true;
-            }
-            int kspCompatibilityHiddenIndex = configuration.HiddenColumnNames.IndexOf("KSPCompatibility");
-            if (kspCompatibilityHiddenIndex > -1)
-            {
-                configuration.HiddenColumnNames[kspCompatibilityHiddenIndex] = "GameCompatibility";
-                needsSave = true;
-            }
+            needsSave = FixColumnName(configuration.SortColumns,       "KSPCompatibility", "GameCompatibility") || needsSave;
+            needsSave = FixColumnName(configuration.HiddenColumnNames, "KSPCompatibility", "GameCompatibility") || needsSave;
+
+            // SizeCol column got renamed to DownloadSize
+            needsSave = FixColumnName(configuration.SortColumns,       "SizeCol", "DownloadSize") || needsSave;
+            needsSave = FixColumnName(configuration.HiddenColumnNames, "SizeCol", "DownloadSize") || needsSave;
 
             return needsSave;
+        }
+
+        private static bool FixColumnName(List<string> columnNames, string oldName, string newName)
+        {
+            int columnIndex = columnNames.IndexOf("KSPCompatibility");
+            if (columnIndex > -1)
+            {
+                columnNames[columnIndex] = "GameCompatibility";
+                return true;
+            }
+            return false;
         }
 
         private static void SaveConfiguration(GUIConfiguration configuration)

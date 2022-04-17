@@ -45,6 +45,7 @@ namespace CKAN.NetKAN.Transformers
             "download_size",
             "download_hash",
             "download_content_type",
+            "install_size",
             "release_date",
         }
             .Select((str, index) => new {index, str})
