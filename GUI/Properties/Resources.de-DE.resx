@@ -336,6 +336,7 @@ Möchtest du CKAN dies erlauben?
 Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   </data>
   <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Linkadresse kopieren</value></data>
+  <data name="StatusInstanceLabelTextWithPlayTime" xml:space="preserve"><value>Spielinstanz: {0} ({1} {2}, {3}h gespielt)</value></data>
   <data name="StatusInstanceLabelText" xml:space="preserve"><value>Spielinstanz: {0} ({1} {2})</value></data>
   <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favoriten</value></data>
   <data name="ModuleLabelListHidden" xml:space="preserve"><value>Versteckt</value></data>
@@ -389,4 +390,5 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Detailierte Suchfelder ein-/ausklappen (Strg-Shift-F)</value></data>
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>Füge eine weitere Suche hinzu</value></data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>Abwählen um alle Mods zu deinstallieren, anwählen um die Änderungsliste zu leeren</value></data>
+  <data name="TotalPlayTime" xml:space="preserve"><value>Gesamtspielzeit: {0} Stunden</value></data>
 </root>

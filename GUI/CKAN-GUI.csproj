@@ -690,6 +690,9 @@
     <EmbeddedResource Include="Controls\PlayTime.resx">
       <DependentUpon>PlayTime.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\PlayTime.de-DE.resx">
+      <DependentUpon>..\..\Controls\PlayTime.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\fr-FR\PlayTime.fr-FR.resx">
       <DependentUpon>..\..\Controls\PlayTime.cs</DependentUpon>
     </EmbeddedResource>
