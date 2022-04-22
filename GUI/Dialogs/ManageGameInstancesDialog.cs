@@ -74,20 +74,11 @@ namespace CKAN
             GameInstancesListView.Items.Clear();
             UpdateButtonState();
 
-
-            if (!GameInstancesListView.Columns.Contains(Game))
-            {
-                // Always show the game column so our rows load correctly
-                GameInstancesListView.Columns.Insert(Game.Index, Game);
-            }
-            if (!GameInstancesListView.Columns.Contains(GamePlayTime))
-            {
-                // Always show the play time column so our rows load correctly
-                GameInstancesListView.Columns.Insert(GamePlayTime.Index, GamePlayTime);
-            }
-
             var allSameGame = _manager.Instances.Select(i => i.Value.game).Distinct().Count() <= 1;
             var hasPlayTime = _manager.Instances.Any(instance => (instance.Value.playTime?.Time ?? TimeSpan.Zero) > TimeSpan.Zero);
+
+            AddOrRemoveColumn(GameInstancesListView, Game, !allSameGame);
+            AddOrRemoveColumn(GameInstancesListView, GamePlayTime, hasPlayTime);
 
             GameInstancesListView.Items.AddRange(_manager.Instances
                 .OrderByDescending(instance => instance.Value.Version())
@@ -98,19 +89,20 @@ namespace CKAN
                 .ToArray()
             );
 
-            if (allSameGame && GameInstancesListView.Columns.Contains(Game))
-            {
-                // Hide the game column if not in use
-                GameInstancesListView.Columns.Remove(Game);
-            }
-            if (!hasPlayTime && GameInstancesListView.Columns.Contains(GamePlayTime))
-            {
-                // Hide the play time column if not in use
-                GameInstancesListView.Columns.Remove(GamePlayTime);
-            }
-
             GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
+        private void AddOrRemoveColumn(ListView listView, ColumnHeader column, bool condition)
+        {
+            if (condition && !listView.Columns.Contains(column))
+            {
+                listView.Columns.Insert(column.Index, column);
+            }
+            else if (!condition && listView.Columns.Contains(column))
+            {
+                listView.Columns.Remove(column);
+            }
         }
 
         private string[] rowItems(GameInstance instance, bool includeGame, bool includePlayTime)
