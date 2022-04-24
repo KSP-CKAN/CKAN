@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 using CKAN.NetKAN.Services;
 using CKAN.Versioning;
 
@@ -67,57 +69,27 @@ namespace CKAN.NetKAN.Sources.Github
             {
                 var json = Call($"repos/{reference.Repository}/releases?per_page={perPage}&page={page}");
                 Log.Debug("Parsing JSON...");
-                var releases = JArray.Parse(json);
-
-                // Finding the most recent *stable* release means filtering
-                // out on pre-releases.
-
-                foreach (var release in releases)
-                {
-                    // First, check for prerelease status...
-                    if (reference.UsePrerelease == (bool)release["prerelease"])
-                    {
-                        var version = new ModuleVersion((string)release["tag_name"]);
-                        var author = (string)release["author"]["login"];
-
-                        List<GithubReleaseAsset> allAssets;
-
-                        if (reference.UseSourceArchive)
-                        {
-                            Log.Debug("Using GitHub source archive");
-                            Uri download = new Uri((string)release["zipball_url"]);
-                            DateTime?  updated = (DateTime)release["published_at"];
-                            allAssets = new List<GithubReleaseAsset> { new GithubReleaseAsset(version.ToString(), download, updated) };
-                        }
-                        else
-                        {
-                            allAssets = new List<GithubReleaseAsset>();
-                            var assets = (JArray)release["assets"];
-
-                            foreach (var asset in assets.Where(asset => reference.Filter.IsMatch((string)asset["name"])))
-                            {
-                                Log.DebugFormat("Using GitHub asset: {0}", asset["name"]);
-                                Uri download = new Uri((string)asset["browser_download_url"]);
-                                DateTime? updated = (DateTime)asset["updated_at"];
-
-                                allAssets.Add(new GithubReleaseAsset(
-                                        (string)asset["name"], download, updated
-                                    )
-                                );
-                            }
-                        }
-
-                        if (allAssets.Any())
-                        {
-                            yield return new GithubRelease(author, version, allAssets);
-                        }
-                    }
-                }
-
-                if (releases.Count < perPage)
+                var jsonReleases = JArray.Parse(json);
+                if (jsonReleases.Count < 1)
                 {
                     // That's all folks!
                     break;
+                }
+                var ghReleases = jsonReleases
+                    .Select(rel => new GithubRelease(reference, rel))
+                    .Where(ghRel =>
+                        // Finding the most recent *stable* release means filtering
+                        // out on pre-releases.
+                        ghRel.PreRelease == reference.UsePrerelease
+                        // Skip releases without assets
+                        && ghRel.Assets.Any())
+                    // Insurance against GitHub returning them in the wrong order
+                    .OrderByDescending(ghRel => ghRel.PublishedAt)
+                    .ToList();
+
+                foreach (var ghRel in ghReleases)
+                {
+                    yield return ghRel;
                 }
             }
         }
