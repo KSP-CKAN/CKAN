@@ -224,6 +224,9 @@
     <Compile Include="Controls\EditModSearchDetails.Designer.cs">
       <DependentUpon>EditModSearchDetails.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\LeftRightRowPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\ManageMods.cs">
       <SubType>UserControl</SubType>
     </Compile>
