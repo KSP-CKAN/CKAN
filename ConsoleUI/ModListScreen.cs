@@ -216,6 +216,10 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
+            moduleList.AddTip("F8", "Mark auto-installed",
+                () => moduleList.Selection != null && !moduleList.Selection.IsDLC
+                    && (!registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
+            );
             moduleList.AddTip("F8", "Mark user-selected",
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && (registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
