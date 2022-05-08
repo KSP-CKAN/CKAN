@@ -21,7 +21,7 @@ jobs:
       image: mono:${{ matrix.mono }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Adding HTTPS support to APT for old Mono images
         run: |
@@ -98,7 +98,7 @@ jobs:
         configuration: [Debug_NetCore, Release_NetCore]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
