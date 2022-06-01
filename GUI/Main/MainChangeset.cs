@@ -40,7 +40,7 @@ namespace CKAN.GUI
             // TODO Work out why this is.
             try
             {
-                installWorker.RunWorkerAsync(
+                Wait.StartWaiting(InstallMods, PostInstallMods, true,
                     new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                         ManageMods.mainModList
                             .ComputeUserChangeSet(RegistryManager.Instance(Main.Instance.CurrentInstance).registry)

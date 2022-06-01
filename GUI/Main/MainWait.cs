@@ -1,19 +1,15 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace CKAN.GUI
 {
     public partial class Main
     {
-        private Action cancelCallback;
-        private Action okCallback;
-
-        public void ShowWaitDialog(bool cancelable = true)
+        public void ShowWaitDialog()
         {
             Util.Invoke(this, () =>
             {
                 tabController.ShowTab("WaitTabPage", 2);
-                Wait.Reset(cancelable);
                 StatusProgress.Value = 0;
                 StatusProgress.Style = ProgressBarStyle.Marquee;
                 StatusProgress.Visible = true;
@@ -27,6 +23,7 @@ namespace CKAN.GUI
                 Wait.Finish(success);
                 RecreateDialogs();
 
+                tabController.HideTab("WaitTabPage");
                 tabController.SetActiveTab("ManageModsTabPage");
 
                 StatusProgress.Value = 0;
@@ -41,7 +38,7 @@ namespace CKAN.GUI
         /// <param name="statusMsg">Message for the lower status bar</param>
         /// <param name="logMsg">Message to display on WaitDialog-Log (not the real log!)</param>
         /// <param name="description">Message displayed above the DialogProgress bar</param>
-        public void FailWaitDialog(string statusMsg, string logMsg, string description, bool success)
+        public void FailWaitDialog(string statusMsg, string logMsg, string description)
         {
             Util.Invoke(statusStrip1, () => {
                 StatusProgress.Visible = false;
@@ -83,23 +80,12 @@ namespace CKAN.GUI
             tabController.ShowTab("ChangesetTabPage", 1);
         }
 
-        public void Wait_OnCancel()
-        {
-            if (cancelCallback != null)
-            {
-                cancelCallback();
-            }
-        }
-
         public void Wait_OnOk()
         {
-            if (okCallback != null)
-            {
-                okCallback();
-            }
             Util.Invoke(this, () => Enabled = true);
             Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
             tabController.SetTabLock(false);
+            HideWaitDialog(false);
         }
     }
 }

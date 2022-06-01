@@ -21,10 +21,6 @@ namespace CKAN.GUI
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
 
-        public delegate void ModChangedCallback(CkanModule module, GUIModChangeType change);
-
-        public static event ModChangedCallback modChangedCallback;
-
         public GUIConfiguration configuration;
 
         public ControlFactory controlFactory;
@@ -289,17 +285,6 @@ namespace CKAN.GUI
                 // If not allowing, don't do anything
                 if (repoUpdateNeeded)
                 {
-                    // Update the filters after UpdateRepo() completed.
-                    // Since this happens with a backgroundworker, Filter() is added as callback for RunWorkerCompleted.
-                    // Remove it again after it ran, else it stays there and is added again and again.
-                    void filterUpdate(object sender, RunWorkerCompletedEventArgs e)
-                    {
-                        SetupDefaultSearch();
-                        m_UpdateRepoWorker.RunWorkerCompleted -= filterUpdate;
-                    }
-
-                    m_UpdateRepoWorker.RunWorkerCompleted += filterUpdate;
-
                     ManageMods.ModGrid.Rows.Clear();
                     UpdateRepo();
                 }
@@ -407,15 +392,6 @@ namespace CKAN.GUI
             bool autoUpdating = CheckForCKANUpdate();
             CheckTrayState();
             InitRefreshTimer();
-
-            m_UpdateRepoWorker = new BackgroundWorker { WorkerReportsProgress = false, WorkerSupportsCancellation = true };
-
-            m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
-            m_UpdateRepoWorker.DoWork += UpdateRepo;
-
-            installWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
-            installWorker.RunWorkerCompleted += PostInstallMods;
-            installWorker.DoWork += InstallMods;
 
             URLHandlers.RegisterURLHandler(configuration, currentUser);
 
@@ -680,7 +656,6 @@ namespace CKAN.GUI
             else
             {
                 tabController.HideTab("ChangesetTabPage");
-                Wait.RetryEnabled = false;
                 auditRecommendationsMenuItem.Enabled = true;
             }
         }
@@ -695,8 +670,7 @@ namespace CKAN.GUI
             switch (MainTabControl.SelectedTab?.Name)
             {
                 case "ManageModsTabPage":
-                    // TODO: Call public func on ManageMods
-                    //ModList_SelectedIndexChanged(sender, e);
+                    ActiveModInfo = ManageMods.SelectedModule;
                     break;
 
                 case "ChangesetTabPage":
@@ -829,33 +803,27 @@ namespace CKAN.GUI
             UpdateStatusBar();
         }
 
+        // This is used by Reinstall
         private void ManageMods_StartChangeSet(List<ModChange> changeset)
         {
-            // Hand off to centralized [un]installer code
-            installWorker.RunWorkerAsync(
+            Wait.StartWaiting(InstallMods, PostInstallMods, true,
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    changeset,
-                    RelationshipResolver.DependsOnlyOpts()
-                )
-            );
+                    changeset, RelationshipResolver.DependsOnlyOpts()));
         }
 
         private void ManageMods_OpenProgressTab()
         {
             ResetProgress();
-            ShowWaitDialog(false);
+            ShowWaitDialog();
             tabController.SetTabLock(true);
             Util.Invoke(this, SwitchEnabledState);
-            Wait.ClearLog();
         }
 
         private void ManageMods_CloseProgressTab()
         {
             Util.Invoke(this, UpdateTrayInfo);
             HideWaitDialog(true);
-            tabController.HideTab("WaitTabPage");
             tabController.SetTabLock(false);
-            tabController.ShowTab("ManageModsTabPage");
             Util.Invoke(this, SwitchEnabledState);
         }
     }

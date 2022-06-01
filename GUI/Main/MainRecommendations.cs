@@ -52,7 +52,7 @@ namespace CKAN.GUI
                 tabController.HideTab("ChooseRecommendedModsTabPage");
                 if (result != null && result.Any())
                 {
-                    installWorker.RunWorkerAsync(
+                    Wait.StartWaiting(InstallMods, PostInstallMods, true,
                         new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                             result.Select(mod => new ModChange(
                                 mod,

@@ -81,6 +81,12 @@
     <Compile Include="Dialogs\CompatibleGameVersionsDialog.Designer.cs">
       <DependentUpon>CompatibleGameVersionsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\DownloadsFailedDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DownloadsFailedDialog.Designer.cs">
+      <DependentUpon>DownloadsFailedDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\EditLabelsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -571,6 +577,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\ja-JP\DeleteDirectories.ja-JP.resx">
       <DependentUpon>..\..\Controls\DeleteDirectories.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DownloadsFailedDialog.resx">
+      <DependentUpon>DownloadsFailedDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\EditLabelsDialog.resx">
       <DependentUpon>EditLabelsDialog.cs</DependentUpon>

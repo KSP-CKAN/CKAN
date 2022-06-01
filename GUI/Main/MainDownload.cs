@@ -7,7 +7,6 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private BackgroundWorker          cacheWorker;
         private NetAsyncModulesDownloader downloader;
 
         private void ModInfo_OnDownloadClick(GUIMod gmod)
@@ -20,19 +19,8 @@ namespace CKAN.GUI
             if (module == null || !module.IsCKAN)
                 return;
 
-            if (cacheWorker == null)
-            {
-                cacheWorker = new BackgroundWorker()
-                {
-                    WorkerReportsProgress      = true,
-                    WorkerSupportsCancellation = true,
-                };
-                cacheWorker.DoWork += CacheMod;
-                cacheWorker.RunWorkerCompleted += PostModCaching;
-            }
-
-            Main.Instance.ShowWaitDialog(false);
-            if (cacheWorker.IsBusy)
+            ShowWaitDialog();
+            if (downloader != null)
             {
                 Task.Factory.StartNew(() =>
                 {
@@ -44,31 +32,57 @@ namespace CKAN.GUI
             else
             {
                 // Start up a new worker
-                downloader = new NetAsyncModulesDownloader(Main.Instance.currentUser, Main.Instance.Manager.Cache);
-                cacheWorker.RunWorkerAsync(module);
+                Wait.StartWaiting(CacheMod, PostModCaching, true, module);
             }
         }
 
-        // cacheWorker.DoWork
         private void CacheMod(object sender, DoWorkEventArgs e)
         {
             ResetProgress();
-            Wait.ClearLog();
 
             GUIMod gm = e.Argument as GUIMod;
+            downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
+            Wait.OnCancel += downloader.CancelDownload;
             downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
             e.Result = e.Argument;
         }
 
-        // cacheWorker.RunWorkerCompleted
         public void PostModCaching(object sender, RunWorkerCompletedEventArgs e)
         {
-            Util.Invoke(this, () => _PostModCaching((GUIMod)e.Result));
+            downloader = null;
+            // Can't access e.Result if there's an error
+            if (e.Error != null)
+            {
+                switch (e.Error)
+                {
+
+                    case CancelledActionKraken exc:
+                        // User already knows they cancelled, get out
+                        HideWaitDialog(false);
+                        tabController.SetTabLock(false);
+                        Util.Invoke(this, () => Enabled = true);
+                        Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
+                        break;
+
+                    default:
+                        FailWaitDialog(Properties.Resources.DownloadFailed,
+                                       e.Error.ToString(),
+                                       Properties.Resources.DownloadFailed);
+                        break;
+
+                }
+            }
+            else
+            {
+                Util.Invoke(this, () => _PostModCaching((GUIMod)e.Result));
+            }
         }
 
         private void _PostModCaching(GUIMod module)
         {
             module.UpdateIsCached();
+            // Update mod list in case is:cached or not:cached filters are active
+            ManageMods.UpdateModsList();
             HideWaitDialog(true);
             // User might have selected another row. Show current in tree.
             UpdateModContentsTree(ModInfo.SelectedModule.ToCkanModule(), true);

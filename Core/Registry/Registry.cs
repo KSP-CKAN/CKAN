@@ -1098,7 +1098,7 @@ namespace CKAN
         )
         {
             modulesToRemove = modulesToRemove.Memoize();
-            origInstalled    = origInstalled.Memoize();
+            origInstalled   = origInstalled.Memoize();
             var dllSet = dlls.ToHashSet();
             // The empty list has no reverse dependencies
             // (Don't remove broken modules if we're only installing)
