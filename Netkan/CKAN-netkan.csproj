@@ -44,7 +44,7 @@
     <PackageReference Include="SharpZipLib" Version="1.3.3" />
     <PackageReference Include="log4net" Version="2.0.10" />
     <PackageReference Include="Namotion.Reflection" Version="1.0.7" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="YamlDotNet" Version="9.1.0" />
   </ItemGroup>
   <ItemGroup>
