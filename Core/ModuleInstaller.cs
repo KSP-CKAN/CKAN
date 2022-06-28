@@ -327,6 +327,7 @@ namespace CKAN
         private IEnumerable<string> InstallModule(CkanModule module, string zip_filename, Registry registry, ref HashSet<string> possibleConfigOnlyDirs)
         {
             CheckKindInstallationKraken(module);
+            var createdPaths = new List<string>();
 
             using (ZipFile zipfile = new ZipFile(zip_filename))
             {
@@ -387,7 +388,7 @@ namespace CKAN
                     foreach (InstallableFile file in files)
                     {
                         log.DebugFormat("Copying {0}", file.source.Name);
-                        CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
+                        createdPaths.Add(CopyZipEntry(zipfile, file.source, file.destination, file.makedir));
                         if (file.source.IsDirectory && possibleConfigOnlyDirs != null)
                         {
                             possibleConfigOnlyDirs.Remove(file.destination);
@@ -403,9 +404,8 @@ namespace CKAN
                     kraken.owningModule = registry.FileOwner(kraken.filename);
                     throw;
                 }
-
-                return files.Select(x => x.destination);
             }
+            return createdPaths.Where(p => p != null);
         }
 
         /// <summary>
@@ -561,7 +561,11 @@ namespace CKAN
         /// <summary>
         /// Copy the entry from the opened zipfile to the path specified.
         /// </summary>
-        internal static void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
+        /// <returns>
+        /// Path of file or directory that was created.
+        /// May differ from the input fullPath!
+        /// </returns>
+        internal static string CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
         {
             TxFileManager file_transaction = new TxFileManager();
 
@@ -570,30 +574,33 @@ namespace CKAN
                 // Skip if we're not making directories for this install.
                 if (!makeDirs)
                 {
-                    log.DebugFormat("Skipping {0}, we don't make directories for this path", fullPath);
-                    return;
+                    log.DebugFormat("Skipping '{0}', we don't make directories for this path", fullPath);
+                    return null;
                 }
 
-                log.DebugFormat("Making directory {0}", fullPath);
+                // Windows silently trims trailing spaces, get the path it will actually use
+                fullPath = CKANPathUtils.NormalizePath(Path.GetDirectoryName(
+                    Path.Combine(fullPath, "DUMMY")));
+
+                log.DebugFormat("Making directory '{0}'", fullPath);
                 file_transaction.CreateDirectory(fullPath);
             }
             else
             {
-                log.DebugFormat("Writing file {0}", fullPath);
+                log.DebugFormat("Writing file '{0}'", fullPath);
 
-                // Sometimes there are zipfiles that don't contain entries for the
-                // directories their files are in. No, I understand either, but
-                // the result is we have to make sure our directories exist, just in case.
+                // ZIP format does not require directory entries
                 if (makeDirs)
                 {
                     string directory = Path.GetDirectoryName(fullPath);
+                    log.DebugFormat("Making parent directory '{0}'", directory);
                     file_transaction.CreateDirectory(directory);
                 }
 
                 // We don't allow for the overwriting of files. See #208.
                 if (file_transaction.FileExists(fullPath))
                 {
-                    throw new FileExistsKraken(fullPath, string.Format("Trying to write {0} but it already exists.", fullPath));
+                    throw new FileExistsKraken(fullPath, string.Format("Trying to write '{0}' but it already exists.", fullPath));
                 }
 
                 // Snapshot whatever was there before. If there's nothing, this will just
@@ -607,6 +614,8 @@ namespace CKAN
                     using (Stream zipStream = zipfile.GetInputStream(entry))
                     using (FileStream writer = File.Create(fullPath))
                     {
+                        // Windows silently changes paths ending with spaces, get the name it actually used
+                        fullPath = CKANPathUtils.NormalizePath(writer.Name);
                         // 4k is the block size on practically every disk and OS.
                         byte[] buffer = new byte[4096];
                         StreamUtils.Copy(zipStream, writer, buffer);
@@ -617,6 +626,9 @@ namespace CKAN
                     throw new DirectoryNotFoundKraken("", ex.Message, ex);
                 }
             }
+            // Usually, this is the path we're given.
+            // Sometimes it has trailing spaces trimmed by the OS.
+            return fullPath;
         }
 
         /// <summary>
