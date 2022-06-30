@@ -239,7 +239,7 @@ namespace CKAN.NetKAN.Transformers
             var result = new List<string> { mod.author };
 
             if (mod.shared_authors != null)
-                result.AddRange(mod.shared_authors.Select(i => i.Username));
+                result.AddRange(mod.shared_authors.Select(i => i.Username).Distinct());
 
             return result;
         }
