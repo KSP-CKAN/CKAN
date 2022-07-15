@@ -1,5 +1,7 @@
 [<img src="https://img.shields.io/github/downloads/KSP-CKAN/CKAN/latest/total.svg?label=%E2%A4%93Latest&style=plastic" height="48px" />](https://github.com/KSP-CKAN/CKAN/releases/latest)
 
+[<img src="https://img.shields.io/github/downloads/KSP-CKAN/CKAN/v1.31.0/total.svg?label=%E2%A4%93IKAROS&style=plastic" height="48px" />](https://github.com/KSP-CKAN/CKAN/releases/v1.31.0)
+
 [<img src="https://img.shields.io/github/downloads/KSP-CKAN/CKAN/v1.30.4/total.svg?label=%E2%A4%93Hubble&style=plastic" height="48px" />](https://github.com/KSP-CKAN/CKAN/releases/v1.30.4)
 
 [<img src="https://img.shields.io/github/downloads/KSP-CKAN/CKAN/v1.30.2/total.svg?label=%E2%A4%93Hawking&style=plastic" height="48px" />](https://github.com/KSP-CKAN/CKAN/releases/v1.30.2)
