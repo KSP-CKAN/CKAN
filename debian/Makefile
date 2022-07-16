@@ -1,7 +1,8 @@
 .PHONY: clean test repo sign
 
 DESTDIR:=../_build/deb/fakeroot
-EXESRC:=../_build/repack/Release/ckan.exe
+CONFIGURATION?=Release
+EXESRC:=../_build/repack/$(CONFIGURATION)/ckan.exe
 EXEDEST:=$(DESTDIR)/usr/lib/ckan/ckan.exe
 SCRIPTSRC:=ckan
 SCRIPTDEST:=$(DESTDIR)/usr/bin/ckan
@@ -92,7 +93,7 @@ $(EXEDEST): $(EXESRC)
 	umask 0022 && cp $< $@
 
 $(EXESRC):
-	cd .. && ./build --configuration=Release
+	cd .. && ./build --configuration=$(CONFIGURATION)
 
 $(CONTROLDEST): $(CONTROLSRC) $(CHANGELOGSRC)
 	umask 0022 && mkdir -p $(shell dirname $@)

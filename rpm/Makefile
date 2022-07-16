@@ -9,7 +9,8 @@ MANSRC:=$(DEBDIR)/ckan.1
 DESKTOPSRC:=$(DEBDIR)/ckan.desktop
 CONSOLEUIDESKTOPSRC:=$(DEBDIR)/ckan-consoleui.desktop
 ICONSRC:=$(DEBDIR)/ckan.ico
-EXESRC:=$(shell pwd)/../_build/repack/Release/ckan.exe
+CONFIGURATION?=Release
+EXESRC:=$(shell pwd)/../_build/repack/$(CONFIGURATION)/ckan.exe
 CHANGELOGSRC:=../CHANGELOG.md
 VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' -e 's/-/_/g' )
 RPM:=$(shell pwd)/../_build/rpm/RPMS/noarch/ckan-$(VERSION)-1.noarch.rpm
@@ -22,6 +23,9 @@ $(RPM): $(SCRIPTSRC) $(EXESRC) $(MANSRC) $(DESKTOPSRC) $(ICONSRC) $(CONSOLEUIDES
 	mkdir -p "${TOPDIR}/SOURCES"
 	cp $^ "${TOPDIR}/SOURCES"
 	rpmbuild --define "_topdir ${TOPDIR}" --define "_version $(VERSION)" -bb ckan.spec
+
+$(EXESRC):
+	cd .. && ./build --configuration=$(CONFIGURATION)
 
 clean:
 	rm -r "$(TOPDIR)"

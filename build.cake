@@ -172,6 +172,7 @@ private void MakeIn(string dir, string args = null)
     int exitCode = StartProcess("make", new ProcessSettings {
         WorkingDirectory = dir,
         Arguments = args,
+        EnvironmentVariables = new Dictionary<string, string> { { "CONFIGURATION", configuration } }
     });
     if (exitCode != 0)
     {
