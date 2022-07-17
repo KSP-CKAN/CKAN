@@ -1,0 +1,6 @@
+[ckan-nightly-repo]
+name=CKAN Nightly Repo
+baseurl=https://ksp-ckan.s3-us-west-2.amazonaws.com/rpm/nightly
+enabled=1
+gpgcheck=1
+gpgkey=https://github.com/KSP-CKAN/CKAN/raw/master/debian/repo.pub
