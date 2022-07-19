@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.31.1
 
+### Features
+
+- [GUI] Korean translation of GUI (#3606 by: Kingnoob1377; reviewed: HebaruSan)
+
 ## v1.31.0 (IKAROS)
 
 ### Features

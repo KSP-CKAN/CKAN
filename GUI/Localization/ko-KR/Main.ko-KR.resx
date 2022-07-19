@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>126, 17</value>
+  </metadata>
+  <metadata name="minimizeNotifyIcon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>546, 17</value>
+  </metadata>
+  <metadata name="minimizedContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>704, 17</value>
+  </metadata>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>32</value>
+  </metadata>
+  <data name="$this.Localizable" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>파일</value></data>
+  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve"><value>게임 인스턴스 관리</value></data>
+  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>게임 경로 열기</value></data>
+  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>.ckan으로 설치...</value></data>
+  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;설치한 모드 리스트 저장...</value></data>
+  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>모드팩 내보내기...</value></data>
+  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>&amp;다운로드한 모드들 내보내기...</value></data>
+  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve"><value>추천 모드 심사</value></data>
+  <data name="ExitToolButton.Text" xml:space="preserve"><value>나&amp;가기</value></data>
+  <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>설정</value></data>
+  <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN 설정</value></data>
+  <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN 플러그인</value></data>
+  <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve"><value>설치 필터</value></data>
+  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>게임 명령줄</value></data>
+  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>호환되는 게임 버전</value></data>
+  <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>도움말</value></data>
+  <data name="userGuideToolStripMenuItem.Text" xml:space="preserve"><value>유저 가이드</value></data>
+  <data name="discordToolStripMenuItem.Text" xml:space="preserve"><value>디스코드</value></data>
+  <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>CKAN 클라이언트의 문제 신고</value></data>
+  <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>모드 메타데이터의 문제 신고</value></data>
+  <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>상세</value></data>
+  <data name="ManageModsTabPage.Text" xml:space="preserve"><value>모드 관리</value></data>
+  <data name="ChangesetTabPage.Text" xml:space="preserve"><value>변경점</value></data>
+  <data name="WaitTabPage.Text" xml:space="preserve"><value>상태 기록</value></data>
+  <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>모드를 고르세요</value></data>
+  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>추천, 제안, 지원 받는 모드들을 고르세요.</value></data>
+  <data name="PlayTimeTabPage.Text" xml:space="preserve"><value>플레이 타임...</value></data>
+  <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>디렉토리 삭제</value></data>
+  <data name="EditModpackTabPage.Text" xml:space="preserve"><value>모드팩 수정</value></data>
+  <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
+  <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>N 개의 가능한 업데이트</value></data>
+  <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>새로고침</value></data>
+  <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>중지</value></data>
+  <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>CKAN 열기</value></data>
+  <data name="openGameToolStripMenuItem.Text" xml:space="preserve"><value>게임 실행</value></data>
+  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>게임 경로 열기</value></data>
+  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>CKAN 설정</value></data>
+  <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>나가기</value></data>
+  <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve"><value>플레이 타임...</value></data>
+</root>
