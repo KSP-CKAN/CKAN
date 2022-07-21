@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
-- [Build] Generate RPM repo for releases and under dev builds (#3605 by: HebaruSan)
+- [Build] Generate RPM repo for releases and under dev builds (#3605, #3609 by: HebaruSan)
 
 ## v1.31.0 (IKAROS)
 

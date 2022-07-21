@@ -30,7 +30,7 @@ jobs:
           fi
 
       - name: Installing build dependencies
-        run: apt-get update && apt-get install -y git make sed gzip fakeroot lintian dpkg-dev gpg createrepo-c
+        run: apt-get update && apt-get install -y git make sed gzip fakeroot lintian dpkg-dev gpg createrepo
       - name: Installing runtime dependencies
         run: apt-get install -y xvfb
       - name: Install Docker
