@@ -15,6 +15,7 @@ CHANGELOGSRC:=../CHANGELOG.md
 VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' -e 's/-/_/g' )
 RPM:=$(TOPDIR)/RPMS/noarch/ckan-$(VERSION)-1.noarch.rpm
 
+CREATEREPO:=$(if $(shell which createrepo),createrepo,createrepo_c)
 REPODIR:=$(TOPDIR)/repo
 CODENAME?=nightly
 REPOFILE:=ckan_$(CODENAME).repo
@@ -38,7 +39,7 @@ $(REPOSIG): $(REPOXML)
 	gpg --detach-sign --armor $<
 
 $(REPOXML): $(REPORPM)
-	createrepo_c "$(REPODIR)"
+	$(CREATEREPO) "$(REPODIR)"
 
 $(REPORPM): $(RPM) $(REPOFILE)
 	mkdir -p "$(REPODIR)"
