@@ -1,4 +1,4 @@
-## CKAN'S RPM repository
+# CKAN'S RPM repository
 
 We have created an RPM repository that you can add to your RPM-based OS to install CKAN. This will allow you to run CKAN from the system app menus or via `ckan` from your command line. Your system's package manager will pull in dependencies and update CKAN automatically. There's even a man page.
 
