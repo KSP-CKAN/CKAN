@@ -12,7 +12,7 @@ ICONSRC:=$(DEBDIR)/ckan.ico
 CONFIGURATION?=Release
 EXESRC:=$(shell pwd)/../_build/repack/$(CONFIGURATION)/ckan.exe
 CHANGELOGSRC:=../CHANGELOG.md
-VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' -e 's/-/_/g' )
+VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' -e 's/-/_/g' ).$(shell date +'%g%j')
 RPM:=$(TOPDIR)/RPMS/noarch/ckan-$(VERSION)-1.noarch.rpm
 
 CREATEREPO:=$(if $(shell which createrepo),createrepo,createrepo_c)
