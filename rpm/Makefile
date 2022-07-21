@@ -1,4 +1,4 @@
-.PHONY: clean test
+.PHONY: clean test repo
 
 # Borrow files from .deb
 DEBDIR:=$(shell pwd)/../debian
@@ -13,7 +13,15 @@ CONFIGURATION?=Release
 EXESRC:=$(shell pwd)/../_build/repack/$(CONFIGURATION)/ckan.exe
 CHANGELOGSRC:=../CHANGELOG.md
 VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' -e 's/-/_/g' )
-RPM:=$(shell pwd)/../_build/rpm/RPMS/noarch/ckan-$(VERSION)-1.noarch.rpm
+RPM:=$(TOPDIR)/RPMS/noarch/ckan-$(VERSION)-1.noarch.rpm
+
+REPODIR:=$(TOPDIR)/repo
+CODENAME?=nightly
+REPOFILE:=ckan_$(CODENAME).repo
+REPORPM:=$(REPODIR)/ckan-$(VERSION)-1.noarch.rpm
+REPOXML:=$(REPODIR)/repodata/repomd.xml
+REPOSIG:=$(REPOXML).asc
+GPGNAME:=KSP CKAN <debian@ksp-ckan.space>
 
 # rpmbuild tries to use $HOME/rpmbuild by default
 # rpmbuild can't handle relative paths for its topdir
@@ -23,6 +31,21 @@ $(RPM): $(SCRIPTSRC) $(EXESRC) $(MANSRC) $(DESKTOPSRC) $(ICONSRC) $(CONSOLEUIDES
 	mkdir -p "${TOPDIR}/SOURCES"
 	cp $^ "${TOPDIR}/SOURCES"
 	rpmbuild --define "_topdir ${TOPDIR}" --define "_version $(VERSION)" -bb ckan.spec
+
+repo: $(REPOSIG)
+
+$(REPOSIG): $(REPOXML)
+	gpg --detach-sign --armor $<
+
+$(REPOXML): $(REPORPM)
+	createrepo_c "$(REPODIR)"
+
+$(REPORPM): $(RPM) $(REPOFILE)
+	mkdir -p "$(REPODIR)"
+	cp $^ "$(REPODIR)"
+	rpm --define '%_gpg_name $(GPGNAME)' \
+	    --define '%__gpg $(shell which gpg)' \
+	    --addsign $@
 
 $(EXESRC):
 	cd .. && ./build --configuration=$(CONFIGURATION)

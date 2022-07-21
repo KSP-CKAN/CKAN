@@ -158,6 +158,11 @@ Task("rpm")
     .IsDependentOn("Ckan")
     .Does(() => MakeIn("rpm"));
 
+Task("rpm-repo")
+    .Description("Build the rpm repository for RPM-based distros.")
+    .IsDependentOn("Ckan")
+    .Does(() => MakeIn("rpm", "repo"));
+
 Task("rpm-test")
     .Description("Test the rpm packaging.")
     .IsDependentOn("Ckan")

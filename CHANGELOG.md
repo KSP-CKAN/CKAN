@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Korean translation of GUI (#3606 by: Kingnoob1377; reviewed: HebaruSan)
 
+### Internal
+
+- [Build] Generate RPM repo for releases and under dev builds (#3605 by: HebaruSan)
+
 ## v1.31.0 (IKAROS)
 
 ### Features
