@@ -51,6 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Changelogs.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Changelogs.Designer.cs">
+      <DependentUpon>Changelogs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\AboutDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -353,6 +359,9 @@
     <Compile Include="X11.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\Changelogs.resx">
+      <DependentUpon>Changelogs.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\de-DE\AboutDialog.de-DE.resx">
       <DependentUpon>..\..\Dialogs\AboutDialog.cs</DependentUpon>
     </EmbeddedResource>

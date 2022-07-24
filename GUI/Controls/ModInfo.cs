@@ -50,6 +50,7 @@ namespace CKAN
                         UpdateModDependencyGraph(module);
                         UpdateModContentsTree(module);
                         AllModVersions.SelectedModule = value;
+                        changelogs1.SelectedModule = value;
                     }
                     selectedModule = value;
                 }
