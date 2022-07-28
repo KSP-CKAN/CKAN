@@ -336,7 +336,10 @@ namespace CKAN
                     .ToHashSet();
                 var files = FindInstallableFiles(module, zipfile, ksp)
                     .Where(instF => !filters.Any(filt =>
-                        instF.destination.Contains(filt)))
+                                        instF.destination.Contains(filt))
+                                    // Skip the file if it's a ckan file, these should never be copied to GameData
+                                    && !instF.source.Name.EndsWith(
+                                        ".ckan", StringComparison.InvariantCultureIgnoreCase))
                     .ToList();
 
                 try

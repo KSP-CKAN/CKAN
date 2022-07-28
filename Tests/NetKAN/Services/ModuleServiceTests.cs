@@ -1,9 +1,12 @@
-using CKAN;
-using CKAN.NetKAN.Services;
-using CKAN.Versioning;
+using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Tests.Data;
+
+using CKAN;
+using CKAN.NetKAN.Services;
+using CKAN.Versioning;
+using CKAN.Games;
 
 namespace Tests.NetKAN.Services
 {
@@ -52,9 +55,11 @@ namespace Tests.NetKAN.Services
         {
             // Arrange
             var sut = new ModuleService();
+            CkanModule mod = CkanModule.FromJson(TestData.DogeCoinFlag_101());
+            GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
 
             // Act
-            var result = sut.GetInternalCkan(TestData.DogeCoinFlagZip());
+            var result = sut.GetInternalCkan(mod, TestData.DogeCoinFlagZip(), inst);
 
             // Assert
             Assert.That(result, Is.Not.Null,

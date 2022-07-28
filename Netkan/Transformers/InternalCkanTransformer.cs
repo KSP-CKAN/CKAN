@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using log4net;
+
 using CKAN.Versioning;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.Games;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -32,9 +34,10 @@ namespace CKAN.NetKAN.Transformers
             {
                 var json = metadata.Json();
 
-                string file = _http.DownloadModule(metadata);
+                CkanModule mod = CkanModule.FromJson(json.ToString());
+                GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
 
-                var internalJson = _moduleService.GetInternalCkan(file);
+                var internalJson = _moduleService.GetInternalCkan(mod, _http.DownloadModule(metadata), inst);
 
                 if (internalJson != null)
                 {

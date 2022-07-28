@@ -63,9 +63,6 @@ namespace CKAN
         [JsonIgnore]
         private Regex inst_pattern = null;
 
-        private static Regex ckanPattern = new Regex(".ckan$",
-            RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
         private static Regex trailingSlashPattern = new Regex("/$",
             RegexOptions.Compiled);
 
@@ -272,12 +269,6 @@ namespace CKAN
             else if (matchWhere.HasValue && match.Index != matchWhere.Value)
             {
                 // Matches too late in the string, not our folder
-                return false;
-            }
-
-            // Skip the file if it's a ckan file, these should never be copied to GameData.
-            if (ckanPattern.IsMatch(normalised_path))
-            {
                 return false;
             }
 
