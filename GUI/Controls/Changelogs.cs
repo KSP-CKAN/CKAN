@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using CKAN.Versioning;
+using System.Runtime.Caching;
 
 namespace CKAN
 {
@@ -15,7 +16,10 @@ namespace CKAN
         {
             InitializeComponent();
             getters.Add(new GithubChangelogGetter());
+            cache = new MemoryCache("ChangelogsCache");
         }
+
+        private MemoryCache cache = null;
 
         readonly List<IChangelogGetter> getters = new List<IChangelogGetter>();
 
@@ -40,12 +44,11 @@ namespace CKAN
 
                 ModuleVersion installedVersion = registry.InstalledVersion(value.Identifier);
                 CkanModule latest = registry.LatestAvailable(value.Identifier, currentInstance.VersionCriteria());
-                if (latest == null) return;
-                if (latest.version.IsEqualTo(installedVersion)) return;
-                if (latest.version.IsGreaterThan(installedVersion))
-                {
-                    ShowChangelogs();
-                }
+                bool cached = cache.Contains(value.Identifier);
+                if (!cached && latest == null) return;
+                if (!cached && latest.version.IsEqualTo(installedVersion)) return;
+
+                ShowChangelogs();
             }
             get
             {
@@ -64,16 +67,36 @@ namespace CKAN
 
             richTextBox1.Text = "";
             string outtext = "";
-            foreach (var getter in getters)
+            Uri repository = registry.GetModuleByVersion(value.Identifier, installedVersion).resources.repository;
+            ChangelogData cacheEntry = (ChangelogData)cache.Get(value.Identifier);
+            ModuleVersion latestVersion = registry.LatestAvailable(value.Identifier, currentInstance.VersionCriteria()).version;
+            if (cacheEntry != null && cacheEntry.latestKnownVersion.IsLessThan(latestVersion))
             {
-                Uri repository = registry.GetModuleByVersion(value.Identifier, installedVersion).resources.repository;
-                if (getter.CanHandle(repository))
+                cache.Remove(value.Identifier);
+                cacheEntry = null;
+            }
+
+            List<ChangelogResultRow> result = new List<ChangelogResultRow>();
+
+            if (cacheEntry == null)
+            {
+                foreach (var getter in getters)
                 {
-                    var result = getter.GetChangelog(repository);
-                    outtext = String.Join("\n\n------------------------\n\n", from r in result select r.tagName + " := " + r.body);
-                    break;
+                    if (getter.CanHandle(repository))
+                    {
+                        result = getter.GetChangelog(repository);
+                        cache.Set(value.Identifier, new ChangelogData(result, latestVersion), new CacheItemPolicy());
+                        break;
+                    }
                 }
             }
+            else
+            {
+                result = cacheEntry.rows;
+            }
+
+            outtext = String.Join("\n\n------------------------\n\n", from r in result select r.tagName + " := " + r.body);
+
 
             if (outtext.Length > 0)
             {
@@ -94,6 +117,17 @@ namespace CKAN
             {
                 this.tagName = tagName;
                 this.body = body;
+            }
+        }
+
+        private class ChangelogData
+        {
+            public List<ChangelogResultRow> rows;
+            public ModuleVersion latestKnownVersion;
+            public ChangelogData(List<ChangelogResultRow> rows, ModuleVersion latestKnownVersion)
+            {
+                this.rows = rows;
+                this.latestKnownVersion = latestKnownVersion;
             }
         }
 
