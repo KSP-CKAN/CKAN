@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Build] Generate RPM repo for releases and under dev builds (#3605, #3609, #3610 by: HebaruSan)
+- [Netkan] Internal .ckan file compatibility with bundled mods (#3615 by: HebaruSan)
 
 ## v1.31.0 (IKAROS)
 

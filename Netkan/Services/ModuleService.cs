@@ -28,29 +28,38 @@ namespace CKAN.NetKAN.Services
             }
         }
 
-        public JObject GetInternalCkan(string filePath)
-        {
-            using (var zipfile = new ZipFile(filePath))
-            {
-                // Skip everything but embedded .ckan files.
-                var entries = zipfile
-                    .Cast<ZipEntry>()
-                    .Where(entry => entry.Name.EndsWith(".ckan",
-                        StringComparison.InvariantCultureIgnoreCase));
+        /// <summary>
+        /// Find and parse a .ckan file in a ZIP.
+        /// If the module has an `install` property, only files that would
+        /// be installed are considered. Otherwise the whole ZIP is searched.
+        /// </summary>
+        /// <param name="module">The CkanModule associated with the ZIP, so we can tell which files would be installed</param>
+        /// <param name="zipPath">Where the ZIP file is</param>
+        /// <param name="inst">Game instance for generating InstallableFiles</param>
+        /// <returns>Parsed contents of the file, or null if none found</returns>
+        public JObject GetInternalCkan(CkanModule module, string zipPath, GameInstance inst)
+            => GetInternalCkan(module, new ZipFile(zipPath), inst);
 
-                foreach (var entry in entries)
-                {
-                    Log.DebugFormat("Reading {0}", entry.Name);
-
-                    using (var zipStream = zipfile.GetInputStream(entry))
-                    {
-                        return DeserializeFromStream(zipStream);
-                    }
-                }
-            }
-
-            return null;
-        }
+        /// <summary>
+        /// Find and parse a .ckan file in the ZIP.
+        /// If the module has an `install` property, only files that would
+        /// be installed are considered. Otherwise the whole ZIP is searched.
+        /// </summary>
+        /// <param name="module">The CkanModule associated with the ZIP, so we can tell which files would be installed</param>
+        /// <param name="zip">The ZipFile to search</param>
+        /// <param name="inst">Game instance for generating InstallableFiles</param>
+        /// <returns>Parsed contents of the file, or null if none found</returns>
+        private JObject GetInternalCkan(CkanModule module, ZipFile zip, GameInstance inst)
+            => (module.install != null
+                    // Find embedded .ckan files that would be included in the install
+                    ? GetFilesBySuffix(module, zip, ".ckan", inst)
+                        .Select(instF => instF.source)
+                    // Find embedded .ckan files anywhere in the ZIP
+                    : zip.Cast<ZipEntry>()
+                        .Where(entry => entry.Name.EndsWith(".ckan", StringComparison.InvariantCultureIgnoreCase)))
+                .Select(entry => DeserializeFromStream(
+                                    zip.GetInputStream(entry)))
+                .FirstOrDefault();
 
         public bool HasInstallableFiles(CkanModule module, string filePath)
         {
@@ -78,26 +87,26 @@ namespace CKAN.NetKAN.Services
             return GetFilesBySuffix(module, zip, ".dll", inst);
         }
 
-        public IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, GameInstance ksp)
+        public IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, GameInstance inst)
         {
-            return GetFilesBySuffix(module, zip, ".craft", ksp);
+            return GetFilesBySuffix(module, zip, ".craft", inst);
         }
 
-        private IEnumerable<InstallableFile> GetFilesBySuffix(CkanModule module, ZipFile zip, string suffix, GameInstance ksp)
+        private IEnumerable<InstallableFile> GetFilesBySuffix(CkanModule module, ZipFile zip, string suffix, GameInstance inst)
         {
             return ModuleInstaller
-                .FindInstallableFiles(module, zip, ksp)
+                .FindInstallableFiles(module, zip, inst)
                 .Where(instF => instF.destination.EndsWith(suffix,
                     StringComparison.InvariantCultureIgnoreCase));
         }
 
         public IEnumerable<string> FileDestinations(CkanModule module, string filePath)
         {
-            var ksp = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", null, false);
+            var inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", null, false);
             return ModuleInstaller
-                .FindInstallableFiles(module, filePath, ksp)
+                .FindInstallableFiles(module, filePath, inst)
                 .Where(f => !f.source.IsDirectory)
-                .Select(f => ksp.ToRelativeGameDir(f.destination));
+                .Select(f => inst.ToRelativeGameDir(f.destination));
         }
 
         /// <summary>
