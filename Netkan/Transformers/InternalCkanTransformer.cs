@@ -34,7 +34,11 @@ namespace CKAN.NetKAN.Transformers
             {
                 var json = metadata.Json();
 
-                CkanModule mod = CkanModule.FromJson(json.ToString());
+                // We run before the AVC transformer, which sets "version" for Jenkins.
+                // Set it to a default if missing so CkanModule can initialize.
+                var moduleJson = metadata.Json();
+                moduleJson.SafeAdd("version", "1");
+                CkanModule mod = CkanModule.FromJson(moduleJson.ToString());
                 GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
 
                 var internalJson = _moduleService.GetInternalCkan(mod, _http.DownloadModule(metadata), inst);
