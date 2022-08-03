@@ -3,41 +3,41 @@ using CommandLine.Text;
 
 namespace CKAN.CmdLine
 {
+    internal class RepairSubOptions : VerbCommandOptions
+    {
+        [VerbOption("registry", HelpText = "Try to repair the CKAN registry")]
+        public InstanceSpecificOptions Registry { get; set; }
+
+        [HelpVerbOption]
+        public string GetUsage(string verb)
+        {
+            HelpText ht = HelpText.AutoBuild(this, verb);
+            // Add a usage prefix line
+            ht.AddPreOptionsLine(" ");
+            if (string.IsNullOrEmpty(verb))
+            {
+                ht.AddPreOptionsLine("ckan repair - Attempt various automatic repairs");
+                ht.AddPreOptionsLine($"Usage: ckan repair <command> [options]");
+            }
+            else
+            {
+                ht.AddPreOptionsLine("repair " + verb + " - " + GetDescription(verb));
+                switch (verb)
+                {
+                    // Commands with only --flag type options
+                    case "registry":
+                    default:
+                        ht.AddPreOptionsLine($"Usage: ckan repair {verb} [options]");
+                        break;
+                }
+            }
+            return ht;
+        }
+    }
+
     public class Repair : ISubCommand
     {
         public Repair() { }
-
-        internal class RepairSubOptions : VerbCommandOptions
-        {
-            [VerbOption("registry", HelpText = "Try to repair the CKAN registry")]
-            public InstanceSpecificOptions Registry { get; set; }
-
-            [HelpVerbOption]
-            public string GetUsage(string verb)
-            {
-                HelpText ht = HelpText.AutoBuild(this, verb);
-                // Add a usage prefix line
-                ht.AddPreOptionsLine(" ");
-                if (string.IsNullOrEmpty(verb))
-                {
-                    ht.AddPreOptionsLine("ckan repair - Attempt various automatic repairs");
-                    ht.AddPreOptionsLine($"Usage: ckan repair <command> [options]");
-                }
-                else
-                {
-                    ht.AddPreOptionsLine("repair " + verb + " - " + GetDescription(verb));
-                    switch (verb)
-                    {
-                        // Commands with only --flag type options
-                        case "registry":
-                        default:
-                            ht.AddPreOptionsLine($"Usage: ckan repair {verb} [options]");
-                            break;
-                    }
-                }
-                return ht;
-            }
-        }
 
         public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
         {
