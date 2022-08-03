@@ -336,6 +336,7 @@ namespace CKAN
             this.Icon = Properties.Resources.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.HelpButton = true;
             this.Name = "EditLabelsDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             resources.ApplyResources(this, "$this");

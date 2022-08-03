@@ -422,8 +422,8 @@ namespace CKAN
             if (Platform.IsUnix)
             {
                 return "Oh no! Our download failed with a certificate error!\r\n\r\n"
-                    + "Consult this page for help:\r\n"
-                    + "\thttps://github.com/KSP-CKAN/CKAN/wiki/SSL-certificate-errors";
+                    + "Consult this page for help:\r\n\t"
+                    + HelpURLs.CertificateErrors;
             }
             else
             {

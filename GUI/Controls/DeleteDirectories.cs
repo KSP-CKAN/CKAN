@@ -79,6 +79,14 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.DeleteDirectories);
+        }
+
         private void DirectoriesListView_ItemSelectionChanged(Object sender, ListViewItemSelectionChangedEventArgs e)
         {
             ContentsListView.Items.Clear();

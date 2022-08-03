@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 using CKAN.Configuration;
@@ -13,6 +14,22 @@ namespace CKAN
             InitializeComponent();
             this.globalConfig = globalConfig;
             this.instance     = instance;
+        }
+
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.Filters);
+        }
+
+        /// <summary>
+        /// Open the user guide when the user clicks the help button
+        /// </summary>
+        protected override void OnHelpButtonClicked(CancelEventArgs evt)
+        {
+            evt.Cancel = Util.TryOpenWebPage(HelpURLs.Filters);
         }
 
         private void InstallFiltersDialog_Load(object sender, EventArgs e)

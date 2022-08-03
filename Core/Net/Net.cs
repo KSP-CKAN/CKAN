@@ -31,7 +31,7 @@ namespace CKAN
         {
             {
                 "api.github.com",
-                new Uri("https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-GitHub-API-authtoken")
+                new Uri(HelpURLs.AuthTokens)
             }
         };
 

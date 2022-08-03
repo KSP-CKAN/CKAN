@@ -224,6 +224,7 @@
             this.Icon = Properties.Resources.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.HelpButton = true;
             this.Name = "CompatibleGameVersionsDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Shown += new System.EventHandler(this.CompatibleGameVersionsDialog_Shown);

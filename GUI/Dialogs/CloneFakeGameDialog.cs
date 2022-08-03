@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows.Forms;
 using Autofac;
 using CKAN.Versioning;
@@ -332,5 +333,22 @@ namespace CKAN
             }
 
         }
+
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.CloneFakeInstances);
+        }
+
+        /// <summary>
+        /// Open the user guide when the user clicks the help button
+        /// </summary>
+        protected override void OnHelpButtonClicked(CancelEventArgs evt)
+        {
+            evt.Cancel = Util.TryOpenWebPage(HelpURLs.CloneFakeInstances);
+        }
+
     }
 }
