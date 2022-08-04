@@ -20,8 +20,9 @@ namespace CKAN.CmdLine
         public int RunCommand(object raw_options)
         {
             CommonOptions opts = raw_options as CommonOptions;
+            bool headless = opts?.Headless ?? false;
             // Print an intro if not in headless mode
-            if (!(opts?.Headless ?? false))
+            if (!headless)
             {
                 Console.WriteLine("Welcome to CKAN!");
                 Console.WriteLine("");
@@ -33,7 +34,7 @@ namespace CKAN.CmdLine
             while (!done)
             {
                 // Prompt if not in headless mode
-                if (!(opts?.Headless ?? false))
+                if (!headless)
                 {
                     Console.Write(
                         manager.CurrentInstance != null
@@ -44,7 +45,7 @@ namespace CKAN.CmdLine
                 try
                 {
                     // Get input
-                    string command = ReadLineWithCompletion();
+                    string command = ReadLineWithCompletion(headless);
                     if (command == null || command == exitCommand)
                     {
                         done = true;
@@ -55,7 +56,7 @@ namespace CKAN.CmdLine
                         // but with a persistent GameInstanceManager object.
                         int cmdExitCode = MainClass.Execute(manager, opts, command.Split(' '));
                         // Clear the command if no exception was thrown
-                        if ((opts?.Headless ?? false) && cmdExitCode != Exit.OK)
+                        if (headless && cmdExitCode != Exit.OK)
                         {
                             // Pass failure codes to calling process in headless mode
                             // (in interactive mode the user can see the error and try again)
@@ -73,11 +74,13 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private string ReadLineWithCompletion()
+        private string ReadLineWithCompletion(bool headless)
         {
             try
             {
-                return ReadLine.Read("");
+                // ReadLine.Read can't read from pipes
+                return headless ? Console.ReadLine()
+                                : ReadLine.Read("");
             }
             catch (InvalidOperationException)
             {
