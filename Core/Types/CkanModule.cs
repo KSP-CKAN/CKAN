@@ -106,7 +106,7 @@ namespace CKAN
 
         // Package type: in spec v1.6 can be either "package" or "metapackage"
         // In spec v1.28, "dlc"
-        [JsonProperty("kind", Order = 29, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("kind", Order = 31, NullValueHandling = NullValueHandling.Ignore)]
         public string kind;
 
         [JsonProperty("author", Order = 7, NullValueHandling = NullValueHandling.Ignore)]
@@ -140,6 +140,10 @@ namespace CKAN
         [JsonProperty("download_content_type", Order = 28, DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue("application/zip")]
         public string download_content_type;
+
+        [JsonProperty("install_size", Order = 29, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [DefaultValue(0)]
+        public long install_size;
 
         [JsonProperty("identifier", Order = 3, Required = Required.Always)]
         public string identifier;

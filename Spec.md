@@ -471,6 +471,12 @@ and not filled in by hand.
     "download_content_type": "application/zip"
 ```
 
+##### install_size
+
+If supplied, `install_size` is the number of bytes consumed by the module
+when it is installed. It is recommended that this field is only generated
+by automated tools (where it is encouraged), and not filled in by hand.
+
 ##### release_date
 
 If supplied, `release_date` is the timestamp when the described version

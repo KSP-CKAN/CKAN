@@ -65,7 +65,8 @@ namespace CKAN
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GameCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DownloadSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.InstallSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ReleaseDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstallDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DownloadCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -314,7 +315,8 @@ namespace CKAN
             this.InstalledVersion,
             this.LatestVersion,
             this.GameCompatibility,
-            this.SizeCol,
+            this.DownloadSize,
+            this.InstallSize,
             this.ReleaseDate,
             this.InstallDate,
             this.DownloadCount,
@@ -413,13 +415,21 @@ namespace CKAN
             this.GameCompatibility.Width = 78;
             resources.ApplyResources(this.GameCompatibility, "GameCompatibility");
             //
-            // SizeCol
+            // DownloadSize
             //
-            this.SizeCol.Name = "SizeCol";
-            this.SizeCol.ReadOnly = true;
-            this.SizeCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.SizeCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            resources.ApplyResources(this.SizeCol, "SizeCol");
+            this.DownloadSize.Name = "DownloadSize";
+            this.DownloadSize.ReadOnly = true;
+            this.DownloadSize.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.DownloadSize.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            resources.ApplyResources(this.DownloadSize, "DownloadSize");
+            //
+            // InstallSize
+            //
+            this.InstallSize.Name = "InstallSize";
+            this.InstallSize.ReadOnly = true;
+            this.InstallSize.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.InstallSize.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            resources.ApplyResources(this.InstallSize, "InstallSize");
             //
             // ReleaseDate
             //
@@ -580,7 +590,8 @@ namespace CKAN
         private System.Windows.Forms.DataGridViewTextBoxColumn InstalledVersion;
         private System.Windows.Forms.DataGridViewTextBoxColumn LatestVersion;
         private System.Windows.Forms.DataGridViewTextBoxColumn GameCompatibility;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SizeCol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DownloadSize;
+        private System.Windows.Forms.DataGridViewTextBoxColumn InstallSize;
         private System.Windows.Forms.DataGridViewTextBoxColumn ReleaseDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn InstallDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn DownloadCount;

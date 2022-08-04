@@ -78,27 +78,22 @@ namespace CKAN.NetKAN.Services
         }
 
         public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip, GameInstance inst)
-        {
-            return GetFilesBySuffix(module, zip, ".cfg", inst);
-        }
+            => GetFilesBySuffix(module, zip, ".cfg", inst);
 
         public IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip, GameInstance inst)
-        {
-            return GetFilesBySuffix(module, zip, ".dll", inst);
-        }
+            => GetFilesBySuffix(module, zip, ".dll", inst);
 
         public IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, GameInstance inst)
-        {
-            return GetFilesBySuffix(module, zip, ".craft", inst);
-        }
+            => GetFilesBySuffix(module, zip, ".craft", inst);
 
         private IEnumerable<InstallableFile> GetFilesBySuffix(CkanModule module, ZipFile zip, string suffix, GameInstance inst)
-        {
-            return ModuleInstaller
-                .FindInstallableFiles(module, zip, inst)
-                .Where(instF => instF.destination.EndsWith(suffix,
-                    StringComparison.InvariantCultureIgnoreCase));
-        }
+            => ModuleInstaller.FindInstallableFiles(module, zip, inst)
+                              .Where(instF => instF.destination.EndsWith(suffix, StringComparison.InvariantCultureIgnoreCase));
+
+        public IEnumerable<ZipEntry> FileSources(CkanModule module, ZipFile zip, GameInstance inst)
+            => ModuleInstaller.FindInstallableFiles(module, zip, inst)
+                              .Select(instF => instF.source)
+                              .Where(ze => !ze.IsDirectory);
 
         public IEnumerable<string> FileDestinations(CkanModule module, string filePath)
         {

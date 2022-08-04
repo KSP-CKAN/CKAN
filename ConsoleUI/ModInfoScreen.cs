@@ -65,9 +65,22 @@ namespace CKAN.ConsoleUI {
                 th => th.DimLabelFg
             ));
             AddObject(new ConsoleLabel(
-                13, 5, midL - 2,
+                13, 5, midL / 2,
                 () => CkanModule.FmtSize(mod.download_size)
             ));
+            if (mod.install_size > 0)
+            {
+                AddObject(new ConsoleLabel(
+                    midL / 2, 5, midL / 2 + 9,
+                    () => "Install:",
+                    null,
+                    th => th.DimLabelFg
+                ));
+                AddObject(new ConsoleLabel(
+                    midL / 2 + 9, 5, midL - 2,
+                    () => CkanModule.FmtSize(mod.install_size)
+                ));
+            }
             AddObject(new ConsoleLabel(
                 3, 6, midL - 2,
                 HostedOn
