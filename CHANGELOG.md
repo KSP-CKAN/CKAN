@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Korean translation of GUI (#3606 by: Kingnoob1377; reviewed: HebaruSan)
-- [CLI] Tab completion for `ckan prompt` (#3515 by: HebaruSan; reviewed: techman83)
+- [CLI] Tab completion for `ckan prompt` (#3515, #3617 by: HebaruSan; reviewed: techman83)
 - [GUI] Context sensitive help (#3563 by: HebaruSan; reviewed: techman83)
 - [Multiple] Add install size to metadata and display in clients (#3568 by: HebaruSan; reviewed: techman83)
 
