@@ -35,7 +35,7 @@
             this.RepoNameTextBox = new System.Windows.Forms.TextBox();
             this.RepoUrlLabel = new System.Windows.Forms.Label();
             this.RepoUrlTextBox = new System.Windows.Forms.TextBox();
-            this.BottomButtonPanel = new System.Windows.Forms.Panel();
+            this.BottomPanel = new System.Windows.Forms.Panel();
             this.RepoCancel = new System.Windows.Forms.Button();
             this.RepoOK = new System.Windows.Forms.Button();
             this.ReposListBox = new ThemedListView();
@@ -82,17 +82,17 @@
             this.RepoURLHeader.Width = 370;
             resources.ApplyResources(this.RepoURLHeader, "RepoURLHeader");
             // 
-            // BottomButtonPanel
+            // BottomPanel
             // 
-            this.BottomButtonPanel.Controls.Add(this.RepoNameLabel);
-            this.BottomButtonPanel.Controls.Add(this.RepoNameTextBox);
-            this.BottomButtonPanel.Controls.Add(this.RepoUrlLabel);
-            this.BottomButtonPanel.Controls.Add(this.RepoUrlTextBox);
-            this.BottomButtonPanel.Controls.Add(this.RepoOK);
-            this.BottomButtonPanel.Controls.Add(this.RepoCancel);
-            this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.BottomButtonPanel.Name = "BottomButtonPanel";
-            this.BottomButtonPanel.Size = new System.Drawing.Size(500, 94);
+            this.BottomPanel.Controls.Add(this.RepoNameLabel);
+            this.BottomPanel.Controls.Add(this.RepoNameTextBox);
+            this.BottomPanel.Controls.Add(this.RepoUrlLabel);
+            this.BottomPanel.Controls.Add(this.RepoUrlTextBox);
+            this.BottomPanel.Controls.Add(this.RepoOK);
+            this.BottomPanel.Controls.Add(this.RepoCancel);
+            this.BottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.BottomPanel.Name = "BottomPanel";
+            this.BottomPanel.Size = new System.Drawing.Size(500, 94);
             //
             // RepoNameLabel
             //
@@ -163,7 +163,7 @@
             this.ClientSize = new System.Drawing.Size(500, 220);
             this.MinimumSize = new System.Drawing.Size(520, 260);
             this.Controls.Add(this.RepositoryGroupBox);
-            this.Controls.Add(this.BottomButtonPanel);
+            this.Controls.Add(this.BottomPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.Icon = Properties.Resources.AppIcon;
             this.Name = "NewRepoDialog";
@@ -184,7 +184,7 @@
         private System.Windows.Forms.TextBox RepoNameTextBox;
         private System.Windows.Forms.Label RepoUrlLabel;
         private System.Windows.Forms.TextBox RepoUrlTextBox;
-        private System.Windows.Forms.Panel BottomButtonPanel;
+        private System.Windows.Forms.Panel BottomPanel;
         private System.Windows.Forms.Button RepoOK;
         private System.Windows.Forms.Button RepoCancel;
     }

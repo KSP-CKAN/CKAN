@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 - [CLI] Tab completion for `ckan prompt` (#3515 by: HebaruSan; reviewed: techman83)
 - [GUI] Context sensitive help (#3563 by: HebaruSan; reviewed: techman83)
 
+## Bugfixes
+
+- [GUI] Auto-size buttons in bottom panels (#3576 by: HebaruSan; reviewed: techman83)
+
 ### Internal
 
 - [Build] Generate RPM repo for releases and under dev builds (#3605, #3609, #3610 by: HebaruSan)

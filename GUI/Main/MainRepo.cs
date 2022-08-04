@@ -41,7 +41,7 @@ namespace CKAN
 
             Wait.SetDescription(Properties.Resources.MainRepoContacting);
             Wait.ClearLog();
-            ShowWaitDialog();
+            ShowWaitDialog(false);
         }
 
         private bool _enabled = true;
@@ -49,7 +49,7 @@ namespace CKAN
         {
             _enabled = !_enabled;
             menuStrip1.Enabled = _enabled;
-            MainTabControl.Enabled = _enabled;
+            tabController.SetTabLock(!_enabled);
             /* Windows (7 & 8 only?) bug #1548 has extra facets.
              * parent.childcontrol.Enabled = false seems to disable the parent,
              * if childcontrol had focus. Depending on optimization steps,

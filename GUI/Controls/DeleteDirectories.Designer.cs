@@ -37,7 +37,7 @@
             this.ContentsListView = new ThemedListView();
             this.FileColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SelectDirPrompt = new System.Windows.Forms.ListViewItem();
-            this.BottomButtonPanel = new System.Windows.Forms.Panel();
+            this.BottomButtonPanel = new LeftRightRowPanel();
             this.OpenDirectoryButton = new System.Windows.Forms.Button();
             this.KeepAllButton = new System.Windows.Forms.Button();
             this.DeleteButton = new System.Windows.Forms.Button();
@@ -45,6 +45,7 @@
             this.Splitter.Panel1.SuspendLayout();
             this.Splitter.Panel2.SuspendLayout();
             this.Splitter.SuspendLayout();
+            this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // ExplanationLabel
@@ -123,19 +124,17 @@
             // 
             // BottomButtonPanel
             // 
-            this.BottomButtonPanel.Controls.Add(this.OpenDirectoryButton);
-            this.BottomButtonPanel.Controls.Add(this.KeepAllButton);
-            this.BottomButtonPanel.Controls.Add(this.DeleteButton);
+            this.BottomButtonPanel.LeftControls.Add(this.OpenDirectoryButton);
+            this.BottomButtonPanel.RightControls.Add(this.DeleteButton);
+            this.BottomButtonPanel.RightControls.Add(this.KeepAllButton);
             this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomButtonPanel.Name = "BottomButtonPanel";
-            this.BottomButtonPanel.Size = new System.Drawing.Size(500, 40);
             // 
             // OpenDirectoryButton
             // 
-            this.OpenDirectoryButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left));
+            this.OpenDirectoryButton.AutoSize = true;
+            this.OpenDirectoryButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.OpenDirectoryButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.OpenDirectoryButton.Location = new System.Drawing.Point(5, 5);
             this.OpenDirectoryButton.Name = "OpenDirectoryButton";
             this.OpenDirectoryButton.Size = new System.Drawing.Size(112, 30);
             this.OpenDirectoryButton.TabIndex = 2;
@@ -145,10 +144,9 @@
             // 
             // KeepAllButton
             // 
-            this.KeepAllButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Right));
+            this.KeepAllButton.AutoSize = true;
+            this.KeepAllButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.KeepAllButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.KeepAllButton.Location = new System.Drawing.Point(266, 5);
             this.KeepAllButton.Name = "KeepAllButton";
             this.KeepAllButton.Size = new System.Drawing.Size(112, 30);
             this.KeepAllButton.TabIndex = 3;
@@ -158,10 +156,9 @@
             // 
             // DeleteButton
             // 
-            this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Right));
+            this.DeleteButton.AutoSize = true;
+            this.DeleteButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.DeleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteButton.Location = new System.Drawing.Point(383, 5);
             this.DeleteButton.Name = "DeleteButton";
             this.DeleteButton.Size = new System.Drawing.Size(112, 30);
             this.DeleteButton.TabIndex = 4;
@@ -175,8 +172,8 @@
             this.Controls.Add(this.Splitter);
             this.Controls.Add(this.ExplanationLabel);
             this.Controls.Add(this.BottomButtonPanel);
-            this.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.Name = "DeleteDirectories";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
@@ -184,6 +181,8 @@
             this.Splitter.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Splitter)).EndInit();
             this.Splitter.ResumeLayout(false);
+            this.BottomButtonPanel.ResumeLayout(false);
+            this.BottomButtonPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -197,7 +196,7 @@
         private System.Windows.Forms.ListView ContentsListView;
         private System.Windows.Forms.ColumnHeader FileColumn;
         private System.Windows.Forms.ListViewItem SelectDirPrompt;
-        private System.Windows.Forms.Panel BottomButtonPanel;
+        private LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button OpenDirectoryButton;
         private System.Windows.Forms.Button KeepAllButton;
         private System.Windows.Forms.Button DeleteButton;
