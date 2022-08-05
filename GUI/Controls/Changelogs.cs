@@ -155,12 +155,10 @@ namespace CKAN
                 {
                     apiEndpoint.Path = apiEndpoint.Path + "/releases"; // some modules already had /releases list in their repo url
                 }
-                var client = new System.Net.WebClient();
-                client.Headers.Set(System.Net.HttpRequestHeader.UserAgent, "jkavalik/CKAN-dev");
                 List <ChangelogResultRow> results;
                 try
                 {
-                    string jsonResponse = client.DownloadString(apiEndpoint.Uri);
+                    string jsonResponse = Net.DownloadText(apiEndpoint.Uri);
                     Newtonsoft.Json.Linq.JToken json = Newtonsoft.Json.Linq.JToken.Parse(jsonResponse);
                     var data = from r in json select new ChangelogResultRow((string)r.SelectToken("$.tag_name"), (string)r.SelectToken("$.body"));
                     results = data.ToList();
