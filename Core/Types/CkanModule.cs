@@ -727,26 +727,22 @@ namespace CKAN
             }
         }
 
+        private const double K = 1024;
+
         /// <summary>
         /// Format a byte count into readable file size
         /// </summary>
         /// <param name="bytes">Number of bytes in a file</param>
         /// <returns>
-        /// ### bytes or ### KB or ### MB or ### GB
+        /// ### bytes or ### KiB or ### MiB or ### GiB or ### TiB
         /// </returns>
         public static string FmtSize(long bytes)
-        {
-            const double K = 1024;
-            if (bytes < K) {
-                return $"{bytes} B";
-            } else if (bytes < K * K) {
-                return $"{bytes / K :N1} KiB";
-            } else if (bytes < K * K * K) {
-                return $"{bytes / K / K :N1} MiB";
-            } else {
-                return $"{bytes / K / K / K :N1} GiB";
-            }
-        }
+            => bytes < K       ? $"{bytes} B"
+             : bytes < K*K     ? $"{bytes /K :N1} KiB"
+             : bytes < K*K*K   ? $"{bytes /K/K :N1} MiB"
+             : bytes < K*K*K*K ? $"{bytes /K/K/K :N1} GiB"
+             :                   $"{bytes /K/K/K/K :N1} TiB";
+
     }
 
     public class InvalidModuleAttributesException : Exception

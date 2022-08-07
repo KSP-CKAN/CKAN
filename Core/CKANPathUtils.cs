@@ -3,9 +3,11 @@ using System.IO;
 using System.Text.RegularExpressions;
 using log4net;
 
+using CKAN.Extensions;
+
 namespace CKAN
 {
-    public class CKANPathUtils
+    public static class CKANPathUtils
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(CKANPathUtils));
 
@@ -194,5 +196,20 @@ namespace CKAN
             // the un-prettiest slashes.
             return NormalizePath(Path.Combine(root, path));
         }
+
+        public static void CheckFreeSpace(DirectoryInfo where, long bytesToStore, string errorDescription)
+        {
+            var bytesFree = where.GetDrive()?.AvailableFreeSpace;
+            if (bytesFree.HasValue && bytesToStore > bytesFree.Value) {
+                throw new NotEnoughSpaceKraken(errorDescription, where,
+                                               bytesFree.Value, bytesToStore);
+            }
+            log.DebugFormat("Storing {0} to {1} ({2} free)...",
+                            CkanModule.FmtSize(bytesToStore),
+                            where.FullName,
+                            bytesFree.HasValue ? CkanModule.FmtSize(bytesFree.Value)
+                                               : "unknown bytes");
+        }
+
     }
 }

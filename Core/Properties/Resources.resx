@@ -280,6 +280,13 @@ Consider adding an authentication token to increase the throttling limit.</value
 If you're certain this is not the case, then delete:
 "{0}"</value></data>
   <data name="KrakenReinstallModule" xml:space="preserve"><value>Metadata changed, reinstallation recommended: {0}</value></data>
+  <data name="NotEnoughSpaceToDownload" xml:space="preserve"><value>Not enough space in temp folder to download modules!</value></data>
+  <data name="NotEnoughSpaceToCache" xml:space="preserve"><value>Not enough space in cache folder to store modules!</value></data>
+  <data name="NotEnoughSpaceToInstall" xml:space="preserve"><value>Not enough space in game folder to install modules!</value></data>
+  <data name="KrakenNotEnoughSpace" xml:space="preserve"><value>{0}
+Need to store {3} to {1}, but only {2} is available!
+Free up space on that device or change your settings to use another location.
+</value></data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>
   <data name="RelationshipResolverRequiredButResolver" xml:space="preserve"><value>{0} required, but an incompatible version is in the resolver</value></data>
   <data name="RelationshipResolverRequiredButInstalled" xml:space="preserve"><value>{0} required, but an incompatible version is installed</value></data>

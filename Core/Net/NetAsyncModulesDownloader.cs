@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using ChinhDo.Transactions.FileManager;
 using log4net;
 
 namespace CKAN
@@ -61,6 +63,14 @@ namespace CKAN
                 .GroupBy(module => module.download)
                 .Where(group => !currentlyActive.Contains(group.Key))
                 .ToDictionary(group => group.Key, group => group.First());
+
+            // Make sure we have enough space to download this stuff
+            var downloadSize = unique_downloads.Values.Select(m => m.download_size).Sum();
+            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(new TxFileManager().GetTempDirectory()),
+                                         downloadSize,
+                                         Properties.Resources.NotEnoughSpaceToDownload);
+            // Make sure we have enough space to cache this stuff
+            cache.CheckFreeSpace(downloadSize);
 
             this.modules.AddRange(unique_downloads.Values);
 

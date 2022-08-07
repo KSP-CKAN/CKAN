@@ -70,14 +70,19 @@ namespace CKAN
         {
             return cache.GetCachedZip(m.download);
         }
-        public void GetSizeInfo(out int numFiles, out long numBytes)
+        public void GetSizeInfo(out int numFiles, out long numBytes, out long bytesFree)
         {
-            cache.GetSizeInfo(out numFiles, out numBytes);
+            cache.GetSizeInfo(out numFiles, out numBytes, out bytesFree);
         }
         public void EnforceSizeLimit(long bytes, Registry registry)
         {
             cache.EnforceSizeLimit(bytes, registry);
         }
+        public void CheckFreeSpace(long bytesToStore)
+        {
+            cache.CheckFreeSpace(bytesToStore);
+        }
+
 
         /// <summary>
         /// Calculate the SHA1 hash of a file

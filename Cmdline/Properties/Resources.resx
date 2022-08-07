@@ -161,7 +161,7 @@ Update recommended!</value></data>
   <data name="CacheReset" xml:space="preserve"><value>Download cache reset to {0}</value></data>
   <data name="CacheResetFailed" xml:space="preserve"><value>Can't reset cache path: {0}</value></data>
   <data name="CacheUnlimited" xml:space="preserve"><value>Unlimited</value></data>
-  <data name="CacheInfo" xml:space="preserve"><value>{0} files, {1}</value></data>
+  <data name="CacheInfo" xml:space="preserve"><value>{0} files, {1}, {2} free</value></data>
   <data name="CompareSame" xml:space="preserve"><value>"{0}" and "{1}" are the same versions.</value></data>
   <data name="CompareLower" xml:space="preserve"><value>"{0}" is lower than "{1}".</value></data>
   <data name="CompareHigher" xml:space="preserve"><value>"{0}" is higher than "{1}".</value></data>

@@ -277,11 +277,13 @@ namespace CKAN
         /// </summary>
         /// <param name="numFiles">Output parameter set to number of files in cache</param>
         /// <param name="numBytes">Output parameter set to number of bytes in cache</param>
-        public void GetSizeInfo(out int numFiles, out long numBytes)
+        /// <param name="bytesFree">Output parameter set to number of bytes free</param>
+        public void GetSizeInfo(out int numFiles, out long numBytes, out long bytesFree)
         {
             numFiles = 0;
             numBytes = 0;
             GetSizeInfo(cachePath, ref numFiles, ref numBytes);
+            bytesFree = new DirectoryInfo(cachePath).GetDrive()?.AvailableFreeSpace ?? 0;
             foreach (var legacyDir in legacyDirs())
             {
                 GetSizeInfo(legacyDir, ref numFiles, ref numBytes);
@@ -298,6 +300,13 @@ namespace CKAN
             }
         }
 
+        public void CheckFreeSpace(long bytesToStore)
+        {
+            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(cachePath),
+                                         bytesToStore,
+                                         Properties.Resources.NotEnoughSpaceToCache);
+        }
+
         private HashSet<string> legacyDirs()
         {
             return manager?.Instances.Values
@@ -310,9 +319,7 @@ namespace CKAN
 
         public void EnforceSizeLimit(long bytes, Registry registry)
         {
-            int numFiles;
-            long curBytes;
-            GetSizeInfo(out numFiles, out curBytes);
+            GetSizeInfo(out int numFiles, out long curBytes, out long _);
             if (curBytes > bytes)
             {
                 // This object will let us determine whether a module is compatible with any of our instances

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -35,6 +36,24 @@ namespace CKAN
             : base(reason, innerException)
         {
             this.directory = directory;
+        }
+    }
+
+    public class NotEnoughSpaceKraken : Kraken
+    {
+        public DirectoryInfo destination;
+        public long          bytesFree;
+        public long          bytesToStore;
+
+        public NotEnoughSpaceKraken(string description, DirectoryInfo destination, long bytesFree, long bytesToStore)
+            : base(string.Format(Properties.Resources.KrakenNotEnoughSpace,
+                                 description, destination,
+                                 CkanModule.FmtSize(bytesFree),
+                                 CkanModule.FmtSize(bytesToStore)))
+        {
+            this.destination  = destination;
+            this.bytesFree    = bytesFree;
+            this.bytesToStore = bytesToStore;
         }
     }
 
