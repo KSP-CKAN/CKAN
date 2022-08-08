@@ -1,5 +1,11 @@
 ckan (1.28.0) unstable; urgency=low
 
+  * Added Command Prompt desktop file.
+
+ -- The CKAN Authors <debian@ksp-ckan.space>  Wed, 8 Aug 2022 13:30:00 +0600
+
+ckan (1.28.0) unstable; urgency=low
+
   * Added ConsoleUI desktop file.
 
  -- The CKAN Authors <debian@ksp-ckan.space>  Wed, 15 May 2020 19:12:00 +0600
