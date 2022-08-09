@@ -15,7 +15,7 @@ using Autofac;
 using CKAN.Extensions;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class Main : Form
     {

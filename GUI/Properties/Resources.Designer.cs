@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CKAN.Properties {
+namespace CKAN.GUI.Properties {
     using System;
 
 
@@ -39,7 +39,7 @@ namespace CKAN.Properties {
             get {
                 if (object.ReferenceEquals(resourceMan, null))
                 {
-                    resourceMan = new SingleAssemblyResourceManager("CKAN.Properties.Resources", typeof(Resources).Assembly);
+                    resourceMan = new SingleAssemblyResourceManager("CKAN.GUI.Properties.Resources", typeof(Resources).Assembly);
                 }
                 return resourceMan;
             }
@@ -469,9 +469,6 @@ namespace CKAN.Properties {
         }
         internal static string MainChangesetUpdateSelected {
             get { return (string)(ResourceManager.GetObject("MainChangesetUpdateSelected", resourceCulture)); }
-        }
-        internal static string MainChangesetNewInstall {
-            get { return (string)(ResourceManager.GetObject("MainChangesetNewInstall", resourceCulture)); }
         }
 
         internal static string MainImportTitle {
@@ -1033,5 +1030,20 @@ namespace CKAN.Properties {
             get { return (string)(ResourceManager.GetObject("TotalPlayTime", resourceCulture)); }
         }
 
+        internal static string ChangeTypeNone {
+            get { return (string)(ResourceManager.GetObject("ChangeTypeNone", resourceCulture)); }
+        }
+        internal static string ChangeTypeInstall {
+            get { return (string)(ResourceManager.GetObject("ChangeTypeInstall", resourceCulture)); }
+        }
+        internal static string ChangeTypeRemove {
+            get { return (string)(ResourceManager.GetObject("ChangeTypeRemove", resourceCulture)); }
+        }
+        internal static string ChangeTypeUpdate {
+            get { return (string)(ResourceManager.GetObject("ChangeTypeUpdate", resourceCulture)); }
+        }
+        internal static string ChangeTypeReplace {
+            get { return (string)(ResourceManager.GetObject("ChangeTypeReplace", resourceCulture)); }
+        }
     }
 }

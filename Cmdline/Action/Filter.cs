@@ -60,7 +60,7 @@ namespace CKAN.CmdLine
                             break;
 
                         default:
-                            user.RaiseMessage("Unknown command: filter {0}", option);
+                            user.RaiseMessage("{0}: filter {1}", Properties.Resources.UnknownCommand, option);
                             exitCode = Exit.BADOPT;
                             break;
                     }
@@ -78,7 +78,7 @@ namespace CKAN.CmdLine
             }
 
             var cfg = ServiceLocator.Container.Resolve<Configuration.IConfiguration>();
-            user.RaiseMessage("Global filters:");
+            user.RaiseMessage(Properties.Resources.FilterListGlobalHeader);
             foreach (string filter in cfg.GlobalInstallFilters)
             {
                 user.RaiseMessage("\t- {0}", filter);
@@ -86,7 +86,7 @@ namespace CKAN.CmdLine
             user.RaiseMessage("");
 
             var instance = MainClass.GetGameInstance(manager);
-            user.RaiseMessage("Instance filters:");
+            user.RaiseMessage(Properties.Resources.FilterListInstanceHeader);
             foreach (string filter in instance.InstallFilters)
             {
                 user.RaiseMessage("\t- {0}", filter);
@@ -98,7 +98,7 @@ namespace CKAN.CmdLine
         {
             if (opts.filters.Count < 1)
             {
-                user.RaiseMessage("Usage: ckan filter {0} filter1 [filter2 ...]", verb);
+                user.RaiseMessage("{0}: ckan filter {1} filter1 [filter2 ...]", Properties.Resources.Usage, verb);
                 return Exit.BADOPT;
             }
 
@@ -117,7 +117,7 @@ namespace CKAN.CmdLine
                 if (duplicates.Length > 0)
                 {
                     user.RaiseError(
-                        "Global filters already set: {0}",
+                        Properties.Resources.FilterAddGlobalDuplicateError,
                         string.Join(", ", duplicates)
                     );
                     return Exit.BADOPT;
@@ -139,7 +139,7 @@ namespace CKAN.CmdLine
                     if (duplicates.Length > 0)
                     {
                         user.RaiseError(
-                            "Instance filters already set: {0}",
+                            Properties.Resources.FilterAddInstanceDuplicateError,
                             string.Join(", ", duplicates)
                         );
                         return Exit.BADOPT;
@@ -159,7 +159,7 @@ namespace CKAN.CmdLine
         {
             if (opts.filters.Count < 1)
             {
-                user.RaiseMessage("Usage: ckan filter {0} filter1 [filter2 ...]", verb);
+                user.RaiseMessage("{0}: ckan filter {1} filter1 [filter2 ...]", Properties.Resources.Usage, verb);
                 return Exit.BADOPT;
             }
 
@@ -178,7 +178,7 @@ namespace CKAN.CmdLine
                 if (notFound.Length > 0)
                 {
                     user.RaiseError(
-                        "Global filters not found: {0}",
+                        Properties.Resources.FilterRemoveGlobalNotFoundError,
                         string.Join(", ", notFound)
                     );
                     return Exit.BADOPT;
@@ -199,7 +199,7 @@ namespace CKAN.CmdLine
                 if (notFound.Length > 0)
                 {
                     user.RaiseError(
-                        "Instance filters not found: {0}",
+                        Properties.Resources.FilterRemoveInstanceNotFoundError,
                         string.Join(", ", notFound)
                     );
                     return Exit.BADOPT;
@@ -239,8 +239,8 @@ namespace CKAN.CmdLine
             ht.AddPreOptionsLine(" ");
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine("ckan filter - View or edit installation filters");
-                ht.AddPreOptionsLine($"Usage: ckan filter <command> [options]");
+                ht.AddPreOptionsLine($"ckan filter - {Properties.Resources.FilterHelpSummary}");
+                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan filter <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
             }
             else
             {
@@ -248,15 +248,15 @@ namespace CKAN.CmdLine
                 switch (verb)
                 {
                     case "list":
-                        ht.AddPreOptionsLine($"Usage: ckan filter {verb}");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan filter {verb}");
                         break;
 
                     case "add":
-                        ht.AddPreOptionsLine($"Usage: ckan filter {verb} [options] filter1 [filter2 ...]");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan filter {verb} [{Properties.Resources.Options}] filter1 [filter2 ...]");
                         break;
 
                     case "remove":
-                        ht.AddPreOptionsLine($"Usage: ckan filter {verb} [options] filter1 [filter2 ...]");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan filter {verb} [{Properties.Resources.Options}] filter1 [filter2 ...]");
                         break;
                 }
             }

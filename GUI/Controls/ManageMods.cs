@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using log4net;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class ManageMods : UserControl
     {

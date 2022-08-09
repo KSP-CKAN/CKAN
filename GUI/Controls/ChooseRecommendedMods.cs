@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using CKAN.Extensions;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class ChooseRecommendedMods : UserControl
     {

@@ -86,9 +86,9 @@ namespace CKAN.ConsoleUI {
             drawCentered(19, "https://github.com/KSP-CKAN/CKAN/graphs/contributors");
 
             if (pressAny) {
-                drawCentered(21, "Press any key to continue");
+                drawCentered(21, Properties.Resources.SplashPressAnyKey);
             } else {
-                drawCentered(21, "Loading...");
+                drawCentered(21, Properties.Resources.SplashLoading);
             }
         }
 

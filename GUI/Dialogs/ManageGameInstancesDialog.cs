@@ -7,7 +7,7 @@ using System.IO;
 
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class ManageGameInstancesDialog : Form
     {

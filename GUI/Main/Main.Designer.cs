@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     partial class Main
     {
@@ -63,23 +63,23 @@
             this.untaggedFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.labelToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.editLabelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ModInfo = new CKAN.ModInfo();
+            this.ModInfo = new CKAN.GUI.ModInfo();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusInstanceLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusProgress = new System.Windows.Forms.ToolStripProgressBar();
-            this.MainTabControl = new CKAN.MainTabControl();
+            this.MainTabControl = new CKAN.GUI.MainTabControl();
             this.ManageModsTabPage = new System.Windows.Forms.TabPage();
-            this.ManageMods = new CKAN.ManageMods();
+            this.ManageMods = new CKAN.GUI.ManageMods();
             this.ChangesetTabPage = new System.Windows.Forms.TabPage();
-            this.Changeset = new CKAN.Changeset();
+            this.Changeset = new CKAN.GUI.Changeset();
             this.WaitTabPage = new System.Windows.Forms.TabPage();
-            this.Wait = new CKAN.Wait();
+            this.Wait = new CKAN.GUI.Wait();
             this.ChooseRecommendedModsTabPage = new System.Windows.Forms.TabPage();
-            this.ChooseRecommendedMods = new CKAN.ChooseRecommendedMods();
+            this.ChooseRecommendedMods = new CKAN.GUI.ChooseRecommendedMods();
             this.PlayTimeTabPage = new System.Windows.Forms.TabPage();
-            this.PlayTime = new CKAN.PlayTime();
+            this.PlayTime = new CKAN.GUI.PlayTime();
             this.ChooseProvidedModsTabPage = new System.Windows.Forms.TabPage();
-            this.ChooseProvidedMods = new CKAN.ChooseProvidedMods();
+            this.ChooseProvidedMods = new CKAN.GUI.ChooseProvidedMods();
             this.minimizeNotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.minimizedContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.updatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,9 +97,9 @@
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewPlayTimeStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteDirectoriesTabPage = new System.Windows.Forms.TabPage();
-            this.DeleteDirectories = new CKAN.DeleteDirectories();
+            this.DeleteDirectories = new CKAN.GUI.DeleteDirectories();
             this.EditModpackTabPage = new System.Windows.Forms.TabPage();
-            this.EditModpack = new CKAN.EditModpack();
+            this.EditModpack = new CKAN.GUI.EditModpack();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -814,27 +814,27 @@
         private System.Windows.Forms.ContextMenuStrip LabelsContextMenuStrip;
         private System.Windows.Forms.ToolStripSeparator labelToolStripSeparator;
         private System.Windows.Forms.ToolStripMenuItem editLabelsToolStripMenuItem;
-        private CKAN.ModInfo ModInfo;
+        private CKAN.GUI.ModInfo ModInfo;
         private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
         private System.Windows.Forms.ToolStripStatusLabel StatusInstanceLabel;
         private System.Windows.Forms.ToolStripProgressBar StatusProgress;
-        private CKAN.MainTabControl MainTabControl;
+        private CKAN.GUI.MainTabControl MainTabControl;
         private System.Windows.Forms.TabPage ManageModsTabPage;
-        public CKAN.ManageMods ManageMods;
+        public CKAN.GUI.ManageMods ManageMods;
         private System.Windows.Forms.TabPage ChangesetTabPage;
-        private CKAN.Changeset Changeset;
+        private CKAN.GUI.Changeset Changeset;
         private System.Windows.Forms.TabPage WaitTabPage;
-        public CKAN.Wait Wait;
+        public CKAN.GUI.Wait Wait;
         private System.Windows.Forms.TabPage ChooseRecommendedModsTabPage;
+        private CKAN.GUI.ChooseRecommendedMods ChooseRecommendedMods;
         private System.Windows.Forms.TabPage PlayTimeTabPage;
-        private CKAN.ChooseRecommendedMods ChooseRecommendedMods;
-        private CKAN.PlayTime PlayTime;
+        private CKAN.GUI.PlayTime PlayTime;
         private System.Windows.Forms.TabPage ChooseProvidedModsTabPage;
-        private CKAN.ChooseProvidedMods ChooseProvidedMods;
+        private CKAN.GUI.ChooseProvidedMods ChooseProvidedMods;
         private System.Windows.Forms.TabPage DeleteDirectoriesTabPage;
-        private CKAN.DeleteDirectories DeleteDirectories;
+        private CKAN.GUI.DeleteDirectories DeleteDirectories;
         private System.Windows.Forms.TabPage EditModpackTabPage;
-        private CKAN.EditModpack EditModpack;
+        private CKAN.GUI.EditModpack EditModpack;
         private System.Windows.Forms.NotifyIcon minimizeNotifyIcon;
         private System.Windows.Forms.ContextMenuStrip minimizedContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem updatesToolStripMenuItem;

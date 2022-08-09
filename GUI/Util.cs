@@ -4,7 +4,7 @@ using System.Linq;
 using System.Drawing;
 using log4net;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     using System.Runtime.InteropServices;
     using System.Windows.Forms;

@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using CKAN.Extensions;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     using ModChanges = List<ModChange>;
     public partial class Main

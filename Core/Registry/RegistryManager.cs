@@ -409,7 +409,8 @@ namespace CKAN
             if (directoryPath == null)
             {
                 log.ErrorFormat("Failed to save registry, invalid path: {0}", path);
-                throw new DirectoryNotFoundKraken(path, "Can't find a directory in " + path);
+                throw new DirectoryNotFoundKraken(path, string.Format(
+                    Properties.Resources.RegistryManagerDirectoryNotFound, path));
             }
 
             if (!Directory.Exists(directoryPath))
@@ -433,8 +434,8 @@ namespace CKAN
             );
         }
 
-        public string LatestInstalledExportFilename() => $"installed-{ksp.SanitizedName}.ckan";
-        public string HistoricInstalledExportFilename() => $"installed-{ksp.SanitizedName}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.ckan";
+        public string LatestInstalledExportFilename() => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{ksp.SanitizedName}.ckan";
+        public string HistoricInstalledExportFilename() => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{ksp.SanitizedName}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.ckan";
 
         /// <summary>
         /// Save a custom .ckan file that contains all the currently
@@ -475,7 +476,7 @@ namespace CKAN
                 new ModuleVersion("v1.18"),
                 Identifier.Sanitize(name),
                 name,
-                $"A list of modules installed on the {kspInstanceName} KSP instance",
+                string.Format(Properties.Resources.RegistryManagerDefaultModpackAbstract, kspInstanceName),
                 null,
                 new List<string>() { System.Environment.UserName },
                 new List<License>() { new License("unknown") },

@@ -23,18 +23,18 @@ namespace CKAN.ConsoleUI {
             defaultRepos = RepositoryList.DefaultRepositories(game);
 
             name = new ConsoleField(labelWidth, nameRow, -1, initName) {
-                GhostText = () => "<Enter the name to use for this repository>"
+                GhostText = () => Properties.Resources.RepoNameGhostText
             };
             url  = new ConsoleField(labelWidth, urlRow,  -1, initUrl) {
-                GhostText = () => "<Enter the URL of this repository>"
+                GhostText = () => Properties.Resources.RepoURLGhostText
             };
 
-            AddObject(new ConsoleLabel(1, nameRow, labelWidth, () => "Name:"));
+            AddObject(new ConsoleLabel(1, nameRow, labelWidth, () => Properties.Resources.RepoNameLabel));
             AddObject(name);
-            AddObject(new ConsoleLabel(1, urlRow,  labelWidth, () => "URL:"));
+            AddObject(new ConsoleLabel(1, urlRow,  labelWidth, () => Properties.Resources.RepoURLLabel));
             AddObject(url);
 
-            AddTip("F2", "Accept");
+            AddTip("F2", Properties.Resources.Accept);
             AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
                 if (Valid()) {
                     Save();
@@ -44,7 +44,7 @@ namespace CKAN.ConsoleUI {
                 }
             });
 
-            AddTip("Esc", "Cancel");
+            AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 return false;
             });
@@ -56,7 +56,7 @@ namespace CKAN.ConsoleUI {
                     // This variable will be remembered correctly in our lambdas later
                     Repository repo = r;
                     opts.Add(new ConsoleMenuOption(
-                        repo.name, "", $"Import values from default mod list source {repo.name}",
+                        repo.name, "", string.Format(Properties.Resources.RepoImportTip, repo.name),
                         true, (ConsoleTheme theme) => {
                             name.Value    = repo.name;
                             name.Position = name.Value.Length;
@@ -83,7 +83,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override string CenterHeader()
         {
-            return "Edit Mod List Source";
+            return Properties.Resources.RepoTitle;
         }
 
         /// <summary>
@@ -108,11 +108,11 @@ namespace CKAN.ConsoleUI {
         protected bool nameValid()
         {
             if (string.IsNullOrEmpty(name.Value)) {
-                RaiseError("Name cannot be empty!");
+                RaiseError(Properties.Resources.RepoNameEmptyError);
                 SetFocus(name);
                 return false;
             } else if (editList.ContainsKey(name.Value)) {
-                RaiseError($"{name.Value} already exists!");
+                RaiseError(Properties.Resources.RepoNameDuplicateError, name.Value);
                 SetFocus(name);
                 return false;
             } else {
@@ -131,7 +131,7 @@ namespace CKAN.ConsoleUI {
         protected bool urlValid()
         {
             if (string.IsNullOrEmpty(url.Value)) {
-                RaiseError("URL cannot be empty!");
+                RaiseError(Properties.Resources.RepoURLEmptyError);
                 SetFocus(url);
                 return false;
             }
@@ -154,7 +154,10 @@ namespace CKAN.ConsoleUI {
 
         private RepositoryList defaultRepos;
 
-        private const int labelWidth = 8;
+        private int labelWidth => Math.Max(8, Math.Max(
+            Properties.Resources.RepoNameLabel.Length,
+            Properties.Resources.RepoURLLabel.Length
+        ));
         private const int nameRow    = 3;
         private const int urlRow     = 5;
     }

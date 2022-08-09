@@ -30,7 +30,8 @@ namespace CKAN
                         {
                             if (child.Property(forbiddenPropertyName) != null)
                             {
-                                throw new Kraken($"`any_of` should not be combined with `{forbiddenPropertyName}`");
+                                throw new Kraken(string.Format(
+                                    Properties.Resources.JsonRelationshipConverterAnyOfCombined, forbiddenPropertyName));
                             }
                         }
                         rels.Add(child.ToObject<AnyOfRelationshipDescriptor>());

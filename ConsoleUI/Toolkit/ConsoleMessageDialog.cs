@@ -76,7 +76,7 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             if (messageLines.Count > boxH) {
                 // Scroll
-                AddTip("Cursor keys", "Scroll");
+                AddTip(Properties.Resources.CursorKeys, Properties.Resources.Scroll);
                 tb.AddScrollBindings(this);
             }
 

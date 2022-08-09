@@ -27,7 +27,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Function returning text to show when field is empty
         /// </summary>
-        public Func<string> GhostText = () => "<Enter a value>";
+        public Func<string> GhostText = () => Properties.Resources.DefaultGhostText;
         /// <summary>
         /// Current value displayed in field
         /// </summary>

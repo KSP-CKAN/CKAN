@@ -192,7 +192,6 @@
   <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (cached)</value></data>
   <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>用户选择更新到 {0} 版本.</value></data>
-  <data name="MainChangesetNewInstall" xml:space="preserve"><value>用户选择安装的新Mod.</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>导入Mod</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>状态日志</value></data>

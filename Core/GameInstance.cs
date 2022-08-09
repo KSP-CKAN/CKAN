@@ -102,13 +102,13 @@ namespace CKAN
 
             if (!Directory.Exists(CkanDir()))
             {
-                User.RaiseMessage("Setting up CKAN for the first time...");
-                User.RaiseMessage("Creating {0}", CkanDir());
+                User.RaiseMessage(Properties.Resources.GameInstanceSettingUp);
+                User.RaiseMessage(Properties.Resources.GameInstanceCreatingDir, CkanDir());
                 txFileMgr.CreateDirectory(CkanDir());
 
                 if (scan)
                 {
-                    User.RaiseMessage("Scanning for installed mods...");
+                    User.RaiseMessage(Properties.Resources.GameInstanceScanning);
                     Scan();
                 }
             }
@@ -117,7 +117,7 @@ namespace CKAN
 
             if (!Directory.Exists(InstallHistoryDir()))
             {
-                User.RaiseMessage("Creating {0}", InstallHistoryDir());
+                User.RaiseMessage(Properties.Resources.GameInstanceCreatingDir, InstallHistoryDir());
                 txFileMgr.CreateDirectory(InstallHistoryDir());
             }
 
@@ -318,8 +318,8 @@ namespace CKAN
         {
             if (!Valid)
             {
-                log.Error("Could not find KSP version");
-                throw new NotKSPDirKraken(gameDir, "Could not find KSP version in buildID.txt or readme.txt");
+                log.Error("Could not find game version");
+                throw new NotKSPDirKraken(gameDir, Properties.Resources.GameInstanceVersionNotFound);
             }
             return CKANPathUtils.NormalizePath(
                 Path.Combine(GameDir(), "CKAN"));
@@ -475,7 +475,7 @@ namespace CKAN
 
         public override string ToString()
         {
-            return $"{game.ShortName} Install: {gameDir}";
+            return string.Format(Properties.Resources.GameInstanceToString, game.ShortName, gameDir);
         }
 
         public bool Equals(GameInstance other)

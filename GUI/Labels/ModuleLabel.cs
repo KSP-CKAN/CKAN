@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class ModuleLabel

@@ -13,7 +13,9 @@ namespace CKAN.Versioning
         public UnmanagedModuleVersion(string version) : base(version ?? "0")
         {
             IsUnknownVersion = version == null;
-            _string = version == null ? "(unmanaged)" : $"{version} (unmanaged)";
+            _string = version == null
+                ? Properties.Resources.UnmanagedModuleVersionUnknown
+                : string.Format(Properties.Resources.UnmanagedModuleVersionKnown, version);
         }
 
         public override string ToString()

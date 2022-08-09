@@ -121,7 +121,7 @@
   <data name="AddToCKANMenuItem.Text" xml:space="preserve"><value>Ajouter une instance à CKAN</value></data>
   <data name="CloneFakeInstanceMenuItem.Text" xml:space="preserve"><value>Cloner ou falsifier une nouvelle instance</value></data>
   <data name="RenameButton.Text" xml:space="preserve"><value>Renommer</value></data>
-  <data name="SetAsDefaultCheckbox.Text" xml:space="preserve"><value>Marquer comme par défaut</value></data>
+  <data name="SetAsDefaultCheckbox.Text" xml:space="preserve"><value>Marquer par défaut</value></data>
   <data name="ForgetButton.Text" xml:space="preserve"><value>Oublier</value></data>
   <data name="$this.Text" xml:space="preserve"><value>Gérer les Instances de Jeu</value></data>
 </root>

@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// Custom toolstrip renderer that just fills the background with the BackColor.

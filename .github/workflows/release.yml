@@ -144,7 +144,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release_data.outputs.upload_url }}
-          asset_path: _build/out/AutoUpdater/Release/bin/AutoUpdater.exe
+          asset_path: _build/repack/Release/AutoUpdater.exe
           asset_name: AutoUpdater.exe
           asset_content_type: application/vnd.microsoft.portable-executable
 

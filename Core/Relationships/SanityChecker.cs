@@ -30,11 +30,15 @@ namespace CKAN
             {
                 foreach (var kvp in unmetDepends)
                 {
-                    errors.Add($"{kvp.Key} has an unsatisfied dependency: {kvp.Value} is not installed");
+                    errors.Add(string.Format(
+                        Properties.Resources.SanityCheckerUnsatisfiedDependency,
+                        kvp.Key, kvp.Value));
                 }
                 foreach (var kvp in conflicts)
                 {
-                    errors.Add($"{kvp.Key} conflicts with {kvp.Value}");
+                    errors.Add(string.Format(
+                        Properties.Resources.SanityCheckerConflictsWith,
+                        kvp.Key, kvp.Value));
                 }
             }
             return errors;

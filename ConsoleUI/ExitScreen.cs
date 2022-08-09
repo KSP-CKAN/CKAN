@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
@@ -45,56 +47,36 @@ namespace CKAN.ConsoleUI {
             }
             Console.Clear();
 
-            FancyLinePiece ckanPiece = new FancyLinePiece("CKAN", theme.ExitInnerBg, theme.ExitHighlightFg);
-    
+            // Specially formatted snippets
+            var ckanPiece = new FancyLinePiece("CKAN", theme.ExitInnerBg, theme.ExitHighlightFg);
+            var ckanVersionPiece = new FancyLinePiece($"CKAN {Meta.GetVersion()}", theme.ExitInnerBg, theme.ExitHighlightFg);
+            var releaseLinkPiece = new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/releases/latest", theme.ExitInnerBg, theme.ExitLinkFg);
+            var issuesLinkPiece = new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/issues", theme.ExitInnerBg, theme.ExitLinkFg);
+            var authorsLinkPiece = new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/graphs/contributors", theme.ExitInnerBg, theme.ExitLinkFg);
+
             FancyLinePiece[][] lines = new FancyLinePiece[][] {
+                new FancyLinePiece(Properties.Resources.ExitTitle, theme.ExitInnerBg, theme.ExitNormalFg)
+                    .Replace("{0}", ckanPiece).ToArray(),
                 new FancyLinePiece[] {
-                    ckanPiece,
-                    new FancyLinePiece(", the Comprehensive Kerbal Archive Network", theme.ExitInnerBg, theme.ExitNormalFg)
-                }, new FancyLinePiece[] {
                     new FancyLinePiece(
                         new string(Symbols.horizLine, Console.WindowWidth - 2 -2 * horizMargin),
                         theme.ExitInnerBg, theme.ExitNormalFg)
-                }, new FancyLinePiece[] {
-                    new FancyLinePiece("YOU ARE USING ", theme.ExitInnerBg, theme.ExitNormalFg),
-                    new FancyLinePiece($"CKAN {Meta.GetVersion()}", theme.ExitInnerBg, theme.ExitHighlightFg),
-                    new FancyLinePiece(".", theme.ExitInnerBg, theme.ExitNormalFg)
-                }, new FancyLinePiece[] {
-                }, new FancyLinePiece[] {
-                    new FancyLinePiece("Thanks for downloading ", theme.ExitInnerBg, theme.ExitNormalFg),
-                    ckanPiece,
-                    new FancyLinePiece(". We hope you have as", theme.ExitInnerBg, theme.ExitNormalFg)
-                }, new FancyLinePiece[] {
-                    new FancyLinePiece("much fun using it as we had (and have) making it.", theme.ExitInnerBg, theme.ExitNormalFg)
-                }, new FancyLinePiece[] {
-                }, new FancyLinePiece[] {
-                    new FancyLinePiece("If you have paid for ", theme.ExitInnerBg, theme.ExitNormalFg),
-                    ckanPiece,
-                    new FancyLinePiece(", try to get your money back,", theme.ExitInnerBg, theme.ExitNormalFg)
-                }, new FancyLinePiece[] {
-                    new FancyLinePiece("because you can download ", theme.ExitInnerBg, theme.ExitNormalFg),
-                    ckanPiece,
-                    new FancyLinePiece(" for free from", theme.ExitInnerBg, theme.ExitNormalFg)
-                }, new FancyLinePiece[] {
-                    new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/releases/latest", theme.ExitInnerBg, theme.ExitLinkFg)
-                }, new FancyLinePiece[] {
-                }, new FancyLinePiece[] {
-                    new FancyLinePiece("If you have any problems using ", theme.ExitInnerBg, theme.ExitNormalFg),
-                    ckanPiece,
-                    new FancyLinePiece(", please send us an issue at", theme.ExitInnerBg, theme.ExitNormalFg)
-                }, new FancyLinePiece[] {
-                    new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/issues", theme.ExitInnerBg, theme.ExitLinkFg)
-                }, new FancyLinePiece[] {
-                }, new FancyLinePiece[] {
-                    ckanPiece,
-                    new FancyLinePiece(" WAS CREATED BY THE ", theme.ExitInnerBg, theme.ExitNormalFg),
-                    ckanPiece,
-                    new FancyLinePiece(" AUTHORS:", theme.ExitInnerBg, theme.ExitNormalFg)
-                }, new FancyLinePiece[] {
-                    new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/graphs/contributors", theme.ExitInnerBg, theme.ExitLinkFg)
-                }, new FancyLinePiece[] {
-                }
-            };
+                },
+            }.Concat(
+                // Parse the single multi-line resource into array of array of FancyLinePiece
+                Properties.Resources.ExitBody.Split(new string[] { "\r\n" }, StringSplitOptions.None)
+                    // Each line generates one array of FancyLinePiece
+                    .Select(ln => new FancyLinePiece(ln, theme.ExitInnerBg, theme.ExitNormalFg)
+                        // This turns one FancyLinePiece into a sequence
+                        .Replace("{0}", ckanPiece)
+                        // From here on we go from sequence to sequence, flattening at each step
+                        .SelectMany(flp => flp.Replace("{1}", ckanVersionPiece))
+                        .SelectMany(flp => flp.Replace("{2}", releaseLinkPiece))
+                        .SelectMany(flp => flp.Replace("{3}", issuesLinkPiece))
+                        .SelectMany(flp => flp.Replace("{4}", authorsLinkPiece))
+                        .ToArray()
+                    )
+                ).ToArray();
 
             for (int i = 0; i < lines.Length; ++i) {
                 drawLine(theme, i, lines[i]);
@@ -147,6 +129,49 @@ namespace CKAN.ConsoleUI {
             Text       = text;
             Background = bg;
             Foreground = fg;
+        }
+
+        /// <summary>
+        /// Replace found tokens with a FancyLinePiece
+        /// </summary>
+        /// <param name="tokens">Values for which to search the string</param>
+        /// <param name="replacement">FancyLinePiece that should take the place of the tokens</param>
+        /// <returns>
+        /// FancyLinePiece array containing replacement where the tokens used to be
+        /// </returns>
+        public IEnumerable<FancyLinePiece> Replace(string[] tokens, FancyLinePiece replacement)
+        {
+            // Lambas can't yield return, and a separate method couldn't access our inputs
+            IEnumerable<FancyLinePiece> InjectReplacement(string p, int i)
+            {
+                if (i > 0) {
+                    // Return the replacement in between elements that weren't the token
+                    yield return replacement;
+                }
+                if (p.Length > 0) {
+                    // Skip empty pieces
+                    yield return new FancyLinePiece(p, Background, Foreground);
+                }
+            }
+            // We need to keep empty pieces from the split to handle tokens at the start
+            var pieces = Text.Split(tokens, StringSplitOptions.None);
+            return pieces.Length <= 1
+                // Stop making new objects if no tokens found
+                ? Enumerable.Repeat<FancyLinePiece>(this, 1)
+                : pieces.SelectMany(InjectReplacement);
+        }
+
+        /// <summary>
+        /// Replace found token with a FancyLinePiece
+        /// </summary>
+        /// <param name="token">Value for which to search the string</param>
+        /// <param name="replacement">FancyLinePiece that should take the place of the token</param>
+        /// <returns>
+        /// FancyLinePiece array containing replacement where the token used to be
+        /// </returns>
+        public IEnumerable<FancyLinePiece> Replace(string token, FancyLinePiece replacement)
+        {
+            return Replace(new string[] { token }, replacement);
         }
 
         /// <summary>

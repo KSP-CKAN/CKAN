@@ -27,12 +27,12 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Installs a module, if available
         /// </summary>
-        /// <param name="ksp">Game instance into which to install</param>
+        /// <param name="instance">Game instance into which to install</param>
         /// <param name="raw_options">Command line options object</param>
         /// <returns>
         /// Exit code for shell environment
         /// </returns>
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
             InstallOptions options = (InstallOptions) raw_options;
 
@@ -55,8 +55,7 @@ namespace CKAN.CmdLine
                         else
                         {
                             // We have no further ideas as what we can do with this Uri, tell the user.
-                            user.RaiseError("Can not find file \"{0}\".", ckan_file);
-                            user.RaiseError("Exiting.");
+                            user.RaiseError(Properties.Resources.InstallNotFound, ckan_file);
                             return Exit.ERROR;
                         }
                     }
@@ -84,7 +83,7 @@ namespace CKAN.CmdLine
                     // Parse the JSON file.
                     try
                     {
-                        CkanModule m = MainClass.LoadCkanFromFile(ksp, filename);
+                        CkanModule m = MainClass.LoadCkanFromFile(instance, filename);
                         options.modules.Add($"{m.identifier}={m.version}");
                     }
                     catch (Kraken kraken)
@@ -101,14 +100,14 @@ namespace CKAN.CmdLine
             }
             else
             {
-                Search.AdjustModulesCase(ksp, options.modules);
+                Search.AdjustModulesCase(instance, options.modules);
             }
 
             if (options.modules.Count == 0)
             {
                 // What? No files specified?
                 user.RaiseMessage(
-                    "Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] [--headless] Mod [Mod2, ...]");
+                    $"{Properties.Resources.Usage}: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] [--headless] Mod [Mod2, ...]");
                 return Exit.BADOPT;
             }
 
@@ -127,7 +126,7 @@ namespace CKAN.CmdLine
                 install_ops.without_enforce_consistency = true;
             }
 
-            RegistryManager regMgr = RegistryManager.Instance(ksp);
+            RegistryManager regMgr = RegistryManager.Instance(instance);
             List<string> modules = options.modules;
 
             for (bool done = false; !done; )
@@ -136,7 +135,7 @@ namespace CKAN.CmdLine
                 try
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
-                    var installer = new ModuleInstaller(ksp, manager.Cache, user);
+                    var installer = new ModuleInstaller(instance, manager.Cache, user);
                     installer.InstallList(modules, install_ops, regMgr, ref possibleConfigOnlyDirs);
                     user.RaiseMessage("");
                     done = true;
@@ -144,32 +143,27 @@ namespace CKAN.CmdLine
                 catch (DependencyNotSatisfiedKraken ex)
                 {
                     user.RaiseError(ex.Message);
-                    user.RaiseMessage("If you're lucky, you can do a `ckan update` and try again.");
-                    user.RaiseMessage("Try `ckan install --no-recommends` to skip installation of recommended modules.");
-                    user.RaiseMessage("Or `ckan install --allow-incompatible` to ignore module compatibility.");
+                    user.RaiseMessage(Properties.Resources.InstallTryAgain);
                     return Exit.ERROR;
                 }
                 catch (ModuleNotFoundKraken ex)
                 {
                     if (ex.version == null)
                     {
-                        user.RaiseError("Module {0} required but it is not listed in the index, or not available for your version of KSP.",
-                            ex.module);
+                        user.RaiseError(Properties.Resources.InstallUnversionedDependencyNotSatisfied,
+                            ex.module, instance.game.ShortName);
                     }
                     else
                     {
-                        user.RaiseError("Module {0} {1} required but it is not listed in the index, or not available for your version of KSP.",
-                            ex.module, ex.version);
+                        user.RaiseError(Properties.Resources.InstallVersionedDependencyNotSatisfied,
+                            ex.module, ex.version, instance.game.ShortName);
                     }
-                    user.RaiseMessage("If you're lucky, you can do a `ckan update` and try again.");
-                    user.RaiseMessage("Try `ckan install --no-recommends` to skip installation of recommended modules.");
-                    user.RaiseMessage("Or `ckan install --allow-incompatible` to ignore module compatibility.");
+                    user.RaiseMessage(Properties.Resources.InstallTryAgain);
                     return Exit.ERROR;
                 }
                 catch (BadMetadataKraken ex)
                 {
-                    user.RaiseError("Bad metadata detected for module {0}: {1}",
-                        ex.module, ex.Message);
+                    user.RaiseError(Properties.Resources.InstallBadMetadata, ex.module, ex.Message);
                     return Exit.ERROR;
                 }
                 catch (TooManyModsProvideKraken ex)
@@ -204,49 +198,29 @@ namespace CKAN.CmdLine
                 {
                     if (ex.owningModule != null)
                     {
-                        user.RaiseError(
-                            "Oh no! We tried to overwrite a file owned by another mod!\r\n"+
-                            "Please try a `ckan update` and try again.\r\n\r\n"+
-                            "If this problem re-occurs, then it maybe a packaging bug.\r\n"+
-                            "Please report it at:\r\n\r\n" +
-                            "https://github.com/KSP-CKAN/NetKAN/issues/new\r\n\r\n" +
-                            "Please including the following information in your report:\r\n\r\n" +
-                            "File           : {0}\r\n" +
-                            "Installing Mod : {1}\r\n" +
-                            "Owning Mod     : {2}\r\n" +
-                            "CKAN Version   : {3}\r\n",
+                        user.RaiseError(Properties.Resources.InstallFileConflictOwned,
                             ex.filename, ex.installingModule, ex.owningModule,
-                            Meta.GetVersion(VersionFormat.Full)
-                        );
+                            Meta.GetVersion(VersionFormat.Full));
                     }
                     else
                     {
-                        user.RaiseError(
-                            "Oh no!\r\n\r\n"+
-                            "It looks like you're trying to install a mod which is already installed,\r\n"+
-                            "or which conflicts with another mod which is already installed.\r\n\r\n"+
-                            "As a safety feature, CKAN will *never* overwrite or alter a file\r\n"+
-                            "that it did not install itself.\r\n\r\n"+
-                            "If you wish to install {0} via CKAN,\r\n"+
-                            "then please manually uninstall the mod which owns:\r\n\r\n"+
-                            "{1}\r\n\r\n"+"and try again.\r\n",
-                            ex.installingModule, ex.filename
-                        );
+                        user.RaiseError(Properties.Resources.InstallFileConflictUnowned,
+                            ex.installingModule, ex.filename);
                     }
 
-                    user.RaiseMessage("Your GameData has been returned to its original state.");
+                    user.RaiseMessage(Properties.Resources.InstallGamedataReturned, instance.game.PrimaryModDirectoryRelative);
                     return Exit.ERROR;
                 }
                 catch (InconsistentKraken ex)
                 {
                     // The prettiest Kraken formats itself for us.
                     user.RaiseError(ex.InconsistenciesPretty);
-                    user.RaiseMessage("Install canceled. Your files have been returned to their initial state.");
+                    user.RaiseMessage(Properties.Resources.InstallCancelled);
                     return Exit.ERROR;
                 }
                 catch (CancelledActionKraken k)
                 {
-                    user.RaiseError("Installation aborted: {0}", k.Message);
+                    user.RaiseError(Properties.Resources.InstallAborted, k.Message);
                     return Exit.ERROR;
                 }
                 catch (MissingCertificateKraken kraken)
@@ -258,13 +232,12 @@ namespace CKAN.CmdLine
                 catch (DownloadThrottledKraken kraken)
                 {
                     user.RaiseError(kraken.ToString());
-                    user.RaiseMessage("Try the authtoken command. See {0} for details.",
-                        kraken.infoUrl);
+                    user.RaiseMessage(Properties.Resources.InstallTryAuthToken, kraken.infoUrl);
                     return Exit.ERROR;
                 }
                 catch (DownloadErrorsKraken)
                 {
-                    user.RaiseError("One or more files failed to download, stopped.");
+                    user.RaiseError(Properties.Resources.InstallDownloadFailed);
                     return Exit.ERROR;
                 }
                 catch (ModuleDownloadErrorsKraken kraken)
@@ -279,15 +252,14 @@ namespace CKAN.CmdLine
                 }
                 catch (ModuleIsDLCKraken kraken)
                 {
-                    user.RaiseError("CKAN can't install expansion '{0}' for you.",
-                        kraken.module.name);
+                    user.RaiseError(Properties.Resources.InstallDLC, kraken.module.name);
                     var res = kraken?.module?.resources;
                     var storePagesMsg = new Uri[] { res?.store, res?.steamstore }
                         .Where(u => u != null)
                         .Aggregate("", (a, b) => $"{a}\r\n- {b}");
                     if (!string.IsNullOrEmpty(storePagesMsg))
                     {
-                        user.RaiseMessage($"To install this expansion, purchase it from one of its store pages:\r\n{storePagesMsg}");
+                        user.RaiseMessage(Properties.Resources.InstallDLCStorePage, storePagesMsg);
                     }
                     return Exit.ERROR;
                 }

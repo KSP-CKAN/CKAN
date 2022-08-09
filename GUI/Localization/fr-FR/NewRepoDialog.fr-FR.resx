@@ -123,7 +123,7 @@
   <data name="RepoOK.Text" xml:space="preserve"><value>&amp;Ajouter</value></data>
   <data name="RepoNameHeader.Text" xml:space="preserve"><value>Nom</value></data>
   <data name="RepoURLHeader.Text" xml:space="preserve"><value>URL</value></data>
-  <data name="RepoNameLabel.Text" xml:space="preserve"><value>Nom:</value></data>
-  <data name="RepoUrlLabel.Text" xml:space="preserve"><value>URL:</value></data>
+  <data name="RepoNameLabel.Text" xml:space="preserve"><value>Nom :</value></data>
+  <data name="RepoUrlLabel.Text" xml:space="preserve"><value>URL :</value></data>
   <data name="$this.Text" xml:space="preserve"><value>Ajouter un répertoire</value></data>
 </root>

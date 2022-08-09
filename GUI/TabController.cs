@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace CKAN
+namespace CKAN.GUI
 {
 
     public class TabController

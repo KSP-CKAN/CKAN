@@ -1,7 +1,7 @@
 ﻿using System;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public abstract class IGUIPlugin
     {

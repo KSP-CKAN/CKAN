@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Context sensitive help (#3563 by: HebaruSan; reviewed: techman83)
 - [Multiple] Add install size to metadata and display in clients (#3568 by: HebaruSan; reviewed: techman83)
 - [CLI] Create a system menu entry for command prompt (#3622 by: HebaruSan; reviewed: techman83)
+- [Multiple] Internationalize Core, CmdLine, ConsoleUI, and AutoUpdater (#3482 by: HebaruSan; reviewed: techman83)
 
 ## Bugfixes
 

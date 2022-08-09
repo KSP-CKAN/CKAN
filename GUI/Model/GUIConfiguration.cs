@@ -3,7 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     [XmlRootAttribute("Configuration")]
     public class GUIConfiguration

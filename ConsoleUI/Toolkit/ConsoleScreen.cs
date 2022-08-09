@@ -65,7 +65,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         protected virtual string MenuTip()
         {
-            return "Menu";
+            return Properties.Resources.Menu;
         }
 
         /// <summary>
@@ -94,7 +94,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             ConsoleMessageDialog d = new ConsoleMessageDialog(
                 string.Join("", messagePieces) + question,
-                new List<string>() {"Yes", "No"}
+                new List<string>() {
+                    Properties.Resources.Yes,
+                    Properties.Resources.No
+                }
             );
             d.AddBinding(Keys.Y, (object sender, ConsoleTheme theme) => {
                 d.PressButton(0);
@@ -144,7 +147,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             ConsoleMessageDialog d = new ConsoleMessageDialog(
                 string.Join("", messagePieces) + string.Format(message, args),
-                new List<string>() {"OK"}
+                new List<string>() { Properties.Resources.OK }
             );
             messagePieces.Clear();
             d.Run(userTheme);
@@ -267,7 +270,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         private ConsoleTheme userTheme;
-        private static readonly string hamburger    = $" {Symbols.hamburger} ";
+        private static readonly string hamburger = $" {Symbols.hamburger} ";
     }
 
 }

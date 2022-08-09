@@ -83,7 +83,7 @@ namespace CKAN
             TxFileManager FileTransaction = new TxFileManager();
 
             user = user ?? new NullUser();
-            user.RaiseMessage("Downloading {0}", url);
+            user.RaiseMessage(Properties.Resources.NetDownloading, url);
 
             // Generate a temporary file if none is provided.
             if (filename == null)
@@ -130,7 +130,9 @@ namespace CKAN
                 // Look for an exception regarding the authentication.
                 if (Regex.IsMatch(exc.ToString(), "The authentication or decryption has failed."))
                 {
-                    throw new MissingCertificateKraken("Failed downloading " + url, exc);
+                    throw new MissingCertificateKraken(
+                        string.Format(Properties.Resources.NetMissingCertFailed, url),
+                        exc);
                 }
 
                 // Not the exception we were looking for! Throw it further upwards!
@@ -277,7 +279,7 @@ namespace CKAN
                     }
                     else
                     {
-                        throw new Kraken("Invalid URL in Location header: " + location);
+                        throw new Kraken(string.Format(Properties.Resources.NetInvalidLocation, location));
                     }
                 }
             }

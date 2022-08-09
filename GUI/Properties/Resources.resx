@@ -218,7 +218,6 @@ Do you really want to install it?</value></data>
   <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (cached)</value></data>
   <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Update selected by user to version {0}.</value></data>
-  <data name="MainChangesetNewInstall" xml:space="preserve"><value>New mod install selected by user.</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Import Mods</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Status log</value></data>
@@ -432,4 +431,9 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>Combine a new search with your current searches</value></data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>Uncheck to uninstall all mods, check to clear change set</value></data>
   <data name="TotalPlayTime" xml:space="preserve"><value>Total play time: {0} hours</value></data>
+  <data name="ChangeTypeNone" xml:space="preserve"><value>None</value></data>
+  <data name="ChangeTypeInstall" xml:space="preserve"><value>Install</value></data>
+  <data name="ChangeTypeRemove" xml:space="preserve"><value>Remove</value></data>
+  <data name="ChangeTypeUpdate" xml:space="preserve"><value>Update</value></data>
+  <data name="ChangeTypeReplace" xml:space="preserve"><value>Replace</value></data>
 </root>

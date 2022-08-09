@@ -27,15 +27,15 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Uninstalls a module, if it exists.
         /// </summary>
-        /// <param name="ksp">Game instance from which to remove</param>
+        /// <param name="instance">Game instance from which to remove</param>
         /// <param name="raw_options">Command line options object</param>
         /// <returns>
         /// Exit code for shell environment
         /// </returns>
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
             RemoveOptions options = (RemoveOptions) raw_options;
-            RegistryManager regMgr = RegistryManager.Instance(ksp);
+            RegistryManager regMgr = RegistryManager.Instance(instance);
 
             // Use one (or more!) regex to select the modules to remove
             if (options.regex)
@@ -77,39 +77,38 @@ namespace CKAN.CmdLine
                 try
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
-                    var installer = new ModuleInstaller(ksp, manager.Cache, user);
-                    Search.AdjustModulesCase(ksp, options.modules);
+                    var installer = new ModuleInstaller(instance, manager.Cache, user);
+                    Search.AdjustModulesCase(instance, options.modules);
                     installer.UninstallList(options.modules, ref possibleConfigOnlyDirs, regMgr);
                     user.RaiseMessage("");
                 }
                 catch (ModNotInstalledKraken kraken)
                 {
-                    user.RaiseMessage("I can't do that, {0} isn't installed.", kraken.mod);
-                    user.RaiseMessage("Try `ckan list` for a list of installed mods.");
+                    user.RaiseMessage(Properties.Resources.RemoveNotInstalled, kraken.mod);
                     return Exit.BADOPT;
                 }
                 catch (ModuleIsDLCKraken kraken)
                 {
-                    user.RaiseMessage($"CKAN can't remove expansion '{kraken.module.name}' for you.");
+                    user.RaiseMessage(Properties.Resources.RemoveDLC, kraken.module.name);
                     var res = kraken?.module?.resources;
                     var storePagesMsg = new Uri[] { res?.store, res?.steamstore }
                         .Where(u => u != null)
                         .Aggregate("", (a, b) => $"{a}\r\n- {b}");
                     if (!string.IsNullOrEmpty(storePagesMsg))
                     {
-                        user.RaiseMessage($"To remove this expansion, follow the instructions for the store page from which you purchased it:\r\n{storePagesMsg}");
+                        user.RaiseMessage(Properties.Resources.RemoveDLCStorePage, storePagesMsg);
                     }
                     return Exit.BADOPT;
                 }
                 catch (CancelledActionKraken k)
                 {
-                    user.RaiseMessage("Remove aborted: {0}", k.Message);
+                    user.RaiseMessage(Properties.Resources.RemoveCancelled, k.Message);
                     return Exit.ERROR;
                 }
             }
             else
             {
-                user.RaiseMessage("No mod selected, nothing to do");
+                user.RaiseMessage(Properties.Resources.RemoveNothing);
                 return Exit.BADOPT;
             }
 

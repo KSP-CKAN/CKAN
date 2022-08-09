@@ -767,7 +767,7 @@ namespace CKAN
                     // Woah! Registering an already owned file? Not cool!
                     // (Although if it existed, we should have thrown a kraken well before this.)
                     inconsistencies.Add(string.Format(
-                        "{0} wishes to install {1}, but this file is registered to {2}",
+                        Properties.Resources.RegistryFileConflict,
                         mod.identifier, file, owner
                     ));
                 }
@@ -819,7 +819,7 @@ namespace CKAN
             foreach (var absolute_file in absolute_files.Where(File.Exists))
             {
                 inconsistencies.Add(string.Format(
-                    "{0} is registered to {1} but has not been removed!",
+                    Properties.Resources.RegistryFileNotRemoved,
                     absolute_file, module));
             }
 

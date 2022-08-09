@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Text;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
@@ -27,20 +29,26 @@ namespace CKAN.ConsoleUI {
                 th => th.PopupFg
             );
             AddObject(symbolTb);
-            symbolTb.AddLine("Status Symbols");
-            symbolTb.AddLine("==============");
-            symbolTb.AddLine($"{installed}           Installed");
-            symbolTb.AddLine($"{autoInstalled}      Auto-installed");
-            symbolTb.AddLine($"{upgradable}         Upgradeable");
-            symbolTb.AddLine($"{autodetected}  Manually installed");
-            symbolTb.AddLine($"{replaceable}         Replaceable");
-            symbolTb.AddLine($"!         Unavailable");
+            symbolTb.AddLine(LeftRightTable(
+                Properties.Resources.ModListHelpSymbolHeader,
+                new Tuple<string, string>[] {
+                    new Tuple<string, string>(installed,     Properties.Resources.ModListHelpInstalled),
+                    new Tuple<string, string>(autoInstalled, Properties.Resources.ModListHelpAutoInstalled),
+                    new Tuple<string, string>(upgradable,    Properties.Resources.ModListHelpUpgradeable),
+                    new Tuple<string, string>(autodetected,  Properties.Resources.ModListHelpManuallyInstalled),
+                    new Tuple<string, string>(replaceable,   Properties.Resources.ModListHelpReplaceable),
+                    new Tuple<string, string>("!",           Properties.Resources.ModListHelpUnavailable),
+                }
+            ));
             symbolTb.AddLine(" ");
-            symbolTb.AddLine("Basic Keys");
-            symbolTb.AddLine("==========");
-            symbolTb.AddLine("Tab            Move focus");
-            symbolTb.AddLine("Cursor keys    Select row");
-            symbolTb.AddLine("Escape       Clear search");
+            symbolTb.AddLine(LeftRightTable(
+                Properties.Resources.ModListHelpBasicKeysHeader,
+                new Tuple<string, string>[] {
+                    new Tuple<string, string>(Properties.Resources.Tab,        Properties.Resources.ModListHelpMoveFocus),
+                    new Tuple<string, string>(Properties.Resources.CursorKeys, Properties.Resources.ModListHelpSelectRow),
+                    new Tuple<string, string>(Properties.Resources.Esc,        Properties.Resources.ModListHelpClearSearch),
+                }
+            ));
 
             ConsoleTextBox searchTb = new ConsoleTextBox(
                 Console.WindowWidth / 2 + 1, GetTop() + 3, GetRight() - 2, GetBottom() - 4,
@@ -50,21 +58,42 @@ namespace CKAN.ConsoleUI {
                 th => th.PopupFg
             );
             AddObject(searchTb);
-            searchTb.AddLine("Special Searches");
-            searchTb.AddLine("================");
-            searchTb.AddLine("@author    Mods by author");
-            searchTb.AddLine("~i         Installed mods");
-            searchTb.AddLine("~u       Upgradeable mods");
-            searchTb.AddLine("~dname     Depend on name");
-            searchTb.AddLine("~cname   Conflict w/ name");
-            searchTb.AddLine("~n               New mods");
+            searchTb.AddLine(LeftRightTable(
+                Properties.Resources.ModListHelpSpecialSearchesHeader,
+                new Tuple<string, string>[] {
+                    new Tuple<string, string>($"@{Properties.Resources.ModListHelpAuthor}", Properties.Resources.ModListHelpSearchAuthor),
+                    new Tuple<string, string>("~i", Properties.Resources.ModListHelpSearchInstalled),
+                    new Tuple<string, string>("~u", Properties.Resources.ModListHelpSearchUpgradeable),
+                    new Tuple<string, string>($"~d{Properties.Resources.ModListHelpName}", Properties.Resources.ModListHelpSearchDepends),
+                    new Tuple<string, string>($"~c{Properties.Resources.ModListHelpName}", Properties.Resources.ModListHelpSearchConflicts),
+                    new Tuple<string, string>("~n", Properties.Resources.ModListHelpSearchNew),
+                }
+            ));
 
             AddObject(new ConsoleButton(
                 btnL, GetBottom() - 2, btnL + btnW - 1,
-                "OK",
+                Properties.Resources.OK,
                 Quit
             ));
         }
+
+        private string LeftRightTable(string header, Tuple<string, string>[] rows)
+        {
+            int leftW  = rows.Max(r => r.Item1.Length);
+            int rightW = rows.Max(r => r.Item2.Length);
+            int fullW  = Math.Max(leftW + rightW + tableSpacing, header.Length);
+            int midW   = fullW - leftW - rightW;
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(header);
+            sb.AppendLine(new string('=', fullW));
+            string mid = new string(' ', midW);
+            foreach (var row in rows) {
+                sb.AppendLine(row.Item1.PadRight(leftW) + mid + row.Item2.PadLeft(rightW));
+            }
+            return sb.ToString();
+        }
+
+        private const int tableSpacing = 2;
 
         private static readonly string installed     = Symbols.checkmark;
         private static readonly string autoInstalled = Symbols.feminineOrdinal;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CKAN;
+using CKAN.GUI;
 using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Core;

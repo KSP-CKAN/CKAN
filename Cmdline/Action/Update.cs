@@ -22,12 +22,12 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Update the registry
         /// </summary>
-        /// <param name="ksp">Game instance to update</param>
+        /// <param name="instance">Game instance to update</param>
         /// <param name="raw_options">Command line options object</param>
         /// <returns>
         /// Exit code for shell environment
         /// </returns>
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
             UpdateOptions options = (UpdateOptions) raw_options;
 
@@ -36,8 +36,8 @@ namespace CKAN.CmdLine
             if (options.list_changes)
             {
                 // Get a list of compatible modules prior to the update.
-                var registry = RegistryManager.Instance(ksp).registry;
-                compatible_prior = registry.CompatibleModules(ksp.VersionCriteria()).ToList();
+                var registry = RegistryManager.Instance(instance).registry;
+                compatible_prior = registry.CompatibleModules(instance.VersionCriteria()).ToList();
             }
 
             // If no repository is selected, select all.
@@ -50,16 +50,16 @@ namespace CKAN.CmdLine
             {
                 if (options.update_all)
                 {
-                    UpdateRepository(ksp);
+                    UpdateRepository(instance);
                 }
                 else
                 {
-                    UpdateRepository(ksp, options.repo);
+                    UpdateRepository(instance, options.repo);
                 }
             }
             catch (ReinstallModuleKraken rmk)
             {
-                Upgrade.UpgradeModules(manager, user, ksp, false, rmk.Modules);
+                Upgrade.UpgradeModules(manager, user, instance, false, rmk.Modules);
             }
             catch (MissingCertificateKraken kraken)
             {
@@ -70,8 +70,8 @@ namespace CKAN.CmdLine
 
             if (options.list_changes)
             {
-                var registry = RegistryManager.Instance(ksp).registry;
-                PrintChanges(compatible_prior, registry.CompatibleModules(ksp.VersionCriteria()).ToList());
+                var registry = RegistryManager.Instance(instance).registry;
+                PrintChanges(compatible_prior, registry.CompatibleModules(instance.VersionCriteria()).ToList());
             }
 
             return Exit.OK;
@@ -92,25 +92,26 @@ namespace CKAN.CmdLine
             var removed = new HashSet<CkanModule>(prior.Except(post, new NameComparer()));
 
 
-            var unchanged = post.Intersect(prior);//Default compare includes versions
+            // Default compare includes versions
+            var unchanged = post.Intersect(prior);
             var updated = post.Except(unchanged).Except(added).Except(removed).ToList();
 
             // Print the changes.
-            user.RaiseMessage("Found {0} new modules, {1} removed modules and {2} updated modules.", added.Count(), removed.Count(), updated.Count());
+            user.RaiseMessage(Properties.Resources.UpdateChangesSummary, added.Count(), removed.Count(), updated.Count());
 
             if (added.Count > 0)
             {
-                PrintModules("New modules [Name (CKAN identifier)]:", added);
+                PrintModules(Properties.Resources.UpdateAddedHeader, added);
             }
 
             if (removed.Count > 0)
             {
-                PrintModules("Removed modules [Name (CKAN identifier)]:", removed);
+                PrintModules(Properties.Resources.UpdateRemovedHeader, removed);
             }
 
             if (updated.Count > 0)
             {
-                PrintModules("Updated modules [Name (CKAN identifier)]:", updated);
+                PrintModules(Properties.Resources.UpdateUpdatedHeader, updated);
             }
         }
 
@@ -145,17 +146,17 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Updates the repository.
         /// </summary>
-        /// <param name="ksp">The KSP instance to work on.</param>
+        /// <param name="instance">The KSP instance to work on.</param>
         /// <param name="repository">Repository to update. If null all repositories are used.</param>
-        private void UpdateRepository(CKAN.GameInstance ksp, string repository = null)
+        private void UpdateRepository(CKAN.GameInstance instance, string repository = null)
         {
-            RegistryManager registry_manager = RegistryManager.Instance(ksp);
+            RegistryManager registry_manager = RegistryManager.Instance(instance);
 
             var updated = repository == null
-                ? CKAN.Repo.UpdateAllRepositories(registry_manager, ksp, manager.Cache, user) != CKAN.RepoUpdateResult.Failed
-                : CKAN.Repo.Update(registry_manager, ksp, user, repository);
+                ? CKAN.Repo.UpdateAllRepositories(registry_manager, instance, manager.Cache, user) != CKAN.RepoUpdateResult.Failed
+                : CKAN.Repo.Update(registry_manager, instance, user, repository);
 
-            user.RaiseMessage("Updated information on {0} compatible modules", registry_manager.registry.CompatibleModules(ksp.VersionCriteria()).Count());
+            user.RaiseMessage(Properties.Resources.UpdateSummary, registry_manager.registry.CompatibleModules(instance.VersionCriteria()).Count());
         }
     }
 }

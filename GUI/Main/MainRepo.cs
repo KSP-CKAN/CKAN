@@ -8,7 +8,7 @@ using CKAN.Versioning;
 using CKAN.Configuration;
 using Autofac;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class Main
     {

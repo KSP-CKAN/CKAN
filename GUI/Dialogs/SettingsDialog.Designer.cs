@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     partial class SettingsDialog
     {
@@ -51,7 +51,7 @@
             this.CacheLimit = new System.Windows.Forms.TextBox();
             this.CacheLimitPostLabel = new System.Windows.Forms.Label();
             this.ChangeCacheButton = new System.Windows.Forms.Button();
-            this.ClearCacheButton = new CKAN.DropdownMenuButton();
+            this.ClearCacheButton = new CKAN.GUI.DropdownMenuButton();
             this.ClearCacheMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.PurgeToLimitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PurgeAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -668,7 +668,7 @@
         private System.Windows.Forms.TextBox CacheLimit;
         private System.Windows.Forms.Label CacheLimitPostLabel;
         private System.Windows.Forms.Button ChangeCacheButton;
-        private CKAN.DropdownMenuButton ClearCacheButton;
+        private CKAN.GUI.DropdownMenuButton ClearCacheButton;
         private System.Windows.Forms.ContextMenuStrip ClearCacheMenu;
         private System.Windows.Forms.ToolStripMenuItem PurgeToLimitMenuItem;
         private System.Windows.Forms.ToolStripMenuItem PurgeAllMenuItem;

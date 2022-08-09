@@ -9,7 +9,7 @@ using Autofac;
 using CKAN.Versioning;
 using CKAN.Configuration;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class SettingsDialog : Form
     {

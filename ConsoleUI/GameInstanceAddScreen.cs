@@ -17,7 +17,7 @@ namespace CKAN.ConsoleUI {
         {
             AddObject(new ConsoleLabel(
                 labelWidth, pathRow + 1, -1,
-                () => $"Example: {examplePath}",
+                () => string.Format(Properties.Resources.InstanceAddExample, examplePath),
                 null, th => th.DimLabelFg
             ));
         }
@@ -39,7 +39,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override string CenterHeader()
         {
-            return "Add Game Instance";
+            return Properties.Resources.InstanceAddTitle;
         }
 
         /// <summary>

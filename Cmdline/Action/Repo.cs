@@ -34,8 +34,8 @@ namespace CKAN.CmdLine
             ht.AddPreOptionsLine(" ");
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine("ckan repo - Manage CKAN repositories");
-                ht.AddPreOptionsLine($"Usage: ckan repo <command> [options]");
+                ht.AddPreOptionsLine($"ckan repo - {Properties.Resources.RepoHelpSummary}");
+                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
             }
             else
             {
@@ -44,21 +44,21 @@ namespace CKAN.CmdLine
                 {
                     // First the commands with two arguments
                     case "add":
-                        ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options] name url");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name url");
                         break;
 
                     // Then the commands with one argument
                     case "remove":
                     case "forget":
                     case "default":
-                        ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options] name");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name");
                         break;
 
                     // Now the commands with only --flag type options
                     case "available":
                     case "list":
                     default:
-                        ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options]");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}]");
                         break;
                 }
             }
@@ -148,7 +148,7 @@ namespace CKAN.CmdLine
                             break;
 
                         default:
-                            User.RaiseMessage("Unknown command: repo {0}", option);
+                            User.RaiseMessage(Properties.Resources.RepoUnknownCommand, option);
                             exitCode = Exit.BADOPT;
                             break;
                     }
@@ -170,7 +170,7 @@ namespace CKAN.CmdLine
 
         private int AvailableRepositories()
         {
-            User.RaiseMessage("Listing all (canonical) available CKAN repositories:");
+            User.RaiseMessage(Properties.Resources.RepoAvailableHeader);
             RepositoryList repositories;
 
             try
@@ -179,7 +179,7 @@ namespace CKAN.CmdLine
             }
             catch
             {
-                User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
+                User.RaiseError(Properties.Resources.RepoAvailableFailed, MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
                 return Exit.ERROR;
             }
 
@@ -200,7 +200,7 @@ namespace CKAN.CmdLine
         private int ListRepositories()
         {
             var manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
-            User.RaiseMessage("Listing all known repositories:");
+            User.RaiseMessage(Properties.Resources.RepoListHeader);
             SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
             int maxNameLen = 0;
@@ -223,7 +223,7 @@ namespace CKAN.CmdLine
 
             if (options.name == null)
             {
-                User.RaiseMessage("add <name> [ <uri> ] - argument missing, perhaps you forgot it?");
+                User.RaiseMessage("add <name> [ <uri> ] - {0}", Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
 
@@ -237,7 +237,7 @@ namespace CKAN.CmdLine
                 }
                 catch
                 {
-                    User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Manager.CurrentInstance.game.RepositoryListURL.ToString());
+                    User.RaiseError(Properties.Resources.RepoAvailableFailed, Manager.CurrentInstance.game.RepositoryListURL.ToString());
                     return Exit.ERROR;
                 }
 
@@ -253,7 +253,7 @@ namespace CKAN.CmdLine
                 // Nothing found in the master list?
                 if (options.uri == null)
                 {
-                    User.RaiseMessage("Name {0} not found in master list, please provide name and uri.", options.name);
+                    User.RaiseMessage(Properties.Resources.RepoAddNotFound, options.name);
                     return Exit.BADOPT;
                 }
             }
@@ -263,13 +263,13 @@ namespace CKAN.CmdLine
 
             if (repositories.ContainsKey(options.name))
             {
-                User.RaiseMessage("Repository with name \"{0}\" already exists, aborting..", options.name);
+                User.RaiseMessage(Properties.Resources.RepoAddDuplicate, options.name);
                 return Exit.BADOPT;
             }
 
             repositories.Add(options.name, new Repository(options.name, options.uri));
 
-            User.RaiseMessage("Added repository '{0}' - '{1}'", options.name, options.uri);
+            User.RaiseMessage(Properties.Resources.RepoAdded, options.name, options.uri);
             manager.Save();
 
             return Exit.OK;
@@ -279,7 +279,7 @@ namespace CKAN.CmdLine
         {
             if (options.name == null)
             {
-                User.RaiseError("forget <name> - argument missing, perhaps you forgot it?");
+                User.RaiseError("forget <name> - {0}", Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
 
@@ -295,14 +295,14 @@ namespace CKAN.CmdLine
                 name = repos.Keys.FirstOrDefault(repo => repo.Equals(options.name, StringComparison.OrdinalIgnoreCase));
                 if (name == null)
                 {
-                    User.RaiseMessage("Couldn't find repository with name \"{0}\", aborting..", options.name);
+                    User.RaiseMessage(Properties.Resources.RepoForgetNotFound, options.name);
                     return Exit.BADOPT;
                 }
-                User.RaiseMessage("Removing insensitive match \"{0}\"", name);
+                User.RaiseMessage(Properties.Resources.RepoForgetRemoving, name);
             }
 
             registry.Repositories.Remove(name);
-            User.RaiseMessage("Successfully removed \"{0}\"", options.name);
+            User.RaiseMessage(Properties.Resources.RepoForgetRemoved, options.name);
             manager.Save();
 
             return Exit.OK;
@@ -314,7 +314,7 @@ namespace CKAN.CmdLine
 
             if (options.uri == null)
             {
-                User.RaiseMessage("default <uri> - argument missing, perhaps you forgot it?");
+                User.RaiseMessage("default <uri> - {0}", Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
 
@@ -329,7 +329,7 @@ namespace CKAN.CmdLine
             repositories.Add(Repository.default_ckan_repo_name, new Repository(
                     Repository.default_ckan_repo_name, options.uri));
 
-            User.RaiseMessage("Set {0} repository to '{1}'", Repository.default_ckan_repo_name, options.uri);
+            User.RaiseMessage(Properties.Resources.RepoSet, Repository.default_ckan_repo_name, options.uri);
             manager.Save();
 
             return Exit.OK;

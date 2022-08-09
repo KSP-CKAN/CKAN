@@ -46,7 +46,7 @@ namespace CKAN
             {
                 throw new BadMetadataKraken(
                     null,
-                    String.Format("{0} is not a valid release status", status)
+                    String.Format(Properties.Resources.ReleaseStatusInvalid, status)
                 );
             }
 

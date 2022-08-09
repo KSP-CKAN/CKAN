@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public enum GUIModFilter
     {

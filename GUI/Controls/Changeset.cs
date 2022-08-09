@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using CKAN.Extensions;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class Changeset : UserControl
     {
@@ -102,7 +102,7 @@ namespace CKAN
             return new ListViewItem(new string[]
             {
                 change.NameAndStatus,
-                change.ChangeType.ToString(),
+                change.ChangeType.ToI18nString(),
                 warnLbl != null
                     ? string.Format(
                         Properties.Resources.MainChangesetWarningInstallingModuleWithLabel,

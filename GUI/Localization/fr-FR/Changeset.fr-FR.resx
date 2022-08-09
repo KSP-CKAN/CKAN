@@ -120,6 +120,7 @@
   <data name="Mod.Text" xml:space="preserve"><value>Mod</value></data>
   <data name="ChangeType.Text" xml:space="preserve"><value>Changement</value></data>
   <data name="Reason.Text" xml:space="preserve"><value>Raison de l'action</value></data>
+  <data name="BackButton.Text" xml:space="preserve"><value>Retour</value></data>
   <data name="CancelChangesButton.Text" xml:space="preserve"><value>Effacer</value></data>
   <data name="ConfirmChangesButton.Text" xml:space="preserve"><value>Appliquer</value></data>
 </root>

@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     /// <summary>
     /// Create a new TransparentTextBox control that allows the backcolor of textboxes to be transparent.

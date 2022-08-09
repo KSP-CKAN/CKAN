@@ -11,7 +11,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A79F9D54-315C-472B-928F-713A5860B2BE}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>CKAN</RootNamespace>
+    <RootNamespace>CKAN.GUI</RootNamespace>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -937,37 +937,37 @@
       <DependentUpon>..\..\Dialogs\PluginsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <LogicalName>CKAN.Properties.Resources.resources</LogicalName>
+      <LogicalName>CKAN.GUI.Properties.Resources.resources</LogicalName>
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.de-DE.resx">
-      <LogicalName>CKAN.Properties.Resources.de-DE.resources</LogicalName>
+      <LogicalName>CKAN.GUI.Properties.Resources.de-DE.resources</LogicalName>
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.fr-FR.resx">
-      <LogicalName>CKAN.Properties.Resources.fr-FR.resources</LogicalName>
+      <LogicalName>CKAN.GUI.Properties.Resources.fr-FR.resources</LogicalName>
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.zh-CN.resx">
-      <LogicalName>CKAN.Properties.Resources.zh-CN.resources</LogicalName>
+      <LogicalName>CKAN.GUI.Properties.Resources.zh-CN.resources</LogicalName>
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
-      <LogicalName>CKAN.Properties.Resources.en-US.resources</LogicalName>
+      <LogicalName>CKAN.GUI.Properties.Resources.en-US.resources</LogicalName>
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.pt-BR.resx">
-      <LogicalName>CKAN.Properties.Resources.pt-BR.resources</LogicalName>
+      <LogicalName>CKAN.GUI.Properties.Resources.pt-BR.resources</LogicalName>
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -979,13 +979,13 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.ru-RU.resx">
-      <LogicalName>CKAN.Properties.Resources.ru-RU.resources</LogicalName>
+      <LogicalName>CKAN.GUI.Properties.Resources.ru-RU.resources</LogicalName>
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.ja-JP.resx">
-      <LogicalName>CKAN.Properties.Resources.ja-JP.resources</LogicalName>
+      <LogicalName>CKAN.GUI.Properties.Resources.ja-JP.resources</LogicalName>
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

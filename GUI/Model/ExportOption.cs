@@ -1,6 +1,6 @@
 ﻿using CKAN.Types;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     internal sealed class ExportOption
     {

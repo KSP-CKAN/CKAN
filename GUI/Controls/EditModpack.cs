@@ -8,7 +8,7 @@ using CKAN.Versioning;
 using CKAN.GameVersionProviders;
 using CKAN.Types;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class EditModpack : UserControl
     {

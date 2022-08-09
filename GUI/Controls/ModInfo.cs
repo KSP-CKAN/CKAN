@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using System.IO;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public enum RelationshipType
     {

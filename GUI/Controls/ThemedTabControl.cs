@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// A TabControl that obeys system colors to look less awful in a dark theme

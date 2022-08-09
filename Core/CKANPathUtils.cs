@@ -144,12 +144,14 @@ namespace CKAN
 
             if (!Path.IsPathRooted(path))
             {
-                throw new PathErrorKraken(path, $"{path} is not an absolute path");
+                throw new PathErrorKraken(path, string.Format(
+                    Properties.Resources.PathUtilsNotAbsolute, path));
             }
 
             if (!path.StartsWith(root, StringComparison.CurrentCultureIgnoreCase))
             {
-                throw new PathErrorKraken(path, $"Oh snap. {path} isn't inside {root}");
+                throw new PathErrorKraken(path, string.Format(
+                    Properties.Resources.PathUtilsNotInside, path, root));
             }
 
             // Strip off the root, then remove any slashes at the beginning
@@ -176,7 +178,7 @@ namespace CKAN
             {
                 throw new PathErrorKraken(
                     path,
-                    String.Format("{0} is already absolute", path)
+                    String.Format(Properties.Resources.PathUtilsAlreadyAbsolute, path)
                 );
             }
 
@@ -184,7 +186,7 @@ namespace CKAN
             {
                 throw new PathErrorKraken(
                     root,
-                    String.Format("{0} isn't an absolute root", root)
+                    String.Format(Properties.Resources.PathUtilsNotRoot, root)
                 );
             }
 

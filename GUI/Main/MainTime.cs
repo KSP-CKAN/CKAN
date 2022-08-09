@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class Main
     {

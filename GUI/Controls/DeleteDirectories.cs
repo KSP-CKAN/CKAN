@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using CKAN.Extensions;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class DeleteDirectories : UserControl
     {
