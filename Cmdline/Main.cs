@@ -49,6 +49,18 @@ namespace CKAN.CmdLine
             }
 
             Logging.Initialize();
+            // We need to load the game instance manager before parsing the args,
+            // which is too late for debug flags if we want them active during the instance loading
+            if (args.Contains("--debug"))
+            {
+                LogManager.GetRepository().Threshold = Level.Debug;
+                log.Info("Debug logging enabled");
+            }
+            else if (args.Contains("--verbose"))
+            {
+                LogManager.GetRepository().Threshold = Level.Info;
+                log.Info("Verbose logging enabled");
+            }
             log.Info("CKAN started.");
 
             // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.

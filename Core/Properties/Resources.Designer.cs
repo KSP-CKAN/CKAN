@@ -114,6 +114,9 @@ namespace CKAN.Properties {
             get { return (string)(ResourceManager.GetObject("NetModuleCacheMismatchSHA256", resourceCulture)); }
         }
 
+        internal static string NetRepoUpdatingBuildMap {
+            get { return (string)(ResourceManager.GetObject("NetRepoUpdatingBuildMap", resourceCulture)); }
+        }
         internal static string NetRepoCheckingForUpdates {
             get { return (string)(ResourceManager.GetObject("NetRepoCheckingForUpdates", resourceCulture)); }
         }

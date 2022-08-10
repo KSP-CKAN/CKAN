@@ -37,6 +37,11 @@ namespace CKAN
         public static RepoUpdateResult UpdateAllRepositories(RegistryManager registry_manager, GameInstance ksp, NetModuleCache cache, IUser user)
         {
             SortedDictionary<string, Repository> sortedRepositories = registry_manager.registry.Repositories;
+
+            // First get latest copy of the game versions data
+            user.RaiseMessage(Properties.Resources.NetRepoUpdatingBuildMap);
+            ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh();
+
             user.RaiseProgress(Properties.Resources.NetRepoCheckingForUpdates, 0);
             if (sortedRepositories.Values.All(repo => !string.IsNullOrEmpty(repo.last_server_etag) && repo.last_server_etag == Net.CurrentETag(repo.uri)))
             {
