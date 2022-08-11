@@ -119,6 +119,9 @@ namespace CKAN.ConsoleUI.Properties {
         internal static string Enter {
             get { return (string)(ResourceManager.GetObject("Enter", resourceCulture)); }
         }
+        internal static string F2 {
+            get { return (string)(ResourceManager.GetObject("F2", resourceCulture)); }
+        }
         internal static string Esc {
             get { return (string)(ResourceManager.GetObject("Esc", resourceCulture)); }
         }
@@ -157,6 +160,9 @@ namespace CKAN.ConsoleUI.Properties {
         }
         internal static string DeselectAll {
             get { return (string)(ResourceManager.GetObject("DeselectAll", resourceCulture)); }
+        }
+        internal static string LaunchKSP {
+            get { return (string)(ResourceManager.GetObject("LaunchKSP", resourceCulture)); }
         }
         internal static string Details {
             get { return (string)(ResourceManager.GetObject("Details", resourceCulture)); }
@@ -349,6 +355,9 @@ namespace CKAN.ConsoleUI.Properties {
         }
         internal static string InstanceListVersionHeader {
             get { return (string)(ResourceManager.GetObject("InstanceListVersionHeader", resourceCulture)); }
+        }
+        internal static string InstancePlayTimeHeader {
+            get { return (string)(ResourceManager.GetObject("InstancePlayTimeHeader", resourceCulture)); }
         }
         internal static string InstanceListPathHeader {
             get { return (string)(ResourceManager.GetObject("InstanceListPathHeader", resourceCulture)); }

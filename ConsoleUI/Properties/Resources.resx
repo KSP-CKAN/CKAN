@@ -137,6 +137,7 @@
   <data name="Force" xml:space="preserve"><value>Force</value></data>
   <data name="Tab" xml:space="preserve"><value>Tab</value></data>
   <data name="Enter" xml:space="preserve"><value>Enter</value></data>
+  <data name="F2" xml:space="preserve"><value>F2</value></data>
   <data name="Esc" xml:space="preserve"><value>Esc</value></data>
   <data name="Ctrl" xml:space="preserve"><value>Ctrl</value></data>
   <data name="Alt" xml:space="preserve"><value>Alt</value></data>
@@ -150,6 +151,7 @@
   <data name="Select" xml:space="preserve"><value>Select</value></data>
   <data name="SelectAll" xml:space="preserve"><value>Select all</value></data>
   <data name="DeselectAll" xml:space="preserve"><value>Deselect all</value></data>
+  <data name="LaunchKSP" xml:space="preserve"><value>Launch KSP</value></data>
   <data name="Details" xml:space="preserve"><value>Details</value></data>
   <data name="Up" xml:space="preserve"><value>Up</value></data>
   <data name="Down" xml:space="preserve"><value>Down</value></data>
@@ -214,6 +216,7 @@
   <data name="InstanceListNameHeader" xml:space="preserve"><value>Name</value></data>
   <data name="InstanceListGameHeader" xml:space="preserve"><value>Game</value></data>
   <data name="InstanceListVersionHeader" xml:space="preserve"><value>Version</value></data>
+  <data name="InstancePlayTimeHeader" xml:space="preserve"><value>Play Time</value></data>
   <data name="InstanceListPathHeader" xml:space="preserve"><value>Path</value></data>
   <data name="InstanceListLoadingInstance" xml:space="preserve"><value>Loading instance {0}...</value></data>
   <data name="InstanceListDefaultToggle" xml:space="preserve"><value>Default</value></data>
