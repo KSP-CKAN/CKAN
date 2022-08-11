@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     partial class Wait
     {
@@ -34,10 +34,11 @@
             this.MessageTextBox = new System.Windows.Forms.TextBox();
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
             this.LogTextBox = new System.Windows.Forms.TextBox();
-            this.BottomButtonPanel = new System.Windows.Forms.Panel();
+            this.BottomButtonPanel = new LeftRightRowPanel();
             this.CancelCurrentActionButton = new System.Windows.Forms.Button();
             this.RetryCurrentActionButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
+            this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             //
             // TopPanel
@@ -51,7 +52,9 @@
             // MessageTextBox
             //
             this.MessageTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));            this.MessageTextBox.BackColor = System.Drawing.SystemColors.Control;
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.MessageTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.MessageTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MessageTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.MessageTextBox.Enabled = false;
             this.MessageTextBox.Location = new System.Drawing.Point(5, 5);
@@ -86,6 +89,7 @@
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
+            this.LogTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.LogTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.LogTextBox.Size = new System.Drawing.Size(500, 400);
@@ -93,19 +97,17 @@
             //
             // BottomButtonPanel
             //
-            this.BottomButtonPanel.Controls.Add(this.RetryCurrentActionButton);
-            this.BottomButtonPanel.Controls.Add(this.CancelCurrentActionButton);
-            this.BottomButtonPanel.Controls.Add(this.OkButton);
+            this.BottomButtonPanel.RightControls.Add(this.OkButton);
+            this.BottomButtonPanel.RightControls.Add(this.CancelCurrentActionButton);
+            this.BottomButtonPanel.RightControls.Add(this.RetryCurrentActionButton);
             this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomButtonPanel.Name = "BottomButtonPanel";
-            this.BottomButtonPanel.Size = new System.Drawing.Size(500, 40);
             //
             // RetryCurrentActionButton
             //
-            this.RetryCurrentActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RetryCurrentActionButton.AutoSize = true;
+            this.RetryCurrentActionButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.RetryCurrentActionButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RetryCurrentActionButton.Location = new System.Drawing.Point(149, 5);
-            this.RetryCurrentActionButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RetryCurrentActionButton.Name = "RetryCurrentActionButton";
             this.RetryCurrentActionButton.Size = new System.Drawing.Size(112, 30);
             this.RetryCurrentActionButton.TabIndex = 3;
@@ -114,10 +116,9 @@
             //
             // CancelCurrentActionButton
             //
-            this.CancelCurrentActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancelCurrentActionButton.AutoSize = true;
+            this.CancelCurrentActionButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CancelCurrentActionButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelCurrentActionButton.Location = new System.Drawing.Point(266, 5);
-            this.CancelCurrentActionButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.CancelCurrentActionButton.Name = "CancelCurrentActionButton";
             this.CancelCurrentActionButton.Size = new System.Drawing.Size(112, 30);
             this.CancelCurrentActionButton.TabIndex = 4;
@@ -126,10 +127,9 @@
             //
             // OkButton
             //
-            this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.OkButton.AutoSize = true;
+            this.OkButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.OkButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.OkButton.Location = new System.Drawing.Point(383, 5);
-            this.OkButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.OkButton.Name = "OkButton";
             this.OkButton.Size = new System.Drawing.Size(112, 30);
             this.OkButton.TabIndex = 5;
@@ -147,6 +147,8 @@
             this.Name = "Wait";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
+            this.BottomButtonPanel.ResumeLayout(false);
+            this.BottomButtonPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -157,7 +159,7 @@
         private System.Windows.Forms.TextBox MessageTextBox;
         private System.Windows.Forms.ProgressBar DialogProgressBar;
         private System.Windows.Forms.TextBox LogTextBox;
-        private System.Windows.Forms.Panel BottomButtonPanel;
+        private LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button RetryCurrentActionButton;
         private System.Windows.Forms.Button CancelCurrentActionButton;
         private System.Windows.Forms.Button OkButton;

@@ -18,7 +18,7 @@ namespace CKAN.CmdLine
 
             if (options.Left != null && options.Right != null)
             {
-                var leftVersion = new ModuleVersion(options.Left);
+                var leftVersion  = new ModuleVersion(options.Left);
                 var rightVersion = new ModuleVersion(options.Right);
 
                 int compareResult = leftVersion.CompareTo(rightVersion);
@@ -29,29 +29,24 @@ namespace CKAN.CmdLine
                 }
                 else if (compareResult == 0)
                 {
-                    user.RaiseMessage(
-                        "\"{0}\" and \"{1}\" are the same versions.", leftVersion, rightVersion);
+                    user.RaiseMessage(Properties.Resources.CompareSame, leftVersion, rightVersion);
                 }
                 else if (compareResult < 0)
                 {
-                    user.RaiseMessage(
-                        "\"{0}\" is lower than \"{1}\".", leftVersion, rightVersion);
+                    user.RaiseMessage(Properties.Resources.CompareLower, leftVersion, rightVersion);
                 }
                 else if (compareResult > 0)
                 {
-                    user.RaiseMessage(
-                        "\"{0}\" is higher than \"{1}\".", leftVersion, rightVersion);
+                    user.RaiseMessage(Properties.Resources.CompareHigher, leftVersion, rightVersion);
                 }
                 else
                 {
-                    user.RaiseMessage(
-                        "Usage: ckan compare version1 version2");
+                    user.RaiseMessage("{0}: ckan compare version1 version2", Properties.Resources.Usage);
                 }
             }
             else
             {
-                user.RaiseMessage(
-                    "Usage: ckan compare version1 version2");
+                user.RaiseMessage("{0}: ckan compare version1 version2", Properties.Resources.Usage);
                 return Exit.BADOPT;
             }
 

@@ -8,7 +8,7 @@ using IniParser.Exceptions;
 using IniParser.Model;
 using log4net;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public static class URLHandlers
     {

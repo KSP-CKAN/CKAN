@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     partial class EditModSearch
     {
@@ -34,9 +34,9 @@
             this.ToolTip = new System.Windows.Forms.ToolTip();
             this.FilterCombinedLabel = new System.Windows.Forms.Label();
             this.FilterOrLabel = new System.Windows.Forms.Label();
-            this.FilterCombinedTextBox = new CKAN.HintTextBox();
+            this.FilterCombinedTextBox = new CKAN.GUI.HintTextBox();
             this.ExpandButton = new System.Windows.Forms.CheckBox();
-            this.SearchDetails = new CKAN.EditModSearchDetails();
+            this.SearchDetails = new CKAN.GUI.EditModSearchDetails();
             this.SuspendLayout();
             //
             // ToolTip
@@ -127,8 +127,8 @@
         private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.Label FilterCombinedLabel;
         private System.Windows.Forms.Label FilterOrLabel;
-        private CKAN.HintTextBox FilterCombinedTextBox;
+        private CKAN.GUI.HintTextBox FilterCombinedTextBox;
         private System.Windows.Forms.CheckBox ExpandButton;
-        private CKAN.EditModSearchDetails SearchDetails;
+        private CKAN.GUI.EditModSearchDetails SearchDetails;
     }
 }

@@ -5,6 +5,9 @@ on:
     branches:
       - master
   workflow_dispatch:
+  repository_dispatch:
+    types:
+      - deploy
 
 jobs:
   deploy:
@@ -14,7 +17,7 @@ jobs:
       image: mono:latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Check version
         id: check_version
@@ -27,7 +30,7 @@ jobs:
           fi
 
       - name: Installing build dependencies
-        run: apt-get update && apt-get install -y git make sed gzip fakeroot lintian dpkg-dev
+        run: apt-get update && apt-get install -y git make sed gzip fakeroot lintian dpkg-dev gpg createrepo
       - name: Installing runtime dependencies
         run: apt-get install -y xvfb
       - name: Install Docker
@@ -64,14 +67,27 @@ jobs:
           CODENAME: nightly
         run: ./build deb --configuration=Release --exclusive
         if: ${{ steps.check_version.outputs.odd_build }}
-      - name: Sign deb release
+      - name: Build rpm
+        run: ./build rpm --configuration=Release --exclusive
+        if: ${{ steps.check_version.outputs.odd_build }}
+      - name: Import GPG key
         env:
-          CODENAME: nightly
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: |
           echo "$DEBIAN_PRIVATE_KEY" | base64 --decode | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
-          ./build deb-sign --configuration=Release --exclusive
+        if: ${{ env.DEBIAN_PRIVATE_KEY && steps.check_version.outputs.odd_build }}
+      - name: Sign deb release
+        env:
+          CODENAME: nightly
+          DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
+        run: ./build deb-sign --configuration=Release --exclusive
+        if: ${{ env.DEBIAN_PRIVATE_KEY && steps.check_version.outputs.odd_build }}
+      - name: Build rpm repository
+        env:
+          CODENAME: nightly
+          DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
+        run: ./build rpm-repo --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY && steps.check_version.outputs.odd_build }}
 
       - name: Run tests
@@ -123,7 +139,7 @@ jobs:
           SOURCE_DIR: _build/deb/apt-repo-root
           DEST_DIR: deb
         if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && steps.check_version.outputs.odd_build }}
-      - name: Push Release file to S3
+      - name: Push nightly APT repo to S3
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --follow-symlinks
@@ -134,6 +150,18 @@ jobs:
           AWS_REGION: us-east-1
           SOURCE_DIR: _build/deb/apt-repo-dist
           DEST_DIR: deb/dists/nightly
+        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && steps.check_version.outputs.odd_build }}
+      - name: Push nightly RPM repo to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --follow-symlinks
+        env:
+          AWS_S3_BUCKET: ksp-ckan
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          SOURCE_DIR: _build/rpm/repo
+          DEST_DIR: rpm/nightly
         if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && steps.check_version.outputs.odd_build }}
 
       - name: Send Discord Notification

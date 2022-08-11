@@ -63,7 +63,8 @@ namespace CKAN
             // Basic validation, our cache has to exist.
             if (!Directory.Exists(cachePath))
             {
-                throw new DirectoryNotFoundKraken(cachePath, $"Cannot find cache directory: {cachePath}");
+                throw new DirectoryNotFoundKraken(cachePath, string.Format(
+                    Properties.Resources.NetFileCacheCannotFind, cachePath));
             }
 
             // Establish a watch on our cache. This means we can cache the directory contents,
@@ -443,7 +444,9 @@ namespace CKAN
                                 if (st != null && !st.EntryValid && !string.IsNullOrEmpty(msg))
                                 {
                                     // Capture the error string so we can return it
-                                    zipErr = $"Error in step {st.Operation} for {st.Entry?.Name}: {msg}";
+                                    zipErr = string.Format(
+                                        Properties.Resources.NetFileCacheZipError,
+                                        st.Operation, st.Entry?.Name, msg);
                                 }
                             }))
                         {
@@ -452,14 +455,14 @@ namespace CKAN
                         }
                         else
                         {
-                            invalidReason = zipErr ?? "ZipFile.TestArchive(true) returned false";
+                            invalidReason = zipErr ?? Properties.Resources.NetFileCacheZipTestArchiveFalse;
                             return false;
                         }
                     }
                 }
                 else
                 {
-                    invalidReason = "Null file name";
+                    invalidReason = Properties.Resources.NetFileCacheNullFileName;
                     return false;
                 }
             }
@@ -477,7 +480,7 @@ namespace CKAN
             catch (NotSupportedException nse) when (Platform.IsMono)
             {
                 // SharpZipLib throws this if your locale isn't installed on Mono
-                invalidReason = $"{nse.Message}\r\n\r\nInstall the `mono-complete` package or equivalent for your operating system.";
+                invalidReason = string.Format(Properties.Resources.NetFileCacheMonoNotSupported, nse.Message);
                 return false;
             }
         }

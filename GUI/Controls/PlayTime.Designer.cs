@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     partial class PlayTime
     {
@@ -34,9 +34,10 @@
             this.PlayTimeGrid = new System.Windows.Forms.DataGridView();
             this.NameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TimeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BottomButtonPanel = new System.Windows.Forms.Panel();
+            this.BottomButtonPanel = new LeftRightRowPanel();
             this.TotalLabel = new System.Windows.Forms.Label();
             this.OKButton = new System.Windows.Forms.Button();
+            this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             //
             // EditHelpLabel
@@ -45,7 +46,7 @@
             this.EditHelpLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.EditHelpLabel.BackColor = System.Drawing.Color.Transparent;
             this.EditHelpLabel.Location = new System.Drawing.Point(4, 5);
-            this.EditHelpLabel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.EditHelpLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
             this.EditHelpLabel.Name = "EditHelpLabel";
             this.EditHelpLabel.Size = new System.Drawing.Size(147, 20);
             this.EditHelpLabel.TabIndex = 0;
@@ -71,7 +72,7 @@
             this.NameColumn,
             this.TimeColumn});
             this.PlayTimeGrid.Location = new System.Drawing.Point(0, 111);
-            this.PlayTimeGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.PlayTimeGrid.Margin = new System.Windows.Forms.Padding(0, 5, 0, 5);
             this.PlayTimeGrid.MultiSelect = false;
             this.PlayTimeGrid.Name = "PlayTimeGrid";
             this.PlayTimeGrid.RowHeadersVisible = false;
@@ -101,18 +102,16 @@
             // 
             // BottomButtonPanel
             // 
-            this.BottomButtonPanel.Controls.Add(this.OKButton);
-            this.BottomButtonPanel.Controls.Add(this.TotalLabel);
+            this.BottomButtonPanel.RightControls.Add(this.OKButton);
+            this.BottomButtonPanel.LeftControls.Add(this.TotalLabel);
             this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomButtonPanel.Name = "BottomButtonPanel";
-            this.BottomButtonPanel.Size = new System.Drawing.Size(500, 40);
             //
             // TotalLabel
             //
             this.TotalLabel.AutoSize = true;
             this.TotalLabel.BackColor = System.Drawing.Color.Transparent;
-            this.TotalLabel.Location = new System.Drawing.Point(0, 8);
-            this.TotalLabel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.TotalLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
             this.TotalLabel.Name = "TotalLabel";
             this.TotalLabel.Size = new System.Drawing.Size(147, 20);
             this.TotalLabel.TabIndex = 2;
@@ -121,10 +120,9 @@
             //
             // OKButton
             //
-            this.OKButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.OKButton.AutoSize = true;
+            this.OKButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.OKButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.OKButton.Location = new System.Drawing.Point(383, 5);
-            this.OKButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(112, 30);
             this.OKButton.TabIndex = 3;
@@ -140,6 +138,8 @@
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "PlayTime";
             this.Size = new System.Drawing.Size(500, 500);
+            this.BottomButtonPanel.ResumeLayout(false);
+            this.BottomButtonPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -149,7 +149,7 @@
         private System.Windows.Forms.DataGridView PlayTimeGrid;
         private System.Windows.Forms.DataGridViewTextBoxColumn NameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn TimeColumn;
-        private System.Windows.Forms.Panel BottomButtonPanel;
+        private LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Label TotalLabel;
         private System.Windows.Forms.Button OKButton;
     }

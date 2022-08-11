@@ -14,6 +14,7 @@ Source2: ckan.1
 Source3: ckan.desktop
 Source4: ckan.ico
 Source5: ckan-consoleui.desktop
+Source6: ckan-cmdprompt.desktop
 
 %description
 KSP-CKAN official client.
@@ -35,6 +36,7 @@ cp %{SOURCE2} %{buildroot}%{_mandir}/man1
 mkdir -p %{buildroot}%{_datadir}/applications
 cp %{SOURCE3} %{buildroot}%{_datadir}/applications
 cp %{SOURCE5} %{buildroot}%{_datadir}/applications
+cp %{SOURCE6} %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_datadir}/icons
 cp %{SOURCE4} %{buildroot}%{_datadir}/icons
 
@@ -46,6 +48,9 @@ cp %{SOURCE4} %{buildroot}%{_datadir}/icons
 %{_mandir}/man1/*
 
 %changelog
+* Mon Aug 8 2022 The CKAN authors <rpm@ksp-ckan.space> 1.31.2
+- Added Command Prompt desktop file
+
 * Fri May 15 2020 The CKAN authors <rpm@ksp-ckan.space> 1.28.0
 - Added ConsoleUI desktop file
 

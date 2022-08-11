@@ -294,18 +294,24 @@ namespace CKAN.ConsoleUI.Toolkit {
             if (sortMenu == null) {
                 List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>() {
                     new ConsoleMenuOption(
-                        "Ascending", "",
-                        "Sort the list in ascending order",
+                        Properties.Resources.Ascending, "",
+                        Properties.Resources.AscendingSortTip,
                         true,
-                        (ConsoleTheme theme) => { SortDirection  =  ListSortDirection.Ascending; return true; },
-                        () => { return sortDir == ListSortDirection.Ascending;              }
+                        (ConsoleTheme theme) => {
+                            SortDirection = ListSortDirection.Ascending;
+                            return true;
+                        },
+                        () => sortDir == ListSortDirection.Ascending
                     ),
                     new ConsoleMenuOption(
-                        "Descending", "",
-                        "Sort the list in descending order",
+                        Properties.Resources.Descending, "",
+                        Properties.Resources.DescendingSortTip,
                         true,
-                        (ConsoleTheme theme) => { SortDirection  =  ListSortDirection.Descending; return true;},
-                        () => { return sortDir == ListSortDirection.Descending;             }
+                        (ConsoleTheme theme) => {
+                            SortDirection = ListSortDirection.Descending;
+                            return true;
+                        },
+                        () => sortDir == ListSortDirection.Descending
                     ),
                     null
                 };
@@ -314,15 +320,18 @@ namespace CKAN.ConsoleUI.Toolkit {
                     int newIndex = i;
                     opts.Add(new ConsoleMenuOption(
                         string.IsNullOrEmpty(columns[i].Header)
-                            ? $"Column #{i+1}"
+                            ? string.Format(Properties.Resources.ColumnNumber, i + 1)
                             : columns[i].Header,
                         "",
                         string.IsNullOrEmpty(columns[i].Header)
-                            ? $"Sort the list by column #{i+1}"
-                            : $"Sort the list by the {columns[i].Header} column",
+                            ? string.Format(Properties.Resources.ColumnNumberSortTip, i + 1)
+                            : string.Format(Properties.Resources.ColumnNameSortTip, columns[i].Header),
                         true,
-                        (ConsoleTheme theme) => { SortColumnIndex = newIndex; return true; },
-                        () => { return sortColIndex == newIndex;         }
+                        (ConsoleTheme theme) => {
+                            SortColumnIndex = newIndex;
+                            return true;
+                        },
+                        () => sortColIndex == newIndex
                     ));
                 }
                 sortMenu = new ConsolePopupMenu(opts);

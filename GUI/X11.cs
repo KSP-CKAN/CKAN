@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public struct XClassHint
     {

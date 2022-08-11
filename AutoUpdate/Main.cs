@@ -16,7 +16,7 @@ using System.Windows.Forms;
  * AutoUpdate.exe <running CKAN PID> <running CKAN path> <updated CKAN path> <launch>
  */
 
-namespace AutoUpdater
+namespace CKAN.AutoUpdateHelper
 {
     public class Program
     {
@@ -26,7 +26,7 @@ namespace AutoUpdater
 
             if (args.Length != 4)
             {
-                ReportError("Usage: AutoUpdater.exe pid oldPath newPath [no]launch");
+                ReportError("{0}: AutoUpdater.exe pid oldPath newPath [no]launch", Properties.Resources.Usage);
                 return ExitBADOPT;
             }
 
@@ -39,7 +39,7 @@ namespace AutoUpdater
 
             if (!File.Exists(updated_path))
             {
-                ReportError($"Downloaded ckan.exe not found at: {updated_path}");
+                ReportError(Properties.Resources.DownloadNotFound, updated_path);
                 return ExitBADOPT;
             }
 
@@ -71,7 +71,7 @@ namespace AutoUpdater
             }
             catch (Exception exc)
             {
-                ReportError($"Failed to wait for CKAN to close: {exc.Message}");
+                ReportError(Properties.Resources.FailedToWait, exc.Message);
                 return ExitERROR;
             }
 
@@ -86,7 +86,7 @@ namespace AutoUpdater
                 {
                     if (retry == maxRetries - 1)
                     {
-                        ReportError($"Failed to delete {local_path}: {exc.Message}");
+                        ReportError(Properties.Resources.FailedToDelete, local_path, exc.Message);
                         if (fromGui)
                         {
                             // Launch the old EXE that we can't delete
@@ -172,20 +172,21 @@ namespace AutoUpdater
         /// <param name="e">Info about the exception</param>
         private static void UnhandledExceptionEventHandler(Object sender, UnhandledExceptionEventArgs e)
         {
-            ReportError($"Unhandled exception:\r\n{e.ExceptionObject}");
+            ReportError(Properties.Resources.UnhandledException, e.ExceptionObject);
         }
 
         /// <summary>
         /// It's nice to tell the user when something goes wrong!
         /// </summary>
         /// <param name="err">Description of the problem that happened</param>
-        private static void ReportError(string err)
+        private static void ReportError(string message, params object[] args)
         {
+            string err = string.Format(message, args);
             Console.Error.WriteLine(err);
             if (fromGui)
             {
                 // Show a popup in case the console isn't open
-                MessageBox.Show(err, "Fatal AutoUpdater Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(err, Properties.Resources.FatalErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

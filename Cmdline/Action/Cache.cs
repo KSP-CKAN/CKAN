@@ -6,79 +6,79 @@ using Autofac;
 
 namespace CKAN.CmdLine
 {
+    public class CacheSubOptions : VerbCommandOptions
+    {
+        [VerbOption("list", HelpText = "List the download cache path")]
+        public CommonOptions ListOptions { get; set; }
+
+        [VerbOption("set", HelpText = "Set the download cache path")]
+        public SetOptions SetOptions { get; set; }
+
+        [VerbOption("clear", HelpText = "Clear the download cache directory")]
+        public CommonOptions ClearOptions { get; set; }
+
+        [VerbOption("reset", HelpText = "Set the download cache path to the default")]
+        public CommonOptions ResetOptions { get; set; }
+
+        [VerbOption("showlimit", HelpText = "Show the cache size limit")]
+        public CommonOptions ShowLimitOptions { get; set; }
+
+        [VerbOption("setlimit", HelpText = "Set the cache size limit")]
+        public SetLimitOptions SetLimitOptions { get; set; }
+
+        [HelpVerbOption]
+        public string GetUsage(string verb)
+        {
+            HelpText ht = HelpText.AutoBuild(this, verb);
+            // Add a usage prefix line
+            ht.AddPreOptionsLine(" ");
+            if (string.IsNullOrEmpty(verb))
+            {
+                ht.AddPreOptionsLine($"ckan cache - {Properties.Resources.CacheHelpSummary}");
+                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan cache <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
+            }
+            else
+            {
+                ht.AddPreOptionsLine("cache " + verb + " - " + GetDescription(verb));
+                switch (verb)
+                {
+                    // First the commands with one string argument
+                    case "set":
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}] path");
+                        break;
+                    case "setlimit":
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}] megabytes");
+                        break;
+
+                    // Now the commands with only --flag type options
+                    case "list":
+                    case "clear":
+                    case "reset":
+                    case "showlimit":
+                    default:
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}]");
+                        break;
+                }
+            }
+            return ht;
+        }
+    }
+
+    public class SetOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public string Path { get; set; }
+    }
+
+    public class SetLimitOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public long Megabytes { get; set; } = -1;
+    }
+
     public class Cache : ISubCommand
     {
         public Cache() { }
-
-        private class CacheSubOptions : VerbCommandOptions
-        {
-            [VerbOption("list", HelpText = "List the download cache path")]
-            public CommonOptions ListOptions { get; set; }
-
-            [VerbOption("set", HelpText = "Set the download cache path")]
-            public SetOptions SetOptions { get; set; }
-
-            [VerbOption("clear", HelpText = "Clear the download cache directory")]
-            public CommonOptions ClearOptions { get; set; }
-
-            [VerbOption("reset", HelpText = "Set the download cache path to the default")]
-            public CommonOptions ResetOptions { get; set; }
-
-            [VerbOption("showlimit", HelpText = "Show the cache size limit")]
-            public CommonOptions ShowLimitOptions { get; set; }
-
-            [VerbOption("setlimit", HelpText = "Set the cache size limit")]
-            public SetLimitOptions SetLimitOptions { get; set; }
-
-            [HelpVerbOption]
-            public string GetUsage(string verb)
-            {
-                HelpText ht = HelpText.AutoBuild(this, verb);
-                // Add a usage prefix line
-                ht.AddPreOptionsLine(" ");
-                if (string.IsNullOrEmpty(verb))
-                {
-                    ht.AddPreOptionsLine("ckan cache - Manage the download cache path of CKAN");
-                    ht.AddPreOptionsLine($"Usage: ckan cache <command> [options]");
-                }
-                else
-                {
-                    ht.AddPreOptionsLine("cache " + verb + " - " + GetDescription(verb));
-                    switch (verb)
-                    {
-                        // First the commands with one string argument
-                        case "set":
-                            ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options] path");
-                            break;
-                        case "setlimit":
-                            ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options] megabytes");
-                            break;
-
-                        // Now the commands with only --flag type options
-                        case "list":
-                        case "clear":
-                        case "reset":
-                        case "showlimit":
-                        default:
-                            ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options]");
-                            break;
-                    }
-                }
-                return ht;
-            }
-        }
-
-        private class SetOptions : CommonOptions
-        {
-            [ValueOption(0)]
-            public string Path { get; set; }
-        }
-
-        private class SetLimitOptions : CommonOptions
-        {
-            [ValueOption(0)]
-            public long Megabytes { get; set; } = -1;
-        }
 
         /// <summary>
         /// Execute a cache subcommand
@@ -135,7 +135,7 @@ namespace CKAN.CmdLine
                             break;
 
                         default:
-                            user.RaiseMessage("Unknown command: cache {0}", option);
+                            user.RaiseMessage("{0}: cache {1}", Properties.Resources.UnknownCommand, option);
                             exitCode = Exit.BADOPT;
                             break;
                     }
@@ -156,7 +156,7 @@ namespace CKAN.CmdLine
         {
             if (string.IsNullOrEmpty(options.Path))
             {
-                user.RaiseError("set <path> - argument missing, perhaps you forgot it?");
+                user.RaiseError("set <{0}> - {1}", Properties.Resources.Path, Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
 
@@ -164,13 +164,13 @@ namespace CKAN.CmdLine
             if (manager.TrySetupCache(options.Path, out failReason))
             {
                 IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-                user.RaiseMessage($"Download cache set to {cfg.DownloadCacheDir}");
+                user.RaiseMessage(Properties.Resources.CacheSet, cfg.DownloadCacheDir);
                 printCacheInfo();
                 return Exit.OK;
             }
             else
             {
-                user.RaiseError($"Invalid path: {failReason}");
+                user.RaiseError(Properties.Resources.CacheInvalidPath, failReason);
                 return Exit.BADOPT;
             }
         }
@@ -178,7 +178,7 @@ namespace CKAN.CmdLine
         private int ClearCacheDirectory(CommonOptions options)
         {
             manager.Cache.RemoveAll();
-            user.RaiseMessage("Download cache cleared.");
+            user.RaiseMessage(Properties.Resources.CacheCleared);
             printCacheInfo();
             return Exit.OK;
         }
@@ -189,12 +189,12 @@ namespace CKAN.CmdLine
             if (manager.TrySetupCache("", out failReason))
             {
                 IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-                user.RaiseMessage($"Download cache reset to {cfg.DownloadCacheDir}");
+                user.RaiseMessage(Properties.Resources.CacheReset, cfg.DownloadCacheDir);
                 printCacheInfo();
             }
             else
             {
-                user.RaiseError($"Can't reset cache path: {failReason}");
+                user.RaiseError(Properties.Resources.CacheResetFailed, failReason);
             }
             return Exit.OK;
         }
@@ -208,7 +208,7 @@ namespace CKAN.CmdLine
             }
             else
             {
-                user.RaiseMessage("Unlimited");
+                user.RaiseMessage(Properties.Resources.CacheUnlimited);
             }
             return Exit.OK;
         }
@@ -232,11 +232,11 @@ namespace CKAN.CmdLine
             int fileCount;
             long bytes;
             manager.Cache.GetSizeInfo(out fileCount, out bytes);
-            user.RaiseMessage($"{fileCount} files, {CkanModule.FmtSize(bytes)}");
+            user.RaiseMessage(Properties.Resources.CacheInfo, fileCount, CkanModule.FmtSize(bytes));
         }
 
+        private IUser               user;
         private GameInstanceManager manager;
-        private IUser      user;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Cache));
     }

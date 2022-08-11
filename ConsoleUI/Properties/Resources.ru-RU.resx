@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Accept" xml:space="preserve"><value>Принять</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="DefaultGhostText" xml:space="preserve"><value>&lt;Введите значение&gt;</value></data>
+  <data name="Ascending" xml:space="preserve"><value>По возрастанию</value></data>
+  <data name="AscendingSortTip" xml:space="preserve"><value>Сортировка списка по возрастанию</value></data>
+  <data name="Descending" xml:space="preserve"><value>По убыванию</value></data>
+  <data name="DescendingSortTip" xml:space="preserve"><value>Сортировка списка по убыванию</value></data>
+  <data name="ColumnNumber" xml:space="preserve"><value>Столбец №{0}</value></data>
+  <data name="ColumnNumberSortTip" xml:space="preserve"><value>Сортировка списка по столбцу №{0}</value></data>
+  <data name="ColumnNameSortTip" xml:space="preserve"><value>Сортировка списка по столбцу «{0}» </value></data>
+  <data name="CursorKeys" xml:space="preserve"><value>Стрелки</value></data>
+  <data name="Scroll" xml:space="preserve"><value>Прокрутка</value></data>
+  <data name="ScrollMessages" xml:space="preserve"><value>Прокрутка сообщений</value></data>
+  <data name="Menu" xml:space="preserve"><value>Меню</value></data>
+  <data name="Yes" xml:space="preserve"><value>Да</value></data>
+  <data name="No" xml:space="preserve"><value>Нет</value></data>
+  <data name="OK" xml:space="preserve"><value>OK</value></data>
+  <data name="Force" xml:space="preserve"><value>Принуд.</value></data>
+  <data name="Tab" xml:space="preserve"><value>Tab</value></data>
+  <data name="Enter" xml:space="preserve"><value>Enter</value></data>
+  <data name="Esc" xml:space="preserve"><value>Esc</value></data>
+  <data name="Ctrl" xml:space="preserve"><value>Ctrl</value></data>
+  <data name="Alt" xml:space="preserve"><value>Alt</value></data>
+  <data name="Back" xml:space="preserve"><value>Назад</value></data>
+  <data name="Quit" xml:space="preserve"><value>Выйти</value></data>
+  <data name="Add" xml:space="preserve"><value>Добавить</value></data>
+  <data name="Remove" xml:space="preserve"><value>Удалить</value></data>
+  <data name="Edit" xml:space="preserve"><value>Изменить</value></data>
+  <data name="Sort" xml:space="preserve"><value>Сортировка</value></data>
+  <data name="Toggle" xml:space="preserve"><value>Переключить</value></data>
+  <data name="Select" xml:space="preserve"><value>Выбрать</value></data>
+  <data name="SelectAll" xml:space="preserve"><value>Выбрать все</value></data>
+  <data name="DeselectAll" xml:space="preserve"><value>Снять выделение</value></data>
+  <data name="Details" xml:space="preserve"><value>Подробно</value></data>
+  <data name="Up" xml:space="preserve"><value>Вверх</value></data>
+  <data name="Down" xml:space="preserve"><value>Вниз</value></data>
+  <data name="AuthTokenListTitle" xml:space="preserve"><value>Токены аутентификации</value></data>
+  <data name="AuthTokenListGitHubLink" xml:space="preserve"><value>Создать токен GitHub API</value></data>
+  <data name="AuthTokenListGitHubLinkTip" xml:space="preserve"><value>Открытие страницы для создания токенов аутентификации GitHub API</value></data>
+  <data name="AuthTokenListLabel" xml:space="preserve"><value>Токены аутентификации для загрузок:</value></data>
+  <data name="AuthTokenListHostHeader" xml:space="preserve"><value>Хост</value></data>
+  <data name="AuthTokenListTokenHeader" xml:space="preserve"><value>Токен</value></data>
+  <data name="AuthTokenListWarning" xml:space="preserve"><value>ВНИМАНИЕ: Не делитесь ни с кем этими значениями!</value></data>
+  <data name="AuthTokenListMissingToken" xml:space="preserve"><value>&lt;ОШИБКА&gt;</value></data>
+  <data name="AuthTokenAddTitle" xml:space="preserve"><value>Создать ключ аутентификации</value></data>
+  <data name="AuthTokenAddHost" xml:space="preserve"><value>Хост:</value></data>
+  <data name="AuthTokenAddHostGhostText" xml:space="preserve"><value>&lt;Введите имя хоста&gt;</value></data>
+  <data name="AuthTokenAddToken" xml:space="preserve"><value>Токен:</value></data>
+  <data name="AuthTokenAddTokenGhostText" xml:space="preserve"><value>&lt;Введите токен аутентификации&gt;</value></data>
+  <data name="CompatibleVersionsTitle" xml:space="preserve"><value>Выбор совместимой версии</value></data>
+  <data name="CompatibleVersionsListHeader" xml:space="preserve"><value>Версия игры</value></data>
+  <data name="CompatibleVersionsListAcceptTip" xml:space="preserve"><value>Выбор версии</value></data>
+  <data name="CompatibleVersionsGhostText" xml:space="preserve"><value>&lt;Введите номер версии&gt;</value></data>
+  <data name="CompatibleVersionsEntryAcceptTip" xml:space="preserve"><value>Принять значеие</value></data>
+  <data name="ThemeNotFound" xml:space="preserve"><value>Тема «{0}» не существует</value></data>
+  <data name="ThemeList" xml:space="preserve"><value>Доступные темы: {0}</value></data>
+  <data name="RecommendationsLabel" xml:space="preserve"><value>Рекомендуются или предлагаются дополнительные модификации:</value></data>
+  <data name="RecommendationsInstallHeader" xml:space="preserve"><value>Уст.</value></data>
+  <data name="RecommendationsNameHeader" xml:space="preserve"><value>Название</value></data>
+  <data name="RecommendationsSourcesHeader" xml:space="preserve"><value>Источники</value></data>
+  <data name="RecommendationsTitle" xml:space="preserve"><value>Рекомендации и предложения</value></data>
+  <data name="ImportSelectTitle" xml:space="preserve"><value>Импорт загруженных модификаций</value></data>
+  <data name="ImportSelectHeader" xml:space="preserve"><value>Импорт</value></data>
+  <data name="ImportProgressTitle" xml:space="preserve"><value>Импортирование загрузок</value></data>
+  <data name="ImportProgressMessage" xml:space="preserve"><value>Вычисление...</value></data>
+  <data name="InstanceNameLabel" xml:space="preserve"><value>Название:</value></data>
+  <data name="InstanceNameGhostText" xml:space="preserve"><value>&lt;Введите название данной сборки&gt;</value></data>
+  <data name="InstancePathGhostText" xml:space="preserve"><value>&lt;Введите путь к сборке&gt;</value></data>
+  <data name="InstancePathLabel" xml:space="preserve"><value>Расположение сборки:</value></data>
+  <data name="InstanceNameEmptyError" xml:space="preserve"><value>Имя не может быть пустым!</value></data>
+  <data name="InstanceNameDuplicateError" xml:space="preserve"><value>Сборка «{0}» уже существует!</value></data>
+  <data name="InstancePathNotGameFolderError" xml:space="preserve"><value>Путь не является папкой с игрой!</value></data>
+  <data name="InstanceAddExample" xml:space="preserve"><value>Пример: {0}</value></data>
+  <data name="InstanceAddTitle" xml:space="preserve"><value>Добавить сборку игры</value></data>
+  <data name="InstanceEditTitle" xml:space="preserve"><value>Изменить сборку игры</value></data>
+  <data name="InstanceEditRepoFrameTitle" xml:space="preserve"><value>Источники списка модификаций</value></data>
+  <data name="InstanceEditCompatFrameTitle" xml:space="preserve"><value>Дополнительные совместимые версии игры</value></data>
+  <data name="InstanceEditRepoIndexHeader" xml:space="preserve"><value>Указ.</value></data>
+  <data name="InstanceEditRepoNameHeader" xml:space="preserve"><value>Название</value></data>
+  <data name="InstanceEditRepoURLHeader" xml:space="preserve"><value>URL</value></data>
+  <data name="InstanceEditCompatVersionHeader" xml:space="preserve"><value>Версия</value></data>
+  <data name="InstanceEditRegistryParseError" xml:space="preserve"><value>Не удалось извлечь источники списка модификаций из {0}.</value></data>
+  <data name="InstanceListTitle" xml:space="preserve"><value>Сборки игры</value></data>
+  <data name="InstanceListLabel" xml:space="preserve"><value>Выберите или добавьте сборку игры:</value></data>
+  <data name="InstanceListDefaultHeader" xml:space="preserve"><value>Умл.</value></data>
+  <data name="InstanceListNameHeader" xml:space="preserve"><value>Название</value></data>
+  <data name="InstanceListGameHeader" xml:space="preserve"><value>Игра</value></data>
+  <data name="InstanceListVersionHeader" xml:space="preserve"><value>Версия</value></data>
+  <data name="InstanceListPathHeader" xml:space="preserve"><value>Путь</value></data>
+  <data name="InstanceListLoadingInstance" xml:space="preserve"><value>Загрузка сборки «{0}»...</value></data>
+  <data name="InstanceListDefaultToggle" xml:space="preserve"><value>По умолчанию</value></data>
+  <data name="InstanceListLoadingError" xml:space="preserve"><value>Ошибка загрузки «{0}»:
+{1}</value></data>
+  <data name="InstanceListLocked" xml:space="preserve"><value>Блокирующий файл с ID процесса найден в {0}
+
+Это может означать, что другой процесс CKAN работает с этой сборкой. 
+Вы можете удалить этот файл, но в таком случае вероятно повреждение данных.
+
+Хотите ли вы удалить блокирующий файл для получения доступа?</value></data>
+  <data name="InstanceListNoVersion" xml:space="preserve"><value>&lt;НЕТ&gt;</value></data>
+  <data name="InstallTitle" xml:space="preserve"><value>Установка, обновление и удаление модификаций</value></data>
+  <data name="InstallMessage" xml:space="preserve"><value>Вычисление...</value></data>
+  <data name="InstallOwnedFileConflict" xml:space="preserve"><value>{0} пытался установить {1}, но {2} уже установил его.
+Пожалуйста, сообщите о проблеме по адресу https://github.com/KSP-CKAN/NetKAN/issues/new/choose</value></data>
+  <data name="InstallUnownedFileConflict" xml:space="preserve"><value>{0} пытался установить {1}, но он был уже установлен.
+Для установки {2} вручную удалите модификацию, которой принадлежит этот файл.</value></data>
+  <data name="InstallFilesReverted" xml:space="preserve"><value>Файлы игры возвращены.</value></data>
+  <data name="InstallAuthTokenPrompt" xml:space="preserve"><value>{0}
+
+Изменить токены аутентификации?</value></data>
+  <data name="InstallTooManyModsNameHeader" xml:space="preserve"><value>Название</value></data>
+  <data name="InstallBadMetadata" xml:space="preserve"><value>Найдены некорректные метаданные {0}: {1}</value></data>
+  <data name="InstallUnsatisfiedDependency" xml:space="preserve"><value>{0} требует {1}, но он отсутствует в указателе или недоступен для вашей версии игры.
+{2}</value></data>
+  <data name="InstallModuleNotFound" xml:space="preserve"><value>Требуется модуль {0}, но он отсутствует в указателе или недоступен для вашей версии игры.
+{1}</value></data>
+  <data name="InstallNotInstalled" xml:space="preserve"><value>{0} не установлен, невозможно удалить</value></data>
+  <data name="InstallModInstalled" xml:space="preserve"><value>{0} Успешно установлен {1} {2}</value></data>
+  <data name="ModInfoTitle" xml:space="preserve"><value>О модификации</value></data>
+  <data name="ModInfoMenuTip" xml:space="preserve"><value>Ссылки</value></data>
+  <data name="ModInfoAuthors" xml:space="preserve"><value>Автор: {0}</value></data>
+  <data name="ModInfoLicence" xml:space="preserve"><value>Лицензия:</value></data>
+  <data name="ModInfoDownload" xml:space="preserve"><value>Размер:</value></data>
+  <data name="ModInfoDescriptionFrame" xml:space="preserve"><value>Описание модификации</value></data>
+  <data name="ModInfoUnavailableWarning" xml:space="preserve"><value>
+ВНИМАНИЕ: Эта модификация установлена, но более не доступна.
+Если вы удалите её, CKAN не сможет её переустановить.</value></data>
+  <data name="ModInfoDownloadToCache" xml:space="preserve"><value>Загрузить в кэш (без установки)</value></data>
+  <data name="ModInfoHomePage" xml:space="preserve"><value>Страница</value></data>
+  <data name="ModInfoHomePageTip" xml:space="preserve"><value>Открыть домашнюю страницу в браузере</value></data>
+  <data name="ModInfoRepository" xml:space="preserve"><value>Репозиторий</value></data>
+  <data name="ModInfoRepositoryTip" xml:space="preserve"><value>Открыть страницу репозитория в браузере</value></data>
+  <data name="ModInfoBugtracker" xml:space="preserve"><value>Багтрекер</value></data>
+  <data name="ModInfoBugtrackerTip" xml:space="preserve"><value>Открыть страницу багтрекера в браузере</value></data>
+  <data name="ModInfoSpaceDock" xml:space="preserve"><value>SpaceDock</value></data>
+  <data name="ModInfoSpaceDockTip" xml:space="preserve"><value>Открыть страницу SpaceDock в браузере</value></data>
+  <data name="ModInfoCurse" xml:space="preserve"><value>Curse</value></data>
+  <data name="ModInfoCurseTip" xml:space="preserve"><value>Открыть страницу Curse в браузере</value></data>
+  <data name="ModInfoStore" xml:space="preserve"><value>Магазин</value></data>
+  <data name="ModInfoStoreTip" xml:space="preserve"><value>Открыть страницу магазина в браузере</value></data>
+  <data name="ModInfoSteamStore" xml:space="preserve"><value>Магазин Steam</value></data>
+  <data name="ModInfoSteamStoreTip" xml:space="preserve"><value>Открыть страницу магазина Steam в браузере</value></data>
+  <data name="ModInfoViewMetadata" xml:space="preserve"><value>ОТЛАДКА: Просмотр метаданных</value></data>
+  <data name="ModInfoViewMetadataTip" xml:space="preserve"><value>Просмотр всех данных реестра для этой модификации</value></data>
+  <data name="ModInfoViewMetadataTitle" xml:space="preserve"><value>Метаданные {0}</value></data>
+  <data name="ModInfoURLLaunching" xml:space="preserve"><value>Запуск...</value></data>
+  <data name="ModInfoDependenciesFrame" xml:space="preserve"><value>Зависимости</value></data>
+  <data name="ModInfoRequiredLabel" xml:space="preserve"><value>Требует ({0}):</value></data>
+  <data name="ModInfoConflictsLabel" xml:space="preserve"><value>Конфликтует ({0}):</value></data>
+  <data name="ModInfoReplacedBy" xml:space="preserve"><value>Заменяется {0}:</value></data>
+  <data name="ModInfoInstalledOn" xml:space="preserve"><value>Установлен {0}</value></data>
+  <data name="ModInfoInstalledManually" xml:space="preserve"><value>Установлен вручную</value></data>
+  <data name="ModInfoLatestInstalledOn" xml:space="preserve"><value>Последняя версия/Установлен {0}</value></data>
+  <data name="ModInfoLatestInstalledManually" xml:space="preserve"><value>Последняя версия/Установлен вручную</value></data>
+  <data name="ModInfoLatestVersion" xml:space="preserve"><value>Последняя версия</value></data>
+  <data name="ModInfoOtherVersions" xml:space="preserve"><value>Другие версии</value></data>
+  <data name="ModInfoUnavailableInstalledOn" xml:space="preserve"><value>НЕДОСТУПЕН/Установлен {0}</value></data>
+  <data name="ModInfoUnavailableInstalledManually" xml:space="preserve"><value>НЕДОСТУПЕН/Установлен вручную</value></data>
+  <data name="ModInfoCompatibleWith" xml:space="preserve"><value>Совместимо с:</value></data>
+  <data name="ModInfoHostedOn" xml:space="preserve"><value>Находится в {0}</value></data>
+  <data name="ModInfoReportBugsOn" xml:space="preserve"><value>Сообщать об ошибках в {0}</value></data>
+  <data name="ModInfoRepositoryOn" xml:space="preserve"><value>Репозиторий в {0}</value></data>
+  <data name="ModInfoHomePageOn" xml:space="preserve"><value>Домашняя страница в {0}</value></data>
+  <data name="ModInfoBuyFromKSPStore" xml:space="preserve"><value>Купить в магазине KSP</value></data>
+  <data name="ModInfoBuyFromSteamStore" xml:space="preserve"><value>Купить в магазине Steam</value></data>
+  <data name="ModInfoBuyFromKSPStoreOrSteamStore" xml:space="preserve"><value>Купить в магазине KSP или Steam</value></data>
+  <data name="ModInfoDownloading" xml:space="preserve"><value>Загрузка «{0}»</value></data>
+  <data name="ModInfoDownloadCorrupted" xml:space="preserve"><value>Загрузка не завершена, файл повреждён</value></data>
+  <data name="ModInfoDownloadFailed" xml:space="preserve"><value>Загрузка не завершена: {0}</value></data>
+  <data name="ProgressTitle" xml:space="preserve"><value>Выполнение операции</value></data>
+  <data name="ProgressMessages" xml:space="preserve"><value>Сообщения</value></data>
+  <data name="SplashLoading" xml:space="preserve"><value>Загрузка...</value></data>
+  <data name="SplashPressAnyKey" xml:space="preserve"><value>Для продолжения нажмите любую клавишу</value></data>
+  <data name="RepoNameLabel" xml:space="preserve"><value>Название:</value></data>
+  <data name="RepoNameGhostText" xml:space="preserve"><value>&lt;Введите имя для данного репозитория&gt;</value></data>
+  <data name="RepoURLLabel" xml:space="preserve"><value>URL:</value></data>
+  <data name="RepoURLGhostText" xml:space="preserve"><value>&lt;Введите адрес репозитория&gt;</value></data>
+  <data name="RepoImportTip" xml:space="preserve"><value>Импорт значений из источника списка модификаций по умолчанию «{0}»</value></data>
+  <data name="RepoTitle" xml:space="preserve"><value>Изменить источник списка модификаций</value></data>
+  <data name="RepoNameEmptyError" xml:space="preserve"><value>Имя не может быть пустым!</value></data>
+  <data name="RepoNameDuplicateError" xml:space="preserve"><value>Репозиторий «{0}» уже существует!</value></data>
+  <data name="RepoURLEmptyError" xml:space="preserve"><value>Адрес не может быть пустым!</value></data>
+  <data name="ModListNameHeader" xml:space="preserve"><value>Название</value></data>
+  <data name="ModListVersionHeader" xml:space="preserve"><value>Версия</value></data>
+  <data name="ModListMaxGameVersionHeader" xml:space="preserve"><value>Макс.вер.</value></data>
+  <data name="ModListSearchFocusedGhostText" xml:space="preserve"><value>&lt;Введите текст для поиска...&gt;</value></data>
+  <data name="ModListSearchUnfocusedGhostText" xml:space="preserve"><value>&lt;Нажмите Ctrl+F для поиска&gt;</value></data>
+  <data name="ModListCount" xml:space="preserve"><value>{0} модификаций</value></data>
+  <data name="ModListSizeOnDisk" xml:space="preserve"><value>Занимает {0}</value></data>
+  <data name="ModListInstallTip" xml:space="preserve"><value>Установить</value></data>
+  <data name="ModListUpgradeTip" xml:space="preserve"><value>Обновить</value></data>
+  <data name="ModListReplaceTip" xml:space="preserve"><value>Заменить</value></data>
+  <data name="ModListRemoveTip" xml:space="preserve"><value>Удалить</value></data>
+  <data name="ModListAutoInstTip" xml:space="preserve"><value>Отметить как автоустановленное</value></data>
+  <data name="ModListUserSelectedTip" xml:space="preserve"><value>Отметить как выбранное</value></data>
+  <data name="ModListApplyChangesTip" xml:space="preserve"><value>Применить изменения</value></data>
+  <data name="ModListUpdatedDayAgo" xml:space="preserve"><value>Обновлено как минимум {0} день назад</value></data>
+  <data name="ModListUpdatedDaysAgo" xml:space="preserve"><value>Обновлено как минимум {0} дней назад</value></data>
+  <data name="ModListSortMenu" xml:space="preserve"><value>Сортировка...</value></data>
+  <data name="ModListSortMenuTip" xml:space="preserve"><value>Изменение сортировки списка модификаций</value></data>
+  <data name="ModListRefreshMenu" xml:space="preserve"><value>Обновить список модификаций</value></data>
+  <data name="ModListRefreshMenuTip" xml:space="preserve"><value>Обновление списка модификаций</value></data>
+  <data name="ModListUpgradeMenu" xml:space="preserve"><value>Обновить все модификации</value></data>
+  <data name="ModListUpgradeMenuTip" xml:space="preserve"><value>Установка всех возможных обновлений</value></data>
+  <data name="ModListAuditRecsMenu" xml:space="preserve"><value>Проверить рекомендации</value></data>
+  <data name="ModListAuditRecsMenuTip" xml:space="preserve"><value>Открытие списка модификаций, рекомендованных установленными модификациями</value></data>
+  <data name="ModListImportMenu" xml:space="preserve"><value>Импортировать загруженные модификации...</value></data>
+  <data name="ModListImportMenuTip" xml:space="preserve"><value>Импорт загруженных вручную модификаций в CKAN</value></data>
+  <data name="ModListExportMenu" xml:space="preserve"><value>Экспортировать модификации...</value></data>
+  <data name="ModListExportMenuTip" xml:space="preserve"><value>Сохранение списка установленных модификаций на диск</value></data>
+  <data name="ModListInstanceSettingsMenu" xml:space="preserve"><value>Настройки сборки игры...</value></data>
+  <data name="ModListInstanceSettingsMenuTip" xml:space="preserve"><value>Конфигурация текущей сборки игры</value></data>
+  <data name="ModListSelectInstanceMenu" xml:space="preserve"><value>Выбор сборки игры...</value></data>
+  <data name="ModListSelectInstanceMenuTip" xml:space="preserve"><value>Переключение на другую сборку игры</value></data>
+  <data name="ModListAuthTokenMenu" xml:space="preserve"><value>Токены аутентификации...</value></data>
+  <data name="ModListAuthTokenMenuTip" xml:space="preserve"><value>Изменение токенов аутентификации, отправляемых на серверы загрузки</value></data>
+  <data name="ModListHelpMenu" xml:space="preserve"><value>Помощь</value></data>
+  <data name="ModListHelpMenuTip" xml:space="preserve"><value>Подсказки по использованию CKAN</value></data>
+  <data name="ModListQuitMenu" xml:space="preserve"><value>Выйти</value></data>
+  <data name="ModListQuitMenuTip" xml:space="preserve"><value>Выход из программы</value></data>
+  <data name="ModListCaptureKeyMenu" xml:space="preserve"><value>ОТЛАДКА: Захват нажатий...</value></data>
+  <data name="ModListCaptureKeyMenuTip" xml:space="preserve"><value>Отладочная информация о том, как система отображает нажатия клавиш</value></data>
+  <data name="ModListPressAKey" xml:space="preserve"><value>Нажмите клавишу</value></data>
+  <data name="ModListAuditNotFound" xml:space="preserve"><value>Нет рекомендаций от установленных модификаций.</value></data>
+  <data name="ModListUpdateRegistryTitle" xml:space="preserve"><value>Обновление реестра</value></data>
+  <data name="ModListUpdateRegistryMessage" xml:space="preserve"><value>Проверка обновлений</value></data>
+  <data name="ModListNewMod" xml:space="preserve"><value>С последнего обновления доступна {0} новая модификация. Показать?</value></data>
+  <data name="ModListNewMods" xml:space="preserve"><value>С последнего обновления доступны {0} новые модификации. Показать?</value></data>
+  <data name="ModListScanBad" xml:space="preserve"><value>{0} Репозиторий не сохранён.</value></data>
+  <data name="ModListExportPrefix" xml:space="preserve"><value>установленные</value></data>
+  <data name="ModListExported" xml:space="preserve"><value>Список модификаций экспортирован в {0}</value></data>
+  <data name="ModListExportFailed" xml:space="preserve"><value>Экспорт не удался: {0}</value></data>
+  <data name="ModListHelpSymbolHeader" xml:space="preserve"><value>Символы статуса</value></data>
+  <data name="ModListHelpInstalled" xml:space="preserve"><value>Установлен</value></data>
+  <data name="ModListHelpAutoInstalled" xml:space="preserve"><value>Автоустановлен</value></data>
+  <data name="ModListHelpUpgradeable" xml:space="preserve"><value>Возм. обновление</value></data>
+  <data name="ModListHelpManuallyInstalled" xml:space="preserve"><value>Уст. вручную</value></data>
+  <data name="ModListHelpReplaceable" xml:space="preserve"><value>Возможна замена</value></data>
+  <data name="ModListHelpUnavailable" xml:space="preserve"><value>Недоступен</value></data>
+  <data name="ModListHelpBasicKeysHeader" xml:space="preserve"><value>Основные клавиши</value></data>
+  <data name="ModListHelpMoveFocus" xml:space="preserve"><value>Переместить фокус</value></data>
+  <data name="ModListHelpSelectRow" xml:space="preserve"><value>Выбрать строку</value></data>
+  <data name="ModListHelpClearSearch" xml:space="preserve"><value>Очистить строку поиска</value></data>
+  <data name="ModListHelpSpecialSearchesHeader" xml:space="preserve"><value>Особые параметры поиска</value></data>
+  <data name="ModListHelpAuthor" xml:space="preserve"><value>автор</value></data>
+  <data name="ModListHelpName" xml:space="preserve"><value>имя</value></data>
+  <data name="ModListHelpSearchAuthor" xml:space="preserve"><value>Модификации автора</value></data>
+  <data name="ModListHelpSearchInstalled" xml:space="preserve"><value>Установленные мод-ии</value></data>
+  <data name="ModListHelpSearchUpgradeable" xml:space="preserve"><value>Мод. с возм. обновления</value></data>
+  <data name="ModListHelpSearchDepends" xml:space="preserve"><value>Зависящие от</value></data>
+  <data name="ModListHelpSearchConflicts" xml:space="preserve"><value>Конфликтующие с</value></data>
+  <data name="ModListHelpSearchNew" xml:space="preserve"><value>Новые модификации</value></data>
+  <data name="ExitTitle" xml:space="preserve"><value>{0}, Всекербальская сеть архивов</value></data>
+  <data name="ExitBody" xml:space="preserve"><value>ВЫ ИСПОЛЬЗУЕТЕ {1}.
+
+Спасибо за загрузку {0}. Надеемся, вам нравится
+использовать её так же, как нам её создавать.
+
+Если вы заплатили за {0}, попытайтесь вернуть деньги,
+так как её можно бесплатно загрузить с
+{2}
+
+Если у вас возникают проблемы с использованием {0},
+пожалуйста, отправьте отчёт об ошибке на
+{3}
+
+СОЗДАТЕЛИ {0}:
+{4}
+</value></data>
+</root>

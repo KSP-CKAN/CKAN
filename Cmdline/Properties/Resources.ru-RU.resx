@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Usage" xml:space="preserve"><value>Использование</value></data>
+  <data name="Command" xml:space="preserve"><value>команда</value></data>
+  <data name="UnknownCommand" xml:space="preserve"><value>Неизвестная команда</value></data>
+  <data name="Options" xml:space="preserve"><value>параметры</value></data>
+  <data name="ArgumentMissing" xml:space="preserve"><value>отсутствует параметр</value></data>
+  <data name="Path" xml:space="preserve"><value>путь</value></data>
+  <data name="MainVersion" xml:space="preserve"><value>Вы используете CKAN версии {0}</value></data>
+  <data name="MainUnknownCommand" xml:space="preserve"><value>Неизвестная команда, --help для справки</value></data>
+  <data name="MainMissingInstance" xml:space="preserve"><value>CKAN не знает, где установлена сборка игры.
+Используйте 'ckan instance help' для справки.</value></data>
+  <data name="OptionsRootError" xml:space="preserve"><value>Вы пытаетесь запустить CKAN с правами администратора.
+Пожалуйста, запускайте CKAN с правами обычного пользователя (либо, если это действительно необходимо, используйте --asroot).</value></data>
+  <data name="OptionsRootWarning" xml:space="preserve"><value>Внимание: CKAN запущен с правами администратора!</value></data>
+  <data name="OptionsMonoWarning" xml:space="preserve"><value>Винмание. Обнаруженная версия mono {0} ниже, чем рекомендуемая версия {1}.
+Рекомендовано обновление!</value></data>
+  <data name="OptionsInstanceAndGameDir" xml:space="preserve"><value>--instance и --gamedir не могут быть заданы в одно и то же время</value></data>
+  <data name="OptionsInvalidInstance" xml:space="preserve"><value>Указана неверная сборка "{0}", используйте '--gamedir' для указания пути, либо 'instance list' для просмотра сборок игры</value></data>
+  <data name="InstanceNotInstance" xml:space="preserve"><value>Извините, {0} не являтся сборкой игры</value></data>
+  <data name="InstanceDuplicate" xml:space="preserve"><value>Данное имя сборки уже занято: {0}</value></data>
+  <data name="UserYesNoPromptSuffix" xml:space="preserve"><value>[Д/н]</value></data>
+  <data name="UserYesNoY" xml:space="preserve"><value>д</value></data>
+  <data name="UserYesNoYes" xml:space="preserve"><value>да</value></data>
+  <data name="UserYesNoN" xml:space="preserve"><value>н</value></data>
+  <data name="UserYesNoNo" xml:space="preserve"><value>нет</value></data>
+  <data name="UserYesNoInvalid" xml:space="preserve"><value>Пожалуйста, введите «да» или «нет»</value></data>
+  <data name="UserSelectionPromptWithDefault" xml:space="preserve"><value>Введите число между {0} и {1} (Для отмены нажмите "о" или "н". "Enter" выберет {2}.): </value></data>
+  <data name="UserSelectionPromptWithoutDefault" xml:space="preserve"><value>Введите число между {0} и {1} (Для отмены нажмите "о" или "н".): </value></data>
+  <data name="UserSelectionC" xml:space="preserve"><value>о</value></data>
+  <data name="UserSelectionN" xml:space="preserve"><value>н</value></data>
+  <data name="UserSelectionCancelled" xml:space="preserve"><value>Выбор отменён</value></data>
+  <data name="UserSelectionNotNumber" xml:space="preserve"><value>Введенное значение не является числом</value></data>
+  <data name="UserSelectionTooLarge" xml:space="preserve"><value>Введённое число слишком велико</value></data>
+  <data name="UserSelectionTooSmall" xml:space="preserve"><value>Введённое число слишком мало</value></data>
+  <data name="AuthTokenHostHeader" xml:space="preserve"><value>Хост</value></data>
+  <data name="AuthTokenTokenHeader" xml:space="preserve"><value>Токен</value></data>
+  <data name="AuthTokenHelpSummary" xml:space="preserve"><value>Управление токенами аутентификации</value></data>
+  <data name="AvailableHeader" xml:space="preserve"><value>Модули, совместимые с {0} {1}</value></data>
+  <data name="CacheHelpSummary" xml:space="preserve"><value>Управление папкой кэша загрузок CKAN</value></data>
+  <data name="CacheSet" xml:space="preserve"><value>Кэш загрузок находится в {0}</value></data>
+  <data name="CacheInvalidPath" xml:space="preserve"><value>Неверный путь: {0}</value></data>
+  <data name="CacheCleared" xml:space="preserve"><value>Кэш загрузок очищен</value></data>
+  <data name="CacheReset" xml:space="preserve"><value>Кэш загрузок сброшен в {0}</value></data>
+  <data name="CacheResetFailed" xml:space="preserve"><value>Не удалось сбросить путь к кэшу: {0}</value></data>
+  <data name="CacheUnlimited" xml:space="preserve"><value>Неограничено</value></data>
+  <data name="CacheInfo" xml:space="preserve"><value>{0} файлов, {1}</value></data>
+  <data name="CompareSame" xml:space="preserve"><value>"{0}" и "{1}" одинаковы.</value></data>
+  <data name="CompareLower" xml:space="preserve"><value>"{0}" ниже, чем "{1}".</value></data>
+  <data name="CompareHigher" xml:space="preserve"><value>"{0}" выше, чем "{1}".</value></data>
+  <data name="CompatHelpSummary" xml:space="preserve"><value>Управление версиями игры</value></data>
+  <data name="CompatVersionHeader" xml:space="preserve"><value>Версия</value></data>
+  <data name="CompatActualHeader" xml:space="preserve"><value>Актуальная</value></data>
+  <data name="CompatInvalid" xml:space="preserve"><value>ОШИБКА: Неверно указана версия игры</value></data>
+  <data name="CompatCantForget" xml:space="preserve"><value>ОШИБКА: Не удалось забыть актуальную версию игры</value></data>
+  <data name="InstanceHelpSummary" xml:space="preserve"><value>Управление сборками игры</value></data>
+  <data name="InstanceListNoVersion" xml:space="preserve"><value>&lt;НЕТ&gt;</value></data>
+  <data name="InstanceListYes" xml:space="preserve"><value>Да</value></data>
+  <data name="InstanceListNo" xml:space="preserve"><value>Нет</value></data>
+  <data name="InstanceListNameHeader" xml:space="preserve"><value>Имя</value></data>
+  <data name="InstanceListVersionHeader" xml:space="preserve"><value>Версия</value></data>
+  <data name="InstanceListDefaultHeader" xml:space="preserve"><value>По умолч.</value></data>
+  <data name="InstanceListPathHeader" xml:space="preserve"><value>Путь</value></data>
+  <data name="InstanceAddDuplicate" xml:space="preserve"><value>Сборка с именем "{0}" уже существует, операция не выполнена</value></data>
+  <data name="InstanceAdded" xml:space="preserve"><value>Добавлена "{0}" с корнем "{1}"</value></data>
+  <data name="InstanceCloneNotFound" xml:space="preserve"><value>Не найдено сборок с таким именем или по такому пути: {0}
+Проверьте список известных сборок:
+</value></data>
+  <data name="InstanceCloneFailed" xml:space="preserve"><value>Что-то пошло не так. Проверьте, произошло ли создание новой папки.
+Попробуйте вручную добавить сборку с помощью "ckan instance add".
+</value></data>
+  <data name="InstanceNotFound" xml:space="preserve"><value>Не удалось найти сборку с именем "{0}", операция не выполнена</value></data>
+  <data name="InstanceRenamed" xml:space="preserve"><value>Сборка "{0}" переименована в "{1}"</value></data>
+  <data name="InstanceForgot" xml:space="preserve"><value>Сборка "{0}" удалена</value></data>
+  <data name="InstanceDefaultArgumentMissing" xml:space="preserve"><value>отсуствует параметр, выберите из списка ниже</value></data>
+  <data name="InstanceDefaultSet" xml:space="preserve"><value>"{0}" установлена как сборка по умолчанию</value></data>
+  <data name="InstanceFakeFailed" xml:space="preserve"><value>Что-то пошло не так. Попробуйте вручную добавить сборку с помощью "ckan instance add". Проверьте, была ли создана новая папка.</value></data>
+  <data name="InstanceFakeBadArguments" xml:space="preserve"><value>--Ошибка: неверный(-е) параметр(-ы)--</value></data>
+  <data name="InstanceFakeMakingHistory" xml:space="preserve"><value>Проверьте параметр версии DLC Making History - правильный формат: Maj.Min.Patch - пример: 1.1.0</value></data>
+  <data name="InstanceFakeBreakingGround" xml:space="preserve"><value>Проверьте параметр версии DLC Breaking Ground - правильный формат: Maj.Min.Patch - пример: 1.1.0</value></data>
+  <data name="InstanceFakeVersion" xml:space="preserve"><value>Проверьте параметр версии игры - правильный формат: Maj.Min.Patch[.Build] - пример: 1.6.0 или 1.2.2.1622</value></data>
+  <data name="InstanceFakeBadGameVersion" xml:space="preserve"><value>Не удалось найти соответствующую версию игры.
+Проверьте формат введённой версии - правильный формат: Maj.Min - пример: 1.5</value></data>
+  <data name="InstanceFakeCancelled" xml:space="preserve"><value>Выбор отменён! Снова вызовите 'ckan instance fake'</value></data>
+  <data name="InstanceFakeCreating" xml:space="preserve"><value>Создание новой псевдосборки "{0}" по пути {1} с версией {2}</value></data>
+  <data name="InstanceFakeDefault" xml:space="preserve"><value>Setting new instance to default...</value></data>
+  <data name="InstanceFakeDone" xml:space="preserve"><value>--Готово--</value></data>
+  <data name="ImportError" xml:space="preserve"><value>Ошибка импортирования: {0}</value></data>
+  <data name="ImportNotFound" xml:space="preserve"><value>Файл не найден: {0}</value></data>
+  <data name="InstallNotFound" xml:space="preserve"><value>Файл не найден, выход: {0}</value></data>
+  <data name="InstallTryAgain" xml:space="preserve"><value>Попробуйте совершить `ckan update` и попытайтесь заново.
+Используйте `ckan install --no-recommends`, чтобы пропустить установку рекомендуемых модулей.
+Либо используйте `ckan install --allow-incompatible`, чтобы игнорировать проблемы совместимости.</value></data>
+  <data name="InstallUnversionedDependencyNotSatisfied" xml:space="preserve"><value>Необходим модуль {0}, но он отсутствует в указателе либо недоступен для вашей версии {1}</value></data>
+  <data name="InstallVersionedDependencyNotSatisfied" xml:space="preserve"><value>Необходим модуль {0} {1}, но он отсутствует в указателе либо недоступен для вашей версии {2}</value></data>
+  <data name="InstallBadMetadata" xml:space="preserve"><value>Обнаружены некорректные метаданные для модуля {0}: {1}</value></data>
+  <data name="InstallFileConflictOwned" xml:space="preserve"><value>О нет! Была произведена попытка перезаписать файл, принадлежащий другой модификации!
+Произведите `ckan update` и попытайтесь заново.
+
+Если проблема повторяется, это может означать ошибку упаковки пакета.
+Пожалуйста, отправьте отчёт об ошибке на:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new
+
+Включите в отчёт следующую информацию:
+
+File           : {0} (Файл)
+Installing Mod : {1} (Устанавливающаяся модификация)
+Owning Mod     : {2} (Модификация-владелец файла)
+CKAN Version   : {3} (Версия CKAN)
+</value></data>
+  <data name="InstallFileConflictUnowned" xml:space="preserve"><value>О нет!
+
+Похоже, что вы пытаетесь установить модификацию, которая уже установлена
+или конфликтует с другой уже установленной модификацией.
+
+В качестве меры безопасности CKAN *никогда* не меняет файлы,
+которые не установила сама.
+
+Если вы хотите установить {0} с помощью CKAN,
+вручную удалите модификацию, которой принадлежит файл:
+
+{1}
+
+и попытайтесь заново.
+</value></data>
+  <data name="InstallGamedataReturned" xml:space="preserve"><value>{0} возвращена в изначальное состояние</value></data>
+  <data name="InstallCancelled" xml:space="preserve"><value>Установка отменена. Ваши файлы возвращены в изначальное состояние.</value></data>
+  <data name="InstallAborted" xml:space="preserve"><value>Установка отменена: {0}</value></data>
+  <data name="InstallTryAuthToken" xml:space="preserve"><value>Используйте команду authtoken. Используйте {0} для справки.</value></data>
+  <data name="InstallDownloadFailed" xml:space="preserve"><value>Не удалось загрузить один или несколько файлов, остановка</value></data>
+  <data name="InstallDLC" xml:space="preserve"><value>CKAN не может установить дополнение '{0}'.</value></data>
+  <data name="InstallDLCStorePage" xml:space="preserve"><value>Для установки дополнений приобретите их в соответствующем магазине:
+{0}</value></data>
+  <data name="ListUnknownFormat" xml:space="preserve"><value>Неизвестный формат экспорта: {0}</value></data>
+  <data name="ListGameFound" xml:space="preserve"><value>{0} найден по пути: {1}</value></data>
+  <data name="ListGameVersion" xml:space="preserve"><value>{0} версия: {1}</value></data>
+  <data name="ListGameModulesHeader" xml:space="preserve"><value>Установленные модули:</value></data>
+  <data name="ListLegend" xml:space="preserve"><value>Legend: -: Обновлено. +: Авто-уст. X: Несовместимо. ^: Возм. обнов. >: Есть замена
+        A: Обнаружено. ?: Неизв. *: Поврежд.</value></data>
+  <data name="MarkHelpSummary" xml:space="preserve"><value>Изменение флагов модулей</value></data>
+  <data name="MarkUnknownCommand" xml:space="preserve"><value>Неизвестная команда: mark {0}</value></data>
+  <data name="MarkNotInstalled" xml:space="preserve"><value>{0} не установлен</value></data>
+  <data name="MarkAlready" xml:space="preserve"><value>{0} уже отмечен как {1}</value></data>
+  <data name="Marking" xml:space="preserve"><value>Отметка {0} как {1}...</value></data>
+  <data name="MarkDLC" xml:space="preserve"><value>Дополнение '{0}' нельзя отметить как авто-устанавливаемое</value></data>
+  <data name="MarkChanged" xml:space="preserve"><value>Изменения совершены!</value></data>
+  <data name="MarkAutoInstalled" xml:space="preserve"><value>авто-устанавливаемое</value></data>
+  <data name="MarkUserSelected" xml:space="preserve"><value>выбранное пользователем</value></data>
+  <data name="PromptWelcome" xml:space="preserve"><value>Добро пожаловать в CKAN!
+
+Для справки введите `help` и нажмите Enter. Чтобы выйти, введите {0} и нажмите Enter.
+</value></data>
+  <data name="PromptWithInstance" xml:space="preserve"><value>CKAN {0}: {1} {2} ({3})&gt; </value></data>
+  <data name="PromptWithoutInstance" xml:space="preserve"><value>CKAN {0}&gt; </value></data>
+  <data name="RemoveNotInstalled" xml:space="preserve"><value>Невозможно выполнить, {0} не установлена.
+Используйте `ckan list` для вывода списка установленных модификаций.</value></data>
+  <data name="RemoveDLC" xml:space="preserve"><value>CKAN не может удалить дополнение '{0}'.</value></data>
+  <data name="RemoveDLCStorePage" xml:space="preserve"><value>Чтобы удалить дополнение, следуйте инструкциям на странице магазина, где оно было приобретено:
+{0}</value></data>
+  <data name="RemoveCancelled" xml:space="preserve"><value>Удаление отменено: {0}</value></data>
+  <data name="RemoveNothing" xml:space="preserve"><value>Не выбрано ни обной модификации</value></data>
+  <data name="RepairHelpSummary" xml:space="preserve"><value>Способы автоматического восстановления</value></data>
+  <data name="RepairUnknownCommand" xml:space="preserve"><value>Неизвестная команда: repair {0}</value></data>
+  <data name="Repaired" xml:space="preserve"><value>Произведена попытка восстановления реестра.</value></data>
+  <data name="ReplaceModuleNotFound" xml:space="preserve"><value>Модуль {0} не найден</value></data>
+  <data name="Replacing" xml:space="preserve"><value>Замена модулей...</value></data>
+  <data name="ReplaceFound" xml:space="preserve"><value>Для {2} {3} найден заменяющий модуль {0} {1}</value></data>
+  <data name="ReplaceContinuePrompt" xml:space="preserve"><value>Продолжить?</value></data>
+  <data name="ReplaceCancelled" xml:space="preserve"><value>Операция замены отменена по запросу пользователя</value></data>
+  <data name="ReplaceDependencyNotSatisfied" xml:space="preserve"><value>Не удовлетворены зависимости для замены, {0} требует {1} {2}, но его нет в указателе либо он недоступен для вашей версии {3}</value></data>
+  <data name="ReplaceNotFound" xml:space="preserve"><value>Замен не найдено</value></data>
+  <data name="RepoHelpSummary" xml:space="preserve"><value>Управление репозиториями CKAN</value></data>
+  <data name="RepoUnknownCommand" xml:space="preserve"><value>Неизвестная команда: repo {0}</value></data>
+  <data name="RepoAvailableHeader" xml:space="preserve"><value>Все доступные (основные) репозитории CKAN:</value></data>
+  <data name="RepoAvailableFailed" xml:space="preserve"><value>Не удалось загрузить список репозиториев CKAN из {0}</value></data>
+  <data name="RepoListHeader" xml:space="preserve"><value>Список известных репозиториев:</value></data>
+  <data name="RepoAddNotFound" xml:space="preserve"><value>{0} не найден в основном списке, предоставьте имя и URI</value></data>
+  <data name="RepoAddDuplicate" xml:space="preserve"><value>Репозиторий с именем "{0}" уже существует, операция не выполнена</value></data>
+  <data name="RepoAdded" xml:space="preserve"><value>Добавлен репозиторий '{0}' - '{1}'</value></data>
+  <data name="RepoForgetNotFound" xml:space="preserve"><value>Не удалось найти репозиторий с именем "{0}", операция не выполнена</value></data>
+  <data name="RepoForgetRemoving" xml:space="preserve"><value>Удаление нечувствительного совпадения "{0}"</value></data>
+  <data name="RepoForgetRemoved" xml:space="preserve"><value>"{0}" успешно удален</value></data>
+  <data name="RepoSet" xml:space="preserve"><value>Репозиторий {0} установлен в '{1}'</value></data>
+  <data name="SearchNoTerm" xml:space="preserve"><value>Отсутствует запрос?</value></data>
+  <data name="SearchFoundByAuthorWithIncompat" xml:space="preserve"><value>Найдено {0} совместимых и {1} несовместимых модификаций, совпадающих с "{2}" от "{3}"</value></data>
+  <data name="SearchFoundWithIncompat" xml:space="preserve"><value>Найдено {0} совместимых и {1} несовместимых модификаций, совпадающих с "{2}"</value></data>
+  <data name="SearchFoundByAuthor" xml:space="preserve"><value>Найдено {0} совместимых модификаций, совпадающих с "{1}" от "{2}"</value></data>
+  <data name="SearchFound" xml:space="preserve"><value>Найдено {0} совместимых модификаций, совпадающих с "{1}"</value></data>
+  <data name="SearchCompatibleModsHeader" xml:space="preserve"><value>Совпадающие совместимые модификации:</value></data>
+  <data name="SearchCompatibleMod" xml:space="preserve"><value>* {0} ({1}) - {2} от {3} - {4}</value></data>
+  <data name="SearchIncompatibleModsHeader" xml:space="preserve"><value>Совпадающие несовместимые модификации:</value></data>
+  <data name="SearchIncompatibleMod" xml:space="preserve"><value>* {0} ({1} - {2}) - {3} от {4} - {5}</value></data>
+  <data name="ShowNotInstalledOrCompatible" xml:space="preserve"><value>{0} не установлена или несовместима с {1} {2}</value></data>
+  <data name="ShowLookingForClose" xml:space="preserve"><value>Поиск совпадений в совместимых модификациях...</value></data>
+  <data name="ShowNoClose" xml:space="preserve"><value>Совпадений не найдено</value></data>
+  <data name="ShowFoundOne" xml:space="preserve"><value>Найдено одно совпадение: {0}</value></data>
+  <data name="ShowClosePrompt" xml:space="preserve"><value>Совпадения:</value></data>
+  <data name="ShowFilesHeader" xml:space="preserve"><value>Показ {0} установленных файлов:</value></data>
+  <data name="ShowModuleInfoHeader" xml:space="preserve"><value>Информация о модуле:</value></data>
+  <data name="ShowVersion" xml:space="preserve"><value>  Версия:	{0}</value></data>
+  <data name="ShowAuthor" xml:space="preserve"><value>  Авторы:	{0}</value></data>
+  <data name="ShowAuthorUnknown" xml:space="preserve"><value>  Авторы:	НЕИЗВЕСТНО</value></data>
+  <data name="ShowStatus" xml:space="preserve"><value>  Статус:	{0}</value></data>
+  <data name="ShowLicence" xml:space="preserve"><value>  Лицензия:	{0}</value></data>
+  <data name="ShowTags" xml:space="preserve"><value>  Теги: 	{0}</value></data>
+  <data name="ShowLanguages" xml:space="preserve"><value>  Языки:	{0}</value></data>
+  <data name="ShowDependsHeader" xml:space="preserve"><value>Зависит:</value></data>
+  <data name="ShowRecommendsHeader" xml:space="preserve"><value>Рекоммендует:</value></data>
+  <data name="ShowSuggestsHeader" xml:space="preserve"><value>Предлагает:</value></data>
+  <data name="ShowProvidesHeader" xml:space="preserve"><value>Предоставляет:</value></data>
+  <data name="ShowResourcesHeader" xml:space="preserve"><value>Ресурсы:</value></data>
+  <data name="ShowHomePage" xml:space="preserve"><value>  Страница:	{0}</value></data>
+  <data name="ShowManual" xml:space="preserve"><value>  Инструкция:	{0}</value></data>
+  <data name="ShowSpaceDock" xml:space="preserve"><value>  SpaceDock:	{0}</value></data>
+  <data name="ShowRepository" xml:space="preserve"><value>  Репозиторий:	{0}</value></data>
+  <data name="ShowBugTracker" xml:space="preserve"><value>  Багтрекер:	{0}</value></data>
+  <data name="ShowCurse" xml:space="preserve"><value>  Curse:	{0}</value></data>
+  <data name="ShowStore" xml:space="preserve"><value>  Магазин:	{0}</value></data>
+  <data name="ShowSteamStore" xml:space="preserve"><value>  Магазин Steam:	{0}</value></data>
+  <data name="ShowVersionFile" xml:space="preserve"><value>  Файл версии:	{0}</value></data>
+  <data name="ShowFileName" xml:space="preserve"><value>Имя файла: {0}</value></data>
+  <data name="ShowVersionHeader" xml:space="preserve"><value>Версия</value></data>
+  <data name="ShowGameVersionsHeader" xml:space="preserve"><value>Версии игры</value></data>
+  <data name="UpdateChangesSummary" xml:space="preserve"><value>Найдено {0} новых модулей, {1} удалённых модулей и {2} обновлённых модулей</value></data>
+  <data name="UpdateAddedHeader" xml:space="preserve"><value>Новые модули [Имя (идентификатор CKAN)]:</value></data>
+  <data name="UpdateRemovedHeader" xml:space="preserve"><value>Удалённые модули [Имя (идентификатор CKAN)]:</value></data>
+  <data name="UpdateUpdatedHeader" xml:space="preserve"><value>Обновлённые модули [Имя (идентификатор CKAN)]:</value></data>
+  <data name="UpdateSummary" xml:space="preserve"><value>Обновлены сведения о {0} совместимых модулях</value></data>
+  <data name="UpgradeQueryingCKAN" xml:space="preserve"><value>Запрос последней версии CKAN</value></data>
+  <data name="UpgradeNewCKANAvailable" xml:space="preserve"><value>Доступна новая версия CKAN - {0}</value></data>
+  <data name="UpgradeProceed" xml:space="preserve"><value>Продолжить установку?</value></data>
+  <data name="UpgradePleaseWait" xml:space="preserve"><value>Обновление CKAN, пожалуйста, подождите...</value></data>
+  <data name="UpgradeAlreadyHaveLatest" xml:space="preserve"><value>Ваша версия уже является последней</value></data>
+  <data name="UpgradeAborted" xml:space="preserve"><value>Обновление отменено: {0}</value></data>
+  <data name="UpgradeNotFound" xml:space="preserve"><value>Модуль {0} не найден</value></data>
+  <data name="UpgradeDLC" xml:space="preserve"><value>CKAN не может обновить дополнение '{0}'u</value></data>
+  <data name="UpgradeDLCStorePage" xml:space="preserve"><value>Для обновления дополнений загрузите их со страницы магазина, в котором они были приобретены:
+{0}</value></data>
+  <data name="ScanNotSaved" xml:space="preserve"><value>Репозиторий не сохранён</value></data>
+  <data name="ScanPreliminaryInconsistent" xml:space="preserve"><value>Предварительное сканирование показывает, что сборка находится в несогласованном состоянии.
+Используйте ckan.exe для сканирования.
+Продолжение использования {0}.</value></data>
+</root>

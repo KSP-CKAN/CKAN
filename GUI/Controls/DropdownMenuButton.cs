@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// Button with a Menu property that displays when you click

@@ -30,7 +30,7 @@ namespace CKAN.ConsoleUI {
 
             AddObject(new ConsoleLabel(
                 1, 2, -1,
-                () => "Additional mods are recommended or suggested:"
+                () => Properties.Resources.RecommendationsLabel
             ));
 
             HashSet<CkanModule> sourceModules = new HashSet<CkanModule>();
@@ -46,30 +46,30 @@ namespace CKAN.ConsoleUI {
                 new List<Dependency>(dependencies.Values),
                 new List<ConsoleListBoxColumn<Dependency>>() {
                     new ConsoleListBoxColumn<Dependency>() {
-                        Header   = "Install",
+                        Header   = Properties.Resources.RecommendationsInstallHeader,
                         Width    = 7,
                         Renderer = (Dependency d) => StatusSymbol(d.module)
                     },
                     new ConsoleListBoxColumn<Dependency>() {
-                        Header   = "Name",
+                        Header   = Properties.Resources.RecommendationsNameHeader,
                         Width    = 36,
                         Renderer = (Dependency d) => d.module.ToString()
                     },
                     new ConsoleListBoxColumn<Dependency>() {
-                        Header   = "Sources",
+                        Header   = Properties.Resources.RecommendationsSourcesHeader,
                         Width    = 42,
                         Renderer = (Dependency d) => string.Join(", ", d.dependents)
                     }
                 },
                 1, 0, ListSortDirection.Descending
             );
-            dependencyList.AddTip("+", "Toggle");
+            dependencyList.AddTip("+", Properties.Resources.Toggle);
             dependencyList.AddBinding(Keys.Plus, (object sender, ConsoleTheme theme) => {
                 ChangePlan.toggleContains(accepted, dependencyList.Selection.module);
                 return true;
             });
 
-            dependencyList.AddTip("Ctrl+A", "Select all");
+            dependencyList.AddTip($"{Properties.Resources.Ctrl}+A", Properties.Resources.SelectAll);
             dependencyList.AddBinding(Keys.CtrlA, (object sender, ConsoleTheme theme) => {
                 foreach (var kvp in dependencies) {
                     if (!accepted.Contains(kvp.Key)) {
@@ -79,13 +79,13 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
-            dependencyList.AddTip("Ctrl+D", "Deselect all", () => accepted.Count > 0);
+            dependencyList.AddTip($"{Properties.Resources.Ctrl}+D", Properties.Resources.DeselectAll, () => accepted.Count > 0);
             dependencyList.AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) => {
                 accepted.Clear();
                 return true;
             });
 
-            dependencyList.AddTip("Enter", "Details");
+            dependencyList.AddTip(Properties.Resources.Enter, Properties.Resources.Details);
             dependencyList.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 if (dependencyList.Selection != null) {
                     LaunchSubScreen(theme, new ModInfoScreen(
@@ -99,7 +99,7 @@ namespace CKAN.ConsoleUI {
 
             AddObject(dependencyList);
 
-            AddTip("Esc", "Cancel");
+            AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 // Add everything to rejected
                 foreach (var kvp in dependencies) {
@@ -108,7 +108,7 @@ namespace CKAN.ConsoleUI {
                 return false;
             });
 
-            AddTip("F9", "Accept");
+            AddTip("F9", Properties.Resources.Accept);
             AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
                 foreach (CkanModule mod in accepted) {
                     plan.Install.Add(mod);
@@ -136,7 +136,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override string CenterHeader()
         {
-            return "Recommendations & Suggestions";
+            return Properties.Resources.RecommendationsTitle;
         }
 
         /// <summary>
@@ -197,21 +197,19 @@ namespace CKAN.ConsoleUI {
 
         private string StatusSymbol(CkanModule mod)
         {
-            if (accepted.Contains(mod)) {
-                return installing;
-            } else {
-                return notinstalled;
-            }
+            return accepted.Contains(mod)
+                ? installing
+                : notinstalled;
         }
 
         private HashSet<CkanModule> accepted = new HashSet<CkanModule>();
-        private HashSet<string> rejected;
+        private HashSet<string>     rejected;
 
-        private IRegistryQuerier registry;
-        private GameInstanceManager       manager;
-        private ModuleInstaller  installer;
-        private ChangePlan       plan;
-        private bool             debug;
+        private IRegistryQuerier    registry;
+        private GameInstanceManager manager;
+        private ModuleInstaller     installer;
+        private ChangePlan          plan;
+        private bool                debug;
 
         private Dictionary<CkanModule, Dependency> dependencies = new Dictionary<CkanModule, Dependency>();
         private ConsoleListBox<Dependency>         dependencyList;
@@ -228,17 +226,17 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Identifier of mod
         /// </summary>
-        public CkanModule       module;
+        public CkanModule   module;
 
         /// <summary>
         /// True if we default to installing, false otherwise
         /// </summary>
-        public bool             defaultInstall;
+        public bool         defaultInstall;
 
         /// <summary>
         /// List of mods that recommended or suggested this mod
         /// </summary>
-        public List<string>     dependents = new List<string>();
+        public List<string> dependents = new List<string>();
     }
 
 }

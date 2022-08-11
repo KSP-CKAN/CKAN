@@ -18,14 +18,14 @@ namespace CKAN.ConsoleUI {
         public AuthTokenScreen() : base()
         {
             mainMenu = new ConsolePopupMenu(new List<ConsoleMenuOption>() {
-                new ConsoleMenuOption("Make a GitHub API token", "",
-                    "Open the web page for creating GitHub API authentication tokens",
+                new ConsoleMenuOption(Properties.Resources.AuthTokenListGitHubLink, "",
+                    Properties.Resources.AuthTokenListGitHubLinkTip,
                     true, openGitHubURL)
             });
 
             AddObject(new ConsoleLabel(
                 1, 2, -1,
-                () => "Authentication tokens for downloads:"
+                () => Properties.Resources.AuthTokenListLabel
             ));
 
             tokenList = new ConsoleListBox<string>(
@@ -33,18 +33,18 @@ namespace CKAN.ConsoleUI {
                 new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts()),
                 new List<ConsoleListBoxColumn<string>>() {
                     new ConsoleListBoxColumn<string>() {
-                        Header   = "Host",
+                        Header   = Properties.Resources.AuthTokenListHostHeader,
                         Width    = 20,
                         Renderer = (string s) => s
                     },
                     new ConsoleListBoxColumn<string>() {
-                        Header   = "Token",
+                        Header   = Properties.Resources.AuthTokenListTokenHeader,
                         Width    = 50,
                         Renderer = (string s) => {
                             string token;
                             return ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(s, out token)
                                 ? token
-                                : missingTokenValue;
+                                : Properties.Resources.AuthTokenListMissingToken;
                         }
                     }
                 },
@@ -54,15 +54,15 @@ namespace CKAN.ConsoleUI {
 
             AddObject(new ConsoleLabel(
                 3, -1, -1,
-                () => "NOTE: These values are private! Do not share screenshots of this screen!",
+                () => Properties.Resources.AuthTokenListWarning,
                 null,
                 th => th.AlertFrameFg
             ));
 
-            AddTip("Esc", "Back");
+            AddTip(Properties.Resources.Esc, Properties.Resources.Back);
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
 
-            tokenList.AddTip("A", "Add");
+            tokenList.AddTip("A", Properties.Resources.Add);
             tokenList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
                 AuthTokenAddDialog ad = new AuthTokenAddDialog();
                 ad.Run(theme);
@@ -71,7 +71,7 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
-            tokenList.AddTip("R", "Remove", () => tokenList.Selection != null);
+            tokenList.AddTip("R", Properties.Resources.Remove, () => tokenList.Selection != null);
             tokenList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
                 if (tokenList.Selection != null) {
                     ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(tokenList.Selection, null);
@@ -94,7 +94,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override string CenterHeader()
         {
-            return "Authentication Tokens";
+            return Properties.Resources.AuthTokenListTitle;
         }
 
         private bool openGitHubURL(ConsoleTheme theme)
@@ -105,8 +105,7 @@ namespace CKAN.ConsoleUI {
 
         private ConsoleListBox<string> tokenList;
 
-        private const           string missingTokenValue = "<ERROR>";
-        private static readonly Uri    githubTokenURL    = new Uri("https://github.com/settings/tokens");
+        private static readonly Uri githubTokenURL = new Uri("https://github.com/settings/tokens");
     }
 
 }

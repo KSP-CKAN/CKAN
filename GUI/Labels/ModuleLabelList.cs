@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class ModuleLabelList

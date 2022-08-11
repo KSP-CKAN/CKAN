@@ -10,130 +10,133 @@ using CKAN.Games;
 
 namespace CKAN.CmdLine
 {
+    internal class InstanceSubOptions : VerbCommandOptions
+    {
+        [VerbOption("list",    HelpText = "List game instances")]
+        public CommonOptions  ListOptions    { get; set; }
+
+        [VerbOption("add",     HelpText = "Add a game instance")]
+        public AddOptions     AddOptions     { get; set; }
+
+        [VerbOption("clone",   HelpText = "Clone an existing game instance")]
+        public CloneOptions   CloneOptions   { get; set; }
+
+        [VerbOption("rename",  HelpText = "Rename a game instance")]
+        public RenameOptions  RenameOptions  { get; set; }
+
+        [VerbOption("forget",  HelpText = "Forget a game instance")]
+        public ForgetOptions  ForgetOptions  { get; set; }
+
+        [VerbOption("default", HelpText = "Set the default game instance")]
+        public DefaultOptions DefaultOptions { get; set; }
+
+        [VerbOption("fake",    HelpText = "Fake a game instance")]
+        public FakeOptions    FakeOptions    { get; set; }
+
+        [HelpVerbOption]
+        public string GetUsage(string verb)
+        {
+            HelpText ht = HelpText.AutoBuild(this, verb);
+            // Add a usage prefix line
+            ht.AddPreOptionsLine(" ");
+            if (string.IsNullOrEmpty(verb))
+            {
+                ht.AddPreOptionsLine($"ckan instance - {Properties.Resources.InstanceHelpSummary}");
+                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan instance <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
+            }
+            else
+            {
+                ht.AddPreOptionsLine("instance " + verb + " - " + GetDescription(verb));
+                switch (verb)
+                {
+                    // First the commands with three string arguments
+                    case "fake":
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan instance {verb} [{Properties.Resources.Options}] name path version [--MakingHistory <version>] [--BreakingGround <version>]");
+                        break;
+
+                    case "clone":
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan instance {verb} [{Properties.Resources.Options}] instanceNameOrPath newname newpath");
+                        break;
+
+                    // Second the commands with two string arguments
+                    case "add":
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan instance {verb} [{Properties.Resources.Options}] name url");
+                        break;
+                    case "rename":
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan instance {verb} [{Properties.Resources.Options}] oldname newname");
+                        break;
+
+                    // Now the commands with one string argument
+                    case "remove":
+                    case "forget":
+                    case "use":
+                    case "default":
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan instance {verb} [{Properties.Resources.Options}] name");
+                        break;
+
+                    // Now the commands with only --flag type options
+                    case "list":
+                    default:
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan instance {verb} [{Properties.Resources.Options}]");
+                        break;
+
+                }
+            }
+            return ht;
+        }
+    }
+
+    internal class AddOptions : CommonOptions
+    {
+        [ValueOption(0)] public string name { get; set; }
+        [ValueOption(1)] public string path { get; set; }
+    }
+
+    internal class CloneOptions : CommonOptions
+    {
+        [ValueOption(0)] public string nameOrPath { get; set; }
+        [ValueOption(1)] public string new_name { get; set; }
+        [ValueOption(2)] public string new_path { get; set; }
+    }
+
+    internal class RenameOptions : CommonOptions
+    {
+        [GameInstancesAttribute]
+        [ValueOption(0)] public string old_name { get; set; }
+        [ValueOption(1)] public string new_name { get; set; }
+    }
+
+    internal class ForgetOptions : CommonOptions
+    {
+        [GameInstancesAttribute]
+        [ValueOption(0)] public string name { get; set; }
+    }
+
+    internal class DefaultOptions : CommonOptions
+    {
+        [GameInstancesAttribute]
+        [ValueOption(0)] public string name { get; set; }
+    }
+
+    internal class FakeOptions : CommonOptions
+    {
+        [ValueOption(0)] public string name { get; set; }
+        [ValueOption(1)] public string path { get; set; }
+        [ValueOption(2)] public string version { get; set; }
+
+        [Option("MakingHistory", DefaultValue = "none", HelpText = "The version of the Making History DLC to be faked.")]
+        public string makingHistoryVersion { get; set; }
+        [Option("BreakingGround", DefaultValue = "none", HelpText = "The version of the Breaking Ground DLC to be faked.")]
+        public string breakingGroundVersion { get; set; }
+
+        [Option("set-default", DefaultValue = false, HelpText = "Set the new instance as the default one.")]
+        public bool setDefault { get; set; }
+    }
+
     public class GameInstance : ISubCommand
     {
         public GameInstance() { }
         protected static readonly ILog log = LogManager.GetLogger(typeof(GameInstance));
-
-        internal class InstanceSubOptions : VerbCommandOptions
-        {
-            [VerbOption("list",    HelpText = "List game instances")]
-            public CommonOptions  ListOptions    { get; set; }
-
-            [VerbOption("add",     HelpText = "Add a game instance")]
-            public AddOptions     AddOptions     { get; set; }
-
-            [VerbOption("clone",   HelpText = "Clone an existing game instance")]
-            public CloneOptions   CloneOptions   { get; set; }
-
-            [VerbOption("rename",  HelpText = "Rename a game instance")]
-            public RenameOptions  RenameOptions  { get; set; }
-
-            [VerbOption("forget",  HelpText = "Forget a game instance")]
-            public ForgetOptions  ForgetOptions  { get; set; }
-
-            [VerbOption("default", HelpText = "Set the default game instance")]
-            public DefaultOptions DefaultOptions { get; set; }
-
-            [VerbOption("fake",    HelpText = "Fake a game instance")]
-            public FakeOptions    FakeOptions    { get; set; }
-
-            [HelpVerbOption]
-            public string GetUsage(string verb)
-            {
-                HelpText ht = HelpText.AutoBuild(this, verb);
-                // Add a usage prefix line
-                ht.AddPreOptionsLine(" ");
-                if (string.IsNullOrEmpty(verb))
-                {
-                    ht.AddPreOptionsLine("ckan instance - Manage game instances");
-                    ht.AddPreOptionsLine($"Usage: ckan instance <command> [options]");
-                }
-                else
-                {
-                    ht.AddPreOptionsLine("instance " + verb + " - " + GetDescription(verb));
-                    switch (verb)
-                    {
-                        // First the commands with three string arguments
-                        case "fake":
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] name path version [--MakingHistory <version>] [--BreakingGround <version>]");
-                            break;
-
-                        case "clone":
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] instanceNameOrPath newname newpath");
-                            break;
-
-                        // Second the commands with two string arguments
-                        case "add":
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] name url");
-                            break;
-                        case "rename":
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] oldname newname");
-                            break;
-
-                        // Now the commands with one string argument
-                        case "remove":
-                        case "forget":
-                        case "use":
-                        case "default":
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options] name");
-                            break;
-
-                        // Now the commands with only --flag type options
-                        case "list":
-                        default:
-                            ht.AddPreOptionsLine($"Usage: ckan instance {verb} [options]");
-                            break;
-
-                    }
-                }
-                return ht;
-            }
-        }
-
-        internal class AddOptions : CommonOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-            [ValueOption(1)] public string path { get; set; }
-        }
-
-        internal class CloneOptions : CommonOptions
-        {
-            [ValueOption(0)] public string nameOrPath { get; set; }
-            [ValueOption(1)] public string new_name { get; set; }
-            [ValueOption(2)] public string new_path { get; set; }
-        }
-
-        internal class RenameOptions : CommonOptions
-        {
-            [ValueOption(0)] public string old_name { get; set; }
-            [ValueOption(1)] public string new_name { get; set; }
-        }
-
-        internal class ForgetOptions : CommonOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-        }
-
-        internal class DefaultOptions : CommonOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-        }
-
-        internal class FakeOptions : CommonOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-            [ValueOption(1)] public string path { get; set; }
-            [ValueOption(2)] public string version { get; set; }
-
-            [Option("MakingHistory", DefaultValue = "none", HelpText = "The version of the Making History DLC to be faked.")]
-            public string makingHistoryVersion { get; set; }
-            [Option("BreakingGround", DefaultValue = "none", HelpText = "The version of the Breaking Ground DLC to be faked.")]
-            public string breakingGroundVersion { get; set; }
-
-            [Option("set-default", DefaultValue = false, HelpText = "Set the new instance as the default one.")]
-            public bool setDefault { get; set; }
-        }
 
         // This is required by ISubCommand
         public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
@@ -204,7 +207,7 @@ namespace CKAN.CmdLine
                             break;
 
                         default:
-                            User.RaiseMessage("Unknown command: instance {0}", option);
+                            User.RaiseMessage("{0}: instance {1}", Properties.Resources.UnknownCommand, option);
                             exitCode = Exit.BADOPT;
                             break;
                     }
@@ -213,8 +216,8 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
+        private IUser               User    { get; set; }
         private GameInstanceManager Manager { get; set; }
-        private IUser      User    { get; set; }
 
         #region option functions
 
@@ -227,46 +230,48 @@ namespace CKAN.CmdLine
                 .Select(i => new
                 {
                     Name = i.Key,
-                    Version = i.Value.Version()?.ToString() ?? "<NONE>",
-                    Default = i.Value.Name == Manager.AutoStartInstance ? "Yes" : "No",
+                    Version = i.Value.Version()?.ToString() ?? Properties.Resources.InstanceListNoVersion,
+                    Default = i.Value.Name == Manager.AutoStartInstance
+                        ? Properties.Resources.InstanceListYes
+                        : Properties.Resources.InstanceListNo,
                     Path = i.Value.GameDir()
                 })
                 .ToList();
 
-            const string nameHeader = "Name";
-            const string versionHeader = "Version";
-            const string defaultHeader = "Default";
-            const string pathHeader = "Path";
+            string nameHeader    = Properties.Resources.InstanceListNameHeader;
+            string versionHeader = Properties.Resources.InstanceListVersionHeader;
+            string defaultHeader = Properties.Resources.InstanceListDefaultHeader;
+            string pathHeader    = Properties.Resources.InstanceListPathHeader;
 
-            var nameWidth = Enumerable.Repeat(nameHeader, 1).Concat(output.Select(i => i.Name)).Max(i => i.Length);
+            var nameWidth    = Enumerable.Repeat(nameHeader, 1).Concat(output.Select(i => i.Name)).Max(i => i.Length);
             var versionWidth = Enumerable.Repeat(versionHeader, 1).Concat(output.Select(i => i.Version)).Max(i => i.Length);
             var defaultWidth = Enumerable.Repeat(defaultHeader, 1).Concat(output.Select(i => i.Default)).Max(i => i.Length);
-            var pathWidth = Enumerable.Repeat(pathHeader, 1).Concat(output.Select(i => i.Path)).Max(i => i.Length);
+            var pathWidth    = Enumerable.Repeat(pathHeader, 1).Concat(output.Select(i => i.Path)).Max(i => i.Length);
 
             const string columnFormat = "{0}  {1}  {2}  {3}";
 
-            User.RaiseMessage(string.Format(columnFormat,
+            User.RaiseMessage(columnFormat,
                 nameHeader.PadRight(nameWidth),
                 versionHeader.PadRight(versionWidth),
                 defaultHeader.PadRight(defaultWidth),
                 pathHeader.PadRight(pathWidth)
-            ));
+            );
 
-            User.RaiseMessage(string.Format(columnFormat,
+            User.RaiseMessage(columnFormat,
                 new string('-', nameWidth),
                 new string('-', versionWidth),
                 new string('-', defaultWidth),
                 new string('-', pathWidth)
-            ));
+            );
 
             foreach (var line in output)
             {
-                User.RaiseMessage(string.Format(columnFormat,
-                   line.Name.PadRight(nameWidth),
-                   line.Version.PadRight(versionWidth),
-                   line.Default.PadRight(defaultWidth),
-                   line.Path.PadRight(pathWidth)
-               ));
+                User.RaiseMessage(columnFormat,
+                    line.Name.PadRight(nameWidth),
+                    line.Version.PadRight(versionWidth),
+                    line.Default.PadRight(defaultWidth),
+                    line.Path.PadRight(pathWidth)
+                );
             }
 
             return Exit.OK;
@@ -276,13 +281,13 @@ namespace CKAN.CmdLine
         {
             if (options.name == null || options.path == null)
             {
-                User.RaiseMessage("add <name> <path> - argument missing, perhaps you forgot it?");
+                User.RaiseMessage("add <name> <{0}> - {1}", Properties.Resources.Path, Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
 
             if (Manager.HasInstance(options.name))
             {
-                User.RaiseMessage("Install with name \"{0}\" already exists, aborting..", options.name);
+                User.RaiseMessage(Properties.Resources.InstanceAddDuplicate, options.name);
                 return Exit.BADOPT;
             }
 
@@ -290,12 +295,12 @@ namespace CKAN.CmdLine
             {
                 string path = options.path;
                 Manager.AddInstance(path, options.name, User);
-                User.RaiseMessage("Added \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
+                User.RaiseMessage(Properties.Resources.InstanceAdded, options.name, options.path);
                 return Exit.OK;
             }
             catch (NotKSPDirKraken ex)
             {
-                User.RaiseMessage("Sorry, {0} does not appear to be a game instance", ex.path);
+                User.RaiseMessage(Properties.Resources.InstanceNotInstance, ex.path);
                 return Exit.BADOPT;
             }
         }
@@ -304,7 +309,8 @@ namespace CKAN.CmdLine
         {
             if (options.nameOrPath == null || options.new_name == null || options.new_path == null)
             {
-                User.RaiseMessage("instance clone <nameOrPathExistingInstance> <newName> <newPath> - argument(s) missing");
+                User.RaiseMessage("instance clone <nameOrPathExistingInstance> <newName> <newPath> - {0}",
+                    Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
 
@@ -372,13 +378,13 @@ namespace CKAN.CmdLine
             }
             catch (NoGameInstanceKraken)
             {
-                User.RaiseError(String.Format("No instance with this name or at this path: {0}\n See below for a list of known instances:\n", instanceNameOrPath));
+                User.RaiseError(Properties.Resources.InstanceCloneNotFound, instanceNameOrPath);
                 ListInstalls();
                 return Exit.ERROR;
             }
             catch (InstanceNameTakenKraken kraken)
             {
-                User.RaiseError("This instance name is already taken: {0}", kraken.instName);
+                User.RaiseError(Properties.Resources.InstanceDuplicate, kraken.instName);
                 return Exit.BADOPT;
             }
 
@@ -391,8 +397,7 @@ namespace CKAN.CmdLine
             }
             else
             {
-                User.RaiseMessage("Something went wrong. Please look if the new directory has been created.\n",
-                    "Try to add the new instance manually with \"ckan instance add\".\n");
+                User.RaiseMessage(Properties.Resources.InstanceCloneFailed);
                 return Exit.ERROR;
             }
         }
@@ -401,19 +406,19 @@ namespace CKAN.CmdLine
         {
             if (options.old_name == null || options.new_name == null)
             {
-                User.RaiseMessage("rename <old_name> <new_name> - argument missing, perhaps you forgot it?");
+                User.RaiseMessage("rename <old_name> <new_name> - {0}", Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
 
             if (!Manager.HasInstance(options.old_name))
             {
-                User.RaiseMessage("Couldn't find install with name \"{0}\", aborting..", options.old_name);
+                User.RaiseMessage(Properties.Resources.InstanceNotFound, options.old_name);
                 return Exit.BADOPT;
             }
 
             Manager.RenameInstance(options.old_name, options.new_name);
 
-            User.RaiseMessage("Successfully renamed \"{0}\" to \"{1}\"", options.old_name, options.new_name);
+            User.RaiseMessage(Properties.Resources.InstanceRenamed, options.old_name, options.new_name);
             return Exit.OK;
         }
 
@@ -421,19 +426,19 @@ namespace CKAN.CmdLine
         {
             if (options.name == null)
             {
-                User.RaiseMessage("forget <name> - argument missing, perhaps you forgot it?");
+                User.RaiseMessage("forget <name> - {0}", Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
 
             if (!Manager.HasInstance(options.name))
             {
-                User.RaiseMessage("Couldn't find install with name \"{0}\", aborting..", options.name);
+                User.RaiseMessage(Properties.Resources.InstanceNotFound, options.name);
                 return Exit.BADOPT;
             }
 
             Manager.RemoveInstance(options.name);
 
-            User.RaiseMessage("Successfully removed \"{0}\"", options.name);
+            User.RaiseMessage(Properties.Resources.InstanceForgot, options.name);
             return Exit.OK;
         }
 
@@ -444,7 +449,7 @@ namespace CKAN.CmdLine
             if (name == null)
             {
                 // No input argument from the user. Present a list of the possible instances.
-                string message = "default <name> - argument missing, please select from the list below.";
+                string message = $"default <name> - {Properties.Resources.InstanceDefaultArgumentMissing}";
 
                 // Check if there is a default instance.
                 string defaultInstance = Manager.Configuration.AutoStartInstance;
@@ -462,7 +467,7 @@ namespace CKAN.CmdLine
                 {
                     var instance = Manager.Instances.ElementAt(i);
 
-                    keys[i + defaultInstancePresent] = String.Format("\"{0}\" - {1}", instance.Key, instance.Value.GameDir());
+                    keys[i + defaultInstancePresent] = string.Format("\"{0}\" - {1}", instance.Key, instance.Value.GameDir());
                 }
 
                 // Mark the default instance for the user.
@@ -492,7 +497,7 @@ namespace CKAN.CmdLine
 
             if (!Manager.Instances.ContainsKey(name))
             {
-                User.RaiseMessage("Couldn't find install with name \"{0}\", aborting..", name);
+                User.RaiseMessage(Properties.Resources.InstanceNotFound, name);
                 return Exit.BADOPT;
             }
 
@@ -502,11 +507,11 @@ namespace CKAN.CmdLine
             }
             catch (NotKSPDirKraken k)
             {
-                User.RaiseMessage("Sorry, {0} does not appear to be a game instance", k.path);
+                User.RaiseMessage(Properties.Resources.InstanceNotInstance, k.path);
                 return Exit.BADOPT;
             }
 
-            User.RaiseMessage("Successfully set \"{0}\" as the default game instance", name);
+            User.RaiseMessage(Properties.Resources.InstanceDefaultSet, name);
             return Exit.OK;
         }
 
@@ -519,22 +524,22 @@ namespace CKAN.CmdLine
             int error()
             {
                 log.Debug("Instance faking failed, see console output for details.");
-                User.RaiseMessage("--Error--");
                 return Exit.ERROR;
             }
 
             int badArgument()
             {
                 log.Debug("Instance faking failed: bad argument(s). See console output for details.");
-                User.RaiseMessage("--Error: bad argument(s)--");
+                User.RaiseMessage(Properties.Resources.InstanceFakeBadArguments);
                 return Exit.BADOPT;
             }
 
 
             if (options.name == null || options.path == null || options.version == null)
             {
-                User.RaiseMessage("instance fake <name> <path> <version> " +
-                    "[--MakingHistory <version>] [--BreakingGround <version>] - argument(s) missing");
+                User.RaiseMessage("instance fake <name> <{0}> <version> " +
+                	"[--MakingHistory <version>] [--BreakingGround <version>] - {1}",
+                    Properties.Resources.Path, Properties.Resources.ArgumentMissing);
                 return badArgument();
             }
 
@@ -555,7 +560,7 @@ namespace CKAN.CmdLine
                 }
                 else
                 {
-                    User.RaiseError("Please check the Making History DLC version argument - Format it like Maj.Min.Patch - e.g. 1.1.0");
+                    User.RaiseError(Properties.Resources.InstanceFakeMakingHistory);
                     return badArgument();
                 }
             }
@@ -567,7 +572,7 @@ namespace CKAN.CmdLine
                 }
                 else
                 {
-                    User.RaiseError("Please check the Breaking Ground DLC version argument - Format it like Maj.Min.Patch - e.g. 1.1.0");
+                    User.RaiseError(Properties.Resources.InstanceFakeBreakingGround);
                     return badArgument();
                 }
             }
@@ -580,7 +585,7 @@ namespace CKAN.CmdLine
             catch (FormatException)
             {
                 // Thrown if there is anything besides numbers and points in the version string or a different syntactic error.
-                User.RaiseError("Please check the version argument - Format it like Maj.Min.Patch[.Build] - e.g. 1.6.0 or 1.2.2.1622");
+                User.RaiseError(Properties.Resources.InstanceFakeVersion);
                 return badArgument();
             }
 
@@ -591,17 +596,17 @@ namespace CKAN.CmdLine
             }
             catch (BadGameVersionKraken)
             {
-                User.RaiseError("Couldn't find a valid game version for your input.\n" +
-                    "Make sure to enter the at least the version major and minor values in the form Maj.Min - e.g. 1.5");
+                User.RaiseError(Properties.Resources.InstanceFakeBadGameVersion);
                 return badArgument();
             }
             catch (CancelledActionKraken)
             {
-                User.RaiseError("Selection cancelled! Please call 'ckan instance fake' again.");
+                User.RaiseError(Properties.Resources.InstanceFakeCancelled);
                 return error();
             }
 
-            User.RaiseMessage(String.Format("Creating new fake game instance {0} at {1} with version {2}", installName, path, version.ToString()));
+            User.RaiseMessage(Properties.Resources.InstanceFakeCreating,
+                installName, path, version.ToString());
             log.Debug("Faking instance...");
 
             try
@@ -610,13 +615,13 @@ namespace CKAN.CmdLine
                 Manager.FakeInstance(new KerbalSpaceProgram(), installName, path, version, dlcs);
                 if (setDefault)
                 {
-                    User.RaiseMessage("Setting new instance to default...");
+                    User.RaiseMessage(Properties.Resources.InstanceFakeDefault);
                     Manager.SetAutoStart(installName);
                 }
             }
             catch (InstanceNameTakenKraken kraken)
             {
-                User.RaiseError("This instance name is already taken: {0}", kraken.instName);
+                User.RaiseError(Properties.Resources.InstanceDuplicate, kraken.instName);
                 return badArgument();
             }
             catch (BadInstallLocationKraken kraken)
@@ -636,6 +641,7 @@ namespace CKAN.CmdLine
                 // Something went wrong adding the new instance to the registry,
                 // most likely because the newly created directory is somehow not valid.
                 log.Error(kraken);
+                User.RaiseError(kraken.Message);
                 return error();
             }
             catch (InvalidKSPInstanceKraken)
@@ -649,13 +655,12 @@ namespace CKAN.CmdLine
             // No need to test if valid, because this is done in AddInstance().
             if (Manager.HasInstance(installName))
             {
-                User.RaiseMessage("--Done--");
+                User.RaiseMessage(Properties.Resources.InstanceFakeDone);
                 return Exit.OK;
             }
             else
             {
-                User.RaiseError("Something went wrong. Try to add the instance yourself with \"ckan instance add\".",
-                    "Also look if the new directory has been created.");
+                User.RaiseError(Properties.Resources.InstanceFakeFailed);
                 return error();
             }
         }

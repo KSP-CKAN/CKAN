@@ -132,7 +132,7 @@
   <data name="labelNewName.Text" xml:space="preserve"><value>Nom de la nouvelle instance:</value></data>
   <data name="labelNewPath.Text" xml:space="preserve"><value>Chemin de la nouvelle instance:</value></data>
   <data name="buttonPathBrowser.Text" xml:space="preserve"><value>Parcourir</value></data>
-  <data name="checkBoxSetAsDefault.Text" xml:space="preserve"><value>Marquer comme par défaut</value></data>
+  <data name="checkBoxSetAsDefault.Text" xml:space="preserve"><value>Marquer par défaut</value></data>
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve"><value>Basculer à la nouvelle instance</value></data>
   <data name="buttonOK.Text" xml:space="preserve"><value>Créer</value></data>
   <data name="buttonCancel.Text" xml:space="preserve"><value>Annuler</value></data>

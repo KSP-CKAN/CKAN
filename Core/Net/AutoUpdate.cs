@@ -137,7 +137,7 @@ namespace CKAN
         {
             if (!IsFetched())
             {
-                throw new Kraken("We have not fetched the release info yet. Can't update.");
+                throw new Kraken(Properties.Resources.AutoUpdateNotFetched);
             }
 
             var pid = Process.GetCurrentProcess().Id;

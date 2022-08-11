@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public class MainTabControl : ThemedTabControl
     {

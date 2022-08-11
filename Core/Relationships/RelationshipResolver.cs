@@ -108,6 +108,8 @@ namespace CKAN
         /// </summary>
         private readonly HashSet<CkanModule> installed_modules;
 
+        private HashSet<CkanModule> alreadyResolved = new HashSet<CkanModule>();
+
         /// <summary>
         /// Creates a new Relationship resolver.
         /// </summary>
@@ -263,8 +265,9 @@ namespace CKAN
                     }
                     else
                     {
-                        throw new InconsistentKraken(
-                            $"{module} conflicts with {listed_mod}");
+                        throw new InconsistentKraken(string.Format(
+                            Properties.Resources.RelationshipResolverConflictsWith,
+                            module, listed_mod));
                     }
                 }
 
@@ -327,6 +330,16 @@ namespace CKAN
         /// </summary>
         private void Resolve(CkanModule module, RelationshipResolverOptions options, IEnumerable<RelationshipDescriptor> old_stanza = null)
         {
+            if (alreadyResolved.Contains(module))
+            {
+                return;
+            }
+            else
+            {
+                // Mark this module as resolved so we don't recurse here again
+                alreadyResolved.Add(module);
+            }
+
             // Even though we may resolve top-level suggests for our module,
             // we don't install suggestions all the down unless with_all_suggests
             // is true.
@@ -378,9 +391,17 @@ namespace CKAN
             {
                 log.DebugFormat("Considering {0}", descriptor.ToString());
 
-                // If we already have this dependency covered, skip.
-                if (descriptor.MatchesAny(modlist.Values, null, null))
+                // If we already have this dependency covered,
+                // resolve its relationships if we haven't already.
+                if (descriptor.MatchesAny(modlist.Values, null, null, out CkanModule installingCandidate))
                 {
+                    if (installingCandidate != null)
+                    {
+                        // Resolve the relationships of the matching module here
+                        // because that's when it would happen if non-virtual
+                        Resolve(installingCandidate, options, stanza);
+                    }
+                    // If null, it's a DLL or DLC, which we can't resolve
                     continue;
                 }
                 else if (descriptor.ContainsAny(modlist.Keys))
@@ -395,9 +416,9 @@ namespace CKAN
                     }
                     else
                     {
-                        throw new InconsistentKraken(
-                            $"{descriptor} required, but an incompatible version is in the resolver"
-                        );
+                        throw new InconsistentKraken(string.Format(
+                            Properties.Resources.RelationshipResolverRequiredButResolver,
+                            descriptor));
                     }
                 }
 
@@ -421,9 +442,9 @@ namespace CKAN
                     }
                     else
                     {
-                        throw new InconsistentKraken(
-                            $"{descriptor} required, but an incompatible version is installed"
-                        );
+                        throw new InconsistentKraken(string.Format(
+                            Properties.Resources.RelationshipResolverRequiredButInstalled,
+                            descriptor));
                     }
                 }
 
@@ -517,8 +538,9 @@ namespace CKAN
                     }
                     else
                     {
-                        throw new InconsistentKraken(
-                            $"{conflicting_mod} conflicts with {candidate}");
+                        throw new InconsistentKraken(string.Format(
+                            Properties.Resources.RelationshipResolverConflictsWith,
+                            conflicting_mod, candidate));
                     }
                 }
             }
@@ -651,10 +673,12 @@ namespace CKAN
                                       .Distinct())
                     .ToDictionary(
                         kvp => kvp.Key,
-                        kvp => $"{kvp.Key} conflicts with " + (
-                            kvp.Value.Count() == 0
-                                ? "an unmanaged DLL or DLC"
-                                : string.Join(", ", kvp.Value)));
+                        kvp => string.Format(
+                            Properties.Resources.RelationshipResolverConflictsWith,
+                            kvp.Key, (
+                                kvp.Value.Count() == 0
+                                    ? Properties.Resources.RelationshipResolverAnUnmanaged
+                                    : string.Join(", ", kvp.Value))));
             }
         }
 
@@ -673,7 +697,7 @@ namespace CKAN
             if (mod == null)
             {
                 // If we don't have a CkanModule, it must be a DLL or DLC
-                return "Unmanaged";
+                return Properties.Resources.RelationshipResolverUnmanaged;
             }
             var reason = ReasonFor(mod);
             var is_root_type = reason.GetType() == typeof(SelectionReason.UserRequested)
@@ -688,7 +712,9 @@ namespace CKAN
             if (mod == null) throw new ArgumentNullException();
             if (!reasons.ContainsKey(mod) && !ModList().Contains(mod))
             {
-                throw new ArgumentException("Mod " + mod.identifier + " is not in the list");
+                throw new ArgumentException(string.Format(
+                    Properties.Resources.RelationshipResolverModNotInList,
+                    mod.identifier));
             }
 
             return reasons[mod];
@@ -735,7 +761,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  Currently installed.\r\n"; }
+                get { return Properties.Resources.RelationshipResolverInstalledReason; }
             }
         }
 
@@ -752,7 +778,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  Requested by user.\r\n"; }
+                get { return Properties.Resources.RelationshipResolverUserReason; }
             }
         }
 
@@ -760,7 +786,7 @@ namespace CKAN
         {
             public override string Reason
             {
-                get { return "  Auto-installed, depending modules removed.\r\n"; }
+                get { return Properties.Resources.RelationshipResolverNoLongerUsedReason; }
             }
         }
 
@@ -774,7 +800,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  Replacing " + Parent.name + ".\r\n"; }
+                get { return string.Format(Properties.Resources.RelationshipResolverReplacementReason, Parent.name); }
             }
         }
 
@@ -788,7 +814,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  Suggested by " + Parent.name + ".\r\n"; }
+                get { return string.Format(Properties.Resources.RelationshipResolverSuggestedReason, Parent.name); }
             }
         }
 
@@ -802,7 +828,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  To satisfy dependency from " + Parent.name + ".\r\n"; }
+                get { return string.Format(Properties.Resources.RelationshipResolverDependsReason, Parent.name); }
             }
         }
 
@@ -816,7 +842,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  Recommended by " + Parent.name + ".\r\n"; }
+                get { return string.Format(Properties.Resources.RelationshipResolverRecommendedReason, Parent.name); }
             }
         }
     }

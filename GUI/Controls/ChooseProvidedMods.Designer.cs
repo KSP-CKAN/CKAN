@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     partial class ChooseProvidedMods
     {
@@ -34,9 +34,10 @@
             this.ChooseProvidedModsListView = new ThemedListView();
             this.modNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.modDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.BottomButtonPanel = new System.Windows.Forms.Panel();
+            this.BottomButtonPanel = new LeftRightRowPanel();
             this.ChooseProvidedModsCancelButton = new System.Windows.Forms.Button();
             this.ChooseProvidedModsContinueButton = new System.Windows.Forms.Button();
+            this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             //
             // ChooseProvidedModsLabel
@@ -82,17 +83,16 @@
             // 
             // BottomButtonPanel
             // 
-            this.BottomButtonPanel.Controls.Add(this.ChooseProvidedModsCancelButton);
-            this.BottomButtonPanel.Controls.Add(this.ChooseProvidedModsContinueButton);
+            this.BottomButtonPanel.RightControls.Add(this.ChooseProvidedModsContinueButton);
+            this.BottomButtonPanel.RightControls.Add(this.ChooseProvidedModsCancelButton);
             this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomButtonPanel.Name = "BottomButtonPanel";
-            this.BottomButtonPanel.Size = new System.Drawing.Size(500, 40);
             //
             // ChooseProvidedModsCancelButton
             //
-            this.ChooseProvidedModsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ChooseProvidedModsCancelButton.AutoSize = true;
+            this.ChooseProvidedModsCancelButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.ChooseProvidedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ChooseProvidedModsCancelButton.Location = new System.Drawing.Point(266, 5);
             this.ChooseProvidedModsCancelButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseProvidedModsCancelButton.Name = "ChooseProvidedModsCancelButton";
             this.ChooseProvidedModsCancelButton.Size = new System.Drawing.Size(112, 30);
@@ -102,9 +102,9 @@
             //
             // ChooseProvidedModsContinueButton
             //
-            this.ChooseProvidedModsContinueButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ChooseProvidedModsContinueButton.AutoSize = true;
+            this.ChooseProvidedModsContinueButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.ChooseProvidedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ChooseProvidedModsContinueButton.Location = new System.Drawing.Point(383, 5);
             this.ChooseProvidedModsContinueButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseProvidedModsContinueButton.Name = "ChooseProvidedModsContinueButton";
             this.ChooseProvidedModsContinueButton.Size = new System.Drawing.Size(112, 30);
@@ -123,6 +123,8 @@
             this.Name = "ChooseProvidedMods";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
+            this.BottomButtonPanel.ResumeLayout(false);
+            this.BottomButtonPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -133,7 +135,7 @@
         private System.Windows.Forms.ListView ChooseProvidedModsListView;
         private System.Windows.Forms.ColumnHeader modNameColumnHeader;
         private System.Windows.Forms.ColumnHeader modDescriptionColumnHeader;
-        private System.Windows.Forms.Panel BottomButtonPanel;
+        private LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button ChooseProvidedModsCancelButton;
         private System.Windows.Forms.Button ChooseProvidedModsContinueButton;
     }

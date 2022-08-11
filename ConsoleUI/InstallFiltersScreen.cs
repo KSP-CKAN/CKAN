@@ -7,8 +7,16 @@ using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
 
+    /// <summary>
+    /// A screen for editing the global and instance install filters
+    /// </summary>
     public class InstallFiltersScreen : ConsoleScreen {
 
+        /// <summary>
+        /// Initialize the screen
+        /// </summary>
+        /// <param name="globalConfig">Object holding the global configuration</param>
+        /// <param name="instance">The current instance</param>
         public InstallFiltersScreen(IConfiguration globalConfig, GameInstance instance)
         {
             this.globalConfig = globalConfig;
@@ -16,21 +24,21 @@ namespace CKAN.ConsoleUI {
             globalFilters   = globalConfig.GlobalInstallFilters.ToList();
             instanceFilters = instance.InstallFilters.ToList();
 
-            AddTip("F2", "Accept");
+            AddTip("F2", Properties.Resources.Accept);
             AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
                 Save();
                 // Close screen
                 return false;
             });
-            AddTip("Esc", "Cancel");
+            AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 // Discard changes
                 return false;
             });
 
             mainMenu = new ConsolePopupMenu(new List<ConsoleMenuOption>() {
-                new ConsoleMenuOption("Add MiniAVC", "",
-                    "Prevent MiniAVC from being installed",
+                new ConsoleMenuOption(Properties.Resources.FiltersAddMiniAVCMenu, "",
+                    Properties.Resources.FiltersAddMiniAVCMenuTip,
                     true, AddMiniAVC),
             });
 
@@ -41,7 +49,7 @@ namespace CKAN.ConsoleUI {
                 globalFilters,
                 new List<ConsoleListBoxColumn<string>>() {
                     new ConsoleListBoxColumn<string>() {
-                        Header   = "Global Filters",
+                        Header   = Properties.Resources.FiltersGlobalHeader,
                         Width    = 40,
                         Renderer = f => f,
                     }
@@ -49,12 +57,12 @@ namespace CKAN.ConsoleUI {
                 0
             );
             AddObject(globalList);
-            globalList.AddTip("A", "Add");
+            globalList.AddTip("A", Properties.Resources.Add);
             globalList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
                 AddFilter(theme, globalList, globalFilters);
                 return true;
             });
-            globalList.AddTip("R", "Remove");
+            globalList.AddTip("R", Properties.Resources.Remove);
             globalList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
                 RemoveFilter(globalList, globalFilters);
                 return true;
@@ -64,7 +72,7 @@ namespace CKAN.ConsoleUI {
                 instanceFilters,
                 new List<ConsoleListBoxColumn<string>>() {
                     new ConsoleListBoxColumn<string>() {
-                        Header   = "Instance Filters",
+                        Header   = Properties.Resources.FiltersInstanceHeader,
                         Width    = 40,
                         Renderer = f => f,
                     }
@@ -72,12 +80,12 @@ namespace CKAN.ConsoleUI {
                 0
             );
             AddObject(instanceList);
-            instanceList.AddTip("A", "Add");
+            instanceList.AddTip("A", Properties.Resources.Add);
             instanceList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
                 AddFilter(theme, instanceList, instanceFilters);
                 return true;
             });
-            instanceList.AddTip("R", "Remove");
+            instanceList.AddTip("R", Properties.Resources.Remove);
             instanceList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
                 RemoveFilter(instanceList, instanceFilters);
                 return true;
@@ -97,7 +105,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override string CenterHeader()
         {
-            return "Installation Filters";
+            return Properties.Resources.FiltersTitle;
         }
 
         private bool AddMiniAVC(ConsoleTheme theme)

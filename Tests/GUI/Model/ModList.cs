@@ -10,6 +10,7 @@ using Tests.Core.Configuration;
 using Tests.Data;
 
 using CKAN;
+using CKAN.GUI;
 using CKAN.Versioning;
 
 namespace Tests.GUI
@@ -168,7 +169,7 @@ namespace Tests.GUI
 
             // TODO: Refactor the column header code to allow mocking of the GUI without creating columns
             const int numCheckboxCols = 4;
-            const int numTextCols     = 10;
+            const int numTextCols     = 11;
             listGui.Columns.AddRange(
                 Enumerable.Range(1, numCheckboxCols)
                     .Select(i => (DataGridViewColumn)new DataGridViewCheckBoxColumn())

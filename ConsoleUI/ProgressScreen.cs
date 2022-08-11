@@ -21,8 +21,8 @@ namespace CKAN.ConsoleUI {
             // A nice frame to take up some of the blank space at the top
             AddObject(new ConsoleDoubleFrame(
                 1, 2, -1, -1, 8,
-                () => "Progress",
-                () => "Messages",
+                () => Properties.Resources.ProgressTitle,
+                () => Properties.Resources.ProgressMessages,
                 // Cheating because our IUser handler needs a theme context
                 th => { yesNoTheme = th; return th.NormalFrameFg; }
             ));
@@ -74,7 +74,10 @@ namespace CKAN.ConsoleUI {
             ConsoleMessageDialog d = new ConsoleMessageDialog(
                 // The installer's questions include embedded newlines for spacing in CmdLine
                 question.Trim(),
-                new List<string>() {"Yes", "No"},
+                new List<string>() {
+                    Properties.Resources.Yes,
+                    Properties.Resources.No
+                },
                 null,
                 TextAlign.Center,
                 -Console.WindowHeight / 2
@@ -89,7 +92,7 @@ namespace CKAN.ConsoleUI {
             });
 
             // Scroll messages
-            d.AddTip("Cursor keys", "Scroll messages");
+            d.AddTip(Properties.Resources.CursorKeys, Properties.Resources.ScrollMessages);
             messages.AddScrollBindings(d, true);
 
             bool val = d.Run(yesNoTheme) == 0;

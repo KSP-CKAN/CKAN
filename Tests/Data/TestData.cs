@@ -188,6 +188,10 @@ namespace Tests.Data
                         ""install_to"": ""GameData"",
                         ""filter"" : [ ""Thumbs.db"", ""README.md"" ],
                         ""filter_regexp"" : ""\\.bak$""
+                        },
+                        {
+                        ""file"": ""DogeCoinFlag-1.01/META.ckan"",
+                        ""install_to"": ""GameData""
                         }
                     ],
                     ""resources"": {

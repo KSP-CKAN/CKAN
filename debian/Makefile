@@ -1,7 +1,8 @@
 .PHONY: clean test repo sign
 
 DESTDIR:=../_build/deb/fakeroot
-EXESRC:=../_build/repack/Release/ckan.exe
+CONFIGURATION?=Release
+EXESRC:=../_build/repack/$(CONFIGURATION)/ckan.exe
 EXEDEST:=$(DESTDIR)/usr/lib/ckan/ckan.exe
 SCRIPTSRC:=ckan
 SCRIPTDEST:=$(DESTDIR)/usr/bin/ckan
@@ -21,6 +22,8 @@ DESKTOPSRC:=ckan.desktop
 DESKTOPDEST:=$(DESTDIR)/usr/share/applications/ckan.desktop
 CONSOLEUIDESKTOPSRC:=ckan-consoleui.desktop
 CONSOLEUIDESKTOPDEST:=$(DESTDIR)/usr/share/applications/ckan-consoleui.desktop
+CMDPROMPTDESKTOPSRC:=ckan-cmdprompt.desktop
+CMDPROMPTDESKTOPDEST:=$(DESTDIR)/usr/share/applications/ckan-cmdprompt.desktop
 VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' ).$(shell date +'%g%j')
 DEB:=../_build/deb/ckan_$(VERSION)_all.deb
 
@@ -79,7 +82,7 @@ $(INRELEASE): $(DISTRELEASEDEST)
 $(SIGNEDDISTRELEASEDEST): $(DISTRELEASEDEST)
 	gpg -abs -o $@ $<
 
-$(DEB): $(EXEDEST) $(SCRIPTDEST) $(CONTROLDEST) $(CHANGELOGDEST) $(DEBCHANGEDEST) $(MANDEST) $(ICONDEST) $(COPYRIGHTDEST) $(DESKTOPDEST) $(CONSOLEUIDESKTOPDEST)
+$(DEB): $(EXEDEST) $(SCRIPTDEST) $(CONTROLDEST) $(CHANGELOGDEST) $(DEBCHANGEDEST) $(MANDEST) $(ICONDEST) $(COPYRIGHTDEST) $(DESKTOPDEST) $(CONSOLEUIDESKTOPDEST) $(CMDPROMPTDESKTOPDEST)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	fakeroot dpkg-deb --build $(DESTDIR)/ $@
 
@@ -92,7 +95,7 @@ $(EXEDEST): $(EXESRC)
 	umask 0022 && cp $< $@
 
 $(EXESRC):
-	cd .. && ./build --configuration=Release
+	cd .. && ./build --configuration=$(CONFIGURATION)
 
 $(CONTROLDEST): $(CONTROLSRC) $(CHANGELOGSRC)
 	umask 0022 && mkdir -p $(shell dirname $@)
@@ -123,6 +126,10 @@ $(DESKTOPDEST): $(DESKTOPSRC)
 	umask 0022 && cp $< $@
 
 $(CONSOLEUIDESKTOPDEST): $(CONSOLEUIDESKTOPSRC)
+	umask 0022 && mkdir -p $(shell dirname $@)
+	umask 0022 && cp $< $@
+
+$(CMDPROMPTDESKTOPDEST): $(CMDPROMPTDESKTOPSRC)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && cp $< $@
 

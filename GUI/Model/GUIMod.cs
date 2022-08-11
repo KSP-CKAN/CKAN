@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public sealed class GUIMod : INotifyPropertyChanged
     {
@@ -74,6 +74,7 @@ namespace CKAN
         public DateTime? InstallDate { get; private set; }
         public string LatestVersion { get; private set; }
         public string DownloadSize { get; private set; }
+        public string InstallSize { get; private set; }
         public int? DownloadCount { get; private set; }
         public bool IsCached { get; private set; }
 
@@ -167,6 +168,7 @@ namespace CKAN
             HasUpdate      = registry.HasUpdate(mod.identifier, current_game_version);
             HasReplacement = registry.GetReplacement(mod, current_game_version) != null;
             DownloadSize   = mod.download_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.download_size);
+            InstallSize    = mod.install_size  == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.install_size);
 
             // Get the Searchables.
             SearchableName        = mod.SearchableName;

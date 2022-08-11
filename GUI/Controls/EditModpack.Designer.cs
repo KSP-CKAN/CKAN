@@ -1,4 +1,4 @@
-namespace CKAN
+namespace CKAN.GUI
 {
     partial class EditModpack
     {
@@ -56,13 +56,14 @@ namespace CKAN
             this.RecommendationsGroup = new System.Windows.Forms.ListViewGroup();
             this.SuggestionsGroup = new System.Windows.Forms.ListViewGroup();
             this.IgnoredGroup = new System.Windows.Forms.ListViewGroup();
-            this.BottomButtonPanel = new System.Windows.Forms.Panel();
+            this.BottomButtonPanel = new LeftRightRowPanel();
             this.DependsRadioButton = new System.Windows.Forms.RadioButton();
             this.RecommendsRadioButton = new System.Windows.Forms.RadioButton();
             this.SuggestsRadioButton = new System.Windows.Forms.RadioButton();
             this.IgnoreRadioButton = new System.Windows.Forms.RadioButton();
             this.CancelExportButton = new System.Windows.Forms.Button();
             this.ExportModpackButton = new System.Windows.Forms.Button();
+            this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // ToolTip
@@ -317,23 +318,19 @@ namespace CKAN
             // 
             // BottomButtonPanel
             // 
-            this.BottomButtonPanel.Controls.Add(this.DependsRadioButton);
-            this.BottomButtonPanel.Controls.Add(this.RecommendsRadioButton);
-            this.BottomButtonPanel.Controls.Add(this.SuggestsRadioButton);
-            this.BottomButtonPanel.Controls.Add(this.IgnoreRadioButton);
-            this.BottomButtonPanel.Controls.Add(this.CancelExportButton);
-            this.BottomButtonPanel.Controls.Add(this.ExportModpackButton);
+            this.BottomButtonPanel.LeftControls.Add(this.DependsRadioButton);
+            this.BottomButtonPanel.LeftControls.Add(this.RecommendsRadioButton);
+            this.BottomButtonPanel.LeftControls.Add(this.SuggestsRadioButton);
+            this.BottomButtonPanel.LeftControls.Add(this.IgnoreRadioButton);
+            this.BottomButtonPanel.RightControls.Add(this.ExportModpackButton);
+            this.BottomButtonPanel.RightControls.Add(this.CancelExportButton);
             this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomButtonPanel.Name = "BottomButtonPanel";
-            this.BottomButtonPanel.Size = new System.Drawing.Size(500, 40);
             // 
             // DependsRadioButton
             // 
-            this.DependsRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left));
             this.DependsRadioButton.Appearance = System.Windows.Forms.Appearance.Button;
             this.DependsRadioButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DependsRadioButton.Location = new System.Drawing.Point(5, 5);
             this.DependsRadioButton.Name = "DependsRadioButton";
             this.DependsRadioButton.Size = new System.Drawing.Size(112, 30);
             this.DependsRadioButton.TabIndex = 16;
@@ -343,11 +340,8 @@ namespace CKAN
             // 
             // RecommendsRadioButton
             // 
-            this.RecommendsRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left));
             this.RecommendsRadioButton.Appearance = System.Windows.Forms.Appearance.Button;
             this.RecommendsRadioButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RecommendsRadioButton.Location = new System.Drawing.Point(116, 5);
             this.RecommendsRadioButton.Name = "RecommendsRadioButton";
             this.RecommendsRadioButton.Size = new System.Drawing.Size(112, 30);
             this.RecommendsRadioButton.TabIndex = 17;
@@ -357,11 +351,8 @@ namespace CKAN
             // 
             // SuggestsRadioButton
             // 
-            this.SuggestsRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left));
             this.SuggestsRadioButton.Appearance = System.Windows.Forms.Appearance.Button;
             this.SuggestsRadioButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SuggestsRadioButton.Location = new System.Drawing.Point(227, 5);
             this.SuggestsRadioButton.Name = "SuggestsRadioButton";
             this.SuggestsRadioButton.Size = new System.Drawing.Size(112, 30);
             this.SuggestsRadioButton.TabIndex = 18;
@@ -371,11 +362,8 @@ namespace CKAN
             // 
             // IgnoreRadioButton
             // 
-            this.IgnoreRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left));
             this.IgnoreRadioButton.Appearance = System.Windows.Forms.Appearance.Button;
             this.IgnoreRadioButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IgnoreRadioButton.Location = new System.Drawing.Point(338, 5);
             this.IgnoreRadioButton.Name = "IgnoreRadioButton";
             this.IgnoreRadioButton.Size = new System.Drawing.Size(112, 30);
             this.IgnoreRadioButton.TabIndex = 19;
@@ -385,10 +373,9 @@ namespace CKAN
             // 
             // CancelExportButton
             // 
-            this.CancelExportButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Right));
+            this.CancelExportButton.AutoSize = true;
+            this.CancelExportButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CancelExportButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelExportButton.Location = new System.Drawing.Point(266, 5);
             this.CancelExportButton.Name = "CancelExportButton";
             this.CancelExportButton.Size = new System.Drawing.Size(112, 30);
             this.CancelExportButton.TabIndex = 20;
@@ -398,10 +385,9 @@ namespace CKAN
             // 
             // ExportModpackButton
             // 
-            this.ExportModpackButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Right));
+            this.ExportModpackButton.AutoSize = true;
+            this.ExportModpackButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.ExportModpackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ExportModpackButton.Location = new System.Drawing.Point(383, 5);
             this.ExportModpackButton.Name = "ExportModpackButton";
             this.ExportModpackButton.Size = new System.Drawing.Size(112, 30);
             this.ExportModpackButton.TabIndex = 22;
@@ -420,6 +406,8 @@ namespace CKAN
             this.Name = "EditModpack";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
+            this.BottomButtonPanel.ResumeLayout(false);
+            this.BottomButtonPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -452,7 +440,7 @@ namespace CKAN
         private System.Windows.Forms.ListViewGroup RecommendationsGroup;
         private System.Windows.Forms.ListViewGroup SuggestionsGroup;
         private System.Windows.Forms.ListViewGroup IgnoredGroup;
-        private System.Windows.Forms.Panel BottomButtonPanel;
+        private LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.RadioButton DependsRadioButton;
         private System.Windows.Forms.RadioButton RecommendsRadioButton;
         private System.Windows.Forms.RadioButton SuggestsRadioButton;

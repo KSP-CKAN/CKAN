@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     partial class AboutDialog
     {

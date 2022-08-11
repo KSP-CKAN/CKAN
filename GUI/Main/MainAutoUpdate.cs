@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class Main
     {

@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     partial class Changeset
     {
@@ -34,10 +34,11 @@
             this.Mod = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChangeType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Reason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.BottomButtonPanel = new System.Windows.Forms.Panel();
+            this.BottomButtonPanel = new LeftRightRowPanel();
             this.ConfirmChangesButton = new System.Windows.Forms.Button();
             this.BackButton = new System.Windows.Forms.Button();
             this.CancelChangesButton = new System.Windows.Forms.Button();
+            this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             //
             // ChangesListView
@@ -75,18 +76,17 @@
             // 
             // BottomButtonPanel
             // 
-            this.BottomButtonPanel.Controls.Add(this.ConfirmChangesButton);
-            this.BottomButtonPanel.Controls.Add(this.BackButton);
-            this.BottomButtonPanel.Controls.Add(this.CancelChangesButton);
+            this.BottomButtonPanel.RightControls.Add(this.ConfirmChangesButton);
+            this.BottomButtonPanel.RightControls.Add(this.CancelChangesButton);
+            this.BottomButtonPanel.RightControls.Add(this.BackButton);
             this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomButtonPanel.Name = "BottomButtonPanel";
-            this.BottomButtonPanel.Size = new System.Drawing.Size(500, 40);
             //
             // BackButton
             //
-            this.BackButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BackButton.AutoSize = true;
+            this.BackButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.BackButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BackButton.Location = new System.Drawing.Point(149, 5);
             this.BackButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.BackButton.Name = "BackButton";
             this.BackButton.Size = new System.Drawing.Size(112, 30);
@@ -96,9 +96,9 @@
             //
             // CancelChangesButton
             //
-            this.CancelChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancelChangesButton.AutoSize = true;
+            this.CancelChangesButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelChangesButton.Location = new System.Drawing.Point(266, 5);
             this.CancelChangesButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.CancelChangesButton.Name = "CancelChangesButton";
             this.CancelChangesButton.Size = new System.Drawing.Size(112, 30);
@@ -108,9 +108,9 @@
             //
             // ConfirmChangesButton
             //
-            this.ConfirmChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ConfirmChangesButton.AutoSize = true;
+            this.ConfirmChangesButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.ConfirmChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ConfirmChangesButton.Location = new System.Drawing.Point(383, 5);
             this.ConfirmChangesButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ConfirmChangesButton.Name = "ConfirmChangesButton";
             this.ConfirmChangesButton.Size = new System.Drawing.Size(112, 30);
@@ -128,6 +128,8 @@
             this.Name = "Changeset";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
+            this.BottomButtonPanel.ResumeLayout(false);
+            this.BottomButtonPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -138,7 +140,7 @@
         private System.Windows.Forms.ColumnHeader Mod;
         private System.Windows.Forms.ColumnHeader ChangeType;
         private System.Windows.Forms.ColumnHeader Reason;
-        private System.Windows.Forms.Panel BottomButtonPanel;
+        private LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button BackButton;
         private System.Windows.Forms.Button CancelChangesButton;
         private System.Windows.Forms.Button ConfirmChangesButton;

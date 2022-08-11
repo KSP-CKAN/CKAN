@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using log4net;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class ErrorDialog : Form
     {

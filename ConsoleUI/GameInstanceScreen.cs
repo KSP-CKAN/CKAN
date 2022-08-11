@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using CKAN.ConsoleUI.Toolkit;
 
@@ -19,7 +20,7 @@ namespace CKAN.ConsoleUI {
         {
             manager = mgr;
 
-            AddTip("F2", "Accept");
+            AddTip("F2", Properties.Resources.Accept);
             AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
                 if (Valid()) {
                     Save();
@@ -31,25 +32,25 @@ namespace CKAN.ConsoleUI {
                 }
             });
 
-            AddTip("Esc", "Cancel");
+            AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 // Discard changes
                 return false;
             });
 
             name = new ConsoleField(labelWidth, nameRow, -1, initName) {
-                GhostText = () => "<Enter the name to use for this game instance>"
+                GhostText = () => Properties.Resources.InstanceNameGhostText
             };
             path = new ConsoleField(labelWidth, pathRow, -1, initPath) {
-                GhostText = () => "<Enter the location of this game instance on disk>"
+                GhostText = () => Properties.Resources.InstancePathGhostText
             };
             args = new ConsoleField(labelWidth, cmdRow, -1, initCmdArgs) {
                 GhostText = () => "<Enter the command-line arguments>"
             };
 
-            AddObject(new ConsoleLabel(1, nameRow, labelWidth, () => "Name:"));
+            AddObject(new ConsoleLabel(1, nameRow, labelWidth, () => Properties.Resources.InstanceNameLabel));
             AddObject(name);
-            AddObject(new ConsoleLabel(1, pathRow, labelWidth, () => "Path to game instance:"));
+            AddObject(new ConsoleLabel(1, pathRow, labelWidth, () => Properties.Resources.InstancePathLabel));
             AddObject(path);
             AddObject(new ConsoleLabel(1, cmdRow, labelWidth, () => "Command line arguments:"));
             AddObject(args);
@@ -82,12 +83,12 @@ namespace CKAN.ConsoleUI {
         {
             if (string.IsNullOrEmpty(name.Value)) {
                 // Complain about empty name
-                RaiseError("Name cannot be empty!");
+                RaiseError(Properties.Resources.InstanceNameEmptyError);
                 SetFocus(name);
                 return false;
             } else if (manager.HasInstance(name.Value)) {
                 // Complain about duplicate name
-                RaiseError($"{name.Value} already exists!");
+                RaiseError(Properties.Resources.InstanceNameDuplicateError, name.Value);
                 SetFocus(name);
                 return false;
             } else {
@@ -114,7 +115,7 @@ namespace CKAN.ConsoleUI {
                 // Pretend DirectoryInfo constructed an instance that made IsGameInstanceDir return false
             }
             // Complain about non-KSP path
-            RaiseError("Path does not correspond to a game folder!");
+            RaiseError(Properties.Resources.InstancePathNotGameFolderError);
             SetFocus(path);
             return false;
         }
@@ -155,7 +156,10 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Number of columns reserved at left of screen for labels
         /// </summary>
-        protected const int labelWidth = 24;
+        protected int labelWidth => Math.Max(24, Math.Max(
+            Properties.Resources.InstanceNameLabel.Length,
+            Properties.Resources.InstancePathLabel.Length
+        ));
         private   const int nameRow    = 2;
         /// <summary>
         /// Y coordinate of path field

@@ -13,10 +13,10 @@ jobs:
       image: mono:latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Installing build dependencies
-        run: apt-get update && apt-get install -y git make sed libplist-utils xorriso gzip fakeroot lintian rpm wget jq dpkg-dev
+        run: apt-get update && apt-get install -y git make sed libplist-utils xorriso gzip fakeroot lintian rpm wget jq dpkg-dev gpg createrepo-c
       - name: Installing runtime dependencies
         run: apt-get install -y xvfb
 
@@ -31,17 +31,27 @@ jobs:
         env:
           CODENAME: stable
         run: ./build deb --configuration=Release --exclusive
-      - name: Sign deb release
+      - name: Build rpm
+        run: ./build rpm --configuration=Release --exclusive
+      - name: Import GPG key
         env:
-          CODENAME: stable
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: |
           echo "$DEBIAN_PRIVATE_KEY" | base64 --decode | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
-          ./build deb-sign --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
-      - name: Build rpm
-        run: ./build rpm --configuration=Release --exclusive
+      - name: Sign deb release
+        env:
+          CODENAME: stable
+          DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
+        run: ./build deb-sign --configuration=Release --exclusive
+        if: ${{ env.DEBIAN_PRIVATE_KEY }}
+      - name: Build rpm repository
+        env:
+          CODENAME: stable
+          DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
+        run: ./build rpm-repo --configuration=Release --exclusive
+        if: ${{ env.DEBIAN_PRIVATE_KEY }}
 
       - name: Get release data
         id: release_data
@@ -67,7 +77,7 @@ jobs:
           SOURCE_DIR: _build/deb/apt-repo-root
           DEST_DIR: deb
         if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
-      - name: Push Release file to S3
+      - name: Push stable APT repo to S3
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --follow-symlinks
@@ -78,6 +88,18 @@ jobs:
           AWS_REGION: us-east-1
           SOURCE_DIR: _build/deb/apt-repo-dist
           DEST_DIR: deb/dists/stable
+        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
+      - name: Push stable RPM repo to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --follow-symlinks
+        env:
+          AWS_S3_BUCKET: ksp-ckan
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          SOURCE_DIR: _build/rpm/repo
+          DEST_DIR: rpm/stable
         if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
 
       - name: Upload ckan.exe
@@ -122,7 +144,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release_data.outputs.upload_url }}
-          asset_path: _build/out/AutoUpdater/Release/bin/AutoUpdater.exe
+          asset_path: _build/repack/Release/AutoUpdater.exe
           asset_name: AutoUpdater.exe
           asset_content_type: application/vnd.microsoft.portable-executable
 

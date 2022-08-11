@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     partial class ManageGameInstancesDialog
     {
@@ -41,7 +41,7 @@
             this.GamePlayTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.GameInstallPath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SelectButton = new System.Windows.Forms.Button();
-            this.AddNewButton = new CKAN.DropdownMenuButton();
+            this.AddNewButton = new CKAN.GUI.DropdownMenuButton();
             this.AddNewMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.InstanceListContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openDirectoryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -217,6 +217,9 @@
             this.Controls.Add(this.AddNewButton);
             this.Controls.Add(this.SelectButton);
             this.Controls.Add(this.GameInstancesListView);
+            this.MinimizeBox = false;
+            this.MaximizeBox = false;
+            this.HelpButton = true;
             this.Icon = Properties.Resources.AppIcon;
             this.MinimumSize = new System.Drawing.Size(560, 200);
             this.Name = "ManageGameInstancesDialog";

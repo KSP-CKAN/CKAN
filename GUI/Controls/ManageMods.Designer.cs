@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     partial class ManageMods
     {
@@ -53,7 +53,7 @@ namespace CKAN
             this.FilterTagsToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NavBackwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NavForwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.EditModSearches = new CKAN.EditModSearches();
+            this.EditModSearches = new CKAN.GUI.EditModSearches();
             this.ModGrid = new System.Windows.Forms.DataGridView();
             this.InstallAllCheckbox = new System.Windows.Forms.CheckBox();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -65,7 +65,8 @@ namespace CKAN
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GameCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DownloadSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.InstallSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ReleaseDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstallDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DownloadCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -118,7 +119,7 @@ namespace CKAN
             //
             // launchGameToolStripMenuItem
             //
-            this.launchGameToolStripMenuItem.Image = global::CKAN.Properties.Resources.ksp;
+            this.launchGameToolStripMenuItem.Image = global::CKAN.GUI.Properties.Resources.ksp;
             this.launchGameToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.launchGameToolStripMenuItem.Name = "launchGameToolStripMenuItem";
             this.launchGameToolStripMenuItem.Size = new System.Drawing.Size(146, 56);
@@ -128,7 +129,7 @@ namespace CKAN
             //
             // RefreshToolButton
             //
-            this.RefreshToolButton.Image = global::CKAN.Properties.Resources.refresh;
+            this.RefreshToolButton.Image = global::CKAN.GUI.Properties.Resources.refresh;
             this.RefreshToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.RefreshToolButton.Name = "RefreshToolButton";
             this.RefreshToolButton.Size = new System.Drawing.Size(114, 56);
@@ -138,7 +139,7 @@ namespace CKAN
             //
             // UpdateAllToolButton
             //
-            this.UpdateAllToolButton.Image = global::CKAN.Properties.Resources.update;
+            this.UpdateAllToolButton.Image = global::CKAN.GUI.Properties.Resources.update;
             this.UpdateAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.UpdateAllToolButton.Name = "UpdateAllToolButton";
             this.UpdateAllToolButton.Size = new System.Drawing.Size(232, 56);
@@ -148,7 +149,7 @@ namespace CKAN
             //
             // ApplyToolButton
             //
-            this.ApplyToolButton.Image = global::CKAN.Properties.Resources.apply;
+            this.ApplyToolButton.Image = global::CKAN.GUI.Properties.Resources.apply;
             this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ApplyToolButton.Name = "ApplyToolButton";
             this.ApplyToolButton.Size = new System.Drawing.Size(173, 56);
@@ -173,7 +174,7 @@ namespace CKAN
             this.FilterTagsToolButton,
             this.FilterLabelsToolButton});
             this.FilterToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterToolButton_DropDown_Opening);
-            this.FilterToolButton.Image = global::CKAN.Properties.Resources.filter;
+            this.FilterToolButton.Image = global::CKAN.GUI.Properties.Resources.filter;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
             this.FilterToolButton.Size = new System.Drawing.Size(201, 56);
@@ -266,7 +267,7 @@ namespace CKAN
             //
             // NavBackwardToolButton
             //
-            this.NavBackwardToolButton.Image = global::CKAN.Properties.Resources.backward;
+            this.NavBackwardToolButton.Image = global::CKAN.GUI.Properties.Resources.backward;
             this.NavBackwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.NavBackwardToolButton.Name = "NavBackwardToolButton";
             this.NavBackwardToolButton.Size = new System.Drawing.Size(44, 56);
@@ -276,7 +277,7 @@ namespace CKAN
             //
             // NavForwardToolButton
             //
-            this.NavForwardToolButton.Image = global::CKAN.Properties.Resources.forward;
+            this.NavForwardToolButton.Image = global::CKAN.GUI.Properties.Resources.forward;
             this.NavForwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.NavForwardToolButton.Name = "NavForwardToolButton";
             this.NavForwardToolButton.Size = new System.Drawing.Size(44, 56);
@@ -314,7 +315,8 @@ namespace CKAN
             this.InstalledVersion,
             this.LatestVersion,
             this.GameCompatibility,
-            this.SizeCol,
+            this.DownloadSize,
+            this.InstallSize,
             this.ReleaseDate,
             this.InstallDate,
             this.DownloadCount,
@@ -413,13 +415,21 @@ namespace CKAN
             this.GameCompatibility.Width = 78;
             resources.ApplyResources(this.GameCompatibility, "GameCompatibility");
             //
-            // SizeCol
+            // DownloadSize
             //
-            this.SizeCol.Name = "SizeCol";
-            this.SizeCol.ReadOnly = true;
-            this.SizeCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.SizeCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            resources.ApplyResources(this.SizeCol, "SizeCol");
+            this.DownloadSize.Name = "DownloadSize";
+            this.DownloadSize.ReadOnly = true;
+            this.DownloadSize.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.DownloadSize.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            resources.ApplyResources(this.DownloadSize, "DownloadSize");
+            //
+            // InstallSize
+            //
+            this.InstallSize.Name = "InstallSize";
+            this.InstallSize.ReadOnly = true;
+            this.InstallSize.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.InstallSize.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            resources.ApplyResources(this.InstallSize, "InstallSize");
             //
             // ReleaseDate
             //
@@ -580,7 +590,8 @@ namespace CKAN
         private System.Windows.Forms.DataGridViewTextBoxColumn InstalledVersion;
         private System.Windows.Forms.DataGridViewTextBoxColumn LatestVersion;
         private System.Windows.Forms.DataGridViewTextBoxColumn GameCompatibility;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SizeCol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DownloadSize;
+        private System.Windows.Forms.DataGridViewTextBoxColumn InstallSize;
         private System.Windows.Forms.DataGridViewTextBoxColumn ReleaseDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn InstallDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn DownloadCount;
@@ -597,6 +608,6 @@ namespace CKAN
         private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem purgeContentsToolStripMenuItem;
-        private CKAN.EditModSearches EditModSearches;
+        private CKAN.GUI.EditModSearches EditModSearches;
     }
 }

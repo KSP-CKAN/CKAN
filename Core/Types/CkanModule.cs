@@ -106,7 +106,7 @@ namespace CKAN
 
         // Package type: in spec v1.6 can be either "package" or "metapackage"
         // In spec v1.28, "dlc"
-        [JsonProperty("kind", Order = 29, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("kind", Order = 31, NullValueHandling = NullValueHandling.Ignore)]
         public string kind;
 
         [JsonProperty("author", Order = 7, NullValueHandling = NullValueHandling.Ignore)]
@@ -140,6 +140,10 @@ namespace CKAN
         [JsonProperty("download_content_type", Order = 28, DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue("application/zip")]
         public string download_content_type;
+
+        [JsonProperty("install_size", Order = 29, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [DefaultValue(0)]
+        public long install_size;
 
         [JsonProperty("identifier", Order = 3, Required = Required.Always)]
         public string identifier;
@@ -334,7 +338,9 @@ namespace CKAN
             }
             catch (JsonException ex)
             {
-                throw new BadMetadataKraken(null, string.Format("JSON deserialization error: {0}", ex.Message), ex);
+                throw new BadMetadataKraken(null,
+                    string.Format(Properties.Resources.CkanModuleDeserialisationError, ex.Message),
+                    ex);
             }
             _comparator = comparator;
             CheckHealth();
@@ -348,7 +354,8 @@ namespace CKAN
         {
             if (!IsSpecSupported())
             {
-                throw new UnsupportedKraken($"{this} requires CKAN {spec_version}, we can't read it.");
+                throw new UnsupportedKraken(string.Format(
+                    Properties.Resources.CkanModuleUnsupportedSpec, this, spec_version));
             }
 
             // Check everything in the spec is defined.
@@ -367,7 +374,8 @@ namespace CKAN
 
                 if (value == null)
                 {
-                    throw new BadMetadataKraken(null, $"{identifier} missing required field {field}");
+                    throw new BadMetadataKraken(null, string.Format(
+                        Properties.Resources.CkanModuleMissingRequired, identifier, field));
                 }
             }
         }
@@ -411,7 +419,7 @@ namespace CKAN
             if (ksp_version != null && (ksp_version_max != null || ksp_version_min != null))
             {
                 // KSP version mixed with min/max.
-                throw new InvalidModuleAttributesException("ksp_version mixed with ksp_version_(min|max)", this);
+                throw new InvalidModuleAttributesException(Properties.Resources.CkanModuleKspVersionMixed, this);
             }
 
             license = license ?? new List<License> { License.UnknownLicense };
@@ -446,7 +454,7 @@ namespace CKAN
                 if (module == null
                         || (ksp_version != null && !module.IsCompatibleKSP(ksp_version)))
                     throw new ModuleNotFoundKraken(ident, version,
-                        string.Format("Module {0} version {1} not available", ident, version));
+                        string.Format(Properties.Resources.CkanModuleNotAvailable, ident, version));
             }
             else
             {
@@ -455,7 +463,7 @@ namespace CKAN
 
                 if (module == null)
                     throw new ModuleNotFoundKraken(mod, null,
-                        string.Format("Module {0} not installed or available", mod));
+                        string.Format(Properties.Resources.CkanModuleNotInstalledOrAvailable, mod));
             }
             return module;
         }
@@ -553,7 +561,7 @@ namespace CKAN
         {
             GameVersion v = LatestCompatibleKSP();
             if (v.IsAny)
-                return "All versions";
+                return Properties.Resources.CkanModuleAllVersions;
             else
                 return v.ToString();
         }

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Linq;
+
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using ICSharpCode.SharpZipLib.Zip;
+
+using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
@@ -15,7 +19,7 @@ namespace Tests.NetKAN.Transformers
         private TransformOptions opts = new TransformOptions(1, null, null, false, null);
 
         [Test]
-        public void AddsMiddingProperties()
+        public void AddsMissingProperties()
         {
             // Arrange
             const string filePath = "/DoesNotExist.zip";
@@ -30,13 +34,17 @@ namespace Tests.NetKAN.Transformers
             mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(filePath);
 
-            mModuleService.Setup(i => i.GetInternalCkan(filePath))
+            mModuleService.Setup(i => i.GetInternalCkan(
+                    It.IsAny<CkanModule>(), It.IsAny<string>(),
+                    It.IsAny<GameInstance>()))
                 .Returns(internalCkan);
 
             var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object);
 
             var json = new JObject();
             json["spec_version"] = 1;
+            json["identifier"] = "DoesNotExist";
+            json["version"] = "1.0";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             // Act
@@ -65,13 +73,17 @@ namespace Tests.NetKAN.Transformers
             mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(filePath);
 
-            mModuleService.Setup(i => i.GetInternalCkan(filePath))
+            mModuleService.Setup(i => i.GetInternalCkan(
+                    It.IsAny<CkanModule>(), It.IsAny<string>(),
+                    It.IsAny<GameInstance>()))
                 .Returns(internalCkan);
 
             var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object);
 
             var json = new JObject();
             json["spec_version"] = 1;
+            json["identifier"] = "DoesNotExist";
+            json["version"] = "1.0";
             json["foo"] = "baz";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
@@ -103,13 +115,17 @@ namespace Tests.NetKAN.Transformers
             mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(filePath);
 
-            mModuleService.Setup(i => i.GetInternalCkan(filePath))
+            mModuleService.Setup(i => i.GetInternalCkan(
+                    It.IsAny<CkanModule>(), It.IsAny<string>(),
+                    It.IsAny<GameInstance>()))
                 .Returns(internalCkan);
 
             var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object);
 
             var json = new JObject();
             json["spec_version"] = specVersion;
+            json["identifier"] = "DoesNotExist";
+            json["version"] = "1.0";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             // Act

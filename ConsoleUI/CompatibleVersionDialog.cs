@@ -30,7 +30,7 @@ namespace CKAN.ConsoleUI {
                 options,
                 new List<ConsoleListBoxColumn<GameVersion>>() {
                     new ConsoleListBoxColumn<GameVersion>() {
-                        Header   = "Predefined Version",
+                        Header   = Properties.Resources.CompatibleVersionsListHeader,
                         Width    = r - l - 5,
                         Renderer = v => v.ToString(),
                         Comparer = (v1, v2) => v1.CompareTo(v2)
@@ -39,7 +39,7 @@ namespace CKAN.ConsoleUI {
                 0, 0, ListSortDirection.Descending
             );
             AddObject(choices);
-            choices.AddTip("Enter", "Select version");
+            choices.AddTip(Properties.Resources.Enter, Properties.Resources.CompatibleVersionsListAcceptTip);
             choices.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 choice = choices.Selection;
                 return false;
@@ -48,10 +48,10 @@ namespace CKAN.ConsoleUI {
             manualEntry = new ConsoleField(
                 l + 2, b - 2, r - 2
             ) {
-                GhostText = () => "<Enter a version>"
+                GhostText = () => Properties.Resources.CompatibleVersionsGhostText
             };
             AddObject(manualEntry);
-            manualEntry.AddTip("Enter", "Accept value", () => GameVersion.TryParse(manualEntry.Value, out choice));
+            manualEntry.AddTip(Properties.Resources.Enter, Properties.Resources.CompatibleVersionsEntryAcceptTip, () => GameVersion.TryParse(manualEntry.Value, out choice));
             manualEntry.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 if (GameVersion.TryParse(manualEntry.Value, out choice)) {
                     // Good value, done running
@@ -62,13 +62,13 @@ namespace CKAN.ConsoleUI {
                 }
             });
 
-            AddTip("Esc", "Cancel");
+            AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
                 choice = null;
                 return false;
             });
 
-            CenterHeader = () => "Select Compatible Version";
+            CenterHeader = () => Properties.Resources.CompatibleVersionsTitle;
         }
 
         /// <summary>

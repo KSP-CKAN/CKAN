@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
+  <data name="AppIcon" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\..\assets\ckan.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="apply" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\apply.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="ksp" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\ksp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="settings" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="update" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\update.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="backward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\backward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="filter" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\filter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="textClear" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\textClear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="star" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\star.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="thumbup" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\thumbup.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\info.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="smile" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\smile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="alert" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\alert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="triToggleYes" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\triToggleYes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="triToggleNo" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\triToggleNo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="triToggleBoth" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\triToggleBoth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="CKANFileFilter" xml:space="preserve"><value>CKAN 메타데이터 (*.ckan)|*.ckan</value></data>
+  <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>모드 리스트 내보내기</value></data>
+  <data name="AboutDialogLabel2Text" xml:space="preserve"><value>버전 {0}</value></data>
+  <data name="BuildIDFilterDescription" xml:space="preserve"><value>메타데이터 파일 빌드</value></data>
+  <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>새로운 인스턴스의 이름을 입력해주세요.</value></data>
+  <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>새로운 인스턴스의 경로를 입력해주세요.</value></data>
+  <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"인스턴스 복제 중..."</value></data>
+  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve"><value>{0} DLC의 버전이 올바르지 않아요. 예를 들어 "1.0.0"를 시도해보세요.</value></data>
+  <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>복사할 인스턴스가 유효하지 않아요. {0}</value></data>
+  <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>설정한 폴더가 비어있지 않아요. {0}</value></data>
+  <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>복사 실패. {0}</value></data>
+  <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>성공적으로 인스턴스를 복사했어요.</value></data>
+  <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>새로운 인스턴스 생성중...</value></data>
+  <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>그 이름은 이미 사용 중이에요.</value></data>
+  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>인스턴스 위조 실패. {0}</value></data>
+  <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>성공적으로 인스턴스를 생성했어요.</value></data>
+  <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
+  <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>마지막으로 호환되는 버전을 검토한 뒤로 게임이 업데이트 되었어요. 설정이 정확한지 확인해주세요.</value></data>
+  <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (이전 게임 버전: {1})</value></data>
+  <data name="CompatibleGameVersionsDialogInvalidFormat" xml:space="preserve"><value>버전의 형식이 올바르지 않아요</value></data>
+  <data name="CompatibleGameVersionsDialogErrorTitle" xml:space="preserve"><value>에러</value></data>
+  <data name="ConfigurationParseError" xml:space="preserve"><value>"{0}"{1} 를 분석하는 도중 에러 발생
+{2} 를 {3} 밖으로 뺀 다음 CKAN을 재시작 해보세요.</value></data>
+  <data name="GUIModNSlashA" xml:space="preserve"><value>N/A</value></data>
+  <data name="GUIModUnknown" xml:space="preserve"><value>알 수 없음</value></data>
+  <data name="GUIModMethodNotCKAN" xml:space="preserve"><value>IsCKAN이 아닌 이상 메소드를 호출할 수 없어요.</value></data>
+  <data name="GUIModGameCompatibilityLong" xml:space="preserve"><value>{0} (모드 버전 {1} 를 사용 중)</value></data>
+  <data name="MainAutoUpdateFailed" xml:space="preserve"><value>자동 업데이트 중 에러 발생:&#xD;&#xA;{0}</value></data>
+  <data name="MainQuitWithConflicts" xml:space="preserve"><value>충돌이 있어요. 정말 나갈까요?&#xD;&#xA;&#xD;&#xA;{0}</value></data>
+  <data name="MainQuit" xml:space="preserve"><value>나가기</value></data>
+  <data name="MainGoBack" xml:space="preserve"><value>뒤로 가기</value></data>
+  <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>필수 모드가 충족되지 않았어요. 정말 나갈까요?</value></data>
+  <data name="MainQuitWithUnappliedChanges" xml:space="preserve"><value>적용하지 않은 변경점들이 있어요. 정말 나갈까요?
+
+{0}</value></data>
+  <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>CKAN 업데이트 중</value></data>
+  <data name="MainUpgradingTo" xml:space="preserve"><value>{0} 버전으로 업데이트 중</value></data>
+  <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0}의 필수모드인 {1}은 현재 설치되어 있는 게임 버전과 호환되지 않아요.</value></data>
+  <data name="MainFilterAll" xml:space="preserve"><value>필터 (모두)</value></data>
+  <data name="MainFilterIncompatible" xml:space="preserve"><value>필터 (호환되지 않음)</value></data>
+  <data name="MainFilterInstalled" xml:space="preserve"><value>필터 (설치됨)</value></data>
+  <data name="MainFilterUpgradeable" xml:space="preserve"><value>필터 (업데이트 가능)</value></data>
+  <data name="MainFilterReplaceable" xml:space="preserve"><value>필터 (대체 가능)</value></data>
+  <data name="MainFilterCached" xml:space="preserve"><value>필터 (캐시됨)</value></data>
+  <data name="MainFilterUncached" xml:space="preserve"><value>필터 (캐시되지 않음)</value></data>
+  <data name="MainFilterNew" xml:space="preserve"><value>필터 (새 모드)</value></data>
+  <data name="MainFilterNotInstalled" xml:space="preserve"><value>필터 (설치되지 않음)</value></data>
+  <data name="MainFilterCompatible" xml:space="preserve"><value>필터 (호환됨)</value></data>
+  <data name="MainFilterLabel" xml:space="preserve"><value>라벨 ({0})</value></data>
+  <data name="MainFilterTag" xml:space="preserve"><value>태그 ({0})</value></data>
+  <data name="MainFilterUntagged" xml:space="preserve"><value>태그 (태그 없음)</value></data>
+  <data name="MainLaunchWithIncompatible" xml:space="preserve"><value>설치된 모듈들의 일부가 호환되지 않아요! 이대로 게임을 실행하면 안전하지 않을 수도 있어요. 정말 실행할까요?
+
+{0}</value></data>
+  <data name="MainLaunchDontShow" xml:space="preserve"><value>이 모드들에 관해서는 다시 보여주지 않기 {0} {1}</value></data>
+  <data name="MainLaunch" xml:space="preserve"><value>실행</value></data>
+  <data name="MainLaunchFailed" xml:space="preserve"><value>게임을 실행할 수 없었어요.
+
+{0}</value></data>
+  <data name="MainModPack" xml:space="preserve"><value>CKAN 모드팩 (*.ckan)</value></data>
+  <data name="MainPlainText" xml:space="preserve"><value>일반 텍스트(*.txt)</value></data>
+  <data name="MainMarkdown" xml:space="preserve"><value>마크다운 (*.md)</value></data>
+  <data name="MainBBCode" xml:space="preserve"><value>BBCode (*.txt)</value></data>
+  <data name="MainCSV" xml:space="preserve"><value>쉼표로 분리되는 값 (*.csv)</value></data>
+  <data name="MainTSV" xml:space="preserve"><value>탭으로 분리되는 값 (*.csv)</value></data>
+  <data name="MainNotFound" xml:space="preserve"><value>찾을 수 없었어요.</value></data>
+  <data name="MainReinstallConfirm" xml:space="preserve"><value>{0}를 재설치 할까요?</value></data>
+  <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN은 {0} 확장을 설치할 수 없어요!</value></data>
+  <data name="MainCorruptedRegistry" xml:space="preserve"><value>{0}에 아카이브된 손상된 레지스트리: {1}
+
+이것은 CKAN이 당신의 모드들에 대해서 모두 잊어버렸다는 것을 뜻하지만, 모드들은 아직도 GameData 파일 안에 있어요. {2} 파일을 가져오면 재설치 할 수 있어요.</value></data>
+  <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0}은 이 게임 버전을 지원하지 않고, 전혀 작동하지 않을 수도 있어요. 그러니 만약 어떠한 문제라도 생긴다면, 당신은 절대로 제작자에게 도움을 요청해선 안될 거예요.
+
+정말 이 모드를 설치할까요?</value></data>
+  <data name="AllModVersionsInstallYes" xml:space="preserve"><value>설치</value></data>
+  <data name="AllModVersionsInstallNo" xml:space="preserve"><value>취소하기</value></data>
+  <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (메타패키지)</value></data>
+  <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (캐시됨)</value></data>
+  <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
+  <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>유저가 선택한 것을 버전 {0}으로 업데이트 하기.</value></data>
+  <data name="MainChangesetNewInstall" xml:space="preserve"><value>유저가 선택한 모드를 설치하기.</value></data>
+  <data name="MainImportTitle" xml:space="preserve"><value>모드들 가져오기</value></data>
+  <data name="MainImportFilter" xml:space="preserve"><value>모드들 (*.zip)|*.zip</value></data>
+  <data name="MainImportWaitTitle" xml:space="preserve"><value>상태 기록</value></data>
+  <data name="MainInstallWaitTitle" xml:space="preserve"><value>상태 기록</value></data>
+  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0}은 {1}이 필요하지만 이 모드는 리스트에 없거나, 이 게임 버전과 맞지 않아요.</value></data>
+  <data name="MainInstallNotFound" xml:space="preserve"><value>모듈 {0}이 필요하지만 리스트에 없거나, 이 게임 버전과 맞지 않아요.</value></data>
+  <data name="MainInstallBadMetadata" xml:space="preserve"><value>나쁜 메타데이터가 모듈 {0}에서 감지됨: {1}</value></data>
+  <data name="MainInstallFileExists" xml:space="preserve"><value>으악! 우리가 다른 모드의 파일을 덮어씌우려고 했어요!
+'CKAN 업데이트' 를 시도한 다음 다시 시도해주세요.
+
+만약 이 문제가 다시 생긴다면 패키징에 버그가 있을 수도 있어요.
+
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+에서 신고해주세요.
+
+다음의 정보들을 신고할 때 첨부해주세요.
+
+File      : {0}
+Installing Mod : {1}
+Owning Mod: {2}
+CKAN Version   : {3}</value></data>
+  <data name="MainInstallUnownedFileExists" xml:space="preserve"><value>으악!
+
+아마도 당신은 이미 설치되어 있는 모드를 설치하려고 한 것 같아요. 아니면 이미 설치되어 있는 모드와 충돌하는 모드를요.
+
+안전을 위해서, CKAN은 절대!! 자기자신이 설치하지 않은 파일은 덮어씌우거나 바꾸지 않아요.
+
+만약 {0}를 CKAN으로 깔고 싶으시다면, 먼저
+
+{1}
+
+을 가지는 모드를 수동으로 삭제한 다음 다시 시도해 주세요.</value></data>
+  <data name="MainInstallGameDataReverted" xml:space="preserve"><value>당신의 GameData는 원상태로 돌아왔어요.</value></data>
+  <data name="MainInstallOpenSettingsPrompt" xml:space="preserve"><value>{0}
+
+지금 설정을 열까요?</value></data>
+  <data name="MainInstallOpenSettings" xml:space="preserve"><value>설정 열기</value></data>
+  <data name="MainInstallNo" xml:space="preserve"><value>아니요</value></data>
+  <data name="MainInstallModSuccess" xml:space="preserve"><value>모듈 "{0}" 을 성공적으로 설치함</value></data>
+  <data name="MainInstallSuccess" xml:space="preserve"><value>성공!</value></data>
+  <data name="MainInstallCancelTooLate" xml:space="preserve"><value>취소가 너무 늦었어요. 처리 완료!</value></data>
+  <data name="MainInstallCancelAfterInstall" xml:space="preserve"><value>유저가 처리를 수동으로 취소했지만, 모든 모드들이 이미 적용 완료되었어요.</value></data>
+  <data name="MainInstallProcessComplete" xml:space="preserve"><value>처리 완료!</value></data>
+  <data name="MainInstallProcessCanceled" xml:space="preserve"><value>유저가 처리를 취소시켰어요!</value></data>
+  <data name="MainInstallCanceledManually" xml:space="preserve"><value>유저가 처리를 수동으로 취소시켰어요!</value></data>
+  <data name="MainInstallInstallCanceled" xml:space="preserve"><value>처리가 취소되었어요!</value></data>
+  <data name="MainInstallErrorInstalling" xml:space="preserve"><value>설치 중 오류 발생!</value></data>
+  <data name="MainInstallUnknownError" xml:space="preserve"><value>미지의 에러가 발생했어요. 다시 시도해주세요!</value></data>
+  <data name="MainInstallKnownError" xml:space="preserve"><value>위의 메세지가 다운로드 에러를 가리킨다면, 다시 시도해주세요. 아니라면, 이슈를 생성해서 저희가 조사할 수 있게 해주세요.
+메타데이터 문제 같다면: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+클라이언트 버그 같다면: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
+  <data name="MainInstallFailed" xml:space="preserve"><value>설치 실패!</value></data>
+  <data name="MainInstallProvidedBy" xml:space="preserve"><value>모듈 {0}이 하나 보다 더 많은 모듈들을 제공했어요. 이 중에 하나의 모드를 골라주세요.</value></data>
+  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN은 당신을 위해서 {0} 확장을 설치할 수 없어요.</value></data>
+  <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
+  <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (가상)</value></data>
+  <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (색인 없음)</value></data>
+  <data name="ModInfoNotCached" xml:space="preserve"><value>이 모드는 캐시에 있지 않아요. 파일 내용을 보려면 '설치'를 누르세요.</value></data>
+  <data name="ModInfoCached" xml:space="preserve"><value>모듈이 캐시되어서 미리보기 할 수 있어요</value></data>
+  <data name="ModInfoNoDownload" xml:space="preserve"><value>모듈의 다운로드가 없어요</value></data>
+  <data name="ModInfoHomepageLabel" xml:space="preserve"><value>홈페이지:</value></data>
+  <data name="ModInfoSpaceDockLabel" xml:space="preserve"><value>스페이스 독:</value></data>
+  <data name="ModInfoCurseLabel" xml:space="preserve"><value>커스 포지:</value></data>
+  <data name="ModInfoRepositoryLabel" xml:space="preserve"><value>깃헙 리포지터리:</value></data>
+  <data name="ModInfoBugTrackerLabel" xml:space="preserve"><value>버그 신고:</value></data>
+  <data name="ModInfoContinuousIntegrationLabel" xml:space="preserve"><value>지속적인 통합:</value></data>
+  <data name="ModInfoLicenseLabel" xml:space="preserve"><value>라이선스:</value></data>
+  <data name="ModInfoManualLabel" xml:space="preserve"><value>설명서:</value></data>
+  <data name="ModInfoMetanetkanLabel" xml:space="preserve"><value>Metanetkan:</value></data>
+  <data name="ModInfoRemoteAvcLabel" xml:space="preserve"><value>리모트 버전 파일:</value></data>
+  <data name="ModInfoStoreLabel" xml:space="preserve"><value>스토어:</value></data>
+  <data name="ModInfoSteamStoreLabel" xml:space="preserve"><value>스팀 스토어:</value></data>
+  <data name="MainModListWaitTitle" xml:space="preserve"><value>모듈 로딩 중</value></data>
+  <data name="MainModListLoadingRegistry" xml:space="preserve"><value>레지스트리 로딩 중...</value></data>
+  <data name="MainModListLoadingInstalled" xml:space="preserve"><value>설치된 모듈들을 로딩 중...</value></data>
+  <data name="MainModListLoadingAvailable" xml:space="preserve"><value>가능한 모듈들을 로딩 중...</value></data>
+  <data name="MainModListLoadingIncompatible" xml:space="preserve"><value>비호환 모듈들을 로딩 중...</value></data>
+  <data name="MainModListRestoringChangeset" xml:space="preserve"><value>변경점들을 복구 중...</value></data>
+  <data name="MainModListPreservingNew" xml:space="preserve"><value>새로운 플래그를 보존 중...</value></data>
+  <data name="MainModListPopulatingList" xml:space="preserve"><value>모드 리스트를 채우는 중...</value></data>
+  <data name="MainModListUpdatingFilters" xml:space="preserve"><value>필터를 업데이트 중...</value></data>
+  <data name="MainModListCompatible" xml:space="preserve"><value>호환됨 ({0})</value></data>
+  <data name="MainModListInstalled" xml:space="preserve"><value>설치됨 ({0})</value></data>
+  <data name="MainModListUpgradeable" xml:space="preserve"><value>업데이트 가능 ({0})</value></data>
+  <data name="MainModListReplaceable" xml:space="preserve"><value>대체 가능 ({0})</value></data>
+  <data name="MainModListCached" xml:space="preserve"><value>캐시됨 ({0})</value></data>
+  <data name="MainModListUncached" xml:space="preserve"><value>캐시되지 않음 ({0})</value></data>
+  <data name="MainModListNewlyCompatible" xml:space="preserve"><value>새로 호환됨 ({0})</value></data>
+  <data name="MainModListNotInstalled" xml:space="preserve"><value>설치되지 않음 ({0})</value></data>
+  <data name="MainModListIncompatible" xml:space="preserve"><value>호환되지 않음 ({0})</value></data>
+  <data name="MainModListAll" xml:space="preserve"><value>모두 ({0})</value></data>
+  <data name="MainModListUpdatingTray" xml:space="preserve"><value>트레이 업데이트 중</value></data>
+  <data name="MainModListAutoDetected" xml:space="preserve"><value>AD</value></data>
+  <data name="MainModListUnknownFilter" xml:space="preserve"><value>IsModInFilter 안의 미지의 필터 타입 {0}</value></data>
+  <data name="MainRecommendationsTitle" xml:space="preserve"><value>추천, 제안, 지원 받는 모드들을 고르세요.</value></data>
+  <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>추천, 제안, 지원 받는 모드들이 발견되지 않았어요.</value></data>
+  <data name="MainRepoWaitTitle" xml:space="preserve"><value>리포지터리 업데이트 중</value></data>
+  <data name="MainRepoScanning" xml:space="preserve"><value>DLC와 수동 설치된 모듈들을 스캔 중...</value></data>
+  <data name="MainRepoContacting" xml:space="preserve"><value>리포지터리와 접촉 중...</value></data>
+  <data name="MainRepoUpdating" xml:space="preserve"><value>리포지터리 업데이트 중...</value></data>
+  <data name="MainRepoFailedToConnect" xml:space="preserve"><value>리포지터리에 접속 실패. 예외: {0}</value></data>
+  <data name="MainRepoUpToDate" xml:space="preserve"><value>리포지터리가 최신이에요.</value></data>
+  <data name="MainRepoFailed" xml:space="preserve"><value>리포지터리 업데이트가 실패했어요!</value></data>
+  <data name="MainRepoSuccess" xml:space="preserve"><value>리포지터리가 성공적으로 업데이트 되었어요.</value></data>
+  <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>CKAN이 모드리스트를 로드할 때마다 새로고침할까요? (위에 있는 버튼으로 수동 새로고침도 할 수 있어요)</value></data>
+  <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>{0} 개의 업데이트가 가능</value></data>
+  <data name="MainRepoBalloonTipTooltip" xml:space="preserve"><value>업데이트 하려면 클릭 하세요.</value></data>
+  <data name="MainTrayIconResume" xml:space="preserve"><value>재개</value></data>
+  <data name="MainTrayIconPause" xml:space="preserve"><value>중지</value></data>
+  <data name="MainTrayNoUpdates" xml:space="preserve"><value>가능한 업데이트 없음</value></data>
+  <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>{0} 개의 가능한 업데이트</value></data>
+  <data name="MainWaitPleaseWait" xml:space="preserve"><value>기다려주세요</value></data>
+  <data name="MainWaitDone" xml:space="preserve"><value>끝났어요!</value></data>
+  <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>경로 {0} 는 유효한 게임 경로가 아니에요.</value></data>
+  <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>경로 "{0}"는 존재하지 않아요.</value></data>
+  <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (올바르지 않음)</value></data>
+  <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (잠금)</value></data>
+  <data name="NewRepoDialogFailed" xml:space="preserve"><value>마스터 리스트를 가져오는 데에 실패했어요.</value></data>
+  <data name="PluginsDialogFilter" xml:space="preserve"><value>CKAN 플러그인 (*.dll)|*.dll</value></data>
+  <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} 개의 파일, {1}</value></data>
+  <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>유효하지 않은 경로: {0}</value></data>
+  <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>CKAN이 다운로드한 모드들을 모아놓을 폴더를 골라주세요:</value></data>
+  <data name="SettingsDialogDeleteConfirm" xml:space="preserve"><value>정말로 {0}개의 캐시 파일들을 지울까요? {1}가 확보돼요.</value></data>
+  <data name="AddAuthTokenTitle" xml:space="preserve"><value>인증 토큰 추가</value></data>
+  <data name="AddAuthTokenHost" xml:space="preserve"><value>호스트:</value></data>
+  <data name="AddAuthTokenToken" xml:space="preserve"><value>토큰:</value></data>
+  <data name="AddAuthTokenAccept" xml:space="preserve"><value>&amp;수락</value></data>
+  <data name="AddAuthTokenCancel" xml:space="preserve"><value>&amp;취소</value></data>
+  <data name="AddAuthTokenHostRequired" xml:space="preserve"><value>호스트 필드가 필요해요.</value></data>
+  <data name="AddAuthTokenTokenRequired" xml:space="preserve"><value>토큰 필드가 필요해요.</value></data>
+  <data name="AddAuthTokenInvalidHost" xml:space="preserve"><value>{0}은 유효한 호스트 이름이 아니에요.</value></data>
+  <data name="AddAuthTokenDupHost" xml:space="preserve"><value>{0}은 이미 인증 토큰이 있어요.</value></data>
+  <data name="SettingsDialogUpdateFailed" xml:space="preserve"><value>업데이트 중 오류 발생.
+자동으로 업데이트 할 수 없어요. 왜냐하면 ckan.exe가 읽기 전용이거나 저희가 덮어씌울 수 없기 때문이에요.
+https://github.com/KSP-CKAN/CKAN/releases/latest 에서 수동으로 업데이트 해주세요.</value></data>
+  <data name="URLHandlersPrompt" xml:space="preserve"><value>CKAN은 ckan:// URLs에 핸들러를 추가할 권한이 필요해요.
+CKAN에게 이것을 허용할 건가요? 아니요를 누르면 이 메세지를 다시 보지 않게 됩니다.</value></data>
+  <data name="UtilCopyLink" xml:space="preserve"><value>&amp;링크 주소 복사</value></data>
+  <data name="StatusInstanceLabelTextWithPlayTime" xml:space="preserve"><value>게임 인스턴스: {0} ({1} {2}, {3}시간 플레이)</value></data>
+  <data name="StatusInstanceLabelText" xml:space="preserve"><value>게임 인스턴스: {0} ({1} {2})</value></data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>즐겨찾기</value></data>
+  <data name="ModuleLabelListHidden" xml:space="preserve"><value>숨겨짐</value></data>
+  <data name="ModuleLabelListHeld" xml:space="preserve"><value>유지</value></data>
+  <data name="ModuleLabelListGlobal" xml:space="preserve"><value>전역</value></data>
+  <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>정말로 {0}을 지울까요? 다시는 되돌릴 수 없어요!</value></data>
+  <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>변경점을 저장할까요?</value></data>
+  <data name="EditLabelsDialogNoRecord" xml:space="preserve"><value>편집되고 있는 기록이 없어요!</value></data>
+  <data name="EditLabelsDialogNameRequired" xml:space="preserve"><value>이름이 필요해요!</value></data>
+  <data name="EditLabelsDialogAlreadyExists" xml:space="preserve"><value>{0}은 {1}에 이미 존재해요!</value></data>
+  <data name="EditLabelsDialogDelete" xml:space="preserve"><value>지우기</value></data>
+  <data name="EditLabelsDialogCancel" xml:space="preserve"><value>취소하기</value></data>
+  <data name="EditLabelsDialogSave" xml:space="preserve"><value>저장</value></data>
+  <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>폐기</value></data>
+  <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>주의: 라벨 {0}이 달린 모듈을 설치하고 있어요. ({1})</value></data>
+  <data name="EditLabelsToolTipName" xml:space="preserve"><value>이 이름을 달고 라벨 메뉴에 나타나게 돼요. 꼭 고유한 이름이 게임마다 있어야 해요.</value></data>
+  <data name="EditLabelsToolTipColor" xml:space="preserve"><value>이 라벨이 달려있는 모듈은 이 색이 배경으로 깔려서 보이게 돼요.</value></data>
+  <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>라벨을 달 수 있는 인스턴스예요. 비워두면 모두 가능해요.</value></data>
+  <data name="EditLabelsToolTipHide" xml:space="preserve"><value>체크하면, 이 라벨이 달려있는 모듈은 보통 필터로는 표시되지 않아요.</value></data>
+  <data name="EditLabelsToolTipNotifyOnChanges" xml:space="preserve"><value>체크하면, 이 모듈이 호환되지 않았다가 호환될 때 알림이 뜨게 돼요.</value></data>
+  <data name="EditLabelsToolTipRemoveOnChanges" xml:space="preserve"><value>체크하면, 호환되지 않았다가 호환된 모듈은 이 라벨을 떼게 돼요.</value></data>
+  <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve"><value>체크하면, 변경점 화면에서 이 라벨이 달린 모드가 설치된다고 경고해줘요.</value></data>
+  <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve"><value>체크하면, 설치된 모드는 이 라벨을 떼게 돼요.</value></data>
+  <data name="EditLabelsToolTipHoldVersion" xml:space="preserve"><value>체크하면, 이 라벨이 달린 모드는 업데이트되지 않아요.</value></data>
+  <data name="EditLabelsToolTipMoveUp" xml:space="preserve"><value>위로 이동</value></data>
+  <data name="EditLabelsToolTipMoveDown" xml:space="preserve"><value>아래로 이동</value></data>
+  <data name="MainLabelsUpdateMessage" xml:space="preserve"><value>보고 있던 모드 중 일부가 업데이트 되었어요:
+
+{0}</value></data>
+  <data name="MainLabelsUpdateTitle" xml:space="preserve"><value>업데이트 알림</value></data>
+  <data name="MainLabelsUntagged" xml:space="preserve"><value>태크 없음 ({0})</value></data>
+  <data name="EditModpackBadIdentifier" xml:space="preserve"><value>식별자는 로마자, 숫자, 대시만을 가질 수 있어요. 그리고 꼭 로마자나 숫자로 시작해야 해요.</value></data>
+  <data name="EditModpackBadName" xml:space="preserve"><value>이름이 필요해요</value></data>
+  <data name="EditModpackBadVersion" xml:space="preserve"><value>버전이 필요해요</value></data>
+  <data name="EditModpackBadGameVersions" xml:space="preserve"><value>최소 지원 버전은 최대 지원 버전보다 작거나 같아야 해요.</value></data>
+  <data name="EditModpackTooltipIdentifier" xml:space="preserve"><value>이 모드팩의 내부적인 이름; 로마자, 숫자, 대시만 가능</value></data>
+  <data name="EditModpackTooltipName" xml:space="preserve"><value>이 모드팩의 공개적으로 보이는 이름</value></data>
+  <data name="EditModpackTooltipAbstract" xml:space="preserve"><value>이 모드팩의 짧은 설명</value></data>
+  <data name="EditModpackTooltipVersion" xml:space="preserve"><value>이 모드팩의 버전</value></data>
+  <data name="EditModpackTooltipGameVersionMin" xml:space="preserve"><value>가장 오래된 호환 게임 버전. 비워두면 모두</value></data>
+  <data name="EditModpackTooltipGameVersionMax" xml:space="preserve"><value>가장 최신 호환 게임 버전, 비워두면 모두</value></data>
+  <data name="EditModpackTooltipLicense" xml:space="preserve"><value>이 모드팩의 라이선스</value></data>
+  <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>체크하면, 이 모드팩은 모드의 특정한 버전을 포함해요. 체크하지 않는다면 아무 버전으로 해요.</value></data>
+  <data name="EditModpackTooltipDepends" xml:space="preserve"><value>선택한 모드들을 필수 그룹으로 옮겨요. 이 모드들은 꼭 설치될 거예요.</value></data>
+  <data name="EditModpackTooltipRecommends" xml:space="preserve"><value>선택한 모드들을 추천 그룹으로 옮겨요. 모드팩 사용자는 이 모드들을 뺄 수 있어요.</value></data>
+  <data name="EditModpackTooltipSuggests" xml:space="preserve"><value>선택한 모드들을 제안 그룹으로 옮겨요. 이 모드들은 설치할 때 제공은 되지만, 직접 선택해야 해요.</value></data>
+  <data name="EditModpackTooltipIgnore" xml:space="preserve"><value>선택한 모드들을 무시 그룹으로 옮겨요. 이 모드들은 모드팩에 포함되지 않을 거예요. </value></data>
+  <data name="EditModpackTooltipCancel" xml:space="preserve"><value>모드팩 생성 취소</value></data>
+  <data name="EditModpackTooltipExport" xml:space="preserve"><value>파일 이름을 짓고 모드팩을 저장</value></data>
+  <data name="TriStateToggleYesTooltip" xml:space="preserve"><value>예</value></data>
+  <data name="TriStateToggleBothTooltip" xml:space="preserve"><value>예 또는 아니요</value></data>
+  <data name="TriStateToggleNoTooltip" xml:space="preserve"><value>아니요</value></data>
+  <data name="ModSearchDescriptionPrefix" xml:space="preserve"><value>설명:</value></data>
+  <data name="ModSearchLanguagePrefix" xml:space="preserve"><value>언어:</value></data>
+  <data name="ModSearchDependsPrefix" xml:space="preserve"><value>필수:</value></data>
+  <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>추천:</value></data>
+  <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>제안:</value></data>
+  <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>충돌:</value></data>
+  <data name="ModSearchTagPrefix" xml:space="preserve"><value>태그:</value></data>
+  <data name="ModSearchLabelPrefix" xml:space="preserve"><value>라벨:</value></data>
+  <data name="ModSearchYesPrefix" xml:space="preserve"><value>조건:</value></data>
+  <data name="ModSearchNoPrefix" xml:space="preserve"><value>아니요:</value></data>
+  <data name="ModSearchCompatibleSuffix" xml:space="preserve"><value>호환됨</value></data>
+  <data name="ModSearchInstalledSuffix" xml:space="preserve"><value>설치됨</value></data>
+  <data name="ModSearchCachedSuffix" xml:space="preserve"><value>캐시됨</value></data>
+  <data name="ModSearchNewlyCompatibleSuffix" xml:space="preserve"><value>새로 호환됨</value></data>
+  <data name="ModSearchUpgradeableSuffix" xml:space="preserve"><value>업데이트 가능</value></data>
+  <data name="ModSearchReplaceableSuffix" xml:space="preserve"><value>대체 가능</value></data>
+  <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>상세 검색 창을 확장하거나 축소(Ctrl-Shift-F)</value></data>
+  <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>새로운 검색을 지금 검색에 더하기</value></data>
+  <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>모든 모드를 지우려면 체크를 풀고, 다시 되돌리려면 체크하기</value></data>
+  <data name="TotalPlayTime" xml:space="preserve"><value>총 플레이 타임: {0} 시간</value></data>
+</root>

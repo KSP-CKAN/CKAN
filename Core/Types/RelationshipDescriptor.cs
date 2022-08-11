@@ -9,10 +9,20 @@ namespace CKAN
 {
     public abstract class RelationshipDescriptor : IEquatable<RelationshipDescriptor>
     {
-        public abstract bool MatchesAny(
+        public bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
             IDictionary<string, ModuleVersion> dlc
+        )
+        {
+            return MatchesAny(modules, dlls, dlc, out CkanModule _);
+        }
+
+        public abstract bool MatchesAny(
+            IEnumerable<CkanModule> modules,
+            HashSet<string> dlls,
+            IDictionary<string, ModuleVersion> dlc,
+            out CkanModule matched
         );
 
         public abstract bool WithinBounds(CkanModule otherModule);
@@ -99,7 +109,8 @@ namespace CKAN
         public override bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc,
+            out CkanModule matched
         )
         {
             modules = modules?.AsCollection();
@@ -107,6 +118,7 @@ namespace CKAN
             // DLLs are considered to match any version
             if (dlls != null && dlls.Contains(name))
             {
+                matched = null;
                 return true;
             }
 
@@ -114,8 +126,15 @@ namespace CKAN
             {
                 // See if anyone else "provides" the target name
                 // Note that versions can't be checked for "provides" clauses
-                if (modules.Any(m => m.identifier != name && m.provides != null && m.provides.Contains(name)))
+                var matches = modules
+                    .Where(m =>
+                        m.identifier != name
+                        && m.provides != null
+                        && m.provides.Contains(name))
+                    .ToList();
+                if (matches.Any())
                 {
+                    matched = matches.FirstOrDefault();
                     return true;
                 }
 
@@ -124,6 +143,7 @@ namespace CKAN
                 {
                     if (WithinBounds(m))
                     {
+                        matched = m;
                         return true;
                     }
                 }
@@ -135,11 +155,13 @@ namespace CKAN
                 {
                     if (WithinBounds(d.Value))
                     {
+                        matched = null;
                         return true;
                     }
                 }
             }
 
+            matched = null;
             return false;
         }
 
@@ -172,22 +194,6 @@ namespace CKAN
         }
 
         /// <summary>
-        /// A user friendly message for what versions satisfies this descriptor.
-        /// </summary>
-        [JsonIgnore]
-        public string RequiredVersion
-        {
-            get
-            {
-                if (version != null)
-                    return version.ToString();
-                return string.Format("between {0} and {1} inclusive.",
-                    min_version != null ? min_version.ToString() : "any version",
-                    max_version != null ? max_version.ToString() : "any version");
-            }
-        }
-
-        /// <summary>
         /// Generate a user readable description of the relationship
         /// </summary>
         /// <returns>
@@ -202,9 +208,11 @@ namespace CKAN
         {
             return
                   version     != null                        ? $"{name} {version}"
-                : min_version != null && max_version != null ? $"{name} {min_version} -- {max_version}"
-                : min_version != null                        ? $"{name} {min_version} or later"
-                : max_version != null                        ? $"{name} {max_version} or earlier"
+                : min_version != null && max_version != null ? $"{name} {min_version}–{max_version}"
+                : min_version != null
+                    ? string.Format(Properties.Resources.RelationshipDescriptorMinVersionOnly, name, min_version)
+                : max_version != null
+                    ? string.Format(Properties.Resources.RelationshipDescriptorMaxVersionOnly, name, max_version)
                 : name;
         }
 
@@ -233,11 +241,23 @@ namespace CKAN
         public override bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc
+            IDictionary<string, ModuleVersion> dlc,
+            out CkanModule matched
         )
         {
-            return any_of?.Any(r => r.MatchesAny(modules, dlls, dlc))
-                ?? false;
+            if (any_of != null)
+            {
+                foreach (RelationshipDescriptor rel in any_of)
+                {
+                    if (rel.MatchesAny(modules, dlls, dlc, out CkanModule whatMatched))
+                    {
+                        matched = whatMatched;
+                        return true;
+                    }
+                }
+            }
+            matched = null;
+            return false;
         }
 
         public override List<CkanModule> LatestAvailableWithProvides(
@@ -270,7 +290,8 @@ namespace CKAN
         public override string ToString()
         {
             return any_of?.Select(r => r.ToString())
-                .Aggregate((a, b) => $"{a} OR {b}");
+                .Aggregate((a, b) =>
+                    string.Format(Properties.Resources.RelationshipDescriptorAnyOfJoiner, a, b));
         }
     }
 }

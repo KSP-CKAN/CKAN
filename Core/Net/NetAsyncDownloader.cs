@@ -155,7 +155,7 @@ namespace CKAN
                 downloads.Add(dl);
 
                 // Encode spaces to avoid confusing URL parsers
-                User.RaiseMessage("Downloading \"{0}\"",
+                User.RaiseMessage(Properties.Resources.NetAsyncDownloaderDownloading,
                     dl.target.url.ToString().Replace(" ", "%20"));
 
                 // Schedule for us to get back progress reports.
@@ -237,7 +237,7 @@ namespace CKAN
                 }
 
                 // Signal to the caller that the user cancelled the download.
-                throw new CancelledActionKraken("Download cancelled by user");
+                throw new CancelledActionKraken(Properties.Resources.NetAsyncDownloaderCancelled);
             }
 
             // Check to see if we've had any errors. If so, then release the kraken!
@@ -367,7 +367,7 @@ namespace CKAN
             {
                 // Math.Ceiling was added to avoid showing 0 MiB left when finishing
                 User.RaiseProgress(
-                    String.Format("{0}/sec - downloading - {1} left",
+                    String.Format(Properties.Resources.NetAsyncDownloaderProgress,
                         CkanModule.FmtSize(totalBytesPerSecond),
                         CkanModule.FmtSize(totalBytesLeft)),
                     totalPercentage);
@@ -389,7 +389,7 @@ namespace CKAN
                 {
                     log.InfoFormat("Trying fallback URL: {0}", downloads[index].target.fallbackUrl);
                     // Encode spaces to avoid confusing URL parsers
-                    User.RaiseMessage("Failed to download \"{0}\", trying fallback \"{1}\"",
+                    User.RaiseMessage(Properties.Resources.NetAsyncDownloaderTryingFallback,
                         downloads[index].target.url.ToString().Replace(" ", "%20"),
                         downloads[index].target.fallbackUrl.ToString().Replace(" ", "%20")
                     );

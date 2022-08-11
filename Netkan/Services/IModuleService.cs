@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
-using CKAN.NetKAN.Sources.Avc;
+
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json.Linq;
+
+using CKAN.NetKAN.Sources.Avc;
 
 namespace CKAN.NetKAN.Services
 {
@@ -10,13 +12,14 @@ namespace CKAN.NetKAN.Services
     {
         Tuple<ZipEntry, bool> FindInternalAvc(CkanModule module, ZipFile zipfile, string internalFilePath);
         AvcVersion GetInternalAvc(CkanModule module, string filePath, string internalFilePath = null);
-        JObject GetInternalCkan(string filePath);
+        JObject GetInternalCkan(CkanModule module, string zipPath, GameInstance inst);
         bool HasInstallableFiles(CkanModule module, string filePath);
 
         IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip, GameInstance inst);
         IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip, GameInstance inst);
-        IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, GameInstance ksp);
+        IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, GameInstance inst);
 
+        IEnumerable<ZipEntry> FileSources(CkanModule module, ZipFile zip, GameInstance inst);
         IEnumerable<string> FileDestinations(CkanModule module, string filePath);
     }
 }

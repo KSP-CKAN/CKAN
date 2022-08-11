@@ -45,8 +45,8 @@ namespace CKAN.ConsoleUI {
                 // I'm not a huge fan of this layout, but I think it's better than just a label
                 AddObject(new ConsoleDoubleFrame(
                     1, repoFrameTop, -1, compatFrameBottom, compatFrameTop,
-                    () => $"Mod List Sources",
-                    () => $"Additional Compatible Versions",
+                    () => Properties.Resources.InstanceEditRepoFrameTitle,
+                    () => Properties.Resources.InstanceEditCompatFrameTitle,
                     th => th.LabelFg
                 ));
 
@@ -55,15 +55,15 @@ namespace CKAN.ConsoleUI {
                     new List<Repository>(repoEditList.Values),
                     new List<ConsoleListBoxColumn<Repository>>() {
                         new ConsoleListBoxColumn<Repository>() {
-                            Header   = "Index",
+                            Header   = Properties.Resources.InstanceEditRepoIndexHeader,
                             Renderer = r => r.priority.ToString(),
                             Width    = 7
                         }, new ConsoleListBoxColumn<Repository>() {
-                            Header   = "Name",
+                            Header   = Properties.Resources.InstanceEditRepoNameHeader,
                             Renderer = r => r.name,
                             Width    = 16
                         }, new ConsoleListBoxColumn<Repository>() {
-                            Header   = "URL",
+                            Header   = Properties.Resources.InstanceEditRepoURLHeader,
                             Renderer = r => r.uri.ToString(),
                             Width    = 50
                         }
@@ -71,13 +71,13 @@ namespace CKAN.ConsoleUI {
                     1, 0, ListSortDirection.Ascending
                 );
                 AddObject(repoList);
-                repoList.AddTip("A", "Add");
+                repoList.AddTip("A", Properties.Resources.Add);
                 repoList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
                     LaunchSubScreen(theme, new RepoAddScreen(ksp.game, repoEditList));
                     repoList.SetData(new List<Repository>(repoEditList.Values));
                     return true;
                 });
-                repoList.AddTip("R", "Remove");
+                repoList.AddTip("R", Properties.Resources.Remove);
                 repoList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
                     int oldPrio = repoList.Selection.priority;
                     repoEditList.Remove(repoList.Selection.name);
@@ -90,13 +90,13 @@ namespace CKAN.ConsoleUI {
                     repoList.SetData(new List<Repository>(repoEditList.Values));
                     return true;
                 });
-                repoList.AddTip("E", "Edit");
+                repoList.AddTip("E", Properties.Resources.Edit);
                 repoList.AddBinding(Keys.E, (object sender, ConsoleTheme theme) => {
                     LaunchSubScreen(theme, new RepoEditScreen(ksp.game, repoEditList, repoList.Selection));
                     repoList.SetData(new List<Repository>(repoEditList.Values));
                     return true;
                 });
-                repoList.AddTip("-", "Up");
+                repoList.AddTip("-", Properties.Resources.Up);
                 repoList.AddBinding(Keys.Minus, (object sender, ConsoleTheme theme) => {
                     if (repoList.Selection.priority > 0) {
                         Repository prev = SortedDictFind(repoEditList,
@@ -109,7 +109,7 @@ namespace CKAN.ConsoleUI {
                     }
                     return true;
                 });
-                repoList.AddTip("+", "Down");
+                repoList.AddTip("+", Properties.Resources.Down);
                 repoList.AddBinding(Keys.Plus, (object sender, ConsoleTheme theme) => {
                     Repository next = SortedDictFind(repoEditList,
                         r => r.priority == repoList.Selection.priority + 1);
@@ -126,7 +126,7 @@ namespace CKAN.ConsoleUI {
                     compatEditList,
                     new List<ConsoleListBoxColumn<GameVersion>>() {
                         new ConsoleListBoxColumn<GameVersion>() {
-                            Header   = "Version",
+                            Header   = Properties.Resources.InstanceEditCompatVersionHeader,
                             Width    = 10,
                             Renderer = v => v.ToString(),
                             Comparer = (a, b) => a.CompareTo(b)
@@ -136,7 +136,7 @@ namespace CKAN.ConsoleUI {
                 );
                 AddObject(compatList);
 
-                compatList.AddTip("A", "Add");
+                compatList.AddTip("A", Properties.Resources.Add);
                 compatList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
                     CompatibleVersionDialog vd = new CompatibleVersionDialog(ksp.game);
                     GameVersion newVersion = vd.Run(theme);
@@ -147,7 +147,7 @@ namespace CKAN.ConsoleUI {
                     }
                     return true;
                 });
-                compatList.AddTip("R", "Remove", () => compatList.Selection != null);
+                compatList.AddTip("R", Properties.Resources.Remove, () => compatList.Selection != null);
                 compatList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
                     compatEditList.Remove(compatList.Selection);
                     compatList.SetData(compatEditList);
@@ -159,7 +159,7 @@ namespace CKAN.ConsoleUI {
                 // Notify the user that the registry doesn't parse
                 AddObject(new ConsoleLabel(
                     1, repoFrameTop, -1,
-                    () => $"Failed to extract mod list sources from {ksp.Name}."
+                    () => string.Format(Properties.Resources.InstanceEditRegistryParseError, ksp.Name)
                 ));
 
             }
@@ -180,7 +180,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override string CenterHeader()
         {
-            return "Edit Game Instance";
+            return Properties.Resources.InstanceEditTitle;
         }
 
         /// <summary>

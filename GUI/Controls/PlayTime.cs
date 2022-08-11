@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using CKAN.Versioning;
 using CKAN.Extensions;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// Show the user's play time in each instance and allow editing
@@ -41,6 +41,14 @@ namespace CKAN
         /// Invoked when the user clicks OK
         /// </summary>
         public event Action Done;
+
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.PlayTime);
+        }
 
         private void ShowTotal()
         {

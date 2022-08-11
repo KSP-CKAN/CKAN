@@ -22,8 +22,7 @@ namespace CKAN.CmdLine
             // Check the input.
             if (String.IsNullOrWhiteSpace(options.search_term) && String.IsNullOrWhiteSpace(options.author_term))
             {
-                user.RaiseError("No search term?");
-
+                user.RaiseError(Properties.Resources.SearchNoTerm);
                 return Exit.BADOPT;
             }
 
@@ -37,7 +36,7 @@ namespace CKAN.CmdLine
             // Show how many matches we have.
             if (options.all && !String.IsNullOrWhiteSpace(options.author_term))
             {
-                user.RaiseMessage("Found {0} compatible and {1} incompatible mods matching \"{2}\" by \"{3}\".",
+                user.RaiseMessage(Properties.Resources.SearchFoundByAuthorWithIncompat,
                     matching_compatible.Count().ToString(),
                     matching_incompatible.Count().ToString(),
                     options.search_term,
@@ -45,21 +44,21 @@ namespace CKAN.CmdLine
             }
             else if (options.all && String.IsNullOrWhiteSpace(options.author_term))
             {
-                user.RaiseMessage("Found {0} compatible and {1} incompatible mods matching \"{2}\".",
+                user.RaiseMessage(Properties.Resources.SearchFoundWithIncompat,
                     matching_compatible.Count().ToString(),
                     matching_incompatible.Count().ToString(),
                     options.search_term);
             }
             else if (!options.all && !String.IsNullOrWhiteSpace(options.author_term))
             {
-                user.RaiseMessage("Found {0} compatible mods matching \"{1}\" by \"{2}\".",
+                user.RaiseMessage(Properties.Resources.SearchFoundByAuthor,
                     matching_compatible.Count().ToString(),
                     options.search_term,
                     options.author_term);
             }
             else if (!options.all && String.IsNullOrWhiteSpace(options.author_term))
             {
-                user.RaiseMessage("Found {0} compatible mods matching \"{1}\".",
+                user.RaiseMessage(Properties.Resources.SearchFound,
                     matching_compatible.Count().ToString(),
                     options.search_term);
             }
@@ -72,10 +71,10 @@ namespace CKAN.CmdLine
 
             if (options.detail)
             {
-                user.RaiseMessage("Matching compatible mods:");
+                user.RaiseMessage(Properties.Resources.SearchCompatibleModsHeader);
                 foreach (CkanModule mod in matching_compatible)
                 {
-                    user.RaiseMessage("* {0} ({1}) - {2} by {3} - {4}",
+                    user.RaiseMessage(Properties.Resources.SearchCompatibleMod,
                         mod.identifier,
                         mod.version,
                         mod.name,
@@ -85,13 +84,13 @@ namespace CKAN.CmdLine
 
                 if (matching_incompatible.Any())
                 {
-                    user.RaiseMessage("Matching incompatible mods:");
+                    user.RaiseMessage(Properties.Resources.SearchIncompatibleModsHeader);
                     foreach (CkanModule mod in matching_incompatible)
                     {
                         Registry.GetMinMaxVersions(new List<CkanModule> { mod } , out _, out _, out var minKsp, out var maxKsp);
                         string GameVersion = Versioning.GameVersionRange.VersionSpan(ksp.game, minKsp, maxKsp).ToString();
 
-                        user.RaiseMessage("* {0} ({1} - {2}) - {3} by {4} - {5}",
+                        user.RaiseMessage(Properties.Resources.SearchIncompatibleMod,
                             mod.identifier,
                             mod.version,
                             GameVersion,

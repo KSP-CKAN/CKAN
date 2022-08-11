@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     partial class SelectionDialog
     {

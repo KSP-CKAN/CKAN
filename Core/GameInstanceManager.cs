@@ -107,7 +107,7 @@ namespace CKAN
 
                 if (path != null)
                 {
-                    GameInstance portableInst = new GameInstance(game, path, "portable", User);
+                    GameInstance portableInst = new GameInstance(game, path, Properties.Resources.GameInstanceManagerPortable, User);
                     if (portableInst.Valid)
                     {
                         return portableInst;
@@ -156,7 +156,7 @@ namespace CKAN
                 {
                     string gamedir = GameInstance.FindGameDir(game);
                     GameInstance foundInst = new GameInstance(
-                        game, gamedir, $"Auto {game.ShortName}", User);
+                        game, gamedir, string.Format(Properties.Resources.GameInstanceManagerAuto, game.ShortName), User);
                     if (foundInst.Valid)
                     {
                         var inst = AddInstance(foundInst);
@@ -230,7 +230,8 @@ namespace CKAN
             }
             if (!existingInstance.Valid)
             {
-                throw new NotKSPDirKraken(existingInstance.GameDir(), "The specified instance is not a valid KSP instance.");
+                throw new NotKSPDirKraken(existingInstance.GameDir(), string.Format(
+                    Properties.Resources.GameInstanceCloneInvalid, existingInstance.game.ShortName));
             }
 
             log.Debug("Copying directory.");
@@ -264,11 +265,12 @@ namespace CKAN
 
                 if (!version.InBuildMap(game))
                 {
-                    throw new BadGameVersionKraken(String.Format("The specified KSP version is not a known version: {0}", version.ToString()));
+                    throw new BadGameVersionKraken(string.Format(
+                        Properties.Resources.GameInstanceFakeBadVersion, game.ShortName, version));
                 }
                 if (Directory.Exists(newPath) && (Directory.GetFiles(newPath).Length != 0 || Directory.GetDirectories(newPath).Length != 0))
                 {
-                    throw new BadInstallLocationKraken("The specified folder already exists and is not empty.");
+                    throw new BadInstallLocationKraken(Properties.Resources.GameInstanceFakeNotEmpty);
                 }
 
                 log.DebugFormat("Creating folder structure and text files at {0} for KSP version {1}", Path.GetFullPath(newPath), version.ToString());
@@ -307,7 +309,8 @@ namespace CKAN
                         if (!dlcDetector.AllowedOnBaseVersion(version))
                             throw new WrongGameVersionKraken(
                                 version,
-                                String.Format("KSP version {0} or above is needed for {1} DLC.",
+                                string.Format(Properties.Resources.GameInstanceFakeDLCNotAllowed,
+                                    game.ShortName,
                                     dlcDetector.ReleaseGameVersion,
                                     dlcDetector.IdentifierBaseName
                             ));
@@ -335,13 +338,13 @@ namespace CKAN
         /// <exception cref="CKAN.Kraken">Could not find a valid name.</exception>
         public string GetNextValidInstanceName(string name)
         {
-            // Check if the current name is valid.
+            // Check if the current name is valid
             if (InstanceNameIsValid(name))
             {
                 return name;
             }
 
-            // Try appending a number to the name.
+            // Try appending a number to the name
             var validName = Enumerable.Repeat(name, 1000)
                 .Select((s, i) => s + " (" + i + ")")
                 .FirstOrDefault(InstanceNameIsValid);
@@ -350,7 +353,7 @@ namespace CKAN
                 return validName;
             }
 
-            // Check if a name with the current timestamp is valid.
+            // Check if a name with the current timestamp is valid
             validName = name + " (" + DateTime.Now + ")";
 
             if (InstanceNameIsValid(validName))
@@ -358,8 +361,8 @@ namespace CKAN
                 return validName;
             }
 
-            // Give up.
-            throw new Kraken("Could not return a valid name for the new instance.");
+            // Give up
+            throw new Kraken(Properties.Resources.GameInstanceNoValidName);
         }
 
         /// <summary>
@@ -432,7 +435,7 @@ namespace CKAN
 
                 case 1:
                     GameInstance ksp = new GameInstance(
-                        matchingGames.First(), path, "custom", User);
+                        matchingGames.First(), path, Properties.Resources.GameInstanceByPathName, User);
                     if (ksp.Valid)
                     {
                         CurrentInstance = ksp;
@@ -461,7 +464,7 @@ namespace CKAN
 
                 case 1:
                     return new GameInstance(
-                        matchingGames.First(), path, "custom", User);
+                        matchingGames.First(), path, Properties.Resources.GameInstanceByPathName, User);
 
                 default:
                     // TODO: Prompt user to choose
@@ -572,7 +575,7 @@ namespace CKAN
             }
             catch (DirectoryNotFoundKraken)
             {
-                failureReason = $"{path} does not exist";
+                failureReason = string.Format(Properties.Resources.GameInstancePathNotFound, path);
                 return false;
             }
             catch (PathErrorKraken ex)

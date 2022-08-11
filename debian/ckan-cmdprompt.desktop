@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=CKAN Command Propmt
+Comment=Comprehensive Kerbal Archive Network Command Prompt
+Icon=/usr/share/icons/ckan.ico
+Categories=Game;Utility
+Exec=/usr/bin/ckan prompt
+Terminal=true
+Type=Application
+Version=1.0
+X-GNOME-SingleWindow=true

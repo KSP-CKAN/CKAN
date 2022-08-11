@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using CKAN.Extensions;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class DeleteDirectories : UserControl
     {
@@ -77,6 +77,14 @@ namespace CKAN
                 toDelete = null;
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.DeleteDirectories);
         }
 
         private void DirectoriesListView_ItemSelectionChanged(Object sender, ListViewItemSelectionChangedEventArgs e)

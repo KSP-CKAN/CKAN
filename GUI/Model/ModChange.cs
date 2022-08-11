@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public enum GUIModChangeType
     {
@@ -10,6 +10,22 @@ namespace CKAN
         Remove  = 2,
         Update  = 3,
         Replace = 4
+    }
+
+    public static class GUIModChangeTypeExtensions
+    {
+        public static string ToI18nString(this GUIModChangeType val)
+        {
+            switch (val)
+            {
+                case GUIModChangeType.None:    return Properties.Resources.ChangeTypeNone;
+                case GUIModChangeType.Install: return Properties.Resources.ChangeTypeInstall;
+                case GUIModChangeType.Remove:  return Properties.Resources.ChangeTypeRemove;
+                case GUIModChangeType.Update:  return Properties.Resources.ChangeTypeUpdate;
+                case GUIModChangeType.Replace: return Properties.Resources.ChangeTypeReplace;
+            }
+            throw new NotImplementedException(val.ToString());
+        }
     }
 
     /// <summary>
@@ -56,7 +72,7 @@ namespace CKAN
 
         public override string ToString()
         {
-            return $"{ChangeType} {Mod} ({Reason})";
+            return $"{ChangeType.ToI18nString()} {Mod} ({Reason})";
         }
 
         protected string modNameAndStatus(CkanModule m)
@@ -81,18 +97,7 @@ namespace CKAN
         {
             get
             {
-                switch (ChangeType)
-                {
-                    case GUIModChangeType.Install:
-                        if (Reason is SelectionReason.UserRequested)
-                        {
-                            return Properties.Resources.MainChangesetNewInstall;
-                        }
-                        else goto default;
-
-                    default:
-                        return Reason.Reason.Trim();
-                }
+                return Reason.Reason.Trim();
             }
         }
     }

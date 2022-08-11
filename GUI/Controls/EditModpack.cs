@@ -8,7 +8,7 @@ using CKAN.Versioning;
 using CKAN.GameVersionProviders;
 using CKAN.Types;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class EditModpack : UserControl
     {
@@ -119,6 +119,14 @@ namespace CKAN
             GroupToRelationships.Add(IgnoredGroup,         ignored);
 
             RelationshipsListView_ItemSelectionChanged(null, null);
+        }
+
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.ModPacks);
         }
 
         private void AddGroup(List<RelationshipDescriptor> relationships, ListViewGroup group, IRegistryQuerier registry)

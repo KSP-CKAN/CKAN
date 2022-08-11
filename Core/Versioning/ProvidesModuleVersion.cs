@@ -15,7 +15,7 @@ namespace CKAN.Versioning
         /// <param name="version">The version of the providing module.</param>
         public ProvidesModuleVersion(string identifier, string version) : base(version)
         {
-            _string = $"{version} (provided by {identifier})";
+            _string = string.Format(Properties.Resources.ProvidesModuleVersionToString, version, identifier);
         }
 
         /// <summary>

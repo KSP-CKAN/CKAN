@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -86,28 +87,28 @@ namespace CKAN.CmdLine
         public CleanOptions Clean { get; set; }
 
         [VerbOption("repair", HelpText = "Attempt various automatic repairs")]
-        public SubCommandOptions Repair { get; set; }
+        public RepairSubOptions Repair { get; set; }
 
         [VerbOption("replace", HelpText = "Replace list of replaceable mods")]
         public ReplaceOptions Replace { get; set; }
 
         [VerbOption("repo", HelpText = "Manage CKAN repositories")]
-        public SubCommandOptions Repo { get; set; }
+        public RepoSubOptions Repo { get; set; }
 
         [VerbOption("mark", HelpText = "Edit flags on modules")]
-        public SubCommandOptions Mark { get; set; }
+        public MarkSubOptions Mark { get; set; }
 
         [VerbOption("instance", HelpText = "Manage game instances")]
-        public SubCommandOptions Instance { get; set; }
+        public InstanceSubOptions Instance { get; set; }
 
         [VerbOption("authtoken", HelpText = "Manage authentication tokens")]
         public AuthTokenSubOptions AuthToken { get; set; }
 
         [VerbOption("cache", HelpText = "Manage download cache path")]
-        public SubCommandOptions Cache { get; set; }
+        public CacheSubOptions Cache { get; set; }
 
         [VerbOption("compat", HelpText = "Manage game version compatibility")]
-        public SubCommandOptions Compat { get; set; }
+        public CompatOptions Compat { get; set; }
 
         [VerbOption("compare", HelpText = "Compare version strings")]
         public CompareOptions Compare { get; set; }
@@ -116,7 +117,7 @@ namespace CKAN.CmdLine
         public VersionOptions Version { get; set; }
 
         [VerbOption("filter", HelpText = "View or edit installation filters")]
-        public SubCommandOptions Filter { get; set; }
+        public FilterSubOptions Filter { get; set; }
 
         [HelpVerbOption]
         public string GetUsage(string verb)
@@ -124,40 +125,49 @@ namespace CKAN.CmdLine
             HelpText ht = HelpText.AutoBuild(this, verb);
 
             // Add a usage prefix line
-            ht.AddPreOptionsLine(" ");
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine($"Usage: ckan <command> [options]");
+                ht.AddPreOptionsLine(" ");
+                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
             }
             else
             {
-                ht.AddPreOptionsLine(verb + " - " + GetDescription(verb));
+                string descr = GetDescription(verb);
+                if (!string.IsNullOrEmpty(descr))
+                {
+                    ht.AddPreOptionsLine(" ");
+                    ht.AddPreOptionsLine($"ckan {verb} - {descr}");
+                }
                 switch (verb)
                 {
-                    // First the commands that deal with mods
+                    // Commands that don't need a header
+                    case "help":
+                        break;
+
+                    // Commands that deal with mods
                     case "add":
                     case "install":
                     case "remove":
                     case "uninstall":
                     case "upgrade":
-                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options] modules");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] modules");
                         break;
                     case "show":
-                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options] module");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] module");
                         break;
 
-                    // Now the commands with other string arguments
+                    // Commands with other string arguments
                     case "search":
-                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options] substring");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] substring");
                         break;
                     case "compare":
-                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options] version1 version2");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] version1 version2");
                         break;
                     case "import":
-                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options] paths");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] paths");
                         break;
 
-                    // Now the commands with only --flag type options
+                    // Commands with only --flag type options
                     case "gui":
                     case "available":
                     case "list":
@@ -166,7 +176,7 @@ namespace CKAN.CmdLine
                     case "clean":
                     case "version":
                     default:
-                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options]");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}]");
                         break;
                 }
             }
@@ -179,15 +189,11 @@ namespace CKAN.CmdLine
     {
         protected string GetDescription(string verb)
         {
-            var info = this.GetType().GetProperties();
-            foreach (var property in info)
-            {
-                BaseOptionAttribute attrib = (BaseOptionAttribute)Attribute.GetCustomAttribute(
-                    property, typeof(BaseOptionAttribute), false);
-                if (attrib != null && attrib.LongName == verb)
-                    return attrib.HelpText;
-            }
-            return "";
+            return GetType().GetProperties()
+                .Select(property => (BaseOptionAttribute)Attribute.GetCustomAttribute(
+                    property, typeof(BaseOptionAttribute), false))
+                .FirstOrDefault(attrib => attrib?.LongName == verb)
+                ?.HelpText;
         }
     }
 
@@ -230,12 +236,12 @@ namespace CKAN.CmdLine
             {
                 if (!AsRoot)
                 {
-                    user.RaiseError("You are trying to run CKAN as root.\r\nThis is a bad idea and there is absolutely no good reason to do it. Please run CKAN from a user account (or use --asroot if you are feeling brave).");
+                    user.RaiseError(Properties.Resources.OptionsRootError);
                     return Exit.ERROR;
                 }
                 else
                 {
-                    user.RaiseMessage("Warning: Running CKAN as root!");
+                    user.RaiseMessage(Properties.Resources.OptionsRootWarning);
                 }
             }
 
@@ -298,12 +304,9 @@ namespace CKAN.CmdLine
 
                         if (major < rec_major || (major == rec_major && minor < rec_minor))
                         {
-                            user.RaiseMessage(
-                                "Warning. Detected mono runtime of {0} is less than the recommended version of {1}\r\n",
+                            user.RaiseMessage(Properties.Resources.OptionsMonoWarning,
                                 String.Join(".", major, minor, patch),
-                                String.Join(".", rec_major, rec_minor, rec_patch)
-                                );
-                            user.RaiseMessage("Update recommend\r\n");
+                                String.Join(".", rec_major, rec_minor, rec_patch));
                         }
                     }
                 }
@@ -333,7 +336,7 @@ namespace CKAN.CmdLine
                 // User provided game instance
                 if (Gamedir != null && Instance != null)
                 {
-                    user.RaiseMessage("--instance and --gamedir can't be specified at the same time");
+                    user.RaiseMessage(Properties.Resources.OptionsInstanceAndGameDir);
                     return Exit.BADOPT;
                 }
 
@@ -352,12 +355,12 @@ namespace CKAN.CmdLine
                 }
                 catch (NotKSPDirKraken k)
                 {
-                    user.RaiseMessage("Sorry, {0} does not appear to be a game instance", k.path);
+                    user.RaiseMessage(Properties.Resources.InstanceNotInstance, k.path);
                     return Exit.BADOPT;
                 }
                 catch (InvalidKSPInstanceKraken k)
                 {
-                    user.RaiseMessage("Invalid game instance specified \"{0}\", use '--gamedir' to specify by path, or 'instance list' to see known game instances", k.instance);
+                    user.RaiseMessage(Properties.Resources.OptionsInvalidInstance, k.instance);
                     return Exit.BADOPT;
                 }
             }
@@ -387,7 +390,7 @@ namespace CKAN.CmdLine
 
     internal class InstallOptions : InstanceSpecificOptions
     {
-        [OptionArray('c', "ckanfiles", HelpText = "Local CKAN files to process")]
+        [OptionArray('c', "ckanfiles", HelpText = "Local CKAN files or URLs to process")]
         public string[] ckan_files { get; set; }
 
         [Option("no-recommends", DefaultValue = false, HelpText = "Do not install recommended modules")]
@@ -403,6 +406,7 @@ namespace CKAN.CmdLine
         public bool allow_incompatible { get; set; }
 
         [ValueList(typeof(List<string>))]
+        [AvailableIdentifiers]
         public List<string> modules { get; set; }
     }
 
@@ -424,6 +428,7 @@ namespace CKAN.CmdLine
         public bool upgrade_all { get; set; }
 
         [ValueList(typeof (List<string>))]
+        [InstalledIdentifiers]
         public List<string> modules { get; set; }
     }
 
@@ -449,6 +454,7 @@ namespace CKAN.CmdLine
 
         // TODO: How do we provide helptext on this?
         [ValueList(typeof (List<string>))]
+        [InstalledIdentifiers]
         public List<string> modules { get; set; }
     }
 
@@ -505,6 +511,7 @@ namespace CKAN.CmdLine
         public bool regex { get; set; }
 
         [ValueList(typeof(List<string>))]
+        [InstalledIdentifiers]
         public List<string> modules { get; set; }
 
         [Option("all", DefaultValue = false, HelpText = "Remove all installed mods.")]
@@ -538,6 +545,7 @@ namespace CKAN.CmdLine
         public bool with_versions { get; set; }
 
         [ValueList(typeof(List<string>))]
+        [AvailableIdentifiers]
         public List<string> modules { get; set; }
     }
 
@@ -564,4 +572,13 @@ namespace CKAN.CmdLine
         [ValueOption(0)] public string Left  { get; set; }
         [ValueOption(1)] public string Right { get; set; }
     }
+
+    [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+    public class AvailableIdentifiersAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+    public class InstalledIdentifiersAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+    public class GameInstancesAttribute : Attribute { }
 }

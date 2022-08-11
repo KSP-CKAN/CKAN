@@ -7,7 +7,7 @@ namespace CKAN
 {
     public class Repository : IEquatable<Repository>
     {
-        [JsonIgnore] public static readonly string default_ckan_repo_name = "default";
+        [JsonIgnore] public static string default_ckan_repo_name => Properties.Resources.RepositoryDefaultName;
 
         public string  name;
         public Uri     uri;

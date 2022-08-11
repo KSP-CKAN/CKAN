@@ -9,86 +9,85 @@ using log4net;
 
 namespace CKAN.CmdLine
 {
+    public class RepoSubOptions : VerbCommandOptions
+    {
+        [VerbOption("available", HelpText = "List (canonical) available repositories")]
+        public RepoAvailableOptions AvailableOptions { get; set; }
+
+        [VerbOption("list",      HelpText = "List repositories")]
+        public RepoListOptions ListOptions { get; set; }
+
+        [VerbOption("add",       HelpText = "Add a repository")]
+        public RepoAddOptions AddOptions { get; set; }
+
+        [VerbOption("forget",    HelpText = "Forget a repository")]
+        public RepoForgetOptions ForgetOptions { get; set; }
+
+        [VerbOption("default",   HelpText = "Set the default repository")]
+        public RepoDefaultOptions DefaultOptions { get; set; }
+
+        [HelpVerbOption]
+        public string GetUsage(string verb)
+        {
+            HelpText ht = HelpText.AutoBuild(this, verb);
+            // Add a usage prefix line
+            ht.AddPreOptionsLine(" ");
+            if (string.IsNullOrEmpty(verb))
+            {
+                ht.AddPreOptionsLine($"ckan repo - {Properties.Resources.RepoHelpSummary}");
+                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
+            }
+            else
+            {
+                ht.AddPreOptionsLine("repo " + verb + " - " + GetDescription(verb));
+                switch (verb)
+                {
+                    // First the commands with two arguments
+                    case "add":
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name url");
+                        break;
+
+                    // Then the commands with one argument
+                    case "remove":
+                    case "forget":
+                    case "default":
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name");
+                        break;
+
+                    // Now the commands with only --flag type options
+                    case "available":
+                    case "list":
+                    default:
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}]");
+                        break;
+                }
+            }
+            return ht;
+        }
+    }
+
+    public class RepoAvailableOptions : CommonOptions { }
+    public class RepoListOptions      : InstanceSpecificOptions { }
+
+    public class RepoAddOptions : InstanceSpecificOptions
+    {
+        [ValueOption(0)] public string name { get; set; }
+        [ValueOption(1)] public string uri { get; set; }
+    }
+
+    public class RepoDefaultOptions : InstanceSpecificOptions
+    {
+        [ValueOption(0)] public string uri { get; set; }
+    }
+
+    public class RepoForgetOptions : InstanceSpecificOptions
+    {
+        [ValueOption(0)] public string name { get; set; }
+    }
 
     public class Repo : ISubCommand
     {
         public Repo() { }
-
-        internal class RepoSubOptions : VerbCommandOptions
-        {
-            [VerbOption("available", HelpText = "List (canonical) available repositories")]
-            public AvailableOptions AvailableOptions { get; set; }
-
-            [VerbOption("list",      HelpText = "List repositories")]
-            public ListOptions ListOptions { get; set; }
-
-            [VerbOption("add",       HelpText = "Add a repository")]
-            public AddOptions AddOptions { get; set; }
-
-            [VerbOption("forget",    HelpText = "Forget a repository")]
-            public ForgetOptions ForgetOptions { get; set; }
-
-            [VerbOption("default",   HelpText = "Set the default repository")]
-            public DefaultOptions DefaultOptions { get; set; }
-
-            [HelpVerbOption]
-            public string GetUsage(string verb)
-            {
-                HelpText ht = HelpText.AutoBuild(this, verb);
-                // Add a usage prefix line
-                ht.AddPreOptionsLine(" ");
-                if (string.IsNullOrEmpty(verb))
-                {
-                    ht.AddPreOptionsLine("ckan repo - Manage CKAN repositories");
-                    ht.AddPreOptionsLine($"Usage: ckan repo <command> [options]");
-                }
-                else
-                {
-                    ht.AddPreOptionsLine("repo " + verb + " - " + GetDescription(verb));
-                    switch (verb)
-                    {
-                        // First the commands with two arguments
-                        case "add":
-                            ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options] name url");
-                            break;
-
-                        // Then the commands with one argument
-                        case "remove":
-                        case "forget":
-                        case "default":
-                            ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options] name");
-                            break;
-
-                        // Now the commands with only --flag type options
-                        case "available":
-                        case "list":
-                        default:
-                            ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options]");
-                            break;
-                    }
-                }
-                return ht;
-            }
-        }
-
-        internal class AvailableOptions : CommonOptions { }
-        internal class ListOptions      : InstanceSpecificOptions { }
-
-        internal class AddOptions : InstanceSpecificOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-            [ValueOption(1)] public string uri { get; set; }
-        }
-
-        internal class DefaultOptions : InstanceSpecificOptions
-        {
-            [ValueOption(0)] public string uri { get; set; }
-        }
-
-        internal class ForgetOptions : InstanceSpecificOptions
-        {
-            [ValueOption(0)] public string name { get; set; }
-        }
 
         // This is required by ISubCommand
         public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
@@ -136,20 +135,20 @@ namespace CKAN.CmdLine
                             break;
 
                         case "add":
-                            exitCode = AddRepository((AddOptions)suboptions);
+                            exitCode = AddRepository((RepoAddOptions)suboptions);
                             break;
 
                         case "remove":
                         case "forget":
-                            exitCode = ForgetRepository((ForgetOptions)suboptions);
+                            exitCode = ForgetRepository((RepoForgetOptions)suboptions);
                             break;
 
                         case "default":
-                            exitCode = DefaultRepository((DefaultOptions)suboptions);
+                            exitCode = DefaultRepository((RepoDefaultOptions)suboptions);
                             break;
 
                         default:
-                            User.RaiseMessage("Unknown command: repo {0}", option);
+                            User.RaiseMessage(Properties.Resources.RepoUnknownCommand, option);
                             exitCode = Exit.BADOPT;
                             break;
                     }
@@ -171,7 +170,7 @@ namespace CKAN.CmdLine
 
         private int AvailableRepositories()
         {
-            User.RaiseMessage("Listing all (canonical) available CKAN repositories:");
+            User.RaiseMessage(Properties.Resources.RepoAvailableHeader);
             RepositoryList repositories;
 
             try
@@ -180,7 +179,7 @@ namespace CKAN.CmdLine
             }
             catch
             {
-                User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
+                User.RaiseError(Properties.Resources.RepoAvailableFailed, MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
                 return Exit.ERROR;
             }
 
@@ -201,7 +200,7 @@ namespace CKAN.CmdLine
         private int ListRepositories()
         {
             var manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
-            User.RaiseMessage("Listing all known repositories:");
+            User.RaiseMessage(Properties.Resources.RepoListHeader);
             SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
             int maxNameLen = 0;
@@ -218,13 +217,13 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private int AddRepository(AddOptions options)
+        private int AddRepository(RepoAddOptions options)
         {
             RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
 
             if (options.name == null)
             {
-                User.RaiseMessage("add <name> [ <uri> ] - argument missing, perhaps you forgot it?");
+                User.RaiseMessage("add <name> [ <uri> ] - {0}", Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
 
@@ -238,7 +237,7 @@ namespace CKAN.CmdLine
                 }
                 catch
                 {
-                    User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Manager.CurrentInstance.game.RepositoryListURL.ToString());
+                    User.RaiseError(Properties.Resources.RepoAvailableFailed, Manager.CurrentInstance.game.RepositoryListURL.ToString());
                     return Exit.ERROR;
                 }
 
@@ -254,7 +253,7 @@ namespace CKAN.CmdLine
                 // Nothing found in the master list?
                 if (options.uri == null)
                 {
-                    User.RaiseMessage("Name {0} not found in master list, please provide name and uri.", options.name);
+                    User.RaiseMessage(Properties.Resources.RepoAddNotFound, options.name);
                     return Exit.BADOPT;
                 }
             }
@@ -264,23 +263,23 @@ namespace CKAN.CmdLine
 
             if (repositories.ContainsKey(options.name))
             {
-                User.RaiseMessage("Repository with name \"{0}\" already exists, aborting..", options.name);
+                User.RaiseMessage(Properties.Resources.RepoAddDuplicate, options.name);
                 return Exit.BADOPT;
             }
 
             repositories.Add(options.name, new Repository(options.name, options.uri));
 
-            User.RaiseMessage("Added repository '{0}' - '{1}'", options.name, options.uri);
+            User.RaiseMessage(Properties.Resources.RepoAdded, options.name, options.uri);
             manager.Save();
 
             return Exit.OK;
         }
 
-        private int ForgetRepository(ForgetOptions options)
+        private int ForgetRepository(RepoForgetOptions options)
         {
             if (options.name == null)
             {
-                User.RaiseError("forget <name> - argument missing, perhaps you forgot it?");
+                User.RaiseError("forget <name> - {0}", Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
 
@@ -296,26 +295,26 @@ namespace CKAN.CmdLine
                 name = repos.Keys.FirstOrDefault(repo => repo.Equals(options.name, StringComparison.OrdinalIgnoreCase));
                 if (name == null)
                 {
-                    User.RaiseMessage("Couldn't find repository with name \"{0}\", aborting..", options.name);
+                    User.RaiseMessage(Properties.Resources.RepoForgetNotFound, options.name);
                     return Exit.BADOPT;
                 }
-                User.RaiseMessage("Removing insensitive match \"{0}\"", name);
+                User.RaiseMessage(Properties.Resources.RepoForgetRemoving, name);
             }
 
             registry.Repositories.Remove(name);
-            User.RaiseMessage("Successfully removed \"{0}\"", options.name);
+            User.RaiseMessage(Properties.Resources.RepoForgetRemoved, options.name);
             manager.Save();
 
             return Exit.OK;
         }
 
-        private int DefaultRepository(DefaultOptions options)
+        private int DefaultRepository(RepoDefaultOptions options)
         {
             RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
 
             if (options.uri == null)
             {
-                User.RaiseMessage("default <uri> - argument missing, perhaps you forgot it?");
+                User.RaiseMessage("default <uri> - {0}", Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
 
@@ -330,7 +329,7 @@ namespace CKAN.CmdLine
             repositories.Add(Repository.default_ckan_repo_name, new Repository(
                     Repository.default_ckan_repo_name, options.uri));
 
-            User.RaiseMessage("Set {0} repository to '{1}'", Repository.default_ckan_repo_name, options.uri);
+            User.RaiseMessage(Properties.Resources.RepoSet, Repository.default_ckan_repo_name, options.uri);
             manager.Save();
 
             return Exit.OK;

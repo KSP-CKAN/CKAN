@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public enum GUIModFilter
     {
@@ -358,12 +358,13 @@ namespace CKAN
 
             var downloadCount = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"       };
             var compat        = new DataGridViewTextBoxCell { Value = mod.GameCompatibility           };
-            var size          = new DataGridViewTextBoxCell { Value = mod.DownloadSize                };
+            var downloadSize  = new DataGridViewTextBoxCell { Value = mod.DownloadSize                };
+            var installSize   = new DataGridViewTextBoxCell { Value = mod.InstallSize                 };
             var releaseDate   = new DataGridViewTextBoxCell { Value = mod.ToModule().release_date     };
             var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate                 };
             var desc          = new DataGridViewTextBoxCell { Value = mod.Abstract.Replace("&", "&&") };
 
-            item.Cells.AddRange(selecting, autoInstalled, updating, replacing, name, author, installVersion, latestVersion, compat, size, releaseDate, installDate, downloadCount, desc);
+            item.Cells.AddRange(selecting, autoInstalled, updating, replacing, name, author, installVersion, latestVersion, compat, downloadSize, installSize, releaseDate, installDate, downloadCount, desc);
 
             selecting.ReadOnly     = selecting     is DataGridViewTextBoxCell;
             autoInstalled.ReadOnly = autoInstalled is DataGridViewTextBoxCell;

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using log4net;
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class ManageMods : UserControl
     {
@@ -1377,8 +1377,10 @@ namespace CKAN
                         {
                             return modB.release_date.HasValue ? -1 : 0;
                         }
-                    case "SizeCol":
+                    case "DownloadSize":
                         return modA.download_size.CompareTo(modB.download_size);
+                    case "InstallSize":
+                        return modA.install_size.CompareTo(modB.install_size);
                     case "DownloadCount":
                         if (gmodA.DownloadCount.HasValue)
                         {

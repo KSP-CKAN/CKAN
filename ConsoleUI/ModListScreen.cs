@@ -36,17 +36,17 @@ namespace CKAN.ConsoleUI {
                         Width    = 1,
                         Renderer = StatusSymbol
                     }, new ConsoleListBoxColumn<CkanModule>() {
-                        Header   = "Name",
+                        Header   = Properties.Resources.ModListNameHeader,
                         Width    = 44,
                         Renderer = m => m.name ?? ""
                     }, new ConsoleListBoxColumn<CkanModule>() {
-                        Header   = "Version",
+                        Header   = Properties.Resources.ModListVersionHeader,
                         Width    = 10,
                         Renderer = m => ModuleInstaller.StripEpoch(m.version?.ToString() ?? ""),
                         Comparer = (a, b) => a.version.CompareTo(b.version)
                     }, new ConsoleListBoxColumn<CkanModule>() {
-                        Header   = "Max game version",
-                        Width    = 17,
+                        Header   = Properties.Resources.ModListMaxGameVersionHeader,
+                        Width    = 20,
                         Renderer = m => registry.LatestCompatibleKSP(m.identifier)?.ToString() ?? "",
                         Comparer = (a, b) => registry.LatestCompatibleKSP(a.identifier).CompareTo(registry.LatestCompatibleKSP(b.identifier))
                     }
@@ -113,8 +113,8 @@ namespace CKAN.ConsoleUI {
 
             searchBox = new ConsoleField(-searchWidth, 2, -1) {
                 GhostText = () => Focused() == searchBox
-                    ? "<Type to search>"
-                    : "<Ctrl+F to search>"
+                    ? Properties.Resources.ModListSearchFocusedGhostText
+                    : Properties.Resources.ModListSearchUnfocusedGhostText
             };
             searchBox.OnChange += (ConsoleField sender, string newValue) => {
                 moduleList.FilterString = newValue;
@@ -122,7 +122,7 @@ namespace CKAN.ConsoleUI {
 
             AddObject(new ConsoleLabel(
                 1, 2, -searchWidth - 2,
-                () => $"{moduleList.VisibleRowCount()} mods"
+                () => string.Format(Properties.Resources.ModListCount, moduleList.VisibleRowCount())
             ));
             AddObject(searchBox);
             AddObject(moduleList);
@@ -158,13 +158,13 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
-            moduleList.AddTip("F2", "Launch KSP");
+            moduleList.AddTip(Properties.Resources.F2, Properties.Resources.LaunchKSP);
             moduleList.AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
                 manager.CurrentInstance.LaunchGame(this, launchAnyWay);
                 return true;
             });
 
-            moduleList.AddTip("Enter", "Details",
+            moduleList.AddTip(Properties.Resources.Enter, Properties.Resources.Details,
                 () => moduleList.Selection != null
             );
             moduleList.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
@@ -176,15 +176,15 @@ namespace CKAN.ConsoleUI {
 
             // Conditionally show only one of these based on selected mod status
 
-            moduleList.AddTip("+", "Install",
+            moduleList.AddTip("+", Properties.Resources.ModListInstallTip,
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && !registry.IsInstalled(moduleList.Selection.identifier, false)
             );
-            moduleList.AddTip("+", "Upgrade",
+            moduleList.AddTip("+", Properties.Resources.ModListUpgradeTip,
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && registry.HasUpdate(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria())
             );
-            moduleList.AddTip("+", "Replace",
+            moduleList.AddTip("+", Properties.Resources.ModListReplaceTip,
                 () => moduleList.Selection != null
                     && registry.GetReplacement(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()) != null
             );
@@ -202,7 +202,7 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
-            moduleList.AddTip("-", "Remove",
+            moduleList.AddTip("-", Properties.Resources.ModListRemoveTip,
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && registry.IsInstalled(moduleList.Selection.identifier, false)
                     && !registry.IsAutodetected(moduleList.Selection.identifier)
@@ -216,11 +216,11 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
-            moduleList.AddTip("F8", "Mark auto-installed",
+            moduleList.AddTip("F8", Properties.Resources.ModListAutoInstTip,
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && (!registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
             );
-            moduleList.AddTip("F8", "Mark user-selected",
+            moduleList.AddTip("F8", Properties.Resources.ModListUserSelectedTip,
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && (registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
             );
@@ -233,7 +233,7 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
-            AddTip("F9", "Apply changes", plan.NonEmpty);
+            AddTip("F9", Properties.Resources.ModListApplyChangesTip, plan.NonEmpty);
             AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
                 ApplyChanges(theme);
                 return true;
@@ -242,7 +242,7 @@ namespace CKAN.ConsoleUI {
             // Show total download size of all installed mods
             AddObject(new ConsoleLabel(
                 1, -1, searchWidth,
-                () => $"{CkanModule.FmtSize(totalInstalledDownloadSize())} installed",
+                () => string.Format(Properties.Resources.ModListSizeOnDisk, CkanModule.FmtSize(totalInstalledDownloadSize())),
                 null,
                 th => th.DimLabelFg
             ));
@@ -252,68 +252,64 @@ namespace CKAN.ConsoleUI {
                 () => {
                     int days = daysSinceUpdated(registryFilePath());
                     return days <  1 ? ""
-                        :  days == 1 ? $"Updated at least {days} day ago"
-                        :              $"Updated at least {days} days ago";
+                        :  days == 1 ? string.Format(Properties.Resources.ModListUpdatedDayAgo,  days)
+                        :              string.Format(Properties.Resources.ModListUpdatedDaysAgo, days);
                 },
                 null,
                 (ConsoleTheme th) => {
                     int daysSince = daysSinceUpdated(registryFilePath());
-                    if (daysSince < daysTillStale) {
-                        return th.RegistryUpToDate;
-                    } else if (daysSince < daystillVeryStale) {
-                        return th.RegistryStale;
-                    } else {
-                        return th.RegistryVeryStale;
-                    }
+                    return daysSince < daysTillStale     ? th.RegistryUpToDate
+                        :  daysSince < daystillVeryStale ? th.RegistryStale
+                        :                                  th.RegistryVeryStale;
                 }
             ));
 
             List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>() {
-                new ConsoleMenuOption("Sort...",                    "",
-                    "Change the sorting of the list of mods",
+                new ConsoleMenuOption(Properties.Resources.ModListSortMenu, "",
+                    Properties.Resources.ModListSortMenuTip,
                     true, null, null, moduleList.SortMenu()),
                 null,
-                new ConsoleMenuOption("Refresh mod list", "F5, Ctrl+R",
-                    "Refresh the list of mods",
+                new ConsoleMenuOption(Properties.Resources.ModListRefreshMenu, $"F5, {Properties.Resources.Ctrl}+R",
+                    Properties.Resources.ModListRefreshMenuTip,
                     true, (ConsoleTheme th) => UpdateRegistry(th)),
-                new ConsoleMenuOption("Upgrade all",          "Ctrl+U",
-                    "Mark all available updates for installation",
+                new ConsoleMenuOption(Properties.Resources.ModListUpgradeMenu, $"{Properties.Resources.Ctrl}+U",
+                    Properties.Resources.ModListUpgradeMenuTip,
                     true, UpgradeAll, null, null, HasAnyUpgradeable()),
-                new ConsoleMenuOption("Audit recommendations",      "",
-                    "List mods suggested and recommended by installed mods",
+                new ConsoleMenuOption(Properties.Resources.ModListAuditRecsMenu, "",
+                    Properties.Resources.ModListAuditRecsMenuTip,
                     true, ViewSuggestions),
-                new ConsoleMenuOption("Import downloads...",        "",
-                    "Select manually downloaded mods to import into CKAN",
+                new ConsoleMenuOption(Properties.Resources.ModListImportMenu, "",
+                    Properties.Resources.ModListImportMenuTip,
                     true, ImportDownloads),
-                new ConsoleMenuOption("Export installed...",        "",
-                    "Save your mod list",
+                new ConsoleMenuOption(Properties.Resources.ModListExportMenu, "",
+                    Properties.Resources.ModListExportMenuTip,
                     true, ExportInstalled),
                 null,
-                new ConsoleMenuOption("Game instance settings...",    "",
-                    "Configure the current game instance",
+                new ConsoleMenuOption(Properties.Resources.ModListInstanceSettingsMenu, "",
+                    Properties.Resources.ModListInstanceSettingsMenuTip,
                     true, InstanceSettings),
-                new ConsoleMenuOption("Select game instance...",      "",
-                    "Switch to a different game instance",
+                new ConsoleMenuOption(Properties.Resources.ModListSelectInstanceMenu, "",
+                    Properties.Resources.ModListSelectInstanceMenuTip,
                     true, SelectInstall),
-                new ConsoleMenuOption("Authentication tokens...",     "",
-                    "Edit authentication tokens sent to download servers",
+                new ConsoleMenuOption(Properties.Resources.ModListAuthTokenMenu, "",
+                    Properties.Resources.ModListAuthTokenMenuTip,
                     true, EditAuthTokens),
-                new ConsoleMenuOption("Installation filters...",     "",
-                    "Edit list of files and folders to exclude from installation",
+                new ConsoleMenuOption(Properties.Resources.ModListFilterMenu, "",
+                    Properties.Resources.ModListFilterMenuTip,
                     true, EditInstallFilters),
                 null,
-                new ConsoleMenuOption("Help",                  helpKey,
-                    "Tips & tricks",
+                new ConsoleMenuOption(Properties.Resources.ModListHelpMenu, helpKey,
+                    Properties.Resources.ModListHelpMenuTip,
                     true, Help),
                 null,
-                new ConsoleMenuOption("Quit",                 "Ctrl+Q",
-                    "Exit to DOS",
+                new ConsoleMenuOption(Properties.Resources.ModListQuitMenu, $"{Properties.Resources.Ctrl}+Q",
+                    Properties.Resources.ModListQuitMenuTip,
                     true, (ConsoleTheme th) => false)
             };
             if (debug) {
                 opts.Add(null);
-                opts.Add(new ConsoleMenuOption("DEBUG: Capture key...", "",
-                    "Print details of how your system reports a keystroke for debugging",
+                opts.Add(new ConsoleMenuOption(Properties.Resources.ModListCaptureKeyMenu, "",
+                    Properties.Resources.ModListCaptureKeyMenuTip,
                     true, CaptureKey));
             }
             mainMenu = new ConsolePopupMenu(opts);
@@ -339,7 +335,7 @@ namespace CKAN.ConsoleUI {
         // an option other than F1 for terminals that open their own help.
         private static readonly string helpKey = Platform.IsMac
             ? "F1"
-            : "F1, Alt+H";
+            : $"F1, {Properties.Resources.Alt}+H";
 
         private bool ImportDownloads(ConsoleTheme theme)
         {
@@ -351,13 +347,13 @@ namespace CKAN.ConsoleUI {
         private bool CaptureKey(ConsoleTheme theme)
         {
             ConsoleKeyInfo k = default(ConsoleKeyInfo);
-            ConsoleMessageDialog keyprompt = new ConsoleMessageDialog("Press a key", new List<string>());
+            ConsoleMessageDialog keyprompt = new ConsoleMessageDialog(Properties.Resources.ModListPressAKey, new List<string>());
             keyprompt.Run(theme, (ConsoleTheme th) => {
                 k = Console.ReadKey(true);
             });
             ConsoleMessageDialog output = new ConsoleMessageDialog(
                 $"Key: {k.Key,18}\nKeyChar:           0x{(int)k.KeyChar:x2}\nModifiers: {k.Modifiers,12}",
-                new List<string> {"OK"}
+                new List<string> { Properties.Resources.OK }
             );
             output.Run(theme);
             return true;
@@ -412,7 +408,7 @@ namespace CKAN.ConsoleUI {
                         RefreshList(theme);
                     }
                 } else {
-                    RaiseError("Installed mods have no unsatisfied recommendations or suggestions.");
+                    RaiseError(Properties.Resources.ModListAuditNotFound);
                 }
             } catch (ModuleNotFoundKraken k) {
                 RaiseError($"{k.module} {k.version}: {k.Message}");
@@ -432,7 +428,10 @@ namespace CKAN.ConsoleUI {
 
         private bool UpdateRegistry(ConsoleTheme theme, bool showNewModsPrompt = true)
         {
-            ProgressScreen ps = new ProgressScreen("Updating Registry", "Checking for updates");
+            ProgressScreen ps = new ProgressScreen(
+                Properties.Resources.ModListUpdateRegistryTitle,
+                Properties.Resources.ModListUpdateRegistryMessage
+            );
             LaunchSubScreen(theme, ps, (ConsoleTheme th) => {
                 HashSet<string> availBefore = new HashSet<string>(
                     Array.ConvertAll<CkanModule, string>(
@@ -480,8 +479,8 @@ namespace CKAN.ConsoleUI {
         private string newModPrompt(int howMany)
         {
             return howMany == 1
-                ? $"{howMany} new mod available since last update. Show it?"
-                : $"{howMany} new mods available since last update. Show them?";
+                ? string.Format(Properties.Resources.ModListNewMod,  howMany)
+                : string.Format(Properties.Resources.ModListNewMods, howMany);
         }
 
         private bool ScanForMods()
@@ -490,7 +489,7 @@ namespace CKAN.ConsoleUI {
                 manager.CurrentInstance.Scan();
             } catch (InconsistentKraken ex) {
                 // Warn about inconsistent state
-                RaiseError(ex.InconsistenciesPretty + " The repo has not been saved.");
+                RaiseError(Properties.Resources.ModListScanBad, ex.InconsistenciesPretty);
             }
             return true;
         }
@@ -597,11 +596,11 @@ namespace CKAN.ConsoleUI {
                 RegistryManager.Instance(manager.CurrentInstance).Save(true);
                 string path = Path.Combine(
                     manager.CurrentInstance.CkanDir(),
-                    $"installed-{manager.CurrentInstance.Name}.ckan"
+                    $"{Properties.Resources.ModListExportPrefix}-{manager.CurrentInstance.Name}.ckan"
                 );
-                RaiseError($"Mod list exported to {path}");
+                RaiseError(Properties.Resources.ModListExported, path);
             } catch (Exception ex) {
-                RaiseError($"Export failed: {ex.Message}");
+                RaiseError(Properties.Resources.ModListExportFailed, ex.Message);
             }
             return true;
         }
@@ -664,7 +663,9 @@ namespace CKAN.ConsoleUI {
         {
             long total = 0;
             foreach (InstalledModule im in registry.InstalledModules) {
-                total += im.Module.download_size;
+                total += im.Module.install_size > 0
+                    ? im.Module.install_size
+                    : im.Module.download_size;
             }
             return total;
         }
@@ -694,7 +695,10 @@ namespace CKAN.ConsoleUI {
         private ChangePlan      plan   = new ChangePlan();
         private HashSet<string> recent = new HashSet<string>();
 
-        private const int searchWidth       = 30;
+        private int searchWidth => Math.Max(30, Math.Max(
+            Properties.Resources.ModListSearchFocusedGhostText.Length,
+            Properties.Resources.ModListSearchUnfocusedGhostText.Length
+        ));
         private const int daysTillStale     = 7;
         private const int daystillVeryStale = 30;
 

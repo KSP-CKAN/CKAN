@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     partial class ModInfo
     {
@@ -71,7 +71,7 @@
             this.ContentsOpenButton = new System.Windows.Forms.Button();
             this.NotCachedLabel = new System.Windows.Forms.Label();
             this.AllModVersionsTabPage = new System.Windows.Forms.TabPage();
-            this.AllModVersions = new CKAN.AllModVersions();
+            this.AllModVersions = new CKAN.GUI.AllModVersions();
             this.ModInfoTabControl.SuspendLayout();
             this.MetadataTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -116,6 +116,7 @@
             // splitContainer2
             //
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer2.Location = new System.Drawing.Point(3, 3);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -454,17 +455,17 @@
                 // ImageList's default makes icons look like garbage
                 ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
             };
-            this.DependsGraphTree.ImageList.Images.Add("Root", global::CKAN.Properties.Resources.ksp);
-            this.DependsGraphTree.ImageList.Images.Add("Depends", global::CKAN.Properties.Resources.star);
-            this.DependsGraphTree.ImageList.Images.Add("Recommends", global::CKAN.Properties.Resources.thumbup);
-            this.DependsGraphTree.ImageList.Images.Add("Suggests", global::CKAN.Properties.Resources.info);
-            this.DependsGraphTree.ImageList.Images.Add("Supports", global::CKAN.Properties.Resources.smile);
-            this.DependsGraphTree.ImageList.Images.Add("Conflicts", global::CKAN.Properties.Resources.alert);
+            this.DependsGraphTree.ImageList.Images.Add("Root", global::CKAN.GUI.Properties.Resources.ksp);
+            this.DependsGraphTree.ImageList.Images.Add("Depends", global::CKAN.GUI.Properties.Resources.star);
+            this.DependsGraphTree.ImageList.Images.Add("Recommends", global::CKAN.GUI.Properties.Resources.thumbup);
+            this.DependsGraphTree.ImageList.Images.Add("Suggests", global::CKAN.GUI.Properties.Resources.info);
+            this.DependsGraphTree.ImageList.Images.Add("Supports", global::CKAN.GUI.Properties.Resources.smile);
+            this.DependsGraphTree.ImageList.Images.Add("Conflicts", global::CKAN.GUI.Properties.Resources.alert);
             //
             // LegendDependsImage
             //
             this.LegendDependsImage.BackColor = System.Drawing.SystemColors.Window;
-            this.LegendDependsImage.Image = global::CKAN.Properties.Resources.star;
+            this.LegendDependsImage.Image = global::CKAN.GUI.Properties.Resources.star;
             this.LegendDependsImage.Location = new System.Drawing.Point(6, 3);
             this.LegendDependsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LegendDependsImage.ClientSize = new System.Drawing.Size(14, 14);
@@ -472,7 +473,7 @@
             // LegendRecommendsImage
             //
             this.LegendRecommendsImage.BackColor = System.Drawing.SystemColors.Window;
-            this.LegendRecommendsImage.Image = global::CKAN.Properties.Resources.thumbup;
+            this.LegendRecommendsImage.Image = global::CKAN.GUI.Properties.Resources.thumbup;
             this.LegendRecommendsImage.Location = new System.Drawing.Point(6, 21);
             this.LegendRecommendsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LegendRecommendsImage.ClientSize = new System.Drawing.Size(14, 14);
@@ -480,7 +481,7 @@
             // LegendSuggestsImage
             //
             this.LegendSuggestsImage.BackColor = System.Drawing.SystemColors.Window;
-            this.LegendSuggestsImage.Image = global::CKAN.Properties.Resources.info;
+            this.LegendSuggestsImage.Image = global::CKAN.GUI.Properties.Resources.info;
             this.LegendSuggestsImage.Location = new System.Drawing.Point(6, 39);
             this.LegendSuggestsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LegendSuggestsImage.ClientSize = new System.Drawing.Size(14, 14);
@@ -488,7 +489,7 @@
             // LegendSupportsImage
             //
             this.LegendSupportsImage.BackColor = System.Drawing.SystemColors.Window;
-            this.LegendSupportsImage.Image = global::CKAN.Properties.Resources.smile;
+            this.LegendSupportsImage.Image = global::CKAN.GUI.Properties.Resources.smile;
             this.LegendSupportsImage.Location = new System.Drawing.Point(6, 57);
             this.LegendSupportsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LegendSupportsImage.ClientSize = new System.Drawing.Size(14, 14);
@@ -496,7 +497,7 @@
             // LegendConflictsImage
             //
             this.LegendConflictsImage.BackColor = System.Drawing.SystemColors.Window;
-            this.LegendConflictsImage.Image = global::CKAN.Properties.Resources.alert;
+            this.LegendConflictsImage.Image = global::CKAN.GUI.Properties.Resources.alert;
             this.LegendConflictsImage.Location = new System.Drawing.Point(6, 75);
             this.LegendConflictsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LegendConflictsImage.ClientSize = new System.Drawing.Size(14, 14);
@@ -682,6 +683,6 @@
         private System.Windows.Forms.Button ContentsOpenButton;
         private System.Windows.Forms.Label NotCachedLabel;
         private System.Windows.Forms.TabPage AllModVersionsTabPage;
-        private AllModVersions AllModVersions;
+        private CKAN.GUI.AllModVersions AllModVersions;
     }
 }

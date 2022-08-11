@@ -2,7 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.30.5
+## v1.31.1
+
+### Features
+
+- [GUI] Korean translation of GUI (#3606 by: Kingnoob1377; reviewed: HebaruSan)
+- [CLI] Tab completion for `ckan prompt` (#3515, #3617 by: HebaruSan; reviewed: techman83)
+- [GUI] Context sensitive help (#3563 by: HebaruSan; reviewed: techman83)
+- [Multiple] Add install size to metadata and display in clients (#3568 by: HebaruSan; reviewed: techman83)
+- [CLI] Create a system menu entry for command prompt (#3622 by: HebaruSan; reviewed: techman83)
+- [Multiple] Internationalize Core, CmdLine, ConsoleUI, and AutoUpdater (#3482 by: HebaruSan; reviewed: techman83)
+
+## Bugfixes
+
+- [GUI] Auto-size buttons in bottom panels (#3576 by: HebaruSan; reviewed: techman83)
+
+### Internal
+
+- [Build] Generate RPM repo for releases and under dev builds (#3605, #3609, #3610 by: HebaruSan)
+- [Netkan] Internal .ckan file compatibility with bundled mods (#3615 by: HebaruSan)
+- [Netkan] Filter duplicate co-authors from SpaceDock (#3599 by: HebaruSan; reviewed: techman83)
+
+## v1.31.0 (IKAROS)
 
 ### Features
 
@@ -44,6 +65,9 @@ All notable changes to this project will be documented in this file.
 - [Core] Get licenses from embedded schema, skip bad modules in deserialize (#3526 by: HebaruSan; reviewed: DasSkelett)
 - [Core] One concurrent download per host for all hosts (#3557 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Show dependencies of upgrading mods in change set (#3560 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Resolve virtual module dependencies in same order as non-virtual (#3476 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Fix play time column if no playtime, hide game column if all instances are of the same game (#3570 by: DasSkelett; reviewed: HebaruSan)
+- [Core] Fix tracking of paths with trailing spaces on Windows (#3586 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
@@ -61,6 +85,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Rename GH1866 test, fix invalid char test, fix equality assertion order (#3509 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Enforce a few more spec version requirements (#3505 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Allow overriding resources.remote-avc (#3451 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] Sort GitHub releases (#3571 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.30.4 (Hubble)
 

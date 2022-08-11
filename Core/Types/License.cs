@@ -41,7 +41,7 @@ namespace CKAN
             {
                 throw new BadMetadataKraken(
                     null,
-                    string.Format("The license {0} is invalid", license)
+                    string.Format(Properties.Resources.LicenceInvalid, license)
                 );
             }
 

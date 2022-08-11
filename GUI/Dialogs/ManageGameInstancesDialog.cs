@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
 
 using CKAN.Versioning;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class ManageGameInstancesDialog : Form
     {
@@ -73,27 +75,15 @@ namespace CKAN
             GameInstancesListView.Items.Clear();
             UpdateButtonState();
 
-            if (!GameInstancesListView.Columns.Contains(GamePlayTime))
-            {
-                // Always show the play time column so our rows load correctly
-                GameInstancesListView.Columns.Insert(
-                    GameInstallPath.Index, GamePlayTime);
-            }
+            var allSameGame = _manager.Instances.Select(i => i.Value.game).Distinct().Count() <= 1;
+            var hasPlayTime = _manager.Instances.Any(instance => (instance.Value.playTime?.Time ?? TimeSpan.Zero) > TimeSpan.Zero);
+
+            AddOrRemoveColumn(GameInstancesListView, Game, !allSameGame);
+            AddOrRemoveColumn(GameInstancesListView, GamePlayTime, hasPlayTime);
 
             GameInstancesListView.Items.AddRange(_manager.Instances
                 .OrderByDescending(instance => instance.Value.Version())
-                .Select(instance => new ListViewItem(new string[]
-                {
-                    !instance.Value.Valid
-                        ? string.Format(Properties.Resources.ManageGameInstancesNameColumnInvalid, instance.Key)
-                        : _manager.CurrentInstance != instance.Value && instance.Value.IsMaybeLocked
-                            ? string.Format(Properties.Resources.ManageGameInstancesNameColumnLocked, instance.Key)
-                            : instance.Key,
-                    instance.Value.game.ShortName,
-                    FormatVersion(instance.Value.Version()),
-                    instance.Value.playTime?.ToString() ?? "",
-                    instance.Value.GameDir().Replace('/', Path.DirectorySeparatorChar)
-                })
+                .Select(instance => new ListViewItem(rowItems(instance.Value, !allSameGame, hasPlayTime))
                 {
                     Tag = instance.Key
                 })
@@ -102,13 +92,57 @@ namespace CKAN
 
             GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
 
-            var hasPlayTime = _manager.Instances.Any(instance => (instance.Value.playTime?.Time ?? TimeSpan.Zero) > TimeSpan.Zero);
-            if (!hasPlayTime && GameInstancesListView.Columns.Contains(GamePlayTime))
+        private void AddOrRemoveColumn(ListView listView, ColumnHeader column, bool condition)
+        {
+            if (condition && !listView.Columns.Contains(column))
             {
-                // Hide the play time column if not in use
-                GameInstancesListView.Columns.Remove(GamePlayTime);
+                listView.Columns.Insert(column.Index, column);
             }
+            else if (!condition && listView.Columns.Contains(column))
+            {
+                listView.Columns.Remove(column);
+            }
+        }
+
+        private string[] rowItems(GameInstance instance, bool includeGame, bool includePlayTime)
+        {
+            var list = new List<string>
+            {
+                !instance.Valid
+                    ? string.Format(Properties.Resources.ManageGameInstancesNameColumnInvalid, instance.Name)
+                    : !(_manager.CurrentInstance?.Equals(instance) ?? false) && instance.IsMaybeLocked
+                        ? string.Format(Properties.Resources.ManageGameInstancesNameColumnLocked, instance.Name)
+                        : instance.Name
+            };
+
+            if (includeGame)
+                list.Add(instance.game.ShortName);
+
+            list.Add(FormatVersion(instance.Version()));
+
+            if (includePlayTime)
+                list.Add(instance.playTime?.ToString() ?? "");
+
+            list.Add(instance.GameDir().Replace('/', Path.DirectorySeparatorChar));
+            return list.ToArray();
+        }
+
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.ManageInstances);
+        }
+
+        /// <summary>
+        /// Open the user guide when the user clicks the help button
+        /// </summary>
+        protected override void OnHelpButtonClicked(CancelEventArgs evt)
+        {
+            evt.Cancel = Util.TryOpenWebPage(HelpURLs.ManageInstances);
         }
 
         private static string FormatVersion(GameVersion v)

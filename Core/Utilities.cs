@@ -11,7 +11,7 @@ namespace CKAN
     {
         public static readonly string[] AvailableLanguages =
         {
-            "en-GB", "en-US", "de-DE", "zh-CN", "fr-FR", "pt-BR", "ru-RU", "ja-JP"
+            "en-GB", "en-US", "de-DE", "zh-CN", "fr-FR", "pt-BR", "ru-RU", "ja-JP", "ko-KR"
         };
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace CKAN
                 }
             }
         }
-        
+
         /// <summary>
         /// Launch a URL. For YEARS this was done by Process.Start in a
         /// cross-platform way, but Microsoft chose to break that,

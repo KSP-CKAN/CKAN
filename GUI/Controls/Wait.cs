@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     public partial class Wait : UserControl
     {
@@ -24,7 +24,7 @@ namespace CKAN
             set
             {
                 Util.Invoke(this, () =>
-                    RetryCurrentActionButton.Enabled = value);
+                    RetryCurrentActionButton.Visible = value);
             }
         }
 
@@ -198,8 +198,8 @@ namespace CKAN
                 ClearModuleBars();
                 ProgressValue = DialogProgressBar.Minimum;
                 ProgressIndeterminate = true;
-                RetryCurrentActionButton.Enabled = false;
-                CancelCurrentActionButton.Enabled = cancelable;
+                RetryCurrentActionButton.Visible = false;
+                CancelCurrentActionButton.Visible = cancelable;
                 OkButton.Enabled = false;
                 MessageTextBox.Text = Properties.Resources.MainWaitPleaseWait;
             });
@@ -212,8 +212,8 @@ namespace CKAN
                 MessageTextBox.Text = Properties.Resources.MainWaitDone;
                 ProgressValue = 100;
                 ProgressIndeterminate = false;
-                RetryCurrentActionButton.Enabled = !success;
-                CancelCurrentActionButton.Enabled = false;
+                RetryCurrentActionButton.Visible = !success;
+                CancelCurrentActionButton.Visible = false;
                 OkButton.Enabled = true;
             });
         }

@@ -3,41 +3,41 @@ using CommandLine.Text;
 
 namespace CKAN.CmdLine
 {
+    internal class RepairSubOptions : VerbCommandOptions
+    {
+        [VerbOption("registry", HelpText = "Try to repair the CKAN registry")]
+        public InstanceSpecificOptions Registry { get; set; }
+
+        [HelpVerbOption]
+        public string GetUsage(string verb)
+        {
+            HelpText ht = HelpText.AutoBuild(this, verb);
+            // Add a usage prefix line
+            ht.AddPreOptionsLine(" ");
+            if (string.IsNullOrEmpty(verb))
+            {
+                ht.AddPreOptionsLine($"ckan repair - {Properties.Resources.RepairHelpSummary}");
+                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repair <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
+            }
+            else
+            {
+                ht.AddPreOptionsLine("repair " + verb + " - " + GetDescription(verb));
+                switch (verb)
+                {
+                    // Commands with only --flag type options
+                    case "registry":
+                    default:
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repair {verb} [{Properties.Resources.Options}]");
+                        break;
+                }
+            }
+            return ht;
+        }
+    }
+
     public class Repair : ISubCommand
     {
         public Repair() { }
-
-        internal class RepairSubOptions : VerbCommandOptions
-        {
-            [VerbOption("registry", HelpText = "Try to repair the CKAN registry")]
-            public InstanceSpecificOptions Registry { get; set; }
-
-            [HelpVerbOption]
-            public string GetUsage(string verb)
-            {
-                HelpText ht = HelpText.AutoBuild(this, verb);
-                // Add a usage prefix line
-                ht.AddPreOptionsLine(" ");
-                if (string.IsNullOrEmpty(verb))
-                {
-                    ht.AddPreOptionsLine("ckan repair - Attempt various automatic repairs");
-                    ht.AddPreOptionsLine($"Usage: ckan repair <command> [options]");
-                }
-                else
-                {
-                    ht.AddPreOptionsLine("repair " + verb + " - " + GetDescription(verb));
-                    switch (verb)
-                    {
-                        // Commands with only --flag type options
-                        case "registry":
-                        default:
-                            ht.AddPreOptionsLine($"Usage: ckan repair {verb} [options]");
-                            break;
-                    }
-                }
-                return ht;
-            }
-        }
 
         public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
         {
@@ -66,7 +66,7 @@ namespace CKAN.CmdLine
                             break;
 
                         default:
-                            User.RaiseMessage("Unknown command: repair {0}", option);
+                            User.RaiseMessage(Properties.Resources.RepairUnknownCommand, option);
                             exitCode = Exit.BADOPT;
                             break;
                     }
@@ -85,7 +85,7 @@ namespace CKAN.CmdLine
             RegistryManager manager = RegistryManager.Instance(ksp);
             manager.registry.Repair();
             manager.Save();
-            User.RaiseMessage("Registry repairs attempted. Hope it helped.");
+            User.RaiseMessage(Properties.Resources.Repaired);
             return Exit.OK;
         }
     }

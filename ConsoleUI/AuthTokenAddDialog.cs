@@ -15,7 +15,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         public AuthTokenAddDialog() : base()
         {
-            CenterHeader = () => "Create Authentication Key";
+            CenterHeader = () => Properties.Resources.AuthTokenAddTitle;
 
             int top = (Console.WindowHeight - height) / 2;
             SetDimensions(6, top, -6, top + height - 1);
@@ -27,7 +27,7 @@ namespace CKAN.ConsoleUI {
 
             AddObject(new ConsoleLabel(
                 l + 2, t + 2, l + 2 + labelW,
-                () => "Host:",
+                () => Properties.Resources.AuthTokenAddHost,
                 th => th.PopupBg,
                 th => th.PopupFg
             ));
@@ -35,13 +35,13 @@ namespace CKAN.ConsoleUI {
             hostEntry = new ConsoleField(
                 l + 2 + labelW + wPad, t + 2, r - 3
             ) {
-                GhostText = () => "<Enter a host name>"
+                GhostText = () => Properties.Resources.AuthTokenAddHostGhostText
             };
             AddObject(hostEntry);
 
             AddObject(new ConsoleLabel(
                 l + 2, t + 4, l + 2 + labelW,
-                () => "Token:",
+                () => Properties.Resources.AuthTokenAddToken,
                 th => th.PopupBg,
                 th => th.PopupFg
             ));
@@ -49,14 +49,14 @@ namespace CKAN.ConsoleUI {
             tokenEntry = new ConsoleField(
                 l + 2 + labelW + wPad, t + 4, r - 3
             ) {
-                GhostText = () => "<Enter an authentication token>"
+                GhostText = () => Properties.Resources.AuthTokenAddTokenGhostText
             };
             AddObject(tokenEntry);
 
-            AddTip("Esc", "Cancel");
+            AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
 
-            AddTip("Enter", "Accept", validKey);
+            AddTip(Properties.Resources.Enter, Properties.Resources.Accept, validKey);
             AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 if (validKey()) {
                     ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(hostEntry.Value, tokenEntry.Value);
@@ -81,7 +81,10 @@ namespace CKAN.ConsoleUI {
         private ConsoleField tokenEntry;
 
         private const int wPad   = 2;
-        private const int labelW = 6;
+        private int labelW => Math.Max(6, Math.Max(
+            Properties.Resources.AuthTokenAddHost.Length,
+            Properties.Resources.AuthTokenAddToken.Length
+        ));
         private const int height = 7;
     }
 

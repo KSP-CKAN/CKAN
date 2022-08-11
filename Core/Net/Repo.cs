@@ -37,18 +37,18 @@ namespace CKAN
         public static RepoUpdateResult UpdateAllRepositories(RegistryManager registry_manager, GameInstance ksp, NetModuleCache cache, IUser user)
         {
             SortedDictionary<string, Repository> sortedRepositories = registry_manager.registry.Repositories;
-            user.RaiseProgress("Checking for updates", 0);
+            user.RaiseProgress(Properties.Resources.NetRepoCheckingForUpdates, 0);
             if (sortedRepositories.Values.All(repo => !string.IsNullOrEmpty(repo.last_server_etag) && repo.last_server_etag == Net.CurrentETag(repo.uri)))
             {
-                user.RaiseProgress("Already up to date", 100);
-                user.RaiseMessage("No changes since last update");
+                user.RaiseProgress(Properties.Resources.NetRepoAlreadyUpToDate, 100);
+                user.RaiseMessage(Properties.Resources.NetRepoNoChanges);
                 return RepoUpdateResult.NoChanges;
             }
             List<CkanModule> allAvail = new List<CkanModule>();
             int index = 0;
             foreach (KeyValuePair<string, Repository> repository in sortedRepositories)
             {
-                user.RaiseProgress($"Updating {repository.Value.name}",
+                user.RaiseProgress(string.Format(Properties.Resources.NetRepoUpdating, repository.Value.name),
                     10 + 80 * index / sortedRepositories.Count);
                 SortedDictionary<string, int> downloadCounts;
                 string newETag;
@@ -65,7 +65,7 @@ namespace CKAN
                     // Merge all the lists
                     allAvail.AddRange(avail);
                     repository.Value.last_server_etag = newETag;
-                    user.RaiseMessage("Updated {0} ({1} modules)",
+                    user.RaiseMessage(Properties.Resources.NetRepoUpdated,
                         repository.Value.name, avail.Count);
                 }
                 ++index;
@@ -73,7 +73,7 @@ namespace CKAN
             // Save allAvail to the registry if we found anything
             if (allAvail.Count > 0)
             {
-                user.RaiseProgress("Saving modules to registry", 90);
+                user.RaiseProgress(Properties.Resources.NetRepoSaving, 90);
                 using (var transaction = CkanTransaction.CreateTransactionScope())
                 {
                     // Save our changes.
@@ -92,14 +92,14 @@ namespace CKAN
 
                 // Registry.CompatibleModules is slow, just return success,
                 // caller can check it if it's really needed
-                user.RaiseProgress("Registry saved", 100);
-                user.RaiseMessage("Repositories updated");
+                user.RaiseProgress(Properties.Resources.NetRepoSaved, 100);
+                user.RaiseMessage(Properties.Resources.NetRepoUpdatedAll);
                 return RepoUpdateResult.Updated;
             }
             else
             {
                 // Return failure
-                user.RaiseMessage("No modules found!");
+                user.RaiseMessage(Properties.Resources.NetRepoNoModules);
                 return RepoUpdateResult.Failed;
             }
         }
@@ -121,7 +121,7 @@ namespace CKAN
             }
             catch (System.Net.WebException ex)
             {
-                user.RaiseError("Failed to download {0}: {1}", repo, ex.Message);
+                user.RaiseError(Properties.Resources.NetRepoFailedDownload, repo, ex.Message);
                 currentETag = null;
                 return null;
             }
@@ -203,12 +203,7 @@ namespace CKAN
                 sb.AppendLine(string.Format("- {0} {1}", module.identifier, module.version));
             }
 
-            if (user.RaiseYesNoDialog(string.Format(@"The following mods have had their metadata changed since last update:
-
-{0}
-You should reinstall them in order to preserve consistency with the repository.
-
-Do you wish to reinstall now?", sb)))
+            if (user.RaiseYesNoDialog(string.Format(Properties.Resources.NetRepoChangedModulesReinstallPrompt, sb)))
             {
                 throw new ReinstallModuleKraken(metadataChanges);
             }
@@ -229,6 +224,10 @@ Do you wish to reinstall now?", sb)))
                     if (!metadata.install[i].Equals(oldMetadata.install[i]))
                         return false;
                 }
+            }
+            if (metadata.install_size != oldMetadata.install_size)
+            {
+                return false;
             }
 
             if (!RelationshipsAreEquivalent(metadata.conflicts,  oldMetadata.conflicts))
@@ -526,7 +525,7 @@ Do you wish to reinstall now?", sb)))
             {
                 var sanityMessage = new StringBuilder();
 
-                sanityMessage.AppendLine("The following inconsistencies were found:");
+                sanityMessage.AppendLine(Properties.Resources.NetRepoInconsistenciesHeader);
                 foreach (var sanityError in sanityErrors)
                 {
                     sanityMessage.Append("- ");

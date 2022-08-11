@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     partial class ChooseRecommendedMods
     {
@@ -38,10 +38,11 @@
             this.ModNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SourceModulesHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.DescriptionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.BottomButtonPanel = new System.Windows.Forms.Panel();
+            this.BottomButtonPanel = new LeftRightRowPanel();
             this.RecommendedModsToggleCheckbox = new System.Windows.Forms.CheckBox();
             this.RecommendedModsCancelButton = new System.Windows.Forms.Button();
             this.RecommendedModsContinueButton = new System.Windows.Forms.Button();
+            this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             //
             // RecommendedDialogLabel
@@ -112,19 +113,16 @@
             // 
             // BottomButtonPanel
             // 
-            this.BottomButtonPanel.Controls.Add(this.RecommendedModsToggleCheckbox);
-            this.BottomButtonPanel.Controls.Add(this.RecommendedModsCancelButton);
-            this.BottomButtonPanel.Controls.Add(this.RecommendedModsContinueButton);
+            this.BottomButtonPanel.LeftControls.Add(this.RecommendedModsToggleCheckbox);
+            this.BottomButtonPanel.RightControls.Add(this.RecommendedModsContinueButton);
+            this.BottomButtonPanel.RightControls.Add(this.RecommendedModsCancelButton);
             this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomButtonPanel.Name = "BottomButtonPanel";
-            this.BottomButtonPanel.Size = new System.Drawing.Size(500, 40);
             //
             // RecommendedModsToggleCheckbox
             //
-            this.RecommendedModsToggleCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RecommendedModsToggleCheckbox.AutoSize = true;
             this.RecommendedModsToggleCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RecommendedModsToggleCheckbox.Location = new System.Drawing.Point(5, 5);
             this.RecommendedModsToggleCheckbox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RecommendedModsToggleCheckbox.Name = "RecommendedModsToggleCheckbox";
             this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(131, 24);
@@ -134,9 +132,9 @@
             //
             // RecommendedModsCancelButton
             //
-            this.RecommendedModsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RecommendedModsCancelButton.AutoSize = true;
+            this.RecommendedModsCancelButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.RecommendedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RecommendedModsCancelButton.Location = new System.Drawing.Point(266, 5);
             this.RecommendedModsCancelButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RecommendedModsCancelButton.Name = "RecommendedModsCancelButton";
             this.RecommendedModsCancelButton.Size = new System.Drawing.Size(112, 30);
@@ -146,9 +144,9 @@
             //
             // RecommendedModsContinueButton
             //
-            this.RecommendedModsContinueButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RecommendedModsContinueButton.AutoSize = true;
+            this.RecommendedModsContinueButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.RecommendedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RecommendedModsContinueButton.Location = new System.Drawing.Point(383, 5);
             this.RecommendedModsContinueButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RecommendedModsContinueButton.Name = "RecommendedModsContinueButton";
             this.RecommendedModsContinueButton.Size = new System.Drawing.Size(112, 30);
@@ -167,6 +165,8 @@
             this.Name = "ChooseRecommendedMods";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
+            this.BottomButtonPanel.ResumeLayout(false);
+            this.BottomButtonPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -181,7 +181,7 @@
         private System.Windows.Forms.ColumnHeader ModNameHeader;
         private System.Windows.Forms.ColumnHeader SourceModulesHeader;
         private System.Windows.Forms.ColumnHeader DescriptionHeader;
-        private System.Windows.Forms.Panel BottomButtonPanel;
+        private LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.CheckBox RecommendedModsToggleCheckbox;
         private System.Windows.Forms.Button RecommendedModsCancelButton;
         private System.Windows.Forms.Button RecommendedModsContinueButton;

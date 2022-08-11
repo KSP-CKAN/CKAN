@@ -1,4 +1,4 @@
-﻿namespace CKAN
+﻿namespace CKAN.GUI
 {
     partial class InstallFiltersDialog
     {
@@ -122,6 +122,9 @@
             this.Controls.Add(this.WarningLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = Properties.Resources.AppIcon;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.HelpButton = true;
             this.Name = "InstallFiltersDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Load += new System.EventHandler(this.InstallFiltersDialog_Load);
