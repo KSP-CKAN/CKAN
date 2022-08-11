@@ -38,6 +38,9 @@ namespace CKAN.NetKAN.Transformers
             {
                 var json = metadata.Json();
 
+                // Tell downstream translators that this host's API is unreliable
+                opts.FlakyAPI = true;
+
                 Log.InfoFormat("Executing GitHub transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 

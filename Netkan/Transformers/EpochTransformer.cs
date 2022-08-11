@@ -63,9 +63,16 @@ namespace CKAN.NetKAN.Transformers
                 if (!opts.HighestVersion.EpochEquals(currentV)
                     && startV < opts.HighestVersion && opts.HighestVersion < currentV)
                 {
-                    // New file, tell the Indexer to be careful
-                    opts.Staged = true;
-                    opts.StagingReasons.Add($"Auto-epoching out of order version: {startV} < {opts.HighestVersion} < {currentV}");
+                    if (opts.FlakyAPI)
+                    {
+                        throw new Kraken($"Out-of-order version found on unreliable server: {startV} < {opts.HighestVersion} < {currentV}");
+                    }
+                    else
+                    {
+                        // New file, tell the Indexer to be careful
+                        opts.Staged = true;
+                        opts.StagingReasons.Add($"Auto-epoching out of order version: {startV} < {opts.HighestVersion} < {currentV}");
+                    }
                 }
                 json["version"] = currentV.ToString();
             }
