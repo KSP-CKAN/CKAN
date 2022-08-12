@@ -136,6 +136,7 @@ Install the `mono-complete` package or equivalent for your operating system.</va
   <data name="NetModuleCacheNotValidZIP" xml:space="preserve"><value>{0}: {1} is not a valid ZIP file: {2}</value></data>
   <data name="NetModuleCacheMismatchSHA1" xml:space="preserve"><value>{0}: {1} has SHA1 {2}, should be {3}</value></data>
   <data name="NetModuleCacheMismatchSHA256" xml:space="preserve"><value>{0}: {1} has SHA256 {2}, should be {3}</value></data>
+  <data name="NetRepoUpdatingBuildMap" xml:space="preserve"><value>Refreshing game version data</value></data>
   <data name="NetRepoCheckingForUpdates" xml:space="preserve"><value>Checking for updates</value></data>
   <data name="NetRepoAlreadyUpToDate" xml:space="preserve"><value>Already up to date</value></data>
   <data name="NetRepoNoChanges" xml:space="preserve"><value>No changes since last update</value></data>

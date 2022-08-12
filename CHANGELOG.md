@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Internal .ckan file compatibility with bundled mods (#3615 by: HebaruSan)
 - [Netkan] Filter duplicate co-authors from SpaceDock (#3599 by: HebaruSan; reviewed: techman83)
 - [Netkan] Log errors instead of PRs for OOO mods on GitHub (#3625 by: HebaruSan)
+- [Core] Cache remote build map, fetch in registry refresh (#3624 by: HebaruSan; reviewed: techman83)
 
 ## v1.31.0 (IKAROS)
 

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+
 using log4net;
 using Newtonsoft.Json;
+
 using CKAN.Versioning;
 using CKAN.Configuration;
 
@@ -30,6 +33,9 @@ namespace CKAN.GameVersionProviders
         // TODO: Need a way for the client to configure this
         private static readonly Uri BuildMapUri =
             new Uri("https://raw.githubusercontent.com/KSP-CKAN/CKAN-meta/master/builds.json");
+        private static readonly string cachedBuildMapPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "CKAN", "builds.json");
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(KspBuildMap));
 
@@ -53,12 +59,9 @@ namespace CKAN.GameVersionProviders
             get
             {
                 EnsureBuildMap();
-                List<GameVersion> knownVersions = new List<GameVersion>();
-                foreach (var version in _jBuilds.Builds)
-                {
-                    knownVersions.Add(GameVersion.Parse(version.Value));
-                }
-                return knownVersions;
+                return _jBuilds.Builds
+                    .Select(b => GameVersion.Parse(b.Value))
+                    .ToList();
             }
         }
 
@@ -75,21 +78,24 @@ namespace CKAN.GameVersionProviders
                 {
                     if (ReferenceEquals(_jBuilds, null))
                     {
-                        Refresh();
+                        // Check for a cached copy of the remote build map
+                        if (TrySetCachedBuildMap())   return;
+                        // If that doesn't exist, use the copy from when we were compiled
+                        if (TrySetEmbeddedBuildMap()) return;
+                        Log.Warn("Could not load build map from cached or embedded copy");
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Load a build map
+        /// Download the build map from the server to the cache
         /// </summary>
         public void Refresh()
         {
-            if (TrySetRemoteBuildMap())   return;
-            if (TrySetEmbeddedBuildMap()) return;
-
-            Log.Warn("Could not refresh the build map from any source");
+            Log.Debug("Refreshing build map from server");
+            if (TrySetRemoteBuildMap()) return;
+            Log.Warn("Could not refresh the build map from remote server");
         }
 
         private bool TrySetBuildMap(string buildMapJson)
@@ -106,20 +112,28 @@ namespace CKAN.GameVersionProviders
                 return false;
             }
         }
+
+        private bool TrySetCachedBuildMap()
+        {
+            try
+            {
+                Log.Debug("Getting cached build map");
+                return TrySetBuildMap(File.ReadAllText(cachedBuildMapPath));
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private bool TrySetRemoteBuildMap()
         {
             try
             {
+                Log.Debug("Getting remote build map");
                 var json = Net.DownloadText(BuildMapUri);
-
-                if (TrySetBuildMap(json))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                File.WriteAllText(cachedBuildMapPath, json);
+                return TrySetBuildMap(json);
             }
             catch (Exception e)
             {
@@ -133,14 +147,15 @@ namespace CKAN.GameVersionProviders
         {
             try
             {
-                var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("CKAN.builds.json");
+                Log.Debug("Getting embedded build map");
+                var resourceStream = Assembly.GetExecutingAssembly()
+                    .GetManifestResourceStream("CKAN.builds.json");
 
                 if (resourceStream != null)
                 {
                     using (var reader = new StreamReader(resourceStream))
                     {
-                        TrySetBuildMap(reader.ReadToEnd());
-                        return true;
+                        return TrySetBuildMap(reader.ReadToEnd());
                     }
                 }
                 else

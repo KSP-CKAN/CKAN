@@ -9,6 +9,9 @@ namespace CKAN.GameVersionProviders
 
         List<GameVersion> KnownVersions { get; }
 
+        /// <summary>
+        /// Download the build map from the server to the cache
+        /// </summary>
         void Refresh();
     }
 }
