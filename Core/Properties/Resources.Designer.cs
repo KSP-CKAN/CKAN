@@ -513,6 +513,18 @@ namespace CKAN.Properties {
         internal static string KrakenReinstallModule {
             get { return (string)(ResourceManager.GetObject("KrakenReinstallModule", resourceCulture)); }
         }
+        internal static string NotEnoughSpaceToDownload {
+            get { return (string)(ResourceManager.GetObject("NotEnoughSpaceToDownload", resourceCulture)); }
+        }
+        internal static string NotEnoughSpaceToCache {
+            get { return (string)(ResourceManager.GetObject("NotEnoughSpaceToCache", resourceCulture)); }
+        }
+        internal static string NotEnoughSpaceToInstall {
+            get { return (string)(ResourceManager.GetObject("NotEnoughSpaceToInstall", resourceCulture)); }
+        }
+        internal static string KrakenNotEnoughSpace {
+            get { return (string)(ResourceManager.GetObject("KrakenNotEnoughSpace", resourceCulture)); }
+        }
 
         internal static string RelationshipResolverConflictsWith {
             get { return (string)(ResourceManager.GetObject("RelationshipResolverConflictsWith", resourceCulture)); }

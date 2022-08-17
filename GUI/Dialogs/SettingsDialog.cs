@@ -17,7 +17,8 @@ namespace CKAN.GUI
 
         private IUser m_user;
         private long m_cacheSize;
-        private int m_cacheFileCount;
+        private int  m_cacheFileCount;
+        private long m_cacheFreeSpace;
         private IConfiguration config;
 
         private List<Repository> _sortedRepos = new List<Repository>();
@@ -128,7 +129,7 @@ namespace CKAN.GUI
                 Task.Factory.StartNew(() =>
                 {
                     // This might take a little while if the cache is big
-                    Main.Instance.Manager.Cache.GetSizeInfo(out m_cacheFileCount, out m_cacheSize);
+                    Main.Instance.Manager.Cache.GetSizeInfo(out m_cacheFileCount, out m_cacheSize, out long m_cacheFreeSpace);
                     Util.Invoke(this, () =>
                     {
                         if (config.CacheSizeLimit.HasValue)
@@ -137,7 +138,7 @@ namespace CKAN.GUI
                             CacheLimit.Text = (config.CacheSizeLimit.Value / 1024 / 1024).ToString();
                         }
                         CachePath.Text = config.DownloadCacheDir;
-                        CacheSummary.Text = string.Format(Properties.Resources.SettingsDialogSummmary, m_cacheFileCount, CkanModule.FmtSize(m_cacheSize));
+                        CacheSummary.Text = string.Format(Properties.Resources.SettingsDialogSummmary, m_cacheFileCount, CkanModule.FmtSize(m_cacheSize), CkanModule.FmtSize(m_cacheFreeSpace));
                         CacheSummary.ForeColor   = SystemColors.ControlText;
                         OpenCacheButton.Enabled  = true;
                         ClearCacheButton.Enabled = (m_cacheSize > 0);

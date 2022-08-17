@@ -340,7 +340,7 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (LOCKED)</value></data>
   <data name="NewRepoDialogFailed" xml:space="preserve"><value>Failed to fetch master list.</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>CKAN Plugins (*.dll)|*.dll</value></data>
-  <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} files, {1}</value></data>
+  <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} files, {1}, {2} free</value></data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Invalid path: {0}</value></data>
   <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>Choose a folder for storing CKAN's mod downloads:</value></data>
   <data name="SettingsDialogDeleteConfirm" xml:space="preserve"><value>Do you really want to delete {0} cached files, freeing {1}?</value></data>

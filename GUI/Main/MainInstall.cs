@@ -320,6 +320,10 @@ namespace CKAN.GUI
                         currentUser.RaiseMessage(Properties.Resources.MainInstallBadMetadata, exc.module, exc.Message);
                         break;
 
+                    case NotEnoughSpaceKraken exc:
+                        currentUser.RaiseMessage(exc.Message);
+                        break;
+
                     case FileExistsKraken exc:
                         if (exc.owningModule != null)
                         {

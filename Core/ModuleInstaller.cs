@@ -139,6 +139,12 @@ namespace CKAN
             var modsToInstall = resolver.ModList().ToList();
             List<CkanModule> downloads = new List<CkanModule>();
 
+            // Make sure we have enough space to install this stuff
+            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(ksp.GameDir()),
+                                         modsToInstall.Select(m => m.install_size)
+                                                      .Sum(),
+                                         Properties.Resources.NotEnoughSpaceToInstall);
+
             // TODO: All this user-stuff should be happening in another method!
             // We should just be installing mods as a transaction.
 
@@ -177,6 +183,13 @@ namespace CKAN
 
                 downloader.DownloadModules(downloads);
             }
+
+            // Make sure we STILL have enough space to install this stuff
+            // now that the downloads have been stored to the cache
+            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(ksp.GameDir()),
+                                         modsToInstall.Select(m => m.install_size)
+                                                      .Sum(),
+                                         Properties.Resources.NotEnoughSpaceToInstall);
 
             // We're about to install all our mods; so begin our transaction.
             using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())

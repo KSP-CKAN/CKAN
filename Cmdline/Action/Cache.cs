@@ -1,8 +1,9 @@
 using CommandLine;
 using CommandLine.Text;
 using log4net;
-using CKAN.Configuration;
 using Autofac;
+
+using CKAN.Configuration;
 
 namespace CKAN.CmdLine
 {
@@ -229,10 +230,11 @@ namespace CKAN.CmdLine
 
         private void printCacheInfo()
         {
-            int fileCount;
-            long bytes;
-            manager.Cache.GetSizeInfo(out fileCount, out bytes);
-            user.RaiseMessage(Properties.Resources.CacheInfo, fileCount, CkanModule.FmtSize(bytes));
+            manager.Cache.GetSizeInfo(out int fileCount, out long bytes, out long bytesFree);
+            user.RaiseMessage(Properties.Resources.CacheInfo,
+                              fileCount,
+                              CkanModule.FmtSize(bytes),
+                              CkanModule.FmtSize(bytesFree));
         }
 
         private IUser               user;
