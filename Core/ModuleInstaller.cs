@@ -246,17 +246,19 @@ namespace CKAN
 
             if (filename == null)
             {
-                return null;
+                return Enumerable.Empty<string>();
             }
 
             try
             {
                 return FindInstallableFiles(module, filename, ksp)
-                    .Select(x => ksp.ToRelativeGameDir(x.destination));
+                    // Skip folders
+                    .Where(f => !f.source.IsDirectory)
+                    .Select(f => ksp.ToRelativeGameDir(f.destination));
             }
             catch (ZipException)
             {
-                return null;
+                return Enumerable.Empty<string>();
             }
         }
 
