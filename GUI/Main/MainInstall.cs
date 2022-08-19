@@ -413,7 +413,7 @@ namespace CKAN.GUI
                 // The Result property throws if InstallMods threw (!!!)
                 KeyValuePair<bool, ModChanges> result = (KeyValuePair<bool, ModChanges>) e.Result;
                 // Rebuilds the list of GUIMods
-                ManageMods.UpdateModsList();
+                ManageMods_OnRefresh();
 
                 Util.Invoke(this, () => Enabled = true);
                 Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);

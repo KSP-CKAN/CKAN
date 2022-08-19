@@ -5,7 +5,10 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.ComponentModel;
+
 using log4net;
+
 using CKAN.Versioning;
 
 namespace CKAN.GUI
@@ -83,8 +86,7 @@ namespace CKAN.GUI
         public event Action OnRegistryChanged;
 
         public event Action<List<ModChange>> StartChangeSet;
-        public event Action OpenProgressTab;
-        public event Action CloseProgressTab;
+        public event Action<Dictionary<string, bool>> OnRefresh;
         public event Action<IEnumerable<GUIMod>> LabelsAfterUpdate;
 
         private IEnumerable<ModChange> ChangeSet
@@ -1066,25 +1068,14 @@ namespace CKAN.GUI
             }
         }
 
-        public async void UpdateModsList(Dictionary<string, bool> old_modules = null)
+        public void Update(object sender, DoWorkEventArgs e)
         {
-            // Run the update in the background so the UI thread can appear alive
-            // Await it so potential (fatal) errors are thrown, not swallowed.
-            // Need to be on the GUI thread to get the translated strings
-            Main.Instance.tabController.RenameTab("WaitTabPage", Properties.Resources.MainModListWaitTitle);
-            await Task.Factory.StartNew(() =>
-                _UpdateModsList(old_modules)
-            );
+            _UpdateModsList(e.Argument as Dictionary<string, bool>);
         }
 
         private void _UpdateModsList(Dictionary<string, bool> old_modules = null)
         {
             log.Info("Updating the mod list");
-
-            if (OpenProgressTab != null)
-            {
-                OpenProgressTab();
-            }
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingRegistry);
             GameVersionCriteria versionCriteria = Main.Instance.CurrentInstance.VersionCriteria();
@@ -1205,10 +1196,6 @@ namespace CKAN.GUI
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListUpdatingTray);
 
-            if (CloseProgressTab != null)
-            {
-                CloseProgressTab();
-            }
             Util.Invoke(this, () => ModGrid.Focus());
         }
 

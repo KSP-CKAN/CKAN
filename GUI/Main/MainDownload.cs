@@ -82,8 +82,7 @@ namespace CKAN.GUI
         {
             module.UpdateIsCached();
             // Update mod list in case is:cached or not:cached filters are active
-            ManageMods.UpdateModsList();
-            HideWaitDialog(true);
+            ManageMods_OnRefresh();
             // User might have selected another row. Show current in tree.
             UpdateModContentsTree(ModInfo.SelectedModule.ToCkanModule(), true);
         }
