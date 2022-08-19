@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,6 +14,22 @@ namespace CKAN.GUI
         {
             InitializeComponent();
             progressTimer.Tick += (sender, evt) => ReflowProgressBars();
+
+            bgWorker.DoWork             += DoWork;
+            bgWorker.RunWorkerCompleted += RunWorkerCompleted;
+        }
+
+        public void StartWaiting(Action<object, DoWorkEventArgs>             mainWork,
+                                 Action<object, RunWorkerCompletedEventArgs> postWork,
+                                 bool cancelable,
+                                 object param)
+        {
+            bgLogic   = mainWork;
+            postLogic = postWork;
+            Reset(cancelable);
+            ClearLog();
+            RetryEnabled = false;
+            bgWorker.RunWorkerAsync(param);
         }
 
         public event Action OnRetry;
@@ -101,6 +118,25 @@ namespace CKAN.GUI
                 }
                 progressTimer.Start();
             });
+        }
+
+        private Action<object, DoWorkEventArgs>             bgLogic;
+        private Action<object, RunWorkerCompletedEventArgs> postLogic;
+
+        private BackgroundWorker bgWorker = new BackgroundWorker()
+        {
+            WorkerReportsProgress      = true,
+            WorkerSupportsCancellation = true,
+        };
+
+        private void DoWork(object sender, DoWorkEventArgs e)
+        {
+            bgLogic?.Invoke(sender, e);
+        }
+
+        private void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            postLogic?.Invoke(sender, e);
         }
 
         private const int padding        = 5;
@@ -198,8 +234,8 @@ namespace CKAN.GUI
                 ClearModuleBars();
                 ProgressValue = DialogProgressBar.Minimum;
                 ProgressIndeterminate = true;
-                RetryCurrentActionButton.Visible = false;
                 CancelCurrentActionButton.Visible = cancelable;
+                CancelCurrentActionButton.Enabled = true;
                 OkButton.Enabled = false;
                 MessageTextBox.Text = Properties.Resources.MainWaitPleaseWait;
             });
@@ -207,13 +243,13 @@ namespace CKAN.GUI
 
         public void Finish(bool success)
         {
+            OnCancel = null;
             Util.Invoke(this, () =>
             {
                 MessageTextBox.Text = Properties.Resources.MainWaitDone;
                 ProgressValue = 100;
                 ProgressIndeterminate = false;
-                RetryCurrentActionButton.Visible = !success;
-                CancelCurrentActionButton.Visible = false;
+                CancelCurrentActionButton.Enabled = false;
                 OkButton.Enabled = true;
             });
         }
@@ -224,7 +260,7 @@ namespace CKAN.GUI
                 MessageTextBox.Text = "(" + message + ")");
         }
 
-        public void ClearLog()
+        private void ClearLog()
         {
             Util.Invoke(this, () =>
                 LogTextBox.Text = "");
@@ -238,28 +274,23 @@ namespace CKAN.GUI
 
         private void RetryCurrentActionButton_Click(object sender, EventArgs e)
         {
-            if (OnRetry != null)
-            {
-                OnRetry();
-            }
+            OnRetry?.Invoke();
         }
 
         private void CancelCurrentActionButton_Click(object sender, EventArgs e)
         {
+            bgWorker.CancelAsync();
             if (OnCancel != null)
             {
-                OnCancel();
+                OnCancel.Invoke();
+                Util.Invoke(this, () =>
+                    CancelCurrentActionButton.Enabled = false);
             }
-            Util.Invoke(this, () =>
-                CancelCurrentActionButton.Enabled = false);
         }
 
         private void OkButton_Click(object sender, EventArgs e)
         {
-            if (OnOk != null)
-            {
-                OnOk();
-            }
+            OnOk?.Invoke();
         }
     }
 }

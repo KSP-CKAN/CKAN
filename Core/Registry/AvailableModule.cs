@@ -97,7 +97,6 @@ namespace CKAN
             IEnumerable<CkanModule> toInstall    = null
         )
         {
-            log.DebugFormat("Our dictionary has {0} keys", module_version.Keys.Count);
             IEnumerable<CkanModule> modules = module_version.Values.Reverse();
             if (relationship != null)
             {
@@ -128,6 +127,7 @@ namespace CKAN
                     // If 'others' matches an identifier, it must also match the versions, else fail
                     if (rel.ContainsAny(others.Select(m => m.identifier)) && !rel.MatchesAny(others, null, null))
                     {
+                        log.DebugFormat("Unsatisfied dependency {0}, rejecting", rel);
                         return false;
                     }
                 }
@@ -139,8 +139,9 @@ namespace CKAN
                 foreach (RelationshipDescriptor rel in module.conflicts)
                 {
                     // If any of the conflicts are present, fail
-                    if (rel.MatchesAny(othersMinusSelf, null, null))
+                    if (rel.MatchesAny(othersMinusSelf, null, null, out CkanModule matched))
                     {
+                        log.DebugFormat("Found conflict with {0}, rejecting", matched);
                         return false;
                     }
                 }
@@ -155,6 +156,7 @@ namespace CKAN
                     {
                         if (rel.MatchesAny(selfArray, null, null))
                         {
+                            log.DebugFormat("Found reverse conflict with {0}, rejecting", other);
                             return false;
                         }
                     }

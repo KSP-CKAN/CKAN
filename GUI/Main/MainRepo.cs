@@ -12,7 +12,6 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private BackgroundWorker m_UpdateRepoWorker;
         public Timer refreshTimer;
 
         public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
@@ -32,16 +31,14 @@ namespace CKAN.GUI
 
             try
             {
-                // The argument will be accessed with (bool)e.Argument in private UpdateRepo()
-                m_UpdateRepoWorker.RunWorkerAsync();
+                Wait.StartWaiting(UpdateRepo, PostUpdateRepo, false, null);
             }
             catch { }
 
             Util.Invoke(this, SwitchEnabledState);
 
             Wait.SetDescription(Properties.Resources.MainRepoContacting);
-            Wait.ClearLog();
-            ShowWaitDialog(false);
+            ShowWaitDialog();
         }
 
         private bool _enabled = true;
@@ -118,8 +115,7 @@ namespace CKAN.GUI
                     case ReinstallModuleKraken rmk:
                         // Re-enable the UI for the install flow
                         Util.Invoke(this, SwitchEnabledState);
-                        // Hand off to the full installer flow
-                        installWorker.RunWorkerAsync(
+                        Wait.StartWaiting(InstallMods, PostInstallMods, true,
                             new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                                 rmk.Modules
                                     .Select(m => new ModChange(m, GUIModChangeType.Update, null))
@@ -167,6 +163,7 @@ namespace CKAN.GUI
             Util.Invoke(this, SwitchEnabledState);
             Util.Invoke(this, RecreateDialogs);
             Util.Invoke(this, ManageMods.ModGrid.Select);
+            SetupDefaultSearch();
         }
 
         private void ShowRefreshQuestion()
@@ -244,7 +241,7 @@ namespace CKAN.GUI
             ManageMods.MarkAllUpdates();
 
             // Install
-            installWorker.RunWorkerAsync(
+            Wait.StartWaiting(InstallMods, PostInstallMods, true,
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                     ManageMods.mainModList.ComputeUserChangeSet(RegistryManager.Instance(Main.Instance.CurrentInstance).registry).ToList(),
                     RelationshipResolver.DependsOnlyOpts()

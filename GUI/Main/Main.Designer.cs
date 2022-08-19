@@ -507,7 +507,6 @@
             this.Wait.Size = new System.Drawing.Size(500, 500);
             this.Wait.TabIndex = 32;
             this.Wait.OnRetry += Wait_OnRetry;
-            this.Wait.OnCancel += Wait_OnCancel;
             this.Wait.OnOk += Wait_OnOk;
             //
             // ChooseRecommendedModsTabPage

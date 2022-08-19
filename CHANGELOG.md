@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [CLI] Create a system menu entry for command prompt (#3622 by: HebaruSan; reviewed: techman83)
 - [Multiple] Internationalize Core, CmdLine, ConsoleUI, and AutoUpdater (#3482 by: HebaruSan; reviewed: techman83)
 - [Multiple] Check free space before downloading (#3631 by: HebaruSan; reviewed: techman83)
+- [Multiple] Many improvements for failed downloads (#3635 by: HebaruSan; reviewed: techman83)
 
 ## Bugfixes
 

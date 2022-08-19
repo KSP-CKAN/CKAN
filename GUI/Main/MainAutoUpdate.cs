@@ -53,17 +53,18 @@ namespace CKAN.GUI
         public void UpdateCKAN()
         {
             ResetProgress();
-            ShowWaitDialog(false);
+            ShowWaitDialog();
             SwitchEnabledState();
-            Wait.ClearLog();
             tabController.RenameTab("WaitTabPage", Properties.Resources.MainUpgradingWaitTitle);
             Wait.SetDescription(string.Format(Properties.Resources.MainUpgradingTo, AutoUpdate.Instance.latestUpdate.Version));
 
             log.Info("Start ckan update");
-            BackgroundWorker updateWorker = new BackgroundWorker();
-            updateWorker.DoWork += (sender, args) => AutoUpdate.Instance.StartUpdateProcess(true, currentUser);
-            updateWorker.RunWorkerCompleted += UpdateReady;
-            updateWorker.RunWorkerAsync();
+            Wait.StartWaiting(
+                (sender, args) => AutoUpdate.Instance.StartUpdateProcess(true, currentUser),
+                UpdateReady,
+                false,
+                null
+            );
         }
 
         private void UpdateReady(object sender, RunWorkerCompletedEventArgs e)

@@ -291,19 +291,19 @@ namespace CKAN
     /// </summary>
     public class DownloadErrorsKraken : Kraken
     {
-        public readonly List<KeyValuePair<int, Exception>> exceptions
+        public readonly List<KeyValuePair<int, Exception>> Exceptions
             = new List<KeyValuePair<int, Exception>>();
 
         public DownloadErrorsKraken(List<KeyValuePair<int, Exception>> errors) : base()
         {
-            exceptions = new List<KeyValuePair<int, Exception>>(errors);
+            Exceptions = new List<KeyValuePair<int, Exception>>(errors);
         }
 
         public override string ToString()
         {
             return String.Join("\r\n",
                 new string[] { Properties.Resources.KrakenDownloadErrorsHeader, "" }
-                .Concat(exceptions.Select(e => e.ToString())));
+                .Concat(Exceptions.Select(e => e.ToString())));
         }
     }
 
@@ -313,6 +313,9 @@ namespace CKAN
     /// </summary>
     public class ModuleDownloadErrorsKraken : Kraken
     {
+        public readonly List<KeyValuePair<CkanModule, Exception>> Exceptions
+            = new List<KeyValuePair<CkanModule, Exception>>();
+
         /// <summary>
         /// Initialize the exception.
         /// </summary>
@@ -321,9 +324,9 @@ namespace CKAN
         public ModuleDownloadErrorsKraken(IList<CkanModule> modules, DownloadErrorsKraken kraken)
             : base()
         {
-            foreach (var kvp in kraken.exceptions)
+            foreach (var kvp in kraken.Exceptions)
             {
-                exceptions.Add(new KeyValuePair<CkanModule, Exception>(
+                Exceptions.Add(new KeyValuePair<CkanModule, Exception>(
                     modules[kvp.Key], kvp.Value.GetBaseException() ?? kvp.Value
                 ));
             }
@@ -345,7 +348,7 @@ namespace CKAN
                 builder = new StringBuilder();
                 builder.AppendLine(Properties.Resources.KrakenModuleDownloadErrorsHeader);
                 builder.AppendLine("");
-                foreach (KeyValuePair<CkanModule, Exception> kvp in exceptions)
+                foreach (KeyValuePair<CkanModule, Exception> kvp in Exceptions)
                 {
                     builder.AppendLine(string.Format(
                         Properties.Resources.KrakenModuleDownloadError, kvp.Key.ToString(), kvp.Value.Message));
@@ -354,8 +357,6 @@ namespace CKAN
             return builder.ToString();
         }
 
-        private readonly List<KeyValuePair<CkanModule, Exception>> exceptions
-            = new List<KeyValuePair<CkanModule, Exception>>();
         private StringBuilder builder = null;
     }
 

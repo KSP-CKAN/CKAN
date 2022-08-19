@@ -91,15 +91,16 @@ namespace CKAN
                             : $"{item.Value.download_content_type};q=1.0,{defaultMimeType};q=0.9"
                     )).ToList()
                 );
-                if (AllComplete != null)
-                {
-                    AllComplete();
-                }
+                this.modules.Clear();
+                AllComplete?.Invoke();
             }
             catch (DownloadErrorsKraken kraken)
             {
                 // Associate the errors with the affected modules
-                throw new ModuleDownloadErrorsKraken(this.modules, kraken);
+                var exc = new ModuleDownloadErrorsKraken(this.modules.ToList(), kraken);
+                // Clear this.modules because we're done with these
+                this.modules.Clear();
+                throw exc;
             }
         }
 
