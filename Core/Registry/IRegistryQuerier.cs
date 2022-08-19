@@ -79,7 +79,7 @@ namespace CKAN
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// </summary>
         IEnumerable<string> FindReverseDependencies(
-            IEnumerable<string> modulesToRemove, IEnumerable<CkanModule> modulesToInstall = null
+            IEnumerable<string> modulesToRemove, IEnumerable<CkanModule> modulesToInstall = null, Func<RelationshipDescriptor, bool> satisfiedFilter = null
         );
 
         /// <summary>

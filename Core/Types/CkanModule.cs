@@ -544,9 +544,10 @@ namespace CKAN
         /// </summary>
         public bool IsCompatibleKSP(GameVersionCriteria version)
         {
-            log.DebugFormat("Testing if {0} is compatible with game versions {1}", this, version.ToString());
-
-            return _comparator.Compatible(version, this);
+            var compat = _comparator.Compatible(version, this);
+            log.DebugFormat("Checking compat of {0} with game versions {1}: {2}",
+                this, version.ToString(), compat ? "Compatible": "Incompatible");
+            return compat;
         }
 
         /// <summary>

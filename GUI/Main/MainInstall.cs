@@ -191,9 +191,12 @@ namespace CKAN.GUI
                     }
                     catch (ModuleDownloadErrorsKraken k)
                     {
+                        // Get full changeset (toInstall only includes user's selections, not dependencies)
+                        var crit = CurrentInstance.VersionCriteria();
+                        var fullChangeset = new RelationshipResolver(toInstall, null, opts.Value, registry, crit).ModList().ToList();
                         var dfd = new DownloadsFailedDialog(
                             k.Exceptions.Select(kvp => new KeyValuePair<CkanModule[], Exception>(
-                                toInstall.Where(m => m.download == kvp.Key.download).ToArray(),
+                                fullChangeset.Where(m => m.download == kvp.Key.download).ToArray(),
                                 kvp.Value)));
                         dfd.ShowDialog(this);
                         var abort = dfd.Abort;
@@ -206,12 +209,18 @@ namespace CKAN.GUI
                             throw new CancelledActionKraken();
                         }
 
-                        // Remove mods from changeset that user chose to skip
-                        // and any mods depending on them
-                        var dependers = registry.FindReverseDependencies(
-                            skip.Select(s => s.identifier), toInstall)
-                            .ToHashSet();
-                        toInstall.RemoveWhere(m => dependers.Contains(m.identifier));
+                        if (skip.Length > 0)
+                        {
+                            // Remove mods from changeset that user chose to skip
+                            // and any mods depending on them
+                            var dependers = registry.FindReverseDependencies(
+                                skip.Select(s => s.identifier),
+                                fullChangeset,
+                                // Consider virtual dependencies satisfied so user can make a new choice if they skip
+                                rel => rel.LatestAvailableWithProvides(registry, crit).Count > 1)
+                                .ToHashSet();
+                            toInstall.RemoveWhere(m => dependers.Contains(m.identifier));
+                        }
 
                         // Now we loop back around again
                     }
