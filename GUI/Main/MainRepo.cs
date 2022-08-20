@@ -140,30 +140,34 @@ namespace CKAN.GUI
                     // Load rows if grid empty, otherwise keep current
                     if (ManageMods.ModGrid.Rows.Count < 1)
                     {
-                        ManageMods.UpdateModsList();
+                        ManageMods_OnRefresh();
                     }
+                    else
+                    {
+                        Util.Invoke(this, SwitchEnabledState);
+                        Util.Invoke(this, ManageMods.ModGrid.Select);
+                    }
+                    SetupDefaultSearch();
                     break;
 
                 case RepoUpdateResult.Failed:
                     AddStatusMessage(Properties.Resources.MainRepoFailed);
                     HideWaitDialog(false);
+                    Util.Invoke(this, SwitchEnabledState);
+                    Util.Invoke(this, ManageMods.ModGrid.Select);
+                    SetupDefaultSearch();
                     break;
 
                 case RepoUpdateResult.Updated:
                 default:
-                    ManageMods.UpdateModsList(oldModules);
                     AddStatusMessage(Properties.Resources.MainRepoSuccess);
                     ShowRefreshQuestion();
-                    HideWaitDialog(true);
                     UpgradeNotification();
+                    Util.Invoke(this, SwitchEnabledState);
+                    ManageMods_OnRefresh(oldModules);
                     break;
             }
 
-            tabController.HideTab("WaitTabPage");
-            Util.Invoke(this, SwitchEnabledState);
-            Util.Invoke(this, RecreateDialogs);
-            Util.Invoke(this, ManageMods.ModGrid.Select);
-            SetupDefaultSearch();
         }
 
         private void ShowRefreshQuestion()

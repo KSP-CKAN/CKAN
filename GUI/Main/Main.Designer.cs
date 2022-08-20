@@ -455,8 +455,7 @@
             this.ManageMods.OnSelectedModuleChanged += ManageMods_OnSelectedModuleChanged;
             this.ManageMods.OnChangeSetChanged += ManageMods_OnChangeSetChanged;
             this.ManageMods.OnRegistryChanged += ManageMods_OnRegistryChanged;
-            this.ManageMods.OpenProgressTab += ManageMods_OpenProgressTab;
-            this.ManageMods.CloseProgressTab += ManageMods_CloseProgressTab;
+            this.ManageMods.OnRefresh += ManageMods_OnRefresh;
             this.ManageMods.LabelsAfterUpdate += ManageMods_LabelsAfterUpdate;
             this.ManageMods.StartChangeSet += ManageMods_StartChangeSet;
             //

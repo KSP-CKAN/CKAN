@@ -291,7 +291,7 @@ namespace CKAN.GUI
                 else
                 {
                     SetupDefaultSearch();
-                    ManageMods.UpdateModsList();
+                    ManageMods_OnRefresh();
                 }
             }
             ManageMods.InstanceUpdated(CurrentInstance);
@@ -607,7 +607,7 @@ namespace CKAN.GUI
             if (dialog.ShowDialog() != DialogResult.Cancel)
             {
                 // This takes a while, so don't do it if they cancel out
-                ManageMods.UpdateModsList();
+                ManageMods_OnRefresh();
             }
         }
 
@@ -811,20 +811,22 @@ namespace CKAN.GUI
                     changeset, RelationshipResolver.DependsOnlyOpts()));
         }
 
-        private void ManageMods_OpenProgressTab()
+        private void ManageMods_OnRefresh(Dictionary<string, bool> oldModules = null)
         {
-            ResetProgress();
+            tabController.RenameTab("WaitTabPage", Properties.Resources.MainModListWaitTitle);
             ShowWaitDialog();
+            Util.Invoke(this, SwitchEnabledState);
             tabController.SetTabLock(true);
-            Util.Invoke(this, SwitchEnabledState);
-        }
-
-        private void ManageMods_CloseProgressTab()
-        {
-            Util.Invoke(this, UpdateTrayInfo);
-            HideWaitDialog(true);
-            tabController.SetTabLock(false);
-            Util.Invoke(this, SwitchEnabledState);
+            Wait.StartWaiting(
+                ManageMods.Update,
+                (sender, e) => {
+                    HideWaitDialog(true);
+                    tabController.SetTabLock(false);
+                    Util.Invoke(this, SwitchEnabledState);
+                    SetupDefaultSearch();
+                },
+                false,
+                oldModules);
         }
     }
 }
