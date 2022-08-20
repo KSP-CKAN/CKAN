@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
+using Timer = System.Windows.Forms.Timer;
+
 using log4net;
 
 namespace CKAN.GUI
@@ -212,6 +214,64 @@ namespace CKAN.GUI
             // We pass that box to ClampedLocation to make sure it fits on screen,
             // then place our window at an offset within the box
             return ClampedLocation(location - topLeftMargin, size + topLeftMargin + bottomRightMargin, screen) + topLeftMargin;
+        }
+
+        /// <summary>
+        /// Coalesce multiple events from a busy event source into single delayed reactions
+        ///
+        /// See: https://www.freecodecamp.org/news/javascript-debounce-example/
+        ///
+        /// Additional convenience features:
+        ///   - Ability to do something immediately unconditionally
+        ///   - Execute immediately if a condition is met
+        ///   - Pass the events to the functions
+        /// </summary>
+        /// <param name="startFunc">Called immediately when the event is fired, for fast parts of the handling</param>
+        /// <param name="immediateFunc">If this returns true for an event, truncate the delay and fire doneFunc immediately</param>
+        /// <param name="abortFunc">If this returns true for an event, ignore it completely (e.g. for setting text box contents programmatically)</param>
+        /// <param name="doneFunc">Called after timeoutMs milliseconds, or immediately if immediateFunc returns true</param>
+        /// <param name="timeoutMs">Number of milliseconds between the last event and when to call doneFunc</param>
+        /// <typeparam name="EventT">Event type handled</typeparam>
+        /// <returns>A new event handler that wraps the given functions using the timer</returns>
+        public static EventHandler<EventT> Debounce<EventT>(
+            EventHandler<EventT>       startFunc,
+            Func<object, EventT, bool> immediateFunc,
+            Func<object, EventT, bool> abortFunc,
+            EventHandler<EventT>       doneFunc,
+            int timeoutMs = 500)
+        {
+            // Store the most recent event we received
+            object receivedFrom = null;
+            EventT received     = default(EventT);
+
+            // Set up the timer that will track the delay
+            Timer timer = new Timer() { Interval = timeoutMs };
+            timer.Tick += (sender, evt) =>
+            {
+                timer.Stop();
+                doneFunc(receivedFrom, received);
+            };
+
+            return (object sender, EventT evt) =>
+            {
+                if (!abortFunc(sender, evt))
+                {
+                    timer.Stop();
+                    startFunc(sender, evt);
+                    if (immediateFunc(sender, evt))
+                    {
+                        doneFunc(sender, evt);
+                        receivedFrom = null;
+                        received     = default(EventT);
+                    }
+                    else
+                    {
+                        receivedFrom = sender;
+                        received     = evt;
+                        timer.Start();
+                    }
+                }
+            };
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Util));

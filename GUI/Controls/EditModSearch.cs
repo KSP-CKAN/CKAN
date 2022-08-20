@@ -28,6 +28,15 @@ namespace CKAN.GUI
             // to line up the button with it
             ExpandButton.Top    = FilterCombinedTextBox.Top;
             ExpandButton.Height = ExpandButton.Width = FilterCombinedTextBox.Height;
+
+            handler = Util.Debounce<EventArgs>(ImmediateHandler,
+                                               SkipDelayIf,
+                                               AbortIf,
+                                               DelayedHandler);
+
+            // Sharing handler combines the delay from both events
+            FilterCombinedTextBox.TextChanged += (sender, e) => handler(sender, e);
+            FilterCombinedTextBox.KeyDown     += (sender, e) => handler(sender, e);
         }
 
         /// <summary>
@@ -77,9 +86,80 @@ namespace CKAN.GUI
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(EditModSearch));
-        private Timer filterTimer;
         private bool suppressSearch = false;
         private ModSearch currentSearch = null;
+
+        private void ImmediateHandler(object sender, EventArgs e)
+        {
+            try
+            {
+                switch (e)
+                {
+                    case KeyEventArgs keyEvt:
+                        switch (keyEvt.KeyCode)
+                        {
+                            // Switch focus from filters to mod list on enter, down, or pgdn
+                            case Keys.Up:
+                            case Keys.Down:
+                            case Keys.PageUp:
+                            case Keys.PageDown:
+                                keyEvt.Handled = true;
+                                SurrenderFocus?.Invoke();
+                                return;
+                        }
+                        break;
+                }
+                // Sync the search boxes immediately
+                currentSearch = ModSearch.Parse(FilterCombinedTextBox.Text,
+                    Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList());
+                SearchToEditor();
+            }
+            catch (Kraken k)
+            {
+                Main.Instance.AddStatusMessage(k.Message);
+            }
+        }
+
+        private bool SkipDelayIf(object sender, EventArgs e)
+        {
+            if (e == null)
+            {
+                // The tri state search controls don't pass their events to us,
+                // and we want immediate handling for them
+                return true;
+            }
+            switch (e) {
+                case KeyEventArgs keyEvt:
+                    switch (keyEvt.KeyCode)
+                    {
+                        // Refresh immediately if user presses enter
+                        case Keys.Enter:
+                            keyEvt.Handled = true;
+                            keyEvt.SuppressKeyPress = true;
+                            return true;
+                    }
+                    break;
+            }
+            // Always refresh immediately on clear
+            return string.IsNullOrEmpty(FilterCombinedTextBox.Text)
+                // Or if the plain text search is long enough to return few enough results to be fast
+                || (currentSearch?.Name.Length ?? 0) > 4;
+        }
+
+        private bool AbortIf(object sender, EventArgs e) => suppressSearch;
+
+        private void DelayedHandler(object sender, EventArgs e)
+        {
+            ApplySearch?.Invoke(this, currentSearch);
+        }
+
+        /// <summary>
+        /// Allow multiple changes to the filter criteria before automatically
+        /// refreshing the display. Refresh may take longer than the time between key strokes,
+        /// which makes the UI seem unresponsive or buggy:
+        /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
+        /// </summary>
+        private EventHandler<EventArgs> handler;
 
         private void ExpandButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -117,25 +197,6 @@ namespace CKAN.GUI
             SearchDetails.Width = Math.Max(200,
                 ExpandButton.Left + ExpandButton.Width
                     - FilterCombinedTextBox.Left);
-        }
-
-        private void FilterCombinedTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (suppressSearch)
-                return;
-
-            try
-            {
-                currentSearch = ModSearch.Parse(FilterCombinedTextBox.Text,
-                    Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList()
-                );
-                SearchToEditor();
-                TriggerSearchOrTimer();
-            }
-            catch (Kraken k)
-            {
-                Main.Instance.AddStatusMessage(k.Message);
-            }
         }
 
         private void SearchToEditor()
@@ -178,7 +239,7 @@ namespace CKAN.GUI
             return string.IsNullOrEmpty(joined) ? piece : $"{joined} {piece}";
         }
 
-        private void SearchDetails_ApplySearch(bool immediately)
+        private void SearchDetails_ApplySearch(object sender, EventArgs e)
         {
             if (suppressSearch)
                 return;
@@ -209,22 +270,12 @@ namespace CKAN.GUI
             suppressSearch = true;
                 FilterCombinedTextBox.Text = currentSearch?.Combined ?? "";
             suppressSearch = false;
-            if (immediately)
-            {
-                TriggerSearch();
-            }
-            else
-            {
-                TriggerSearchOrTimer();
-            }
+            handler(sender, e);
         }
 
         private void SearchDetails_SurrenderFocus()
         {
-            if (SurrenderFocus != null)
-            {
-                SurrenderFocus();
-            }
+            SurrenderFocus?.Invoke();
         }
 
         protected override void OnLeave(EventArgs e)
@@ -236,81 +287,5 @@ namespace CKAN.GUI
         {
             (sender as TextBox)?.SelectAll();
         }
-
-        private void FilterTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            // Switch focus from filters to mod list on enter, down, or pgdn
-            switch (e.KeyCode)
-            {
-                case Keys.Enter:
-                    // Bypass the timer for immediate update
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    filterTimer?.Stop();
-                    TriggerSearch();
-                    break;
-
-                case Keys.Up:
-                case Keys.Down:
-                case Keys.PageUp:
-                case Keys.PageDown:
-                    if (SurrenderFocus != null)
-                    {
-                        SurrenderFocus();
-                    }
-                    e.Handled = true;
-                    break;
-            }
-        }
-
-        private void TriggerSearchOrTimer()
-        {
-            if (Platform.IsMono && !string.IsNullOrEmpty(FilterCombinedTextBox.Text))
-            {
-                // Delay updating to improve typing performance on OS X and Linux
-                RunFilterUpdateTimer();
-            }
-            else
-            {
-                TriggerSearch();
-            }
-        }
-
-        /// <summary>
-        /// Start or restart a timer to update the filter after an interval since the last keypress.
-        /// On Mac OS X, this prevents the search field from locking up due to DataGridViews being
-        /// slow and key strokes being interpreted incorrectly when slowed down:
-        /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
-        /// </summary>
-        private void RunFilterUpdateTimer()
-        {
-            if (filterTimer == null)
-            {
-                filterTimer = new Timer();
-                filterTimer.Tick += OnFilterUpdateTimer;
-                filterTimer.Interval = 500;
-                filterTimer.Start();
-            }
-            else
-            {
-                filterTimer.Stop();
-                filterTimer.Start();
-            }
-        }
-
-        /// <summary>
-        /// Updates the filter after an interval of time has passed since the last keypress.
-        /// </summary>
-        private void OnFilterUpdateTimer(object source, EventArgs e)
-        {
-            TriggerSearch();
-            filterTimer.Stop();
-        }
-
-        private void TriggerSearch()
-        {
-            ApplySearch?.Invoke(this, currentSearch);
-        }
-
     }
 }
