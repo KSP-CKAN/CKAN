@@ -10,6 +10,9 @@ namespace CKAN.GUI
     {
         #region Tray Behaviour
 
+        private bool enableTrayIcon;
+        private bool minimizeToTray;
+
         public void CheckTrayState()
         {
             enableTrayIcon = configuration.EnableTrayIcon;
@@ -112,7 +115,7 @@ namespace CKAN.GUI
         private void cKANSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             OpenWindow();
-            new SettingsDialog(currentUser).ShowDialog();
+            new SettingsDialog(currentUser).ShowDialog(this);
         }
 
         private void minimizedContextMenuStrip_Opening(object sender, CancelEventArgs e)
