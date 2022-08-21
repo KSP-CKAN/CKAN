@@ -571,17 +571,24 @@ namespace CKAN.GUI
 
         private TreeNode findDependencyShallow(IRegistryQuerier registry, RelationshipDescriptor relDescr, RelationshipType relationship, GameVersionCriteria crit)
         {
-            // Maybe it's a DLC?
+            // Check if this dependency is installed
             if (relDescr.MatchesAny(
                 registry.InstalledModules.Select(im => im.Module),
                 new HashSet<string>(registry.InstalledDlls),
-                registry.InstalledDlc))
+                // Maybe it's a DLC?
+                registry.InstalledDlc,
+                out CkanModule matched))
             {
-                return nonModuleNode(relDescr, null, relationship);
+                return matched != null
+                    ? indexedNode(registry, matched, relationship, true)
+                    : nonModuleNode(relDescr, null, relationship);
             }
 
             // Find modules that satisfy this dependency
-            List<CkanModule> dependencyModules = relDescr.LatestAvailableWithProvides(registry, crit);
+            List<CkanModule> dependencyModules = relDescr.LatestAvailableWithProvides(
+                registry, crit,
+                // Ignore conflicts with installed mods
+                Enumerable.Empty<CkanModule>());
             if (dependencyModules.Count == 0)
             {
                 // Nothing found, don't return a node
