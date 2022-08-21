@@ -241,7 +241,7 @@ namespace CKAN.GUI
             });
         }
 
-        public void Finish(bool success)
+        public void Finish()
         {
             OnCancel = null;
             Util.Invoke(this, () =>

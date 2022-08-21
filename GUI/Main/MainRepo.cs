@@ -35,27 +35,11 @@ namespace CKAN.GUI
             }
             catch { }
 
-            Util.Invoke(this, SwitchEnabledState);
+            DisableMainWindow();
 
             Wait.SetDescription(Properties.Resources.MainRepoContacting);
             ShowWaitDialog();
         }
-
-        private bool _enabled = true;
-        private void SwitchEnabledState()
-        {
-            _enabled = !_enabled;
-            menuStrip1.Enabled = _enabled;
-            tabController.SetTabLock(!_enabled);
-            /* Windows (7 & 8 only?) bug #1548 has extra facets.
-             * parent.childcontrol.Enabled = false seems to disable the parent,
-             * if childcontrol had focus. Depending on optimization steps,
-             * parent.childcontrol.Enabled = true does not necessarily
-             * re-enable the parent.*/
-            if (_enabled)
-                this.Focus();
-        }
-
 
         private void UpdateRepo(object sender, DoWorkEventArgs e)
         {
@@ -114,7 +98,7 @@ namespace CKAN.GUI
                 {
                     case ReinstallModuleKraken rmk:
                         // Re-enable the UI for the install flow
-                        Util.Invoke(this, SwitchEnabledState);
+                        EnableMainWindow();
                         Wait.StartWaiting(InstallMods, PostInstallMods, true,
                             new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                                 rmk.Modules
@@ -136,7 +120,7 @@ namespace CKAN.GUI
             {
                 case RepoUpdateResult.NoChanges:
                     AddStatusMessage(Properties.Resources.MainRepoUpToDate);
-                    HideWaitDialog(true);
+                    HideWaitDialog();
                     // Load rows if grid empty, otherwise keep current
                     if (ManageMods.ModGrid.Rows.Count < 1)
                     {
@@ -144,7 +128,7 @@ namespace CKAN.GUI
                     }
                     else
                     {
-                        Util.Invoke(this, SwitchEnabledState);
+                        EnableMainWindow();
                         Util.Invoke(this, ManageMods.ModGrid.Select);
                     }
                     SetupDefaultSearch();
@@ -152,8 +136,8 @@ namespace CKAN.GUI
 
                 case RepoUpdateResult.Failed:
                     AddStatusMessage(Properties.Resources.MainRepoFailed);
-                    HideWaitDialog(false);
-                    Util.Invoke(this, SwitchEnabledState);
+                    HideWaitDialog();
+                    EnableMainWindow();
                     Util.Invoke(this, ManageMods.ModGrid.Select);
                     SetupDefaultSearch();
                     break;
@@ -163,7 +147,7 @@ namespace CKAN.GUI
                     AddStatusMessage(Properties.Resources.MainRepoSuccess);
                     ShowRefreshQuestion();
                     UpgradeNotification();
-                    Util.Invoke(this, SwitchEnabledState);
+                    EnableMainWindow();
                     ManageMods_OnRefresh(oldModules);
                     break;
             }

@@ -58,10 +58,8 @@ namespace CKAN.GUI
 
                     case CancelledActionKraken exc:
                         // User already knows they cancelled, get out
-                        HideWaitDialog(false);
-                        tabController.SetTabLock(false);
-                        Util.Invoke(this, () => Enabled = true);
-                        Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
+                        HideWaitDialog();
+                        EnableMainWindow();
                         break;
 
                     default:

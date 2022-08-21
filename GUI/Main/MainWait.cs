@@ -16,11 +16,11 @@ namespace CKAN.GUI
             });
         }
 
-        public void HideWaitDialog(bool success)
+        public void HideWaitDialog()
         {
             Util.Invoke(this, () =>
             {
-                Wait.Finish(success);
+                Wait.Finish();
                 RecreateDialogs();
 
                 tabController.HideTab("WaitTabPage");
@@ -46,7 +46,7 @@ namespace CKAN.GUI
             });
             Util.Invoke(WaitTabPage, () => {
                 RecreateDialogs();
-                Wait.Finish(false);
+                Wait.Finish();
                 SetProgress(100);
             });
             Wait.AddLogMessage(logMsg);
@@ -82,10 +82,8 @@ namespace CKAN.GUI
 
         public void Wait_OnOk()
         {
-            Util.Invoke(this, () => Enabled = true);
-            Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
-            tabController.SetTabLock(false);
-            HideWaitDialog(false);
+            EnableMainWindow();
+            HideWaitDialog();
         }
     }
 }

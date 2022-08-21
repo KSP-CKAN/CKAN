@@ -20,17 +20,15 @@ namespace CKAN.GUI
             Task.Factory.StartNew(() =>
             {
                 AddStatusMessage("");
-                Util.Invoke(this, () => menuStrip1.Enabled = false);
                 tabController.ShowTab("EditModpackTabPage", 2);
-                tabController.SetTabLock(true);
+                DisableMainWindow();
                 var mgr = RegistryManager.Instance(CurrentInstance);
                 EditModpack.LoadModule(mgr.GenerateModpack(false, true), mgr.registry);
                 // This will block till the user is done
                 EditModpack.Wait(currentUser);
                 tabController.ShowTab("ManageModsTabPage");
                 tabController.HideTab("EditModpackTabPage");
-                tabController.SetTabLock(false);
-                Util.Invoke(this, () => menuStrip1.Enabled = true);
+                EnableMainWindow();
             });
         }
 
