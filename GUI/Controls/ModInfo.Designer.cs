@@ -1,4 +1,4 @@
-﻿namespace CKAN.GUI
+namespace CKAN.GUI
 {
     partial class ModInfo
     {
@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ModInfo));
+            this.ToolTip = new System.Windows.Forms.ToolTip();
             this.ModInfoTabControl = new ThemedTabControl();
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -86,6 +87,13 @@
             this.AllModVersions.SuspendLayout();
             this.AllModVersionsTabPage.SuspendLayout();
             this.SuspendLayout();
+            //
+            // ToolTip
+            //
+            this.ToolTip.AutoPopDelay = 10000;
+            this.ToolTip.InitialDelay = 250;
+            this.ToolTip.ReshowDelay = 250;
+            this.ToolTip.ShowAlways = true;
             //
             // ModInfoTabControl
             //
@@ -540,13 +548,14 @@
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ReverseRelationshipsCheckbox.AutoSize = true;
+            this.ReverseRelationshipsCheckbox.AutoCheck = false;
             this.ReverseRelationshipsCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ReverseRelationshipsCheckbox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ReverseRelationshipsCheckbox.Name = "ReverseRelationshipsCheckbox";
             this.ReverseRelationshipsCheckbox.Location = new System.Drawing.Point(4, 474);
             this.ReverseRelationshipsCheckbox.Size = new System.Drawing.Size(346, 24);
+            this.ReverseRelationshipsCheckbox.Click += new System.EventHandler(this.ReverseRelationshipsCheckbox_Click);
             this.ReverseRelationshipsCheckbox.CheckedChanged += new System.EventHandler(this.ReverseRelationshipsCheckbox_CheckedChanged);
-            this.ReverseRelationshipsCheckbox.ThreeState = true;
             resources.ApplyResources(this.ReverseRelationshipsCheckbox, "ReverseRelationshipsCheckbox");
             //
             // ContentTabPage
@@ -665,6 +674,7 @@
 
         #endregion
 
+        private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.TabControl ModInfoTabControl;
         private System.Windows.Forms.TabPage MetadataTabPage;
         private System.Windows.Forms.SplitContainer splitContainer2;

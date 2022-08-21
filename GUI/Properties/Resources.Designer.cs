@@ -638,6 +638,9 @@ namespace CKAN.GUI.Properties {
         internal static string ModInfoSteamStoreLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoSteamStoreLabel", resourceCulture)); }
         }
+        internal static string ModInfoToolTipReverseRelationships {
+            get { return (string)(ResourceManager.GetObject("ModInfoToolTipReverseRelationships", resourceCulture)); }
+        }
         internal static string DownloadFailed {
             get { return (string)(ResourceManager.GetObject("DownloadFailed", resourceCulture)); }
         }

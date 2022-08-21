@@ -296,6 +296,7 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="ModInfoRemoteAvcLabel" xml:space="preserve"><value>Remote version file:</value></data>
   <data name="ModInfoStoreLabel" xml:space="preserve"><value>Store:</value></data>
   <data name="ModInfoSteamStoreLabel" xml:space="preserve"><value>Steam store:</value></data>
+  <data name="ModInfoToolTipReverseRelationships" xml:space="preserve"><value>Ctrl-click or Shift-click to make sticky</value></data>
   <data name="DownloadFailed" xml:space="preserve"><value>Download failed!</value></data>
   <data name="MainModListWaitTitle" xml:space="preserve"><value>Loading modules</value></data>
   <data name="MainModListLoadingRegistry" xml:space="preserve"><value>Loading registry...</value></data>

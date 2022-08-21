@@ -31,6 +31,8 @@ namespace CKAN.GUI
             InitializeComponent();
             staticRowCount = MetaDataLowerLayoutPanel.RowCount;
 
+            ToolTip.SetToolTip(ReverseRelationshipsCheckbox, Properties.Resources.ModInfoToolTipReverseRelationships);
+
             DependsGraphTree.BeforeExpand += BeforeExpand;
         }
 
@@ -52,6 +54,7 @@ namespace CKAN.GUI
                         {
                             ReverseRelationshipsCheckbox.CheckState = CheckState.Unchecked;
                         }
+                        UpdateHeaderInfo(module);
                         LoadTab(ModInfoTabControl.SelectedTab.Name, value);
                     }
                     selectedModule = value;
@@ -165,15 +168,13 @@ namespace CKAN.GUI
             }
         }
 
-        private void UpdateModInfo(GUIMod gui_module)
+        private void UpdateHeaderInfo(CkanModule module)
         {
-            CkanModule module = gui_module.ToModule();
-
-            Util.Invoke(MetadataModuleNameTextBox, () => MetadataModuleNameTextBox.Text = module.name);
-            UpdateTagsAndLabels(module);
-            Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract.Replace("&", "&&"));
-            Util.Invoke(MetadataModuleDescriptionTextBox, () =>
+            Util.Invoke(this, () =>
             {
+                MetadataModuleNameTextBox.Text = module.name;
+                UpdateTagsAndLabels(module);
+                MetadataModuleAbstractLabel.Text = module.@abstract.Replace("&", "&&");
                 MetadataModuleDescriptionTextBox.Text = module.description
                     ?.Replace("\r\n", "\n").Replace("\n", Environment.NewLine);
                 MetadataModuleDescriptionTextBox.ScrollBars =
@@ -181,6 +182,11 @@ namespace CKAN.GUI
                         ? ScrollBars.None
                         : ScrollBars.Vertical;
             });
+        }
+
+        private void UpdateModInfo(GUIMod gui_module)
+        {
+            CkanModule module = gui_module.ToModule();
 
             Util.Invoke(MetadataModuleVersionTextBox, () => MetadataModuleVersionTextBox.Text = gui_module.LatestVersion.ToString());
             Util.Invoke(MetadataModuleLicenseTextBox, () => MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license));
@@ -405,6 +411,18 @@ namespace CKAN.GUI
                 }
             }
             return false;
+        }
+
+        private void ReverseRelationshipsCheckbox_Click(object sender, EventArgs e)
+        {
+            ReverseRelationshipsCheckbox.CheckState =
+                ReverseRelationshipsCheckbox.CheckState == CheckState.Unchecked
+                    // If user holds ctrl or shift, go to "sticky" indeterminate state,
+                    // else normal checked
+? (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0
+                        ? CheckState.Indeterminate
+                        : CheckState.Checked
+                    : CheckState.Unchecked;
         }
 
         private void ReverseRelationshipsCheckbox_CheckedChanged(object sender, EventArgs e)
