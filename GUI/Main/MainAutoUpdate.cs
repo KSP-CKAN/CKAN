@@ -54,7 +54,7 @@ namespace CKAN.GUI
         {
             ResetProgress();
             ShowWaitDialog();
-            SwitchEnabledState();
+            DisableMainWindow();
             tabController.RenameTab("WaitTabPage", Properties.Resources.MainUpgradingWaitTitle);
             Wait.SetDescription(string.Format(Properties.Resources.MainUpgradingTo, AutoUpdate.Instance.latestUpdate.Version));
 
@@ -70,7 +70,7 @@ namespace CKAN.GUI
         private void UpdateReady(object sender, RunWorkerCompletedEventArgs e)
         {
             // Close will be cancelled if the window is still disabled
-            SwitchEnabledState();
+            EnableMainWindow();
             Close();
         }
 

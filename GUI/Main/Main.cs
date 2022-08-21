@@ -590,8 +590,6 @@ namespace CKAN.GUI
                         continue;
                     }
 
-                    menuStrip1.Enabled = false;
-
                     InstallModuleDriver(registry_manager.registry, module);
                 }
                 registry_manager.Save(true);
@@ -815,18 +813,43 @@ namespace CKAN.GUI
         {
             tabController.RenameTab("WaitTabPage", Properties.Resources.MainModListWaitTitle);
             ShowWaitDialog();
-            Util.Invoke(this, SwitchEnabledState);
-            tabController.SetTabLock(true);
+            DisableMainWindow();
             Wait.StartWaiting(
                 ManageMods.Update,
                 (sender, e) => {
-                    HideWaitDialog(true);
-                    tabController.SetTabLock(false);
-                    Util.Invoke(this, SwitchEnabledState);
+                    HideWaitDialog();
+                    EnableMainWindow();
                     SetupDefaultSearch();
                 },
                 false,
                 oldModules);
         }
+
+        private void EnableMainWindow()
+        {
+            Util.Invoke(this, () =>
+            {
+                Enabled = true;
+                menuStrip1.Enabled = true;
+                tabController.SetTabLock(false);
+                /* Windows (7 & 8 only?) bug #1548 has extra facets.
+                 * parent.childcontrol.Enabled = false seems to disable the parent,
+                 * if childcontrol had focus. Depending on optimization steps,
+                 * parent.childcontrol.Enabled = true does not necessarily
+                 * re-enable the parent.*/
+                this.Focus();
+            });
+        }
+
+        private void DisableMainWindow()
+        {
+            Util.Invoke(this, () =>
+            {
+                Enabled = false;
+                menuStrip1.Enabled = false;
+                tabController.SetTabLock(true);
+            });
+        }
+
     }
 }

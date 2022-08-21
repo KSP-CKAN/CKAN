@@ -33,7 +33,7 @@ namespace CKAN.GUI
 
         private void Changeset_OnConfirmChanges()
         {
-            menuStrip1.Enabled = false;
+            DisableMainWindow();
 
             // Using the changeset passed in can cause issues with versions.
             // An example is Mechjeb for FAR at 25/06/2015 with a 1.0.2 install.

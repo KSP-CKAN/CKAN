@@ -31,8 +31,8 @@ namespace CKAN.GUI
             {
                 // Show WaitTabPage (status page) and lock it.
                 tabController.RenameTab("WaitTabPage", Properties.Resources.MainImportWaitTitle);
-                tabController.ShowTab("WaitTabPage");
-                tabController.SetTabLock(true);
+                ShowWaitDialog();
+                DisableMainWindow();
 
                 try
                 {
@@ -46,8 +46,8 @@ namespace CKAN.GUI
                 finally
                 {
                     // Put GUI back the way we found it
-                    tabController.SetTabLock(false);
-                    tabController.HideTab("WaitTabPage");
+                    EnableMainWindow();
+                    HideWaitDialog();
                 }
             }
         }

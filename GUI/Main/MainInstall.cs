@@ -21,6 +21,7 @@ namespace CKAN.GUI
         {
             try
             {
+                DisableMainWindow();
                 var userChangeSet = new List<ModChange>();
                 InstalledModule installed = registry.InstalledModule(module.identifier);
                 if (installed != null)
@@ -52,8 +53,8 @@ namespace CKAN.GUI
             catch
             {
                 // If we failed, do the clean-up normally done by PostInstallMods.
-                HideWaitDialog(false);
-                menuStrip1.Enabled = true;
+                HideWaitDialog();
+                EnableMainWindow();
             }
         }
 
@@ -347,10 +348,8 @@ namespace CKAN.GUI
 
                     case CancelledActionKraken exc:
                         // User already knows they cancelled, get out
-                        HideWaitDialog(false);
-                        tabController.SetTabLock(false);
-                        Util.Invoke(this, () => Enabled = true);
-                        Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
+                        HideWaitDialog();
+                        EnableMainWindow();
                         break;
 
                     case MissingCertificateKraken exc:
@@ -412,15 +411,9 @@ namespace CKAN.GUI
             {
                 // The Result property throws if InstallMods threw (!!!)
                 KeyValuePair<bool, ModChanges> result = (KeyValuePair<bool, ModChanges>) e.Result;
+                AddStatusMessage(Properties.Resources.MainInstallSuccess);
                 // Rebuilds the list of GUIMods
                 ManageMods_OnRefresh();
-
-                Util.Invoke(this, () => Enabled = true);
-                Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
-                tabController.SetTabLock(false);
-
-                AddStatusMessage(Properties.Resources.MainInstallSuccess);
-                HideWaitDialog(true);
             }
         }
     }

@@ -9,9 +9,8 @@ namespace CKAN.GUI
         private void viewPlayTimeStripMenuItem_Click(object sender, EventArgs e)
         {
             PlayTime.loadAllPlayTime(manager);
-            menuStrip1.Enabled = false;
             tabController.ShowTab("PlayTimeTabPage", 2);
-            tabController.SetTabLock(true);
+            DisableMainWindow();
         }
 
         private void PlayTime_Done()
@@ -19,8 +18,7 @@ namespace CKAN.GUI
             UpdateStatusBar();
             tabController.ShowTab("ManageModsTabPage");
             tabController.HideTab("PlayTimeTabPage");
-            tabController.SetTabLock(false);
-            menuStrip1.Enabled = true;
+            EnableMainWindow();
         }
     }
 }
