@@ -73,7 +73,7 @@ namespace CKAN.GUI
             // setup progress callback
 
             // this will be the final list of mods we want to install
-            HashSet<CkanModule> toInstall = new HashSet<CkanModule>();
+            var toInstall   = new List<CkanModule>();
             var toUninstall = new HashSet<CkanModule>();
             var toUpgrade   = new HashSet<CkanModule>();
 
@@ -132,7 +132,7 @@ namespace CKAN.GUI
                 }
                 else
                 {
-                    toInstall.UnionWith(result);
+                    toInstall = toInstall.Concat(result).Distinct().ToList();
                 }
             }
 
@@ -215,12 +215,13 @@ namespace CKAN.GUI
                             // Remove mods from changeset that user chose to skip
                             // and any mods depending on them
                             var dependers = registry.FindReverseDependencies(
-                                skip.Select(s => s.identifier),
+                                skip.Select(s => s.identifier).ToList(),
                                 fullChangeset,
                                 // Consider virtual dependencies satisfied so user can make a new choice if they skip
                                 rel => rel.LatestAvailableWithProvides(registry, crit).Count > 1)
                                 .ToHashSet();
-                            toInstall.RemoveWhere(m => dependers.Contains(m.identifier));
+                            toInstall.RemoveAll(m =>
+                             dependers.Contains(m.identifier));
                         }
 
                         // Now we loop back around again
@@ -413,7 +414,7 @@ namespace CKAN.GUI
                 KeyValuePair<bool, ModChanges> result = (KeyValuePair<bool, ModChanges>) e.Result;
                 AddStatusMessage(Properties.Resources.MainInstallSuccess);
                 // Rebuilds the list of GUIMods
-                ManageMods_OnRefresh();
+                RefreshModList();
             }
         }
     }

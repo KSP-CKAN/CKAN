@@ -18,7 +18,7 @@ namespace CKAN.GUI
 
         public void LoadRecommendations(
             IRegistryQuerier registry,
-            HashSet<CkanModule> toInstall, HashSet<CkanModule> toUninstall,
+            List<CkanModule> toInstall, HashSet<CkanModule> toUninstall,
             GameVersionCriteria GameVersion, NetModuleCache cache,
             Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
             Dictionary<CkanModule, List<string>> suggestions,
@@ -84,7 +84,7 @@ namespace CKAN.GUI
                 MarkConflicts();
             }
         }
-        
+
         private void MarkConflicts()
         {
             try
@@ -216,7 +216,7 @@ namespace CKAN.GUI
         }
 
         private IRegistryQuerier    registry;
-        private HashSet<CkanModule> toInstall;
+        private List<CkanModule>    toInstall;
         private HashSet<CkanModule> toUninstall;
         private GameVersionCriteria GameVersion;
 

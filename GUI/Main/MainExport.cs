@@ -71,7 +71,7 @@ namespace CKAN.GUI
                 using (var stream = new FileStream(dlg.FileName, fileMode))
                 {
                     new Exporter(specialExportOptions[dlg.FilterIndex - 1].ExportFileType).Export(
-                        RegistryManager.Instance(Main.Instance.CurrentInstance).registry,
+                        RegistryManager.Instance(CurrentInstance).registry,
                         stream
                     );
                 }

@@ -587,5 +587,11 @@ namespace CKAN.GUI
         {
             return Equals(obj as ModSearch);
         }
+
+        public override int GetHashCode()
+        {
+            return Combined.GetHashCode();
+        }
+
     }
 }

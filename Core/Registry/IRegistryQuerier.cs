@@ -2,7 +2,10 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+using log4net;
+
 using CKAN.Versioning;
+using CKAN.Extensions;
 using CKAN.Games;
 
 namespace CKAN
@@ -79,20 +82,8 @@ namespace CKAN
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// </summary>
         IEnumerable<string> FindReverseDependencies(
-            IEnumerable<string> modulesToRemove, IEnumerable<CkanModule> modulesToInstall = null, Func<RelationshipDescriptor, bool> satisfiedFilter = null
+            List<string> modulesToRemove, List<CkanModule> modulesToInstall = null, Func<RelationshipDescriptor, bool> satisfiedFilter = null
         );
-
-        /// <summary>
-        /// Find auto-installed modules that have no depending modules
-        /// or only auto-installed depending modules.
-        /// installedModules is a parameter so we can experiment with
-        /// changes that have not yet been made, such as removing other modules.
-        /// </summary>
-        /// <param name="installedModules">The modules currently installed</param>
-        /// <returns>
-        /// Sequence of removable auto-installed modules, if any
-        /// </returns>
-        IEnumerable<InstalledModule> FindRemovableAutoInstalled(IEnumerable<InstalledModule> installedModules);
 
         /// <summary>
         /// Gets the installed version of a mod. Does not check for provided or autodetected mods.
@@ -238,7 +229,8 @@ namespace CKAN
         /// Generate a string describing the range of game versions
         /// compatible with the given module.
         /// </summary>
-        /// <param name="identifier">Mod name to findDependencyShallow</param>
+        /// <param name="game">Game to represent</param>
+        /// <param name="module">Mod to findDependencyShallow</param>
         /// <returns>
         /// String describing range of compatible game versions.
         /// </returns>
@@ -326,5 +318,72 @@ namespace CKAN
                 return null;
             }
         }
+
+        /// <summary>
+        /// Find auto-installed modules that have no depending modules
+        /// or only auto-installed depending modules.
+        /// </summary>
+        /// <param name="installedModules">The modules currently installed</param>
+        /// <param name="dlls">The DLLs that are manually installed</param>
+        /// <param name="dlc">The DLCs that are installed</param>
+        /// <param name="crit">Version criteria for resolving relationships</param>
+        /// <returns>
+        /// Sequence of removable auto-installed modules, if any
+        /// </returns>
+        private static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
+            this IRegistryQuerier querier,
+            List<InstalledModule>              installedModules,
+            HashSet<string>                    dlls,
+            IDictionary<string, ModuleVersion> dlc,
+            GameVersionCriteria                crit)
+        {
+            var autoInstMods = installedModules.Where(im => im.AutoInstalled).ToList();
+            var autoInstIds  = autoInstMods.Select(im => im.Module.identifier).ToHashSet();
+
+            // Need to get the full changeset for this to work as intended
+            RelationshipResolverOptions opts = RelationshipResolver.DependsOnlyOpts();
+            opts.without_toomanyprovides_kraken = true;
+            opts.without_enforce_consistency    = true;
+            opts.proceed_with_inconsistencies   = true;
+            var resolver = new RelationshipResolver(
+                installedModules
+                    // DLC silently crashes the resolver
+                    .Where(im => !im.Module.IsDLC)
+                    .Select(im => im.Module),
+                null,
+                opts, querier, crit);
+
+            return autoInstMods.Where(
+                im => autoInstIds.IsSupersetOf(Registry.FindReverseDependencies(
+                    new List<string> { im.identifier },
+                    new List<CkanModule>(),
+                    resolver.ModList().ToHashSet(),
+                    dlls, dlc)));
+        }
+
+        /// <summary>
+        /// Find auto-installed modules that have no depending modules
+        /// or only auto-installed depending modules.
+        /// installedModules is a parameter so we can experiment with
+        /// changes that have not yet been made, such as removing other modules.
+        /// </summary>
+        /// <param name="installedModules">The modules currently installed</param>
+        /// <param name="crit">Version criteria for resolving relationships</param>
+        /// <returns>
+        /// Sequence of removable auto-installed modules, if any
+        /// </returns>
+        public static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
+            this IRegistryQuerier querier,
+            List<InstalledModule> installedModules,
+            GameVersionCriteria   crit)
+        {
+            log.DebugFormat("Finding removable autoInstalled for: {0}", string.Join(", ", installedModules.Select(im => im.identifier)));
+            return querier == null
+                ? Enumerable.Empty<InstalledModule>()
+                : querier.FindRemovableAutoInstalled(
+                    installedModules, querier.InstalledDlls.ToHashSet(), querier.InstalledDlc, crit);
+        }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(IRegistryQuerierHelpers));
     }
 }

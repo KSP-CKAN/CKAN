@@ -36,7 +36,7 @@ namespace CKAN.GUI
             var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
             if (installer.FindRecommendations(
                 registry.InstalledModules.Select(im => im.Module).ToHashSet(),
-                new HashSet<CkanModule>(),
+                new List<CkanModule>(),
                 registry as Registry,
                 out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                 out Dictionary<CkanModule, List<string>> suggestions,
@@ -45,7 +45,7 @@ namespace CKAN.GUI
             {
                 tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
                 ChooseRecommendedMods.LoadRecommendations(
-                    registry, new HashSet<CkanModule>(), new HashSet<CkanModule>(),
+                    registry, new List<CkanModule>(), new HashSet<CkanModule>(),
                     versionCriteria, Manager.Cache,
                     recommendations, suggestions, supporters);
                 var result = ChooseRecommendedMods.Wait();

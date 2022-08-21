@@ -14,11 +14,11 @@ namespace CKAN.GUI
     {
         public Timer refreshTimer;
 
-        public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
+        public RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
         {
             if (master_uri == null)
             {
-                master_uri = Main.Instance.CurrentInstance.game.RepositoryListURL;
+                master_uri = CurrentInstance.game.RepositoryListURL;
             }
 
             string json = Net.DownloadText(master_uri);
@@ -124,7 +124,7 @@ namespace CKAN.GUI
                     // Load rows if grid empty, otherwise keep current
                     if (ManageMods.ModGrid.Rows.Count < 1)
                     {
-                        ManageMods_OnRefresh();
+                        RefreshModList();
                     }
                     else
                     {
@@ -148,7 +148,7 @@ namespace CKAN.GUI
                     ShowRefreshQuestion();
                     UpgradeNotification();
                     EnableMainWindow();
-                    ManageMods_OnRefresh(oldModules);
+                    RefreshModList(oldModules);
                     break;
             }
 
@@ -231,7 +231,7 @@ namespace CKAN.GUI
             // Install
             Wait.StartWaiting(InstallMods, PostInstallMods, true,
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    ManageMods.mainModList.ComputeUserChangeSet(RegistryManager.Instance(Main.Instance.CurrentInstance).registry).ToList(),
+                    ManageMods.mainModList.ComputeUserChangeSet(RegistryManager.Instance(CurrentInstance).registry, CurrentInstance.VersionCriteria()).ToList(),
                     RelationshipResolver.DependsOnlyOpts()
                 )
             );

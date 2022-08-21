@@ -26,7 +26,7 @@ namespace CKAN.GUI
 
             try
             {
-                repositories = Main.FetchMasterRepositoryList();
+                repositories = Main.Instance.FetchMasterRepositoryList();
             }
             catch
             {

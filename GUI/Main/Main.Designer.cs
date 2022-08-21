@@ -67,7 +67,7 @@
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusInstanceLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusProgress = new System.Windows.Forms.ToolStripProgressBar();
-            this.MainTabControl = new CKAN.GUI.MainTabControl();
+            this.MainTabControl = new CKAN.GUI.ThemedTabControl();
             this.ManageModsTabPage = new System.Windows.Forms.TabPage();
             this.ManageMods = new CKAN.GUI.ManageMods();
             this.ChangesetTabPage = new System.Windows.Forms.TabPage();
@@ -455,7 +455,6 @@
             this.ManageMods.OnSelectedModuleChanged += ManageMods_OnSelectedModuleChanged;
             this.ManageMods.OnChangeSetChanged += ManageMods_OnChangeSetChanged;
             this.ManageMods.OnRegistryChanged += ManageMods_OnRegistryChanged;
-            this.ManageMods.OnRefresh += ManageMods_OnRefresh;
             this.ManageMods.LabelsAfterUpdate += ManageMods_LabelsAfterUpdate;
             this.ManageMods.StartChangeSet += ManageMods_StartChangeSet;
             //
@@ -816,7 +815,7 @@
         private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
         private System.Windows.Forms.ToolStripStatusLabel StatusInstanceLabel;
         private System.Windows.Forms.ToolStripProgressBar StatusProgress;
-        private CKAN.GUI.MainTabControl MainTabControl;
+        private CKAN.GUI.ThemedTabControl MainTabControl;
         private System.Windows.Forms.TabPage ManageModsTabPage;
         public CKAN.GUI.ManageMods ManageMods;
         private System.Windows.Forms.TabPage ChangesetTabPage;

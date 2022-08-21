@@ -43,7 +43,7 @@ namespace CKAN.GUI
                 Wait.StartWaiting(InstallMods, PostInstallMods, true,
                     new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                         ManageMods.mainModList
-                            .ComputeUserChangeSet(RegistryManager.Instance(Main.Instance.CurrentInstance).registry)
+                            .ComputeUserChangeSet(RegistryManager.Instance(CurrentInstance).registry, CurrentInstance.VersionCriteria())
                             .ToList(),
                         RelationshipResolver.DependsOnlyOpts()
                     )
@@ -51,7 +51,7 @@ namespace CKAN.GUI
             }
             catch (InvalidOperationException)
             {
-                // Thrown if it's already busy, can happen if the user fouble-clicks the button. Ignore it.
+                // Thrown if it's already busy, can happen if the user double-clicks the button. Ignore it.
                 // More thread-safe than checking installWorker.IsBusy beforehand.
             }
         }

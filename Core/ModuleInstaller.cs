@@ -662,7 +662,7 @@ namespace CKAN
         /// </summary>
         public void UninstallList(
             IEnumerable<string> mods, ref HashSet<string> possibleConfigOnlyDirs,
-            RegistryManager registry_manager, bool ConfirmPrompt = true, IEnumerable<CkanModule> installing = null
+            RegistryManager registry_manager, bool ConfirmPrompt = true, List<CkanModule> installing = null
         )
         {
             mods = mods.Memoize();
@@ -682,16 +682,20 @@ namespace CKAN
             }
 
             // Find all the things which need uninstalling.
-            IEnumerable<string> revdep = mods
+            var revdep = mods
                 .Union(registry_manager.registry.FindReverseDependencies(
-                    mods.Except(installing?.Select(m => m.identifier) ?? new string[] {}),
-                    installing
-                )).Memoize();
+                    mods.Except(installing?.Select(m => m.identifier) ?? new string[] {})
+                        .ToList(),
+                    installing))
+                .ToList();
+
             var goners = revdep.Union(
                     registry_manager.registry.FindRemovableAutoInstalled(
                         registry_manager.registry.InstalledModules
                             .Where(im => !revdep.Contains(im.identifier))
-                            .Concat(installing?.Select(m => new InstalledModule(null, m, new string[0], false)) ?? new InstalledModule[0]))
+                            .Concat(installing?.Select(m => new InstalledModule(null, m, new string[0], false)) ?? new InstalledModule[0])
+                            .ToList(),
+                        ksp.VersionCriteria())
                     .Select(im => im.identifier))
                 .ToList();
 
@@ -1234,7 +1238,7 @@ namespace CKAN
         /// </returns>
         public bool FindRecommendations(
             HashSet<CkanModule> sourceModules,
-            HashSet<CkanModule> toInstall,
+            List<CkanModule>    toInstall,
             Registry registry,
             out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
             out Dictionary<CkanModule, List<string>> suggestions,
@@ -1340,7 +1344,7 @@ namespace CKAN
         private Dictionary<CkanModule, List<string>> getDependersIndex(
             IEnumerable<CkanModule> sourceModules,
             IRegistryQuerier        registry,
-            HashSet<CkanModule>     toExclude
+            List<CkanModule>        toExclude
         )
         {
             Dictionary<CkanModule, List<string>> dependersIndex = new Dictionary<CkanModule, List<string>>();
