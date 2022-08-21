@@ -37,6 +37,8 @@ namespace CKAN.GUI
                     .Where(ch => ch.ChangeType != GUIModChangeType.None)
                     .Select(makeItem)
                     .ToArray());
+                ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             }
         }
 
