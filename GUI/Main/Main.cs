@@ -845,7 +845,6 @@ namespace CKAN.GUI
         {
             Util.Invoke(this, () =>
             {
-                Enabled = false;
                 menuStrip1.Enabled = false;
                 tabController.SetTabLock(true);
             });
