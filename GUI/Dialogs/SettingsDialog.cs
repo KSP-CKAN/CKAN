@@ -129,7 +129,7 @@ namespace CKAN.GUI
                 Task.Factory.StartNew(() =>
                 {
                     // This might take a little while if the cache is big
-                    Main.Instance.Manager.Cache.GetSizeInfo(out m_cacheFileCount, out m_cacheSize, out long m_cacheFreeSpace);
+                    Main.Instance.Manager.Cache.GetSizeInfo(out m_cacheFileCount, out m_cacheSize, out m_cacheFreeSpace);
                     Util.Invoke(this, () =>
                     {
                         if (config.CacheSizeLimit.HasValue)

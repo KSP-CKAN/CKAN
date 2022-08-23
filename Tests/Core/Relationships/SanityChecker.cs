@@ -135,7 +135,7 @@ namespace Tests.Core.Relationships
         [Test]
         public void ReverseDepends()
         {
-            var mods = new List<CkanModule>()
+            var mods = new HashSet<CkanModule>()
             {
                 registry.LatestAvailable("CustomBiomes",       null),
                 registry.LatestAvailable("CustomBiomesKerbal", null),
@@ -335,13 +335,13 @@ namespace Tests.Core.Relationships
 
         private static void TestDepends(
             List<string> to_remove,
-            List<CkanModule> mods,
-            List<string> dlls,
+            HashSet<CkanModule> mods,
+            HashSet<string> dlls,
             Dictionary<string, ModuleVersion> dlc,
             List<string> expected,
             string message)
         {
-            dlls = dlls ?? new List<string>();
+            dlls = dlls ?? new HashSet<string>();
 
             var remove_count = to_remove.Count;
             var dll_count = dlls.Count;

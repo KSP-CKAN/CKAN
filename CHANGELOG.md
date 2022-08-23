@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Auto-size buttons in bottom panels (#3576 by: HebaruSan; reviewed: techman83)
 - [GUI] Hide tray icon at exit via ctrl-C (#3639 by: HebaruSan; reviewed: techman83)
+- [Multiple] Fix auto removal when installing w/ deps (#3643 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 

@@ -288,7 +288,7 @@ namespace CKAN.GUI
                 else
                 {
                     SetupDefaultSearch();
-                    ManageMods_OnRefresh();
+                    RefreshModList();
                 }
             }
             ManageMods.InstanceUpdated(CurrentInstance);
@@ -607,7 +607,7 @@ namespace CKAN.GUI
             if (dialog.ShowDialog() != DialogResult.Cancel)
             {
                 // This takes a while, so don't do it if they cancel out
-                ManageMods_OnRefresh();
+                RefreshModList();
             }
         }
 
@@ -645,7 +645,7 @@ namespace CKAN.GUI
             );
         }
 
-        private void ManageMods_OnChangeSetChanged(IEnumerable<ModChange> changeset)
+        private void ManageMods_OnChangeSetChanged(List<ModChange> changeset)
         {
             if (changeset != null && changeset.Any())
             {
@@ -671,6 +671,7 @@ namespace CKAN.GUI
             {
                 case "ManageModsTabPage":
                     ActiveModInfo = ManageMods.SelectedModule;
+                    ManageMods.ModGrid.Focus();
                     break;
 
                 case "ChangesetTabPage":
@@ -765,8 +766,7 @@ namespace CKAN.GUI
                 }
             }
 
-            split = CurrentInstance.game.AdjustCommandLine(split,
-                Main.Instance.CurrentInstance.Version());
+            split = CurrentInstance.game.AdjustCommandLine(split, CurrentInstance.Version());
             var binary = split[0];
             var args = string.Join(" ", split.Skip(1));
 
@@ -811,7 +811,7 @@ namespace CKAN.GUI
                     changeset, RelationshipResolver.DependsOnlyOpts()));
         }
 
-        private void ManageMods_OnRefresh(Dictionary<string, bool> oldModules = null)
+        private void RefreshModList(Dictionary<string, bool> oldModules = null)
         {
             tabController.RenameTab("WaitTabPage", Properties.Resources.MainModListWaitTitle);
             ShowWaitDialog();

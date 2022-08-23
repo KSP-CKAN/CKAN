@@ -306,9 +306,6 @@
     <Compile Include="Main\MainRepo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main\MainTabControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Main\MainTime.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+
+using log4net;
+
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN.GUI
 {
@@ -61,10 +65,10 @@ namespace CKAN.GUI
             if (!SearchesEqual(activeSearches, newSearches))
             {
                 activeSearches = newSearches;
-                
+
                 Main.Instance.configuration.DefaultSearches = activeSearches?.Select(s => s?.Combined ?? "").ToList()
                     ?? new List<string>() { "" };
-                
+
                 ModFiltersUpdated?.Invoke(this);
             }
         }
@@ -120,7 +124,7 @@ namespace CKAN.GUI
             IRegistryQuerier registry, HashSet<ModChange> changeSet, ModuleInstaller installer,
             GameVersionCriteria version)
         {
-            var modules_to_install = new HashSet<CkanModule>();
+            var modules_to_install = new List<CkanModule>();
             var modules_to_remove = new HashSet<CkanModule>();
 
             foreach (var change in changeSet)
@@ -151,15 +155,16 @@ namespace CKAN.GUI
                 }
             }
 
-            var installed_modules =
-                registry.InstalledModules.Select(imod => imod.Module).ToDictionary(mod => mod.identifier, mod => mod);
+            var installed_modules = registry.InstalledModules.ToDictionary(
+                imod => imod.Module.identifier,
+                imod => imod.Module);
 
             foreach (var dependent in registry.FindReverseDependencies(
                 modules_to_remove
                     .Select(mod => mod.identifier)
-                    .Except(modules_to_install.Select(m => m.identifier)),
-                modules_to_install
-            ))
+                    .Except(modules_to_install.Select(m => m.identifier))
+                    .ToList(),
+                modules_to_install))
             {
                 //TODO This would be a good place to have an event that alters the row's graphics to show it will be removed
                 CkanModule depMod;
@@ -172,13 +177,17 @@ namespace CKAN.GUI
                     modules_to_remove.Add(module_by_version);
                 }
             }
+
             foreach (var im in registry.FindRemovableAutoInstalled(
                 registry.InstalledModules
-                    .Where(im => modules_to_remove.All(m => m.identifier != im.identifier) || modules_to_install.Any(m => m.identifier == im.identifier))
-                    .Concat(modules_to_install.Select(m => new InstalledModule(null, m, new string[0], false)))
-            ))
+                    .Where(im =>
+                        modules_to_remove.All(m => m.identifier != im.identifier)
+                        || modules_to_install.Any(m => m.identifier == im.identifier))
+                    .Concat(modules_to_install.Select(m =>
+                        new InstalledModule(null, m, new string[0], false)))
+                    .ToList(),
+                version))
             {
-                // TODO this removes modules that a newly installed mod will depend on, and gets readded as module to install in the RelationshipResolver
                 changeSet.Add(new ModChange(im.Module, GUIModChangeType.Remove, new SelectionReason.NoLongerUsed()));
                 modules_to_remove.Add(im.Module);
             }
@@ -192,6 +201,7 @@ namespace CKAN.GUI
                 modules_to_install,
                 modules_to_remove,
                 opts, registry, version);
+
             changeSet.UnionWith(
                 resolver.ModList()
                     .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonFor(m))));
@@ -474,18 +484,20 @@ namespace CKAN.GUI
             );
         }
 
-        public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier registry)
+        public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier registry, GameVersionCriteria crit)
         {
-            var removableAuto = registry?.FindRemovableAutoInstalled(registry?.InstalledModules)
-                ?? new InstalledModule[] {};
-            return new HashSet<ModChange>(
-                Modules
-                    .SelectMany(mod => mod.GetModChanges())
-                    .Union(removableAuto.Select(im => new ModChange(
-                        im.Module,
-                        GUIModChangeType.Remove,
-                        new SelectionReason.NoLongerUsed())))
-            );
+            log.Debug("Computing user changeset");
+            var modChanges = Modules.SelectMany(mod => mod.GetModChanges());
+            return (registry == null
+                ? modChanges
+                : modChanges.Union(
+                    registry.FindRemovableAutoInstalled(registry.InstalledModules.ToList(), crit)
+                        .Select(im => new ModChange(
+                            im.Module, GUIModChangeType.Remove,
+                            new SelectionReason.NoLongerUsed()))))
+                .ToHashSet();
         }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(ModList));
     }
 }

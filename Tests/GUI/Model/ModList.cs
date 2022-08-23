@@ -22,7 +22,7 @@ namespace Tests.GUI
         public void ComputeChangeSetFromModList_WithEmptyList_HasEmptyChangeSet()
         {
             var item = new ModList(delegate { });
-            Assert.That(item.ComputeUserChangeSet(null), Is.Empty);
+            Assert.That(item.ComputeUserChangeSet(null, null), Is.Empty);
         }
 
         [Test]
@@ -205,7 +205,7 @@ namespace Tests.GUI
             {
                 // Install the "other" module
                 installer.InstallList(
-                    modList.ComputeUserChangeSet(null).Select(change => change.Mod).ToList(),
+                    modList.ComputeUserChangeSet(null, null).Select(change => change.Mod).ToList(),
                     new RelationshipResolverOptions(),
                     registryManager,
                     ref possibleConfigOnlyDirs,

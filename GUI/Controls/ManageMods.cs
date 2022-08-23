@@ -52,7 +52,7 @@ namespace CKAN.GUI
         private string lastSearchKey;
         private NavigationHistory<GUIMod> navHistory;
 
-        private IEnumerable<ModChange> currentChangeSet;
+        private List<ModChange> currentChangeSet;
         private Dictionary<GUIMod, string> conflicts;
 
         public readonly ModList mainModList;
@@ -82,14 +82,13 @@ namespace CKAN.GUI
         }
 
         public event Action<GUIMod> OnSelectedModuleChanged;
-        public event Action<IEnumerable<ModChange>> OnChangeSetChanged;
+        public event Action<List<ModChange>> OnChangeSetChanged;
         public event Action OnRegistryChanged;
 
         public event Action<List<ModChange>> StartChangeSet;
-        public event Action<Dictionary<string, bool>> OnRefresh;
         public event Action<IEnumerable<GUIMod>> LabelsAfterUpdate;
 
-        private IEnumerable<ModChange> ChangeSet
+        private List<ModChange> ChangeSet
         {
             get { return currentChangeSet; }
             set
@@ -969,9 +968,11 @@ namespace CKAN.GUI
             var revdep = registry.FindReverseDependencies(new List<string>() { module.Identifier });
             var goners = revdep.Union(
                 registry.FindRemovableAutoInstalled(
-                    registry.InstalledModules.Where(im => !revdep.Contains(im.identifier))
-                ).Select(im => im.Module.identifier)
-            );
+                    registry.InstalledModules
+                        .Where(im => !revdep.Contains(im.identifier))
+                        .ToList(),
+                    Main.Instance.CurrentInstance.VersionCriteria())
+                .Select(im => im.Module.identifier));
             foreach (string id in goners)
             {
                 toReinstall.Add(new ModChange(
@@ -1593,21 +1594,21 @@ namespace CKAN.GUI
 
         public async Task UpdateChangeSetAndConflicts(GameInstance inst, IRegistryQuerier registry)
         {
-            IEnumerable<ModChange> full_change_set = null;
+            List<ModChange> full_change_set = null;
             Dictionary<GUIMod, string> new_conflicts = null;
 
             bool too_many_provides_thrown = false;
-            var user_change_set = mainModList.ComputeUserChangeSet(registry);
+            var user_change_set = mainModList.ComputeUserChangeSet(registry, inst.VersionCriteria());
             try
             {
                 var module_installer = new ModuleInstaller(inst, Main.Instance.Manager.Cache, Main.Instance.currentUser);
-                full_change_set = mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, inst.VersionCriteria());
+                full_change_set = mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, inst.VersionCriteria()).ToList();
             }
             catch (InconsistentKraken k)
             {
                 // Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
                 Main.Instance.AddStatusMessage(k.ShortDescription);
-                user_change_set = mainModList.ComputeUserChangeSet(registry);
+                user_change_set = mainModList.ComputeUserChangeSet(registry, inst.VersionCriteria());
                 new_conflicts = ModList.ComputeConflictsFromModList(registry, user_change_set, inst.VersionCriteria());
                 full_change_set = null;
             }

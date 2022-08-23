@@ -76,7 +76,7 @@ namespace CKAN.GUI
         /// Luckily the data object's properties are always correct,
         /// so all we have to do is force a refresh
         /// </summary>
-        private async void DownloadsGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private void DownloadsGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             var binding  = (BindingList<DownloadRow>) DownloadsGrid.DataSource;
             var download = rows[e.RowIndex].Module.download;

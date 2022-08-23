@@ -11,7 +11,7 @@ namespace CKAN.GUI
 
         private void ManageMods_LabelsAfterUpdate(IEnumerable<GUIMod> mods)
         {
-            Util.Invoke(Main.Instance, () =>
+            Util.Invoke(this, () =>
             {
                 mods = mods.Memoize();
                 var notifLabs = ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)

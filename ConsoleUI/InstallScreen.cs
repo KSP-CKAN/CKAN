@@ -63,7 +63,7 @@ namespace CKAN.ConsoleUI {
                         ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
                         inst.onReportModInstalled = OnModInstalled;
                         if (plan.Remove.Count > 0) {
-                            inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, plan.Install);
+                            inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, new List<CkanModule>(plan.Install));
                             plan.Remove.Clear();
                         }
                         NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache);
