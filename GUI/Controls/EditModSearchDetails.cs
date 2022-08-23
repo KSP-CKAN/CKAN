@@ -24,10 +24,9 @@ namespace CKAN.GUI
 
         /// <summary>
         /// Event fired when a search needs to be executed.
-        /// The parameter is true if the search should be executed immediately,
-        /// or false if the keystroke timer should be used.
+        /// Upstream source event is passed along.
         /// </summary>
-        public event Action<bool> ApplySearch;
+        public event EventHandler ApplySearch;
 
         /// <summary>
         /// Event fired when user wants to switch focus away from this control.
@@ -64,20 +63,14 @@ namespace CKAN.GUI
 
         protected override void OnLeave(EventArgs e)
         {
-            if (SurrenderFocus != null)
-            {
-                SurrenderFocus();
-            }
+            SurrenderFocus?.Invoke();
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(EditModSearchDetails));
 
         private void FilterTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (ApplySearch != null)
-            {
-                ApplySearch(string.IsNullOrEmpty((sender as TextBox)?.Text));
-            }
+            ApplySearch?.Invoke(sender, e);
         }
 
         private void FilterTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -85,41 +78,25 @@ namespace CKAN.GUI
             // Switch focus from filters to mod list on enter, down, or pgdn
             switch (e.KeyCode)
             {
-                case Keys.Enter:
-                    if (ApplySearch != null)
-                    {
-                        ApplySearch(true);
-                        e.Handled = true;
-                        e.SuppressKeyPress = true;
-                    }
-                    break;
-
                 case Keys.Escape:
                     if (SurrenderFocus != null
                         && string.IsNullOrEmpty((sender as HintTextBox)?.Text ?? null))
                     {
-                        SurrenderFocus();
+                        SurrenderFocus?.Invoke();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                     }
                     break;
 
-                case Keys.Up:
-                case Keys.Down:
-                case Keys.PageUp:
-                case Keys.PageDown:
-                    if (SurrenderFocus != null)
-                    {
-                        SurrenderFocus();
-                        e.Handled = true;
-                    }
+                default:
+                    ApplySearch?.Invoke(sender, e);
                     break;
             }
         }
 
         private void TriStateChanged(bool? val)
         {
-            ApplySearch?.Invoke(true);
+            ApplySearch?.Invoke(null, null);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -127,7 +104,7 @@ namespace CKAN.GUI
             switch (keyData)
             {
                 case Keys.Control | Keys.Shift | Keys.F:
-                    SurrenderFocus();
+                    SurrenderFocus?.Invoke();
                     return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);

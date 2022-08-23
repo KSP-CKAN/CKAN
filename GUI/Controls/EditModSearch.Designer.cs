@@ -80,8 +80,6 @@
             this.FilterCombinedTextBox.Size = new System.Drawing.Size(247, 26);
             this.FilterCombinedTextBox.TabIndex = 17;
             this.FilterCombinedTextBox.Enter += new System.EventHandler(this.FilterTextBox_Enter);
-            this.FilterCombinedTextBox.TextChanged += new System.EventHandler(this.FilterCombinedTextBox_TextChanged);
-            this.FilterCombinedTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterCombinedTextBox, "FilterCombinedTextBox");
             //
             // ExpandButton
