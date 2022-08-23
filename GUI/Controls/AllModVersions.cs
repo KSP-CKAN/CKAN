@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 using CKAN.Versioning;
 
@@ -122,96 +123,134 @@ namespace CKAN.GUI
                         visibleGuiModule.PropertyChanged += visibleGuiModule_PropertyChanged;
                     }
                 }
-                VersionsListView.Items.Clear();
                 if (value == null)
                 {
                     return;
                 }
+                Refresh(value);
+            }
+        }
 
-                // Get all the data; can put this in bg if slow
-                GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
-                IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
-                var installer = new ModuleInstaller(
-                    currentInstance,
-                    Main.Instance.Manager.Cache,
-                    Main.Instance.currentUser);
-                Dictionary<CkanModule, bool> allAvailableVersions = null;
-                try
+        private List<CkanModule> getVersions(GUIMod gmod)
+        {
+            GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
+            IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
+
+            // Can't be functional because AvailableByIdentifier throws exceptions
+            var versions = new List<CkanModule>();
+            try
+            {
+                versions = registry.AvailableByIdentifier(gmod.Identifier).ToList();
+            }
+            catch (ModuleNotFoundKraken)
+            {
+                // Identifier unknown to registry, maybe installed from local .ckan
+            }
+
+            // Take the module associated with GUIMod, if any, and append it to the list if it's not already there.
+            var installedModule = gmod.InstalledMod?.Module;
+            if (installedModule != null && !versions.Contains(installedModule))
+            {
+                versions.Add(installedModule);
+            }
+
+            return versions;
+        }
+
+        private ListViewItem[] getItems(GUIMod gmod, List<CkanModule> versions)
+        {
+            GameInstance     currentInstance  = Main.Instance.Manager.CurrentInstance;
+            IRegistryQuerier registry         = RegistryManager.Instance(currentInstance).registry;
+            ModuleVersion    installedVersion = registry.InstalledVersion(gmod.Identifier);
+
+            var items = versions.OrderByDescending(module => module.version)
+                .Select(module =>
+            {
+                Registry.GetMinMaxVersions(
+                    new List<CkanModule>() {module},
+                    out ModuleVersion minMod, out ModuleVersion maxMod,
+                    out GameVersion minKsp,   out GameVersion maxKsp);
+                ListViewItem toRet = new ListViewItem(new string[]
                 {
-                    allAvailableVersions = registry.AvailableByIdentifier(value.Identifier)
-                        .ToDictionary(m => m,
-                            m => installable(installer, m, registry));
-                }
-                catch (ModuleNotFoundKraken)
+                    module.version.ToString(),
+                    GameVersionRange.VersionSpan(currentInstance.game, minKsp, maxKsp),
+                    module.release_date?.ToString("g") ?? ""
+                })
                 {
-                    // Identifier unknown to registry, maybe installed from local .ckan
-                    allAvailableVersions = new Dictionary<CkanModule, bool>();
-                }
-
-                // Take the module associated with GUIMod, if any, and append it to the list if it's not already there.
-                var installedModule = value.InstalledMod?.Module;
-                if (installedModule != null && !allAvailableVersions.ContainsKey(installedModule))
+                    Tag = module
+                };
+                if (installedVersion != null && installedVersion.IsEqualTo(module.version))
                 {
-                    allAvailableVersions.Add(installedModule, installable(installer, installedModule, registry));
+                    toRet.Font = new Font(toRet.Font, FontStyle.Bold);
                 }
-
-                if (!allAvailableVersions.Any())
+                if (module.Equals(gmod.SelectedMod))
                 {
-                    return;
+                    toRet.Checked = true;
                 }
+                return toRet;
+            }).ToArray();
 
-                ModuleVersion installedVersion = registry.InstalledVersion(value.Identifier);
+            return items;
+        }
 
-                // Update UI; must be in fg
-                ignoreItemCheck = true;
-                bool latestCompatibleVersionAlreadyFound = false;
+        private void checkInstallable(ListViewItem[] items)
+        {
+            GameInstance     currentInstance = Main.Instance.Manager.CurrentInstance;
+            IRegistryQuerier registry        = RegistryManager.Instance(currentInstance).registry;
+            bool latestCompatibleVersionAlreadyFound = false;
+            var installer = new ModuleInstaller(
+                currentInstance,
+                Main.Instance.Manager.Cache,
+                Main.Instance.currentUser);
+            foreach (ListViewItem item in items)
+            {
+                if (item.ListView == null)
+                {
+                    // User switched to another mod, quit
+                    break;
+                }
+                if (installable(installer, item.Tag as CkanModule, registry))
+                {
+                    if (!latestCompatibleVersionAlreadyFound)
+                    {
+                        latestCompatibleVersionAlreadyFound = true;
+                        Util.Invoke(this, () =>
+                        {
+                            item.BackColor = Color.Green;
+                            item.ForeColor = Color.White;
+                        });
+                    }
+                    else
+                    {
+                        Util.Invoke(this, () =>
+                        {
+                            item.BackColor = Color.LightGreen;
+                        });
+                    }
+                }
+            }
+            Util.Invoke(this, () =>
+            {
+                UseWaitCursor = false;
+            });
+        }
 
+        private void Refresh(GUIMod gmod)
+        {
+            Util.Invoke(this, () => VersionsListView.Items.Clear());
+            var startingModule = gmod;
+            var items          = getItems(gmod, getVersions(gmod));
+            // Make sure user hasn't switched to another mod while we were loading
+            if (startingModule.Equals(visibleGuiModule))
+            {
                 // Only show checkboxes for non-DLC modules
-                VersionsListView.CheckBoxes = !value.ToModule().IsDLC;
-
-                VersionsListView.Items.AddRange(allAvailableVersions
-                    .OrderByDescending(kvp => kvp.Key.version)
-                    .Select(kvp =>
-                {
-                    CkanModule module = kvp.Key;
-                    ModuleVersion minMod = null, maxMod = null;
-                    GameVersion   minKsp = null, maxKsp = null;
-                    Registry.GetMinMaxVersions(new List<CkanModule>() {module}, out minMod, out maxMod, out minKsp, out maxKsp);
-                    ListViewItem toRet = new ListViewItem(new string[]
-                        {
-                            module.version.ToString(),
-                            GameVersionRange.VersionSpan(currentInstance.game, minKsp, maxKsp),
-                            module.release_date?.ToString("g") ?? ""
-                        })
-                    {
-                        Tag  = module
-                    };
-
-                    if (kvp.Value)
-                    {
-                        if (!latestCompatibleVersionAlreadyFound)
-                        {
-                            latestCompatibleVersionAlreadyFound = true;
-                            toRet.BackColor = Color.Green;
-                            toRet.ForeColor = Color.White;
-                        }
-                        else
-                        {
-                            toRet.BackColor = Color.LightGreen;
-                        }
-                    }
-
-                    if (installedVersion != null && installedVersion.IsEqualTo(module.version))
-                    {
-                        toRet.Font = new Font(toRet.Font, FontStyle.Bold);
-                    }
-                    if (module.Equals(value.SelectedMod))
-                    {
-                        toRet.Checked = true;
-                    }
-                    return toRet;
-                }).ToArray());
+                VersionsListView.CheckBoxes = !gmod.ToModule().IsDLC;
+                ignoreItemCheck = true;
+                VersionsListView.Items.AddRange(items);
                 ignoreItemCheck = false;
+                // Check installability in the background because it's slow
+                UseWaitCursor = true;
+                Task.Factory.StartNew(() => checkInstallable(items));
             }
         }
     }

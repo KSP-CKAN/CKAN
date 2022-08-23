@@ -1,4 +1,4 @@
-﻿namespace CKAN.GUI
+namespace CKAN.GUI
 {
     partial class ModInfo
     {
@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ModInfo));
+            this.ToolTip = new System.Windows.Forms.ToolTip();
             this.ModInfoTabControl = new ThemedTabControl();
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -65,6 +66,7 @@
             this.LegendSuggestsLabel = new System.Windows.Forms.Label();
             this.LegendSupportsLabel = new System.Windows.Forms.Label();
             this.LegendConflictsLabel = new System.Windows.Forms.Label();
+            this.ReverseRelationshipsCheckbox = new System.Windows.Forms.CheckBox();
             this.ContentTabPage = new System.Windows.Forms.TabPage();
             this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
             this.ContentsDownloadButton = new System.Windows.Forms.Button();
@@ -86,6 +88,13 @@
             this.AllModVersionsTabPage.SuspendLayout();
             this.SuspendLayout();
             //
+            // ToolTip
+            //
+            this.ToolTip.AutoPopDelay = 10000;
+            this.ToolTip.InitialDelay = 250;
+            this.ToolTip.ReshowDelay = 250;
+            this.ToolTip.ShowAlways = true;
+            //
             // ModInfoTabControl
             //
             this.ModInfoTabControl.Appearance = System.Windows.Forms.TabAppearance.Normal;
@@ -100,7 +109,7 @@
             this.ModInfoTabControl.Name = "ModInfoTabControl";
             this.ModInfoTabControl.Size = new System.Drawing.Size(362, 531);
             this.ModInfoTabControl.TabIndex = 1;
-            this.ModInfoTabControl.SelectedIndexChanged += new System.EventHandler(this.ModInfoIndexChanged);
+            this.ModInfoTabControl.SelectedIndexChanged += new System.EventHandler(this.ModInfoTabControl_SelectedIndexChanged);
             //
             // MetadataTabPage
             //
@@ -431,6 +440,7 @@
             this.RelationshipTabPage.Controls.Add(this.LegendSuggestsLabel);
             this.RelationshipTabPage.Controls.Add(this.LegendSupportsLabel);
             this.RelationshipTabPage.Controls.Add(this.LegendConflictsLabel);
+            this.RelationshipTabPage.Controls.Add(this.ReverseRelationshipsCheckbox);
             this.RelationshipTabPage.Location = new System.Drawing.Point(4, 25);
             this.RelationshipTabPage.Name = "RelationshipTabPage";
             this.RelationshipTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -446,7 +456,7 @@
             this.DependsGraphTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.DependsGraphTree.Location = new System.Drawing.Point(3, 96);
             this.DependsGraphTree.Name = "DependsGraphTree";
-            this.DependsGraphTree.Size = new System.Drawing.Size(345, 400);
+            this.DependsGraphTree.Size = new System.Drawing.Size(345, 380);
             this.DependsGraphTree.TabIndex = 0;
             this.DependsGraphTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.DependsGraphTree_NodeMouseDoubleClick);
             this.DependsGraphTree.ShowNodeToolTips = true;
@@ -532,6 +542,22 @@
             this.LegendConflictsLabel.Location = new System.Drawing.Point(24, 75);
             resources.ApplyResources(this.LegendConflictsLabel, "LegendConflictsLabel");
             //
+            // ReverseRelationshipsCheckbox
+            //
+            this.ReverseRelationshipsCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ReverseRelationshipsCheckbox.AutoSize = true;
+            this.ReverseRelationshipsCheckbox.AutoCheck = false;
+            this.ReverseRelationshipsCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ReverseRelationshipsCheckbox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ReverseRelationshipsCheckbox.Name = "ReverseRelationshipsCheckbox";
+            this.ReverseRelationshipsCheckbox.Location = new System.Drawing.Point(4, 474);
+            this.ReverseRelationshipsCheckbox.Size = new System.Drawing.Size(346, 24);
+            this.ReverseRelationshipsCheckbox.Click += new System.EventHandler(this.ReverseRelationshipsCheckbox_Click);
+            this.ReverseRelationshipsCheckbox.CheckedChanged += new System.EventHandler(this.ReverseRelationshipsCheckbox_CheckedChanged);
+            resources.ApplyResources(this.ReverseRelationshipsCheckbox, "ReverseRelationshipsCheckbox");
+            //
             // ContentTabPage
             //
             this.ContentTabPage.BackColor = System.Drawing.SystemColors.Control;
@@ -552,10 +578,16 @@
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ContentsPreviewTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ContentsPreviewTree.ShowPlusMinus = false;
+            this.ContentsPreviewTree.ImageList = new System.Windows.Forms.ImageList()
+            {
+                // ImageList's default makes icons look like garbage
+                ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
+            };
+            this.ContentsPreviewTree.ImageList.Images.Add("folderZip", global::CKAN.GUI.Properties.Resources.folderZip);
+            this.ContentsPreviewTree.ImageList.Images.Add("folder", global::CKAN.GUI.Properties.Resources.folder);
+            this.ContentsPreviewTree.ImageList.Images.Add("file", global::CKAN.GUI.Properties.Resources.file);
+            this.ContentsPreviewTree.ShowPlusMinus = true;
             this.ContentsPreviewTree.ShowRootLines = false;
-            this.ContentsPreviewTree.Indent = 12;
-            this.ContentsPreviewTree.Enabled = false;
             this.ContentsPreviewTree.Location = new System.Drawing.Point(6, 65);
             this.ContentsPreviewTree.Name = "ContentsPreviewTree";
             this.ContentsPreviewTree.Size = new System.Drawing.Size(342, 434);
@@ -642,6 +674,7 @@
 
         #endregion
 
+        private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.TabControl ModInfoTabControl;
         private System.Windows.Forms.TabPage MetadataTabPage;
         private System.Windows.Forms.SplitContainer splitContainer2;
@@ -677,6 +710,7 @@
         private System.Windows.Forms.Label LegendSuggestsLabel;
         private System.Windows.Forms.Label LegendSupportsLabel;
         private System.Windows.Forms.Label LegendConflictsLabel;
+        private System.Windows.Forms.CheckBox ReverseRelationshipsCheckbox;
         private System.Windows.Forms.TabPage ContentTabPage;
         private System.Windows.Forms.TreeView ContentsPreviewTree;
         private System.Windows.Forms.Button ContentsDownloadButton;

@@ -117,9 +117,39 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap file {
+            get {
+                object obj = ResourceManager.GetObject("file", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap filter {
             get {
                 object obj = ResourceManager.GetObject("filter", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap folder {
+            get {
+                object obj = ResourceManager.GetObject("folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap folderZip {
+            get {
+                object obj = ResourceManager.GetObject("folderZip", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -607,6 +637,9 @@ namespace CKAN.GUI.Properties {
         }
         internal static string ModInfoSteamStoreLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoSteamStoreLabel", resourceCulture)); }
+        }
+        internal static string ModInfoToolTipReverseRelationships {
+            get { return (string)(ResourceManager.GetObject("ModInfoToolTipReverseRelationships", resourceCulture)); }
         }
         internal static string DownloadFailed {
             get { return (string)(ResourceManager.GetObject("DownloadFailed", resourceCulture)); }

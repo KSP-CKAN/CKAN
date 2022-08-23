@@ -5,6 +5,8 @@ using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading.Tasks;
+
 using CKAN.Versioning;
 
 namespace CKAN.GUI
@@ -29,6 +31,8 @@ namespace CKAN.GUI
             InitializeComponent();
             staticRowCount = MetaDataLowerLayoutPanel.RowCount;
 
+            ToolTip.SetToolTip(ReverseRelationshipsCheckbox, Properties.Resources.ModInfoToolTipReverseRelationships);
+
             DependsGraphTree.BeforeExpand += BeforeExpand;
         }
 
@@ -46,10 +50,12 @@ namespace CKAN.GUI
                     else
                     {
                         ModInfoTabControl.Enabled = true;
-                        UpdateModInfo(value);
-                        UpdateModDependencyGraph(module);
-                        UpdateModContentsTree(module);
-                        AllModVersions.SelectedModule = value;
+                        if (ReverseRelationshipsCheckbox.CheckState == CheckState.Checked)
+                        {
+                            ReverseRelationshipsCheckbox.CheckState = CheckState.Unchecked;
+                        }
+                        UpdateHeaderInfo(module);
+                        LoadTab(ModInfoTabControl.SelectedTab.Name, value);
                     }
                     selectedModule = value;
                 }
@@ -58,6 +64,39 @@ namespace CKAN.GUI
             {
                 return selectedModule;
             }
+        }
+
+        private void LoadTab(string name, GUIMod gm)
+        {
+            switch (ModInfoTabControl.SelectedTab.Name)
+            {
+                case "MetadataTabPage":
+                    UpdateModInfo(gm);
+                    break;
+
+                case "ContentTabPage":
+                    UpdateModContentsTree(gm.ToModule());
+                    break;
+
+                case "RelationshipTabPage":
+                    UpdateModDependencyGraph(gm.ToModule());
+                    break;
+
+                case "AllModVersionsTabPage":
+                    AllModVersions.SelectedModule = gm;
+                    if (Platform.IsMono)
+                    {
+                        // Workaround: make sure the ListView headers are drawn
+                        AllModVersions.ForceRedraw();
+                    }
+                    break;
+            }
+        }
+
+        // When switching tabs ensure that the resulting tab is updated.
+        private void ModInfoTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadTab(ModInfoTabControl.SelectedTab.Name, selectedModule);
         }
 
         public int ModMetaSplitPosition
@@ -129,15 +168,13 @@ namespace CKAN.GUI
             }
         }
 
-        private void UpdateModInfo(GUIMod gui_module)
+        private void UpdateHeaderInfo(CkanModule module)
         {
-            CkanModule module = gui_module.ToModule();
-
-            Util.Invoke(MetadataModuleNameTextBox, () => MetadataModuleNameTextBox.Text = module.name);
-            UpdateTagsAndLabels(module);
-            Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract.Replace("&", "&&"));
-            Util.Invoke(MetadataModuleDescriptionTextBox, () =>
+            Util.Invoke(this, () =>
             {
+                MetadataModuleNameTextBox.Text = module.name;
+                UpdateTagsAndLabels(module);
+                MetadataModuleAbstractLabel.Text = module.@abstract.Replace("&", "&&");
                 MetadataModuleDescriptionTextBox.Text = module.description
                     ?.Replace("\r\n", "\n").Replace("\n", Environment.NewLine);
                 MetadataModuleDescriptionTextBox.ScrollBars =
@@ -145,6 +182,11 @@ namespace CKAN.GUI
                         ? ScrollBars.None
                         : ScrollBars.Vertical;
             });
+        }
+
+        private void UpdateModInfo(GUIMod gui_module)
+        {
+            CkanModule module = gui_module.ToModule();
 
             Util.Invoke(MetadataModuleVersionTextBox, () => MetadataModuleVersionTextBox.Text = gui_module.LatestVersion.ToString());
             Util.Invoke(MetadataModuleLicenseTextBox, () => MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license));
@@ -355,31 +397,6 @@ namespace CKAN.GUI
             OnChangeFilter?.Invoke(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, link.Tag as ModuleLabel));
         }
 
-        private void BeforeExpand(object sender, TreeViewCancelEventArgs args)
-        {
-            // Hourglass cursor
-            Cursor prevCur = Cursor.Current;
-            Cursor.Current = Cursors.WaitCursor;
-
-            DependsGraphTree.BeginUpdate();
-
-            TreeNode node = args.Node;
-            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
-            // Should already have children, since the user is expanding it
-            foreach (TreeNode child in node.Nodes)
-            {
-                // If there are grandchildren, then this child has been loaded before
-                if (child.Nodes.Count == 0)
-                {
-                    AddChildren(registry, child);
-                }
-            }
-
-            DependsGraphTree.EndUpdate();
-
-            Cursor.Current = prevCur;
-        }
-
         private bool ImMyOwnGrandpa(TreeNode node)
         {
             CkanModule module = node.Tag as CkanModule;
@@ -394,6 +411,23 @@ namespace CKAN.GUI
                 }
             }
             return false;
+        }
+
+        private void ReverseRelationshipsCheckbox_Click(object sender, EventArgs e)
+        {
+            ReverseRelationshipsCheckbox.CheckState =
+                ReverseRelationshipsCheckbox.CheckState == CheckState.Unchecked
+                    // If user holds ctrl or shift, go to "sticky" indeterminate state,
+                    // else normal checked
+? (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0
+                        ? CheckState.Indeterminate
+                        : CheckState.Checked
+                    : CheckState.Unchecked;
+        }
+
+        private void ReverseRelationshipsCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateModDependencyGraph(null);
         }
 
         private void UpdateModDependencyGraph(CkanModule module)
@@ -421,8 +455,69 @@ namespace CKAN.GUI
             };
             DependsGraphTree.Nodes.Add(root);
             AddChildren(registry, root);
-            root.Expand();
             DependsGraphTree.EndUpdate();
+            root.Expand();
+        }
+
+        private void BeforeExpand(object sender, TreeViewCancelEventArgs args)
+        {
+            IRegistryQuerier registry      = RegistryManager.Instance(manager.CurrentInstance).registry;
+            TreeNode         node          = args.Node;
+            const int        modsPerUpdate = 10;
+
+            // Load in groups to reduce flickering
+            UseWaitCursor = true;
+            int lastStart = Math.Max(0, node.Nodes.Count - modsPerUpdate);
+            for (int start = 0; start <= lastStart; start += modsPerUpdate)
+            {
+                // Copy start's value to a variable that won't change as we loop
+                int threadStart = start;
+                int nodesLeft   = node.Nodes.Count - start;
+                Task.Factory.StartNew(() =>
+                    ExpandOnePage(
+                        registry, node, threadStart,
+                        // If next page is small (last), add it to this one,
+                        // so the final page will be slower rather than faster
+                        nodesLeft >= 2 * modsPerUpdate ? modsPerUpdate : nodesLeft));
+            }
+        }
+
+        private void ExpandOnePage(IRegistryQuerier registry, TreeNode parent, int start, int length)
+        {
+            // Should already have children, since the user is expanding it
+            var nodesAndChildren = parent.Nodes.Cast<TreeNode>()
+                .Skip(start)
+                .Take(length)
+                // If there are grandchildren, then this child has been loaded before
+                .Where(child => child.Nodes.Count == 0
+                    // If user switched to another mod, stop loading
+                    && child.TreeView != null)
+                .Select(child => new KeyValuePair<TreeNode, TreeNode[]>(
+                    child,
+                    GetChildren(registry, child).ToArray()))
+                .ToArray();
+            // If user switched to another mod, stop loading
+            if (parent.TreeView != null)
+            {
+                // Refresh the UI
+                Util.Invoke(this, () =>
+                {
+                    if (nodesAndChildren.Length > 0)
+                    {
+                        DependsGraphTree.BeginUpdate();
+                        foreach (var kvp in nodesAndChildren)
+                        {
+                            kvp.Key.Nodes.AddRange(kvp.Value);
+                        }
+                        DependsGraphTree.EndUpdate();
+                    }
+                    if (start + length >= parent.Nodes.Count)
+                    {
+                        // Reset the cursor when the final group finishes
+                        UseWaitCursor = false;
+                    }
+                });
+            }
         }
 
         private static readonly RelationshipType[] kindsOfRelationships = new RelationshipType[]
@@ -436,69 +531,82 @@ namespace CKAN.GUI
 
         private void AddChildren(IRegistryQuerier registry, TreeNode node)
         {
-            // Skip children of nodes from circular dependencies
-            if (ImMyOwnGrandpa(node))
-                return;
-
-            // Load one layer of grandchildren on demand
-            CkanModule module = node.Tag as CkanModule;
-            // Tag is null for non-indexed nodes
-            if (module != null)
-            {
-                foreach (RelationshipType relationship in kindsOfRelationships)
-                {
-                    IEnumerable<RelationshipDescriptor> relationships = null;
-                    switch (relationship)
-                    {
-                        case RelationshipType.Depends:
-                            relationships = module.depends;
-                            break;
-                        case RelationshipType.Recommends:
-                            relationships = module.recommends;
-                            break;
-                        case RelationshipType.Suggests:
-                            relationships = module.suggests;
-                            break;
-                        case RelationshipType.Supports:
-                            relationships = module.supports;
-                            break;
-                        case RelationshipType.Conflicts:
-                            relationships = module.conflicts;
-                            break;
-                    }
-                    if (relationships != null)
-                    {
-                        foreach (RelationshipDescriptor dependency in relationships)
-                        {
-                            // Look for compatible mods
-                            TreeNode child = findDependencyShallow(
-                                    registry, dependency, relationship,
-                                    manager.CurrentInstance.VersionCriteria())
-                                // Then incompatible mods
-                                ?? findDependencyShallow(
-                                    registry, dependency, relationship, null)
-                                // Then give up and note the name without a module
-                                ?? nonindexedNode(dependency, relationship);
-                            node.Nodes.Add(child);
-                        }
-                    }
-                }
-            }
+            var nodes = GetChildren(registry, node).ToArray();
+            Util.Invoke(this, () => node.Nodes.AddRange(nodes));
         }
+
+        // Load one layer of grandchildren on demand
+        private IEnumerable<TreeNode> GetChildren(IRegistryQuerier registry, TreeNode node)
+        {
+            var module = node.Tag as CkanModule;
+            var crit   = manager.CurrentInstance.VersionCriteria();
+            // Skip children of nodes from circular dependencies
+            // Tag is null for non-indexed nodes
+            return ImMyOwnGrandpa(node) || module == null
+                ? Enumerable.Empty<TreeNode>()
+                : ReverseRelationshipsCheckbox.CheckState == CheckState.Unchecked
+                    ? ForwardRelationships(registry, node, module, crit)
+                    : ReverseRelationships(registry, node, module, crit);
+        }
+
+        private IEnumerable<RelationshipDescriptor> GetModRelationships(CkanModule module, RelationshipType which)
+        {
+            switch (which)
+            {
+                case RelationshipType.Depends:
+                    return module.depends
+                        ?? Enumerable.Empty<RelationshipDescriptor>();
+                    break;
+                case RelationshipType.Recommends:
+                    return module.recommends
+                        ?? Enumerable.Empty<RelationshipDescriptor>();
+                    break;
+                case RelationshipType.Suggests:
+                    return module.suggests
+                        ?? Enumerable.Empty<RelationshipDescriptor>();
+                    break;
+                case RelationshipType.Supports:
+                    return module.supports
+                        ?? Enumerable.Empty<RelationshipDescriptor>();
+                    break;
+                case RelationshipType.Conflicts:
+                    return module.conflicts
+                        ?? Enumerable.Empty<RelationshipDescriptor>();
+                    break;
+            }
+            return Enumerable.Empty<RelationshipDescriptor>();
+        }
+
+        private IEnumerable<TreeNode> ForwardRelationships(IRegistryQuerier registry, TreeNode node, CkanModule module, GameVersionCriteria crit)
+            => kindsOfRelationships.SelectMany(relationship =>
+                GetModRelationships(module, relationship).Select(dependency =>
+                    // Look for compatible mods
+                    findDependencyShallow(registry, dependency, relationship, crit)
+                    // Then incompatible mods
+                    ?? findDependencyShallow(registry, dependency, relationship, null)
+                    // Then give up and note the name without a module
+                    ?? nonindexedNode(dependency, relationship)));
 
         private TreeNode findDependencyShallow(IRegistryQuerier registry, RelationshipDescriptor relDescr, RelationshipType relationship, GameVersionCriteria crit)
         {
-            // Maybe it's a DLC?
+            // Check if this dependency is installed
             if (relDescr.MatchesAny(
                 registry.InstalledModules.Select(im => im.Module),
                 new HashSet<string>(registry.InstalledDlls),
-                registry.InstalledDlc))
+                // Maybe it's a DLC?
+                registry.InstalledDlc,
+                out CkanModule matched))
             {
-                return nonModuleNode(relDescr, null, relationship);
+                return matched != null
+                    ? indexedNode(registry, matched, relationship, true)
+                    : nonModuleNode(relDescr, null, relationship);
             }
 
             // Find modules that satisfy this dependency
-            List<CkanModule> dependencyModules = relDescr.LatestAvailableWithProvides(registry, crit);
+            List<CkanModule> dependencyModules = relDescr.LatestAvailableWithProvides(
+                registry, crit,
+                // Ignore conflicts with installed mods
+                Enumerable.Empty<CkanModule>());
             if (dependencyModules.Count == 0)
             {
                 // Nothing found, don't return a node
@@ -517,6 +625,22 @@ namespace CKAN.GUI
                     dependencyModules.Select(dep => indexedNode(registry, dep, relationship, crit != null))
                 );
             }
+        }
+
+        private IEnumerable<TreeNode> ReverseRelationships(IRegistryQuerier registry, TreeNode node, CkanModule module, GameVersionCriteria crit)
+        {
+            var compat   = registry.CompatibleModules(crit).ToArray();
+            var incompat = registry.IncompatibleModules(crit).ToArray();
+            var toFind   = new CkanModule[] { module };
+            return kindsOfRelationships.SelectMany(relationship =>
+                compat.SelectMany(otherMod =>
+                    GetModRelationships(otherMod, relationship)
+                        .Where(r => r.MatchesAny(toFind, null, null))
+                        .Select(r => indexedNode(registry, otherMod, relationship, true)))
+                .Concat(incompat.SelectMany(otherMod =>
+                    GetModRelationships(otherMod, relationship)
+                        .Where(r => r.MatchesAny(toFind, null, null))
+                        .Select(r => indexedNode(registry, otherMod, relationship, false)))));
         }
 
         private TreeNode providesNode(string identifier, RelationshipType relationship, IEnumerable<TreeNode> children)
@@ -566,31 +690,6 @@ namespace CKAN.GUI
             };
         }
 
-        // When switching tabs ensure that the resulting tab is updated.
-        private void ModInfoIndexChanged(object sender, EventArgs e)
-        {
-            switch (ModInfoTabControl.SelectedTab.Name)
-            {
-
-                case "ContentTabPage":
-                    UpdateModContentsTree(null);
-                    break;
-
-                case "RelationshipTabPage":
-                    UpdateModDependencyGraph(null);
-                    break;
-
-                case "AllModVersionsTabPage":
-                    if (Platform.IsMono)
-                    {
-                        // Workaround: make sure the ListView headers are drawn
-                        AllModVersions.ForceRedraw();
-                    }
-                    break;
-
-            }
-        }
-
         public void UpdateModContentsTree(CkanModule module, bool force = false)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
@@ -627,7 +726,7 @@ namespace CKAN.GUI
             {
                 ContentsPreviewTree.Enabled = true;
                 ContentsPreviewTree.Nodes.Clear();
-                ContentsPreviewTree.Nodes.Add(module.name);
+                var rootNode = ContentsPreviewTree.Nodes.Add("", module.ToString(), "folderZip", "folderZip");
                 if (!Main.Instance.Manager.Cache.IsMaybeCachedZip(module))
                 {
                     NotCachedLabel.Text = Properties.Resources.ModInfoNotCached;
@@ -637,41 +736,73 @@ namespace CKAN.GUI
                 }
                 else
                 {
+                    rootNode.Text = Path.GetFileName(
+                        Main.Instance.Manager.Cache.GetCachedFilename(module));
                     NotCachedLabel.Text = Properties.Resources.ModInfoCached;
                     ContentsDownloadButton.Enabled = false;
                     ContentsOpenButton.Enabled = true;
                     ContentsPreviewTree.Enabled = true;
 
-                    // Get all the data; can put this in bg if slow
-                    var contents = new ModuleInstaller(
-                            manager.CurrentInstance,
-                            Main.Instance.Manager.Cache,
-                            Main.Instance.currentUser)
-                        .GetModuleContentsList(module)?.ToList();
-
-                    // Update UI; must be in fg
-                    if (contents != null)
+                    UseWaitCursor = true;
+                    Task.Factory.StartNew(() =>
                     {
-                        foreach (string item in contents)
+                        var paths = new ModuleInstaller(
+                                manager.CurrentInstance,
+                                Main.Instance.Manager.Cache,
+                                Main.Instance.currentUser)
+                            .GetModuleContentsList(module)
+                            // Load fully in bg
+                            .ToArray();
+                        // Stop if user switched to another mod
+                        if (rootNode.TreeView != null)
                         {
-                            ContentsPreviewTree.Nodes[0].Nodes.Add(
-                                item.Replace('/', Path.DirectorySeparatorChar));
+                            Util.Invoke(this, () =>
+                            {
+                                ContentsPreviewTree.BeginUpdate();
+                                foreach (string path in paths)
+                                {
+                                    AddContentPieces(
+                                        rootNode,
+                                        path.Split(new char[] {'/'}));
+                                }
+                                rootNode.ExpandAll();
+                                rootNode.EnsureVisible();
+                                ContentsPreviewTree.EndUpdate();
+                                UseWaitCursor = false;
+                            });
                         }
-                        ContentsPreviewTree.Nodes[0].ExpandAll();
-                    }
+                    });
                 }
             }
         }
 
+        private void AddContentPieces(TreeNode parent, IEnumerable<string> pieces)
+        {
+            var firstPiece = pieces.FirstOrDefault();
+            if (firstPiece != null)
+            {
+                if (parent.ImageKey == "file")
+                {
+                    parent.SelectedImageKey = parent.ImageKey = "folder";
+                }
+                // Key/Name needs to be the full relative path for double click to work
+                var key = string.IsNullOrEmpty(parent.Name)
+                    ? firstPiece
+                    : $"{parent.Name}/{firstPiece}";
+                var node = parent.Nodes[key]
+                        ?? parent.Nodes.Add(key, firstPiece, "file", "file");
+                AddContentPieces(node, pieces.Skip(1));
+            }
+        }
+
         /// <summary>
-        /// Opens the file browser of the users system
-        /// with the folder of the clicked node opened
-        /// TODO: Open a file browser with the file selected
+        /// Opens the folder of the double-clicked node
+        /// in the file browser of the user's system
         /// </summary>
         /// <param name="node">A node of the ContentsPreviewTree</param>
         internal void OpenFileBrowser(TreeNode node)
         {
-            string location = manager.CurrentInstance.ToAbsoluteGameDir(node.Text);
+            string location = manager.CurrentInstance.ToAbsoluteGameDir(node.Name);
 
             if (File.Exists(location))
             {
