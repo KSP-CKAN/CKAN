@@ -819,6 +819,7 @@ namespace CKAN.GUI
             Wait.StartWaiting(
                 ManageMods.Update,
                 (sender, e) => {
+                    UpdateTrayInfo();
                     HideWaitDialog();
                     EnableMainWindow();
                     SetupDefaultSearch();
