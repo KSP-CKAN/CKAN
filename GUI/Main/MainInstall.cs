@@ -370,7 +370,7 @@ namespace CKAN.GUI
                             }
                             // Now pretend they clicked the menu option for the settings
                             Enabled = false;
-                            new SettingsDialog(currentUser).ShowDialog();
+                            new SettingsDialog(currentUser).ShowDialog(this);
                             Enabled = true;
                         }
                         break;

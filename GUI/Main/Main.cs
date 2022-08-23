@@ -48,9 +48,6 @@ namespace CKAN.GUI
 
         public GUIUser currentUser;
 
-        private bool enableTrayIcon;
-        private bool minimizeToTray;
-
         public static Main Instance { get; private set; }
 
         public Main(string[] cmdlineArgs, GameInstanceManager mgr, bool showConsole)
@@ -391,6 +388,11 @@ namespace CKAN.GUI
 
             bool autoUpdating = CheckForCKANUpdate();
             CheckTrayState();
+            Console.CancelKeyPress += (sender, evt) =>
+            {
+                // Hide tray icon on Ctrl-C
+                minimizeNotifyIcon.Visible = false;
+            };
             InitRefreshTimer();
 
             URLHandlers.RegisterURLHandler(configuration, currentUser);
@@ -462,7 +464,7 @@ namespace CKAN.GUI
             // Copy metadata panel split height to app settings
             configuration.ModInfoPosition = ModInfo.ModMetaSplitPosition;
 
-            // Save settings.
+            // Save settings
             configuration.Save();
 
             if (needRegistrySave)
@@ -530,7 +532,7 @@ namespace CKAN.GUI
         {
             // Flipping enabled here hides the main form itself.
             Enabled = false;
-            new SettingsDialog(currentUser).ShowDialog();
+            new SettingsDialog(currentUser).ShowDialog(this);
             Enabled = true;
         }
 
