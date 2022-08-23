@@ -40,22 +40,9 @@ namespace CKAN.CmdLine
                 compatible_prior = registry.CompatibleModules(instance.VersionCriteria()).ToList();
             }
 
-            // If no repository is selected, select all.
-            if (options.repo == null)
-            {
-                options.update_all = true;
-            }
-
             try
             {
-                if (options.update_all)
-                {
-                    UpdateRepository(instance);
-                }
-                else
-                {
-                    UpdateRepository(instance, options.repo);
-                }
+                UpdateRepository(instance);
             }
             catch (ReinstallModuleKraken rmk)
             {
@@ -148,13 +135,11 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <param name="instance">The KSP instance to work on.</param>
         /// <param name="repository">Repository to update. If null all repositories are used.</param>
-        private void UpdateRepository(CKAN.GameInstance instance, string repository = null)
+        private void UpdateRepository(CKAN.GameInstance instance)
         {
             RegistryManager registry_manager = RegistryManager.Instance(instance);
 
-            var updated = repository == null
-                ? CKAN.Repo.UpdateAllRepositories(registry_manager, instance, manager.Cache, user) != CKAN.RepoUpdateResult.Failed
-                : CKAN.Repo.Update(registry_manager, instance, user, repository);
+            CKAN.Repo.UpdateAllRepositories(registry_manager, instance, manager.Cache, user);
 
             user.RaiseMessage(Properties.Resources.UpdateSummary, registry_manager.registry.CompatibleModules(instance.VersionCriteria()).Count());
         }

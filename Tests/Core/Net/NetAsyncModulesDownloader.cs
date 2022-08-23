@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
-using CKAN;
+
 using log4net;
 using NUnit.Framework;
+
 using Tests.Data;
+using CKAN;
 
 namespace Tests.Core.Net
 {
@@ -33,7 +35,16 @@ namespace Tests.Core.Net
             registry.ClearDlls();
             registry.Installed().Clear();
             // Make sure we have a registry we can use.
-            CKAN.Repo.Update(registry_manager, ksp.KSP, new NullUser(), TestData.TestKANZip());
+
+            registry.Repositories = new SortedDictionary<string, Repository>()
+            {
+                {
+                    "testRepo",
+                    new Repository("testRepo", TestData.TestKANZip())
+                }
+            };
+
+            CKAN.Repo.UpdateAllRepositories(registry_manager, ksp.KSP, null, new NullUser());
 
             // Ready our downloader.
             async = new CKAN.NetAsyncModulesDownloader(new NullUser(), manager.Cache);

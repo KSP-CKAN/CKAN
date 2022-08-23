@@ -494,13 +494,6 @@ namespace CKAN.CmdLine
 
     internal class UpdateOptions : InstanceSpecificOptions
     {
-        // This option is really meant for devs testing their CKAN-meta forks.
-        [Option('r', "repo", HelpText = "CKAN repository to use (experimental!)")]
-        public string repo { get; set; }
-
-        [Option("all", DefaultValue = false, HelpText = "Upgrade all available updated modules")]
-        public bool update_all { get; set; }
-
         [Option("list-changes", DefaultValue = false, HelpText = "List new and removed modules")]
         public bool list_changes { get; set; }
     }

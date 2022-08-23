@@ -90,7 +90,7 @@ namespace CKAN
                 ShowUserInconsistencies(registry_manager.registry, user);
 
                 List<CkanModule> metadataChanges = GetChangedInstalledModules(registry_manager.registry);
-                if (metadataChanges.Count > 0)
+                if (metadataChanges.Count > 0 && cache != null)
                 {
                     HandleModuleChanges(metadataChanges, user, ksp, cache, registry_manager);
                 }
@@ -284,55 +284,6 @@ namespace CKAN
             }
 
             // If we couldn't find any differences they must be equivalent
-            return true;
-        }
-
-        /// <summary>
-        /// Set a registry's available modules to the list from just one repo
-        /// </summary>
-        /// <param name="registry_manager">Manager of the regisry of interest</param>
-        /// <param name="ksp">Game instance</param>
-        /// <param name="user">Object for user interaction callbacks</param>
-        /// <param name="repo">Repository to check</param>
-        /// <returns>
-        /// Number of modules found in repo
-        /// </returns>
-        public static bool Update(RegistryManager registry_manager, GameInstance ksp, IUser user, string repo = null)
-        {
-            if (repo == null)
-            {
-                return Update(registry_manager, ksp, user, (Uri)null);
-            }
-
-            return Update(registry_manager, ksp, user, new Uri(repo));
-        }
-
-        // Same as above, just with a Uri instead of string for the repo
-        public static bool Update(RegistryManager registry_manager, GameInstance ksp, IUser user, Uri repo = null)
-        {
-            // Use our default repo, unless we've been told otherwise.
-            if (repo == null)
-            {
-                repo = ksp.game.DefaultRepositoryURL;
-            }
-
-            SortedDictionary<string, int> downloadCounts;
-            string newETag;
-            List<CkanModule> newAvail = UpdateRegistry(repo, ksp, user, out downloadCounts, out newETag);
-
-            registry_manager.registry.SetDownloadCounts(downloadCounts);
-
-            if (newAvail != null && newAvail.Count > 0)
-            {
-                registry_manager.registry.SetAllAvailable(newAvail);
-                // Save our changes!
-                registry_manager.Save(enforce_consistency: false);
-            }
-
-            ShowUserInconsistencies(registry_manager.registry, user);
-
-            // Registry.CompatibleModules is slow, just return success,
-            // caller can check it if it's really needed
             return true;
         }
 
