@@ -9,8 +9,34 @@ using log4net;
 
 namespace CKAN.GUI
 {
+    /// <summary>
+    /// A popup form reporting one or more download errors where
+    /// the user can choose whether to retry or skip each one or
+    /// abort the whole changeset, looking kind of like this:
+    ///
+    /// +--------------------------------------------------------+
+    /// |                   Downloads Failed                     |
+    /// +--------------------------------------------------------+
+    /// | The following mods failed to download:                 |
+    /// |                                                        |
+    /// |  +--------+-------+-----------------+---------------+  |
+    /// |  | Retry? | Skip? | Mod             | Error         |  |
+    /// |  +--------+-------+-----------------+---------------+  |
+    /// |  |   X    |       | CoolMod 1.0     | Timed out     |  |
+    /// |  |   X    |       | AwesomeMod 1.0  | 404 Not Found |  |
+    /// |  |        |   X   | MediocreMod 1.0 | 403 Forbidden |  |
+    /// |  +--------+-------+-----------------+---------------+  |
+    /// |                                                        |
+    /// | [Retry without "Skip" mods]                            |
+    /// | [Abort whole changeset]                                |
+    /// +--------------------------------------------------------+
+    /// </summary>
     public partial class DownloadsFailedDialog : Form
     {
+        /// <summary>
+        /// Initialize the form, loads the grid and sets the height to fit
+        /// </summary>
+        /// <param name="Exceptions">Sequence of arrays of modules that failed and the exceptions they threw</param>
         public DownloadsFailedDialog(IEnumerable<KeyValuePair<CkanModule[], Exception>> Exceptions)
         {
             InitializeComponent();
@@ -26,10 +52,19 @@ namespace CKAN.GUI
                 + BottomButtonPanel.Height);
         }
 
+        /// <summary>
+        /// True if user clicked the abort button, false otherwise
+        /// </summary>
         public bool         Abort { get; private set; } = false;
+        /// <summary>
+        /// Array of modules with a checkmark in the Retry column
+        /// </summary>
         public CkanModule[] Retry => rows.Where(r => r.Retry)
                                          .Select(r => r.Module)
                                          .ToArray();
+        /// <summary>
+        /// Array of modules with a checkmark in the Skip column
+        /// </summary>
         public CkanModule[] Skip  => rows.Where(r => r.Skip)
                                          .Select(r => r.Module)
                                          .ToArray();
@@ -112,8 +147,16 @@ namespace CKAN.GUI
         private static readonly ILog log = LogManager.GetLogger(typeof(DownloadsFailedDialog));
     }
 
+    /// <summary>
+    /// Data object representing one row, for BindingList to examine and update
+    /// </summary>
     public class DownloadRow
     {
+        /// <summary>
+        /// Initialize the row
+        /// </summary>
+        /// <param name="module">The module for this row</param>
+        /// <param name="exc">The exception thrown while trying to download this module</param>
         public DownloadRow(CkanModule module, Exception exc)
         {
             Retry   = true;
@@ -121,9 +164,22 @@ namespace CKAN.GUI
             Error   = exc.Message;
         }
 
+        /// <summary>
+        /// True if Retry column has a checkmark
+        /// </summary>
         public bool       Retry   { get; set; }
+        /// <summary>
+        /// True if Skip column has a checkmark
+        /// </summary>
+        /// <value></value>
         public bool       Skip    { get => !Retry; set { Retry = !value; } }
+        /// <summary>
+        /// This row's module
+        /// </summary>
         public CkanModule Module  { get; private set; }
+        /// <summary>
+        /// This row's download error
+        /// </summary>
         public string     Error   { get; private set; }
     }
 }

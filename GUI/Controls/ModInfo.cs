@@ -556,23 +556,18 @@ namespace CKAN.GUI
                 case RelationshipType.Depends:
                     return module.depends
                         ?? Enumerable.Empty<RelationshipDescriptor>();
-                    break;
                 case RelationshipType.Recommends:
                     return module.recommends
                         ?? Enumerable.Empty<RelationshipDescriptor>();
-                    break;
                 case RelationshipType.Suggests:
                     return module.suggests
                         ?? Enumerable.Empty<RelationshipDescriptor>();
-                    break;
                 case RelationshipType.Supports:
                     return module.supports
                         ?? Enumerable.Empty<RelationshipDescriptor>();
-                    break;
                 case RelationshipType.Conflicts:
                     return module.conflicts
                         ?? Enumerable.Empty<RelationshipDescriptor>();
-                    break;
             }
             return Enumerable.Empty<RelationshipDescriptor>();
         }
