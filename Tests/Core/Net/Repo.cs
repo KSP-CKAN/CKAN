@@ -15,6 +15,7 @@ namespace Tests.Core.Net
         private CKAN.RegistryManager manager;
         private CKAN.Registry registry;
         private DisposableKSP ksp;
+        private NetAsyncDownloader downloader;
 
         [SetUp]
         public void Setup()
@@ -24,6 +25,7 @@ namespace Tests.Core.Net
             registry = manager.registry;
             registry.ClearDlls();
             registry.Installed().Clear();
+            downloader = new NetAsyncDownloader(new NullUser());
         }
 
         [TearDown]
@@ -42,7 +44,7 @@ namespace Tests.Core.Net
                     new Repository("testRepo", TestData.TestKANTarGz())
                 }
             };
-            CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, null, new NullUser());
+            CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
             // Test we've got an expected module.
             CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new GameVersionCriteria(GameVersion.Parse("0.25.0")));
 
@@ -59,7 +61,7 @@ namespace Tests.Core.Net
                     new Repository("testRepo", TestData.TestKANZip())
                 }
             };
-            CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, null, new NullUser());
+            CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
 
             // Test we've got an expected module.
             CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new GameVersionCriteria(GameVersion.Parse("0.25.0")));
@@ -79,7 +81,7 @@ namespace Tests.Core.Net
                         new Repository("testRepo", TestData.BadKANTarGz())
                     }
                 };
-                CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, null, new NullUser());
+                CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
             });
         }
 
@@ -95,7 +97,7 @@ namespace Tests.Core.Net
                         new Repository("testRepo", TestData.BadKANZip())
                     }
                 };
-                CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, null, new NullUser());
+                CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
             });
         }
     }

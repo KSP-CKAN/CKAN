@@ -21,6 +21,7 @@ namespace Tests.Core.Net
         private DisposableKSP        ksp;
         private CKAN.IDownloader     async;
         private NetModuleCache       cache;
+        private NetAsyncDownloader   downloader;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
 
@@ -44,7 +45,9 @@ namespace Tests.Core.Net
                 }
             };
 
-            CKAN.Repo.UpdateAllRepositories(registry_manager, ksp.KSP, null, new NullUser());
+            downloader = new NetAsyncDownloader(new NullUser());
+
+            CKAN.Repo.UpdateAllRepositories(registry_manager, ksp.KSP, downloader, null, new NullUser());
 
             // Ready our downloader.
             async = new CKAN.NetAsyncModulesDownloader(new NullUser(), manager.Cache);

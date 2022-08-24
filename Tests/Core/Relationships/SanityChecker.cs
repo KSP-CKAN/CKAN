@@ -38,7 +38,8 @@ namespace Tests.Core.Relationships
                     new Repository("testRepo", TestData.TestKANZip())
                 }
             };
-            CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, null, new NullUser());
+            var downloader = new NetAsyncDownloader(new NullUser());
+            CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
         }
 
         [OneTimeTearDown]

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using Autofac;
 using ChinhDo.Transactions.FileManager;
 using ICSharpCode.SharpZipLib.GZip;
@@ -11,8 +12,10 @@ using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using Newtonsoft.Json;
+
 using CKAN.GameVersionProviders;
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -24,132 +27,226 @@ namespace CKAN
     }
 
     /// <summary>
-    ///     Class for downloading the CKAN meta-info itself.
+    /// Class for downloading the CKAN meta-info
     /// </summary>
     public static class Repo
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
-
         /// <summary>
         /// Download and update the local CKAN meta-info.
         /// Optionally takes a URL to the zipfile repo to download.
         /// </summary>
-        public static RepoUpdateResult UpdateAllRepositories(RegistryManager registry_manager, GameInstance ksp, NetModuleCache cache, IUser user)
+        public static RepoUpdateResult UpdateAllRepositories(RegistryManager registry_manager, GameInstance ksp, NetAsyncDownloader downloader, NetModuleCache cache, IUser user)
         {
-            SortedDictionary<string, Repository> sortedRepositories = registry_manager.registry.Repositories;
+            var repos = registry_manager.registry.Repositories.Values.ToArray();
 
-            // First get latest copy of the game versions data
+            // Get latest copy of the game versions data (remote build map)
             user.RaiseMessage(Properties.Resources.NetRepoUpdatingBuildMap);
             ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh();
 
+            // Check if the ETags have changed, quit if not
             user.RaiseProgress(Properties.Resources.NetRepoCheckingForUpdates, 0);
-            if (sortedRepositories.Values.All(repo => !string.IsNullOrEmpty(repo.last_server_etag) && repo.last_server_etag == Net.CurrentETag(repo.uri)))
+            if (repos.All(repo => !string.IsNullOrEmpty(repo.last_server_etag)
+                                  && repo.last_server_etag == Net.CurrentETag(repo.uri)))
             {
                 user.RaiseProgress(Properties.Resources.NetRepoAlreadyUpToDate, 100);
                 user.RaiseMessage(Properties.Resources.NetRepoNoChanges);
                 return RepoUpdateResult.NoChanges;
             }
-            List<CkanModule> allAvail = new List<CkanModule>();
-            int index = 0;
-            foreach (KeyValuePair<string, Repository> repository in sortedRepositories)
+
+            // Capture repo etags to be set once we're done
+            var savedEtags = new Dictionary<Uri, string>();
+            downloader.onOneCompleted += (url, filename, error, etag) => savedEtags.Add(url, etag);
+
+            // Download metadata from all repos
+            var targets = repos.Select(r => new Net.DownloadTarget(r.uri)).ToArray();
+            downloader.DownloadAndWait(targets);
+
+            // If we get to this point, the downloads were successful
+            // Load them
+            var files    = targets.Select(t => t.filename).ToArray();
+            var dlCounts = new SortedDictionary<string, int>();
+            var modules  = repos
+                .ZipMany(files, (r, f) => ModulesFromFile(r, f, ref dlCounts, user))
+                .ToArray();
+
+            // Loading done, commit etags
+            foreach (var kvp in savedEtags)
             {
-                user.RaiseProgress(string.Format(Properties.Resources.NetRepoUpdating, repository.Value.name),
-                    10 + 80 * index / sortedRepositories.Count);
-                SortedDictionary<string, int> downloadCounts;
-                string newETag;
-                List<CkanModule> avail = UpdateRegistry(repository.Value.uri, ksp, user, out downloadCounts, out newETag);
-                registry_manager.registry.SetDownloadCounts(downloadCounts);
-                if (avail == null)
+                var repo = repos.Where(r => r.uri == kvp.Key).FirstOrDefault();
+                var etag = kvp.Value;
+                if (repo != null)
                 {
-                    // Report failure if any repo fails, rather than losing half the list.
-                    // UpdateRegistry will have alerted the user to specific errors already.
-                    return RepoUpdateResult.Failed;
+                    log.DebugFormat("Setting etag for {0}: {1}", repo.name, etag);
+                    repo.last_server_etag = etag;
                 }
-                else
-                {
-                    // Merge all the lists
-                    allAvail.AddRange(avail);
-                    repository.Value.last_server_etag = newETag;
-                    user.RaiseMessage(Properties.Resources.NetRepoUpdated,
-                        repository.Value.name, avail.Count);
-                }
-                ++index;
             }
-            // Save allAvail to the registry if we found anything
-            if (allAvail.Count > 0)
+
+            // Clean up temp files
+            foreach (var f in files)
             {
-                user.RaiseProgress(Properties.Resources.NetRepoSaving, 90);
-                using (var transaction = CkanTransaction.CreateTransactionScope())
-                {
-                    // Save our changes.
-                    registry_manager.registry.SetAllAvailable(allAvail);
-                    registry_manager.Save(enforce_consistency: false);
-                    transaction.Complete();
-                }
+                File.Delete(f);
+            }
+
+            if (modules.Length > 0)
+            {
+                // Save our changes
+                registry_manager.registry.SetAllAvailable(modules);
+                registry_manager.registry.SetDownloadCounts(dlCounts);
+                registry_manager.Save(enforce_consistency: false);
 
                 ShowUserInconsistencies(registry_manager.registry, user);
-
                 List<CkanModule> metadataChanges = GetChangedInstalledModules(registry_manager.registry);
                 if (metadataChanges.Count > 0 && cache != null)
                 {
                     HandleModuleChanges(metadataChanges, user, ksp, cache, registry_manager);
                 }
+            }
 
-                // Registry.CompatibleModules is slow, just return success,
-                // caller can check it if it's really needed
-                user.RaiseProgress(Properties.Resources.NetRepoSaved, 100);
-                user.RaiseMessage(Properties.Resources.NetRepoUpdatedAll);
-                return RepoUpdateResult.Updated;
-            }
-            else
+            // Report success
+            return RepoUpdateResult.Updated;
+        }
+
+        private static IEnumerable<CkanModule> ModulesFromFile(Repository repo, string filename, ref SortedDictionary<string, int> downloadCounts, IUser user)
+        {
+            if (!File.Exists(filename))
             {
-                // Return failure
-                user.RaiseMessage(Properties.Resources.NetRepoNoModules);
-                return RepoUpdateResult.Failed;
+                throw new FileNotFoundKraken(filename);
             }
+            switch (FileIdentifier.IdentifyFile(filename))
+            {
+                case FileType.TarGz:
+                    return ModulesFromTarGz(repo, filename, ref downloadCounts, user);
+                case FileType.Zip:
+                    return ModulesFromZip(repo, filename, user);
+                default:
+                    throw new UnsupportedKraken($"Not a .tar.gz or .zip, cannot process: {filename}");
+            }
+            return Enumerable.Empty<CkanModule>();
         }
 
         /// <summary>
-        /// Retrieve available modules from the URL given.
+        /// Returns available modules from the supplied tar.gz file.
         /// </summary>
-        private static List<CkanModule> UpdateRegistry(Uri repo, GameInstance ksp, IUser user, out SortedDictionary<string, int> downloadCounts, out string currentETag)
+        private static List<CkanModule> ModulesFromTarGz(Repository repo, string path, ref SortedDictionary<string, int> downloadCounts, IUser user)
         {
-            TxFileManager file_transaction = new TxFileManager();
-            downloadCounts = null;
+            log.DebugFormat("Starting registry update from tar.gz file: \"{0}\".", path);
 
-            log.InfoFormat("Downloading {0}", repo);
+            List<CkanModule> modules = new List<CkanModule>();
 
-            string repo_file = String.Empty;
+            // Open the gzip'ed file
+            using (Stream inputStream = File.OpenRead(path))
+            // Create a gzip stream
+            using (GZipInputStream gzipStream = new GZipInputStream(inputStream))
+            // Create a handle for the tar stream
+            using (TarInputStream tarStream = new TarInputStream(gzipStream, Encoding.UTF8))
+            {
+                user.RaiseMessage("Loading modules from {0} repository...", repo.name);
+                TarEntry entry;
+                while ((entry = tarStream.GetNextEntry()) != null)
+                {
+                    string filename = entry.Name;
+
+                    if (filename.EndsWith("download_counts.json"))
+                    {
+                        downloadCounts = JsonConvert.DeserializeObject<SortedDictionary<string, int>>(
+                            tarStreamString(tarStream, entry));
+                        user.RaiseMessage("Loaded download counts from {0} repository", repo.name);
+                    }
+                    else if (filename.EndsWith(".ckan"))
+                    {
+                        log.DebugFormat("Reading CKAN data from {0}", filename);
+                        user.RaiseProgress($"Loading modules from {repo.name} repository",
+                            (int)(100 * inputStream.Position / inputStream.Length));
+
+                        // Read each file into a buffer
+                        string metadata_json = tarStreamString(tarStream, entry);
+
+                        CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
+                        if (module != null)
+                        {
+                            modules.Add(module);
+                        }
+                    }
+                    else
+                    {
+                        // Skip things we don't want
+                        log.DebugFormat("Skipping archive entry {0}", filename);
+                    }
+                }
+            }
+            return modules;
+        }
+
+        private static string tarStreamString(TarInputStream stream, TarEntry entry)
+        {
+            // Read each file into a buffer.
+            int buffer_size;
+
             try
             {
-                repo_file = Net.Download(repo, out currentETag);
+                buffer_size = Convert.ToInt32(entry.Size);
             }
-            catch (System.Net.WebException ex)
+            catch (OverflowException)
             {
-                user.RaiseError(Properties.Resources.NetRepoFailedDownload, repo, ex.Message);
-                currentETag = null;
+                log.ErrorFormat("Error processing {0}: Metadata size too large.", entry.Name);
                 return null;
             }
 
-            // Check the filetype.
-            FileType type = FileIdentifier.IdentifyFile(repo_file);
+            byte[] buffer = new byte[buffer_size];
 
-            List<CkanModule> newAvailable = null;
-            switch (type)
+            stream.Read(buffer, 0, buffer_size);
+
+            // Convert the buffer data to a string.
+            return Encoding.ASCII.GetString(buffer);
+        }
+
+        /// <summary>
+        /// Returns available modules from the supplied zip file.
+        /// </summary>
+        private static List<CkanModule> ModulesFromZip(Repository repo, string path, IUser user)
+        {
+            log.DebugFormat("Starting registry update from zip file: \"{0}\".", path);
+
+            List<CkanModule> modules = new List<CkanModule>();
+            using (var zipfile = new ZipFile(path))
             {
-                case FileType.TarGz:
-                    newAvailable = UpdateRegistryFromTarGz(repo_file, out downloadCounts);
-                    break;
-                case FileType.Zip:
-                    newAvailable = UpdateRegistryFromZip(repo_file);
-                    break;
+                user.RaiseMessage("Loading modules from {0} repository...", repo.name);
+                int index = 0;
+                foreach (ZipEntry entry in zipfile)
+                {
+                    string filename = entry.Name;
+
+                    if (filename.EndsWith(".ckan"))
+                    {
+                        log.DebugFormat("Reading CKAN data from {0}", filename);
+                        user.RaiseProgress($"Loading modules from {repo.name} repository",
+                            (int)(100 * index / zipfile.Count));
+
+                        // Read each file into a string.
+                        string metadata_json;
+                        using (var stream = new StreamReader(zipfile.GetInputStream(entry)))
+                        {
+                            metadata_json = stream.ReadToEnd();
+                            stream.Close();
+                        }
+
+                        CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
+                        if (module != null)
+                        {
+                            modules.Add(module);
+                        }
+                    }
+                    else
+                    {
+                        // Skip things we don't want.
+                        log.DebugFormat("Skipping archive entry {0}", filename);
+                    }
+                    ++index;
+                }
+
+                zipfile.Close();
             }
-
-            // Remove our downloaded meta-data now we've processed it.
-            // Seems weird to do this as part of a transaction, but Net.Download uses them, so let's be consistent.
-            file_transaction.Delete(repo_file);
-
-            return newAvailable;
+            return modules;
         }
 
         /// <summary>
@@ -287,140 +384,15 @@ namespace CKAN
             return true;
         }
 
-        /// <summary>
-        /// Returns available modules from the supplied tar.gz file.
-        /// </summary>
-        private static List<CkanModule> UpdateRegistryFromTarGz(string path, out SortedDictionary<string, int> downloadCounts)
-        {
-            log.DebugFormat("Starting registry update from tar.gz file: \"{0}\".", path);
-
-            downloadCounts = null;
-            List<CkanModule> modules = new List<CkanModule>();
-            // Open the gzip'ed file.
-            using (Stream inputStream = File.OpenRead(path))
-            {
-                // Create a gzip stream.
-                using (GZipInputStream gzipStream = new GZipInputStream(inputStream))
-                {
-                    // Create a handle for the tar stream.
-                    using (TarInputStream tarStream = new TarInputStream(gzipStream, Encoding.UTF8))
-                    {
-                        TarEntry entry;
-                        while ((entry = tarStream.GetNextEntry()) != null)
-                        {
-                            string filename = entry.Name;
-
-                            if (filename.EndsWith("download_counts.json"))
-                            {
-                                downloadCounts = JsonConvert.DeserializeObject<SortedDictionary<string, int>>(
-                                    tarStreamString(tarStream, entry)
-                                );
-                            }
-                            else if (filename.EndsWith(".ckan"))
-                            {
-                                log.DebugFormat("Reading CKAN data from {0}", filename);
-
-                                // Read each file into a buffer.
-                                string metadata_json = tarStreamString(tarStream, entry);
-
-                                CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
-                                if (module != null)
-                                {
-                                    modules.Add(module);
-                                }
-                            }
-                            else
-                            {
-                                // Skip things we don't want.
-                                log.DebugFormat("Skipping archive entry {0}", filename);
-                            }
-                        }
-                    }
-                }
-            }
-            return modules;
-        }
-
-        private static string tarStreamString(TarInputStream stream, TarEntry entry)
-        {
-            // Read each file into a buffer.
-            int buffer_size;
-
-            try
-            {
-                buffer_size = Convert.ToInt32(entry.Size);
-            }
-            catch (OverflowException)
-            {
-                log.ErrorFormat("Error processing {0}: Metadata size too large.", entry.Name);
-                return null;
-            }
-
-            byte[] buffer = new byte[buffer_size];
-
-            stream.Read(buffer, 0, buffer_size);
-
-            // Convert the buffer data to a string.
-            return Encoding.ASCII.GetString(buffer);
-        }
-
-        /// <summary>
-        /// Returns available modules from the supplied zip file.
-        /// </summary>
-        private static List<CkanModule> UpdateRegistryFromZip(string path)
-        {
-            log.DebugFormat("Starting registry update from zip file: \"{0}\".", path);
-
-            List<CkanModule> modules = new List<CkanModule>();
-            using (var zipfile = new ZipFile(path))
-            {
-                foreach (ZipEntry entry in zipfile)
-                {
-                    string filename = entry.Name;
-
-                    if (filename.EndsWith(".ckan"))
-                    {
-                        log.DebugFormat("Reading CKAN data from {0}", filename);
-
-                        // Read each file into a string.
-                        string metadata_json;
-                        using (var stream = new StreamReader(zipfile.GetInputStream(entry)))
-                        {
-                            metadata_json = stream.ReadToEnd();
-                            stream.Close();
-                        }
-
-                        CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
-                        if (module != null)
-                        {
-                            modules.Add(module);
-                        }
-                    }
-                    else
-                    {
-                        // Skip things we don't want.
-                        log.DebugFormat("Skipping archive entry {0}", filename);
-                        continue;
-                    }
-
-                }
-
-                zipfile.Close();
-            }
-            return modules;
-        }
-
         private static CkanModule ProcessRegistryMetadataFromJSON(string metadata, string filename)
         {
-            log.DebugFormat("Converting metadata from JSON.");
-
             try
             {
                 CkanModule module = CkanModule.FromJson(metadata);
                 // FromJson can return null for the empty string
                 if (module != null)
                 {
-                    log.DebugFormat("Found {0} version {1}", module.identifier, module.version);
+                    log.DebugFormat("Module parsed: {0}", module.ToString());
                 }
                 return module;
             }
@@ -491,5 +463,7 @@ namespace CKAN
                 user.RaiseMessage(sanityMessage.ToString());
             }
         }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(Repo));
     }
 }

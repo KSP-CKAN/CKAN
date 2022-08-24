@@ -6,9 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
+
 using Autofac;
-using CKAN.Configuration;
 using log4net;
+
+using CKAN.Configuration;
 
 namespace CKAN
 {
@@ -30,18 +32,18 @@ namespace CKAN
             public Exception error;
             public int lastProgressUpdateSize;
 
-            public event DownloadProgressChangedEventHandler Progress;
-            public event AsyncCompletedEventHandler          Done;
+            public event DownloadProgressChangedEventHandler             Progress;
+            public event Action<object, AsyncCompletedEventArgs, string> Done;
 
             private string mimeType;
             private WebClient agent;
 
-            public NetAsyncDownloaderDownloadPart(Net.DownloadTarget target, string path = null)
+            public NetAsyncDownloaderDownloadPart(Net.DownloadTarget target)
             {
                 this.target = target;
                 this.mimeType = target.mimeType;
                 this.triedFallback = false;
-                this.path = path ?? Path.GetTempFileName();
+                this.path = target.filename ?? Path.GetTempFileName();
                 this.size = bytesLeft = target.size;
                 this.lastProgressUpdateTime = DateTime.Now;
             }
@@ -72,7 +74,8 @@ namespace CKAN
 
                 // Check whether to use an auth token for this host
                 string token;
-                if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(this.target.url.Host, out token)
+                if (this.target.url.IsAbsoluteUri
+                    && ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(this.target.url.Host, out token)
                         && !string.IsNullOrEmpty(token))
                 {
                     log.InfoFormat("Using auth token for {0}", this.target.url.Host);
@@ -81,17 +84,16 @@ namespace CKAN
                 }
 
                 // Forward progress and completion events to our listeners
-                agent.DownloadProgressChanged += (sender, args) => {
-                    if (Progress != null)
-                    {
-                        Progress(sender, args);
-                    }
+                agent.DownloadProgressChanged += (sender, args) =>
+                {
+                    Progress?.Invoke(sender, args);
                 };
-                agent.DownloadFileCompleted += (sender, args) => {
-                    if (Done != null)
-                    {
-                        Done(sender, args);
-                    }
+                agent.DownloadFileCompleted += (sender, args) =>
+                {
+                    Done?.Invoke(sender, args,
+                                 args.Cancelled || args.Error != null
+                                     ? null
+                                     : agent.ResponseHeaders?.Get("ETag")?.Replace("\"", ""));
                 };
             }
         }
@@ -114,8 +116,7 @@ namespace CKAN
         private volatile bool download_canceled;
         private readonly ManualResetEvent complete_or_canceled;
 
-        public delegate void NetAsyncOneCompleted(Uri url, string filename, Exception error);
-        public NetAsyncOneCompleted onOneCompleted;
+        public event Action<Uri, string, Exception, string> onOneCompleted;
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader.
@@ -169,8 +170,8 @@ namespace CKAN
                         args.TotalBytesToReceive);
 
                 // And schedule a notification if we're done (or if something goes wrong)
-                dl.Done += (sender, args) =>
-                    FileDownloadComplete(index, args.Error, args.Cancelled);
+                dl.Done += (sender, args, etag) =>
+                    FileDownloadComplete(index, args.Error, args.Cancelled, etag);
 
                 // Start the download!
                 dl.Download(dl.target.url, dl.path);
@@ -189,7 +190,7 @@ namespace CKAN
         private bool shouldQueue(Net.DownloadTarget target)
         {
             return downloads.Any(dl =>
-                    dl.target.url.Host == target.url.Host
+                    (!dl.target.url.IsAbsoluteUri || dl.target.url.Host == target.url.Host)
                     && dl.bytesLeft > 0
                     // Consider done if already tried and failed
                     && dl.error == null);
@@ -267,7 +268,8 @@ namespace CKAN
                             // Handle HTTP 403 used for throttling
                             case HttpStatusCode.Forbidden:
                                 Uri infoUrl;
-                                if (Net.ThrottledHosts.TryGetValue(downloads[i].target.url.Host, out infoUrl))
+                                if (downloads[i].target.url.IsAbsoluteUri
+                                    && Net.ThrottledHosts.TryGetValue(downloads[i].target.url.Host, out infoUrl))
                                 {
                                     throw new DownloadThrottledKraken(downloads[i].target.url, infoUrl);
                                 }
@@ -385,7 +387,7 @@ namespace CKAN
         /// This method gets called back by `WebClient` when a download is completed.
         /// It in turncalls the onCompleted hook when *all* downloads are finished.
         /// </summary>
-        private void FileDownloadComplete(int index, Exception error, bool canceled)
+        private void FileDownloadComplete(int index, Exception error, bool canceled, string etag)
         {
             // Make sure the threads don't trip on one another
             lock (dlMutex)
@@ -420,7 +422,7 @@ namespace CKAN
                 }
 
                 var next = queuedDownloads.FirstOrDefault(dl =>
-                    dl.url.Host == downloads[index].target.url.Host);
+                    !dl.url.IsAbsoluteUri || dl.url.Host == downloads[index].target.url.Host);
                 if (next != null)
                 {
                     // Start this host's next queued download
@@ -428,7 +430,7 @@ namespace CKAN
                     DownloadModule(next);
                 }
 
-                onOneCompleted.Invoke(downloads[index].target.url, downloads[index].path, downloads[index].error);
+                onOneCompleted?.Invoke(downloads[index].target.url, downloads[index].path, downloads[index].error, etag);
 
                 if (++completed_downloads >= downloads.Count + queuedDownloads.Count)
                 {

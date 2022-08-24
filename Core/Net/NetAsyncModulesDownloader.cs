@@ -35,11 +35,9 @@ namespace CKAN
         public NetAsyncModulesDownloader(IUser user, NetModuleCache cache)
         {
             modules    = new List<CkanModule>();
-            downloader = new NetAsyncDownloader(user)
-            {
-                // Schedule us to process each module on completion.
-                onOneCompleted = ModuleDownloadComplete
-            };
+            downloader = new NetAsyncDownloader(user);
+            // Schedule us to process each module on completion.
+            downloader.onOneCompleted += ModuleDownloadComplete;
             downloader.Progress += (target, remaining, total) =>
             {
                 var mod = modules.FirstOrDefault(m => m.download == target.url);
@@ -104,7 +102,7 @@ namespace CKAN
             }
         }
 
-        private void ModuleDownloadComplete(Uri url, string filename, Exception error)
+        private void ModuleDownloadComplete(Uri url, string filename, Exception error, string etag)
         {
             if (error != null)
             {
