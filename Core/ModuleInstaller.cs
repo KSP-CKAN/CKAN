@@ -374,7 +374,10 @@ namespace CKAN
                                     && f.destination.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
                             .Select(f => Path.GetDirectoryName(ksp.ToRelativeGameDir(f.destination)))
                             .ToHashSet();
-                        if (!dllFolders.Contains(Path.GetDirectoryName(dll)))
+                        // Make sure that the DLL is actually included in the install
+                        // (NearFutureElectrical, NearFutureElectrical-Core)
+                        if (dllFolders.Count > 0
+                            && !dllFolders.Contains(Path.GetDirectoryName(dll)))
                         {
                             // Manually installed DLL is somewhere else where we're not installing files,
                             // probable bad install, alert user and abort
