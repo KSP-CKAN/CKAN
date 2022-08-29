@@ -54,7 +54,7 @@ namespace CKAN.GUI
                         {
                             ReverseRelationshipsCheckbox.CheckState = CheckState.Unchecked;
                         }
-                        UpdateHeaderInfo(module);
+                        UpdateHeaderInfo(value, manager.CurrentInstance.VersionCriteria());
                         LoadTab(ModInfoTabControl.SelectedTab.Name, value);
                     }
                     selectedModule = value;
@@ -168,8 +168,9 @@ namespace CKAN.GUI
             }
         }
 
-        private void UpdateHeaderInfo(CkanModule module)
+        private void UpdateHeaderInfo(GUIMod gmod, GameVersionCriteria crit)
         {
+            var module = gmod.ToModule();
             Util.Invoke(this, () =>
             {
                 MetadataModuleNameTextBox.Text = module.name;
@@ -181,6 +182,16 @@ namespace CKAN.GUI
                     string.IsNullOrWhiteSpace(module.description)
                         ? ScrollBars.None
                         : ScrollBars.Vertical;
+                // Mono doesn't draw TabPage.ImageIndex, so fake it
+                const string fakeStopSign = "<!> ";
+                ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ModInfo));
+                resources.ApplyResources(RelationshipTabPage,   "RelationshipTabPage");
+                resources.ApplyResources(AllModVersionsTabPage, "AllModVersionsTabPage");
+                if (gmod.IsIncompatible)
+                {
+                    var pageToAlert = module.IsCompatibleKSP(crit) ? RelationshipTabPage : AllModVersionsTabPage;
+                    pageToAlert.Text = fakeStopSign + pageToAlert.Text;
+                }
             });
         }
 
@@ -211,25 +222,6 @@ namespace CKAN.GUI
             });
             Util.Invoke(MetadataModuleGameCompatibilityTextBox, () => MetadataModuleGameCompatibilityTextBox.Text = gui_module.GameCompatibilityLong);
 
-            Util.Invoke(ModInfoTabControl, () =>
-            {
-                // Mono doesn't draw TabPage.ImageIndex, so fake it
-                const string fakeStopSign = "<!> ";
-                ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ModInfo));
-                resources.ApplyResources(RelationshipTabPage,   "RelationshipTabPage");
-                resources.ApplyResources(AllModVersionsTabPage, "AllModVersionsTabPage");
-                if (gui_module.IsIncompatible)
-                {
-                    if (!module.IsCompatibleKSP(manager.CurrentInstance.VersionCriteria()))
-                    {
-                        AllModVersionsTabPage.Text = fakeStopSign + AllModVersionsTabPage.Text;
-                    }
-                    else
-                    {
-                        RelationshipTabPage.Text = fakeStopSign + RelationshipTabPage.Text;
-                    }
-                }
-            });
             Util.Invoke(ReplacementTextBox, () =>
             {
                 if (module.replaced_by == null)

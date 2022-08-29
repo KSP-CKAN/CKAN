@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Internationalize Core, CmdLine, ConsoleUI, and AutoUpdater (#3482 by: HebaruSan; reviewed: techman83)
 - [Multiple] Check free space before downloading (#3631 by: HebaruSan; reviewed: techman83)
 - [Multiple] Many improvements for failed downloads (#3635, #3637, #3642 by: HebaruSan; reviewed: techman83)
-- [GUI] Show reverse relationships (#3638 by: HebaruSan; reviewed: techman83)
+- [GUI] Show reverse relationships (#3638, #3649 by: HebaruSan; reviewed: techman83)
 - [GUI] Debounce search events on all platforms (#3641 by: HebaruSan; reviewed: techman83)
 - [Multiple] Improvements for failed repo updates (#3645 by: HebaruSan; reviewed: techman83)
 
