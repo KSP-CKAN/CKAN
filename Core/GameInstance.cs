@@ -392,16 +392,19 @@ namespace CKAN
                     // GameData *twice*.
                     //
                     // The least evil is to walk it once, and filter it ourselves.
-                    IEnumerable<string> files = Directory
+                    var files = Directory
                         .EnumerateFiles(game.PrimaryModDirectory(this), "*", SearchOption.AllDirectories)
-                        .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
                         .Select(CKANPathUtils.NormalizePath)
-                        .Where(absPath => !game.StockFolders.Any(f =>
-                            ToRelativeGameDir(absPath).StartsWith($"{f}/")));
+                        .Select(ToRelativeGameDir)
+                        .Where(relPath => !game.StockFolders.Any(f => relPath.StartsWith($"{f}/"))
+                                && manager.registry.FileOwner(relPath) == null);
 
-                    foreach (string dll in files)
+                    foreach (string relativePath in files)
                     {
-                        manager.registry.RegisterDll(this, dll);
+                        foreach (var identifier in game.IdentifiersFromFileName(this, relativePath))
+                        {
+                            manager.registry.RegisterFile(relativePath, identifier);
+                        }
                     }
                     var newDlls = manager.registry.InstalledDlls.ToHashSet();
                     bool dllChanged = !oldDlls.SetEquals(newDlls);
@@ -438,39 +441,6 @@ namespace CKAN
         public string ToAbsoluteGameDir(string path)
         {
             return CKANPathUtils.ToAbsolute(path, GameDir());
-        }
-
-        /// <summary>
-        /// https://xkcd.com/208/
-        /// This regex matches things like GameData/Foo/Foo.1.2.dll
-        /// </summary>
-        private static readonly Regex dllPattern = new Regex(
-            @"
-                ^(?:.*/)?             # Directories (ending with /)
-                (?<identifier>[^.]+)  # Our DLL name, up until the first dot.
-                .*\.dll$              # Everything else, ending in dll
-            ",
-            RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled
-        );
-
-        /// <summary>
-        /// Find the identifier associated with a manually installed DLL
-        /// </summary>
-        /// <param name="relative_path">Path of the DLL relative to game root</param>
-        /// <returns>
-        /// Identifier if found otherwise null
-        /// </returns>
-        public string DllPathToIdentifier(string relative_path)
-        {
-            if (!relative_path.StartsWith($"{game.PrimaryModDirectoryRelative}/", StringComparison.CurrentCultureIgnoreCase))
-            {
-                // DLLs only live in the primary mod directory
-                return null;
-            }
-            Match match = dllPattern.Match(relative_path);
-            return match.Success
-                ? Identifier.Sanitize(match.Groups["identifier"].Value)
-                : null;
         }
 
         public override string ToString()

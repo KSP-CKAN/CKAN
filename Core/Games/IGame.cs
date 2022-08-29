@@ -34,6 +34,9 @@ namespace CKAN.Games
         string            CompatibleVersionsFile { get; }
         string[]          BuildIDFiles { get; }
 
+        // Manually installed file handling
+        string[] IdentifiersFromFileName(GameInstance inst, string absolutePath);
+
         // How to get metadata
         Uri DefaultRepositoryURL { get; }
         Uri RepositoryListURL    { get; }

@@ -1,9 +1,12 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using Newtonsoft.Json.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using KSPMMCfgParser;
+
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
 using CKAN.Extensions;
@@ -13,10 +16,11 @@ namespace CKAN.NetKAN.Validators
 {
     internal sealed class ModuleManagerDependsValidator : IValidator
     {
-        public ModuleManagerDependsValidator(IHttpService http, IModuleService moduleService)
+        public ModuleManagerDependsValidator(IHttpService http, IModuleService moduleService, IConfigParser parser)
         {
             _http          = http;
             _moduleService = moduleService;
+            _parser        = parser;
         }
 
         public void Validate(Metadata metadata)
@@ -32,10 +36,10 @@ namespace CKAN.NetKAN.Validators
                 {
                     ZipFile zip = new ZipFile(package);
                     GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
-                    var mmConfigs = _moduleService.GetConfigFiles(mod, zip, inst)
-                        .Where(cfg => moduleManagerRegex.IsMatch(
-                            new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd()))
-                        .Memoize();
+                    var mmConfigs = _parser.GetConfigNodes(mod, zip, inst)
+                        .Where(kvp => kvp.Value.Any(node => HasAnyModuleManager(node)))
+                        .Select(kvp => kvp.Key)
+                        .ToArray();
 
                     bool dependsOnMM = mod?.depends?.Any(r => r.ContainsAny(identifiers)) ?? false;
 
@@ -56,13 +60,25 @@ namespace CKAN.NetKAN.Validators
 
         private string[] identifiers = new string[] { "ModuleManager" };
 
-        private static readonly Regex moduleManagerRegex = new Regex(
-            @"^\s*[@+$\-!%]|^\s*[a-zA-Z0-9_]+:",
-            RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.Singleline
-        );
+        private static bool HasAnyModuleManager(KSPConfigNode node)
+            => node.Operator != MMOperator.Insert
+            || node.Filters  != null
+            || node.Needs    != null
+            || node.Has      != null
+            || node.Index    != null
+            || node.Properties.Any(prop => HasAnyModuleManager(prop))
+            || node.Children.Any( child => HasAnyModuleManager(child));
+
+        private static bool HasAnyModuleManager(KSPConfigProperty prop)
+            => prop.Operator           != MMOperator.Insert
+            || prop.Needs              != null
+            || prop.Index              != null
+            || prop.ArrayIndex         != null
+            || prop.AssignmentOperator != null;
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly IConfigParser  _parser;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(ModuleManagerDependsValidator));
     }

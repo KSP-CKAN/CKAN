@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using Newtonsoft.Json.Linq;
+
 using CKAN.Extensions;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
@@ -21,10 +22,11 @@ namespace CKAN.NetKAN.Transformers
         /// </summary>
         /// <param name="http">HTTP service</param>
         /// <param name="moduleService">Module service</param>
-        public LocalizationsTransformer(IHttpService http, IModuleService moduleService)
+        public LocalizationsTransformer(IHttpService http, IModuleService moduleService, IConfigParser parser)
         {
             _http          = http;
             _moduleService = moduleService;
+            _parser        = parser;
         }
 
         /// <summary>
@@ -56,16 +58,13 @@ namespace CKAN.NetKAN.Transformers
 
                 log.Debug("Extracting locales");
                 // Extract the locale names from the ZIP's cfg files
-                var locales = _moduleService.GetConfigFiles(mod, zip, inst)
-                    .Select(cfg => new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd())
-                    .SelectMany(contents => localizationRegex.Matches(contents).Cast<Match>()
-                        .Select(m => m.Groups["contents"].Value))
-                    .SelectMany(contents => localeRegex.Matches(contents).Cast<Match>()
-                        .Where(m => m.Groups["contents"].Value.Contains("="))
-                        .Select(m => m.Groups["locale"].Value))
-                    .Distinct()
-                    .OrderBy(l => l)
-                    .Memoize();
+                var locales = _parser.GetConfigNodes(mod, zip, inst)
+                                     .SelectMany(kvp => kvp.Value)
+                                     .Where(node => node.Name == localizationsNodeName)
+                                     .SelectMany(node => node.Children.Select(child => child.Name))
+                                     .Distinct()
+                                     .OrderBy(l => l)
+                                     .Memoize();
                 log.Debug("Locales extracted");
 
                 if (locales.Any())
@@ -82,20 +81,13 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
+        private const string localizationsNodeName = "Localization";
         private const string localizationsProperty = "localizations";
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly IConfigParser  _parser;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(LocalizationsTransformer));
-
-        private static readonly Regex localizationRegex = new Regex(
-            @"^\s*Localization\b\s*{(?<contents>[^{}]+({[^{}]*}[^{}]*)+)}",
-            RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.Singleline
-        );
-        private static readonly Regex localeRegex = new Regex(
-            @"^\s*(?<locale>[-a-zA-Z]+).*?{(?<contents>.*?)}",
-            RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.Singleline
-        );
     }
 }

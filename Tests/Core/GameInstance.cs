@@ -99,7 +99,7 @@ namespace Tests.Core
 
             ksp.Scan();
 
-            Assert.IsTrue(registry.IsInstalled("NewMod"));
+            Assert.IsTrue(registry.IsInstalled("NewMod"), "NewMod installed");
         }
 
         [Test]

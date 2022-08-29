@@ -26,9 +26,11 @@ namespace CKAN.NetKAN.Processors
 
             IModuleService moduleService = new ModuleService();
             IFileService   fileService   = new FileService(cache);
+            IConfigParser  configParser  = new CachingConfigParser(moduleService);
             http          = new CachingHttpService(cache, overwriteCache);
-            ckanValidator = new CkanValidator(http, moduleService);
-            transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, prerelease, netkanValidator);
+            ckanValidator = new CkanValidator(http, moduleService, configParser);
+            transformer   = new NetkanTransformer(http, fileService, moduleService, configParser,
+                                                  githubToken, prerelease, netkanValidator);
         }
 
         internal IEnumerable<Metadata> Inflate(string filename, Metadata netkan, TransformOptions opts)

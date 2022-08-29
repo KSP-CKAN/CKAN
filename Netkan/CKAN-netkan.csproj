@@ -14,14 +14,14 @@
     <RootNamespace>CKAN.NetKAN</RootNamespace>
     <StartupObject>CKAN.NetKAN.Program</StartupObject>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,6 +46,8 @@
     <PackageReference Include="Namotion.Reflection" Version="1.0.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="YamlDotNet" Version="9.1.0" />
+    <PackageReference Include="ParsecSharp" Version="3.4.0" PrivateAssets="All" />
+    <PackageReference Include="KSPMMCfgParser" Version="1.0.*" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -71,7 +73,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueueAppender.cs" />
     <Compile Include="Services\CachingHttpService.cs" />
+    <Compile Include="Services\CachingConfigParser.cs" />
     <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\IConfigParser.cs" />
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IHttpService.cs" />
     <Compile Include="Services\IModuleService.cs" />
@@ -130,6 +134,7 @@
     <Compile Include="Validators\CkanValidator.cs" />
     <Compile Include="Validators\CraftsInShipsValidator.cs" />
     <Compile Include="Validators\DownloadVersionValidator.cs" />
+    <Compile Include="Validators\ForClauseValidator.cs" />
     <Compile Include="Validators\HasIdentifierValidator.cs" />
     <Compile Include="Validators\HarmonyValidator.cs" />
     <Compile Include="Validators\InstallsFilesValidator.cs" />
