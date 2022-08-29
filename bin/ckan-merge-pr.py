@@ -82,8 +82,8 @@ class CkanPullRequest:
     def merge_commit_message(self) -> str:
         return f'Merge #{self.pull_request.number} {self.pull_request.title}'
 
-    def merge_into(self, repo: CkanRepo) -> bool:
-        if not self.approvers():
+    def merge_into(self, repo: CkanRepo, self_review: bool) -> bool:
+        if not self_review and not self.approvers():
             print(f'PR #{self.pull_request.number} is not approved!')
             return False
         if not repo.on_master():
@@ -111,12 +111,13 @@ class CkanPullRequest:
 @option('--repo-path', type=click.Path(exists=True, file_okay=False),
         default='.', help='Path to CKAN working copy')
 @option('--token', required=False, envvar='GITHUB_TOKEN')
+@option('--self-review', is_flag=True, default=False)
 @argument('pr_num', type=click.INT)
-def merge_pr(repo_path: str, token: str, pr_num: int) -> None:
+def merge_pr(repo_path: str, token: str, self_review: bool, pr_num: int) -> None:
     ckr = CkanRepo(repo_path)
     ckpr = CkanPullRequest(Github(token).get_repo('KSP-CKAN/CKAN').get_pull(pr_num))
     sys.exit(ExitStatus.success
-             if ckpr.merge_into(ckr)
+             if ckpr.merge_into(ckr, self_review)
              else ExitStatus.failure)
 
 if __name__ == '__main__':
