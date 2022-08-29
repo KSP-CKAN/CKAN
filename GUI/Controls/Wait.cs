@@ -67,18 +67,11 @@ namespace CKAN.GUI
             }
         }
 
-        /// <summary>
-        /// React to data received for a module,
-        /// adds or updates a label and progress bar so user can see how each download is going
-        /// </summary>
-        /// <param name="module">The module that is being downloaded</param>
-        /// <param name="remaining">Number of bytes left to download</param>
-        /// <param name="total">Number of bytes in complete download</param>
-        public void SetModuleProgress(CkanModule module, long remaining, long total)
+        public void SetProgress(string label, long remaining, long total)
         {
             Util.Invoke(this, () =>
             {
-                if (moduleBars.TryGetValue(module, out ProgressBar pb))
+                if (downloadBars.TryGetValue(label, out ProgressBar pb))
                 {
                     // download_size is allowed to be 0
                     pb.Value = Math.Max(pb.Minimum, Math.Min(pb.Maximum,
@@ -93,14 +86,9 @@ namespace CKAN.GUI
                         AutoSize = true,
                         Location = new Point(2 * padding, rowTop),
                         Size     = new Size(labelWidth, progressHeight),
-                        Text     = string.Format(
-                                Properties.Resources.MainChangesetHostSize,
-                                module.name,
-                                module.version,
-                                module.download.Host ?? "",
-                                CkanModule.FmtSize(module.download_size)),
+                        Text     = label,
                     };
-                    moduleLabels.Add(module, newLb);
+                    downloadLabels.Add(label, newLb);
                     var newPb = new ProgressBar()
                     {
                         Anchor   = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
@@ -114,10 +102,27 @@ namespace CKAN.GUI
                                    )),
                         Style    = ProgressBarStyle.Continuous,
                     };
-                    moduleBars.Add(module, newPb);
+                    downloadBars.Add(label, newPb);
                 }
                 progressTimer.Start();
             });
+        }
+
+        /// <summary>
+        /// React to data received for a module,
+        /// adds or updates a label and progress bar so user can see how each download is going
+        /// </summary>
+        /// <param name="module">The module that is being downloaded</param>
+        /// <param name="remaining">Number of bytes left to download</param>
+        /// <param name="total">Number of bytes in complete download</param>
+        public void SetModuleProgress(CkanModule module, long remaining, long total)
+        {
+            SetProgress(string.Format(Properties.Resources.MainChangesetHostSize,
+                                      module.name,
+                                      module.version,
+                                      module.download.Host ?? "",
+                                      CkanModule.FmtSize(module.download_size)),
+                        remaining, total);
         }
 
         private Action<object, DoWorkEventArgs>             bgLogic;
@@ -144,8 +149,8 @@ namespace CKAN.GUI
         private const int progressHeight = 20;
         private const int emptyHeight    = 85;
 
-        private Dictionary<CkanModule, Label>       moduleLabels = new Dictionary<CkanModule, Label>();
-        private Dictionary<CkanModule, ProgressBar> moduleBars   = new Dictionary<CkanModule, ProgressBar>();
+        private Dictionary<string, Label>       downloadLabels = new Dictionary<string, Label>();
+        private Dictionary<string, ProgressBar> downloadBars   = new Dictionary<string, ProgressBar>();
         private Timer progressTimer = new Timer() { Interval = 3000 };
 
         /// <summary>
@@ -157,29 +162,29 @@ namespace CKAN.GUI
             Util.Invoke(this, () =>
             {
                 int rowTop = emptyHeight - padding;
-                var theBars = moduleBars.OrderBy(kvp => kvp.Value.Top).ToList();
+                var theBars = downloadBars.OrderBy(kvp => kvp.Value.Top).ToList();
                 foreach (var kvp in theBars)
                 {
                     if (kvp.Value.Value == 100)
                     {
                         // Finished, remove in this pass
-                        TopPanel.Controls.Remove(moduleLabels[kvp.Key]);
+                        TopPanel.Controls.Remove(downloadLabels[kvp.Key]);
                         TopPanel.Controls.Remove(kvp.Value);
                         // rowTop is unchanged, so next row will replace this one
                     }
                     else if (!TopPanel.Controls.Contains(kvp.Value))
                     {
                         // Just started, add it in this pass
-                        moduleLabels[kvp.Key].Top = rowTop;
+                        downloadLabels[kvp.Key].Top = rowTop;
                         kvp.Value.Top = rowTop;
-                        TopPanel.Controls.Add(moduleLabels[kvp.Key]);
+                        TopPanel.Controls.Add(downloadLabels[kvp.Key]);
                         TopPanel.Controls.Add(kvp.Value);
                         rowTop += progressHeight + padding;
                     }
                     else
                     {
                         // Not finished, already displayed, just make sure it's in the right position
-                        moduleLabels[kvp.Key].Top = rowTop;
+                        downloadLabels[kvp.Key].Top = rowTop;
                         kvp.Value.Top = rowTop;
                         rowTop += progressHeight + padding;
                     }
@@ -187,14 +192,14 @@ namespace CKAN.GUI
                 // Make room for everything that's still visible
                 TopPanel.Height = rowTop + padding;
 
-                var removedModules = moduleBars
+                var removedModules = downloadBars
                     .Where(kvp => !TopPanel.Controls.Contains(kvp.Value))
                     .Select(kvp => kvp.Key)
                     .ToList();
                 foreach (var module in removedModules)
                 {
-                    moduleLabels.Remove(module);
-                    moduleBars.Remove(module);
+                    downloadLabels.Remove(module);
+                    downloadBars.Remove(module);
                 }
             });
         }
@@ -205,24 +210,24 @@ namespace CKAN.GUI
         /// </summary>
         public void DownloadsComplete()
         {
-            ClearModuleBars();
+            ClearDownloadBars();
             progressTimer.Stop();
         }
 
-        private void ClearModuleBars()
+        private void ClearDownloadBars()
         {
             Util.Invoke(this, () =>
             {
-                foreach (var kvp in moduleLabels)
+                foreach (var kvp in downloadLabels)
                 {
                     TopPanel.Controls.Remove(kvp.Value);
                 }
-                foreach (var kvp in moduleBars)
+                foreach (var kvp in downloadBars)
                 {
                     TopPanel.Controls.Remove(kvp.Value);
                 }
-                moduleLabels.Clear();
-                moduleBars.Clear();
+                downloadLabels.Clear();
+                downloadBars.Clear();
                 TopPanel.Height = emptyHeight;
             });
         }
@@ -231,7 +236,7 @@ namespace CKAN.GUI
         {
             Util.Invoke(this, () =>
             {
-                ClearModuleBars();
+                ClearDownloadBars();
                 ProgressValue = DialogProgressBar.Minimum;
                 ProgressIndeterminate = true;
                 CancelCurrentActionButton.Visible = cancelable;

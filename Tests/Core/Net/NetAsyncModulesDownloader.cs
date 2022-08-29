@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
-using CKAN;
+
 using log4net;
 using NUnit.Framework;
+
 using Tests.Data;
+using CKAN;
 
 namespace Tests.Core.Net
 {
@@ -19,6 +21,7 @@ namespace Tests.Core.Net
         private DisposableKSP        ksp;
         private CKAN.IDownloader     async;
         private NetModuleCache       cache;
+        private NetAsyncDownloader   downloader;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
 
@@ -33,7 +36,18 @@ namespace Tests.Core.Net
             registry.ClearDlls();
             registry.Installed().Clear();
             // Make sure we have a registry we can use.
-            CKAN.Repo.Update(registry_manager, ksp.KSP, new NullUser(), TestData.TestKANZip());
+
+            registry.Repositories = new SortedDictionary<string, Repository>()
+            {
+                {
+                    "testRepo",
+                    new Repository("testRepo", TestData.TestKANZip())
+                }
+            };
+
+            downloader = new NetAsyncDownloader(new NullUser());
+
+            CKAN.Repo.UpdateAllRepositories(registry_manager, ksp.KSP, downloader, null, new NullUser());
 
             // Ready our downloader.
             async = new CKAN.NetAsyncModulesDownloader(new NullUser(), manager.Cache);

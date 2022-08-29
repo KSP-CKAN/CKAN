@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+
+using NUnit.Framework;
+using Tests.Data;
+
 using CKAN;
 using CKAN.Extensions;
 using CKAN.Versioning;
-using NUnit.Framework;
-using Tests.Data;
 
 // We're exercising FindReverseDependencies in here, because:
 // - We need a registry
@@ -28,7 +30,16 @@ namespace Tests.Core.Relationships
             registry = manager.registry;
             registry.ClearDlls();
             registry.Installed().Clear();
-            CKAN.Repo.Update(manager, ksp.KSP, new NullUser(), TestData.TestKANZip());
+
+            registry.Repositories = new SortedDictionary<string, Repository>()
+            {
+                {
+                    "testRepo",
+                    new Repository("testRepo", TestData.TestKANZip())
+                }
+            };
+            var downloader = new NetAsyncDownloader(new NullUser());
+            CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
         }
 
         [OneTimeTearDown]

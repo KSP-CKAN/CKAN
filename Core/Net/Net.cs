@@ -180,20 +180,19 @@ namespace CKAN
 
         public static void DownloadWithProgress(ICollection<DownloadTarget> downloadTargets, IUser user = null)
         {
-            new NetAsyncDownloader(user ?? new NullUser())
+            var downloader = new NetAsyncDownloader(user ?? new NullUser());
+            downloader.onOneCompleted += (url, filename, error, etag) =>
             {
-                onOneCompleted = (url, filename, error) =>
+                if (error != null)
                 {
-                    if (error != null)
-                    {
-                        user?.RaiseError(error.ToString());
-                    }
-                    else
-                    {
-                        File.Move(filename, downloadTargets.First(p => p.url == url).filename);
-                    }
+                    user?.RaiseError(error.ToString());
                 }
-            }.DownloadAndWait(downloadTargets);
+                else
+                {
+                    File.Move(filename, downloadTargets.First(p => p.url == url).filename);
+                }
+            };
+            downloader.DownloadAndWait(downloadTargets);
         }
 
         /// <summary>

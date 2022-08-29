@@ -119,11 +119,8 @@
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Text" xml:space="preserve"><value>Downloads Failed</value></data>
-  <data name="ExplanationLabel.Text" xml:space="preserve"><value>The following mods failed to download. You can retry or abort, and if you retry, you can choose to remove some mods (and any mods that depend on them) from the changeset. Mods that share the same download link will automatically be updated to the same choice.</value></data>
   <data name="RetryColumn.HeaderText" xml:space="preserve"><value>Retry?</value></data>
   <data name="SkipColumn.HeaderText" xml:space="preserve"><value>Skip?</value></data>
-  <data name="ModColumn.HeaderText" xml:space="preserve"><value>Mod</value></data>
   <data name="ErrorColumn.HeaderText" xml:space="preserve"><value>Error</value></data>
   <data name="RetryButton.Text" xml:space="preserve"><value>Retry</value></data>
-  <data name="AbortButton.Text" xml:space="preserve"><value>Abort whole changeset</value></data>
 </root>

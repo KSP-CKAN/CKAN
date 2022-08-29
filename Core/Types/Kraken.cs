@@ -294,16 +294,12 @@ namespace CKAN
         public readonly List<KeyValuePair<int, Exception>> Exceptions
             = new List<KeyValuePair<int, Exception>>();
 
-        public DownloadErrorsKraken(List<KeyValuePair<int, Exception>> errors) : base()
+        public DownloadErrorsKraken(List<KeyValuePair<int, Exception>> errors)
+            : base(String.Join("\r\n",
+                new string[] { Properties.Resources.KrakenDownloadErrorsHeader, "" }
+                .Concat(errors.Select(e => e.ToString()))))
         {
             Exceptions = new List<KeyValuePair<int, Exception>>(errors);
-        }
-
-        public override string ToString()
-        {
-            return String.Join("\r\n",
-                new string[] { Properties.Resources.KrakenDownloadErrorsHeader, "" }
-                .Concat(Exceptions.Select(e => e.ToString())));
         }
     }
 

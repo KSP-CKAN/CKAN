@@ -1,7 +1,11 @@
+using System.Collections.Generic;
+
+using NUnit.Framework;
+
+using Tests.Data;
+
 using CKAN;
 using CKAN.Versioning;
-using NUnit.Framework;
-using Tests.Data;
 
 namespace Tests.Core.Net
 {
@@ -11,6 +15,7 @@ namespace Tests.Core.Net
         private CKAN.RegistryManager manager;
         private CKAN.Registry registry;
         private DisposableKSP ksp;
+        private NetAsyncDownloader downloader;
 
         [SetUp]
         public void Setup()
@@ -20,6 +25,7 @@ namespace Tests.Core.Net
             registry = manager.registry;
             registry.ClearDlls();
             registry.Installed().Clear();
+            downloader = new NetAsyncDownloader(new NullUser());
         }
 
         [TearDown]
@@ -31,8 +37,14 @@ namespace Tests.Core.Net
         [Test]
         public void UpdateRegistryTarGz()
         {
-            CKAN.Repo.Update(manager, ksp.KSP, new NullUser(), TestData.TestKANTarGz());
-
+            manager.registry.Repositories = new SortedDictionary<string, Repository>()
+            {
+                {
+                    "testRepo",
+                    new Repository("testRepo", TestData.TestKANTarGz())
+                }
+            };
+            CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
             // Test we've got an expected module.
             CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new GameVersionCriteria(GameVersion.Parse("0.25.0")));
 
@@ -42,7 +54,14 @@ namespace Tests.Core.Net
         [Test]
         public void UpdateRegistryZip()
         {
-            CKAN.Repo.Update(manager, ksp.KSP, new NullUser(), TestData.TestKANZip());
+            manager.registry.Repositories = new SortedDictionary<string, Repository>()
+            {
+                {
+                    "testRepo",
+                    new Repository("testRepo", TestData.TestKANZip())
+                }
+            };
+            CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
 
             // Test we've got an expected module.
             CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new GameVersionCriteria(GameVersion.Parse("0.25.0")));
@@ -55,7 +74,14 @@ namespace Tests.Core.Net
         {
             Assert.DoesNotThrow(delegate
             {
-                CKAN.Repo.Update(manager, ksp.KSP, new NullUser(), TestData.BadKANTarGz());
+                manager.registry.Repositories = new SortedDictionary<string, Repository>()
+                {
+                    {
+                        "testRepo",
+                        new Repository("testRepo", TestData.BadKANTarGz())
+                    }
+                };
+                CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
             });
         }
 
@@ -64,7 +90,14 @@ namespace Tests.Core.Net
         {
             Assert.DoesNotThrow(delegate
             {
-                CKAN.Repo.Update(manager, ksp.KSP, new NullUser(), TestData.BadKANZip());
+                manager.registry.Repositories = new SortedDictionary<string, Repository>()
+                {
+                    {
+                        "testRepo",
+                        new Repository("testRepo", TestData.BadKANZip())
+                    }
+                };
+                CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
             });
         }
     }

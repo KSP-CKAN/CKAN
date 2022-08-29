@@ -441,4 +441,10 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="ChangeTypeRemove" xml:space="preserve"><value>Remove</value></data>
   <data name="ChangeTypeUpdate" xml:space="preserve"><value>Update</value></data>
   <data name="ChangeTypeReplace" xml:space="preserve"><value>Replace</value></data>
+  <data name="ModDownloadsFailedMessage" xml:space="preserve"><value>The following mods failed to download. You can retry or abort, and if you retry, you can choose to remove some mods (and any mods that depend on them) from the changeset. Mods that share the same download link will automatically be updated to the same choice.</value></data>
+  <data name="ModDownloadsFailedColHdr" xml:space="preserve"><value>Mod</value></data>
+  <data name="ModDownloadsFailedAbortBtn" xml:space="preserve"><value>Abort whole changeset</value></data>
+  <data name="RepoDownloadsFailedMessage" xml:space="preserve"><value>The following repositories failed to download. You can retry or abort, and if you retry, you can choose to remove some repositories. Note that any repositories you skip will be PERMANENTLY removed from your configuration!</value></data>
+  <data name="RepoDownloadsFailedColHdr" xml:space="preserve"><value>Repository</value></data>
+  <data name="RepoDownloadsFailedAbortBtn" xml:space="preserve"><value>Abort whole update</value></data>
 </root>

@@ -1,8 +1,12 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using CKAN.Configuration;
+using System.Collections.Generic;
+using System.Linq;
+
 using Autofac;
+
+using CKAN.Configuration;
 
 namespace CKAN.GUI
 {
@@ -128,6 +132,22 @@ namespace CKAN.GUI
             );
         }
 
+        private void minimizeNotifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        {
+            // Unminimize
+            OpenWindow();
+
+            // Check all the upgrade checkboxes
+            ManageMods.MarkAllUpdates();
+
+            // Install
+            Wait.StartWaiting(InstallMods, PostInstallMods, true,
+                new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
+                    ManageMods.mainModList.ComputeUserChangeSet(RegistryManager.Instance(CurrentInstance).registry, CurrentInstance.VersionCriteria()).ToList(),
+                    RelationshipResolver.DependsOnlyOpts()
+                )
+            );
+        }
         #endregion
     }
 }

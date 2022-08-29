@@ -437,9 +437,12 @@ namespace CKAN.ConsoleUI {
                 );
                 recent.Clear();
                 try {
+                    var downloader = new NetAsyncDownloader(ps);
+
                     Repo.UpdateAllRepositories(
                         RegistryManager.Instance(manager.CurrentInstance),
                         manager.CurrentInstance,
+                        downloader,
                         manager.Cache,
                         ps
                     );

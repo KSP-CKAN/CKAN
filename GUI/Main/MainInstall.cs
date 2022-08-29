@@ -149,7 +149,8 @@ namespace CKAN.GUI
             downloader.Progress    += Wait.SetModuleProgress;
             downloader.AllComplete += Wait.DownloadsComplete;
 
-            Wait.OnCancel += () => {
+            Wait.OnCancel += () =>
+            {
                 canceled = true;
                 downloader.CancelDownload();
             };
@@ -196,12 +197,16 @@ namespace CKAN.GUI
                         var crit = CurrentInstance.VersionCriteria();
                         var fullChangeset = new RelationshipResolver(toInstall, null, opts.Value, registry, crit).ModList().ToList();
                         var dfd = new DownloadsFailedDialog(
-                            k.Exceptions.Select(kvp => new KeyValuePair<CkanModule[], Exception>(
+                            Properties.Resources.ModDownloadsFailedMessage,
+                            Properties.Resources.ModDownloadsFailedColHdr,
+                            Properties.Resources.ModDownloadsFailedAbortBtn,
+                            k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
                                 fullChangeset.Where(m => m.download == kvp.Key.download).ToArray(),
-                                kvp.Value)));
+                                kvp.Value)),
+                            (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
                         dfd.ShowDialog(this);
                         var abort = dfd.Abort;
-                        var skip  = dfd.Skip;
+                        var skip  = dfd.Skip.Select(m => m as CkanModule).ToArray();
                         dfd.Dispose();
                         if (abort)
                         {
@@ -220,8 +225,7 @@ namespace CKAN.GUI
                                 // Consider virtual dependencies satisfied so user can make a new choice if they skip
                                 rel => rel.LatestAvailableWithProvides(registry, crit).Count > 1)
                                 .ToHashSet();
-                            toInstall.RemoveAll(m =>
-                             dependers.Contains(m.identifier));
+                            toInstall.RemoveAll(m => dependers.Contains(m.identifier));
                         }
 
                         // Now we loop back around again
@@ -374,11 +378,6 @@ namespace CKAN.GUI
                             new SettingsDialog(currentUser).ShowDialog(this);
                             Enabled = true;
                         }
-                        break;
-
-                    case ModuleDownloadErrorsKraken exc:
-                        currentUser.RaiseMessage(exc.ToString());
-                        currentUser.RaiseError(exc.ToString());
                         break;
 
                     case DirectoryNotFoundKraken exc:

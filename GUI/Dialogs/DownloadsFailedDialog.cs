@@ -36,10 +36,19 @@ namespace CKAN.GUI
         /// <summary>
         /// Initialize the form, loads the grid and sets the height to fit
         /// </summary>
-        /// <param name="Exceptions">Sequence of arrays of modules that failed and the exceptions they threw</param>
-        public DownloadsFailedDialog(IEnumerable<KeyValuePair<CkanModule[], Exception>> Exceptions)
+        /// <param name="Exceptions">Sequence of arrays of objects representing downloads that failed and the exceptions they threw</param>
+        public DownloadsFailedDialog(
+            string TopLabelMessage,
+            string ModuleColumnHeader,
+            string AbortButtonCaption,
+            IEnumerable<KeyValuePair<object[], Exception>> Exceptions,
+            Func<object, object, bool> rowsLinked)
         {
             InitializeComponent();
+            ExplanationLabel.Text = TopLabelMessage;
+            ModColumn.HeaderText  = ModuleColumnHeader;
+            AbortButton.Text      = AbortButtonCaption;
+            this.rowsLinked       = rowsLinked;
             rows = Exceptions
                 // One row per affected mod (mods can share downloads)
                 .SelectMany(kvp => kvp.Key.Select(m => new DownloadRow(m, kvp.Value)))
@@ -55,19 +64,19 @@ namespace CKAN.GUI
         /// <summary>
         /// True if user clicked the abort button, false otherwise
         /// </summary>
-        public bool         Abort { get; private set; } = false;
+        public bool     Abort { get; private set; } = false;
         /// <summary>
-        /// Array of modules with a checkmark in the Retry column
+        /// Array of data objects with a checkmark in the Retry column
         /// </summary>
-        public CkanModule[] Retry => rows.Where(r => r.Retry)
-                                         .Select(r => r.Module)
-                                         .ToArray();
+        public object[] Retry => rows.Where(r => r.Retry)
+                                     .Select(r => r.Data)
+                                     .ToArray();
         /// <summary>
-        /// Array of modules with a checkmark in the Skip column
+        /// Array of data objects with a checkmark in the Skip column
         /// </summary>
-        public CkanModule[] Skip  => rows.Where(r => r.Skip)
-                                         .Select(r => r.Module)
-                                         .ToArray();
+        public object[] Skip  => rows.Where(r => r.Skip)
+                                     .Select(r => r.Data)
+                                     .ToArray();
 
         /// <summary>
         /// Open the user guide when the user presses F1
@@ -113,13 +122,12 @@ namespace CKAN.GUI
         /// </summary>
         private void DownloadsGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            var binding  = (BindingList<DownloadRow>) DownloadsGrid.DataSource;
-            var download = rows[e.RowIndex].Module.download;
-            var retry    = rows[e.RowIndex].Retry;
+            var binding = (BindingList<DownloadRow>)DownloadsGrid.DataSource;
+            var retry   = rows[e.RowIndex].Retry;
             // Update all rows with this download
             for (int i = 0; i < rows.Count; ++i)
             {
-                if (rows[i].Module.download == download)
+                if (rowsLinked(rows[e.RowIndex].Data, rows[i].Data))
                 {
                     if (i != e.RowIndex)
                     {
@@ -143,6 +151,7 @@ namespace CKAN.GUI
         }
 
         private List<DownloadRow> rows;
+        private Func<object, object, bool> rowsLinked;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(DownloadsFailedDialog));
     }
@@ -155,31 +164,31 @@ namespace CKAN.GUI
         /// <summary>
         /// Initialize the row
         /// </summary>
-        /// <param name="module">The module for this row</param>
-        /// <param name="exc">The exception thrown while trying to download this module</param>
-        public DownloadRow(CkanModule module, Exception exc)
+        /// <param name="data">The data object for this row</param>
+        /// <param name="exc">The exception thrown when this download failed</param>
+        public DownloadRow(object data, Exception exc)
         {
-            Retry   = true;
-            Module  = module;
-            Error   = exc.Message;
+            Retry = true;
+            Data  = data;
+            Error = exc.Message;
         }
 
         /// <summary>
         /// True if Retry column has a checkmark
         /// </summary>
-        public bool       Retry   { get; set; }
+        public bool   Retry { get; set; }
         /// <summary>
         /// True if Skip column has a checkmark
         /// </summary>
         /// <value></value>
-        public bool       Skip    { get => !Retry; set { Retry = !value; } }
+        public bool   Skip  { get => !Retry; set { Retry = !value; } }
         /// <summary>
-        /// This row's module
+        /// This row's data object
         /// </summary>
-        public CkanModule Module  { get; private set; }
+        public object Data  { get; private set; }
         /// <summary>
         /// This row's download error
         /// </summary>
-        public string     Error   { get; private set; }
+        public string Error { get; private set; }
     }
 }

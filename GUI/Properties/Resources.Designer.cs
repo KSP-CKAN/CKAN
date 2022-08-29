@@ -1081,5 +1081,25 @@ namespace CKAN.GUI.Properties {
         internal static string ChangeTypeReplace {
             get { return (string)(ResourceManager.GetObject("ChangeTypeReplace", resourceCulture)); }
         }
+
+        internal static string ModDownloadsFailedMessage {
+            get { return (string)(ResourceManager.GetObject("ModDownloadsFailedMessage", resourceCulture)); }
+        }
+        internal static string ModDownloadsFailedColHdr {
+            get { return (string)(ResourceManager.GetObject("ModDownloadsFailedColHdr", resourceCulture)); }
+        }
+        internal static string ModDownloadsFailedAbortBtn {
+            get { return (string)(ResourceManager.GetObject("ModDownloadsFailedAbortBtn", resourceCulture)); }
+        }
+
+        internal static string RepoDownloadsFailedMessage {
+            get { return (string)(ResourceManager.GetObject("RepoDownloadsFailedMessage", resourceCulture)); }
+        }
+        internal static string RepoDownloadsFailedColHdr {
+            get { return (string)(ResourceManager.GetObject("RepoDownloadsFailedColHdr", resourceCulture)); }
+        }
+        internal static string RepoDownloadsFailedAbortBtn {
+            get { return (string)(ResourceManager.GetObject("RepoDownloadsFailedAbortBtn", resourceCulture)); }
+        }
     }
 }
