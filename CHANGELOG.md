@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Log errors instead of PRs for OOO mods on GitHub (#3625 by: HebaruSan)
 - [Core] Cache remote build map, fetch in registry refresh (#3624 by: HebaruSan; reviewed: techman83)
 - [Tooling] Self review option for merge script (#3650 by: HebaruSan; reviewed: DasSkelett)
+- [Infra] Improve translation process (#3648 by: Olympic1; reviewed: HebaruSan)
 
 ## v1.31.0 (IKAROS)
 
