@@ -816,7 +816,7 @@ namespace Tests.Core.Relationships
 
             var mod_not_in_resolver_list = generator.GeneratorRandomModule();
             CollectionAssert.DoesNotContain(relationship_resolver.ModList(),mod_not_in_resolver_list);
-            Assert.Throws<ArgumentException>(() => relationship_resolver.ReasonFor(mod_not_in_resolver_list));
+            Assert.Throws<ArgumentException>(() => relationship_resolver.ReasonsFor(mod_not_in_resolver_list));
         }
 
         [Test]
@@ -829,8 +829,8 @@ namespace Tests.Core.Relationships
             AddToRegistry(mod);
 
             var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
-            var reason = relationship_resolver.ReasonFor(mod);
-            Assert.That(reason, Is.AssignableTo<SelectionReason.UserRequested>());
+            var reasons = relationship_resolver.ReasonsFor(mod);
+            Assert.That(reasons[0], Is.AssignableTo<SelectionReason.UserRequested>());
         }
 
         [Test]
@@ -846,10 +846,10 @@ namespace Tests.Core.Relationships
 
             options.with_all_suggests = true;
             var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
-            var reason = relationship_resolver.ReasonFor(suggested);
+            var reasons = relationship_resolver.ReasonsFor(suggested);
 
-            Assert.That(reason, Is.AssignableTo<SelectionReason.Suggested>());
-            Assert.That(reason.Parent, Is.EqualTo(mod));
+            Assert.That(reasons[0], Is.AssignableTo<SelectionReason.Suggested>());
+            Assert.That(reasons[0].Parent, Is.EqualTo(mod));
         }
 
         [Test]
@@ -877,13 +877,13 @@ namespace Tests.Core.Relationships
             options.with_all_suggests = true;
             options.with_recommends = true;
             var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
-            var reason = relationship_resolver.ReasonFor(recommendedA);
-            Assert.That(reason, Is.AssignableTo<SelectionReason.Recommended>());
-            Assert.That(reason.Parent, Is.EqualTo(suggested));
+            var reasons = relationship_resolver.ReasonsFor(recommendedA);
+            Assert.That(reasons[0], Is.AssignableTo<SelectionReason.Recommended>());
+            Assert.That(reasons[0].Parent, Is.EqualTo(suggested));
 
-            reason = relationship_resolver.ReasonFor(recommendedB);
-            Assert.That(reason, Is.AssignableTo<SelectionReason.Recommended>());
-            Assert.That(reason.Parent, Is.EqualTo(suggested));
+            reasons = relationship_resolver.ReasonsFor(recommendedB);
+            Assert.That(reasons[0], Is.AssignableTo<SelectionReason.Recommended>());
+            Assert.That(reasons[0].Parent, Is.EqualTo(suggested));
         }
 
         // The whole point of autodetected mods is they can participate in relationships.

@@ -54,11 +54,8 @@ namespace CKAN.GUI
                 {
                     Wait.StartWaiting(InstallMods, PostInstallMods, true,
                         new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                            result.Select(mod => new ModChange(
-                                mod,
-                                GUIModChangeType.Install,
-                                null
-                            )).ToList(),
+                            result.Select(mod => new ModChange(mod, GUIModChangeType.Install))
+                                .ToList(),
                             RelationshipResolver.DependsOnlyOpts()
                         )
                     );

@@ -298,7 +298,7 @@ Free up space on that device or change your settings to use another location.
   <data name="RelationshipResolverNoLongerUsedReason" xml:space="preserve"><value>Auto-installed, depending modules removed</value></data>
   <data name="RelationshipResolverReplacementReason" xml:space="preserve"><value>Replacing {0}</value></data>
   <data name="RelationshipResolverSuggestedReason" xml:space="preserve"><value>Suggested by {0}</value></data>
-  <data name="RelationshipResolverDependsReason" xml:space="preserve"><value>To satisfy dependency from {0}</value></data>
+  <data name="RelationshipResolverDependsReason" xml:space="preserve"><value>Dependency of {0}</value></data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve"><value>Recommended by {0}</value></data>
   <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve"><value>{0} has an unsatisfied dependency: {1} is not installed</value></data>
   <data name="SanityCheckerConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>

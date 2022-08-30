@@ -97,8 +97,8 @@ namespace CKAN
         // as recreating them from reasons is no longer possible.
         private readonly List<KeyValuePair<CkanModule, CkanModule>> conflicts =
             new List<KeyValuePair<CkanModule, CkanModule>>();
-        private readonly Dictionary<CkanModule, SelectionReason> reasons =
-            new Dictionary<CkanModule, SelectionReason>(new NameComparer());
+        private readonly Dictionary<CkanModule, List<SelectionReason>> reasons =
+            new Dictionary<CkanModule, List<SelectionReason>>(new NameComparer());
 
         private readonly IRegistryQuerier registry;
         private readonly GameVersionCriteria GameVersion;
@@ -109,6 +109,18 @@ namespace CKAN
         private readonly HashSet<CkanModule> installed_modules;
 
         private HashSet<CkanModule> alreadyResolved = new HashSet<CkanModule>();
+
+        private void AddReason(CkanModule module, SelectionReason reason)
+        {
+            if (reasons.TryGetValue(module, out List<SelectionReason> modReasons))
+            {
+                modReasons.Add(reason);
+            }
+            else
+            {
+                reasons.Add(module, new List<SelectionReason>() { reason });
+            }
+        }
 
         /// <summary>
         /// Creates a new Relationship resolver.
@@ -126,7 +138,7 @@ namespace CKAN
             var installed_relationship = new SelectionReason.Installed();
             foreach (var module in installed_modules)
             {
-                reasons.Add(module, installed_relationship);
+                AddReason(module, installed_relationship);
             }
         }
 
@@ -397,8 +409,10 @@ namespace CKAN
                 {
                     if (installingCandidate != null)
                     {
+                        log.DebugFormat("Match already in changeset: {0}, adding reason {1}", installingCandidate, reason);
                         // Resolve the relationships of the matching module here
                         // because that's when it would happen if non-virtual
+                        AddReason(installingCandidate, reason);
                         Resolve(installingCandidate, options, stanza);
                     }
                     // If null, it's a DLL or DLC, which we can't resolve
@@ -576,11 +590,7 @@ namespace CKAN
                 }
             }
             modlist.Add(module.identifier, module);
-            if (!reasons.ContainsKey(module))
-                reasons.Add(module, reason);
-            // Override Installed for upgrades
-            else if (reasons[module] is SelectionReason.Installed)
-                reasons[module] = reason;
+            AddReason(module, reason);
 
             log.DebugFormat("Added {0}", module.identifier);
             // Stop here if it doesn't have any provide aliases.
@@ -651,10 +661,60 @@ namespace CKAN
 
         /// <summary>
         /// Returns a list of all modules to install to satisfy the changes required.
+        /// Each mod should be after its dependencies and before its reverse dependencies.
+        /// Circular dependencies throw a wrench into that, but for now we treat them the same
+        /// and let the chips fall where they may.
         /// </summary>
         public IEnumerable<CkanModule> ModList()
         {
-            return new HashSet<CkanModule>(modlist.Values);
+            var sortedDepsFirst = new List<CkanModule>();
+            try
+            {
+                var modules = modlist.Values
+                    .Distinct()
+                    .OrderBy(m => m.depends?.Count ?? 0)
+                    .ThenBy(m => m.name);
+                foreach (var module in modules)
+                {
+                    try
+                    {
+                        var reasons = ReasonsFor(module);
+                        var userReq = reasons.Any(r => r is SelectionReason.UserRequested);
+                        var index = reasons
+                            // Ignore non-dependencies
+                            .Where(r =>
+                                !(r is SelectionReason.UserRequested
+                                    || r is SelectionReason.Installed
+                                    || (userReq
+                                        // Ignore if depending mod is not user requested
+                                        && ReasonsFor(r.Parent).All(parentR =>
+                                            !(parentR is SelectionReason.UserRequested)))))
+                            .Select(r => sortedDepsFirst.IndexOf(r.Parent))
+                            // Ignore parents not added yet
+                            .Except(Enumerable.Repeat<int>(-1, 1))
+                            // Put it at the earliest point where a depender needs it
+                            // (throws into below catch block if empty)
+                            .Min();
+                        log.DebugFormat("Parent found: {0}, {1}", index, module);
+                        sortedDepsFirst.Insert(index, module);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // No index, just append
+                        log.DebugFormat("Valid parent not added yet: {0}", module);
+                        sortedDepsFirst.Add(module);
+                    }
+                }
+                if (sortedDepsFirst.Count > 0)
+                {
+                    log.DebugFormat("Returning sorted: {0}", string.Join(", ", sortedDepsFirst));
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Debug("Failed to get mod list", ex);
+            }
+            return sortedDepsFirst;
         }
 
         /// <summary>
@@ -687,27 +747,7 @@ namespace CKAN
             get { return !conflicts.Any(); }
         }
 
-        /// <summary>
-        /// Displays a user readable string explaining why the mod was chosen.
-        /// </summary>
-        /// <param name="mod">A Mod in the resolvers modlist. Must not be null</param>
-        /// <returns></returns>
-        public string ReasonStringFor(CkanModule mod)
-        {
-            if (mod == null)
-            {
-                // If we don't have a CkanModule, it must be a DLL or DLC
-                return Properties.Resources.RelationshipResolverUnmanaged;
-            }
-            var reason = ReasonFor(mod);
-            var is_root_type = reason.GetType() == typeof(SelectionReason.UserRequested)
-                || reason.GetType() == typeof(SelectionReason.Installed);
-            return is_root_type
-                ? reason.Reason
-                : reason.Reason + ReasonStringFor(reason.Parent);
-        }
-
-        public SelectionReason ReasonFor(CkanModule mod)
+        public List<SelectionReason> ReasonsFor(CkanModule mod)
         {
             if (mod == null) throw new ArgumentNullException();
             if (!reasons.ContainsKey(mod) && !ModList().Contains(mod))
@@ -731,8 +771,8 @@ namespace CKAN
         /// </returns>
         public bool IsAutoInstalled(CkanModule mod)
         {
-            var reason = ReasonFor(mod);
-            return reason is SelectionReason.Depends && !reason.Parent.IsMetapackage;
+            return ReasonsFor(mod).All(reason =>
+                reason is SelectionReason.Depends && !reason.Parent.IsMetapackage);
         }
     }
 
@@ -742,11 +782,10 @@ namespace CKAN
     /// </summary>
     public abstract class SelectionReason
     {
-        //Currently assumed to exist for any relationship other than useradded or installed
+        // Currently assumed to exist for any relationship other than UserRequested or Installed
         public virtual CkanModule Parent { get; protected set; }
-        //Should contain a newline at the end of the string.
-        public abstract String Reason { get; }
-
+        public abstract string Reason { get; }
+        public virtual string DescribeWith(IEnumerable<SelectionReason> others) => Reason;
 
         public class Installed : SelectionReason
         {
@@ -760,9 +799,7 @@ namespace CKAN
             }
 
             public override string Reason
-            {
-                get { return Properties.Resources.RelationshipResolverInstalledReason; }
-            }
+                => Properties.Resources.RelationshipResolverInstalledReason;
         }
 
         public class UserRequested : SelectionReason
@@ -777,17 +814,13 @@ namespace CKAN
             }
 
             public override string Reason
-            {
-                get { return Properties.Resources.RelationshipResolverUserReason; }
-            }
+                => Properties.Resources.RelationshipResolverUserReason;
         }
 
         public class NoLongerUsed: SelectionReason
         {
             public override string Reason
-            {
-                get { return Properties.Resources.RelationshipResolverNoLongerUsedReason; }
-            }
+                => Properties.Resources.RelationshipResolverNoLongerUsedReason;
         }
 
         public class Replacement : SelectionReason
@@ -799,9 +832,7 @@ namespace CKAN
             }
 
             public override string Reason
-            {
-                get { return string.Format(Properties.Resources.RelationshipResolverReplacementReason, Parent.name); }
-            }
+                => string.Format(Properties.Resources.RelationshipResolverReplacementReason, Parent.name);
         }
 
         public sealed class Suggested : SelectionReason
@@ -813,9 +844,7 @@ namespace CKAN
             }
 
             public override string Reason
-            {
-                get { return string.Format(Properties.Resources.RelationshipResolverSuggestedReason, Parent.name); }
-            }
+                => string.Format(Properties.Resources.RelationshipResolverSuggestedReason, Parent.name);
         }
 
         public sealed class Depends : SelectionReason
@@ -827,9 +856,11 @@ namespace CKAN
             }
 
             public override string Reason
-            {
-                get { return string.Format(Properties.Resources.RelationshipResolverDependsReason, Parent.name); }
-            }
+                => string.Format(Properties.Resources.RelationshipResolverDependsReason, Parent.name);
+
+            public override string DescribeWith(IEnumerable<SelectionReason> others)
+                => string.Format(Properties.Resources.RelationshipResolverDependsReason,
+                    string.Join(", ", Enumerable.Repeat(this, 1).Concat(others).Select(r => r.Parent.name)));
         }
 
         public sealed class Recommended : SelectionReason
@@ -841,9 +872,7 @@ namespace CKAN
             }
 
             public override string Reason
-            {
-                get { return string.Format(Properties.Resources.RelationshipResolverRecommendedReason, Parent.name); }
-            }
+                => string.Format(Properties.Resources.RelationshipResolverRecommendedReason, Parent.name);
         }
     }
 }

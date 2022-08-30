@@ -27,18 +27,10 @@ namespace CKAN.GUI
                 if (installed != null)
                 {
                     // Already installed, remove it first
-                    userChangeSet.Add(new ModChange(
-                        installed.Module,
-                        GUIModChangeType.Remove,
-                        null
-                    ));
+                    userChangeSet.Add(new ModChange(installed.Module, GUIModChangeType.Remove));
                 }
                 // Install the selected mod
-                userChangeSet.Add(new ModChange(
-                    module,
-                    GUIModChangeType.Install,
-                    null
-                ));
+                userChangeSet.Add(new ModChange(module, GUIModChangeType.Install));
                 if (userChangeSet.Count > 0)
                 {
                     // Resolve the provides relationships in the dependencies

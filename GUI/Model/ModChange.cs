@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CKAN.GUI
@@ -34,22 +35,32 @@ namespace CKAN.GUI
     /// </summary>
     public class ModChange
     {
-        public CkanModule       Mod        { get; private set; }
+        public CkanModule        Mod        { get; private set; }
         /// <summary>
         /// For changes involving another version in addition to the main one,
         /// this is that other version.
         /// When upgrading, the target version.
         /// Otherwise not used.
         /// </summary>
-        public GUIModChangeType ChangeType { get; private set; }
-        public SelectionReason  Reason     { get; private set; }
+        public GUIModChangeType  ChangeType { get; private set; }
+        public SelectionReason[] Reasons    { get; private set; }
+
+        // If we don't have a Reason, the user probably wanted to install it
+        public ModChange(CkanModule mod, GUIModChangeType changeType)
+            : this(mod, changeType, new SelectionReason.UserRequested())
+        {
+        }
 
         public ModChange(CkanModule mod, GUIModChangeType changeType, SelectionReason reason)
+            : this(mod, changeType, new SelectionReason[] { reason })
+        {
+        }
+
+        public ModChange(CkanModule mod, GUIModChangeType changeType, IEnumerable<SelectionReason> reasons)
         {
             Mod        = mod;
             ChangeType = changeType;
-            // If we don't have a Reason, the user probably wanted to install it
-            Reason     = reason ?? new SelectionReason.UserRequested();
+            Reasons    = reasons.ToArray();
         }
 
         public override bool Equals(object obj)
@@ -72,7 +83,7 @@ namespace CKAN.GUI
 
         public override string ToString()
         {
-            return $"{ChangeType.ToI18nString()} {Mod} ({Reason})";
+            return $"{ChangeType.ToI18nString()} {Mod} ({Description})";
         }
 
         protected string modNameAndStatus(CkanModule m)
@@ -93,19 +104,23 @@ namespace CKAN.GUI
             }
         }
 
+        private string DescribeGroup(IEnumerable<SelectionReason> reasons)
+            => reasons.First().DescribeWith(reasons.Skip(1));
+
         public virtual string Description
-        {
-            get
-            {
-                return Reason.Reason.Trim();
-            }
-        }
+            => string.Join("; ",
+                Reasons.GroupBy(r => r.GetType(), (t, reasons) =>
+                    DescribeGroup(
+                        // Avoid the reasons that throw exceptions for Parent
+                        t.Equals(typeof(SelectionReason.Depends))
+                            ? reasons.OrderBy(r => r.Parent.name)
+                            : reasons)));
     }
 
     public class ModUpgrade : ModChange
     {
-        public ModUpgrade(CkanModule mod, GUIModChangeType changeType, SelectionReason reason, CkanModule targetMod)
-            : base(mod, changeType, reason)
+        public ModUpgrade(CkanModule mod, GUIModChangeType changeType, IEnumerable<SelectionReason> reasons, CkanModule targetMod)
+            : base(mod, changeType, reasons)
         {
             this.targetMod = targetMod;
         }

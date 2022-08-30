@@ -307,17 +307,17 @@ namespace CKAN.GUI
             }
             else if (IsReplaceChecked)
             {
-                yield return new ModChange(Mod, GUIModChangeType.Replace, null);
+                yield return new ModChange(Mod, GUIModChangeType.Replace);
             }
             else if (!selectedIsInstalled)
             {
                 if (InstalledMod != null)
                 {
-                    yield return new ModChange(InstalledMod.Module, GUIModChangeType.Remove, null);
+                    yield return new ModChange(InstalledMod.Module, GUIModChangeType.Remove);
                 }
                 if (SelectedMod != null)
                 {
-                    yield return new ModChange(SelectedMod, GUIModChangeType.Install, null);
+                    yield return new ModChange(SelectedMod, GUIModChangeType.Install);
                 }
             }
         }
