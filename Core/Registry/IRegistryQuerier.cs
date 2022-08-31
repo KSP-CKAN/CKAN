@@ -125,6 +125,14 @@ namespace CKAN
         /// <param name="with_provides">If set to false will not check for provided versions.</param>
         /// <returns>The version of the mod or null if not found</returns>
         ModuleVersion InstalledVersion(string identifier, bool with_provides = true);
+
+        /// <summary>
+        /// Check whether any versions of this mod are installable (including dependencies) on the given game versions
+        /// </summary>
+        /// <param name="identifier">Identifier of mod</param>
+        /// <param name="crit">Game versions</param>
+        /// <returns>true if any version is recursively compatible, false otherwise</returns>
+        bool IdentifierCompatible(string identifier, GameVersionCriteria crit);
     }
 
     /// <summary>

@@ -538,6 +538,20 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Check whether any versions of this mod are installable (including dependencies) on the given game versions.
+        /// Quicker than checking CompatibleModules for one identifier.
+        /// </summary>
+        /// <param name="identifier">Identifier of mod</param>
+        /// <param name="crit">Game versions</param>
+        /// <returns>true if any version is recursively compatible, false otherwise</returns>
+        public bool IdentifierCompatible(string identifier, GameVersionCriteria crit)
+        {
+            // Set up our compatibility partition
+            SetCompatibleVersion(crit);
+            return sorter.Compatible.ContainsKey(identifier);
+        }
+
+        /// <summary>
         /// <see cref="IRegistryQuerier.LatestAvailable" />
         /// </summary>
         public CkanModule LatestAvailable(

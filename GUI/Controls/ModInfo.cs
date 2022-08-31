@@ -585,7 +585,7 @@ namespace CKAN.GUI
                 out CkanModule matched))
             {
                 return matched != null
-                    ? indexedNode(registry, matched, relationship, true)
+                    ? indexedNode(registry, matched, relationship, crit)
                     : nonModuleNode(relDescr, null, relationship);
             }
 
@@ -603,13 +603,13 @@ namespace CKAN.GUI
                 && relDescr.ContainsAny(new string[] { dependencyModules[0].identifier }))
             {
                 // Only one exact match module, return a simple node
-                return indexedNode(registry, dependencyModules[0], relationship, crit != null);
+                return indexedNode(registry, dependencyModules[0], relationship, crit);
             }
             else
             {
                 // Several found or not same id, return a "provides" node
                 return providesNode(relDescr.ToString(), relationship,
-                    dependencyModules.Select(dep => indexedNode(registry, dep, relationship, crit != null))
+                    dependencyModules.Select(dep => indexedNode(registry, dep, relationship, crit))
                 );
             }
         }
@@ -623,11 +623,11 @@ namespace CKAN.GUI
                 compat.SelectMany(otherMod =>
                     GetModRelationships(otherMod, relationship)
                         .Where(r => r.MatchesAny(toFind, null, null))
-                        .Select(r => indexedNode(registry, otherMod, relationship, true)))
+                        .Select(r => indexedNode(registry, otherMod, relationship, crit)))
                 .Concat(incompat.SelectMany(otherMod =>
                     GetModRelationships(otherMod, relationship)
                         .Where(r => r.MatchesAny(toFind, null, null))
-                        .Select(r => indexedNode(registry, otherMod, relationship, false)))));
+                        .Select(r => indexedNode(registry, otherMod, relationship, crit)))));
         }
 
         private TreeNode providesNode(string identifier, RelationshipType relationship, IEnumerable<TreeNode> children)
@@ -641,9 +641,11 @@ namespace CKAN.GUI
             };
         }
 
-        private TreeNode indexedNode(IRegistryQuerier registry, CkanModule module, RelationshipType relationship, bool compatible)
+        private TreeNode indexedNode(IRegistryQuerier registry, CkanModule module, RelationshipType relationship, GameVersionCriteria crit)
         {
             int icon = (int)relationship + 1;
+            bool compatible = crit == null ? false
+                : registry.IdentifierCompatible(module.identifier, crit);
             string suffix = compatible ? ""
                 : $" ({registry.CompatibleGameVersions(manager.CurrentInstance.game, module.identifier)})";
             return new TreeNode($"{module.name} {module.version}{suffix}", icon, icon)
