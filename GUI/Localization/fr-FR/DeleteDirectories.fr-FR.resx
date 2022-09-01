@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,12 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ExplanationLabel.Text" xml:space="preserve"><value>Les dossiers ci-dessous sont des restes de mods qui ont été enlevés. Ils contiennent des fichiers qui n'ont pas été installés par CKAN (probablement générés par un mod ou installés manuellement). CKAN ne supprime pas automatiquement les fichiers qu'il n'a pas installé, mais vous pouvez choisir de les enlever si cela a l'air sans danger (recommandé).
-Notez que si vous décidez de ne pas enlever un dossier, ModuleManager risque de penser à tort que ce mod est toujours installé.</value></data>
-  <data name="DirectoryColumn.Text" xml:space="preserve"><value>Dossiers</value></data>
-  <data name="FileColumn.Text" xml:space="preserve"><value>Contenu du Dossier</value></data>
-  <data name="SelectDirPrompt.Text" xml:space="preserve"><value>Cliquez sur un dossier à gauche pour voir son contenu</value></data>
-  <data name="OpenDirectoryButton.Text" xml:space="preserve"><value>Ouvrir le Dossier</value></data>
-  <data name="DeleteButton.Text" xml:space="preserve"><value>Supprimer coché</value></data>
-  <data name="KeepAllButton.Text" xml:space="preserve"><value>Tout garder</value></data>
+  <data name="ExplanationLabel.Text" xml:space="preserve">
+    <value>Les dossiers ci-dessous sont des restes de mods qui ont été enlevés. Ils contiennent des fichiers qui n'ont pas été installés par CKAN (probablement générés par un mod ou installés manuellement). CKAN ne supprime pas automatiquement les fichiers qu'il n'a pas installé, mais vous pouvez choisir de les enlever si cela a l'air sans danger (recommandé).
+Notez que si vous décidez de ne pas enlever un dossier, ModuleManager risque de penser à tort que ce mod est toujours installé.</value>
+  </data>
+  <data name="DirectoryColumn.Text" xml:space="preserve">
+    <value>Dossiers</value>
+  </data>
+  <data name="FileColumn.Text" xml:space="preserve">
+    <value>Contenu du Dossier</value>
+  </data>
+  <data name="SelectDirPrompt.Text" xml:space="preserve">
+    <value>Cliquez sur un dossier à gauche pour voir son contenu</value>
+  </data>
+  <data name="OpenDirectoryButton.Text" xml:space="preserve">
+    <value>Ouvrir le Dossier</value>
+  </data>
+  <data name="DeleteButton.Text" xml:space="preserve">
+    <value>Supprimer coché</value>
+  </data>
+  <data name="KeepAllButton.Text" xml:space="preserve">
+    <value>Tout garder</value>
+  </data>
 </root>
