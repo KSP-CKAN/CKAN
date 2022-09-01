@@ -118,9 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
-  <data name="GlobalFiltersGroupBox.Text" xml:space="preserve"><value>전역 필터</value></data>
-  <data name="InstanceFiltersGroupBox.Text" xml:space="preserve"><value>인스턴스 한정 필터</value></data>
-  <data name="AddMiniAVCButton.Text" xml:space="preserve"><value>MiniAVC 추가</value></data>
-  <data name="WarningLabel.Text" xml:space="preserve"><value>참고: 설치 필터를 바꾸면 나중의 모드 설치에만 적용돼요. 현재 모드들은 영향을 받지 않아요.</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>설치 필터</value></data>
+  <data name="GlobalFiltersGroupBox.Text" xml:space="preserve">
+    <value>전역 필터</value>
+  </data>
+  <data name="InstanceFiltersGroupBox.Text" xml:space="preserve">
+    <value>인스턴스 한정 필터</value>
+  </data>
+  <data name="AddMiniAVCButton.Text" xml:space="preserve">
+    <value>MiniAVC 추가</value>
+  </data>
+  <data name="WarningLabel.Text" xml:space="preserve">
+    <value>참고: 설치 필터를 바꾸면 나중의 모드 설치에만 적용돼요. 현재 모드들은 영향을 받지 않아요.</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>설치 필터</value>
+  </data>
 </root>
