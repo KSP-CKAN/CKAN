@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -135,41 +135,124 @@
   <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>Fichier</value></data>
-  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve"><value>Gérer les instances de jeu</value></data>
-  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>Ouvrir le répertoire du jeu</value></data>
-  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Installer depuis .ckan...</value></data>
-  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Sauvegarder la liste des mods installés...</value></data>
-  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>Exporter modpack...</value></data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>Importer des &amp;mods téléchargés...</value></data>
-  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve"><value>Auditionner les recommandations</value></data>
-  <data name="ExitToolButton.Text" xml:space="preserve"><value>&amp;Quitter</value></data>
-  <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>Options</value></data>
-  <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>Options CKAN</value></data>
-  <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>Plugins CKAN</value></data>
-  <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve"><value>Filtres d'Installation</value></data>
-  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>Ligne de commande du jeu</value></data>
-  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>Versions de jeu compatibles</value></data>
-  <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>Aide</value></data>
-  <data name="userGuideToolStripMenuItem.Text" xml:space="preserve"><value>Guide d'utilisation</value></data>
-  <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>Signaler un problème avec le client CKAN</value></data>
-  <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>Signaler un problème avec les métadonnées de mod</value></data>
-  <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>À propos</value></data>
-  <data name="ManageModsTabPage.Text" xml:space="preserve"><value>Gérer les mods</value></data>
-  <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Résumé des changements</value></data>
-  <data name="WaitTabPage.Text" xml:space="preserve"><value>Registre</value></data>
-  <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Choisir des mods</value></data>
-  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Choisir des mods recommandés, suggérés, ou supportés</value></data>
-  <data name="PlayTimeTabPage.Text" xml:space="preserve"><value>Temps de Jeu</value></data>
-  <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>Supprimer les dossiers</value></data>
-  <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Modifier le Modpack</value></data>
-  <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
-  <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>Aucune Mise à jour disponible</value></data>
-  <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Rafraîchir</value></data>
-  <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>Pause</value></data>
-  <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>Ouvrir CKAN</value></data>
-  <data name="openGameToolStripMenuItem.Text" xml:space="preserve"><value>Lancer le jeu</value></data>
-  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>Ouvrir le Répertoire du Jeu</value></data>
-  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>Options CKAN</value></data>
-  <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>Quitter</value></data>
+  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
+    <value>Fichier</value>
+  </data>
+  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve">
+    <value>Gérer les instances de jeu</value>
+  </data>
+  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
+    <value>Ouvrir le répertoire du jeu</value>
+  </data>
+  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Installer depuis .ckan...</value>
+  </data>
+  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Sauvegarder la liste des mods installés...</value>
+  </data>
+  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve">
+    <value>Exporter modpack...</value>
+  </data>
+  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Importer des &amp;mods téléchargés...</value>
+  </data>
+  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve">
+    <value>Auditionner les recommandations</value>
+  </data>
+  <data name="ExitToolButton.Text" xml:space="preserve">
+    <value>&amp;Quitter</value>
+  </data>
+  <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Options CKAN</value>
+  </data>
+  <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Plugins CKAN</value>
+  </data>
+  <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve">
+    <value>Filtres d'Installation</value>
+  </data>
+  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve">
+    <value>Ligne de commande du jeu</value>
+  </data>
+  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Versions de jeu compatibles</value>
+  </data>
+  <data name="helpToolStripMenuItem.Text" xml:space="preserve">
+    <value>Aide</value>
+  </data>
+  <data name="userGuideToolStripMenuItem.Text" xml:space="preserve">
+    <value>Guide d'utilisation</value>
+  </data>
+  <data name="discordToolStripMenuItem.Text" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve">
+    <value>Signaler un problème avec le client CKAN</value>
+  </data>
+  <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve">
+    <value>Signaler un problème avec les métadonnées de mod</value>
+  </data>
+  <data name="aboutToolStripMenuItem.Text" xml:space="preserve">
+    <value>À propos</value>
+  </data>
+  <data name="ManageModsTabPage.Text" xml:space="preserve">
+    <value>Gérer les mods</value>
+  </data>
+  <data name="ChangesetTabPage.Text" xml:space="preserve">
+    <value>Résumé des changements</value>
+  </data>
+  <data name="WaitTabPage.Text" xml:space="preserve">
+    <value>Registre</value>
+  </data>
+  <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve">
+    <value>Choisir des mods</value>
+  </data>
+  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve">
+    <value>Choisir des mods recommandés, suggérés, ou supportés</value>
+  </data>
+  <data name="PlayTimeTabPage.Text" xml:space="preserve">
+    <value>Temps de Jeu</value>
+  </data>
+  <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve">
+    <value>Supprimer les dossiers</value>
+  </data>
+  <data name="EditModpackTabPage.Text" xml:space="preserve">
+    <value>Modifier le Modpack</value>
+  </data>
+  <data name="minimizeNotifyIcon.Text" xml:space="preserve">
+    <value>CKAN</value>
+  </data>
+  <data name="updatesToolStripMenuItem.Text" xml:space="preserve">
+    <value>Aucune Mise à jour disponible</value>
+  </data>
+  <data name="refreshToolStripMenuItem.Text" xml:space="preserve">
+    <value>Rafraîchir</value>
+  </data>
+  <data name="pauseToolStripMenuItem.Text" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="openCKANToolStripMenuItem.Text" xml:space="preserve">
+    <value>Ouvrir CKAN</value>
+  </data>
+  <data name="openGameToolStripMenuItem.Text" xml:space="preserve">
+    <value>Lancer le jeu</value>
+  </data>
+  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
+    <value>Ouvrir le Répertoire du Jeu</value>
+  </data>
+  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve">
+    <value>Options CKAN</value>
+  </data>
+  <data name="quitToolStripMenuItem.Text" xml:space="preserve">
+    <value>Quitter</value>
+  </data>
+  <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
+    <value>Temps de jeu...</value>
+  </data>
+  <data name="minimizeNotifyIcon.Text" xml:space="preserve">
+    <value>CKAN</value>
+  </data>
 </root>
