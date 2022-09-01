@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -126,48 +126,134 @@
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>48</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="RepositoryGroupBox.Text" xml:space="preserve"><value>Répertoires des métadonnées</value></data>
-  <data name="NewRepoButton.Text" xml:space="preserve"><value>Nouveau</value></data>
-  <data name="UpRepoButton.Text" xml:space="preserve"><value>Haut</value></data>
-  <data name="DownRepoButton.Text" xml:space="preserve"><value>Bas</value></data>
-  <data name="DeleteRepoButton.Text" xml:space="preserve"><value>Supprimer</value></data>
-  <data name="AuthTokensGroupBox.Text" xml:space="preserve"><value>Jetons d'authentification</value></data>
-  <data name="NewAuthTokenButton.Text" xml:space="preserve"><value>Nouveau</value></data>
-  <data name="DeleteAuthTokenButton.Text" xml:space="preserve"><value>Supprimer</value></data>
-  <data name="CacheGroupBox.Text" xml:space="preserve"><value>Cache des téléchargements</value></data>
-  <data name="CacheSummary.Text" xml:space="preserve"><value>N fichiers, M Mo</value></data>
-  <data name="CacheLimitPreLabel.Text" xml:space="preserve"><value>Taille de cache max:</value></data>
-  <data name="CacheLimitPostLabel.Text" xml:space="preserve"><value>Mo (vide pour illimité)</value></data>
-  <data name="ChangeCacheButton.Text" xml:space="preserve"><value>Changer...</value></data>
-  <data name="ClearCacheButton.Text" xml:space="preserve"><value>Purger</value></data>
-  <data name="PurgeToLimitMenuItem.Text" xml:space="preserve"><value>Purger jusqu'à la limite</value></data>
-  <data name="PurgeAllMenuItem.Text" xml:space="preserve"><value>Purger tout</value></data>
-  <data name="ResetCacheButton.Text" xml:space="preserve"><value>Réinitialiser</value></data>
-  <data name="OpenCacheButton.Text" xml:space="preserve"><value>Ouvrir</value></data>
-  <data name="AutoUpdateGroupBox.Text" xml:space="preserve"><value>Mises à jour auto</value></data>
-  <data name="LocalVersionPreLabel.Text" xml:space="preserve"><value>Version locale:</value></data>
-  <data name="LocalVersionLabel.Text" xml:space="preserve"><value>v0.0.0</value></data>
-  <data name="LatestVersionPreLabel.Text" xml:space="preserve"><value>Dernière version:</value></data>
-  <data name="LatestVersionLabel.Text" xml:space="preserve"><value>???</value></data>
-  <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve"><value>Vérifier les mises à jour CKAN au lancement</value></data>
-  <data name="CheckForUpdatesButton.Text" xml:space="preserve"><value>Vérifier MàJ</value></data>
-  <data name="InstallUpdateButton.Text" xml:space="preserve"><value>Installer MàJ</value></data>
-  <data name="BehaviourGroupBox.Text" xml:space="preserve"><value>Comportement</value></data>
-  <data name="EnableTrayIconCheckBox.Text" xml:space="preserve"><value>Activer l'icône réduite</value></data>
-  <data name="MinimizeToTrayCheckBox.Text" xml:space="preserve"><value>Minimiser dans la barre des tâches</value></data>
-  <data name="RefreshPreLabel.Text" xml:space="preserve"><value>Rafraîchir la liste toutes les</value></data>
-  <data name="RefreshPostLabel.Text" xml:space="preserve"><value>minutes</value></data>
-  <data name="PauseRefreshCheckBox.Text" xml:space="preserve"><value>Mettre le rafraîchissement en pause</value></data>
-  <data name="MoreSettingsGroupBox.Text" xml:space="preserve"><value>Plus d'options</value></data>
-  <data name="LanguageSelectionLabel.Text" xml:space="preserve"><value>Langue (redémarrage requis):</value></data>
-  <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve"><value>Mettre à jour les répertoires au lancement</value></data>
-  <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>Cacher les nombres epoch (temps POSIX) dans la liste de mods (redémarrage requis)</value></data>
-  <data name="HideVCheckbox.Text" xml:space="preserve"><value>Cacher "v" dans la liste de mods (redémarrage requis)</value></data>
-  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>Trier avec la colonne "MàJ" lorsque le bouton "Ajouter les mises à jour disponibles" est cliqué</value></data>
-  <data name="RepoNameHeader.Text" xml:space="preserve"><value>Nom</value></data>
-  <data name="RepoURLHeader.Text" xml:space="preserve"><value>URL</value></data>
-  <data name="AuthHostHeader.Text" xml:space="preserve"><value>Hôte</value></data>
-  <data name="AuthTokenHeader.Text" xml:space="preserve"><value>Jeton</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Options</value></data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
+  <data name="RepositoryGroupBox.Text" xml:space="preserve">
+    <value>Répertoires des métadonnées</value>
+  </data>
+  <data name="NewRepoButton.Text" xml:space="preserve">
+    <value>Nouveau</value>
+  </data>
+  <data name="UpRepoButton.Text" xml:space="preserve">
+    <value>Haut</value>
+  </data>
+  <data name="DownRepoButton.Text" xml:space="preserve">
+    <value>Bas</value>
+  </data>
+  <data name="DeleteRepoButton.Text" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="AuthTokensGroupBox.Text" xml:space="preserve">
+    <value>Jetons d'authentification</value>
+  </data>
+  <data name="NewAuthTokenButton.Text" xml:space="preserve">
+    <value>Nouveau</value>
+  </data>
+  <data name="DeleteAuthTokenButton.Text" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="CacheGroupBox.Text" xml:space="preserve">
+    <value>Cache des téléchargements</value>
+  </data>
+  <data name="CacheSummary.Text" xml:space="preserve">
+    <value>N fichiers, M Mo</value>
+  </data>
+  <data name="CacheLimitPreLabel.Text" xml:space="preserve">
+    <value>Taille de cache max:</value>
+  </data>
+  <data name="CacheLimitPostLabel.Text" xml:space="preserve">
+    <value>Mo (vide pour illimité)</value>
+  </data>
+  <data name="ChangeCacheButton.Text" xml:space="preserve">
+    <value>Changer...</value>
+  </data>
+  <data name="ClearCacheButton.Text" xml:space="preserve">
+    <value>Purger</value>
+  </data>
+  <data name="PurgeToLimitMenuItem.Text" xml:space="preserve">
+    <value>Purger jusqu'à la limite</value>
+  </data>
+  <data name="PurgeAllMenuItem.Text" xml:space="preserve">
+    <value>Purger tout</value>
+  </data>
+  <data name="ResetCacheButton.Text" xml:space="preserve">
+    <value>Réinitialiser</value>
+  </data>
+  <data name="OpenCacheButton.Text" xml:space="preserve">
+    <value>Ouvrir</value>
+  </data>
+  <data name="AutoUpdateGroupBox.Text" xml:space="preserve">
+    <value>Mises à jour auto</value>
+  </data>
+  <data name="LocalVersionPreLabel.Text" xml:space="preserve">
+    <value>Version locale:</value>
+  </data>
+  <data name="LocalVersionLabel.Text" xml:space="preserve">
+    <value>v0.0.0</value>
+  </data>
+  <data name="LatestVersionPreLabel.Text" xml:space="preserve">
+    <value>Dernière version:</value>
+  </data>
+  <data name="LatestVersionLabel.Text" xml:space="preserve">
+    <value>???</value>
+  </data>
+  <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve">
+    <value>Vérifier les mises à jour CKAN au lancement</value>
+  </data>
+  <data name="CheckForUpdatesButton.Text" xml:space="preserve">
+    <value>Vérifier MàJ</value>
+  </data>
+  <data name="InstallUpdateButton.Text" xml:space="preserve">
+    <value>Installer MàJ</value>
+  </data>
+  <data name="BehaviourGroupBox.Text" xml:space="preserve">
+    <value>Comportement</value>
+  </data>
+  <data name="EnableTrayIconCheckBox.Text" xml:space="preserve">
+    <value>Activer l'icône réduite</value>
+  </data>
+  <data name="MinimizeToTrayCheckBox.Text" xml:space="preserve">
+    <value>Minimiser dans la barre des tâches</value>
+  </data>
+  <data name="RefreshPreLabel.Text" xml:space="preserve">
+    <value>Rafraîchir la liste toutes les</value>
+  </data>
+  <data name="RefreshPostLabel.Text" xml:space="preserve">
+    <value>minutes</value>
+  </data>
+  <data name="PauseRefreshCheckBox.Text" xml:space="preserve">
+    <value>Mettre le rafraîchissement en pause</value>
+  </data>
+  <data name="MoreSettingsGroupBox.Text" xml:space="preserve">
+    <value>Plus d'options</value>
+  </data>
+  <data name="LanguageSelectionLabel.Text" xml:space="preserve">
+    <value>Langue (redémarrage requis):</value>
+  </data>
+  <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve">
+    <value>Mettre à jour les répertoires au lancement</value>
+  </data>
+  <data name="HideEpochsCheckbox.Text" xml:space="preserve">
+    <value>Cacher les nombres epoch (temps POSIX) dans la liste de mods (redémarrage requis)</value>
+  </data>
+  <data name="HideVCheckbox.Text" xml:space="preserve">
+    <value>Cacher "v" dans la liste de mods (redémarrage requis)</value>
+  </data>
+  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve">
+    <value>Trier avec la colonne "MàJ" lorsque le bouton "Ajouter les mises à jour disponibles" est cliqué</value>
+  </data>
+  <data name="RepoNameHeader.Text" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="RepoURLHeader.Text" xml:space="preserve">
+    <value>Lien</value>
+  </data>
+  <data name="AuthHostHeader.Text" xml:space="preserve">
+    <value>Hôte</value>
+  </data>
+  <data name="AuthTokenHeader.Text" xml:space="preserve">
+    <value>Jeton</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Options</value>
+  </data>
 </root>
