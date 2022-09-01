@@ -117,9 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MessageLabel.Text" xml:space="preserve"><value>선택해주세요:</value></data>
-  <data name="SelectButton.Text" xml:space="preserve"><value>선택</value></data>
-  <data name="DefaultButton.Text" xml:space="preserve"><value>기본</value></data>
-  <data name="CancelButton.Text" xml:space="preserve"><value>취소하기</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>CKAN 선택창</value></data>
+  <data name="MessageLabel.Text" xml:space="preserve">
+    <value>선택해주세요:</value>
+  </data>
+  <data name="SelectButton.Text" xml:space="preserve">
+    <value>선택</value>
+  </data>
+  <data name="DefaultButton.Text" xml:space="preserve">
+    <value>기본</value>
+  </data>
+  <data name="CancelButton.Text" xml:space="preserve">
+    <value>취소하기</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>CKAN 선택창</value>
+  </data>
 </root>
