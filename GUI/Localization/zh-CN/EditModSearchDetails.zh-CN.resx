@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,29 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="menuStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>236, 17</value>
-  </metadata>
-  <metadata name="ModListContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>351, 17</value>
-  </metadata>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="FilterByNameLabel.Text" xml:space="preserve">
+    <value>按Mod名称筛选:</value>
   </data>
-  <data name="FilterByAuthorLabel.Text" xml:space="preserve"><value>按作者名筛选:</value></data>
-  <data name="FilterByNameLabel.Text" xml:space="preserve"><value>按Mod名称筛选:</value></data>
-  <data name="FilterByDescriptionLabel.Text" xml:space="preserve"><value>按描述筛选:</value></data>
-  <data name="FilterByLanguageLabel.Text" xml:space="preserve"><value>按语言筛选:</value></data>
-  <data name="FilterByDependsLabel.Text" xml:space="preserve"><value>按依赖Mod筛选:</value></data>
-  <data name="FilterByRecommendsLabel.Text" xml:space="preserve"><value>按推荐Mod筛选:</value></data>
-  <data name="FilterBySuggestsLabel.Text" xml:space="preserve"><value>按建议Mod筛选:</value></data>
-  <data name="FilterByConflictsLabel.Text" xml:space="preserve"><value>按冲突Mod筛选:</value></data>
-  <data name="FilterByTagsLabel.Text" xml:space="preserve"><value>分类:</value></data>
-  <data name="FilterByLabelsLabel.Text" xml:space="preserve"><value>标签:</value></data>
-  <data name="CompatibleLabel.Text" xml:space="preserve"><value>兼容:</value></data>
-  <data name="InstalledLabel.Text" xml:space="preserve"><value>已安装:</value></data>
-  <data name="CachedLabel.Text" xml:space="preserve"><value>已缓存:</value></data>
-  <data name="NewlyCompatibleLabel.Text" xml:space="preserve"><value>新:</value></data>
-  <data name="UpgradeableLabel.Text" xml:space="preserve"><value>可更新:</value></data>
-  <data name="ReplaceableLabel.Text" xml:space="preserve"><value>可替换:</value></data>
+  <data name="FilterByAuthorLabel.Text" xml:space="preserve">
+    <value>按作者名筛选:</value>
+  </data>
+  <data name="FilterByDescriptionLabel.Text" xml:space="preserve">
+    <value>按描述筛选:</value>
+  </data>
+  <data name="FilterByLanguageLabel.Text" xml:space="preserve">
+    <value>按语言筛选:</value>
+  </data>
+  <data name="FilterByDependsLabel.Text" xml:space="preserve">
+    <value>按依赖Mod筛选:</value>
+  </data>
+  <data name="FilterByRecommendsLabel.Text" xml:space="preserve">
+    <value>按推荐Mod筛选:</value>
+  </data>
+  <data name="FilterBySuggestsLabel.Text" xml:space="preserve">
+    <value>按建议Mod筛选:</value>
+  </data>
+  <data name="FilterByConflictsLabel.Text" xml:space="preserve">
+    <value>按冲突Mod筛选:</value>
+  </data>
+  <data name="FilterByTagsLabel.Text" xml:space="preserve">
+    <value>分类:</value>
+  </data>
+  <data name="FilterByLabelsLabel.Text" xml:space="preserve">
+    <value>标签:</value>
+  </data>
+  <data name="CompatibleLabel.Text" xml:space="preserve">
+    <value>兼容:</value>
+  </data>
+  <data name="InstalledLabel.Text" xml:space="preserve">
+    <value>已安装:</value>
+  </data>
+  <data name="CachedLabel.Text" xml:space="preserve">
+    <value>已缓存:</value>
+  </data>
+  <data name="NewlyCompatibleLabel.Text" xml:space="preserve">
+    <value>新:</value>
+  </data>
+  <data name="UpgradeableLabel.Text" xml:space="preserve">
+    <value>可更新:</value>
+  </data>
+  <data name="ReplaceableLabel.Text" xml:space="preserve">
+    <value>可替换:</value>
+  </data>
 </root>
