@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="OKButton.Text" xml:space="preserve"><value>확인</value></data>
-  <data name="CancelRenameInstanceButton.Text" xml:space="preserve"><value>취소하기</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>설치 이름 변경</value></data>
+  <data name="OKButton.Text" xml:space="preserve">
+    <value>확인</value>
+  </data>
+  <data name="CancelRenameInstanceButton.Text" xml:space="preserve">
+    <value>취소하기</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>설치 이름 변경</value>
+  </data>
 </root>
