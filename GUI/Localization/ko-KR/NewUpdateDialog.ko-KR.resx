@@ -118,9 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
-  <data name="label1.Text" xml:space="preserve"><value>버전:</value></data>
-  <data name="VersionLabel.Text" xml:space="preserve"><value>v0.0.0</value></data>
-  <data name="InstallUpdateButton.Text" xml:space="preserve"><value>설치</value></data>
-  <data name="CancelUpdateButton.Text" xml:space="preserve"><value>나중에</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>CKAN의 새로운 버전을 받을 수 있어요.</value></data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>버전:</value>
+  </data>
+  <data name="VersionLabel.Text" xml:space="preserve">
+    <value>v0.0.0</value>
+  </data>
+  <data name="InstallUpdateButton.Text" xml:space="preserve">
+    <value>설치</value>
+  </data>
+  <data name="CancelUpdateButton.Text" xml:space="preserve">
+    <value>나중에</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>CKAN의 새로운 버전을 받을 수 있어요.</value>
+  </data>
 </root>
