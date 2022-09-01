@@ -118,12 +118,28 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
-  <data name="RepositoryGroupBox.Text" xml:space="preserve"><value>공식 리포지토리</value></data>
-  <data name="RepoCancel.Text" xml:space="preserve"><value>&amp;취소</value></data>
-  <data name="RepoOK.Text" xml:space="preserve"><value>&amp;추가</value></data>
-  <data name="RepoNameHeader.Text" xml:space="preserve"><value>이름</value></data>
-  <data name="RepoURLHeader.Text" xml:space="preserve"><value>URL</value></data>
-  <data name="RepoNameLabel.Text" xml:space="preserve"><value>이름:</value></data>
-  <data name="RepoUrlLabel.Text" xml:space="preserve"><value>URL:</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>리포지터리 추가</value></data>
+  <data name="RepositoryGroupBox.Text" xml:space="preserve">
+    <value>공식 리포지토리</value>
+  </data>
+  <data name="RepoCancel.Text" xml:space="preserve">
+    <value>&amp;취소</value>
+  </data>
+  <data name="RepoOK.Text" xml:space="preserve">
+    <value>&amp;추가</value>
+  </data>
+  <data name="RepoNameHeader.Text" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="RepoURLHeader.Text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="RepoNameLabel.Text" xml:space="preserve">
+    <value>이름:</value>
+  </data>
+  <data name="RepoUrlLabel.Text" xml:space="preserve">
+    <value>URL:</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>리포지터리 추가</value>
+  </data>
 </root>
