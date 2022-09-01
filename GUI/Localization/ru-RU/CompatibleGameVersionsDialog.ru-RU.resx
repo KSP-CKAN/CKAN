@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,18 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve"><value>Проверять совместимость со следующими версиями игры:</value></data>
-  <data name="label2.Text" xml:space="preserve"><value>Версия игры:</value></data>
-  <data name="label3.Text" xml:space="preserve"><value>Внимание! Невозможно убедиться в полной совместимости модификаций с выбранными версиями игры! Действуйте с осторожностью.</value></data>
-  <data name="GameVersionLabel.Text" xml:space="preserve"><value>&lt;версия&gt;</value></data>
-  <data name="ClearSelectionButton.Text" xml:space="preserve"><value>Очистить выбор</value></data>
-  <data name="AddVersionToListButton.Text" xml:space="preserve"><value>Добавить</value></data>
-  <data name="label5.Text" xml:space="preserve"><value>Добавить версию:</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>Пример: при выборе версии установки игры «1.x» с данной установкой будут совместимы все модификации, совместимые с версиями 1.x.0, 1.x.1 и т.д.</value></data>
-  <data name="label7.Text" xml:space="preserve"><value>Для уточнения настроек это окно будет показываться после каждого обновления игры.</value></data>
-  <data name="SaveButton.Text" xml:space="preserve"><value>Принять</value></data>
-  <data name="label8.Text" xml:space="preserve"><value>Папка:</value></data>
-  <data name="GameLocationLabel.Text" xml:space="preserve"><value>&lt;путь к сборке&gt;</value></data>
-  <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve"><value>Отмена</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Совместимые версии игры</value></data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Проверять совместимость со следующими версиями игры:</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Версия игры:</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>Внимание! Невозможно убедиться в полной совместимости модификаций с выбранными версиями игры! Действуйте с осторожностью.</value>
+  </data>
+  <data name="GameVersionLabel.Text" xml:space="preserve">
+    <value>&lt;версия&gt;</value>
+  </data>
+  <data name="ClearSelectionButton.Text" xml:space="preserve">
+    <value>Очистить выбор</value>
+  </data>
+  <data name="AddVersionToListButton.Text" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Добавить версию:</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Пример: при выборе версии установки игры «1.x» с данной установкой будут совместимы все модификации, совместимые с версиями 1.x.0, 1.x.1 и т.д.</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>Для уточнения настроек это окно будет показываться после каждого обновления игры.</value>
+  </data>
+  <data name="SaveButton.Text" xml:space="preserve">
+    <value>Принять</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>Папка:</value>
+  </data>
+  <data name="GameLocationLabel.Text" xml:space="preserve">
+    <value>&lt;путь к сборке&gt;</value>
+  </data>
+  <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Совместимые версии игры</value>
+  </data>
 </root>
