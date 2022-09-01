@@ -118,8 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
-  <data name="autoCheckLabel.Text" xml:space="preserve"><value>CKAN을 실행했을 때 자동으로 업데이트를 체크할까요(설정에서 변경 가능)?</value></data>
-  <data name="YesButton.Text" xml:space="preserve"><value>네, 체크해주세요.</value></data>
-  <data name="NoButton.Text" xml:space="preserve"><value>아니요</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>업데이크 체크하기</value></data>
+  <data name="autoCheckLabel.Text" xml:space="preserve">
+    <value>CKAN을 실행했을 때 자동으로 업데이트를 체크할까요(설정에서 변경 가능)?</value>
+  </data>
+  <data name="YesButton.Text" xml:space="preserve">
+    <value>네, 체크해주세요.</value>
+  </data>
+  <data name="NoButton.Text" xml:space="preserve">
+    <value>아니요</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>업데이크 체크하기</value>
+  </data>
 </root>
