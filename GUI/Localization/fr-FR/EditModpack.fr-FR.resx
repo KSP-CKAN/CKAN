@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,24 +117,67 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IdentifierLabel.Text" xml:space="preserve"><value>Identifiant:</value></data>
-  <data name="NameLabel.Text" xml:space="preserve"><value>Nom:</value></data>
-  <data name="AbstractLabel.Text" xml:space="preserve"><value>Description:</value></data>
-  <data name="VersionLabel.Text" xml:space="preserve"><value>Version:</value></data>
-  <data name="GameVersionLabel.Text" xml:space="preserve"><value>Versions de jeu:</value></data>
-  <data name="LicenseLabel.Text" xml:space="preserve"><value>Licence:</value></data>
-  <data name="IncludeVersionsCheckbox.Text" xml:space="preserve"><value>Sauvegarder les versions de mod</value></data>
-  <data name="ModNameColumn.Text" xml:space="preserve"><value>Mod</value></data>
-  <data name="ModVersionColumn.Text" xml:space="preserve"><value>Version</value></data>
-  <data name="ModAbstractColumn.Text" xml:space="preserve"><value>Description</value></data>
-  <data name="DependsGroup.Header" xml:space="preserve"><value>Dépendance</value></data>
-  <data name="RecommendationsGroup.Header" xml:space="preserve"><value>Recommandé</value></data>
-  <data name="SuggestionsGroup.Header" xml:space="preserve"><value>Suggéré</value></data>
-  <data name="IgnoredGroup.Header" xml:space="preserve"><value>Ignoré</value></data>
-  <data name="DependsRadioButton.Text" xml:space="preserve"><value>Dépendance</value></data>
-  <data name="RecommendsRadioButton.Text" xml:space="preserve"><value>Recommandé</value></data>
-  <data name="SuggestsRadioButton.Text" xml:space="preserve"><value>Suggéré</value></data>
-  <data name="IgnoreRadioButton.Text" xml:space="preserve"><value>Ignoré</value></data>
-  <data name="CancelExportButton.Text" xml:space="preserve"><value>Annuler</value></data>
-  <data name="ExportModpackButton.Text" xml:space="preserve"><value>Exporter</value></data>
+  <data name="IdentifierLabel.Text" xml:space="preserve">
+    <value>Identifiant:</value>
+  </data>
+  <data name="NameLabel.Text" xml:space="preserve">
+    <value>Nom:</value>
+  </data>
+  <data name="AbstractLabel.Text" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="AuthorLabel.Text" xml:space="preserve">
+    <value>Auteur:</value>
+  </data>
+  <data name="VersionLabel.Text" xml:space="preserve">
+    <value>Version :</value>
+  </data>
+  <data name="GameVersionLabel.Text" xml:space="preserve">
+    <value>Versions de jeu:</value>
+  </data>
+  <data name="LicenseLabel.Text" xml:space="preserve">
+    <value>Licence :</value>
+  </data>
+  <data name="IncludeVersionsCheckbox.Text" xml:space="preserve">
+    <value>Sauvegarder les versions de mod</value>
+  </data>
+  <data name="ModNameColumn.Text" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="ModVersionColumn.Text" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="ModAbstractColumn.Text" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DependsGroup.Header" xml:space="preserve">
+    <value>Dépendance</value>
+  </data>
+  <data name="RecommendationsGroup.Header" xml:space="preserve">
+    <value>Recommandé</value>
+  </data>
+  <data name="SuggestionsGroup.Header" xml:space="preserve">
+    <value>Suggéré</value>
+  </data>
+  <data name="IgnoredGroup.Header" xml:space="preserve">
+    <value>Ignoré</value>
+  </data>
+  <data name="DependsRadioButton.Text" xml:space="preserve">
+    <value>Dépendance</value>
+  </data>
+  <data name="RecommendsRadioButton.Text" xml:space="preserve">
+    <value>Recommandé</value>
+  </data>
+  <data name="SuggestsRadioButton.Text" xml:space="preserve">
+    <value>Suggéré</value>
+  </data>
+  <data name="IgnoreRadioButton.Text" xml:space="preserve">
+    <value>Ignoré</value>
+  </data>
+  <data name="CancelExportButton.Text" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="ExportModpackButton.Text" xml:space="preserve">
+    <value>Exporter</value>
+  </data>
 </root>
