@@ -127,47 +127,133 @@
     <value>48</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
-  <data name="RepositoryGroupBox.Text" xml:space="preserve"><value>메타데이터 리포지터리</value></data>
-  <data name="NewRepoButton.Text" xml:space="preserve"><value>신규</value></data>
-  <data name="UpRepoButton.Text" xml:space="preserve"><value>위로</value></data>
-  <data name="DownRepoButton.Text" xml:space="preserve"><value>아래로</value></data>
-  <data name="DeleteRepoButton.Text" xml:space="preserve"><value>지우기</value></data>
-  <data name="AuthTokensGroupBox.Text" xml:space="preserve"><value>인증 토큰</value></data>
-  <data name="NewAuthTokenButton.Text" xml:space="preserve"><value>신규</value></data>
-  <data name="DeleteAuthTokenButton.Text" xml:space="preserve"><value>지우기</value></data>
-  <data name="CacheGroupBox.Text" xml:space="preserve"><value>다운로드 캐시</value></data>
-  <data name="CacheSummary.Text" xml:space="preserve"><value>N개 파일, M MB</value></data>
-  <data name="CacheLimitPreLabel.Text" xml:space="preserve"><value>최대 캐시 크기</value></data>
-  <data name="CacheLimitPostLabel.Text" xml:space="preserve"><value>MB (비워두면 무제한)</value></data>
-  <data name="ChangeCacheButton.Text" xml:space="preserve"><value>변경:</value></data>
-  <data name="ClearCacheButton.Text" xml:space="preserve"><value>삭제</value></data>
-  <data name="PurgeToLimitMenuItem.Text" xml:space="preserve"><value>제한까지 삭제</value></data>
-  <data name="PurgeAllMenuItem.Text" xml:space="preserve"><value>모두 삭제</value></data>
-  <data name="ResetCacheButton.Text" xml:space="preserve"><value>초기화</value></data>
-  <data name="OpenCacheButton.Text" xml:space="preserve"><value>열기</value></data>
-  <data name="AutoUpdateGroupBox.Text" xml:space="preserve"><value>자동 업데이트</value></data>
-  <data name="LocalVersionPreLabel.Text" xml:space="preserve"><value>현재 버전:</value></data>
-  <data name="LocalVersionLabel.Text" xml:space="preserve"><value>v0.0.0</value></data>
-  <data name="LatestVersionPreLabel.Text" xml:space="preserve"><value>최신 버전:</value></data>
-  <data name="LatestVersionLabel.Text" xml:space="preserve"><value>???</value></data>
-  <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve"><value>실행 시에 업데이트 체크</value></data>
-  <data name="CheckForUpdatesButton.Text" xml:space="preserve"><value>업데이크 체크하기</value></data>
-  <data name="InstallUpdateButton.Text" xml:space="preserve"><value>업데이트 설치</value></data>
-  <data name="BehaviourGroupBox.Text" xml:space="preserve"><value>동작 설정</value></data>
-  <data name="EnableTrayIconCheckBox.Text" xml:space="preserve"><value>알림 영역 아이콘 사용</value></data>
-  <data name="MinimizeToTrayCheckBox.Text" xml:space="preserve"><value>알림 영역으로 최소화</value></data>
-  <data name="RefreshPreLabel.Text" xml:space="preserve"><value>모드리스트 갱신을 매</value></data>
-  <data name="RefreshPostLabel.Text" xml:space="preserve"><value>분 마다</value></data>
-  <data name="PauseRefreshCheckBox.Text" xml:space="preserve"><value>새로고침 중단</value></data>
-  <data name="MoreSettingsGroupBox.Text" xml:space="preserve"><value>추가 설정</value></data>
-  <data name="LanguageSelectionLabel.Text" xml:space="preserve"><value>언어 (재시작 필요):</value></data>
-  <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve"><value>실행할 때 리포지터리 업데이트</value></data>
-  <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>모드 리스트에서 에포크 수 숨기기 (재시작 필요)</value></data>
-  <data name="HideVCheckbox.Text" xml:space="preserve"><value>모드 리스트에서 "v" 숨기기 (재시작 필요)</value></data>
-  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>"가능한 업데이트들 추가" 버튼을 눌렀을 때 자동으로 "업데이트" 항목으로 정렬</value></data>
-  <data name="RepoNameHeader.Text" xml:space="preserve"><value>이름</value></data>
-  <data name="RepoURLHeader.Text" xml:space="preserve"><value>URL</value></data>
-  <data name="AuthHostHeader.Text" xml:space="preserve"><value>호스트</value></data>
-  <data name="AuthTokenHeader.Text" xml:space="preserve"><value>토큰</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>설정</value></data>
+  <data name="RepositoryGroupBox.Text" xml:space="preserve">
+    <value>메타데이터 리포지터리</value>
+  </data>
+  <data name="NewRepoButton.Text" xml:space="preserve">
+    <value>신규</value>
+  </data>
+  <data name="UpRepoButton.Text" xml:space="preserve">
+    <value>위로</value>
+  </data>
+  <data name="DownRepoButton.Text" xml:space="preserve">
+    <value>아래로</value>
+  </data>
+  <data name="DeleteRepoButton.Text" xml:space="preserve">
+    <value>지우기</value>
+  </data>
+  <data name="AuthTokensGroupBox.Text" xml:space="preserve">
+    <value>인증 토큰</value>
+  </data>
+  <data name="NewAuthTokenButton.Text" xml:space="preserve">
+    <value>신규</value>
+  </data>
+  <data name="DeleteAuthTokenButton.Text" xml:space="preserve">
+    <value>지우기</value>
+  </data>
+  <data name="CacheGroupBox.Text" xml:space="preserve">
+    <value>다운로드 캐시</value>
+  </data>
+  <data name="CacheSummary.Text" xml:space="preserve">
+    <value>N개 파일, M MB</value>
+  </data>
+  <data name="CacheLimitPreLabel.Text" xml:space="preserve">
+    <value>최대 캐시 크기</value>
+  </data>
+  <data name="CacheLimitPostLabel.Text" xml:space="preserve">
+    <value>MB (비워두면 무제한)</value>
+  </data>
+  <data name="ChangeCacheButton.Text" xml:space="preserve">
+    <value>변경:</value>
+  </data>
+  <data name="ClearCacheButton.Text" xml:space="preserve">
+    <value>삭제</value>
+  </data>
+  <data name="PurgeToLimitMenuItem.Text" xml:space="preserve">
+    <value>제한까지 삭제</value>
+  </data>
+  <data name="PurgeAllMenuItem.Text" xml:space="preserve">
+    <value>모두 삭제</value>
+  </data>
+  <data name="ResetCacheButton.Text" xml:space="preserve">
+    <value>초기화</value>
+  </data>
+  <data name="OpenCacheButton.Text" xml:space="preserve">
+    <value>열기</value>
+  </data>
+  <data name="AutoUpdateGroupBox.Text" xml:space="preserve">
+    <value>자동 업데이트</value>
+  </data>
+  <data name="LocalVersionPreLabel.Text" xml:space="preserve">
+    <value>현재 버전:</value>
+  </data>
+  <data name="LocalVersionLabel.Text" xml:space="preserve">
+    <value>v0.0.0</value>
+  </data>
+  <data name="LatestVersionPreLabel.Text" xml:space="preserve">
+    <value>최신 버전:</value>
+  </data>
+  <data name="LatestVersionLabel.Text" xml:space="preserve">
+    <value>???</value>
+  </data>
+  <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve">
+    <value>실행 시에 업데이트 체크</value>
+  </data>
+  <data name="CheckForUpdatesButton.Text" xml:space="preserve">
+    <value>업데이크 체크하기</value>
+  </data>
+  <data name="InstallUpdateButton.Text" xml:space="preserve">
+    <value>업데이트 설치</value>
+  </data>
+  <data name="BehaviourGroupBox.Text" xml:space="preserve">
+    <value>동작 설정</value>
+  </data>
+  <data name="EnableTrayIconCheckBox.Text" xml:space="preserve">
+    <value>알림 영역 아이콘 사용</value>
+  </data>
+  <data name="MinimizeToTrayCheckBox.Text" xml:space="preserve">
+    <value>알림 영역으로 최소화</value>
+  </data>
+  <data name="RefreshPreLabel.Text" xml:space="preserve">
+    <value>모드리스트 갱신을 매</value>
+  </data>
+  <data name="RefreshPostLabel.Text" xml:space="preserve">
+    <value>분 마다</value>
+  </data>
+  <data name="PauseRefreshCheckBox.Text" xml:space="preserve">
+    <value>새로고침 중단</value>
+  </data>
+  <data name="MoreSettingsGroupBox.Text" xml:space="preserve">
+    <value>추가 설정</value>
+  </data>
+  <data name="LanguageSelectionLabel.Text" xml:space="preserve">
+    <value>언어 (재시작 필요):</value>
+  </data>
+  <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve">
+    <value>실행할 때 리포지터리 업데이트</value>
+  </data>
+  <data name="HideEpochsCheckbox.Text" xml:space="preserve">
+    <value>모드 리스트에서 에포크 수 숨기기 (재시작 필요)</value>
+  </data>
+  <data name="HideVCheckbox.Text" xml:space="preserve">
+    <value>모드 리스트에서 "v" 숨기기 (재시작 필요)</value>
+  </data>
+  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve">
+    <value>"가능한 업데이트들 추가" 버튼을 눌렀을 때 자동으로 "업데이트" 항목으로 정렬</value>
+  </data>
+  <data name="RepoNameHeader.Text" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="RepoURLHeader.Text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="AuthHostHeader.Text" xml:space="preserve">
+    <value>호스트</value>
+  </data>
+  <data name="AuthTokenHeader.Text" xml:space="preserve">
+    <value>토큰</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>설정</value>
+  </data>
 </root>
