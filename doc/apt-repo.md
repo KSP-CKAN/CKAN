@@ -9,8 +9,8 @@ We have created an APT repository that you can add to your Debian-based OS to in
 These are [the main releases](https://github.com/KSP-CKAN/CKAN/releases), recommended for most users. You will have the same features at the same time as everyone else, but you will have the added conveniences of APT managing the updates for you.
 
 ```
-sudo curl -sS -o /etc/apt/trusted.gpg.d/ksp-ckan.gpg https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/debian/ksp-ckan.gpg
-sudo apt-add-repository -u -y 'deb https://ksp-ckan.s3-us-west-2.amazonaws.com/deb stable main'
+sudo curl -sS -o /usr/share/keyrings/ckan-archive-keyring.gpg https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/debian/ksp-ckan.gpg
+sudo apt-add-repository -u -y 'deb [arch=amd64 signed-by=/usr/share/keyrings/ckan-archive-keyring.gpg] https://ksp-ckan.s3-us-west-2.amazonaws.com/deb stable main'
 sudo apt install ckan
 ```
 
@@ -21,7 +21,7 @@ If you like to live dangerously, these are the bleeding edge builds that are gen
 Things may break! But if they do and you report it to us, you'll be a hero to CKAN users everywhere, whether they know it or not.
 
 ```
-sudo curl -sS -o /etc/apt/trusted.gpg.d/ksp-ckan.gpg https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/debian/ksp-ckan.gpg
-sudo apt-add-repository -u -y 'deb https://ksp-ckan.s3-us-west-2.amazonaws.com/deb nightly main'
+sudo curl -sS -o /usr/share/keyrings/ckan-archive-keyring.gpg https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/debian/ksp-ckan.gpg
+sudo apt-add-repository -u -y 'deb [arch=amd64 signed-by=/usr/share/keyrings/ckan-archive-keyring.gpg] https://ksp-ckan.s3-us-west-2.amazonaws.com/deb nightly main'
 sudo apt install ckan
 ```
