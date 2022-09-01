@@ -117,25 +117,67 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IdentifierLabel.Text" xml:space="preserve"><value>식별자:</value></data>
-  <data name="NameLabel.Text" xml:space="preserve"><value>이름:</value></data>
-  <data name="AbstractLabel.Text" xml:space="preserve"><value>설명:</value></data>
-  <data name="AuthorLabel.Text" xml:space="preserve"><value>제작자:</value></data>
-  <data name="VersionLabel.Text" xml:space="preserve"><value>버전:</value></data>
-  <data name="GameVersionLabel.Text" xml:space="preserve"><value>지원 게임 버전:</value></data>
-  <data name="LicenseLabel.Text" xml:space="preserve"><value>라이선스:</value></data>
-  <data name="IncludeVersionsCheckbox.Text" xml:space="preserve"><value>모드 버전 저장</value></data>
-  <data name="ModNameColumn.Text" xml:space="preserve"><value>모드</value></data>
-  <data name="ModVersionColumn.Text" xml:space="preserve"><value>버전</value></data>
-  <data name="ModAbstractColumn.Text" xml:space="preserve"><value>설명</value></data>
-  <data name="DependsGroup.Header" xml:space="preserve"><value>필수</value></data>
-  <data name="RecommendationsGroup.Header" xml:space="preserve"><value>추천</value></data>
-  <data name="SuggestionsGroup.Header" xml:space="preserve"><value>제안</value></data>
-  <data name="IgnoredGroup.Header" xml:space="preserve"><value>무시됨</value></data>
-  <data name="DependsRadioButton.Text" xml:space="preserve"><value>필수</value></data>
-  <data name="RecommendsRadioButton.Text" xml:space="preserve"><value>추천</value></data>
-  <data name="SuggestsRadioButton.Text" xml:space="preserve"><value>제안</value></data>
-  <data name="IgnoreRadioButton.Text" xml:space="preserve"><value>무시</value></data>
-  <data name="CancelExportButton.Text" xml:space="preserve"><value>취소하기</value></data>
-  <data name="ExportModpackButton.Text" xml:space="preserve"><value>내보내기</value></data>
+  <data name="IdentifierLabel.Text" xml:space="preserve">
+    <value>식별자:</value>
+  </data>
+  <data name="NameLabel.Text" xml:space="preserve">
+    <value>이름:</value>
+  </data>
+  <data name="AbstractLabel.Text" xml:space="preserve">
+    <value>설명:</value>
+  </data>
+  <data name="AuthorLabel.Text" xml:space="preserve">
+    <value>제작자:</value>
+  </data>
+  <data name="VersionLabel.Text" xml:space="preserve">
+    <value>버전:</value>
+  </data>
+  <data name="GameVersionLabel.Text" xml:space="preserve">
+    <value>지원 게임 버전:</value>
+  </data>
+  <data name="LicenseLabel.Text" xml:space="preserve">
+    <value>라이선스:</value>
+  </data>
+  <data name="IncludeVersionsCheckbox.Text" xml:space="preserve">
+    <value>모드 버전 저장</value>
+  </data>
+  <data name="ModNameColumn.Text" xml:space="preserve">
+    <value>모드</value>
+  </data>
+  <data name="ModVersionColumn.Text" xml:space="preserve">
+    <value>버전</value>
+  </data>
+  <data name="ModAbstractColumn.Text" xml:space="preserve">
+    <value>설명</value>
+  </data>
+  <data name="DependsGroup.Header" xml:space="preserve">
+    <value>필수</value>
+  </data>
+  <data name="RecommendationsGroup.Header" xml:space="preserve">
+    <value>추천</value>
+  </data>
+  <data name="SuggestionsGroup.Header" xml:space="preserve">
+    <value>제안</value>
+  </data>
+  <data name="IgnoredGroup.Header" xml:space="preserve">
+    <value>무시됨</value>
+  </data>
+  <data name="DependsRadioButton.Text" xml:space="preserve">
+    <value>필수</value>
+  </data>
+  <data name="RecommendsRadioButton.Text" xml:space="preserve">
+    <value>추천</value>
+  </data>
+  <data name="SuggestsRadioButton.Text" xml:space="preserve">
+    <value>제안</value>
+  </data>
+  <data name="IgnoreRadioButton.Text" xml:space="preserve">
+    <value>무시</value>
+  </data>
+  <data name="CancelExportButton.Text" xml:space="preserve">
+    <value>취소하기</value>
+  </data>
+  <data name="ExportModpackButton.Text" xml:space="preserve">
+    <value>내보내기</value>
+  </data>
 </root>
