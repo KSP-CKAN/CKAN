@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -138,6 +138,9 @@
   <metadata name="DownloadSize.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <metadata name="InstallSize.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <metadata name="Description.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -147,42 +150,121 @@
   <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="launchGameToolStripMenuItem.Text" xml:space="preserve"><value>Запустить игру</value></data>
-  <data name="RefreshToolButton.Text" xml:space="preserve"><value>Обновить</value></data>
-  <data name="UpdateAllToolButton.Text" xml:space="preserve"><value>Выбрать доступные обновления</value></data>
-  <data name="ApplyToolButton.Text" xml:space="preserve"><value>Применить изменения</value></data>
-  <data name="FilterToolButton.Text" xml:space="preserve"><value>Фильтры</value></data>
-  <data name="FilterCompatibleButton.Text" xml:space="preserve"><value>Совместимые</value></data>
-  <data name="FilterInstalledButton.Text" xml:space="preserve"><value>Установленные</value></data>
-  <data name="FilterInstalledUpdateButton.Text" xml:space="preserve"><value>Установленные (доступны обновления)</value></data>
-  <data name="FilterReplaceableButton.Text" xml:space="preserve"><value>Заменяемые</value></data>
-  <data name="FilterCachedButton.Text" xml:space="preserve"><value>Загруженные</value></data>
-  <data name="FilterUncachedButton.Text" xml:space="preserve"><value>Не загруженные</value></data>
-  <data name="FilterNewButton.Text" xml:space="preserve"><value>Совместимые с недавнего времени</value></data>
-  <data name="FilterNotInstalledButton.Text" xml:space="preserve"><value>Не установленные</value></data>
-  <data name="FilterIncompatibleButton.Text" xml:space="preserve"><value>Несовместимые</value></data>
-  <data name="FilterAllButton.Text" xml:space="preserve"><value>Все</value></data>
-  <data name="FilterTagsToolButton.Text" xml:space="preserve"><value>Теги</value></data>
-  <data name="FilterLabelsToolButton.Text" xml:space="preserve"><value>Ярлыки</value></data>
-  <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve"><value>Предыдущий выбранный...</value></data>
-  <data name="NavForwardToolButton.ToolTipText" xml:space="preserve"><value>Следующий выбранный...</value></data>
-  <data name="Installed.HeaderText" xml:space="preserve"><value>Установлено</value></data>
-  <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>Авто</value></data>
-  <data name="UpdateCol.HeaderText" xml:space="preserve"><value>Обновление</value></data>
-  <data name="ReplaceCol.HeaderText" xml:space="preserve"><value>Замена</value></data>
-  <data name="ModName.HeaderText" xml:space="preserve"><value>Название</value></data>
-  <data name="Author.HeaderText" xml:space="preserve"><value>Автор</value></data>
-  <data name="InstalledVersion.HeaderText" xml:space="preserve"><value>Установленная версия</value></data>
-  <data name="LatestVersion.HeaderText" xml:space="preserve"><value>Последняя версия</value></data>
-  <data name="GameCompatibility.HeaderText" xml:space="preserve"><value>Поддерживаемая версия игры</value></data>
-  <data name="DownloadSize.HeaderText" xml:space="preserve"><value>Размер</value></data>
-  <data name="ReleaseDate.HeaderText" xml:space="preserve"><value>Дата выпуска</value></data>
-  <data name="InstallDate.HeaderText" xml:space="preserve"><value>Дата установки</value></data>
-  <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Загрузки</value></data>
-  <data name="Description.HeaderText" xml:space="preserve"><value>Описание</value></data>
-  <data name="reinstallToolStripMenuItem.Text" xml:space="preserve"><value>Переустановить</value></data>
-  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>Загрузить в кэш без установки</value></data>
-  <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve"><value>Удалить из кэша</value></data>
-  <data name="labelsToolStripMenuItem.Text" xml:space="preserve"><value>Ярлыки</value></data>
-  <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve"><value>Изменить ярлыки...</value></data>
+  <data name="launchGameToolStripMenuItem.Text" xml:space="preserve">
+    <value>Запустить игру</value>
+  </data>
+  <data name="RefreshToolButton.Text" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="UpdateAllToolButton.Text" xml:space="preserve">
+    <value>Выбрать доступные обновления</value>
+  </data>
+  <data name="ApplyToolButton.Text" xml:space="preserve">
+    <value>Применить изменения</value>
+  </data>
+  <data name="FilterToolButton.Text" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+  <data name="FilterCompatibleButton.Text" xml:space="preserve">
+    <value>Совместимые</value>
+  </data>
+  <data name="FilterInstalledButton.Text" xml:space="preserve">
+    <value>Установленные</value>
+  </data>
+  <data name="FilterInstalledUpdateButton.Text" xml:space="preserve">
+    <value>Установленные (доступны обновления)</value>
+  </data>
+  <data name="FilterReplaceableButton.Text" xml:space="preserve">
+    <value>Заменяемые</value>
+  </data>
+  <data name="FilterCachedButton.Text" xml:space="preserve">
+    <value>Загруженные</value>
+  </data>
+  <data name="FilterUncachedButton.Text" xml:space="preserve">
+    <value>Не загруженные</value>
+  </data>
+  <data name="FilterNewButton.Text" xml:space="preserve">
+    <value>Совместимые с недавнего времени</value>
+  </data>
+  <data name="FilterNotInstalledButton.Text" xml:space="preserve">
+    <value>Не установленные</value>
+  </data>
+  <data name="FilterIncompatibleButton.Text" xml:space="preserve">
+    <value>Несовместимые</value>
+  </data>
+  <data name="FilterAllButton.Text" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="FilterTagsToolButton.Text" xml:space="preserve">
+    <value>Теги</value>
+  </data>
+  <data name="FilterLabelsToolButton.Text" xml:space="preserve">
+    <value>Ярлыки</value>
+  </data>
+  <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve">
+    <value>Предыдущий выбранный...</value>
+  </data>
+  <data name="NavForwardToolButton.ToolTipText" xml:space="preserve">
+    <value>Следующий выбранный...</value>
+  </data>
+  <data name="Installed.HeaderText" xml:space="preserve">
+    <value>Установлено</value>
+  </data>
+  <data name="AutoInstalled.HeaderText" xml:space="preserve">
+    <value>Авто</value>
+  </data>
+  <data name="UpdateCol.HeaderText" xml:space="preserve">
+    <value>Обновление</value>
+  </data>
+  <data name="ReplaceCol.HeaderText" xml:space="preserve">
+    <value>Замена</value>
+  </data>
+  <data name="ModName.HeaderText" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="Author.HeaderText" xml:space="preserve">
+    <value>Автор</value>
+  </data>
+  <data name="InstalledVersion.HeaderText" xml:space="preserve">
+    <value>Установленная версия</value>
+  </data>
+  <data name="LatestVersion.HeaderText" xml:space="preserve">
+    <value>Последняя версия</value>
+  </data>
+  <data name="GameCompatibility.HeaderText" xml:space="preserve">
+    <value>Поддерживаемая версия игры</value>
+  </data>
+  <data name="DownloadSize.HeaderText" xml:space="preserve">
+    <value>Размер</value>
+  </data>
+  <data name="InstallSize.HeaderText" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="ReleaseDate.HeaderText" xml:space="preserve">
+    <value>Дата выпуска</value>
+  </data>
+  <data name="InstallDate.HeaderText" xml:space="preserve">
+    <value>Дата установки</value>
+  </data>
+  <data name="DownloadCount.HeaderText" xml:space="preserve">
+    <value>Загрузки</value>
+  </data>
+  <data name="Description.HeaderText" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="reinstallToolStripMenuItem.Text" xml:space="preserve">
+    <value>Переустановить</value>
+  </data>
+  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Загрузить в кэш без установки</value>
+  </data>
+  <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Удалить из кэша</value>
+  </data>
+  <data name="labelsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Ярлыки</value>
+  </data>
+  <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Изменить ярлыки...</value>
+  </data>
 </root>
