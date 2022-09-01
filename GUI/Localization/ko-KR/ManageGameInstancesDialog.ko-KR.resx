@@ -110,18 +110,46 @@
     <value>17, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
-  <data name="openDirectoryMenuItem.Text" xml:space="preserve"><value>경로 열기</value></data>
-  <data name="GameInstallName.Text" xml:space="preserve"><value>이름</value></data>
-  <data name="Game.Text" xml:space="preserve"><value>게임</value></data>
-  <data name="GameInstallVersion.Text" xml:space="preserve"><value>버전</value></data>
-  <data name="GamePlayTime.Text" xml:space="preserve"><value>플레이 타임</value></data>
-  <data name="GameInstallPath.Text" xml:space="preserve"><value>경로</value></data>
-  <data name="SelectButton.Text" xml:space="preserve"><value>선택</value></data>
-  <data name="AddNewButton.Text" xml:space="preserve"><value>새로운 인스턴스 추가</value></data>
-  <data name="AddToCKANMenuItem.Text" xml:space="preserve"><value>CKAN에 인스턴스 추가</value></data>
-  <data name="CloneFakeInstanceMenuItem.Text" xml:space="preserve"><value>인스턴스 복사 혹은 위조</value></data>
-  <data name="RenameButton.Text" xml:space="preserve"><value>이름 변경</value></data>
-  <data name="SetAsDefaultCheckbox.Text" xml:space="preserve"><value>기본으로 설정</value></data>
-  <data name="ForgetButton.Text" xml:space="preserve"><value>잊기</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>게임 인스턴스 관리</value></data>
+  <data name="openDirectoryMenuItem.Text" xml:space="preserve">
+    <value>경로 열기</value>
+  </data>
+  <data name="GameInstallName.Text" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="Game.Text" xml:space="preserve">
+    <value>게임</value>
+  </data>
+  <data name="GameInstallVersion.Text" xml:space="preserve">
+    <value>버전</value>
+  </data>
+  <data name="GamePlayTime.Text" xml:space="preserve">
+    <value>플레이 타임</value>
+  </data>
+  <data name="GameInstallPath.Text" xml:space="preserve">
+    <value>경로</value>
+  </data>
+  <data name="SelectButton.Text" xml:space="preserve">
+    <value>선택</value>
+  </data>
+  <data name="AddNewButton.Text" xml:space="preserve">
+    <value>새로운 인스턴스 추가</value>
+  </data>
+  <data name="AddToCKANMenuItem.Text" xml:space="preserve">
+    <value>CKAN에 인스턴스 추가</value>
+  </data>
+  <data name="CloneFakeInstanceMenuItem.Text" xml:space="preserve">
+    <value>인스턴스 복사 혹은 위조</value>
+  </data>
+  <data name="RenameButton.Text" xml:space="preserve">
+    <value>이름 변경</value>
+  </data>
+  <data name="SetAsDefaultCheckbox.Text" xml:space="preserve">
+    <value>기본으로 설정</value>
+  </data>
+  <data name="ForgetButton.Text" xml:space="preserve">
+    <value>잊기</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>게임 인스턴스 관리</value>
+  </data>
 </root>
