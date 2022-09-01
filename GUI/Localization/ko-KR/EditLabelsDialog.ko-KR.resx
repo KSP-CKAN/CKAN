@@ -118,23 +118,59 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
-  <data name="CreateButton.Text" xml:space="preserve"><value>만들기</value></data>
-  <data name="SelectOrCreateLabel.Text" xml:space="preserve"><value>새로운 라벨을 만들거나 라벨을 선택해서 수정하세요.</value></data>
-  <data name="NameLabel.Text" xml:space="preserve"><value>이름:</value></data>
-  <data name="ColorLabel.Text" xml:space="preserve"><value>배경색:</value></data>
-  <data name="ColorButton.Text" xml:space="preserve"><value>선택하기</value></data>
-  <data name="InstanceNameLabel.Text" xml:space="preserve"><value>인스턴스
-(비워두면 모두):</value></data>
-  <data name="HideFromOtherFiltersCheckBox.Text" xml:space="preserve"><value>다른 필터일 때는 숨기기</value></data>
-  <data name="NotifyOnChangesCheckBox.Text" xml:space="preserve"><value>업데이트 했을 때 알리기</value></data>
-  <data name="RemoveOnChangesCheckBox.Text" xml:space="preserve"><value>업데이트 했을 때 지우기</value></data>
-  <data name="AlertOnInstallCheckBox.Text" xml:space="preserve"><value>설치할 때 경고하기</value></data>
-  <data name="RemoveOnInstallCheckBox.Text" xml:space="preserve"><value>설치할 때 지우기</value></data>
-  <data name="HoldVersionCheckBox.Text" xml:space="preserve"><value>업데이트 금지</value></data>
-  <data name="CloseButton.Text" xml:space="preserve"><value>닫기</value></data>
-  <data name="SaveButton.Text" xml:space="preserve"><value>저장</value></data>
-  <data name="CancelEditButton.Text" xml:space="preserve"><value>취소하기</value></data>
-  <data name="DeleteButton.Text" xml:space="preserve"><value>지우기</value></data>
-  <data name="ExportButton.Text" xml:space="preserve"><value>내보내기...</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>라벨 수정</value></data>
+  <data name="CreateButton.Text" xml:space="preserve">
+    <value>만들기</value>
+  </data>
+  <data name="SelectOrCreateLabel.Text" xml:space="preserve">
+    <value>새로운 라벨을 만들거나 라벨을 선택해서 수정하세요.</value>
+  </data>
+  <data name="NameLabel.Text" xml:space="preserve">
+    <value>이름:</value>
+  </data>
+  <data name="ColorLabel.Text" xml:space="preserve">
+    <value>배경색:</value>
+  </data>
+  <data name="ColorButton.Text" xml:space="preserve">
+    <value>선택하기</value>
+  </data>
+  <data name="InstanceNameLabel.Text" xml:space="preserve">
+    <value>인스턴스
+(비워두면 모두):</value>
+  </data>
+  <data name="HideFromOtherFiltersCheckBox.Text" xml:space="preserve">
+    <value>다른 필터일 때는 숨기기</value>
+  </data>
+  <data name="NotifyOnChangesCheckBox.Text" xml:space="preserve">
+    <value>업데이트 했을 때 알리기</value>
+  </data>
+  <data name="RemoveOnChangesCheckBox.Text" xml:space="preserve">
+    <value>업데이트 했을 때 지우기</value>
+  </data>
+  <data name="AlertOnInstallCheckBox.Text" xml:space="preserve">
+    <value>설치할 때 경고하기</value>
+  </data>
+  <data name="RemoveOnInstallCheckBox.Text" xml:space="preserve">
+    <value>설치할 때 지우기</value>
+  </data>
+  <data name="HoldVersionCheckBox.Text" xml:space="preserve">
+    <value>업데이트 금지</value>
+  </data>
+  <data name="CloseButton.Text" xml:space="preserve">
+    <value>닫기</value>
+  </data>
+  <data name="SaveButton.Text" xml:space="preserve">
+    <value>저장</value>
+  </data>
+  <data name="CancelEditButton.Text" xml:space="preserve">
+    <value>취소하기</value>
+  </data>
+  <data name="DeleteButton.Text" xml:space="preserve">
+    <value>지우기</value>
+  </data>
+  <data name="ExportButton.Text" xml:space="preserve">
+    <value>내보내기...</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>라벨 수정</value>
+  </data>
 </root>
