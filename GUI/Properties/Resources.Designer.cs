@@ -635,6 +635,9 @@ namespace CKAN.GUI.Properties {
         internal static string DownloadFailed {
             get { return (string)(ResourceManager.GetObject("DownloadFailed", resourceCulture)); }
         }
+        internal static string ValidatingDownload {
+            get { return (string)(ResourceManager.GetObject("ValidatingDownload", resourceCulture)); }
+        }
 
         internal static string MainModListWaitTitle {
             get { return (string)(ResourceManager.GetObject("MainModListWaitTitle", resourceCulture)); }

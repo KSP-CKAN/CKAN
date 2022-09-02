@@ -121,7 +121,6 @@ namespace CKAN
                 default:
                     throw new UnsupportedKraken($"Not a .tar.gz or .zip, cannot process: {filename}");
             }
-            return Enumerable.Empty<CkanModule>();
         }
 
         /// <summary>

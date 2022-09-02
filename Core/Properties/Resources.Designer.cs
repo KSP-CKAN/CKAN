@@ -85,6 +85,9 @@ namespace CKAN.Properties {
         internal static string NetAsyncDownloaderTryingFallback {
             get { return (string)(ResourceManager.GetObject("NetAsyncDownloaderTryingFallback", resourceCulture)); }
         }
+        internal static string NetAsyncDownloaderValidating {
+            get { return (string)(ResourceManager.GetObject("NetAsyncDownloaderValidating", resourceCulture)); }
+        }
 
         internal static string NetFileCacheCannotFind {
             get { return (string)(ResourceManager.GetObject("NetFileCacheCannotFind", resourceCulture)); }

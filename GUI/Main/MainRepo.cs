@@ -120,9 +120,9 @@ namespace CKAN.GUI
                                 new object[] { repos[kvp.Key] }, kvp.Value)),
                             // Rows are only linked to themselves
                             (r1, r2) => r1 == r2);
-                        dfd.ShowDialog(this);
+                        Util.Invoke(this, () => dfd.ShowDialog(this));
+                        var skip  = dfd.Wait()?.Select(r => r as Repository).ToArray();
                         var abort = dfd.Abort;
-                        var skip  = dfd.Skip.Select(r => r as Repository).ToArray();
                         dfd.Dispose();
                         if (abort)
                         {

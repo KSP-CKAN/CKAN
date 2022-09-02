@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+using System.Windows.Forms;
 
 namespace CKAN.GUI
 {
@@ -330,18 +330,18 @@ namespace CKAN.GUI
             this.ModGrid.Size = new System.Drawing.Size(1536, 837);
             this.ModGrid.StandardTab = true;
             this.ModGrid.TabIndex = 12;
-            this.ModGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
-            this.ModGrid.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_CellMouseDoubleClick);
-            this.ModGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
-            this.ModGrid.SelectionChanged += new System.EventHandler(this.ModList_SelectionChanged);
-            this.ModGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
-            this.ModGrid.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
-            this.ModGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ModList_MouseDown);
-            this.ModGrid.GotFocus += new System.EventHandler(this.ModList_GotFocus);
-            this.ModGrid.LostFocus += new System.EventHandler(this.ModList_LostFocus);
-            this.ModGrid.CurrentCellDirtyStateChanged += new System.EventHandler(this.ModList_CurrentCellDirtyStateChanged);
-            this.ModGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellValueChanged);
-            this.ModGrid.Resize += new System.EventHandler(this.ModList_Resize);
+            this.ModGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModGrid_CellContentClick);
+            this.ModGrid.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModGrid_CellMouseDoubleClick);
+            this.ModGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModGrid_HeaderMouseClick);
+            this.ModGrid.SelectionChanged += new System.EventHandler(this.ModGrid_SelectionChanged);
+            this.ModGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModGrid_KeyDown);
+            this.ModGrid.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModGrid_KeyPress);
+            this.ModGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ModGrid_MouseDown);
+            this.ModGrid.GotFocus += new System.EventHandler(this.ModGrid_GotFocus);
+            this.ModGrid.LostFocus += new System.EventHandler(this.ModGrid_LostFocus);
+            this.ModGrid.CurrentCellDirtyStateChanged += new System.EventHandler(this.ModGrid_CurrentCellDirtyStateChanged);
+            this.ModGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModGrid_CellValueChanged);
+            this.ModGrid.Resize += new System.EventHandler(this.ModGrid_Resize);
             //
             // Installed
             //

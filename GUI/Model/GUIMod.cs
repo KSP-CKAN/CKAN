@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+
 using CKAN.Versioning;
 
 namespace CKAN.GUI
@@ -303,7 +304,7 @@ namespace CKAN.GUI
                 ?? true;
             if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
             {
-                yield return new ModUpgrade(Mod, GUIModChangeType.Update, null, SelectedMod);
+                yield return new ModUpgrade(Mod, GUIModChangeType.Update, SelectedMod);
             }
             else if (IsReplaceChecked)
             {
@@ -386,17 +387,16 @@ namespace CKAN.GUI
                     IsInstallChecked = changeTo;
                 }
                 SelectedMod = changeTo ? (SelectedMod ?? Mod) : null;
-                // Setting this property causes ModList_CellValueChanged to be called,
+                // Setting this property causes ModGrid_CellValueChanged to be called,
                 // which calls SetInstallChecked again. Treat it conservatively.
                 if ((bool)install_cell.Value != IsInstallChecked)
                 {
                     install_cell.Value = IsInstallChecked;
                     if (row.DataGridView != null)
                     {
-                        // These calls are needed to force the UI to update,
+                        // This call is needed to force the UI to update,
                         // otherwise the checkbox will look checked when it's unchecked or vice versa
                         row.DataGridView.RefreshEdit();
-                        row.DataGridView.Refresh();
                     }
                 }
             }

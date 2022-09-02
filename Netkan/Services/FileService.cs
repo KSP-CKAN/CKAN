@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace CKAN.NetKAN.Services
@@ -18,14 +19,14 @@ namespace CKAN.NetKAN.Services
         {
             // Use shared implementation from Core.
             // Also needs to be an instance method so it can be Moq'd for testing.
-            return cache.GetFileHashSha1(filePath);
+            return cache.GetFileHashSha1(filePath, new Progress<long>(bytes => {}));
         }
 
         public string GetFileHashSha256(string filePath)
         {
             // Use shared implementation from Core.
             // Also needs to be an instance method so it can be Moq'd for testing.
-            return cache.GetFileHashSha256(filePath);
+            return cache.GetFileHashSha256(filePath, new Progress<long>(bytes => {}));
         }
 
         public string GetMimetype(string filePath)

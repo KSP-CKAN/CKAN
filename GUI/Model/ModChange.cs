@@ -109,8 +109,8 @@ namespace CKAN.GUI
 
     public class ModUpgrade : ModChange
     {
-        public ModUpgrade(CkanModule mod, GUIModChangeType changeType, IEnumerable<SelectionReason> reasons, CkanModule targetMod)
-            : base(mod, changeType, reasons)
+        public ModUpgrade(CkanModule mod, GUIModChangeType changeType, CkanModule targetMod)
+            : base(mod, changeType)
         {
             this.targetMod = targetMod;
         }
