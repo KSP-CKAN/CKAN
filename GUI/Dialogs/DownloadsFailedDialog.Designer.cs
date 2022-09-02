@@ -109,7 +109,7 @@ namespace CKAN.GUI
             // ModColumn
             //
             this.ModColumn.Name = "ModColumn";
-            this.ModColumn.DataPropertyName = "Module";
+            this.ModColumn.DataPropertyName = "Data";
             this.ModColumn.ReadOnly = true;
             this.ModColumn.Width = 250;
             this.ModColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;

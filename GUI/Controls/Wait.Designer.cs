@@ -33,11 +33,13 @@
             this.TopPanel = new System.Windows.Forms.Panel();
             this.MessageTextBox = new System.Windows.Forms.TextBox();
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
+            this.ProgressBarTable = new System.Windows.Forms.TableLayoutPanel();
             this.LogTextBox = new System.Windows.Forms.TextBox();
             this.BottomButtonPanel = new LeftRightRowPanel();
             this.CancelCurrentActionButton = new System.Windows.Forms.Button();
             this.RetryCurrentActionButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
+            this.ProgressBarTable.SuspendLayout();
             this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             //
@@ -45,6 +47,7 @@
             //
             this.TopPanel.Controls.Add(this.MessageTextBox);
             this.TopPanel.Controls.Add(this.DialogProgressBar);
+            this.TopPanel.Controls.Add(this.ProgressBarTable);
             this.TopPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.TopPanel.Name = "TopPanel";
             this.TopPanel.Size = new System.Drawing.Size(500, 85);
@@ -79,6 +82,24 @@
             this.DialogProgressBar.Size = new System.Drawing.Size(490, 25);
             this.DialogProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.DialogProgressBar.TabIndex = 1;
+            //
+            // ProgressBarTable
+            //
+            this.ProgressBarTable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ProgressBarTable.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ProgressBarTable.ColumnCount = 2;
+            this.ProgressBarTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.ProgressBarTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.ProgressBarTable.Location = new System.Drawing.Point(0, 70);
+            this.ProgressBarTable.Name = "ProgressBarTable";
+            this.ProgressBarTable.Padding = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.ProgressBarTable.Size = new System.Drawing.Size(500, 0);
+            this.ProgressBarTable.AutoSize = false;
+            this.ProgressBarTable.AutoScroll = false;
+            this.ProgressBarTable.VerticalScroll.Visible = false;
+            this.ProgressBarTable.HorizontalScroll.Visible = false;
+            this.ProgressBarTable.TabIndex = 0;
             //
             // LogTextBox
             //
@@ -142,11 +163,13 @@
             this.Controls.Add(this.LogTextBox);
             this.Controls.Add(this.TopPanel);
             this.Controls.Add(this.BottomButtonPanel);
-            this.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.Name = "Wait";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
+            this.ProgressBarTable.ResumeLayout(false);
+            this.ProgressBarTable.PerformLayout();
             this.BottomButtonPanel.ResumeLayout(false);
             this.BottomButtonPanel.PerformLayout();
             this.ResumeLayout(false);
@@ -158,6 +181,7 @@
         private System.Windows.Forms.Panel TopPanel;
         private System.Windows.Forms.TextBox MessageTextBox;
         private System.Windows.Forms.ProgressBar DialogProgressBar;
+        private System.Windows.Forms.TableLayoutPanel ProgressBarTable;
         private System.Windows.Forms.TextBox LogTextBox;
         private LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button RetryCurrentActionButton;

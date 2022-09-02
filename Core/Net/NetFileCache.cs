@@ -275,7 +275,7 @@ namespace CKAN
             else
             {
                 string invalidReason;
-                if (ZipValid(filename, out invalidReason))
+                if (ZipValid(filename, out invalidReason, null))
                 {
                     return filename;
                 }
@@ -445,10 +445,11 @@ namespace CKAN
         /// </summary>
         /// <param name="filename">Path to zip file to check</param>
         /// <param name="invalidReason">Description of problem with the file</param>
+        /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
         /// <returns>
         /// True if valid, false otherwise. See invalidReason param for explanation.
         /// </returns>
-        public static bool ZipValid(string filename, out string invalidReason)
+        public static bool ZipValid(string filename, out string invalidReason, IProgress<long> progress)
         {
             try
             {
@@ -457,6 +458,8 @@ namespace CKAN
                     using (ZipFile zip = new ZipFile(filename))
                     {
                         string zipErr = null;
+                        // Limit progress updates to 100 per ZIP file
+                        long highestPercent = -1;
                         // Perform CRC and other checks
                         if (zip.TestArchive(true, TestStrategy.FindFirstError,
                             (TestStatus st, string msg) =>
@@ -470,6 +473,16 @@ namespace CKAN
                                     zipErr = string.Format(
                                         Properties.Resources.NetFileCacheZipError,
                                         st.Operation, st.Entry?.Name, msg);
+                                }
+                                else if (st.Entry != null && progress != null)
+                                {
+                                    // Report progress
+                                    var percent = 100 * st.Entry.ZipFileIndex / zip.Count;
+                                    if (percent > highestPercent)
+                                    {
+                                        progress.Report(percent);
+                                        highestPercent = percent;
+                                    }
                                 }
                             }))
                         {
@@ -682,69 +695,55 @@ namespace CKAN
         /// Calculate the SHA1 hash of a file
         /// </summary>
         /// <param name="filePath">Path to file to examine</param>
+        /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha1(string filePath)
-        {
-            string hash = null;
-            string hashFile = $"{filePath}.sha1";
-            if (sha1Cache.TryGetValue(filePath, out hash))
-            {
-                return hash;
-            }
-            else if (File.Exists(hashFile))
-            {
-                hash = File.ReadAllText(hashFile);
-                sha1Cache.Add(filePath, hash);
-                return hash;
-            }
-            else
-            {
-                using (FileStream     fs   = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                using (BufferedStream bs   = new BufferedStream(fs))
-                using (SHA1           sha1 = new SHA1CryptoServiceProvider())
-                {
-                    hash = BitConverter.ToString(sha1.ComputeHash(bs)).Replace("-", "");
-                    sha1Cache.Add(filePath, hash);
-                    if (Path.GetDirectoryName(hashFile) == Path.GetFullPath(cachePath))
-                    {
-                        File.WriteAllText(hashFile, hash);
-                    }
-                    return hash;
-                }
-            }
-        }
+        public string GetFileHashSha1(string filePath, IProgress<long> progress)
+            => GetFileHash<SHA1CryptoServiceProvider>(filePath, "sha1", sha1Cache, progress);
 
         /// <summary>
         /// Calculate the SHA256 hash of a file
         /// </summary>
         /// <param name="filePath">Path to file to examine</param>
+        /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha256(string filePath)
+        public string GetFileHashSha256(string filePath, IProgress<long> progress)
+            => GetFileHash<SHA256Managed>(filePath, "sha256", sha256Cache, progress);
+
+        /// <summary>
+        /// Calculate the hash of a file
+        /// </summary>
+        /// <param name="filePath">Path to file to examine</param>
+        /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
+        /// <returns>
+        /// Hash, in all-caps hexadecimal format
+        /// </returns>
+        private string GetFileHash<T>(string filePath, string hashSuffix, Dictionary<string, string> cache, IProgress<long> progress)
+            where T: HashAlgorithm, new()
         {
             string hash = null;
-            string hashFile = $"{filePath}.sha256";
-            if (sha256Cache.TryGetValue(filePath, out hash))
+            string hashFile = $"{filePath}.{hashSuffix}";
+            if (cache.TryGetValue(filePath, out hash))
             {
                 return hash;
             }
             else if (File.Exists(hashFile))
             {
                 hash = File.ReadAllText(hashFile);
-                sha256Cache.Add(filePath, hash);
+                cache.Add(filePath, hash);
                 return hash;
             }
             else
             {
                 using (FileStream     fs     = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 using (BufferedStream bs     = new BufferedStream(fs))
-                using (SHA256Managed  sha256 = new SHA256Managed())
+                using (T              hasher = new T())
                 {
-                    hash = BitConverter.ToString(sha256.ComputeHash(bs)).Replace("-", "");
-                    sha256Cache.Add(filePath, hash);
+                    hash = BitConverter.ToString(hasher.ComputeHash(bs, progress)).Replace("-", "");
+                    cache.Add(filePath, hash);
                     if (Path.GetDirectoryName(hashFile) == Path.GetFullPath(cachePath))
                     {
                         File.WriteAllText(hashFile, hash);

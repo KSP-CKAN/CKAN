@@ -20,6 +20,11 @@ namespace CKAN
         event Action<CkanModule, long, long> Progress;
 
         /// <summary>
+        /// Raised while we are checking that a ZIP is valid
+        /// </summary>
+        event Action<CkanModule, long, long> StoreProgress;
+
+        /// <summary>
         /// Raised when a batch of downloads is all done
         /// </summary>
         event Action AllComplete;

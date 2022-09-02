@@ -87,7 +87,7 @@ namespace CKAN.NetKAN.Services
                     case FileType.Zip:
                         extension = "zip";
                         string invalidReason;
-                        if (!NetFileCache.ZipValid(downloadedFile, out invalidReason))
+                        if (!NetFileCache.ZipValid(downloadedFile, out invalidReason, null))
                         {
                             log.Debug($"{url} is not a valid ZIP file: {invalidReason}");
                             File.Delete(downloadedFile);

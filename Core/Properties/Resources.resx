@@ -125,6 +125,7 @@
   <data name="NetAsyncDownloaderCancelled" xml:space="preserve"><value>Download cancelled by user</value></data>
   <data name="NetAsyncDownloaderProgress" xml:space="preserve"><value>{0}/sec - downloading - {1} left</value></data>
   <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve"><value>Failed to download "{0}", trying fallback "{1}"</value></data>
+  <data name="NetAsyncDownloaderValidating" xml:space="preserve"><value>Finished downloading {0}, validating and storing to cache...</value></data>
   <data name="NetFileCacheCannotFind" xml:space="preserve"><value>Cannot find cache directory: {0}</value></data>
   <data name="NetFileCacheZipError" xml:space="preserve"><value>Error in step {0} for {1}: {2}</value></data>
   <data name="NetFileCacheZipTestArchiveFalse" xml:space="preserve"><value>ZipFile.TestArchive(true) returned false</value></data>

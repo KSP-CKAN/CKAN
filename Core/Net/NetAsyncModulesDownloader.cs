@@ -12,21 +12,9 @@ namespace CKAN
     /// </summary>
     public class NetAsyncModulesDownloader : IDownloader
     {
-        private IUser User
-        {
-            get { return downloader.User;  }
-        }
-
-        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
-
-        private const    string             defaultMimeType = "application/octet-stream";
-
         public event Action<CkanModule, long, long> Progress;
+        public event Action<CkanModule, long, long> StoreProgress;
         public event Action                         AllComplete;
-
-        private          List<CkanModule>   modules;
-        private readonly NetAsyncDownloader downloader;
-        private readonly NetModuleCache     cache;
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncModulesDownloader.
@@ -96,37 +84,6 @@ namespace CKAN
             }
         }
 
-        private void ModuleDownloadComplete(Uri url, string filename, Exception error, string etag)
-        {
-            log.DebugFormat("Received download completion: {0}, {1}, {2}",
-                            url, filename, error?.Message);
-            if (error != null)
-            {
-                // If there was an error in DOWNLOADING, keep the file so we can retry it later
-                log.Info(error.ToString());
-            }
-            else
-            {
-                // Cache if this download succeeded
-                try
-                {
-                    CkanModule module = modules.First(m => m.download == url);
-                    cache.Store(module, filename, module.StandardName());
-                    File.Delete(filename);
-                }
-                catch (InvalidModuleFileKraken kraken)
-                {
-                    User.RaiseError(kraken.ToString());
-                    // If there was an error in STORING, delete the file so we can try it from scratch later
-                    File.Delete(filename);
-                }
-                catch (FileNotFoundException e)
-                {
-                    log.WarnFormat("cache.Store(): FileNotFoundException: {0}", e.Message);
-                }
-            }
-        }
-
         /// <summary>
         /// <see cref="IDownloader.CancelDownload()"/>
         /// </summary>
@@ -134,5 +91,59 @@ namespace CKAN
         {
             downloader.CancelDownload();
         }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncModulesDownloader));
+
+        private const    string             defaultMimeType = "application/octet-stream";
+
+        private          List<CkanModule>   modules;
+        private readonly NetAsyncDownloader downloader;
+        private          IUser              User => downloader.User;
+        private readonly NetModuleCache     cache;
+
+        private void ModuleDownloadComplete(Uri url, string filename, Exception error, string etag)
+        {
+            log.DebugFormat("Received download completion: {0}, {1}, {2}",
+                            url, filename, error?.Message);
+            if (error != null)
+            {
+                // If there was an error in DOWNLOADING, keep the file so we can retry it later
+                log.Info(error.Message);
+            }
+            else
+            {
+                // Cache if this download succeeded
+                CkanModule module = null;
+                try
+                {
+                    module = modules.First(m => m.download == url);
+                    User.RaiseMessage(Properties.Resources.NetAsyncDownloaderValidating, module);
+                    cache.Store(module, filename,
+                        new Progress<long>(percent => StoreProgress?.Invoke(module, 100 - percent, 100)),
+                        module.StandardName());
+                    File.Delete(filename);
+                }
+                catch (InvalidModuleFileKraken kraken)
+                {
+                    User.RaiseError(kraken.ToString());
+                    if (module != null)
+                    {
+                        // Finish out the progress bar
+                        StoreProgress?.Invoke(module, 0, 100);
+                    }
+                    // If there was an error in STORING, delete the file so we can try it from scratch later
+                    File.Delete(filename);
+                }
+                catch (FileNotFoundException e)
+                {
+                    log.WarnFormat("cache.Store(): FileNotFoundException: {0}", e.Message);
+                }
+                catch (InvalidOperationException)
+                {
+                    log.WarnFormat("No module found for completed URL: {0}", url);
+                }
+            }
+        }
+
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace CKAN.Extensions
 {
@@ -60,12 +61,13 @@ namespace CKAN.Extensions
         /// <param name="src">Stream from which to copy</param>
         /// <param name="dest">Stream to which to copy</param>
         /// <param name="progress">Callback to notify as we traverse the input, called with count of bytes received</param>
-        public static void CopyTo(this Stream src, Stream dest, IProgress<long> progress)
+        public static void CopyTo(this Stream src, Stream dest, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
         {
             // CopyTo says its default buffer is 81920, but we want more than 1 update for a 100 KiB file
             const int bufSize = 8192;
             var buffer = new byte[bufSize];
             long total = 0;
+            var lastProgressTime = DateTime.Now;
             while (true)
             {
                 var bytesRead = src.Read(buffer, 0, bufSize);
@@ -74,8 +76,17 @@ namespace CKAN.Extensions
                     break;
                 }
                 dest.Write(buffer, 0, bytesRead);
-                progress.Report(total += bytesRead);
+                total += bytesRead;
+                cancelToken.ThrowIfCancellationRequested();
+                var now = DateTime.Now;
+                if (now - lastProgressTime >= progressInterval)
+                {
+                    progress.Report(total);
+                    lastProgressTime = now;
+                }
             }
         }
+
+        private static readonly TimeSpan progressInterval = TimeSpan.FromMilliseconds(200);
     }
 }

@@ -113,18 +113,14 @@ namespace Tests.Core
             Assert.Throws<FileNotFoundKraken>(() =>
                 module_cache.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
-                    "/DoesNotExist.zip"
-                )
-            );
+                    "/DoesNotExist.zip", new Progress<long>(bytes => {})));
 
             // Try to store the LZMA-format DogeCoin zip into a NetModuleCache
             // and expect an InvalidModuleFileKraken
             Assert.Throws<InvalidModuleFileKraken>(() =>
                 module_cache.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
-                    TestData.DogeCoinFlagZipLZMA
-                )
-            );
+                    TestData.DogeCoinFlagZipLZMA, new Progress<long>(bytes => {})));
 
             // Try to store the normal DogeCoin zip into a NetModuleCache
             // using the WRONG metadata (file size and hashes)
@@ -132,9 +128,7 @@ namespace Tests.Core
             Assert.Throws<InvalidModuleFileKraken>(() =>
                 module_cache.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
-                    TestData.DogeCoinFlagZip()
-                )
-            );
+                    TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {})));
         }
 
         [Test]
@@ -193,7 +187,7 @@ namespace Tests.Core
             bool valid = false;
             string reason = "";
             Assert.DoesNotThrow(() =>
-                valid = NetFileCache.ZipValid(TestData.ZipWithBadChars, out reason));
+                valid = NetFileCache.ZipValid(TestData.ZipWithBadChars, out reason, null));
 
             // The file is considered valid on Linux;
             // only check the reason if found invalid
@@ -216,7 +210,7 @@ namespace Tests.Core
             string reason = null;
 
             Assert.DoesNotThrow(() =>
-                valid = NetFileCache.ZipValid(TestData.ZipWithUnicodeChars, out reason));
+                valid = NetFileCache.ZipValid(TestData.ZipWithUnicodeChars, out reason, null));
             Assert.IsTrue(valid, reason);
         }
 

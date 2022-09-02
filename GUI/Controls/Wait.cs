@@ -69,43 +69,39 @@ namespace CKAN.GUI
 
         public void SetProgress(string label, long remaining, long total)
         {
-            Util.Invoke(this, () =>
+            if (total > 0)
             {
-                if (downloadBars.TryGetValue(label, out ProgressBar pb))
+                Util.Invoke(this, () =>
                 {
-                    // download_size is allowed to be 0
-                    pb.Value = Math.Max(pb.Minimum, Math.Min(pb.Maximum,
-                        (int) (100 * (total - remaining) / total)
-                    ));
-                }
-                else
-                {
-                    var rowTop = TopPanel.Height - padding;
-                    var newLb = new Label()
+                    if (progressBars.TryGetValue(label, out ProgressBar pb))
                     {
-                        AutoSize = true,
-                        Location = new Point(2 * padding, rowTop),
-                        Size     = new Size(labelWidth, progressHeight),
-                        Text     = label,
-                    };
-                    downloadLabels.Add(label, newLb);
-                    var newPb = new ProgressBar()
-                    {
-                        Anchor   = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-                        Location = new Point(labelWidth + 3 * padding, rowTop),
-                        Size     = new Size(TopPanel.Width - labelWidth - 5 * padding, progressHeight),
-                        Minimum  = 0,
-                        Maximum  = 100,
                         // download_size is allowed to be 0
-                        Value    = Math.Max(0, Math.Min(100,
-                                       (int) (100 * (total - remaining) / total)
-                                   )),
-                        Style    = ProgressBarStyle.Continuous,
-                    };
-                    downloadBars.Add(label, newPb);
-                }
-                progressTimer.Start();
-            });
+                        pb.Value = Math.Max(pb.Minimum, Math.Min(pb.Maximum,
+                            (int) (100 * (total - remaining) / total)));
+                    }
+                    else
+                    {
+                        var newLb = new Label()
+                        {
+                            AutoSize = true,
+                            Text     = label,
+                        };
+                        progressLabels.Add(label, newLb);
+                        var newPb = new ProgressBar()
+                        {
+                            Anchor  = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                            Minimum = 0,
+                            Maximum = 100,
+                            // download_size is allowed to be 0
+                            Value   = Math.Max(0, Math.Min(100,
+                                           (int) (100 * (total - remaining) / total))),
+                            Style   = ProgressBarStyle.Continuous,
+                        };
+                        progressBars.Add(label, newPb);
+                    }
+                    progressTimer.Start();
+                });
+            }
         }
 
         /// <summary>
@@ -139,13 +135,11 @@ namespace CKAN.GUI
             postLogic?.Invoke(sender, e);
         }
 
-        private const int padding        = 5;
-        private const int labelWidth     = 400;
-        private const int progressHeight = 20;
-        private const int emptyHeight    = 85;
+        private const int padding     = 5;
+        private const int emptyHeight = 85;
 
-        private Dictionary<string, Label>       downloadLabels = new Dictionary<string, Label>();
-        private Dictionary<string, ProgressBar> downloadBars   = new Dictionary<string, ProgressBar>();
+        private Dictionary<string, Label>       progressLabels = new Dictionary<string, Label>();
+        private Dictionary<string, ProgressBar> progressBars   = new Dictionary<string, ProgressBar>();
         private Timer progressTimer = new Timer() { Interval = 3000 };
 
         /// <summary>
@@ -156,46 +150,47 @@ namespace CKAN.GUI
         {
             Util.Invoke(this, () =>
             {
-                int rowTop = emptyHeight - padding;
-                var theBars = downloadBars.OrderBy(kvp => kvp.Value.Top).ToList();
-                foreach (var kvp in theBars)
+                foreach (var kvp in progressBars)
                 {
-                    if (kvp.Value.Value == 100)
+                    var lbl = progressLabels[kvp.Key];
+                    var pb  = kvp.Value;
+
+                    if (pb.Value >= 100)
                     {
-                        // Finished, remove in this pass
-                        TopPanel.Controls.Remove(downloadLabels[kvp.Key]);
-                        TopPanel.Controls.Remove(kvp.Value);
-                        // rowTop is unchanged, so next row will replace this one
+                        if (ProgressBarTable.Controls.Contains(pb))
+                        {
+                            // Finished, remove in this pass
+                            ProgressBarTable.Controls.Remove(lbl);
+                            ProgressBarTable.Controls.Remove(pb);
+                            ProgressBarTable.RowStyles.RemoveAt(0);
+                        }
                     }
-                    else if (!TopPanel.Controls.Contains(kvp.Value))
+                    else if (!ProgressBarTable.Controls.Contains(pb))
                     {
                         // Just started, add it in this pass
-                        downloadLabels[kvp.Key].Top = rowTop;
-                        kvp.Value.Top = rowTop;
-                        TopPanel.Controls.Add(downloadLabels[kvp.Key]);
-                        TopPanel.Controls.Add(kvp.Value);
-                        rowTop += progressHeight + padding;
-                    }
-                    else
-                    {
-                        // Not finished, already displayed, just make sure it's in the right position
-                        downloadLabels[kvp.Key].Top = rowTop;
-                        kvp.Value.Top = rowTop;
-                        rowTop += progressHeight + padding;
+                        ProgressBarTable.Controls.Add(lbl, 0, -1);
+                        ProgressBarTable.Controls.Add(pb,  1, -1);
+                        ProgressBarTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
                     }
                 }
-                // Make room for everything that's still visible
-                TopPanel.Height = rowTop + padding;
 
-                var removedModules = downloadBars
-                    .Where(kvp => !TopPanel.Controls.Contains(kvp.Value))
+                // Remove completed rows from our dicts
+                var removedKeys = progressBars
+                    .Where(kvp => !ProgressBarTable.Controls.Contains(kvp.Value))
                     .Select(kvp => kvp.Key)
                     .ToList();
-                foreach (var module in removedModules)
+                foreach (var key in removedKeys)
                 {
-                    downloadLabels.Remove(module);
-                    downloadBars.Remove(module);
+                    progressLabels.Remove(key);
+                    progressBars.Remove(key);
                 }
+
+                // Fit table to its contents (it assumes we will give it a size)
+                var cellPadding = ProgressBarTable.Padding.Vertical;
+                ProgressBarTable.Height = progressBars.Values
+                    .Select(pb => pb.GetPreferredSize(Size.Empty).Height + cellPadding)
+                    .Sum();
+                TopPanel.Height = ProgressBarTable.Top + ProgressBarTable.Height + padding;
             });
         }
 
@@ -205,24 +200,18 @@ namespace CKAN.GUI
         /// </summary>
         public void DownloadsComplete()
         {
-            ClearDownloadBars();
+            ClearProgressBars();
             progressTimer.Stop();
         }
 
-        private void ClearDownloadBars()
+        private void ClearProgressBars()
         {
             Util.Invoke(this, () =>
             {
-                foreach (var kvp in downloadLabels)
-                {
-                    TopPanel.Controls.Remove(kvp.Value);
-                }
-                foreach (var kvp in downloadBars)
-                {
-                    TopPanel.Controls.Remove(kvp.Value);
-                }
-                downloadLabels.Clear();
-                downloadBars.Clear();
+                ProgressBarTable.Controls.Clear();
+                ProgressBarTable.RowStyles.Clear();
+                progressLabels.Clear();
+                progressBars.Clear();
                 TopPanel.Height = emptyHeight;
             });
         }
@@ -231,7 +220,7 @@ namespace CKAN.GUI
         {
             Util.Invoke(this, () =>
             {
-                ClearDownloadBars();
+                ClearProgressBars();
                 ProgressValue = DialogProgressBar.Minimum;
                 ProgressIndeterminate = true;
                 CancelCurrentActionButton.Visible = cancelable;
