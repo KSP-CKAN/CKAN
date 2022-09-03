@@ -17,7 +17,7 @@ using CKAN.Versioning;
 
 namespace CKAN.GUI
 {
-    public partial class Main : Form
+    public partial class Main : Form, IMessageFilter
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
 
@@ -70,6 +70,8 @@ namespace CKAN.GUI
             {
                 CultureInfo.DefaultThreadCurrentUICulture = Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(mainConfig.Language);
             }
+
+            Application.AddMessageFilter(this);
 
             InitializeComponent();
 
@@ -336,6 +338,7 @@ namespace CKAN.GUI
                     inst.playTime.Stop(inst.CkanDir());
                 }
             }
+            Application.RemoveMessageFilter(this);
             actuallyVisible = false;
             base.OnFormClosed(e);
         }
@@ -609,6 +612,30 @@ namespace CKAN.GUI
                 // This takes a while, so don't do it if they cancel out
                 RefreshModList();
             }
+        }
+
+        private const int WM_XBUTTONDOWN = 0x20b;
+        private const int MK_XBUTTON1    = 0x20;
+        private const int MK_XBUTTON2    = 0x40;
+
+        public bool PreFilterMessage(ref Message m)
+        {
+            switch (m.Msg)
+            {
+                case WM_XBUTTONDOWN:
+                    switch (m.WParam.ToInt32() & 0xffff)
+                    {
+                        case MK_XBUTTON1:
+                            ManageMods.NavGoBackward();
+                            break;
+
+                        case MK_XBUTTON2:
+                            ManageMods.NavGoForward();
+                            break;
+                    }
+                    break;
+            }
+            return false;
         }
 
         private void ManageMods_OnSelectedModuleChanged(GUIMod m)

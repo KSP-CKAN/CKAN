@@ -1489,13 +1489,13 @@ namespace CKAN.GUI
             navHistory.AddToHistory(module);
         }
 
-        private void NavGoBackward()
+        public void NavGoBackward()
         {
             if (navHistory.CanNavigateBackward)
                 NavGoToMod(navHistory.NavigateBackward());
         }
 
-        private void NavGoForward()
+        public void NavGoForward()
         {
             if (navHistory.CanNavigateForward)
                 NavGoToMod(navHistory.NavigateForward());
