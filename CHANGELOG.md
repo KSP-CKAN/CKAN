@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Debounce search events on all platforms (#3641 by: HebaruSan; reviewed: techman83)
 - [Multiple] Improvements for failed repo updates (#3645 by: HebaruSan; reviewed: techman83)
 - [GUI] Highlight incompatible mods recursively (#3651 by: HebaruSan; reviewed: techman83)
+- [GUI] Support mouse back/forward buttons (#3655 by: HebaruSan; reviewed: techman83)
 
 ## Bugfixes
 
