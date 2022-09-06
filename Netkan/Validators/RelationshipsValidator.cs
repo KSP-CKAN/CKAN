@@ -53,6 +53,14 @@ namespace CKAN.NetKAN.Validators
                             {
                                 throw new Kraken($"{name} in {relName} is not a valid CKAN identifier");
                             }
+                            if (rel.ContainsKey("version_min"))
+                            {
+                                throw new Kraken($"'version_min' found in relationship, the correct form is 'min_version'");
+                            }
+                            if (rel.ContainsKey("version_max"))
+                            {
+                                throw new Kraken($"'version_max' found in relationship, the correct form is 'max_version'");
+                            }
                         }
                     }
                 }
