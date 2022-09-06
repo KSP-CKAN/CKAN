@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Check free space before downloading (#3631 by: HebaruSan; reviewed: techman83)
 - [Multiple] Many improvements for failed downloads (#3635, #3637, #3642 by: HebaruSan; reviewed: techman83)
 - [GUI] Show reverse relationships (#3638, #3649 by: HebaruSan; reviewed: techman83)
-- [GUI] Debounce search events on all platforms (#3641 by: HebaruSan; reviewed: techman83)
+- [GUI] Debounce search events on all platforms (#3641, #3656 by: HebaruSan; reviewed: techman83, DasSkelett)
 - [Multiple] Improvements for failed repo updates (#3645 by: HebaruSan; reviewed: techman83)
 - [GUI] Highlight incompatible mods recursively (#3651 by: HebaruSan; reviewed: techman83)
 - [GUI] Support mouse back/forward buttons (#3655 by: HebaruSan; reviewed: techman83)

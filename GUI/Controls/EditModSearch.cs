@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
+
 using log4net;
 
 namespace CKAN.GUI
@@ -137,6 +138,10 @@ namespace CKAN.GUI
                             keyEvt.Handled = true;
                             keyEvt.SuppressKeyPress = true;
                             return true;
+
+                        // Let the runtime update the text box first for any other keys
+                        default:
+                            return false;
                     }
                     break;
             }
