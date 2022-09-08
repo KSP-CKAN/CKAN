@@ -54,6 +54,7 @@ namespace CKAN.NetKAN
                         Options.CacheDir,
                         Options.OverwriteCache,
                         Options.GitHubToken,
+                        Options.GitLabToken,
                         Options.PreRelease
                     );
                     inf.ValidateCkan(ckan);
@@ -72,6 +73,7 @@ namespace CKAN.NetKAN
                         Options.CacheDir,
                         Options.OverwriteCache,
                         Options.GitHubToken,
+                        Options.GitLabToken,
                         Options.PreRelease
                     );
                     qh.Process();
@@ -89,6 +91,7 @@ namespace CKAN.NetKAN
                         Options.CacheDir,
                         Options.OverwriteCache,
                         Options.GitHubToken,
+                        Options.GitLabToken,
                         Options.PreRelease
                     );
                     var ckans = inf.Inflate(

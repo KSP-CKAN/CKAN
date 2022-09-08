@@ -15,7 +15,7 @@ namespace CKAN.NetKAN.Processors
 {
     public class Inflator
     {
-        public Inflator(string cacheDir, bool overwriteCache, string githubToken, bool prerelease)
+        public Inflator(string cacheDir, bool overwriteCache, string githubToken, string gitlabToken, bool prerelease)
         {
             log.Debug("Initializing inflator");
             cache = FindCache(
@@ -28,7 +28,7 @@ namespace CKAN.NetKAN.Processors
             IFileService   fileService   = new FileService(cache);
             http          = new CachingHttpService(cache, overwriteCache);
             ckanValidator = new CkanValidator(http, moduleService);
-            transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, prerelease, netkanValidator);
+            transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, gitlabToken, prerelease, netkanValidator);
         }
 
         internal IEnumerable<Metadata> Inflate(string filename, Metadata netkan, TransformOptions opts)
@@ -56,8 +56,15 @@ namespace CKAN.NetKAN.Processors
             }
             catch (Exception)
             {
-                // Purge anything we download for a failed indexing attempt from the cache to allow re-downloads
-                PurgeDownloads(http, cache);
+                try
+                {
+                    // Purge anything we download for a failed indexing attempt from the cache to allow re-downloads
+                    PurgeDownloads(http, cache);
+                }
+                catch
+                {
+                    // Don't freak out if we can't delete
+                }
                 throw;
             }
         }
