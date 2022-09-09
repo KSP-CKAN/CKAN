@@ -89,6 +89,12 @@
     <Compile Include="Sources\Github\GithubReleaseAsset.cs" />
     <Compile Include="Sources\Github\GithubRepo.cs" />
     <Compile Include="Sources\Github\IGithubApi.cs" />
+    <Compile Include="Sources\Gitlab\GitlabApi.cs" />
+    <Compile Include="Sources\Gitlab\GitlabOptions.cs" />
+    <Compile Include="Sources\Gitlab\GitlabProject.cs" />
+    <Compile Include="Sources\Gitlab\GitlabRef.cs" />
+    <Compile Include="Sources\Gitlab\GitlabRelease.cs" />
+    <Compile Include="Sources\Gitlab\IGitlabApi.cs" />
     <Compile Include="Sources\Jenkins\IJenkinsApi.cs" />
     <Compile Include="Sources\Jenkins\JenkinsApi.cs" />
     <Compile Include="Sources\Jenkins\JenkinsArtifact.cs" />
@@ -110,6 +116,7 @@
     <Compile Include="Transformers\ForcedVTransformer.cs" />
     <Compile Include="Transformers\GeneratedByTransformer.cs" />
     <Compile Include="Transformers\GithubTransformer.cs" />
+    <Compile Include="Transformers\GitlabTransformer.cs" />
     <Compile Include="Transformers\HttpTransformer.cs" />
     <Compile Include="Transformers\InternalCkanTransformer.cs" />
     <Compile Include="Transformers\ITransformer.cs" />

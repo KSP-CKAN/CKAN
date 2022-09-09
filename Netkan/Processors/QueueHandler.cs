@@ -22,13 +22,13 @@ namespace CKAN.NetKAN.Processors
 {
     public class QueueHandler
     {
-        public QueueHandler(string inputQueueName, string outputQueueName, string cacheDir, bool overwriteCache, string githubToken, bool prerelease)
+        public QueueHandler(string inputQueueName, string outputQueueName, string cacheDir, bool overwriteCache, string githubToken, string gitlabToken, bool prerelease)
         {
             warningAppender = GetQueueLogAppender();
             (LogManager.GetRepository() as Hierarchy)?.Root.AddAppender(warningAppender);
 
             log.Debug("Initializing SQS queue handler");
-            inflator = new Inflator(cacheDir, overwriteCache, githubToken, prerelease);
+            inflator = new Inflator(cacheDir, overwriteCache, githubToken, gitlabToken, prerelease);
 
             inputQueueURL  = getQueueUrl(inputQueueName);
             outputQueueURL = getQueueUrl(outputQueueName);

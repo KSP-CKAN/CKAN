@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Validators;
 using CKAN.NetKAN.Sources.Curse;
 using CKAN.NetKAN.Sources.Github;
+using CKAN.NetKAN.Sources.Gitlab;
 using CKAN.NetKAN.Sources.Jenkins;
 using CKAN.NetKAN.Sources.Spacedock;
 
@@ -25,12 +27,14 @@ namespace CKAN.NetKAN.Transformers
             IFileService fileService,
             IModuleService moduleService,
             string githubToken,
+            string gitlabToken,
             bool prerelease,
             IValidator validator
         )
         {
             _validator = validator;
             var ghApi = new GithubApi(http, githubToken);
+            var glApi = new GitlabApi(http, gitlabToken);
             _transformers = InjectVersionedOverrideTransformers(new List<ITransformer>
             {
                 new StagingTransformer(),
@@ -38,6 +42,7 @@ namespace CKAN.NetKAN.Transformers
                 new SpacedockTransformer(new SpacedockApi(http), ghApi),
                 new CurseTransformer(new CurseApi(http)),
                 new GithubTransformer(ghApi, prerelease),
+                new GitlabTransformer(glApi),
                 new HttpTransformer(),
                 new JenkinsTransformer(new JenkinsApi(http)),
                 new AvcKrefTransformer(http, ghApi),

@@ -37,6 +37,7 @@ All notable changes to this project will be documented in this file.
 - [Tooling] Self review option for merge script (#3650 by: HebaruSan; reviewed: DasSkelett)
 - [Infra] Improve translation process (#3648 by: Olympic1; reviewed: HebaruSan)
 - [Netkan] Inflation error for `version_min` and `version_max` (#3657 by: HebaruSan; reviewed: DasSkelett)
+- [Netkan] GitLab kref (#3661 by: HebaruSan; reviewed: techman83)
 
 ## v1.31.0 (IKAROS)
 

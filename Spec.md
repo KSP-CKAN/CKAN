@@ -808,6 +808,38 @@ An `x_netkan_github` field may be provided to customize how the metadata is fetc
 - `use_source_archive` (type: `boolean`) (default: `false`)<br/>
   Specifies that the source ZIP of the repository itself will be used instead of any assets in the release.
 
+###### `#/ckan/gitlab/:user/:repo`
+
+Indicates that data should be fetched from GitLab, using the `:user` and `:repo` provided.
+For example: `#/ckan/gitlab/Ailex-/starilex-mk1-iva`.
+
+When used, the following fields will be auto-filled if not already present:
+
+- `name`
+- `abstract`
+- `author`
+- `version`
+- `resources.repository`
+- `resources.bugtracker`
+- `resources.manual`
+- `download`
+- `download_size`
+- `download_hash`
+- `download_content_type`
+- `release_date`
+
+An example `.netkan` excerpt:
+
+```yaml
+$kref: '#/ckan/gitlab/Ailex-/starilex-mk1-iva'
+```
+
+An `x_netkan_gitlab` field must be provided to customize how the metadata is fetched from GitLab. It is an `object` with the following fields:
+
+- `use_source_archive` (type: `boolean`) (default: `false`)<br/>
+  Specifies that the source ZIP of the release will be used instead of any discrete assets.<br/>
+  Note that this must be `true`! GitLab only offers source ZIP assets, so we can only index mods that use them. If at some point in the future GitLab adds support for non-source assets, we will be able to add support for setting this property to `false` or omitting it.
+
 ###### `#/ckan/jenkins/:joburl`
 
 Indicates data should be fetched from a [Jenkins CI server](https://jenkins-ci.org/) using the `:joburl` provided. For
