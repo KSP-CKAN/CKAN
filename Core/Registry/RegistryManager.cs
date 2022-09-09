@@ -4,11 +4,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Runtime.Serialization;
+
 using ChinhDo.Transactions.FileManager;
-using CKAN.DLC;
-using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
+
+using CKAN.DLC;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -303,10 +306,7 @@ namespace CKAN
             // after deserialisation.
             var settings = new JsonSerializerSettings
             {
-                Context = new System.Runtime.Serialization.StreamingContext(
-                    System.Runtime.Serialization.StreamingContextStates.Other,
-                    ksp
-                    )
+                Context = new StreamingContext(StreamingContextStates.Other, ksp)
             };
 
             log.DebugFormat("Trying to load registry from {0}", path);
@@ -478,7 +478,7 @@ namespace CKAN
                 name,
                 string.Format(Properties.Resources.RegistryManagerDefaultModpackAbstract, kspInstanceName),
                 null,
-                new List<string>() { System.Environment.UserName },
+                new List<string>() { Environment.UserName },
                 new List<License>() { new License("unknown") },
                 new ModuleVersion(DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss")),
                 null,

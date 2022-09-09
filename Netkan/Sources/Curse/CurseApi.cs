@@ -2,9 +2,12 @@
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Net;
-using CKAN.NetKAN.Services;
+using System.Text;
+
 using log4net;
 using Newtonsoft.Json;
+
+using CKAN.NetKAN.Services;
 
 namespace CKAN.NetKAN.Sources.Curse
 {
@@ -32,7 +35,7 @@ namespace CKAN.NetKAN.Sources.Curse
             catch (WebException e)
             {
                 // CurseForge returns a valid json with an error message in some cases.
-                json = new StreamReader(e.Response.GetResponseStream(), System.Text.Encoding.UTF8).ReadToEnd();
+                json = new StreamReader(e.Response.GetResponseStream(), Encoding.UTF8).ReadToEnd();
             }
             // Check if the mod has been removed from Curse and if it corresponds to a KSP mod.
             var error = JsonConvert.DeserializeObject<CurseError>(json);

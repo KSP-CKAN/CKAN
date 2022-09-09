@@ -4,6 +4,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
+using System.Drawing;
 
 using CKAN.Versioning;
 
@@ -277,7 +278,7 @@ namespace CKAN.GUI
         {
             if (e.Button == MouseButtons.Right)
             {
-                InstanceListContextMenuStrip.Show(this, new System.Drawing.Point(e.X, e.Y));
+                InstanceListContextMenuStrip.Show(this, new Point(e.X, e.Y));
             }
         }
 

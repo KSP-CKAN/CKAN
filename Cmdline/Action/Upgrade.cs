@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Transactions;
+
 using log4net;
+
 using CKAN.Versioning;
 
 namespace CKAN.CmdLine
@@ -38,7 +40,7 @@ namespace CKAN.CmdLine
             UpgradeOptions options = (UpgradeOptions) raw_options;
 
             if (options.ckan_file != null)
-            {                
+            {
                 options.modules.Add(MainClass.LoadCkanFromFile(instance, options.ckan_file).identifier);
             }
 
@@ -195,7 +197,7 @@ namespace CKAN.CmdLine
             );
         }
 
-        // System.Action<ref T> isn't allowed
+        // Action<ref T> isn't allowed
         private delegate void AttemptUpgradeAction(ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs);
 
         /// <summary>
@@ -212,7 +214,7 @@ namespace CKAN.CmdLine
         private static void UpgradeModules(
             GameInstanceManager manager, IUser user, CKAN.GameInstance instance,
             AttemptUpgradeAction attemptUpgradeCallback,
-            System.Action<CkanModule> addUserChoiceCallback)
+            Action<CkanModule> addUserChoiceCallback)
         {
             using (TransactionScope transact = CkanTransaction.CreateTransactionScope()) {
                 var installer  = new ModuleInstaller(instance, manager.Cache, user);

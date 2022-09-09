@@ -1,4 +1,6 @@
-﻿namespace CKAN.GUI
+﻿using System.Windows.Forms;
+
+namespace CKAN.GUI
 {
     /// <summary>
     /// Create a new TransparentTextBox control that allows the backcolor of textboxes to be transparent.
@@ -7,15 +9,15 @@
     /// Multiline is set to true.
     /// Used in <see cref="MainModInfo"/>.</para>
     /// </summary>
-    public class TransparentTextBox : System.Windows.Forms.TextBox
+    public class TransparentTextBox : TextBox
     {
         public TransparentTextBox()
         {
-            SetStyle(
-                System.Windows.Forms.ControlStyles.SupportsTransparentBackColor |
-                System.Windows.Forms.ControlStyles.ResizeRedraw |
-                System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer |
-                System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.SupportsTransparentBackColor
+                     | ControlStyles.ResizeRedraw
+                     | ControlStyles.OptimizedDoubleBuffer
+                     | ControlStyles.AllPaintingInWmPaint,
+                     true);
             Multiline = true;
         }
     }

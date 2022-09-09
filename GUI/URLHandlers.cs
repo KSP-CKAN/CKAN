@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Microsoft.Win32;
+
 using IniParser;
 using IniParser.Exceptions;
 using IniParser.Model;
@@ -186,7 +187,7 @@ namespace CKAN.GUI
             data.Sections.AddSection("Desktop Entry");
             data["Desktop Entry"].AddKey("Version", "1.0");
             data["Desktop Entry"].AddKey("Type", "Application");
-            data["Desktop Entry"].AddKey("Exec", "mono \"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\" gui %u");
+            data["Desktop Entry"].AddKey("Exec", "mono \"" + Assembly.GetExecutingAssembly().Location + "\" gui %u");
             data["Desktop Entry"].AddKey("Icon", "ckan");
             data["Desktop Entry"].AddKey("StartupNotify", "true");
             data["Desktop Entry"].AddKey("NoDisplay", "true");

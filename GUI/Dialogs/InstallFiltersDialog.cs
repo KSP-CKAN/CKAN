@@ -40,7 +40,7 @@ namespace CKAN.GUI
             InstanceFiltersTextBox.DeselectAll();
         }
 
-        private void InstallFiltersDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void InstallFiltersDialog_Closing(object sender, CancelEventArgs e)
         {
             globalConfig.GlobalInstallFilters = GlobalFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             instance.InstallFilters = InstanceFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);

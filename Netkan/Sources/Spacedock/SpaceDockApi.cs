@@ -1,9 +1,13 @@
 ﻿using System;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
-using CKAN.NetKAN.Services;
+
 using log4net;
 using Newtonsoft.Json;
+
+using CKAN.NetKAN.Services;
 
 namespace CKAN.NetKAN.Sources.Spacedock
 {
@@ -37,7 +41,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
                 }
 
                 // SpaceDock returns a valid json with an error message in case of non 200 codes.
-                json = new System.IO.StreamReader(e.Response.GetResponseStream(), System.Text.Encoding.UTF8).ReadToEnd();
+                json = new StreamReader(e.Response.GetResponseStream(), Encoding.UTF8).ReadToEnd();
                 if (string.IsNullOrEmpty(json))
                 {
                     // ... sometimes. Other times we get nothing.

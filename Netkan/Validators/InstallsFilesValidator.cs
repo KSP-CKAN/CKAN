@@ -1,6 +1,6 @@
 using System.Linq;
 
-﻿using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.Extensions;
 using CKAN.Games;

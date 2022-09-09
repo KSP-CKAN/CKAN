@@ -49,12 +49,10 @@ namespace CKAN.GUI
         {
             if (ClearIcon.Image != null)
             {
-                ClearIcon.Location = new Point(
-                    // align with right edge of textbox minus 5px
-                    Width - ClearIcon.Width - 5,
-                    // need to divide these as decimals and drop back to int at the end
-                    (int)Math.Ceiling(Height / 2d - (ClearIcon.Height / 2d))
-                );
+                // Fit the X just inside the text box's borders
+                ClearIcon.Size = new Size(Height - 2, Height - 2);
+                // Align with right edge of textbox minus 1px
+                ClearIcon.Location = new Point(Width - ClearIcon.Width - 1, 1);
             }
         }
 
