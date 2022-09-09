@@ -185,14 +185,14 @@ namespace CKAN.GUI
 
         #region Filter dropdown
 
-        private void FilterToolButton_DropDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private void FilterToolButton_DropDown_Opening(object sender, CancelEventArgs e)
         {
             // The menu items' dropdowns can't be accessed if they're empty
             FilterTagsToolButton_DropDown_Opening(null, null);
             FilterLabelsToolButton_DropDown_Opening(null, null);
         }
 
-        private void FilterTagsToolButton_DropDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private void FilterTagsToolButton_DropDown_Opening(object sender, CancelEventArgs e)
         {
             FilterTagsToolButton.DropDownItems.Clear();
             foreach (var kvp in mainModList.ModuleTags.Tags.OrderBy(kvp => kvp.Key))
@@ -215,7 +215,7 @@ namespace CKAN.GUI
             });
         }
 
-        private void FilterLabelsToolButton_DropDown_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private void FilterLabelsToolButton_DropDown_Opening(object sender, CancelEventArgs e)
         {
             FilterLabelsToolButton.DropDownItems.Clear();
             foreach (ModuleLabel mlbl in mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name))
@@ -234,7 +234,7 @@ namespace CKAN.GUI
 
         #region Filter right click menu
 
-        private void LabelsContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private void LabelsContextMenuStrip_Opening(object sender, CancelEventArgs e)
         {
             LabelsContextMenuStrip.Items.Clear();
 
@@ -571,7 +571,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Called if a ToolStripButton of the header context menu is pressed.
         /// </summary>
-        private void ModListHeaderContextMenuStrip_ItemClicked(object sender, System.Windows.Forms.ToolStripItemClickedEventArgs e)
+        private void ModListHeaderContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             // ClickedItem is of type ToolStripItem, we need ToolStripButton.
             ToolStripMenuItem  clickedItem = e.ClickedItem    as ToolStripMenuItem;

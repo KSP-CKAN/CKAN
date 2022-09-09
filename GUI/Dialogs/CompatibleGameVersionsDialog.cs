@@ -4,7 +4,10 @@ using System.IO;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Drawing;
+
 using Autofac;
+
 using CKAN.Versioning;
 using CKAN.GameVersionProviders;
 
@@ -26,7 +29,7 @@ namespace CKAN.GUI
 
             if (centerScreen)
             {
-                StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+                StartPosition = FormStartPosition.CenterScreen;
             }
 
             List<GameVersion> compatibleVersions = inst.GetCompatibleVersions();
@@ -70,7 +73,7 @@ namespace CKAN.GUI
                     _inst.Version(),
                     _inst.GameVersionWhenCompatibleVersionsWereStored
                 );
-                GameVersionLabel.ForeColor = System.Drawing.Color.Red;
+                GameVersionLabel.ForeColor = Color.Red;
             }
         }
 

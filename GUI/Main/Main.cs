@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
+
 using log4net;
 using Autofac;
 
@@ -68,7 +69,7 @@ namespace CKAN.GUI
             }
             else
             {
-                CultureInfo.DefaultThreadCurrentUICulture = Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(mainConfig.Language);
+                CultureInfo.DefaultThreadCurrentUICulture = Thread.CurrentThread.CurrentUICulture = new CultureInfo(mainConfig.Language);
             }
 
             Application.AddMessageFilter(this);

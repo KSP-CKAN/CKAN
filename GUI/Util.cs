@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
 using log4net;
 
 namespace CKAN.GUI
 {
-    using System.Runtime.InteropServices;
-    using System.Windows.Forms;
 
     public static class Util
     {

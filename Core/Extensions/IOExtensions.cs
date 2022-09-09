@@ -11,12 +11,16 @@ namespace CKAN.Extensions
         private static bool StringArrayStartsWith(string[] child, string[] parent)
         {
             if (parent.Length > child.Length)
+            {
                 // Only child is allowed to have extra pieces
                 return false;
+            }
             var opt = Platform.IsWindows ? StringComparison.InvariantCultureIgnoreCase
                                          : StringComparison.InvariantCulture;
-            for (int i = 0; i < parent.Length; ++i) {
-                if (!parent[i].Equals(child[i], opt)) {
+            for (int i = 0; i < parent.Length; ++i)
+            {
+                if (!parent[i].Equals(child[i], opt))
+                {
                     return false;
                 }
             }

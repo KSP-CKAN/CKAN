@@ -3,8 +3,10 @@ using System.IO;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
+
 using log4net;
 using Newtonsoft.Json;
+
 using CKAN.Versioning;
 
 namespace CKAN
@@ -143,8 +145,8 @@ namespace CKAN
             var pid = Process.GetCurrentProcess().Id;
 
             // download updater app and new ckan.exe
-            string updaterFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            string ckanFilename    = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
+            string updaterFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
+            string ckanFilename    = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
             Net.DownloadWithProgress(
                 new[]
                 {

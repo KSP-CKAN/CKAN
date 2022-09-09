@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Timers;
 using System.Linq;
+using System.Windows.Forms;
+using Timer = System.Timers.Timer;
+
 using Newtonsoft.Json;
+using Autofac;
+
 using CKAN.Versioning;
 using CKAN.Configuration;
-using Autofac;
 
 namespace CKAN.GUI
 {
@@ -269,7 +273,7 @@ namespace CKAN.GUI
                         10000,
                         string.Format(Properties.Resources.MainRepoBalloonTipDetails, numUpgradeable),
                         Properties.Resources.MainRepoBalloonTipTooltip,
-                        System.Windows.Forms.ToolTipIcon.Info
+                        ToolTipIcon.Info
                     );
                 });
             }

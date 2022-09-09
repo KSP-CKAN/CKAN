@@ -1,5 +1,5 @@
 ﻿using System;
-﻿using System.Linq;
+using System.Linq;
 using System.Text.RegularExpressions;
 using log4net;
 

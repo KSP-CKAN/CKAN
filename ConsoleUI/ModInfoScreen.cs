@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Threading;
+
 using CKAN.Versioning;
 using CKAN.ConsoleUI.Toolkit;
 
@@ -249,7 +251,7 @@ namespace CKAN.ConsoleUI {
             ConsoleMessageDialog d = new ConsoleMessageDialog(Properties.Resources.ModInfoURLLaunching, new List<string>());
             d.Run(theme, (ConsoleTheme th) => {
                 Utilities.ProcessStartURL(u.ToString());
-                System.Threading.Thread.Sleep(1500);
+                Thread.Sleep(1500);
             });
             return true;
         }
