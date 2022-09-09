@@ -179,14 +179,7 @@ namespace CKAN.GUI
             }
 
             foreach (var im in registry.FindRemovableAutoInstalled(
-                registry.InstalledModules
-                    .Where(im =>
-                        modules_to_remove.All(m => m.identifier != im.identifier)
-                        || modules_to_install.Any(m => m.identifier == im.identifier))
-                    .Concat(modules_to_install.Select(m =>
-                        new InstalledModule(null, m, new string[0], false)))
-                    .ToList(),
-                version))
+                InstalledAfterChanges(registry, changeSet, version).ToList(), version))
             {
                 changeSet.Add(new ModChange(im.Module, GUIModChangeType.Remove, new SelectionReason.NoLongerUsed()));
                 modules_to_remove.Add(im.Module);
@@ -207,6 +200,34 @@ namespace CKAN.GUI
                     .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonFor(m))));
 
             return changeSet.Where(m => !m.Mod.IsMetapackage);
+        }
+
+        /// <summary>
+        /// Get the InstalledModules that we'll have after the changeset,
+        /// not including dependencies
+        /// </summary>
+        /// <param name="registry">Registry with currently installed modules</param>
+        /// <param name="changeSet">Changes to be made to the installed modules</param>
+        /// <param name="crit">Compatible versions of current instance</param>
+        /// <returns>Sequence of InstalledModules after the changes are applied, not including dependencies</returns>
+        private IEnumerable<InstalledModule> InstalledAfterChanges(
+            IRegistryQuerier registry, HashSet<ModChange> changeSet, GameVersionCriteria crit)
+        {
+            var removingIdents = changeSet
+                .Where(ch => ch.ChangeType != GUIModChangeType.Install)
+                .Select(ch => ch.Mod.identifier)
+                .ToHashSet();
+            return registry.InstalledModules
+                .Where(im => !removingIdents.Contains(im.identifier))
+                .Concat(changeSet
+                    .Where(ch => ch.ChangeType != GUIModChangeType.Remove)
+                    .Select(ch => new InstalledModule(
+                        null,
+                        ch.ChangeType == GUIModChangeType.Replace
+                            ? registry.GetReplacement(ch.Mod, crit)?.ReplaceWith
+                            : (ch as ModUpgrade)?.targetMod ?? ch.Mod,
+                        new string[0],
+                        false)));
         }
 
         public bool IsVisible(GUIMod mod, string instanceName)
