@@ -18,18 +18,16 @@ namespace CKAN.GUI
             Util.Invoke(this, () =>
             {
                 ChooseProvidedModsLabel.Text = message;
-    
+
                 ChooseProvidedModsListView.Items.Clear();
                 ChooseProvidedModsListView.Items.AddRange(modules
                     .Select(module => new ListViewItem(new string[]
                     {
-                        cache.IsMaybeCachedZip(module)
-                            ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
-                            : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download.Host ?? "", CkanModule.FmtSize(module.download_size)),
+                        cache.DescribeAvailability(module),
                         module.@abstract
                     })
                     {
-                        Tag = module,
+                        Tag     = module,
                         Checked = false
                     })
                     .ToArray());

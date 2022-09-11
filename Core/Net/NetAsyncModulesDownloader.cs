@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using ChinhDo.Transactions.FileManager;
 using log4net;
 
 namespace CKAN
@@ -62,33 +61,28 @@ namespace CKAN
                 .Where(group => !currentlyActive.Contains(group.Key))
                 .ToDictionary(group => group.Key, group => group.First());
 
-            // Make sure we have enough space to download this stuff
-            var downloadSize = unique_downloads.Values.Select(m => m.download_size).Sum();
-            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(new TxFileManager().GetTempDirectory()),
-                                         downloadSize,
-                                         Properties.Resources.NotEnoughSpaceToDownload);
-            // Make sure we have enough space to cache this stuff
-            cache.CheckFreeSpace(downloadSize);
+            // Make sure we have enough space to download and cache
+            cache.CheckFreeSpace(unique_downloads.Values
+                .Select(m => m.download_size)
+                .Sum());
 
             this.modules.AddRange(unique_downloads.Values);
 
             try
             {
                 // Start the downloads!
-                downloader.DownloadAndWait(
-                    unique_downloads.Select(item => new Net.DownloadTarget(
+                downloader.DownloadAndWait(unique_downloads
+                    .Select(item => new Net.DownloadTarget(
                         item.Key,
                         item.Value.InternetArchiveDownload,
-                        // Use a temp file name
-                        null,
+                        cache.GetInProgressFileName(item.Value),
                         item.Value.download_size,
                         // Send the MIME type to use for the Accept header
                         // The GitHub API requires this to include application/octet-stream
                         string.IsNullOrEmpty(item.Value.download_content_type)
                             ? defaultMimeType
-                            : $"{item.Value.download_content_type};q=1.0,{defaultMimeType};q=0.9"
-                    )).ToList()
-                );
+                            : $"{item.Value.download_content_type};q=1.0,{defaultMimeType};q=0.9"))
+                    .ToList());
                 this.modules.Clear();
                 AllComplete?.Invoke();
             }
@@ -104,8 +98,11 @@ namespace CKAN
 
         private void ModuleDownloadComplete(Uri url, string filename, Exception error, string etag)
         {
+            log.DebugFormat("Received download completion: {0}, {1}, {2}",
+                            url, filename, error?.Message);
             if (error != null)
             {
+                // If there was an error in DOWNLOADING, keep the file so we can retry it later
                 log.Info(error.ToString());
             }
             else
@@ -120,6 +117,8 @@ namespace CKAN
                 catch (InvalidModuleFileKraken kraken)
                 {
                     User.RaiseError(kraken.ToString());
+                    // If there was an error in STORING, delete the file so we can try it from scratch later
+                    File.Delete(filename);
                 }
                 catch (FileNotFoundException e)
                 {

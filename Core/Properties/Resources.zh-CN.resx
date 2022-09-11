@@ -213,7 +213,6 @@
   <data name="ModuleInstallerDownloading" xml:space="preserve"><value>正在下载 "{0}"</value></data>
   <data name="ModuleInstallerNothingToInstall" xml:space="preserve"><value>没有需要安装的</value></data>
   <data name="ModuleInstallerAboutToInstall" xml:space="preserve"><value>中止安装:</value></data>
-  <data name="ModuleInstallerModuleCached" xml:space="preserve"><value> * {0} {1} (已缓存)</value></data>
   <data name="ModuleInstallerUserDeclined" xml:space="preserve"><value>用户取消安装列表</value></data>
   <data name="ModuleInstallerInstallingMod" xml:space="preserve"><value>安装模组 "{0}"</value></data>
   <data name="ModuleInstallerUpdatingRegistry" xml:space="preserve"><value>正在更新注册表</value></data>
@@ -293,4 +292,7 @@ https://github.com/KSP-CKAN/CKAN/wiki/SSL-certificate-errors</value></data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve"><value>由 {0} 推荐</value></data>
   <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve"><value>{0} 有一个未满足的依赖项: {1} 未安装</value></data>
   <data name="SanityCheckerConflictsWith" xml:space="preserve"><value>{0} 与 {1} 冲突</value></data>
+  <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (metapackage)</value></data>
+  <data name="NetModuleCacheModuleCached" xml:space="preserve"><value>{0} {1} (已缓存)</value></data>
+  <data name="NetModuleCacheModuleHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
 </root>

@@ -54,5 +54,28 @@ namespace CKAN.Extensions
                         .OrderByDescending(dr => dr.RootDirectory.FullName.Length)
                         .FirstOrDefault();
 
+        /// <summary>
+        /// A version of Stream.CopyTo with progress updates.
+        /// </summary>
+        /// <param name="src">Stream from which to copy</param>
+        /// <param name="dest">Stream to which to copy</param>
+        /// <param name="progress">Callback to notify as we traverse the input, called with count of bytes received</param>
+        public static void CopyTo(this Stream src, Stream dest, IProgress<long> progress)
+        {
+            // CopyTo says its default buffer is 81920, but we want more than 1 update for a 100 KiB file
+            const int bufSize = 8192;
+            var buffer = new byte[bufSize];
+            long total = 0;
+            while (true)
+            {
+                var bytesRead = src.Read(buffer, 0, bufSize);
+                if (bytesRead == 0)
+                {
+                    break;
+                }
+                dest.Write(buffer, 0, bytesRead);
+                progress.Report(total += bytesRead);
+            }
+        }
     }
 }

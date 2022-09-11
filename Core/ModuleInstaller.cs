@@ -155,19 +155,10 @@ namespace CKAN
 
             foreach (CkanModule module in modsToInstall)
             {
+                User.RaiseMessage(" * {0}", Cache.DescribeAvailability(module));
                 if (!Cache.IsMaybeCachedZip(module))
                 {
-                    User.RaiseMessage(" * {0} {1} ({2}, {3})",
-                        module.name,
-                        module.version,
-                        module.download.Host,
-                        CkanModule.FmtSize(module.download_size)
-                    );
                     downloads.Add(module);
-                }
-                else
-                {
-                    User.RaiseMessage(Properties.Resources.ModuleInstallerModuleCached, module.name, module.version);
                 }
             }
 
@@ -1053,12 +1044,21 @@ namespace CKAN
                 {
                     if (!Cache.IsMaybeCachedZip(module))
                     {
-                        User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingUncached,
-                            module.name,
-                            module.version,
-                            module.download.Host,
-                            CkanModule.FmtSize(module.download_size)
-                        );
+                        var inProgressFile = new FileInfo(Cache.GetInProgressFileName(module));
+                        if (inProgressFile.Exists)
+                        {
+                            User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingResuming,
+                                module.name, module.version,
+                                module.download.Host,
+                                CkanModule.FmtSize(module.download_size - inProgressFile.Length));
+                        }
+                        else
+                        {
+                            User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingUncached,
+                                module.name, module.version,
+                                module.download.Host,
+                                CkanModule.FmtSize(module.download_size));
+                        }
                     }
                     else
                     {
@@ -1086,13 +1086,19 @@ namespace CKAN
                     {
                         if (!Cache.IsMaybeCachedZip(module))
                         {
-                            User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingUncached,
-                                module.name,
-                                installed.version,
-                                module.version,
-                                module.download.Host,
-                                CkanModule.FmtSize(module.download_size)
-                            );
+                            var inProgressFile = new FileInfo(Cache.GetInProgressFileName(module));
+                            if (inProgressFile.Exists)
+                            {
+                                User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingResuming,
+                                    module.name, installed.version, module.version,
+                                    module.download.Host, CkanModule.FmtSize(module.download_size - inProgressFile.Length));
+                            }
+                            else
+                            {
+                                User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingUncached,
+                                    module.name, installed.version, module.version,
+                                    module.download.Host, CkanModule.FmtSize(module.download_size));
+                            }
                         }
                         else
                         {

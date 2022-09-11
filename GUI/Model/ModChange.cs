@@ -75,21 +75,11 @@ namespace CKAN.GUI
             return $"{ChangeType.ToI18nString()} {Mod} ({Reason})";
         }
 
-        protected string modNameAndStatus(CkanModule m)
-        {
-            return m.IsMetapackage
-                ? string.Format(Properties.Resources.MainChangesetMetapackage, m.name, m.version)
-                : Main.Instance.Manager.Cache.IsMaybeCachedZip(m)
-                    ? string.Format(Properties.Resources.MainChangesetCached, m.name, m.version)
-                    : string.Format(Properties.Resources.MainChangesetHostSize,
-                        m.name, m.version, m.download.Host ?? "", CkanModule.FmtSize(m.download_size));
-        }
-
         public virtual string NameAndStatus
         {
             get
             {
-                return modNameAndStatus(Mod);
+                return Main.Instance.Manager.Cache.DescribeAvailability(Mod);
             }
         }
 
@@ -114,7 +104,7 @@ namespace CKAN.GUI
         {
             get
             {
-                return modNameAndStatus(targetMod);
+                return Main.Instance.Manager.Cache.DescribeAvailability(targetMod);
             }
         }
 

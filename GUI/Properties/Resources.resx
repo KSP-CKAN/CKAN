@@ -217,9 +217,6 @@ This means that CKAN forgot about all your installed mods, but they are still in
 Do you really want to install it?</value></data>
   <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Install</value></data>
   <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Cancel</value></data>
-  <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (metapackage)</value></data>
-  <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (cached)</value></data>
-  <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Update selected by user to version {0}.</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Import Mods</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>

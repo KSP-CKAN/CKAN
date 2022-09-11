@@ -213,7 +213,6 @@ Souhaitez-vous réinstaller maintenant ?</value></data>
   <data name="ModuleInstallerDownloading" xml:space="preserve"><value>Téléchargement de "{0}"</value></data>
   <data name="ModuleInstallerNothingToInstall" xml:space="preserve"><value>Rien à installer</value></data>
   <data name="ModuleInstallerAboutToInstall" xml:space="preserve"><value>Vont être installés :</value></data>
-  <data name="ModuleInstallerModuleCached" xml:space="preserve"><value> * {0} {1} (en cache)</value></data>
   <data name="ModuleInstallerUserDeclined" xml:space="preserve"><value>L'utilisateur a refusé la liste d'installation</value></data>
   <data name="ModuleInstallerInstallingMod" xml:space="preserve"><value>Installation du mod "{0}"</value></data>
   <data name="ModuleInstallerUpdatingRegistry" xml:space="preserve"><value>Mise à jour du registre</value></data>
@@ -294,4 +293,7 @@ Si vous êtes certain que ce n'est pas le cas, alors supprimez :
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve"><value>Recommandé par {0}</value></data>
   <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve"><value>{0} a une dépendance non-satisfaite : {1} n'est pas installé</value></data>
   <data name="SanityCheckerConflictsWith" xml:space="preserve"><value>{0} est en conflit avec {1}</value></data>
+  <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (méta-paquet)</value></data>
+  <data name="NetModuleCacheModuleCached" xml:space="preserve"><value>{0} {1} (en cache)</value></data>
+  <data name="NetModuleCacheModuleHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
 </root>

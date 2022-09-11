@@ -32,11 +32,14 @@ namespace CKAN
             public Exception error;
             public int lastProgressUpdateSize;
 
-            public event DownloadProgressChangedEventHandler             Progress;
+            /// <summary>
+            /// Percentage, bytes received, total bytes to receive
+            /// </summary>
+            public event Action<int, long, long>                         Progress;
             public event Action<object, AsyncCompletedEventArgs, string> Done;
 
             private string mimeType;
-            private WebClient agent;
+            private ResumingWebClient agent;
 
             public NetAsyncDownloaderDownloadPart(Net.DownloadTarget target)
             {
@@ -51,7 +54,7 @@ namespace CKAN
             public void Download(Uri url, string path)
             {
                 ResetAgent();
-                agent.DownloadFileAsync(url, path);
+                agent.DownloadFileAsyncWithResume(url, path);
             }
 
             public void Abort()
@@ -61,7 +64,7 @@ namespace CKAN
 
             private void ResetAgent()
             {
-                agent = new WebClient();
+                agent = new ResumingWebClient();
 
                 agent.Headers.Add("User-Agent", Net.UserAgentString);
 
@@ -86,7 +89,11 @@ namespace CKAN
                 // Forward progress and completion events to our listeners
                 agent.DownloadProgressChanged += (sender, args) =>
                 {
-                    Progress?.Invoke(sender, args);
+                    Progress?.Invoke(args.ProgressPercentage, args.BytesReceived, args.TotalBytesToReceive);
+                };
+                agent.DownloadProgress += (percent, bytesReceived, totalBytesToReceive) =>
+                {
+                    Progress?.Invoke(percent, bytesReceived, totalBytesToReceive);
                 };
                 agent.DownloadFileCompleted += (sender, args) =>
                 {
@@ -163,11 +170,8 @@ namespace CKAN
                     dl.target.url.ToString().Replace(" ", "%20"));
 
                 // Schedule for us to get back progress reports.
-                dl.Progress += (sender, args) =>
-                    FileProgressReport(index,
-                        args.ProgressPercentage,
-                        args.BytesReceived,
-                        args.TotalBytesToReceive);
+                dl.Progress += (ProgressPercentage, BytesReceived, TotalBytesToReceive) =>
+                    FileProgressReport(index, ProgressPercentage, BytesReceived, TotalBytesToReceive);
 
                 // And schedule a notification if we're done (or if something goes wrong)
                 dl.Done += (sender, args, etag) =>

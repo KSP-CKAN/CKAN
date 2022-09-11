@@ -192,9 +192,6 @@
 Вы действительно хотите установить его?</value></data>
   <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Установить</value></data>
   <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Отмена</value></data>
-  <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (метапакет)</value></data>
-  <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (загружено)</value></data>
-  <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Обновить выбранное пользователем до версии {0}.</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Импортировать модификации</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Модификации (*.zip)|*.zip</value></data>

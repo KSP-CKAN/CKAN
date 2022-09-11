@@ -340,6 +340,19 @@ namespace CKAN.Properties {
             get { return (string)(ResourceManager.GetObject("GameInstancePathNotFound", resourceCulture)); }
         }
 
+        internal static string NetModuleCacheMetapackage {
+            get { return (string)(ResourceManager.GetObject("NetModuleCacheModuleHostSize", resourceCulture)); }
+        }
+        internal static string NetModuleCacheModuleHostSize {
+            get { return (string)(ResourceManager.GetObject("NetModuleCacheModuleHostSize", resourceCulture)); }
+        }
+        internal static string NetModuleCacheModuleCached {
+            get { return (string)(ResourceManager.GetObject("NetModuleCacheModuleCached", resourceCulture)); }
+        }
+        internal static string NetModuleCacheModuleResuming {
+            get { return (string)(ResourceManager.GetObject("NetModuleCacheModuleResuming", resourceCulture)); }
+        }
+
         internal static string ModuleInstallerDownloading {
             get { return (string)(ResourceManager.GetObject("ModuleInstallerDownloading", resourceCulture)); }
         }
@@ -348,9 +361,6 @@ namespace CKAN.Properties {
         }
         internal static string ModuleInstallerAboutToInstall {
             get { return (string)(ResourceManager.GetObject("ModuleInstallerAboutToInstall", resourceCulture)); }
-        }
-        internal static string ModuleInstallerModuleCached {
-            get { return (string)(ResourceManager.GetObject("ModuleInstallerModuleCached", resourceCulture)); }
         }
         internal static string ModuleInstallerUserDeclined {
             get { return (string)(ResourceManager.GetObject("ModuleInstallerUserDeclined", resourceCulture)); }
@@ -418,6 +428,9 @@ namespace CKAN.Properties {
         internal static string ModuleInstallerUpgradeInstallingUncached {
             get { return (string)(ResourceManager.GetObject("ModuleInstallerUpgradeInstallingUncached", resourceCulture)); }
         }
+        internal static string ModuleInstallerUpgradeInstallingResuming {
+            get { return (string)(ResourceManager.GetObject("ModuleInstallerUpgradeInstallingResuming", resourceCulture)); }
+        }
         internal static string ModuleInstallerUpgradeInstallingCached {
             get { return (string)(ResourceManager.GetObject("ModuleInstallerUpgradeInstallingCached", resourceCulture)); }
         }
@@ -432,6 +445,9 @@ namespace CKAN.Properties {
         }
         internal static string ModuleInstallerUpgradeUpgradingCached {
             get { return (string)(ResourceManager.GetObject("ModuleInstallerUpgradeUpgradingCached", resourceCulture)); }
+        }
+        internal static string ModuleInstallerUpgradeUpgradingResuming {
+            get { return (string)(ResourceManager.GetObject("ModuleInstallerUpgradeUpgradingResuming", resourceCulture)); }
         }
         internal static string ModuleInstallerUpgradeUserDeclined {
             get { return (string)(ResourceManager.GetObject("ModuleInstallerUpgradeUserDeclined", resourceCulture)); }
