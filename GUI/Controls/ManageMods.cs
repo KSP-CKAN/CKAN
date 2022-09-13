@@ -962,7 +962,7 @@ namespace CKAN.GUI
             // Build the list of changes, first the mod to remove:
             List<ModChange> toReinstall = new List<ModChange>()
             {
-                new ModChange(module.ToModule(), GUIModChangeType.Remove, null)
+                new ModChange(module.ToModule(), GUIModChangeType.Remove)
             };
             // Then everything we need to re-install:
             var revdep = registry.FindReverseDependencies(new List<string>() { module.Identifier });
@@ -977,9 +977,7 @@ namespace CKAN.GUI
             {
                 toReinstall.Add(new ModChange(
                     (mainModList.full_list_of_mod_rows[id]?.Tag as GUIMod).ToModule(),
-                    GUIModChangeType.Install,
-                    null
-                ));
+                    GUIModChangeType.Install));
             }
             if (StartChangeSet != null)
             {

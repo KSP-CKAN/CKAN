@@ -1,4 +1,4 @@
-﻿namespace CKAN.GUI
+namespace CKAN.GUI
 {
     partial class Changeset
     {
@@ -54,6 +54,7 @@
             this.ChangesListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChangesListView.Name = "ChangesListView";
             this.ChangesListView.Size = new System.Drawing.Size(1532, 886);
+            this.ChangesListView.ShowItemToolTips = true;
             this.ChangesListView.TabIndex = 0;
             this.ChangesListView.UseCompatibleStateImageBehavior = false;
             this.ChangesListView.View = System.Windows.Forms.View.Details;

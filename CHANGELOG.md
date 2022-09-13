@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Highlight incompatible mods recursively (#3651 by: HebaruSan; reviewed: techman83)
 - [GUI] Support mouse back/forward buttons (#3655 by: HebaruSan; reviewed: techman83)
 - [Core] Resume failed downloads (#3666 by: HebaruSan; reviewed: techman83)
+- [Multiple] Install dependencies first (#3667 by: HebaruSan; reviewed: techman83)
 
 ## Bugfixes
 

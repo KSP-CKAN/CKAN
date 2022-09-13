@@ -112,12 +112,11 @@ namespace CKAN
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
             // Only pass the CkanModules of the parameters, so we can tell which are auto-installed,
             // and relationships of metapackages, since metapackages aren't included in the RR modlist.
-            var list = resolver.ModList().Where(
-                m =>
-                {
-                    var reason = resolver.ReasonFor(m);
-                    return reason is SelectionReason.UserRequested || (reason.Parent?.IsMetapackage ?? false);
-                }).ToList();
+            var list = resolver.ModList()
+                .Where(m => resolver.ReasonsFor(m).Any(reason =>
+                    reason is SelectionReason.UserRequested
+                    || (reason.Parent?.IsMetapackage ?? false)))
+                .ToList();
             InstallList(list, options, registry_manager, ref possibleConfigOnlyDirs, downloader);
         }
 

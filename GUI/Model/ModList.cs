@@ -173,7 +173,7 @@ namespace CKAN.GUI
                     CkanModule module_by_version = registry.GetModuleByVersion(depMod.identifier,
                     depMod.version)
                         ?? registry.InstalledModule(dependent).Module;
-                    changeSet.Add(new ModChange(module_by_version, GUIModChangeType.Remove, null));
+                    changeSet.Add(new ModChange(module_by_version, GUIModChangeType.Remove));
                     modules_to_remove.Add(module_by_version);
                 }
             }
@@ -195,11 +195,13 @@ namespace CKAN.GUI
                 modules_to_remove,
                 opts, registry, version);
 
-            changeSet.UnionWith(
-                resolver.ModList()
-                    .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonFor(m))));
-
-            return changeSet.Where(m => !m.Mod.IsMetapackage);
+            // Replace Install entries in changeset with the ones from resolver to get all the reasons
+            return changeSet
+                .Where(ch => !(ch.ChangeType is GUIModChangeType.Install))
+                .OrderBy(ch => ch.Mod.identifier)
+                .Union(resolver.ModList()
+                    .Where(m => !m.IsMetapackage)
+                    .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonsFor(m))));
         }
 
         /// <summary>
