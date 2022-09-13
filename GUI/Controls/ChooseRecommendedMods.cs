@@ -173,10 +173,7 @@ namespace CKAN.GUI
         {
             return new ListViewItem(new string[]
             {
-                module.IsDLC ? module.name
-                    : cache.IsMaybeCachedZip(module)
-                        ? string.Format(Properties.Resources.MainChangesetCached, module.name, module.version)
-                        : string.Format(Properties.Resources.MainChangesetHostSize, module.name, module.version, module.download?.Host ?? "", CkanModule.FmtSize(module.download_size)),
+                module.IsDLC ? module.name : cache.DescribeAvailability(module),
                 descrip,
                 module.@abstract
             })

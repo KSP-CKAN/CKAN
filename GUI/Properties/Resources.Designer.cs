@@ -488,15 +488,6 @@ namespace CKAN.GUI.Properties {
             get { return (string)(ResourceManager.GetObject("AllModVersionsInstallNo", resourceCulture)); }
         }
 
-        internal static string MainChangesetMetapackage {
-            get { return (string)(ResourceManager.GetObject("MainChangesetMetapackage", resourceCulture)); }
-        }
-        internal static string MainChangesetCached {
-            get { return (string)(ResourceManager.GetObject("MainChangesetCached", resourceCulture)); }
-        }
-        internal static string MainChangesetHostSize {
-            get { return (string)(ResourceManager.GetObject("MainChangesetHostSize", resourceCulture)); }
-        }
         internal static string MainChangesetUpdateSelected {
             get { return (string)(ResourceManager.GetObject("MainChangesetUpdateSelected", resourceCulture)); }
         }

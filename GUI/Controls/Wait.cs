@@ -117,12 +117,7 @@ namespace CKAN.GUI
         /// <param name="total">Number of bytes in complete download</param>
         public void SetModuleProgress(CkanModule module, long remaining, long total)
         {
-            SetProgress(string.Format(Properties.Resources.MainChangesetHostSize,
-                                      module.name,
-                                      module.version,
-                                      module.download.Host ?? "",
-                                      CkanModule.FmtSize(module.download_size)),
-                        remaining, total);
+            SetProgress(module.ToString(), remaining, total);
         }
 
         private Action<object, DoWorkEventArgs>             bgLogic;

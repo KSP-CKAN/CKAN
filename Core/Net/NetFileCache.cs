@@ -67,6 +67,9 @@ namespace CKAN
                     Properties.Resources.NetFileCacheCannotFind, cachePath));
             }
 
+            // Files go here while they're downloading
+            Directory.CreateDirectory(InProgressPath);
+
             // Establish a watch on our cache. This means we can cache the directory contents,
             // and discard that cache if we spot changes.
             watcher = new FileSystemWatcher(cachePath, "*.zip")
@@ -102,6 +105,19 @@ namespace CKAN
             watcher.EnableRaisingEvents = false;
             watcher.Dispose();
         }
+
+        private string InProgressPath => Path.Combine(cachePath, "downloading");
+
+        private string GetInProgressFileName(string hash, string description)
+            => Directory.EnumerateFiles(InProgressPath)
+                .Where(path => new FileInfo(path).Name.StartsWith(hash))
+                .FirstOrDefault()
+                // If not found, return the name to create
+                ?? Path.Combine(InProgressPath, $"{hash}-{description}");
+
+        public string GetInProgressFileName(Uri url, string description)
+            => GetInProgressFileName(NetFileCache.CreateURLHash(url),
+                                     description);
 
         /// <summary>
         /// Called from our FileSystemWatcher. Use OnCacheChanged()
@@ -293,7 +309,7 @@ namespace CKAN
         private void GetSizeInfo(string path, ref int numFiles, ref long numBytes)
         {
             DirectoryInfo cacheDir = new DirectoryInfo(path);
-            foreach (var file in cacheDir.EnumerateFiles())
+            foreach (var file in cacheDir.EnumerateFiles("*", SearchOption.AllDirectories))
             {
                 ++numFiles;
                 numBytes += file.Length;
@@ -341,12 +357,10 @@ namespace CKAN
                     kvp.Value.RemoveAll(mod => !mod.IsCompatibleKSP(aggregateCriteria));
                 }
 
-                // Now get all the files in all the caches...
-                List<FileInfo> files = allFiles();
-                // ... and sort them by compatibilty and timestamp...
-                files.Sort((a, b) => compareFiles(
-                    hashMap, aggregateCriteria, a, b
-                ));
+                // Now get all the files in all the caches, including in progress...
+                List<FileInfo> files = allFiles(true);
+                // ... and sort them by compatibility and timestamp...
+                files.Sort((a, b) => compareFiles(hashMap, aggregateCriteria, a, b));
 
                 // ... and delete them till we're under the limit
                 foreach (FileInfo fi in files)
@@ -407,10 +421,12 @@ namespace CKAN
             }
         }
 
-        private List<FileInfo> allFiles()
+        private List<FileInfo> allFiles(bool includeInProgress = false)
         {
             DirectoryInfo mainDir = new DirectoryInfo(cachePath);
-            var files = mainDir.EnumerateFiles();
+            var files = mainDir.EnumerateFiles("*",
+                                               includeInProgress ? SearchOption.AllDirectories
+                                                                 : SearchOption.TopDirectoryOnly);
             foreach (string legacyDir in legacyDirs())
             {
                 DirectoryInfo legDir = new DirectoryInfo(legacyDir);
@@ -583,15 +599,10 @@ namespace CKAN
         /// </summary>
         public void RemoveAll()
         {
-            foreach (string file in Directory.EnumerateFiles(cachePath))
-            {
-                try
-                {
-                    File.Delete(file);
-                }
-                catch { }
-            }
-            foreach (string dir in legacyDirs())
+            var dirs = Enumerable.Repeat<string>(cachePath, 1)
+                .Concat(Enumerable.Repeat<string>(InProgressPath, 1))
+                .Concat(legacyDirs());
+            foreach (string dir in dirs)
             {
                 foreach (string file in Directory.EnumerateFiles(dir))
                 {

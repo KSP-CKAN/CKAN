@@ -117,6 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RelationshipResolverUserReason" xml:space="preserve"><value>Neue Mod-Installation ausgewählt vom Nutzer</value></data>
-  <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (Metapacket)</value></data>
+  <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (メタパッケージ)</value></data>
+  <data name="NetModuleCacheModuleCached" xml:space="preserve"><value>{0} {1} (キャッシュ済)</value></data>
+  <data name="NetModuleCacheModuleHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
 </root>

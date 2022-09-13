@@ -189,9 +189,6 @@ Tentando mover {2} de {3} e reiniciar o CKAN.</value></data>
 Você quer realmente instalá-la?</value></data>
   <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Instalar</value></data>
   <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Cancelar</value></data>
-  <data name="MainChangesetMetapackage" xml:space="preserve"><value>{0} {1} (metapackage)</value></data>
-  <data name="MainChangesetCached" xml:space="preserve"><value>{0} {1} (Em cache)</value></data>
-  <data name="MainChangesetHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Atualização selecionada pelo usuário para a versão {0}.</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Importar mods</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>

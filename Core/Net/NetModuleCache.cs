@@ -83,6 +83,23 @@ namespace CKAN
             cache.CheckFreeSpace(bytesToStore);
         }
 
+        public string GetInProgressFileName(CkanModule m)
+            => cache.GetInProgressFileName(m.download, m.StandardName());
+
+        private static string DescribeUncachedAvailability(CkanModule m, FileInfo fi)
+            => fi.Exists
+                ? string.Format(Properties.Resources.NetModuleCacheModuleResuming,
+                    m.name, m.version, m.download.Host ?? "",
+                    CkanModule.FmtSize(m.download_size - fi.Length))
+                : string.Format(Properties.Resources.NetModuleCacheModuleHostSize,
+                    m.name, m.version, m.download.Host ?? "", CkanModule.FmtSize(m.download_size));
+
+        public string DescribeAvailability(CkanModule m)
+            => m.IsMetapackage
+                ? string.Format(Properties.Resources.NetModuleCacheMetapackage, m.name, m.version)
+                : IsMaybeCachedZip(m)
+                    ? string.Format(Properties.Resources.NetModuleCacheModuleCached, m.name, m.version)
+                    : DescribeUncachedAvailability(m, new FileInfo(GetInProgressFileName(m)));
 
         /// <summary>
         /// Calculate the SHA1 hash of a file
