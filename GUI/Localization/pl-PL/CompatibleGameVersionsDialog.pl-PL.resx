@@ -124,7 +124,7 @@
     <value>Wersja gry:</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>Uwaga! Nie da się sprawdzić, czy ten mod jest naprawdę kompatybilny z wybranymi wersjami! Proszę o ostrożność.</value>
+    <value>Uwaga! Nie da się sprawdzić, czy mod jest naprawdę kompatybilny z wybranymi tutaj wersjami! Proszę o ostrożność.</value>
   </data>
   <data name="GameVersionLabel.Text" xml:space="preserve">
     <value>&lt;wersja&gt;</value>

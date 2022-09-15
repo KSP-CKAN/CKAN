@@ -617,7 +617,7 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
     <value>Sugerowane przez {0}</value>
   </data>
   <data name="RelationshipResolverDependsReason" xml:space="preserve">
-    <value>Aby spełnić zależność od {0}</value>
+    <value>Aby spełnić zależność {0}</value>
   </data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve">
     <value>Zalecane przez {0}</value>
