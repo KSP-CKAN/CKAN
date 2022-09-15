@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Support mouse back/forward buttons (#3655 by: HebaruSan; reviewed: techman83)
 - [Core] Resume failed downloads (#3666 by: HebaruSan; reviewed: techman83)
 - [Multiple] Install dependencies first (#3667 by: HebaruSan; reviewed: techman83)
+- [Multiple] Polish translation (#3669 by: WujekFoliarz; reviewed: HebaruSan)
 
 ## Bugfixes
 
