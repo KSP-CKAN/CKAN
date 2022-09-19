@@ -38,14 +38,16 @@ namespace Tests.GUI
         /// </summary>
         [Test,
             // Controls
-            TestCase(typeof(CKAN.GUI.AllModVersions)),
+            TestCase(typeof(CKAN.GUI.Metadata)),
+            TestCase(typeof(CKAN.GUI.Relationships)),
+            TestCase(typeof(CKAN.GUI.Contents)),
+            TestCase(typeof(CKAN.GUI.Versions)),
             TestCase(typeof(CKAN.GUI.Changeset)),
             TestCase(typeof(CKAN.GUI.ChooseProvidedMods)),
             TestCase(typeof(CKAN.GUI.ChooseRecommendedMods)),
             TestCase(typeof(CKAN.GUI.DeleteDirectories)),
             TestCase(typeof(CKAN.GUI.EditModpack)),
             TestCase(typeof(CKAN.GUI.EditModSearch)),
-            TestCase(typeof(CKAN.GUI.HintTextBox)),
             TestCase(typeof(CKAN.GUI.ManageMods)),
             TestCase(typeof(CKAN.GUI.ModInfo)),
             TestCase(typeof(CKAN.GUI.Wait)),

@@ -118,30 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MetadataTabPage.Text" xml:space="preserve"><value>Метаданные</value></data>
-  <data name="MetadataModuleNameTextBox.Text" xml:space="preserve"><value>Название</value></data>
-  <data name="IdentifierLabel.Text" xml:space="preserve"><value>Идентиф.:</value></data>
-  <data name="MetadataIdentifierTextBox.Text" xml:space="preserve"><value>—</value></data>
-  <data name="ReplacementLabel.Text" xml:space="preserve"><value>Заменено:</value></data>
-  <data name="ReplacementTextBox.Text" xml:space="preserve"><value>—</value></data>
-  <data name="GameCompatibilityLabel.Text" xml:space="preserve"><value>Версия игры:</value></data>
-  <data name="ReleaseLabel.Text" xml:space="preserve"><value>Статус:</value></data>
-  <data name="AuthorLabel.Text" xml:space="preserve"><value>Автор:</value></data>
-  <data name="LicenseLabel.Text" xml:space="preserve"><value>Лицензия:</value></data>
-  <data name="MetadataModuleVersionTextBox.Text" xml:space="preserve"><value>0.0.0</value></data>
-  <data name="MetadataModuleLicenseTextBox.Text" xml:space="preserve"><value>Нет</value></data>
-  <data name="MetadataModuleAuthorTextBox.Text" xml:space="preserve"><value>Никто</value></data>
-  <data name="VersionLabel.Text" xml:space="preserve"><value>Версия:</value></data>
-  <data name="MetadataModuleReleaseStatusTextBox.Text" xml:space="preserve"><value>стабильно</value></data>
-  <data name="MetadataModuleGameCompatibilityTextBox.Text" xml:space="preserve"><value>0.0.0</value></data>
   <data name="RelationshipTabPage.Text" xml:space="preserve"><value>Зависимости</value></data>
-  <data name="LegendDependsLabel.Text" xml:space="preserve"><value>Зависит от</value></data>
-  <data name="LegendRecommendsLabel.Text" xml:space="preserve"><value>Рекомендует</value></data>
-  <data name="LegendSuggestsLabel.Text" xml:space="preserve"><value>Предлагает</value></data>
-  <data name="LegendSupportsLabel.Text" xml:space="preserve"><value>Поддерживает</value></data>
-  <data name="LegendConflictsLabel.Text" xml:space="preserve"><value>Конфликтует с</value></data>
   <data name="ContentTabPage.Text" xml:space="preserve"><value>Содержимое</value></data>
-  <data name="ContentsDownloadButton.Text" xml:space="preserve"><value>Загрузить</value></data>
-  <data name="ContentsOpenButton.Text" xml:space="preserve"><value>Открыть ZIP</value></data>
-  <data name="NotCachedLabel.Text" xml:space="preserve"><value>Модификация не загружена в кэш. Нажмите «Загрузить» для просмотра содержимого</value></data>
-  <data name="AllModVersionsTabPage.Text" xml:space="preserve"><value>Версии</value></data>
+  <data name="VersionsTabPage.Text" xml:space="preserve"><value>Версии</value></data>
 </root>

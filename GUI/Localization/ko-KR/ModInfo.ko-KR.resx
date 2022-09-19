@@ -118,30 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MetadataTabPage.Text" xml:space="preserve"><value>메타데이터</value></data>
-  <data name="MetadataModuleNameTextBox.Text" xml:space="preserve"><value>모드 이름</value></data>
-  <data name="IdentifierLabel.Text" xml:space="preserve"><value>식별자:</value></data>
-  <data name="MetadataIdentifierTextBox.Text" xml:space="preserve"><value>-</value></data>
-  <data name="ReplacementLabel.Text" xml:space="preserve"><value>대체된 모드:</value></data>
-  <data name="ReplacementTextBox.Text" xml:space="preserve"><value>-</value></data>
-  <data name="GameCompatibilityLabel.Text" xml:space="preserve"><value>최대 지원 버전:</value></data>
-  <data name="ReleaseLabel.Text" xml:space="preserve"><value>출시 상태:</value></data>
-  <data name="AuthorLabel.Text" xml:space="preserve"><value>제작자:</value></data>
-  <data name="LicenseLabel.Text" xml:space="preserve"><value>라이선스:</value></data>
-  <data name="MetadataModuleVersionTextBox.Text" xml:space="preserve"><value>0.0.0</value></data>
-  <data name="MetadataModuleLicenseTextBox.Text" xml:space="preserve"><value>없음</value></data>
-  <data name="MetadataModuleAuthorTextBox.Text" xml:space="preserve"><value>미상</value></data>
-  <data name="VersionLabel.Text" xml:space="preserve"><value>버전:</value></data>
-  <data name="MetadataModuleReleaseStatusTextBox.Text" xml:space="preserve"><value>안정함</value></data>
-  <data name="MetadataModuleGameCompatibilityTextBox.Text" xml:space="preserve"><value>0.0.0</value></data>
   <data name="RelationshipTabPage.Text" xml:space="preserve"><value>모드 관계</value></data>
-  <data name="LegendDependsLabel.Text" xml:space="preserve"><value>필수</value></data>
-  <data name="LegendRecommendsLabel.Text" xml:space="preserve"><value>추천</value></data>
-  <data name="LegendSuggestsLabel.Text" xml:space="preserve"><value>제안</value></data>
-  <data name="LegendSupportsLabel.Text" xml:space="preserve"><value>지원함</value></data>
-  <data name="LegendConflictsLabel.Text" xml:space="preserve"><value>충돌함</value></data>
   <data name="ContentTabPage.Text" xml:space="preserve"><value>파일 내용</value></data>
-  <data name="ContentsDownloadButton.Text" xml:space="preserve"><value>용량</value></data>
-  <data name="ContentsOpenButton.Text" xml:space="preserve"><value>ZIP 열기</value></data>
-  <data name="NotCachedLabel.Text" xml:space="preserve"><value>이 모드는 캐시에 있지 않아요. 파일 내용을 보려면 '설치'를 누르세요.</value></data>
-  <data name="AllModVersionsTabPage.Text" xml:space="preserve"><value>버전</value></data>
+  <data name="VersionsTabPage.Text" xml:space="preserve"><value>버전</value></data>
 </root>

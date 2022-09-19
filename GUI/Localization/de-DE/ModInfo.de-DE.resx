@@ -118,24 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MetadataTabPage.Text" xml:space="preserve"><value>Metadaten</value></data>
-  <data name="MetadataModuleNameTextBox.Text" xml:space="preserve"><value>Modname</value></data>
-  <data name="IdentifierLabel.Text" xml:space="preserve"><value>Kennung:</value></data>
-  <data name="ReplacementLabel.Text" xml:space="preserve"><value>Ersetzt durch:</value></data>
-  <data name="GameCompatibilityLabel.Text" xml:space="preserve"><value>Max. Spielversion:</value></data>
-  <data name="ReleaseLabel.Text" xml:space="preserve"><value>Releasestatus:</value></data>
-  <data name="AuthorLabel.Text" xml:space="preserve"><value>Autor:</value></data>
-  <data name="LicenseLabel.Text" xml:space="preserve"><value>Lizenz:</value></data>
-  <data name="MetadataModuleLicenseTextBox.Text" xml:space="preserve"><value>N/A</value></data>
-  <data name="MetadataModuleAuthorTextBox.Text" xml:space="preserve"><value>N/A</value></data>
   <data name="RelationshipTabPage.Text" xml:space="preserve"><value>Beziehungen</value></data>
-  <data name="LegendDependsLabel.Text" xml:space="preserve"><value>Abhängigkeit</value></data>
-  <data name="LegendRecommendsLabel.Text" xml:space="preserve"><value>Empfehlung</value></data>
-  <data name="LegendSuggestsLabel.Text" xml:space="preserve"><value>Vorschlag</value></data>
-  <data name="LegendSupportsLabel.Text" xml:space="preserve"><value>Unterstützt</value></data>
-  <data name="LegendConflictsLabel.Text" xml:space="preserve"><value>Konflikt</value></data>
   <data name="ContentTabPage.Text" xml:space="preserve"><value>Inhalt</value></data>
-  <data name="ContentsDownloadButton.Text" xml:space="preserve"><value>Herunterladen</value></data>
-  <data name="ContentsOpenButton.Text" xml:space="preserve"><value>ZIP öffnen</value></data>
-  <data name="NotCachedLabel.Text" xml:space="preserve"><value>Diese Mod ist nicht im Cache, klicke 'Herunterladen' für eine Inhaltsvorschau</value></data>
-  <data name="AllModVersionsTabPage.Text" xml:space="preserve"><value>Versionen</value></data>
+  <data name="VersionsTabPage.Text" xml:space="preserve"><value>Versionen</value></data>
 </root>

@@ -10,9 +10,9 @@ using CKAN.Versioning;
 
 namespace CKAN.GUI
 {
-    public partial class AllModVersions : UserControl
+    public partial class Versions : UserControl
     {
-        public AllModVersions()
+        public Versions()
         {
             InitializeComponent();
         }

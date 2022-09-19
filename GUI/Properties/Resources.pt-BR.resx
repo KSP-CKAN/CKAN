@@ -382,4 +382,9 @@ Você deseja permitir que o CKAN faça isso? Se você clicar em Não, você não
   <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>sug:</value></data>
   <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>conf:</value></data>
   <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Expanda ou retraia os campos de busca detalhados (Ctrl-Shift-F)</value></data>
+  <data name="RelationshipTypeDepends" xml:space="preserve"><value>Depende</value></data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve"><value>Recomenda</value></data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve"><value>Sugere</value></data>
+  <data name="RelationshipTypeSupports" xml:space="preserve"><value>Suporta</value></data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve"><value>Conflita</value></data>
 </root>

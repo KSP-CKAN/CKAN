@@ -427,4 +427,9 @@ CKAN에게 이것을 허용할 건가요? 아니요를 누르면 이 메세지�
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>새로운 검색을 지금 검색에 더하기</value></data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>모든 모드를 지우려면 체크를 풀고, 다시 되돌리려면 체크하기</value></data>
   <data name="TotalPlayTime" xml:space="preserve"><value>총 플레이 타임: {0} 시간</value></data>
+  <data name="RelationshipTypeDepends" xml:space="preserve"><value>필수</value></data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve"><value>추천</value></data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve"><value>제안</value></data>
+  <data name="RelationshipTypeSupports" xml:space="preserve"><value>지원함</value></data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve"><value>충돌함</value></data>
 </root>

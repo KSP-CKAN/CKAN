@@ -403,4 +403,9 @@ CKANにこの動作をする許可を与えますか？ いいえをクリック
   <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>詳細検索フィールドを広げるまたは閉じる(Ctrl-Shift-F)</value></data>
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>新規検索を現在の検索結果に結合</value></data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>全てのModをアンインストールするにはチェック解除、変更セットを消去するにはチェックする。</value></data>
+  <data name="RelationshipTypeDepends" xml:space="preserve"><value>依存</value></data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve"><value>推奨</value></data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve"><value>提案</value></data>
+  <data name="RelationshipTypeSupports" xml:space="preserve"><value>サポート</value></data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve"><value>衝突</value></data>
 </root>
