@@ -1012,4 +1012,9 @@ Czy chcesz zezwolić na to CKAN-owi? Jeśli klikniesz nie, nie zobaczysz tej wia
   <data name="RepoDownloadsFailedAbortBtn" xml:space="preserve">
     <value>Przerwij całą aktualizację</value>
   </data>
+  <data name="RelationshipTypeDepends" xml:space="preserve"><value>Zależne</value></data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve"><value>Zalecenia</value></data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve"><value>Sugerowane</value></data>
+  <data name="RelationshipTypeSupports" xml:space="preserve"><value>Wspiera</value></data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve"><value>Konflikty</value></data>
 </root>

@@ -48,6 +48,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -200,11 +201,29 @@
     <Compile Include="Controls\HintTextBox.Designer.cs">
       <DependentUpon>HintTextBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\AllModVersions.cs">
+    <Compile Include="Controls\ModInfoTabs\Versions.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\AllModVersions.Designer.cs">
-      <DependentUpon>AllModVersions.cs</DependentUpon>
+    <Compile Include="Controls\ModInfoTabs\Versions.Designer.cs">
+      <DependentUpon>Versions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ModInfoTabs\Metadata.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ModInfoTabs\Metadata.Designer.cs">
+      <DependentUpon>Metadata.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ModInfoTabs\Relationships.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ModInfoTabs\Relationships.Designer.cs">
+      <DependentUpon>Relationships.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ModInfoTabs\Contents.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ModInfoTabs\Contents.Designer.cs">
+      <DependentUpon>Contents.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ModInfo.cs">
       <SubType>UserControl</SubType>
@@ -689,9 +708,6 @@
     <EmbeddedResource Include="Localization\ja-JP\ErrorDialog.ja-JP.resx">
       <DependentUpon>..\..\Dialogs\ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\HintTextBox.resx">
-      <DependentUpon>HintTextBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\GameCommandLineOptionsDialog.resx">
       <DependentUpon>GameCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -756,32 +772,41 @@
     <EmbeddedResource Include="Localization\ja-JP\Main.ja-JP.resx">
       <DependentUpon>..\..\Main\Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\AllModVersions.resx">
-      <DependentUpon>AllModVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\ModInfoTabs\Versions.resx">
+      <DependentUpon>Versions.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\de-DE\AllModVersions.de-DE.resx">
-      <DependentUpon>..\..\Controls\AllModVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\ModInfoTabs\Metadata.resx">
+      <DependentUpon>Metadata.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\fr-FR\AllModVersions.fr-FR.resx">
-      <DependentUpon>..\..\Controls\AllModVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\ModInfoTabs\Relationships.resx">
+      <DependentUpon>Relationships.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\zh-CN\AllModVersions.zh-CN.resx">
-      <DependentUpon>..\..\Controls\AllModVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\ModInfoTabs\Contents.resx">
+      <DependentUpon>Contents.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\pt-BR\AllModVersions.pt-BR.resx">
-      <DependentUpon>..\..\Controls\AllModVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\de-DE\Versions.de-DE.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\pl-PL\AllModVersions.pl-PL.resx">
-      <DependentUpon>..\..\Controls\AllModVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\fr-FR\Versions.fr-FR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\ko-KR\AllModVersions.ko-KR.resx">
-      <DependentUpon>..\..\Controls\AllModVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\zh-CN\Versions.zh-CN.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\ru-RU\AllModVersions.ru-RU.resx">
-      <DependentUpon>..\..\Controls\AllModVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\pt-BR\Versions.pt-BR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\ja-JP\AllModVersions.ja-JP.resx">
-      <DependentUpon>..\..\Controls\AllModVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\pl-PL\Versions.pl-PL.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ko-KR\Versions.ko-KR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ru-RU\Versions.ru-RU.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ja-JP\Versions.ja-JP.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ModInfo.resx">
       <DependentUpon>ModInfo.cs</DependentUpon>
@@ -882,26 +907,99 @@
     <EmbeddedResource Include="Localization\fr-FR\ModInfo.fr-FR.resx">
       <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\zh-CN\ModInfo.zh-CN.resx">
-      <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Localization\en-US\ModInfo.en-US.resx">
-      <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Localization\pt-BR\ModInfo.pt-BR.resx">
-      <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Localization\pl-PL\ModInfo.pl-PL.resx">
+    <EmbeddedResource Include="Localization\ja-JP\ModInfo.ja-JP.resx">
       <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\ko-KR\ModInfo.ko-KR.resx">
       <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\pl-PL\ModInfo.pl-PL.resx">
+      <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\pt-BR\ModInfo.pt-BR.resx">
+      <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\ru-RU\ModInfo.ru-RU.resx">
       <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\ja-JP\ModInfo.ja-JP.resx">
+    <EmbeddedResource Include="Localization\zh-CN\ModInfo.zh-CN.resx">
       <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\en-US\Metadata.en-US.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\Metadata.de-DE.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\fr-FR\Metadata.fr-FR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ja-JP\Metadata.ja-JP.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ko-KR\Metadata.ko-KR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\pl-PL\Metadata.pl-PL.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\pt-BR\Metadata.pt-BR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ru-RU\Metadata.ru-RU.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\zh-CN\Metadata.zh-CN.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
+    </EmbeddedResource>
+
+    <EmbeddedResource Include="Localization\de-DE\Relationships.de-DE.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\fr-FR\Relationships.fr-FR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ja-JP\Relationships.ja-JP.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ko-KR\Relationships.ko-KR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\pl-PL\Relationships.pl-PL.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\pt-BR\Relationships.pt-BR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ru-RU\Relationships.ru-RU.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\zh-CN\Relationships.zh-CN.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\de-DE\Contents.de-DE.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\fr-FR\Contents.fr-FR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ja-JP\Contents.ja-JP.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ko-KR\Contents.ko-KR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\pl-PL\Contents.pl-PL.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\pt-BR\Contents.pt-BR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ru-RU\Contents.ru-RU.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\zh-CN\Contents.zh-CN.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ManageGameInstancesDialog.resx">
       <DependentUpon>ManageGameInstancesDialog.cs</DependentUpon>

@@ -406,4 +406,9 @@ Voulez-vous autoriser à faire cela? Si vous cliquer non, vous ne verrez plus ce
   <data name="ChangeTypeRemove" xml:space="preserve"><value>Retrait</value></data>
   <data name="ChangeTypeUpdate" xml:space="preserve"><value>Mise à jour</value></data>
   <data name="ChangeTypeReplace" xml:space="preserve"><value>Remplacement</value></data>
+  <data name="RelationshipTypeDepends" xml:space="preserve"><value>Dépendance</value></data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve"><value>Recommandé</value></data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve"><value>Suggéré</value></data>
+  <data name="RelationshipTypeSupports" xml:space="preserve"><value>Supports</value></data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve"><value>Conflits</value></data>
 </root>

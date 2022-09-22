@@ -22,14 +22,14 @@ namespace CKAN.GUI.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
 
         private static global::System.Resources.ResourceManager resourceMan;
 
         private static global::System.Globalization.CultureInfo resourceCulture;
 
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() { }
+        public Resources() { }
 
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
@@ -180,6 +180,26 @@ namespace CKAN.GUI.Properties {
         internal static System.Drawing.Bitmap ksp {
             get {
                 object obj = ResourceManager.GetObject("ksp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap stop {
+            get {
+                object obj = ResourceManager.GetObject("stop", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ballot {
+            get {
+                object obj = ResourceManager.GetObject("ballot", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1091,6 +1111,25 @@ namespace CKAN.GUI.Properties {
         }
         internal static string RepoDownloadsFailedAbortBtn {
             get { return (string)(ResourceManager.GetObject("RepoDownloadsFailedAbortBtn", resourceCulture)); }
+        }
+
+        public static string RelationshipTypeProvides {
+            get { return (string)(ResourceManager.GetObject("RelationshipTypeProvides", resourceCulture)); }
+        }
+        public static string RelationshipTypeDepends {
+            get { return (string)(ResourceManager.GetObject("RelationshipTypeDepends", resourceCulture)); }
+        }
+        public static string RelationshipTypeRecommends {
+            get { return (string)(ResourceManager.GetObject("RelationshipTypeRecommends", resourceCulture)); }
+        }
+        public static string RelationshipTypeSuggests {
+            get { return (string)(ResourceManager.GetObject("RelationshipTypeSuggests", resourceCulture)); }
+        }
+        public static string RelationshipTypeSupports {
+            get { return (string)(ResourceManager.GetObject("RelationshipTypeSupports", resourceCulture)); }
+        }
+        public static string RelationshipTypeConflicts {
+            get { return (string)(ResourceManager.GetObject("RelationshipTypeConflicts", resourceCulture)); }
         }
     }
 }

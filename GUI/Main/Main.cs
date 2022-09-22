@@ -316,7 +316,6 @@ namespace CKAN.GUI
                 // SplitContainer is mis-designed to throw exceptions
                 // if the min/max limits are exceeded rather than simply obeying them.
             }
-            ModInfo.ModMetaSplitPosition = configuration.ModInfoPosition;
 
             base.OnShown(e);
         }
@@ -464,9 +463,6 @@ namespace CKAN.GUI
 
             // Copy panel position to app settings
             configuration.PanelPosition = splitContainer1.SplitterDistance;
-
-            // Copy metadata panel split height to app settings
-            configuration.ModInfoPosition = ModInfo.ModMetaSplitPosition;
 
             // Save settings
             configuration.Save();

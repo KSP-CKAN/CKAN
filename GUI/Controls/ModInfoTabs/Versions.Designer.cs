@@ -1,6 +1,6 @@
 ﻿namespace CKAN.GUI
 {
-    partial class AllModVersions
+    partial class Versions
     {
         /// <summary>
         /// Required designer variable.
@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(AllModVersions));
+            System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Versions));
             this.label1 = new System.Windows.Forms.Label();
-            this.ModVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.CompatibleGameVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ReleaseDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.VersionsListView = new ThemedListView();
+            this.ModVersion = new System.Windows.Forms.ColumnHeader();
+            this.CompatibleGameVersion = new System.Windows.Forms.ColumnHeader();
+            this.ReleaseDate = new System.Windows.Forms.ColumnHeader();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -52,6 +52,26 @@
             this.label1.TabIndex = 0;
             resources.ApplyResources(this.label1, "label1");
             //
+            // VersionsListView
+            //
+            this.VersionsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.VersionsListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.VersionsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.ModVersion,
+            this.CompatibleGameVersion,
+            this.ReleaseDate});
+            this.VersionsListView.CheckBoxes = true;
+            this.VersionsListView.FullRowSelect = true;
+            this.VersionsListView.Location = new System.Drawing.Point(6, 76);
+            this.VersionsListView.Name = "VersionsListView";
+            this.VersionsListView.Size = new System.Drawing.Size(488, 416);
+            this.VersionsListView.TabIndex = 1;
+            this.VersionsListView.UseCompatibleStateImageBehavior = false;
+            this.VersionsListView.View = System.Windows.Forms.View.Details;
+            this.VersionsListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.VersionsListView_ItemCheck);
+            //
             // ModVersion
             //
             this.ModVersion.Width = 98;
@@ -66,25 +86,6 @@
             //
             this.ReleaseDate.Width = 140;
             resources.ApplyResources(this.ReleaseDate, "ReleaseDate");
-            //
-            // VersionsListView
-            //
-            this.VersionsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.VersionsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.ModVersion,
-            this.CompatibleGameVersion,
-            this.ReleaseDate});
-            this.VersionsListView.CheckBoxes = true;
-            this.VersionsListView.FullRowSelect = true;
-            this.VersionsListView.Location = new System.Drawing.Point(3, 76);
-            this.VersionsListView.Name = "VersionsListView";
-            this.VersionsListView.Size = new System.Drawing.Size(348, 423);
-            this.VersionsListView.TabIndex = 1;
-            this.VersionsListView.UseCompatibleStateImageBehavior = false;
-            this.VersionsListView.View = System.Windows.Forms.View.Details;
-            this.VersionsListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.VersionsListView_ItemCheck);
             //
             // label2
             //
@@ -144,7 +145,7 @@
             this.label7.TabIndex = 7;
             resources.ApplyResources(this.label7, "label7");
             //
-            // AllModVersions
+            // Versions
             //
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -154,8 +155,8 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.VersionsListView);
             this.Controls.Add(this.label1);
-            this.Name = "AllModVersions";
-            this.Size = new System.Drawing.Size(354, 502);
+            this.Name = "Versions";
+            this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -164,10 +165,10 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ListView VersionsListView;
         private System.Windows.Forms.ColumnHeader ModVersion;
         private System.Windows.Forms.ColumnHeader CompatibleGameVersion;
         private System.Windows.Forms.ColumnHeader ReleaseDate;
-        private System.Windows.Forms.ListView VersionsListView;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;

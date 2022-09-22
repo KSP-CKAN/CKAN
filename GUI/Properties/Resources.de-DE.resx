@@ -389,4 +389,9 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>Füge eine weitere Suche hinzu</value></data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>Abwählen um alle Mods zu deinstallieren, anwählen um die Änderungsliste zu leeren</value></data>
   <data name="TotalPlayTime" xml:space="preserve"><value>Gesamtspielzeit: {0} Stunden</value></data>
+  <data name="RelationshipTypeDepends" xml:space="preserve"><value>Abhängigkeit</value></data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve"><value>Empfehlung</value></data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve"><value>Vorschlag</value></data>
+  <data name="RelationshipTypeSupports" xml:space="preserve"><value>Unterstützt</value></data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve"><value>Konflikt</value></data>
 </root>

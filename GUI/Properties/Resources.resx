@@ -122,6 +122,8 @@
   <data name="AppIcon" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\..\assets\ckan.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="apply" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\apply.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="ksp" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\ksp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="stop" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\stop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="ballot" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\ballot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="settings" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
@@ -444,4 +446,10 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="RepoDownloadsFailedMessage" xml:space="preserve"><value>The following repositories failed to download. You can retry or abort, and if you retry, you can choose to remove some repositories. Note that any repositories you skip will be PERMANENTLY removed from your configuration!</value></data>
   <data name="RepoDownloadsFailedColHdr" xml:space="preserve"><value>Repository</value></data>
   <data name="RepoDownloadsFailedAbortBtn" xml:space="preserve"><value>Abort whole update</value></data>
+  <data name="RelationshipTypeProvides" xml:space="preserve"><value>Provides</value></data>
+  <data name="RelationshipTypeDepends" xml:space="preserve"><value>Depends</value></data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve"><value>Recommends</value></data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve"><value>Suggests</value></data>
+  <data name="RelationshipTypeSupports" xml:space="preserve"><value>Supports</value></data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve"><value>Conflicts</value></data>
 </root>
