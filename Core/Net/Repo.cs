@@ -141,6 +141,7 @@ namespace CKAN
             {
                 user.RaiseMessage("Loading modules from {0} repository...", repo.name);
                 TarEntry entry;
+                int prevPercent = 0;
                 while ((entry = tarStream.GetNextEntry()) != null)
                 {
                     string filename = entry.Name;
@@ -154,8 +155,12 @@ namespace CKAN
                     else if (filename.EndsWith(".ckan"))
                     {
                         log.DebugFormat("Reading CKAN data from {0}", filename);
-                        user.RaiseProgress($"Loading modules from {repo.name} repository",
-                            (int)(100 * inputStream.Position / inputStream.Length));
+                        var percent = (int)(100 * inputStream.Position / inputStream.Length);
+                        if (percent > prevPercent)
+                        {
+                            user.RaiseProgress($"Loading modules from {repo.name} repository", percent);
+                            prevPercent = percent;
+                        }
 
                         // Read each file into a buffer
                         string metadata_json = tarStreamString(tarStream, entry);
@@ -211,6 +216,7 @@ namespace CKAN
             {
                 user.RaiseMessage("Loading modules from {0} repository...", repo.name);
                 int index = 0;
+                int prevPercent = 0;
                 foreach (ZipEntry entry in zipfile)
                 {
                     string filename = entry.Name;
@@ -218,8 +224,11 @@ namespace CKAN
                     if (filename.EndsWith(".ckan"))
                     {
                         log.DebugFormat("Reading CKAN data from {0}", filename);
-                        user.RaiseProgress($"Loading modules from {repo.name} repository",
-                            (int)(100 * index / zipfile.Count));
+                        var percent = (int)(100 * index / zipfile.Count);
+                        if (percent > prevPercent)
+                        {
+                            user.RaiseProgress($"Loading modules from {repo.name} repository", percent);
+                        }
 
                         // Read each file into a string.
                         string metadata_json;
