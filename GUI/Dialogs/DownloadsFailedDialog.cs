@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 using log4net;
 
@@ -56,10 +57,16 @@ namespace CKAN.GUI
             DownloadsGrid.DataSource = new BindingList<DownloadRow>(rows);
             ClientSize = new Size(ClientSize.Width,
                 ExplanationLabel.Height
+                + ExplanationLabel.Padding.Vertical
+                + DownloadsGrid.ColumnHeadersHeight
                 + DownloadsGrid.RowCount
                     * DownloadsGrid.RowTemplate.Height
+                + DownloadsGrid.Margin.Vertical
+                + DownloadsGrid.Padding.Vertical
                 + BottomButtonPanel.Height);
         }
+
+        public object[] Wait() => task.Task.Result;
 
         /// <summary>
         /// True if user clicked the abort button, false otherwise
@@ -141,17 +148,20 @@ namespace CKAN.GUI
         private void RetryButton_Click(object sender, EventArgs e)
         {
             Abort = false;
+            task.SetResult(Skip);
             Close();
         }
 
         private void AbortButton_Click(object sender, EventArgs e)
         {
             Abort = true;
+            task.SetResult(null);
             Close();
         }
 
         private List<DownloadRow> rows;
         private Func<object, object, bool> rowsLinked;
+        private TaskCompletionSource<object[]> task = new TaskCompletionSource<object[]>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof(DownloadsFailedDialog));
     }

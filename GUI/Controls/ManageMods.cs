@@ -54,6 +54,7 @@ namespace CKAN.GUI
 
         private List<ModChange> currentChangeSet;
         private Dictionary<GUIMod, string> conflicts;
+        private bool freezeChangeSet = false;
 
         public readonly ModList mainModList;
         private List<string> sortColumns
@@ -488,7 +489,7 @@ namespace CKAN.GUI
             NavGoForward();
         }
 
-        private void ModList_SelectionChanged(object sender, EventArgs e)
+        private void ModGrid_SelectionChanged(object sender, EventArgs e)
         {
             // Skip if already disposed (i.e. after the form has been closed).
             // Needed for TransparentTextBoxes
@@ -512,7 +513,7 @@ namespace CKAN.GUI
         /// Called when there's a click on the ModGrid header row.
         /// Handles sorting and the header right click context menu.
         /// </summary>
-        private void ModList_HeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void ModGrid_HeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             // Left click -> sort by new column / change sorting direction.
             if (e.Button == MouseButtons.Left)
@@ -607,7 +608,7 @@ namespace CKAN.GUI
         /// Called on key down when the mod list is focused.
         /// Makes the Home/End keys go to the top/bottom of the list respectively.
         /// </summary>
-        private void ModList_KeyDown(object sender, KeyEventArgs e)
+        private void ModGrid_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {
@@ -659,7 +660,7 @@ namespace CKAN.GUI
         /// being pressed repeatedly, it cycles through mods names beginning with that key.
         /// If space is pressed, the checkbox at the current row is toggled.
         /// </summary>
-        private void ModList_KeyPress(object sender, KeyPressEventArgs e)
+        private void ModGrid_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Don't search for spaces or newlines
             if (e.KeyChar == (char)Keys.Space || e.KeyChar == (char)Keys.Enter)
@@ -693,12 +694,12 @@ namespace CKAN.GUI
         /// <summary>
         /// I'm pretty sure this is what gets called when the user clicks on a ticky in the mod list.
         /// </summary>
-        private void ModList_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void ModGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             ModGrid.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-        private void ModList_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void ModGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left)
                 return;
@@ -715,7 +716,7 @@ namespace CKAN.GUI
             ModGrid.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-        private async void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private async void ModGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             int row_index    = e.RowIndex;
             int column_index = e.ColumnIndex;
@@ -768,7 +769,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void ModList_GotFocus(object sender, EventArgs e)
+        private void ModGrid_GotFocus(object sender, EventArgs e)
         {
             Util.Invoke(this, () =>
             {
@@ -778,7 +779,7 @@ namespace CKAN.GUI
             });
         }
 
-        private void ModList_LostFocus(object sender, EventArgs e)
+        private void ModGrid_LostFocus(object sender, EventArgs e)
         {
             Util.Invoke(this, () =>
             {
@@ -790,22 +791,33 @@ namespace CKAN.GUI
 
         private void InstallAllCheckbox_CheckChanged(object sender, EventArgs e)
         {
-            if (InstallAllCheckbox.Checked)
+            try
             {
-                // Reset changeset
-                ClearChangeSet();
-            }
-            else
-            {
-                // Uninstall all
-                foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
+                freezeChangeSet = true;
+                if (InstallAllCheckbox.Checked)
                 {
-                    GUIMod mod = row.Tag as GUIMod;
-                    if (mod.IsInstallChecked)
+                    // Reset changeset
+                    ClearChangeSet();
+                }
+                else
+                {
+                    // Uninstall all
+                    var checkedRows = mainModList.full_list_of_mod_rows.Values
+                        .Where(r => (r.Tag as GUIMod)?.IsInstallChecked ?? false);
+                    foreach (var row in checkedRows)
                     {
-                        mod.SetInstallChecked(row, Installed, false);
+                        (row.Tag as GUIMod)?.SetInstallChecked(row, Installed, false);
                     }
                 }
+            }
+            finally
+            {
+                // Don't let anything ever prevent us from unfreezing the changeset
+                freezeChangeSet = false;
+                ModGrid.Refresh();
+                UpdateChangeSetAndConflicts(
+                    Main.Instance.CurrentInstance,
+                    RegistryManager.Instance(Main.Instance.CurrentInstance).registry);
             }
         }
 
@@ -910,7 +922,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void ModList_MouseDown(object sender, MouseEventArgs e)
+        private void ModGrid_MouseDown(object sender, MouseEventArgs e)
         {
             var rowIndex = ModGrid.HitTest(e.X, e.Y).RowIndex;
 
@@ -941,7 +953,7 @@ namespace CKAN.GUI
             return false;
         }
 
-        private void ModList_Resize(object sender, EventArgs e)
+        private void ModGrid_Resize(object sender, EventArgs e)
         {
             InstallAllCheckbox.Top = ModGrid.Top - InstallAllCheckbox.Height;
         }
@@ -1213,9 +1225,9 @@ namespace CKAN.GUI
             }
         }
 
-        private void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void ModGrid_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
-            ModList_CellContentClick(sender, null);
+            ModGrid_CellContentClick(sender, null);
         }
 
         private void SetSort(DataGridViewColumn col)
@@ -1592,6 +1604,12 @@ namespace CKAN.GUI
 
         public async Task UpdateChangeSetAndConflicts(GameInstance inst, IRegistryQuerier registry)
         {
+            if (freezeChangeSet)
+            {
+                log.Debug("Skipping refresh because changeset is frozen");
+                return;
+            }
+
             List<ModChange> full_change_set = null;
             Dictionary<GUIMod, string> new_conflicts = null;
 

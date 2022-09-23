@@ -42,6 +42,11 @@ namespace CKAN.GUI
 
             GUIMod gm = e.Argument as GUIMod;
             downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
+            downloader.Progress      += Wait.SetModuleProgress;
+            downloader.AllComplete   += Wait.DownloadsComplete;
+            downloader.StoreProgress += (module, remaining, total) =>
+                Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload, module),
+                    remaining, total);
             Wait.OnCancel += downloader.CancelDownload;
             downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
             e.Result = e.Argument;
@@ -49,6 +54,7 @@ namespace CKAN.GUI
 
         public void PostModCaching(object sender, RunWorkerCompletedEventArgs e)
         {
+            Wait.OnCancel -= downloader.CancelDownload;
             downloader = null;
             // Can't access e.Result if there's an error
             if (e.Error != null)

@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Install dependencies first (#3667 by: HebaruSan; reviewed: techman83)
 - [Multiple] Polish translation (#3669 by: WujekFoliarz; reviewed: HebaruSan)
 - [GUI] ModInfo usability improvements (#3670 by: HebaruSan; reviewed: techman83)
+- [Multiple] Report progress in validating downloads (#3659 by: HebaruSan; reviewed: techman83)
 
 ## Bugfixes
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -138,8 +138,11 @@ namespace CKAN.GUI
             tabController.SetTabLock(true);
 
             IDownloader downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
-            downloader.Progress    += Wait.SetModuleProgress;
-            downloader.AllComplete += Wait.DownloadsComplete;
+            downloader.Progress      += Wait.SetModuleProgress;
+            downloader.AllComplete   += Wait.DownloadsComplete;
+            downloader.StoreProgress += (module, remaining, total) =>
+                Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload, module),
+                    remaining, total);
 
             Wait.OnCancel += () =>
             {
@@ -196,9 +199,9 @@ namespace CKAN.GUI
                                 fullChangeset.Where(m => m.download == kvp.Key.download).ToArray(),
                                 kvp.Value)),
                             (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
-                        dfd.ShowDialog(this);
+                        Util.Invoke(this, () => dfd.ShowDialog(this));
+                        var skip = dfd.Wait()?.Select(m => m as CkanModule).ToArray();
                         var abort = dfd.Abort;
-                        var skip  = dfd.Skip.Select(m => m as CkanModule).ToArray();
                         dfd.Dispose();
                         if (abort)
                         {

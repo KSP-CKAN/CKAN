@@ -68,7 +68,7 @@ namespace CKAN
 
             string tmp_file = Net.Download(module.download);
 
-            return cache.Store(module, tmp_file, filename, true);
+            return cache.Store(module, tmp_file, new Progress<long>(bytes => {}), filename, true);
         }
 
         /// <summary>
@@ -1481,7 +1481,7 @@ namespace CKAN
                 int percent = i * 100 / files.Count;
                 user.RaiseProgress(string.Format(Properties.Resources.ModuleInstallerImporting, f.Name, percent), percent);
                 // Calc SHA-1 sum
-                string sha1 = Cache.GetFileHashSha1(f.FullName);
+                string sha1 = Cache.GetFileHashSha1(f.FullName, new Progress<long>(bytes => {}));
                 // Find SHA-1 sum in registry (potentially multiple)
                 if (index.ContainsKey(sha1))
                 {
@@ -1501,7 +1501,7 @@ namespace CKAN
                         {
                             user.RaiseMessage(Properties.Resources.ModuleInstallerImportingMod,
                                 mod.identifier, StripEpoch(mod.version));
-                            Cache.Store(mod, f.FullName);
+                            Cache.Store(mod, f.FullName, new Progress<long>(bytes => {}));
                         }
                     }
                 }

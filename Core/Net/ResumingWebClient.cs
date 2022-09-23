@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 using log4net;
@@ -21,6 +22,7 @@ namespace CKAN
         /// <param name="path">Where to save it</param>
         public void DownloadFileAsyncWithResume(Uri url, string path)
         {
+            contentLength = 0;
             Task.Factory.StartNew(() =>
             {
                 var fi = new FileInfo(path);
@@ -51,6 +53,23 @@ namespace CKAN
         /// </summary>
         public event Action<int, long, long> DownloadProgress;
 
+        /// <summary>
+        /// CancelAsync isn't virtual, so we make another function
+        /// </summary>
+        public void CancelAsyncOverridden()
+        {
+            if (cancelTokenSrc != null)
+            {
+                log.Debug("Cancellation requested, going through token");
+                cancelTokenSrc?.Cancel();
+            }
+            else
+            {
+                log.Debug("Cancellation requested, using non-token means");
+                CancelAsync();
+            }
+        }
+
         protected override WebRequest GetWebRequest(Uri address)
         {
             var request = base.GetWebRequest(address);
@@ -58,6 +77,7 @@ namespace CKAN
             {
                 log.DebugFormat("Skipping {0} bytes of {1}", bytesToSkip, address);
                 webRequest.AddRange(bytesToSkip);
+                webRequest.ReadWriteTimeout = timeoutMs;
             }
             return request;
         }
@@ -75,16 +95,10 @@ namespace CKAN
                   && wexc.Response is HttpWebResponse response
                   && response.StatusCode == HttpStatusCode.RequestedRangeNotSatisfiable)
             {
-                log.Debug("GetWebResponse failed with range error, closing stream and suppressing exception");
+                log.DebugFormat("GetWebResponse failed with range error, closing stream for {0}", request.RequestUri);
                 // Don't save the error page into a file
                 response.Close();
                 return response;
-            }
-            catch (Exception exc)
-            {
-                log.Debug("Failed to get web response", exc);
-                OnDownloadFileCompleted(new AsyncCompletedEventArgs(exc, false, null));
-                throw;
             }
         }
 
@@ -96,20 +110,50 @@ namespace CKAN
                 var destination = e.UserState as string;
                 using (var netStream = e.Result)
                 {
-                    if (!netStream.CanRead)
+                    if (!netStream.CanRead || contentLength == 0)
                     {
-                        log.Debug("OnOpenReadCompleted got closed stream, skipping download");
+                        log.DebugFormat("OnOpenReadCompleted got closed stream or zero contentLength, skipping download to {0}", destination);
+                        // Synthesize a progress update for 100% completion
+                        var fi = new FileInfo(destination);
+                        DownloadProgress?.Invoke(100, fi.Length, fi.Length);
                     }
                     else
                     {
-                        log.DebugFormat("OnOpenReadCompleted got open stream, appending to {0}", destination);
-                        using (var fileStream = new FileStream(destination, FileMode.Append, FileAccess.Write))
+                        try
                         {
-                            netStream.CopyTo(fileStream, new Progress<long>(bytesDownloaded =>
+                            log.DebugFormat("OnOpenReadCompleted got open stream, appending to {0}", destination);
+                            using (var fileStream = new FileStream(destination, FileMode.Append, FileAccess.Write))
                             {
-                                DownloadProgress?.Invoke(100 * (int)(bytesDownloaded / contentLength),
-                                                         bytesDownloaded, contentLength);
-                            }));
+                                try
+                                {
+                                    log.DebugFormat("Default stream read timeout is {0}", netStream.ReadTimeout);
+                                    netStream.ReadTimeout = timeoutMs;
+                                }
+                                catch
+                                {
+                                    // file:// URLs don't support timeouts
+                                }
+                                cancelTokenSrc = new CancellationTokenSource();
+                                netStream.CopyTo(fileStream, new Progress<long>(bytesDownloaded =>
+                                    {
+                                        DownloadProgress?.Invoke((int)(100 * bytesDownloaded / contentLength),
+                                                                 bytesDownloaded, contentLength);
+                                    }),
+                                    cancelTokenSrc.Token);
+                                DownloadProgress?.Invoke(100, contentLength, contentLength);
+                                cancelTokenSrc = null;
+                            }
+                        }
+                        catch (OperationCanceledException exc)
+                        {
+                            log.Debug("Cancellation token threw, sending cancel completion");
+                            OnDownloadFileCompleted(new AsyncCompletedEventArgs(exc, true, e.UserState));
+                            return;
+                        }
+                        catch (Exception exc)
+                        {
+                            OnDownloadFileCompleted(new AsyncCompletedEventArgs(exc, false, e.UserState));
+                            return;
                         }
                     }
                 }
@@ -119,6 +163,9 @@ namespace CKAN
 
         private long bytesToSkip   = 0;
         private long contentLength = 0;
+        private CancellationTokenSource cancelTokenSrc;
+
+        private const int timeoutMs = 30 * 1000;
         private static readonly ILog log = LogManager.GetLogger(typeof(ResumingWebClient));
     }
 }

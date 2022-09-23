@@ -19,7 +19,7 @@ namespace CKAN
 
     public class FileNotFoundKraken : Kraken
     {
-        public string file;
+        public readonly string file;
 
         public FileNotFoundKraken(string file, string reason = null, Exception innerException = null)
             : base(reason, innerException)
@@ -30,7 +30,7 @@ namespace CKAN
 
     public class DirectoryNotFoundKraken : Kraken
     {
-        public string directory;
+        public readonly string directory;
 
         public DirectoryNotFoundKraken(string directory, string reason = null, Exception innerException = null)
             : base(reason, innerException)
@@ -41,9 +41,9 @@ namespace CKAN
 
     public class NotEnoughSpaceKraken : Kraken
     {
-        public DirectoryInfo destination;
-        public long          bytesFree;
-        public long          bytesToStore;
+        public readonly DirectoryInfo destination;
+        public readonly long          bytesFree;
+        public readonly long          bytesToStore;
 
         public NotEnoughSpaceKraken(string description, DirectoryInfo destination, long bytesFree, long bytesToStore)
             : base(string.Format(Properties.Resources.KrakenNotEnoughSpace,
@@ -74,8 +74,8 @@ namespace CKAN
 
     public class ModuleNotFoundKraken : Kraken
     {
-        public string module;
-        public string version;
+        public readonly string module;
+        public readonly string version;
 
         // TODO: Is there a way to set the stringify version of this?
         public ModuleNotFoundKraken(string module, string version, string reason, Exception innerException = null)
@@ -124,7 +124,7 @@ namespace CKAN
 
     public class NotKSPDirKraken : Kraken
     {
-        public string path;
+        public readonly string path;
 
         public NotKSPDirKraken(string path, string reason = null, Exception innerException = null)
             : base(reason, innerException)
@@ -161,7 +161,7 @@ namespace CKAN
     /// </summary>
     public class RegistryVersionNotSupportedKraken : Kraken
     {
-        public int requestVersion;
+        public readonly int requestVersion;
 
         public RegistryVersionNotSupportedKraken(int v, string reason = null, Exception innerException = null)
             : base(reason, innerException)
@@ -199,13 +199,13 @@ namespace CKAN
     /// </summary>
     public class InconsistentKraken : Kraken
     {
-        public ICollection<string> inconsistencies;
+        public readonly ICollection<string> inconsistencies;
 
         public string InconsistenciesPretty
         {
             get
             {
-                return String.Join("\r\n",
+                return String.Join(Environment.NewLine,
                     new string[] { Properties.Resources.KrakenInconsistenciesHeader }
                     .Concat(inconsistencies.Select(msg => $"* {msg}")));
             }
@@ -233,7 +233,7 @@ namespace CKAN
 
         public override string ToString()
         {
-            return InconsistenciesPretty + "\r\n\r\n" + StackTrace;
+            return InconsistenciesPretty + Environment.NewLine + Environment.NewLine + StackTrace;
         }
     }
 
@@ -260,8 +260,8 @@ namespace CKAN
                 ?? new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
         }
 
-        public List<KeyValuePair<CkanModule, RelationshipDescriptor>> Depends   { get; private set; }
-        public List<KeyValuePair<CkanModule, RelationshipDescriptor>> Conflicts { get; private set; }
+        public readonly List<KeyValuePair<CkanModule, RelationshipDescriptor>> Depends;
+        public readonly List<KeyValuePair<CkanModule, RelationshipDescriptor>> Conflicts;
     }
 
     /// <summary>
@@ -295,9 +295,9 @@ namespace CKAN
             = new List<KeyValuePair<int, Exception>>();
 
         public DownloadErrorsKraken(List<KeyValuePair<int, Exception>> errors)
-            : base(String.Join("\r\n",
+            : base(String.Join(Environment.NewLine,
                 new string[] { Properties.Resources.KrakenDownloadErrorsHeader, "" }
-                .Concat(errors.Select(e => e.ToString()))))
+                .Concat(errors.Select(e => e.Value.Message))))
         {
             Exceptions = new List<KeyValuePair<int, Exception>>(errors);
         }
@@ -386,7 +386,7 @@ namespace CKAN
     /// </summary>
     public class PathErrorKraken : Kraken
     {
-        public string path;
+        public readonly string path;
 
         public PathErrorKraken(string path, string reason = null, Exception innerException = null)
             : base(reason, innerException)
@@ -402,7 +402,7 @@ namespace CKAN
     /// </summary>
     public class ModNotInstalledKraken : Kraken
     {
-        public string mod;
+        public readonly string mod;
 
         public override string Message
         {
@@ -592,7 +592,7 @@ namespace CKAN
 
     public class InvalidKSPInstanceKraken : Kraken
     {
-        public string instance;
+        public readonly string instance;
 
         public InvalidKSPInstanceKraken(string instance, string reason = null, Exception innerException = null)
             : base(reason, innerException)
