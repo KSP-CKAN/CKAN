@@ -491,7 +491,7 @@ namespace CKAN.GUI
                     ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
                     ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                         .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
-                ));
+                ), false);
                 // Clear the old filter so it doesn't get pulled forward again
                 configuration.ActiveFilter = (int)GUIModFilter.All;
             }

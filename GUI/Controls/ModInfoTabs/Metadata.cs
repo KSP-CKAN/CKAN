@@ -1,6 +1,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace CKAN.GUI
 {
@@ -16,13 +18,15 @@ namespace CKAN.GUI
         {
             CkanModule module = gui_module.ToModule();
 
-            Util.Invoke(MetadataModuleVersionTextBox, () => MetadataModuleVersionTextBox.Text = gui_module.LatestVersion.ToString());
-            Util.Invoke(MetadataModuleLicenseTextBox, () => MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license));
-            Util.Invoke(MetadataModuleAuthorTextBox, () => MetadataModuleAuthorTextBox.Text = gui_module.Authors);
-            Util.Invoke(MetadataIdentifierTextBox, () => MetadataIdentifierTextBox.Text = module.identifier);
-
-            Util.Invoke(MetadataModuleReleaseStatusTextBox, () =>
+            Util.Invoke(this, () =>
             {
+                MetadataModuleVersionTextBox.Text = gui_module.LatestVersion.ToString();
+                MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license);
+
+                UpdateAuthorLinks(gui_module.Authors);
+
+                MetadataIdentifierTextBox.Text = module.identifier;
+
                 if (module.release_status == null)
                 {
                     ReleaseLabel.Visible = false;
@@ -36,11 +40,8 @@ namespace CKAN.GUI
                     MetadataTable.LayoutSettings.RowStyles[3].Height = 30;
                     MetadataModuleReleaseStatusTextBox.Text = module.release_status.ToString();
                 }
-            });
-            Util.Invoke(MetadataModuleGameCompatibilityTextBox, () => MetadataModuleGameCompatibilityTextBox.Text = gui_module.GameCompatibilityLong);
+                MetadataModuleGameCompatibilityTextBox.Text = gui_module.GameCompatibilityLong;
 
-            Util.Invoke(ReplacementTextBox, () =>
-            {
                 if (module.replaced_by == null)
                 {
                     ReplacementLabel.Visible = false;
@@ -54,10 +55,7 @@ namespace CKAN.GUI
                     MetadataTable.LayoutSettings.RowStyles[6].Height = 30;
                     ReplacementTextBox.Text = module.replaced_by.ToString();
                 }
-            });
 
-            Util.Invoke(MetadataTable, () =>
-            {
                 ClearResourceLinks();
                 var res = module.resources;
                 if (res != null)
@@ -76,6 +74,50 @@ namespace CKAN.GUI
                     AddResourceLink(Properties.Resources.ModInfoSteamStoreLabel,            res.steamstore);
                 }
             });
+        }
+
+        public event Action<SavedSearch, bool> OnChangeFilter;
+
+        private void UpdateAuthorLinks(List<string> authors)
+        {
+            AuthorsPanel.SuspendLayout();
+            AuthorsPanel.Controls.Clear();
+            AuthorsPanel.Controls.AddRange(
+                authors.Select(a => AuthorLink(a)).ToArray());
+            AuthorsPanel.ResumeLayout();
+        }
+
+        private LinkLabel AuthorLink(string name)
+        {
+            var link = new LinkLabel()
+            {
+                AutoSize     = true,
+                LinkColor    = SystemColors.GrayText,
+                LinkBehavior = LinkBehavior.HoverUnderline,
+                Margin       = new Padding(0, 0, 4, 4),
+                Text         = name,
+                Tag          = name,
+            };
+            link.LinkClicked += OnAuthorClick;
+            ToolTip.SetToolTip(link, Properties.Resources.FilterLinkToolTip);
+            return link;
+        }
+
+        private void OnAuthorClick(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var link   = sender as LinkLabel;
+            var author = link.Text;
+            var merge  = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            OnChangeFilter?.Invoke(
+                new SavedSearch()
+                {
+                    Name   = string.Format(Properties.Resources.AuthorSearchName, author),
+                    Values = new List<string>()
+                    {
+                        ModSearch.FromAuthors(Enumerable.Repeat(author, 1)).Combined
+                    },
+                },
+                merge);
         }
 
         private GameInstanceManager manager => Main.Instance.manager;

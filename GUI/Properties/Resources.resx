@@ -453,4 +453,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="RelationshipTypeSuggests" xml:space="preserve"><value>Suggests</value></data>
   <data name="RelationshipTypeSupports" xml:space="preserve"><value>Supports</value></data>
   <data name="RelationshipTypeConflicts" xml:space="preserve"><value>Conflicts</value></data>
+  <data name="AuthorSearchName"><value>Mods by {0}</value></data>
+  <data name="FilterLinkToolTip"><value>Click to search
+Ctrl-click or Shift-click to combine with current search</value></data>
 </root>

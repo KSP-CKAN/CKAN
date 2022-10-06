@@ -55,6 +55,22 @@ namespace CKAN.GUI
             Apply();
         }
 
+        /// <summary>
+        /// Merge the given searches with the currently active ones
+        /// </summary>
+        /// <param name="searches">New searches to add</param>
+        public void MergeSearches(List<ModSearch> searches)
+        {
+            // Merge inputs once for all editors
+            var merged = searches.Aggregate((search, newSearch) => search.MergedWith(newSearch));
+            foreach (var editor in editors)
+            {
+                // Combine all new with each existing (old AND new)
+                editor.Search = editor.Search?.MergedWith(merged) ?? merged;
+            }
+            Apply();
+        }
+
         private void AddSearchButton_Click(object sender, EventArgs e)
         {
             AddSearch().Focus();
@@ -87,6 +103,8 @@ namespace CKAN.GUI
             ResumeLayout(false);
             PerformLayout();
 
+            AddSearchButton.Top = editors[editors.Count - 1].Top;
+
             return ctl;
         }
 
@@ -107,6 +125,8 @@ namespace CKAN.GUI
                 Controls.Remove(which);
                 // Make sure the top label is always visible
                 editors[0].ShowLabel = true;
+
+                AddSearchButton.Top = editors[editors.Count - 1].Top;
 
                 Height = editors.Sum(ems => ems.Height);
             }

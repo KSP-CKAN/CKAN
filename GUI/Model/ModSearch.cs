@@ -149,6 +149,44 @@ namespace CKAN.GUI
         public readonly bool? Replaceable;
 
         /// <summary>
+        /// Create a new search from a list of authors
+        /// </summary>
+        /// <param name="authors">The authors for the search</param>
+        /// <returns>A search for the authors</returns>
+        public static ModSearch FromAuthors(IEnumerable<string> authors)
+            => new ModSearch(
+                // Can't search for spaces, so massage them like SearchableAuthors
+                "", authors.Select(a => CkanModule.nonAlphaNums.Replace(a, "")).ToList(), "", null,
+                null, null, null, null,
+                null, null,
+                null, null, null, null,
+                null, null);
+
+        /// <summary>
+        /// Create a new search by merging this and another
+        /// </summary>
+        /// <param name="other">The other search for merging</param>
+        /// <returns>A search containing all the search terms</returns>
+        public ModSearch MergedWith(ModSearch other)
+            => new ModSearch(
+                Name + other.Name,
+                Authors.Concat(other.Authors).Distinct().ToList(),
+                Description + other.Description,
+                Localizations.Concat(other.Localizations).Distinct().ToList(),
+                DependsOn.Concat(other.DependsOn).Distinct().ToList(),
+                Recommends.Concat(other.Recommends).Distinct().ToList(),
+                Suggests.Concat(other.Suggests).Distinct().ToList(),
+                ConflictsWith.Concat(other.ConflictsWith).Distinct().ToList(),
+                TagNames.Concat(other.TagNames).Distinct().ToList(),
+                Labels.Concat(other.Labels).Distinct().ToList(),
+                Compatible      ?? other.Compatible,
+                Installed       ?? other.Installed,
+                Cached          ?? other.Cached,
+                NewlyCompatible ?? other.NewlyCompatible,
+                Upgradeable     ?? other.Upgradeable,
+                Replaceable     ?? other.Replaceable);
+
+        /// <summary>
         /// Generate a full formatted search string from the parameters.
         /// MUST be the inverse of Parse!
         /// </summary>
@@ -405,11 +443,9 @@ namespace CKAN.GUI
         }
 
         private static string AddTermPrefix(string prefix, string term)
-        {
-            return term.StartsWith("-")
+            => term.StartsWith("-")
                 ? $"-{prefix}{term.Substring(1)}"
                 : $"{prefix}{term}";
-        }
 
         private static bool ShouldNegateTerm(string term, out string subTerm)
         {
@@ -433,8 +469,7 @@ namespace CKAN.GUI
         /// true if mod matches filters, false otherwise
         /// </returns>
         public bool Matches(GUIMod mod)
-        {
-            return MatchesName(mod)
+            => MatchesName(mod)
                 && MatchesAuthors(mod)
                 && MatchesDescription(mod)
                 && MatchesLocalizations(mod)
@@ -450,33 +485,26 @@ namespace CKAN.GUI
                 && MatchesNewlyCompatible(mod)
                 && MatchesUpgradeable(mod)
                 && MatchesReplaceable(mod);
-        }
 
         private bool MatchesName(GUIMod mod)
-        {
-            return string.IsNullOrWhiteSpace(Name)
+            => string.IsNullOrWhiteSpace(Name)
                 || ShouldNegateTerm(Name, out string subName) ^ (
                     mod.Abbrevation.IndexOf(subName, StringComparison.InvariantCultureIgnoreCase) != -1
                     || mod.SearchableName.IndexOf(subName, StringComparison.InvariantCultureIgnoreCase) != -1
                     || mod.SearchableIdentifier.IndexOf(subName, StringComparison.InvariantCultureIgnoreCase) != -1);
-        }
 
         private bool MatchesAuthors(GUIMod mod)
-        {
-            return Authors.Count < 1
+            => Authors.Count < 1
                 || Authors.All(searchAuth =>
                     ShouldNegateTerm(searchAuth, out string subAuth)
                     ^ mod.SearchableAuthors.Any(modAuth =>
-                        modAuth.StartsWith(subAuth, StringComparison.InvariantCultureIgnoreCase)));
-        }
+                            modAuth.StartsWith(subAuth, StringComparison.InvariantCultureIgnoreCase)));
 
         private bool MatchesDescription(GUIMod mod)
-        {
-            return string.IsNullOrWhiteSpace(Description)
+            => string.IsNullOrWhiteSpace(Description)
                 || ShouldNegateTerm(Description, out string subDesc) ^ (
                     mod.SearchableAbstract.IndexOf(subDesc, StringComparison.InvariantCultureIgnoreCase) != -1
                     || mod.SearchableDescription.IndexOf(subDesc, StringComparison.InvariantCultureIgnoreCase) != -1);
-        }
 
         private bool MatchesLocalizations(GUIMod mod)
         {
@@ -492,28 +520,18 @@ namespace CKAN.GUI
         }
 
         private bool MatchesDepends(GUIMod mod)
-        {
-            return RelationshipMatch(mod.ToModule().depends, DependsOn);
-        }
+            => RelationshipMatch(mod.ToModule().depends, DependsOn);
         private bool MatchesRecommends(GUIMod mod)
-        {
-            return RelationshipMatch(mod.ToModule().recommends, Recommends);
-        }
+            => RelationshipMatch(mod.ToModule().recommends, Recommends);
         private bool MatchesSuggests(GUIMod mod)
-        {
-            return RelationshipMatch(mod.ToModule().suggests, Suggests);
-        }
+            => RelationshipMatch(mod.ToModule().suggests, Suggests);
         private bool MatchesConflicts(GUIMod mod)
-        {
-            return RelationshipMatch(mod.ToModule().conflicts, ConflictsWith);
-        }
+            => RelationshipMatch(mod.ToModule().conflicts, ConflictsWith);
         private bool RelationshipMatch(List<RelationshipDescriptor> rels, List<string> toFind)
-        {
-            return toFind.Count < 1
+            => toFind.Count < 1
                 || (rels != null && toFind.All(searchRel =>
                     ShouldNegateTerm(searchRel, out string subRel)
                     ^ rels.Any(r => r.StartsWith(subRel))));
-        }
 
         private bool MatchesTags(GUIMod mod)
         {
@@ -527,44 +545,29 @@ namespace CKAN.GUI
         }
 
         private bool MatchesLabels(GUIMod mod)
-        {
             // Every label in Labels must contain this mod
-            return Labels.Count < 1 || Labels.All(lb => lb.ModuleIdentifiers.Contains(mod.Identifier));
-        }
+            => Labels.Count < 1 || Labels.All(lb => lb.ModuleIdentifiers.Contains(mod.Identifier));
 
         private bool MatchesCompatible(GUIMod mod)
-        {
-            return !Compatible.HasValue || Compatible.Value == !mod.IsIncompatible;
-        }
+            => !Compatible.HasValue || Compatible.Value == !mod.IsIncompatible;
 
         private bool MatchesInstalled(GUIMod mod)
-        {
-            return !Installed.HasValue || Installed.Value == mod.IsInstalled;
-        }
+            => !Installed.HasValue || Installed.Value == mod.IsInstalled;
 
         private bool MatchesCached(GUIMod mod)
-        {
-            return !Cached.HasValue || Cached.Value == mod.IsCached;
-        }
+            => !Cached.HasValue || Cached.Value == mod.IsCached;
 
         private bool MatchesNewlyCompatible(GUIMod mod)
-        {
-            return !NewlyCompatible.HasValue || NewlyCompatible.Value == mod.IsNew;
-        }
+            => !NewlyCompatible.HasValue || NewlyCompatible.Value == mod.IsNew;
 
         private bool MatchesUpgradeable(GUIMod mod)
-        {
-            return !Upgradeable.HasValue || Upgradeable.Value == mod.HasUpdate;
-        }
+            => !Upgradeable.HasValue || Upgradeable.Value == mod.HasUpdate;
 
         private bool MatchesReplaceable(GUIMod mod)
-        {
-            return !Replaceable.HasValue || Replaceable.Value == (mod.IsInstalled && mod.HasReplacement);
-        }
+            => !Replaceable.HasValue || Replaceable.Value == (mod.IsInstalled && mod.HasReplacement);
 
         public bool Equals(ModSearch other)
-        {
-            return other != null
+            => other != null
                 && Name            == other.Name
                 && Description     == other.Description
                 && Compatible      == other.Compatible
@@ -581,17 +584,12 @@ namespace CKAN.GUI
                 && ConflictsWith.SequenceEqual(other.ConflictsWith)
                 && TagNames.SequenceEqual(other.TagNames)
                 && Labels.SequenceEqual(other.Labels);
-        }
 
         public override bool Equals(object obj)
-        {
-            return Equals(obj as ModSearch);
-        }
+            => Equals(obj as ModSearch);
 
         public override int GetHashCode()
-        {
-            return Combined.GetHashCode();
-        }
+            => Combined.GetHashCode();
 
     }
 }

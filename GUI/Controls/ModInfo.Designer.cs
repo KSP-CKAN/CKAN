@@ -30,6 +30,7 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ModInfo));
+            this.ToolTip = new System.Windows.Forms.ToolTip();
             this.ModInfoTable = new System.Windows.Forms.TableLayoutPanel();
             this.MetadataModuleNameTextBox = new TransparentTextBox();
             this.MetadataTagsLabelsPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -45,6 +46,13 @@ namespace CKAN.GUI
             this.VersionsTabPage = new System.Windows.Forms.TabPage();
             this.Versions = new CKAN.GUI.Versions();
             this.SuspendLayout();
+            //
+            // ToolTip
+            //
+            this.ToolTip.AutoPopDelay = 10000;
+            this.ToolTip.InitialDelay = 250;
+            this.ToolTip.ReshowDelay = 250;
+            this.ToolTip.ShowAlways = true;
             //
             // ModInfoTable
             //
@@ -83,6 +91,7 @@ namespace CKAN.GUI
             //
             // MetadataTagsLabelsPanel
             //
+            this.MetadataTagsLabelsPanel.AutoSize = true;
             this.MetadataTagsLabelsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataTagsLabelsPanel.Padding = new System.Windows.Forms.Padding(0);
             this.MetadataTagsLabelsPanel.Location = new System.Drawing.Point(0, 0);
@@ -150,6 +159,7 @@ namespace CKAN.GUI
             this.Metadata.Margin = new System.Windows.Forms.Padding(2);
             this.Metadata.Name = "Metadata";
             this.Metadata.TabIndex = 6;
+            this.Metadata.OnChangeFilter += Metadata_OnChangeFilter;
             //
             // RelationshipTabPage
             //
@@ -216,6 +226,7 @@ namespace CKAN.GUI
 
         #endregion
 
+        private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.TableLayoutPanel ModInfoTable;
         private TransparentTextBox MetadataModuleNameTextBox;
         private System.Windows.Forms.FlowLayoutPanel MetadataTagsLabelsPanel;
