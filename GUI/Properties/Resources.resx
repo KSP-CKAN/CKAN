@@ -214,9 +214,14 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainCorruptedRegistry" xml:space="preserve"><value>Corrupted registry archived to {0}: {1}
 
 This means that CKAN forgot about all your installed mods, but they are still in GameData. You can reinstall them by importing the {2} file.</value></data>
-  <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} is not supported on your current game version and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
+  <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} is not supported on your current compatible game versions ({1}) and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
 
 Do you really want to install it?</value></data>
+  <data name="ModpackInstallIncompatiblePrompt" xml:space="preserve"><value>Some of the selected mods (or their dependencies) are not supported on your current compatible game versions ({1}) and may not work at all. If you have any problems with them, you should NOT ask their maintainers for help.
+
+{0}
+
+Are you sure you want to install them? Cancelling will abort the entire installation.</value></data>
   <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Install</value></data>
   <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Cancel</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Update selected by user to version {0}.</value></data>

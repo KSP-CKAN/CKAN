@@ -33,10 +33,35 @@ namespace CKAN.Versioning
             _string = inclusive ? string.Format("[{0}]", valueStr) : string.Format("({0})", valueStr);
         }
 
-        public override string ToString()
-        {
-            return _string;
-        }
+        public GameVersion AsInclusiveLower()
+            => Inclusive
+                // Already inclusive? Drop all trailing 0 values
+                ? (Value.IsPatchDefined && Value.Patch > 0 ? new GameVersion(Value.Major, Value.Minor, Value.Patch)
+                 : Value.IsMinorDefined && Value.Minor > 0 ? new GameVersion(Value.Major, Value.Minor)
+                 : Value.IsMajorDefined && Value.Major > 0 ? new GameVersion(Value.Major)
+                 : GameVersion.Any)
+                // 1.3.1 non-inclusive => 1.3.2 inclusive lower
+                : Value.IsPatchDefined ? new GameVersion(Value.Major, Value.Minor, Value.Patch + 1)
+                // 1.3 non-inclusive => 1.4 inclusive lower
+                : Value.IsMinorDefined ? new GameVersion(Value.Major, Value.Minor + 1)
+                // 1 non-inclusive => 2 inclusive lower
+                : Value.IsMajorDefined ? new GameVersion(Value.Major + 1)
+                // Unbounded, I guess?
+                : GameVersion.Any;
+
+        public GameVersion AsInclusiveUpper()
+            // Already inclusive?
+            => Inclusive ? Value
+                // 1.3.1 non-inclusive => 1.3.0 inclusive upper
+                : Value.IsPatchDefined && Value.Patch > 0 ? new GameVersion(Value.Major, Value.Minor, Value.Patch - 1)
+                // 1.3 non-inclusive => 1.2 inclusive upper
+                : Value.IsMinorDefined && Value.Minor > 0 ? new GameVersion(Value.Major, Value.Minor - 1)
+                // 2 non-inclusive => 1 inclusive lower
+                : Value.IsMajorDefined && Value.Major > 0 ? new GameVersion(Value.Major - 1)
+                // Unbounded, I guess?
+                : GameVersion.Any;
+
+        public override string ToString() => _string;
     }
 
     public sealed partial class GameVersionBound : IEquatable<GameVersionBound>
@@ -63,15 +88,8 @@ namespace CKAN.Versioning
             }
         }
 
-        public static bool operator ==(GameVersionBound left, GameVersionBound right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(GameVersionBound left, GameVersionBound right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator ==(GameVersionBound left, GameVersionBound right) => Equals(left, right);
+        public static bool operator !=(GameVersionBound left, GameVersionBound right) => !Equals(left, right);
     }
 
     public sealed partial class GameVersionBound

@@ -501,6 +501,9 @@ namespace CKAN.GUI.Properties {
         internal static string AllModVersionsInstallPrompt {
             get { return (string)(ResourceManager.GetObject("AllModVersionsInstallPrompt", resourceCulture)); }
         }
+        internal static string ModpackInstallIncompatiblePrompt {
+            get { return (string)(ResourceManager.GetObject("ModpackInstallIncompatiblePrompt", resourceCulture)); }
+        }
         internal static string AllModVersionsInstallYes {
             get { return (string)(ResourceManager.GetObject("AllModVersionsInstallYes", resourceCulture)); }
         }

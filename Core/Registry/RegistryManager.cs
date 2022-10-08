@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using System.ComponentModel;
+using System.Reflection;
 
 using ChinhDo.Transactions.FileManager;
 using log4net;
@@ -462,7 +464,9 @@ namespace CKAN
         public CkanModule GenerateModpack(bool recommends = false, bool with_versions = true)
         {
             string gameInstanceName = gameInstance.Name;
-            string name = $"installed-{gameInstanceName}";
+            string name      = string.Format(Properties.Resources.ModpackName, gameInstanceName);
+            var    crit      = gameInstance.VersionCriteria();
+            var    minAndMax = crit.MinAndMax;
             var module = new CkanModule(
                 // v1.18 to allow Unlicense
                 new ModuleVersion("v1.18"),
@@ -470,50 +474,66 @@ namespace CKAN
                 name,
                 string.Format(Properties.Resources.RegistryManagerDefaultModpackAbstract, gameInstanceName),
                 null,
-                new List<string>() { Environment.UserName },
-                new List<License>() { new License("unknown") },
+                new List<string>()  { Environment.UserName   },
+                new List<License>() { License.UnknownLicense },
                 new ModuleVersion(DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss")),
                 null,
-                "metapackage"
-            )
+                "metapackage")
             {
-                download_content_type = "application/zip",
-                release_date = DateTime.Now,
+                ksp_version_min       = minAndMax.Lower.AsInclusiveLower().WithoutBuild,
+                ksp_version_max       = minAndMax.Upper.AsInclusiveUpper().WithoutBuild,
+                download_content_type = typeof(CkanModule).GetTypeInfo()
+                                            .GetDeclaredField("download_content_type")
+                                            .GetCustomAttribute<DefaultValueAttribute>()
+                                            .Value.ToString(),
+                release_date          = DateTime.Now,
             };
 
-            List<RelationshipDescriptor> mods = registry.Installed(false, false)
-                .Where(kvp => {
-                    // Skip unavailable modules (custom .ckan files)
-                    try
-                    {
-                        var avail = registry.LatestAvailable(kvp.Key, null, null);
-                        return !avail.IsDLC;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                })
-                // Case insensitive sort by identifier
-                .OrderBy(kvp => kvp.Key, StringComparer.OrdinalIgnoreCase)
-                .Select(kvp => (RelationshipDescriptor) new ModuleRelationshipDescriptor()
-                    {
-                        name    = kvp.Key,
-                        version = with_versions ? kvp.Value : null
-                    })
+            var rels = registry.InstalledModules
+                .Where(inst => !inst.Module.IsDLC && IsAvailable(inst))
+                .OrderBy(inst => inst.identifier, StringComparer.OrdinalIgnoreCase)
+                .Select(with_versions ? (Func<InstalledModule, RelationshipDescriptor>) RelationshipWithVersion
+                                      : RelationshipWithoutVersion)
                 .ToList();
 
             if (recommends)
             {
-                module.recommends = mods;
+                module.recommends = rels;
             }
             else
             {
-                module.depends = mods;
+                module.depends    = rels;
             }
 
             return module;
         }
+
+        private bool IsAvailable(InstalledModule inst)
+        {
+            try
+            {
+                var avail = registry.LatestAvailable(inst.identifier, null, null);
+                return true;
+            }
+            catch
+            {
+                // Skip unavailable modules (custom .ckan files)
+                return false;
+            }
+        }
+
+        private RelationshipDescriptor RelationshipWithVersion(InstalledModule inst)
+            => new ModuleRelationshipDescriptor()
+            {
+                name    = inst.identifier,
+                version = inst.Module.version,
+            };
+
+        private RelationshipDescriptor RelationshipWithoutVersion(InstalledModule inst)
+            => new ModuleRelationshipDescriptor()
+            {
+                name = inst.identifier,
+            };
 
         /// <summary>
         /// Look for DLC installed in GameData

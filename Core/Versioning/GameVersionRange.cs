@@ -12,7 +12,7 @@ namespace CKAN.Versioning
             new GameVersionRange(GameVersionBound.Unbounded, GameVersionBound.Unbounded);
 
         public GameVersionBound Lower { get; private set; }
-        public GameVersionBound Upper { get; private set;  }
+        public GameVersionBound Upper { get; private set; }
 
         public GameVersionRange(GameVersionBound lower, GameVersionBound upper)
         {
@@ -31,10 +31,7 @@ namespace CKAN.Versioning
         public GameVersionRange(GameVersion lower, GameVersion upper)
             : this(lower?.ToVersionRange().Lower, upper?.ToVersionRange().Upper) { }
 
-        public override string ToString()
-        {
-            return _string;
-        }
+        public override string ToString() =>_string;
 
         public GameVersionRange IntersectWith(GameVersionRange other)
         {
@@ -64,10 +61,8 @@ namespace CKAN.Versioning
         }
 
         private static bool IsEmpty(GameVersionBound lower, GameVersionBound upper)
-        {
-            return upper.Value < lower.Value ||
+            => upper.Value < lower.Value ||
                 (lower.Value == upper.Value && (!lower.Inclusive || !upper.Inclusive));
-        }
 
         private static string DeriveString(GameVersionRange versionRange)
         {
@@ -89,11 +84,9 @@ namespace CKAN.Versioning
         }
 
         private static string SameVersionString(GameVersion v)
-        {
-            return v == null ? "???"
-                :  v.IsAny   ? "all versions"
-                :              v.ToString();
-        }
+            => v == null ? "???"
+             : v.IsAny   ? Properties.Resources.CkanModuleAllVersions
+             :             v.ToString();
 
         /// <summary>
         /// Generate a string describing a range of KSP versions.
@@ -105,15 +98,18 @@ namespace CKAN.Versioning
         /// Human readable string describing the versions.
         /// </returns>
         public static string VersionSpan(IGame game, GameVersion minKsp, GameVersion maxKsp)
-        {
-            return minKsp == maxKsp ? $"{game.ShortName} {SameVersionString(minKsp)}"
-                :  minKsp.IsAny
+            => minKsp == maxKsp
+                ? $"{game.ShortName} {SameVersionString(minKsp)}"
+                : minKsp.IsAny
                     ? string.Format(Properties.Resources.GameVersionRangeMinOnly, game.ShortName, maxKsp)
-                :  maxKsp.IsAny
-                    ? string.Format(Properties.Resources.GameVersionRangeMaxOnly, game.ShortName, minKsp)
-                :                     $"{game.ShortName} {minKsp}–{maxKsp}";
-        }
+                    : maxKsp.IsAny
+                        ? string.Format(Properties.Resources.GameVersionRangeMaxOnly, game.ShortName, minKsp)
+                        : $"{game.ShortName} {minKsp}–{maxKsp}";
 
+        public string ToSummaryString(IGame game)
+            => VersionSpan(game,
+                           Lower.AsInclusiveLower().WithoutBuild,
+                           Upper.AsInclusiveUpper().WithoutBuild);
     }
 
     public sealed partial class GameVersionRange : IEquatable<GameVersionRange>
@@ -140,14 +136,7 @@ namespace CKAN.Versioning
             }
         }
 
-        public static bool operator ==(GameVersionRange left, GameVersionRange right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(GameVersionRange left, GameVersionRange right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator ==(GameVersionRange left, GameVersionRange right) => Equals(left, right);
+        public static bool operator !=(GameVersionRange left, GameVersionRange right) => !Equals(left, right);
     }
 }

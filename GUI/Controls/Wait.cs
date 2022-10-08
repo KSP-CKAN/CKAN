@@ -85,6 +85,7 @@ namespace CKAN.GUI
                         {
                             AutoSize = true,
                             Text     = label,
+                            Margin   = new Padding(0, 8, 0, 0),
                         };
                         progressLabels.Add(label, newLb);
                         var newPb = new ProgressBar()

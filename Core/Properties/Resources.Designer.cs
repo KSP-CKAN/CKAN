@@ -591,5 +591,9 @@ namespace CKAN.Properties {
         internal static string SanityCheckerConflictsWith {
             get { return (string)(ResourceManager.GetObject("SanityCheckerConflictsWith", resourceCulture)); }
         }
+
+        internal static string ModpackName {
+            get { return (string)(ResourceManager.GetObject("ModpackName", resourceCulture)); }
+        }
     }
 }
