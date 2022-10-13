@@ -365,8 +365,8 @@ namespace CKAN.GUI
                     Value = "-"
                 };
 
-            var name   = new DataGridViewTextBoxCell { Value = mod.Name   .Replace("&", "&&") };
-            var author = new DataGridViewTextBoxCell { Value = mod.Authors.Replace("&", "&&") };
+            var name   = new DataGridViewTextBoxCell { Value = mod.Name.Replace("&", "&&") };
+            var author = new DataGridViewTextBoxCell { Value = string.Join(", ", mod.Authors).Replace("&", "&&") };
 
             var installVersion = new DataGridViewTextBoxCell()
             {

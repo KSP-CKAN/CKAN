@@ -47,8 +47,8 @@ namespace CKAN.GUI
             Contents.UpdateModContentsTree(module, force);
         }
 
-        public event Action<GUIMod>      OnDownloadClick;
-        public event Action<SavedSearch> OnChangeFilter;
+        public event Action<GUIMod>            OnDownloadClick;
+        public event Action<SavedSearch, bool> OnChangeFilter;
 
         protected override void OnResize(EventArgs e)
         {
@@ -111,6 +111,8 @@ namespace CKAN.GUI
             var module = gmod.ToModule();
             Util.Invoke(this, () =>
             {
+                ModInfoTabControl.SuspendLayout();
+
                 MetadataModuleNameTextBox.Text = module.name;
                 UpdateTagsAndLabels(module);
                 MetadataModuleAbstractLabel.Text = module.@abstract.Replace("&", "&&");
@@ -126,6 +128,8 @@ namespace CKAN.GUI
                     var pageToAlert = module.IsCompatibleKSP(crit) ? RelationshipTabPage : VersionsTabPage;
                     pageToAlert.ImageKey = "Stop";
                 }
+
+                ModInfoTabControl.ResumeLayout();
             });
         }
 
@@ -174,25 +178,36 @@ namespace CKAN.GUI
                 AutoSize     = true,
                 LinkColor    = SystemColors.GrayText,
                 LinkBehavior = LinkBehavior.HoverUnderline,
-                Margin       = new Padding(2),
+                Margin       = new Padding(0, 2, 4, 2),
                 Text         = name,
                 Tag          = tag,
             };
             link.LinkClicked += onClick;
+            ToolTip.SetToolTip(link, Properties.Resources.FilterLinkToolTip);
             return link;
         }
 
         private void TagLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var link = sender as LinkLabel;
-            OnChangeFilter?.Invoke(ModList.FilterToSavedSearch(GUIModFilter.Tag, link.Tag as ModuleTag, null));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            OnChangeFilter?.Invoke(
+                ModList.FilterToSavedSearch(GUIModFilter.Tag, link.Tag as ModuleTag, null),
+                merge);
         }
 
         private void LabelLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var link = sender as LinkLabel;
-            OnChangeFilter?.Invoke(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, link.Tag as ModuleLabel));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            OnChangeFilter?.Invoke(
+                ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, link.Tag as ModuleLabel),
+                merge);
         }
 
+        private void Metadata_OnChangeFilter(SavedSearch search, bool merge)
+        {
+            OnChangeFilter?.Invoke(search, merge);
+        }
     }
 }

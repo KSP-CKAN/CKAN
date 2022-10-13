@@ -70,7 +70,7 @@ namespace CKAN.GUI
         public bool HasReplacement { get; private set; }
         public bool IsIncompatible { get; private set; }
         public bool IsAutodetected { get; private set; }
-        public string Authors { get; private set; }
+        public List<string> Authors => Mod.author ?? new List<string>();
         public string InstalledVersion { get; private set; }
         public DateTime? InstallDate { get; private set; }
         public string LatestVersion { get; private set; }
@@ -164,7 +164,6 @@ namespace CKAN.GUI
             Abstract      = mod.@abstract.Trim();
             Description   = mod.description?.Trim() ?? string.Empty;
             Abbrevation   = new string(Name.Split(' ').Where(s => s.Length > 0).Select(s => s[0]).ToArray());
-            Authors       = mod.author == null ? Properties.Resources.GUIModNSlashA : String.Join(",", mod.author);
 
             HasUpdate      = registry.HasUpdate(mod.identifier, current_game_version);
             HasReplacement = registry.GetReplacement(mod, current_game_version) != null;

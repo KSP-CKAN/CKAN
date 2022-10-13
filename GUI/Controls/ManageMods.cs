@@ -20,6 +20,15 @@ namespace CKAN.GUI
             InitializeComponent();
 
             ToolTip.SetToolTip(InstallAllCheckbox, Properties.Resources.ManageModsInstallAllCheckboxTooltip);
+            FilterCompatibleButton.ToolTipText      = Properties.Resources.FilterLinkToolTip;
+            FilterInstalledButton.ToolTipText       = Properties.Resources.FilterLinkToolTip;
+            FilterInstalledUpdateButton.ToolTipText = Properties.Resources.FilterLinkToolTip;
+            FilterReplaceableButton.ToolTipText     = Properties.Resources.FilterLinkToolTip;
+            FilterCachedButton.ToolTipText          = Properties.Resources.FilterLinkToolTip;
+            FilterUncachedButton.ToolTipText        = Properties.Resources.FilterLinkToolTip;
+            FilterNewButton.ToolTipText             = Properties.Resources.FilterLinkToolTip;
+            FilterNotInstalledButton.ToolTipText    = Properties.Resources.FilterLinkToolTip;
+            FilterIncompatibleButton.ToolTipText    = Properties.Resources.FilterLinkToolTip;
 
             mainModList = new ModList(source => UpdateFilters());
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
@@ -203,7 +212,8 @@ namespace CKAN.GUI
                     null, tagFilterButton_Click
                 )
                 {
-                    Tag = kvp.Value
+                    Tag         = kvp.Value,
+                    ToolTipText = Properties.Resources.FilterLinkToolTip,
                 });
             }
             FilterTagsToolButton.DropDownItems.Add(untaggedFilterToolStripSeparator);
@@ -226,7 +236,8 @@ namespace CKAN.GUI
                     null, customFilterButton_Click
                 )
                 {
-                    Tag = mlbl
+                    Tag         = mlbl,
+                    ToolTipText = Properties.Resources.FilterLinkToolTip,
                 });
             }
         }
@@ -295,78 +306,98 @@ namespace CKAN.GUI
         private void tagFilterButton_Click(object sender, EventArgs e)
         {
             var clicked = sender as ToolStripMenuItem;
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Tag, clicked.Tag as ModuleTag, null));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Tag, clicked.Tag as ModuleTag, null), merge);
         }
 
         private void customFilterButton_Click(object sender, EventArgs e)
         {
             var clicked = sender as ToolStripMenuItem;
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, clicked.Tag as ModuleLabel));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, clicked.Tag as ModuleLabel), merge);
         }
 
         private void FilterCompatibleButton_Click(object sender, EventArgs e)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Compatible));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Compatible), merge);
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Installed));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Installed), merge);
         }
 
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.InstalledUpdateAvailable));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.InstalledUpdateAvailable), merge);
         }
 
         private void FilterReplaceableButton_Click(object sender, EventArgs e)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Replaceable));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Replaceable), merge);
         }
 
         private void FilterCachedButton_Click(object sender, EventArgs e)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Cached));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Cached), merge);
         }
 
         private void FilterUncachedButton_Click(object sender, EventArgs e)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Uncached));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Uncached), merge);
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.NewInRepository));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.NewInRepository), merge);
         }
 
         private void FilterNotInstalledButton_Click(object sender, EventArgs e)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.NotInstalled));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.NotInstalled), merge);
         }
 
         private void FilterIncompatibleButton_Click(object sender, EventArgs e)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Incompatible));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Incompatible), merge);
         }
 
         private void FilterAllButton_Click(object sender, EventArgs e)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.All));
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.All), merge);
         }
 
         /// <summary>
         /// Called when the ModGrid filter (all, compatible, incompatible...) is changed.
         /// </summary>
         /// <param name="search">Search string</param>
-        public void Filter(SavedSearch search)
+        /// <param name="merge">If true, merge with current searches, else replace</param>
+        public void Filter(SavedSearch search, bool merge)
         {
             var searches = search.Values.Select(s => ModSearch.Parse(s,
-                Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList()
+                mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList()
             )).ToList();
 
             Util.Invoke(ModGrid, () =>
             {
-                EditModSearches.SetSearches(searches);
+                if (merge)
+                {
+                    EditModSearches.MergeSearches(searches);
+                }
+                else
+                {
+                    EditModSearches.SetSearches(searches);
+                }
 
                 // Ask the configuration which columns to show.
                 foreach (DataGridViewColumn col in ModGrid.Columns)

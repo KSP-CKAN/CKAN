@@ -30,6 +30,7 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Metadata));
+            this.ToolTip = new System.Windows.Forms.ToolTip();
             this.MetadataTable = new System.Windows.Forms.TableLayoutPanel();
             this.IdentifierLabel = new System.Windows.Forms.Label();
             this.MetadataIdentifierTextBox = new TransparentTextBox();
@@ -41,11 +42,18 @@ namespace CKAN.GUI
             this.LicenseLabel = new System.Windows.Forms.Label();
             this.MetadataModuleVersionTextBox = new TransparentTextBox();
             this.MetadataModuleLicenseTextBox = new TransparentTextBox();
-            this.MetadataModuleAuthorTextBox = new TransparentTextBox();
+            this.AuthorsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.MetadataModuleReleaseStatusTextBox = new TransparentTextBox();
             this.MetadataModuleGameCompatibilityTextBox = new TransparentTextBox();
             this.SuspendLayout();
+            //
+            // ToolTip
+            //
+            this.ToolTip.AutoPopDelay = 10000;
+            this.ToolTip.InitialDelay = 250;
+            this.ToolTip.ReshowDelay = 250;
+            this.ToolTip.ShowAlways = true;
             //
             // MetadataTable
             //
@@ -54,18 +62,18 @@ namespace CKAN.GUI
             this.MetadataTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
             this.MetadataTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.MetadataTable.Controls.Add(this.VersionLabel, 0, 0);
-            this.MetadataTable.Controls.Add(this.LicenseLabel, 0, 1);
-            this.MetadataTable.Controls.Add(this.AuthorLabel, 0, 2);
-            this.MetadataTable.Controls.Add(this.ReleaseLabel, 0, 3);
-            this.MetadataTable.Controls.Add(this.GameCompatibilityLabel, 0, 4);
-            this.MetadataTable.Controls.Add(this.IdentifierLabel, 0, 5);
-            this.MetadataTable.Controls.Add(this.ReplacementLabel, 0, 6);
             this.MetadataTable.Controls.Add(this.MetadataModuleVersionTextBox, 1, 0);
+            this.MetadataTable.Controls.Add(this.LicenseLabel, 0, 1);
             this.MetadataTable.Controls.Add(this.MetadataModuleLicenseTextBox, 1, 1);
-            this.MetadataTable.Controls.Add(this.MetadataModuleAuthorTextBox, 1, 2);
+            this.MetadataTable.Controls.Add(this.AuthorLabel, 0, 2);
+            this.MetadataTable.Controls.Add(this.AuthorsPanel, 1, 2);
+            this.MetadataTable.Controls.Add(this.ReleaseLabel, 0, 3);
             this.MetadataTable.Controls.Add(this.MetadataModuleReleaseStatusTextBox, 1, 3);
+            this.MetadataTable.Controls.Add(this.GameCompatibilityLabel, 0, 4);
             this.MetadataTable.Controls.Add(this.MetadataModuleGameCompatibilityTextBox, 1, 4);
+            this.MetadataTable.Controls.Add(this.IdentifierLabel, 0, 5);
             this.MetadataTable.Controls.Add(this.MetadataIdentifierTextBox, 1, 5);
+            this.MetadataTable.Controls.Add(this.ReplacementLabel, 0, 6);
             this.MetadataTable.Controls.Add(this.ReplacementTextBox, 1, 6);
             this.MetadataTable.Dock = System.Windows.Forms.DockStyle.Top;
             this.MetadataTable.Location = new System.Drawing.Point(0, 0);
@@ -74,22 +82,13 @@ namespace CKAN.GUI
             this.MetadataTable.RowCount = 7;
             this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetadataTable.Size = new System.Drawing.Size(346, 255);
             this.MetadataTable.AutoSize = true;
-            /*
-            //this.MetadataTable.AutoScroll = true;
-            this.MetadataTable.HorizontalScroll.Enabled = false;
-            this.MetadataTable.HorizontalScroll.Visible = false;
-            this.MetadataTable.HorizontalScroll.Minimum = 0;
-            this.MetadataTable.HorizontalScroll.Maximum = 0;
-            this.MetadataTable.VerticalScroll.Enabled = true;
-            this.MetadataTable.VerticalScroll.Visible = true;
-            */
             this.MetadataTable.TabIndex = 0;
             //
             // IdentifierLabel
@@ -214,19 +213,15 @@ namespace CKAN.GUI
             this.MetadataModuleLicenseTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             resources.ApplyResources(this.MetadataModuleLicenseTextBox, "MetadataModuleLicenseTextBox");
             //
-            // MetadataModuleAuthorTextBox
+            // AuthorsPanel
             //
-            this.MetadataModuleAuthorTextBox.AutoSize = true;
-            this.MetadataModuleAuthorTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleAuthorTextBox.Location = new System.Drawing.Point(93, 60);
-            this.MetadataModuleAuthorTextBox.Name = "MetadataModuleAuthorTextBox";
-            this.MetadataModuleAuthorTextBox.Size = new System.Drawing.Size(250, 30);
-            this.MetadataModuleAuthorTextBox.TabIndex = 6;
-            this.MetadataModuleAuthorTextBox.ReadOnly = true;
-            this.MetadataModuleAuthorTextBox.BackColor = System.Drawing.SystemColors.Control;
-            this.MetadataModuleAuthorTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.MetadataModuleAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            resources.ApplyResources(this.MetadataModuleAuthorTextBox, "MetadataModuleAuthorTextBox");
+            this.AuthorsPanel.AutoSize = true;
+            this.AuthorsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.AuthorsPanel.Margin = new System.Windows.Forms.Padding(this.AuthorsPanel.Margin.Left, 0, this.AuthorsPanel.Margin.Right, this.AuthorsPanel.Margin.Bottom);
+            this.AuthorsPanel.Padding = new System.Windows.Forms.Padding(0);
+            this.AuthorsPanel.Location = new System.Drawing.Point(0, 0);
+            this.AuthorsPanel.Name = "AuthorsPanel";
+            this.AuthorsPanel.Size = new System.Drawing.Size(500, 20);
             //
             // VersionLabel
             //
@@ -283,6 +278,7 @@ namespace CKAN.GUI
 
         #endregion
 
+        private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.TableLayoutPanel MetadataTable;
         private System.Windows.Forms.Label IdentifierLabel;
         private TransparentTextBox MetadataIdentifierTextBox;
@@ -294,7 +290,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.Label LicenseLabel;
         private TransparentTextBox MetadataModuleVersionTextBox;
         private TransparentTextBox MetadataModuleLicenseTextBox;
-        private TransparentTextBox MetadataModuleAuthorTextBox;
+        private System.Windows.Forms.FlowLayoutPanel AuthorsPanel;
         private System.Windows.Forms.Label VersionLabel;
         private TransparentTextBox MetadataModuleReleaseStatusTextBox;
         private TransparentTextBox MetadataModuleGameCompatibilityTextBox;

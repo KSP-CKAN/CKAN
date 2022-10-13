@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Polish translation (#3669 by: WujekFoliarz; reviewed: HebaruSan)
 - [GUI] ModInfo usability improvements (#3670 by: HebaruSan; reviewed: techman83)
 - [Multiple] Report progress in validating downloads (#3659 by: HebaruSan; reviewed: techman83)
+- [GUI] Authors as clickable filter links, combine search links w/ ctrl or shift (#3672 by: HebaruSan; reviewed: techman83)
 
 ## Bugfixes
 

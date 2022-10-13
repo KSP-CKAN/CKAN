@@ -1134,5 +1134,12 @@ namespace CKAN.GUI.Properties {
         public static string RelationshipTypeConflicts {
             get { return (string)(ResourceManager.GetObject("RelationshipTypeConflicts", resourceCulture)); }
         }
+
+        public static string AuthorSearchName {
+            get { return (string)(ResourceManager.GetObject("AuthorSearchName", resourceCulture)); }
+        }
+        public static string FilterLinkToolTip {
+            get { return (string)(ResourceManager.GetObject("FilterLinkToolTip", resourceCulture)); }
+        }
     }
 }
