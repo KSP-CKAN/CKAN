@@ -117,7 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="CKANFileFilter" xml:space="preserve"><value>CKAN元数据 (*.ckan)|*.ckan</value></data>
   <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>导出Mod列表</value></data>
   <data name="AboutDialogLabel2Text" xml:space="preserve"><value>版本 {0}</value></data>
