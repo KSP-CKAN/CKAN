@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,20 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FilterByNameLabel.Text" xml:space="preserve"><value>名前:</value></data>
-  <data name="FilterByAuthorLabel.Text" xml:space="preserve"><value>作者:</value></data>
-  <data name="FilterByDescriptionLabel.Text" xml:space="preserve"><value>詳細:</value></data>
-  <data name="FilterByLanguageLabel.Text" xml:space="preserve"><value>言語:</value></data>
-  <data name="FilterByDependsLabel.Text" xml:space="preserve"><value>依存:</value></data>
-  <data name="FilterByRecommendsLabel.Text" xml:space="preserve"><value>推奨:</value></data>
-  <data name="FilterBySuggestsLabel.Text" xml:space="preserve"><value>提案:</value></data>
-  <data name="FilterByConflictsLabel.Text" xml:space="preserve"><value>衝突:</value></data>
-  <data name="FilterByTagsLabel.Text" xml:space="preserve"><value>タグ:</value></data>
-  <data name="FilterByLabelsLabel.Text" xml:space="preserve"><value>ラベル:</value></data>
-  <data name="CompatibleLabel.Text" xml:space="preserve"><value>対応:</value></data>
-  <data name="InstalledLabel.Text" xml:space="preserve"><value>インストール済み:</value></data>
-  <data name="CachedLabel.Text" xml:space="preserve"><value>ダウンロード済み:</value></data>
-  <data name="NewlyCompatibleLabel.Text" xml:space="preserve"><value>新規対応:</value></data>
-  <data name="UpgradeableLabel.Text" xml:space="preserve"><value>更新可能:</value></data>
-  <data name="ReplaceableLabel.Text" xml:space="preserve"><value>置換可能:</value></data>
+  <data name="FilterByNameLabel.Text" xml:space="preserve">
+    <value>名前:</value>
+  </data>
+  <data name="FilterByAuthorLabel.Text" xml:space="preserve">
+    <value>作者:</value>
+  </data>
+  <data name="FilterByDescriptionLabel.Text" xml:space="preserve">
+    <value>詳細:</value>
+  </data>
+  <data name="FilterByLanguageLabel.Text" xml:space="preserve">
+    <value>言語:</value>
+  </data>
+  <data name="FilterByDependsLabel.Text" xml:space="preserve">
+    <value>依存:</value>
+  </data>
+  <data name="FilterByRecommendsLabel.Text" xml:space="preserve">
+    <value>推奨:</value>
+  </data>
+  <data name="FilterBySuggestsLabel.Text" xml:space="preserve">
+    <value>提案:</value>
+  </data>
+  <data name="FilterByConflictsLabel.Text" xml:space="preserve">
+    <value>衝突:</value>
+  </data>
+  <data name="FilterByTagsLabel.Text" xml:space="preserve">
+    <value>タグ:</value>
+  </data>
+  <data name="FilterByLabelsLabel.Text" xml:space="preserve">
+    <value>ラベル:</value>
+  </data>
+  <data name="CompatibleLabel.Text" xml:space="preserve">
+    <value>対応:</value>
+  </data>
+  <data name="InstalledLabel.Text" xml:space="preserve">
+    <value>インストール済み:</value>
+  </data>
+  <data name="CachedLabel.Text" xml:space="preserve">
+    <value>ダウンロード済み:</value>
+  </data>
+  <data name="NewlyCompatibleLabel.Text" xml:space="preserve">
+    <value>新規対応:</value>
+  </data>
+  <data name="UpgradeableLabel.Text" xml:space="preserve">
+    <value>更新可能:</value>
+  </data>
+  <data name="ReplaceableLabel.Text" xml:space="preserve">
+    <value>置換可能:</value>
+  </data>
 </root>

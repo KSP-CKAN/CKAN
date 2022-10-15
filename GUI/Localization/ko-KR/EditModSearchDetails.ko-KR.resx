@@ -117,20 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FilterByNameLabel.Text" xml:space="preserve"><value>이름:</value></data>
-  <data name="FilterByAuthorLabel.Text" xml:space="preserve"><value>제작자:</value></data>
-  <data name="FilterByDescriptionLabel.Text" xml:space="preserve"><value>설명:</value></data>
-  <data name="FilterByLanguageLabel.Text" xml:space="preserve"><value>언어:</value></data>
-  <data name="FilterByDependsLabel.Text" xml:space="preserve"><value>필수 모드:</value></data>
-  <data name="FilterByRecommendsLabel.Text" xml:space="preserve"><value>추천 모드:</value></data>
-  <data name="FilterBySuggestsLabel.Text" xml:space="preserve"><value>제안 모드:</value></data>
-  <data name="FilterByConflictsLabel.Text" xml:space="preserve"><value>충돌하는 모드:</value></data>
-  <data name="FilterByTagsLabel.Text" xml:space="preserve"><value>태그:</value></data>
-  <data name="FilterByLabelsLabel.Text" xml:space="preserve"><value>라벨:</value></data>
-  <data name="CompatibleLabel.Text" xml:space="preserve"><value>호환됨:</value></data>
-  <data name="InstalledLabel.Text" xml:space="preserve"><value>설치됨:</value></data>
-  <data name="CachedLabel.Text" xml:space="preserve"><value>캐시됨:</value></data>
-  <data name="NewlyCompatibleLabel.Text" xml:space="preserve"><value>새로 호환됨:</value></data>
-  <data name="UpgradeableLabel.Text" xml:space="preserve"><value>업데이트 가능:</value></data>
-  <data name="ReplaceableLabel.Text" xml:space="preserve"><value>대체 가능:</value></data>
+  <data name="FilterByNameLabel.Text" xml:space="preserve">
+    <value>이름:</value>
+  </data>
+  <data name="FilterByAuthorLabel.Text" xml:space="preserve">
+    <value>제작자:</value>
+  </data>
+  <data name="FilterByDescriptionLabel.Text" xml:space="preserve">
+    <value>설명:</value>
+  </data>
+  <data name="FilterByLanguageLabel.Text" xml:space="preserve">
+    <value>언어:</value>
+  </data>
+  <data name="FilterByDependsLabel.Text" xml:space="preserve">
+    <value>필수 모드:</value>
+  </data>
+  <data name="FilterByRecommendsLabel.Text" xml:space="preserve">
+    <value>추천 모드:</value>
+  </data>
+  <data name="FilterBySuggestsLabel.Text" xml:space="preserve">
+    <value>제안 모드:</value>
+  </data>
+  <data name="FilterByConflictsLabel.Text" xml:space="preserve">
+    <value>충돌하는 모드:</value>
+  </data>
+  <data name="FilterByTagsLabel.Text" xml:space="preserve">
+    <value>태그:</value>
+  </data>
+  <data name="FilterByLabelsLabel.Text" xml:space="preserve">
+    <value>라벨:</value>
+  </data>
+  <data name="CompatibleLabel.Text" xml:space="preserve">
+    <value>호환됨:</value>
+  </data>
+  <data name="InstalledLabel.Text" xml:space="preserve">
+    <value>설치됨:</value>
+  </data>
+  <data name="CachedLabel.Text" xml:space="preserve">
+    <value>캐시됨:</value>
+  </data>
+  <data name="NewlyCompatibleLabel.Text" xml:space="preserve">
+    <value>새로 호환됨:</value>
+  </data>
+  <data name="UpgradeableLabel.Text" xml:space="preserve">
+    <value>업데이트 가능:</value>
+  </data>
+  <data name="ReplaceableLabel.Text" xml:space="preserve">
+    <value>대체 가능:</value>
+  </data>
 </root>

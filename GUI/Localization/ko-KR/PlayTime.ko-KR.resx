@@ -117,8 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EditHelpLabel.Text" xml:space="preserve"><value>입력하려면, 값을 선택한 다음 타이핑하거나 F2를 누르세요.</value></data>
-  <data name="NameColumn.HeaderText" xml:space="preserve"><value>인스턴스 이름</value></data>
-  <data name="TimeColumn.HeaderText" xml:space="preserve"><value>플레이한 시간</value></data>
-  <data name="OKButton.Text" xml:space="preserve"><value>확인</value></data>
+  <data name="EditHelpLabel.Text" xml:space="preserve">
+    <value>입력하려면, 값을 선택한 다음 타이핑하거나 F2를 누르세요.</value>
+  </data>
+  <data name="NameColumn.HeaderText" xml:space="preserve">
+    <value>인스턴스 이름</value>
+  </data>
+  <data name="TimeColumn.HeaderText" xml:space="preserve">
+    <value>플레이한 시간</value>
+  </data>
+  <data name="OKButton.Text" xml:space="preserve">
+    <value>확인</value>
+  </data>
 </root>

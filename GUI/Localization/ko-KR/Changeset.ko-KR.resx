@@ -117,10 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Mod.Text" xml:space="preserve"><value>모드</value></data>
-  <data name="ChangeType.Text" xml:space="preserve"><value>변경</value></data>
-  <data name="Reason.Text" xml:space="preserve"><value>변경 이유</value></data>
-  <data name="BackButton.Text" xml:space="preserve"><value>뒤로가기</value></data>
-  <data name="CancelChangesButton.Text" xml:space="preserve"><value>되돌리기</value></data>
-  <data name="ConfirmChangesButton.Text" xml:space="preserve"><value>적용하기</value></data>
+  <data name="Mod.Text" xml:space="preserve">
+    <value>모드</value>
+  </data>
+  <data name="ChangeType.Text" xml:space="preserve">
+    <value>변경</value>
+  </data>
+  <data name="Reason.Text" xml:space="preserve">
+    <value>변경 이유</value>
+  </data>
+  <data name="BackButton.Text" xml:space="preserve">
+    <value>뒤로가기</value>
+  </data>
+  <data name="CancelChangesButton.Text" xml:space="preserve">
+    <value>되돌리기</value>
+  </data>
+  <data name="ConfirmChangesButton.Text" xml:space="preserve">
+    <value>적용하기</value>
+  </data>
 </root>

@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,18 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve"><value>此外，安装兼容以下游戏版本的Mod:</value></data>
-  <data name="label2.Text" xml:space="preserve"><value>游戏版本:</value></data>
-  <data name="label3.Text" xml:space="preserve"><value>警告！无法检查Mod是否真正与所选版本兼容！请小心操作。</value></data>
-  <data name="GameVersionLabel.Text" xml:space="preserve"><value>&lt;版本&gt;</value></data>
-  <data name="ClearSelectionButton.Text" xml:space="preserve"><value>清除选中</value></data>
-  <data name="AddVersionToListButton.Text" xml:space="preserve"><value>添加</value></data>
-  <data name="label5.Text" xml:space="preserve"><value>向列表中添加版本:</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>注意:如果您添加类似于“1.2”的版本您将会强制所有兼容1.2.xx（例如1.2.0、1.2.1等等）的Mod与该版本兼容</value></data>
-  <data name="label7.Text" xml:space="preserve"><value>如果游戏被更新，此对话框将重新弹出以便您调整设置。</value></data>
-  <data name="SaveButton.Text" xml:space="preserve"><value>确认</value></data>
-  <data name="label8.Text" xml:space="preserve"><value>当前安装:</value></data>
-  <data name="GameLocationLabel.Text" xml:space="preserve"><value>&lt;地址&gt;</value></data>
-  <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve"><value>取消</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>兼容的游戏版本</value></data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>此外，安装兼容以下游戏版本的Mod:</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>游戏版本:</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>警告！无法检查Mod是否真正与所选版本兼容！请小心操作。</value>
+  </data>
+  <data name="GameVersionLabel.Text" xml:space="preserve">
+    <value>&lt;版本&gt;</value>
+  </data>
+  <data name="ClearSelectionButton.Text" xml:space="preserve">
+    <value>清除选中</value>
+  </data>
+  <data name="AddVersionToListButton.Text" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>向列表中添加版本:</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>注意:如果您添加类似于“1.2”的版本您将会强制所有兼容1.2.xx（例如1.2.0、1.2.1等等）的Mod与该版本兼容</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>如果游戏被更新，此对话框将重新弹出以便您调整设置。</value>
+  </data>
+  <data name="SaveButton.Text" xml:space="preserve">
+    <value>确认</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>当前安装:</value>
+  </data>
+  <data name="GameLocationLabel.Text" xml:space="preserve">
+    <value>&lt;地址&gt;</value>
+  </data>
+  <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>兼容的游戏版本</value>
+  </data>
 </root>

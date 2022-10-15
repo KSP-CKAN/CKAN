@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,18 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve"><value>Additionnellement, installer des mods compatibles avec les versions de jeu suivantes:</value></data>
-  <data name="label2.Text" xml:space="preserve"><value>Version du jeu:</value></data>
-  <data name="label3.Text" xml:space="preserve"><value>Attention! Il n'y a aucun moyen de vérifier si un mod est réellement compatible avec les versions sélectionnées ici! Faîtes attention.</value></data>
-  <data name="GameVersionLabel.Text" xml:space="preserve"><value>&lt;version&gt;</value></data>
-  <data name="ClearSelectionButton.Text" xml:space="preserve"><value>Effacer</value></data>
-  <data name="AddVersionToListButton.Text" xml:space="preserve"><value>Ajouter</value></data>
-  <data name="label5.Text" xml:space="preserve"><value>Ajouter une version:</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>Note: si vous ajouter une version comme la "1.2", vous allez forcer tous les mods compatibles avec la 1.2.xx (1.2.0, 1.2.1, etc) à être compatibles avec cette instance.</value></data>
-  <data name="label7.Text" xml:space="preserve"><value>Si le jeu est mis à jour, cette fenêtre de dialogue apparaîtra de nouveau pour que vous puissiez ajustez vos réglages.</value></data>
-  <data name="SaveButton.Text" xml:space="preserve"><value>Accepter</value></data>
-  <data name="label8.Text" xml:space="preserve"><value>Installation:</value></data>
-  <data name="GameLocationLabel.Text" xml:space="preserve"><value>&lt;emplacement&gt;</value></data>
-  <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve"><value>Annuler</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Version de Jeu Compatibles</value></data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Additionnellement, installer des mods compatibles avec les versions de jeu suivantes:</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Version du jeu:</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>Attention! Il n'y a aucun moyen de vérifier si un mod est réellement compatible avec les versions sélectionnées ici! Faîtes attention.</value>
+  </data>
+  <data name="GameVersionLabel.Text" xml:space="preserve">
+    <value>&lt;version&gt;</value>
+  </data>
+  <data name="ClearSelectionButton.Text" xml:space="preserve">
+    <value>Effacer</value>
+  </data>
+  <data name="AddVersionToListButton.Text" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Ajouter une version:</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Note: si vous ajouter une version comme la "1.2", vous allez forcer tous les mods compatibles avec la 1.2.xx (1.2.0, 1.2.1, etc) à être compatibles avec cette instance.</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>Si le jeu est mis à jour, cette fenêtre de dialogue apparaîtra de nouveau pour que vous puissiez ajustez vos réglages.</value>
+  </data>
+  <data name="SaveButton.Text" xml:space="preserve">
+    <value>Accepter</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>Installation :</value>
+  </data>
+  <data name="GameLocationLabel.Text" xml:space="preserve">
+    <value>&lt;emplacement&gt;</value>
+  </data>
+  <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Version de Jeu Compatibles</value>
+  </data>
 </root>

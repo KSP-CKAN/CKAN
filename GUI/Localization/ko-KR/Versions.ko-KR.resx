@@ -117,14 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve"><value>선택된 모드의 등록된 버전들</value></data>
-  <data name="ModVersion.Text" xml:space="preserve"><value>모드 버전</value></data>
-  <data name="CompatibleGameVersion.Text" xml:space="preserve"><value>지원 버전</value></data>
-  <data name="ReleaseDate.Text" xml:space="preserve"><value>출시일</value></data>
-  <data name="label2.Text" xml:space="preserve"><value>녹색</value></data>
-  <data name="label3.Text" xml:space="preserve"><value>연두색</value></data>
-  <data name="label4.Text" xml:space="preserve"><value>볼드체</value></data>
-  <data name="label5.Text" xml:space="preserve"><value>- 호환되는 마지막 버전이에요(설치될 수 있음).</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>- 이 버전은 게임과 호환돼요.</value></data>
-  <data name="label7.Text" xml:space="preserve"><value>- 지금 설치한 버전이에요.</value></data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>선택된 모드의 등록된 버전들</value>
+  </data>
+  <data name="ModVersion.Text" xml:space="preserve">
+    <value>모드 버전</value>
+  </data>
+  <data name="CompatibleGameVersion.Text" xml:space="preserve">
+    <value>지원 버전</value>
+  </data>
+  <data name="ReleaseDate.Text" xml:space="preserve">
+    <value>출시일</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>녹색</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>연두색</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>볼드체</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>- 호환되는 마지막 버전이에요(설치될 수 있음).</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>- 이 버전은 게임과 호환돼요.</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>- 지금 설치한 버전이에요.</value>
+  </data>
 </root>
