@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 using CKAN.NetKAN.Model;
@@ -39,7 +40,8 @@ namespace CKAN.NetKAN.Validators
 
                 // Make sure no paths include GameData other than at the start
                 var gamedatas = allFiles
-                    .Where(p => p.StartsWith("GameData") && p.LastIndexOf("/GameData/") > 0)
+                    .Where(p => p.StartsWith("GameData", StringComparison.InvariantCultureIgnoreCase)
+                         && p.LastIndexOf("/GameData/", StringComparison.InvariantCultureIgnoreCase) > 0)
                     .OrderBy(f => f)
                     .ToList();
                 if (gamedatas.Any())
