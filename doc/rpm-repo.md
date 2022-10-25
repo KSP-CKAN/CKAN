@@ -4,7 +4,7 @@ We have created an RPM repository that you can add to your RPM-based OS to insta
 
 ## Stable builds
 
-These are [the main releases](https://github.com/KSP-CKAN/CKAN/releases), recommended for most users. You will have the same features at the same time as everyone else, but you will have the added conveniences of APT managing the updates for you.
+These are [the main releases](https://github.com/KSP-CKAN/CKAN/releases), recommended for most users. You will have the same features at the same time as everyone else, but you will have the added conveniences of DNF managing the updates for you.
 
 ```
 sudo dnf config-manager --add-repo https://ksp-ckan.s3-us-west-2.amazonaws.com/rpm/stable/ckan_stable.repo
