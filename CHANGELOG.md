@@ -46,6 +46,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Inflation error for `version_min` and `version_max` (#3657 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] GitLab kref (#3661 by: HebaruSan; reviewed: techman83)
 - [Netkan] Make Netkan nested GameData check case insensitive (#3682 by: HebaruSan)
+- [Docs] Replace apt with dnf in the docs for the RPM repo (#3684 by: htmlcsjs; reviewed: HebaruSan)
 
 ## v1.31.0 (IKAROS)
 
