@@ -26,11 +26,7 @@ namespace CKAN
         private FileStream lockfileStream = null;
         private StreamWriter lockfileWriter = null;
 
-        // The only reason we have a KSP field is so we can pass it to the registry
-        // when deserialising, and *it* only needs it to do registry upgrades.
-        // We could get rid of all of this if we declare we no longer wish to support
-        // older registry formats.
-        private readonly GameInstance ksp;
+        private readonly GameInstance gameInstance;
 
         public Registry registry;
 
@@ -43,21 +39,17 @@ namespace CKAN
         /// </summary>
         public string previousCorruptedPath;
 
-        private static string InstanceRegistryLockPath(string path)
-        {
-            return Path.Combine(path, "registry.locked");
-        }
+        private static string InstanceRegistryLockPath(string ckanDirPath)
+            => Path.Combine(ckanDirPath, "registry.locked");
 
-        public static bool IsInstanceMaybeLocked(string path)
-        {
-            return File.Exists(InstanceRegistryLockPath(path));
-        }
+        public static bool IsInstanceMaybeLocked(string ckanDirPath)
+            => File.Exists(InstanceRegistryLockPath(ckanDirPath));
 
         // We require our constructor to be private so we can
         // enforce this being an instance (via Instance() above)
-        private RegistryManager(string path, GameInstance ksp)
+        private RegistryManager(string path, GameInstance inst)
         {
-            this.ksp = ksp;
+            this.gameInstance = inst;
 
             this.path    = Path.Combine(path, "registry.json");
             lockfilePath = InstanceRegistryLockPath(path);
@@ -91,7 +83,7 @@ namespace CKAN
             {
                 // Only log an error for this if user-interactive,
                 // automated tools do not care that no one picked a Scatterer config
-                if (ksp.User.Headless)
+                if (gameInstance.User.Headless)
                 {
                     log.InfoFormat("Loaded registry with inconsistencies:\r\n\r\n{0}", kraken.InconsistenciesPretty);
                 }
@@ -127,7 +119,7 @@ namespace CKAN
             // free managed (.NET core) objects when called with a true value here.
 
             ReleaseLock();
-            var directory = ksp.CkanDir();
+            var directory = gameInstance.CkanDir();
             if (!registryCache.ContainsKey(directory))
             {
                 log.DebugFormat("Registry not in cache at {0}", directory);
@@ -168,7 +160,7 @@ namespace CKAN
         private void CheckStaleLock()
         {
             log.DebugFormat("Checking for stale lock file at {0}", lockfilePath);
-            if (IsInstanceMaybeLocked(path))
+            if (IsInstanceMaybeLocked(gameInstance.CkanDir()))
             {
                 log.DebugFormat("Lock file found at {0}", lockfilePath);
                 string contents;
@@ -271,16 +263,16 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns an instance of the registry manager for the KSP install.
+        /// Returns an instance of the registry manager for the game instance.
         /// The file `registry.json` is assumed.
         /// </summary>
-        public static RegistryManager Instance(GameInstance ksp)
+        public static RegistryManager Instance(GameInstance inst)
         {
-            string directory = ksp.CkanDir();
+            string directory = inst.CkanDir();
             if (!registryCache.ContainsKey(directory))
             {
                 log.DebugFormat("Preparing to load registry at {0}", directory);
-                registryCache[directory] = new RegistryManager(directory, ksp);
+                registryCache[directory] = new RegistryManager(directory, inst);
             }
 
             return registryCache[directory];
@@ -301,12 +293,12 @@ namespace CKAN
 
         private void Load()
         {
-            // Our registry needs to know our KSP install when upgrading from older
+            // Our registry needs to know our game instance when upgrading from older
             // registry formats. This lets us encapsulate that to make it available
             // after deserialisation.
             var settings = new JsonSerializerSettings
             {
-                Context = new StreamingContext(StreamingContextStates.Other, ksp)
+                Context = new StreamingContext(StreamingContextStates.Other, gameInstance)
             };
 
             log.DebugFormat("Trying to load registry from {0}", path);
@@ -369,7 +361,7 @@ namespace CKAN
             if (repositories.Count == 0)
             {
                 repositories.Add(Repository.default_ckan_repo_name,
-                    new Repository(Repository.default_ckan_repo_name, ksp.game.DefaultRepositoryURL));
+                    new Repository(Repository.default_ckan_repo_name, gameInstance.game.DefaultRepositoryURL));
             }
 
             registry.Repositories = repositories;
@@ -424,18 +416,18 @@ namespace CKAN
                 Path.Combine(directoryPath, LatestInstalledExportFilename()),
                 false, true
             );
-            if (!Directory.Exists(ksp.InstallHistoryDir()))
+            if (!Directory.Exists(gameInstance.InstallHistoryDir()))
             {
-                Directory.CreateDirectory(ksp.InstallHistoryDir());
+                Directory.CreateDirectory(gameInstance.InstallHistoryDir());
             }
             ExportInstalled(
-                Path.Combine(ksp.InstallHistoryDir(), HistoricInstalledExportFilename()),
+                Path.Combine(gameInstance.InstallHistoryDir(), HistoricInstalledExportFilename()),
                 false, true
             );
         }
 
-        public string LatestInstalledExportFilename() => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{ksp.SanitizedName}.ckan";
-        public string HistoricInstalledExportFilename() => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{ksp.SanitizedName}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.ckan";
+        public string LatestInstalledExportFilename() => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{gameInstance.SanitizedName}.ckan";
+        public string HistoricInstalledExportFilename() => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{gameInstance.SanitizedName}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.ckan";
 
         /// <summary>
         /// Save a custom .ckan file that contains all the currently
@@ -469,14 +461,14 @@ namespace CKAN
         /// </returns>
         public CkanModule GenerateModpack(bool recommends = false, bool with_versions = true)
         {
-            string kspInstanceName = ksp.Name;
-            string name = $"installed-{kspInstanceName}";
+            string gameInstanceName = gameInstance.Name;
+            string name = $"installed-{gameInstanceName}";
             var module = new CkanModule(
                 // v1.18 to allow Unlicense
                 new ModuleVersion("v1.18"),
                 Identifier.Sanitize(name),
                 name,
-                string.Format(Properties.Resources.RegistryManagerDefaultModpackAbstract, kspInstanceName),
+                string.Format(Properties.Resources.RegistryManagerDefaultModpackAbstract, gameInstanceName),
                 null,
                 new List<string>() { Environment.UserName },
                 new List<License>() { new License("unknown") },
@@ -581,7 +573,7 @@ namespace CKAN
         {
             var dlc = new Dictionary<string, UnmanagedModuleVersion>();
 
-            var dlcDirectory = Path.Combine(ksp.CkanDir(), "dlc");
+            var dlcDirectory = Path.Combine(gameInstance.CkanDir(), "dlc");
             if (Directory.Exists(dlcDirectory))
             {
                 foreach (var f in Directory.EnumerateFiles(dlcDirectory, "*.dlc", SearchOption.TopDirectoryOnly))
@@ -604,7 +596,7 @@ namespace CKAN
 
             foreach (var d in detectors)
             {
-                if (d.IsInstalled(ksp, out var identifier, out var version))
+                if (d.IsInstalled(gameInstance, out var identifier, out var version))
                 {
                     dlc[identifier] = version ?? new UnmanagedModuleVersion(null);
                 }
