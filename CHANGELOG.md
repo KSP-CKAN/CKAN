@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Hide tray icon at exit via ctrl-C (#3639 by: HebaruSan; reviewed: techman83)
 - [Multiple] Fix auto removal when installing w/ deps (#3643, #3660 by: HebaruSan; reviewed: techman83)
 - [Core] Only show DLL location error if installing DLL (#3647 by: HebaruSan; reviewed: techman83)
+- [Core] Fix stale lockfile detection (#3687 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 
