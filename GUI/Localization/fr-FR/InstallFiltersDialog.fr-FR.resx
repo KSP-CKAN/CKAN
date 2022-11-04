@@ -127,7 +127,7 @@
     <value>Ajouter MiniAVC</value>
   </data>
   <data name="WarningLabel.Text" xml:space="preserve">
-    <value>NOTE : Les changement de filtres prendront effet lors de l'installation des prochains mods ; les fichiers déjà présents ne sont pas affectés.</value>
+    <value>NOTE : Les changements de filtres prendront effet lors de l'installation des prochains mods ; les fichiers déjà présents ne sont pas affectés.</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Installer des Filtres</value>
