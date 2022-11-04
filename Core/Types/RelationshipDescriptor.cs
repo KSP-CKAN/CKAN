@@ -29,8 +29,11 @@ namespace CKAN
 
         public abstract List<CkanModule> LatestAvailableWithProvides(
             IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null
-        );
+            IEnumerable<CkanModule> toInstall = null);
+
+        public abstract CkanModule ExactMatch(
+            IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
+            IEnumerable<CkanModule> toInstall = null);
 
         public abstract bool Equals(RelationshipDescriptor other);
 
@@ -167,11 +170,14 @@ namespace CKAN
 
         public override List<CkanModule> LatestAvailableWithProvides(
             IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null
-        )
-        {
-            return registry.LatestAvailableWithProvides(name, crit, this, installed, toInstall);
-        }
+            IEnumerable<CkanModule> toInstall = null)
+            => registry.LatestAvailableWithProvides(name, crit, this, installed, toInstall);
+
+        public override CkanModule ExactMatch(
+            IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
+            IEnumerable<CkanModule> toInstall = null)
+            => registry.LatestAvailableWithProvides(name, crit, this, installed, toInstall)
+                .FirstOrDefault(mod => mod.identifier == name);
 
         public override bool Equals(RelationshipDescriptor other)
         {
@@ -183,15 +189,10 @@ namespace CKAN
                 && max_version == modRel.max_version;
         }
 
-        public override bool ContainsAny(IEnumerable<string> identifiers)
-        {
-            return identifiers.Contains(name);
-        }
+        public override bool ContainsAny(IEnumerable<string> identifiers) => identifiers.Contains(name);
 
         public override bool StartsWith(string prefix)
-        {
-            return name.IndexOf(prefix, StringComparison.CurrentCultureIgnoreCase) == 0;
-        }
+            => name.IndexOf(prefix, StringComparison.CurrentCultureIgnoreCase) == 0;
 
         /// <summary>
         /// Generate a user readable description of the relationship
@@ -205,16 +206,13 @@ namespace CKAN
         /// name max_version or earlier
         /// </returns>
         public override string ToString()
-        {
-            return
-                  version     != null                        ? $"{name} {version}"
+            =>    version     != null                        ? $"{name} {version}"
                 : min_version != null && max_version != null ? $"{name} {min_version}–{max_version}"
                 : min_version != null
                     ? string.Format(Properties.Resources.RelationshipDescriptorMinVersionOnly, name, min_version)
                 : max_version != null
                     ? string.Format(Properties.Resources.RelationshipDescriptorMaxVersionOnly, name, max_version)
                 : name;
-        }
 
     }
 
@@ -262,11 +260,14 @@ namespace CKAN
 
         public override List<CkanModule> LatestAvailableWithProvides(
             IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null
-        )
-        {
-            return any_of?.SelectMany(r => r.LatestAvailableWithProvides(registry, crit, installed, toInstall)).Distinct().ToList();
-        }
+            IEnumerable<CkanModule> toInstall = null)
+            => any_of?.SelectMany(r => r.LatestAvailableWithProvides(registry, crit, installed, toInstall)).Distinct().ToList();
+
+        // Exact match is not possible for any_of
+        public override CkanModule ExactMatch(
+            IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
+            IEnumerable<CkanModule> toInstall = null)
+            => null;
 
         public override bool Equals(RelationshipDescriptor other)
         {
@@ -276,22 +277,14 @@ namespace CKAN
         }
 
         public override bool ContainsAny(IEnumerable<string> identifiers)
-        {
-            return any_of?.Any(r => r.ContainsAny(identifiers))
-                ?? false;
-        }
+            => any_of?.Any(r => r.ContainsAny(identifiers)) ?? false;
 
         public override bool StartsWith(string prefix)
-        {
-            return any_of?.Any(r => r.StartsWith(prefix))
-                ?? false;
-        }
+            => any_of?.Any(r => r.StartsWith(prefix)) ?? false;
 
         public override string ToString()
-        {
-            return any_of?.Select(r => r.ToString())
+            => any_of?.Select(r => r.ToString())
                 .Aggregate((a, b) =>
                     string.Format(Properties.Resources.RelationshipDescriptorAnyOfJoiner, a, b));
-        }
     }
 }

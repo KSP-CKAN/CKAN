@@ -17,29 +17,30 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="registry">Reference to the registry</param>
         /// <param name="module">Module to install</param>
-        public void InstallModuleDriver(IRegistryQuerier registry, CkanModule module)
+        public void InstallModuleDriver(IRegistryQuerier registry, IEnumerable<CkanModule> modules)
         {
             try
             {
                 DisableMainWindow();
                 var userChangeSet = new List<ModChange>();
-                InstalledModule installed = registry.InstalledModule(module.identifier);
-                if (installed != null)
+                foreach (var module in modules)
                 {
-                    // Already installed, remove it first
-                    userChangeSet.Add(new ModChange(installed.Module, GUIModChangeType.Remove));
+                    InstalledModule installed = registry.InstalledModule(module.identifier);
+                    if (installed != null)
+                    {
+                        // Already installed, remove it first
+                        userChangeSet.Add(new ModChange(installed.Module, GUIModChangeType.Remove));
+                    }
+                    // Install the selected mod
+                    userChangeSet.Add(new ModChange(module, GUIModChangeType.Install));
                 }
-                // Install the selected mod
-                userChangeSet.Add(new ModChange(module, GUIModChangeType.Install));
                 if (userChangeSet.Count > 0)
                 {
                     // Resolve the provides relationships in the dependencies
                     Wait.StartWaiting(InstallMods, PostInstallMods, true,
                         new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                             userChangeSet,
-                            RelationshipResolver.DependsOnlyOpts()
-                        )
-                    );
+                            RelationshipResolver.DependsOnlyOpts()));
                 }
             }
             catch

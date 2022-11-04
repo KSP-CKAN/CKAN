@@ -567,7 +567,10 @@ namespace CKAN
         private void Add(CkanModule module, SelectionReason reason)
         {
             if (module.IsMetapackage)
+            {
+                AddReason(module, reason);
                 return;
+            }
             if (module.IsDLC)
             {
                 throw new ModuleIsDLCKraken(module);
@@ -697,6 +700,12 @@ namespace CKAN
                             .Min();
                         log.DebugFormat("Parent found: {0}, {1}", index, module);
                         sortedDepsFirst.Insert(index, module);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // ReasonsFor throws this for mods without reasons, just add it to the end
+                        log.DebugFormat("Reasons for parent not found: {0}", module);
+                        sortedDepsFirst.Add(module);
                     }
                     catch (InvalidOperationException)
                     {

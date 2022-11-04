@@ -70,7 +70,9 @@ namespace CKAN.GUI
 
             return installable(installer, module, registry)
                 || Main.Instance.YesNoDialog(
-                    string.Format(Properties.Resources.AllModVersionsInstallPrompt, module.ToString()),
+                    string.Format(Properties.Resources.AllModVersionsInstallPrompt,
+                        module.ToString(),
+                        currentInstance.VersionCriteria().ToSummaryString(currentInstance.game)),
                     Properties.Resources.AllModVersionsInstallYes,
                     Properties.Resources.AllModVersionsInstallNo);
         }

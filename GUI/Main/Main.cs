@@ -563,6 +563,10 @@ namespace CKAN.GUI
             {
                 // We'll need to make some registry changes to do this.
                 RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
+                var crit = CurrentInstance.VersionCriteria();
+
+                var installed = registry_manager.registry.InstalledModules.Select(inst => inst.Module).ToList();
+                var toInstall = new List<CkanModule>();
 
                 foreach (string path in open_file_dialog.FileNames)
                 {
@@ -571,6 +575,20 @@ namespace CKAN.GUI
                     try
                     {
                         module = CkanModule.FromFile(path);
+                        if (module.IsMetapackage && module.depends != null)
+                        {
+                            // Add metapackage dependencies to the changeset so we can skip compat checks for them
+                            toInstall.AddRange(module.depends
+                                .Where(rel => !rel.MatchesAny(installed, null, null))
+                                .Select(rel =>
+                                    // If there's a compatible match, return it
+                                    // Metapackages aren't intending to prompt users to choose providing mods
+                                    rel.ExactMatch(registry_manager.registry, crit, installed, toInstall)
+                                    // Otherwise look for incompatible
+                                    ?? rel.ExactMatch(registry_manager.registry, null, installed, toInstall))
+                                .Where(mod => mod != null));
+                        }
+                        toInstall.Add(module);
                     }
                     catch (Kraken kraken)
                     {
@@ -591,10 +609,24 @@ namespace CKAN.GUI
                         currentUser.RaiseError(Properties.Resources.MainCantInstallDLC, module);
                         continue;
                     }
-
-                    InstallModuleDriver(registry_manager.registry, module);
                 }
-                registry_manager.Save(true);
+                // Get all recursively incompatible module identifiers (quickly)
+                var allIncompat = registry_manager.registry.IncompatibleModules(crit)
+                    .Select(mod => mod.identifier)
+                    .ToHashSet();
+                // Get incompatible mods we're installing
+                var myIncompat = toInstall.Where(mod => allIncompat.Contains(mod.identifier)).ToList();
+                if (!myIncompat.Any()
+                    // Confirm installation of incompatible like the Versions tab does
+                    || Main.Instance.YesNoDialog(
+                        string.Format(Properties.Resources.ModpackInstallIncompatiblePrompt,
+                            string.Join(Environment.NewLine, myIncompat),
+                            crit.ToSummaryString(CurrentInstance.game)),
+                        Properties.Resources.AllModVersionsInstallYes,
+                        Properties.Resources.AllModVersionsInstallNo))
+                {
+                    InstallModuleDriver(registry_manager.registry, toInstall);
+                }
             }
         }
 

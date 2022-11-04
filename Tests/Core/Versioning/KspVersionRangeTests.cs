@@ -628,7 +628,7 @@ namespace Tests.Core.Versioning
             // Act
             string s = GameVersionRange.VersionSpan(game, min, max);
             // Assert
-            Assert.AreEqual("KSP all versions", s);
+            Assert.AreEqual("KSP All versions", s);
         }
 
         [Test]

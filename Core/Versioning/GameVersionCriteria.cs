@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using CKAN.Games;
+
 namespace CKAN.Versioning
 {
     public class GameVersionCriteria : IEquatable<GameVersionCriteria>
@@ -26,49 +28,36 @@ namespace CKAN.Versioning
             this._versions = this._versions.Distinct().ToList();
         }
 
-        public IList<GameVersion> Versions
-        {
-            get
-            {
-                return _versions.AsReadOnly();
-            }
-        }
+        public IList<GameVersion> Versions => _versions.AsReadOnly();
+
+        public GameVersionRange MinAndMax => Versions
+            .Skip(1)
+            .Select(v => v.ToVersionRange())
+            .Aggregate(Versions.First().ToVersionRange(),
+                       (range, v) => new GameVersionRange(
+                            GameVersionBound.Lowest(range.Lower, v.Lower),
+                            GameVersionBound.Highest(range.Upper, v.Upper)));
 
         public GameVersionCriteria Union(GameVersionCriteria other)
-        {
-            return new GameVersionCriteria(
-                null,
-                _versions.Union(other.Versions).ToList()
-            );
-        }
+            => new GameVersionCriteria(null, _versions.Union(other.Versions).ToList());
 
         public override bool Equals(object obj)
-        {
-            return Equals(obj as GameVersionCriteria);
-        }
+            => Equals(obj as GameVersionCriteria);
 
         // From IEquatable<GameVersionCriteria>
         public bool Equals(GameVersionCriteria other)
-        {
-            return other == null
-                ? false
-                : !_versions.Except(other._versions).Any()
-                    && !other._versions.Except(_versions).Any();
-        }
+            => other == null ? false
+                             : !_versions.Except(other._versions).Any()
+                                 && !other._versions.Except(_versions).Any();
 
         public override int GetHashCode()
-        {
-            return _versions.Aggregate(19, (code, vers) => code * 31 + vers.GetHashCode());
-        }
+            => _versions.Aggregate(19, (code, vers) => code * 31 + vers.GetHashCode());
 
         public override String ToString()
-        {
-            List<String> versionList = new List<String>();
-            foreach (GameVersion version in _versions)
-            {
-                versionList.Add(version.ToString());
-            }
-            return string.Format(Properties.Resources.GameVersionCriteriaToString, string.Join( ", ", versionList));
-        }
+            => string.Format(Properties.Resources.GameVersionCriteriaToString,
+                             string.Join(", ", _versions.Select(v => v.ToString())));
+
+        public string ToSummaryString(IGame game)
+            => MinAndMax.ToSummaryString(game);
     }
 }

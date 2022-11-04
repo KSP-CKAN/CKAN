@@ -36,65 +36,59 @@ namespace CKAN.Versioning
         /// Gets the value of the major component of the version number for the current <see cref="GameVersion"/>
         /// object.
         /// </summary>
-        public int Major {  get { return _major; } }
+        public int Major => _major;
 
         /// <summary>
         /// Gets the value of the minor component of the version number for the current <see cref="GameVersion"/>
         /// object.
         /// </summary>
-        public int Minor { get { return _minor; } }
+        public int Minor => _minor;
 
         /// <summary>
         /// Gets the value of the patch component of the version number for the current <see cref="GameVersion"/>
         /// object.
         /// </summary>
-        public int Patch { get { return _patch; } }
+        public int Patch => _patch;
 
         /// <summary>
         /// Gets the value of the build component of the version number for the current <see cref="GameVersion"/>
         /// object.
         /// </summary>
-        public int Build { get { return _build; } }
+        public int Build => _build;
 
         /// <summary>
         /// Gets whether or not the major component of the version number for the current <see cref="GameVersion"/>
         /// object is defined.
         /// </summary>
-        public bool IsMajorDefined { get { return _major != Undefined; } }
+        public bool IsMajorDefined => _major != Undefined;
 
         /// <summary>
         /// Gets whether or not the minor component of the version number for the current <see cref="GameVersion"/>
         /// object is defined.
         /// </summary>
-        public bool IsMinorDefined { get { return _minor != Undefined; } }
+        public bool IsMinorDefined => _minor != Undefined;
 
         /// <summary>
         /// Gets whether or not the patch component of the version number for the current <see cref="GameVersion"/>
         /// object is defined.
         /// </summary>
-        public bool IsPatchDefined { get { return _patch != Undefined; } }
+        public bool IsPatchDefined => _patch != Undefined;
 
         /// <summary>
         /// Gets whether or not the build component of the version number for the current <see cref="GameVersion"/>
         /// object is defined.
         /// </summary>
-        public bool IsBuildDefined {  get { return _build != Undefined; } }
+        public bool IsBuildDefined => _build != Undefined;
 
         /// <summary>
         /// Indicates whether or not all components of the current <see cref="GameVersion"/> are defined.
         /// </summary>
-        public bool IsFullyDefined
-        {
-            get { return IsMajorDefined && IsMinorDefined && IsPatchDefined && IsBuildDefined; }
-        }
+        public bool IsFullyDefined => IsMajorDefined && IsMinorDefined && IsPatchDefined && IsBuildDefined;
 
         /// <summary>
         /// Indicates wheter or not all the components of the current <see cref="GameVersion"/> are undefined.
         /// </summary>
-        public bool IsAny
-        {
-            get { return !IsMajorDefined && !IsMinorDefined && !IsPatchDefined && !IsBuildDefined; }
-        }
+        public bool IsAny => !IsMajorDefined && !IsMinorDefined && !IsPatchDefined && !IsBuildDefined;
 
         /// <summary>
         /// Check whether a version is null or Any.
@@ -104,10 +98,7 @@ namespace CKAN.Versioning
         /// <returns>
         /// True if null or Any, false otherwise
         /// </returns>
-        public static bool IsNullOrAny(GameVersion v)
-        {
-            return v == null || v.IsAny;
-        }
+        public static bool IsNullOrAny(GameVersion v) => v == null || v.IsAny;
 
         /// <summary>
         /// Initialize a new instance of the <see cref="GameVersion"/> class with all components unspecified.
@@ -240,10 +231,7 @@ namespace CKAN.Versioning
         /// If the current <see cref="GameVersion"/> is totally undefined the return value will <c>null</c>.
         /// </para>
         /// </returns>
-        public override string ToString()
-        {
-            return _string;
-        }
+        public override string ToString() => _string;
 
         private static Dictionary<string, GameVersion> VersionsMax = new Dictionary<string, GameVersion>();
 
@@ -303,6 +291,13 @@ namespace CKAN.Versioning
         {
             return (int)Math.Pow(10, Math.Floor(Math.Log10(num + 1)) + 1) - 1;
         }
+
+        /// <summary>
+        /// Strip off the build number if it's defined
+        /// </summary>
+        /// <returns>A GameVersion equal to this but without a build number</returns>
+        public GameVersion WithoutBuild => IsBuildDefined ? new GameVersion(_major, _minor, _patch)
+                                                          : this;
 
         /// <summary>
         /// Converts the value of the current <see cref="GameVersion"/> to its equivalent
@@ -491,7 +486,7 @@ namespace CKAN.Versioning
         /// Raises a selection dialog for choosing a specific KSP version, if it is not fully defined yet.
         /// If a build number is specified but not known, it presents a list of all builds
         /// of the patch range.
-        /// Needs at least a Major and Minor (doesn't make sense else). 
+        /// Needs at least a Major and Minor (doesn't make sense else).
         /// </summary>
         /// <returns>A complete GameVersion object</returns>
         /// <param name="user">A IUser instance, to raise the corresponding dialog.</param>
@@ -526,7 +521,7 @@ namespace CKAN.Versioning
                         {
                             possibleVersions.Add(ver);
                         }
-                    } 
+                    }
                     // If we also have Patch -> compare it too.
                     else if (!IsBuildDefined)
                     {

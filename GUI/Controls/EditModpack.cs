@@ -317,6 +317,18 @@ namespace CKAN.GUI
             }
             else if (TrySavePrompt(modpackExportOptions, out ExportOption selectedOption, out string filename))
             {
+                if (module.depends.Count == 0)
+                {
+                    module.depends = null;
+                }
+                if (module.recommends.Count == 0)
+                {
+                    module.recommends = null;
+                }
+                if (module.suggests.Count == 0)
+                {
+                    module.suggests = null;
+                }
                 CkanModule.ToFile(ApplyVersionsCheckbox(module), filename);
                 task?.SetResult(true);
             }
