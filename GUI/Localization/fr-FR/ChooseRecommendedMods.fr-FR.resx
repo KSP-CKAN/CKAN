@@ -127,7 +127,7 @@
     <value>(Dé-)sélectionner tout</value>
   </data>
   <data name="RecommendedDialogLabel.Text" xml:space="preserve">
-    <value>Les modules choisis recommandent, suggèrent ou sont supportés par les modules suivants:</value>
+    <value>Les modules choisis recommandent, suggèrent ou sont supportés par les modules suivants :</value>
   </data>
   <data name="RecommendationsGroup.Header" xml:space="preserve">
     <value>Recommandations</value>
