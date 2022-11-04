@@ -124,7 +124,7 @@
     <value>Version du Mod</value>
   </data>
   <data name="CompatibleGameVersion.Text" xml:space="preserve">
-    <value>Versions de Jeu</value>
+    <value>Versions de jeu</value>
   </data>
   <data name="ReleaseDate.Text" xml:space="preserve">
     <value>Date de publication</value>
@@ -133,7 +133,7 @@
     <value>Vert</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>Vert Clair</value>
+    <value>Vert clair</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>Gras</value>
