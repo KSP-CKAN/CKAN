@@ -117,6 +117,80 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
+  <data name="AppIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\assets\ckan.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="apply" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\apply.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ksp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ksp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="stop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\stop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ballot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ballot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="search" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="settings" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="update" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\update.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="backward" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\backward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="filter" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\filter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="forward" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="textClear" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\textClear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="star" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\star.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="thumbup" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\thumbup.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\info.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="smile" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\smile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="alert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\alert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="folderZip" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\folderZip.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\folder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="file" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\file.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="triToggleYes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\triToggleYes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="triToggleNo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\triToggleNo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="triToggleBoth" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\triToggleBoth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="CKANFileFilter" xml:space="preserve">
     <value>metadane CKAN (*.ckan)|*.ckan</value>
   </data>
@@ -317,20 +391,18 @@ Oznacza to, że CKAN zapomniał o wszystkich zainstalowanych modyfikacjach, ale 
 
 Czy na pewno chcesz go zainstalować?</value>
   </data>
+  <data name="ModpackInstallIncompatiblePrompt" xml:space="preserve">
+    <value>Niektóre wybrane mody (lub ich zależności) nie są obsługiwane przez twoje kompatybilne wersje gry ({1}) i mogą w ogóle nie działać. Jeśli masz jakieś problemu, NIE proś nikogo o pomoc.
+
+{0}
+
+Na pewno chcesz je zainstalować? Anulowanie przerwie całą instalację.</value>
+  </data>
   <data name="AllModVersionsInstallYes" xml:space="preserve">
     <value>Rozmiar instalacji</value>
   </data>
   <data name="AllModVersionsInstallNo" xml:space="preserve">
     <value>Anuluj</value>
-  </data>
-  <data name="MainChangesetMetapackage" xml:space="preserve">
-    <value>{0} {1} (metapackage)</value>
-  </data>
-  <data name="MainChangesetCached" xml:space="preserve">
-    <value>{0} {1} (zapisany w folderze cache)</value>
-  </data>
-  <data name="MainChangesetHostSize" xml:space="preserve">
-    <value>{0} {1} ({2}, {3})</value>
   </data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve">
     <value>Aktualizacja wybrana przez użytkownika do wersji {0}.</value>
@@ -504,6 +576,9 @@ Jeśli podejrzewasz błąd w programie: https://github.com/KSP-CKAN/CKAN/issues/
   </data>
   <data name="DownloadFailed" xml:space="preserve">
     <value>Pobieranie nie powiodło się!</value>
+  </data>
+  <data name="ValidatingDownload" xml:space="preserve">
+    <value>Weryfikuje {0}</value>
   </data>
   <data name="MainModListWaitTitle" xml:space="preserve">
     <value>Ładowanie modułów</value>
@@ -944,9 +1019,29 @@ Czy chcesz zezwolić na to CKAN-owi? Jeśli klikniesz nie, nie zobaczysz tej wia
   <data name="RepoDownloadsFailedAbortBtn" xml:space="preserve">
     <value>Przerwij całą aktualizację</value>
   </data>
-  <data name="RelationshipTypeDepends" xml:space="preserve"><value>Zależne</value></data>
-  <data name="RelationshipTypeRecommends" xml:space="preserve"><value>Zalecenia</value></data>
-  <data name="RelationshipTypeSuggests" xml:space="preserve"><value>Sugerowane</value></data>
-  <data name="RelationshipTypeSupports" xml:space="preserve"><value>Wspiera</value></data>
-  <data name="RelationshipTypeConflicts" xml:space="preserve"><value>Konflikty</value></data>
+  <data name="RelationshipTypeProvides" xml:space="preserve">
+    <value>Zapewnia</value>
+  </data>
+  <data name="RelationshipTypeDepends" xml:space="preserve">
+    <value>Zależne</value>
+  </data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve">
+    <value>Zalecenia</value>
+  </data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve">
+    <value>Sugerowane</value>
+  </data>
+  <data name="RelationshipTypeSupports" xml:space="preserve">
+    <value>Wspiera</value>
+  </data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve">
+    <value>Konflikty</value>
+  </data>
+  <data name="AuthorSearchName">
+    <value>Według autora {0}</value>
+  </data>
+  <data name="FilterLinkToolTip">
+    <value>Kliknij, aby wyszukać
+Kliknij razem z Ctrl lub Shift, aby połączyć z bieżącym wyszukiwaniem</value>
+  </data>
 </root>

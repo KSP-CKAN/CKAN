@@ -25,7 +25,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] ModInfo usability improvements (#3670 by: HebaruSan; reviewed: techman83)
 - [Multiple] Report progress in validating downloads (#3659 by: HebaruSan; reviewed: techman83)
 - [GUI] Authors as clickable filter links, combine search links w/ ctrl or shift (#3672 by: HebaruSan; reviewed: techman83)
-- [GUI] New Crowdin updates (#3653 by: Olympic1; reviewed: HebaruSan)
+- [GUI] New Crowdin updates (#3653, #3695 by: Olympic1; reviewed: HebaruSan)
 - [Multiple] Install incompatible with confirmation (#3675 by: HebaruSan; reviewed: techman83)
 
 ## Bugfixes

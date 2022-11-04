@@ -147,13 +147,13 @@ Utilisez 'ckan instance help' pour être aidé dans cette configuration.</value>
   </data>
   <data name="OptionsRootError" xml:space="preserve">
     <value>Vous essayer d'utiliser CKAN en tant que super-utilisateur.
-C'est une mauvaise idée et il n'y a absolument aucune raison de le faire. Veuillez utilisez CKAN depuis un compte utilisateur (ou utilisez --asroot si vous aimez le risque).</value>
+C'est une mauvaise idée et il n'y a absolument aucune raison de le faire. Veuillez utiliser CKAN depuis un compte utilisateur (ou utilisez --asroot si vous aimez le risque).</value>
   </data>
   <data name="OptionsRootWarning" xml:space="preserve">
     <value>Attention : CKAN utilisé par un super-utilisateur !</value>
   </data>
   <data name="OptionsMonoWarning" xml:space="preserve">
-    <value>Attention. Un runtime Mono {0} a été détecté, ce qui est inférieur à la version recommandée qui est {1}.
+    <value>Attention. Un runtime Mono {0} a été détecté, ce qui est inférieur à la version recommandée {1}.
 Mise à jour conseillée !</value>
   </data>
   <data name="OptionsInstanceAndGameDir" xml:space="preserve">
@@ -187,10 +187,10 @@ Mise à jour conseillée !</value>
     <value>Saisie invalide. Veuillez entrer oui ou non</value>
   </data>
   <data name="UserSelectionPromptWithDefault" xml:space="preserve">
-    <value>Entrez un nombre entre {0} et {1} (Pour annuler appuyez sur "c" ou "n". "Entré" va sélectionner {2}.) : </value>
+    <value>Entrez un nombre entre {0} et {1} (Pour annuler, appuyez sur "c" ou "n". "Entrée" va sélectionner {2}.) : </value>
   </data>
   <data name="UserSelectionPromptWithoutDefault" xml:space="preserve">
-    <value>Entrez un nombre entre {0} et {1} (Pour annuler appuyez sur "c" ou "n".) : </value>
+    <value>Entrez un nombre entre {0} et {1} (Pour annuler, appuyez sur "c" ou "n".) : </value>
   </data>
   <data name="UserSelectionC" xml:space="preserve">
     <value>c</value>
@@ -220,7 +220,7 @@ Mise à jour conseillée !</value>
     <value>Gérer les jetons d'authentification</value>
   </data>
   <data name="AvailableHeader" xml:space="preserve">
-    <value>Modules compatible avec {0} {1}</value>
+    <value>Modules compatibles avec {0} {1}</value>
   </data>
   <data name="CacheHelpSummary" xml:space="preserve">
     <value>Gérer le chemin du cache des téléchargements de CKAN</value>
@@ -244,7 +244,7 @@ Mise à jour conseillée !</value>
     <value>Illimité</value>
   </data>
   <data name="CacheInfo" xml:space="preserve">
-    <value>{0} fichiers, {1}</value>
+    <value>{0} fichiers, {1}, {2} libre</value>
   </data>
   <data name="CompareSame" xml:space="preserve">
     <value>"{0}" et "{1}" ont les mêmes versions.</value>
@@ -320,7 +320,7 @@ Essayez d'ajouter l'instance manuellement avec "ckan instance add".
     <value>"{0}" a été retirée avec succès</value>
   </data>
   <data name="InstanceDefaultArgumentMissing" xml:space="preserve">
-    <value>argument manquant, veuillez sélectionnez depuis la liste ci-dessous</value>
+    <value>argument manquant, veuillez choisir depuis la liste ci-dessous</value>
   </data>
   <data name="InstanceDefaultSet" xml:space="preserve">
     <value>"{0}" a été définie comme instance de jeu par défaut</value>
@@ -329,26 +329,26 @@ Essayez d'ajouter l'instance manuellement avec "ckan instance add".
     <value>Quelque chose s'est mal passé. Essayez d'ajouter l'instance manuellement avec "ckan instance add". Vérifiez aussi si le nouveau dossier a bien été créé.</value>
   </data>
   <data name="InstanceFakeBadArguments" xml:space="preserve">
-    <value>--Erreur: mauvais argument·s--</value>
+    <value>--Erreur : mauvais argument·s--</value>
   </data>
   <data name="InstanceFakeMakingHistory" xml:space="preserve">
     <value>Veuillez vérifier l'argument de version du DLC Making History - Le format est du type Maj.Min.Patch - ex: 1.1.0</value>
   </data>
   <data name="InstanceFakeBreakingGround" xml:space="preserve">
-    <value>Veuillez vérifier l'argument de version du DLC Breaking Ground - Le format est du type Maj.Min.Patch - ex: 1.1.0</value>
+    <value>Veuillez vérifier l'argument de version du DLC Breaking Ground - Le format est du type Màj.Min.Patch - ex: 1.1.0</value>
   </data>
   <data name="InstanceFakeVersion" xml:space="preserve">
-    <value>Veuillez vérifier l'argument de version - Le format est du type Maj.Min.Patch[.Build] - ex: 1.6.0 ou 1.2.2.1622</value>
+    <value>Veuillez vérifier l'argument de version - Le format est du type Màj.Min.Patch[.Build] - ex : 1.6.0 ou 1.2.2.1622</value>
   </data>
   <data name="InstanceFakeBadGameVersion" xml:space="preserve">
     <value>Impossible de trouver une version de jeu valide pour votre saisie.
-Soyez sûr d'avoir saisi au moins les valeurs de version majeure et mineure au format Maj.Min - ex: 1.5</value>
+Soyez sûr d'avoir saisi au moins les valeurs de version majeure et mineure au format Màj.Min - ex: 1.5</value>
   </data>
   <data name="InstanceFakeCancelled" xml:space="preserve">
     <value>Sélection annulée ! Veuillez saisir 'ckan instance fake' à nouveau</value>
   </data>
   <data name="InstanceFakeCreating" xml:space="preserve">
-    <value>Création d'une instance de jeu artificielle {0} à {1} de version {2}</value>
+    <value>Création d'une fausse instance de jeu {0} à {1} de version {2}</value>
   </data>
   <data name="InstanceFakeDefault" xml:space="preserve">
     <value>Définition de la nouvelle instance comme par défaut...</value>
@@ -371,10 +371,10 @@ Essayez `ckan install --no-recommends` pour ignorer l'installation des modules r
 Ou `ckan install --allow-incompatible` pour ignorer la compatibilité des modules.</value>
   </data>
   <data name="InstallUnversionedDependencyNotSatisfied" xml:space="preserve">
-    <value>Le module {0} est requis mais il n'est pas listé dans l'index, ou indisponible pour votre version de {1}</value>
+    <value>Le module {0} est requis, mais il n'est pas listé dans l'index, ou indisponible pour votre version de {1}</value>
   </data>
   <data name="InstallVersionedDependencyNotSatisfied" xml:space="preserve">
-    <value>Le module {0} {1} est requis mais il n'est pas listé dans l'index, ou indisponible pour votre version de {2}</value>
+    <value>Le module {0} {1} est requis, mais il n'est pas listé dans l'index, ou indisponible pour votre version de {2}</value>
   </data>
   <data name="InstallBadMetadata" xml:space="preserve">
     <value>Mauvaises métadonnées détectées pour le module {0} : {1}</value>
@@ -417,16 +417,16 @@ et réessayez.
     <value>Votre {0} a été remis dans son état original</value>
   </data>
   <data name="InstallCancelled" xml:space="preserve">
-    <value>Installation annulée. Vos fichiers ont remis dans leur état initial.</value>
+    <value>Installation annulée. Vos fichiers ont été remis dans leur état initial.</value>
   </data>
   <data name="InstallAborted" xml:space="preserve">
     <value>Installation annulée : {0}</value>
   </data>
   <data name="InstallTryAuthToken" xml:space="preserve">
-    <value>Essayez la commande authtoken . Regardez {0} pour plus de détails.</value>
+    <value>Essayez la commande authtoken. Voir {0} pour plus de détails.</value>
   </data>
   <data name="InstallDownloadFailed" xml:space="preserve">
-    <value>Un ou plusieurs fichier·s n'ont pu être téléchargés, arrêt</value>
+    <value>Un ou plusieurs fichiers n'ont pu être téléchargés, arrêt</value>
   </data>
   <data name="InstallDLC" xml:space="preserve">
     <value>CKAN ne peut pas installer l'extension '{0}' pour vous.</value>
@@ -467,21 +467,22 @@ et réessayez.
     <value>Marquage de {0} comme {1}...</value>
   </data>
   <data name="MarkDLC" xml:space="preserve">
-    <value>Impossible de marquer l'extension '{0}' comme auto-installé</value>
+    <value>Impossible de marquer l'extension '{0}' comme autoinstallé</value>
   </data>
   <data name="MarkChanged" xml:space="preserve">
     <value>Changements complétés !</value>
   </data>
   <data name="MarkAutoInstalled" xml:space="preserve">
-    <value>auto-installé</value>
+    <value>autoinstallé</value>
   </data>
   <data name="MarkUserSelected" xml:space="preserve">
-    <value>Sélectionné par l'utilisateur</value>
+    <value>sélectionné par l'utilisateur</value>
   </data>
   <data name="PromptWelcome" xml:space="preserve">
-    <value>Bienvenue sur CKAN!
+    <value>Bienvenue sur CKAN !
 
-Pour obtenir de l'aide, tapez help et appuyez sur entré. Pour quitter, tapez {0} et appuyez sur entré.
+Pour obtenir de l'aide, tapez help et appuyez sur entrée. Pour quitter, tapez {0} et appuyez sur entrée.
+Appuyez sur tabulation pour compléter les commandes et les modules.
 </value>
   </data>
   <data name="PromptWithInstance" xml:space="preserve">
@@ -544,7 +545,7 @@ Essayez `ckan list` pour une liste des mods installés.</value>
     <value>Commande inconnue : repo {0}</value>
   </data>
   <data name="RepoAvailableHeader" xml:space="preserve">
-    <value>Liste de tous les répertoires officiels de CKAN :</value>
+    <value>Liste de tous les répertoires connus de CKAN :</value>
   </data>
   <data name="RepoAvailableFailed" xml:space="preserve">
     <value>Impossible d'obtenir la liste maîtresse des répertoires CKAN depuis {0}</value>
@@ -709,7 +710,7 @@ Essayez `ckan list` pour une liste des mods installés.</value>
     <value>Informations sur {0} modules compatibles mises à jour</value>
   </data>
   <data name="UpgradeQueryingCKAN" xml:space="preserve">
-    <value>Requête de la dernière version CKAN</value>
+    <value>Requête de la dernière version de CKAN</value>
   </data>
   <data name="UpgradeNewCKANAvailable" xml:space="preserve">
     <value>Nouvelle version de CKAN disponible - {0}</value>
@@ -742,13 +743,13 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   <data name="ScanPreliminaryInconsistent" xml:space="preserve">
     <value>L'analyse préliminaire montre que l'installation est dans un état incohérent.
 Utilisez ckan.exe scan pour plus de détails
-Exécution de {0} au cas où cela réglerai le problème.</value>
+Exécution de {0} au cas où cela réglerait le problème.</value>
   </data>
   <data name="FilterListGlobalHeader" xml:space="preserve">
     <value>Filtres globaux :</value>
   </data>
   <data name="FilterListInstanceHeader" xml:space="preserve">
-    <value>Filtre d'instance Instance :</value>
+    <value>Filtres d'instance :</value>
   </data>
   <data name="FilterAddGlobalDuplicateError" xml:space="preserve">
     <value>Filtres globaux existant déjà : {0}</value>

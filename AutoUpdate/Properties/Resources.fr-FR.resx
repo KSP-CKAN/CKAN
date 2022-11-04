@@ -130,7 +130,7 @@
     <value>Échec de la suppression de {0} : {1}</value>
   </data>
   <data name="UnhandledException" xml:space="preserve">
-    <value>Exception non-gérée :
+    <value>Exception non gérée :
 {0}</value>
   </data>
   <data name="FatalErrorTitle" xml:space="preserve">

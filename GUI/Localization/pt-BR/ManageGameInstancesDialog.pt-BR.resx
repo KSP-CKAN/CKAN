@@ -48,46 +48,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -106,17 +106,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="openDirectoryMenuItem.Text" xml:space="preserve"><value>Abrir diretório</value></data>
-  <data name="GameInstallName.Text" xml:space="preserve"><value>Nome</value></data>
-  <data name="Game.Text" xml:space="preserve"><value>Jogo</value></data>
-  <data name="GameInstallVersion.Text" xml:space="preserve"><value>Versão</value></data>
-  <data name="GameInstallPath.Text" xml:space="preserve"><value>Caminho</value></data>
-  <data name="SelectButton.Text" xml:space="preserve"><value>Selecionar</value></data>
-  <data name="AddNewButton.Text" xml:space="preserve"><value>Nova instância do jogo</value></data>
-  <data name="AddToCKANMenuItem.Text" xml:space="preserve"><value>Adicionar instância no CKAN</value></data>
-  <data name="CloneFakeInstanceMenuItem.Text" xml:space="preserve"><value>Clonar ou falsificar nova instância</value></data>
-  <data name="RenameButton.Text" xml:space="preserve"><value>Renomear</value></data>
-  <data name="SetAsDefaultCheckbox.Text" xml:space="preserve"><value>Definir como padrão</value></data>
-  <data name="ForgetButton.Text" xml:space="preserve"><value>Esquecer</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Gerenciar Instâncias do Jogo</value></data>
+  <data name="openDirectoryMenuItem.Text" xml:space="preserve">
+    <value>Abrir diretório</value>
+  </data>
+  <data name="GameInstallName.Text" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="Game.Text" xml:space="preserve">
+    <value>Jogo</value>
+  </data>
+  <data name="GameInstallVersion.Text" xml:space="preserve">
+    <value>Versão</value>
+  </data>
+  <data name="GamePlayTime.Text" xml:space="preserve">
+    <value>Horas jogadas</value>
+  </data>
+  <data name="GameInstallPath.Text" xml:space="preserve">
+    <value>Caminho</value>
+  </data>
+  <data name="SelectButton.Text" xml:space="preserve">
+    <value>Selecionar</value>
+  </data>
+  <data name="AddNewButton.Text" xml:space="preserve">
+    <value>Nova instância do jogo</value>
+  </data>
+  <data name="AddToCKANMenuItem.Text" xml:space="preserve">
+    <value>Adicionar instância no CKAN</value>
+  </data>
+  <data name="CloneFakeInstanceMenuItem.Text" xml:space="preserve">
+    <value>Clonar ou falsificar nova instância</value>
+  </data>
+  <data name="RenameButton.Text" xml:space="preserve">
+    <value>Renomear</value>
+  </data>
+  <data name="SetAsDefaultCheckbox.Text" xml:space="preserve">
+    <value>Definir como padrão</value>
+  </data>
+  <data name="ForgetButton.Text" xml:space="preserve">
+    <value>Esquecer</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Gerenciar Instâncias do Jogo</value>
+  </data>
 </root>

@@ -130,6 +130,6 @@
     <value>Description du mod</value>
   </data>
   <data name="ChooseProvidedModsLabel.Text" xml:space="preserve">
-    <value>Plusieurs mods fournissent le module virtuel Foo, choisissez un des mods suivants:</value>
+    <value>Plusieurs mods fournissent le module virtuel Foo, choisissez un des mods suivants :</value>
   </data>
 </root>

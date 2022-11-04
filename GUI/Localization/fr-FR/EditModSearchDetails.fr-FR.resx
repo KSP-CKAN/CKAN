@@ -118,51 +118,51 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FilterByNameLabel.Text" xml:space="preserve">
-    <value>Nom:</value>
+    <value>Nom :</value>
   </data>
   <data name="FilterByAuthorLabel.Text" xml:space="preserve">
-    <value>Auteur:</value>
+    <value>Auteur :</value>
   </data>
   <data name="FilterByDescriptionLabel.Text" xml:space="preserve">
     <value>Description:</value>
   </data>
   <data name="FilterByLanguageLabel.Text" xml:space="preserve">
-    <value>Langue:</value>
+    <value>Langue :</value>
   </data>
   <data name="FilterByDependsLabel.Text" xml:space="preserve">
-    <value>Dépend de:</value>
+    <value>Dépend de :</value>
   </data>
   <data name="FilterByRecommendsLabel.Text" xml:space="preserve">
-    <value>Recommande:</value>
+    <value>Recommande :</value>
   </data>
   <data name="FilterBySuggestsLabel.Text" xml:space="preserve">
-    <value>Suggère:</value>
+    <value>Suggère :</value>
   </data>
   <data name="FilterByConflictsLabel.Text" xml:space="preserve">
-    <value>Conflits avec:</value>
+    <value>Conflit avec :</value>
   </data>
   <data name="FilterByTagsLabel.Text" xml:space="preserve">
-    <value>Étiquette:</value>
+    <value>Étiquettes :</value>
   </data>
   <data name="FilterByLabelsLabel.Text" xml:space="preserve">
-    <value>Label:</value>
+    <value>Labels :</value>
   </data>
   <data name="CompatibleLabel.Text" xml:space="preserve">
     <value>Compatible :</value>
   </data>
   <data name="InstalledLabel.Text" xml:space="preserve">
-    <value>Installé:</value>
+    <value>Installé :</value>
   </data>
   <data name="CachedLabel.Text" xml:space="preserve">
-    <value>En cache:</value>
+    <value>En cache :</value>
   </data>
   <data name="NewlyCompatibleLabel.Text" xml:space="preserve">
-    <value>Nouveau:</value>
+    <value>Nouveau :</value>
   </data>
   <data name="UpgradeableLabel.Text" xml:space="preserve">
-    <value>À mettre à jour:</value>
+    <value>À mettre à jour :</value>
   </data>
   <data name="ReplaceableLabel.Text" xml:space="preserve">
-    <value>Remplaçable:</value>
+    <value>Remplaçable :</value>
   </data>
 </root>

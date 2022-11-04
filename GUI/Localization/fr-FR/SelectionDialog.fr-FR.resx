@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MessageLabel.Text" xml:space="preserve">
-    <value>Veuillez sélectionner:</value>
+    <value>Veuillez choisir :</value>
   </data>
   <data name="SelectButton.Text" xml:space="preserve">
     <value>Sélectionner</value>

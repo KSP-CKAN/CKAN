@@ -175,7 +175,7 @@
     <value>Tabulation</value>
   </data>
   <data name="Enter" xml:space="preserve">
-    <value>Entré</value>
+    <value>Entrée</value>
   </data>
   <data name="Esc" xml:space="preserve">
     <value>Échappe</value>
@@ -214,7 +214,7 @@
     <value>Sélectionner tout</value>
   </data>
   <data name="DeselectAll" xml:space="preserve">
-    <value>désélectionner tout</value>
+    <value>Désélectionner tout</value>
   </data>
   <data name="Details" xml:space="preserve">
     <value>Détails</value>
@@ -271,7 +271,7 @@
     <value>Jeton</value>
   </data>
   <data name="AuthTokenListWarning" xml:space="preserve">
-    <value>NOTE: Ces valeurs sont privées ! Ne partagez pas une capture de cet écran !</value>
+    <value>NOTE : Ces valeurs sont privées ! Ne partagez pas une capture de cet écran !</value>
   </data>
   <data name="AuthTokenListMissingToken" xml:space="preserve">
     <value>&lt;ERREUR&gt;</value>
@@ -304,7 +304,7 @@
     <value>&lt;Entrez une version&gt;</value>
   </data>
   <data name="CompatibleVersionsEntryAcceptTip" xml:space="preserve">
-    <value>Accepter cette value</value>
+    <value>Accepter cette valeur</value>
   </data>
   <data name="ThemeNotFound" xml:space="preserve">
     <value>Impossible de trouver ce thème : {0}</value>
@@ -328,7 +328,7 @@
     <value>Recommandations &amp; Suggestions</value>
   </data>
   <data name="ImportSelectTitle" xml:space="preserve">
-    <value>Importer les téléchargements</value>
+    <value>Importer Téléchargements</value>
   </data>
   <data name="ImportSelectHeader" xml:space="preserve">
     <value>Importer</value>
@@ -358,7 +358,7 @@
     <value>{0} existe déjà !</value>
   </data>
   <data name="InstancePathNotGameFolderError" xml:space="preserve">
-    <value>Le chemin ne correspond à un dossier de jeu !</value>
+    <value>Le chemin ne correspond pas à un dossier de jeu !</value>
   </data>
   <data name="InstanceAddExample" xml:space="preserve">
     <value>Exemple : {0}</value>
@@ -446,7 +446,7 @@ Veuillez signaler ce problème à https://github.com/KSP-CKAN/NetKAN/issues/new/
 Veuillez désinstaller manuellement le mod auquel ce fichier appartient pour pouvoir installer {2}.</value>
   </data>
   <data name="InstallFilesReverted" xml:space="preserve">
-    <value>Retour en arrière des fichiers de jeu.</value>
+    <value>Fichiers de jeu restaurés.</value>
   </data>
   <data name="InstallAuthTokenPrompt" xml:space="preserve">
     <value>{0}
@@ -464,7 +464,7 @@ Veuillez désinstaller manuellement le mod auquel ce fichier appartient pour pou
 {2}</value>
   </data>
   <data name="InstallModuleNotFound" xml:space="preserve">
-    <value>Le module {0} est requis mais il n'est pas listé dans l'index, ou indisponible pour votre version de jeu.
+    <value>Le module {0} est requis, mais il n'est pas listé dans l'index, ou indisponible pour votre version de jeu.
 {1}</value>
   </data>
   <data name="InstallNotInstalled" xml:space="preserve">
@@ -493,14 +493,14 @@ Veuillez désinstaller manuellement le mod auquel ce fichier appartient pour pou
   </data>
   <data name="ModInfoUnavailableWarning" xml:space="preserve">
     <value>
-NOTE : Ce mod est installé mais n'est plus disponible.
+NOTE : Ce mod est installé, mais n'est plus disponible.
 Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
   </data>
   <data name="ModInfoDownloadToCache" xml:space="preserve">
     <value>Télécharger dans le cache (sans installer)</value>
   </data>
   <data name="ModInfoHomePage" xml:space="preserve">
-    <value>Page Principale</value>
+    <value>Page principale</value>
   </data>
   <data name="ModInfoHomePageTip" xml:space="preserve">
     <value>Ouvrir le lien de la page principale dans un navigateur</value>
@@ -695,7 +695,7 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
     <value>Retirer</value>
   </data>
   <data name="ModListAutoInstTip" xml:space="preserve">
-    <value>Marquer le mod comme auto-installé</value>
+    <value>Marquer le mod comme autoinstallé</value>
   </data>
   <data name="ModListUserSelectedTip" xml:space="preserve">
     <value>Marquer le mod sélectionné comme installé par l'utilisateur</value>
@@ -743,7 +743,7 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
     <value>Exporter les mods installés...</value>
   </data>
   <data name="ModListExportMenuTip" xml:space="preserve">
-    <value>Sauvegarde de votre liste de mods installés</value>
+    <value>Sauvegarder votre liste de mods</value>
   </data>
   <data name="ModListInstanceSettingsMenu" xml:space="preserve">
     <value>Paramètres de l'instance de jeu...</value>
@@ -761,7 +761,7 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
     <value>Jeton d'authentification...</value>
   </data>
   <data name="ModListAuthTokenMenuTip" xml:space="preserve">
-    <value>Éditer les jetons d'authentication envoyés aux serveurs de téléchargements</value>
+    <value>Éditer les jetons d'authentification envoyés aux serveurs de téléchargements</value>
   </data>
   <data name="ModListFilterMenu" xml:space="preserve">
     <value>Filtres d'installation...</value>
@@ -773,7 +773,7 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
     <value>Aide</value>
   </data>
   <data name="ModListHelpMenuTip" xml:space="preserve">
-    <value>Trucs &amp; astuces</value>
+    <value>Trucs et astuces</value>
   </data>
   <data name="ModListQuitMenu" xml:space="preserve">
     <value>Quitter</value>
@@ -791,7 +791,7 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
     <value>Appuyez sur une touche</value>
   </data>
   <data name="ModListAuditNotFound" xml:space="preserve">
-    <value>Les mods installés n'ont aucune recommandations ou suggestions supplémentaires.</value>
+    <value>Les mods installés n'ont aucune recommandation ou suggestion supplémentaire.</value>
   </data>
   <data name="ModListUpdateRegistryTitle" xml:space="preserve">
     <value>Mise à Jour du Registre</value>
@@ -800,10 +800,10 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
     <value>Recherche de mises à jour</value>
   </data>
   <data name="ModListNewMod" xml:space="preserve">
-    <value>{0} nouveau mod depuis la dernière mise à jour. L'afficher ?</value>
+    <value>{0} nouveau mod disponible depuis la dernière mise à jour. L'afficher ?</value>
   </data>
   <data name="ModListNewMods" xml:space="preserve">
-    <value>{0} nouveaux mods depuis la dernière mise à jour. Les afficher ?</value>
+    <value>{0} nouveaux mods disponibles depuis la dernière mise à jour. Les afficher ?</value>
   </data>
   <data name="ModListScanBad" xml:space="preserve">
     <value>{0} Le répertoire n'a pas été sauvegardé.</value>
@@ -896,7 +896,7 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
     <value>&lt;Entrez un filtre&gt;</value>
   </data>
   <data name="FilterAddAcceptTip" xml:space="preserve">
-    <value>Accepter cette value</value>
+    <value>Accepter cette valeur</value>
   </data>
   <data name="FilterAddTitle" xml:space="preserve">
     <value>Ajouter un Filtre</value>
@@ -908,9 +908,9 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
     <value>Vous utilisez {1}.
 
 Merci d'avoir téléchargé {0}. Nous espérons que vous avez eu autant
-de plaisir à l'utiliser que nous en avons eu (et avons) à le développer.
+de plaisir à l'utiliser que nous avons eu (et avons) à le développer.
 
-Si vous avez payé pour {0}, essayez d'en avoir pour votre argent,
+Si vous avez payé pour {0}, essayez d'être remboursé,
 car vous pouvez télécharger {0} gratuitement sur
 {2}
 

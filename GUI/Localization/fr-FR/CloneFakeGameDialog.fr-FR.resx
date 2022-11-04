@@ -121,10 +121,10 @@
     <value>Cloner une instance existante de KSP</value>
   </data>
   <data name="labelOldInstance.Text" xml:space="preserve">
-    <value>Instance à cloner:</value>
+    <value>Instance à cloner :</value>
   </data>
   <data name="labelOldPath.Text" xml:space="preserve">
-    <value>Chemin à cloner:</value>
+    <value>Chemin à cloner :</value>
   </data>
   <data name="buttonInstancePathSelection.Text" xml:space="preserve">
     <value>Parcourir</value>
@@ -136,7 +136,7 @@
     <value>Version :</value>
   </data>
   <data name="labelDlcVersions.Text" xml:space="preserve">
-    <value>Versions DLC (vide si absent):</value>
+    <value>Versions DLC (vide si absent) :</value>
   </data>
   <data name="labelMakingHistory.Text" xml:space="preserve">
     <value>Making History</value>
@@ -145,10 +145,10 @@
     <value>Breaking Ground</value>
   </data>
   <data name="labelNewName.Text" xml:space="preserve">
-    <value>Nom de la nouvelle instance:</value>
+    <value>Nom de la nouvelle instance :</value>
   </data>
   <data name="labelNewPath.Text" xml:space="preserve">
-    <value>Chemin de la nouvelle instance:</value>
+    <value>Chemin de la nouvelle instance :</value>
   </data>
   <data name="buttonPathBrowser.Text" xml:space="preserve">
     <value>Parcourir</value>

@@ -133,12 +133,12 @@
     <value>Source</value>
   </data>
   <data name="forumthreadLabel.Text" xml:space="preserve">
-    <value>Forum discussion</value>
+    <value>Forum Discussion</value>
   </data>
   <data name="homepageLabel.Text" xml:space="preserve">
-    <value>Page principale</value>
+    <value>Page Principale</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>À propos</value>
+    <value>À Propos</value>
   </data>
 </root>

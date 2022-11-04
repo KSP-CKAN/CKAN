@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="label1.Text" xml:space="preserve">
-    <value>Additionnellement, installer des mods compatibles avec les versions de jeu suivantes:</value>
+    <value>Additionnellement, installer des mods compatibles avec les versions de jeu suivantes :</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
-    <value>Version du jeu:</value>
+    <value>Version de jeu :</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>Attention! Il n'y a aucun moyen de vérifier si un mod est réellement compatible avec les versions sélectionnées ici! Faîtes attention.</value>
+    <value>Attention ! Il n'y a aucun moyen de vérifier si un mod est réellement compatible avec les versions sélectionnées ici ! Soyez prudent.</value>
   </data>
   <data name="GameVersionLabel.Text" xml:space="preserve">
     <value>&lt;version&gt;</value>
@@ -136,13 +136,13 @@
     <value>Ajouter</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
-    <value>Ajouter une version:</value>
+    <value>Ajouter une version :</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
-    <value>Note: si vous ajouter une version comme la "1.2", vous allez forcer tous les mods compatibles avec la 1.2.xx (1.2.0, 1.2.1, etc) à être compatibles avec cette instance.</value>
+    <value>Note : si vous ajoutez une version comme la "1.2", vous allez forcer tous les mods compatibles avec la 1.2.xx (1.2.0, 1.2.1, etc) à être compatibles avec cette instance.</value>
   </data>
   <data name="label7.Text" xml:space="preserve">
-    <value>Si le jeu est mis à jour, cette fenêtre de dialogue apparaîtra de nouveau pour que vous puissiez ajustez vos réglages.</value>
+    <value>Si le jeu est mis à jour, cette fenêtre de dialogue apparaîtra de nouveau pour que vous puissiez ajuster vos réglages.</value>
   </data>
   <data name="SaveButton.Text" xml:space="preserve">
     <value>Accepter</value>
@@ -157,6 +157,6 @@
     <value>Annuler</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Version de Jeu Compatibles</value>
+    <value>Versions de Jeu Compatibles</value>
   </data>
 </root>

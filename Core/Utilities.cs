@@ -22,6 +22,7 @@ namespace CKAN
             "ja-JP",
             "ko-KR",
             "pl-PL",
+            "tr-TR",
         };
 
         /// <summary>

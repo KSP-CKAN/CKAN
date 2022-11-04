@@ -121,7 +121,7 @@
     <value>48</value>
   </metadata>
   <data name="RepositoryGroupBox.Text" xml:space="preserve">
-    <value>Répertoires des métadonnées</value>
+    <value>Répertoires des Métadonnées</value>
   </data>
   <data name="NewRepoButton.Text" xml:space="preserve">
     <value>Nouveau</value>
@@ -136,7 +136,7 @@
     <value>Supprimer</value>
   </data>
   <data name="AuthTokensGroupBox.Text" xml:space="preserve">
-    <value>Jetons d'authentification</value>
+    <value>Jetons d'Authentification</value>
   </data>
   <data name="NewAuthTokenButton.Text" xml:space="preserve">
     <value>Nouveau</value>
@@ -145,13 +145,13 @@
     <value>Supprimer</value>
   </data>
   <data name="CacheGroupBox.Text" xml:space="preserve">
-    <value>Cache des téléchargements</value>
+    <value>Cache des Téléchargements</value>
   </data>
   <data name="CacheSummary.Text" xml:space="preserve">
     <value>N fichiers, M Mo</value>
   </data>
   <data name="CacheLimitPreLabel.Text" xml:space="preserve">
-    <value>Taille de cache max:</value>
+    <value>Taille de cache max :</value>
   </data>
   <data name="CacheLimitPostLabel.Text" xml:space="preserve">
     <value>Mo (vide pour illimité)</value>
@@ -175,16 +175,16 @@
     <value>Ouvrir</value>
   </data>
   <data name="AutoUpdateGroupBox.Text" xml:space="preserve">
-    <value>Mises à jour auto</value>
+    <value>Mises à Jour Auto</value>
   </data>
   <data name="LocalVersionPreLabel.Text" xml:space="preserve">
-    <value>Version locale:</value>
+    <value>Version locale :</value>
   </data>
   <data name="LocalVersionLabel.Text" xml:space="preserve">
     <value>v0.0.0</value>
   </data>
   <data name="LatestVersionPreLabel.Text" xml:space="preserve">
-    <value>Dernière version:</value>
+    <value>Dernière version :</value>
   </data>
   <data name="LatestVersionLabel.Text" xml:space="preserve">
     <value>???</value>
@@ -217,16 +217,16 @@
     <value>Mettre le rafraîchissement en pause</value>
   </data>
   <data name="MoreSettingsGroupBox.Text" xml:space="preserve">
-    <value>Plus d'options</value>
+    <value>Plus d'Options</value>
   </data>
   <data name="LanguageSelectionLabel.Text" xml:space="preserve">
-    <value>Langue (redémarrage requis):</value>
+    <value>Langue (redémarrage requis) :</value>
   </data>
   <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve">
     <value>Mettre à jour les répertoires au lancement</value>
   </data>
   <data name="HideEpochsCheckbox.Text" xml:space="preserve">
-    <value>Cacher les nombres epoch (temps POSIX) dans la liste de mods (redémarrage requis)</value>
+    <value>Cacher les temps POSIX dans la liste de mods (redémarrage requis)</value>
   </data>
   <data name="HideVCheckbox.Text" xml:space="preserve">
     <value>Cacher "v" dans la liste de mods (redémarrage requis)</value>

@@ -420,6 +420,9 @@
     <EmbeddedResource Include="Localization\pt-BR\AskUserForAutoUpdatesDialog.pt-BR.resx">
       <DependentUpon>..\..\Dialogs\AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\tr-TR\AskUserForAutoUpdatesDialog.tr-TR.resx">
+      <DependentUpon>..\..\Dialogs\AskUserForAutoUpdatesDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\AskUserForAutoUpdatesDialog.pl-PL.resx">
       <DependentUpon>..\..\Dialogs\AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -501,6 +504,9 @@
     <EmbeddedResource Include="Localization\pt-BR\Changeset.pt-BR.resx">
       <DependentUpon>..\..\Controls\Changeset.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\tr-TR\Changeset.tr-TR.resx">
+      <DependentUpon>..\..\Controls\Changeset.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\Changeset.pl-PL.resx">
       <DependentUpon>..\..\Controls\Changeset.cs</DependentUpon>
     </EmbeddedResource>
@@ -553,6 +559,9 @@
       <DependentUpon>..\..\Controls\ChooseRecommendedMods.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\ChooseRecommendedMods.pt-BR.resx">
+      <DependentUpon>..\..\Controls\ChooseRecommendedMods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\tr-TR\ChooseRecommendedMods.tr-TR.resx">
       <DependentUpon>..\..\Controls\ChooseRecommendedMods.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\ChooseRecommendedMods.pl-PL.resx">
@@ -796,6 +805,9 @@
     <EmbeddedResource Include="Localization\pt-BR\Versions.pt-BR.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\tr-TR\Versions.tr-TR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\Versions.pl-PL.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
     </EmbeddedResource>
@@ -946,6 +958,9 @@
     <EmbeddedResource Include="Localization\pt-BR\Metadata.pt-BR.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\tr-TR\Metadata.tr-TR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\ru-RU\Metadata.ru-RU.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
     </EmbeddedResource>
@@ -993,6 +1008,9 @@
       <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\Contents.pt-BR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\tr-TR\Contents.tr-TR.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\ru-RU\Contents.ru-RU.resx">

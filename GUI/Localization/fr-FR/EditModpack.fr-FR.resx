@@ -118,28 +118,28 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IdentifierLabel.Text" xml:space="preserve">
-    <value>Identifiant:</value>
+    <value>Identifiant :</value>
   </data>
   <data name="NameLabel.Text" xml:space="preserve">
-    <value>Nom:</value>
+    <value>Nom :</value>
   </data>
   <data name="AbstractLabel.Text" xml:space="preserve">
-    <value>Description:</value>
+    <value>Description :</value>
   </data>
   <data name="AuthorLabel.Text" xml:space="preserve">
-    <value>Auteur:</value>
+    <value>Auteur :</value>
   </data>
   <data name="VersionLabel.Text" xml:space="preserve">
     <value>Version :</value>
   </data>
   <data name="GameVersionLabel.Text" xml:space="preserve">
-    <value>Versions de jeu:</value>
+    <value>Versions de jeu :</value>
   </data>
   <data name="LicenseLabel.Text" xml:space="preserve">
     <value>Licence :</value>
   </data>
   <data name="IncludeVersionsCheckbox.Text" xml:space="preserve">
-    <value>Sauvegarder les versions de mod</value>
+    <value>Inclure les versions de mod</value>
   </data>
   <data name="ModNameColumn.Text" xml:space="preserve">
     <value>Mod</value>
