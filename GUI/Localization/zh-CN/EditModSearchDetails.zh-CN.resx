@@ -117,11 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FilterByAuthorLabel.Text" xml:space="preserve">
-    <value>按作者名筛选:</value>
-  </data>
   <data name="FilterByNameLabel.Text" xml:space="preserve">
     <value>按Mod名称筛选:</value>
+  </data>
+  <data name="FilterByAuthorLabel.Text" xml:space="preserve">
+    <value>按作者名筛选:</value>
   </data>
   <data name="FilterByDescriptionLabel.Text" xml:space="preserve">
     <value>按描述筛选:</value>
