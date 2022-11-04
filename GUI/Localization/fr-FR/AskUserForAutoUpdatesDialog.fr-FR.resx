@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="autoCheckLabel.Text" xml:space="preserve">
-    <value>Souhaitez-vous que CKAN vérifie automatiquement les mises à jour disponibles au démarrage? (Peut être modifié plus tard depuis les options)</value>
+    <value>Souhaitez-vous que CKAN vérifie automatiquement les mises à jour disponibles au démarrage ? (modifiable plus tard dans les options)</value>
   </data>
   <data name="YesButton.Text" xml:space="preserve">
     <value>Oui, vérifier les mises à jour</value>
