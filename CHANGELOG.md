@@ -28,7 +28,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] New Crowdin updates (#3653, #3695 by: Olympic1; reviewed: HebaruSan)
 - [Multiple] Install incompatible modpack dependencies with confirmation (#3675 by: HebaruSan; reviewed: techman83)
 
-## Bugfixes
+### Bugfixes
 
 - [GUI] Auto-size buttons in bottom panels (#3576 by: HebaruSan; reviewed: techman83)
 - [GUI] Hide tray icon at exit via ctrl-C (#3639 by: HebaruSan; reviewed: techman83)
