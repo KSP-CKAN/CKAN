@@ -60,7 +60,7 @@ jobs:
           echo "::set-output name=upload_url::$URL"
           VERSION=$(wget -qO- https://api.github.com/repos/$GITHUB_REPOSITORY/releases | jq '.[0].tag_name' | tr -d \"v)
           echo "::set-output name=version::$VERSION"
-          RPM_VERSION=$(echo $VERSION | sed -e 's/-/_/g')
+          RPM_VERSION=$(echo ${VERSION}.$(date +'%g%j') | sed -e 's/-/_/g')
           echo "::set-output name=rpm_version::$RPM_VERSION"
           DEB_VERSION=${VERSION}.$(date +'%g%j')
           echo "::set-output name=deb_version::$DEB_VERSION"
@@ -136,7 +136,7 @@ jobs:
         with:
           upload_url: ${{ steps.release_data.outputs.upload_url }}
           asset_path: _build/rpm/RPMS/noarch/ckan-${{ steps.release_data.outputs.rpm_version }}-1.noarch.rpm
-          asset_name: ckan-${{ steps.release_data.outputs.rpm_version }}-1.noarch.rpm
+          asset_name: ckan-${{ steps.release_data.outputs.version }}-1.noarch.rpm
           asset_content_type: application/x-rpm
       - name: Upload AutoUpdater.exe
         uses: actions/upload-release-asset@v1.0.1
