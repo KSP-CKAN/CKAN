@@ -28,7 +28,7 @@ jobs:
           VERSION=$(egrep '^\s*\#\#\s+v.*$' CHANGELOG.md | head -1 | sed -e 's/^\s*\#\#\s\+v//' -e 's/-.*$//')
           if [[ $VERSION =~ [13579]$ ]]
           then
-            echo '::set-output name=odd_build::true'
+            echo 'odd_build=true' >> $GITHUB_OUTPUT
           fi
 
       - name: Installing build dependencies

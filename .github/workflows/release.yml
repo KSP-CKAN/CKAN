@@ -57,13 +57,13 @@ jobs:
         id: release_data
         run: |
           URL=$(wget -qO- https://api.github.com/repos/$GITHUB_REPOSITORY/releases | jq '.[0].upload_url' | tr -d \")
-          echo "::set-output name=upload_url::$URL"
+          echo "upload_url=$URL" >> $GITHUB_OUTPUT
           VERSION=$(wget -qO- https://api.github.com/repos/$GITHUB_REPOSITORY/releases | jq '.[0].tag_name' | tr -d \"v)
-          echo "::set-output name=version::$VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
           RPM_VERSION=$(echo ${VERSION}.$(date +'%g%j') | sed -e 's/-/_/g')
-          echo "::set-output name=rpm_version::$RPM_VERSION"
+          echo "rpm_version=$RPM_VERSION" >> $GITHUB_OUTPUT
           DEB_VERSION=${VERSION}.$(date +'%g%j')
-          echo "::set-output name=deb_version::$DEB_VERSION"
+          echo "deb_version=$DEB_VERSION" >> $GITHUB_OUTPUT
       - name: Push deb to S3
         # Send deb file to https://ksp-ckan.s3-us-west-2.amazonaws.com/
         uses: jakejarvis/s3-sync-action@master

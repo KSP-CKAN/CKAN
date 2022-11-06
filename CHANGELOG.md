@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.31.3
 
+### Internal
 
+- [Tooling] Switch workflows from set-output to `$GITHUB_OUTPUT` (#3696 by: HebaruSan; reviewed: )
 
 ## v1.31.2 (Juno)
 
