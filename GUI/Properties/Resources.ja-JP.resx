@@ -252,7 +252,7 @@ CKAN バージョン   : {3}</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (仮想)</value></data>
   <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (非インデックス)</value></data>
-  <data name="ModInfoNotCached" xml:space="preserve"><value>このModはキャッシュにありません、閲覧するにはダウンロードを押してください。 </value></data>
+  <data name="ModInfoNotCached" xml:space="preserve"><value>このModはキャッシュにありません、閲覧するにはダウンロードを押してください。</value></data>
   <data name="ModInfoCached" xml:space="preserve"><value>Modはキャッシュ済み、閲覧可能</value></data>
   <data name="ModInfoNoDownload" xml:space="preserve"><value>Modはダウンロード先がありません</value></data>
   <data name="ModInfoHomepageLabel" xml:space="preserve"><value>ホームページ:</value></data>
@@ -326,7 +326,7 @@ CKAN バージョン   : {3}</value></data>
   <data name="AddAuthTokenHostRequired" xml:space="preserve"><value>ホストフィールドが必要です。</value></data>
   <data name="AddAuthTokenTokenRequired" xml:space="preserve"><value>トークンフィールドが必要です。</value></data>
   <data name="AddAuthTokenInvalidHost" xml:space="preserve"><value>{0}は正しいホストの名前ではありません。</value></data>
-  <data name="AddAuthTokenDupHost" xml:space="preserve"><value>{0}には既に認証トークンがあります。 </value></data>
+  <data name="AddAuthTokenDupHost" xml:space="preserve"><value>{0}には既に認証トークンがあります。</value></data>
   <data name="SettingsDialogUpdateFailed" xml:space="preserve"><value>更新中にエラーが発生しました。
 自動更新できません、何故ならckan.exeが読み取り専用になっているか、書き込みの権限がありません。https://github.com/KSP-CKAN/CKAN/releases/latest から手動で更新してください。</value></data>
   <data name="URLHandlersPrompt" xml:space="preserve"><value>CKANはckan:// URLsハンドラを追加する権限が必要です。
@@ -372,7 +372,7 @@ CKANにこの動作をする許可を与えますか？ いいえをクリック
   <data name="EditModpackTooltipGameVersionMin" xml:space="preserve"><value>最も古い対応するゲームバージョン、空白は全て</value></data>
   <data name="EditModpackTooltipGameVersionMax" xml:space="preserve"><value>最新の対応するゲームバージョン、空白は全て</value></data>
   <data name="EditModpackTooltipLicense" xml:space="preserve"><value>このModパックのライセンス</value></data>
-  <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>チェックすると、表示されている特定のバージョンのModを含みます、そうでない場合はどれかのバージョンを含みます。 </value></data>
+  <data name="EditModpackTooltipIncludeVersions" xml:space="preserve"><value>チェックすると、表示されている特定のバージョンのModを含みます、そうでない場合はどれかのバージョンを含みます。</value></data>
   <data name="EditModpackTooltipDepends" xml:space="preserve"><value>選択されたModを依存グループに移動する。それらのModは必ずインストールされます。</value></data>
   <data name="EditModpackTooltipRecommends" xml:space="preserve"><value>選択されたModを推奨グループに移動する。ユーザーがインストール時に選択できます。デフォルトはインストール。</value></data>
   <data name="EditModpackTooltipSuggests" xml:space="preserve"><value>選択されたModを提案グループに移動する。それらのModはインストールに利用可能になりますが、別で選択する必要はあります。</value></data>

@@ -178,7 +178,7 @@
     <value>Próximo mod selecionado...</value>
   </data>
   <data name="Installed.HeaderText" xml:space="preserve">
-    <value>    Check</value>
+    <value>Check</value>
   </data>
   <data name="AutoInstalled.HeaderText" xml:space="preserve">
     <value>Auto-instalados</value>
