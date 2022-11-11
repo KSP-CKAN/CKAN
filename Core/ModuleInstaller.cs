@@ -940,9 +940,10 @@ namespace CKAN
         /// No relationships will be processed.
         /// This *will* save the registry.
         /// </summary>
-        /// <param name="add">Add.</param>
-        /// <param name="remove">Remove.</param>
-        public void AddRemove(ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, IEnumerable<CkanModule> add = null, IEnumerable<InstalledModule> remove = null, bool enforceConsistency = true)
+        /// <param name="add">Modules to add</param>
+        /// <param name="remove">Modules to remove</param>
+        /// <param name="newModulesAreAutoInstalled">true if newly installed modules should be marked auto-installed, false otherwise</param>
+        private void AddRemove(ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, IEnumerable<CkanModule> add, IEnumerable<InstalledModule> remove, bool enforceConsistency, bool newModulesAreAutoInstalled)
         {
             // TODO: We should do a consistency check up-front, rather than relying
             // upon our registry catching inconsistencies at the end.
@@ -971,7 +972,9 @@ namespace CKAN
                     User.RaiseProgress(
                         string.Format(Properties.Resources.ModuleInstallerInstallingMod, module),
                         percent_complete);
-                    Install(module, previous?.AutoInstalled ?? false, registry_manager.registry, ref possibleConfigOnlyDirs);
+                    // For upgrading, new modules are dependencies and should be marked auto-installed,
+                    // for replacing, new modules are the replacements and should not be marked auto-installed
+                    Install(module, previous?.AutoInstalled ?? newModulesAreAutoInstalled, registry_manager.registry, ref possibleConfigOnlyDirs);
                 }
 
                 User.RaiseProgress(Properties.Resources.ModuleInstallerUpdatingRegistry, 80);
@@ -1022,7 +1025,7 @@ namespace CKAN
                     registry_manager.registry,
                     ksp.VersionCriteria()
                 );
-                modules = resolver.ModList();
+                modules = resolver.ModList().Memoize();
             }
 
             User.RaiseMessage(Properties.Resources.ModuleInstallerAboutToUpgrade);
@@ -1121,7 +1124,8 @@ namespace CKAN
                 registry_manager,
                 modules,
                 to_remove,
-                enforceConsistency
+                enforceConsistency,
+                true
             );
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
         }
@@ -1215,7 +1219,8 @@ namespace CKAN
                 registry_manager,
                 resolvedModsToInstall,
                 modsToRemove,
-                enforceConsistency
+                enforceConsistency,
+                false
             );
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
         }
