@@ -326,6 +326,7 @@ namespace CKAN.GUI
         private TreeNode indexedNode(IRegistryQuerier registry, CkanModule module, RelationshipType relationship, RelationshipDescriptor relDescr, GameVersionCriteria crit)
         {
             int icon = (int)relationship + 1;
+            bool missingDLC = module.IsDLC && !registry.InstalledDlc.ContainsKey(module.identifier);
             bool compatible = crit == null ? false
                 : registry.IdentifierCompatible(module.identifier, crit);
             string suffix = compatible ? ""
@@ -335,7 +336,9 @@ namespace CKAN.GUI
                 Name        = module.identifier,
                 ToolTipText = $"{relationship.Localize()} {relDescr}",
                 Tag         = module,
-                ForeColor   = compatible ? SystemColors.WindowText : Color.Red,
+                ForeColor   = (compatible && !missingDLC)
+                    ? SystemColors.WindowText
+                    : Color.Red,
             };
         }
 

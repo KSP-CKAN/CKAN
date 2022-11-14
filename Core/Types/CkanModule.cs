@@ -607,21 +607,9 @@ namespace CKAN
             return this.identifier == identifier || provides.Contains(identifier);
         }
 
-        public bool IsMetapackage
-        {
-            get
-            {
-                return this.kind == "metapackage";
-            }
-        }
+        public bool IsMetapackage => kind == "metapackage";
 
-        public bool IsDLC
-        {
-            get
-            {
-                return this.kind == "dlc";
-            }
-        }
+        public bool IsDLC => kind == "dlc";
 
         protected bool Equals(CkanModule other)
         {

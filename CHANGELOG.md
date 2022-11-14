@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.31.3
 
+### Features
+
+- [GUI] Red highlight for dependencies on missing DLC (#3698 by: HebaruSan; reviewed: techman83)
+
 ### Bugfixes
 
 - [GUI] Remove duplicate Install changes for upgrades (#3706 by: HebaruSan; reviewed: techman83)
