@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.31.3
 
+### Bugfixes
+
+- [GUI] Remove duplicate Install changes for upgrades (#3706 by: HebaruSan; reviewed: techman83)
+
 ### Internal
 
 - [Tooling] Switch workflows from set-output to `$GITHUB_OUTPUT` (#3696 by: HebaruSan; reviewed: )

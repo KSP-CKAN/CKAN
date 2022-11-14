@@ -126,6 +126,7 @@ namespace CKAN.GUI
         {
             var modules_to_install = new List<CkanModule>();
             var modules_to_remove = new HashSet<CkanModule>();
+            var upgrading = new HashSet<CkanModule>();
 
             foreach (var change in changeSet)
             {
@@ -134,7 +135,9 @@ namespace CKAN.GUI
                     case GUIModChangeType.None:
                         break;
                     case GUIModChangeType.Update:
-                        modules_to_install.Add((change as ModUpgrade)?.targetMod ?? change.Mod);
+                        var mod = (change as ModUpgrade)?.targetMod ?? change.Mod;
+                        modules_to_install.Add(mod);
+                        upgrading.Add(mod);
                         break;
                     case GUIModChangeType.Install:
                         modules_to_install.Add(change.Mod);
@@ -200,6 +203,8 @@ namespace CKAN.GUI
                 .Where(ch => !(ch.ChangeType is GUIModChangeType.Install))
                 .OrderBy(ch => ch.Mod.identifier)
                 .Union(resolver.ModList()
+                    // Changeset already contains Update changes for these
+                    .Except(upgrading)
                     .Where(m => !m.IsMetapackage)
                     .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonsFor(m))));
         }
