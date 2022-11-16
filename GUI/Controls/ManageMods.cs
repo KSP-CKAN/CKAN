@@ -112,19 +112,19 @@ namespace CKAN.GUI
 
         private void ChangeSetUpdated()
         {
-            if (ChangeSet != null && ChangeSet.Any())
+            Util.Invoke(this, () =>
             {
-                ApplyToolButton.Enabled = true;
-            }
-            else
-            {
-                ApplyToolButton.Enabled = false;
-                InstallAllCheckbox.Checked = true;
-            }
-            if (OnChangeSetChanged != null)
-            {
-                OnChangeSetChanged(ChangeSet);
-            }
+                if (ChangeSet != null && ChangeSet.Any())
+                {
+                    ApplyToolButton.Enabled = true;
+                }
+                else
+                {
+                    ApplyToolButton.Enabled = false;
+                    InstallAllCheckbox.Checked = true;
+                }
+                OnChangeSetChanged?.Invoke(ChangeSet);
+            });
         }
 
         private Dictionary<GUIMod, string> Conflicts

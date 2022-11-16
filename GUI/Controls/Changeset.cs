@@ -42,12 +42,7 @@ namespace CKAN.GUI
         }
 
         public ListView.SelectedListViewItemCollection SelectedItems
-        {
-            get
-            {
-                return ChangesListView.SelectedItems;
-            }
-        }
+            => ChangesListView.SelectedItems;
 
         public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
 

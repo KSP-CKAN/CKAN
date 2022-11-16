@@ -7,7 +7,7 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        public void UpdateChangesDialog(List<ModChange> changeset)
+        private void UpdateChangesDialog(List<ModChange> changeset)
         {
             Changeset.LoadChangeset(
                 changeset,
