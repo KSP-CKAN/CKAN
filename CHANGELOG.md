@@ -15,7 +15,8 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
-- [Tooling] Switch workflows from set-output to `$GITHUB_OUTPUT` (#3696 by: HebaruSan; reviewed: )
+- [Tooling] Switch workflows from set-output to `$GITHUB_OUTPUT` (#3696 by: HebaruSan)
+- [Netkan] Fix Netkan check for Ships/Script `spec_version` (#3713 by: HebaruSan; reviewed: techman83)
 
 ## v1.31.2 (Juno)
 
