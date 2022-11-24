@@ -9,6 +9,7 @@ using System.ComponentModel;
 
 using log4net;
 
+using CKAN.Extensions;
 using CKAN.Versioning;
 
 namespace CKAN.GUI
@@ -995,37 +996,42 @@ namespace CKAN.GUI
             if (module == null || !module.IsCKAN)
                 return;
 
-            YesNoDialog reinstallDialog = new YesNoDialog();
-            string confirmationText = string.Format(Properties.Resources.MainReinstallConfirm, module.Name);
-            if (reinstallDialog.ShowYesNoDialog(Main.Instance, confirmationText) == DialogResult.No)
-                return;
-
             IRegistryQuerier registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
 
-            // Build the list of changes, first the mod to remove:
-            List<ModChange> toReinstall = new List<ModChange>()
-            {
-                new ModChange(module.ToModule(), GUIModChangeType.Remove)
-            };
-            // Then everything we need to re-install:
-            var revdep = registry.FindReverseDependencies(new List<string>() { module.Identifier });
+            // Find everything we need to re-install
+            var revdep = registry.FindReverseDependencies(new List<string>() { module.Identifier })
+                .Select(ident => registry.InstalledModule(ident))
+                .ToHashSet();
             var goners = revdep.Union(
                 registry.FindRemovableAutoInstalled(
                     registry.InstalledModules
-                        .Where(im => !revdep.Contains(im.identifier))
+                        .Where(im => !revdep.Contains(im))
                         .ToList(),
-                    Main.Instance.CurrentInstance.VersionCriteria())
-                .Select(im => im.Module.identifier));
-            foreach (string id in goners)
-            {
-                toReinstall.Add(new ModChange(
-                    (mainModList.full_list_of_mod_rows[id]?.Tag as GUIMod).ToModule(),
-                    GUIModChangeType.Install));
-            }
-            if (StartChangeSet != null)
-            {
-                StartChangeSet(toReinstall);
-            }
+                    Main.Instance.CurrentInstance.VersionCriteria()));
+
+            // Build the list of changes
+            StartChangeSet?.Invoke(goners
+                .SelectMany(instMod => instMod.AutoInstalled
+                    ? new ModChange[]
+                    {
+                        new ModChange(instMod.Module, GUIModChangeType.Remove),
+                        // Let resolver find it so the auto-installed flag is set
+                    }
+                    : new ModChange[]
+                    {
+                        new ModChange(instMod.Module, GUIModChangeType.Remove),
+                        new ModChange(
+                            // Install current available mod from registry, if found
+                            registry.GetModuleByVersion(instMod.identifier, instMod.Module.version)
+                                ?? instMod.Module,
+                            GUIModChangeType.Install,
+                            // Preserve auto-installed checkbox
+                            instMod.AutoInstalled
+                                // We don't use the depending mod here, so just fake it
+                                ? (SelectionReason)new SelectionReason.Depends(module.ToModule())
+                                : new SelectionReason.UserRequested()),
+                    })
+                .ToList());
         }
 
         private void purgeContentsToolStripMenuItem_Click(object sender, EventArgs e)

@@ -706,7 +706,7 @@ namespace CKAN.GUI
             if (changeset != null && changeset.Any())
             {
                 tabController.ShowTab("ChangesetTabPage", 1, false);
-                UpdateChangesDialog(changeset.ToList());
+                UpdateChangesDialog(changeset);
                 auditRecommendationsMenuItem.Enabled = false;
             }
             else
@@ -862,9 +862,8 @@ namespace CKAN.GUI
         // This is used by Reinstall
         private void ManageMods_StartChangeSet(List<ModChange> changeset)
         {
-            Wait.StartWaiting(InstallMods, PostInstallMods, true,
-                new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    changeset, RelationshipResolver.DependsOnlyOpts()));
+            UpdateChangesDialog(changeset);
+            tabController.ShowTab("ChangesetTabPage", 1);
         }
 
         private void RefreshModList(Dictionary<string, bool> oldModules = null)

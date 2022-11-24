@@ -17,6 +17,7 @@ namespace CKAN.GUI
 
         public void LoadChangeset(List<ModChange> changes, List<ModuleLabel> AlertLabels)
         {
+            changeset = changes;
             alertLabels = AlertLabels;
             ChangesListView.Items.Clear();
             if (changes != null)
@@ -46,7 +47,7 @@ namespace CKAN.GUI
 
         public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
 
-        public event Action OnConfirmChanges;
+        public event Action<List<ModChange>> OnConfirmChanges;
         public event Action<bool> OnCancelChanges;
 
         private void ChangesListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -56,11 +57,12 @@ namespace CKAN.GUI
 
         private void ConfirmChangesButton_Click(object sender, EventArgs e)
         {
-            OnConfirmChanges?.Invoke();
+            OnConfirmChanges?.Invoke(changeset);
         }
 
         private void CancelChangesButton_Click(object sender, EventArgs e)
         {
+            changeset = null;
             OnCancelChanges?.Invoke(true);
         }
 
@@ -92,6 +94,7 @@ namespace CKAN.GUI
             };
         }
 
+        private List<ModChange>   changeset;
         private List<ModuleLabel> alertLabels;
     }
 }
