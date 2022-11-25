@@ -31,23 +31,20 @@ namespace CKAN.GUI
             tabController.ShowTab("ManageModsTabPage");
         }
 
-        private void Changeset_OnConfirmChanges()
+        private void Changeset_OnConfirmChanges(List<ModChange> changeset)
         {
             DisableMainWindow();
-
-            // Using the changeset passed in can cause issues with versions.
-            // An example is Mechjeb for FAR at 25/06/2015 with a 1.0.2 install.
-            // TODO Work out why this is.
             try
             {
                 Wait.StartWaiting(InstallMods, PostInstallMods, true,
                     new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                        ManageMods.mainModList
-                            .ComputeUserChangeSet(RegistryManager.Instance(CurrentInstance).registry, CurrentInstance.VersionCriteria())
+                        changeset
+                            .Where(change =>
+                                // Skip dependencies so auto-installed checkbox is set
+                                !(change.Reasons.Any(reason =>
+                                    reason is SelectionReason.Depends)))
                             .ToList(),
-                        RelationshipResolver.DependsOnlyOpts()
-                    )
-                );
+                        RelationshipResolver.DependsOnlyOpts()));
             }
             catch (InvalidOperationException)
             {
