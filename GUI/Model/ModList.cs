@@ -112,15 +112,22 @@ namespace CKAN.GUI
             };
         }
 
+        private static readonly RelationshipResolverOptions conflictOptions = new RelationshipResolverOptions()
+        {
+            without_toomanyprovides_kraken = true,
+            proceed_with_inconsistencies   = true,
+            without_enforce_consistency    = true,
+            with_recommends                = false
+        };
+
         /// <summary>
-        /// This function returns a changeset based on the selections of the user.
-        /// Currently returns null if a conflict is detected.
+        /// Returns a changeset and conflicts based on the selections of the user.
         /// </summary>
         /// <param name="registry"></param>
         /// <param name="changeSet"></param>
         /// <param name="installer">A module installer for the current game instance</param>
         /// <param name="version">The version of the current game instance</param>
-        public IEnumerable<ModChange> ComputeChangeSetFromModList(
+        public Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>> ComputeFullChangeSetFromUserChangeSet(
             IRegistryQuerier registry, HashSet<ModChange> changeSet, ModuleInstaller installer,
             GameVersionCriteria version)
         {
@@ -189,24 +196,20 @@ namespace CKAN.GUI
             }
 
             // Get as many dependencies as we can, but leave decisions and prompts for installation time
-            RelationshipResolverOptions opts = RelationshipResolver.DependsOnlyOpts();
-            opts.without_toomanyprovides_kraken = true;
-            opts.without_enforce_consistency    = true;
-
             var resolver = new RelationshipResolver(
-                modules_to_install,
-                modules_to_remove,
-                opts, registry, version);
+                modules_to_install, modules_to_remove,
+                conflictOptions, registry, version);
 
             // Replace Install entries in changeset with the ones from resolver to get all the reasons
-            return changeSet
-                .Where(ch => !(ch.ChangeType is GUIModChangeType.Install))
-                .OrderBy(ch => ch.Mod.identifier)
-                .Union(resolver.ModList()
-                    // Changeset already contains Update changes for these
-                    .Except(upgrading)
-                    .Where(m => !m.IsMetapackage)
-                    .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonsFor(m))));
+            return new Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>>(
+                changeSet.Where(ch => !(ch.ChangeType is GUIModChangeType.Install))
+                         .OrderBy(ch => ch.Mod.identifier)
+                         .Union(resolver.ModList()
+                                        // Changeset already contains Update changes for these
+                                        .Except(upgrading)
+                                        .Where(m => !m.IsMetapackage)
+                                        .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonsFor(m)))),
+                resolver.ConflictList);
         }
 
         /// <summary>
@@ -460,57 +463,6 @@ namespace CKAN.GUI
 
         private static readonly Regex ContainsEpoch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
         private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
-
-        public static Dictionary<GUIMod, string> ComputeConflictsFromModList(IRegistryQuerier registry,
-            IEnumerable<ModChange> change_set, GameVersionCriteria ksp_version)
-        {
-            var modules_to_install = new HashSet<CkanModule>();
-            var modules_to_remove  = new HashSet<CkanModule>();
-            var options = new RelationshipResolverOptions
-            {
-                without_toomanyprovides_kraken = true,
-                proceed_with_inconsistencies = true,
-                without_enforce_consistency = true,
-                with_recommends = false
-            };
-
-            foreach (var change in change_set)
-            {
-                switch (change.ChangeType)
-                {
-                    case GUIModChangeType.None:
-                        break;
-                    case GUIModChangeType.Install:
-                        modules_to_install.Add(change.Mod);
-                        break;
-                    case GUIModChangeType.Remove:
-                        modules_to_remove.Add(change.Mod);
-                        break;
-                    case GUIModChangeType.Update:
-                        break;
-                    case GUIModChangeType.Replace:
-                        ModuleReplacement repl = registry.GetReplacement(change.Mod, ksp_version);
-                        if (repl != null)
-                        {
-                            modules_to_remove.Add(repl.ToReplace);
-                            modules_to_install.Add(repl.ReplaceWith);
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            var resolver = new RelationshipResolver(
-                modules_to_install.Except(modules_to_remove),
-                modules_to_remove,
-                options, registry, ksp_version
-            );
-            return resolver.ConflictList.ToDictionary(
-                item => new GUIMod(item.Key, registry, ksp_version),
-                item => item.Value
-            );
-        }
 
         public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier registry, GameVersionCriteria crit)
         {
