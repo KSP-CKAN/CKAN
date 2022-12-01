@@ -39,10 +39,8 @@ namespace CKAN.GUI
                 Wait.StartWaiting(InstallMods, PostInstallMods, true,
                     new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                         changeset
-                            .Where(change =>
-                                // Skip dependencies so auto-installed checkbox is set
-                                !(change.Reasons.Any(reason =>
-                                    reason is SelectionReason.Depends)))
+                            // Only pass along user requested mods, so auto-installed can be determined
+                            .Where(ch => ch.Reasons.Any(r => r is SelectionReason.UserRequested))
                             .ToList(),
                         RelationshipResolver.DependsOnlyOpts()));
             }
