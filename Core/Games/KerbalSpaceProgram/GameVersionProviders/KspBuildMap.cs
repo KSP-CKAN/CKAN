@@ -103,7 +103,7 @@ namespace CKAN.GameVersionProviders
             try
             {
                 _jBuilds = JsonConvert.DeserializeObject<JBuilds>(buildMapJson);
-                return true;
+                return _jBuilds != null;
             }
             catch (Exception e)
             {
@@ -132,16 +132,20 @@ namespace CKAN.GameVersionProviders
             {
                 Log.Debug("Getting remote build map");
                 var json = Net.DownloadText(BuildMapUri);
-                new FileInfo(cachedBuildMapPath).Directory.Create();
-                File.WriteAllText(cachedBuildMapPath, json);
-                return TrySetBuildMap(json);
+                if (TrySetBuildMap(json))
+                {
+                    // Save to disk if parse succeeds
+                    new FileInfo(cachedBuildMapPath).Directory.Create();
+                    File.WriteAllText(cachedBuildMapPath, json);
+                    return true;
+                }
             }
             catch (Exception e)
             {
                 Log.WarnFormat("Could not retrieve latest build map from: {0}", BuildMapUri);
                 Log.Debug(e);
-                return false;
             }
+            return false;
         }
 
         private bool TrySetEmbeddedBuildMap()
