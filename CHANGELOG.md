@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Remove duplicate Install changes for upgrades (#3706 by: HebaruSan; reviewed: techman83)
 - [GUI] Fix GUI freeze with non-empty changeset at startup (#3708 by: HebaruSan; reviewed: techman83)
 - [GUI] Use changeset tab for reinstall (#3726, #3728 by: HebaruSan; reviewed: techman83)
+- [Core] Fix handling of empty builds.json file (#3733 by: HebaruSan; reviewed: DasSkelett)
 
 ### Internal
 
