@@ -16,7 +16,7 @@ namespace CKAN.CmdLine
 
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
-            ShowOptions options = (ShowOptions) raw_options;
+            ShowOptions options = (ShowOptions)raw_options;
             if (options.modules == null || options.modules.Count < 1)
             {
                 // empty argument
@@ -50,7 +50,7 @@ namespace CKAN.CmdLine
                 CkanModule moduleToShow = registry
                                           .CompatibleModules(instance.VersionCriteria())
                                           .SingleOrDefault(
-                                                mod => mod.name       == modName
+                                                mod => mod.name == modName
                                                     || mod.identifier == modName
                                           );
                 if (moduleToShow == null)
@@ -161,7 +161,7 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseMessage("{0}", module.name);
                 }
-                
+
                 if (!string.IsNullOrEmpty(module.description))
                 {
                     user.RaiseMessage("");
@@ -176,7 +176,7 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ShowModuleInfoHeader);
                 user.RaiseMessage(Properties.Resources.ShowVersion, module.version);
-                
+
                 if (module.author != null)
                 {
                     user.RaiseMessage(Properties.Resources.ShowAuthor, string.Join(", ", module.author));
@@ -187,7 +187,7 @@ namespace CKAN.CmdLine
                     // You do now. #673.
                     user.RaiseMessage(Properties.Resources.ShowAuthorUnknown);
                 }
-                
+
                 if (module.release_status != null)
                 {
                     user.RaiseMessage(Properties.Resources.ShowStatus, module.release_status);
@@ -297,7 +297,7 @@ namespace CKAN.CmdLine
                 // Compute the CKAN filename.
                 string file_uri_hash = NetFileCache.CreateURLHash(module.download);
                 string file_name = CkanModule.StandardName(module.identifier, module.version);
-                
+
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ShowFileName, file_uri_hash + "-" + file_name);
             }
@@ -313,7 +313,7 @@ namespace CKAN.CmdLine
 
         private void ShowVersionTable(CKAN.GameInstance inst, List<CkanModule> modules)
         {
-            var versions     = modules.Select(m => m.version.ToString()).ToList();
+            var versions = modules.Select(m => m.version.ToString()).ToList();
             var gameVersions = modules.Select(m =>
             {
                 GameVersion minKsp = null, maxKsp = null;
@@ -324,7 +324,7 @@ namespace CKAN.CmdLine
                 Properties.Resources.ShowVersionHeader,
                 Properties.Resources.ShowGameVersionsHeader
             };
-            int versionLength     = Math.Max(headers[0].Length, versions.Max(v => v.Length));
+            int versionLength = Math.Max(headers[0].Length, versions.Max(v => v.Length));
             int gameVersionLength = Math.Max(headers[1].Length, gameVersions.Max(v => v.Length));
             user.RaiseMessage("");
             user.RaiseMessage(

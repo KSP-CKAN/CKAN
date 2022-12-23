@@ -42,8 +42,8 @@ namespace CKAN.GUI
 
             GUIMod gm = e.Argument as GUIMod;
             downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
-            downloader.Progress      += Wait.SetModuleProgress;
-            downloader.AllComplete   += Wait.DownloadsComplete;
+            downloader.Progress += Wait.SetModuleProgress;
+            downloader.AllComplete += Wait.DownloadsComplete;
             downloader.StoreProgress += (module, remaining, total) =>
                 Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload, module),
                     remaining, total);

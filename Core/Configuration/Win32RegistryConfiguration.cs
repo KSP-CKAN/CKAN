@@ -15,10 +15,10 @@ namespace CKAN.Configuration
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(Win32RegistryConfiguration));
 
-        private const           string CKAN_KEY           = @"HKEY_CURRENT_USER\Software\CKAN";
+        private const string CKAN_KEY = @"HKEY_CURRENT_USER\Software\CKAN";
         private static readonly string CKAN_KEY_NO_PREFIX = StripPrefixKey(CKAN_KEY);
 
-        private const           string authTokenKey         = CKAN_KEY + @"\AuthTokens";
+        private const string authTokenKey = CKAN_KEY + @"\AuthTokens";
         private static readonly string authTokenKeyNoPrefix = StripPrefixKey(authTokenKey);
 
         private static readonly string defaultDownloadCacheDir = Path.Combine(
@@ -91,7 +91,7 @@ namespace CKAN.Configuration
         public string AutoStartInstance
         {
             get { return GetRegistryValue(@"KSPAutoStartInstance", ""); }
-            set { SetAutoStartInstance(value??String.Empty); }
+            set { SetAutoStartInstance(value ?? String.Empty); }
         }
 
         public string Language
@@ -122,8 +122,8 @@ namespace CKAN.Configuration
         {
             SetNumberOfInstances(instances.Count);
 
-            foreach (var instance in instances.Select((instance,i)=>
-                new {number=i,name=instance.Key,path=instance.Value}))
+            foreach (var instance in instances.Select((instance, i) =>
+                new { number = i, name = instance.Key, path = instance.Value }))
             {
                 SetInstanceKeysTo(instance.number, instance.name, instance.path);
             }
@@ -187,9 +187,11 @@ namespace CKAN.Configuration
         public static void DeleteAllKeys()
         {
             // This can fail if the key doesn't exist, but we don't really care...
-            try {
+            try
+            {
                 Microsoft.Win32.Registry.CurrentUser.DeleteSubKeyTree(CKAN_KEY_NO_PREFIX);
-            } catch { }
+            }
+            catch { }
         }
 
         private static string StripPrefixKey(string keyname)

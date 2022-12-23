@@ -27,7 +27,7 @@ namespace CKAN
             return base.Compatible(gameVersionCriteria, module);
         }
 
-        public override bool SingleVersionsCompatible (GameVersion gameVersion, CkanModule module)
+        public override bool SingleVersionsCompatible(GameVersion gameVersion, CkanModule module)
         {
 
             // Otherwise, check if it's "generally recognise as safe".

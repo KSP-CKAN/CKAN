@@ -11,19 +11,19 @@ namespace CKAN.NetKAN.Sources.Github
 {
     internal sealed class GithubRelease
     {
-        public readonly string                   Author;
-        public readonly ModuleVersion            Tag;
+        public readonly string Author;
+        public readonly ModuleVersion Tag;
         public readonly List<GithubReleaseAsset> Assets;
-        public readonly bool                     PreRelease;
-        public readonly DateTime?                PublishedAt;
+        public readonly bool PreRelease;
+        public readonly DateTime? PublishedAt;
 
         public GithubRelease(GithubRef reference, JToken json)
         {
-            PreRelease  = (bool)json["prerelease"];
-            Tag         = new ModuleVersion((string)json["tag_name"]);
-            Author      = (string)json["author"]["login"];
+            PreRelease = (bool)json["prerelease"];
+            Tag = new ModuleVersion((string)json["tag_name"]);
+            Author = (string)json["author"]["login"];
             PublishedAt = (DateTime?)json["published_at"];
-            Assets      = reference.UseSourceArchive
+            Assets = reference.UseSourceArchive
                 ? new List<GithubReleaseAsset> {
                     new GithubReleaseAsset(
                         Tag.ToString(),
@@ -41,7 +41,7 @@ namespace CKAN.NetKAN.Sources.Github
         public GithubRelease(string author, ModuleVersion tag, List<GithubReleaseAsset> assets)
         {
             Author = author;
-            Tag    = tag;
+            Tag = tag;
             Assets = assets;
         }
     }

@@ -22,18 +22,18 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(AvcTransformer));
 
-        private readonly IHttpService   _http;
+        private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
-        private readonly IGithubApi     _github;
-        private readonly VrefValidator  _vrefValidator;
+        private readonly IGithubApi _github;
+        private readonly VrefValidator _vrefValidator;
 
         public string Name { get { return "avc"; } }
 
         public AvcTransformer(IHttpService http, IModuleService moduleService, IGithubApi github)
         {
-            _http          = http;
+            _http = http;
             _moduleService = moduleService;
-            _github        = github;
+            _github = github;
             _vrefValidator = new VrefValidator(_http, _moduleService);
         }
 

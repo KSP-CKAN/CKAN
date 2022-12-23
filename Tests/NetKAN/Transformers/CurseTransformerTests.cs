@@ -47,7 +47,7 @@ namespace Tests.NetKAN.Transformers
                 license = "CC-BY",
                 title = "Dogecoin Flag",
                 description = "Such test. Very unit. Wow.",
-                members = new List<CurseModMember>{ new CurseModMember { username = "pjf" } }
+                members = new List<CurseModMember> { new CurseModMember { username = "pjf" } }
             };
 
             cmod.files = new List<CurseFile>() { new CurseFile() };

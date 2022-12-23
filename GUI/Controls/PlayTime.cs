@@ -87,9 +87,9 @@ namespace CKAN.GUI
         /// </summary>
         public PlayTimeRow(string name, GameInstance instance)
         {
-            Name     = name;
+            Name = name;
             PlayTime = instance.playTime;
-            path     = TimeLog.GetPath(instance.CkanDir());
+            path = TimeLog.GetPath(instance.CkanDir());
         }
 
         /// <summary>

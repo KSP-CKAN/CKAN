@@ -25,10 +25,10 @@ namespace CKAN.NetKAN.Processors
             );
 
             IModuleService moduleService = new ModuleService();
-            IFileService   fileService   = new FileService(cache);
-            http          = new CachingHttpService(cache, overwriteCache);
+            IFileService fileService = new FileService(cache);
+            http = new CachingHttpService(cache, overwriteCache);
             ckanValidator = new CkanValidator(http, moduleService);
-            transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, gitlabToken, prerelease, netkanValidator);
+            transformer = new NetkanTransformer(http, fileService, moduleService, githubToken, gitlabToken, prerelease, netkanValidator);
         }
 
         internal IEnumerable<Metadata> Inflate(string filename, Metadata netkan, TransformOptions opts)
@@ -118,7 +118,7 @@ namespace CKAN.NetKAN.Processors
         private NetkanTransformer transformer;
 
         private NetkanValidator netkanValidator = new NetkanValidator();
-        private CkanValidator   ckanValidator;
+        private CkanValidator ckanValidator;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Inflator));
     }

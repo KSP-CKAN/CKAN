@@ -37,8 +37,8 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    user     = new ConsoleUser(options.Headless);
-                    manager  = mgr ?? new GameInstanceManager(user);
+                    user = new ConsoleUser(options.Headless);
+                    manager = mgr ?? new GameInstanceManager(user);
                     exitCode = options.Handle(manager, user);
                     if (exitCode != Exit.OK)
                         return;
@@ -77,8 +77,8 @@ namespace CKAN.CmdLine
                 return exitCode;
             }
 
-            var  ksp      = MainClass.GetGameInstance(manager);
-            var  regMgr   = RegistryManager.Instance(ksp);
+            var ksp = MainClass.GetGameInstance(manager);
+            var regMgr = RegistryManager.Instance(ksp);
             bool needSave = false;
             Search.AdjustModulesCase(ksp, opts.modules);
             foreach (string id in opts.modules)
@@ -115,7 +115,7 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private IUser               user    { get; set; }
+        private IUser user { get; set; }
         private GameInstanceManager manager { get; set; }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Mark));

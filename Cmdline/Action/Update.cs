@@ -15,7 +15,7 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for interaction</param>
         public Update(GameInstanceManager mgr, IUser user)
         {
-            manager   = mgr;
+            manager = mgr;
             this.user = user;
         }
 
@@ -29,7 +29,7 @@ namespace CKAN.CmdLine
         /// </returns>
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
-            UpdateOptions options = (UpdateOptions) raw_options;
+            UpdateOptions options = (UpdateOptions)raw_options;
 
             List<CkanModule> compatible_prior = null;
 

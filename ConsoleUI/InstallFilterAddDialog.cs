@@ -7,12 +7,14 @@ using CKAN.GameVersionProviders;
 using CKAN.ConsoleUI.Toolkit;
 using Autofac;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Popup letting user enter an installation filter
     /// </summary>
-    public class InstallFilterAddDialog : ConsoleDialog {
+    public class InstallFilterAddDialog : ConsoleDialog
+    {
 
         /// <summary>
         /// Initialize the popup
@@ -27,18 +29,21 @@ namespace CKAN.ConsoleUI {
 
             manualEntry = new ConsoleField(
                 l + 2, b - 2, r - 2
-            ) {
+            )
+            {
                 GhostText = () => Properties.Resources.FilterAddGhostText
             };
             AddObject(manualEntry);
             manualEntry.AddTip(Properties.Resources.Enter, Properties.Resources.FilterAddAcceptTip);
-            manualEntry.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
+            manualEntry.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) =>
+            {
                 choice = manualEntry.Value;
                 return false;
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) =>
+            {
                 choice = null;
                 return false;
             });
@@ -61,6 +66,6 @@ namespace CKAN.ConsoleUI {
         }
 
         private ConsoleField manualEntry;
-        private string       choice;
+        private string choice;
     }
 }

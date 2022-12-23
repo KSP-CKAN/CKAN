@@ -2,12 +2,14 @@ using System;
 using System.IO;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Screen for adding a new game instance
     /// </summary>
-    public class GameInstanceAddScreen : GameInstanceScreen {
+    public class GameInstanceAddScreen : GameInstanceScreen
+    {
 
         /// <summary>
         /// Initialize the Screen
@@ -28,7 +30,8 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override bool Valid()
         {
-            if (!nameValid() || !pathValid()) {
+            if (!nameValid() || !pathValid())
+            {
                 return false;
             }
             return true;

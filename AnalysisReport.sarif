@@ -1,0 +1,477 @@
+﻿{
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Dependency Analysis",
+          "semanticVersion": "0.4.355802",
+          "informationUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview",
+          "rules": [
+            {
+              "id": "UA106",
+              "name": "PackageToBeAdded",
+              "fullDescription": {
+                "text": "Packages that need to be added in order to upgrade the project to chosen TFM"
+              },
+              "helpUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview"
+            },
+            {
+              "id": "UA105",
+              "name": "PackageToBeDeleted",
+              "fullDescription": {
+                "text": "Packages that need to be deleted in order to upgrade the project to chosen TFM"
+              },
+              "helpUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview"
+            },
+            {
+              "id": "UA103",
+              "name": "ReferenceToBeDeleted",
+              "fullDescription": {
+                "text": "References that need to be deleted in order to upgrade the project to chosen TFM"
+              },
+              "helpUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/Core/CKAN-core.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/AutoUpdate/CKAN-autoupdate.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.Windows.Compatibility, Version=7.0.0 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/AutoUpdate/CKAN-autoupdate.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA105",
+          "message": {
+            "text": "Package CommandLineParser, Version=1.9.71 does not support the target(s) net7.0-windows but a newer version (2.9.1) does.  Package CommandLineParser needs to be upgraded across major versions (1.9.71 -> 2.9.1) which may introduce breaking changes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/Cmdline/CKAN-cmdline.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package CommandLineParser, Version=2.9.1 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/Cmdline/CKAN-cmdline.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/Cmdline/CKAN-cmdline.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.Windows.Compatibility, Version=7.0.0 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/Cmdline/CKAN-cmdline.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA103",
+          "message": {
+            "text": "Reference to System.ServiceModel needs to be deleted."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/ConsoleUI/CKAN-ConsoleUI.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package System.ServiceModel.Primitives, Version=4.8.1 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/ConsoleUI/CKAN-ConsoleUI.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package System.ServiceModel.Http, Version=4.8.1 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/ConsoleUI/CKAN-ConsoleUI.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package System.ServiceModel.Duplex, Version=4.8.1 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/ConsoleUI/CKAN-ConsoleUI.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package System.ServiceModel.NetTcp, Version=4.8.1 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/ConsoleUI/CKAN-ConsoleUI.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package System.ServiceModel.Security, Version=4.8.1 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/ConsoleUI/CKAN-ConsoleUI.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package System.ServiceModel.Federation, Version=4.8.1 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/ConsoleUI/CKAN-ConsoleUI.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/ConsoleUI/CKAN-ConsoleUI.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/GUI/CKAN-GUI.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.Windows.Compatibility, Version=7.0.0 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/GUI/CKAN-GUI.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA105",
+          "message": {
+            "text": "Package CommandLineParser, Version=1.9.71 does not support the target(s) net7.0 but a newer version (2.9.1) does.  Package CommandLineParser needs to be upgraded across major versions (1.9.71 -> 2.9.1) which may introduce breaking changes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/Netkan/CKAN-netkan.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA105",
+          "message": {
+            "text": "Package AWSSDK.Core, Version=3.3.103.64 needs to be deleted."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/Netkan/CKAN-netkan.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package CommandLineParser, Version=2.9.1 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/Netkan/CKAN-netkan.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/Netkan/CKAN-netkan.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers, Version=0.4.355802 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/Tests/Tests.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA106",
+          "message": {
+            "text": "Package Microsoft.Windows.Compatibility, Version=7.0.0 needs to be added."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/Tests/Tests.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        }
+      ],
+      "columnKind": "utf16CodeUnits"
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "API Upgradability",
+          "semanticVersion": "0.4.355802",
+          "informationUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview"
+        }
+      },
+      "results": [],
+      "columnKind": "utf16CodeUnits"
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "Component Analysis",
+          "semanticVersion": "0.4.355802",
+          "informationUri": "https://docs.microsoft.com/en-us/dotnet/core/porting/upgrade-assistant-overview",
+          "rules": [
+            {
+              "id": "UA209",
+              "name": "Microsoft.DotNet.UpgradeAssistant.Extensions.Windows.WinformsDefaultFontUpdater",
+              "fullDescription": {
+                "text": "Default Font API Alert"
+              },
+              "helpUri": "about:blank"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "UA209",
+          "message": {
+            "text": "Default font in Windows Forms has been changed from Microsoft Sans Serif to Seg Segoe UI, in order to change the default font use the API - Application.SetDefaultFont(Font font). For more details see here - https://devblogs.microsoft.com/dotnet/whats-new-in-windows-forms-in-net-6-0-preview-5/#application-wide-default-font."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/AutoUpdate/CKAN-autoupdate.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "UA209",
+          "message": {
+            "text": "Default font in Windows Forms has been changed from Microsoft Sans Serif to Seg Segoe UI, in order to change the default font use the API - Application.SetDefaultFont(Font font). For more details see here - https://devblogs.microsoft.com/dotnet/whats-new-in-windows-forms-in-net-6-0-preview-5/#application-wide-default-font."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/opensource/CKAN/GUI/CKAN-GUI.csproj"
+                },
+                "region": {}
+              }
+            }
+          ]
+        }
+      ],
+      "columnKind": "utf16CodeUnits"
+    }
+  ]
+}

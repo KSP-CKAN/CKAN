@@ -86,7 +86,7 @@ namespace CKAN
     /// </remarks>
     public class RelationshipResolver
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
+        private static readonly ILog log = LogManager.GetLogger(typeof(RelationshipResolver));
         /// <summary>
         /// The list of all additional mods that need to be installed to satisfy all relationships.
         /// </summary>
@@ -229,8 +229,8 @@ namespace CKAN
         {
             return new RelationshipResolverOptions
             {
-                with_recommends   = true,
-                with_suggests     = false,
+                with_recommends = true,
+                with_suggests = false,
                 with_all_suggests = false
             };
         }
@@ -242,8 +242,8 @@ namespace CKAN
         {
             return new RelationshipResolverOptions
             {
-                with_recommends   = false,
-                with_suggests     = false,
+                with_recommends = false,
+                with_suggests = false,
                 with_all_suggests = false
             };
         }
@@ -355,7 +355,7 @@ namespace CKAN
             // Even though we may resolve top-level suggests for our module,
             // we don't install suggestions all the down unless with_all_suggests
             // is true.
-            var sub_options = (RelationshipResolverOptions) options.Clone();
+            var sub_options = (RelationshipResolverOptions)options.Clone();
             sub_options.with_suggests = false;
 
             old_stanza = old_stanza?.Memoize();
@@ -642,7 +642,7 @@ namespace CKAN
             // in case a dependent depends on it
             compatible.Add(module.identifier);
 
-            var toInstall = stanzaSource != null ? new List<CkanModule> {stanzaSource} : null;
+            var toInstall = stanzaSource != null ? new List<CkanModule> { stanzaSource } : null;
 
             // Get list of lists of dependency choices
             var needed = module.depends
@@ -826,7 +826,7 @@ namespace CKAN
                 => Properties.Resources.RelationshipResolverUserReason;
         }
 
-        public class NoLongerUsed: SelectionReason
+        public class NoLongerUsed : SelectionReason
         {
             public override string Reason
                 => Properties.Resources.RelationshipResolverNoLongerUsedReason;

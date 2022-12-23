@@ -18,7 +18,7 @@ namespace CKAN.GUI
         }
 
         private GUIMod visibleGuiModule = null;
-        private bool   ignoreItemCheck  = false;
+        private bool ignoreItemCheck = false;
 
         private void VersionsListView_ItemCheck(object sender, ItemCheckEventArgs e)
         {
@@ -26,8 +26,8 @@ namespace CKAN.GUI
             {
                 return;
             }
-            ListViewItem item   = VersionsListView.Items[e.Index];
-            CkanModule   module = item.Tag as CkanModule;
+            ListViewItem item = VersionsListView.Items[e.Index];
+            CkanModule module = item.Tag as CkanModule;
             switch (e.NewValue)
             {
                 case CheckState.Checked:
@@ -161,17 +161,17 @@ namespace CKAN.GUI
 
         private ListViewItem[] getItems(GUIMod gmod, List<CkanModule> versions)
         {
-            GameInstance     currentInstance  = Main.Instance.Manager.CurrentInstance;
-            IRegistryQuerier registry         = RegistryManager.Instance(currentInstance).registry;
-            ModuleVersion    installedVersion = registry.InstalledVersion(gmod.Identifier);
+            GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
+            IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
+            ModuleVersion installedVersion = registry.InstalledVersion(gmod.Identifier);
 
             var items = versions.OrderByDescending(module => module.version)
                 .Select(module =>
             {
                 Registry.GetMinMaxVersions(
-                    new List<CkanModule>() {module},
+                    new List<CkanModule>() { module },
                     out ModuleVersion minMod, out ModuleVersion maxMod,
-                    out GameVersion minKsp,   out GameVersion maxKsp);
+                    out GameVersion minKsp, out GameVersion maxKsp);
                 ListViewItem toRet = new ListViewItem(new string[]
                 {
                     module.version.ToString(),
@@ -197,8 +197,8 @@ namespace CKAN.GUI
 
         private void checkInstallable(ListViewItem[] items)
         {
-            GameInstance     currentInstance = Main.Instance.Manager.CurrentInstance;
-            IRegistryQuerier registry        = RegistryManager.Instance(currentInstance).registry;
+            GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
+            IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
             bool latestCompatibleVersionAlreadyFound = false;
             var installer = new ModuleInstaller(
                 currentInstance,
@@ -241,7 +241,7 @@ namespace CKAN.GUI
         {
             Util.Invoke(this, () => VersionsListView.Items.Clear());
             var startingModule = gmod;
-            var items          = getItems(gmod, getVersions(gmod));
+            var items = getItems(gmod, getVersions(gmod));
             // Make sure user hasn't switched to another mod while we were loading
             if (startingModule.Equals(visibleGuiModule))
             {

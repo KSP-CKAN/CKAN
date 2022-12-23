@@ -14,15 +14,15 @@ namespace CKAN.GUI
             {
                 AutoPopDelay = 10000,
                 InitialDelay = 250,
-                ReshowDelay  = 250,
-                ShowAlways   = true,
+                ReshowDelay = 250,
+                ShowAlways = true,
             };
 
-            YesRadioButton  = MakeRadioButton(0, Properties.Resources.triToggleYes,
+            YesRadioButton = MakeRadioButton(0, Properties.Resources.triToggleYes,
                 Properties.Resources.TriStateToggleYesTooltip);
             BothRadioButton = MakeRadioButton(1, Properties.Resources.triToggleBoth,
                 Properties.Resources.TriStateToggleBothTooltip, true);
-            NoRadioButton   = MakeRadioButton(2, Properties.Resources.triToggleNo,
+            NoRadioButton = MakeRadioButton(2, Properties.Resources.triToggleNo,
                 Properties.Resources.TriStateToggleNoTooltip);
             Controls.Add(YesRadioButton);
             Controls.Add(BothRadioButton);
@@ -36,11 +36,11 @@ namespace CKAN.GUI
 
         public bool? Value
         {
-            get 
+            get
             {
                 return YesRadioButton.Checked ? (bool?)true
-                     : NoRadioButton.Checked  ? (bool?)false
-                     :                          null;
+                     : NoRadioButton.Checked ? (bool?)false
+                     : null;
             }
             set
             {
@@ -66,12 +66,12 @@ namespace CKAN.GUI
             var rb = new RadioButton()
             {
                 Appearance = Appearance.Button,
-                BackColor  = check ? SystemColors.Highlight : RadioButton.DefaultBackColor,
-                FlatStyle  = FlatStyle.Flat,
-                Location   = new Point(index * buttonXOffset, 0),
-                Size       = new Size(buttonWidth, 20),
-                Image      = icon,
-                Checked    = check,
+                BackColor = check ? SystemColors.Highlight : RadioButton.DefaultBackColor,
+                FlatStyle = FlatStyle.Flat,
+                Location = new Point(index * buttonXOffset, 0),
+                Size = new Size(buttonWidth, 20),
+                Image = icon,
+                Checked = check,
                 UseVisualStyleBackColor = false,
             };
             rb.CheckedChanged += RadioButtonChanged;
@@ -94,10 +94,10 @@ namespace CKAN.GUI
             }
         }
 
-        private const int buttonWidth   = 33;
+        private const int buttonWidth = 33;
         private const int buttonXOffset = buttonWidth - 1;
 
-        private ToolTip     ToolTip;
+        private ToolTip ToolTip;
         private RadioButton YesRadioButton;
         private RadioButton BothRadioButton;
         private RadioButton NoRadioButton;

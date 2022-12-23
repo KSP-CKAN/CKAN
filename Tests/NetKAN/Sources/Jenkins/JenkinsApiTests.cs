@@ -48,7 +48,7 @@ namespace Tests.NetKAN.Sources.Jenkins
             Assert.IsNotNull(build.Artifacts);
         }
 
-        private string       _cachePath;
+        private string _cachePath;
         private NetFileCache _cache;
     }
 }

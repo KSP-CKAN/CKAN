@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// A popup to let the user import manually downloaded zip files into the mod cache.
     /// </summary>
-    public static class DownloadImportDialog {
+    public static class DownloadImportDialog
+    {
 
         /// <summary>
         /// Let the user choose some zip files, then import them to the mod cache.
@@ -28,8 +30,9 @@ namespace CKAN.ConsoleUI {
             );
             HashSet<FileInfo> files = cfmsd.Run(theme);
 
-            if (files.Count > 0) {
-                ProgressScreen  ps   = new ProgressScreen(
+            if (files.Count > 0)
+            {
+                ProgressScreen ps = new ProgressScreen(
                     Properties.Resources.ImportProgressTitle,
                     Properties.Resources.ImportProgressMessage);
                 ModuleInstaller inst = new ModuleInstaller(gameInst, cache, ps);
@@ -47,8 +50,10 @@ namespace CKAN.ConsoleUI {
 
         private static string FindDownloadsPath(GameInstance gameInst)
         {
-            foreach (string p in downloadPaths) {
-                if (!string.IsNullOrEmpty(p) && Directory.Exists(p)) {
+            foreach (string p in downloadPaths)
+            {
+                if (!string.IsNullOrEmpty(p) && Directory.Exists(p))
+                {
                     return p;
                 }
             }

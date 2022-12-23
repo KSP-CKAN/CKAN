@@ -9,7 +9,7 @@ namespace Tests.NetKAN.Validators
     public sealed class VersionStrictValidatorTests
     {
         [Test,
-            TestCase("v1.2",  false),
+            TestCase("v1.2", false),
             TestCase("v1.16", true),
         ]
         public void Validate_GoodStrictVersion_DoesNotThrow(string spec_version, bool strict)
@@ -30,7 +30,7 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var json = new JObject();
             json["spec_version"] = spec_version;
-            json["identifier"]   = "AwesomeMod";
+            json["identifier"] = "AwesomeMod";
             if (strict)
             {
                 json["ksp_version_strict"] = true;

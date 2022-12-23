@@ -4,14 +4,14 @@
 //     Runtime Version:4.0.30319.42000
 //
 //     Changes to this file may cause incorrect behavior and will be lost if
-//     the code is regenerated. (I WISH!)
+//     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
 
 namespace CKAN.GUI.Properties {
     using System;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,38 +19,39 @@ namespace CKAN.GUI.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
-
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public Resources() { }
-
+        internal Resources() {
+        }
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
-                if (object.ReferenceEquals(resourceMan, null))
-                {
-                    resourceMan = new SingleAssemblyResourceManager("CKAN.GUI.Properties.Resources", typeof(Resources).Assembly);
+                if (object.ReferenceEquals(resourceMan, null)) {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CKAN.GUI.Properties.Resources", typeof(Resources).Assembly);
+                    resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -58,1091 +59,2710 @@ namespace CKAN.GUI.Properties {
                 resourceCulture = value;
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0}.
+        /// </summary>
+        public static string AboutDialogLabel2Text {
+            get {
+                return ResourceManager.GetString("AboutDialogLabel2Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Accept.
+        /// </summary>
+        public static string AddAuthTokenAccept {
+            get {
+                return ResourceManager.GetString("AddAuthTokenAccept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Cancel.
+        /// </summary>
+        public static string AddAuthTokenCancel {
+            get {
+                return ResourceManager.GetString("AddAuthTokenCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} already has an authentication token..
+        /// </summary>
+        public static string AddAuthTokenDupHost {
+            get {
+                return ResourceManager.GetString("AddAuthTokenDupHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Host:.
+        /// </summary>
+        public static string AddAuthTokenHost {
+            get {
+                return ResourceManager.GetString("AddAuthTokenHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Host field is required..
+        /// </summary>
+        public static string AddAuthTokenHostRequired {
+            get {
+                return ResourceManager.GetString("AddAuthTokenHostRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is not a valid host name..
+        /// </summary>
+        public static string AddAuthTokenInvalidHost {
+            get {
+                return ResourceManager.GetString("AddAuthTokenInvalidHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Authentication Token.
+        /// </summary>
+        public static string AddAuthTokenTitle {
+            get {
+                return ResourceManager.GetString("AddAuthTokenTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token:.
+        /// </summary>
+        public static string AddAuthTokenToken {
+            get {
+                return ResourceManager.GetString("AddAuthTokenToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token field is required..
+        /// </summary>
+        public static string AddAuthTokenTokenRequired {
+            get {
+                return ResourceManager.GetString("AddAuthTokenTokenRequired", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap alert {
+        public static System.Drawing.Bitmap alert {
             get {
                 object obj = ResourceManager.GetObject("alert", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to Cancel.
         /// </summary>
-        internal static System.Drawing.Bitmap apply {
+        public static string AllModVersionsInstallNo {
             get {
-                object obj = ResourceManager.GetObject("apply", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("AllModVersionsInstallNo", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to {0} is not supported on your current compatible game versions ({1}) and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
+        ///
+        ///Do you really want to install it?.
         /// </summary>
-        internal static System.Drawing.Bitmap backward {
+        public static string AllModVersionsInstallPrompt {
             get {
-                object obj = ResourceManager.GetObject("backward", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("AllModVersionsInstallPrompt", resourceCulture);
             }
         }
-
-        internal static System.Drawing.Icon AppIcon {
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install.
+        /// </summary>
+        public static string AllModVersionsInstallYes {
+            get {
+                return ResourceManager.GetString("AllModVersionsInstallYes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        public static System.Drawing.Icon AppIcon {
             get {
                 object obj = ResourceManager.GetObject("AppIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to CKAN metadata (*.ckan)|*.ckan.
-        /// </summary>
-        internal static string CKANFileFilter {
-            get {
-                return ResourceManager.GetString("CKANFileFilter", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Export Mod List.
-        /// </summary>
-        internal static string ExportInstalledModsDialogTitle {
-            get {
-                return ResourceManager.GetString("ExportInstalledModsDialogTitle", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap file {
+        public static System.Drawing.Bitmap apply {
             get {
-                object obj = ResourceManager.GetObject("file", resourceCulture);
+                object obj = ResourceManager.GetObject("apply", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mods by {0}.
+        /// </summary>
+        public static string AuthorSearchName {
+            get {
+                return ResourceManager.GetString("AuthorSearchName", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap filter {
+        public static System.Drawing.Bitmap backward {
             get {
-                object obj = ResourceManager.GetObject("filter", resourceCulture);
+                object obj = ResourceManager.GetObject("backward", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap folder {
-            get {
-                object obj = ResourceManager.GetObject("folder", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap folderZip {
-            get {
-                object obj = ResourceManager.GetObject("folderZip", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap forward {
-            get {
-                object obj = ResourceManager.GetObject("forward", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap info {
-            get {
-                object obj = ResourceManager.GetObject("info", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ksp {
-            get {
-                object obj = ResourceManager.GetObject("ksp", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap stop {
-            get {
-                object obj = ResourceManager.GetObject("stop", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ballot {
+        public static System.Drawing.Bitmap ballot {
             get {
                 object obj = ResourceManager.GetObject("ballot", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Build metadata file.
+        /// </summary>
+        public static string BuildIDFilterDescription {
+            get {
+                return ResourceManager.GetString("BuildIDFilterDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install.
+        /// </summary>
+        public static string ChangeTypeInstall {
+            get {
+                return ResourceManager.GetString("ChangeTypeInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string ChangeTypeNone {
+            get {
+                return ResourceManager.GetString("ChangeTypeNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string ChangeTypeRemove {
+            get {
+                return ResourceManager.GetString("ChangeTypeRemove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace.
+        /// </summary>
+        public static string ChangeTypeReplace {
+            get {
+                return ResourceManager.GetString("ChangeTypeReplace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        public static string ChangeTypeUpdate {
+            get {
+                return ResourceManager.GetString("ChangeTypeUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CKAN metadata (*.ckan)|*.ckan.
+        /// </summary>
+        public static string CKANFileFilter {
+            get {
+                return ResourceManager.GetString("CKANFileFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clone failed: {0}.
+        /// </summary>
+        public static string CloneFakeKspDialogCloneFailed {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogCloneFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Cloning instance...&quot;.
+        /// </summary>
+        public static string CloneFakeKspDialogCloningInstance {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogCloningInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating new instance....
+        /// </summary>
+        public static string CloneFakeKspDialogCreatingInstance {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogCreatingInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The destination folder is not empty: {0}.
+        /// </summary>
+        public static string CloneFakeKspDialogDestinationNotEmpty {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogDestinationNotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The version for the {0} DLC is malformatted. Try &quot;1.0.0&quot; for example..
+        /// </summary>
+        public static string CloneFakeKspDialogDlcVersionMalformatted {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogDlcVersionMalformatted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a name for the new instance..
+        /// </summary>
+        public static string CloneFakeKspDialogEnterName {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogEnterName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a path for the new instance..
+        /// </summary>
+        public static string CloneFakeKspDialogEnterPath {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogEnterPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fake instance creation failed: {0}.
+        /// </summary>
+        public static string CloneFakeKspDialogFakeFailed {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogFakeFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The instance you wanted to clone is not valid: {0}.
+        /// </summary>
+        public static string CloneFakeKspDialogInstanceNotValid {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogInstanceNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This name is already used..
+        /// </summary>
+        public static string CloneFakeKspDialogNameAlreadyUsed {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogNameAlreadyUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully cloned instance..
+        /// </summary>
+        public static string CloneFakeKspDialogSuccessfulClone {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogSuccessfulClone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully created instance..
+        /// </summary>
+        public static string CloneFakeKspDialogSuccessfulCreate {
+            get {
+                return ResourceManager.GetString("CloneFakeKspDialogSuccessfulCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string CompatibleGameVersionsDialogErrorTitle {
+            get {
+                return ResourceManager.GetString("CompatibleGameVersionsDialogErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The game has been updated since you last reviewed your compatible game versions. Please make sure that settings are correct..
+        /// </summary>
+        public static string CompatibleGameVersionsDialogGameUpdated {
+            get {
+                return ResourceManager.GetString("CompatibleGameVersionsDialogGameUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version has invalid format.
+        /// </summary>
+        public static string CompatibleGameVersionsDialogInvalidFormat {
+            get {
+                return ResourceManager.GetString("CompatibleGameVersionsDialogInvalidFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;NONE&gt;.
+        /// </summary>
+        public static string CompatibleGameVersionsDialogNone {
+            get {
+                return ResourceManager.GetString("CompatibleGameVersionsDialogNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (previous game version: {1}).
+        /// </summary>
+        public static string CompatibleGameVersionsDialogVersionDetails {
+            get {
+                return ResourceManager.GetString("CompatibleGameVersionsDialogVersionDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error trying to parse &quot;{0}&quot;{1}
+        ///Try to move {2} out of {3} and restart CKAN..
+        /// </summary>
+        public static string ConfigurationParseError {
+            get {
+                return ResourceManager.GetString("ConfigurationParseError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download failed!.
+        /// </summary>
+        public static string DownloadFailed {
+            get {
+                return ResourceManager.GetString("DownloadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} already exists in {1}!.
+        /// </summary>
+        public static string EditLabelsDialogAlreadyExists {
+            get {
+                return ResourceManager.GetString("EditLabelsDialogAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string EditLabelsDialogCancel {
+            get {
+                return ResourceManager.GetString("EditLabelsDialogCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete {0}? This can&apos;t be undone!.
+        /// </summary>
+        public static string EditLabelsDialogConfirmDelete {
+            get {
+                return ResourceManager.GetString("EditLabelsDialogConfirmDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string EditLabelsDialogDelete {
+            get {
+                return ResourceManager.GetString("EditLabelsDialogDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discard.
+        /// </summary>
+        public static string EditLabelsDialogDiscard {
+            get {
+                return ResourceManager.GetString("EditLabelsDialogDiscard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name is required!.
+        /// </summary>
+        public static string EditLabelsDialogNameRequired {
+            get {
+                return ResourceManager.GetString("EditLabelsDialogNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No record being edited!.
+        /// </summary>
+        public static string EditLabelsDialogNoRecord {
+            get {
+                return ResourceManager.GetString("EditLabelsDialogNoRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string EditLabelsDialogSave {
+            get {
+                return ResourceManager.GetString("EditLabelsDialogSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save changes?.
+        /// </summary>
+        public static string EditLabelsDialogSavePrompt {
+            get {
+                return ResourceManager.GetString("EditLabelsDialogSavePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If checked, the change set screen will alert you if this mod is about to be installed.
+        /// </summary>
+        public static string EditLabelsToolTipAlertOnInstall {
+            get {
+                return ResourceManager.GetString("EditLabelsToolTipAlertOnInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rows for modules with this label will be drawn with this background color.
+        /// </summary>
+        public static string EditLabelsToolTipColor {
+            get {
+                return ResourceManager.GetString("EditLabelsToolTipColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If checked, modules with this label will be hidden from standard filters.
+        /// </summary>
+        public static string EditLabelsToolTipHide {
+            get {
+                return ResourceManager.GetString("EditLabelsToolTipHide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If checked, modules will not be upgraded.
+        /// </summary>
+        public static string EditLabelsToolTipHoldVersion {
+            get {
+                return ResourceManager.GetString("EditLabelsToolTipHoldVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The instance for which this label is available, leave blank for all.
+        /// </summary>
+        public static string EditLabelsToolTipInstance {
+            get {
+                return ResourceManager.GetString("EditLabelsToolTipInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move down.
+        /// </summary>
+        public static string EditLabelsToolTipMoveDown {
+            get {
+                return ResourceManager.GetString("EditLabelsToolTipMoveDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move up.
+        /// </summary>
+        public static string EditLabelsToolTipMoveUp {
+            get {
+                return ResourceManager.GetString("EditLabelsToolTipMoveUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The label will appear in the Labels menu under this name, must be unique per install.
+        /// </summary>
+        public static string EditLabelsToolTipName {
+            get {
+                return ResourceManager.GetString("EditLabelsToolTipName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If checked, a notification will be displayed if this module changes from incompatible to compatible.
+        /// </summary>
+        public static string EditLabelsToolTipNotifyOnChanges {
+            get {
+                return ResourceManager.GetString("EditLabelsToolTipNotifyOnChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If checked, a module that changes from incompatible to compatible will be removed from this label.
+        /// </summary>
+        public static string EditLabelsToolTipRemoveOnChanges {
+            get {
+                return ResourceManager.GetString("EditLabelsToolTipRemoveOnChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If checked, modules will be removed from this label if they are installed.
+        /// </summary>
+        public static string EditLabelsToolTipRemoveOnInstall {
+            get {
+                return ResourceManager.GetString("EditLabelsToolTipRemoveOnInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min game version must be less than or equal to max game version.
+        /// </summary>
+        public static string EditModpackBadGameVersions {
+            get {
+                return ResourceManager.GetString("EditModpackBadGameVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identifier must contain ONLY letters, numbers, and dashes, and must start with a letter or number.
+        /// </summary>
+        public static string EditModpackBadIdentifier {
+            get {
+                return ResourceManager.GetString("EditModpackBadIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name is required.
+        /// </summary>
+        public static string EditModpackBadName {
+            get {
+                return ResourceManager.GetString("EditModpackBadName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version is required.
+        /// </summary>
+        public static string EditModpackBadVersion {
+            get {
+                return ResourceManager.GetString("EditModpackBadVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Short description of this modpack.
+        /// </summary>
+        public static string EditModpackTooltipAbstract {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipAbstract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Abort modpack creation.
+        /// </summary>
+        public static string EditModpackTooltipCancel {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move selected mods to the Depends group. These mods will definitely be installed..
+        /// </summary>
+        public static string EditModpackTooltipDepends {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipDepends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a filename and save the modpack.
+        /// </summary>
+        public static string EditModpackTooltipExport {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Latest compatible game version, blank for all.
+        /// </summary>
+        public static string EditModpackTooltipGameVersionMax {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipGameVersionMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Earliest compatible game version, blank for all.
+        /// </summary>
+        public static string EditModpackTooltipGameVersionMin {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipGameVersionMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internal name of this modpack; letters, numbers, and dashes only.
+        /// </summary>
+        public static string EditModpackTooltipIdentifier {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move selected mods to the Ignored group. These mods won&apos;t be included in the modpack..
+        /// </summary>
+        public static string EditModpackTooltipIgnore {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipIgnore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If checked, the modpack will include the specific versions of the mods shown, otherwise any version will do.
+        /// </summary>
+        public static string EditModpackTooltipIncludeVersions {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipIncludeVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The licence for this modpack.
+        /// </summary>
+        public static string EditModpackTooltipLicense {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publicly visible name of this modpack.
+        /// </summary>
+        public static string EditModpackTooltipName {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move selected mods to the Recommends group. A user can drop these mods on installation..
+        /// </summary>
+        public static string EditModpackTooltipRecommends {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipRecommends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move selected mods to the Suggests group. These mods will be available for installation, but you have to explicitly select them..
+        /// </summary>
+        public static string EditModpackTooltipSuggests {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipSuggests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The version number for this modpack.
+        /// </summary>
+        public static string EditModpackTooltipVersion {
+            get {
+                return ResourceManager.GetString("EditModpackTooltipVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Combine a new search with your current searches.
+        /// </summary>
+        public static string EditModSearchesTooltipAddSearchButton {
+            get {
+                return ResourceManager.GetString("EditModSearchesTooltipAddSearchButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand or collapse the detailed search fields (Ctrl-Shift-F).
+        /// </summary>
+        public static string EditModSearchTooltipExpandButton {
+            get {
+                return ResourceManager.GetString("EditModSearchTooltipExpandButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Mod List.
+        /// </summary>
+        public static string ExportInstalledModsDialogTitle {
+            get {
+                return ResourceManager.GetString("ExportInstalledModsDialogTitle", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap refresh {
+        public static System.Drawing.Bitmap file {
+            get {
+                object obj = ResourceManager.GetObject("file", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap filter {
+            get {
+                object obj = ResourceManager.GetObject("filter", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to search
+        ///Ctrl-click or Shift-click to combine with current search.
+        /// </summary>
+        public static string FilterLinkToolTip {
+            get {
+                return ResourceManager.GetString("FilterLinkToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap folder {
+            get {
+                object obj = ResourceManager.GetObject("folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap folderZip {
+            get {
+                object obj = ResourceManager.GetObject("folderZip", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap forward {
+            get {
+                object obj = ResourceManager.GetObject("forward", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (using mod version {1}).
+        /// </summary>
+        public static string GUIModGameCompatibilityLong {
+            get {
+                return ResourceManager.GetString("GUIModGameCompatibilityLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method can not be called unless IsCKAN.
+        /// </summary>
+        public static string GUIModMethodNotCKAN {
+            get {
+                return ResourceManager.GetString("GUIModMethodNotCKAN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to N/A.
+        /// </summary>
+        public static string GUIModNSlashA {
+            get {
+                return ResourceManager.GetString("GUIModNSlashA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string GUIModUnknown {
+            get {
+                return ResourceManager.GetString("GUIModUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap info {
+            get {
+                object obj = ResourceManager.GetObject("info", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ksp {
+            get {
+                object obj = ResourceManager.GetObject("ksp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in auto-update:
+        ///{0}.
+        /// </summary>
+        public static string MainAutoUpdateFailed {
+            get {
+                return ResourceManager.GetString("MainAutoUpdateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BBCode (*.txt).
+        /// </summary>
+        public static string MainBBCode {
+            get {
+                return ResourceManager.GetString("MainBBCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CKAN can&apos;t install expansion {0}!.
+        /// </summary>
+        public static string MainCantInstallDLC {
+            get {
+                return ResourceManager.GetString("MainCantInstallDLC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update selected by user to version {0}..
+        /// </summary>
+        public static string MainChangesetUpdateSelected {
+            get {
+                return ResourceManager.GetString("MainChangesetUpdateSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WARNING: INSTALLING MODULE WITH LABEL {0} ({1}).
+        /// </summary>
+        public static string MainChangesetWarningInstallingModuleWithLabel {
+            get {
+                return ResourceManager.GetString("MainChangesetWarningInstallingModuleWithLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Corrupted registry archived to {0}: {1}
+        ///
+        ///This means that CKAN forgot about all your installed mods, but they are still in GameData. You can reinstall them by importing the {2} file..
+        /// </summary>
+        public static string MainCorruptedRegistry {
+            get {
+                return ResourceManager.GetString("MainCorruptedRegistry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comma-separated values (*.csv).
+        /// </summary>
+        public static string MainCSV {
+            get {
+                return ResourceManager.GetString("MainCSV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} depends on {1}, which is not compatible with the currently installed game version.
+        /// </summary>
+        public static string MainDepNotSatisfied {
+            get {
+                return ResourceManager.GetString("MainDepNotSatisfied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter (All).
+        /// </summary>
+        public static string MainFilterAll {
+            get {
+                return ResourceManager.GetString("MainFilterAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter (Cached).
+        /// </summary>
+        public static string MainFilterCached {
+            get {
+                return ResourceManager.GetString("MainFilterCached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter (Compatible).
+        /// </summary>
+        public static string MainFilterCompatible {
+            get {
+                return ResourceManager.GetString("MainFilterCompatible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter (Incompatible).
+        /// </summary>
+        public static string MainFilterIncompatible {
+            get {
+                return ResourceManager.GetString("MainFilterIncompatible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter (Installed).
+        /// </summary>
+        public static string MainFilterInstalled {
+            get {
+                return ResourceManager.GetString("MainFilterInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Label ({0}).
+        /// </summary>
+        public static string MainFilterLabel {
+            get {
+                return ResourceManager.GetString("MainFilterLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter (New).
+        /// </summary>
+        public static string MainFilterNew {
+            get {
+                return ResourceManager.GetString("MainFilterNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter (Not installed).
+        /// </summary>
+        public static string MainFilterNotInstalled {
+            get {
+                return ResourceManager.GetString("MainFilterNotInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter (Replaceable).
+        /// </summary>
+        public static string MainFilterReplaceable {
+            get {
+                return ResourceManager.GetString("MainFilterReplaceable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag ({0}).
+        /// </summary>
+        public static string MainFilterTag {
+            get {
+                return ResourceManager.GetString("MainFilterTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter (Uncached).
+        /// </summary>
+        public static string MainFilterUncached {
+            get {
+                return ResourceManager.GetString("MainFilterUncached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag (Untagged).
+        /// </summary>
+        public static string MainFilterUntagged {
+            get {
+                return ResourceManager.GetString("MainFilterUntagged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter (Upgradeable).
+        /// </summary>
+        public static string MainFilterUpgradeable {
+            get {
+                return ResourceManager.GetString("MainFilterUpgradeable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go Back.
+        /// </summary>
+        public static string MainGoBack {
+            get {
+                return ResourceManager.GetString("MainGoBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mods (*.zip)|*.zip.
+        /// </summary>
+        public static string MainImportFilter {
+            get {
+                return ResourceManager.GetString("MainImportFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Mods.
+        /// </summary>
+        public static string MainImportTitle {
+            get {
+                return ResourceManager.GetString("MainImportTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status log.
+        /// </summary>
+        public static string MainImportWaitTitle {
+            get {
+                return ResourceManager.GetString("MainImportWaitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bad metadata detected for module {0}: {1}.
+        /// </summary>
+        public static string MainInstallBadMetadata {
+            get {
+                return ResourceManager.GetString("MainInstallBadMetadata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User canceled the process manually, but all mods already (un)installed/upgraded..
+        /// </summary>
+        public static string MainInstallCancelAfterInstall {
+            get {
+                return ResourceManager.GetString("MainInstallCancelAfterInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User canceled the process manually!.
+        /// </summary>
+        public static string MainInstallCanceledManually {
+            get {
+                return ResourceManager.GetString("MainInstallCanceledManually", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancellation too late, process complete!.
+        /// </summary>
+        public static string MainInstallCancelTooLate {
+            get {
+                return ResourceManager.GetString("MainInstallCancelTooLate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CKAN can&apos;t install expansion &apos;{0}&apos; for you..
+        /// </summary>
+        public static string MainInstallCantInstallDLC {
+            get {
+                return ResourceManager.GetString("MainInstallCantInstallDLC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} requires {1} but it is not listed in the index, or not available for your game version..
+        /// </summary>
+        public static string MainInstallDepNotSatisfied {
+            get {
+                return ResourceManager.GetString("MainInstallDepNotSatisfied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error during installation!.
+        /// </summary>
+        public static string MainInstallErrorInstalling {
+            get {
+                return ResourceManager.GetString("MainInstallErrorInstalling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installation failed!.
+        /// </summary>
+        public static string MainInstallFailed {
+            get {
+                return ResourceManager.GetString("MainInstallFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oh no! We tried to overwrite a file owned by another mod!
+        ///Please try a `ckan update` and try again.
+        ///
+        ///If this problem re-occurs, then it may be a packaging bug.
+        ///Please report it at:
+        ///
+        ///https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+        ///
+        ///Please include the following information in your report:
+        ///
+        ///File      : {0}
+        ///Installing Mod : {1}
+        ///Owning Mod: {2}
+        ///CKAN Version   : {3}.
+        /// </summary>
+        public static string MainInstallFileExists {
+            get {
+                return ResourceManager.GetString("MainInstallFileExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your GameData has been returned to its original state..
+        /// </summary>
+        public static string MainInstallGameDataReverted {
+            get {
+                return ResourceManager.GetString("MainInstallGameDataReverted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Un)Install/Upgrade canceled!.
+        /// </summary>
+        public static string MainInstallInstallCanceled {
+            get {
+                return ResourceManager.GetString("MainInstallInstallCanceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If the above message indicates a download error, please try again. Otherwise, please open an issue for us to investigate.
+        ///If you suspect a metadata problem: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+        ///If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/choose.
+        /// </summary>
+        public static string MainInstallKnownError {
+            get {
+                return ResourceManager.GetString("MainInstallKnownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module &quot;{0}&quot; successfully installed.
+        /// </summary>
+        public static string MainInstallModSuccess {
+            get {
+                return ResourceManager.GetString("MainInstallModSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string MainInstallNo {
+            get {
+                return ResourceManager.GetString("MainInstallNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module {0} required but it is not listed in the index, or not available for your game version..
+        /// </summary>
+        public static string MainInstallNotFound {
+            get {
+                return ResourceManager.GetString("MainInstallNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Settings.
+        /// </summary>
+        public static string MainInstallOpenSettings {
+            get {
+                return ResourceManager.GetString("MainInstallOpenSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}
+        ///
+        ///Open settings now?.
+        /// </summary>
+        public static string MainInstallOpenSettingsPrompt {
+            get {
+                return ResourceManager.GetString("MainInstallOpenSettingsPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Process canceled by user!.
+        /// </summary>
+        public static string MainInstallProcessCanceled {
+            get {
+                return ResourceManager.GetString("MainInstallProcessCanceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Process complete!.
+        /// </summary>
+        public static string MainInstallProcessComplete {
+            get {
+                return ResourceManager.GetString("MainInstallProcessComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module {0} is provided by more than one available module, please choose one of the following mods:.
+        /// </summary>
+        public static string MainInstallProvidedBy {
+            get {
+                return ResourceManager.GetString("MainInstallProvidedBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success!.
+        /// </summary>
+        public static string MainInstallSuccess {
+            get {
+                return ResourceManager.GetString("MainInstallSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unknown error occurred, please try again!.
+        /// </summary>
+        public static string MainInstallUnknownError {
+            get {
+                return ResourceManager.GetString("MainInstallUnknownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oh no!
+        ///
+        ///It looks like you&apos;re trying to install a mod which is already installed,
+        ///or which conflicts with another mod which is already installed.
+        ///
+        ///As a safety feature, CKAN will *never* overwrite or alter a file
+        ///that it did not install itself.
+        ///
+        ///If you wish to install {0} via CKAN,
+        ///then please manually uninstall the mod which owns:
+        ///
+        ///{1}
+        ///
+        ///and try again..
+        /// </summary>
+        public static string MainInstallUnownedFileExists {
+            get {
+                return ResourceManager.GetString("MainInstallUnownedFileExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status log.
+        /// </summary>
+        public static string MainInstallWaitTitle {
+            get {
+                return ResourceManager.GetString("MainInstallWaitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Untagged ({0}).
+        /// </summary>
+        public static string MainLabelsUntagged {
+            get {
+                return ResourceManager.GetString("MainLabelsUntagged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some of your watched mods have updated:
+        ///
+        ///{0}.
+        /// </summary>
+        public static string MainLabelsUpdateMessage {
+            get {
+                return ResourceManager.GetString("MainLabelsUpdateMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Notifications.
+        /// </summary>
+        public static string MainLabelsUpdateTitle {
+            get {
+                return ResourceManager.GetString("MainLabelsUpdateTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Launch.
+        /// </summary>
+        public static string MainLaunch {
+            get {
+                return ResourceManager.GetString("MainLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t show this again for these mods on {0} {1}.
+        /// </summary>
+        public static string MainLaunchDontShow {
+            get {
+                return ResourceManager.GetString("MainLaunchDontShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t start game.
+        ///
+        ///{0}.
+        /// </summary>
+        public static string MainLaunchFailed {
+            get {
+                return ResourceManager.GetString("MainLaunchFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some installed modules are incompatible! It might not be safe to launch the game. Really launch?
+        ///
+        ///{0}.
+        /// </summary>
+        public static string MainLaunchWithIncompatible {
+            get {
+                return ResourceManager.GetString("MainLaunchWithIncompatible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Markdown (*.md).
+        /// </summary>
+        public static string MainMarkdown {
+            get {
+                return ResourceManager.GetString("MainMarkdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All ({0}).
+        /// </summary>
+        public static string MainModListAll {
+            get {
+                return ResourceManager.GetString("MainModListAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AD.
+        /// </summary>
+        public static string MainModListAutoDetected {
+            get {
+                return ResourceManager.GetString("MainModListAutoDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cached ({0}).
+        /// </summary>
+        public static string MainModListCached {
+            get {
+                return ResourceManager.GetString("MainModListCached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compatible ({0}).
+        /// </summary>
+        public static string MainModListCompatible {
+            get {
+                return ResourceManager.GetString("MainModListCompatible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incompatible ({0}).
+        /// </summary>
+        public static string MainModListIncompatible {
+            get {
+                return ResourceManager.GetString("MainModListIncompatible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed ({0}).
+        /// </summary>
+        public static string MainModListInstalled {
+            get {
+                return ResourceManager.GetString("MainModListInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading available modules....
+        /// </summary>
+        public static string MainModListLoadingAvailable {
+            get {
+                return ResourceManager.GetString("MainModListLoadingAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading incompatible modules....
+        /// </summary>
+        public static string MainModListLoadingIncompatible {
+            get {
+                return ResourceManager.GetString("MainModListLoadingIncompatible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading installed modules....
+        /// </summary>
+        public static string MainModListLoadingInstalled {
+            get {
+                return ResourceManager.GetString("MainModListLoadingInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading registry....
+        /// </summary>
+        public static string MainModListLoadingRegistry {
+            get {
+                return ResourceManager.GetString("MainModListLoadingRegistry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Newly compatible ({0}).
+        /// </summary>
+        public static string MainModListNewlyCompatible {
+            get {
+                return ResourceManager.GetString("MainModListNewlyCompatible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not installed ({0}).
+        /// </summary>
+        public static string MainModListNotInstalled {
+            get {
+                return ResourceManager.GetString("MainModListNotInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Populating mod list....
+        /// </summary>
+        public static string MainModListPopulatingList {
+            get {
+                return ResourceManager.GetString("MainModListPopulatingList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preserving new flags....
+        /// </summary>
+        public static string MainModListPreservingNew {
+            get {
+                return ResourceManager.GetString("MainModListPreservingNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replaceable ({0}).
+        /// </summary>
+        public static string MainModListReplaceable {
+            get {
+                return ResourceManager.GetString("MainModListReplaceable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restoring change set....
+        /// </summary>
+        public static string MainModListRestoringChangeset {
+            get {
+                return ResourceManager.GetString("MainModListRestoringChangeset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uncached ({0}).
+        /// </summary>
+        public static string MainModListUncached {
+            get {
+                return ResourceManager.GetString("MainModListUncached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown filter type {0} in IsModInFilter.
+        /// </summary>
+        public static string MainModListUnknownFilter {
+            get {
+                return ResourceManager.GetString("MainModListUnknownFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating filters....
+        /// </summary>
+        public static string MainModListUpdatingFilters {
+            get {
+                return ResourceManager.GetString("MainModListUpdatingFilters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating tray....
+        /// </summary>
+        public static string MainModListUpdatingTray {
+            get {
+                return ResourceManager.GetString("MainModListUpdatingTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upgradeable ({0}).
+        /// </summary>
+        public static string MainModListUpgradeable {
+            get {
+                return ResourceManager.GetString("MainModListUpgradeable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading modules.
+        /// </summary>
+        public static string MainModListWaitTitle {
+            get {
+                return ResourceManager.GetString("MainModListWaitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CKAN modpack (*.ckan).
+        /// </summary>
+        public static string MainModPack {
+            get {
+                return ResourceManager.GetString("MainModPack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not found..
+        /// </summary>
+        public static string MainNotFound {
+            get {
+                return ResourceManager.GetString("MainNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plain text (*.txt).
+        /// </summary>
+        public static string MainPlainText {
+            get {
+                return ResourceManager.GetString("MainPlainText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quit.
+        /// </summary>
+        public static string MainQuit {
+            get {
+                return ResourceManager.GetString("MainQuit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are conflicts. Really quit?
+        ///
+        ///{0}.
+        /// </summary>
+        public static string MainQuitWithConflicts {
+            get {
+                return ResourceManager.GetString("MainQuitWithConflicts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have unapplied changes. Really quit?
+        ///
+        ///{0}.
+        /// </summary>
+        public static string MainQuitWithUnappliedChanges {
+            get {
+                return ResourceManager.GetString("MainQuitWithUnappliedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are unmet dependencies. Really quit?.
+        /// </summary>
+        public static string MainQuitWithUnmetDeps {
+            get {
+                return ResourceManager.GetString("MainQuitWithUnmetDeps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No recommended, suggested, or supporting mods found..
+        /// </summary>
+        public static string MainRecommendationsNoneFound {
+            get {
+                return ResourceManager.GetString("MainRecommendationsNoneFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose recommended, suggested, or supporting mods.
+        /// </summary>
+        public static string MainRecommendationsTitle {
+            get {
+                return ResourceManager.GetString("MainRecommendationsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to reinstall {0}?.
+        /// </summary>
+        public static string MainReinstallConfirm {
+            get {
+                return ResourceManager.GetString("MainReinstallConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Would you like CKAN to refresh the modlist every time it is loaded? (You can always manually refresh using the button up top.).
+        /// </summary>
+        public static string MainRepoAutoRefreshPrompt {
+            get {
+                return ResourceManager.GetString("MainRepoAutoRefreshPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} update(s) available.
+        /// </summary>
+        public static string MainRepoBalloonTipDetails {
+            get {
+                return ResourceManager.GetString("MainRepoBalloonTipDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to upgrade.
+        /// </summary>
+        public static string MainRepoBalloonTipTooltip {
+            get {
+                return ResourceManager.GetString("MainRepoBalloonTipTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contacting repository....
+        /// </summary>
+        public static string MainRepoContacting {
+            get {
+                return ResourceManager.GetString("MainRepoContacting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository update failed!.
+        /// </summary>
+        public static string MainRepoFailed {
+            get {
+                return ResourceManager.GetString("MainRepoFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to connect to repository. Exception: {0}.
+        /// </summary>
+        public static string MainRepoFailedToConnect {
+            get {
+                return ResourceManager.GetString("MainRepoFailedToConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scanning for DLCs and manually installed modules....
+        /// </summary>
+        public static string MainRepoScanning {
+            get {
+                return ResourceManager.GetString("MainRepoScanning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repositories successfully updated..
+        /// </summary>
+        public static string MainRepoSuccess {
+            get {
+                return ResourceManager.GetString("MainRepoSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating repositories....
+        /// </summary>
+        public static string MainRepoUpdating {
+            get {
+                return ResourceManager.GetString("MainRepoUpdating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repositories already up to date..
+        /// </summary>
+        public static string MainRepoUpToDate {
+            get {
+                return ResourceManager.GetString("MainRepoUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating repositories.
+        /// </summary>
+        public static string MainRepoWaitTitle {
+            get {
+                return ResourceManager.GetString("MainRepoWaitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause.
+        /// </summary>
+        public static string MainTrayIconPause {
+            get {
+                return ResourceManager.GetString("MainTrayIconPause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resume.
+        /// </summary>
+        public static string MainTrayIconResume {
+            get {
+                return ResourceManager.GetString("MainTrayIconResume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No available updates.
+        /// </summary>
+        public static string MainTrayNoUpdates {
+            get {
+                return ResourceManager.GetString("MainTrayNoUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} available update(s).
+        /// </summary>
+        public static string MainTrayUpdatesAvailable {
+            get {
+                return ResourceManager.GetString("MainTrayUpdatesAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tab-separated values (*.tsv).
+        /// </summary>
+        public static string MainTSV {
+            get {
+                return ResourceManager.GetString("MainTSV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upgrading CKAN to {0}.
+        /// </summary>
+        public static string MainUpgradingTo {
+            get {
+                return ResourceManager.GetString("MainUpgradingTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating CKAN.
+        /// </summary>
+        public static string MainUpgradingWaitTitle {
+            get {
+                return ResourceManager.GetString("MainUpgradingWaitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All done!.
+        /// </summary>
+        public static string MainWaitDone {
+            get {
+                return ResourceManager.GetString("MainWaitDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait.
+        /// </summary>
+        public static string MainWaitPleaseWait {
+            get {
+                return ResourceManager.GetString("MainWaitPleaseWait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory &quot;{0}&quot; doesn&apos;t exist..
+        /// </summary>
+        public static string ManageGameInstancesDirectoryDeleted {
+            get {
+                return ResourceManager.GetString("ManageGameInstancesDirectoryDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (INVALID).
+        /// </summary>
+        public static string ManageGameInstancesNameColumnInvalid {
+            get {
+                return ResourceManager.GetString("ManageGameInstancesNameColumnInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (LOCKED).
+        /// </summary>
+        public static string ManageGameInstancesNameColumnLocked {
+            get {
+                return ResourceManager.GetString("ManageGameInstancesNameColumnLocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory {0} is not a valid game directory..
+        /// </summary>
+        public static string ManageGameInstancesNotValid {
+            get {
+                return ResourceManager.GetString("ManageGameInstancesNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uncheck to uninstall all mods, check to clear change set.
+        /// </summary>
+        public static string ManageModsInstallAllCheckboxTooltip {
+            get {
+                return ResourceManager.GetString("ManageModsInstallAllCheckboxTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Abort whole changeset.
+        /// </summary>
+        public static string ModDownloadsFailedAbortBtn {
+            get {
+                return ResourceManager.GetString("ModDownloadsFailedAbortBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mod.
+        /// </summary>
+        public static string ModDownloadsFailedColHdr {
+            get {
+                return ResourceManager.GetString("ModDownloadsFailedColHdr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following mods failed to download. You can retry or abort, and if you retry, you can choose to remove some mods (and any mods that depend on them) from the changeset. Mods that share the same download link will automatically be updated to the same choice..
+        /// </summary>
+        public static string ModDownloadsFailedMessage {
+            get {
+                return ResourceManager.GetString("ModDownloadsFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bug tracker:.
+        /// </summary>
+        public static string ModInfoBugTrackerLabel {
+            get {
+                return ResourceManager.GetString("ModInfoBugTrackerLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module is cached, preview available.
+        /// </summary>
+        public static string ModInfoCached {
+            get {
+                return ResourceManager.GetString("ModInfoCached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continuous integration:.
+        /// </summary>
+        public static string ModInfoContinuousIntegrationLabel {
+            get {
+                return ResourceManager.GetString("ModInfoContinuousIntegrationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Curse:.
+        /// </summary>
+        public static string ModInfoCurseLabel {
+            get {
+                return ResourceManager.GetString("ModInfoCurseLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Home page:.
+        /// </summary>
+        public static string ModInfoHomepageLabel {
+            get {
+                return ResourceManager.GetString("ModInfoHomepageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Licence:.
+        /// </summary>
+        public static string ModInfoLicenseLabel {
+            get {
+                return ResourceManager.GetString("ModInfoLicenseLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manual:.
+        /// </summary>
+        public static string ModInfoManualLabel {
+            get {
+                return ResourceManager.GetString("ModInfoManualLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metanetkan:.
+        /// </summary>
+        public static string ModInfoMetanetkanLabel {
+            get {
+                return ResourceManager.GetString("ModInfoMetanetkanLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module has no download.
+        /// </summary>
+        public static string ModInfoNoDownload {
+            get {
+                return ResourceManager.GetString("ModInfoNoDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This mod is not in the cache, click &apos;Download&apos; to preview contents.
+        /// </summary>
+        public static string ModInfoNotCached {
+            get {
+                return ResourceManager.GetString("ModInfoNotCached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (not indexed).
+        /// </summary>
+        public static string ModInfoNotIndexed {
+            get {
+                return ResourceManager.GetString("ModInfoNotIndexed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to N/A.
+        /// </summary>
+        public static string ModInfoNSlashA {
+            get {
+                return ResourceManager.GetString("ModInfoNSlashA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote version file:.
+        /// </summary>
+        public static string ModInfoRemoteAvcLabel {
+            get {
+                return ResourceManager.GetString("ModInfoRemoteAvcLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository:.
+        /// </summary>
+        public static string ModInfoRepositoryLabel {
+            get {
+                return ResourceManager.GetString("ModInfoRepositoryLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SpaceDock:.
+        /// </summary>
+        public static string ModInfoSpaceDockLabel {
+            get {
+                return ResourceManager.GetString("ModInfoSpaceDockLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steam store:.
+        /// </summary>
+        public static string ModInfoSteamStoreLabel {
+            get {
+                return ResourceManager.GetString("ModInfoSteamStoreLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store:.
+        /// </summary>
+        public static string ModInfoStoreLabel {
+            get {
+                return ResourceManager.GetString("ModInfoStoreLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ctrl-click or Shift-click to make sticky.
+        /// </summary>
+        public static string ModInfoToolTipReverseRelationships {
+            get {
+                return ResourceManager.GetString("ModInfoToolTipReverseRelationships", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (virtual).
+        /// </summary>
+        public static string ModInfoVirtual {
+            get {
+                return ResourceManager.GetString("ModInfoVirtual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some of the selected mods (or their dependencies) are not supported on your current compatible game versions ({1}) and may not work at all. If you have any problems with them, you should NOT ask their maintainers for help.
+        ///
+        ///{0}
+        ///
+        ///Are you sure you want to install them? Cancelling will abort the entire installation..
+        /// </summary>
+        public static string ModpackInstallIncompatiblePrompt {
+            get {
+                return ResourceManager.GetString("ModpackInstallIncompatiblePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to cached.
+        /// </summary>
+        public static string ModSearchCachedSuffix {
+            get {
+                return ResourceManager.GetString("ModSearchCachedSuffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to compatible.
+        /// </summary>
+        public static string ModSearchCompatibleSuffix {
+            get {
+                return ResourceManager.GetString("ModSearchCompatibleSuffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to conf:.
+        /// </summary>
+        public static string ModSearchConflictsPrefix {
+            get {
+                return ResourceManager.GetString("ModSearchConflictsPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to dep:.
+        /// </summary>
+        public static string ModSearchDependsPrefix {
+            get {
+                return ResourceManager.GetString("ModSearchDependsPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to desc:.
+        /// </summary>
+        public static string ModSearchDescriptionPrefix {
+            get {
+                return ResourceManager.GetString("ModSearchDescriptionPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to installed.
+        /// </summary>
+        public static string ModSearchInstalledSuffix {
+            get {
+                return ResourceManager.GetString("ModSearchInstalledSuffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to label:.
+        /// </summary>
+        public static string ModSearchLabelPrefix {
+            get {
+                return ResourceManager.GetString("ModSearchLabelPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to lang:.
+        /// </summary>
+        public static string ModSearchLanguagePrefix {
+            get {
+                return ResourceManager.GetString("ModSearchLanguagePrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to newly-compatible.
+        /// </summary>
+        public static string ModSearchNewlyCompatibleSuffix {
+            get {
+                return ResourceManager.GetString("ModSearchNewlyCompatibleSuffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to not:.
+        /// </summary>
+        public static string ModSearchNoPrefix {
+            get {
+                return ResourceManager.GetString("ModSearchNoPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to rec:.
+        /// </summary>
+        public static string ModSearchRecommendsPrefix {
+            get {
+                return ResourceManager.GetString("ModSearchRecommendsPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to replaceable.
+        /// </summary>
+        public static string ModSearchReplaceableSuffix {
+            get {
+                return ResourceManager.GetString("ModSearchReplaceableSuffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sug:.
+        /// </summary>
+        public static string ModSearchSuggestsPrefix {
+            get {
+                return ResourceManager.GetString("ModSearchSuggestsPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tag:.
+        /// </summary>
+        public static string ModSearchTagPrefix {
+            get {
+                return ResourceManager.GetString("ModSearchTagPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to upgradeable.
+        /// </summary>
+        public static string ModSearchUpgradeableSuffix {
+            get {
+                return ResourceManager.GetString("ModSearchUpgradeableSuffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is:.
+        /// </summary>
+        public static string ModSearchYesPrefix {
+            get {
+                return ResourceManager.GetString("ModSearchYesPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favourites.
+        /// </summary>
+        public static string ModuleLabelListFavourites {
+            get {
+                return ResourceManager.GetString("ModuleLabelListFavourites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Global.
+        /// </summary>
+        public static string ModuleLabelListGlobal {
+            get {
+                return ResourceManager.GetString("ModuleLabelListGlobal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Held.
+        /// </summary>
+        public static string ModuleLabelListHeld {
+            get {
+                return ResourceManager.GetString("ModuleLabelListHeld", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hidden.
+        /// </summary>
+        public static string ModuleLabelListHidden {
+            get {
+                return ResourceManager.GetString("ModuleLabelListHidden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to fetch master list..
+        /// </summary>
+        public static string NewRepoDialogFailed {
+            get {
+                return ResourceManager.GetString("NewRepoDialogFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CKAN Plugins (*.dll)|*.dll.
+        /// </summary>
+        public static string PluginsDialogFilter {
+            get {
+                return ResourceManager.GetString("PluginsDialogFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap refresh {
             get {
                 object obj = ResourceManager.GetObject("refresh", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Conflicts.
+        /// </summary>
+        public static string RelationshipTypeConflicts {
+            get {
+                return ResourceManager.GetString("RelationshipTypeConflicts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Depends.
+        /// </summary>
+        public static string RelationshipTypeDepends {
+            get {
+                return ResourceManager.GetString("RelationshipTypeDepends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provides.
+        /// </summary>
+        public static string RelationshipTypeProvides {
+            get {
+                return ResourceManager.GetString("RelationshipTypeProvides", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommends.
+        /// </summary>
+        public static string RelationshipTypeRecommends {
+            get {
+                return ResourceManager.GetString("RelationshipTypeRecommends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggests.
+        /// </summary>
+        public static string RelationshipTypeSuggests {
+            get {
+                return ResourceManager.GetString("RelationshipTypeSuggests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Supports.
+        /// </summary>
+        public static string RelationshipTypeSupports {
+            get {
+                return ResourceManager.GetString("RelationshipTypeSupports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Abort whole update.
+        /// </summary>
+        public static string RepoDownloadsFailedAbortBtn {
+            get {
+                return ResourceManager.GetString("RepoDownloadsFailedAbortBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository.
+        /// </summary>
+        public static string RepoDownloadsFailedColHdr {
+            get {
+                return ResourceManager.GetString("RepoDownloadsFailedColHdr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following repositories failed to download. You can retry or abort, and if you retry, you can choose to remove some repositories. Note that any repositories you skip will be PERMANENTLY removed from your configuration!.
+        /// </summary>
+        public static string RepoDownloadsFailedMessage {
+            get {
+                return ResourceManager.GetString("RepoDownloadsFailedMessage", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap search {
+        public static System.Drawing.Bitmap search {
             get {
                 object obj = ResourceManager.GetObject("search", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap settings {
+        public static System.Drawing.Bitmap settings {
             get {
                 object obj = ResourceManager.GetObject("settings", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a folder for storing CKAN&apos;s mod downloads:.
+        /// </summary>
+        public static string SettingsDialogCacheDescrip {
+            get {
+                return ResourceManager.GetString("SettingsDialogCacheDescrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you really want to delete {0} cached files, freeing {1}?.
+        /// </summary>
+        public static string SettingsDialogDeleteConfirm {
+            get {
+                return ResourceManager.GetString("SettingsDialogDeleteConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid path: {0}.
+        /// </summary>
+        public static string SettingsDialogSummaryInvalid {
+            get {
+                return ResourceManager.GetString("SettingsDialogSummaryInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} files, {1}, {2} free.
+        /// </summary>
+        public static string SettingsDialogSummmary {
+            get {
+                return ResourceManager.GetString("SettingsDialogSummmary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error during update.
+        ///Can&apos;t update automatically, because ckan.exe is read-only or we are not allowed to overwrite it. Please update manually via https://github.com/KSP-CKAN/CKAN/releases/latest..
+        /// </summary>
+        public static string SettingsDialogUpdateFailed {
+            get {
+                return ResourceManager.GetString("SettingsDialogUpdateFailed", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap smile {
+        public static System.Drawing.Bitmap smile {
             get {
                 object obj = ResourceManager.GetObject("smile", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap star {
+        public static System.Drawing.Bitmap star {
             get {
                 object obj = ResourceManager.GetObject("star", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game instance: {0} ({1} {2}).
+        /// </summary>
+        public static string StatusInstanceLabelText {
+            get {
+                return ResourceManager.GetString("StatusInstanceLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game instance: {0} ({1} {2}, played {3}h).
+        /// </summary>
+        public static string StatusInstanceLabelTextWithPlayTime {
+            get {
+                return ResourceManager.GetString("StatusInstanceLabelTextWithPlayTime", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap textClear {
+        public static System.Drawing.Bitmap stop {
+            get {
+                object obj = ResourceManager.GetObject("stop", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap textClear {
             get {
                 object obj = ResourceManager.GetObject("textClear", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap thumbup {
+        public static System.Drawing.Bitmap thumbup {
             get {
                 object obj = ResourceManager.GetObject("thumbup", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to Total play time: {0} hours.
         /// </summary>
-        internal static System.Drawing.Bitmap update {
+        public static string TotalPlayTime {
             get {
-                object obj = ResourceManager.GetObject("update", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("TotalPlayTime", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to Yes or No.
         /// </summary>
-        internal static System.Drawing.Bitmap triToggleYes {
+        public static string TriStateToggleBothTooltip {
             get {
-                object obj = ResourceManager.GetObject("triToggleYes", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("TriStateToggleBothTooltip", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string TriStateToggleNoTooltip {
+            get {
+                return ResourceManager.GetString("TriStateToggleNoTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string TriStateToggleYesTooltip {
+            get {
+                return ResourceManager.GetString("TriStateToggleYesTooltip", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap triToggleBoth {
+        public static System.Drawing.Bitmap triToggleBoth {
             get {
                 object obj = ResourceManager.GetObject("triToggleBoth", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap triToggleNo {
+        public static System.Drawing.Bitmap triToggleNo {
             get {
                 object obj = ResourceManager.GetObject("triToggleNo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
-        internal static string AboutDialogLabel2Text {
-            get { return (string)(ResourceManager.GetObject("AboutDialogLabel2Text", resourceCulture)); }
-        }
-
-        internal static string BuildIDFilterDescription {
-            get { return (string)(ResourceManager.GetObject("BuildIDFilterDescription", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogEnterName {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogEnterName", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogEnterPath {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogEnterPath", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogCloningInstance {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogCloningInstance", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogInstanceNotValid {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogInstanceNotValid", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogDlcVersionMalformatted {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogDlcVersionMalformatted", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogDestinationNotEmpty {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogDestinationNotEmpty", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogCloneFailed {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogCloneFailed", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogSuccessfulClone {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogSuccessfulClone", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogCreatingInstance {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogCreatingInstance", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogNameAlreadyUsed {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogNameAlreadyUsed", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogFakeFailed {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogFakeFailed", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogSuccessfulCreate {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogSuccessfulCreate", resourceCulture)); }
-        }
-
-        internal static string CompatibleGameVersionsDialogNone {
-            get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogNone", resourceCulture)); }
-        }
-        internal static string CompatibleGameVersionsDialogGameUpdated {
-            get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogGameUpdated", resourceCulture)); }
-        }
-        internal static string CompatibleGameVersionsDialogVersionDetails {
-            get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogVersionDetails", resourceCulture)); }
-        }
-        internal static string CompatibleGameVersionsDialogInvalidFormat {
-            get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogInvalidFormat", resourceCulture)); }
-        }
-        internal static string CompatibleGameVersionsDialogErrorTitle {
-            get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogErrorTitle", resourceCulture)); }
-        }
-
-        internal static string ConfigurationParseError {
-            get { return (string)(ResourceManager.GetObject("ConfigurationParseError", resourceCulture)); }
-        }
-
-        internal static string GUIModNSlashA {
-            get { return (string)(ResourceManager.GetObject("GUIModNSlashA", resourceCulture)); }
-        }
-        internal static string GUIModUnknown {
-            get { return (string)(ResourceManager.GetObject("GUIModUnknown", resourceCulture)); }
-        }
-        internal static string GUIModMethodNotCKAN {
-            get { return (string)(ResourceManager.GetObject("GUIModMethodNotCKAN", resourceCulture)); }
-        }
-        internal static string GUIModGameCompatibilityLong {
-            get { return (string)(ResourceManager.GetObject("GUIModGameCompatibilityLong", resourceCulture)); }
-        }
-
-        internal static string MainAutoUpdateFailed {
-            get { return (string)(ResourceManager.GetObject("MainAutoUpdateFailed", resourceCulture)); }
-        }
-        internal static string MainQuitWithConflicts {
-            get { return (string)(ResourceManager.GetObject("MainQuitWithConflicts", resourceCulture)); }
-        }
-        internal static string MainQuit {
-            get { return (string)(ResourceManager.GetObject("MainQuit", resourceCulture)); }
-        }
-        internal static string MainGoBack {
-            get { return (string)(ResourceManager.GetObject("MainGoBack", resourceCulture)); }
-        }
-        internal static string MainQuitWithUnmetDeps {
-            get { return (string)(ResourceManager.GetObject("MainQuitWithUnmetDeps", resourceCulture)); }
-        }
-        internal static string MainQuitWithUnappliedChanges {
-            get { return (string)(ResourceManager.GetObject("MainQuitWithUnappliedChanges", resourceCulture)); }
-        }
-        internal static string MainUpgradingWaitTitle {
-            get { return (string)(ResourceManager.GetObject("MainUpgradingWaitTitle", resourceCulture)); }
-        }
-        internal static string MainUpgradingTo {
-            get { return (string)(ResourceManager.GetObject("MainUpgradingTo", resourceCulture)); }
-        }
-        internal static string MainDepNotSatisfied {
-            get { return (string)(ResourceManager.GetObject("MainDepNotSatisfied", resourceCulture)); }
-        }
-        internal static string MainFilterAll {
-            get { return (string)(ResourceManager.GetObject("MainFilterAll", resourceCulture)); }
-        }
-        internal static string MainFilterIncompatible {
-            get { return (string)(ResourceManager.GetObject("MainFilterIncompatible", resourceCulture)); }
-        }
-        internal static string MainFilterInstalled {
-            get { return (string)(ResourceManager.GetObject("MainFilterInstalled", resourceCulture)); }
-        }
-        internal static string MainFilterUpgradeable {
-            get { return (string)(ResourceManager.GetObject("MainFilterUpgradeable", resourceCulture)); }
-        }
-        internal static string MainFilterReplaceable {
-            get { return (string)(ResourceManager.GetObject("MainFilterReplaceable", resourceCulture)); }
-        }
-        internal static string MainFilterCached {
-            get { return (string)(ResourceManager.GetObject("MainFilterCached", resourceCulture)); }
-        }
-        internal static string MainFilterUncached {
-            get { return (string)(ResourceManager.GetObject("MainFilterUncached", resourceCulture)); }
-        }
-        internal static string MainFilterNew {
-            get { return (string)(ResourceManager.GetObject("MainFilterNew", resourceCulture)); }
-        }
-        internal static string MainFilterNotInstalled {
-            get { return (string)(ResourceManager.GetObject("MainFilterNotInstalled", resourceCulture)); }
-        }
-        internal static string MainFilterCompatible {
-            get { return (string)(ResourceManager.GetObject("MainFilterCompatible", resourceCulture)); }
-        }
-        internal static string MainFilterLabel {
-            get { return (string)(ResourceManager.GetObject("MainFilterLabel", resourceCulture)); }
-        }
-        internal static string MainFilterTag {
-            get { return (string)(ResourceManager.GetObject("MainFilterTag", resourceCulture)); }
-        }
-        internal static string MainFilterUntagged {
-            get { return (string)(ResourceManager.GetObject("MainFilterUntagged", resourceCulture)); }
-        }
-        internal static string MainLaunchWithIncompatible {
-            get { return (string)(ResourceManager.GetObject("MainLaunchWithIncompatible", resourceCulture)); }
-        }
-        internal static string MainLaunchDontShow {
-            get { return (string)(ResourceManager.GetObject("MainLaunchDontShow", resourceCulture)); }
-        }
-        internal static string MainLaunch {
-            get { return (string)(ResourceManager.GetObject("MainLaunch", resourceCulture)); }
-        }
-        internal static string MainLaunchFailed {
-            get { return (string)(ResourceManager.GetObject("MainLaunchFailed", resourceCulture)); }
-        }
-        internal static string MainModPack {
-            get { return (string)(ResourceManager.GetObject("MainModPack", resourceCulture)); }
-        }
-        internal static string MainPlainText {
-            get { return (string)(ResourceManager.GetObject("MainPlainText", resourceCulture)); }
-        }
-        internal static string MainMarkdown {
-            get { return (string)(ResourceManager.GetObject("MainMarkdown", resourceCulture)); }
-        }
-        internal static string MainBBCode {
-            get { return (string)(ResourceManager.GetObject("MainBBCode", resourceCulture)); }
-        }
-        internal static string MainCSV {
-            get { return (string)(ResourceManager.GetObject("MainCSV", resourceCulture)); }
-        }
-        internal static string MainTSV {
-            get { return (string)(ResourceManager.GetObject("MainTSV", resourceCulture)); }
-        }
-        internal static string MainNotFound {
-            get { return (string)(ResourceManager.GetObject("MainNotFound", resourceCulture)); }
-        }
-        internal static string MainReinstallConfirm {
-            get { return (string)(ResourceManager.GetObject("MainReinstallConfirm", resourceCulture)); }
-        }
-        internal static string MainCantInstallDLC {
-            get { return (string)(ResourceManager.GetObject("MainCantInstallDLC", resourceCulture)); }
-        }
-        internal static string MainCorruptedRegistry {
-            get { return (string)(ResourceManager.GetObject("MainCorruptedRegistry", resourceCulture)); }
-        }
-
-        internal static string AllModVersionsInstallPrompt {
-            get { return (string)(ResourceManager.GetObject("AllModVersionsInstallPrompt", resourceCulture)); }
-        }
-        internal static string ModpackInstallIncompatiblePrompt {
-            get { return (string)(ResourceManager.GetObject("ModpackInstallIncompatiblePrompt", resourceCulture)); }
-        }
-        internal static string AllModVersionsInstallYes {
-            get { return (string)(ResourceManager.GetObject("AllModVersionsInstallYes", resourceCulture)); }
-        }
-        internal static string AllModVersionsInstallNo {
-            get { return (string)(ResourceManager.GetObject("AllModVersionsInstallNo", resourceCulture)); }
-        }
-
-        internal static string MainChangesetUpdateSelected {
-            get { return (string)(ResourceManager.GetObject("MainChangesetUpdateSelected", resourceCulture)); }
-        }
-
-        internal static string MainImportTitle {
-            get { return (string)(ResourceManager.GetObject("MainImportTitle", resourceCulture)); }
-        }
-        internal static string MainImportFilter {
-            get { return (string)(ResourceManager.GetObject("MainImportFilter", resourceCulture)); }
-        }
-        internal static string MainImportWaitTitle {
-            get { return (string)(ResourceManager.GetObject("MainImportWaitTitle", resourceCulture)); }
-        }
-
-        internal static string MainInstallWaitTitle {
-            get { return (string)(ResourceManager.GetObject("MainInstallWaitTitle", resourceCulture)); }
-        }
-        internal static string MainInstallDepNotSatisfied {
-            get { return (string)(ResourceManager.GetObject("MainInstallDepNotSatisfied", resourceCulture)); }
-        }
-        internal static string MainInstallNotFound {
-            get { return (string)(ResourceManager.GetObject("MainInstallNotFound", resourceCulture)); }
-        }
-        internal static string MainInstallBadMetadata {
-            get { return (string)(ResourceManager.GetObject("MainInstallBadMetadata", resourceCulture)); }
-        }
-        internal static string MainInstallFileExists {
-            get { return (string)(ResourceManager.GetObject("MainInstallFileExists", resourceCulture)); }
-        }
-        internal static string MainInstallUnownedFileExists {
-            get { return (string)(ResourceManager.GetObject("MainInstallUnownedFileExists", resourceCulture)); }
-        }
-        internal static string MainInstallGameDataReverted {
-            get { return (string)(ResourceManager.GetObject("MainInstallGameDataReverted", resourceCulture)); }
-        }
-        internal static string MainInstallOpenSettingsPrompt {
-            get { return (string)(ResourceManager.GetObject("MainInstallOpenSettingsPrompt", resourceCulture)); }
-        }
-        internal static string MainInstallOpenSettings {
-            get { return (string)(ResourceManager.GetObject("MainInstallOpenSettings", resourceCulture)); }
-        }
-        internal static string MainInstallNo {
-            get { return (string)(ResourceManager.GetObject("MainInstallNo", resourceCulture)); }
-        }
-        internal static string MainInstallModSuccess {
-            get { return (string)(ResourceManager.GetObject("MainInstallModSuccess", resourceCulture)); }
-        }
-        internal static string MainInstallSuccess {
-            get { return (string)(ResourceManager.GetObject("MainInstallSuccess", resourceCulture)); }
-        }
-        internal static string MainInstallCancelTooLate {
-            get { return (string)(ResourceManager.GetObject("MainInstallCancelTooLate", resourceCulture)); }
-        }
-        internal static string MainInstallCancelAfterInstall {
-            get { return (string)(ResourceManager.GetObject("MainInstallCancelAfterInstall", resourceCulture)); }
-        }
-        internal static string MainInstallProcessComplete {
-            get { return (string)(ResourceManager.GetObject("MainInstallProcessComplete", resourceCulture)); }
-        }
-        internal static string MainInstallProcessCanceled {
-            get { return (string)(ResourceManager.GetObject("MainInstallProcessCanceled", resourceCulture)); }
-        }
-        internal static string MainInstallCanceledManually {
-            get { return (string)(ResourceManager.GetObject("MainInstallCanceledManually", resourceCulture)); }
-        }
-        internal static string MainInstallInstallCanceled {
-            get { return (string)(ResourceManager.GetObject("MainInstallInstallCanceled", resourceCulture)); }
-        }
-        internal static string MainInstallErrorInstalling {
-            get { return (string)(ResourceManager.GetObject("MainInstallErrorInstalling", resourceCulture)); }
-        }
-        internal static string MainInstallUnknownError {
-            get { return (string)(ResourceManager.GetObject("MainInstallUnknownError", resourceCulture)); }
-        }
-        internal static string MainInstallKnownError {
-            get { return (string)(ResourceManager.GetObject("MainInstallKnownError", resourceCulture)); }
-        }
-        internal static string MainInstallFailed {
-            get { return (string)(ResourceManager.GetObject("MainInstallFailed", resourceCulture)); }
-        }
-        internal static string MainInstallProvidedBy {
-            get { return (string)(ResourceManager.GetObject("MainInstallProvidedBy", resourceCulture)); }
-        }
-        internal static string MainInstallCantInstallDLC {
-            get { return (string)(ResourceManager.GetObject("MainInstallCantInstallDLC", resourceCulture)); }
-        }
-
-        internal static string ModInfoNSlashA {
-            get { return (string)(ResourceManager.GetObject("ModInfoNSlashA", resourceCulture)); }
-        }
-        internal static string ModInfoVirtual {
-            get { return (string)(ResourceManager.GetObject("ModInfoVirtual", resourceCulture)); }
-        }
-        internal static string ModInfoNotIndexed {
-            get { return (string)(ResourceManager.GetObject("ModInfoNotIndexed", resourceCulture)); }
-        }
-        internal static string ModInfoNotCached {
-            get { return (string)(ResourceManager.GetObject("ModInfoNotCached", resourceCulture)); }
-        }
-        internal static string ModInfoCached {
-            get { return (string)(ResourceManager.GetObject("ModInfoCached", resourceCulture)); }
-        }
-        internal static string ModInfoNoDownload {
-            get { return (string)(ResourceManager.GetObject("ModInfoNoDownload", resourceCulture)); }
-        }
-        internal static string ModInfoHomepageLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoHomepageLabel", resourceCulture)); }
-        }
-        internal static string ModInfoSpaceDockLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoSpaceDockLabel", resourceCulture)); }
-        }
-        internal static string ModInfoCurseLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoCurseLabel", resourceCulture)); }
-        }
-        internal static string ModInfoRepositoryLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoRepositoryLabel", resourceCulture)); }
-        }
-        internal static string ModInfoBugTrackerLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoBugTrackerLabel", resourceCulture)); }
-        }
-        internal static string ModInfoContinuousIntegrationLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoContinuousIntegrationLabel", resourceCulture)); }
-        }
-        internal static string ModInfoLicenseLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoLicenseLabel", resourceCulture)); }
-        }
-        internal static string ModInfoManualLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoManualLabel", resourceCulture)); }
-        }
-        internal static string ModInfoMetanetkanLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoMetanetkanLabel", resourceCulture)); }
-        }
-        internal static string ModInfoRemoteAvcLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoRemoteAvcLabel", resourceCulture)); }
-        }
-        internal static string ModInfoStoreLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoStoreLabel", resourceCulture)); }
-        }
-        internal static string ModInfoSteamStoreLabel {
-            get { return (string)(ResourceManager.GetObject("ModInfoSteamStoreLabel", resourceCulture)); }
-        }
-        internal static string ModInfoToolTipReverseRelationships {
-            get { return (string)(ResourceManager.GetObject("ModInfoToolTipReverseRelationships", resourceCulture)); }
-        }
-        internal static string DownloadFailed {
-            get { return (string)(ResourceManager.GetObject("DownloadFailed", resourceCulture)); }
-        }
-        internal static string ValidatingDownload {
-            get { return (string)(ResourceManager.GetObject("ValidatingDownload", resourceCulture)); }
-        }
-
-        internal static string MainModListWaitTitle {
-            get { return (string)(ResourceManager.GetObject("MainModListWaitTitle", resourceCulture)); }
-        }
-        internal static string MainModListLoadingRegistry {
-            get { return (string)(ResourceManager.GetObject("MainModListLoadingRegistry", resourceCulture)); }
-        }
-        internal static string MainModListLoadingInstalled {
-            get { return (string)(ResourceManager.GetObject("MainModListLoadingInstalled", resourceCulture)); }
-        }
-        internal static string MainModListLoadingAvailable {
-            get { return (string)(ResourceManager.GetObject("MainModListLoadingAvailable", resourceCulture)); }
-        }
-        internal static string MainModListLoadingIncompatible {
-            get { return (string)(ResourceManager.GetObject("MainModListLoadingIncompatible", resourceCulture)); }
-        }
-        internal static string MainModListRestoringChangeset {
-            get { return (string)(ResourceManager.GetObject("MainModListRestoringChangeset", resourceCulture)); }
-        }
-        internal static string MainModListPreservingNew {
-            get { return (string)(ResourceManager.GetObject("MainModListPreservingNew", resourceCulture)); }
-        }
-        internal static string MainModListPopulatingList {
-            get { return (string)(ResourceManager.GetObject("MainModListPopulatingList", resourceCulture)); }
-        }
-        internal static string MainModListUpdatingFilters {
-            get { return (string)(ResourceManager.GetObject("MainModListUpdatingFilters", resourceCulture)); }
-        }
-        internal static string MainModListCompatible {
-            get { return (string)(ResourceManager.GetObject("MainModListCompatible", resourceCulture)); }
-        }
-        internal static string MainModListInstalled {
-            get { return (string)(ResourceManager.GetObject("MainModListInstalled", resourceCulture)); }
-        }
-        internal static string MainModListUpgradeable {
-            get { return (string)(ResourceManager.GetObject("MainModListUpgradeable", resourceCulture)); }
-        }
-        internal static string MainModListReplaceable {
-            get { return (string)(ResourceManager.GetObject("MainModListReplaceable", resourceCulture)); }
-        }
-        internal static string MainModListCached {
-            get { return (string)(ResourceManager.GetObject("MainModListCached", resourceCulture)); }
-        }
-        internal static string MainModListUncached {
-            get { return (string)(ResourceManager.GetObject("MainModListUncached", resourceCulture)); }
-        }
-        internal static string MainModListNewlyCompatible {
-            get { return (string)(ResourceManager.GetObject("MainModListNewlyCompatible", resourceCulture)); }
-        }
-        internal static string MainModListNotInstalled {
-            get { return (string)(ResourceManager.GetObject("MainModListNotInstalled", resourceCulture)); }
-        }
-        internal static string MainModListIncompatible {
-            get { return (string)(ResourceManager.GetObject("MainModListIncompatible", resourceCulture)); }
-        }
-        internal static string MainModListAll {
-            get { return (string)(ResourceManager.GetObject("MainModListAll", resourceCulture)); }
-        }
-        internal static string MainModListUpdatingTray {
-            get { return (string)(ResourceManager.GetObject("MainModListUpdatingTray", resourceCulture)); }
-        }
-        internal static string MainModListAutoDetected {
-            get { return (string)(ResourceManager.GetObject("MainModListAutoDetected", resourceCulture)); }
-        }
-        internal static string MainModListUnknownFilter {
-            get { return (string)(ResourceManager.GetObject("MainModListUnknownFilter", resourceCulture)); }
-        }
-
-        internal static string MainRecommendationsTitle {
-            get { return (string)(ResourceManager.GetObject("MainRecommendationsTitle", resourceCulture)); }
-        }
-        internal static string MainRecommendationsNoneFound {
-            get { return (string)(ResourceManager.GetObject("MainRecommendationsNoneFound", resourceCulture)); }
-        }
-
-        internal static string MainRepoWaitTitle {
-            get { return (string)(ResourceManager.GetObject("MainRepoWaitTitle", resourceCulture)); }
-        }
-        internal static string MainRepoContacting {
-            get { return (string)(ResourceManager.GetObject("MainRepoContacting", resourceCulture)); }
-        }
-        internal static string MainRepoScanning {
-            get { return (string)(ResourceManager.GetObject("MainRepoScanning", resourceCulture)); }
-        }
-        internal static string MainRepoUpdating {
-            get { return (string)(ResourceManager.GetObject("MainRepoUpdating", resourceCulture)); }
-        }
-        internal static string MainRepoFailedToConnect {
-            get { return (string)(ResourceManager.GetObject("MainRepoFailedToConnect", resourceCulture)); }
-        }
-        internal static string MainRepoUpToDate {
-            get { return (string)(ResourceManager.GetObject("MainRepoUpToDate", resourceCulture)); }
-        }
-        internal static string MainRepoFailed {
-            get { return (string)(ResourceManager.GetObject("MainRepoFailed", resourceCulture)); }
-        }
-        internal static string MainRepoSuccess {
-            get { return (string)(ResourceManager.GetObject("MainRepoSuccess", resourceCulture)); }
-        }
-        internal static string MainRepoAutoRefreshPrompt {
-            get { return (string)(ResourceManager.GetObject("MainRepoAutoRefreshPrompt", resourceCulture)); }
-        }
-        internal static string MainRepoBalloonTipDetails {
-            get { return (string)(ResourceManager.GetObject("MainRepoBalloonTipDetails", resourceCulture)); }
-        }
-        internal static string MainRepoBalloonTipTooltip {
-            get { return (string)(ResourceManager.GetObject("MainRepoBalloonTipTooltip", resourceCulture)); }
-        }
-
-        internal static string MainTrayIconResume {
-            get { return (string)(ResourceManager.GetObject("MainTrayIconResume", resourceCulture)); }
-        }
-        internal static string MainTrayIconPause {
-            get { return (string)(ResourceManager.GetObject("MainTrayIconPause", resourceCulture)); }
-        }
-        internal static string MainTrayNoUpdates {
-            get { return (string)(ResourceManager.GetObject("MainTrayNoUpdates", resourceCulture)); }
-        }
-        internal static string MainTrayUpdatesAvailable {
-            get { return (string)(ResourceManager.GetObject("MainTrayUpdatesAvailable", resourceCulture)); }
-        }
-        internal static string MainWaitPleaseWait {
-            get { return (string)(ResourceManager.GetObject("MainWaitPleaseWait", resourceCulture)); }
-        }
-        internal static string MainWaitDone {
-            get { return (string)(ResourceManager.GetObject("MainWaitDone", resourceCulture)); }
-        }
-
-        internal static string ManageGameInstancesNotValid {
-            get { return (string)(ResourceManager.GetObject("ManageGameInstancesNotValid", resourceCulture)); }
-        }
-
-        internal static string ManageGameInstancesDirectoryDeleted {
-            get { return (string)(ResourceManager.GetObject("ManageGameInstancesDirectoryDeleted", resourceCulture)); }
-        }
-
-        internal static string ManageGameInstancesNameColumnInvalid {
-            get { return (string)(ResourceManager.GetObject("ManageGameInstancesNameColumnInvalid", resourceCulture)); }
-        }
-        internal static string ManageGameInstancesNameColumnLocked {
-            get { return (string)(ResourceManager.GetObject("ManageGameInstancesNameColumnLocked", resourceCulture)); }
-        }
-
-        internal static string NewRepoDialogFailed {
-            get { return (string)(ResourceManager.GetObject("NewRepoDialogFailed", resourceCulture)); }
-        }
-
-        internal static string PluginsDialogFilter {
-            get { return (string)(ResourceManager.GetObject("PluginsDialogFilter", resourceCulture)); }
-        }
-
-        internal static string SettingsDialogSummmary {
-            get { return (string)(ResourceManager.GetObject("SettingsDialogSummmary", resourceCulture)); }
-        }
-        internal static string SettingsDialogSummaryInvalid {
-            get { return (string)(ResourceManager.GetObject("SettingsDialogSummaryInvalid", resourceCulture)); }
-        }
-        internal static string SettingsDialogCacheDescrip {
-            get { return (string)(ResourceManager.GetObject("SettingsDialogCacheDescrip", resourceCulture)); }
-        }
-        internal static string SettingsDialogDeleteConfirm {
-            get { return (string)(ResourceManager.GetObject("SettingsDialogDeleteConfirm", resourceCulture)); }
-        }
-        internal static string SettingsDialogUpdateFailed {
-            get { return (string)(ResourceManager.GetObject("SettingsDialogUpdateFailed", resourceCulture)); }
-        }
-
-        internal static string AddAuthTokenTitle {
-            get { return (string)(ResourceManager.GetObject("AddAuthTokenTitle", resourceCulture)); }
-        }
-        internal static string AddAuthTokenHost {
-            get { return (string)(ResourceManager.GetObject("AddAuthTokenHost", resourceCulture)); }
-        }
-        internal static string AddAuthTokenToken {
-            get { return (string)(ResourceManager.GetObject("AddAuthTokenToken", resourceCulture)); }
-        }
-        internal static string AddAuthTokenAccept {
-            get { return (string)(ResourceManager.GetObject("AddAuthTokenAccept", resourceCulture)); }
-        }
-        internal static string AddAuthTokenCancel {
-            get { return (string)(ResourceManager.GetObject("AddAuthTokenCancel", resourceCulture)); }
-        }
-        internal static string AddAuthTokenHostRequired {
-            get { return (string)(ResourceManager.GetObject("AddAuthTokenHostRequired", resourceCulture)); }
-        }
-        internal static string AddAuthTokenTokenRequired {
-            get { return (string)(ResourceManager.GetObject("AddAuthTokenTokenRequired", resourceCulture)); }
-        }
-        internal static string AddAuthTokenInvalidHost {
-            get { return (string)(ResourceManager.GetObject("AddAuthTokenInvalidHost", resourceCulture)); }
-        }
-        internal static string AddAuthTokenDupHost {
-            get { return (string)(ResourceManager.GetObject("AddAuthTokenDupHost", resourceCulture)); }
-        }
-
-        internal static string URLHandlersPrompt {
-            get { return (string)(ResourceManager.GetObject("URLHandlersPrompt", resourceCulture)); }
-        }
-
-        internal static string UtilCopyLink {
-            get { return (string)(ResourceManager.GetObject("UtilCopyLink", resourceCulture)); }
-        }
-
-        internal static string StatusInstanceLabelText {
-            get { return (string)(ResourceManager.GetObject("StatusInstanceLabelText", resourceCulture)); }
-        }
-        internal static string StatusInstanceLabelTextWithPlayTime {
-            get { return (string)(ResourceManager.GetObject("StatusInstanceLabelTextWithPlayTime", resourceCulture)); }
-        }
-        internal static string ModuleLabelListFavourites {
-            get { return (string)(ResourceManager.GetObject("ModuleLabelListFavourites", resourceCulture)); }
-        }
-        internal static string ModuleLabelListHidden {
-            get { return (string)(ResourceManager.GetObject("ModuleLabelListHidden", resourceCulture)); }
-        }
-        internal static string ModuleLabelListHeld {
-            get { return (string)(ResourceManager.GetObject("ModuleLabelListHeld", resourceCulture)); }
-        }
-        internal static string ModuleLabelListGlobal {
-            get { return (string)(ResourceManager.GetObject("ModuleLabelListGlobal", resourceCulture)); }
-        }
-        internal static string EditLabelsDialogConfirmDelete {
-            get { return (string)(ResourceManager.GetObject("EditLabelsDialogConfirmDelete", resourceCulture)); }
-        }
-        internal static string EditLabelsDialogSavePrompt {
-            get { return (string)(ResourceManager.GetObject("EditLabelsDialogSavePrompt", resourceCulture)); }
-        }
-        internal static string EditLabelsDialogNoRecord {
-            get { return (string)(ResourceManager.GetObject("EditLabelsDialogNoRecord", resourceCulture)); }
-        }
-        internal static string EditLabelsDialogNameRequired {
-            get { return (string)(ResourceManager.GetObject("EditLabelsDialogNameRequired", resourceCulture)); }
-        }
-        internal static string EditLabelsDialogAlreadyExists {
-            get { return (string)(ResourceManager.GetObject("EditLabelsDialogAlreadyExists", resourceCulture)); }
-        }
-        internal static string EditLabelsDialogDelete {
-            get { return (string)(ResourceManager.GetObject("EditLabelsDialogDelete", resourceCulture)); }
-        }
-        internal static string EditLabelsDialogCancel {
-            get { return (string)(ResourceManager.GetObject("EditLabelsDialogCancel", resourceCulture)); }
-        }
-        internal static string EditLabelsDialogSave {
-            get { return (string)(ResourceManager.GetObject("EditLabelsDialogSave", resourceCulture)); }
-        }
-        internal static string EditLabelsDialogDiscard {
-            get { return (string)(ResourceManager.GetObject("EditLabelsDialogDiscard", resourceCulture)); }
-        }
-        internal static string MainChangesetWarningInstallingModuleWithLabel {
-            get { return (string)(ResourceManager.GetObject("MainChangesetWarningInstallingModuleWithLabel", resourceCulture)); }
-        }
-        internal static string EditLabelsToolTipName {
-            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipName", resourceCulture)); }
-        }
-        internal static string EditLabelsToolTipColor {
-            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipColor", resourceCulture)); }
-        }
-        internal static string EditLabelsToolTipInstance {
-            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipInstance", resourceCulture)); }
-        }
-        internal static string EditLabelsToolTipHide {
-            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipHide", resourceCulture)); }
-        }
-        internal static string EditLabelsToolTipNotifyOnChanges {
-            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipNotifyOnChanges", resourceCulture)); }
-        }
-        internal static string EditLabelsToolTipRemoveOnChanges {
-            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipRemoveOnChanges", resourceCulture)); }
-        }
-        internal static string EditLabelsToolTipAlertOnInstall {
-            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipAlertOnInstall", resourceCulture)); }
-        }
-        internal static string EditLabelsToolTipRemoveOnInstall {
-            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipRemoveOnInstall", resourceCulture)); }
-        }
-        internal static string EditLabelsToolTipHoldVersion {
-            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipHoldVersion", resourceCulture)); }
-        }
-        internal static string EditLabelsToolTipMoveUp {
-            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipMoveUp", resourceCulture)); }
-        }
-        internal static string EditLabelsToolTipMoveDown {
-            get { return (string)(ResourceManager.GetObject("EditLabelsToolTipMoveDown", resourceCulture)); }
-        }
-        internal static string MainLabelsUpdateMessage {
-            get { return (string)(ResourceManager.GetObject("MainLabelsUpdateMessage", resourceCulture)); }
-        }
-        internal static string MainLabelsUpdateTitle {
-            get { return (string)(ResourceManager.GetObject("MainLabelsUpdateTitle", resourceCulture)); }
-        }
-        internal static string MainLabelsUntagged {
-            get { return (string)(ResourceManager.GetObject("MainLabelsUntagged", resourceCulture)); }
-        }
-
-        internal static string EditModpackBadIdentifier {
-            get { return (string)(ResourceManager.GetObject("EditModpackBadIdentifier", resourceCulture)); }
-        }
-        internal static string EditModpackBadName {
-            get { return (string)(ResourceManager.GetObject("EditModpackBadName", resourceCulture)); }
-        }
-        internal static string EditModpackBadVersion {
-            get { return (string)(ResourceManager.GetObject("EditModpackBadVersion", resourceCulture)); }
-        }
-        internal static string EditModpackBadGameVersions {
-            get { return (string)(ResourceManager.GetObject("EditModpackBadGameVersions", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipIdentifier {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipIdentifier", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipName {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipName", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipAbstract {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipAbstract", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipVersion {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipVersion", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipGameVersionMin {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipGameVersionMin", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipGameVersionMax {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipGameVersionMax", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipLicense {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipLicense", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipIncludeVersions {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipIncludeVersions", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipDepends {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipDepends", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipRecommends {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipRecommends", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipSuggests {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipSuggests", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipIgnore {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipIgnore", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipCancel {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipCancel", resourceCulture)); }
-        }
-        internal static string EditModpackTooltipExport {
-            get { return (string)(ResourceManager.GetObject("EditModpackTooltipExport", resourceCulture)); }
-        }
-
-        internal static string TriStateToggleYesTooltip {
-            get { return (string)(ResourceManager.GetObject("TriStateToggleYesTooltip", resourceCulture)); }
-        }
-        internal static string TriStateToggleBothTooltip {
-            get { return (string)(ResourceManager.GetObject("TriStateToggleBothTooltip", resourceCulture)); }
-        }
-        internal static string TriStateToggleNoTooltip {
-            get { return (string)(ResourceManager.GetObject("TriStateToggleNoTooltip", resourceCulture)); }
-        }
-
-        internal static string ModSearchDescriptionPrefix {
-            get { return (string)(ResourceManager.GetObject("ModSearchDescriptionPrefix", resourceCulture)); }
-        }
-        internal static string ModSearchLanguagePrefix {
-            get { return (string)(ResourceManager.GetObject("ModSearchLanguagePrefix", resourceCulture)); }
-        }
-        internal static string ModSearchDependsPrefix {
-            get { return (string)(ResourceManager.GetObject("ModSearchDependsPrefix", resourceCulture)); }
-        }
-        internal static string ModSearchRecommendsPrefix {
-            get { return (string)(ResourceManager.GetObject("ModSearchRecommendsPrefix", resourceCulture)); }
-        }
-        internal static string ModSearchSuggestsPrefix {
-            get { return (string)(ResourceManager.GetObject("ModSearchSuggestsPrefix", resourceCulture)); }
-        }
-        internal static string ModSearchConflictsPrefix {
-            get { return (string)(ResourceManager.GetObject("ModSearchConflictsPrefix", resourceCulture)); }
-        }
-        internal static string ModSearchTagPrefix {
-            get { return (string)(ResourceManager.GetObject("ModSearchTagPrefix", resourceCulture)); }
-        }
-        internal static string ModSearchLabelPrefix {
-            get { return (string)(ResourceManager.GetObject("ModSearchLabelPrefix", resourceCulture)); }
-        }
-        internal static string ModSearchYesPrefix {
-            get { return (string)(ResourceManager.GetObject("ModSearchYesPrefix", resourceCulture)); }
-        }
-        internal static string ModSearchNoPrefix {
-            get { return (string)(ResourceManager.GetObject("ModSearchNoPrefix", resourceCulture)); }
-        }
-        internal static string ModSearchCompatibleSuffix {
-            get { return (string)(ResourceManager.GetObject("ModSearchCompatibleSuffix", resourceCulture)); }
-        }
-        internal static string ModSearchInstalledSuffix {
-            get { return (string)(ResourceManager.GetObject("ModSearchInstalledSuffix", resourceCulture)); }
-        }
-        internal static string ModSearchCachedSuffix {
-            get { return (string)(ResourceManager.GetObject("ModSearchCachedSuffix", resourceCulture)); }
-        }
-        internal static string ModSearchNewlyCompatibleSuffix {
-            get { return (string)(ResourceManager.GetObject("ModSearchNewlyCompatibleSuffix", resourceCulture)); }
-        }
-        internal static string ModSearchUpgradeableSuffix {
-            get { return (string)(ResourceManager.GetObject("ModSearchUpgradeableSuffix", resourceCulture)); }
-        }
-        internal static string ModSearchReplaceableSuffix {
-            get { return (string)(ResourceManager.GetObject("ModSearchReplaceableSuffix", resourceCulture)); }
-        }
-        internal static string EditModSearchTooltipExpandButton {
-            get { return (string)(ResourceManager.GetObject("EditModSearchTooltipExpandButton", resourceCulture)); }
-        }
-        internal static string EditModSearchesTooltipAddSearchButton {
-            get { return (string)(ResourceManager.GetObject("EditModSearchesTooltipAddSearchButton", resourceCulture)); }
-        }
-
-        internal static string ManageModsInstallAllCheckboxTooltip {
-            get { return (string)(ResourceManager.GetObject("ManageModsInstallAllCheckboxTooltip", resourceCulture)); }
-        }
-
-        internal static string TotalPlayTime {
-            get { return (string)(ResourceManager.GetObject("TotalPlayTime", resourceCulture)); }
-        }
-
-        internal static string ChangeTypeNone {
-            get { return (string)(ResourceManager.GetObject("ChangeTypeNone", resourceCulture)); }
-        }
-        internal static string ChangeTypeInstall {
-            get { return (string)(ResourceManager.GetObject("ChangeTypeInstall", resourceCulture)); }
-        }
-        internal static string ChangeTypeRemove {
-            get { return (string)(ResourceManager.GetObject("ChangeTypeRemove", resourceCulture)); }
-        }
-        internal static string ChangeTypeUpdate {
-            get { return (string)(ResourceManager.GetObject("ChangeTypeUpdate", resourceCulture)); }
-        }
-        internal static string ChangeTypeReplace {
-            get { return (string)(ResourceManager.GetObject("ChangeTypeReplace", resourceCulture)); }
-        }
-
-        internal static string ModDownloadsFailedMessage {
-            get { return (string)(ResourceManager.GetObject("ModDownloadsFailedMessage", resourceCulture)); }
-        }
-        internal static string ModDownloadsFailedColHdr {
-            get { return (string)(ResourceManager.GetObject("ModDownloadsFailedColHdr", resourceCulture)); }
-        }
-        internal static string ModDownloadsFailedAbortBtn {
-            get { return (string)(ResourceManager.GetObject("ModDownloadsFailedAbortBtn", resourceCulture)); }
-        }
-
-        internal static string RepoDownloadsFailedMessage {
-            get { return (string)(ResourceManager.GetObject("RepoDownloadsFailedMessage", resourceCulture)); }
-        }
-        internal static string RepoDownloadsFailedColHdr {
-            get { return (string)(ResourceManager.GetObject("RepoDownloadsFailedColHdr", resourceCulture)); }
-        }
-        internal static string RepoDownloadsFailedAbortBtn {
-            get { return (string)(ResourceManager.GetObject("RepoDownloadsFailedAbortBtn", resourceCulture)); }
-        }
-
-        public static string RelationshipTypeProvides {
-            get { return (string)(ResourceManager.GetObject("RelationshipTypeProvides", resourceCulture)); }
-        }
-        public static string RelationshipTypeDepends {
-            get { return (string)(ResourceManager.GetObject("RelationshipTypeDepends", resourceCulture)); }
-        }
-        public static string RelationshipTypeRecommends {
-            get { return (string)(ResourceManager.GetObject("RelationshipTypeRecommends", resourceCulture)); }
-        }
-        public static string RelationshipTypeSuggests {
-            get { return (string)(ResourceManager.GetObject("RelationshipTypeSuggests", resourceCulture)); }
-        }
-        public static string RelationshipTypeSupports {
-            get { return (string)(ResourceManager.GetObject("RelationshipTypeSupports", resourceCulture)); }
-        }
-        public static string RelationshipTypeConflicts {
-            get { return (string)(ResourceManager.GetObject("RelationshipTypeConflicts", resourceCulture)); }
-        }
-
-        public static string AuthorSearchName {
-            get { return (string)(ResourceManager.GetObject("AuthorSearchName", resourceCulture)); }
-        }
-        public static string FilterLinkToolTip {
-            get { return (string)(ResourceManager.GetObject("FilterLinkToolTip", resourceCulture)); }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap triToggleYes {
+            get {
+                object obj = ResourceManager.GetObject("triToggleYes", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap update {
+            get {
+                object obj = ResourceManager.GetObject("update", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CKAN requires permission to add a handler for ckan:// URLs.
+        ///Do you want to allow CKAN to do this? If you click no you won&apos;t see this message again..
+        /// </summary>
+        public static string URLHandlersPrompt {
+            get {
+                return ResourceManager.GetString("URLHandlersPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &amp;Copy link address.
+        /// </summary>
+        public static string UtilCopyLink {
+            get {
+                return ResourceManager.GetString("UtilCopyLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validating {0}.
+        /// </summary>
+        public static string ValidatingDownload {
+            get {
+                return ResourceManager.GetString("ValidatingDownload", resourceCulture);
+            }
         }
     }
 }

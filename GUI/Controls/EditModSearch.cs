@@ -27,7 +27,7 @@ namespace CKAN.GUI
 
             // TextBox resizes unpredictably at runtime, so we need special logic
             // to line up the button with it
-            ExpandButton.Top    = FilterCombinedTextBox.Top;
+            ExpandButton.Top = FilterCombinedTextBox.Top;
             ExpandButton.Height = ExpandButton.Width = FilterCombinedTextBox.Height;
 
             handler = Util.Debounce<EventArgs>(ImmediateHandler,
@@ -37,7 +37,7 @@ namespace CKAN.GUI
 
             // Sharing handler combines the delay from both events
             FilterCombinedTextBox.TextChanged += (sender, e) => handler(sender, e);
-            FilterCombinedTextBox.KeyDown     += (sender, e) => handler(sender, e);
+            FilterCombinedTextBox.KeyDown += (sender, e) => handler(sender, e);
         }
 
         /// <summary>
@@ -129,7 +129,8 @@ namespace CKAN.GUI
                 // and we want immediate handling for them
                 return true;
             }
-            switch (e) {
+            switch (e)
+            {
                 case KeyEventArgs keyEvt:
                     switch (keyEvt.KeyCode)
                     {
@@ -181,13 +182,13 @@ namespace CKAN.GUI
                 SearchDetails.FilterByNameTextBox.Focus();
                 if (Main.Instance != null)
                 {
-                    Main.Instance.Move   += FormGeometryChanged;
+                    Main.Instance.Move += FormGeometryChanged;
                     Resize += FormGeometryChanged;
                 }
             }
             else if (Main.Instance != null)
             {
-                Main.Instance.Move   -= FormGeometryChanged;
+                Main.Instance.Move -= FormGeometryChanged;
                 Resize -= FormGeometryChanged;
             }
         }
@@ -207,35 +208,35 @@ namespace CKAN.GUI
         private void SearchToEditor()
         {
             suppressSearch = true;
-                SearchDetails.FilterByNameTextBox.Text        = currentSearch?.Name
-                                                                    ?? "";
-                SearchDetails.FilterByAuthorTextBox.Text      = currentSearch?.Authors.Aggregate("", combinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByDescriptionTextBox.Text = currentSearch?.Description
-                                                                    ?? "";
-                SearchDetails.FilterByLanguageTextBox.Text    = currentSearch?.Localizations.Aggregate("", combinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByDependsTextBox.Text     = currentSearch?.DependsOn.Aggregate("", combinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByRecommendsTextBox.Text  = currentSearch?.Recommends.Aggregate("", combinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByConflictsTextBox.Text   = currentSearch?.ConflictsWith.Aggregate("", combinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterBySuggestsTextBox.Text    = currentSearch?.Suggests.Aggregate("", combinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByTagsTextBox.Text        = currentSearch?.TagNames.Aggregate("", combinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByLabelsTextBox.Text      = currentSearch?.Labels
-                                                                    .Select(lb => lb.Name)
-                                                                    .Aggregate("", combinePieces)
-                                                                    ?? "";
+            SearchDetails.FilterByNameTextBox.Text = currentSearch?.Name
+                                                                ?? "";
+            SearchDetails.FilterByAuthorTextBox.Text = currentSearch?.Authors.Aggregate("", combinePieces)
+                                                                ?? "";
+            SearchDetails.FilterByDescriptionTextBox.Text = currentSearch?.Description
+                                                                ?? "";
+            SearchDetails.FilterByLanguageTextBox.Text = currentSearch?.Localizations.Aggregate("", combinePieces)
+                                                                ?? "";
+            SearchDetails.FilterByDependsTextBox.Text = currentSearch?.DependsOn.Aggregate("", combinePieces)
+                                                                ?? "";
+            SearchDetails.FilterByRecommendsTextBox.Text = currentSearch?.Recommends.Aggregate("", combinePieces)
+                                                                ?? "";
+            SearchDetails.FilterByConflictsTextBox.Text = currentSearch?.ConflictsWith.Aggregate("", combinePieces)
+                                                                ?? "";
+            SearchDetails.FilterBySuggestsTextBox.Text = currentSearch?.Suggests.Aggregate("", combinePieces)
+                                                                ?? "";
+            SearchDetails.FilterByTagsTextBox.Text = currentSearch?.TagNames.Aggregate("", combinePieces)
+                                                                ?? "";
+            SearchDetails.FilterByLabelsTextBox.Text = currentSearch?.Labels
+                                                                .Select(lb => lb.Name)
+                                                                .Aggregate("", combinePieces)
+                                                                ?? "";
 
-                SearchDetails.CompatibleToggle.Value      = currentSearch?.Compatible;
-                SearchDetails.InstalledToggle.Value       = currentSearch?.Installed;
-                SearchDetails.CachedToggle.Value          = currentSearch?.Cached;
-                SearchDetails.NewlyCompatibleToggle.Value = currentSearch?.NewlyCompatible;
-                SearchDetails.UpgradeableToggle.Value     = currentSearch?.Upgradeable;
-                SearchDetails.ReplaceableToggle.Value     = currentSearch?.Replaceable;
+            SearchDetails.CompatibleToggle.Value = currentSearch?.Compatible;
+            SearchDetails.InstalledToggle.Value = currentSearch?.Installed;
+            SearchDetails.CachedToggle.Value = currentSearch?.Cached;
+            SearchDetails.NewlyCompatibleToggle.Value = currentSearch?.NewlyCompatible;
+            SearchDetails.UpgradeableToggle.Value = currentSearch?.Upgradeable;
+            SearchDetails.ReplaceableToggle.Value = currentSearch?.Replaceable;
             suppressSearch = false;
         }
 
@@ -273,7 +274,7 @@ namespace CKAN.GUI
                 SearchDetails.ReplaceableToggle.Value
             );
             suppressSearch = true;
-                FilterCombinedTextBox.Text = currentSearch?.Combined ?? "";
+            FilterCombinedTextBox.Text = currentSearch?.Combined ?? "";
             suppressSearch = false;
             handler(sender, e);
         }

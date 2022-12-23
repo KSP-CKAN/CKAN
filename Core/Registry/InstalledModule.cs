@@ -111,8 +111,9 @@ namespace CKAN
 
         public bool AutoInstalled
         {
-            get { return auto_installed;  }
-            set { 
+            get { return auto_installed; }
+            set
+            {
                 if (Module.IsDLC)
                 {
                     throw new ModuleIsDLCKraken(Module);

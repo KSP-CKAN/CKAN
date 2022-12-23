@@ -1,13 +1,15 @@
 using System;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Not inheriting from ConsoleScreen because we don't
     /// want the standard header/footer/background.
     /// </summary>
-    public class SplashScreen {
+    public class SplashScreen
+    {
 
         /// <summary>
         /// Initialize the screen
@@ -26,7 +28,8 @@ namespace CKAN.ConsoleUI {
         {
             // If there's a default instance, try to get the lock for it.
             GameInstance ksp = manager.CurrentInstance ?? manager.GetPreferredInstance();
-            if (ksp != null && !GameInstanceListScreen.TryGetInstance(theme, ksp, (ConsoleTheme th) => Draw(th, false))) {
+            if (ksp != null && !GameInstanceListScreen.TryGetInstance(theme, ksp, (ConsoleTheme th) => Draw(th, false)))
+            {
                 Console.ResetColor();
                 Console.Clear();
                 Console.CursorVisible = true;
@@ -76,7 +79,8 @@ namespace CKAN.ConsoleUI {
 
             string horiz = $"{Symbols.horizLineDouble}";
             drawCentered(12, $"{Symbols.upperLeftCornerDouble}##################################################{Symbols.upperRightCornerDouble}".Replace("#", horiz));
-            for (int ln = 13; ln <= 15; ++ln) {
+            for (int ln = 13; ln <= 15; ++ln)
+            {
                 drawCentered(ln, $"{Symbols.vertLineDouble}                                                  {Symbols.vertLineDouble}");
             }
             drawCentered(14, $"Version {Meta.GetVersion()}");
@@ -85,9 +89,12 @@ namespace CKAN.ConsoleUI {
             drawCentered(18, $"(C) Copyright the CKAN Authors 2014-{DateTime.Now.Year}");
             drawCentered(19, "https://github.com/KSP-CKAN/CKAN/graphs/contributors");
 
-            if (pressAny) {
+            if (pressAny)
+            {
                 drawCentered(21, Properties.Resources.SplashPressAnyKey);
-            } else {
+            }
+            else
+            {
                 drawCentered(21, Properties.Resources.SplashLoading);
             }
         }
@@ -95,11 +102,13 @@ namespace CKAN.ConsoleUI {
         private void drawCentered(int y, string val)
         {
             int lp = (Console.WindowWidth - val.Length) / 2;
-            try {
+            try
+            {
                 // This can throw if the screen is too small
                 Console.SetCursorPosition(lp, y);
                 Console.Write(val);
-            } catch { }
+            }
+            catch { }
         }
 
         private GameInstanceManager manager;

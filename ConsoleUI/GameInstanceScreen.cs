@@ -2,12 +2,14 @@ using System;
 using System.IO;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Base class for screens adding/editing game instances
     /// </summary>
-    public abstract class GameInstanceScreen : ConsoleScreen {
+    public abstract class GameInstanceScreen : ConsoleScreen
+    {
 
         /// <summary>
         /// Initialize the screen
@@ -20,27 +22,34 @@ namespace CKAN.ConsoleUI {
             manager = mgr;
 
             AddTip("F2", Properties.Resources.Accept);
-            AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
-                if (Valid()) {
+            AddBinding(Keys.F2, (object sender, ConsoleTheme theme) =>
+            {
+                if (Valid())
+                {
                     Save();
                     // Close screen
                     return false;
-                } else {
+                }
+                else
+                {
                     // Keep running the screen
                     return true;
                 }
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) =>
+            {
                 // Discard changes
                 return false;
             });
 
-            name = new ConsoleField(labelWidth, nameRow, -1, initName) {
+            name = new ConsoleField(labelWidth, nameRow, -1, initName)
+            {
                 GhostText = () => Properties.Resources.InstanceNameGhostText
             };
-            path = new ConsoleField(labelWidth, pathRow, -1, initPath) {
+            path = new ConsoleField(labelWidth, pathRow, -1, initPath)
+            {
                 GhostText = () => Properties.Resources.InstancePathGhostText
             };
 
@@ -75,17 +84,22 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected bool nameValid()
         {
-            if (string.IsNullOrEmpty(name.Value)) {
+            if (string.IsNullOrEmpty(name.Value))
+            {
                 // Complain about empty name
                 RaiseError(Properties.Resources.InstanceNameEmptyError);
                 SetFocus(name);
                 return false;
-            } else if (manager.HasInstance(name.Value)) {
+            }
+            else if (manager.HasInstance(name.Value))
+            {
                 // Complain about duplicate name
                 RaiseError(Properties.Resources.InstanceNameDuplicateError, name.Value);
                 SetFocus(name);
                 return false;
-            } else {
+            }
+            else
+            {
                 return true;
             }
         }
@@ -95,17 +109,21 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected bool pathValid()
         {
-            if (Platform.IsMac) {
+            if (Platform.IsMac)
+            {
                 // Handle default path dragged-and-dropped onto Mac's Terminal
                 path.Value = path.Value.Replace("Kerbal\\ Space\\ Program", "Kerbal Space Program");
             }
             try
             {
                 // DirectoryInfo's constructor throws exceptions for invalid characters, empty strings, etc.
-                if (GameInstanceManager.IsGameInstanceDir(new DirectoryInfo(path.Value))) {
+                if (GameInstanceManager.IsGameInstanceDir(new DirectoryInfo(path.Value)))
+                {
                     return true;
                 }
-            } catch {
+            }
+            catch
+            {
                 // Pretend DirectoryInfo constructed an instance that made IsGameInstanceDir return false
             }
             // Complain about non-KSP path
@@ -135,11 +153,11 @@ namespace CKAN.ConsoleUI {
             Properties.Resources.InstanceNameLabel.Length,
             Properties.Resources.InstancePathLabel.Length
         ));
-        private   const int nameRow    = 2;
+        private const int nameRow = 2;
         /// <summary>
         /// Y coordinate of path field
         /// </summary>
-        protected const int pathRow    = 4;
+        protected const int pathRow = 4;
     }
 
 }

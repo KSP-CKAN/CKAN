@@ -12,26 +12,26 @@ namespace CKAN.CmdLine
 {
     internal class InstanceSubOptions : VerbCommandOptions
     {
-        [VerbOption("list",    HelpText = "List game instances")]
-        public CommonOptions  ListOptions    { get; set; }
+        [VerbOption("list", HelpText = "List game instances")]
+        public CommonOptions ListOptions { get; set; }
 
-        [VerbOption("add",     HelpText = "Add a game instance")]
-        public AddOptions     AddOptions     { get; set; }
+        [VerbOption("add", HelpText = "Add a game instance")]
+        public AddOptions AddOptions { get; set; }
 
-        [VerbOption("clone",   HelpText = "Clone an existing game instance")]
-        public CloneOptions   CloneOptions   { get; set; }
+        [VerbOption("clone", HelpText = "Clone an existing game instance")]
+        public CloneOptions CloneOptions { get; set; }
 
-        [VerbOption("rename",  HelpText = "Rename a game instance")]
-        public RenameOptions  RenameOptions  { get; set; }
+        [VerbOption("rename", HelpText = "Rename a game instance")]
+        public RenameOptions RenameOptions { get; set; }
 
-        [VerbOption("forget",  HelpText = "Forget a game instance")]
-        public ForgetOptions  ForgetOptions  { get; set; }
+        [VerbOption("forget", HelpText = "Forget a game instance")]
+        public ForgetOptions ForgetOptions { get; set; }
 
         [VerbOption("default", HelpText = "Set the default game instance")]
         public DefaultOptions DefaultOptions { get; set; }
 
-        [VerbOption("fake",    HelpText = "Fake a game instance")]
-        public FakeOptions    FakeOptions    { get; set; }
+        [VerbOption("fake", HelpText = "Fake a game instance")]
+        public FakeOptions FakeOptions { get; set; }
 
         [HelpVerbOption]
         public string GetUsage(string verb)
@@ -169,8 +169,8 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    User     = new ConsoleUser(options.Headless);
-                    Manager  = manager ?? new GameInstanceManager(User);
+                    User = new ConsoleUser(options.Headless);
+                    Manager = manager ?? new GameInstanceManager(User);
                     exitCode = options.Handle(Manager, User);
                     if (exitCode != Exit.OK)
                         return;
@@ -216,7 +216,7 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
-        private IUser               User    { get; set; }
+        private IUser User { get; set; }
         private GameInstanceManager Manager { get; set; }
 
         #region option functions
@@ -238,15 +238,15 @@ namespace CKAN.CmdLine
                 })
                 .ToList();
 
-            string nameHeader    = Properties.Resources.InstanceListNameHeader;
+            string nameHeader = Properties.Resources.InstanceListNameHeader;
             string versionHeader = Properties.Resources.InstanceListVersionHeader;
             string defaultHeader = Properties.Resources.InstanceListDefaultHeader;
-            string pathHeader    = Properties.Resources.InstanceListPathHeader;
+            string pathHeader = Properties.Resources.InstanceListPathHeader;
 
-            var nameWidth    = Enumerable.Repeat(nameHeader, 1).Concat(output.Select(i => i.Name)).Max(i => i.Length);
+            var nameWidth = Enumerable.Repeat(nameHeader, 1).Concat(output.Select(i => i.Name)).Max(i => i.Length);
             var versionWidth = Enumerable.Repeat(versionHeader, 1).Concat(output.Select(i => i.Version)).Max(i => i.Length);
             var defaultWidth = Enumerable.Repeat(defaultHeader, 1).Concat(output.Select(i => i.Default)).Max(i => i.Length);
-            var pathWidth    = Enumerable.Repeat(pathHeader, 1).Concat(output.Select(i => i.Path)).Max(i => i.Length);
+            var pathWidth = Enumerable.Repeat(pathHeader, 1).Concat(output.Select(i => i.Path)).Max(i => i.Length);
 
             const string columnFormat = "{0}  {1}  {2}  {3}";
 
@@ -538,7 +538,7 @@ namespace CKAN.CmdLine
             if (options.name == null || options.path == null || options.version == null)
             {
                 User.RaiseMessage("instance fake <name> <{0}> <version> " +
-                	"[--MakingHistory <version>] [--BreakingGround <version>] - {1}",
+                    "[--MakingHistory <version>] [--BreakingGround <version>] - {1}",
                     Properties.Resources.Path, Properties.Resources.ArgumentMissing);
                 return badArgument();
             }

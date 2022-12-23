@@ -12,8 +12,8 @@ namespace CKAN.GUI
         public EditLabelsDialog(IUser user, GameInstanceManager manager, ModuleLabelList labels)
         {
             InitializeComponent();
-            this.user    = user;
-            this.labels  = labels;
+            this.user = user;
+            this.labels = labels;
             InstanceNameComboBox.DataSource = new string[] { "" }
                 .Concat(manager.Instances.Keys).ToArray();
             LoadTree();
@@ -47,15 +47,15 @@ namespace CKAN.GUI
                 LabelSelectionTree.Nodes.Add(new TreeNode(
                     groupName,
                     group.Select(mlbl => new TreeNode(mlbl.Name)
-                        {
-                            // Windows's TreeView has a bug where the node's visual
-                            // width is based on the owning TreeView.Font rather
-                            // than TreeNode.Font, so to ensure there's enough space,
-                            // we have to make the default bold and then override it
-                            // for non-bold nodes.
-                            NodeFont = new Font(LabelSelectionTree.Font, FontStyle.Regular),
-                            Tag      = mlbl
-                        })
+                    {
+                        // Windows's TreeView has a bug where the node's visual
+                        // width is based on the owning TreeView.Font rather
+                        // than TreeNode.Font, so to ensure there's enough space,
+                        // we have to make the default bold and then override it
+                        // for non-bold nodes.
+                        NodeFont = new Font(LabelSelectionTree.Font, FontStyle.Regular),
+                        Tag = mlbl
+                    })
                         .ToArray()
                 ));
             }
@@ -125,11 +125,11 @@ namespace CKAN.GUI
         {
             var dlg = new ColorDialog()
             {
-                AnyColor       = true,
-                AllowFullOpen  = true,
-                ShowHelp       = true,
+                AnyColor = true,
+                AllowFullOpen = true,
+                ShowHelp = true,
                 SolidColorOnly = true,
-                Color          = ColorButton.BackColor,
+                Color = ColorButton.BackColor,
             };
             if (dlg.ShowDialog(this) == DialogResult.OK)
             {
@@ -189,15 +189,15 @@ namespace CKAN.GUI
         {
             currentlyEditing = lbl;
 
-            NameTextBox.Text                     = lbl.Name;
-            ColorButton.BackColor                = lbl.Color;
-            InstanceNameComboBox.SelectedItem    = lbl.InstanceName;
+            NameTextBox.Text = lbl.Name;
+            ColorButton.BackColor = lbl.Color;
+            InstanceNameComboBox.SelectedItem = lbl.InstanceName;
             HideFromOtherFiltersCheckBox.Checked = lbl.Hide;
-            NotifyOnChangesCheckBox.Checked      = lbl.NotifyOnChange;
-            RemoveOnChangesCheckBox.Checked      = lbl.RemoveOnChange;
-            AlertOnInstallCheckBox.Checked       = lbl.AlertOnInstall;
-            RemoveOnInstallCheckBox.Checked      = lbl.RemoveOnInstall;
-            HoldVersionCheckBox.Checked          = lbl.HoldVersion;
+            NotifyOnChangesCheckBox.Checked = lbl.NotifyOnChange;
+            RemoveOnChangesCheckBox.Checked = lbl.RemoveOnChange;
+            AlertOnInstallCheckBox.Checked = lbl.AlertOnInstall;
+            RemoveOnInstallCheckBox.Checked = lbl.RemoveOnInstall;
+            HoldVersionCheckBox.Checked = lbl.HoldVersion;
 
             DeleteButton.Enabled = labels.Labels.Contains(lbl);
             EnableDisableUpDownButtons();
@@ -219,7 +219,7 @@ namespace CKAN.GUI
                     .Where(lbl => lbl.InstanceName == currentlyEditing.InstanceName)
                     .ToList();
                 int groupIndex = group.IndexOf(currentlyEditing);
-                MoveUpButton.Enabled   = groupIndex >  0;
+                MoveUpButton.Enabled = groupIndex > 0;
                 MoveDownButton.Enabled = groupIndex >= 0 && groupIndex < group.Count - 1;
             }
         }
@@ -289,18 +289,18 @@ namespace CKAN.GUI
         {
             if (EditingValid(out errMsg))
             {
-                currentlyEditing.Name         = NameTextBox.Text;
-                currentlyEditing.Color        = ColorButton.BackColor;
+                currentlyEditing.Name = NameTextBox.Text;
+                currentlyEditing.Color = ColorButton.BackColor;
                 currentlyEditing.InstanceName =
                     string.IsNullOrWhiteSpace(InstanceNameComboBox.SelectedItem?.ToString())
                         ? null
                         : InstanceNameComboBox.SelectedItem.ToString();
-                currentlyEditing.Hide            = HideFromOtherFiltersCheckBox.Checked;
-                currentlyEditing.NotifyOnChange  = NotifyOnChangesCheckBox.Checked;
-                currentlyEditing.RemoveOnChange  = RemoveOnChangesCheckBox.Checked;
-                currentlyEditing.AlertOnInstall  = AlertOnInstallCheckBox.Checked;
+                currentlyEditing.Hide = HideFromOtherFiltersCheckBox.Checked;
+                currentlyEditing.NotifyOnChange = NotifyOnChangesCheckBox.Checked;
+                currentlyEditing.RemoveOnChange = RemoveOnChangesCheckBox.Checked;
+                currentlyEditing.AlertOnInstall = AlertOnInstallCheckBox.Checked;
                 currentlyEditing.RemoveOnInstall = RemoveOnInstallCheckBox.Checked;
-                currentlyEditing.HoldVersion     = HoldVersionCheckBox.Checked;
+                currentlyEditing.HoldVersion = HoldVersionCheckBox.Checked;
                 if (!labels.Labels.Contains(currentlyEditing))
                 {
                     labels.Labels = labels.Labels
@@ -334,8 +334,8 @@ namespace CKAN.GUI
                 ? null
                 : InstanceNameComboBox.SelectedItem.ToString();
             var found = labels.Labels.FirstOrDefault(l =>
-                   l              != currentlyEditing
-                && l.Name         == NameTextBox.Text
+                   l != currentlyEditing
+                && l.Name == NameTextBox.Text
                 && (l.InstanceName == newInst
                     || newInst == null
                     || l.InstanceName == null)
@@ -359,21 +359,21 @@ namespace CKAN.GUI
                 ? null
                 : InstanceNameComboBox.SelectedItem.ToString();
             return EditDetailsPanel.Visible && currentlyEditing != null
-                && (   currentlyEditing.Name            != NameTextBox.Text
-                    || currentlyEditing.Color           != ColorButton.BackColor
-                    || currentlyEditing.InstanceName    != newInst
-                    || currentlyEditing.Hide            != HideFromOtherFiltersCheckBox.Checked
-                    || currentlyEditing.NotifyOnChange  != NotifyOnChangesCheckBox.Checked
-                    || currentlyEditing.RemoveOnChange  != RemoveOnChangesCheckBox.Checked
-                    || currentlyEditing.AlertOnInstall  != AlertOnInstallCheckBox.Checked
+                && (currentlyEditing.Name != NameTextBox.Text
+                    || currentlyEditing.Color != ColorButton.BackColor
+                    || currentlyEditing.InstanceName != newInst
+                    || currentlyEditing.Hide != HideFromOtherFiltersCheckBox.Checked
+                    || currentlyEditing.NotifyOnChange != NotifyOnChangesCheckBox.Checked
+                    || currentlyEditing.RemoveOnChange != RemoveOnChangesCheckBox.Checked
+                    || currentlyEditing.AlertOnInstall != AlertOnInstallCheckBox.Checked
                     || currentlyEditing.RemoveOnInstall != RemoveOnInstallCheckBox.Checked
-                    || currentlyEditing.HoldVersion     != HoldVersionCheckBox.Checked
+                    || currentlyEditing.HoldVersion != HoldVersionCheckBox.Checked
                 );
         }
 
-        private ModuleLabel     currentlyEditing;
+        private ModuleLabel currentlyEditing;
 
-        private readonly IUser           user;
+        private readonly IUser user;
         private readonly ModuleLabelList labels;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(EditLabelsDialog));

@@ -142,8 +142,8 @@ namespace CKAN
         public string Store(CkanModule module, string path, IProgress<long> progress, string description = null, bool move = false)
         {
             // ZipValid takes a lot longer than the hash steps, so scale them 60:20:20
-            const int zipValidPercent   = 60;
-            const int hashSha1Percent   = 20;
+            const int zipValidPercent = 60;
+            const int hashSha1Percent = 20;
             const int hashSha256Percent = 20;
 
             progress.Report(0);

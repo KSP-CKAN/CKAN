@@ -22,7 +22,7 @@ namespace CKAN
         private static readonly Dictionary<string, RegistryManager> registryCache =
             new Dictionary<string, RegistryManager>();
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
+        private static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         private readonly string path;
         public readonly string lockfilePath;
         private FileStream lockfileStream = null;
@@ -53,7 +53,7 @@ namespace CKAN
         {
             this.gameInstance = inst;
 
-            this.path    = Path.Combine(path, "registry.json");
+            this.path = Path.Combine(path, "registry.json");
             lockfilePath = InstanceRegistryLockPath(path);
 
             // Create a lock for this registry, so we cannot touch it again.
@@ -333,7 +333,7 @@ namespace CKAN
             catch (JsonException exc)
             {
                 previousCorruptedMessage = exc.Message;
-                previousCorruptedPath    = path + "_CORRUPTED_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                previousCorruptedPath = path + "_CORRUPTED_" + DateTime.Now.ToString("yyyyMMddHHmmss");
                 log.ErrorFormat("{0} is corrupted, archiving to {1}: {2}",
                     path, previousCorruptedPath, previousCorruptedMessage);
                 File.Move(path, previousCorruptedPath);
@@ -464,9 +464,9 @@ namespace CKAN
         public CkanModule GenerateModpack(bool recommends = false, bool with_versions = true)
         {
             string gameInstanceName = gameInstance.Name;
-            string name      = string.Format(Properties.Resources.ModpackName, gameInstanceName);
-            var    crit      = gameInstance.VersionCriteria();
-            var    minAndMax = crit.MinAndMax;
+            string name = string.Format(Properties.Resources.ModpackName, gameInstanceName);
+            var crit = gameInstance.VersionCriteria();
+            var minAndMax = crit.MinAndMax;
             var module = new CkanModule(
                 // v1.18 to allow Unlicense
                 new ModuleVersion("v1.18"),
@@ -474,25 +474,25 @@ namespace CKAN
                 name,
                 string.Format(Properties.Resources.RegistryManagerDefaultModpackAbstract, gameInstanceName),
                 null,
-                new List<string>()  { Environment.UserName   },
+                new List<string>() { Environment.UserName },
                 new List<License>() { License.UnknownLicense },
                 new ModuleVersion(DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss")),
                 null,
                 "metapackage")
             {
-                ksp_version_min       = minAndMax.Lower.AsInclusiveLower().WithoutBuild,
-                ksp_version_max       = minAndMax.Upper.AsInclusiveUpper().WithoutBuild,
+                ksp_version_min = minAndMax.Lower.AsInclusiveLower().WithoutBuild,
+                ksp_version_max = minAndMax.Upper.AsInclusiveUpper().WithoutBuild,
                 download_content_type = typeof(CkanModule).GetTypeInfo()
                                             .GetDeclaredField("download_content_type")
                                             .GetCustomAttribute<DefaultValueAttribute>()
                                             .Value.ToString(),
-                release_date          = DateTime.Now,
+                release_date = DateTime.Now,
             };
 
             var rels = registry.InstalledModules
                 .Where(inst => !inst.Module.IsDLC && IsAvailable(inst))
                 .OrderBy(inst => inst.identifier, StringComparer.OrdinalIgnoreCase)
-                .Select(with_versions ? (Func<InstalledModule, RelationshipDescriptor>) RelationshipWithVersion
+                .Select(with_versions ? (Func<InstalledModule, RelationshipDescriptor>)RelationshipWithVersion
                                       : RelationshipWithoutVersion)
                 .ToList();
 
@@ -502,7 +502,7 @@ namespace CKAN
             }
             else
             {
-                module.depends    = rels;
+                module.depends = rels;
             }
 
             return module;
@@ -525,7 +525,7 @@ namespace CKAN
         private RelationshipDescriptor RelationshipWithVersion(InstalledModule inst)
             => new ModuleRelationshipDescriptor()
             {
-                name    = inst.identifier,
+                name = inst.identifier,
                 version = inst.Module.version,
             };
 

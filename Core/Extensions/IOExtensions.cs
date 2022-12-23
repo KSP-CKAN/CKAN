@@ -36,9 +36,9 @@ namespace CKAN.Extensions
         /// <returns>true if child is a descendant of parent, false otherwise</returns>
         public static bool IsAncestorOf(this DirectoryInfo parent, DirectoryInfo child)
             => StringArrayStartsWith(
-                child.FullName.Split(new char[] {Path.DirectorySeparatorChar},
+                child.FullName.Split(new char[] { Path.DirectorySeparatorChar },
                                      StringSplitOptions.RemoveEmptyEntries),
-                parent.FullName.Split(new char[] {Path.DirectorySeparatorChar},
+                parent.FullName.Split(new char[] { Path.DirectorySeparatorChar },
                                       StringSplitOptions.RemoveEmptyEntries));
 
         /// <summary>

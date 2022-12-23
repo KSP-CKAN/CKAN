@@ -16,7 +16,7 @@ namespace CKAN.CmdLine
 
     public class Options
     {
-        public string action  { get; set; }
+        public string action { get; set; }
         public object options { get; set; }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace CKAN.CmdLine
             (
                 args, new Actions(), (verb, suboptions) =>
                 {
-                    action  = verb;
+                    action = verb;
                     options = suboptions;
                 },
                 delegate
@@ -274,12 +274,12 @@ namespace CKAN.CmdLine
         {
             if (otherOpts != null)
             {
-                Verbose      = Verbose      || otherOpts.Verbose;
-                Debug        = Debug        || otherOpts.Debug;
-                Debugger     = Debugger     || otherOpts.Debugger;
+                Verbose = Verbose || otherOpts.Verbose;
+                Debug = Debug || otherOpts.Debug;
+                Debugger = Debugger || otherOpts.Debugger;
                 NetUserAgent = NetUserAgent ?? otherOpts.NetUserAgent;
-                Headless     = Headless     || otherOpts.Headless;
-                AsRoot       = AsRoot       || otherOpts.AsRoot;
+                Headless = Headless || otherOpts.Headless;
+                AsRoot = AsRoot || otherOpts.AsRoot;
             }
         }
 
@@ -293,7 +293,7 @@ namespace CKAN.CmdLine
                 MethodInfo display_name = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
                 if (display_name != null)
                 {
-                    var version_string = (string) display_name.Invoke(null, null);
+                    var version_string = (string)display_name.Invoke(null, null);
                     var match = Regex.Match(version_string, @"^\D*(?<major>[\d]+)\.(?<minor>\d+)\.(?<revision>\d+).*$");
 
                     if (match.Success)
@@ -427,7 +427,7 @@ namespace CKAN.CmdLine
         [Option("all", DefaultValue = false, HelpText = "Upgrade all available updated modules")]
         public bool upgrade_all { get; set; }
 
-        [ValueList(typeof (List<string>))]
+        [ValueList(typeof(List<string>))]
         [InstalledIdentifiers]
         public List<string> modules { get; set; }
     }
@@ -453,7 +453,7 @@ namespace CKAN.CmdLine
         public bool replace_all { get; set; }
 
         // TODO: How do we provide helptext on this?
-        [ValueList(typeof (List<string>))]
+        [ValueList(typeof(List<string>))]
         [InstalledIdentifiers]
         public List<string> modules { get; set; }
     }
@@ -471,8 +471,8 @@ namespace CKAN.CmdLine
         public string export { get; set; }
     }
 
-    internal class VersionOptions   : CommonOptions { }
-    internal class CleanOptions     : InstanceSpecificOptions { }
+    internal class VersionOptions : CommonOptions { }
+    internal class CleanOptions : InstanceSpecificOptions { }
 
     internal class AvailableOptions : InstanceSpecificOptions
     {
@@ -560,9 +560,9 @@ namespace CKAN.CmdLine
     internal class CompareOptions : CommonOptions
     {
         [Option("machine-readable", HelpText = "Output in a machine readable format: -1, 0 or 1")]
-        public bool machine_readable { get; set;}
+        public bool machine_readable { get; set; }
 
-        [ValueOption(0)] public string Left  { get; set; }
+        [ValueOption(0)] public string Left { get; set; }
         [ValueOption(1)] public string Right { get; set; }
     }
 

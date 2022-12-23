@@ -20,11 +20,11 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name { get { return "avc-kref"; } }
         private readonly IHttpService httpSvc;
-        private readonly IGithubApi   githubSrc;
+        private readonly IGithubApi githubSrc;
 
         public AvcKrefTransformer(IHttpService http, IGithubApi github)
         {
-            httpSvc   = http;
+            httpSvc = http;
             githubSrc = github;
         }
 
@@ -43,7 +43,7 @@ namespace CKAN.NetKAN.Transformers
                         ?? httpSvc.DownloadText(CKAN.Net.GetRawUri(url))
                 );
 
-                json.SafeAdd("name",     remoteAvc.Name);
+                json.SafeAdd("name", remoteAvc.Name);
                 json.Remove("$kref");
                 json.SafeAdd("download", remoteAvc.Download);
 

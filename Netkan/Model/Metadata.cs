@@ -9,26 +9,26 @@ namespace CKAN.NetKAN.Model
 {
     internal sealed class Metadata
     {
-        private const string KrefPropertyName          = "$kref";
-        private const string VrefPropertyName          = "$vref";
-        private const string SpecVersionPropertyName   = "spec_version";
-        private const string VersionPropertyName       = "version";
-        private const string DownloadPropertyName      = "download";
-        public  const string UpdatedPropertyName       = "release_date";
-        private const string StagedPropertyName        = "x_netkan_staging";
+        private const string KrefPropertyName = "$kref";
+        private const string VrefPropertyName = "$vref";
+        private const string SpecVersionPropertyName = "spec_version";
+        private const string VersionPropertyName = "version";
+        private const string DownloadPropertyName = "download";
+        public const string UpdatedPropertyName = "release_date";
+        private const string StagedPropertyName = "x_netkan_staging";
         private const string StagingReasonPropertyName = "x_netkan_staging_reason";
 
         private readonly JObject _json;
 
-        public string        Identifier      { get { return (string)_json["identifier"]; } }
-        public RemoteRef     Kref            { get; private set; }
-        public RemoteRef     Vref            { get; private set; }
-        public ModuleVersion SpecVersion     { get; private set; }
-        public ModuleVersion Version         { get; private set; }
-        public Uri           Download        { get; private set; }
-        public DateTime?     RemoteTimestamp { get; private set; }
-        public bool          Staged          { get; private set; }
-        public string        StagingReason   { get; private set; }
+        public string Identifier { get { return (string)_json["identifier"]; } }
+        public RemoteRef Kref { get; private set; }
+        public RemoteRef Vref { get; private set; }
+        public ModuleVersion SpecVersion { get; private set; }
+        public ModuleVersion Version { get; private set; }
+        public Uri Download { get; private set; }
+        public DateTime? RemoteTimestamp { get; private set; }
+        public bool Staged { get; private set; }
+        public string StagingReason { get; private set; }
 
         public Metadata(JObject json)
         {

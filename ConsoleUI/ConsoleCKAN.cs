@@ -2,12 +2,14 @@ using System;
 using System.Linq;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Class that runs the console UI in its constructor
     /// </summary>
-    public class ConsoleCKAN {
+    public class ConsoleCKAN
+    {
 
         /// <summary>
         /// Run the console UI.
@@ -26,20 +28,26 @@ namespace CKAN.ConsoleUI {
 
                 // The splash screen returns true when it's safe to run the rest of the app.
                 // This can be blocked by a lock file, for example.
-                if (new SplashScreen(manager).Run(theme)) {
+                if (new SplashScreen(manager).Run(theme))
+                {
 
-                    if (manager.CurrentInstance == null) {
-                        if (manager.Instances.Count == 0) {
+                    if (manager.CurrentInstance == null)
+                    {
+                        if (manager.Instances.Count == 0)
+                        {
                             // No instances, add one
                             new GameInstanceAddScreen(manager).Run(theme);
                             // Set instance to current if they added one
                             manager.GetPreferredInstance();
-                        } else {
+                        }
+                        else
+                        {
                             // Multiple instances, no default, pick one
                             new GameInstanceListScreen(manager).Run(theme);
                         }
                     }
-                    if (manager.CurrentInstance != null) {
+                    if (manager.CurrentInstance != null)
+                    {
                         new ModListScreen(manager, debug, theme).Run(theme);
                     }
 

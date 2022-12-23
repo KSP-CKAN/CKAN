@@ -87,7 +87,7 @@ namespace CKAN.CmdLine
                     user.RaiseMessage(Properties.Resources.SearchIncompatibleModsHeader);
                     foreach (CkanModule mod in matching_incompatible)
                     {
-                        Registry.GetMinMaxVersions(new List<CkanModule> { mod } , out _, out _, out var minKsp, out var maxKsp);
+                        Registry.GetMinMaxVersions(new List<CkanModule> { mod }, out _, out _, out var minKsp, out var maxKsp);
                         string GameVersion = Versioning.GameVersionRange.VersionSpan(ksp.game, minKsp, maxKsp).ToString();
 
                         user.RaiseMessage(Properties.Resources.SearchIncompatibleMod,
@@ -126,7 +126,7 @@ namespace CKAN.CmdLine
         public List<CkanModule> PerformSearch(CKAN.GameInstance ksp, string term, string author = null, bool searchIncompatible = false)
         {
             // Remove spaces and special characters from the search term.
-            term   = String.IsNullOrWhiteSpace(term)   ? string.Empty : CkanModule.nonAlphaNums.Replace(term, "");
+            term = String.IsNullOrWhiteSpace(term) ? string.Empty : CkanModule.nonAlphaNums.Replace(term, "");
             author = String.IsNullOrWhiteSpace(author) ? string.Empty : CkanModule.nonAlphaNums.Replace(author, "");
 
             var registry = RegistryManager.Instance(ksp).registry;
@@ -192,7 +192,7 @@ namespace CKAN.CmdLine
                 if (match.Success)
                 {
                     // Handle name=version format
-                    string ident   = match.Groups["mod"].Value;
+                    string ident = match.Groups["mod"].Value;
                     string version = match.Groups["version"].Value;
                     modules[i] = $"{CaseInsensitiveExactMatch(mods, ident)}={version}";
                 }

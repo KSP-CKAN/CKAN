@@ -36,12 +36,12 @@ namespace CKAN
                 if (url.EndsWith("ckan.exe"))
                 {
                     ReleaseDownload = asset.browser_download_url;
-                    ReleaseSize     = (long)asset.size;
+                    ReleaseSize = (long)asset.size;
                 }
                 else if (url.EndsWith("AutoUpdater.exe"))
                 {
                     UpdaterDownload = asset.browser_download_url;
-                    UpdaterSize     = (long)asset.size;
+                    UpdaterSize = (long)asset.size;
                 }
             }
         }
@@ -61,10 +61,10 @@ namespace CKAN
         }
 
         public readonly CkanModuleVersion Version;
-        public readonly Uri    ReleaseDownload;
-        public readonly long   ReleaseSize;
-        public readonly Uri    UpdaterDownload;
-        public readonly long   UpdaterSize;
+        public readonly Uri ReleaseDownload;
+        public readonly long ReleaseSize;
+        public readonly Uri UpdaterDownload;
+        public readonly long UpdaterSize;
         public readonly string ReleaseNotes;
     }
 
@@ -146,7 +146,7 @@ namespace CKAN
 
             // download updater app and new ckan.exe
             string updaterFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            string ckanFilename    = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
+            string ckanFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
             Net.DownloadWithProgress(
                 new[]
                 {
@@ -168,8 +168,8 @@ namespace CKAN
             SetExecutable(updaterFilename);
             Process.Start(new ProcessStartInfo
             {
-                Verb      = "runas",
-                FileName  = updaterFilename,
+                Verb = "runas",
+                FileName = updaterFilename,
                 Arguments = String.Format(@"{0} ""{1}"" ""{2}"" {3}", -pid, exePath, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch"),
                 UseShellExecute = false,
                 // Make child's stdin a pipe so it can tell when we exit

@@ -1,17 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel;
-using System.Windows.Forms;
 using NUnit.Framework;
 using Tests.Core.Configuration;
 using Tests.Data;
 
 using CKAN;
 using CKAN.GUI;
-using CKAN.Versioning;
+using System.Windows.Forms;
 
 namespace Tests.GUI
 {
@@ -35,7 +32,8 @@ namespace Tests.GUI
                 GameInstanceManager manager = new GameInstanceManager(
                     new NullUser(),
                     config
-                ) {
+                )
+                {
                     CurrentInstance = tidy.KSP
                 };
 
@@ -76,7 +74,8 @@ namespace Tests.GUI
                 GameInstanceManager manager = new GameInstanceManager(
                     new NullUser(),
                     config
-                ) {
+                )
+                {
                     CurrentInstance = tidy.KSP
                 };
                 var registry = Registry.Empty();
@@ -150,7 +149,7 @@ namespace Tests.GUI
             // Act
 
             // Install module and set it as pre-installed
-            manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
+            manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<long>(bytes => { }));
             registry.RegisterModule(anyVersionModule, new string[] { }, instance.KSP, false);
             registry.AddAvailable(anyVersionModule);
 
@@ -169,7 +168,7 @@ namespace Tests.GUI
 
             // TODO: Refactor the column header code to allow mocking of the GUI without creating columns
             const int numCheckboxCols = 4;
-            const int numTextCols     = 11;
+            const int numTextCols = 11;
             listGui.Columns.AddRange(
                 Enumerable.Range(1, numCheckboxCols)
                     .Select(i => (DataGridViewColumn)new DataGridViewCheckBoxColumn())

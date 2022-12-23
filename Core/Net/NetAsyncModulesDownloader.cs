@@ -14,14 +14,14 @@ namespace CKAN
     {
         public event Action<CkanModule, long, long> Progress;
         public event Action<CkanModule, long, long> StoreProgress;
-        public event Action                         AllComplete;
+        public event Action AllComplete;
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncModulesDownloader.
         /// </summary>
         public NetAsyncModulesDownloader(IUser user, NetModuleCache cache)
         {
-            modules    = new List<CkanModule>();
+            modules = new List<CkanModule>();
             downloader = new NetAsyncDownloader(user);
             // Schedule us to process each module on completion.
             downloader.onOneCompleted += ModuleDownloadComplete;
@@ -94,12 +94,12 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncModulesDownloader));
 
-        private const    string             defaultMimeType = "application/octet-stream";
+        private const string defaultMimeType = "application/octet-stream";
 
-        private          List<CkanModule>   modules;
+        private List<CkanModule> modules;
         private readonly NetAsyncDownloader downloader;
-        private          IUser              User => downloader.User;
-        private readonly NetModuleCache     cache;
+        private IUser User => downloader.User;
+        private readonly NetModuleCache cache;
 
         private void ModuleDownloadComplete(Uri url, string filename, Exception error, string etag)
         {

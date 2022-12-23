@@ -20,7 +20,7 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for interaction</param>
         public Install(GameInstanceManager mgr, IUser user)
         {
-            manager   = mgr;
+            manager = mgr;
             this.user = user;
         }
 
@@ -34,7 +34,7 @@ namespace CKAN.CmdLine
         /// </returns>
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
-            InstallOptions options = (InstallOptions) raw_options;
+            InstallOptions options = (InstallOptions)raw_options;
 
             if (options.ckan_files != null)
             {
@@ -114,9 +114,9 @@ namespace CKAN.CmdLine
             // Prepare options. Can these all be done in the new() somehow?
             var install_ops = new RelationshipResolverOptions
             {
-                with_all_suggests  = options.with_all_suggests,
-                with_suggests      = options.with_suggests,
-                with_recommends    = !options.no_recommends,
+                with_all_suggests = options.with_all_suggests,
+                with_suggests = options.with_suggests,
+                with_recommends = !options.no_recommends,
                 allow_incompatible = options.allow_incompatible
             };
 
@@ -129,7 +129,7 @@ namespace CKAN.CmdLine
             RegistryManager regMgr = RegistryManager.Instance(instance);
             List<string> modules = options.modules;
 
-            for (bool done = false; !done; )
+            for (bool done = false; !done;)
             {
                 // Install everything requested. :)
                 try

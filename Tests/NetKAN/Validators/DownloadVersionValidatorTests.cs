@@ -31,7 +31,7 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var json = new JObject();
             json["spec_version"] = 1;
-            json["identifier"]   = "AwesomeMod";
+            json["identifier"] = "AwesomeMod";
             if (download != null)
             {
                 json["download"] = download;

@@ -13,7 +13,7 @@ namespace CKAN.GUI
         {
             InitializeComponent();
             this.globalConfig = globalConfig;
-            this.instance     = instance;
+            this.instance = instance;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace CKAN.GUI
         }
 
         private IConfiguration globalConfig;
-        private GameInstance   instance;
+        private GameInstance instance;
 
         private static readonly string[] delimiters = new string[]
         {

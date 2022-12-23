@@ -92,7 +92,7 @@ namespace CKAN
         /// <returns>The normalized path</returns>
         public static string NormalizePath(string path)
         {
-            return path == null    ? null
+            return path == null ? null
                  : path.Length < 2 ? path.Replace('\\', '/')
                  : path.Replace('\\', '/').TrimEnd('/');
         }
@@ -200,7 +200,8 @@ namespace CKAN
         public static void CheckFreeSpace(DirectoryInfo where, long bytesToStore, string errorDescription)
         {
             var bytesFree = where.GetDrive()?.AvailableFreeSpace;
-            if (bytesFree.HasValue && bytesToStore > bytesFree.Value) {
+            if (bytesFree.HasValue && bytesToStore > bytesFree.Value)
+            {
                 throw new NotEnoughSpaceKraken(errorDescription, where,
                                                bytesFree.Value, bytesToStore);
             }

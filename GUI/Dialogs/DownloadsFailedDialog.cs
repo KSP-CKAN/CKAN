@@ -47,9 +47,9 @@ namespace CKAN.GUI
         {
             InitializeComponent();
             ExplanationLabel.Text = TopLabelMessage;
-            ModColumn.HeaderText  = ModuleColumnHeader;
-            AbortButton.Text      = AbortButtonCaption;
-            this.rowsLinked       = rowsLinked;
+            ModColumn.HeaderText = ModuleColumnHeader;
+            AbortButton.Text = AbortButtonCaption;
+            this.rowsLinked = rowsLinked;
             rows = Exceptions
                 // One row per affected mod (mods can share downloads)
                 .SelectMany(kvp => kvp.Key.Select(m => new DownloadRow(m, kvp.Value)))
@@ -71,7 +71,7 @@ namespace CKAN.GUI
         /// <summary>
         /// True if user clicked the abort button, false otherwise
         /// </summary>
-        public bool     Abort { get; private set; } = false;
+        public bool Abort { get; private set; } = false;
         /// <summary>
         /// Array of data objects with a checkmark in the Retry column
         /// </summary>
@@ -81,7 +81,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Array of data objects with a checkmark in the Skip column
         /// </summary>
-        public object[] Skip  => rows.Where(r => r.Skip)
+        public object[] Skip => rows.Where(r => r.Skip)
                                      .Select(r => r.Data)
                                      .ToArray();
 
@@ -130,7 +130,7 @@ namespace CKAN.GUI
         private void DownloadsGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             var binding = (BindingList<DownloadRow>)DownloadsGrid.DataSource;
-            var retry   = rows[e.RowIndex].Retry;
+            var retry = rows[e.RowIndex].Retry;
             // Update all rows with this download
             for (int i = 0; i < rows.Count; ++i)
             {
@@ -179,23 +179,23 @@ namespace CKAN.GUI
         public DownloadRow(object data, Exception exc)
         {
             Retry = true;
-            Data  = data;
+            Data = data;
             Error = exc.Message;
         }
 
         /// <summary>
         /// True if Retry column has a checkmark
         /// </summary>
-        public bool   Retry { get; set; }
+        public bool Retry { get; set; }
         /// <summary>
         /// True if Skip column has a checkmark
         /// </summary>
         /// <value></value>
-        public bool   Skip  { get => !Retry; set { Retry = !value; } }
+        public bool Skip { get => !Retry; set { Retry = !value; } }
         /// <summary>
         /// This row's data object
         /// </summary>
-        public object Data  { get; private set; }
+        public object Data { get; private set; }
         /// <summary>
         /// This row's download error
         /// </summary>

@@ -32,7 +32,7 @@ namespace CKAN
             CompatibleVersions = crit;
             this.installed = installed;
             this.dlls = dlls;
-            this.dlc  = dlc;
+            this.dlc = dlc;
             PartitionModules(available, CompatibleProviders(crit, providers));
         }
 

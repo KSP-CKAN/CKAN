@@ -74,11 +74,12 @@ namespace CKAN.NetKAN.Extensions
         {
             switch (yaml.Value)
             {
-                case "null":  return JValue.CreateNull();
-                case "true":  return new JValue(true);
+                case "null": return JValue.CreateNull();
+                case "true": return new JValue(true);
                 case "false": return new JValue(false);
                 // Convert unquoted integers to int type
-                default:      return yaml.Style == ScalarStyle.Plain
+                default:
+                    return yaml.Style == ScalarStyle.Plain
                                      && int.TryParse(yaml.Value, out int intVal)
                                          ? new JValue(intVal)
                                          : new JValue(yaml.Value);

@@ -34,12 +34,12 @@ namespace CKAN.GUI
 
             List<GameVersion> compatibleVersions = inst.GetCompatibleVersions();
 
-            GameVersionLabel.Text  = inst.Version()?.ToString() ?? Properties.Resources.CompatibleGameVersionsDialogNone;
+            GameVersionLabel.Text = inst.Version()?.ToString() ?? Properties.Resources.CompatibleGameVersionsDialogNone;
             GameLocationLabel.Text = inst.GameDir().Replace('/', Path.DirectorySeparatorChar);
             List<GameVersion> knownVersions = inst.game.KnownVersions;
             List<GameVersion> majorVersionsList = CreateMajorVersionsList(knownVersions);
             List<GameVersion> compatibleVersionsLeftOthers = new List<GameVersion>(compatibleVersions);
-            compatibleVersionsLeftOthers.RemoveAll((el)=>knownVersions.Contains(el) || majorVersionsList.Contains(el));
+            compatibleVersionsLeftOthers.RemoveAll((el) => knownVersions.Contains(el) || majorVersionsList.Contains(el));
 
             SortAndAddVersionsToList(compatibleVersionsLeftOthers, compatibleVersions);
             SortAndAddVersionsToList(majorVersionsList, compatibleVersions);

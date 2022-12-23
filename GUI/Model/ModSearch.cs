@@ -38,9 +38,9 @@ namespace CKAN.GUI
                 + CkanModule.nonAlphaNums.Replace(subDesc, "");
             initStringList(Localizations, localizations);
 
-            initStringList(DependsOn,     depends);
-            initStringList(Recommends,    recommends);
-            initStringList(Suggests,      suggests);
+            initStringList(DependsOn, depends);
+            initStringList(Recommends, recommends);
+            initStringList(Suggests, suggests);
             initStringList(ConflictsWith, conflicts);
 
             initStringList(TagNames, tagNames);
@@ -49,12 +49,12 @@ namespace CKAN.GUI
                 Labels.AddRange(labels);
             }
 
-            Compatible      = compatible;
-            Installed       = installed;
-            Cached          = cached;
+            Compatible = compatible;
+            Installed = installed;
+            Cached = cached;
             NewlyCompatible = newlyCompatible;
-            Upgradeable     = upgradeable;
-            Replaceable     = replaceable;
+            Upgradeable = upgradeable;
+            Replaceable = replaceable;
 
             Combined = combined ?? getCombined();
         }
@@ -71,16 +71,16 @@ namespace CKAN.GUI
         {
             switch (filter)
             {
-                case GUIModFilter.Compatible:               Compatible      = true;  break;
-                case GUIModFilter.Incompatible:             Compatible      = false; break;
-                case GUIModFilter.Installed:                Installed       = true;  break;
-                case GUIModFilter.NotInstalled:             Installed       = false; break;
-                case GUIModFilter.InstalledUpdateAvailable: Upgradeable     = true;  break;
-                case GUIModFilter.Replaceable:              Replaceable     = true;  break;
-                case GUIModFilter.Cached:                   Cached          = true;  break;
-                case GUIModFilter.Uncached:                 Cached          = false; break;
-                case GUIModFilter.NewInRepository:          NewlyCompatible = true;  break;
-                case GUIModFilter.Tag:                      TagNames.Add(tag?.Name); break;
+                case GUIModFilter.Compatible: Compatible = true; break;
+                case GUIModFilter.Incompatible: Compatible = false; break;
+                case GUIModFilter.Installed: Installed = true; break;
+                case GUIModFilter.NotInstalled: Installed = false; break;
+                case GUIModFilter.InstalledUpdateAvailable: Upgradeable = true; break;
+                case GUIModFilter.Replaceable: Replaceable = true; break;
+                case GUIModFilter.Cached: Cached = true; break;
+                case GUIModFilter.Uncached: Cached = false; break;
+                case GUIModFilter.NewInRepository: NewlyCompatible = true; break;
+                case GUIModFilter.Tag: TagNames.Add(tag?.Name); break;
                 case GUIModFilter.CustomLabel:
                     if (label != null)
                     {
@@ -88,7 +88,7 @@ namespace CKAN.GUI
                     }
                     break;
                 default:
-                case GUIModFilter.All:                                               break;
+                case GUIModFilter.All: break;
             }
             Combined = getCombined();
         }
@@ -138,8 +138,8 @@ namespace CKAN.GUI
         /// </summary>
         public readonly string Combined;
 
-        public readonly List<string>      TagNames = new List<string>();
-        public readonly List<ModuleLabel> Labels   = new List<ModuleLabel>();
+        public readonly List<string> TagNames = new List<string>();
+        public readonly List<ModuleLabel> Labels = new List<ModuleLabel>();
 
         public readonly bool? Compatible;
         public readonly bool? Installed;
@@ -179,12 +179,12 @@ namespace CKAN.GUI
                 ConflictsWith.Concat(other.ConflictsWith).Distinct().ToList(),
                 TagNames.Concat(other.TagNames).Distinct().ToList(),
                 Labels.Concat(other.Labels).Distinct().ToList(),
-                Compatible      ?? other.Compatible,
-                Installed       ?? other.Installed,
-                Cached          ?? other.Cached,
+                Compatible ?? other.Compatible,
+                Installed ?? other.Installed,
+                Cached ?? other.Cached,
                 NewlyCompatible ?? other.NewlyCompatible,
-                Upgradeable     ?? other.Upgradeable,
-                Replaceable     ?? other.Replaceable);
+                Upgradeable ?? other.Upgradeable,
+                Replaceable ?? other.Replaceable);
 
         /// <summary>
         /// Generate a full formatted search string from the parameters.
@@ -288,25 +288,25 @@ namespace CKAN.GUI
             {
                 return null;
             }
-            string byName          = "";
-            var    byAuthors       = new List<string>();
-            string byDescription   = "";
-            var    byLocalizations = new List<string>();
+            string byName = "";
+            var byAuthors = new List<string>();
+            string byDescription = "";
+            var byLocalizations = new List<string>();
 
-            var depends    = new List<string>();
+            var depends = new List<string>();
             var recommends = new List<string>();
-            var suggests   = new List<string>();
-            var conflicts  = new List<string>();
+            var suggests = new List<string>();
+            var conflicts = new List<string>();
 
-            List<string>      tagNames = new List<string>();
-            List<ModuleLabel> labels   = new List<ModuleLabel>();
+            List<string> tagNames = new List<string>();
+            List<ModuleLabel> labels = new List<ModuleLabel>();
 
-            bool? compatible      = null;
-            bool? installed       = null;
-            bool? cached          = null;
+            bool? compatible = null;
+            bool? installed = null;
+            bool? cached = null;
             bool? newlyCompatible = null;
-            bool? upgradeable     = null;
-            bool? replaceable     = null;
+            bool? upgradeable = null;
+            bool? replaceable = null;
 
             var pieces = combined.Split();
             foreach (string s in pieces)
@@ -568,14 +568,14 @@ namespace CKAN.GUI
 
         public bool Equals(ModSearch other)
             => other != null
-                && Name            == other.Name
-                && Description     == other.Description
-                && Compatible      == other.Compatible
-                && Installed       == other.Installed
-                && Cached          == other.Cached
+                && Name == other.Name
+                && Description == other.Description
+                && Compatible == other.Compatible
+                && Installed == other.Installed
+                && Cached == other.Cached
                 && NewlyCompatible == other.NewlyCompatible
-                && Upgradeable     == other.Upgradeable
-                && Replaceable     == other.Replaceable
+                && Upgradeable == other.Upgradeable
+                && Replaceable == other.Replaceable
                 && Authors.SequenceEqual(other.Authors)
                 && Localizations.SequenceEqual(other.Localizations)
                 && DependsOn.SequenceEqual(other.DependsOn)

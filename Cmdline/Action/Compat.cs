@@ -76,9 +76,9 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions comOpts = (CommonOptions)suboptions;
                     comOpts.Merge(opts);
-                    _user       = new ConsoleUser(comOpts.Headless);
+                    _user = new ConsoleUser(comOpts.Headless);
                     _kspManager = manager ?? new GameInstanceManager(_user);
-                    exitCode    = comOpts.Handle(_kspManager, _user);
+                    exitCode = comOpts.Handle(_kspManager, _user);
                     if (exitCode != Exit.OK)
                         return;
 
@@ -89,7 +89,7 @@ namespace CKAN.CmdLine
                                 var instance = MainClass.GetGameInstance(_kspManager);
 
                                 string versionHeader = Properties.Resources.CompatVersionHeader;
-                                string actualHeader  = Properties.Resources.CompatActualHeader;
+                                string actualHeader = Properties.Resources.CompatActualHeader;
 
                                 var output = instance
                                     .GetCompatibleVersions()
@@ -200,7 +200,7 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
-        private IUser               _user;
+        private IUser _user;
         private GameInstanceManager _kspManager;
     }
 }

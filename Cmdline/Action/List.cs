@@ -20,7 +20,7 @@ namespace CKAN.CmdLine
 
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
-            ListOptions options = (ListOptions) raw_options;
+            ListOptions options = (ListOptions)raw_options;
 
             IRegistryQuerier registry = RegistryManager.Instance(instance).registry;
 
@@ -86,7 +86,7 @@ namespace CKAN.CmdLine
                                 {
                                     log.DebugFormat(" {0} installed version not found in registry", mod.Key);
                                 }
-                                    
+
                                 // Check if mod is replaceable
                                 if (current.replaced_by != null)
                                 {
@@ -155,12 +155,12 @@ namespace CKAN.CmdLine
 
             switch (export)
             {
-                case "text":     return ExportFileType.PlainText;
+                case "text": return ExportFileType.PlainText;
                 case "markdown": return ExportFileType.Markdown;
-                case "bbcode":   return ExportFileType.BbCode;
-                case "csv":      return ExportFileType.Csv;
-                case "tsv":      return ExportFileType.Tsv;
-                default:         return null;
+                case "bbcode": return ExportFileType.BbCode;
+                case "csv": return ExportFileType.Csv;
+                case "tsv": return ExportFileType.Tsv;
+                default: return null;
             }
         }
     }

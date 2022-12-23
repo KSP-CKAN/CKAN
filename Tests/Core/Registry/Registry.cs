@@ -15,7 +15,7 @@ namespace Tests.Core.Registry
         private static readonly CkanModule module = TestData.kOS_014_module();
         private static readonly string identifier = module.identifier;
         private static readonly GameVersionCriteria v0_24_2 = new GameVersionCriteria(GameVersion.Parse("0.24.2"));
-        private static readonly GameVersionCriteria v0_25_0 = new GameVersionCriteria (GameVersion.Parse("0.25.0"));
+        private static readonly GameVersionCriteria v0_25_0 = new GameVersionCriteria(GameVersion.Parse("0.25.0"));
 
         private CKAN.Registry registry;
 
@@ -285,7 +285,7 @@ namespace Tests.Core.Registry
                 registry.AddAvailable(newerDepMod);
                 registry.AddAvailable(dependingMod);
                 GameInstance gameInst = gameInstWrapper.KSP;
-                registry.RegisterModule(olderDepMod,  new string[0], gameInst, false);
+                registry.RegisterModule(olderDepMod, new string[0], gameInst, false);
                 registry.RegisterModule(dependingMod, new string[0], gameInst, false);
                 GameVersionCriteria crit = new GameVersionCriteria(olderDepMod.ksp_version);
 
@@ -337,14 +337,14 @@ namespace Tests.Core.Registry
             using (var scope = new TransactionScope())
             {
                 registry.AddAvailable(module);
-                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier,null).identifier);
+                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
 
                 scope.Dispose(); // Rollback, our module should no longer be available.
             }
 
             Assert.Throws<ModuleNotFoundKraken>(delegate
             {
-                registry.LatestAvailable(identifier,null);
+                registry.LatestAvailable(identifier, null);
             });
         }
 

@@ -5,12 +5,14 @@ using CKAN.ConsoleUI.Toolkit;
 using Autofac;
 using CKAN.Configuration;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Screen for display and editing of authentication tokens.
     /// </summary>
-    public class AuthTokenScreen : ConsoleScreen {
+    public class AuthTokenScreen : ConsoleScreen
+    {
 
         /// <summary>
         /// Initialize the screen.
@@ -63,7 +65,8 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
 
             tokenList.AddTip("A", Properties.Resources.Add);
-            tokenList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
+            tokenList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) =>
+            {
                 AuthTokenAddDialog ad = new AuthTokenAddDialog();
                 ad.Run(theme);
                 DrawBackground(theme);
@@ -72,8 +75,10 @@ namespace CKAN.ConsoleUI {
             });
 
             tokenList.AddTip("R", Properties.Resources.Remove, () => tokenList.Selection != null);
-            tokenList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
-                if (tokenList.Selection != null) {
+            tokenList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) =>
+            {
+                if (tokenList.Selection != null)
+                {
                     ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(tokenList.Selection, null);
                     tokenList.SetData(new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts()));
                 }

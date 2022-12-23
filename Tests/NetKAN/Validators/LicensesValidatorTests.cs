@@ -9,9 +9,9 @@ namespace Tests.NetKAN.Validators
     public sealed class LicensesValidatorTests
     {
         [Test,
-            TestCase("v1.2",  @"""WTFPL"""),
+            TestCase("v1.2", @"""WTFPL"""),
             TestCase("v1.18", @"""Unlicense"""),
-            TestCase("v1.8",  @"[ ""GPL-3.0"", ""MIT"" ]"),
+            TestCase("v1.8", @"[ ""GPL-3.0"", ""MIT"" ]"),
         ]
         public void Validate_GoodSpecVersionLicense_DoesNotThrow(string spec_version, string license)
         {
@@ -19,12 +19,12 @@ namespace Tests.NetKAN.Validators
         }
 
         [Test,
-            TestCase("1",     @"""WTFPL"""),
+            TestCase("1", @"""WTFPL"""),
             TestCase("v1.17", @"""Unlicense"""),
-            TestCase("v1.4",  @"""NotARealLicense"""),
-            TestCase("v1.4",  @"[ ""GPL-3.0"", ""MIT"" ]"),
-            TestCase("v1.4",  @"[ ""GPL-3.0"", ""Unlicense"" ]"),
-            TestCase("v1.4",  @"[ ""GPL-3.0"", ""NotARealLicense"" ]"),
+            TestCase("v1.4", @"""NotARealLicense"""),
+            TestCase("v1.4", @"[ ""GPL-3.0"", ""MIT"" ]"),
+            TestCase("v1.4", @"[ ""GPL-3.0"", ""Unlicense"" ]"),
+            TestCase("v1.4", @"[ ""GPL-3.0"", ""NotARealLicense"" ]"),
         ]
         public void Validate_BadSpecVersionLicense_Throws(string spec_version, string license)
         {
@@ -36,8 +36,8 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var json = new JObject();
             json["spec_version"] = spec_version;
-            json["identifier"]   = "AwesomeMod";
-            json["license"]      = JToken.Parse(license);
+            json["identifier"] = "AwesomeMod";
+            json["license"] = JToken.Parse(license);
 
             // Act
             var val = new LicensesValidator();

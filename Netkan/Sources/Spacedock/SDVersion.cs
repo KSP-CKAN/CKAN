@@ -8,7 +8,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
 {
     public class SDVersion
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (SDVersion));
+        private static readonly ILog log = LogManager.GetLogger(typeof(SDVersion));
 
         // These all get filled by JSON deserialisation.
 

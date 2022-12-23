@@ -11,16 +11,16 @@ namespace CKAN.GUI
 {
     public sealed class GUIMod : INotifyPropertyChanged
     {
-        private CkanModule      Mod                 { get; set; }
-        private CkanModule      LatestCompatibleMod { get; set; }
-        public  InstalledModule InstalledMod        { get; private set; }
+        private CkanModule Mod { get; set; }
+        private CkanModule LatestCompatibleMod { get; set; }
+        public InstalledModule InstalledMod { get; private set; }
 
         /// <summary>
         /// The module of the checkbox that is checked in the MainAllModVersions list if any,
         /// null otherwise.
         /// Used for generating this mod's part of the change set.
         /// </summary>
-        public  CkanModule      SelectedMod
+        public CkanModule SelectedMod
         {
             get { return selectedMod; }
             set
@@ -51,7 +51,7 @@ namespace CKAN.GUI
                 }
             }
         }
-        private CkanModule      selectedMod = null;
+        private CkanModule selectedMod = null;
 
         /// <summary>
         /// Notify listeners when certain properties change.
@@ -132,19 +132,19 @@ namespace CKAN.GUI
         public GUIMod(InstalledModule instMod, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null)
             : this(instMod.Module, registry, current_game_version, incompatible)
         {
-            IsInstalled      = true;
+            IsInstalled = true;
             IsInstallChecked = true;
-            InstalledMod     = instMod;
-            selectedMod      = instMod.Module;
-            IsAutoInstalled  = instMod.AutoInstalled;
-            InstallDate      = instMod.InstallTime;
+            InstalledMod = instMod;
+            selectedMod = instMod.Module;
+            IsAutoInstalled = instMod.AutoInstalled;
+            InstallDate = instMod.InstallTime;
             InstalledVersion = instMod.Module.version.ToString();
             if (LatestVersion == null || LatestVersion.Equals("-"))
             {
                 LatestVersion = InstalledVersion;
             }
             // For mods not known to the registry LatestCompatibleMod is null, however the installed module might be compatible
-            IsIncompatible   = incompatible ?? LatestCompatibleMod == null && !instMod.Module.IsCompatibleKSP(current_game_version);
+            IsIncompatible = incompatible ?? LatestCompatibleMod == null && !instMod.Module.IsCompatibleKSP(current_game_version);
         }
 
         /// <summary>
@@ -157,24 +157,24 @@ namespace CKAN.GUI
         public GUIMod(CkanModule mod, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null)
             : this(mod.identifier, registry, current_game_version, incompatible)
         {
-            Mod           = mod;
-            IsCKAN        = mod is CkanModule;
+            Mod = mod;
+            IsCKAN = mod is CkanModule;
 
-            Name          = mod.name.Trim();
-            Abstract      = mod.@abstract.Trim();
-            Description   = mod.description?.Trim() ?? string.Empty;
-            Abbrevation   = new string(Name.Split(' ').Where(s => s.Length > 0).Select(s => s[0]).ToArray());
+            Name = mod.name.Trim();
+            Abstract = mod.@abstract.Trim();
+            Description = mod.description?.Trim() ?? string.Empty;
+            Abbrevation = new string(Name.Split(' ').Where(s => s.Length > 0).Select(s => s[0]).ToArray());
 
-            HasUpdate      = registry.HasUpdate(mod.identifier, current_game_version);
+            HasUpdate = registry.HasUpdate(mod.identifier, current_game_version);
             HasReplacement = registry.GetReplacement(mod, current_game_version) != null;
-            DownloadSize   = mod.download_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.download_size);
-            InstallSize    = mod.install_size  == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.install_size);
+            DownloadSize = mod.download_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.download_size);
+            InstallSize = mod.install_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.install_size);
 
             // Get the Searchables.
-            SearchableName        = mod.SearchableName;
-            SearchableAbstract    = mod.SearchableAbstract;
+            SearchableName = mod.SearchableName;
+            SearchableAbstract = mod.SearchableAbstract;
             SearchableDescription = mod.SearchableDescription;
-            SearchableAuthors     = mod.SearchableAuthors;
+            SearchableAuthors = mod.SearchableAuthors;
 
             // If not set in GUIMod(identifier, ...) (because the mod is not known to the registry),
             // set based on the the data we have from the CkanModule.
@@ -201,9 +201,9 @@ namespace CKAN.GUI
         /// <param name="incompatible">If true, mark this module as incompatible</param>
         public GUIMod(string identifier, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null)
         {
-            Identifier     = identifier;
+            Identifier = identifier;
             IsAutodetected = registry.IsAutodetected(identifier);
-            DownloadCount  = registry.DownloadCount(identifier);
+            DownloadCount = registry.DownloadCount(identifier);
             if (IsAutodetected)
             {
                 IsInstalled = true;
@@ -357,7 +357,7 @@ namespace CKAN.GUI
             var update_cell = row?.Cells[col.Index] as DataGridViewCheckBoxCell;
             if (update_cell != null)
             {
-                var old_value = (bool) update_cell.Value;
+                var old_value = (bool)update_cell.Value;
 
                 bool value = set_value_to ?? old_value;
                 IsUpgradeChecked = value;
@@ -406,7 +406,7 @@ namespace CKAN.GUI
             var replace_cell = row.Cells[col.Index] as DataGridViewCheckBoxCell;
             if (replace_cell != null)
             {
-                var old_value = (bool) replace_cell.Value;
+                var old_value = (bool)replace_cell.Value;
 
                 bool value = set_value_to ?? old_value;
                 IsReplaceChecked = value;
@@ -420,7 +420,7 @@ namespace CKAN.GUI
             var auto_cell = row.Cells[col.Index] as DataGridViewCheckBoxCell;
             if (auto_cell != null)
             {
-                var old_value = (bool) auto_cell.Value;
+                var old_value = (bool)auto_cell.Value;
 
                 bool value = set_value_to ?? old_value;
                 IsAutoInstalled = value;
@@ -443,7 +443,7 @@ namespace CKAN.GUI
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((GUIMod) obj);
+            return Equals((GUIMod)obj);
         }
 
         public override int GetHashCode()

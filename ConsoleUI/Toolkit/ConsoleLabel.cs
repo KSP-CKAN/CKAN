@@ -1,11 +1,13 @@
 using System;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Object representing a simple text label
     /// </summary>
-    public class ConsoleLabel : ScreenObject {
+    public class ConsoleLabel : ScreenObject
+    {
 
         /// <summary>
         /// Initialize a labelFunc
@@ -19,7 +21,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public ConsoleLabel(int l, int t, int r, Func<string> lf, Func<ConsoleTheme, ConsoleColor> bgFunc = null, Func<ConsoleTheme, ConsoleColor> fgFunc = null)
             : base(l, t, r, t)
         {
-            labelFunc  = lf;
+            labelFunc = lf;
             getBgColor = bgFunc;
             getFgColor = fgFunc;
         }
@@ -33,20 +35,29 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             int w = GetRight() - GetLeft() + 1;
             Console.SetCursorPosition(GetLeft(), GetTop());
-            if (getBgColor == null) {
+            if (getBgColor == null)
+            {
                 Console.BackgroundColor = theme.LabelBg;
-            } else {
+            }
+            else
+            {
                 Console.BackgroundColor = getBgColor(theme);
             }
-            if (getFgColor == null) {
+            if (getFgColor == null)
+            {
                 Console.ForegroundColor = theme.LabelFg;
-            } else {
+            }
+            else
+            {
                 Console.ForegroundColor = getFgColor(theme);
             }
-            try {
+            try
+            {
                 Console.Write(FormatExactWidth(labelFunc(), w));
-            } catch (Exception ex) {
-                Console.Write(FormatExactWidth(ex.Message,  w));
+            }
+            catch (Exception ex)
+            {
+                Console.Write(FormatExactWidth(ex.Message, w));
             }
         }
 
@@ -55,7 +66,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public override bool Focusable() { return false; }
 
-        private Func<string>       labelFunc;
+        private Func<string> labelFunc;
         private Func<ConsoleTheme, ConsoleColor> getBgColor;
         private Func<ConsoleTheme, ConsoleColor> getFgColor;
     }

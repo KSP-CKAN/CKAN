@@ -137,7 +137,7 @@ namespace CKAN.NetKAN.Services
 
             // Now calculate the minimum and maximum KSP versions between both the existing metadata and the
             // AVC file.
-            var gameVerMins  = new List<GameVersion>();
+            var gameVerMins = new List<GameVersion>();
             var gameVerMaxes = new List<GameVersion>();
 
             if (!GameVersion.IsNullOrAny(existingMin))

@@ -19,7 +19,7 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for user interaction</param>
         public Import(GameInstanceManager mgr, IUser user)
         {
-            manager   = mgr;
+            manager = mgr;
             this.user = user;
         }
 
@@ -45,9 +45,9 @@ namespace CKAN.CmdLine
                 else
                 {
                     log.InfoFormat("Importing {0} files", toImport.Count);
-                    List<string>    toInstall = new List<string>();
+                    List<string> toInstall = new List<string>();
                     RegistryManager regMgr = RegistryManager.Instance(ksp);
-                    ModuleInstaller inst      = new ModuleInstaller(ksp, manager.Cache, user);
+                    ModuleInstaller inst = new ModuleInstaller(ksp, manager.Cache, user);
                     inst.ImportFiles(toImport, user, mod => toInstall.Add(mod.identifier), regMgr.registry, !opts.Headless);
                     HashSet<string> possibleConfigOnlyDirs = null;
                     if (toInstall.Count > 0)
@@ -104,9 +104,9 @@ namespace CKAN.CmdLine
             }
         }
 
-        private        readonly GameInstanceManager manager;
-        private        readonly IUser      user;
-        private static readonly ILog       log = LogManager.GetLogger(typeof(Import));
+        private readonly GameInstanceManager manager;
+        private readonly IUser user;
+        private static readonly ILog log = LogManager.GetLogger(typeof(Import));
     }
 
 }

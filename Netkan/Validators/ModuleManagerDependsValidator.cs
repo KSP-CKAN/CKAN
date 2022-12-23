@@ -15,7 +15,7 @@ namespace CKAN.NetKAN.Validators
     {
         public ModuleManagerDependsValidator(IHttpService http, IModuleService moduleService)
         {
-            _http          = http;
+            _http = http;
             _moduleService = moduleService;
         }
 
@@ -23,8 +23,8 @@ namespace CKAN.NetKAN.Validators
         {
             Log.Info("Validating that metadata dependencies are consistent with cfg file syntax");
 
-            JObject    json = metadata.Json();
-            CkanModule mod  = CkanModule.FromJson(json.ToString());
+            JObject json = metadata.Json();
+            CkanModule mod = CkanModule.FromJson(json.ToString());
             if (!mod.IsDLC)
             {
                 var package = _http.DownloadModule(metadata);
@@ -61,7 +61,7 @@ namespace CKAN.NetKAN.Validators
             RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.Singleline
         );
 
-        private readonly IHttpService   _http;
+        private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(ModuleManagerDependsValidator));

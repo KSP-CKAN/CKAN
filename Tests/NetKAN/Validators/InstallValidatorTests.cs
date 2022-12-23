@@ -9,7 +9,7 @@ namespace Tests.NetKAN.Validators
     public sealed class InstallValidatorTests
     {
         [Test,
-            TestCase("v1.2",  "GameData/something"),
+            TestCase("v1.2", "GameData/something"),
             TestCase("v1.12", "Ships/something"),
             TestCase("v1.16", "Ships/@thumbs"),
         ]
@@ -19,7 +19,7 @@ namespace Tests.NetKAN.Validators
         }
 
         [Test,
-            TestCase("1",     "GameData/something"),
+            TestCase("1", "GameData/something"),
             TestCase("v1.11", "Ships/something"),
             TestCase("v1.15", "Ships/@thumbs"),
         ]
@@ -55,8 +55,8 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var json = new JObject();
             json["spec_version"] = spec_version;
-            json["identifier"]   = "AwesomeMod";
-            json["install"]      = new JArray() {
+            json["identifier"] = "AwesomeMod";
+            json["install"] = new JArray() {
                 new JObject() {
                     { "file",       "something" },
                     { "install_to", install_to  }
@@ -73,8 +73,8 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var json = new JObject();
             json["spec_version"] = spec_version;
-            json["identifier"]   = "AwesomeMod";
-            json["install"]      = new JArray() {
+            json["identifier"] = "AwesomeMod";
+            json["install"] = new JArray() {
                 JObject.Parse(install_stanza)
             };
 

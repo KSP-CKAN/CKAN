@@ -183,8 +183,8 @@ namespace CKAN
         {
             ModuleRelationshipDescriptor modRel = other as ModuleRelationshipDescriptor;
             return modRel != null
-                && name        == modRel.name
-                && version     == modRel.version
+                && name == modRel.name
+                && version == modRel.version
                 && min_version == modRel.min_version
                 && max_version == modRel.max_version;
         }
@@ -206,7 +206,7 @@ namespace CKAN
         /// name max_version or earlier
         /// </returns>
         public override string ToString()
-            =>    version     != null                        ? $"{name} {version}"
+            => version != null ? $"{name} {version}"
                 : min_version != null && max_version != null ? $"{name} {min_version}–{max_version}"
                 : min_version != null
                     ? string.Format(Properties.Resources.RelationshipDescriptorMinVersionOnly, name, min_version)

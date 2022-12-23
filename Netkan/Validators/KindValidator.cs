@@ -19,7 +19,7 @@ namespace CKAN.NetKAN.Validators
             }
         }
 
-        private static readonly ModuleVersion v1p6  = new ModuleVersion("v1.6");
+        private static readonly ModuleVersion v1p6 = new ModuleVersion("v1.6");
         private static readonly ModuleVersion v1p28 = new ModuleVersion("v1.28");
     }
 }

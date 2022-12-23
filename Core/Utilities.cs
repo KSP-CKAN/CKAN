@@ -128,7 +128,7 @@ namespace CKAN
                     Process.Start(new ProcessStartInfo(url)
                     {
                         UseShellExecute = true,
-                        Verb            = "open"
+                        Verb = "open"
                     });
                     return true;
                 }

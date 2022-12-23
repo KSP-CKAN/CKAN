@@ -14,11 +14,11 @@ namespace CKAN.GUI
     public static class URLHandlers
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(URLHandlers));
-        public  const  string UrlRegistrationArgument = "registerUrl";
+        public const string UrlRegistrationArgument = "registerUrl";
 
         private static string MimeAppsListPath = "mimeapps.list";
         private static string ApplicationsPath = ".local/share/applications/";
-        private const  string HandlerFileName  = "ckan-handler.desktop";
+        private const string HandlerFileName = "ckan-handler.desktop";
 
         static URLHandlers()
         {
@@ -51,7 +51,7 @@ namespace CKAN.GUI
                 {
                     try
                     {
-                       RegisterURLHandler_Win32();
+                        RegisterURLHandler_Win32();
                     }
                     catch (UnauthorizedAccessException)
                     {
@@ -67,7 +67,7 @@ namespace CKAN.GUI
                                 Assembly.GetEntryAssembly().Location)
                             {
                                 // trigger a UAC prompt (if UAC is enabled)
-                                Verb      = "runas",
+                                Verb = "runas",
                                 Arguments = $"gui {UrlRegistrationArgument}"
                             };
                             Process.Start(startInfo);
@@ -98,8 +98,8 @@ namespace CKAN.GUI
         private static void RegisterURLHandler_Win32()
         {
             log.InfoFormat("Adding URL handler to registry");
-            string      urlCmd  = $"{Assembly.GetExecutingAssembly().Location} gui %1";
-            RegistryKey root    = Microsoft.Win32.Registry.ClassesRoot;
+            string urlCmd = $"{Assembly.GetExecutingAssembly().Location} gui %1";
+            RegistryKey root = Microsoft.Win32.Registry.ClassesRoot;
             RegistryKey ckanKey = root.OpenSubKey("ckan");
             if (ckanKey != null)
             {

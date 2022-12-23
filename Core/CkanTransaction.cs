@@ -31,7 +31,7 @@ namespace CKAN
         private static TransactionOptions transOpts = new TransactionOptions()
         {
             IsolationLevel = IsolationLevel.ReadCommitted,
-            Timeout        = maxCoretimeout
+            Timeout = maxCoretimeout
         };
 
         /// <summary>
@@ -71,18 +71,18 @@ namespace CKAN
                 {
                     // Mono
                     SetField(t, "machineSettings", null);
-                    SetField(t, "maxTimeout",      timeout);
+                    SetField(t, "maxTimeout", timeout);
                 }
                 else
                 {
                     // Framework
                     SetField(t, "_cachedMaxTimeout", true);
-                    SetField(t, "_maximumTimeout",   timeout);
+                    SetField(t, "_maximumTimeout", timeout);
                     // Core
                     SetField(t, "s_cachedMaxTimeout", true);
-                    SetField(t, "s_maximumTimeout",   timeout);
+                    SetField(t, "s_maximumTimeout", timeout);
                 }
-            }            
+            }
         }
 
         private static void SetField(Type T, string fieldName, object value)

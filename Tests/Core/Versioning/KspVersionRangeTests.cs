@@ -1,5 +1,5 @@
 using CKAN.Versioning;
-﻿using CKAN.Games;
+using CKAN.Games;
 using NUnit.Framework;
 
 #pragma warning disable 414
@@ -587,16 +587,16 @@ namespace Tests.Core.Versioning
 
         [Test]
         public void GetHashCodeDoesNotThrow(
-            [Random(0, int.MaxValue, 1)]int lowerMajor,
-            [Random(0, int.MaxValue, 1)]int lowerMinor,
-            [Random(0, int.MaxValue, 1)]int lowerPatch,
-            [Random(0, int.MaxValue, 1)]int lowerBuilder,
-            [Values(false, true)]bool lowerInclusive,
-            [Random(0, int.MaxValue, 1)]int upperMajor,
-            [Random(0, int.MaxValue, 1)]int upperMinor,
-            [Random(0, int.MaxValue, 1)]int upperPatch,
-            [Random(0, int.MaxValue, 1)]int upperBuilder,
-            [Values(false, true)]bool upperInclusive
+            [Random(0, int.MaxValue, 1)] int lowerMajor,
+            [Random(0, int.MaxValue, 1)] int lowerMinor,
+            [Random(0, int.MaxValue, 1)] int lowerPatch,
+            [Random(0, int.MaxValue, 1)] int lowerBuilder,
+            [Values(false, true)] bool lowerInclusive,
+            [Random(0, int.MaxValue, 1)] int upperMajor,
+            [Random(0, int.MaxValue, 1)] int upperMinor,
+            [Random(0, int.MaxValue, 1)] int upperPatch,
+            [Random(0, int.MaxValue, 1)] int upperBuilder,
+            [Values(false, true)] bool upperInclusive
         )
         {
             // Arrange

@@ -17,14 +17,14 @@ namespace CKAN.GUI
             // Prompt the user to select one or more ZIP files
             OpenFileDialog dlg = new OpenFileDialog()
             {
-                Title            = Properties.Resources.MainImportTitle,
-                AddExtension     = true,
-                CheckFileExists  = true,
-                CheckPathExists  = true,
+                Title = Properties.Resources.MainImportTitle,
+                AddExtension = true,
+                CheckFileExists = true,
+                CheckPathExists = true,
                 InitialDirectory = FindDownloadsPath(CurrentInstance),
-                DefaultExt       = "zip",
-                Filter           = Properties.Resources.MainImportFilter,
-                Multiselect      = true
+                DefaultExt = "zip",
+                Filter = Properties.Resources.MainImportFilter,
+                Multiselect = true
             };
             if (dlg.ShowDialog() == DialogResult.OK
                     && dlg.FileNames.Length > 0)

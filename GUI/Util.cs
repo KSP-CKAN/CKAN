@@ -234,15 +234,15 @@ namespace CKAN.GUI
         /// <typeparam name="EventT">Event type handled</typeparam>
         /// <returns>A new event handler that wraps the given functions using the timer</returns>
         public static EventHandler<EventT> Debounce<EventT>(
-            EventHandler<EventT>       startFunc,
+            EventHandler<EventT> startFunc,
             Func<object, EventT, bool> immediateFunc,
             Func<object, EventT, bool> abortFunc,
-            EventHandler<EventT>       doneFunc,
+            EventHandler<EventT> doneFunc,
             int timeoutMs = 500)
         {
             // Store the most recent event we received
             object receivedFrom = null;
-            EventT received     = default(EventT);
+            EventT received = default(EventT);
 
             // Set up the timer that will track the delay
             Timer timer = new Timer() { Interval = timeoutMs };
@@ -262,12 +262,12 @@ namespace CKAN.GUI
                     {
                         doneFunc(sender, evt);
                         receivedFrom = null;
-                        received     = default(EventT);
+                        received = default(EventT);
                     }
                     else
                     {
                         receivedFrom = sender;
-                        received     = evt;
+                        received = evt;
                         timer.Start();
                     }
                 }

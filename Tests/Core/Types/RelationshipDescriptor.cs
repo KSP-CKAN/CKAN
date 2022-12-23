@@ -10,10 +10,10 @@ namespace Tests.Core.Types
         ModuleVersion autodetected = new UnmanagedModuleVersion(null);
 
         [Test]
-        [TestCase("0.23","0.23", true)]
-        [TestCase("wibble","wibble",true)]
+        [TestCase("0.23", "0.23", true)]
+        [TestCase("wibble", "wibble", true)]
         [TestCase("0.23", "0.23.1", false)]
-        [TestCase("wibble","wobble", false)]
+        [TestCase("wibble", "wobble", false)]
         public void VersionWithinBounds_ExactFalse(string version, string other_version, bool expected)
         {
             var rd = new CKAN.ModuleRelationshipDescriptor { version = new ModuleVersion(version) };
@@ -21,9 +21,9 @@ namespace Tests.Core.Types
         }
 
         [Test]
-        [TestCase("0.20","0.23","0.21", true)]
-        [TestCase("0.20","0.23","0.20", true)]
-        [TestCase("0.20","0.23","0.23", true)]
+        [TestCase("0.20", "0.23", "0.21", true)]
+        [TestCase("0.20", "0.23", "0.20", true)]
+        [TestCase("0.20", "0.23", "0.23", true)]
         public void VersionWithinBounds_MinMax(string min, string max, string compare_to, bool expected)
         {
             var rd = new CKAN.ModuleRelationshipDescriptor
@@ -45,7 +45,7 @@ namespace Tests.Core.Types
         }
 
         [Test]
-        [TestCase("0.20","0.23")]
+        [TestCase("0.20", "0.23")]
         public void VersionWithinBounds_MinMax_vs_AutoDetectedMod(string min, string max)
         {
             var rd = new CKAN.ModuleRelationshipDescriptor
@@ -71,6 +71,7 @@ namespace Tests.Core.Types
         {
             var rd = new CKAN.ModuleRelationshipDescriptor();
 
-            Assert.True(rd.WithinBounds(null));        }
+            Assert.True(rd.WithinBounds(null));
+        }
     }
 }

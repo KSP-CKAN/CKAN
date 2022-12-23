@@ -39,8 +39,8 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    user     = new ConsoleUser(options.Headless);
-                    manager  = mgr ?? new GameInstanceManager(user);
+                    user = new ConsoleUser(options.Headless);
+                    manager = mgr ?? new GameInstanceManager(user);
                     exitCode = options.Handle(manager, user);
                     if (exitCode != Exit.OK)
                         return;
@@ -136,21 +136,21 @@ namespace CKAN.CmdLine
                 var duplicates = instance.InstallFilters
                     .Intersect(opts.filters)
                     .ToArray();
-                    if (duplicates.Length > 0)
-                    {
-                        user.RaiseError(
-                            Properties.Resources.FilterAddInstanceDuplicateError,
-                            string.Join(", ", duplicates)
-                        );
-                        return Exit.BADOPT;
-                    }
-                    else
-                    {
-                        instance.InstallFilters = instance.InstallFilters
-                            .Concat(opts.filters)
-                            .Distinct()
-                            .ToArray();
-                    }
+                if (duplicates.Length > 0)
+                {
+                    user.RaiseError(
+                        Properties.Resources.FilterAddInstanceDuplicateError,
+                        string.Join(", ", duplicates)
+                    );
+                    return Exit.BADOPT;
+                }
+                else
+                {
+                    instance.InstallFilters = instance.InstallFilters
+                        .Concat(opts.filters)
+                        .Distinct()
+                        .ToArray();
+                }
             }
             return Exit.OK;
         }
@@ -215,7 +215,7 @@ namespace CKAN.CmdLine
         }
 
         private GameInstanceManager manager { get; set; }
-        private IUser               user    { get; set; }
+        private IUser user { get; set; }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Filter));
     }

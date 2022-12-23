@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using CKAN;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Spacedock;
@@ -13,7 +12,7 @@ namespace Tests.NetKAN.Sources.Spacedock
     [Category("Online")]
     public sealed class SpacedockApiTests
     {
-        private string       _cachePath;
+        private string _cachePath;
         private NetFileCache _cache;
 
         [OneTimeSetUp]

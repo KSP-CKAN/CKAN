@@ -16,7 +16,7 @@ namespace CKAN.NetKAN.Transformers
     {
         public JenkinsTransformer(IJenkinsApi api)
         {
-            _api      = api;
+            _api = api;
         }
 
         public string Name { get { return "jenkins"; } }

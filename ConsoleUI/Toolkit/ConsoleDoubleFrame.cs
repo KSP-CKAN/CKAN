@@ -1,12 +1,14 @@
 using System;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Screen object representing a box to be drawn around some other stuff
     /// with a big divider through the middle splitting it into two sections
     /// </summary>
-    public class ConsoleDoubleFrame : ScreenObject {
+    public class ConsoleDoubleFrame : ScreenObject
+    {
 
         /// <summary>
         /// Initialize a frame
@@ -25,10 +27,10 @@ namespace CKAN.ConsoleUI.Toolkit {
                 Func<ConsoleTheme, ConsoleColor> borderColor, bool dblBorder = false)
             : base(l, t, r, b)
         {
-            getTopTitle  = topTitle;
-            getMidTitle  = midTitle;
-            middleRow    = midY;
-            getColor     = borderColor;
+            getTopTitle = topTitle;
+            getMidTitle = midTitle;
+            middleRow = midY;
+            getColor = borderColor;
             doubleBorder = dblBorder;
         }
 
@@ -45,17 +47,21 @@ namespace CKAN.ConsoleUI.Toolkit {
             Console.BackgroundColor = theme.MainBg;
             Console.ForegroundColor = getColor(theme);
             Console.SetCursorPosition(l, t);
-            Console.Write(doubleBorder ? Symbols.upperLeftCornerDouble  : Symbols.upperLeftCorner);
+            Console.Write(doubleBorder ? Symbols.upperLeftCornerDouble : Symbols.upperLeftCorner);
             writeTitleRow(getTopTitle(), w);
             Console.Write(doubleBorder ? Symbols.upperRightCornerDouble : Symbols.upperRightCorner);
 
-            for (int y = t + 1; y <= b - 1; ++y) {
+            for (int y = t + 1; y <= b - 1; ++y)
+            {
                 Console.SetCursorPosition(l, y);
-                if (y == middleRow) {
+                if (y == middleRow)
+                {
                     Console.Write(doubleBorder ? Symbols.leftTeeDouble : Symbols.leftTee);
                     writeTitleRow(getMidTitle(), w);
                     Console.Write(doubleBorder ? Symbols.rightTeeDouble : Symbols.rightTee);
-                } else {
+                }
+                else
+                {
                     Console.Write(doubleBorder ? Symbols.vertLineDouble : Symbols.vertLine);
                     Console.SetCursorPosition(r, y);
                     Console.Write(doubleBorder ? Symbols.vertLineDouble : Symbols.vertLine);
@@ -63,25 +69,29 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
 
             Console.SetCursorPosition(l, b);
-            Console.Write(doubleBorder ? Symbols.lowerLeftCornerDouble  : Symbols.lowerLeftCorner);
+            Console.Write(doubleBorder ? Symbols.lowerLeftCornerDouble : Symbols.lowerLeftCorner);
             Console.Write(new string(doubleBorder ? Symbols.horizLineDouble : Symbols.horizLine, w - 2));
             Console.Write(doubleBorder ? Symbols.lowerRightCornerDouble : Symbols.lowerRightCorner);
         }
 
         private void writeTitleRow(string title, int w)
         {
-            if (title.Length > 0) {
-                int leftSidePad  = (w - 4 - title.Length) / 2;
+            if (title.Length > 0)
+            {
+                int leftSidePad = (w - 4 - title.Length) / 2;
                 int rightSidePad = (w - 4 - title.Length) - leftSidePad;
-                if (leftSidePad < 0 || rightSidePad < 0) {
-                    leftSidePad  = 0;
+                if (leftSidePad < 0 || rightSidePad < 0)
+                {
+                    leftSidePad = 0;
                     rightSidePad = 0;
                     title = title.Substring(0, w - 4);
                 }
                 Console.Write(new string(doubleBorder ? Symbols.horizLineDouble : Symbols.horizLine, leftSidePad));
                 Console.Write($" {title} ");
                 Console.Write(new string(doubleBorder ? Symbols.horizLineDouble : Symbols.horizLine, rightSidePad));
-            } else {
+            }
+            else
+            {
                 Console.Write(new string(doubleBorder ? Symbols.horizLineDouble : Symbols.horizLine, w - 2));
             }
         }
@@ -91,11 +101,11 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public override bool Focusable() { return false; }
 
-        private Func<string>       getTopTitle;
-        private Func<string>       getMidTitle;
+        private Func<string> getTopTitle;
+        private Func<string> getMidTitle;
         private Func<ConsoleTheme, ConsoleColor> getColor;
-        private bool               doubleBorder;
-        private int                middleRow;
+        private bool doubleBorder;
+        private int middleRow;
     }
 
 }

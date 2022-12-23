@@ -8,12 +8,14 @@ using Autofac;
 
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Screen listing mods available for a given install
     /// </summary>
-    public class ModListScreen : ConsoleScreen {
+    public class ModListScreen : ConsoleScreen
+    {
 
         /// <summary>
         /// Initialize the screen
@@ -23,8 +25,8 @@ namespace CKAN.ConsoleUI {
         /// <param name="regTheme">The theme to use for the registry update flow, if needed</param>
         public ModListScreen(GameInstanceManager mgr, bool dbg, ConsoleTheme regTheme)
         {
-            debug    = dbg;
-            manager  = mgr;
+            debug = dbg;
+            manager = mgr;
             registry = RegistryManager.Instance(manager.CurrentInstance).registry;
 
             moduleList = new ConsoleListBox<CkanModule>(
@@ -52,71 +54,91 @@ namespace CKAN.ConsoleUI {
                     }
                 },
                 1, 0, ListSortDirection.Descending,
-                (CkanModule m, string filter) => {
+                (CkanModule m, string filter) =>
+                {
                     // Search for author
-                    if (filter.StartsWith("@")) {
+                    if (filter.StartsWith("@"))
+                    {
                         string authorFilt = filter.Substring(1);
-                        if (string.IsNullOrEmpty(authorFilt)) {
+                        if (string.IsNullOrEmpty(authorFilt))
+                        {
                             return true;
-                        } else {
+                        }
+                        else
+                        {
                             // Remove special characters from search term
                             authorFilt = CkanModule.nonAlphaNums.Replace(authorFilt, "");
                             return m.SearchableAuthors.Any((author) => author.IndexOf(authorFilt, StringComparison.CurrentCultureIgnoreCase) == 0);
                         }
-                    // Other special search params: installed, updatable, new, conflicting and dependends
-                    } else if (filter.StartsWith("~")) {
-                        if (filter.Length <= 1) {
+                        // Other special search params: installed, updatable, new, conflicting and dependends
+                    }
+                    else if (filter.StartsWith("~"))
+                    {
+                        if (filter.Length <= 1)
+                        {
                             // Don't blank the list for just "~" by itself
                             return true;
-                        } else switch (filter.Substring(1, 1)) {
-                            case "i":
-                                return registry.IsInstalled(m.identifier, false);
-                            case "u":
-                                return registry.HasUpdate(m.identifier, manager.CurrentInstance.VersionCriteria());
-                            case "n":
-                                // Filter new
-                                return recent.Contains(m.identifier);
-                            case "c":
-                                if (m.conflicts != null) {
-                                    string conflictsWith = filter.Substring(2);
-                                    // Search for mods depending on a given mod
-                                    foreach (var rel in m.conflicts) {
-                                        if (rel.StartsWith(conflictsWith)) {
-                                            return true;
-                                        }
-                                    }
-                                }
-                                return false;
-                            case "d":
-                                if (m.depends != null) {
-                                    string dependsOn = filter.Substring(2);
-                                    // Search for mods depending on a given mod
-                                    foreach (var rel in m.depends) {
-                                        if (rel.StartsWith(dependsOn)) {
-                                            return true;
-                                        }
-                                    }
-                                }
-                                return false;
                         }
+                        else switch (filter.Substring(1, 1))
+                            {
+                                case "i":
+                                    return registry.IsInstalled(m.identifier, false);
+                                case "u":
+                                    return registry.HasUpdate(m.identifier, manager.CurrentInstance.VersionCriteria());
+                                case "n":
+                                    // Filter new
+                                    return recent.Contains(m.identifier);
+                                case "c":
+                                    if (m.conflicts != null)
+                                    {
+                                        string conflictsWith = filter.Substring(2);
+                                        // Search for mods depending on a given mod
+                                        foreach (var rel in m.conflicts)
+                                        {
+                                            if (rel.StartsWith(conflictsWith))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                    return false;
+                                case "d":
+                                    if (m.depends != null)
+                                    {
+                                        string dependsOn = filter.Substring(2);
+                                        // Search for mods depending on a given mod
+                                        foreach (var rel in m.depends)
+                                        {
+                                            if (rel.StartsWith(dependsOn))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                    return false;
+                            }
                         return false;
-                    } else {
+                    }
+                    else
+                    {
                         filter = CkanModule.nonAlphaNums.Replace(filter, "");
 
-                        return m.SearchableIdentifier.IndexOf( filter, StringComparison.CurrentCultureIgnoreCase) >= 0
-                            || m.SearchableName.IndexOf(       filter, StringComparison.CurrentCultureIgnoreCase) >= 0
-                            || m.SearchableAbstract.IndexOf(   filter, StringComparison.CurrentCultureIgnoreCase) >= 0
+                        return m.SearchableIdentifier.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0
+                            || m.SearchableName.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0
+                            || m.SearchableAbstract.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0
                             || m.SearchableDescription.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0;
                     }
                 }
             );
 
-            searchBox = new ConsoleField(-searchWidth, 2, -1) {
+            searchBox = new ConsoleField(-searchWidth, 2, -1)
+            {
                 GhostText = () => Focused() == searchBox
                     ? Properties.Resources.ModListSearchFocusedGhostText
                     : Properties.Resources.ModListSearchUnfocusedGhostText
             };
-            searchBox.OnChange += (ConsoleField sender, string newValue) => {
+            searchBox.OnChange += (ConsoleField sender, string newValue) =>
+            {
                 moduleList.FilterString = newValue;
             };
 
@@ -128,32 +150,37 @@ namespace CKAN.ConsoleUI {
             AddObject(moduleList);
 
             AddBinding(Keys.CtrlQ, (object sender, ConsoleTheme theme) => false);
-            AddBinding(Keys.AltX,  (object sender, ConsoleTheme theme) => false);
-            AddBinding(Keys.F1,    (object sender, ConsoleTheme theme) => Help(theme));
-            AddBinding(Keys.AltH,  (object sender, ConsoleTheme theme) => Help(theme));
-            AddBinding(Keys.F5,    (object sender, ConsoleTheme theme) => UpdateRegistry(theme));
+            AddBinding(Keys.AltX, (object sender, ConsoleTheme theme) => false);
+            AddBinding(Keys.F1, (object sender, ConsoleTheme theme) => Help(theme));
+            AddBinding(Keys.AltH, (object sender, ConsoleTheme theme) => Help(theme));
+            AddBinding(Keys.F5, (object sender, ConsoleTheme theme) => UpdateRegistry(theme));
             AddBinding(Keys.CtrlR, (object sender, ConsoleTheme theme) => UpdateRegistry(theme));
             AddBinding(Keys.CtrlU, (object sender, ConsoleTheme theme) => UpgradeAll(theme));
 
             // Now a bunch of convenience shortcuts so you don't get stuck in the search box
-            searchBox.AddBinding(Keys.PageUp, (object sender, ConsoleTheme theme) => {
+            searchBox.AddBinding(Keys.PageUp, (object sender, ConsoleTheme theme) =>
+            {
                 SetFocus(moduleList);
                 return true;
             });
-            searchBox.AddBinding(Keys.PageDown, (object sender, ConsoleTheme theme) => {
+            searchBox.AddBinding(Keys.PageDown, (object sender, ConsoleTheme theme) =>
+            {
                 SetFocus(moduleList);
                 return true;
             });
-            searchBox.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
+            searchBox.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) =>
+            {
                 SetFocus(moduleList);
                 return true;
             });
 
-            moduleList.AddBinding(Keys.CtrlF, (object sender, ConsoleTheme theme) => {
+            moduleList.AddBinding(Keys.CtrlF, (object sender, ConsoleTheme theme) =>
+            {
                 SetFocus(searchBox);
                 return true;
             });
-            moduleList.AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            moduleList.AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) =>
+            {
                 searchBox.Clear();
                 return true;
             });
@@ -161,8 +188,10 @@ namespace CKAN.ConsoleUI {
             moduleList.AddTip(Properties.Resources.Enter, Properties.Resources.Details,
                 () => moduleList.Selection != null
             );
-            moduleList.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
-                if (moduleList.Selection != null) {
+            moduleList.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) =>
+            {
+                if (moduleList.Selection != null)
+                {
                     LaunchSubScreen(theme, new ModInfoScreen(manager, plan, moduleList.Selection, debug));
                 }
                 return true;
@@ -182,14 +211,21 @@ namespace CKAN.ConsoleUI {
                 () => moduleList.Selection != null
                     && registry.GetReplacement(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()) != null
             );
-            moduleList.AddBinding(Keys.Plus, (object sender, ConsoleTheme theme) => {
-                if (moduleList.Selection != null && !moduleList.Selection.IsDLC) {
-                    if (!registry.IsInstalled(moduleList.Selection.identifier, false)) {
+            moduleList.AddBinding(Keys.Plus, (object sender, ConsoleTheme theme) =>
+            {
+                if (moduleList.Selection != null && !moduleList.Selection.IsDLC)
+                {
+                    if (!registry.IsInstalled(moduleList.Selection.identifier, false))
+                    {
                         plan.ToggleInstall(moduleList.Selection);
-                    } else if (registry.IsInstalled(moduleList.Selection.identifier, false)
-                            && registry.HasUpdate(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria())) {
+                    }
+                    else if (registry.IsInstalled(moduleList.Selection.identifier, false)
+                            && registry.HasUpdate(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()))
+                    {
                         plan.ToggleUpgrade(moduleList.Selection);
-                    } else if (registry.GetReplacement(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()) != null) {
+                    }
+                    else if (registry.GetReplacement(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()) != null)
+                    {
                         plan.ToggleReplace(moduleList.Selection.identifier);
                     }
                 }
@@ -201,10 +237,12 @@ namespace CKAN.ConsoleUI {
                     && registry.IsInstalled(moduleList.Selection.identifier, false)
                     && !registry.IsAutodetected(moduleList.Selection.identifier)
             );
-            moduleList.AddBinding(Keys.Minus, (object sender, ConsoleTheme theme) => {
+            moduleList.AddBinding(Keys.Minus, (object sender, ConsoleTheme theme) =>
+            {
                 if (moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && registry.IsInstalled(moduleList.Selection.identifier, false)
-                    && !registry.IsAutodetected(moduleList.Selection.identifier)) {
+                    && !registry.IsAutodetected(moduleList.Selection.identifier))
+                {
                     plan.ToggleRemove(moduleList.Selection);
                 }
                 return true;
@@ -218,9 +256,11 @@ namespace CKAN.ConsoleUI {
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && (registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
             );
-            moduleList.AddBinding(Keys.F8, (object sender, ConsoleTheme theme) => {
+            moduleList.AddBinding(Keys.F8, (object sender, ConsoleTheme theme) =>
+            {
                 InstalledModule im = registry.InstalledModule(moduleList.Selection.identifier);
-                if (im != null && !moduleList.Selection.IsDLC) {
+                if (im != null && !moduleList.Selection.IsDLC)
+                {
                     im.AutoInstalled = !im.AutoInstalled;
                     RegistryManager.Instance(manager.CurrentInstance).Save(false);
                 }
@@ -228,7 +268,8 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip("F9", Properties.Resources.ModListApplyChangesTip, plan.NonEmpty);
-            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) =>
+            {
                 ApplyChanges(theme);
                 return true;
             });
@@ -243,18 +284,20 @@ namespace CKAN.ConsoleUI {
 
             AddObject(new ConsoleLabel(
                 -searchWidth, -1, -2,
-                () => {
+                () =>
+                {
                     int days = daysSinceUpdated(registryFilePath());
-                    return days <  1 ? ""
-                        :  days == 1 ? string.Format(Properties.Resources.ModListUpdatedDayAgo,  days)
-                        :              string.Format(Properties.Resources.ModListUpdatedDaysAgo, days);
+                    return days < 1 ? ""
+                        : days == 1 ? string.Format(Properties.Resources.ModListUpdatedDayAgo, days)
+                        : string.Format(Properties.Resources.ModListUpdatedDaysAgo, days);
                 },
                 null,
-                (ConsoleTheme th) => {
+                (ConsoleTheme th) =>
+                {
                     int daysSince = daysSinceUpdated(registryFilePath());
-                    return daysSince < daysTillStale     ? th.RegistryUpToDate
-                        :  daysSince < daystillVeryStale ? th.RegistryStale
-                        :                                  th.RegistryVeryStale;
+                    return daysSince < daysTillStale ? th.RegistryUpToDate
+                        : daysSince < daystillVeryStale ? th.RegistryStale
+                        : th.RegistryVeryStale;
                 }
             ));
 
@@ -300,7 +343,8 @@ namespace CKAN.ConsoleUI {
                     Properties.Resources.ModListQuitMenuTip,
                     true, (ConsoleTheme th) => false)
             };
-            if (debug) {
+            if (debug)
+            {
                 opts.Add(null);
                 opts.Add(new ConsoleMenuOption(Properties.Resources.ModListCaptureKeyMenu, "",
                     Properties.Resources.ModListCaptureKeyMenuTip,
@@ -342,7 +386,8 @@ namespace CKAN.ConsoleUI {
         {
             ConsoleKeyInfo k = default(ConsoleKeyInfo);
             ConsoleMessageDialog keyprompt = new ConsoleMessageDialog(Properties.Resources.ModListPressAKey, new List<string>());
-            keyprompt.Run(theme, (ConsoleTheme th) => {
+            keyprompt.Run(theme, (ConsoleTheme th) =>
+            {
                 k = Console.ReadKey(true);
             });
             ConsoleMessageDialog output = new ConsoleMessageDialog(
@@ -355,8 +400,10 @@ namespace CKAN.ConsoleUI {
 
         private bool HasAnyUpgradeable()
         {
-            foreach (string identifier in registry.Installed(true).Select(kvp => kvp.Key)) {
-                if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria())) {
+            foreach (string identifier in registry.Installed(true).Select(kvp => kvp.Key))
+            {
+                if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria()))
+                {
                     return true;
                 }
             }
@@ -365,8 +412,10 @@ namespace CKAN.ConsoleUI {
 
         private bool UpgradeAll(ConsoleTheme theme)
         {
-            foreach (string identifier in registry.Installed(true).Select(kvp => kvp.Key)) {
-                if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria())) {
+            foreach (string identifier in registry.Installed(true).Select(kvp => kvp.Key))
+            {
+                if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria()))
+                {
                     plan.Upgrade.Add(identifier);
                 }
             }
@@ -376,35 +425,49 @@ namespace CKAN.ConsoleUI {
         private bool ViewSuggestions(ConsoleTheme theme)
         {
             ChangePlan reinstall = new ChangePlan();
-            foreach (InstalledModule im in registry.InstalledModules) {
+            foreach (InstalledModule im in registry.InstalledModules)
+            {
                 // Only check mods that are still available
-                try {
-                    if (registry.LatestAvailable(im.identifier, manager.CurrentInstance.VersionCriteria()) != null) {
+                try
+                {
+                    if (registry.LatestAvailable(im.identifier, manager.CurrentInstance.VersionCriteria()) != null)
+                    {
                         reinstall.Install.Add(im.Module);
                     }
-                } catch {
+                }
+                catch
+                {
                     // The registry object badly needs an IsAvailable check
                 }
             }
-            try {
+            try
+            {
                 DependencyScreen ds = new DependencyScreen(manager, reinstall, new HashSet<string>(), debug);
-                if (ds.HaveOptions()) {
+                if (ds.HaveOptions())
+                {
                     LaunchSubScreen(theme, ds);
                     bool needRefresh = false;
                     // Copy the right ones into our real plan
-                    foreach (CkanModule mod in reinstall.Install) {
-                        if (!registry.IsInstalled(mod.identifier, false)) {
+                    foreach (CkanModule mod in reinstall.Install)
+                    {
+                        if (!registry.IsInstalled(mod.identifier, false))
+                        {
                             plan.Install.Add(mod);
                             needRefresh = true;
                         }
                     }
-                    if (needRefresh) {
+                    if (needRefresh)
+                    {
                         RefreshList(theme);
                     }
-                } else {
+                }
+                else
+                {
                     RaiseError(Properties.Resources.ModListAuditNotFound);
                 }
-            } catch (ModuleNotFoundKraken k) {
+            }
+            catch (ModuleNotFoundKraken k)
+            {
                 RaiseError($"{k.module} {k.version}: {k.Message}");
             }
             return true;
@@ -426,7 +489,8 @@ namespace CKAN.ConsoleUI {
                 Properties.Resources.ModListUpdateRegistryTitle,
                 Properties.Resources.ModListUpdateRegistryMessage
             );
-            LaunchSubScreen(theme, ps, (ConsoleTheme th) => {
+            LaunchSubScreen(theme, ps, (ConsoleTheme th) =>
+            {
                 HashSet<string> availBefore = new HashSet<string>(
                     Array.ConvertAll<CkanModule, string>(
                         registry.CompatibleModules(
@@ -436,7 +500,8 @@ namespace CKAN.ConsoleUI {
                     )
                 );
                 recent.Clear();
-                try {
+                try
+                {
                     var downloader = new NetAsyncDownloader(ps);
 
                     Repo.UpdateAllRepositories(
@@ -446,26 +511,34 @@ namespace CKAN.ConsoleUI {
                         manager.Cache,
                         ps
                     );
-                } catch (ReinstallModuleKraken rmk) {
+                }
+                catch (ReinstallModuleKraken rmk)
+                {
                     ChangePlan reinstPlan = new ChangePlan();
-                    foreach (CkanModule m in rmk.Modules) {
+                    foreach (CkanModule m in rmk.Modules)
+                    {
                         reinstPlan.ToggleUpgrade(m);
                     }
                     LaunchSubScreen(theme, new InstallScreen(manager, reinstPlan, debug));
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     // There can be errors while you re-install mods with changed metadata
                     ps.RaiseError(ex.Message + ex.StackTrace);
                 }
                 // Update recent with mods that were updated in this pass
                 foreach (CkanModule mod in registry.CompatibleModules(
                         manager.CurrentInstance.VersionCriteria()
-                    )) {
-                    if (!availBefore.Contains(mod.identifier)) {
+                    ))
+                {
+                    if (!availBefore.Contains(mod.identifier))
+                    {
                         recent.Add(mod.identifier);
                     }
                 }
             });
-            if (showNewModsPrompt && recent.Count > 0 && RaiseYesNoDialog(newModPrompt(recent.Count))) {
+            if (showNewModsPrompt && recent.Count > 0 && RaiseYesNoDialog(newModPrompt(recent.Count)))
+            {
                 searchBox.Clear();
                 moduleList.FilterString = searchBox.Value = "~n";
             }
@@ -476,15 +549,18 @@ namespace CKAN.ConsoleUI {
         private string newModPrompt(int howMany)
         {
             return howMany == 1
-                ? string.Format(Properties.Resources.ModListNewMod,  howMany)
+                ? string.Format(Properties.Resources.ModListNewMod, howMany)
                 : string.Format(Properties.Resources.ModListNewMods, howMany);
         }
 
         private bool ScanForMods()
         {
-            try {
+            try
+            {
                 manager.CurrentInstance.Scan();
-            } catch (InconsistentKraken ex) {
+            }
+            catch (InconsistentKraken ex)
+            {
                 // Warn about inconsistent state
                 RaiseError(Properties.Resources.ModListScanBad, ex.InconsistenciesPretty);
             }
@@ -493,14 +569,17 @@ namespace CKAN.ConsoleUI {
 
         private bool InstanceSettings(ConsoleTheme theme)
         {
-            var prevRepos   = new SortedDictionary<string, Repository>(registry.Repositories);
+            var prevRepos = new SortedDictionary<string, Repository>(registry.Repositories);
             var prevVerCrit = manager.CurrentInstance.VersionCriteria();
             LaunchSubScreen(theme, new GameInstanceEditScreen(manager, manager.CurrentInstance));
-            if (!SortedDictionaryEquals(registry.Repositories, prevRepos)) {
+            if (!SortedDictionaryEquals(registry.Repositories, prevRepos))
+            {
                 // Repos changed, need to fetch them
                 UpdateRegistry(theme, false);
                 RefreshList(theme);
-            } else if (!manager.CurrentInstance.VersionCriteria().Equals(prevVerCrit)) {
+            }
+            else if (!manager.CurrentInstance.VersionCriteria().Equals(prevVerCrit))
+            {
                 // VersionCriteria changed, need to re-check what is compatible
                 RefreshList(theme);
             }
@@ -513,16 +592,21 @@ namespace CKAN.ConsoleUI {
             var prevRepos = new SortedDictionary<string, Repository>(registry.Repositories);
             var prevVerCrit = prevInst.VersionCriteria();
             LaunchSubScreen(theme, new GameInstanceListScreen(manager));
-            if (!prevInst.Equals(manager.CurrentInstance)) {
+            if (!prevInst.Equals(manager.CurrentInstance))
+            {
                 // Game instance changed, reset everything
                 plan.Reset();
                 registry = RegistryManager.Instance(manager.CurrentInstance).registry;
                 RefreshList(theme);
-            } else if (!SortedDictionaryEquals(registry.Repositories, prevRepos)) {
+            }
+            else if (!SortedDictionaryEquals(registry.Repositories, prevRepos))
+            {
                 // Repos changed, need to fetch them
                 UpdateRegistry(theme, false);
                 RefreshList(theme);
-            } else if (!manager.CurrentInstance.VersionCriteria().Equals(prevVerCrit)) {
+            }
+            else if (!manager.CurrentInstance.VersionCriteria().Equals(prevVerCrit))
+            {
                 // VersionCriteria changed, need to re-check what is compatible
                 RefreshList(theme);
             }
@@ -565,18 +649,23 @@ namespace CKAN.ConsoleUI {
         private List<CkanModule> GetAllMods(ConsoleTheme theme, bool force = false)
         {
             ScanForMods();
-            if (allMods == null || force) {
+            if (allMods == null || force)
+            {
                 if (!registry?.HasAnyAvailable() ?? false)
                 {
                     UpdateRegistry(theme, false);
                 }
                 allMods = new List<CkanModule>(registry.CompatibleModules(manager.CurrentInstance.VersionCriteria()));
-                foreach (InstalledModule im in registry.InstalledModules) {
+                foreach (InstalledModule im in registry.InstalledModules)
+                {
                     CkanModule m = null;
-                    try {
+                    try
+                    {
                         m = registry.LatestAvailable(im.identifier, manager.CurrentInstance.VersionCriteria());
-                    } catch (ModuleNotFoundKraken) { }
-                    if (m == null) {
+                    }
+                    catch (ModuleNotFoundKraken) { }
+                    if (m == null)
+                    {
                         // Add unavailable installed mods to the list
                         allMods.Add(im.Module);
                     }
@@ -587,7 +676,8 @@ namespace CKAN.ConsoleUI {
 
         private bool ExportInstalled(ConsoleTheme theme)
         {
-            try {
+            try
+            {
                 // Save the mod list as "depends" without the installed versions.
                 // Beacause that's supposed to work.
                 RegistryManager.Instance(manager.CurrentInstance).Save(true);
@@ -596,7 +686,9 @@ namespace CKAN.ConsoleUI {
                     $"{Properties.Resources.ModListExportPrefix}-{manager.CurrentInstance.Name}.ckan"
                 );
                 RaiseError(Properties.Resources.ModListExported, path);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 RaiseError(Properties.Resources.ModListExportFailed, ex.Message);
             }
             return true;
@@ -640,26 +732,28 @@ namespace CKAN.ConsoleUI {
         /// </returns>
         public static string StatusSymbol(InstallStatus st)
         {
-            switch (st) {
-                case InstallStatus.Unavailable:   return unavailable;
-                case InstallStatus.Removing:      return removing;
-                case InstallStatus.Upgrading:     return upgrading;
-                case InstallStatus.Upgradeable:   return upgradable;
-                case InstallStatus.Installed:     return installed;
+            switch (st)
+            {
+                case InstallStatus.Unavailable: return unavailable;
+                case InstallStatus.Removing: return removing;
+                case InstallStatus.Upgrading: return upgrading;
+                case InstallStatus.Upgradeable: return upgradable;
+                case InstallStatus.Installed: return installed;
                 case InstallStatus.AutoInstalled: return autoInstalled;
-                case InstallStatus.Installing:    return installing;
-                case InstallStatus.NotInstalled:  return notinstalled;
-                case InstallStatus.AutoDetected:  return autodetected;
-                case InstallStatus.Replaceable:   return replaceable;
-                case InstallStatus.Replacing:     return replacing;
-                default:                          return "";
+                case InstallStatus.Installing: return installing;
+                case InstallStatus.NotInstalled: return notinstalled;
+                case InstallStatus.AutoDetected: return autodetected;
+                case InstallStatus.Replaceable: return replaceable;
+                case InstallStatus.Replacing: return replacing;
+                default: return "";
             }
         }
 
         private long totalInstalledDownloadSize()
         {
             long total = 0;
-            foreach (InstalledModule im in registry.InstalledModules) {
+            foreach (InstalledModule im in registry.InstalledModules)
+            {
                 total += im.Module.install_size > 0
                     ? im.Module.install_size
                     : im.Module.download_size;
@@ -668,39 +762,40 @@ namespace CKAN.ConsoleUI {
         }
 
         private GameInstanceManager manager;
-        private Registry            registry;
-        private bool                debug;
+        private Registry registry;
+        private bool debug;
 
-        private ConsoleField               searchBox;
+        private ConsoleField searchBox;
         private ConsoleListBox<CkanModule> moduleList;
 
-        private ChangePlan      plan   = new ChangePlan();
+        private ChangePlan plan = new ChangePlan();
         private HashSet<string> recent = new HashSet<string>();
 
         private int searchWidth => Math.Max(30, Math.Max(
             Properties.Resources.ModListSearchFocusedGhostText.Length,
             Properties.Resources.ModListSearchUnfocusedGhostText.Length
         ));
-        private const int daysTillStale     = 7;
+        private const int daysTillStale = 7;
         private const int daystillVeryStale = 30;
 
-        private static readonly string unavailable   = "!";
-        private static readonly string notinstalled  = " ";
-        private static readonly string installed     = Symbols.checkmark;
+        private static readonly string unavailable = "!";
+        private static readonly string notinstalled = " ";
+        private static readonly string installed = Symbols.checkmark;
         private static readonly string autoInstalled = Symbols.feminineOrdinal;
-        private static readonly string installing    = "+";
-        private static readonly string upgradable    = Symbols.greaterEquals;
-        private static readonly string upgrading     = "^";
-        private static readonly string removing      = "-";
-        private static readonly string autodetected  = Symbols.infinity;
-        private static readonly string replaceable   = Symbols.doubleGreater;
-        private static readonly string replacing     = Symbols.plusMinus;
+        private static readonly string installing = "+";
+        private static readonly string upgradable = Symbols.greaterEquals;
+        private static readonly string upgrading = "^";
+        private static readonly string removing = "-";
+        private static readonly string autodetected = Symbols.infinity;
+        private static readonly string replaceable = Symbols.doubleGreater;
+        private static readonly string replacing = Symbols.plusMinus;
     }
 
     /// <summary>
     /// Object representing sets of mods we plan to install, upgrade, and remove
     /// </summary>
-    public class ChangePlan {
+    public class ChangePlan
+    {
 
         /// <summary>
         /// Initialize the plan
@@ -755,7 +850,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         public bool NonEmpty()
         {
-             return Install.Count > 0 || Upgrade.Count > 0 || Remove.Count > 0 || Replace.Count > 0;
+            return Install.Count > 0 || Upgrade.Count > 0 || Remove.Count > 0 || Replace.Count > 0;
         }
 
         /// <summary>
@@ -782,29 +877,50 @@ namespace CKAN.ConsoleUI {
         /// </returns>
         public InstallStatus GetModStatus(GameInstanceManager manager, IRegistryQuerier registry, string identifier)
         {
-            if (registry.IsInstalled(identifier, false)) {
-                if (Remove.Contains(identifier)) {
+            if (registry.IsInstalled(identifier, false))
+            {
+                if (Remove.Contains(identifier))
+                {
                     return InstallStatus.Removing;
-                } else if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria())) {
-                    if (Upgrade.Contains(identifier)) {
+                }
+                else if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria()))
+                {
+                    if (Upgrade.Contains(identifier))
+                    {
                         return InstallStatus.Upgrading;
-                    } else {
+                    }
+                    else
+                    {
                         return InstallStatus.Upgradeable;
                     }
-                } else if (registry.IsAutodetected(identifier)) {
+                }
+                else if (registry.IsAutodetected(identifier))
+                {
                     return InstallStatus.AutoDetected;
-                } else if (Replace.Contains(identifier)) {
+                }
+                else if (Replace.Contains(identifier))
+                {
                     return InstallStatus.Replacing;
-                } else if (registry.GetReplacement(identifier, manager.CurrentInstance.VersionCriteria()) != null) {
+                }
+                else if (registry.GetReplacement(identifier, manager.CurrentInstance.VersionCriteria()) != null)
+                {
                     return InstallStatus.Replaceable;
-                } else if (!IsAnyAvailable(registry, identifier)) {
+                }
+                else if (!IsAnyAvailable(registry, identifier))
+                {
                     return InstallStatus.Unavailable;
-                } else if (registry.InstalledModule(identifier)?.AutoInstalled ?? false) {
+                }
+                else if (registry.InstalledModule(identifier)?.AutoInstalled ?? false)
+                {
                     return InstallStatus.AutoInstalled;
-                } else {
+                }
+                else
+                {
                     return InstallStatus.Installed;
                 }
-            } else {
+            }
+            else
+            {
                 foreach (CkanModule m in Install)
                 {
                     if (m.identifier == identifier)
@@ -826,10 +942,13 @@ namespace CKAN.ConsoleUI {
         /// </returns>
         public static bool IsAnyAvailable(IRegistryQuerier registry, string identifier)
         {
-            try {
+            try
+            {
                 registry.LatestAvailable(identifier, null);
                 return true;
-            } catch (ModuleNotFoundKraken) {
+            }
+            catch (ModuleNotFoundKraken)
+            {
                 return false;
             }
         }
@@ -841,10 +960,14 @@ namespace CKAN.ConsoleUI {
         /// <param name="identifier">The value</param>
         public static void toggleContains(HashSet<string> list, string identifier)
         {
-            if (list != null && !string.IsNullOrEmpty(identifier)) {
-                if (list.Contains(identifier)) {
+            if (list != null && !string.IsNullOrEmpty(identifier))
+            {
+                if (list.Contains(identifier))
+                {
                     list.Remove(identifier);
-                } else {
+                }
+                else
+                {
                     list.Add(identifier);
                 }
             }
@@ -857,10 +980,14 @@ namespace CKAN.ConsoleUI {
         /// <param name="mod">The value</param>
         public static void toggleContains(HashSet<CkanModule> list, CkanModule mod)
         {
-            if (list != null && mod != null) {
-                if (list.Contains(mod)) {
+            if (list != null && mod != null)
+            {
+                if (list.Contains(mod))
+                {
                     list.Remove(mod);
-                } else {
+                }
+                else
+                {
                     list.Add(mod);
                 }
             }
@@ -879,7 +1006,7 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Mods we're planning to remove
         /// </summary>
-        public readonly HashSet<string> Remove  = new HashSet<string>();
+        public readonly HashSet<string> Remove = new HashSet<string>();
 
         /// <summary>
         /// Mods we're planning to replace with successor mods
@@ -890,7 +1017,8 @@ namespace CKAN.ConsoleUI {
     /// <summary>
     /// Representation of the current status of a mod in an install
     /// </summary>
-    public enum InstallStatus {
+    public enum InstallStatus
+    {
 
         /// <summary>
         /// This mod is not in the registry

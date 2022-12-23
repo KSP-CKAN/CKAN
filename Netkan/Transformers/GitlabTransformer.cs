@@ -46,10 +46,10 @@ namespace CKAN.NetKAN.Transformers
             if (metadata.Kref?.Source == Name)
             {
                 var reference = new GitlabRef(metadata.Kref);
-                var project   = api.GetProject(reference);
-                var releases  = api.GetAllReleases(reference)
+                var project = api.GetProject(reference);
+                var releases = api.GetAllReleases(reference)
                     .Skip(opts.SkipReleases ?? 0)
-                    .Take(opts.Releases     ?? 1)
+                    .Take(opts.Releases ?? 1)
                     .ToArray();
                 if (releases.Length < 1)
                 {
@@ -75,10 +75,10 @@ namespace CKAN.NetKAN.Transformers
                 throw new Exception("'x_netkan_gitlab.use_source_archive' missing or false; GitLab ONLY supports source archives!");
             }
 
-            json.SafeAdd("name",     project.Name);
+            json.SafeAdd("name", project.Name);
             json.SafeAdd("abstract", project.Description);
-            json.SafeAdd("author",   release.Author.Name);
-            json.SafeAdd("version",  release.TagName);
+            json.SafeAdd("author", release.Author.Name);
+            json.SafeAdd("version", release.TagName);
             json.SafeMerge("resources", JObject.FromObject(new Dictionary<string, string>()
             {
                 { "repository", project.WebURL },
@@ -97,7 +97,7 @@ namespace CKAN.NetKAN.Transformers
             return new Metadata(json);
         }
 
-        private static readonly ILog       log = LogManager.GetLogger(typeof(GitlabTransformer));
-        private                 IGitlabApi api;
+        private static readonly ILog log = LogManager.GetLogger(typeof(GitlabTransformer));
+        private IGitlabApi api;
     }
 }

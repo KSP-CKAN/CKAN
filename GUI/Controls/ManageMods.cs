@@ -21,15 +21,15 @@ namespace CKAN.GUI
             InitializeComponent();
 
             ToolTip.SetToolTip(InstallAllCheckbox, Properties.Resources.ManageModsInstallAllCheckboxTooltip);
-            FilterCompatibleButton.ToolTipText      = Properties.Resources.FilterLinkToolTip;
-            FilterInstalledButton.ToolTipText       = Properties.Resources.FilterLinkToolTip;
+            FilterCompatibleButton.ToolTipText = Properties.Resources.FilterLinkToolTip;
+            FilterInstalledButton.ToolTipText = Properties.Resources.FilterLinkToolTip;
             FilterInstalledUpdateButton.ToolTipText = Properties.Resources.FilterLinkToolTip;
-            FilterReplaceableButton.ToolTipText     = Properties.Resources.FilterLinkToolTip;
-            FilterCachedButton.ToolTipText          = Properties.Resources.FilterLinkToolTip;
-            FilterUncachedButton.ToolTipText        = Properties.Resources.FilterLinkToolTip;
-            FilterNewButton.ToolTipText             = Properties.Resources.FilterLinkToolTip;
-            FilterNotInstalledButton.ToolTipText    = Properties.Resources.FilterLinkToolTip;
-            FilterIncompatibleButton.ToolTipText    = Properties.Resources.FilterLinkToolTip;
+            FilterReplaceableButton.ToolTipText = Properties.Resources.FilterLinkToolTip;
+            FilterCachedButton.ToolTipText = Properties.Resources.FilterLinkToolTip;
+            FilterUncachedButton.ToolTipText = Properties.Resources.FilterLinkToolTip;
+            FilterNewButton.ToolTipText = Properties.Resources.FilterLinkToolTip;
+            FilterNotInstalledButton.ToolTipText = Properties.Resources.FilterLinkToolTip;
+            FilterIncompatibleButton.ToolTipText = Properties.Resources.FilterLinkToolTip;
 
             mainModList = new ModList(source => UpdateFilters());
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
@@ -172,8 +172,8 @@ namespace CKAN.GUI
                 // Mark current conflicts as conflicted
                 foreach (var kvp in Conflicts)
                 {
-                    GUIMod          guiMod = kvp.Key;
-                    DataGridViewRow row    = mainModList.full_list_of_mod_rows[guiMod.Identifier];
+                    GUIMod guiMod = kvp.Key;
+                    DataGridViewRow row = mainModList.full_list_of_mod_rows[guiMod.Identifier];
                     string conflict_text = kvp.Value;
 
                     foreach (DataGridViewCell cell in row.Cells)
@@ -213,7 +213,7 @@ namespace CKAN.GUI
                     null, tagFilterButton_Click
                 )
                 {
-                    Tag         = kvp.Value,
+                    Tag = kvp.Value,
                     ToolTipText = Properties.Resources.FilterLinkToolTip,
                 });
             }
@@ -237,7 +237,7 @@ namespace CKAN.GUI
                     null, customFilterButton_Click
                 )
                 {
-                    Tag         = mlbl,
+                    Tag = mlbl,
                     ToolTipText = Properties.Resources.FilterLinkToolTip,
                 });
             }
@@ -257,9 +257,9 @@ namespace CKAN.GUI
                 LabelsContextMenuStrip.Items.Add(
                     new ToolStripMenuItem(mlbl.Name, null, labelMenuItem_Click)
                     {
-                        Checked      = mlbl.ModuleIdentifiers.Contains(module.Identifier),
+                        Checked = mlbl.ModuleIdentifiers.Contains(module.Identifier),
                         CheckOnClick = true,
-                        Tag          = mlbl,
+                        Tag = mlbl,
                     }
                 );
             }
@@ -270,8 +270,8 @@ namespace CKAN.GUI
 
         private void labelMenuItem_Click(object sender, EventArgs e)
         {
-            var item   = sender   as ToolStripMenuItem;
-            var mlbl   = item.Tag as ModuleLabel;
+            var item = sender as ToolStripMenuItem;
+            var mlbl = item.Tag as ModuleLabel;
             var module = SelectedModule;
             if (item.Checked)
             {
@@ -572,10 +572,10 @@ namespace CKAN.GUI
                     .Where(col => col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
                     .Select(col => new ToolStripMenuItem()
                     {
-                        Name    = col.Name,
-                        Text    = col.HeaderText,
+                        Name = col.Name,
+                        Text = col.HeaderText,
                         Checked = col.Visible,
-                        Tag     = col
+                        Tag = col
                     })
                     .ToArray()
                 );
@@ -588,10 +588,10 @@ namespace CKAN.GUI
                     mainModList.ModuleTags.Tags.OrderBy(kvp => kvp.Key)
                     .Select(kvp => new ToolStripMenuItem()
                     {
-                        Name    = kvp.Key,
-                        Text    = kvp.Key,
+                        Name = kvp.Key,
+                        Text = kvp.Key,
                         Checked = kvp.Value.Visible,
-                        Tag     = kvp.Value,
+                        Tag = kvp.Value,
                     })
                     .ToArray()
                 );
@@ -607,9 +607,9 @@ namespace CKAN.GUI
         private void ModListHeaderContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             // ClickedItem is of type ToolStripItem, we need ToolStripButton.
-            ToolStripMenuItem  clickedItem = e.ClickedItem    as ToolStripMenuItem;
-            DataGridViewColumn col         = clickedItem?.Tag as DataGridViewColumn;
-            ModuleTag          tag         = clickedItem?.Tag as ModuleTag;
+            ToolStripMenuItem clickedItem = e.ClickedItem as ToolStripMenuItem;
+            DataGridViewColumn col = clickedItem?.Tag as DataGridViewColumn;
+            ModuleTag tag = clickedItem?.Tag as ModuleTag;
 
             if (col != null)
             {
@@ -750,14 +750,14 @@ namespace CKAN.GUI
 
         private async void ModGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            int row_index    = e.RowIndex;
+            int row_index = e.RowIndex;
             int column_index = e.ColumnIndex;
 
             if (row_index < 0 || column_index < 0)
                 return;
 
-            DataGridView     grid     = sender as DataGridView;
-            DataGridViewRow  row      = grid?.Rows[row_index];
+            DataGridView grid = sender as DataGridView;
+            DataGridViewRow row = grid?.Rows[row_index];
             DataGridViewCell gridCell = row?.Cells[column_index];
 
             if (gridCell is DataGridViewLinkCell)
@@ -977,7 +977,7 @@ namespace CKAN.GUI
             {
                 ModListContextMenuStrip.Show(Cursor.Position);
                 // Set the menu options
-                downloadContentsToolStripMenuItem.Enabled = !guiMod.ToModule().IsMetapackage &&  !guiMod.IsCached;
+                downloadContentsToolStripMenuItem.Enabled = !guiMod.ToModule().IsMetapackage && !guiMod.IsCached;
                 purgeContentsToolStripMenuItem.Enabled = !guiMod.ToModule().IsMetapackage && guiMod.IsCached;
                 reinstallToolStripMenuItem.Enabled = guiMod.IsInstalled && !guiMod.IsAutodetected;
                 return true;
@@ -1091,13 +1091,13 @@ namespace CKAN.GUI
             GUIMod selected_mod = null;
             if (ModGrid.CurrentRow != null)
             {
-                selected_mod = (GUIMod) ModGrid.CurrentRow.Tag;
+                selected_mod = (GUIMod)ModGrid.CurrentRow.Tag;
             }
 
             ModGrid.Rows.Clear();
             foreach (var row in rows)
             {
-                var mod = ((GUIMod) row.Tag);
+                var mod = ((GUIMod)row.Tag);
                 row.Visible = mainModList.IsVisible(mod, Main.Instance.CurrentInstance.Name);
             }
 
@@ -1197,9 +1197,9 @@ namespace CKAN.GUI
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListUpdatingFilters);
 
-            var has_any_updates      = gui_mods.Any(mod => mod.HasUpdate);
-            var has_unheld_updates   = gui_mods.Any(mod => mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
-            var has_any_installed    = gui_mods.Any(mod => mod.IsInstalled);
+            var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
+            var has_unheld_updates = gui_mods.Any(mod => mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
+            var has_any_installed = gui_mods.Any(mod => mod.IsInstalled);
             var has_any_replacements = gui_mods.Any(mod => mod.IsInstalled && mod.HasReplacement);
 
             Util.Invoke(menuStrip2, () =>
@@ -1237,9 +1237,9 @@ namespace CKAN.GUI
             // After the update / replacement, they are hidden again.
             Util.Invoke(ModGrid, () =>
             {
-                ModGrid.Columns["UpdateCol"].Visible     = has_any_updates;
+                ModGrid.Columns["UpdateCol"].Visible = has_any_updates;
                 ModGrid.Columns["AutoInstalled"].Visible = has_any_installed && !Main.Instance.configuration.HiddenColumnNames.Contains("AutoInstalled");
-                ModGrid.Columns["ReplaceCol"].Visible    = has_any_replacements;
+                ModGrid.Columns["ReplaceCol"].Visible = has_any_replacements;
             });
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListUpdatingTray);
@@ -1495,7 +1495,7 @@ namespace CKAN.GUI
         {
             return definedA
                 ? (definedB ? valA.CompareTo(valB) : -1)
-                : (definedB ? 1                    :  0);
+                : (definedB ? 1 : 0);
         }
 
         public void ResetFilterAndSelectModOnList(string key)

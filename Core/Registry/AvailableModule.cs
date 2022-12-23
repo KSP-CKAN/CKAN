@@ -44,7 +44,7 @@ namespace CKAN
             this.identifier = identifier;
         }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (AvailableModule));
+        private static readonly ILog log = LogManager.GetLogger(typeof(AvailableModule));
 
         // The map of versions -> modules, that's what we're about!
         // First element is the oldest version, last is the newest.
@@ -91,10 +91,10 @@ namespace CKAN
         /// <param name="toInstall">Modules that are planned to be installed</param>
         /// <returns></returns>
         public CkanModule Latest(
-            GameVersionCriteria      ksp_version  = null,
-            RelationshipDescriptor  relationship = null,
-            IEnumerable<CkanModule> installed    = null,
-            IEnumerable<CkanModule> toInstall    = null
+            GameVersionCriteria ksp_version = null,
+            RelationshipDescriptor relationship = null,
+            IEnumerable<CkanModule> installed = null,
+            IEnumerable<CkanModule> toInstall = null
         )
         {
             IEnumerable<CkanModule> modules = module_version.Values.Reverse();
@@ -209,11 +209,12 @@ namespace CKAN
         public string FullMetadata()
         {
             StringWriter sw = new StringWriter(new StringBuilder());
-            using (JsonTextWriter writer = new JsonTextWriter(sw) {
-                    Formatting  = Formatting.Indented,
-                    Indentation = 4,
-                    IndentChar  = ' '
-                })
+            using (JsonTextWriter writer = new JsonTextWriter(sw)
+            {
+                Formatting = Formatting.Indented,
+                Indentation = 4,
+                IndentChar = ' '
+            })
             {
                 new JsonSerializer().Serialize(writer, this);
             }

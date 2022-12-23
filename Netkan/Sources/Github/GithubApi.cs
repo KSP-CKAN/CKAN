@@ -22,7 +22,7 @@ namespace CKAN.NetKAN.Sources.Github
         private static readonly Uri ApiBase = new Uri("https://api.github.com/");
 
         private readonly IHttpService _http;
-        private readonly string       _oauthToken;
+        private readonly string _oauthToken;
 
         private const string rawMediaType = "application/vnd.github.v3.raw";
 
@@ -46,7 +46,7 @@ namespace CKAN.NetKAN.Sources.Github
 
         public GithubApi(IHttpService http, string oauthToken = null)
         {
-            _http       = http;
+            _http = http;
             _oauthToken = oauthToken;
         }
 
@@ -136,10 +136,10 @@ namespace CKAN.NetKAN.Sources.Github
                     if (ghMatch.Success && urlTypes.Contains(ghMatch.Groups["type"].Value))
                     {
                         Log.DebugFormat("Matched standard GitHub format");
-                        owner  = ghMatch.Groups["owner"].Value;
-                        repo   = ghMatch.Groups["repo"].Value;
+                        owner = ghMatch.Groups["owner"].Value;
+                        repo = ghMatch.Groups["repo"].Value;
                         branch = ghMatch.Groups["branch"].Value;
-                        path   = ghMatch.Groups["path"].Value;
+                        path = ghMatch.Groups["path"].Value;
                         return true;
                     }
                     break;
@@ -150,10 +150,10 @@ namespace CKAN.NetKAN.Sources.Github
                     if (rawMatch.Success)
                     {
                         Log.DebugFormat("Matched raw GitHub format");
-                        owner  = rawMatch.Groups["owner"].Value;
-                        repo   = rawMatch.Groups["repo"].Value;
+                        owner = rawMatch.Groups["owner"].Value;
+                        repo = rawMatch.Groups["repo"].Value;
                         branch = rawMatch.Groups["branch"].Value;
-                        path   = rawMatch.Groups["path"].Value;
+                        path = rawMatch.Groups["path"].Value;
                         return true;
                     }
                     break;

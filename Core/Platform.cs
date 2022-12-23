@@ -96,7 +96,7 @@ namespace CKAN
             // Get Mono's display name and parse the version
             Type type = Type.GetType("Mono.Runtime");
             string display_name =
-                (string) type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
+                (string)type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
 
             var match = versionMatcher.Match(display_name);
             if (match.Success)

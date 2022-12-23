@@ -19,7 +19,7 @@ namespace CKAN.CmdLine
 {
     internal class MainClass
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
+        private static readonly ILog log = LogManager.GetLogger(typeof(MainClass));
 
         /*
          * When the STAThread is applied, it changes the apartment state of the current thread to be single threaded.
@@ -289,7 +289,7 @@ namespace CKAN.CmdLine
             // but trying to catch it here doesn't seem to help. Dunno why.
 
             // GUI expects its first param to be an identifier, don't confuse it
-            GUI.GUI.Main_(args.Except(new string[] {"--verbose", "--debug", "--show-console"})
+            GUI.GUI.Main_(args.Except(new string[] { "--verbose", "--debug", "--show-console" })
                               .ToArray(),
                           manager, options.ShowConsole);
 

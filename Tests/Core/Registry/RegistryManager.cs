@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using Tests.Data;
 using System.IO;
@@ -71,11 +69,11 @@ namespace Tests.Core.RegistryManager
             // Arrange
             string registryPath = TestData.DataDir("zero-byte-registry.json");
             DisposableKSP dispksp;
-            CKAN.GameInstance      ksp;
+            CKAN.GameInstance ksp;
 
             // Act
             dispksp = new DisposableKSP(null, registryPath);
-            ksp     = dispksp.KSP;
+            ksp = dispksp.KSP;
 
             // Assert
             CKAN.Registry reg = CKAN.RegistryManager.Instance(ksp).registry;

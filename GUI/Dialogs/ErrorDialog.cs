@@ -63,7 +63,7 @@ namespace CKAN.GUI
             return (int)CreateGraphics().MeasureString(text, ErrorMessage.Font, maxWidth).Height;
         }
 
-        private const           int  maxHeight = 600;
-        private static readonly ILog log       = LogManager.GetLogger(typeof(ErrorDialog));
+        private const int maxHeight = 600;
+        private static readonly ILog log = LogManager.GetLogger(typeof(ErrorDialog));
     }
 }

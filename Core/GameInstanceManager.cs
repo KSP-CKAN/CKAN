@@ -33,7 +33,7 @@ namespace CKAN
 
         public NetModuleCache Cache { get; private set; }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (GameInstanceManager));
+        private static readonly ILog log = LogManager.GetLogger(typeof(GameInstanceManager));
 
         private readonly SortedList<string, GameInstance> instances = new SortedList<string, GameInstance>();
 

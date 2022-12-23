@@ -7,7 +7,7 @@ namespace CKAN.GUI
     {
         int currentSelected;
 
-        public SelectionDialog ()
+        public SelectionDialog()
         {
             InitializeComponent();
             currentSelected = 0;
@@ -19,7 +19,7 @@ namespace CKAN.GUI
         /// <returns>The selected index, -1 if canceled.</returns>
         /// <param name="message">Message.</param>
         /// <param name="args">Array of items to select from.</param>
-        public int ShowSelectionDialog (string message, params object[] args)
+        public int ShowSelectionDialog(string message, params object[] args)
         {
             int defaultSelection = -1;
             int return_cancel = -1;
@@ -109,7 +109,7 @@ namespace CKAN.GUI
             }
         }
 
-        public void HideYesNoDialog ()
+        public void HideYesNoDialog()
         {
             Util.Invoke(this, Close);
         }

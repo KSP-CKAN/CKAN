@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Screen showing a progress bar and a text box to track progress of things
     /// </summary>
-    public class ProgressScreen : ConsoleScreen {
+    public class ProgressScreen : ConsoleScreen
+    {
 
         // The IUser stuff is ONLY used by the mod download/install operations.
 
@@ -38,7 +40,7 @@ namespace CKAN.ConsoleUI {
             AddObject(progress);
             AddObject(messages);
 
-            topMessage      = initMsg;
+            topMessage = initMsg;
             taskDescription = descrip;
         }
 
@@ -82,11 +84,13 @@ namespace CKAN.ConsoleUI {
                 TextAlign.Center,
                 -Console.WindowHeight / 2
             );
-            d.AddBinding(Keys.Y, (object sender, ConsoleTheme theme) => {
+            d.AddBinding(Keys.Y, (object sender, ConsoleTheme theme) =>
+            {
                 d.PressButton(0);
                 return false;
             });
-            d.AddBinding(Keys.N, (object sender, ConsoleTheme theme) => {
+            d.AddBinding(Keys.N, (object sender, ConsoleTheme theme) =>
+            {
                 d.PressButton(1);
                 return false;
             });
@@ -118,18 +122,18 @@ namespace CKAN.ConsoleUI {
         /// <param name="percent">Value between 0-100 indicating task completion</param>
         protected override void Progress(string message, int percent)
         {
-            topMessage   = message;
+            topMessage = message;
             this.percent = percent / 100.0;
         }
 
         private ConsoleProgressBar progress;
-        private ConsoleTextBox     messages;
+        private ConsoleTextBox messages;
 
         private ConsoleTheme yesNoTheme;
 
-        private string topMessage      = "";
+        private string topMessage = "";
         private string taskDescription = "";
-        private double percent         = 0;
+        private double percent = 0;
     }
 
 }

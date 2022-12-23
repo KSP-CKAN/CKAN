@@ -11,7 +11,7 @@ namespace CKAN.GUI
         {
             InitializeComponent();
             defaultYes = YesButton.Text;
-            defaultNo  = NoButton.Text;
+            defaultNo = NoButton.Text;
         }
 
         public DialogResult ShowYesNoDialog(Form parentForm, string text, string yesText = null, string noText = null)
@@ -51,7 +51,7 @@ namespace CKAN.GUI
                 ? ScrollBars.None
                 : ScrollBars.Vertical;
             YesButton.Text = yesText ?? defaultYes;
-            NoButton.Text  = noText  ?? defaultNo;
+            NoButton.Text = noText ?? defaultNo;
             SuppressCheckbox.Visible = false;
             ClientSize = new Size(
                 ClientSize.Width,

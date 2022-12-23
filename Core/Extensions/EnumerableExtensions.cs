@@ -153,9 +153,9 @@ namespace CKAN.Extensions
         }
 
         private readonly IEnumerable<T> source;
-        private          IEnumerator<T> enumerator;
-        private readonly List<T>        cache = new List<T>();
-        private          bool           isCacheComplete;
-        private readonly object         gate = new object();
+        private IEnumerator<T> enumerator;
+        private readonly List<T> cache = new List<T>();
+        private bool isCacheComplete;
+        private readonly object gate = new object();
     }
 }

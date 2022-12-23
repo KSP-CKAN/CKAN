@@ -88,13 +88,13 @@ namespace CKAN.GUI
                     : descr
             })
             {
-                Tag         = m,
-                ForeColor   = warnLbl != null ? Color.Red : SystemColors.WindowText,
+                Tag = m,
+                ForeColor = warnLbl != null ? Color.Red : SystemColors.WindowText,
                 ToolTipText = descr,
             };
         }
 
-        private List<ModChange>   changeset;
+        private List<ModChange> changeset;
         private List<ModuleLabel> alertLabels;
     }
 }

@@ -9,10 +9,10 @@ namespace CKAN
     {
         [JsonIgnore] public static string default_ckan_repo_name => Properties.Resources.RepositoryDefaultName;
 
-        public string  name;
-        public Uri     uri;
-        public string  last_server_etag;
-        public int     priority = 0;
+        public string name;
+        public Uri uri;
+        public string last_server_etag;
+        public int priority = 0;
 
         public Repository()
         {
@@ -44,9 +44,9 @@ namespace CKAN
 
         public bool Equals(Repository other)
         {
-            return other    != null
-                && name     == other.name
-                && uri      == other.uri
+            return other != null
+                && name == other.name
+                && uri == other.uri
                 && priority == other.priority;
         }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using log4net;
 using Newtonsoft.Json.Linq;
@@ -28,7 +28,7 @@ namespace CKAN.NetKAN.Extensions
                 jobject[propertyName] = jobject[propertyName] ?? token;
             }
         }
-        
+
         /// <summary>
         /// Write a property to a <see cref="JObject"/> only if it does not already exist and the value is not null.
         /// The value is generated on-demand by calling tokenCallback, only when we need it.
@@ -48,7 +48,7 @@ namespace CKAN.NetKAN.Extensions
                 jobject.SafeAdd(propertyName, tokenCallback());
             }
         }
-        
+
         /// <summary>
         /// Merge an object's properties into one of our child objects
         /// E.g., the "resources" object should accumulate values from all levels
@@ -79,6 +79,6 @@ namespace CKAN.NetKAN.Extensions
                 }
             }
         }
-        
+
     }
 }

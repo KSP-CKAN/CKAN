@@ -16,7 +16,7 @@ namespace CKAN.NetKAN.Sources.Curse
         private static readonly ILog Log = LogManager.GetLogger(typeof(CurseApi));
 
         private const string CurseApiBaseOld = "https://api.cfwidget.com/project/";
-        private const string CurseApiBase    = "https://api.cfwidget.com/kerbal/ksp-mods/";
+        private const string CurseApiBase = "https://api.cfwidget.com/kerbal/ksp-mods/";
 
         private readonly IHttpService _http;
 
@@ -50,14 +50,14 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             Uri redirUrl = url;
             int redirects = 0;
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(redirUrl);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(redirUrl);
             request.AllowAutoRedirect = false;
             request.UserAgent = Net.UserAgentString;
 
             HttpWebResponse response;
             try
             {
-                response = (HttpWebResponse) request.GetResponse();
+                response = (HttpWebResponse)request.GetResponse();
             }
             catch (WebException e)
             {
@@ -78,10 +78,10 @@ namespace CKAN.NetKAN.Sources.Curse
                 if (redirects > 6)
                     throw new Kraken("More than 6 redirects when resolving the following url: " + url);
                 redirUrl = new Uri(redirUrl, response.Headers["Location"]);
-                request = (HttpWebRequest) WebRequest.Create(redirUrl);
+                request = (HttpWebRequest)WebRequest.Create(redirUrl);
                 request.AllowAutoRedirect = false;
                 request.UserAgent = Net.UserAgentString;
-                response = (HttpWebResponse) request.GetResponse();
+                response = (HttpWebResponse)request.GetResponse();
                 response.Close();
             }
             return redirUrl;
@@ -94,7 +94,7 @@ namespace CKAN.NetKAN.Sources.Curse
             // otherwise use the new.
             var url = Int32.TryParse(nameOrId, out id)
                 ? CurseApiBaseOld + id
-                : CurseApiBase    + nameOrId;
+                : CurseApiBase + nameOrId;
             Log.InfoFormat("Calling {0}", url);
             return _http.DownloadText(new Uri(url));
         }

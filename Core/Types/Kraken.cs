@@ -42,8 +42,8 @@ namespace CKAN
     public class NotEnoughSpaceKraken : Kraken
     {
         public readonly DirectoryInfo destination;
-        public readonly long          bytesFree;
-        public readonly long          bytesToStore;
+        public readonly long bytesFree;
+        public readonly long bytesToStore;
 
         public NotEnoughSpaceKraken(string description, DirectoryInfo destination, long bytesFree, long bytesToStore)
             : base(string.Format(Properties.Resources.KrakenNotEnoughSpace,
@@ -51,8 +51,8 @@ namespace CKAN
                                  CkanModule.FmtSize(bytesFree),
                                  CkanModule.FmtSize(bytesToStore)))
         {
-            this.destination  = destination;
-            this.bytesFree    = bytesFree;
+            this.destination = destination;
+            this.bytesFree = bytesFree;
             this.bytesToStore = bytesToStore;
         }
     }
@@ -83,7 +83,7 @@ namespace CKAN
                 reason ?? string.Format(Properties.Resources.KrakenDependencyNotSatisfied, module, version),
                 innerException)
         {
-            this.module  = module;
+            this.module = module;
             this.version = version;
         }
 
@@ -179,8 +179,8 @@ namespace CKAN
         public TooManyModsProvideKraken(string requested, List<CkanModule> modules, string choice_help_text = null, Exception innerException = null)
             : base(FormatMessage(requested, modules, choice_help_text), innerException)
         {
-            this.requested        = requested;
-            this.modules          = modules;
+            this.requested = requested;
+            this.modules = modules;
             this.choice_help_text = choice_help_text;
         }
 
@@ -247,14 +247,14 @@ namespace CKAN
             ICollection<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts
         ) : base(
             (depends?.Select(dep => string.Format(Properties.Resources.KrakenMissingDependency, dep.Key, dep.Value))
-                ?? new string[] {}
+                ?? new string[] { }
             ).Concat(
                 conflicts?.Select(conf => string.Format(Properties.Resources.KrakenConflictsWith, conf.Key, conf.Value))
-                ?? new string[] {}
+                ?? new string[] { }
             ).ToArray()
         )
         {
-            Depends   = depends?.ToList()
+            Depends = depends?.ToList()
                 ?? new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
             Conflicts = conflicts?.ToList()
                 ?? new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
@@ -454,7 +454,7 @@ namespace CKAN
         public DownloadThrottledKraken(Uri url, Uri info) : base()
         {
             throttledUrl = url;
-            infoUrl      = info;
+            infoUrl = info;
         }
 
         public override string ToString()
@@ -468,7 +468,7 @@ namespace CKAN
         public readonly string lockfilePath;
 
         public RegistryInUseKraken(string path, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
             this.lockfilePath = path;
         }
@@ -497,7 +497,7 @@ namespace CKAN
         /// <summary>
         /// Path to the file that doesn't match the module
         /// </summary>
-        public readonly string     path;
+        public readonly string path;
 
         /// <summary>
         /// Release the kraken
@@ -509,7 +509,7 @@ namespace CKAN
             : base(reason)
         {
             this.module = module;
-            this.path   = path;
+            this.path = path;
         }
     }
 

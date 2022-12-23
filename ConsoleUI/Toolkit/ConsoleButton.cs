@@ -1,11 +1,13 @@
 using System;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Class representing a button with some text and an action that the user can select and press
     /// </summary>
-    public class ConsoleButton : ScreenObject {
+    public class ConsoleButton : ScreenObject
+    {
 
         /// <summary>
         /// Initialize the button
@@ -18,7 +20,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public ConsoleButton(int l, int t, int r, string cap, Action onClick)
             : base(l, t, r, t)
         {
-            caption     = cap;
+            caption = cap;
             choiceEvent = onClick;
             shadowStrip = new string(Symbols.upperHalfBlock, GetRight() - GetLeft() + 1);
         }
@@ -35,9 +37,12 @@ namespace CKAN.ConsoleUI.Toolkit {
             // Main button text
             Console.SetCursorPosition(GetLeft(), GetTop());
             Console.BackgroundColor = theme.PopupButtonBg;
-            if (focused) {
+            if (focused)
+            {
                 Console.ForegroundColor = theme.PopupButtonSelectedFg;
-            } else {
+            }
+            else
+            {
                 Console.ForegroundColor = theme.PopupButtonFg;
             }
             Console.Write(ScreenObject.PadCenter(caption, w));
@@ -74,7 +79,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public override void OnKeyPress(ConsoleKeyInfo k)
         {
-            switch (k.Key) {
+            switch (k.Key)
+            {
                 case ConsoleKey.Tab:
                     Blur((k.Modifiers & ConsoleModifiers.Shift) == 0);
                     break;
@@ -93,8 +99,8 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
         }
 
-        private          string caption;
-        private          Action choiceEvent;
+        private string caption;
+        private Action choiceEvent;
         private readonly string shadowStrip;
     }
 }

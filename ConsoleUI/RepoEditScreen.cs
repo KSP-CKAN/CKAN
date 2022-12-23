@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using CKAN.Games;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Screen for editing an existing Repository entry
     /// </summary>
-    public class RepoEditScreen : RepoScreen {
+    public class RepoEditScreen : RepoScreen
+    {
 
         /// <summary>
         /// Construct the Screen
@@ -30,11 +32,13 @@ namespace CKAN.ConsoleUI {
         protected override bool Valid()
         {
             if (name.Value != repository.name
-                    && !nameValid()) {
+                    && !nameValid())
+            {
                 return false;
             }
             if (url.Value != repository.uri.ToString()
-                    && !urlValid()) {
+                    && !urlValid())
+            {
                 return false;
             }
             return true;
@@ -45,12 +49,15 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override void Save()
         {
-            if (name.Value != repository.name) {
+            if (name.Value != repository.name)
+            {
                 // They changed the name, so we have to
                 // remove and re-add it.
                 editList.Remove(repository.name);
                 editList.Add(name.Value, new Repository(name.Value, url.Value));
-            } else {
+            }
+            else
+            {
                 // Only the URL changed, so we can just set it
                 repository.uri = new Uri(url.Value);
             }

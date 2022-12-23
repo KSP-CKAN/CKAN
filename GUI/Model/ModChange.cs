@@ -6,10 +6,10 @@ namespace CKAN.GUI
 {
     public enum GUIModChangeType
     {
-        None    = 0,
+        None = 0,
         Install = 1,
-        Remove  = 2,
-        Update  = 3,
+        Remove = 2,
+        Update = 3,
         Replace = 4
     }
 
@@ -19,10 +19,10 @@ namespace CKAN.GUI
         {
             switch (val)
             {
-                case GUIModChangeType.None:    return Properties.Resources.ChangeTypeNone;
+                case GUIModChangeType.None: return Properties.Resources.ChangeTypeNone;
                 case GUIModChangeType.Install: return Properties.Resources.ChangeTypeInstall;
-                case GUIModChangeType.Remove:  return Properties.Resources.ChangeTypeRemove;
-                case GUIModChangeType.Update:  return Properties.Resources.ChangeTypeUpdate;
+                case GUIModChangeType.Remove: return Properties.Resources.ChangeTypeRemove;
+                case GUIModChangeType.Update: return Properties.Resources.ChangeTypeUpdate;
                 case GUIModChangeType.Replace: return Properties.Resources.ChangeTypeReplace;
             }
             throw new NotImplementedException(val.ToString());
@@ -35,15 +35,15 @@ namespace CKAN.GUI
     /// </summary>
     public class ModChange
     {
-        public CkanModule        Mod        { get; private set; }
+        public CkanModule Mod { get; private set; }
         /// <summary>
         /// For changes involving another version in addition to the main one,
         /// this is that other version.
         /// When upgrading, the target version.
         /// Otherwise not used.
         /// </summary>
-        public GUIModChangeType  ChangeType { get; private set; }
-        public SelectionReason[] Reasons    { get; private set; }
+        public GUIModChangeType ChangeType { get; private set; }
+        public SelectionReason[] Reasons { get; private set; }
 
         // If we don't have a Reason, the user probably wanted to install it
         public ModChange(CkanModule mod, GUIModChangeType changeType)
@@ -58,9 +58,9 @@ namespace CKAN.GUI
 
         public ModChange(CkanModule mod, GUIModChangeType changeType, IEnumerable<SelectionReason> reasons)
         {
-            Mod        = mod;
+            Mod = mod;
             ChangeType = changeType;
-            Reasons    = reasons.ToArray();
+            Reasons = reasons.ToArray();
         }
 
         public override bool Equals(object obj)

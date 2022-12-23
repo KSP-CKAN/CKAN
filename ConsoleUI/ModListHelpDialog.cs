@@ -3,13 +3,15 @@ using System.Linq;
 using System.Text;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Dialog with help info for the main screen.
     /// Lists meaning of symbols, non-obvious key strokes, and special search syntaxes
     /// </summary>
-    public class ModListHelpDialog : ConsoleDialog {
+    public class ModListHelpDialog : ConsoleDialog
+    {
 
         /// <summary>
         /// Initialize the screen
@@ -79,15 +81,16 @@ namespace CKAN.ConsoleUI {
 
         private string LeftRightTable(string header, Tuple<string, string>[] rows)
         {
-            int leftW  = rows.Max(r => r.Item1.Length);
+            int leftW = rows.Max(r => r.Item1.Length);
             int rightW = rows.Max(r => r.Item2.Length);
-            int fullW  = Math.Max(leftW + rightW + tableSpacing, header.Length);
-            int midW   = fullW - leftW - rightW;
+            int fullW = Math.Max(leftW + rightW + tableSpacing, header.Length);
+            int midW = fullW - leftW - rightW;
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(header);
             sb.AppendLine(new string('=', fullW));
             string mid = new string(' ', midW);
-            foreach (var row in rows) {
+            foreach (var row in rows)
+            {
                 sb.AppendLine(row.Item1.PadRight(leftW) + mid + row.Item2.PadLeft(rightW));
             }
             return sb.ToString();
@@ -95,11 +98,11 @@ namespace CKAN.ConsoleUI {
 
         private const int tableSpacing = 2;
 
-        private static readonly string installed     = Symbols.checkmark;
+        private static readonly string installed = Symbols.checkmark;
         private static readonly string autoInstalled = Symbols.feminineOrdinal;
-        private static readonly string upgradable    = Symbols.greaterEquals;
-        private static readonly string autodetected  = Symbols.infinity;
-        private static readonly string replaceable   = Symbols.doubleGreater;
+        private static readonly string upgradable = Symbols.greaterEquals;
+        private static readonly string autodetected = Symbols.infinity;
+        private static readonly string replaceable = Symbols.doubleGreater;
     }
 
 }

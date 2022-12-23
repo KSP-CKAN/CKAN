@@ -24,7 +24,7 @@ namespace CKAN.NetKAN.Sources.Curse
         private string _downloadUrl;
         private string _filename;
         private string _fileVersion;
-        public  string ModPageUrl = "";
+        public string ModPageUrl = "";
 
         /// <summary>
         /// Returns the direct path to the file

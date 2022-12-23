@@ -4,12 +4,14 @@ using System.Collections.Generic;
 
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Screen for installing mods
     /// </summary>
-    public class InstallScreen : ProgressScreen {
+    public class InstallScreen : ProgressScreen
+    {
 
         /// <summary>
         /// Initialize the Screen
@@ -23,9 +25,9 @@ namespace CKAN.ConsoleUI {
                 Properties.Resources.InstallMessage
             )
         {
-            debug   = dbg;
+            debug = dbg;
             manager = mgr;
-            plan    = cp;
+            plan = cp;
         }
 
         /// <summary>
@@ -37,20 +39,25 @@ namespace CKAN.ConsoleUI {
         {
             HashSet<string> rejected = new HashSet<string>();
             DrawBackground(theme);
-            using (TransactionScope trans = CkanTransaction.CreateTransactionScope()) {
+            using (TransactionScope trans = CkanTransaction.CreateTransactionScope())
+            {
                 bool retry = false;
-                do {
+                do
+                {
                     Draw(theme);
-                    try {
+                    try
+                    {
                         // Reset this so we stop unless an exception sets it to true
                         retry = false;
 
                         // GUI prompts user to choose recs/sugs,
                         // CmdLine assumes recs and ignores sugs
-                        if (plan.Install.Count > 0) {
+                        if (plan.Install.Count > 0)
+                        {
                             // Track previously rejected optional dependencies and don't prompt for them again.
                             DependencyScreen ds = new DependencyScreen(manager, plan, rejected, debug);
-                            if (ds.HaveOptions()) {
+                            if (ds.HaveOptions())
+                            {
                                 LaunchSubScreen(theme, ds);
                             }
                         }
@@ -62,21 +69,25 @@ namespace CKAN.ConsoleUI {
                         RegistryManager regMgr = RegistryManager.Instance(manager.CurrentInstance);
                         ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
                         inst.onReportModInstalled = OnModInstalled;
-                        if (plan.Remove.Count > 0) {
+                        if (plan.Remove.Count > 0)
+                        {
                             inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, new List<CkanModule>(plan.Install));
                             plan.Remove.Clear();
                         }
                         NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache);
-                        if (plan.Install.Count > 0) {
+                        if (plan.Install.Count > 0)
+                        {
                             List<CkanModule> iList = new List<CkanModule>(plan.Install);
                             inst.InstallList(iList, resolvOpts, regMgr, ref possibleConfigOnlyDirs, dl);
                             plan.Install.Clear();
                         }
-                        if (plan.Upgrade.Count > 0) {
+                        if (plan.Upgrade.Count > 0)
+                        {
                             inst.Upgrade(plan.Upgrade, dl, ref possibleConfigOnlyDirs, regMgr);
                             plan.Upgrade.Clear();
                         }
-                        if (plan.Replace.Count > 0) {
+                        if (plan.Replace.Count > 0)
+                        {
                             inst.Replace(AllReplacements(plan.Replace), resolvOpts, dl, ref possibleConfigOnlyDirs, regMgr, true);
                         }
 
@@ -85,36 +96,61 @@ namespace CKAN.ConsoleUI {
                         inst.User = null;
                         inst.onReportModInstalled = null;
 
-                    } catch (CancelledActionKraken) {
+                    }
+                    catch (CancelledActionKraken)
+                    {
                         // Don't need to tell the user they just cancelled out.
-                    } catch (FileNotFoundKraken ex) {
+                    }
+                    catch (FileNotFoundKraken ex)
+                    {
                         // Possible file corruption
                         RaiseError(ex.Message);
-                    } catch (DirectoryNotFoundKraken ex) {
+                    }
+                    catch (DirectoryNotFoundKraken ex)
+                    {
                         RaiseError(ex.Message);
-                    } catch (FileExistsKraken ex) {
-                        if (ex.owningModule != null) {
+                    }
+                    catch (FileExistsKraken ex)
+                    {
+                        if (ex.owningModule != null)
+                        {
                             RaiseMessage(Properties.Resources.InstallOwnedFileConflict, ex.installingModule, ex.filename, ex.owningModule);
-                        } else {
+                        }
+                        else
+                        {
                             RaiseMessage(Properties.Resources.InstallUnownedFileConflict, ex.installingModule, ex.filename, ex.installingModule);
                         }
                         RaiseError(Properties.Resources.InstallFilesReverted);
-                    } catch (DownloadErrorsKraken ex) {
+                    }
+                    catch (DownloadErrorsKraken ex)
+                    {
                         RaiseError(ex.ToString());
-                    } catch (ModuleDownloadErrorsKraken ex) {
+                    }
+                    catch (ModuleDownloadErrorsKraken ex)
+                    {
                         RaiseError(ex.ToString());
-                    } catch (DownloadThrottledKraken ex) {
-                        if (RaiseYesNoDialog(string.Format(Properties.Resources.InstallAuthTokenPrompt, ex.ToString()))) {
-                            if (ex.infoUrl != null) {
+                    }
+                    catch (DownloadThrottledKraken ex)
+                    {
+                        if (RaiseYesNoDialog(string.Format(Properties.Resources.InstallAuthTokenPrompt, ex.ToString())))
+                        {
+                            if (ex.infoUrl != null)
+                            {
                                 ModInfoScreen.LaunchURL(theme, ex.infoUrl);
                             }
                             LaunchSubScreen(theme, new AuthTokenScreen());
                         }
-                    } catch (MissingCertificateKraken ex) {
+                    }
+                    catch (MissingCertificateKraken ex)
+                    {
                         RaiseError(ex.ToString());
-                    } catch (InconsistentKraken ex) {
+                    }
+                    catch (InconsistentKraken ex)
+                    {
                         RaiseError(ex.InconsistenciesPretty);
-                    } catch (TooManyModsProvideKraken ex) {
+                    }
+                    catch (TooManyModsProvideKraken ex)
+                    {
 
                         ConsoleChoiceDialog<CkanModule> ch = new ConsoleChoiceDialog<CkanModule>(
                             ex.Message,
@@ -124,21 +160,32 @@ namespace CKAN.ConsoleUI {
                         );
                         CkanModule chosen = ch.Run(theme);
                         DrawBackground(theme);
-                        if (chosen != null) {
+                        if (chosen != null)
+                        {
                             // Use chosen to continue installing
                             plan.Install.Add(chosen);
                             retry = true;
                         }
 
-                    } catch (BadMetadataKraken ex) {
+                    }
+                    catch (BadMetadataKraken ex)
+                    {
                         RaiseError(Properties.Resources.InstallBadMetadata, ex.module, ex.Message);
-                    } catch (DependencyNotSatisfiedKraken ex) {
+                    }
+                    catch (DependencyNotSatisfiedKraken ex)
+                    {
                         RaiseError(Properties.Resources.InstallUnsatisfiedDependency, ex.parent, ex.module, ex.Message);
-                    } catch (ModuleNotFoundKraken ex) {
+                    }
+                    catch (ModuleNotFoundKraken ex)
+                    {
                         RaiseError(Properties.Resources.InstallModuleNotFound, ex.module, ex.Message);
-                    } catch (ModNotInstalledKraken ex) {
+                    }
+                    catch (ModNotInstalledKraken ex)
+                    {
                         RaiseError(Properties.Resources.InstallNotInstalled, ex.mod);
-                    } catch (DllLocationMismatchKraken ex) {
+                    }
+                    catch (DllLocationMismatchKraken ex)
+                    {
                         RaiseError(ex.Message);
                     }
                 } while (retry);
@@ -154,27 +201,30 @@ namespace CKAN.ConsoleUI {
         {
             IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
 
-            foreach (string id in identifiers) {
+            foreach (string id in identifiers)
+            {
                 ModuleReplacement repl = registry.GetReplacement(
                     id, manager.CurrentInstance.VersionCriteria()
                 );
-                if (repl != null) {
+                if (repl != null)
+                {
                     yield return repl;
                 }
             }
         }
 
-        private static readonly RelationshipResolverOptions resolvOpts = new RelationshipResolverOptions() {
-            with_all_suggests              = false,
-            with_suggests                  = false,
-            with_recommends                = false,
+        private static readonly RelationshipResolverOptions resolvOpts = new RelationshipResolverOptions()
+        {
+            with_all_suggests = false,
+            with_suggests = false,
+            with_recommends = false,
             without_toomanyprovides_kraken = false,
-            without_enforce_consistency    = false
+            without_enforce_consistency = false
         };
 
         private GameInstanceManager manager;
         private ChangePlan plan;
-        private bool       debug;
+        private bool debug;
     }
 
 }

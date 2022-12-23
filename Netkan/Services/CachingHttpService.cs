@@ -9,8 +9,8 @@ namespace CKAN.NetKAN.Services
     internal sealed class CachingHttpService : IHttpService
     {
         private readonly NetFileCache _cache;
-        private          HashSet<Uri> _requestedURLs  = new HashSet<Uri>();
-        private          bool         _overwriteCache = false;
+        private HashSet<Uri> _requestedURLs = new HashSet<Uri>();
+        private bool _overwriteCache = false;
         private Dictionary<Uri, StringCacheEntry> _stringCache = new Dictionary<Uri, StringCacheEntry>();
 
         // Re-use string value URLs within 15 minutes
@@ -18,7 +18,7 @@ namespace CKAN.NetKAN.Services
 
         public CachingHttpService(NetFileCache cache, bool overwrite = false)
         {
-            _cache          = cache;
+            _cache = cache;
             _overwriteCache = overwrite;
         }
 
@@ -120,7 +120,7 @@ namespace CKAN.NetKAN.Services
 
         public string DownloadText(Uri url)
         {
-            return TryGetCached(url, () => Net.DownloadText(url, timeout:10000));
+            return TryGetCached(url, () => Net.DownloadText(url, timeout: 10000));
         }
         public string DownloadText(Uri url, string authToken, string mimeType = null)
         {
@@ -145,7 +145,7 @@ namespace CKAN.NetKAN.Services
             string val = uncached();
             _stringCache.Add(url, new StringCacheEntry()
             {
-                Value     = val,
+                Value = val,
                 Timestamp = DateTime.Now
             });
             return val;
@@ -162,7 +162,7 @@ namespace CKAN.NetKAN.Services
 
     public class StringCacheEntry
     {
-        public string   Value;
+        public string Value;
         public DateTime Timestamp;
     }
 

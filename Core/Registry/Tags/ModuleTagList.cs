@@ -39,8 +39,8 @@ namespace CKAN
                         else
                             Tags.Add(tagName, new ModuleTag()
                             {
-                                Name              = tagName,
-                                Visible           = !HiddenTags.Contains(tagName),
+                                Name = tagName,
+                                Visible = !HiddenTags.Contains(tagName),
                                 ModuleIdentifiers = new HashSet<string>() { m.identifier },
                             });
                     }
@@ -51,7 +51,7 @@ namespace CKAN
                 Untagged.Add(am.AllAvailable().First().identifier);
             }
         }
-        
+
         public static ModuleTagList Load(string path)
         {
             try

@@ -20,13 +20,13 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(SpacedockTransformer));
 
         private readonly ISpacedockApi _api;
-        private readonly IGithubApi    _githubApi;
+        private readonly IGithubApi _githubApi;
 
         public string Name { get { return "spacedock"; } }
 
         public SpacedockTransformer(ISpacedockApi api, IGithubApi githubApi)
         {
-            _api       = api;
+            _api = api;
             _githubApi = githubApi;
         }
 
@@ -125,7 +125,7 @@ namespace CKAN.NetKAN.Transformers
 
             var resourcesJson = (JObject)json["resources"];
             resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
-            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
+            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage", sdMod.website);
 
             if (sdMod.background != null)
             {
@@ -143,7 +143,7 @@ namespace CKAN.NetKAN.Transformers
                         if (match.Success)
                         {
                             var owner = match.Groups["owner"].Value;
-                            var repo  = match.Groups["repo"].Value;
+                            var repo = match.Groups["repo"].Value;
                             var repoInfo = _githubApi.GetRepo(new GithubRef(
                                 $"#/ckan/github/{owner}/{repo}", false, false
                             ));

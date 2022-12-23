@@ -88,7 +88,7 @@ namespace CKAN
             modules = modules?.Memoize();
             var dllSet = dlls?.ToHashSet();
             UnmetDepends = FindUnsatisfiedDepends(modules?.ToList(), dllSet, dlc);
-            Conflicts    = FindConflicting(       modules,           dllSet, dlc);
+            Conflicts = FindConflicting(modules, dllSet, dlc);
             return !UnmetDepends.Any() && !Conflicts.Any();
         }
 
@@ -165,9 +165,9 @@ namespace CKAN
 
         private sealed class ProvidesInfo
         {
-            public string ProviderIdentifier     { get; }
+            public string ProviderIdentifier { get; }
             public ModuleVersion ProviderVersion { get; }
-            public string ProvideeIdentifier     { get; }
+            public string ProvideeIdentifier { get; }
             public ModuleVersion ProvideeVersion { get; }
 
             public ProvidesInfo(
@@ -178,9 +178,9 @@ namespace CKAN
             )
             {
                 ProviderIdentifier = providerIdentifier;
-                ProviderVersion    = providerVersion;
+                ProviderVersion = providerVersion;
                 ProvideeIdentifier = provideeIdentifier;
-                ProvideeVersion    = provideeVersion;
+                ProvideeVersion = provideeVersion;
             }
         }
     }

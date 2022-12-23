@@ -33,8 +33,8 @@ namespace CKAN.AutoUpdateHelper
             // Yes, it's a global variable, but we're an ephemeral singleton so :shrug:
             fromGui = (args[3] == "launch");
 
-            int    pid          = int.Parse(args[0]);
-            string local_path   = args[1];
+            int pid = int.Parse(args[0]);
+            string local_path = args[1];
             string updated_path = args[2];
 
             if (!File.Exists(updated_path))
@@ -190,11 +190,11 @@ namespace CKAN.AutoUpdateHelper
             }
         }
 
-        private const  int  maxRetries = 8;
-        private static bool fromGui    = false;
+        private const int maxRetries = 8;
+        private static bool fromGui = false;
 
-        private const int ExitOK     = 0;
+        private const int ExitOK = 0;
         private const int ExitBADOPT = 1;
-        private const int ExitERROR  = 2;
+        private const int ExitERROR = 2;
     }
 }

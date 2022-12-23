@@ -2,12 +2,14 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Dialog showing a message and letting the user choose an option from a list box
     /// </summary>
-    public class ConsoleChoiceDialog<ChoiceT> : ConsoleDialog {
+    public class ConsoleChoiceDialog<ChoiceT> : ConsoleDialog
+    {
 
         /// <summary>
         /// Initialize the Dialog
@@ -60,12 +62,14 @@ namespace CKAN.ConsoleUI.Toolkit {
             );
 
             choices.AddTip(Properties.Resources.Enter, Properties.Resources.Accept);
-            choices.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
+            choices.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) =>
+            {
                 return false;
             });
 
             choices.AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            choices.AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            choices.AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) =>
+            {
                 cancelled = true;
                 return false;
             });
@@ -88,7 +92,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         private ConsoleListBox<ChoiceT> choices;
-        private bool                    cancelled;
+        private bool cancelled;
     }
 
 }

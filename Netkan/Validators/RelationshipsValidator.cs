@@ -76,7 +76,7 @@ namespace CKAN.NetKAN.Validators
             "conflicts",
             "supports"
         };
-        private static readonly ModuleVersion v1p2  = new ModuleVersion("v1.2");
+        private static readonly ModuleVersion v1p2 = new ModuleVersion("v1.2");
         private static readonly ModuleVersion v1p26 = new ModuleVersion("v1.26");
         private static readonly ModuleVersion v1p31 = new ModuleVersion("v1.31");
     }

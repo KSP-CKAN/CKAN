@@ -1,4 +1,3 @@
-using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Tests.Data;

@@ -7,12 +7,14 @@ using CKAN.GameVersionProviders;
 using CKAN.ConsoleUI.Toolkit;
 using Autofac;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Popup letting user pick a game version from a list or enter it manually
     /// </summary>
-    public class CompatibleVersionDialog : ConsoleDialog {
+    public class CompatibleVersionDialog : ConsoleDialog
+    {
 
         /// <summary>
         /// Initialize the popup
@@ -40,30 +42,37 @@ namespace CKAN.ConsoleUI {
             );
             AddObject(choices);
             choices.AddTip(Properties.Resources.Enter, Properties.Resources.CompatibleVersionsListAcceptTip);
-            choices.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
+            choices.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) =>
+            {
                 choice = choices.Selection;
                 return false;
             });
 
             manualEntry = new ConsoleField(
                 l + 2, b - 2, r - 2
-            ) {
+            )
+            {
                 GhostText = () => Properties.Resources.CompatibleVersionsGhostText
             };
             AddObject(manualEntry);
             manualEntry.AddTip(Properties.Resources.Enter, Properties.Resources.CompatibleVersionsEntryAcceptTip, () => GameVersion.TryParse(manualEntry.Value, out choice));
-            manualEntry.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
-                if (GameVersion.TryParse(manualEntry.Value, out choice)) {
+            manualEntry.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) =>
+            {
+                if (GameVersion.TryParse(manualEntry.Value, out choice))
+                {
                     // Good value, done running
                     return false;
-                } else {
+                }
+                else
+                {
                     // Not valid, so they can't even see the key binding
                     return true;
                 }
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) =>
+            {
                 choice = null;
                 return false;
             });
@@ -89,12 +98,14 @@ namespace CKAN.ConsoleUI {
         {
             options = game.KnownVersions;
             // C# won't let us foreach over an array while modifying it
-            for (int i = options.Count - 1; i >= 0; --i) {
+            for (int i = options.Count - 1; i >= 0; --i)
+            {
                 GameVersion v = options[i];
                 // From GUI/CompatibleGameVersionsDialog.cs
                 GameVersion fullKnownVersion = v.ToVersionRange().Lower.Value;
                 GameVersion toAdd = new GameVersion(fullKnownVersion.Major, fullKnownVersion.Minor);
-                if (!options.Contains(toAdd)) {
+                if (!options.Contains(toAdd))
+                {
                     options.Add(toAdd);
                 }
             }
@@ -103,7 +114,7 @@ namespace CKAN.ConsoleUI {
         private List<GameVersion> options;
 
         private ConsoleListBox<GameVersion> choices;
-        private ConsoleField                manualEntry;
-        private GameVersion                 choice;
+        private ConsoleField manualEntry;
+        private GameVersion choice;
     }
 }

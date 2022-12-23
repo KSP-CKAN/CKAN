@@ -9,9 +9,9 @@ namespace Tests.NetKAN.Validators
     public sealed class KindValidatorTests
     {
         [Test,
-            TestCase("1",     @"""package"""),
-            TestCase("v1.2",  @"""package"""),
-            TestCase("v1.6",  @"""metapackage"""),
+            TestCase("1", @"""package"""),
+            TestCase("v1.2", @"""package"""),
+            TestCase("v1.6", @"""metapackage"""),
             TestCase("v1.28", @"""dlc"""),
         ]
         public void Validate_GoodSpecVersionKind_DoesNotThrow(string spec_version, string kind)
@@ -20,10 +20,10 @@ namespace Tests.NetKAN.Validators
         }
 
         [Test,
-            TestCase("1",     @"""metapackage"""),
-            TestCase("v1.5",  @"""metapackage"""),
-            TestCase("1",     @"""dlc"""),
-            TestCase("v1.4",  @"""dlc"""),
+            TestCase("1", @"""metapackage"""),
+            TestCase("v1.5", @"""metapackage"""),
+            TestCase("1", @"""dlc"""),
+            TestCase("v1.4", @"""dlc"""),
             TestCase("v1.17", @"""dlc"""),
         ]
         public void Validate_BadSpecVersionKind_Throws(string spec_version, string kind)
@@ -36,8 +36,8 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var json = new JObject();
             json["spec_version"] = spec_version;
-            json["identifier"]   = "AwesomeMod";
-            json["kind"]         = JToken.Parse(kind);
+            json["identifier"] = "AwesomeMod";
+            json["kind"] = JToken.Parse(kind);
 
             // Act
             var val = new KindValidator();

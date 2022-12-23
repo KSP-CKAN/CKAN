@@ -4,7 +4,6 @@ using CKAN;
 using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Tests.Core.Types

@@ -79,7 +79,7 @@ namespace CKAN.GameVersionProviders
                     if (ReferenceEquals(_jBuilds, null))
                     {
                         // Check for a cached copy of the remote build map
-                        if (TrySetCachedBuildMap())   return;
+                        if (TrySetCachedBuildMap()) return;
                         // If that doesn't exist, use the copy from when we were compiled
                         if (TrySetEmbeddedBuildMap()) return;
                         Log.Warn("Could not load build map from cached or embedded copy");

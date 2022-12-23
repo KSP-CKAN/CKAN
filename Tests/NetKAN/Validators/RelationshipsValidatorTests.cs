@@ -9,8 +9,8 @@ namespace Tests.NetKAN.Validators
     public sealed class RelationshipsValidatorTests
     {
         [Test,
-            TestCase("v1.4",  null,      null),
-            TestCase("v1.4",  "depends", @"[ { ""name"": ""ModuleManager"" } ]"),
+            TestCase("v1.4", null, null),
+            TestCase("v1.4", "depends", @"[ { ""name"": ""ModuleManager"" } ]"),
             TestCase("v1.26", "depends", @"[ { ""any_of"": [ { ""name"": ""ModuleManager"" } ] } ]"),
         ]
         public void Validate_ValidRelationships_DoesNotThrow(string spec_version, string relationName, string relationValue)
@@ -19,7 +19,7 @@ namespace Tests.NetKAN.Validators
         }
 
         [Test,
-            TestCase("v1.4",  "depends", @"[ { ""name"": ""Module Manager"" } ]"),
+            TestCase("v1.4", "depends", @"[ { ""name"": ""Module Manager"" } ]"),
             TestCase("v1.25", "depends", @"[ { ""any_of"": [ { ""name"": ""ModuleManager"" } ] } ]"),
             TestCase("v1.26", "depends", @"[ { ""any_of"": [ { ""name"": ""Module Manager"" } ] } ]"),
         ]
@@ -33,7 +33,7 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var json = new JObject();
             json["spec_version"] = spec_version;
-            json["identifier"]   = "AwesomeMod";
+            json["identifier"] = "AwesomeMod";
             if (relationName != null && relationValue != null)
             {
                 json[relationName] = JToken.Parse(relationValue);

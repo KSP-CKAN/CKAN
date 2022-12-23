@@ -73,7 +73,7 @@ namespace Tests.Core
                 CKAN.CKANPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake/", "/home/fionna/KSP/"),
                 "Trailing slashes for everyone!"
             );
-            
+
             // Mono can't handle these tests
             if (Platform.IsWindows)
             {
@@ -148,31 +148,31 @@ namespace Tests.Core
         {
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake","/home/fionna/KSP"),
+                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake", "/home/fionna/KSP"),
                 "Basic functionality"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake/","/home/fionna/KSP"),
+                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake/", "/home/fionna/KSP"),
                 "Trailing slashes path"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake","/home/fionna/KSP/"),
+                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake", "/home/fionna/KSP/"),
                 "Trailing slashes root"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake/","/home/fionna/KSP/"),
+                CKAN.CKANPathUtils.ToAbsolute("GameData/Cake/", "/home/fionna/KSP/"),
                 "Trailing slashes for all"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.CKANPathUtils.ToAbsolute(@"GameData\Cake\","/home/fionna/KSP"),
+                CKAN.CKANPathUtils.ToAbsolute(@"GameData\Cake\", "/home/fionna/KSP"),
                 "Swapped slashes"
             );
 

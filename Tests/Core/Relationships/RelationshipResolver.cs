@@ -318,7 +318,9 @@ namespace Tests.Core.Relationships
         // return a list *without* them. This isn't a hard error at the moment,
         // since ModuleInstaller.InstallList will ignore already installed mods, but
         // it would be nice to have. Discussed a little in GH #521.
-        [Test][Category("TODO")][Explicit]
+        [Test]
+        [Category("TODO")]
+        [Explicit]
         public void ModList_WithInstalledModules_DoesNotContainThem()
         {
             var list = new List<string>();
@@ -497,7 +499,7 @@ namespace Tests.Core.Relationships
         [Category("Version")]
         [TestCase("1.0", "2.0")]
         [TestCase("1.0", "0.2")]
-        [TestCase("0",   "0.2")]
+        [TestCase("0", "0.2")]
         [TestCase("1.0", "0")]
         public void Constructor_WithMissingDependantsVersion_Throws(string ver, string dep)
         {
@@ -761,7 +763,7 @@ namespace Tests.Core.Relationships
             );
 
             // Assert
-            CollectionAssert.Contains(      rr.ModList(), olderDependency);
+            CollectionAssert.Contains(rr.ModList(), olderDependency);
             CollectionAssert.DoesNotContain(rr.ModList(), newerDependency);
         }
 
@@ -800,7 +802,7 @@ namespace Tests.Core.Relationships
             );
 
             // Assert
-            CollectionAssert.Contains(      rr.ModList(), olderDependency);
+            CollectionAssert.Contains(rr.ModList(), olderDependency);
             CollectionAssert.DoesNotContain(rr.ModList(), newerDependency);
         }
 
@@ -815,7 +817,7 @@ namespace Tests.Core.Relationships
             var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
 
             var mod_not_in_resolver_list = generator.GeneratorRandomModule();
-            CollectionAssert.DoesNotContain(relationship_resolver.ModList(),mod_not_in_resolver_list);
+            CollectionAssert.DoesNotContain(relationship_resolver.ModList(), mod_not_in_resolver_list);
             Assert.Throws<ArgumentException>(() => relationship_resolver.ReasonsFor(mod_not_in_resolver_list));
         }
 
@@ -840,7 +842,7 @@ namespace Tests.Core.Relationships
             var suggested = generator.GeneratorRandomModule();
             var mod =
                 generator.GeneratorRandomModule(suggests:
-                    new List<RelationshipDescriptor> {new ModuleRelationshipDescriptor {name = suggested.identifier}});
+                    new List<RelationshipDescriptor> { new ModuleRelationshipDescriptor { name = suggested.identifier } });
             list.Add(mod.identifier);
             AddToRegistry(mod, suggested);
 
@@ -892,7 +894,7 @@ namespace Tests.Core.Relationships
         [Test]
         public void AutodetectedCanSatisfyRelationships()
         {
-            using (var ksp = new DisposableKSP ())
+            using (var ksp = new DisposableKSP())
             {
                 registry.RegisterDll(ksp.KSP, Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), "ModuleManager.dll"));
 
@@ -906,7 +908,7 @@ namespace Tests.Core.Relationships
                     null,
                     RelationshipResolver.DefaultOpts(),
                     registry,
-                    new GameVersionCriteria (GameVersion.Parse("1.0.0"))
+                    new GameVersionCriteria(GameVersion.Parse("1.0.0"))
                 );
             }
         }
@@ -925,13 +927,13 @@ namespace Tests.Core.Relationships
                 );
                 var eveDefaultConfig = generator.GeneratorRandomModule(
                     identifier: "EnvironmentalVisualEnhancements-Config-stock",
-                    provides: new List<string> {"EnvironmentalVisualEnhancements-Config"},
+                    provides: new List<string> { "EnvironmentalVisualEnhancements-Config" },
                     conflicts: new List<RelationshipDescriptor>
                         {new ModuleRelationshipDescriptor {name = "EnvironmentalVisualEnhancements-Config"}}
                 );
                 var avp = generator.GeneratorRandomModule(
                     identifier: "AstronomersVisualPack",
-                    provides: new List<string> {"EnvironmentalVisualEnhancements-Config"},
+                    provides: new List<string> { "EnvironmentalVisualEnhancements-Config" },
                     depends: new List<RelationshipDescriptor>
                     {
                         new ModuleRelationshipDescriptor {name = "AVP-Textures"},
@@ -942,7 +944,7 @@ namespace Tests.Core.Relationships
                 );
                 var avp2kTextures = generator.GeneratorRandomModule(
                     identifier: "AVP-2kTextures",
-                    provides: new List<string> {"AVP-Textures"},
+                    provides: new List<string> { "AVP-Textures" },
                     depends: new List<RelationshipDescriptor>
                         {new ModuleRelationshipDescriptor {name = "AstronomersVisualPack"}},
                     conflicts: new List<RelationshipDescriptor>
@@ -981,7 +983,7 @@ namespace Tests.Core.Relationships
                 {
                     resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, null);
                 });
-                CollectionAssert.AreEquivalent(new List<CkanModule> {avp, eveDefaultConfig}, resolver.ConflictList.Keys);
+                CollectionAssert.AreEquivalent(new List<CkanModule> { avp, eveDefaultConfig }, resolver.ConflictList.Keys);
 
                 // Scenario 3 - Try uninstalling eveDefaultConfig and installing avp, should work and result in no conflicts
 
@@ -995,7 +997,7 @@ namespace Tests.Core.Relationships
                     resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, null);
                 });
                 Assert.IsEmpty(resolver.ConflictList);
-                CollectionAssert.AreEquivalent(new List<CkanModule> {avp, avp2kTextures}, resolver.ModList());
+                CollectionAssert.AreEquivalent(new List<CkanModule> { avp, avp2kTextures }, resolver.ModList());
             }
         }
 

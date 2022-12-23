@@ -1,11 +1,13 @@
 using System;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Object representing a progress bar showing completion of tasks
     /// </summary>
-    public class ConsoleProgressBar : ScreenObject {
+    public class ConsoleProgressBar : ScreenObject
+    {
 
         /// <summary>
         /// Initialize the progress bar
@@ -34,9 +36,12 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             double percent = percentFunc == null ? 0 : percentFunc();
             int highlightWidth = (int)Math.Floor(w * percent);
-            if (highlightWidth < 0) {
+            if (highlightWidth < 0)
+            {
                 highlightWidth = 0;
-            } else if (highlightWidth > w) {
+            }
+            else if (highlightWidth > w)
+            {
                 highlightWidth = w;
             }
 
@@ -46,7 +51,8 @@ namespace CKAN.ConsoleUI.Toolkit {
             Console.SetCursorPosition(l, t);
 
             // Draw the highlighted part
-            if (highlightWidth > 0) {
+            if (highlightWidth > 0)
+            {
                 Console.BackgroundColor = theme.ProgressBarHighlightBg;
                 Console.ForegroundColor = theme.ProgressBarHighlightFg;
                 Console.Write(caption.Substring(0, highlightWidth));

@@ -212,7 +212,7 @@ namespace CKAN
         {
             return new ModuleInstallDescriptor()
             {
-                find       = ident,
+                find = ident,
                 install_to = game.PrimaryModDirectoryRelative,
             };
         }

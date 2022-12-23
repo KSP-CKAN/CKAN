@@ -5,7 +5,8 @@ using Tests.Data;
 
 namespace Tests.Core
 {
-    [TestFixture] public class Utilities
+    [TestFixture]
+    public class Utilities
     {
         string tempDir;
         string goodKspDir = TestData.good_ksp_dir();
@@ -29,13 +30,13 @@ namespace Tests.Core
 
             Assert.IsTrue(UtilStatic.CompareFiles(
                 Path.Combine(goodKspDir, "GameData", "README.md"),
-                Path.Combine(tempDir,   "GameData", "README.md")));
+                Path.Combine(tempDir, "GameData", "README.md")));
             Assert.IsTrue(UtilStatic.CompareFiles(
                 Path.Combine(goodKspDir, "buildID.txt"),
-                Path.Combine(tempDir,   "buildID.txt")));
+                Path.Combine(tempDir, "buildID.txt")));
             Assert.IsTrue(UtilStatic.CompareFiles(
                 Path.Combine(goodKspDir, "readme.txt"),
-                Path.Combine(tempDir,   "readme.txt")));
+                Path.Combine(tempDir, "readme.txt")));
         }
 
         [Test]

@@ -18,13 +18,13 @@ namespace CKAN.GUI
     public partial class CloneFakeGameDialog : Form
     {
         private GameInstanceManager manager;
-        private IUser      user;
+        private IUser user;
 
         public CloneFakeGameDialog(GameInstanceManager manager, IUser user)
             : base()
         {
             this.manager = manager;
-            this.user    = user;
+            this.user = user;
 
             InitializeComponent();
 
@@ -65,12 +65,12 @@ namespace CKAN.GUI
             // Create a new FileDialog object
             OpenFileDialog instanceDialog = new OpenFileDialog()
             {
-                AddExtension     = false,
-                CheckFileExists  = false,
-                CheckPathExists  = false,
+                AddExtension = false,
+                CheckFileExists = false,
+                CheckPathExists = false,
                 InitialDirectory = Environment.CurrentDirectory,
-                Filter           = ManageGameInstancesDialog.GameFolderFilter(manager),
-                Multiselect      = false
+                Filter = ManageGameInstancesDialog.GameFolderFilter(manager),
+                Multiselect = false
             };
 
             // Show the FileDialog and let the user search for the game directory.
@@ -319,7 +319,7 @@ namespace CKAN.GUI
             }
             // Conditionally enable/disable the fake/clone fields
             radioButton_CheckedChanged(radioButtonClone, null);
-            radioButton_CheckedChanged(radioButtonFake,  null);
+            radioButton_CheckedChanged(radioButtonFake, null);
             progressBar.Style = ProgressBarStyle.Continuous;
             progressBar.Value = 0;
             progressBar.Hide();

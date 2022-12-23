@@ -17,8 +17,10 @@ namespace CKAN.NetKAN.Sources.Curse
         [JsonProperty] public string game;
         [JsonProperty] public List<CurseModMember> members;
 
-        public string[] authors {
-            get {
+        public string[] authors
+        {
+            get
+            {
                 return members.Select(m => m.username).ToArray();
             }
         }

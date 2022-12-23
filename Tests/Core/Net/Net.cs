@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using CKAN;
 using NUnit.Framework;
 
 namespace Tests.Core.Net

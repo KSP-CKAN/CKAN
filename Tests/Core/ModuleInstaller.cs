@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -396,7 +395,8 @@ namespace Tests.Core
                 GameInstanceManager manager = new GameInstanceManager(
                     new NullUser(),
                     config
-                ) {
+                )
+                {
                     CurrentInstance = tidy.KSP
                 };
 
@@ -404,7 +404,7 @@ namespace Tests.Core
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
                     // This should throw, as our tidy KSP has no mods installed.
-                    new CKAN.ModuleInstaller(manager.CurrentInstance, manager.Cache, nullUser).UninstallList(new List<string> {"Foo"}, ref possibleConfigOnlyDirs, CKAN.RegistryManager.Instance(manager.CurrentInstance));
+                    new CKAN.ModuleInstaller(manager.CurrentInstance, manager.Cache, nullUser).UninstallList(new List<string> { "Foo" }, ref possibleConfigOnlyDirs, CKAN.RegistryManager.Instance(manager.CurrentInstance));
                 });
 
                 manager.CurrentInstance = null; // I weep even more.
@@ -426,7 +426,8 @@ namespace Tests.Core
                 GameInstanceManager manager = new GameInstanceManager(
                     new NullUser(),
                     config
-                ) {
+                )
+                {
                     CurrentInstance = ksp.KSP
                 };
 
@@ -438,7 +439,7 @@ namespace Tests.Core
                 // Copy the zip file to the cache directory.
                 Assert.IsFalse(manager.Cache.IsCachedZip(TestData.DogeCoinFlag_101_module()));
 
-                string cache_path = manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
+                string cache_path = manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<long>(bytes => { }));
 
                 Assert.IsTrue(manager.Cache.IsCachedZip(TestData.DogeCoinFlag_101_module()));
                 Assert.IsTrue(File.Exists(cache_path));
@@ -476,7 +477,8 @@ namespace Tests.Core
                 GameInstanceManager manager = new GameInstanceManager(
                     new NullUser(),
                     config
-                ) {
+                )
+                {
                     CurrentInstance = ksp.KSP
                 };
                 var registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;
@@ -486,7 +488,7 @@ namespace Tests.Core
                 string mod_file_path = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), mod_file_name);
                 CkanModule mod = TestData.DogeCoinFlag_101_module();
                 registry.AddAvailable(mod);
-                manager.Cache.Store(mod, TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
+                manager.Cache.Store(mod, TestData.DogeCoinFlagZip(), new Progress<long>(bytes => { }));
                 List<string> modules = new List<string>()
                 {
                     $"{mod.identifier}={mod.version}"
@@ -517,7 +519,8 @@ namespace Tests.Core
                 GameInstanceManager manager = new GameInstanceManager(
                     new NullUser(),
                     config
-                ) {
+                )
+                {
                     CurrentInstance = ksp.KSP
                 };
 
@@ -525,7 +528,7 @@ namespace Tests.Core
 
                 // Install the test mod.
                 var registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;
-                manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
+                manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<long>(bytes => { }));
                 registry.AddAvailable(TestData.DogeCoinFlag_101_module());
 
                 List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
@@ -560,7 +563,8 @@ namespace Tests.Core
                 GameInstanceManager manager = new GameInstanceManager(
                     new NullUser(),
                     config
-                ) {
+                )
+                {
                     CurrentInstance = ksp.KSP
                 };
 
@@ -569,7 +573,7 @@ namespace Tests.Core
                 // Install the base test mod.
 
                 var registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;
-                manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
+                manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<long>(bytes => { }));
                 registry.AddAvailable(TestData.DogeCoinFlag_101_module());
 
                 List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
@@ -580,7 +584,7 @@ namespace Tests.Core
                 modules.Clear();
 
                 // Install the plugin test mod.
-                manager.Cache.Store(TestData.DogeCoinPlugin_module(), TestData.DogeCoinPluginZip(), new Progress<long>(bytes => {}));
+                manager.Cache.Store(TestData.DogeCoinPlugin_module(), TestData.DogeCoinPluginZip(), new Progress<long>(bytes => { }));
                 registry.AddAvailable(TestData.DogeCoinPlugin_module());
 
                 modules.Add(TestData.DogeCoinPlugin_module().identifier);
@@ -624,12 +628,13 @@ namespace Tests.Core
                         GameInstanceManager manager = new GameInstanceManager(
                             new NullUser(),
                             config
-                        ) {
+                        )
+                        {
                             CurrentInstance = ksp.KSP
                         };
 
                         // Copy the zip file to the cache directory.
-                        manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
+                        manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<long>(bytes => { }));
 
                         // Mark it as available in the registry.
                         var registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;

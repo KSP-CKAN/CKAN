@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using ICSharpCode.SharpZipLib.Zip;
 
 using CKAN;
 using CKAN.NetKAN.Model;

@@ -17,7 +17,7 @@ namespace CKAN.GUI
 
         private IUser m_user;
         private long m_cacheSize;
-        private int  m_cacheFileCount;
+        private int m_cacheFileCount;
         private long m_cacheFreeSpace;
         private IConfiguration config;
 
@@ -139,8 +139,8 @@ namespace CKAN.GUI
                         }
                         CachePath.Text = config.DownloadCacheDir;
                         CacheSummary.Text = string.Format(Properties.Resources.SettingsDialogSummmary, m_cacheFileCount, CkanModule.FmtSize(m_cacheSize), CkanModule.FmtSize(m_cacheFreeSpace));
-                        CacheSummary.ForeColor   = SystemColors.ControlText;
-                        OpenCacheButton.Enabled  = true;
+                        CacheSummary.ForeColor = SystemColors.ControlText;
+                        OpenCacheButton.Enabled = true;
                         ClearCacheButton.Enabled = (m_cacheSize > 0);
                         PurgeToLimitMenuItem.Enabled = (config.CacheSizeLimit.HasValue
                             && m_cacheSize > config.CacheSizeLimit.Value);
@@ -150,9 +150,9 @@ namespace CKAN.GUI
             }
             else
             {
-                CacheSummary.Text        = string.Format(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
-                CacheSummary.ForeColor   = Color.Red;
-                OpenCacheButton.Enabled  = false;
+                CacheSummary.Text = string.Format(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
+                CacheSummary.ForeColor = Color.Red;
+                OpenCacheButton.Enabled = false;
                 ClearCacheButton.Enabled = false;
             }
         }
@@ -188,9 +188,9 @@ namespace CKAN.GUI
         {
             FolderBrowserDialog cacheChooser = new FolderBrowserDialog()
             {
-                Description         = Properties.Resources.SettingsDialogCacheDescrip,
-                RootFolder          = Environment.SpecialFolder.MyComputer,
-                SelectedPath        = config.DownloadCacheDir,
+                Description = Properties.Resources.SettingsDialogCacheDescrip,
+                RootFolder = Environment.SpecialFolder.MyComputer,
+                SelectedPath = config.DownloadCacheDir,
                 ShowNewFolderButton = true
             };
             DialogResult result = cacheChooser.ShowDialog();
@@ -361,43 +361,43 @@ namespace CKAN.GUI
             Form newAuthTokenPopup = new Form()
             {
                 FormBorderStyle = FormBorderStyle.FixedToolWindow,
-                StartPosition   = FormStartPosition.CenterParent,
-                ClientSize      = new Size(300, 100),
-                Text            = Properties.Resources.AddAuthTokenTitle
+                StartPosition = FormStartPosition.CenterParent,
+                ClientSize = new Size(300, 100),
+                Text = Properties.Resources.AddAuthTokenTitle
             };
             Label hostLabel = new Label()
             {
                 AutoSize = true,
                 Location = new Point(3, 8),
-                Size     = new Size(65, 13),
-                Text     = Properties.Resources.AddAuthTokenHost
+                Size = new Size(65, 13),
+                Text = Properties.Resources.AddAuthTokenHost
             };
             TextBox hostTextBox = new TextBox()
             {
                 Location = new Point(3 + 65 + 3, 6),
-                Size     = new Size(newAuthTokenPopup.ClientSize.Width - 65 - 10, 23),
-                Text     = ""
+                Size = new Size(newAuthTokenPopup.ClientSize.Width - 65 - 10, 23),
+                Text = ""
             };
             Label tokenLabel = new Label()
             {
                 AutoSize = true,
                 Location = new Point(3, 38),
-                Size     = new Size(65, 13),
-                Text     = Properties.Resources.AddAuthTokenToken
+                Size = new Size(65, 13),
+                Text = Properties.Resources.AddAuthTokenToken
             };
             TextBox tokenTextBox = new TextBox()
             {
                 Location = new Point(3 + 65 + 3, 35),
-                Size     = new Size(newAuthTokenPopup.ClientSize.Width - 65 - 10, 23),
-                Text     = ""
+                Size = new Size(newAuthTokenPopup.ClientSize.Width - 65 - 10, 23),
+                Text = ""
             };
             Button acceptButton = new Button()
             {
                 DialogResult = DialogResult.OK,
-                Name         = "okButton",
-                Size         = new Size(75, 23),
-                Text         = Properties.Resources.AddAuthTokenAccept,
-                Location     = new Point((newAuthTokenPopup.ClientSize.Width - 80 - 80) / 2, 64)
+                Name = "okButton",
+                Size = new Size(75, 23),
+                Text = Properties.Resources.AddAuthTokenAccept,
+                Location = new Point((newAuthTokenPopup.ClientSize.Width - 80 - 80) / 2, 64)
             };
             acceptButton.Click += (origin, evt) =>
             {
@@ -408,10 +408,10 @@ namespace CKAN.GUI
             Button cancelButton = new Button()
             {
                 DialogResult = DialogResult.Cancel,
-                Name         = "cancelButton",
-                Size         = new Size(75, 23),
-                Text         = Properties.Resources.AddAuthTokenCancel,
-                Location     = new Point(acceptButton.Location.X + acceptButton.Size.Width + 5, 64)
+                Name = "cancelButton",
+                Size = new Size(75, 23),
+                Text = Properties.Resources.AddAuthTokenCancel,
+                Location = new Point(acceptButton.Location.X + acceptButton.Size.Width + 5, 64)
             };
 
             newAuthTokenPopup.Controls.Add(hostLabel);

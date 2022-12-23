@@ -17,7 +17,7 @@ namespace CKAN
         /// To supply a default option, make the first option an integer indicating the index of it.
         /// </summary>
         /// <returns>The index of the item selected from the array or -1 if cancelled</returns>
-        int  RaiseSelectionDialog(string message, params object[] args);
+        int RaiseSelectionDialog(string message, params object[] args);
         void RaiseError(string message, params object[] args);
 
         void RaiseProgress(string message, int percent);

@@ -4,7 +4,6 @@ using CKAN;
 using CKAN.GUI;
 using CKAN.Versioning;
 using NUnit.Framework;
-using Tests.Core;
 using Tests.Core.Configuration;
 using Tests.Data;
 
@@ -23,7 +22,8 @@ namespace Tests.GUI
                 GameInstanceManager manager = new GameInstanceManager(
                     new NullUser(),
                     config
-                ) {
+                )
+                {
                     CurrentInstance = tidy.KSP
                 };
                 var registry = Registry.Empty();
@@ -45,7 +45,7 @@ namespace Tests.GUI
                 var generatror = new RandomModuleGenerator(new Random(0451));
                 var old_version = generatror.GeneratorRandomModule(version: new ModuleVersion("0.24"), ksp_version: tidy.KSP.Version());
                 var new_version = generatror.GeneratorRandomModule(version: new ModuleVersion("0.25"), ksp_version: tidy.KSP.Version(),
-                    identifier:old_version.identifier);
+                    identifier: old_version.identifier);
                 var registry = Registry.Empty();
                 registry.RegisterModule(old_version, Enumerable.Empty<string>(), null, false);
                 registry.AddAvailable(new_version);

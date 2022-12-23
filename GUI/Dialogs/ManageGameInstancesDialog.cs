@@ -17,12 +17,12 @@ namespace CKAN.GUI
         private RenameInstanceDialog _renameInstanceDialog;
         private readonly OpenFileDialog _instanceDialog = new OpenFileDialog()
         {
-            AddExtension     = false,
-            CheckFileExists  = false,
-            CheckPathExists  = false,
+            AddExtension = false,
+            CheckFileExists = false,
+            CheckPathExists = false,
             InitialDirectory = Environment.CurrentDirectory,
-            Filter           = GameFolderFilter(Main.Instance.Manager),
-            Multiselect      = false
+            Filter = GameFolderFilter(Main.Instance.Manager),
+            Multiselect = false
         };
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace CKAN.GUI
 
         private void OpenDirectoryMenuItem_Click(object sender, EventArgs e)
         {
-            string path = _manager.Instances[(string) GameInstancesListView.SelectedItems[0].Tag].GameDir();
+            string path = _manager.Instances[(string)GameInstancesListView.SelectedItems[0].Tag].GameDir();
 
             if (!Directory.Exists(path))
             {

@@ -17,7 +17,7 @@ namespace CKAN.GUI
             ActiveControl = AddSearch();
         }
 
-        public event Action                  SurrenderFocus;
+        public event Action SurrenderFocus;
         public event Action<List<ModSearch>> ApplySearches;
 
         public void Clear()
@@ -84,11 +84,11 @@ namespace CKAN.GUI
             var ctl = new EditModSearch()
             {
                 // Dock handles the layout for us
-                Dock      = DockStyle.Top,
+                Dock = DockStyle.Top,
                 ShowLabel = editors.Count < 1,
-                TabIndex  = editors.Count * 2
+                TabIndex = editors.Count * 2
             };
-            ctl.ApplySearch    += EditModSearch_ApplySearch;
+            ctl.ApplySearch += EditModSearch_ApplySearch;
             ctl.SurrenderFocus += EditModSearch_SurrenderFocus;
 
             editors.Add(ctl);
@@ -116,7 +116,7 @@ namespace CKAN.GUI
                 {
                     // Move focus to next control, or previous if last in list
                     var activeIndex = editors.IndexOf(which);
-                    ActiveControl   = activeIndex < editors.Count - 1
+                    ActiveControl = activeIndex < editors.Count - 1
                         ? editors[activeIndex + 1]
                         : editors[activeIndex - 1];
                 }

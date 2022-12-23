@@ -10,7 +10,7 @@ namespace CKAN.NetKAN.Validators
     {
         public VrefValidator(IHttpService http, IModuleService moduleService)
         {
-            _http          = http;
+            _http = http;
             _moduleService = moduleService;
         }
 
@@ -37,8 +37,8 @@ namespace CKAN.NetKAN.Validators
                 {
                     bool hasVref = (metadata.Vref != null);
 
-                    string path        = null;
-                    bool   installable = false;
+                    string path = null;
+                    bool installable = false;
                     try
                     {
                         using (var zipfile = new ZipFile(zipFilePath))
@@ -49,7 +49,7 @@ namespace CKAN.NetKAN.Validators
                             {
                                 // This will throw if there's a syntax error
                                 var avc = ModuleService.GetInternalAvc(zipfile, verFileAndInstallable.Item1);
-                                path        = verFileAndInstallable.Item1.Name;
+                                path = verFileAndInstallable.Item1.Name;
                                 installable = verFileAndInstallable.Item2;
                             }
                         }
@@ -81,7 +81,7 @@ namespace CKAN.NetKAN.Validators
             }
         }
 
-        private readonly IHttpService   _http;
+        private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(VrefValidator));

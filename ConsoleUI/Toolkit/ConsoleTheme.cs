@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Collection of constants defining colors for UI elements.
     /// To change default colors at compile time, edit the initializers.
     /// To change colors at run time, modify properties of ConsoleTheme.Current.
     /// </summary>
-    public class ConsoleTheme {
+    public class ConsoleTheme
+    {
 
         /// <summary>
         /// Background color for splash screen, null for transparent
@@ -29,22 +31,22 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Background color for exit screen
         /// </summary>
         public ConsoleColor? ExitOuterBg;
-        
+
         /// <summary>
         /// Background color for info pane of exit screen
         /// </summary>
         public ConsoleColor ExitInnerBg;
-        
+
         /// <summary>
         /// Foreground color for normal text on exit screen
         /// </summary>
         public ConsoleColor ExitNormalFg;
-        
+
         /// <summary>
         /// Foreground color for highlighted text on exit screen
         /// </summary>
         public ConsoleColor ExitHighlightFg;
-        
+
         /// <summary>
         /// Foreground color for links on exit screen
         /// </summary>
@@ -246,7 +248,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Foreground for important/abnormal box frames
         /// </summary>
         public ConsoleColor AlertFrameFg;
-        
+
         /// <summary>
         /// Available themes
         /// </summary>

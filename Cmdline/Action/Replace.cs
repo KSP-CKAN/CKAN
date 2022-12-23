@@ -22,14 +22,14 @@ namespace CKAN.CmdLine
 
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
-            ReplaceOptions options = (ReplaceOptions) raw_options;
+            ReplaceOptions options = (ReplaceOptions)raw_options;
 
             if (options.ckan_file != null)
             {
                 options.modules.Add(MainClass.LoadCkanFromFile(instance, options.ckan_file).identifier);
             }
 
-            if (options.modules.Count == 0 && ! options.replace_all)
+            if (options.modules.Count == 0 && !options.replace_all)
             {
                 // What? No mods specified?
                 User.RaiseMessage("{0}: ckan replace Mod [Mod2, ...]", Properties.Resources.Usage);
@@ -39,12 +39,12 @@ namespace CKAN.CmdLine
 
             // Prepare options. Can these all be done in the new() somehow?
             var replace_ops = new RelationshipResolverOptions
-                {
-                    with_all_suggests  = options.with_all_suggests,
-                    with_suggests      = options.with_suggests,
-                    with_recommends    = !options.no_recommends,
-                    allow_incompatible = options.allow_incompatible
-                };
+            {
+                with_all_suggests = options.with_all_suggests,
+                with_suggests = options.with_suggests,
+                with_recommends = !options.no_recommends,
+                allow_incompatible = options.allow_incompatible
+            };
 
             var regMgr = RegistryManager.Instance(instance);
             var registry = regMgr.registry;

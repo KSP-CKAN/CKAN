@@ -60,18 +60,18 @@ namespace CKAN.GUI
                 var res = module.resources;
                 if (res != null)
                 {
-                    AddResourceLink(Properties.Resources.ModInfoHomepageLabel,              res.homepage);
-                    AddResourceLink(Properties.Resources.ModInfoSpaceDockLabel,             res.spacedock);
-                    AddResourceLink(Properties.Resources.ModInfoCurseLabel,                 res.curse);
-                    AddResourceLink(Properties.Resources.ModInfoRepositoryLabel,            res.repository);
-                    AddResourceLink(Properties.Resources.ModInfoBugTrackerLabel,            res.bugtracker);
+                    AddResourceLink(Properties.Resources.ModInfoHomepageLabel, res.homepage);
+                    AddResourceLink(Properties.Resources.ModInfoSpaceDockLabel, res.spacedock);
+                    AddResourceLink(Properties.Resources.ModInfoCurseLabel, res.curse);
+                    AddResourceLink(Properties.Resources.ModInfoRepositoryLabel, res.repository);
+                    AddResourceLink(Properties.Resources.ModInfoBugTrackerLabel, res.bugtracker);
                     AddResourceLink(Properties.Resources.ModInfoContinuousIntegrationLabel, res.ci);
-                    AddResourceLink(Properties.Resources.ModInfoLicenseLabel,               res.license);
-                    AddResourceLink(Properties.Resources.ModInfoManualLabel,                res.manual);
-                    AddResourceLink(Properties.Resources.ModInfoMetanetkanLabel,            res.metanetkan);
-                    AddResourceLink(Properties.Resources.ModInfoRemoteAvcLabel,             res.remoteAvc);
-                    AddResourceLink(Properties.Resources.ModInfoStoreLabel,                 res.store);
-                    AddResourceLink(Properties.Resources.ModInfoSteamStoreLabel,            res.steamstore);
+                    AddResourceLink(Properties.Resources.ModInfoLicenseLabel, res.license);
+                    AddResourceLink(Properties.Resources.ModInfoManualLabel, res.manual);
+                    AddResourceLink(Properties.Resources.ModInfoMetanetkanLabel, res.metanetkan);
+                    AddResourceLink(Properties.Resources.ModInfoRemoteAvcLabel, res.remoteAvc);
+                    AddResourceLink(Properties.Resources.ModInfoStoreLabel, res.store);
+                    AddResourceLink(Properties.Resources.ModInfoSteamStoreLabel, res.steamstore);
                 }
             });
         }
@@ -91,12 +91,12 @@ namespace CKAN.GUI
         {
             var link = new LinkLabel()
             {
-                AutoSize     = true,
-                LinkColor    = SystemColors.GrayText,
+                AutoSize = true,
+                LinkColor = SystemColors.GrayText,
                 LinkBehavior = LinkBehavior.HoverUnderline,
-                Margin       = new Padding(0, 0, 4, 4),
-                Text         = name,
-                Tag          = name,
+                Margin = new Padding(0, 0, 4, 4),
+                Text = name,
+                Tag = name,
             };
             link.LinkClicked += OnAuthorClick;
             ToolTip.SetToolTip(link, Properties.Resources.FilterLinkToolTip);
@@ -105,13 +105,13 @@ namespace CKAN.GUI
 
         private void OnAuthorClick(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var link   = sender as LinkLabel;
+            var link = sender as LinkLabel;
             var author = link.Text;
-            var merge  = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             OnChangeFilter?.Invoke(
                 new SavedSearch()
                 {
-                    Name   = string.Format(Properties.Resources.AuthorSearchName, author),
+                    Name = string.Format(Properties.Resources.AuthorSearchName, author),
                     Values = new List<string>()
                     {
                         ModSearch.FromAuthors(Enumerable.Repeat(author, 1)).Combined
@@ -188,24 +188,24 @@ namespace CKAN.GUI
             {
                 Label lbl = new Label()
                 {
-                    AutoSize  = true,
-                    Dock      = DockStyle.Fill,
+                    AutoSize = true,
+                    Dock = DockStyle.Fill,
                     ForeColor = SystemColors.GrayText,
-                    Padding   = new Padding(0, vPadding, 0, vPadding),
-                    Text      = label,
+                    Padding = new Padding(0, vPadding, 0, vPadding),
+                    Text = label,
                 };
                 LinkLabel llbl = new LinkLabel()
                 {
                     AutoSize = false,
-                    Dock     = DockStyle.Fill,
-                    Padding  = new Padding(0, vPadding, 0, vPadding),
-                    TabStop  = true,
-                    Text     = link.ToString(),
+                    Dock = DockStyle.Fill,
+                    Padding = new Padding(0, vPadding, 0, vPadding),
+                    TabStop = true,
+                    Text = link.ToString(),
                 };
                 llbl.LinkClicked += new LinkLabelLinkClickedEventHandler(LinkLabel_LinkClicked);
                 llbl.KeyDown += new KeyEventHandler(LinkLabel_KeyDown);
                 int row = MetadataTable.RowCount;
-                MetadataTable.Controls.Add(lbl,  0, row);
+                MetadataTable.Controls.Add(lbl, 0, row);
                 MetadataTable.Controls.Add(llbl, 1, row);
                 MetadataTable.RowCount = row + 1;
                 MetadataTable.RowStyles.Add(

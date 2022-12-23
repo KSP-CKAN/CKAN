@@ -76,7 +76,7 @@ namespace CKAN
             if (stream.CanSeek)
             {
                 // Rewind the stream to the origin of the file.
-                stream.Seek (0, SeekOrigin.Begin);
+                stream.Seek(0, SeekOrigin.Begin);
             }
 
             // Define the buffer and magic types to compare against.
@@ -166,8 +166,8 @@ namespace CKAN
             if (CheckGZip(stream))
             {
                 // This may contain a tar file inside, create a new stream and check.
-                stream.Seek (0, SeekOrigin.Begin);
-                using (ICSharpCode.SharpZipLib.GZip.GZipInputStream gz_stream = new ICSharpCode.SharpZipLib.GZip.GZipInputStream (stream))
+                stream.Seek(0, SeekOrigin.Begin);
+                using (ICSharpCode.SharpZipLib.GZip.GZipInputStream gz_stream = new ICSharpCode.SharpZipLib.GZip.GZipInputStream(stream))
                 {
                     if (CheckTar(gz_stream))
                     {
@@ -217,7 +217,7 @@ namespace CKAN
             }
 
             // Identify the file using the stream method.
-            using (Stream stream = File.OpenRead (path))
+            using (Stream stream = File.OpenRead(path))
             {
                 type = IdentifyFile(stream);
             }

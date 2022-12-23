@@ -41,17 +41,17 @@ namespace CKAN.NetKAN.Transformers
                     propertiesToRemove.Add(property.Name);
                 }
                 else switch (property.Value.Type)
-                {
-                    case JTokenType.Object:
-                        Strip((JObject)property.Value);
-                        break;
-                    case JTokenType.Array:
-                        foreach (var element in ((JArray)property.Value).Where(i => i.Type == JTokenType.Object))
-                        {
-                            Strip((JObject)element);
-                        }
-                        break;
-                }
+                    {
+                        case JTokenType.Object:
+                            Strip((JObject)property.Value);
+                            break;
+                        case JTokenType.Array:
+                            foreach (var element in ((JArray)property.Value).Where(i => i.Type == JTokenType.Object))
+                            {
+                                Strip((JObject)element);
+                            }
+                            break;
+                    }
             }
 
             foreach (var property in propertiesToRemove)

@@ -27,7 +27,7 @@ namespace CKAN.GUI
                         module.@abstract
                     })
                     {
-                        Tag     = module,
+                        Tag = module,
                         Checked = false
                     })
                     .ToArray());

@@ -50,9 +50,9 @@ namespace Tests.NetKAN.Transformers
 
             // Assert
             var json = m.Json();
-            Assert.AreEqual(version,     (string)json["version"]);
+            Assert.AreEqual(version, (string)json["version"]);
             Assert.AreEqual(GameVersion, (string)json["ksp_version"]);
-            Assert.AreEqual(download,    (string)json["download"]);
+            Assert.AreEqual(download, (string)json["download"]);
         }
 
         private Metadata TryKref(IHttpService http, string kref)
@@ -60,7 +60,7 @@ namespace Tests.NetKAN.Transformers
             // Arrange
             var json = new JObject();
             json["spec_version"] = 1;
-            json["identifier"]   = "AwesomeMod";
+            json["identifier"] = "AwesomeMod";
             if (kref != null)
             {
                 json["$kref"] = kref;

@@ -103,8 +103,8 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    user     = new ConsoleUser(options.Headless);
-                    manager  = mgr ?? new GameInstanceManager(user);
+                    user = new ConsoleUser(options.Headless);
+                    manager = mgr ?? new GameInstanceManager(user);
                     exitCode = options.Handle(manager, user);
                     if (exitCode != Exit.OK)
                         return;
@@ -237,7 +237,7 @@ namespace CKAN.CmdLine
                               CkanModule.FmtSize(bytesFree));
         }
 
-        private IUser               user;
+        private IUser user;
         private GameInstanceManager manager;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Cache));

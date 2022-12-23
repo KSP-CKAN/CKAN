@@ -3,13 +3,15 @@ using System.Linq;
 using System.Collections.Generic;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Not inheriting from ConsoleScreen because we don't
     /// want the standard header/footer/background.
     /// </summary>
-    public class ExitScreen {
+    public class ExitScreen
+    {
 
         /// <summary>
         /// Initialize the screen.
@@ -36,14 +38,14 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         private void Draw(ConsoleTheme theme)
         {
-            Console.CursorVisible   = false;
+            Console.CursorVisible = false;
             if (theme.ExitOuterBg.HasValue)
             {
                 Console.BackgroundColor = theme.ExitOuterBg.Value;
             }
             else
             {
-                Console.ResetColor();                
+                Console.ResetColor();
             }
             Console.Clear();
 
@@ -78,7 +80,8 @@ namespace CKAN.ConsoleUI {
                     )
                 ).ToArray();
 
-            for (int i = 0; i < lines.Length; ++i) {
+            for (int i = 0; i < lines.Length; ++i)
+            {
                 drawLine(theme, i, lines[i]);
             }
         }
@@ -87,16 +90,19 @@ namespace CKAN.ConsoleUI {
         {
             // First we need to know how long the text is for centering
             int textLen = 0;
-            foreach (FancyLinePiece p in pieces) {
+            foreach (FancyLinePiece p in pieces)
+            {
                 textLen += p.Text.Length;
             }
             int boxW = Console.WindowWidth - 2 * horizMargin;
             int leftPad = (boxW - textLen) / 2;
-            if (leftPad < 0) {
+            if (leftPad < 0)
+            {
                 leftPad = 0;
             }
             int rightPad = boxW - textLen - leftPad;
-            if (rightPad < 0) {
+            if (rightPad < 0)
+            {
                 rightPad = 0;
             }
 
@@ -104,19 +110,21 @@ namespace CKAN.ConsoleUI {
             Console.SetCursorPosition(horizMargin, y);
             Console.BackgroundColor = theme.ExitInnerBg;
             Console.Write(new string(' ', leftPad));
-            foreach (FancyLinePiece p in pieces) {
+            foreach (FancyLinePiece p in pieces)
+            {
                 p.Draw();
             }
             Console.Write(new string(' ', rightPad));
         }
 
-        private const  int          horizMargin = 6;
+        private const int horizMargin = 6;
     }
 
     /// <summary>
     /// An object representing a segment of a colorful exit screen line
     /// </summary>
-    public class FancyLinePiece {
+    public class FancyLinePiece
+    {
 
         /// <summary>
         /// Initialize a piece.
@@ -126,7 +134,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="fg">Foreground color of this piece</param>
         public FancyLinePiece(string text, ConsoleColor bg, ConsoleColor fg)
         {
-            Text       = text;
+            Text = text;
             Background = bg;
             Foreground = fg;
         }
@@ -144,11 +152,13 @@ namespace CKAN.ConsoleUI {
             // Lambas can't yield return, and a separate method couldn't access our inputs
             IEnumerable<FancyLinePiece> InjectReplacement(string p, int i)
             {
-                if (i > 0) {
+                if (i > 0)
+                {
                     // Return the replacement in between elements that weren't the token
                     yield return replacement;
                 }
-                if (p.Length > 0) {
+                if (p.Length > 0)
+                {
                     // Skip empty pieces
                     yield return new FancyLinePiece(p, Background, Foreground);
                 }
@@ -187,7 +197,7 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// The text that this piece contains.
         /// </summary>
-        public  readonly string       Text;
+        public readonly string Text;
         private readonly ConsoleColor Background;
         private readonly ConsoleColor Foreground;
     }

@@ -24,7 +24,7 @@ namespace CKAN.CmdLine
         public Upgrade(GameInstanceManager mgr, IUser user)
         {
             manager = mgr;
-            User    = user;
+            User = user;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace CKAN.CmdLine
         /// </returns>
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
-            UpgradeOptions options = (UpgradeOptions) raw_options;
+            UpgradeOptions options = (UpgradeOptions)raw_options;
 
             if (options.ckan_file != null)
             {
@@ -216,10 +216,11 @@ namespace CKAN.CmdLine
             AttemptUpgradeAction attemptUpgradeCallback,
             Action<CkanModule> addUserChoiceCallback)
         {
-            using (TransactionScope transact = CkanTransaction.CreateTransactionScope()) {
-                var installer  = new ModuleInstaller(instance, manager.Cache, user);
+            using (TransactionScope transact = CkanTransaction.CreateTransactionScope())
+            {
+                var installer = new ModuleInstaller(instance, manager.Cache, user);
                 var downloader = new NetAsyncModulesDownloader(user, manager.Cache);
-                var regMgr     = RegistryManager.Instance(instance);
+                var regMgr = RegistryManager.Instance(instance);
                 HashSet<string> possibleConfigOnlyDirs = null;
                 bool done = false;
                 while (!done)

@@ -3,12 +3,14 @@ using Autofac;
 using CKAN.ConsoleUI.Toolkit;
 using CKAN.Configuration;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Popup for adding a new authentication token.
     /// </summary>
-    public class AuthTokenAddDialog : ConsoleDialog {
+    public class AuthTokenAddDialog : ConsoleDialog
+    {
 
         /// <summary>
         /// Initialize the popup.
@@ -34,7 +36,8 @@ namespace CKAN.ConsoleUI {
 
             hostEntry = new ConsoleField(
                 l + 2 + labelW + wPad, t + 2, r - 3
-            ) {
+            )
+            {
                 GhostText = () => Properties.Resources.AuthTokenAddHostGhostText
             };
             AddObject(hostEntry);
@@ -48,7 +51,8 @@ namespace CKAN.ConsoleUI {
 
             tokenEntry = new ConsoleField(
                 l + 2 + labelW + wPad, t + 4, r - 3
-            ) {
+            )
+            {
                 GhostText = () => Properties.Resources.AuthTokenAddTokenGhostText
             };
             AddObject(tokenEntry);
@@ -57,11 +61,15 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
 
             AddTip(Properties.Resources.Enter, Properties.Resources.Accept, validKey);
-            AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
-                if (validKey()) {
+            AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) =>
+            {
+                if (validKey())
+                {
                     ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(hostEntry.Value, tokenEntry.Value);
                     return false;
-                } else {
+                }
+                else
+                {
                     // Don't close window on Enter unless adding a key
                     return true;
                 }
@@ -71,7 +79,7 @@ namespace CKAN.ConsoleUI {
         private bool validKey()
         {
             string token;
-            return hostEntry.Value.Length  > 0
+            return hostEntry.Value.Length > 0
                 && tokenEntry.Value.Length > 0
                 && Uri.CheckHostName(hostEntry.Value) != UriHostNameType.Unknown
                 && !ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(hostEntry.Value, out token);
@@ -80,7 +88,7 @@ namespace CKAN.ConsoleUI {
         private ConsoleField hostEntry;
         private ConsoleField tokenEntry;
 
-        private const int wPad   = 2;
+        private const int wPad = 2;
         private int labelW => Math.Max(6, Math.Max(
             Properties.Resources.AuthTokenAddHost.Length,
             Properties.Resources.AuthTokenAddToken.Length

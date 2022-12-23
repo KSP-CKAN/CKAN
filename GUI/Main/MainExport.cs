@@ -63,7 +63,7 @@ namespace CKAN.GUI
             var dlg = new SaveFileDialog()
             {
                 Filter = string.Join("|", specialExportOptions.Select(i => i.ToString()).ToArray()),
-                Title  = Properties.Resources.ExportInstalledModsDialogTitle
+                Title = Properties.Resources.ExportInstalledModsDialogTitle
             };
             if (dlg.ShowDialog() == DialogResult.OK)
             {

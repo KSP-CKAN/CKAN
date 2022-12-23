@@ -21,13 +21,13 @@ namespace CKAN.NetKAN.Transformers
         private const string KrefSource = "netkan";
 
         private readonly IHttpService _http;
-        private readonly IGithubApi   _github;
+        private readonly IGithubApi _github;
 
         public string Name { get { return "metanetkan"; } }
 
         public MetaNetkanTransformer(IHttpService http, IGithubApi github)
         {
-            _http   = http;
+            _http = http;
             _github = github;
         }
 

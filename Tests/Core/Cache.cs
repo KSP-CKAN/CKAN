@@ -13,7 +13,7 @@ namespace Tests.Core
     {
         private string cache_dir;
 
-        private NetFileCache   cache;
+        private NetFileCache cache;
         private NetModuleCache module_cache;
 
         [SetUp]
@@ -21,7 +21,7 @@ namespace Tests.Core
         {
             cache_dir = TestData.NewTempDir();
             Directory.CreateDirectory(cache_dir);
-            cache        = new NetFileCache(cache_dir);
+            cache = new NetFileCache(cache_dir);
             module_cache = new NetModuleCache(cache_dir);
         }
 
@@ -62,8 +62,8 @@ namespace Tests.Core
             FileAssert.AreEqual(file, cached_file);
         }
 
-        [Test, TestCase("cheesy.zip","cheesy.zip"), TestCase("Foo-1-2.3","Foo-1-2.3"),
-            TestCase("Foo-1-2-3","Foo-1-2-3"), TestCase("Foo-..-etc-passwd","Foo-..-etc-passwd")]
+        [Test, TestCase("cheesy.zip", "cheesy.zip"), TestCase("Foo-1-2.3", "Foo-1-2.3"),
+            TestCase("Foo-1-2-3", "Foo-1-2-3"), TestCase("Foo-..-etc-passwd", "Foo-..-etc-passwd")]
         public void NamingHints(string hint, string appendage)
         {
             Uri url = new Uri("http://example.com/");
@@ -113,14 +113,14 @@ namespace Tests.Core
             Assert.Throws<FileNotFoundKraken>(() =>
                 module_cache.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
-                    "/DoesNotExist.zip", new Progress<long>(bytes => {})));
+                    "/DoesNotExist.zip", new Progress<long>(bytes => { })));
 
             // Try to store the LZMA-format DogeCoin zip into a NetModuleCache
             // and expect an InvalidModuleFileKraken
             Assert.Throws<InvalidModuleFileKraken>(() =>
                 module_cache.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
-                    TestData.DogeCoinFlagZipLZMA, new Progress<long>(bytes => {})));
+                    TestData.DogeCoinFlagZipLZMA, new Progress<long>(bytes => { })));
 
             // Try to store the normal DogeCoin zip into a NetModuleCache
             // using the WRONG metadata (file size and hashes)
@@ -128,7 +128,7 @@ namespace Tests.Core
             Assert.Throws<InvalidModuleFileKraken>(() =>
                 module_cache.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
-                    TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {})));
+                    TestData.DogeCoinFlagZip(), new Progress<long>(bytes => { })));
         }
 
         [Test]

@@ -27,10 +27,10 @@ namespace CKAN.GUI
             var items = possibleConfigOnlyDirs
                 .OrderBy(d => d)
                 .Select(d => new ListViewItem(instance.ToRelativeGameDir(d).Replace('/', Path.DirectorySeparatorChar))
-                    {
-                        Tag     = d,
-                        Checked = true
-                    })
+                {
+                    Tag = d,
+                    Checked = true
+                })
                 .ToArray();
             Util.Invoke(this, () =>
             {

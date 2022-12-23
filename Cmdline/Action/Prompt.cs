@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using CommandLine;
 using CommandLine.Text;
 using log4net;
+using System.Web.UI.WebControls;
 
 namespace CKAN.CmdLine
 {
@@ -26,6 +27,7 @@ namespace CKAN.CmdLine
             {
                 Console.WriteLine(Properties.Resources.PromptWelcome, exitCommand);
             }
+            // FIXME: what's supposed to go here???
             ReadLine.AutoCompletionHandler = GetSuggestions;
             bool done = false;
             while (!done)
@@ -87,8 +89,8 @@ namespace CKAN.CmdLine
 
         private string[] GetSuggestions(string text, int index)
         {
-            string[]     pieces = text.Split(new char[] { ' ' });
-            TypeInfo     ti     = typeof(Actions).GetTypeInfo();
+            string[] pieces = text.Split(new char[] { ' ' });
+            TypeInfo ti = typeof(Actions).GetTypeInfo();
             List<string> extras = new List<string> { exitCommand, "help" };
             foreach (string piece in pieces.Take(pieces.Length - 1))
             {
@@ -104,11 +106,11 @@ namespace CKAN.CmdLine
             }
             var lastPiece = pieces.LastOrDefault() ?? "";
             return lastPiece.StartsWith("--") ? GetOptions(ti, lastPiece.Substring(2))
-                : HasVerbs(ti)                ? GetVerbs(ti, lastPiece, extras)
-                : WantsAvailIdentifiers(ti)   ? GetAvailIdentifiers(lastPiece)
-                : WantsInstIdentifiers(ti)    ? GetInstIdentifiers(lastPiece)
-                : WantsGameInstances(ti)      ? GetGameInstances(lastPiece)
-                :                               null;
+                : HasVerbs(ti) ? GetVerbs(ti, lastPiece, extras)
+                : WantsAvailIdentifiers(ti) ? GetAvailIdentifiers(lastPiece)
+                : WantsInstIdentifiers(ti) ? GetInstIdentifiers(lastPiece)
+                : WantsGameInstances(ti) ? GetGameInstances(lastPiece)
+                : null;
         }
 
         private string[] GetOptions(TypeInfo ti, string prefix)

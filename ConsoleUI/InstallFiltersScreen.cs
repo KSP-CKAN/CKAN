@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using CKAN.Configuration;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// A screen for editing the global and instance install filters
     /// </summary>
-    public class InstallFiltersScreen : ConsoleScreen {
+    public class InstallFiltersScreen : ConsoleScreen
+    {
 
         /// <summary>
         /// Initialize the screen
@@ -20,18 +22,20 @@ namespace CKAN.ConsoleUI {
         public InstallFiltersScreen(IConfiguration globalConfig, GameInstance instance)
         {
             this.globalConfig = globalConfig;
-            this.instance     = instance;
-            globalFilters   = globalConfig.GlobalInstallFilters.ToList();
+            this.instance = instance;
+            globalFilters = globalConfig.GlobalInstallFilters.ToList();
             instanceFilters = instance.InstallFilters.ToList();
 
             AddTip("F2", Properties.Resources.Accept);
-            AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.F2, (object sender, ConsoleTheme theme) =>
+            {
                 Save();
                 // Close screen
                 return false;
             });
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) =>
+            {
                 // Discard changes
                 return false;
             });
@@ -58,12 +62,14 @@ namespace CKAN.ConsoleUI {
             );
             AddObject(globalList);
             globalList.AddTip("A", Properties.Resources.Add);
-            globalList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
+            globalList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) =>
+            {
                 AddFilter(theme, globalList, globalFilters);
                 return true;
             });
             globalList.AddTip("R", Properties.Resources.Remove);
-            globalList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
+            globalList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) =>
+            {
                 RemoveFilter(globalList, globalFilters);
                 return true;
             });
@@ -81,12 +87,14 @@ namespace CKAN.ConsoleUI {
             );
             AddObject(instanceList);
             instanceList.AddTip("A", Properties.Resources.Add);
-            instanceList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
+            instanceList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) =>
+            {
                 AddFilter(theme, instanceList, instanceFilters);
                 return true;
             });
             instanceList.AddTip("R", Properties.Resources.Remove);
-            instanceList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
+            instanceList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) =>
+            {
                 RemoveFilter(instanceList, instanceFilters);
                 return true;
             });
@@ -122,7 +130,8 @@ namespace CKAN.ConsoleUI {
         {
             string filter = new InstallFilterAddDialog().Run(theme);
             DrawBackground(theme);
-            if (!string.IsNullOrEmpty(filter) && !filters.Contains(filter)) {
+            if (!string.IsNullOrEmpty(filter) && !filters.Contains(filter))
+            {
                 filters.Add(filter);
                 box.SetData(filters);
             }
@@ -137,11 +146,11 @@ namespace CKAN.ConsoleUI {
         private void Save()
         {
             globalConfig.GlobalInstallFilters = globalFilters.ToArray();
-            instance.InstallFilters           = instanceFilters.ToArray();
+            instance.InstallFilters = instanceFilters.ToArray();
         }
 
         private IConfiguration globalConfig;
-        private GameInstance   instance;
+        private GameInstance instance;
 
         private List<string> globalFilters;
         private List<string> instanceFilters;

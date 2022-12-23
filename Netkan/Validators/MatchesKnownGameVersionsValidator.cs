@@ -20,7 +20,7 @@ namespace CKAN.NetKAN.Validators
             if (!mod.IsCompatibleKSP(new GameVersionCriteria(null, knownVersions)))
             {
                 GameVersion minKsp = null, maxKsp = null;
-                Registry.GetMinMaxVersions(new List<CkanModule>() {mod}, out _, out _, out minKsp, out maxKsp);
+                Registry.GetMinMaxVersions(new List<CkanModule>() { mod }, out _, out _, out minKsp, out maxKsp);
                 var game = new KerbalSpaceProgram();
                 throw new Kraken($"{metadata.Identifier} doesn't match any valid game version: {GameVersionRange.VersionSpan(game, minKsp, maxKsp)}");
             }

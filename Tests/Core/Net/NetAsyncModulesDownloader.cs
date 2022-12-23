@@ -15,15 +15,15 @@ namespace Tests.Core.Net
     [TestFixture]
     public class NetAsyncModulesDownloader
     {
-        private CKAN.GameInstanceManager      manager;
+        private CKAN.GameInstanceManager manager;
         private CKAN.RegistryManager registry_manager;
-        private CKAN.Registry        registry;
-        private DisposableKSP        ksp;
-        private CKAN.IDownloader     async;
-        private NetModuleCache       cache;
-        private NetAsyncDownloader   downloader;
+        private CKAN.Registry registry;
+        private DisposableKSP ksp;
+        private CKAN.IDownloader async;
+        private NetModuleCache cache;
+        private NetAsyncDownloader downloader;
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
+        private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncModulesDownloader));
 
         [SetUp]
         public void Setup()
@@ -132,7 +132,7 @@ namespace Tests.Core.Net
 
             async.DownloadModules(modules);
 
-            Assert.IsTrue(cache.IsCachedZip(rAndS),"Module download successful");
+            Assert.IsTrue(cache.IsCachedZip(rAndS), "Module download successful");
         }
 
     }

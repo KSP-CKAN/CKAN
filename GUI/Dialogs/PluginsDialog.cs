@@ -63,7 +63,7 @@ namespace CKAN.GUI
                 return;
             }
 
-            var plugin = (IGUIPlugin) ActivePluginsListBox.SelectedItem;
+            var plugin = (IGUIPlugin)ActivePluginsListBox.SelectedItem;
             Main.Instance.pluginController.DeactivatePlugin(plugin);
             RefreshActivePlugins();
             RefreshDormantPlugins();

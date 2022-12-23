@@ -29,8 +29,8 @@ namespace CKAN.CmdLine
         /// </returns>
         public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
         {
-            string[] args     = unparsed.options.ToArray();
-            int      exitCode = Exit.OK;
+            string[] args = unparsed.options.ToArray();
+            int exitCode = Exit.OK;
 
             Parser.Default.ParseArgumentsStrict(args, new AuthTokenSubOptions(), (string option, object suboptions) =>
             {
@@ -38,12 +38,12 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    user                  = new ConsoleUser(options.Headless);
+                    user = new ConsoleUser(options.Headless);
                     if (manager == null)
                     {
-                        manager           = new GameInstanceManager(user);
+                        manager = new GameInstanceManager(user);
                     }
-                    exitCode              = options.Handle(manager, user);
+                    exitCode = options.Handle(manager, user);
                     if (exitCode == Exit.OK)
                     {
                         switch (option)
@@ -66,12 +66,12 @@ namespace CKAN.CmdLine
 
         private int listAuthTokens(CommonOptions opts)
         {
-            string hostHeader  = Properties.Resources.AuthTokenHostHeader;
+            string hostHeader = Properties.Resources.AuthTokenHostHeader;
             string tokenHeader = Properties.Resources.AuthTokenTokenHeader;
-            List<string> hosts  = new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts());
+            List<string> hosts = new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts());
             if (hosts.Count > 0)
             {
-                int longestHostLen  = hostHeader.Length;
+                int longestHostLen = hostHeader.Length;
                 int longestTokenLen = tokenHeader.Length;
                 foreach (string host in hosts)
                 {
@@ -121,17 +121,17 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private                 IUser user;
-        private static readonly ILog  log = LogManager.GetLogger(typeof(AuthToken));
+        private IUser user;
+        private static readonly ILog log = LogManager.GetLogger(typeof(AuthToken));
     }
 
     internal class AuthTokenSubOptions : VerbCommandOptions
     {
-        [VerbOption("list",   HelpText = "List auth tokens")]
-        public CommonOptions          ListOptions   { get; set; }
+        [VerbOption("list", HelpText = "List auth tokens")]
+        public CommonOptions ListOptions { get; set; }
 
-        [VerbOption("add",    HelpText = "Add an auth token")]
-        public AddAuthTokenOptions    AddOptions    { get; set; }
+        [VerbOption("add", HelpText = "Add an auth token")]
+        public AddAuthTokenOptions AddOptions { get; set; }
 
         [VerbOption("remove", HelpText = "Delete an auth token")]
         public RemoveAuthTokenOptions RemoveOptions { get; set; }
@@ -169,7 +169,7 @@ namespace CKAN.CmdLine
 
     internal class AddAuthTokenOptions : CommonOptions
     {
-        [ValueOption(0)] public string host  { get; set; }
+        [ValueOption(0)] public string host { get; set; }
         [ValueOption(1)] public string token { get; set; }
     }
 

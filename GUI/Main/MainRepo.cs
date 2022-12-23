@@ -121,7 +121,7 @@ namespace CKAN.GUI
                             // Rows are only linked to themselves
                             (r1, r2) => r1 == r2);
                         Util.Invoke(this, () => dfd.ShowDialog(this));
-                        var skip  = dfd.Wait()?.Select(r => r as Repository).ToArray();
+                        var skip = dfd.Wait()?.Select(r => r as Repository).ToArray();
                         var abort = dfd.Abort;
                         dfd.Dispose();
                         if (abort)

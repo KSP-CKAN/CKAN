@@ -14,9 +14,9 @@ namespace CKAN.CmdLine
 
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
-            AvailableOptions opts       = (AvailableOptions)raw_options;
-            IRegistryQuerier registry   = RegistryManager.Instance(instance).registry;
-            
+            AvailableOptions opts = (AvailableOptions)raw_options;
+            IRegistryQuerier registry = RegistryManager.Instance(instance).registry;
+
             var compatible = registry
                 .CompatibleModules(instance.VersionCriteria())
                 .Where(m => !m.IsDLC);

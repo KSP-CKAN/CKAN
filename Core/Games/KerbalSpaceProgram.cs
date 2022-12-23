@@ -128,9 +128,9 @@ namespace CKAN.Games
                 || path == PrimaryModDirectory(inst)
                 || path == Missions(inst)
                 || path == Scenarios(inst) || path == Tutorial(inst)
-                || path == Ships(inst)     || path == ShipsThumbs(inst)
-                || path == ShipsVab(inst)  || path == ShipsThumbsVAB(inst)
-                || path == ShipsSph(inst)  || path == ShipsThumbsSPH(inst)
+                || path == Ships(inst) || path == ShipsThumbs(inst)
+                || path == ShipsVab(inst) || path == ShipsThumbsVAB(inst)
+                || path == ShipsSph(inst) || path == ShipsThumbsSPH(inst)
                 || path == ShipsScript(inst);
         }
 
@@ -152,8 +152,8 @@ namespace CKAN.Games
 
         public string DefaultCommandLine =>
                   Platform.IsUnix ? "./KSP.x86_64 -single-instance"
-                : Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP"
-                :                   "KSP_x64.exe -single-instance";
+                : Platform.IsMac ? "./KSP.app/Contents/MacOS/KSP"
+                : "KSP_x64.exe -single-instance";
 
         public string[] AdjustCommandLine(string[] args, GameVersion installedVersion)
         {

@@ -18,7 +18,7 @@ namespace CKAN.CmdLine
 
             if (options.Left != null && options.Right != null)
             {
-                var leftVersion  = new ModuleVersion(options.Left);
+                var leftVersion = new ModuleVersion(options.Left);
                 var rightVersion = new ModuleVersion(options.Right);
 
                 int compareResult = leftVersion.CompareTo(rightVersion);

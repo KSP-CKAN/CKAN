@@ -16,7 +16,7 @@ namespace CKAN
     public interface IRegistryQuerier
     {
         IEnumerable<InstalledModule> InstalledModules { get; }
-        IEnumerable<string>          InstalledDlls    { get; }
+        IEnumerable<string> InstalledDlls { get; }
         IDictionary<string, ModuleVersion> InstalledDlc { get; }
 
         int? DownloadCount(string identifier);
@@ -224,9 +224,10 @@ namespace CKAN
         public static string CompatibleGameVersions(this IRegistryQuerier querier, IGame game, string identifier)
         {
             List<CkanModule> releases = querier.AvailableByIdentifier(identifier).ToList();
-            if (releases != null && releases.Count > 0) {
+            if (releases != null && releases.Count > 0)
+            {
                 ModuleVersion minMod = null, maxMod = null;
-                GameVersion   minKsp = null, maxKsp = null;
+                GameVersion minKsp = null, maxKsp = null;
                 Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
                 return GameVersionRange.VersionSpan(game, minKsp, maxKsp);
             }
@@ -245,7 +246,7 @@ namespace CKAN
         public static string CompatibleGameVersions(this IRegistryQuerier querier, IGame game, CkanModule module)
         {
             ModuleVersion minMod = null, maxMod = null;
-            GameVersion   minKsp = null, maxKsp = null;
+            GameVersion minKsp = null, maxKsp = null;
             Registry.GetMinMaxVersions(
                 new CkanModule[] { module },
                 out minMod, out maxMod,
@@ -340,19 +341,19 @@ namespace CKAN
         /// </returns>
         private static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
             this IRegistryQuerier querier,
-            List<InstalledModule>              installedModules,
-            HashSet<string>                    dlls,
+            List<InstalledModule> installedModules,
+            HashSet<string> dlls,
             IDictionary<string, ModuleVersion> dlc,
-            GameVersionCriteria                crit)
+            GameVersionCriteria crit)
         {
             var autoInstMods = installedModules.Where(im => im.AutoInstalled).ToList();
-            var autoInstIds  = autoInstMods.Select(im => im.Module.identifier).ToHashSet();
+            var autoInstIds = autoInstMods.Select(im => im.Module.identifier).ToHashSet();
 
             // Need to get the full changeset for this to work as intended
             RelationshipResolverOptions opts = RelationshipResolver.DependsOnlyOpts();
             opts.without_toomanyprovides_kraken = true;
-            opts.without_enforce_consistency    = true;
-            opts.proceed_with_inconsistencies   = true;
+            opts.without_enforce_consistency = true;
+            opts.proceed_with_inconsistencies = true;
             var resolver = new RelationshipResolver(
                 installedModules
                     // DLC silently crashes the resolver
@@ -383,7 +384,7 @@ namespace CKAN
         public static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
             this IRegistryQuerier querier,
             List<InstalledModule> installedModules,
-            GameVersionCriteria   crit)
+            GameVersionCriteria crit)
         {
             log.DebugFormat("Finding removable autoInstalled for: {0}", string.Join(", ", installedModules.Select(im => im.identifier)));
             return querier == null

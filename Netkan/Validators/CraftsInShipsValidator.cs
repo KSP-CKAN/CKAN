@@ -14,7 +14,7 @@ namespace CKAN.NetKAN.Validators
     {
         public CraftsInShipsValidator(IHttpService http, IModuleService moduleService)
         {
-            _http          = http;
+            _http = http;
             _moduleService = moduleService;
         }
 
@@ -22,15 +22,15 @@ namespace CKAN.NetKAN.Validators
         {
             Log.Info("Validating that craft files are installed into Ships");
 
-            JObject    json = metadata.Json();
-            CkanModule mod  = CkanModule.FromJson(json.ToString());
+            JObject json = metadata.Json();
+            CkanModule mod = CkanModule.FromJson(json.ToString());
             if (!mod.IsDLC)
             {
                 var package = _http.DownloadModule(metadata);
                 if (!string.IsNullOrEmpty(package))
                 {
-                    var zip       = new ZipFile(package);
-                    var inst      = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", null, false);
+                    var zip = new ZipFile(package);
+                    var inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", null, false);
                     var badCrafts = _moduleService.GetCrafts(mod, zip, inst)
                         .Where(f => !AllowedCraftPath(inst.ToRelativeGameDir(f.destination)))
                         .ToList();
@@ -53,7 +53,7 @@ namespace CKAN.NetKAN.Validators
                 || path.StartsWith("GameData/ContractPacks/");
         }
 
-        private readonly IHttpService   _http;
+        private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(CraftsInShipsValidator));

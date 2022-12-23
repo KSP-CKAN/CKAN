@@ -9,37 +9,37 @@ namespace CKAN.GUI
     public class ModuleLabel
     {
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
-        public string  Name;
+        public string Name;
 
         [JsonProperty("color", NullValueHandling = NullValueHandling.Ignore)]
-        public Color   Color;
+        public Color Color;
 
         [JsonProperty("instance_name", NullValueHandling = NullValueHandling.Ignore)]
-        public string  InstanceName;
+        public string InstanceName;
 
         [JsonProperty("hide", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
-        public bool    Hide;
+        public bool Hide;
 
         [JsonProperty("notify_on_change", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
-        public bool    NotifyOnChange;
+        public bool NotifyOnChange;
 
         [JsonProperty("remove_on_change", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
-        public bool    RemoveOnChange;
+        public bool RemoveOnChange;
 
         [JsonProperty("alert_on_install", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
-        public bool    AlertOnInstall;
+        public bool AlertOnInstall;
 
         [JsonProperty("remove_on_install", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
-        public bool    RemoveOnInstall;
+        public bool RemoveOnInstall;
 
         [JsonProperty("hold_version", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
-        public bool    HoldVersion;
+        public bool HoldVersion;
 
         [JsonProperty("module_identifiers", NullValueHandling = NullValueHandling.Ignore)]
         public HashSet<string> ModuleIdentifiers = new HashSet<string>();

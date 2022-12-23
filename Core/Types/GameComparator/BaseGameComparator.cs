@@ -14,7 +14,7 @@ namespace CKAN
             }
             foreach (GameVersion gameVersion in gameVersionCriteria.Versions)
             {
-                if (SingleVersionsCompatible (gameVersion, module))
+                if (SingleVersionsCompatible(gameVersion, module))
                 {
                     return true;
                 }

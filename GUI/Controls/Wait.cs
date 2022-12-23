@@ -15,16 +15,16 @@ namespace CKAN.GUI
             InitializeComponent();
             progressTimer.Tick += (sender, evt) => ReflowProgressBars();
 
-            bgWorker.DoWork             += DoWork;
+            bgWorker.DoWork += DoWork;
             bgWorker.RunWorkerCompleted += RunWorkerCompleted;
         }
 
-        public void StartWaiting(Action<object, DoWorkEventArgs>             mainWork,
+        public void StartWaiting(Action<object, DoWorkEventArgs> mainWork,
                                  Action<object, RunWorkerCompletedEventArgs> postWork,
                                  bool cancelable,
                                  object param)
         {
-            bgLogic   = mainWork;
+            bgLogic = mainWork;
             postLogic = postWork;
             Reset(cancelable);
             ClearLog();
@@ -77,26 +77,26 @@ namespace CKAN.GUI
                     {
                         // download_size is allowed to be 0
                         pb.Value = Math.Max(pb.Minimum, Math.Min(pb.Maximum,
-                            (int) (100 * (total - remaining) / total)));
+                            (int)(100 * (total - remaining) / total)));
                     }
                     else
                     {
                         var newLb = new Label()
                         {
                             AutoSize = true,
-                            Text     = label,
-                            Margin   = new Padding(0, 8, 0, 0),
+                            Text = label,
+                            Margin = new Padding(0, 8, 0, 0),
                         };
                         progressLabels.Add(label, newLb);
                         var newPb = new ProgressBar()
                         {
-                            Anchor  = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                            Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                             Minimum = 0,
                             Maximum = 100,
                             // download_size is allowed to be 0
-                            Value   = Math.Max(0, Math.Min(100,
-                                           (int) (100 * (total - remaining) / total))),
-                            Style   = ProgressBarStyle.Continuous,
+                            Value = Math.Max(0, Math.Min(100,
+                                           (int)(100 * (total - remaining) / total))),
+                            Style = ProgressBarStyle.Continuous,
                         };
                         progressBars.Add(label, newPb);
                     }
@@ -117,12 +117,12 @@ namespace CKAN.GUI
             SetProgress(module.ToString(), remaining, total);
         }
 
-        private Action<object, DoWorkEventArgs>             bgLogic;
+        private Action<object, DoWorkEventArgs> bgLogic;
         private Action<object, RunWorkerCompletedEventArgs> postLogic;
 
         private BackgroundWorker bgWorker = new BackgroundWorker()
         {
-            WorkerReportsProgress      = true,
+            WorkerReportsProgress = true,
             WorkerSupportsCancellation = true,
         };
 
@@ -136,11 +136,11 @@ namespace CKAN.GUI
             postLogic?.Invoke(sender, e);
         }
 
-        private const int padding     = 5;
+        private const int padding = 5;
         private const int emptyHeight = 85;
 
-        private Dictionary<string, Label>       progressLabels = new Dictionary<string, Label>();
-        private Dictionary<string, ProgressBar> progressBars   = new Dictionary<string, ProgressBar>();
+        private Dictionary<string, Label> progressLabels = new Dictionary<string, Label>();
+        private Dictionary<string, ProgressBar> progressBars = new Dictionary<string, ProgressBar>();
         private Timer progressTimer = new Timer() { Interval = 3000 };
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace CKAN.GUI
                 foreach (var kvp in progressBars)
                 {
                     var lbl = progressLabels[kvp.Key];
-                    var pb  = kvp.Value;
+                    var pb = kvp.Value;
 
                     if (pb.Value >= 100)
                     {
@@ -170,7 +170,7 @@ namespace CKAN.GUI
                     {
                         // Just started, add it in this pass
                         ProgressBarTable.Controls.Add(lbl, 0, -1);
-                        ProgressBarTable.Controls.Add(pb,  1, -1);
+                        ProgressBarTable.Controls.Add(pb, 1, -1);
                         ProgressBarTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
                     }
                 }

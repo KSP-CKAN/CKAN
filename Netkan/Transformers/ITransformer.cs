@@ -8,10 +8,10 @@ namespace CKAN.NetKAN.Transformers
     {
         public TransformOptions(int? releases, int? skipReleases, ModuleVersion highVer, bool staged, string stagingReason)
         {
-            Releases       = releases;
-            SkipReleases   = skipReleases;
+            Releases = releases;
+            SkipReleases = skipReleases;
             HighestVersion = highVer;
-            Staged         = staged;
+            Staged = staged;
             StagingReasons = new List<string>();
             if (!string.IsNullOrEmpty(stagingReason))
             {
@@ -19,12 +19,12 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        public readonly int?          Releases;
-        public readonly int?          SkipReleases;
+        public readonly int? Releases;
+        public readonly int? SkipReleases;
         public readonly ModuleVersion HighestVersion;
-        public          bool          Staged;
-        public readonly List<string>  StagingReasons;
-        public          bool          FlakyAPI = false;
+        public bool Staged;
+        public readonly List<string> StagingReasons;
+        public bool FlakyAPI = false;
     }
 
     /// <summary>

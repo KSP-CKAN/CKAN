@@ -22,7 +22,7 @@ namespace CKAN.NetKAN.Sources.Gitlab
         /// <param name="token">GitLab API token</param>
         public GitlabApi(IHttpService http, string token = null)
         {
-            this.http  = http;
+            this.http = http;
             this.token = token;
         }
 
@@ -56,7 +56,7 @@ namespace CKAN.NetKAN.Sources.Gitlab
         }
 
         private IHttpService http;
-        private string       token;
+        private string token;
 
         private static readonly Uri apiBase = new Uri("https://gitlab.com/api/v4/projects/");
     }

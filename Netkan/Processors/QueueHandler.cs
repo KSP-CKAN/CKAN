@@ -30,7 +30,7 @@ namespace CKAN.NetKAN.Processors
             log.Debug("Initializing SQS queue handler");
             inflator = new Inflator(cacheDir, overwriteCache, githubToken, gitlabToken, prerelease);
 
-            inputQueueURL  = getQueueUrl(inputQueueName);
+            inputQueueURL = getQueueUrl(inputQueueName);
             outputQueueURL = getQueueUrl(outputQueueName);
             log.DebugFormat("Queue URLs: {0}, {1}", inputQueueURL, outputQueueURL);
         }
@@ -61,7 +61,7 @@ namespace CKAN.NetKAN.Processors
             };
             qap.AddFilter(new LevelMatchFilter()
             {
-                LevelToMatch  = Level.Warn,
+                LevelToMatch = Level.Warn,
                 AcceptOnMatch = true,
             });
             qap.AddFilter(new DenyAllFilter());
@@ -79,9 +79,9 @@ namespace CKAN.NetKAN.Processors
             log.DebugFormat("Looking for messages from {0}", url);
             var resp = client.ReceiveMessage(new ReceiveMessageRequest()
             {
-                QueueUrl              = url,
-                MaxNumberOfMessages   = howMany,
-                VisibilityTimeout     = (int)TimeSpan.FromMinutes(timeoutMinutes).TotalSeconds,
+                QueueUrl = url,
+                MaxNumberOfMessages = howMany,
+                VisibilityTimeout = (int)TimeSpan.FromMinutes(timeoutMinutes).TotalSeconds,
                 MessageAttributeNames = new List<string>() { "All" },
             });
             if (!resp.Messages.Any())
@@ -101,7 +101,7 @@ namespace CKAN.NetKAN.Processors
                         client.SendMessageBatch(new SendMessageBatchRequest()
                         {
                             QueueUrl = outputQueueURL,
-                            Entries  = responses.GetRange(i, Math.Min(howMany, responses.Count - i)),
+                            Entries = responses.GetRange(i, Math.Min(howMany, responses.Count - i)),
                         });
                     }
                 }
@@ -115,7 +115,7 @@ namespace CKAN.NetKAN.Processors
                     client.DeleteMessageBatch(new DeleteMessageBatchRequest()
                     {
                         QueueUrl = url,
-                        Entries  = resp.Messages.Select(Delete).ToList(),
+                        Entries = resp.Messages.Select(Delete).ToList(),
                     });
                 }
                 catch (Exception e)
@@ -146,9 +146,9 @@ namespace CKAN.NetKAN.Processors
 
             log.InfoFormat("Inflating {0}", netkan.Identifier);
             IEnumerable<Metadata> ckans = null;
-            bool   caught        = false;
+            bool caught = false;
             string caughtMessage = null;
-            var    opts          = new TransformOptions(releases, null, highVer, netkan.Staged, netkan.StagingReason);
+            var opts = new TransformOptions(releases, null, highVer, netkan.Staged, netkan.StagingReason);
             try
             {
                 ckans = inflator.Inflate($"{netkan.Identifier}.netkan", netkan, opts);
@@ -159,7 +159,7 @@ namespace CKAN.NetKAN.Processors
                 log.InfoFormat("Inflation failed, sending error: {0}", e.Message);
                 // If you do this the sensible way, the C# compiler throws:
                 // error CS1631: Cannot yield a value in the body of a catch clause
-                caught        = true;
+                caught = true;
                 caughtMessage = e.Message;
             }
             if (caught)
@@ -219,7 +219,7 @@ namespace CKAN.NetKAN.Processors
                     "FileName",
                     new MessageAttributeValue()
                     {
-                        DataType    = "String",
+                        DataType = "String",
                         StringValue = Program.CkanFileName(ckan)
                     }
                 );
@@ -230,7 +230,7 @@ namespace CKAN.NetKAN.Processors
                     "ErrorMessage",
                     new MessageAttributeValue()
                     {
-                        DataType    = "String",
+                        DataType = "String",
                         StringValue = err
                     }
                 );
@@ -241,7 +241,7 @@ namespace CKAN.NetKAN.Processors
                     "WarningMessages",
                     new MessageAttributeValue()
                     {
-                        DataType    = "String",
+                        DataType = "String",
                         StringValue = string.Join("\r\n", warningAppender.Warnings),
                     }
                 );
@@ -253,18 +253,18 @@ namespace CKAN.NetKAN.Processors
                     "StagingReason",
                     new MessageAttributeValue()
                     {
-                        DataType    = "String",
+                        DataType = "String",
                         StringValue = string.Join("\r\n\r\n", opts.StagingReasons),
                     }
                 );
             }
             return new SendMessageBatchRequestEntry()
             {
-                Id                     = (responseId++).ToString(),
-                MessageGroupId         = "1",
+                Id = (responseId++).ToString(),
+                MessageGroupId = "1",
                 MessageDeduplicationId = Path.GetRandomFileName(),
-                MessageBody            = serializeCkan(ckan),
-                MessageAttributes      = attribs,
+                MessageBody = serializeCkan(ckan),
+                MessageAttributes = attribs,
             };
         }
 
@@ -277,11 +277,11 @@ namespace CKAN.NetKAN.Processors
             }
             var sw = new StringWriter(new StringBuilder());
             using (var writer = new JsonTextWriter(sw)
-                {
-                    Formatting  = Formatting.Indented,
-                    Indentation = 4,
-                    IndentChar  = ' ',
-                })
+            {
+                Formatting = Formatting.Indented,
+                Indentation = 4,
+                IndentChar = ' ',
+            })
             {
                 var serializer = new JsonSerializer();
                 serializer.Serialize(writer, ckan.Json());
@@ -293,12 +293,12 @@ namespace CKAN.NetKAN.Processors
         {
             return new DeleteMessageBatchRequestEntry()
             {
-                Id            = msg.MessageId,
+                Id = msg.MessageId,
                 ReceiptHandle = msg.ReceiptHandle,
             };
         }
 
-        private Inflator        inflator;
+        private Inflator inflator;
         private AmazonSQSClient client = new AmazonSQSClient();
 
         private readonly string inputQueueURL;
@@ -307,6 +307,6 @@ namespace CKAN.NetKAN.Processors
         private int responseId = 0;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(QueueHandler));
-        private QueueAppender        warningAppender;
+        private QueueAppender warningAppender;
     }
 }

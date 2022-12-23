@@ -246,7 +246,7 @@ namespace CKAN.Versioning
             foreach (var v in versions)
             {
                 // Add or replace
-                VersionsMax[$"{v.Major}"          ] = v;
+                VersionsMax[$"{v.Major}"] = v;
                 VersionsMax[$"{v.Major}.{v.Minor}"] = v;
             }
         }
@@ -611,7 +611,7 @@ namespace CKAN.Versioning
         {
             if (ReferenceEquals(obj, null)) return false;
             if (ReferenceEquals(obj, this)) return true;
-            return obj is GameVersion && Equals((GameVersion) obj);
+            return obj is GameVersion && Equals((GameVersion)obj);
         }
 
         /// <summary>
@@ -623,9 +623,9 @@ namespace CKAN.Versioning
             unchecked
             {
                 var hashCode = _major.GetHashCode();
-                hashCode = (hashCode*397) ^ _minor.GetHashCode();
-                hashCode = (hashCode*397) ^ _patch.GetHashCode();
-                hashCode = (hashCode*397) ^ _build.GetHashCode();
+                hashCode = (hashCode * 397) ^ _minor.GetHashCode();
+                hashCode = (hashCode * 397) ^ _patch.GetHashCode();
+                hashCode = (hashCode * 397) ^ _build.GetHashCode();
                 return hashCode;
             }
         }

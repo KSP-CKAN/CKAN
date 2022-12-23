@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Base class for popup dialogs
     /// </summary>
-    public abstract class ConsoleDialog : ScreenContainer {
+    public abstract class ConsoleDialog : ScreenContainer
+    {
 
         /// <summary>
         /// Initialize the dialog.
@@ -14,9 +16,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         protected ConsoleDialog()
         {
-            left   =     Console.WindowWidth  / 4;
-            top    =     Console.WindowHeight / 4;
-            right  = 3 * Console.WindowWidth  / 4;
+            left = Console.WindowWidth / 4;
+            top = Console.WindowHeight / 4;
+            right = 3 * Console.WindowWidth / 4;
             bottom = 3 * Console.WindowHeight / 4;
         }
 
@@ -34,20 +36,25 @@ namespace CKAN.ConsoleUI.Toolkit {
             if (theme.PopupShadow.HasValue)
             {
                 Console.BackgroundColor = theme.PopupShadow.Value;
-                if (r < Console.WindowWidth - 2) {
+                if (r < Console.WindowWidth - 2)
+                {
                     // Right shadow
-                    for (int y = t + 1; y <= b; ++y) {
-                        if (y >= 0 && y < Console.WindowHeight - 1) {
+                    for (int y = t + 1; y <= b; ++y)
+                    {
+                        if (y >= 0 && y < Console.WindowHeight - 1)
+                        {
                             Console.SetCursorPosition(r + 1, y);
                             Console.Write("  ");
                         }
                     }
                 }
                 // Bottom shadow
-                if (l + w + 2 > Console.WindowWidth) {
+                if (l + w + 2 > Console.WindowWidth)
+                {
                     w = Console.WindowWidth - l - 2;
                 }
-                if (b < Console.WindowHeight - 1) {
+                if (b < Console.WindowHeight - 1)
+                {
                     Console.SetCursorPosition(l + 2, b + 1);
                     Console.Write("".PadRight(w));
                 }
@@ -64,15 +71,15 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <returns>
         /// X coordinate of left edge of dialog
         /// </returns>
-        protected int GetLeft()   { return Formatting.ConvertCoord(left,   Console.WindowWidth);  }
+        protected int GetLeft() { return Formatting.ConvertCoord(left, Console.WindowWidth); }
         /// <returns>
         /// Y coordinate of top edge of dialog
         /// </returns>
-        protected int GetTop()    { return Formatting.ConvertCoord(top,    Console.WindowHeight); }
+        protected int GetTop() { return Formatting.ConvertCoord(top, Console.WindowHeight); }
         /// <returns>
         /// X coordinate of right edge of dialog
         /// </returns>
-        protected int GetRight()  { return Formatting.ConvertCoord(right,  Console.WindowWidth);  }
+        protected int GetRight() { return Formatting.ConvertCoord(right, Console.WindowWidth); }
         /// <returns>
         /// Y coordinate of bottom edge of dialog
         /// </returns>
@@ -87,9 +94,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="b">Y coordinate of bottom edge of dialog</param>
         protected void SetDimensions(int l, int t, int r, int b)
         {
-            left   = validX(l) ? l :  2;
-            top    = validY(t) ? t :  1;
-            right  = validX(r) ? r : -2;
+            left = validX(l) ? l : 2;
+            top = validY(t) ? t : 1;
+            right = validX(r) ? r : -2;
             bottom = validY(b) ? b : -1;
         }
 
@@ -100,29 +107,39 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             int w = GetRight() - GetLeft() + 1;
             string fullHorizLineDouble = new string(Symbols.horizLineDouble, w - 2);
-            string midSpace            = new string(' ',                     w - 2);
+            string midSpace = new string(' ', w - 2);
             Console.BackgroundColor = theme.PopupBg;
             Console.ForegroundColor = theme.PopupOutlineFg;
-            for (int y = GetTop(); y <= GetBottom(); ++y) {
-                if (y < 0 || y >= Console.WindowHeight) {
+            for (int y = GetTop(); y <= GetBottom(); ++y)
+            {
+                if (y < 0 || y >= Console.WindowHeight)
+                {
                     continue;
                 }
                 Console.SetCursorPosition(GetLeft(), y);
-                if (y == GetTop()) {
+                if (y == GetTop())
+                {
                     // Top row
                     string curTitle = CenterHeader();
-                    if (string.IsNullOrEmpty(curTitle)) {
+                    if (string.IsNullOrEmpty(curTitle))
+                    {
                         Console.Write(Symbols.upperLeftCornerDouble + fullHorizLineDouble + Symbols.upperRightCornerDouble);
-                    } else {
+                    }
+                    else
+                    {
                         // Title centered
                         Console.Write(Symbols.upperLeftCornerDouble
                             + ScreenObject.PadCenter($" {curTitle} ", w - 2, Symbols.horizLineDouble)
                             + Symbols.upperRightCornerDouble);
                     }
-                } else if (y == GetBottom()) {
+                }
+                else if (y == GetBottom())
+                {
                     // Bottom row
                     Console.Write(Symbols.lowerLeftCornerDouble + fullHorizLineDouble + Symbols.lowerRightCornerDouble);
-                } else {
+                }
+                else
+                {
                     // Blank lines, mostly padding
                     Console.Write(Symbols.vertLineDouble + midSpace + Symbols.vertLineDouble);
                 }

@@ -38,11 +38,11 @@ namespace Tests.NetKAN.Extensions
             YamlMappingNode yaml = YamlExtensions.Parse(input);
 
             // Assert
-            Assert.AreEqual("v1.4",                               (string)yaml["spec_version"]);
-            Assert.AreEqual("Astrogator",                         (string)yaml["identifier"]);
+            Assert.AreEqual("v1.4", (string)yaml["spec_version"]);
+            Assert.AreEqual("Astrogator", (string)yaml["identifier"]);
             Assert.AreEqual("#/ckan/github/HebaruSan/Astrogator", (string)yaml["$kref"]);
-            Assert.AreEqual("#/ckan/ksp-avc",                     (string)yaml["$vref"]);
-            Assert.AreEqual("GPL-3.0",                            (string)yaml["license"]);
+            Assert.AreEqual("#/ckan/ksp-avc", (string)yaml["$vref"]);
+            Assert.AreEqual("GPL-3.0", (string)yaml["license"]);
 
             CollectionAssert.AreEqual(
                 new string[] { "plugin", "information", "control" },
@@ -60,7 +60,7 @@ namespace Tests.NetKAN.Extensions
                 "https://github.com/HebaruSan/Astrogator",
                 (string)yaml["resources"]["repository"]
             );
-            Assert.AreEqual("ModuleManager",   (string)yaml["recommends"][0]["name"]);
+            Assert.AreEqual("ModuleManager", (string)yaml["recommends"][0]["name"]);
             Assert.AreEqual("LoadingTipsPlus", (string)yaml["recommends"][1]["name"]);
         }
 
@@ -111,11 +111,11 @@ namespace Tests.NetKAN.Extensions
             JObject json = yaml.ToJObject();
 
             // Assert
-            Assert.AreEqual("v1.4",                               (string)json["spec_version"]);
-            Assert.AreEqual("Astrogator",                         (string)json["identifier"]);
+            Assert.AreEqual("v1.4", (string)json["spec_version"]);
+            Assert.AreEqual("Astrogator", (string)json["identifier"]);
             Assert.AreEqual("#/ckan/github/HebaruSan/Astrogator", (string)json["$kref"]);
-            Assert.AreEqual("#/ckan/ksp-avc",                     (string)json["$vref"]);
-            Assert.AreEqual("GPL-3.0",                            (string)json["license"]);
+            Assert.AreEqual("#/ckan/ksp-avc", (string)json["$vref"]);
+            Assert.AreEqual("GPL-3.0", (string)json["license"]);
 
             CollectionAssert.AreEqual(
                 new string[] { "plugin", "information", "control" },
@@ -133,7 +133,7 @@ namespace Tests.NetKAN.Extensions
                 "https://github.com/HebaruSan/Astrogator",
                 (string)json["resources"]["repository"]
             );
-            Assert.AreEqual("ModuleManager",   (string)json["recommends"][0]["name"]);
+            Assert.AreEqual("ModuleManager", (string)json["recommends"][0]["name"]);
             Assert.AreEqual("LoadingTipsPlus", (string)json["recommends"][1]["name"]);
         }
     }

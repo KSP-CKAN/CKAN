@@ -9,7 +9,7 @@ namespace Tests.NetKAN.Validators
     public sealed class ReplacedByValidatorTests
     {
         [Test,
-            TestCase("v1.4",  null),
+            TestCase("v1.4", null),
             TestCase("v1.26", @"{ ""name"": ""AwesomeModContinued"" }"),
         ]
         public void Validate_ValidReplacement_DoesNotThrow(string spec_version, string replacement)
@@ -30,7 +30,7 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var json = new JObject();
             json["spec_version"] = spec_version;
-            json["identifier"]   = "AwesomeMod";
+            json["identifier"] = "AwesomeMod";
             if (replacement != null)
             {
                 json["replaced_by"] = JToken.Parse(replacement);

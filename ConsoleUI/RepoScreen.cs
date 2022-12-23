@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using CKAN.ConsoleUI.Toolkit;
 using CKAN.Games;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Base class for screens that create or edit Repository entries
     /// </summary>
-    public abstract class RepoScreen : ConsoleScreen {
+    public abstract class RepoScreen : ConsoleScreen
+    {
 
         /// <summary>
         /// Construct the screens
@@ -22,46 +24,56 @@ namespace CKAN.ConsoleUI {
             editList = reps;
             defaultRepos = RepositoryList.DefaultRepositories(game);
 
-            name = new ConsoleField(labelWidth, nameRow, -1, initName) {
+            name = new ConsoleField(labelWidth, nameRow, -1, initName)
+            {
                 GhostText = () => Properties.Resources.RepoNameGhostText
             };
-            url  = new ConsoleField(labelWidth, urlRow,  -1, initUrl) {
+            url = new ConsoleField(labelWidth, urlRow, -1, initUrl)
+            {
                 GhostText = () => Properties.Resources.RepoURLGhostText
             };
 
             AddObject(new ConsoleLabel(1, nameRow, labelWidth, () => Properties.Resources.RepoNameLabel));
             AddObject(name);
-            AddObject(new ConsoleLabel(1, urlRow,  labelWidth, () => Properties.Resources.RepoURLLabel));
+            AddObject(new ConsoleLabel(1, urlRow, labelWidth, () => Properties.Resources.RepoURLLabel));
             AddObject(url);
 
             AddTip("F2", Properties.Resources.Accept);
-            AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
-                if (Valid()) {
+            AddBinding(Keys.F2, (object sender, ConsoleTheme theme) =>
+            {
+                if (Valid())
+                {
                     Save();
                     return false;
-                } else {
+                }
+                else
+                {
                     return true;
                 }
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) =>
+            {
                 return false;
             });
 
             // mainMenu = list of default options
-            if (defaultRepos.repositories != null && defaultRepos.repositories.Length > 0) {
+            if (defaultRepos.repositories != null && defaultRepos.repositories.Length > 0)
+            {
                 List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>();
-                foreach (Repository r in defaultRepos.repositories) {
+                foreach (Repository r in defaultRepos.repositories)
+                {
                     // This variable will be remembered correctly in our lambdas later
                     Repository repo = r;
                     opts.Add(new ConsoleMenuOption(
                         repo.name, "", string.Format(Properties.Resources.RepoImportTip, repo.name),
-                        true, (ConsoleTheme theme) => {
-                            name.Value    = repo.name;
+                        true, (ConsoleTheme theme) =>
+                        {
+                            name.Value = repo.name;
                             name.Position = name.Value.Length;
-                            url.Value     = repo.uri.ToString();
-                            url.Position  = url.Value.Length;
+                            url.Value = repo.uri.ToString();
+                            url.Position = url.Value.Length;
                             return true;
                         }
                     ));
@@ -107,15 +119,20 @@ namespace CKAN.ConsoleUI {
         /// </returns>
         protected bool nameValid()
         {
-            if (string.IsNullOrEmpty(name.Value)) {
+            if (string.IsNullOrEmpty(name.Value))
+            {
                 RaiseError(Properties.Resources.RepoNameEmptyError);
                 SetFocus(name);
                 return false;
-            } else if (editList.ContainsKey(name.Value)) {
+            }
+            else if (editList.ContainsKey(name.Value))
+            {
                 RaiseError(Properties.Resources.RepoNameDuplicateError, name.Value);
                 SetFocus(name);
                 return false;
-            } else {
+            }
+            else
+            {
                 return true;
             }
         }
@@ -130,7 +147,8 @@ namespace CKAN.ConsoleUI {
         /// </returns>
         protected bool urlValid()
         {
-            if (string.IsNullOrEmpty(url.Value)) {
+            if (string.IsNullOrEmpty(url.Value))
+            {
                 RaiseError(Properties.Resources.RepoURLEmptyError);
                 SetFocus(url);
                 return false;
@@ -158,8 +176,8 @@ namespace CKAN.ConsoleUI {
             Properties.Resources.RepoNameLabel.Length,
             Properties.Resources.RepoURLLabel.Length
         ));
-        private const int nameRow    = 3;
-        private const int urlRow     = 5;
+        private const int nameRow = 3;
+        private const int urlRow = 5;
     }
 
 }

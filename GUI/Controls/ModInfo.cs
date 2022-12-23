@@ -47,7 +47,7 @@ namespace CKAN.GUI
             Contents.UpdateModContentsTree(module, force);
         }
 
-        public event Action<GUIMod>            OnDownloadClick;
+        public event Action<GUIMod> OnDownloadClick;
         public event Action<SavedSearch, bool> OnChangeFilter;
 
         protected override void OnResize(EventArgs e)
@@ -122,7 +122,7 @@ namespace CKAN.GUI
 
                 // Set/reset alert icons to show a user why a mod is incompatible
                 RelationshipTabPage.ImageKey = "";
-                VersionsTabPage.ImageKey     = "";
+                VersionsTabPage.ImageKey = "";
                 if (gmod.IsIncompatible)
                 {
                     var pageToAlert = module.IsCompatibleKSP(crit) ? RelationshipTabPage : VersionsTabPage;
@@ -134,7 +134,7 @@ namespace CKAN.GUI
         }
 
         private ModuleLabelList ModuleLabels => Main.Instance.ManageMods.mainModList.ModuleLabels;
-        private ModuleTagList   ModuleTags   => Main.Instance.ManageMods.mainModList.ModuleTags;
+        private ModuleTagList ModuleTags => Main.Instance.ManageMods.mainModList.ModuleTags;
 
         private void UpdateTagsAndLabels(CkanModule mod)
         {
@@ -175,12 +175,12 @@ namespace CKAN.GUI
         {
             var link = new LinkLabel()
             {
-                AutoSize     = true,
-                LinkColor    = SystemColors.GrayText,
+                AutoSize = true,
+                LinkColor = SystemColors.GrayText,
                 LinkBehavior = LinkBehavior.HoverUnderline,
-                Margin       = new Padding(0, 2, 4, 2),
-                Text         = name,
-                Tag          = tag,
+                Margin = new Padding(0, 2, 4, 2),
+                Text = name,
+                Tag = tag,
             };
             link.LinkClicked += onClick;
             ToolTip.SetToolTip(link, Properties.Resources.FilterLinkToolTip);

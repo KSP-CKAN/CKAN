@@ -12,7 +12,7 @@ namespace CKAN.NetKAN.Sources.Avc
     /// </summary>
     public class JsonAvcToGameVersion : JsonConverter
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof (JsonAvcToGameVersion));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(JsonAvcToGameVersion));
         private const int AvcWildcard = -1;
 
         public override bool CanConvert(Type objectType)
@@ -29,7 +29,7 @@ namespace CKAN.NetKAN.Sources.Avc
             string patch = null;
 
             var token = JToken.Load(reader);
-            Log.DebugFormat("Read Token: {0}, {1}", new object[] {token.Type, token.ToString()});
+            Log.DebugFormat("Read Token: {0}, {1}", new object[] { token.Type, token.ToString() });
             switch (token.Type)
             {
                 case JTokenType.String:
@@ -51,9 +51,9 @@ namespace CKAN.NetKAN.Sources.Avc
                     }
                     break;
                 case JTokenType.Object:
-                    major = (string) token["MAJOR"];
-                    minor = (string) token["MINOR"];
-                    patch = (string) token["PATCH"];
+                    major = (string)token["MAJOR"];
+                    minor = (string)token["MINOR"];
+                    patch = (string)token["PATCH"];
                     break;
                 default:
                     throw new InvalidCastException("Trying to convert non-JSON object to Version object");
@@ -101,7 +101,7 @@ namespace CKAN.NetKAN.Sources.Avc
     /// </summary>
     public class JsonAvcToVersion : JsonConverter
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof (JsonAvcToGameVersion));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(JsonAvcToGameVersion));
 
         public override bool CanConvert(Type objectType)
         {
@@ -118,7 +118,7 @@ namespace CKAN.NetKAN.Sources.Avc
             string build = null;
 
             var token = JToken.Load(reader);
-            Log.DebugFormat("Read Token: {0}, {1}", new Object[] {token.Type, token.ToString()});
+            Log.DebugFormat("Read Token: {0}, {1}", new Object[] { token.Type, token.ToString() });
             switch (token.Type)
             {
                 case JTokenType.String:
@@ -146,10 +146,10 @@ namespace CKAN.NetKAN.Sources.Avc
 
                     break;
                 case JTokenType.Object:
-                    major = (string) token["MAJOR"];
-                    minor = (string) token["MINOR"];
-                    patch = (string) token["PATCH"];
-                    build = (string) token["BUILD"];
+                    major = (string)token["MAJOR"];
+                    minor = (string)token["MINOR"];
+                    patch = (string)token["PATCH"];
+                    build = (string)token["BUILD"];
                     break;
                 default:
                     throw new InvalidCastException("Trying to convert non-JSON object to Version object");

@@ -79,7 +79,7 @@ namespace CKAN.GUI
 
         public Point WindowLoc
         {
-            get { return windowLocation;  }
+            get { return windowLocation; }
             set { windowLocation = value; }
         }
 
@@ -118,14 +118,14 @@ namespace CKAN.GUI
 
         private static GUIConfiguration LoadConfiguration(string path)
         {
-            var serializer = new XmlSerializer(typeof (GUIConfiguration));
+            var serializer = new XmlSerializer(typeof(GUIConfiguration));
 
             GUIConfiguration configuration;
             using (var stream = new StreamReader(path))
             {
                 try
                 {
-                    configuration = (GUIConfiguration) serializer.Deserialize(stream);
+                    configuration = (GUIConfiguration)serializer.Deserialize(stream);
                 }
                 catch (Exception e)
                 {
@@ -171,11 +171,11 @@ namespace CKAN.GUI
             bool needsSave = false;
 
             // KSPCompatibility column got renamed to GameCompatibility
-            needsSave = FixColumnName(configuration.SortColumns,       "KSPCompatibility", "GameCompatibility") || needsSave;
+            needsSave = FixColumnName(configuration.SortColumns, "KSPCompatibility", "GameCompatibility") || needsSave;
             needsSave = FixColumnName(configuration.HiddenColumnNames, "KSPCompatibility", "GameCompatibility") || needsSave;
 
             // SizeCol column got renamed to DownloadSize
-            needsSave = FixColumnName(configuration.SortColumns,       "SizeCol", "DownloadSize") || needsSave;
+            needsSave = FixColumnName(configuration.SortColumns, "SizeCol", "DownloadSize") || needsSave;
             needsSave = FixColumnName(configuration.HiddenColumnNames, "SizeCol", "DownloadSize") || needsSave;
 
             return needsSave;
@@ -194,7 +194,7 @@ namespace CKAN.GUI
 
         private static void SaveConfiguration(GUIConfiguration configuration)
         {
-            var serializer = new XmlSerializer(typeof (GUIConfiguration));
+            var serializer = new XmlSerializer(typeof(GUIConfiguration));
 
             using (var writer = new StreamWriter(configuration.path))
             {

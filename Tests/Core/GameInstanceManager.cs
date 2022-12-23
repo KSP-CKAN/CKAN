@@ -10,7 +10,8 @@ using CKAN.Games;
 
 namespace Tests.Core
 {
-    [TestFixture] public class GameInstanceManagerTests
+    [TestFixture]
+    public class GameInstanceManagerTests
     {
         private DisposableKSP tidy;
         private const string nameInReg = "testing";
@@ -73,7 +74,7 @@ namespace Tests.Core
         [Test]
         public void RenameInstance_HasInstanceOriginalName_ReturnsFalse()
         {
-            manager.RenameInstance(nameInReg,"newname");
+            manager.RenameInstance(nameInReg, "newname");
             Assert.False(manager.HasInstance(nameInReg));
         }
 
@@ -97,7 +98,7 @@ namespace Tests.Core
         public void GetNextValidInstanceName_ManagerDoesNotHaveResult()
         {
             var name = manager.GetNextValidInstanceName(nameInReg);
-            Assert.That(manager.HasInstance(name),Is.False);
+            Assert.That(manager.HasInstance(name), Is.False);
 
         }
 
@@ -257,7 +258,7 @@ namespace Tests.Core
         [Test]
         public void GetPreferredInstance_WithAutoStart_ReturnsAutoStart()
         {
-            Assert.That(manager.GetPreferredInstance(),Is.EqualTo(tidy.KSP));
+            Assert.That(manager.GetPreferredInstance(), Is.EqualTo(tidy.KSP));
         }
 
         [Test]

@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Base class for UI elements like labels, fields, frames, list boxes, etc.
     /// </summary>
-    public abstract class ScreenObject {
+    public abstract class ScreenObject
+    {
 
         /// <summary>
         /// Initialize the object
@@ -17,9 +19,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="b">Y coordinate of bottom edge</param>
         protected ScreenObject(int l, int t, int r, int b)
         {
-            left   = l;
-            top    = t;
-            right  = r;
+            left = l;
+            top = t;
+            right = r;
             bottom = b;
         }
 
@@ -34,9 +36,12 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </returns>
         public static string PadCenter(string s, int w, char pad = ' ')
         {
-            if (s.Length > w) {
+            if (s.Length > w)
+            {
                 return s.Substring(0, w);
-            } else {
+            }
+            else
+            {
                 int lp = (w - s.Length) / 2;
                 return FormatExactWidth(s, w - lp, pad).PadLeft(w, pad);
             }
@@ -79,7 +84,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="a">Action to bind to key</param>
         public void AddBinding(IEnumerable<ConsoleKeyInfo> keys, ConsoleScreen.KeyAction a)
         {
-            foreach (ConsoleKeyInfo k in keys) {
+            foreach (ConsoleKeyInfo k in keys)
+            {
                 AddBinding(k, a);
             }
         }
@@ -97,7 +103,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="displayIf">Function returning true to show the tip, false to hide it</param>
         public void AddTip(string key, string descrip, Func<bool> displayIf = null)
         {
-            if (displayIf == null) {
+            if (displayIf == null)
+            {
                 displayIf = () => true;
             }
             Tips.Add(new ScreenTip(key, descrip, displayIf));
@@ -115,15 +122,23 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             Console.BackgroundColor = theme.ScrollBarBg;
             Console.ForegroundColor = theme.ScrollBarFg;
-            for (int y = t; y <= b; ++y) {
+            for (int y = t; y <= b; ++y)
+            {
                 Console.SetCursorPosition(r, y);
-                if (y <= t) {
+                if (y <= t)
+                {
                     Console.Write(scrollUp);
-                } else if (y == b) {
+                }
+                else if (y == b)
+                {
                     Console.Write(scrollDown);
-                } else if (y == dragRow) {
+                }
+                else if (y == dragRow)
+                {
                     Console.Write(scrollDrag);
-                } else {
+                }
+                else
+                {
                     Console.Write(scrollBar);
                 }
             }
@@ -132,15 +147,15 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <returns>
         /// X coordinate of left edge of dialog
         /// </returns>
-        protected int GetLeft()   { return Formatting.ConvertCoord(left,   Console.WindowWidth);  }
+        protected int GetLeft() { return Formatting.ConvertCoord(left, Console.WindowWidth); }
         /// <returns>
         /// Y coordinate of top edge of dialog
         /// </returns>
-        protected int GetTop()    { return Formatting.ConvertCoord(top,    Console.WindowHeight); }
+        protected int GetTop() { return Formatting.ConvertCoord(top, Console.WindowHeight); }
         /// <returns>
         /// X coordinate of right edge of dialog
         /// </returns>
-        protected int GetRight()  { return Formatting.ConvertCoord(right,  Console.WindowWidth);  }
+        protected int GetRight() { return Formatting.ConvertCoord(right, Console.WindowWidth); }
         /// <returns>
         /// Y coordinate of bottom edge of dialog
         /// </returns>
@@ -179,17 +194,18 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         protected void Blur(bool forward)
         {
-            if (OnBlur != null) {
+            if (OnBlur != null)
+            {
                 OnBlur(this, forward);
             }
         }
 
         private int left, top, right, bottom;
 
-        private static readonly string scrollUp    = "^";
-        private static readonly string scrollDown  = "v";
-        private static readonly string scrollBar   = Symbols.hashBox;
-        private static readonly string scrollDrag  = "*";
+        private static readonly string scrollUp = "^";
+        private static readonly string scrollDown = "v";
+        private static readonly string scrollBar = Symbols.hashBox;
+        private static readonly string scrollDrag = "*";
     }
 
 }

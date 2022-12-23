@@ -19,7 +19,7 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(GithubTransformer));
 
         private readonly IGithubApi _api;
-        private readonly bool       _matchPreleases;
+        private readonly bool _matchPreleases;
 
         public string Name { get { return "github"; } }
 
@@ -28,7 +28,7 @@ namespace CKAN.NetKAN.Transformers
             if (api == null)
                 throw new ArgumentNullException("api");
 
-            _api            = api;
+            _api = api;
             _matchPreleases = matchPreleases;
         }
 
@@ -158,8 +158,8 @@ namespace CKAN.NetKAN.Transformers
 
             if (ghRelease != null)
             {
-                json.SafeAdd("version",  version);
-                json.SafeAdd("author",   () => getAuthors(ghRepo, ghRelease));
+                json.SafeAdd("version", version);
+                json.SafeAdd("author", () => getAuthors(ghRepo, ghRelease));
                 json.Remove("$kref");
                 json.SafeAdd("download", ghAsset.Download.ToString());
                 json.SafeAdd(Metadata.UpdatedPropertyName, ghAsset.Updated);
@@ -192,7 +192,7 @@ namespace CKAN.NetKAN.Transformers
 
                 json.SafeMerge(
                     "x_netkan_version_pieces",
-                    JObject.FromObject(new Dictionary<string, string>{ {"tag", ghRelease.Tag.ToString()} })
+                    JObject.FromObject(new Dictionary<string, string> { { "tag", ghRelease.Tag.ToString() } })
                 );
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
@@ -238,6 +238,6 @@ namespace CKAN.NetKAN.Transformers
         }
 
         private const string userType = "User";
-        private const string orgType  = "Organization";
+        private const string orgType = "Organization";
     }
 }

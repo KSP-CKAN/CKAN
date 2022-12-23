@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using CKAN.Games;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Screen for creating a new Repository entry
     /// </summary>
-    public class RepoAddScreen : RepoScreen {
+    public class RepoAddScreen : RepoScreen
+    {
 
         /// <summary>
         /// Construct the screen
@@ -24,7 +26,8 @@ namespace CKAN.ConsoleUI {
         /// </returns>
         protected override bool Valid()
         {
-            if (!nameValid() || !urlValid()) {
+            if (!nameValid() || !urlValid())
+            {
                 return false;
             }
             return true;
@@ -37,9 +40,11 @@ namespace CKAN.ConsoleUI {
         {
             // Set priority to end of list
             int prio = 0;
-            foreach (var kvp in editList) {
+            foreach (var kvp in editList)
+            {
                 Repository r = kvp.Value;
-                if (r.priority >= prio) {
+                if (r.priority >= prio)
+                {
                     prio = r.priority + 1;
                 }
             }

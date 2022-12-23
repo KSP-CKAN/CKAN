@@ -51,7 +51,7 @@ namespace CKAN
         /// Controls to be placed in the left half,
         /// first added will be at the left/top.
         /// </summary>
-        public ControlCollection LeftControls  => LeftPanel.Controls;
+        public ControlCollection LeftControls => LeftPanel.Controls;
         /// <summary>
         /// Controls to be placed in the right half,
         /// first added will be at the right/top.

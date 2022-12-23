@@ -68,7 +68,7 @@ namespace CKAN
 
             string tmp_file = Net.Download(module.download);
 
-            return cache.Store(module, tmp_file, new Progress<long>(bytes => {}), filename, true);
+            return cache.Store(module, tmp_file, new Progress<long>(bytes => { }), filename, true);
         }
 
         /// <summary>
@@ -679,7 +679,7 @@ namespace CKAN
             // Find all the things which need uninstalling.
             var revdep = mods
                 .Union(registry_manager.registry.FindReverseDependencies(
-                    mods.Except(installing?.Select(m => m.identifier) ?? new string[] {})
+                    mods.Except(installing?.Select(m => m.identifier) ?? new string[] { })
                         .ToList(),
                     installing))
                 .ToList();
@@ -950,9 +950,9 @@ namespace CKAN
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
                 remove = remove.Memoize();
-                add    = add.Memoize();
+                add = add.Memoize();
                 int totSteps = (remove?.Count() ?? 0)
-                             + (add?.Count()    ?? 0);
+                             + (add?.Count() ?? 0);
                 int step = 0;
                 foreach (InstalledModule instMod in remove)
                 {
@@ -1248,7 +1248,7 @@ namespace CKAN
         /// </returns>
         public bool FindRecommendations(
             HashSet<CkanModule> sourceModules,
-            List<CkanModule>    toInstall,
+            List<CkanModule> toInstall,
             Registry registry,
             out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
             out Dictionary<CkanModule, List<string>> suggestions,
@@ -1353,8 +1353,8 @@ namespace CKAN
         // Build up the list of who recommends what
         private Dictionary<CkanModule, List<string>> getDependersIndex(
             IEnumerable<CkanModule> sourceModules,
-            IRegistryQuerier        registry,
-            List<CkanModule>        toExclude
+            IRegistryQuerier registry,
+            List<CkanModule> toExclude
         )
         {
             Dictionary<CkanModule, List<string>> dependersIndex = new Dictionary<CkanModule, List<string>>();
@@ -1406,8 +1406,8 @@ namespace CKAN
         /// </returns>
         public bool CanInstall(
             RelationshipResolverOptions opts,
-            List<CkanModule>            toInstall,
-            IRegistryQuerier            registry
+            List<CkanModule> toInstall,
+            IRegistryQuerier registry
         )
         {
             string request = toInstall.Select(m => m.identifier).Aggregate((a, b) => $"{a}, {b}");
@@ -1472,7 +1472,7 @@ namespace CKAN
         public void ImportFiles(HashSet<FileInfo> files, IUser user, Action<CkanModule> installMod, Registry registry, bool allowDelete = true)
         {
             HashSet<CkanModule> installable = new HashSet<CkanModule>();
-            List<FileInfo>      deletable   = new List<FileInfo>();
+            List<FileInfo> deletable = new List<FileInfo>();
             // Get the mapping of known hashes to modules
             Dictionary<string, List<CkanModule>> index = registry.GetSha1Index();
             int i = 0;
@@ -1481,7 +1481,7 @@ namespace CKAN
                 int percent = i * 100 / files.Count;
                 user.RaiseProgress(string.Format(Properties.Resources.ModuleInstallerImporting, f.Name, percent), percent);
                 // Calc SHA-1 sum
-                string sha1 = Cache.GetFileHashSha1(f.FullName, new Progress<long>(bytes => {}));
+                string sha1 = Cache.GetFileHashSha1(f.FullName, new Progress<long>(bytes => { }));
                 // Find SHA-1 sum in registry (potentially multiple)
                 if (index.ContainsKey(sha1))
                 {
@@ -1501,7 +1501,7 @@ namespace CKAN
                         {
                             user.RaiseMessage(Properties.Resources.ModuleInstallerImportingMod,
                                 mod.identifier, StripEpoch(mod.version));
-                            Cache.Store(mod, f.FullName, new Progress<long>(bytes => {}));
+                            Cache.Store(mod, f.FullName, new Progress<long>(bytes => { }));
                         }
                     }
                 }
@@ -1591,7 +1591,7 @@ namespace CKAN
                 : version;
         }
 
-        private static readonly Regex epochMatch   = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
-        private static readonly Regex epochReplace = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
+        private static readonly Regex epochMatch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
+        private static readonly Regex epochReplace = new Regex(@"^([^:]+):([^:]+)$", RegexOptions.Compiled);
     }
 }

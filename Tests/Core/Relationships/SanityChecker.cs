@@ -5,7 +5,6 @@ using NUnit.Framework;
 using Tests.Data;
 
 using CKAN;
-using CKAN.Extensions;
 using CKAN.Versioning;
 
 // We're exercising FindReverseDependencies in here, because:
@@ -65,7 +64,7 @@ namespace Tests.Core.Relationships
         public void DogeCoin()
         {
             // Test with a module that depends and conflicts with nothing.
-            var mods = new List<CkanModule> {registry.LatestAvailable("DogeCoinFlag",null)};
+            var mods = new List<CkanModule> { registry.LatestAvailable("DogeCoinFlag", null) };
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "DogeCoinFlag");
         }
@@ -73,14 +72,14 @@ namespace Tests.Core.Relationships
         [Test]
         public void CustomBiomes()
         {
-            var mods = new List<CkanModule> {registry.LatestAvailable("CustomBiomes", null)};
+            var mods = new List<CkanModule> { registry.LatestAvailable("CustomBiomes", null) };
 
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes without data");
 
-            mods.Add(registry.LatestAvailable("CustomBiomesKerbal",null));
+            mods.Add(registry.LatestAvailable("CustomBiomesKerbal", null));
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes with stock data");
 
-            mods.Add(registry.LatestAvailable("CustomBiomesRSS",null));
+            mods.Add(registry.LatestAvailable("CustomBiomesRSS", null));
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes with conflicting data");
         }
 
@@ -88,7 +87,7 @@ namespace Tests.Core.Relationships
         public void CustomBiomesWithDlls()
         {
             var mods = new List<CkanModule>();
-            var dlls = new List<string> {"CustomBiomes"};
+            var dlls = new List<string> { "CustomBiomes" };
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes dll by itself");
 
@@ -154,17 +153,17 @@ namespace Tests.Core.Relationships
             };
 
             // Make sure some of our expectations regarding dependencies are correct.
-            Assert.Contains("CustomBiomes", registry.LatestAvailable("CustomBiomesKerbal",null).depends.Select(x => x.ToString()).ToList());
-            Assert.Contains("CustomBiomesData", registry.LatestAvailable("CustomBiomes",null).depends.Select(x => x.ToString()).ToList());
+            Assert.Contains("CustomBiomes", registry.LatestAvailable("CustomBiomesKerbal", null).depends.Select(x => x.ToString()).ToList());
+            Assert.Contains("CustomBiomesData", registry.LatestAvailable("CustomBiomes", null).depends.Select(x => x.ToString()).ToList());
 
             // Removing DCF should only remove itself.
-            var to_remove = new List<string> {"DogeCoinFlag"};
+            var to_remove = new List<string> { "DogeCoinFlag" };
             TestDepends(to_remove, mods, null, null, to_remove, "DogeCoin Removal");
 
             // Removing CB should remove its data, and vice-versa.
             to_remove.Clear();
             to_remove.Add("CustomBiomes");
-            var expected = new List<string> {"CustomBiomes", "CustomBiomesKerbal"};
+            var expected = new List<string> { "CustomBiomes", "CustomBiomesKerbal" };
             TestDepends(to_remove, mods, null, null, expected, "CustomBiomes removed");
 
             // We expect the same result removing CBK

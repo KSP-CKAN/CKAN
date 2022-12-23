@@ -55,7 +55,7 @@ namespace CKAN.GUI
         private void InstallMods(object sender, DoWorkEventArgs e)
         {
             bool canceled = false;
-            var opts = (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
+            var opts = (KeyValuePair<ModChanges, RelationshipResolverOptions>)e.Argument;
 
             RegistryManager registry_manager = RegistryManager.Instance(manager.CurrentInstance);
             Registry registry = registry_manager.registry;
@@ -66,9 +66,9 @@ namespace CKAN.GUI
             // setup progress callback
 
             // this will be the final list of mods we want to install
-            var toInstall   = new List<CkanModule>();
+            var toInstall = new List<CkanModule>();
             var toUninstall = new HashSet<CkanModule>();
-            var toUpgrade   = new HashSet<CkanModule>();
+            var toUpgrade = new HashSet<CkanModule>();
 
             // First compose sets of what the user wants installed, upgraded, and removed.
             foreach (ModChange change in opts.Key)
@@ -139,8 +139,8 @@ namespace CKAN.GUI
             tabController.SetTabLock(true);
 
             IDownloader downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
-            downloader.Progress      += Wait.SetModuleProgress;
-            downloader.AllComplete   += Wait.DownloadsComplete;
+            downloader.Progress += Wait.SetModuleProgress;
+            downloader.AllComplete += Wait.DownloadsComplete;
             downloader.StoreProgress += (module, remaining, total) =>
                 Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload, module),
                     remaining, total);
@@ -406,7 +406,7 @@ namespace CKAN.GUI
             else
             {
                 // The Result property throws if InstallMods threw (!!!)
-                KeyValuePair<bool, ModChanges> result = (KeyValuePair<bool, ModChanges>) e.Result;
+                KeyValuePair<bool, ModChanges> result = (KeyValuePair<bool, ModChanges>)e.Result;
                 AddStatusMessage(Properties.Resources.MainInstallSuccess);
                 // Rebuilds the list of GUIMods
                 RefreshModList();

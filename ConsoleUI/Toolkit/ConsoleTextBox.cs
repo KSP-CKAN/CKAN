@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Object displaying a long screen in a big box
     /// </summary>
-    public class ConsoleTextBox : ScreenObject {
+    public class ConsoleTextBox : ScreenObject
+    {
 
         /// <summary>
         /// Initialize the text box
@@ -28,10 +30,10 @@ namespace CKAN.ConsoleUI.Toolkit {
             : base(l, t, r, b)
         {
             scrollToBottom = autoScroll;
-            align          = ta;
-            getFgColor     = fgFunc;
-            getBgColor     = bgFunc;
-            prevTextW      = r - l + 1;
+            align = ta;
+            getFgColor = fgFunc;
+            getBgColor = bgFunc;
+            prevTextW = r - l + 1;
         }
 
         /// <summary>
@@ -43,21 +45,27 @@ namespace CKAN.ConsoleUI.Toolkit {
             lines.Add(line);
             int w = GetRight() - GetLeft() + 1 + (needScroll ? -1 : 0);
             // AddRange isn't thread-safe, it temporarily pads with nulls
-            foreach (string subLine in Formatting.WordWrap(line, w)) {
+            foreach (string subLine in Formatting.WordWrap(line, w))
+            {
                 displayLines.Add(subLine);
             }
-            if (!needScroll) {
+            if (!needScroll)
+            {
                 int h = GetBottom() - GetTop() + 1;
-                if (displayLines.Count > h) {
+                if (displayLines.Count > h)
+                {
                     // We just crossed over from non-scrollbar to scrollbar,
                     // re-wrap the whole display including this line
                     needScroll = true;
                     rewrapLines();
                 }
             }
-            if (scrollToBottom) {
+            if (scrollToBottom)
+            {
                 ScrollToBottom();
-            } else {
+            }
+            else
+            {
                 // No auto-scrolling
             }
         }
@@ -71,8 +79,10 @@ namespace CKAN.ConsoleUI.Toolkit {
                 ? (float)topLine / ((float)displayLines.Count - h)
                 : 0;
             displayLines.Clear();
-            foreach (string line in lines) {
-                foreach (string subLine in Formatting.WordWrap(line, w)) {
+            foreach (string line in lines)
+            {
+                foreach (string subLine in Formatting.WordWrap(line, w))
+                {
                     displayLines.Add(subLine);
                 }
             }
@@ -93,7 +103,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public void ScrollToBottom()
         {
-            int h   = GetBottom() - GetTop() + 1;
+            int h = GetBottom() - GetTop() + 1;
             topLine = displayLines.Count - h;
         }
 
@@ -103,7 +113,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         public void ScrollUp(int? howFar = null)
         {
             topLine -= howFar ?? (GetBottom() - GetTop() + 1);
-            if (topLine < 0) {
+            if (topLine < 0)
+            {
                 topLine = 0;
             }
         }
@@ -113,11 +124,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public void ScrollDown(int? howFar = null)
         {
-            int h    = GetBottom() - GetTop() + 1;
+            int h = GetBottom() - GetTop() + 1;
             int diff = howFar ?? h;
-            if (topLine +  diff <= displayLines.Count - h) {
+            if (topLine + diff <= displayLines.Count - h)
+            {
                 topLine += diff;
-            } else {
+            }
+            else
+            {
                 ScrollToBottom();
             }
         }
@@ -129,31 +143,41 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="focused">Framework parameter not relevant to this object</param>
         public override void Draw(ConsoleTheme theme, bool focused)
         {
-            int l     = GetLeft();
-            int h     = GetBottom() - GetTop() + 1;
+            int l = GetLeft();
+            int h = GetBottom() - GetTop() + 1;
             int index = displayLines.Count < h ? 0 : topLine;
             // Chop one col off the right if we need a scrollbar
-            int w     = GetRight() - l + 1 + (needScroll ? -1 : 0);
+            int w = GetRight() - l + 1 + (needScroll ? -1 : 0);
 
-            if (w != prevTextW) {
+            if (w != prevTextW)
+            {
                 // Width changed since last time, re-do the word wrap
                 rewrapLines();
             }
 
-            if (getBgColor != null) {
+            if (getBgColor != null)
+            {
                 Console.BackgroundColor = getBgColor(theme);
-            } else {
+            }
+            else
+            {
                 Console.BackgroundColor = theme.TextBoxBg;
             }
-            if (getFgColor != null) {
+            if (getFgColor != null)
+            {
                 Console.ForegroundColor = getFgColor(theme);
-            } else {
+            }
+            else
+            {
                 Console.ForegroundColor = theme.TextBoxFg;
             }
-            for (int y = GetTop(); y <= GetBottom(); ++y, ++index) {
+            for (int y = GetTop(); y <= GetBottom(); ++y, ++index)
+            {
                 Console.SetCursorPosition(l, y);
-                if (index < displayLines.Count) {
-                    switch (align) {
+                if (index < displayLines.Count)
+                {
+                    switch (align)
+                    {
                         case TextAlign.Left:
                             Console.Write(displayLines[index].PadRight(w));
                             break;
@@ -164,13 +188,16 @@ namespace CKAN.ConsoleUI.Toolkit {
                             Console.Write(displayLines[index].PadLeft(w));
                             break;
                     }
-                } else {
+                }
+                else
+                {
                     Console.Write("".PadRight(w));
                 }
             }
 
             // Scrollbar
-            if (needScroll) {
+            if (needScroll)
+            {
                 DrawScrollbar(
                     theme,
                     GetRight(), GetTop(), GetBottom(),
@@ -186,59 +213,74 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="drawMore">If true, force a redraw of the text box after scrolling, otherwise rely on the main event loop to do it</param>
         public void AddScrollBindings(ScreenContainer cont, bool drawMore = false)
         {
-            if (drawMore) {
-                cont.AddBinding(Keys.Home,      (object sender, ConsoleTheme theme) => {
+            if (drawMore)
+            {
+                cont.AddBinding(Keys.Home, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollToTop();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.End,       (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.End, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollToBottom();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.PageUp,    (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.PageUp, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollUp();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.PageDown,  (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.PageDown, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollDown();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.UpArrow,   (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.UpArrow, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollUp(1);
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.DownArrow, (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.DownArrow, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollDown(1);
                     Draw(theme, false);
                     return true;
                 });
-            } else {
-                cont.AddBinding(Keys.Home,      (object sender, ConsoleTheme theme) => {
+            }
+            else
+            {
+                cont.AddBinding(Keys.Home, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollToTop();
                     return true;
                 });
-                cont.AddBinding(Keys.End,       (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.End, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollToBottom();
                     return true;
                 });
-                cont.AddBinding(Keys.PageUp,    (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.PageUp, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollUp();
                     return true;
                 });
-                cont.AddBinding(Keys.PageDown,  (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.PageDown, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollDown();
                     return true;
                 });
-                cont.AddBinding(Keys.UpArrow,   (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.UpArrow, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollUp(1);
                     return true;
                 });
-                cont.AddBinding(Keys.DownArrow, (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.DownArrow, (object sender, ConsoleTheme theme) =>
+                {
                     ScrollDown(1);
                     return true;
                 });
@@ -250,11 +292,11 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public override bool Focusable() { return false; }
 
-        private bool         needScroll = false;
-        private int          prevTextW;
-        private bool         scrollToBottom;
-        private int          topLine;
-        private TextAlign    align;
+        private bool needScroll = false;
+        private int prevTextW;
+        private bool scrollToBottom;
+        private int topLine;
+        private TextAlign align;
         private SynchronizedCollection<string> lines = new SynchronizedCollection<string>();
         private SynchronizedCollection<string> displayLines = new SynchronizedCollection<string>();
         private Func<ConsoleTheme, ConsoleColor> getBgColor;
@@ -264,7 +306,8 @@ namespace CKAN.ConsoleUI.Toolkit {
     /// <summary>
     /// Alignment of text box
     /// </summary>
-    public enum TextAlign {
+    public enum TextAlign
+    {
         /// <summary>
         /// Left aligned, padding on right
         /// </summary>

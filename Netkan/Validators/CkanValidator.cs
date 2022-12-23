@@ -10,7 +10,7 @@ namespace CKAN.NetKAN.Validators
 
         public CkanValidator(IHttpService downloader, IModuleService moduleService)
         {
-            this.downloader    = downloader;
+            this.downloader = downloader;
             this.moduleService = moduleService;
             _validators = new List<IValidator>
             {
@@ -41,7 +41,7 @@ namespace CKAN.NetKAN.Validators
             new MatchingIdentifiersValidator(netkan.Identifier).Validate(metadata);
         }
 
-        private IHttpService   downloader;
+        private IHttpService downloader;
         private IModuleService moduleService;
     }
 }

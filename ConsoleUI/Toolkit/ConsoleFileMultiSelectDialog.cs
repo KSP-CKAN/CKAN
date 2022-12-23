@@ -3,12 +3,14 @@ using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// A popup to let the user select multiple files.
     /// </summary>
-    public class ConsoleFileMultiSelectDialog : ConsoleDialog {
+    public class ConsoleFileMultiSelectDialog : ConsoleDialog
+    {
 
         /// <summary>
         /// Initialize the popup.
@@ -21,13 +23,13 @@ namespace CKAN.ConsoleUI.Toolkit {
             : base()
         {
             CenterHeader = () => title;
-            curDir       = new DirectoryInfo(startPath);
-            filePattern  = filPat;
+            curDir = new DirectoryInfo(startPath);
+            filePattern = filPat;
 
             int w = (Console.WindowWidth > idealW + 2 * hPad)
                 ? idealW
                 : Console.WindowWidth - 2 * hPad;
-            int left  = (Console.WindowWidth - w) / 2;
+            int left = (Console.WindowWidth - w) / 2;
             int right = -left;
 
             SetDimensions(left, top, right, bottom);
@@ -90,29 +92,35 @@ namespace CKAN.ConsoleUI.Toolkit {
             AddObject(fileList);
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) =>
+            {
                 chosenFiles.Clear();
                 return false;
             });
 
             AddTip("F10", Properties.Resources.Sort);
-            AddBinding(Keys.F10, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.F10, (object sender, ConsoleTheme theme) =>
+            {
                 fileList.SortMenu().Run(theme, right - 2, top + 2);
                 DrawBackground(theme);
                 return true;
             });
 
-            AddTip(Properties.Resources.Enter, Properties.Resources.FileSelectChangeDirectory, () => fileList.Selection != null &&  isDir(fileList.Selection));
-            AddTip(Properties.Resources.Enter, Properties.Resources.FileSelectSelect,          () => fileList.Selection != null && !isDir(fileList.Selection));
+            AddTip(Properties.Resources.Enter, Properties.Resources.FileSelectChangeDirectory, () => fileList.Selection != null && isDir(fileList.Selection));
+            AddTip(Properties.Resources.Enter, Properties.Resources.FileSelectSelect, () => fileList.Selection != null && !isDir(fileList.Selection));
             AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => selectRow());
             AddBinding(Keys.Space, (object sender, ConsoleTheme theme) => selectRow());
 
             AddTip($"{Properties.Resources.Ctrl}+A", Properties.Resources.SelectAll);
-            AddBinding(Keys.CtrlA, (object sender, ConsoleTheme theme) => {
-                foreach (FileSystemInfo fi in contents) {
-                    if (!isDir(fi)) {
+            AddBinding(Keys.CtrlA, (object sender, ConsoleTheme theme) =>
+            {
+                foreach (FileSystemInfo fi in contents)
+                {
+                    if (!isDir(fi))
+                    {
                         FileInfo file = fi as FileInfo;
-                        if (file != null) {
+                        if (file != null)
+                        {
                             chosenFiles.Add(file);
                         }
                     }
@@ -121,34 +129,45 @@ namespace CKAN.ConsoleUI.Toolkit {
             });
 
             AddTip($"{Properties.Resources.Ctrl}+D", Properties.Resources.DeselectAll, () => chosenFiles.Count > 0);
-            AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) => {
-                if (chosenFiles.Count > 0) {
+            AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) =>
+            {
+                if (chosenFiles.Count > 0)
+                {
                     chosenFiles.Clear();
                 }
                 return true;
             });
 
             AddTip("F9", Properties.Resources.FileSelectImport, () => chosenFiles.Count > 0);
-            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) =>
+            {
                 return false;
             });
         }
 
         private bool selectRow()
         {
-            if (isDir(fileList.Selection)) {
+            if (isDir(fileList.Selection))
+            {
                 DirectoryInfo di = fileList.Selection as DirectoryInfo;
-                if (di != null) {
+                if (di != null)
+                {
                     curDir = di;
                     pathField.Value = curDir.FullName;
                     fileList.SetData(getFileList());
                 }
-            } else {
+            }
+            else
+            {
                 FileInfo fi = fileList.Selection as FileInfo;
-                if (fi != null) {
-                    if (chosenFiles.Contains(fi)) {
+                if (fi != null)
+                {
+                    if (chosenFiles.Contains(fi))
+                    {
                         chosenFiles.Remove(fi);
-                    } else {
+                    }
+                    else
+                    {
                         chosenFiles.Add(fi);
                     }
                 }
@@ -159,11 +178,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         private void pathFieldChanged(ConsoleField sender, string newValue)
         {
             // Validate and update path
-            if (Directory.Exists(newValue)) {
-                try {
+            if (Directory.Exists(newValue))
+            {
+                try
+                {
                     curDir = new DirectoryInfo(newValue);
                     fileList.SetData(getFileList());
-                } catch { }
+                }
+                catch { }
             }
         }
 
@@ -184,7 +206,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         private IList<FileSystemInfo> getFileList()
         {
             contents = new List<FileSystemInfo>();
-            if (curDir.Parent != null) {
+            if (curDir.Parent != null)
+            {
                 contents.Add(curDir.Parent);
             }
             contents.AddRange(curDir.EnumerateDirectories());
@@ -208,16 +231,19 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </returns>
         private static bool pathEquals(FileSystemInfo a, FileSystemInfo b)
         {
-            if (a == null || b == null) {
+            if (a == null || b == null)
+            {
                 return false;
             }
-            if (a == b) {
+            if (a == b)
+            {
                 // If the references are the same, we're done
                 return true;
             }
             string pathA = a.FullName;
             string pathB = b.FullName;
-            if (Platform.IsWindows) {
+            if (Platform.IsWindows)
+            {
                 // Case insensitive
                 pathA = pathA.ToLower();
                 pathB = pathB.ToLower();
@@ -227,13 +253,19 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         private string getLength(FileSystemInfo fi)
         {
-            if (isDir(fi)) {
+            if (isDir(fi))
+            {
                 return Properties.Resources.FileSelectDirSize;
-            } else {
+            }
+            else
+            {
                 FileInfo file = fi as FileInfo;
-                if (file != null) {
+                if (file != null)
+                {
                     return CkanModule.FmtSize(file.Length);
-                } else {
+                }
+                else
+                {
                     return Properties.Resources.FileSelectDirSize;
                 }
             }
@@ -243,7 +275,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             // Add up sizes of chosen files
             long val = 0;
-            foreach (FileInfo f in chosenFiles) {
+            foreach (FileInfo f in chosenFiles)
+            {
                 val += f.Length;
             }
             return val;
@@ -251,7 +284,8 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         private string getRowSymbol(FileSystemInfo fi)
         {
-            if (!isDir(fi) && chosenFiles.Contains(fi as FileInfo)) {
+            if (!isDir(fi) && chosenFiles.Contains(fi as FileInfo))
+            {
                 return chosen;
             }
             return "";
@@ -259,60 +293,80 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         private string getRowName(FileSystemInfo fi)
         {
-            if (isDir(fi)) {
+            if (isDir(fi))
+            {
                 // Return /path/ or \path\ to show it's a dir
-                if (pathEquals(curDir.Parent, fi)) {
+                if (pathEquals(curDir.Parent, fi))
+                {
                     // Treat parent as a special case
                     return $"..{Path.DirectorySeparatorChar}";
-                } else {
+                }
+                else
+                {
                     return $"{fi.Name}{Path.DirectorySeparatorChar}";
                 }
-            } else {
+            }
+            else
+            {
                 return fi.Name;
             }
         }
 
         private int compareNames(FileSystemInfo a, FileSystemInfo b)
         {
-            if (isDir(a)) {
-                if (isDir(b)) {
-                    if (pathEquals(curDir.Parent, a)) {
+            if (isDir(a))
+            {
+                if (isDir(b))
+                {
+                    if (pathEquals(curDir.Parent, a))
+                    {
                         // Sort .. to the top
                         return -1;
-                    } else if (pathEquals(curDir.Parent, b)) {
+                    }
+                    else if (pathEquals(curDir.Parent, b))
+                    {
                         return 1;
-                    } else {
+                    }
+                    else
+                    {
                         // Both regular directories, just compare the names
                         return a.Name.CompareTo(b.Name);
                     }
-                } else {
+                }
+                else
+                {
                     return -1;
                 }
-            } else {
-                if (isDir(b)) {
+            }
+            else
+            {
+                if (isDir(b))
+                {
                     return 1;
-                } else {
+                }
+                else
+                {
                     // Both files, just compare the names
                     return a.Name.CompareTo(b.Name);
                 }
             }
         }
 
-        private List<FileSystemInfo>           contents;
-        private ConsoleField                   pathField;
+        private List<FileSystemInfo> contents;
+        private ConsoleField pathField;
         private ConsoleListBox<FileSystemInfo> fileList;
-        private DirectoryInfo                  curDir;
+        private DirectoryInfo curDir;
 
         private HashSet<FileInfo> chosenFiles = new HashSet<FileInfo>();
 
         private string filePattern;
 
-        private static readonly string chosen  = Symbols.checkmark;
+        private static readonly string chosen = Symbols.checkmark;
 
         private const int idealW = 76;
         private int labelW => Properties.Resources.FileSelectDirectory.Length;
-        private const int hPad   = 2;
-        private const int top    =  2;
+        private const int hPad = 2;
+        private const int top = 2;
         private const int bottom = -2;
     }
 

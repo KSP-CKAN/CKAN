@@ -28,31 +28,31 @@ namespace Tests.Core.Configuration
         /// <param name="auto_start_instance">The auto start instance to use</param>
         public FakeConfiguration(List<Tuple<string, string, string>> instances, string auto_start_instance)
         {
-            Instances         = instances;
+            Instances = instances;
             AutoStartInstance = auto_start_instance;
-            DownloadCacheDir  = TestData.NewTempDir();
+            DownloadCacheDir = TestData.NewTempDir();
         }
 
         /// <summary>
         /// The instances in the fake registry
         /// </summary>
-        public List<Tuple<string, string, string>> Instances        { get; set; }
+        public List<Tuple<string, string, string>> Instances { get; set; }
         /// <summary>
         /// Build map for the fake registry
         /// </summary>
-        public JBuilds                     BuildMap         { get; set; }
+        public JBuilds BuildMap { get; set; }
         /// <summary>
         /// Path to download cache folder for the fake registry
         /// </summary>
-        public string                      DownloadCacheDir { get; set; }
+        public string DownloadCacheDir { get; set; }
         /// <summary>
         /// Maximum number of bytes of downloads to retain on disk
         /// </summary>
-        public long?                       CacheSizeLimit   { get; set; }
+        public long? CacheSizeLimit { get; set; }
         /// <summary>
         /// Interval in minutes to refresh the modlist
         /// </summary>
-        public int                         RefreshRate      { get; set; }
+        public int RefreshRate { get; set; }
 
         /// <summary>
         /// Number of instances in the fake registry

@@ -15,7 +15,7 @@ namespace Tests.NetKAN.Sources.Github
         // to github, these sometimes cause test failures because github will throw random
         // 403s. (Hence we disable them in travis with --exclude=FlakyNetwork)
 
-        private string       _cachePath;
+        private string _cachePath;
         private NetFileCache _cache;
 
         [OneTimeSetUp]

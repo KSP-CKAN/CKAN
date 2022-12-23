@@ -39,10 +39,10 @@ namespace CKAN
         // paths (and flip from absolute to relative, and vice-versa).
         [JsonProperty] internal Dictionary<string, AvailableModule> available_modules;
         // name => path
-        [JsonProperty] private  Dictionary<string, string>          installed_dlls;
-        [JsonProperty] private  Dictionary<string, InstalledModule> installed_modules;
+        [JsonProperty] private Dictionary<string, string> installed_dlls;
+        [JsonProperty] private Dictionary<string, InstalledModule> installed_modules;
         // filename (case insensitive on Windows) => module
-        [JsonProperty] private  Dictionary<string, string>          installed_files;
+        [JsonProperty] private Dictionary<string, string> installed_files;
 
         [JsonProperty] public readonly SortedDictionary<string, int> download_counts = new SortedDictionary<string, int>();
 
@@ -77,7 +77,8 @@ namespace CKAN
         /// <summary>
         /// Returns all the activated registries, sorted by priority and name
         /// </summary>
-        [JsonIgnore] public SortedDictionary<string, Repository> Repositories
+        [JsonIgnore]
+        public SortedDictionary<string, Repository> Repositories
         {
             get { return this.repositories; }
 
@@ -88,7 +89,8 @@ namespace CKAN
         /// <summary>
         /// Returns all the installed modules
         /// </summary>
-        [JsonIgnore] public IEnumerable<InstalledModule> InstalledModules
+        [JsonIgnore]
+        public IEnumerable<InstalledModule> InstalledModules
         {
             get { return installed_modules.Values; }
         }
@@ -96,7 +98,8 @@ namespace CKAN
         /// <summary>
         /// Returns the names of installed DLLs.
         /// </summary>
-        [JsonIgnore] public IEnumerable<string> InstalledDlls
+        [JsonIgnore]
+        public IEnumerable<string> InstalledDlls
         {
             get { return installed_dlls.Keys; }
         }
@@ -113,9 +116,11 @@ namespace CKAN
         /// <summary>
         /// A map between module identifiers and versions for official DLC that are installed.
         /// </summary>
-        [JsonIgnore] public IDictionary<string, ModuleVersion> InstalledDlc
+        [JsonIgnore]
+        public IDictionary<string, ModuleVersion> InstalledDlc
         {
-            get {
+            get
+            {
                 return installed_modules.Values
                     .Where(im => im.Module.IsDLC)
                     .ToDictionary(im => im.Module.identifier, im => im.Module.version);
@@ -165,7 +170,7 @@ namespace CKAN
                     ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
                     : new Dictionary<string, string>();
 
-                foreach (KeyValuePair<string,string> tuple in installed_files)
+                foreach (KeyValuePair<string, string> tuple in installed_files)
                 {
                     string path = CKANPathUtils.NormalizePath(tuple.Key);
 
@@ -294,19 +299,19 @@ namespace CKAN
         #region Constructors
 
         public Registry(
-            Dictionary<string, InstalledModule>  installed_modules,
-            Dictionary<string, string>           installed_dlls,
-            Dictionary<string, AvailableModule>  available_modules,
-            Dictionary<string, string>           installed_files,
+            Dictionary<string, InstalledModule> installed_modules,
+            Dictionary<string, string> installed_dlls,
+            Dictionary<string, AvailableModule> available_modules,
+            Dictionary<string, string> installed_files,
             SortedDictionary<string, Repository> repositories)
         {
             // Is there a better way of writing constructors than this? Srsly?
             this.installed_modules = installed_modules;
-            this.installed_dlls    = installed_dlls;
+            this.installed_dlls = installed_dlls;
             this.available_modules = available_modules;
-            this.installed_files   = installed_files;
-            this.repositories      = repositories;
-            registry_version       = LATEST_REGISTRY_VERSION;
+            this.installed_files = installed_files;
+            this.repositories = repositories;
+            registry_version = LATEST_REGISTRY_VERSION;
             BuildProvidesIndex();
         }
 
@@ -367,7 +372,8 @@ namespace CKAN
             // So we're done, and can clear our resources.
 
             log.DebugFormat("Committing registry tx {0}", enlisted_tx);
-            lock (txMutex) {
+            lock (txMutex)
+            {
                 enlisted_tx = null;
                 transaction_backup = null;
 
@@ -382,8 +388,9 @@ namespace CKAN
             // In theory, this should put everything back the way it was, overwriting whatever
             // we had previously.
 
-            lock (txMutex) {
-                var options = new JsonSerializerSettings {ObjectCreationHandling = ObjectCreationHandling.Replace};
+            lock (txMutex)
+            {
+                var options = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
 
                 JsonConvert.PopulateObject(transaction_backup, this, options);
 
@@ -636,7 +643,7 @@ namespace CKAN
         /// <param name="maxKsp">Return parameter for the highest game version</param>
         public static void GetMinMaxVersions(IEnumerable<CkanModule> modVersions,
                 out ModuleVersion minMod, out ModuleVersion maxMod,
-                out GameVersion    minKsp, out GameVersion    maxKsp)
+                out GameVersion minKsp, out GameVersion maxKsp)
         {
             minMod = maxMod = null;
             minKsp = maxKsp = null;
@@ -1022,7 +1029,7 @@ namespace CKAN
         /// <summary>
         /// <see cref = "IRegistryQuerier.InstalledVersion" />
         /// </summary>
-        public ModuleVersion InstalledVersion(string modIdentifier, bool with_provides=true)
+        public ModuleVersion InstalledVersion(string modIdentifier, bool with_provides = true)
         {
             InstalledModule installedModule;
 
@@ -1106,10 +1113,10 @@ namespace CKAN
         /// <param name="dlc">Installed DLCs</param>
         /// <returns>List of modules whose dependencies are about to be or already removed.</returns>
         internal static IEnumerable<string> FindReverseDependencies(
-            List<string>                       modulesToRemove,
-            List<CkanModule>                   modulesToInstall,
-            HashSet<CkanModule>                origInstalled,
-            HashSet<string>                    dlls,
+            List<string> modulesToRemove,
+            List<CkanModule> modulesToInstall,
+            HashSet<CkanModule> origInstalled,
+            HashSet<string> dlls,
             IDictionary<string, ModuleVersion> dlc,
             Func<RelationshipDescriptor, bool> satisfiedFilter = null)
         {
@@ -1183,8 +1190,8 @@ namespace CKAN
         /// Return modules which are dependent on the modules passed in or modules in the return list
         /// </summary>
         public IEnumerable<string> FindReverseDependencies(
-            List<string>                       modulesToRemove,
-            List<CkanModule>                   modulesToInstall = null,
+            List<string> modulesToRemove,
+            List<CkanModule> modulesToInstall = null,
             Func<RelationshipDescriptor, bool> satisfiedFilter = null
         )
         {
@@ -1216,7 +1223,7 @@ namespace CKAN
                         }
                         else
                         {
-                            index.Add(mod.download_hash.sha1, new List<CkanModule>() {mod});
+                            index.Add(mod.download_hash.sha1, new List<CkanModule>() { mod });
                         }
                     }
                 }
@@ -1249,7 +1256,7 @@ namespace CKAN
                         }
                         else
                         {
-                            index.Add(hash, new List<CkanModule>() {mod});
+                            index.Add(hash, new List<CkanModule>() { mod });
                         }
                     }
                 }

@@ -25,8 +25,8 @@ namespace CKAN.GUI
             Dictionary<CkanModule, HashSet<string>> supporters
         )
         {
-            this.registry    = registry;
-            this.toInstall   = toInstall;
+            this.registry = registry;
+            this.toInstall = toInstall;
             this.toUninstall = toUninstall;
             this.GameVersion = GameVersion;
             Util.Invoke(this, () =>
@@ -123,9 +123,9 @@ namespace CKAN.GUI
         private static readonly RelationshipResolverOptions conflictOptions = new RelationshipResolverOptions()
         {
             without_toomanyprovides_kraken = true,
-            proceed_with_inconsistencies   = true,
-            without_enforce_consistency    = true,
-            with_recommends                = false
+            proceed_with_inconsistencies = true,
+            without_enforce_consistency = true,
+            with_recommends = false
         };
 
         private Dictionary<CkanModule, String> FindConflicts()
@@ -178,9 +178,9 @@ namespace CKAN.GUI
                 module.@abstract
             })
             {
-                Tag     = module,
+                Tag = module,
                 Checked = check,
-                Group   = group
+                Group = group
             };
         }
 
@@ -212,8 +212,8 @@ namespace CKAN.GUI
             RecommendedModsListView.Items.Clear();
         }
 
-        private IRegistryQuerier    registry;
-        private List<CkanModule>    toInstall;
+        private IRegistryQuerier registry;
+        private List<CkanModule> toInstall;
         private HashSet<CkanModule> toUninstall;
         private GameVersionCriteria GameVersion;
 

@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <AssemblyName>CKAN-GUI</AssemblyName>
     <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
     <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -13,7 +14,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>CKAN.GUI</RootNamespace>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -36,10 +37,9 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="ini-parser" Version="3.4.0" />
-    <PackageReference Include="log4net" Version="2.0.10" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -250,7 +250,7 @@
       <DependentUpon>EditModSearchDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\LeftRightRowPanel.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ManageMods.cs">
       <SubType>UserControl</SubType>
@@ -967,7 +967,6 @@
     <EmbeddedResource Include="Localization\zh-CN\Metadata.zh-CN.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="Localization\de-DE\Relationships.de-DE.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
     </EmbeddedResource>
@@ -1130,7 +1129,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <LogicalName>CKAN.GUI.Properties.Resources.resources</LogicalName>
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.de-DE.resx">

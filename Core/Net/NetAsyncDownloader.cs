@@ -35,7 +35,7 @@ namespace CKAN
             /// <summary>
             /// Percentage, bytes received, total bytes to receive
             /// </summary>
-            public event Action<int, long, long>                         Progress;
+            public event Action<int, long, long> Progress;
             public event Action<object, AsyncCompletedEventArgs, string> Done;
 
             private string mimeType;
@@ -105,7 +105,7 @@ namespace CKAN
             }
         }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
+        private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncDownloader));
 
         public readonly IUser User;
 
@@ -208,17 +208,17 @@ namespace CKAN
                             throw new MissingCertificateKraken();
                         }
                         else switch ((wex.Response as HttpWebResponse)?.StatusCode)
-                        {
-                            // Handle HTTP 403 used for throttling
-                            case HttpStatusCode.Forbidden:
-                                Uri infoUrl;
-                                if (downloads[i].target.url.IsAbsoluteUri
-                                    && Net.ThrottledHosts.TryGetValue(downloads[i].target.url.Host, out infoUrl))
-                                {
-                                    throw new DownloadThrottledKraken(downloads[i].target.url, infoUrl);
-                                }
-                                break;
-                        }
+                            {
+                                // Handle HTTP 403 used for throttling
+                                case HttpStatusCode.Forbidden:
+                                    Uri infoUrl;
+                                    if (downloads[i].target.url.IsAbsoluteUri
+                                        && Net.ThrottledHosts.TryGetValue(downloads[i].target.url.Host, out infoUrl))
+                                    {
+                                        throw new DownloadThrottledKraken(downloads[i].target.url, infoUrl);
+                                    }
+                                    break;
+                            }
                     }
                     // Otherwise just note the error and which download it came from,
                     // then throw them all at once later.

@@ -13,7 +13,7 @@ namespace Tests.NetKAN.Sources.Curse
     [Explicit]
     public sealed class CurseApiTests
     {
-        private string       _cachePath;
+        private string _cachePath;
         private NetFileCache _cache;
 
         [OneTimeSetUp]

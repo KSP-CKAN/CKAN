@@ -44,17 +44,17 @@ namespace CKAN.NetKAN.Validators
                     throw new Kraken("License should match spec");
                 }
                 else foreach (var lic in licenses)
-                {
-                    try
                     {
-                        // This will throw BadMetadataKraken if the license isn't known
-                        new License((string)lic);
+                        try
+                        {
+                            // This will throw BadMetadataKraken if the license isn't known
+                            new License((string)lic);
+                        }
+                        catch
+                        {
+                            throw new Kraken($"License {lic} should match spec");
+                        }
                     }
-                    catch
-                    {
-                        throw new Kraken($"License {lic} should match spec");
-                    }
-                }
             }
         }
 
@@ -62,8 +62,8 @@ namespace CKAN.NetKAN.Validators
             @"^#/ckan/netkan/",
             RegexOptions.Compiled
         );
-        private static readonly ModuleVersion v1p2  = new ModuleVersion("v1.2");
-        private static readonly ModuleVersion v1p8  = new ModuleVersion("v1.8");
+        private static readonly ModuleVersion v1p2 = new ModuleVersion("v1.2");
+        private static readonly ModuleVersion v1p8 = new ModuleVersion("v1.8");
         private static readonly ModuleVersion v1p18 = new ModuleVersion("v1.18");
         private static readonly ModuleVersion v1p30 = new ModuleVersion("v1.30");
     }

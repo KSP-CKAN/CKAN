@@ -37,9 +37,9 @@ namespace CKAN.NetKAN.Validators
                         install_to.StartsWith("Ships/Script")
                         || install_to.Equals("Ships") && (
                             // find: .../Script, install_to: Ships
-                            ((string)stanza["find"])?.Split(new char[] {'/'})?.LastOrDefault() == "Script"
+                            ((string)stanza["find"])?.Split(new char[] { '/' })?.LastOrDefault() == "Script"
                             // file: .../Script, install_to: Ships
-                            || ((string)stanza["file"])?.Split(new char[] {'/'})?.LastOrDefault() == "Script"
+                            || ((string)stanza["file"])?.Split(new char[] { '/' })?.LastOrDefault() == "Script"
                             // install_to: Ships, as: Script
                             || (((string)stanza["as"])?.EndsWith("Script") ?? false))))
                     {
@@ -86,7 +86,7 @@ namespace CKAN.NetKAN.Validators
                     {
                         if (stanza.ContainsKey(propName))
                         {
-                            string val  = (string)stanza[propName];
+                            string val = (string)stanza[propName];
                             string norm = CKANPathUtils.NormalizePath(val);
                             if (val != norm)
                             {
@@ -98,8 +98,8 @@ namespace CKAN.NetKAN.Validators
             }
         }
 
-        private static readonly ModuleVersion v1p2  = new ModuleVersion("v1.2");
-        private static readonly ModuleVersion v1p4  = new ModuleVersion("v1.4");
+        private static readonly ModuleVersion v1p2 = new ModuleVersion("v1.2");
+        private static readonly ModuleVersion v1p4 = new ModuleVersion("v1.4");
         private static readonly ModuleVersion v1p10 = new ModuleVersion("v1.10");
         private static readonly ModuleVersion v1p12 = new ModuleVersion("v1.12");
         private static readonly ModuleVersion v1p14 = new ModuleVersion("v1.14");
@@ -108,6 +108,6 @@ namespace CKAN.NetKAN.Validators
         private static readonly ModuleVersion v1p24 = new ModuleVersion("v1.24");
         private static readonly ModuleVersion v1p25 = new ModuleVersion("v1.25");
         private static readonly ModuleVersion v1p29 = new ModuleVersion("v1.29");
-        private static readonly string[] pathProperties = {"find", "file", "install_to"};
+        private static readonly string[] pathProperties = { "find", "file", "install_to" };
     }
 }

@@ -22,7 +22,7 @@ namespace CKAN.NetKAN.Sources.Jenkins
         [JsonConverter(typeof(UnixDateTimeMillisecondsConverter))]
         public DateTime? Timestamp;
     }
-    
+
     /// <summary>
     /// UnixDateTimeConverter / 1000
     /// https://github.com/JamesNK/Newtonsoft.Json/blob/master/Src/Newtonsoft.Json/Converters/UnixDateTimeConverter.cs
@@ -33,7 +33,7 @@ namespace CKAN.NetKAN.Sources.Jenkins
         {
             return UnixEpoch.AddMilliseconds((long)reader.Value);
         }
-        
+
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             if (value is DateTime dateTime)

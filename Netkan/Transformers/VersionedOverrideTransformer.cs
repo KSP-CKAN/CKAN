@@ -188,7 +188,7 @@ namespace CKAN.NetKAN.Transformers
                 }
             }
         }
-        
+
         private string[] gameVersionProperties = new string[]
         {
             "ksp_version", "ksp_version_min", "ksp_version_max"

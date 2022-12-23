@@ -77,7 +77,7 @@ namespace Tests.Core.Versioning
             var v2 = new ModuleVersion("v6a5");
             Assert.That(v2.IsLessThan(v1));
             Assert.That(v1.IsGreaterThan(v2));
-            Assert.That(! v1.IsEqualTo(v2));
+            Assert.That(!v1.IsEqualTo(v2));
         }
 
         [Test]

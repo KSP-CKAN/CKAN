@@ -15,7 +15,7 @@ namespace CKAN.NetKAN.Validators
     {
         public PluginsValidator(IHttpService http, IModuleService moduleService)
         {
-            _http          = http;
+            _http = http;
             _moduleService = moduleService;
         }
 
@@ -23,17 +23,17 @@ namespace CKAN.NetKAN.Validators
         {
             Log.Info("Validating that metadata is appropriate for DLLs");
 
-            JObject    json = metadata.Json();
-            CkanModule mod  = CkanModule.FromJson(json.ToString());
+            JObject json = metadata.Json();
+            CkanModule mod = CkanModule.FromJson(json.ToString());
             if (!mod.IsDLC)
             {
                 var package = _http.DownloadModule(metadata);
                 if (!string.IsNullOrEmpty(package))
                 {
-                    ZipFile      zip  = new ZipFile(package);
+                    ZipFile zip = new ZipFile(package);
                     GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
 
-                    var plugins    = _moduleService.GetPlugins(mod, zip, inst).ToList();
+                    var plugins = _moduleService.GetPlugins(mod, zip, inst).ToList();
                     bool hasPlugin = plugins.Any();
                     if (hasPlugin)
                     {
@@ -74,7 +74,7 @@ namespace CKAN.NetKAN.Validators
             "MiniAVC"
         };
 
-        private readonly IHttpService   _http;
+        private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(PluginsValidator));

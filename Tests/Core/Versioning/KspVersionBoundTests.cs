@@ -140,11 +140,11 @@ namespace Tests.Core.Versioning
 
         [Test]
         public void GetHashCodeDoesNotThrow(
-            [Random(0, int.MaxValue, 1)]int major,
-            [Random(0, int.MaxValue, 1)]int minor,
-            [Random(0, int.MaxValue, 1)]int patch,
-            [Random(0, int.MaxValue, 1)]int build,
-            [Values(false, true)]bool inclusive
+            [Random(0, int.MaxValue, 1)] int major,
+            [Random(0, int.MaxValue, 1)] int minor,
+            [Random(0, int.MaxValue, 1)] int patch,
+            [Random(0, int.MaxValue, 1)] int build,
+            [Values(false, true)] bool inclusive
         )
         {
             // Act

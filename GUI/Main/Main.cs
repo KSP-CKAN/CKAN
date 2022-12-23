@@ -135,7 +135,7 @@ namespace CKAN.GUI
                             regMgr.previousCorruptedPath, regMgr.previousCorruptedMessage,
                             Path.Combine(Path.GetDirectoryName(regMgr.previousCorruptedPath) ?? "", regMgr.LatestInstalledExportFilename()));
                         regMgr.previousCorruptedMessage = null;
-                        regMgr.previousCorruptedPath    = null;
+                        regMgr.previousCorruptedPath = null;
                         // But the instance is actually fine because a new registry was just created
                     }
                 }
@@ -262,7 +262,7 @@ namespace CKAN.GUI
             }
 
             // This will throw RegistryInUseKraken if locked by another process
-            var regMgr   = RegistryManager.Instance(CurrentInstance);
+            var regMgr = RegistryManager.Instance(CurrentInstance);
             var registry = regMgr.registry;
             if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
                                                 && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
@@ -555,7 +555,7 @@ namespace CKAN.GUI
         {
             OpenFileDialog open_file_dialog = new OpenFileDialog()
             {
-                Filter      = Properties.Resources.CKANFileFilter,
+                Filter = Properties.Resources.CKANFileFilter,
                 Multiselect = true,
             };
 
@@ -644,8 +644,8 @@ namespace CKAN.GUI
         }
 
         private const int WM_XBUTTONDOWN = 0x20b;
-        private const int MK_XBUTTON1    = 0x20;
-        private const int MK_XBUTTON2    = 0x40;
+        private const int MK_XBUTTON1 = 0x20;
+        private const int MK_XBUTTON2 = 0x40;
 
         public bool PreFilterMessage(ref Message m)
         {
@@ -674,7 +674,8 @@ namespace CKAN.GUI
 
         private GUIMod ActiveModInfo
         {
-            set {
+            set
+            {
                 if (value?.ToModule() == null)
                 {
                     splitContainer1.Panel2Collapsed = true;
@@ -873,7 +874,8 @@ namespace CKAN.GUI
             DisableMainWindow();
             Wait.StartWaiting(
                 ManageMods.Update,
-                (sender, e) => {
+                (sender, e) =>
+                {
                     UpdateTrayInfo();
                     HideWaitDialog();
                     EnableMainWindow();

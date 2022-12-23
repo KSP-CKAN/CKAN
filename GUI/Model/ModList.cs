@@ -17,18 +17,18 @@ namespace CKAN.GUI
 {
     public enum GUIModFilter
     {
-        Compatible               = 0,
-        Installed                = 1,
+        Compatible = 0,
+        Installed = 1,
         InstalledUpdateAvailable = 2,
-        NewInRepository          = 3,
-        NotInstalled             = 4,
-        Incompatible             = 5,
-        All                      = 6,
-        Cached                   = 7,
-        Replaceable              = 8,
-        Uncached                 = 9,
-        CustomLabel              = 10,
-        Tag                      = 11,
+        NewInRepository = 3,
+        NotInstalled = 4,
+        Incompatible = 5,
+        All = 6,
+        Cached = 7,
+        Replaceable = 8,
+        Uncached = 9,
+        CustomLabel = 10,
+        Tag = 11,
     }
 
     public class ModList
@@ -84,17 +84,17 @@ namespace CKAN.GUI
         {
             switch (filter)
             {
-                case GUIModFilter.Compatible:               return Properties.Resources.MainFilterCompatible;
-                case GUIModFilter.Incompatible:             return Properties.Resources.MainFilterIncompatible;
-                case GUIModFilter.Installed:                return Properties.Resources.MainFilterInstalled;
-                case GUIModFilter.NotInstalled:             return Properties.Resources.MainFilterNotInstalled;
+                case GUIModFilter.Compatible: return Properties.Resources.MainFilterCompatible;
+                case GUIModFilter.Incompatible: return Properties.Resources.MainFilterIncompatible;
+                case GUIModFilter.Installed: return Properties.Resources.MainFilterInstalled;
+                case GUIModFilter.NotInstalled: return Properties.Resources.MainFilterNotInstalled;
                 case GUIModFilter.InstalledUpdateAvailable: return Properties.Resources.MainFilterUpgradeable;
-                case GUIModFilter.Replaceable:              return Properties.Resources.MainFilterReplaceable;
-                case GUIModFilter.Cached:                   return Properties.Resources.MainFilterCached;
-                case GUIModFilter.Uncached:                 return Properties.Resources.MainFilterUncached;
-                case GUIModFilter.NewInRepository:          return Properties.Resources.MainFilterNew;
-                case GUIModFilter.All:                      return Properties.Resources.MainFilterAll;
-                case GUIModFilter.CustomLabel:              return string.Format(Properties.Resources.MainFilterLabel, label?.Name ?? "CUSTOM");
+                case GUIModFilter.Replaceable: return Properties.Resources.MainFilterReplaceable;
+                case GUIModFilter.Cached: return Properties.Resources.MainFilterCached;
+                case GUIModFilter.Uncached: return Properties.Resources.MainFilterUncached;
+                case GUIModFilter.NewInRepository: return Properties.Resources.MainFilterNew;
+                case GUIModFilter.All: return Properties.Resources.MainFilterAll;
+                case GUIModFilter.CustomLabel: return string.Format(Properties.Resources.MainFilterLabel, label?.Name ?? "CUSTOM");
                 case GUIModFilter.Tag:
                     return tag == null
                         ? Properties.Resources.MainFilterUntagged
@@ -107,7 +107,7 @@ namespace CKAN.GUI
         {
             return new SavedSearch()
             {
-                Name   = FilterName(filter, tag, label),
+                Name = FilterName(filter, tag, label),
                 Values = new List<string>() { new ModSearch(filter, tag, label).Combined },
             };
         }
@@ -191,7 +191,7 @@ namespace CKAN.GUI
             // Get as many dependencies as we can, but leave decisions and prompts for installation time
             RelationshipResolverOptions opts = RelationshipResolver.DependsOnlyOpts();
             opts.without_toomanyprovides_kraken = true;
-            opts.without_enforce_consistency    = true;
+            opts.without_enforce_consistency = true;
 
             var resolver = new RelationshipResolver(
                 modules_to_install,
@@ -306,7 +306,7 @@ namespace CKAN.GUI
 
         private DataGridViewRow MakeRow(GUIMod mod, List<ModChange> changes, string instanceName, bool hideEpochs = false, bool hideV = false)
         {
-            DataGridViewRow item = new DataGridViewRow() {Tag = mod};
+            DataGridViewRow item = new DataGridViewRow() { Tag = mod };
 
             Color? myColor = ModuleLabels.LabelsFor(instanceName)
                 .FirstOrDefault(l => l.ModuleIdentifiers.Contains(mod.Identifier))
@@ -324,11 +324,11 @@ namespace CKAN.GUI
                     Value = Properties.Resources.MainModListAutoDetected
                 }
                 : mod.IsInstallable()
-                ? (DataGridViewCell) new DataGridViewCheckBoxCell()
+                ? (DataGridViewCell)new DataGridViewCheckBoxCell()
                 {
                     Value = myChange == null ? mod.IsInstalled
                         : myChange.ChangeType == GUIModChangeType.Install ? true
-                        : myChange.ChangeType == GUIModChangeType.Remove  ? false
+                        : myChange.ChangeType == GUIModChangeType.Remove ? false
                         : mod.IsInstalled
                 }
                 : new DataGridViewTextBoxCell()
@@ -337,7 +337,7 @@ namespace CKAN.GUI
                 };
 
             var autoInstalled = mod.IsInstalled && !mod.IsAutodetected
-                ? (DataGridViewCell) new DataGridViewCheckBoxCell()
+                ? (DataGridViewCell)new DataGridViewCheckBoxCell()
                 {
                     Value = mod.IsAutoInstalled
                 }
@@ -347,7 +347,7 @@ namespace CKAN.GUI
                 };
 
             var updating = mod.IsInstallable() && mod.HasUpdate
-                ? (DataGridViewCell) new DataGridViewCheckBoxCell()
+                ? (DataGridViewCell)new DataGridViewCheckBoxCell()
                 {
                     Value = myChange == null ? false
                         : myChange.ChangeType == GUIModChangeType.Update ? true
@@ -359,7 +359,7 @@ namespace CKAN.GUI
                 };
 
             var replacing = (mod.IsInstalled && mod.HasReplacement)
-                ? (DataGridViewCell) new DataGridViewCheckBoxCell()
+                ? (DataGridViewCell)new DataGridViewCheckBoxCell()
                 {
                     Value = myChange == null ? false
                         : myChange.ChangeType == GUIModChangeType.Replace ? true
@@ -370,7 +370,7 @@ namespace CKAN.GUI
                     Value = "-"
                 };
 
-            var name   = new DataGridViewTextBoxCell { Value = mod.Name.Replace("&", "&&") };
+            var name = new DataGridViewTextBoxCell { Value = mod.Name.Replace("&", "&&") };
             var author = new DataGridViewTextBoxCell { Value = string.Join(", ", mod.Authors).Replace("&", "&&") };
 
             var installVersion = new DataGridViewTextBoxCell()
@@ -394,19 +394,19 @@ namespace CKAN.GUI
                         : mod.LatestVersion)
             };
 
-            var downloadCount = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"       };
-            var compat        = new DataGridViewTextBoxCell { Value = mod.GameCompatibility           };
-            var downloadSize  = new DataGridViewTextBoxCell { Value = mod.DownloadSize                };
-            var installSize   = new DataGridViewTextBoxCell { Value = mod.InstallSize                 };
-            var releaseDate   = new DataGridViewTextBoxCell { Value = mod.ToModule().release_date     };
-            var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate                 };
-            var desc          = new DataGridViewTextBoxCell { Value = mod.Abstract.Replace("&", "&&") };
+            var downloadCount = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}" };
+            var compat = new DataGridViewTextBoxCell { Value = mod.GameCompatibility };
+            var downloadSize = new DataGridViewTextBoxCell { Value = mod.DownloadSize };
+            var installSize = new DataGridViewTextBoxCell { Value = mod.InstallSize };
+            var releaseDate = new DataGridViewTextBoxCell { Value = mod.ToModule().release_date };
+            var installDate = new DataGridViewTextBoxCell { Value = mod.InstallDate };
+            var desc = new DataGridViewTextBoxCell { Value = mod.Abstract.Replace("&", "&&") };
 
             item.Cells.AddRange(selecting, autoInstalled, updating, replacing, name, author, installVersion, latestVersion, compat, downloadSize, installSize, releaseDate, installDate, downloadCount, desc);
 
-            selecting.ReadOnly     = selecting     is DataGridViewTextBoxCell;
+            selecting.ReadOnly = selecting is DataGridViewTextBoxCell;
             autoInstalled.ReadOnly = autoInstalled is DataGridViewTextBoxCell;
-            updating.ReadOnly      = updating      is DataGridViewTextBoxCell;
+            updating.ReadOnly = updating is DataGridViewTextBoxCell;
 
             return item;
         }
@@ -459,13 +459,13 @@ namespace CKAN.GUI
         }
 
         private static readonly Regex ContainsEpoch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
-        private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
+        private static readonly Regex RemoveEpoch = new Regex(@"^([^:]+):([^:]+)$", RegexOptions.Compiled);
 
         public static Dictionary<GUIMod, string> ComputeConflictsFromModList(IRegistryQuerier registry,
             IEnumerable<ModChange> change_set, GameVersionCriteria ksp_version)
         {
             var modules_to_install = new HashSet<CkanModule>();
-            var modules_to_remove  = new HashSet<CkanModule>();
+            var modules_to_remove = new HashSet<CkanModule>();
             var options = new RelationshipResolverOptions
             {
                 without_toomanyprovides_kraken = true,

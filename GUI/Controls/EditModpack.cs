@@ -16,20 +16,20 @@ namespace CKAN.GUI
         {
             InitializeComponent();
 
-            this.ToolTip.SetToolTip(IdentifierTextBox,       Properties.Resources.EditModpackTooltipIdentifier);
-            this.ToolTip.SetToolTip(NameTextBox,             Properties.Resources.EditModpackTooltipName);
-            this.ToolTip.SetToolTip(AbstractTextBox,         Properties.Resources.EditModpackTooltipAbstract);
-            this.ToolTip.SetToolTip(VersionTextBox,          Properties.Resources.EditModpackTooltipVersion);
-            this.ToolTip.SetToolTip(GameVersionMinComboBox,   Properties.Resources.EditModpackTooltipGameVersionMin);
-            this.ToolTip.SetToolTip(GameVersionMaxComboBox,   Properties.Resources.EditModpackTooltipGameVersionMax);
-            this.ToolTip.SetToolTip(LicenseComboBox,         Properties.Resources.EditModpackTooltipLicense);
+            this.ToolTip.SetToolTip(IdentifierTextBox, Properties.Resources.EditModpackTooltipIdentifier);
+            this.ToolTip.SetToolTip(NameTextBox, Properties.Resources.EditModpackTooltipName);
+            this.ToolTip.SetToolTip(AbstractTextBox, Properties.Resources.EditModpackTooltipAbstract);
+            this.ToolTip.SetToolTip(VersionTextBox, Properties.Resources.EditModpackTooltipVersion);
+            this.ToolTip.SetToolTip(GameVersionMinComboBox, Properties.Resources.EditModpackTooltipGameVersionMin);
+            this.ToolTip.SetToolTip(GameVersionMaxComboBox, Properties.Resources.EditModpackTooltipGameVersionMax);
+            this.ToolTip.SetToolTip(LicenseComboBox, Properties.Resources.EditModpackTooltipLicense);
             this.ToolTip.SetToolTip(IncludeVersionsCheckbox, Properties.Resources.EditModpackTooltipIncludeVersions);
-            this.ToolTip.SetToolTip(DependsRadioButton,      Properties.Resources.EditModpackTooltipDepends);
-            this.ToolTip.SetToolTip(RecommendsRadioButton,   Properties.Resources.EditModpackTooltipRecommends);
-            this.ToolTip.SetToolTip(SuggestsRadioButton,     Properties.Resources.EditModpackTooltipSuggests);
-            this.ToolTip.SetToolTip(IgnoreRadioButton,       Properties.Resources.EditModpackTooltipIgnore);
-            this.ToolTip.SetToolTip(CancelExportButton,      Properties.Resources.EditModpackTooltipCancel);
-            this.ToolTip.SetToolTip(ExportModpackButton,     Properties.Resources.EditModpackTooltipExport);
+            this.ToolTip.SetToolTip(DependsRadioButton, Properties.Resources.EditModpackTooltipDepends);
+            this.ToolTip.SetToolTip(RecommendsRadioButton, Properties.Resources.EditModpackTooltipRecommends);
+            this.ToolTip.SetToolTip(SuggestsRadioButton, Properties.Resources.EditModpackTooltipSuggests);
+            this.ToolTip.SetToolTip(IgnoreRadioButton, Properties.Resources.EditModpackTooltipIgnore);
+            this.ToolTip.SetToolTip(CancelExportButton, Properties.Resources.EditModpackTooltipCancel);
+            this.ToolTip.SetToolTip(ExportModpackButton, Properties.Resources.EditModpackTooltipExport);
         }
 
         public void LoadModule(CkanModule module, IRegistryQuerier registry)
@@ -38,10 +38,10 @@ namespace CKAN.GUI
             Util.Invoke(this, () =>
             {
                 IdentifierTextBox.Text = module.identifier;
-                NameTextBox.Text       = module.name;
-                AbstractTextBox.Text   = module.@abstract;
-                AuthorTextBox.Text     = string.Join(", ", module.author);
-                VersionTextBox.Text    = module.version.ToString();
+                NameTextBox.Text = module.name;
+                AbstractTextBox.Text = module.@abstract;
+                AuthorTextBox.Text = string.Join(", ", module.author);
+                VersionTextBox.Text = module.version.ToString();
                 var options = new string[] { "" }.Concat(Main.Instance.CurrentInstance.game.KnownVersions
                     .SelectMany(v => new GameVersion[] {
                             new GameVersion(v.Major, v.Minor, v.Patch),
@@ -93,30 +93,31 @@ namespace CKAN.GUI
             ignored.Clear();
             // Find installed modules that aren't in the module's relationships
             ignored.AddRange(registry.Installed(false, false)
-                .Where(kvp => {
+                .Where(kvp =>
+                {
                     var ids = new string[] { kvp.Key };
                     return !module.depends.Any(rel => rel.ContainsAny(ids))
                         && !module.recommends.Any(rel => rel.ContainsAny(ids))
                         && !module.suggests.Any(rel => rel.ContainsAny(ids));
                 })
-                .Select(kvp => (RelationshipDescriptor) new ModuleRelationshipDescriptor()
-                    {
-                        name    = kvp.Key,
-                        version = kvp.Value,
-                    })
+                .Select(kvp => (RelationshipDescriptor)new ModuleRelationshipDescriptor()
+                {
+                    name = kvp.Key,
+                    version = kvp.Value,
+                })
             );
             RelationshipsListView.Items.Clear();
-            AddGroup(module.depends,    DependsGroup,         registry);
+            AddGroup(module.depends, DependsGroup, registry);
             AddGroup(module.recommends, RecommendationsGroup, registry);
-            AddGroup(module.suggests,   SuggestionsGroup,     registry);
-            AddGroup(ignored,           IgnoredGroup,         registry);
+            AddGroup(module.suggests, SuggestionsGroup, registry);
+            AddGroup(ignored, IgnoredGroup, registry);
             RelationshipsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 
             GroupToRelationships.Clear();
-            GroupToRelationships.Add(DependsGroup,         module.depends);
+            GroupToRelationships.Add(DependsGroup, module.depends);
             GroupToRelationships.Add(RecommendationsGroup, module.recommends);
-            GroupToRelationships.Add(SuggestionsGroup,     module.suggests);
-            GroupToRelationships.Add(IgnoredGroup,         ignored);
+            GroupToRelationships.Add(SuggestionsGroup, module.suggests);
+            GroupToRelationships.Add(IgnoredGroup, ignored);
 
             RelationshipsListView_ItemSelectionChanged(null, null);
         }
@@ -143,10 +144,10 @@ namespace CKAN.GUI
                                 im => im.identifier == (r as ModuleRelationshipDescriptor)?.name
                             )?.Module.@abstract
                         })
-                        {
-                            Tag   = r,
-                            Group = group,
-                        })
+                    {
+                        Tag = r,
+                        Group = group,
+                    })
                     .ToArray());
             }
         }
@@ -182,12 +183,12 @@ namespace CKAN.GUI
             error = null;
             badField = null;
             module.identifier = IdentifierTextBox.Text;
-            module.name       = NameTextBox.Text;
-            module.@abstract  = AbstractTextBox.Text;
-            module.author     = AuthorTextBox.Text
+            module.name = NameTextBox.Text;
+            module.@abstract = AbstractTextBox.Text;
+            module.author = AuthorTextBox.Text
                 .Split(',').Select(a => a.Trim()).ToList();
-            module.version    = new ModuleVersion(VersionTextBox.Text);
-            module.license    = new List<License>() { new License(LicenseComboBox.Text) };
+            module.version = new ModuleVersion(VersionTextBox.Text);
+            module.license = new List<License>() { new License(LicenseComboBox.Text) };
             module.ksp_version_min = string.IsNullOrEmpty(GameVersionMinComboBox.Text)
                 ? null
                 : GameVersion.Parse(GameVersionMinComboBox.Text);
@@ -236,32 +237,32 @@ namespace CKAN.GUI
             {
                 switch (kinds.First().Name)
                 {
-                    case "DependsGroup":         DependsRadioButton.Checked    = true; break;
+                    case "DependsGroup": DependsRadioButton.Checked = true; break;
                     case "RecommendationsGroup": RecommendsRadioButton.Checked = true; break;
-                    case "SuggestionsGroup":     SuggestsRadioButton.Checked   = true; break;
-                    case "IgnoredGroup":         IgnoreRadioButton.Checked     = true; break;
+                    case "SuggestionsGroup": SuggestsRadioButton.Checked = true; break;
+                    case "IgnoredGroup": IgnoreRadioButton.Checked = true; break;
                 }
             }
             else
             {
-                DependsRadioButton.Checked    = false;
+                DependsRadioButton.Checked = false;
                 RecommendsRadioButton.Checked = false;
-                SuggestsRadioButton.Checked   = false;
-                IgnoreRadioButton.Checked     = false;
+                SuggestsRadioButton.Checked = false;
+                IgnoreRadioButton.Checked = false;
             }
             if (RelationshipsListView.SelectedItems.Count > 0)
             {
-                DependsRadioButton.Enabled    = true;
+                DependsRadioButton.Enabled = true;
                 RecommendsRadioButton.Enabled = true;
-                SuggestsRadioButton.Enabled   = true;
-                IgnoreRadioButton.Enabled     = true;
+                SuggestsRadioButton.Enabled = true;
+                IgnoreRadioButton.Enabled = true;
             }
             else
             {
-                DependsRadioButton.Enabled    = false;
+                DependsRadioButton.Enabled = false;
                 RecommendsRadioButton.Enabled = false;
-                SuggestsRadioButton.Enabled   = false;
-                IgnoreRadioButton.Enabled     = false;
+                SuggestsRadioButton.Enabled = false;
+                IgnoreRadioButton.Enabled = false;
             }
         }
 
@@ -360,7 +361,7 @@ namespace CKAN.GUI
                             .Select(rel => rel as ModuleRelationshipDescriptor)
                             .Where(rel => rel != null))
                         {
-                            rel.version     = null;
+                            rel.version = null;
                             rel.min_version = null;
                             rel.max_version = null;
                         }
@@ -375,18 +376,18 @@ namespace CKAN.GUI
             var dlg = new SaveFileDialog()
             {
                 Filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray()),
-                Title  = Properties.Resources.ExportInstalledModsDialogTitle
+                Title = Properties.Resources.ExportInstalledModsDialogTitle
             };
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 selectedOption = exportOptions[dlg.FilterIndex - 1];
-                filename       = dlg.FileName;
+                filename = dlg.FileName;
                 return true;
             }
             else
             {
                 selectedOption = null;
-                filename       = null;
+                filename = null;
                 return false;
             }
         }
@@ -396,9 +397,9 @@ namespace CKAN.GUI
             new ExportOption(ExportFileType.Ckan, Properties.Resources.MainModPack, "ckan"),
         };
 
-        private CkanModule                   module;
-        private IUser                        user;
-        private TaskCompletionSource<bool>   task;
+        private CkanModule module;
+        private IUser user;
+        private TaskCompletionSource<bool> task;
         private List<RelationshipDescriptor> ignored = new List<RelationshipDescriptor>();
         private Dictionary<ListViewGroup, List<RelationshipDescriptor>> GroupToRelationships =
             new Dictionary<ListViewGroup, List<RelationshipDescriptor>>();

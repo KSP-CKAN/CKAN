@@ -54,7 +54,7 @@ namespace CKAN
 
         #region Fields
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
+        private static readonly ILog log = LogManager.GetLogger(typeof(CkanModule));
 
         private static readonly Dictionary<string, string[]> required_fields =
             new Dictionary<string, string[]>()
@@ -299,29 +299,29 @@ namespace CKAN
         /// <param name="comparator">Object used for checking compatibility of this module</param>
         public CkanModule(
             ModuleVersion spec_version,
-            string        identifier,
-            string        name,
-            string        @abstract,
-            string        description,
-            List<string>  author,
+            string identifier,
+            string name,
+            string @abstract,
+            string description,
+            List<string> author,
             List<License> license,
             ModuleVersion version,
-            Uri           download,
-            string        kind = null,
+            Uri download,
+            string kind = null,
             IGameComparator comparator = null
         )
         {
             this.spec_version = spec_version;
-            this.identifier   = identifier;
-            this.name         = name;
-            this.@abstract    = @abstract;
-            this.description  = description;
-            this.author       = author;
-            this.license      = license;
-            this.version      = version;
-            this.download     = download;
-            this.kind         = kind;
-            this._comparator  = comparator ?? ServiceLocator.Container.Resolve<IGameComparator>();
+            this.identifier = identifier;
+            this.name = name;
+            this.@abstract = @abstract;
+            this.description = description;
+            this.author = author;
+            this.license = license;
+            this.version = version;
+            this.download = download;
+            this.kind = kind;
+            this._comparator = comparator ?? ServiceLocator.Container.Resolve<IGameComparator>();
             CheckHealth();
             CalculateSearchables();
         }
@@ -385,9 +385,9 @@ namespace CKAN
         /// </summary>
         private void CalculateSearchables()
         {
-            SearchableIdentifier  = identifier  == null ? string.Empty : CkanModule.nonAlphaNums.Replace(identifier, "");
-            SearchableName        = name        == null ? string.Empty : CkanModule.nonAlphaNums.Replace(name, "");
-            SearchableAbstract    = @abstract   == null ? string.Empty : CkanModule.nonAlphaNums.Replace(@abstract, "");
+            SearchableIdentifier = identifier == null ? string.Empty : CkanModule.nonAlphaNums.Replace(identifier, "");
+            SearchableName = name == null ? string.Empty : CkanModule.nonAlphaNums.Replace(name, "");
+            SearchableAbstract = @abstract == null ? string.Empty : CkanModule.nonAlphaNums.Replace(@abstract, "");
             SearchableDescription = description == null ? string.Empty : CkanModule.nonAlphaNums.Replace(description, "");
             SearchableAuthors = new List<string>();
 
@@ -446,7 +446,7 @@ namespace CKAN
 
             if (match.Success)
             {
-                string ident   = match.Groups["mod"].Value;
+                string ident = match.Groups["mod"].Value;
                 string version = match.Groups["version"].Value;
 
                 module = registry.GetModuleByVersion(ident, version);
@@ -492,9 +492,9 @@ namespace CKAN
             var sw = new StringWriter(new StringBuilder());
             using (var writer = new JsonTextWriter(sw))
             {
-                writer.Formatting  = Formatting.Indented;
+                writer.Formatting = Formatting.Indented;
                 writer.Indentation = 4;
-                writer.IndentChar  = ' ';
+                writer.IndentChar = ' ';
                 new JsonSerializer().Serialize(writer, module);
             }
             return sw + Environment.NewLine;
@@ -535,7 +535,7 @@ namespace CKAN
         internal static bool UniConflicts(CkanModule mod1, CkanModule mod2)
         {
             return mod1?.conflicts?.Any(
-                conflict => conflict.MatchesAny(new CkanModule[] {mod2}, null, null)
+                conflict => conflict.MatchesAny(new CkanModule[] { mod2 }, null, null)
             ) ?? false;
         }
 
@@ -546,7 +546,7 @@ namespace CKAN
         {
             var compat = _comparator.Compatible(version, this);
             log.DebugFormat("Checking compat of {0} with game versions {1}: {2}",
-                this, version.ToString(), compat ? "Compatible": "Incompatible");
+                this, version.ToString(), compat ? "Compatible" : "Incompatible");
             return compat;
         }
 
@@ -726,11 +726,11 @@ namespace CKAN
         /// ### bytes or ### KiB or ### MiB or ### GiB or ### TiB
         /// </returns>
         public static string FmtSize(long bytes)
-            => bytes < K       ? $"{bytes} B"
-             : bytes < K*K     ? $"{bytes /K :N1} KiB"
-             : bytes < K*K*K   ? $"{bytes /K/K :N1} MiB"
-             : bytes < K*K*K*K ? $"{bytes /K/K/K :N1} GiB"
-             :                   $"{bytes /K/K/K/K :N1} TiB";
+            => bytes < K ? $"{bytes} B"
+             : bytes < K * K ? $"{bytes / K:N1} KiB"
+             : bytes < K * K * K ? $"{bytes / K / K:N1} MiB"
+             : bytes < K * K * K * K ? $"{bytes / K / K / K:N1} GiB"
+             : $"{bytes / K / K / K / K:N1} TiB";
 
     }
 

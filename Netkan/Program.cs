@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -164,8 +164,8 @@ namespace CKAN.NetKAN
 
             LogManager.GetRepository().Threshold =
                   Options.Verbose ? Level.Info
-                : Options.Debug   ? Level.Debug
-                :                   Level.Warn;
+                : Options.Debug ? Level.Debug
+                : Level.Warn;
 
             if (Options.NetUserAgent != null)
             {

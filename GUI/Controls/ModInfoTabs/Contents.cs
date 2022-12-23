@@ -36,8 +36,8 @@ namespace CKAN.GUI
 
         public event Action<GUIMod> OnDownloadClick;
 
-        private GUIMod              selectedModule;
-        private CkanModule          currentModContentsModule;
+        private GUIMod selectedModule;
+        private CkanModule currentModContentsModule;
         private GameInstanceManager manager => Main.Instance.manager;
 
         private void ContentsPreviewTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -117,7 +117,7 @@ namespace CKAN.GUI
                                 {
                                     AddContentPieces(
                                         rootNode,
-                                        path.Split(new char[] {'/'}));
+                                        path.Split(new char[] { '/' }));
                                 }
                                 rootNode.ExpandAll();
                                 rootNode.EnsureVisible();

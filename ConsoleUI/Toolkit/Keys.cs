@@ -1,13 +1,15 @@
 using System;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// A list of keys for key bindings in a console UI.
     /// </summary>
-    public static class Keys {
+    public static class Keys
+    {
 
-        private const char LinuxEnter   = (Char)10;
+        private const char LinuxEnter = (Char)10;
         private const char WindowsEnter = (Char)13;
 
         /// <summary>

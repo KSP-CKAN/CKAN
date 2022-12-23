@@ -24,7 +24,7 @@ namespace CKAN
         // The user agent that we report to web sites
         public static string UserAgentString = "Mozilla/4.0 (compatible; CKAN)";
 
-        private const int MaxRetries             = 3;
+        private const int MaxRetries = 3;
         private const int RetryDelayMilliseconds = 100;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Net));
@@ -146,23 +146,23 @@ namespace CKAN
 
         public class DownloadTarget
         {
-            public Uri    url         { get; private set; }
-            public Uri    fallbackUrl { get; private set; }
-            public string filename    { get; private set; }
-            public long   size        { get; private set; }
-            public string mimeType    { get; private set; }
+            public Uri url { get; private set; }
+            public Uri fallbackUrl { get; private set; }
+            public string filename { get; private set; }
+            public long size { get; private set; }
+            public string mimeType { get; private set; }
 
             public DownloadTarget(Uri url, Uri fallback = null, string filename = null, long size = 0, string mimeType = "")
             {
                 TxFileManager FileTransaction = new TxFileManager();
 
-                this.url         = url;
+                this.url = url;
                 this.fallbackUrl = fallback;
-                this.filename    = string.IsNullOrEmpty(filename)
+                this.filename = string.IsNullOrEmpty(filename)
                     ? FileTransaction.GetTempFileName()
                     : filename;
-                this.size        = size;
-                this.mimeType    = mimeType;
+                this.size = size;
+                this.mimeType = mimeType;
             }
         }
 
@@ -227,7 +227,7 @@ namespace CKAN
                 try
                 {
                     string content = agent.DownloadString(url.OriginalString);
-                    string header  = agent.ResponseHeaders.ToString();
+                    string header = agent.ResponseHeaders.ToString();
 
                     log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
 

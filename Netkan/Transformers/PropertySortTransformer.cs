@@ -48,9 +48,9 @@ namespace CKAN.NetKAN.Transformers
             "install_size",
             "release_date",
         }
-            .Select((str, index) => new {index, str})
-            .Concat(new[] { new { index = int.MaxValue, str = "x_generated_by"} })
-            .ToDictionary(t => t.str, t=> t.index);
+            .Select((str, index) => new { index, str })
+            .Concat(new[] { new { index = int.MaxValue, str = "x_generated_by" } })
+            .ToDictionary(t => t.str, t => t.index);
 
         private static readonly Dictionary<string, int> ResourcePropertySortOrder = new string[]
         {
@@ -63,8 +63,8 @@ namespace CKAN.NetKAN.Transformers
             "license",
             "manual",
         }
-            .Select((str, index) => new {index, str})
-            .ToDictionary(t => t.str, t=> t.index);
+            .Select((str, index) => new { index, str })
+            .ToDictionary(t => t.str, t => t.index);
 
         public string Name { get { return "property_sort"; } }
 

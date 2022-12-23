@@ -63,9 +63,9 @@ namespace CKAN
 
             // If we get to this point, the downloads were successful
             // Load them
-            var files    = targets.Select(t => t.filename).ToArray();
+            var files = targets.Select(t => t.filename).ToArray();
             var dlCounts = new SortedDictionary<string, int>();
-            var modules  = repos
+            var modules = repos
                 .ZipMany(files, (r, f) => ModulesFromFile(r, f, ref dlCounts, user))
                 .ToArray();
 
@@ -340,10 +340,10 @@ namespace CKAN
                 return false;
             }
 
-            if (!RelationshipsAreEquivalent(metadata.conflicts,  oldMetadata.conflicts))
+            if (!RelationshipsAreEquivalent(metadata.conflicts, oldMetadata.conflicts))
                 return false;
 
-            if (!RelationshipsAreEquivalent(metadata.depends,    oldMetadata.depends))
+            if (!RelationshipsAreEquivalent(metadata.depends, oldMetadata.depends))
                 return false;
 
             if (!RelationshipsAreEquivalent(metadata.recommends, oldMetadata.recommends))

@@ -266,7 +266,7 @@ namespace CKAN
         /// </summary>
         /// <param name="message">Message</param>
         /// <param name="percent">Progress in percent</param>
-        public void RaiseProgress (string message, int percent)
+        public void RaiseProgress(string message, int percent)
         {
             if (Regex.IsMatch(message, "download", RegexOptions.IgnoreCase))
             {

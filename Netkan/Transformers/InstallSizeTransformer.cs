@@ -25,7 +25,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 var json = metadata.Json();
                 CkanModule mod = CkanModule.FromJson(json.ToString());
-                ZipFile    zip = new ZipFile(_http.DownloadModule(metadata));
+                ZipFile zip = new ZipFile(_http.DownloadModule(metadata));
                 GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
                 json["install_size"] = _moduleService.FileSources(mod, zip, inst)
                                                      .Select(ze => ze.Size)
@@ -38,7 +38,7 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private readonly IHttpService   _http;
+        private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
     }
 }

@@ -40,11 +40,11 @@ namespace CKAN
         [JsonProperty("metanetkan", Order = 9, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri metanetkan;
-        
+
         [JsonProperty("remote-avc", Order = 10, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri remoteAvc;
-        
+
         [JsonProperty("store", Order = 11, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri store;

@@ -8,12 +8,14 @@ using System.Threading;
 using CKAN.Versioning;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Screen showing details about a mod
     /// </summary>
-    public class ModInfoScreen : ConsoleScreen {
+    public class ModInfoScreen : ConsoleScreen
+    {
 
         /// <summary>
         /// Initialize the Screen
@@ -24,10 +26,10 @@ namespace CKAN.ConsoleUI {
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
         public ModInfoScreen(GameInstanceManager mgr, ChangePlan cp, CkanModule m, bool dbg)
         {
-            debug    = dbg;
-            mod      = m;
-            manager  = mgr;
-            plan     = cp;
+            debug = dbg;
+            mod = m;
+            manager = mgr;
+            plan = cp;
             registry = RegistryManager.Instance(manager.CurrentInstance).registry;
 
             int midL = Console.WindowWidth / 2 - 1;
@@ -105,11 +107,13 @@ namespace CKAN.ConsoleUI {
             );
             tb.AddLine(mod.@abstract);
             if (!string.IsNullOrEmpty(mod.description)
-                    && mod.description != mod.@abstract) {
+                    && mod.description != mod.@abstract)
+            {
                 tb.AddLine(mod.description);
             }
             AddObject(tb);
-            if (!ChangePlan.IsAnyAvailable(registry, mod.identifier)) {
+            if (!ChangePlan.IsAnyAvailable(registry, mod.identifier))
+            {
                 tb.AddLine(Properties.Resources.ModInfoUnavailableWarning);
             }
             tb.AddScrollBindings(this);
@@ -120,66 +124,77 @@ namespace CKAN.ConsoleUI {
             AddTip($"{Properties.Resources.Ctrl}+D", Properties.Resources.ModInfoDownloadToCache,
                 () => !manager.Cache.IsMaybeCachedZip(mod) && !mod.IsDLC
             );
-            AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) => {
-                if (!mod.IsDLC) {
+            AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) =>
+            {
+                if (!mod.IsDLC)
+                {
                     Download(theme);
                 }
                 return true;
             });
 
-            if (mod.resources != null) {
+            if (mod.resources != null)
+            {
                 List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>();
 
-                if (mod.resources.homepage != null) {
+                if (mod.resources.homepage != null)
+                {
                     opts.Add(new ConsoleMenuOption(
-                        Properties.Resources.ModInfoHomePage,  "", Properties.Resources.ModInfoHomePageTip,
+                        Properties.Resources.ModInfoHomePage, "", Properties.Resources.ModInfoHomePageTip,
                         true,
                         th => LaunchURL(th, mod.resources.homepage)
                     ));
                 }
-                if (mod.resources.repository != null) {
+                if (mod.resources.repository != null)
+                {
                     opts.Add(new ConsoleMenuOption(
                         Properties.Resources.ModInfoRepository, "", Properties.Resources.ModInfoRepositoryTip,
                         true,
                         th => LaunchURL(th, mod.resources.repository)
                     ));
                 }
-                if (mod.resources.bugtracker != null) {
+                if (mod.resources.bugtracker != null)
+                {
                     opts.Add(new ConsoleMenuOption(
                         Properties.Resources.ModInfoBugtracker, "", Properties.Resources.ModInfoBugtrackerTip,
                         true,
                         th => LaunchURL(th, mod.resources.bugtracker)
                     ));
                 }
-                if (mod.resources.spacedock != null) {
+                if (mod.resources.spacedock != null)
+                {
                     opts.Add(new ConsoleMenuOption(
-                        Properties.Resources.ModInfoSpaceDock,  "", Properties.Resources.ModInfoSpaceDockTip,
+                        Properties.Resources.ModInfoSpaceDock, "", Properties.Resources.ModInfoSpaceDockTip,
                         true,
                         th => LaunchURL(th, mod.resources.spacedock)
                     ));
                 }
-                if (mod.resources.curse != null) {
+                if (mod.resources.curse != null)
+                {
                     opts.Add(new ConsoleMenuOption(
-                        Properties.Resources.ModInfoCurse,      "", Properties.Resources.ModInfoCurseTip,
+                        Properties.Resources.ModInfoCurse, "", Properties.Resources.ModInfoCurseTip,
                         true,
                         th => LaunchURL(th, mod.resources.curse)
                     ));
                 }
-                if (mod.resources.store != null) {
+                if (mod.resources.store != null)
+                {
                     opts.Add(new ConsoleMenuOption(
-                        Properties.Resources.ModInfoStore,      "", Properties.Resources.ModInfoStoreTip,
+                        Properties.Resources.ModInfoStore, "", Properties.Resources.ModInfoStoreTip,
                         true,
                         th => LaunchURL(th, mod.resources.store)
                     ));
                 }
-                if (mod.resources.steamstore != null) {
+                if (mod.resources.steamstore != null)
+                {
                     opts.Add(new ConsoleMenuOption(
                         Properties.Resources.ModInfoSteamStore, "", Properties.Resources.ModInfoSteamStoreTip,
                         true,
                         th => LaunchURL(th, mod.resources.steamstore)
                     ));
                 }
-                if (debug) {
+                if (debug)
+                {
                     opts.Add(null);
                     opts.Add(new ConsoleMenuOption(
                         Properties.Resources.ModInfoViewMetadata, "", Properties.Resources.ModInfoViewMetadataTip,
@@ -188,7 +203,8 @@ namespace CKAN.ConsoleUI {
                     ));
                 }
 
-                if (opts.Count > 0) {
+                if (opts.Count > 0)
+                {
                     mainMenu = new ConsolePopupMenu(opts);
                 }
             }
@@ -199,7 +215,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override string LeftHeader()
         {
-             return $"CKAN {Meta.GetVersion()}";
+            return $"CKAN {Meta.GetVersion()}";
         }
 
         /// <summary>
@@ -249,7 +265,8 @@ namespace CKAN.ConsoleUI {
             // So instead we display a popup dialog for the garbage to print all over,
             // then wait 1.5 seconds and refresh the screen when it closes.
             ConsoleMessageDialog d = new ConsoleMessageDialog(Properties.Resources.ModInfoURLLaunching, new List<string>());
-            d.Run(theme, (ConsoleTheme th) => {
+            d.Run(theme, (ConsoleTheme th) =>
+            {
                 Utilities.ProcessStartURL(u.ToString());
                 Thread.Sleep(1500);
             });
@@ -258,12 +275,13 @@ namespace CKAN.ConsoleUI {
 
         private int addDependencies(int top = 8)
         {
-            int numDeps  = mod.depends?.Count   ?? 0;
+            int numDeps = mod.depends?.Count ?? 0;
             int numConfs = mod.conflicts?.Count ?? 0;
 
-            if (numDeps + numConfs > 0) {
+            if (numDeps + numConfs > 0)
+            {
                 int midL = Console.WindowWidth / 2 - 1;
-                int h    = Math.Min(11, numDeps + numConfs + 2);
+                int h = Math.Min(11, numDeps + numConfs + 2);
                 const int lblW = 16;
                 int nameW = midL - 2 - lblW - 2;
                 int depsH = (h - 2) * numDeps / (numDeps + numConfs);
@@ -274,7 +292,8 @@ namespace CKAN.ConsoleUI {
                     th => th.NormalFrameFg,
                     false
                 ));
-                if (numDeps > 0) {
+                if (numDeps > 0)
+                {
                     AddObject(new ConsoleLabel(
                         3, top + 1, 3 + lblW - 1,
                         () => string.Format(Properties.Resources.ModInfoRequiredLabel, numDeps),
@@ -288,7 +307,8 @@ namespace CKAN.ConsoleUI {
                         th => th.LabelFg
                     );
                     AddObject(tb);
-                    foreach (RelationshipDescriptor rd in mod.depends) {
+                    foreach (RelationshipDescriptor rd in mod.depends)
+                    {
                         tb.AddLine(ScreenObject.FormatExactWidth(
                             // Show install status
                             ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString()))
@@ -297,7 +317,8 @@ namespace CKAN.ConsoleUI {
                         ));
                     }
                 }
-                if (numConfs > 0) {
+                if (numConfs > 0)
+                {
                     AddObject(new ConsoleLabel(
                         3, top + 1 + depsH, 3 + lblW - 1,
                         () => string.Format(Properties.Resources.ModInfoConflictsLabel, numConfs),
@@ -313,7 +334,8 @@ namespace CKAN.ConsoleUI {
                     AddObject(tb);
                     // FUTURE: Find mods that conflict with this one
                     //         See GUI/MainModList.cs::ComputeConflictsFromModList
-                    foreach (RelationshipDescriptor rd in mod.conflicts) {
+                    foreach (RelationshipDescriptor rd in mod.conflicts)
+                    {
                         tb.AddLine(ScreenObject.FormatExactWidth(
                             // Show install status
                             ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString()))
@@ -335,35 +357,39 @@ namespace CKAN.ConsoleUI {
 
         private int addVersionDisplay()
         {
-            int       boxLeft  = Console.WindowWidth / 2 + 1,
-                      boxTop   = 3;
+            int boxLeft = Console.WindowWidth / 2 + 1,
+                      boxTop = 3;
             const int boxRight = -1,
-                      boxH     = 5;
+                      boxH = 5;
 
-            if (ChangePlan.IsAnyAvailable(registry, mod.identifier)) {
+            if (ChangePlan.IsAnyAvailable(registry, mod.identifier))
+            {
 
-                List<CkanModule> avail              = registry.AvailableByIdentifier(mod.identifier).ToList();
-                CkanModule       inst               = registry.GetInstalledVersion(  mod.identifier);
-                CkanModule       latest             = registry.LatestAvailable(      mod.identifier, null);
-                bool             installed          = registry.IsInstalled(mod.identifier, false);
-                bool             latestIsInstalled  = inst?.Equals(latest) ?? false;
-                List<CkanModule> others             = avail;
+                List<CkanModule> avail = registry.AvailableByIdentifier(mod.identifier).ToList();
+                CkanModule inst = registry.GetInstalledVersion(mod.identifier);
+                CkanModule latest = registry.LatestAvailable(mod.identifier, null);
+                bool installed = registry.IsInstalled(mod.identifier, false);
+                bool latestIsInstalled = inst?.Equals(latest) ?? false;
+                List<CkanModule> others = avail;
 
                 others.Remove(inst);
                 others.Remove(latest);
 
-                if (installed) {
+                if (installed)
+                {
 
                     DateTime? instTime = InstalledOn(mod.identifier);
 
-                    if (latestIsInstalled) {
+                    if (latestIsInstalled)
+                    {
 
                         ModuleReplacement mr = registry.GetReplacement(
                             mod.identifier,
                             manager.CurrentInstance.VersionCriteria()
                         );
 
-                        if (mr != null) {
+                        if (mr != null)
+                        {
 
                             // Show replaced_by
                             addVersionBox(
@@ -371,7 +397,7 @@ namespace CKAN.ConsoleUI {
                                 () => string.Format(Properties.Resources.ModInfoReplacedBy, mr.ReplaceWith.identifier),
                                 th => th.AlertFrameFg,
                                 false,
-                                new List<CkanModule>() {mr.ReplaceWith}
+                                new List<CkanModule>() { mr.ReplaceWith }
                             );
                             boxTop += boxH;
 
@@ -382,11 +408,13 @@ namespace CKAN.ConsoleUI {
                                     : Properties.Resources.ModInfoInstalledManually,
                                 th => th.ActiveFrameFg,
                                 true,
-                                new List<CkanModule>() {inst}
+                                new List<CkanModule>() { inst }
                             );
                             boxTop += boxH;
 
-                        } else {
+                        }
+                        else
+                        {
 
                             addVersionBox(
                                 boxLeft, boxTop, boxRight, boxTop + boxH - 1,
@@ -395,21 +423,23 @@ namespace CKAN.ConsoleUI {
                                     : Properties.Resources.ModInfoLatestInstalledManually,
                                 th => th.ActiveFrameFg,
                                 true,
-                                new List<CkanModule>() {inst}
+                                new List<CkanModule>() { inst }
                             );
                             boxTop += boxH;
 
                         }
 
 
-                    } else {
+                    }
+                    else
+                    {
 
                         addVersionBox(
                             boxLeft, boxTop, boxRight, boxTop + boxH - 1,
                             () => Properties.Resources.ModInfoLatestVersion,
                             th => th.AlertFrameFg,
                             false,
-                            new List<CkanModule>() {latest}
+                            new List<CkanModule>() { latest }
                         );
                         boxTop += boxH;
 
@@ -420,25 +450,28 @@ namespace CKAN.ConsoleUI {
                                     : Properties.Resources.ModInfoInstalledManually,
                             th => th.ActiveFrameFg,
                             true,
-                            new List<CkanModule>() {inst}
+                            new List<CkanModule>() { inst }
                         );
                         boxTop += boxH;
 
                     }
-                } else {
+                }
+                else
+                {
 
                     addVersionBox(
                         boxLeft, boxTop, boxRight, boxTop + boxH - 1,
                             () => Properties.Resources.ModInfoLatestVersion,
                         th => th.NormalFrameFg,
                         false,
-                        new List<CkanModule>() {latest}
+                        new List<CkanModule>() { latest }
                     );
                     boxTop += boxH;
 
                 }
 
-                if (others.Count > 0) {
+                if (others.Count > 0)
+                {
 
                     addVersionBox(
                         boxLeft, boxTop, boxRight, boxTop + boxH - 1,
@@ -451,7 +484,9 @@ namespace CKAN.ConsoleUI {
 
                 }
 
-            } else {
+            }
+            else
+            {
 
                 DateTime? instTime = InstalledOn(mod.identifier);
                 // Mod is no longer indexed, but we can generate a display
@@ -463,7 +498,7 @@ namespace CKAN.ConsoleUI {
                         : Properties.Resources.ModInfoUnavailableInstalledManually,
                     th => th.AlertFrameFg,
                     true,
-                    new List<CkanModule>() {mod}
+                    new List<CkanModule>() { mod }
                 );
                 boxTop += boxH;
 
@@ -481,10 +516,11 @@ namespace CKAN.ConsoleUI {
                 doubleLine
             ));
 
-            if (releases != null && releases.Count > 0) {
+            if (releases != null && releases.Count > 0)
+            {
 
                 ModuleVersion minMod = null, maxMod = null;
-                GameVersion   minKsp = null, maxKsp = null;
+                GameVersion minKsp = null, maxKsp = null;
                 Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
                 AddObject(new ConsoleLabel(
                     l + 2, t + 1, r - 2,
@@ -513,41 +549,54 @@ namespace CKAN.ConsoleUI {
         private string HostedOn()
         {
             string dl = mod.download?.ToString() ?? "";
-            foreach (var kvp in hostDomains) {
-                if (dl.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0) {
+            foreach (var kvp in hostDomains)
+            {
+                if (dl.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                {
                     return string.Format(Properties.Resources.ModInfoHostedOn, kvp.Value);
                 }
             }
-            if (mod.resources != null) {
-                if (mod.resources.bugtracker != null) {
+            if (mod.resources != null)
+            {
+                if (mod.resources.bugtracker != null)
+                {
                     string bt = mod.resources.bugtracker.ToString();
-                    foreach (var kvp in hostDomains) {
-                        if (bt.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0) {
+                    foreach (var kvp in hostDomains)
+                    {
+                        if (bt.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                        {
                             return string.Format(Properties.Resources.ModInfoReportBugsOn, kvp.Value);
                         }
                     }
                 }
-                if (mod.resources.repository != null) {
+                if (mod.resources.repository != null)
+                {
                     string rep = mod.resources.repository.ToString();
-                    foreach (var kvp in hostDomains) {
-                        if (rep.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0) {
+                    foreach (var kvp in hostDomains)
+                    {
+                        if (rep.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                        {
                             return string.Format(Properties.Resources.ModInfoRepositoryOn, kvp.Value);
                         }
                     }
                 }
-                if (mod.resources.homepage != null) {
+                if (mod.resources.homepage != null)
+                {
                     string hp = mod.resources.homepage.ToString();
-                    foreach (var kvp in hostDomains) {
-                        if (hp.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0) {
+                    foreach (var kvp in hostDomains)
+                    {
+                        if (hp.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                        {
                             return string.Format(Properties.Resources.ModInfoHomePageOn, kvp.Value);
                         }
                     }
                 }
 
-                if (mod.resources.store != null || mod.resources.steamstore != null) {
+                if (mod.resources.store != null || mod.resources.steamstore != null)
+                {
                     return mod.resources.steamstore == null ? Properties.Resources.ModInfoBuyFromKSPStore
-                        :  mod.resources.store      == null ? Properties.Resources.ModInfoBuyFromSteamStore
-                        :                                     Properties.Resources.ModInfoBuyFromKSPStoreOrSteamStore;
+                        : mod.resources.store == null ? Properties.Resources.ModInfoBuyFromSteamStore
+                        : Properties.Resources.ModInfoBuyFromKSPStoreOrSteamStore;
                 }
             }
             return mod.download?.Host ?? "";
@@ -555,19 +604,24 @@ namespace CKAN.ConsoleUI {
 
         private void Download(ConsoleTheme theme)
         {
-            ProgressScreen            ps   = new ProgressScreen(string.Format(Properties.Resources.ModInfoDownloading, mod.identifier));
-            NetAsyncModulesDownloader dl   = new NetAsyncModulesDownloader(ps, manager.Cache);
-            ModuleInstaller           inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, ps);
+            ProgressScreen ps = new ProgressScreen(string.Format(Properties.Resources.ModInfoDownloading, mod.identifier));
+            NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(ps, manager.Cache);
+            ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, ps);
             LaunchSubScreen(
                 theme,
                 ps,
-                (ConsoleTheme th) => {
-                    try {
-                        dl.DownloadModules(new List<CkanModule> {mod});
-                        if (!manager.Cache.IsMaybeCachedZip(mod)) {
+                (ConsoleTheme th) =>
+                {
+                    try
+                    {
+                        dl.DownloadModules(new List<CkanModule> { mod });
+                        if (!manager.Cache.IsMaybeCachedZip(mod))
+                        {
                             ps.RaiseError(Properties.Resources.ModInfoDownloadFailed);
                         }
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         ps.RaiseError(Properties.Resources.ModInfoDownloadFailed, ex);
                     }
                 }
@@ -587,10 +641,10 @@ namespace CKAN.ConsoleUI {
         };
 
         private GameInstanceManager manager;
-        private IRegistryQuerier    registry;
-        private ChangePlan          plan;
-        private CkanModule          mod;
-        private bool                debug;
+        private IRegistryQuerier registry;
+        private ChangePlan plan;
+        private CkanModule mod;
+        private bool debug;
     }
 
 }

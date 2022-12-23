@@ -77,14 +77,14 @@ namespace CKAN.Versioning
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj is GameVersionBound && Equals((GameVersionBound) obj);
+            return obj is GameVersionBound && Equals((GameVersionBound)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((Value != null ? Value.GetHashCode() : 0)*397) ^ Inclusive.GetHashCode();
+                return ((Value != null ? Value.GetHashCode() : 0) * 397) ^ Inclusive.GetHashCode();
             }
         }
 

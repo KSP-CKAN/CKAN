@@ -15,14 +15,14 @@ namespace CKAN.NetKAN.Validators
     {
         public HarmonyValidator(IHttpService http, IModuleService moduleService)
         {
-            _http          = http;
+            _http = http;
             _moduleService = moduleService;
         }
 
         public void Validate(Metadata metadata)
         {
-            JObject    json = metadata.Json();
-            CkanModule mod  = CkanModule.FromJson(json.ToString());
+            JObject json = metadata.Json();
+            CkanModule mod = CkanModule.FromJson(json.ToString());
             // The Harmony2 module is allowed to install a Harmony DLL;
             // anybody else must have "provides":["Harmony1"] to do so
             if (!mod.IsDLC && mod.identifier != "Harmony2")
@@ -39,7 +39,7 @@ namespace CKAN.NetKAN.Validators
                         .Where(f => f.IndexOf("Harmony", StringComparison.InvariantCultureIgnoreCase) != -1)
                         .OrderBy(f => f)
                         .ToList();
-                    bool bundlesHarmony   = harmonyDLLs.Any();
+                    bool bundlesHarmony = harmonyDLLs.Any();
                     bool providesHarmony1 = mod.ProvidesList.Contains("Harmony1");
                     if (bundlesHarmony && !providesHarmony1)
                     {
@@ -53,7 +53,7 @@ namespace CKAN.NetKAN.Validators
             }
         }
 
-        private readonly IHttpService   _http;
+        private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(HarmonyValidator));

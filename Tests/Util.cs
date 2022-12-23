@@ -9,7 +9,8 @@ using NUnit.Framework;
 
 namespace Tests
 {
-    [TestFixture] public class Util
+    [TestFixture]
+    public class Util
     {
         [Test]
         public void AssembliesHaveNoAsyncVoids()
@@ -51,7 +52,7 @@ namespace Tests
     {
         private static bool HasAttribute<TAttribute>(this MethodInfo method) where TAttribute : Attribute
         {
-            return method.GetCustomAttributes(typeof (TAttribute), false).Any();
+            return method.GetCustomAttributes(typeof(TAttribute), false).Any();
         }
 
         public static void AssertNoAsyncVoidMethods(Assembly assembly)
@@ -77,7 +78,7 @@ namespace Tests
                     | BindingFlags.Static
                     | BindingFlags.DeclaredOnly))
                 .Where(method => method.HasAttribute<AsyncStateMachineAttribute>())
-                .Where(method => method.ReturnType == typeof (void));
+                .Where(method => method.ReturnType == typeof(void));
         }
 
         private static IEnumerable<Type> GetLoadableTypes(this Assembly assembly)
@@ -98,7 +99,7 @@ namespace Tests
             try
             {
                 await async();
-                Assert.Fail("Expected exception of type: {0}", typeof (T));
+                Assert.Fail("Expected exception of type: {0}", typeof(T));
             }
             catch (T)
             {

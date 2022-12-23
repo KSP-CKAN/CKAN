@@ -14,16 +14,16 @@ namespace CKAN.CmdLine
         [VerbOption("available", HelpText = "List (canonical) available repositories")]
         public RepoAvailableOptions AvailableOptions { get; set; }
 
-        [VerbOption("list",      HelpText = "List repositories")]
+        [VerbOption("list", HelpText = "List repositories")]
         public RepoListOptions ListOptions { get; set; }
 
-        [VerbOption("add",       HelpText = "Add a repository")]
+        [VerbOption("add", HelpText = "Add a repository")]
         public RepoAddOptions AddOptions { get; set; }
 
-        [VerbOption("forget",    HelpText = "Forget a repository")]
+        [VerbOption("forget", HelpText = "Forget a repository")]
         public RepoForgetOptions ForgetOptions { get; set; }
 
-        [VerbOption("default",   HelpText = "Set the default repository")]
+        [VerbOption("default", HelpText = "Set the default repository")]
         public RepoDefaultOptions DefaultOptions { get; set; }
 
         [HelpVerbOption]
@@ -67,7 +67,7 @@ namespace CKAN.CmdLine
     }
 
     public class RepoAvailableOptions : CommonOptions { }
-    public class RepoListOptions      : InstanceSpecificOptions { }
+    public class RepoListOptions : InstanceSpecificOptions { }
 
     public class RepoAddOptions : InstanceSpecificOptions
     {
@@ -118,8 +118,8 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    User     = new ConsoleUser(options.Headless);
-                    Manager  = manager ?? new GameInstanceManager(User);
+                    User = new ConsoleUser(options.Headless);
+                    Manager = manager ?? new GameInstanceManager(User);
                     exitCode = options.Handle(Manager, User);
                     if (exitCode != Exit.OK)
                         return;
@@ -336,9 +336,9 @@ namespace CKAN.CmdLine
         }
 
         private GameInstanceManager Manager { get; set; }
-        private IUser               User    { get; set; }
+        private IUser User { get; set; }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
+        private static readonly ILog log = LogManager.GetLogger(typeof(Repo));
     }
 
     public struct RepositoryList

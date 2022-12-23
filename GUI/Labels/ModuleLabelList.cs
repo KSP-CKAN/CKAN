@@ -12,7 +12,7 @@ namespace CKAN.GUI
     public class ModuleLabelList
     {
         [JsonProperty("labels", NullValueHandling = NullValueHandling.Ignore)]
-        public ModuleLabel[] Labels = new ModuleLabel[] {};
+        public ModuleLabel[] Labels = new ModuleLabel[] { };
 
         public IEnumerable<ModuleLabel> LabelsFor(string instanceName)
         {

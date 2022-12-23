@@ -1,12 +1,14 @@
 using System;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Object representing an editable text field
     /// </summary>
-    public class ConsoleField : ScreenObject {
+    public class ConsoleField : ScreenObject
+    {
 
         /// <summary>
         /// Initialize the text fields
@@ -18,7 +20,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         public ConsoleField(int l, int t, int r, string val = "")
             : base(l, t, r, t)
         {
-            if (!string.IsNullOrEmpty(val)) {
+            if (!string.IsNullOrEmpty(val))
+            {
                 Value = val;
                 Position = Value.Length;
             }
@@ -31,11 +34,11 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Current value displayed in field
         /// </summary>
-        public string       Value     = "";
+        public string Value = "";
         /// <summary>
         /// Position of cursor within field
         /// </summary>
-        public int          Position  = 0;
+        public int Position = 0;
 
         private int leftPos = 0;
 
@@ -49,7 +52,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         public event ChangeListener OnChange;
         private void Changed()
         {
-            if (OnChange != null) {
+            if (OnChange != null)
+            {
                 OnChange(this, Value);
             }
         }
@@ -60,7 +64,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public void Clear()
         {
             Position = 0;
-            Value    = "";
+            Value = "";
             Changed();
         }
 
@@ -73,25 +77,34 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             int w = GetRight() - GetLeft() + 1;
 
-            if (Position > Value.Length) {
+            if (Position > Value.Length)
+            {
                 Position = Value.Length;
             }
-            if (leftPos > Position) {
+            if (leftPos > Position)
+            {
                 leftPos = Position;
             }
-            if (leftPos < Position - w + 1) {
+            if (leftPos < Position - w + 1)
+            {
                 leftPos = Position - w + 1;
             }
 
             Console.SetCursorPosition(GetLeft(), GetTop());
             Console.BackgroundColor = theme.FieldBg;
-            if (string.IsNullOrEmpty(Value)) {
+            if (string.IsNullOrEmpty(Value))
+            {
                 Console.ForegroundColor = theme.FieldGhostFg;
                 Console.Write(GhostText().PadRight(w));
-            } else {
-                if (focused) {
+            }
+            else
+            {
+                if (focused)
+                {
                     Console.ForegroundColor = theme.FieldFocusedFg;
-                } else {
+                }
+                else
+                {
                     Console.ForegroundColor = theme.FieldBlurredFg;
                 }
                 Console.Write(FormatExactWidth(Value.Substring(leftPos), w));
@@ -105,42 +118,54 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="k">Key the user pressed</param>
         public override void OnKeyPress(ConsoleKeyInfo k)
         {
-            switch (k.Key) {
+            switch (k.Key)
+            {
                 case ConsoleKey.Escape:
-                    if (!string.IsNullOrEmpty(Value)) {
+                    if (!string.IsNullOrEmpty(Value))
+                    {
                         Clear();
                     }
                     break;
                 case ConsoleKey.Backspace:
-                    if ((k.Modifiers & ConsoleModifiers.Control) == 0) {
-                        if (Position > 0) {
+                    if ((k.Modifiers & ConsoleModifiers.Control) == 0)
+                    {
+                        if (Position > 0)
+                        {
                             --Position;
                             Value = Value.Substring(0, Position) + Value.Substring(Position + 1);
                             Changed();
                         }
-                    } else if (!string.IsNullOrEmpty(Value)) {
-                        Value    = Value.Substring(Position);
+                    }
+                    else if (!string.IsNullOrEmpty(Value))
+                    {
+                        Value = Value.Substring(Position);
                         Position = 0;
                         Changed();
                     }
                     break;
                 case ConsoleKey.Delete:
-                    if (Position < Value.Length) {
-                        if ((k.Modifiers & ConsoleModifiers.Control) == 0) {
+                    if (Position < Value.Length)
+                    {
+                        if ((k.Modifiers & ConsoleModifiers.Control) == 0)
+                        {
                             Value = Value.Substring(0, Position) + Value.Substring(Position + 1);
-                        } else {
+                        }
+                        else
+                        {
                             Value = Value.Substring(0, Position);
                         }
                         Changed();
                     }
                     break;
                 case ConsoleKey.LeftArrow:
-                    if (Position > 0) {
+                    if (Position > 0)
+                    {
                         --Position;
                     }
                     break;
                 case ConsoleKey.RightArrow:
-                    if (Position < Value.Length) {
+                    if (Position < Value.Length)
+                    {
                         ++Position;
                     }
                     break;
@@ -160,10 +185,14 @@ namespace CKAN.ConsoleUI.Toolkit {
                     Blur((k.Modifiers & ConsoleModifiers.Shift) == 0);
                     break;
                 default:
-                    if (!Char.IsControl(k.KeyChar)) {
-                        if (Position < Value.Length) {
+                    if (!Char.IsControl(k.KeyChar))
+                    {
+                        if (Position < Value.Length)
+                        {
                             Value = Value.Substring(0, Position) + k.KeyChar + Value.Substring(Position);
-                        } else {
+                        }
+                        else
+                        {
                             Value += k.KeyChar;
                         }
                         ++Position;

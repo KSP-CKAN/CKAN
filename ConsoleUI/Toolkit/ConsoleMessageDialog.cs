@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Dialog showing a message and buttons the user can press
     /// </summary>
-    public class ConsoleMessageDialog : ConsoleDialog {
+    public class ConsoleMessageDialog : ConsoleDialog
+    {
 
         /// <summary>
         /// Initialize a dialog
@@ -20,15 +22,17 @@ namespace CKAN.ConsoleUI.Toolkit {
             : base()
         {
             int maxLen = Formatting.MaxLineLength(m);
-            int w      = Math.Max(minWidth, Math.Min(maxLen + 6, Console.WindowWidth - 4));
-            int l      = (Console.WindowWidth - w) / 2;
-            int r      = -l;
-            if (hdr != null) {
+            int w = Math.Max(minWidth, Math.Min(maxLen + 6, Console.WindowWidth - 4));
+            int l = (Console.WindowWidth - w) / 2;
+            int r = -l;
+            if (hdr != null)
+            {
                 CenterHeader = hdr;
             }
 
             int btnW = btns.Count * buttonWidth + (btns.Count - 1) * buttonPadding;
-            if (w < btnW + 4) {
+            if (w < btnW + 4)
+            {
                 // Widen the window to fit the buttons
                 // Buttons will NOT wrap - use ConsoleChoiceDialog
                 // if you have many large options.
@@ -39,21 +43,27 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             List<string> messageLines = Formatting.WordWrap(m, w - 4);
             int h = 2 + messageLines.Count + (btns.Count > 0 ? 2 : 0) + 2;
-            if (h > Console.WindowHeight - 4) {
+            if (h > Console.WindowHeight - 4)
+            {
                 h = Console.WindowHeight - 4;
             }
 
             // Calculate vertical position including offset
             int t, b;
-            if (vertOffset <= 0) {
+            if (vertOffset <= 0)
+            {
                 t = (Console.WindowHeight - h) / 2 + vertOffset;
-                if (t < 1) {
+                if (t < 1)
+                {
                     t = 2;
                 }
                 b = t + h - 1;
-            } else {
+            }
+            else
+            {
                 b = (Console.WindowHeight - h) / 2 + h - 1;
-                if (b >= Console.WindowHeight - 1) {
+                if (b >= Console.WindowHeight - 1)
+                {
                     b = Console.WindowHeight - 1;
                 }
                 t = b - h + 1;
@@ -74,17 +84,20 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             int boxH = GetBottom() - 2 - (btns.Count > 0 ? 2 : 0) - (GetTop() + 2) + 1;
 
-            if (messageLines.Count > boxH) {
+            if (messageLines.Count > boxH)
+            {
                 // Scroll
                 AddTip(Properties.Resources.CursorKeys, Properties.Resources.Scroll);
                 tb.AddScrollBindings(this);
             }
 
             int btnLeft = (Console.WindowWidth - btnW) / 2;
-            for (int i = 0; i < btns.Count; ++i) {
+            for (int i = 0; i < btns.Count; ++i)
+            {
                 string cap = btns[i];
                 int j = i;
-                AddObject(new ConsoleButton(btnLeft, btnRow, btnLeft + buttonWidth - 1, cap, () => {
+                AddObject(new ConsoleButton(btnLeft, btnRow, btnLeft + buttonWidth - 1, cap, () =>
+                {
                     selectedButton = j;
                     Quit();
                 }));
@@ -116,10 +129,10 @@ namespace CKAN.ConsoleUI.Toolkit {
             Quit();
         }
 
-        private       int selectedButton = 0;
-        private const int buttonWidth    = 10;
-        private const int buttonPadding  = 3;
-        private const int minWidth       = 40;
+        private int selectedButton = 0;
+        private const int buttonWidth = 10;
+        private const int buttonPadding = 3;
+        private const int minWidth = 40;
     }
 
 }

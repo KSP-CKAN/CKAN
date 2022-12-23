@@ -5,12 +5,14 @@ using System.ComponentModel;
 using CKAN.Versioning;
 using CKAN.ConsoleUI.Toolkit;
 
-namespace CKAN.ConsoleUI {
+namespace CKAN.ConsoleUI
+{
 
     /// <summary>
     /// Object representing list of available game instances.
     /// </summary>
-    public class GameInstanceListScreen : ConsoleScreen {
+    public class GameInstanceListScreen : ConsoleScreen
+    {
 
         /// <summary>
         /// Initialize the screen.
@@ -56,57 +58,70 @@ namespace CKAN.ConsoleUI {
                 1, 0, ListSortDirection.Descending
             );
 
-            if (first) {
+            if (first)
+            {
                 AddTip($"{Properties.Resources.Ctrl}+Q", Properties.Resources.Quit);
-                AddBinding(Keys.AltX,  (object sender, ConsoleTheme theme) => false);
+                AddBinding(Keys.AltX, (object sender, ConsoleTheme theme) => false);
                 AddBinding(Keys.CtrlQ, (object sender, ConsoleTheme theme) => false);
-            } else {
+            }
+            else
+            {
                 AddTip(Properties.Resources.Esc, Properties.Resources.Quit);
                 AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
             }
 
             AddTip(Properties.Resources.Enter, Properties.Resources.Select);
-            AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) =>
+            {
 
                 ConsoleMessageDialog d = new ConsoleMessageDialog(
                     string.Format(Properties.Resources.InstanceListLoadingInstance, instanceList.Selection.Name),
                     new List<string>()
                 );
 
-                if (TryGetInstance(theme, instanceList.Selection, (ConsoleTheme th) => { d.Run(th, (ConsoleTheme thm) => {}); })) {
-                    try {
+                if (TryGetInstance(theme, instanceList.Selection, (ConsoleTheme th) => { d.Run(th, (ConsoleTheme thm) => { }); }))
+                {
+                    try
+                    {
                         manager.SetCurrentInstance(instanceList.Selection.Name);
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         // This can throw if the previous current instance had an error,
                         // since it gets destructed when it's replaced.
                         RaiseError(ex.Message);
                     }
                     return false;
-                } else {
+                }
+                else
+                {
                     return true;
                 }
             });
 
             instanceList.AddTip("A", Properties.Resources.Add);
-            instanceList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
+            instanceList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) =>
+            {
                 LaunchSubScreen(theme, new GameInstanceAddScreen(manager));
                 instanceList.SetData(manager.Instances.Values);
                 return true;
             });
             instanceList.AddTip("R", Properties.Resources.Remove);
-            instanceList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
+            instanceList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) =>
+            {
                 manager.RemoveInstance(instanceList.Selection.Name);
                 instanceList.SetData(manager.Instances.Values);
                 return true;
             });
             instanceList.AddTip("E", Properties.Resources.Edit);
-            instanceList.AddBinding(Keys.E, (object sender, ConsoleTheme theme) => {
+            instanceList.AddBinding(Keys.E, (object sender, ConsoleTheme theme) =>
+            {
 
                 ConsoleMessageDialog d = new ConsoleMessageDialog(
                     string.Format(Properties.Resources.InstanceListLoadingInstance, instanceList.Selection.Name),
                     new List<string>()
                 );
-                TryGetInstance(theme, instanceList.Selection, (ConsoleTheme th) => { d.Run(theme, (ConsoleTheme thm) => {}); });
+                TryGetInstance(theme, instanceList.Selection, (ConsoleTheme th) => { d.Run(theme, (ConsoleTheme thm) => { }); });
                 // Still launch the screen even if the load fails,
                 // because you need to be able to fix the name/path.
                 LaunchSubScreen(theme, new GameInstanceEditScreen(manager, instanceList.Selection));
@@ -115,14 +130,21 @@ namespace CKAN.ConsoleUI {
             });
 
             instanceList.AddTip("D", Properties.Resources.InstanceListDefaultToggle);
-            instanceList.AddBinding(Keys.D, (object sender, ConsoleTheme theme) => {
+            instanceList.AddBinding(Keys.D, (object sender, ConsoleTheme theme) =>
+            {
                 string name = instanceList.Selection.Name;
-                if (name == manager.AutoStartInstance) {
+                if (name == manager.AutoStartInstance)
+                {
                     manager.ClearAutoStart();
-                } else {
-                    try {
+                }
+                else
+                {
+                    try
+                    {
                         manager.SetAutoStart(name);
-                    } catch (NotKSPDirKraken k) {
+                    }
+                    catch (NotKSPDirKraken k)
+                    {
                         ConsoleMessageDialog errd = new ConsoleMessageDialog(
                             string.Format(Properties.Resources.InstanceListLoadingError, k.path, k.Message),
                             new List<string>() { Properties.Resources.OK }
@@ -173,8 +195,10 @@ namespace CKAN.ConsoleUI {
         public static bool TryGetInstance(ConsoleTheme theme, GameInstance ksp, Action<ConsoleTheme> render)
         {
             bool retry;
-            do {
-                try {
+            do
+            {
+                try
+                {
 
                     retry = false;
                     // Show loading message
@@ -182,7 +206,9 @@ namespace CKAN.ConsoleUI {
                     // Try to get the lock; this will throw if another instance is in there
                     RegistryManager.Instance(ksp);
 
-                } catch (RegistryInUseKraken k) {
+                }
+                catch (RegistryInUseKraken k)
+                {
 
                     ConsoleMessageDialog md = new ConsoleMessageDialog(
                         string.Format(Properties.Resources.InstanceListLocked, k.lockfilePath),
@@ -191,16 +217,21 @@ namespace CKAN.ConsoleUI {
                             Properties.Resources.Force
                         }
                     );
-                    if (md.Run(theme) == 1) {
+                    if (md.Run(theme) == 1)
+                    {
                         // Delete it
                         File.Delete(k.lockfilePath);
                         retry = true;
-                    } else {
+                    }
+                    else
+                    {
                         // User cancelled, return failure
                         return false;
                     }
 
-                } catch (NotKSPDirKraken k) {
+                }
+                catch (NotKSPDirKraken k)
+                {
 
                     ConsoleMessageDialog errd = new ConsoleMessageDialog(
                         string.Format(Properties.Resources.InstanceListLoadingError, ksp.GameDir(), k.Message),
@@ -209,7 +240,9 @@ namespace CKAN.ConsoleUI {
                     errd.Run(theme);
                     return false;
 
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
 
                     ConsoleMessageDialog errd = new ConsoleMessageDialog(
                         string.Format(Properties.Resources.InstanceListLoadingError, Path.Combine(ksp.CkanDir(), "registry.json"), e.Message),
@@ -233,7 +266,7 @@ namespace CKAN.ConsoleUI {
                 : " ";
         }
 
-        private GameInstanceManager          manager;
+        private GameInstanceManager manager;
         private ConsoleListBox<GameInstance> instanceList;
 
         private static readonly string defaultMark = Symbols.checkmark;

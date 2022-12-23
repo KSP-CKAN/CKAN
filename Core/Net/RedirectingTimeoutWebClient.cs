@@ -23,7 +23,7 @@ namespace CKAN
         /// <param name="mimeType">A mime type sent with the "Accept" header</param>
         public RedirectingTimeoutWebClient(int timeout = 100000, string mimeType = "")
         {
-            this.timeout  = timeout;
+            this.timeout = timeout;
             this.mimeType = mimeType;
         }
 
@@ -46,7 +46,7 @@ namespace CKAN
             {
                 // GitHub API tokens cannot be passed via auto-redirect
                 hwr.AllowAutoRedirect = false;
-                hwr.Timeout           = timeout;
+                hwr.Timeout = timeout;
             }
             return request;
         }
@@ -85,7 +85,7 @@ namespace CKAN
             return response;
         }
 
-        private int    timeout;
+        private int timeout;
         private string mimeType;
         private static readonly Dictionary<Uri, Uri> permanentRedirects = new Dictionary<Uri, Uri>();
         private static readonly ILog log = LogManager.GetLogger(typeof(RedirectingTimeoutWebClient));

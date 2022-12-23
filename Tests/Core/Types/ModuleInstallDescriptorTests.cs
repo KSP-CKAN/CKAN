@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Tests.Data;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using ICSharpCode.SharpZipLib.Zip;
 using CKAN;
 using CKAN.Games;
 

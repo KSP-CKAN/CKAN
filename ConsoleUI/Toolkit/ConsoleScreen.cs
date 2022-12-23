@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Base class for full screen UIs
     /// </summary>
-    public abstract class ConsoleScreen : ScreenContainer, IUser {
+    public abstract class ConsoleScreen : ScreenContainer, IUser
+    {
 
         /// <summary>
         /// Initialize a screen.
@@ -18,9 +20,11 @@ namespace CKAN.ConsoleUI.Toolkit {
                 "F10", MenuTip(),
                 () => mainMenu != null
             );
-            AddBinding(new ConsoleKeyInfo[] {Keys.F10, Keys.Apps}, (object sender, ConsoleTheme theme) => {
+            AddBinding(new ConsoleKeyInfo[] { Keys.F10, Keys.Apps }, (object sender, ConsoleTheme theme) =>
+            {
                 bool val = true;
-                if (mainMenu != null) {
+                if (mainMenu != null)
+                {
                     DrawSelectedHamburger(theme);
 
                     val = mainMenu.Run(theme, Console.WindowWidth - 1, 1);
@@ -99,11 +103,13 @@ namespace CKAN.ConsoleUI.Toolkit {
                     Properties.Resources.No
                 }
             );
-            d.AddBinding(Keys.Y, (object sender, ConsoleTheme theme) => {
+            d.AddBinding(Keys.Y, (object sender, ConsoleTheme theme) =>
+            {
                 d.PressButton(0);
                 return false;
             });
-            d.AddBinding(Keys.N, (object sender, ConsoleTheme theme) => {
+            d.AddBinding(Keys.N, (object sender, ConsoleTheme theme) =>
+            {
                 d.PressButton(1);
                 return false;
             });
@@ -255,13 +261,15 @@ namespace CKAN.ConsoleUI.Toolkit {
         private static string LeftCenterRight(string left, string center, string right, int width)
         {
             // If the combined string is too long, shorten the center
-            if (center.Length > width - left.Length - right.Length - 4) {
+            if (center.Length > width - left.Length - right.Length - 4)
+            {
                 center = center.Substring(0, width - left.Length - right.Length - 4);
             }
             // Start with the center centered on the screen
             int leftSideWidth = (width - center.Length) / 2;
             // If there isn't enough room for the left side, shift the center over
-            if (leftSideWidth < left.Length + 2) {
+            if (leftSideWidth < left.Length + 2)
+            {
                 leftSideWidth = left.Length + 2;
             }
             // The right side takes whatever's left

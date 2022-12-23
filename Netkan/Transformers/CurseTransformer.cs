@@ -24,7 +24,7 @@ namespace CKAN.NetKAN.Transformers
 
         public CurseTransformer(ICurseApi api)
         {
-            _api      = api;
+            _api = api;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
@@ -91,7 +91,7 @@ namespace CKAN.NetKAN.Transformers
             var useFilenameVersion = false;
             var useCurseIdVersion = false;
 
-            var curseMetadata = (JObject) json["x_netkan_curse"];
+            var curseMetadata = (JObject)json["x_netkan_curse"];
             if (curseMetadata != null)
             {
                 var useDownloadNameVersionMetadata = (bool?)curseMetadata["use_download_name_version"];
@@ -100,7 +100,7 @@ namespace CKAN.NetKAN.Transformers
                     useDownloadNameVersion = useDownloadNameVersionMetadata.Value;
                 }
 
-                var useFilenameVersionMetadata = (bool?) curseMetadata["use_filename_version"];
+                var useFilenameVersionMetadata = (bool?)curseMetadata["use_filename_version"];
                 if (useFilenameVersionMetadata != null)
                 {
                     useFilenameVersion = useFilenameVersionMetadata.Value;
@@ -121,12 +121,12 @@ namespace CKAN.NetKAN.Transformers
             json.SafeAdd("name", curseMod.GetName());
             json.SafeAdd("abstract", curseMod.description);
 
-            if (useDownloadNameVersion)  json.SafeAdd("version", latestVersion.name);
+            if (useDownloadNameVersion) json.SafeAdd("version", latestVersion.name);
             else if (useFilenameVersion) json.SafeAdd("version", latestVersion.GetFilename());
-            else if (useCurseIdVersion)  json.SafeAdd("version", latestVersion.GetCurseIdVersion());
-            else                         json.SafeAdd("version", latestVersion.GetFileVersion());
+            else if (useCurseIdVersion) json.SafeAdd("version", latestVersion.GetCurseIdVersion());
+            else json.SafeAdd("version", latestVersion.GetFileVersion());
 
-            json.SafeAdd("author",   () => JToken.FromObject(curseMod.authors));
+            json.SafeAdd("author", () => JToken.FromObject(curseMod.authors));
             json.Remove("$kref");
             json.SafeAdd("download", Regex.Replace(latestVersion.GetDownloadUrl(), " ", "%20"));
 

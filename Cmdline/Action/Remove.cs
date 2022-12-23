@@ -20,7 +20,7 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for interaction</param>
         public Remove(GameInstanceManager mgr, IUser user)
         {
-            manager   = mgr;
+            manager = mgr;
             this.user = user;
         }
 
@@ -34,7 +34,7 @@ namespace CKAN.CmdLine
         /// </returns>
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
-            RemoveOptions options = (RemoveOptions) raw_options;
+            RemoveOptions options = (RemoveOptions)raw_options;
             RegistryManager regMgr = RegistryManager.Instance(instance);
 
             // Use one (or more!) regex to select the modules to remove

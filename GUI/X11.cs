@@ -22,7 +22,7 @@ namespace CKAN.GUI
         {
             var hint = new XClassHint()
             {
-                res_name  = Marshal.StringToCoTaskMemAnsi(name),
+                res_name = Marshal.StringToCoTaskMemAnsi(name),
                 res_class = Marshal.StringToCoTaskMemAnsi(wmClass)
             };
             IntPtr classHints = Marshal.AllocCoTaskMem(Marshal.SizeOf(hint));

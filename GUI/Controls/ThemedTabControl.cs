@@ -25,7 +25,7 @@ namespace CKAN.GUI
             // e.Index can be invalid (!!), so we need try/catch
             try
             {
-                var tabPage  = TabPages[e.Index];
+                var tabPage = TabPages[e.Index];
                 var textRect = e.Bounds;
 
                 // Image
@@ -43,7 +43,7 @@ namespace CKAN.GUI
                     ImageList.Draw(e.Graphics, e.Bounds.Location + new Size(offsetX, offsetY), imageIndex);
 
                     // Don't overlap text on image
-                    textRect.X     += image.Width;
+                    textRect.X += image.Width;
                     textRect.Width -= image.Width;
                 }
 

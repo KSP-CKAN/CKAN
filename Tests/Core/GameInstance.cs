@@ -128,10 +128,10 @@ namespace Tests.Core
         public void Valid_MissingVersionData_False()
         {
             // Arrange
-            string gamedir  = TestData.NewTempDir();
-            string ckandir  = Path.Combine(gamedir, "CKAN");
-            string buildid  = Path.Combine(gamedir, "buildID.txt");
-            string readme   = Path.Combine(gamedir, "readme.txt");
+            string gamedir = TestData.NewTempDir();
+            string ckandir = Path.Combine(gamedir, "CKAN");
+            string buildid = Path.Combine(gamedir, "buildID.txt");
+            string readme = Path.Combine(gamedir, "readme.txt");
             string jsonpath = Path.Combine(ckandir, "compatible_ksp_versions.json");
             const string compatible_ksp_versions_json = @"{
                 ""VersionOfKspWhenWritten"": ""1.4.3"",
@@ -160,10 +160,10 @@ namespace Tests.Core
         public void Constructor_NullMainCompatVer_NoCrash()
         {
             // Arrange
-            string gamedir  = TestData.NewTempDir();
-            string ckandir  = Path.Combine(gamedir, "CKAN");
-            string buildid  = Path.Combine(gamedir, "buildID.txt");
-            string readme   = Path.Combine(gamedir, "readme.txt");
+            string gamedir = TestData.NewTempDir();
+            string ckandir = Path.Combine(gamedir, "CKAN");
+            string buildid = Path.Combine(gamedir, "buildID.txt");
+            string readme = Path.Combine(gamedir, "readme.txt");
             string jsonpath = Path.Combine(ckandir, "compatible_ksp_versions.json");
             const string compatible_ksp_versions_json = @"{
                 ""VersionOfKspWhenWritten"": null,

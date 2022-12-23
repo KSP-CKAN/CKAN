@@ -162,7 +162,7 @@ namespace CKAN.CmdLine
                 // Print message string
                 RaiseMessage(defaultSelection >= 0
                     ? string.Format(Properties.Resources.UserSelectionPromptWithDefault, 1, args.Length, defaultSelection + 1)
-                    : string.Format(Properties.Resources.UserSelectionPromptWithoutDefault,1, args.Length));
+                    : string.Format(Properties.Resources.UserSelectionPromptWithoutDefault, 1, args.Length));
 
                 // Wait for input from the command line.
                 string input = Console.In.ReadLine();

@@ -161,7 +161,7 @@ namespace CKAN
             OnDownloadFileCompleted(new AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
         }
 
-        private long bytesToSkip   = 0;
+        private long bytesToSkip = 0;
         private long contentLength = 0;
         private CancellationTokenSource cancelTokenSrc;
 

@@ -34,7 +34,7 @@ namespace Tests.NetKAN.Validators
             // Arrange
             var json = new JObject();
             json["spec_version"] = 1;
-            json["identifier"]   = identifier;
+            json["identifier"] = identifier;
 
             // Act
             var val = new AlphaNumericIdentifierValidator();

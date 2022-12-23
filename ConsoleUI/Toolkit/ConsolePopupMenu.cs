@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace CKAN.ConsoleUI.Toolkit {
+namespace CKAN.ConsoleUI.Toolkit
+{
 
     /// <summary>
     /// Object representing a menu of options for the user to choose.
     /// Displays similarly to menus from Turbo Vision.
     /// </summary>
-    public class ConsolePopupMenu {
+    public class ConsolePopupMenu
+    {
 
         /// <summary>
         /// Initialize the menu.
@@ -16,16 +18,19 @@ namespace CKAN.ConsoleUI.Toolkit {
         public ConsolePopupMenu(List<ConsoleMenuOption> opts)
         {
             options = opts;
-            foreach (ConsoleMenuOption opt in options) {
-                if (opt != null) {
+            foreach (ConsoleMenuOption opt in options)
+            {
+                if (opt != null)
+                {
                     int len = opt.Caption.Length + (
                         string.IsNullOrEmpty(opt.Key) ? 0 : 2 + opt.Key.Length
                     ) + (
-                        opt.SubMenu     != null ? 3 :
+                        opt.SubMenu != null ? 3 :
                         opt.RadioActive != null ? 4 :
                         0
                     );
-                    if (longestLength < len) {
+                    if (longestLength < len)
+                    {
                         longestLength = len;
                     }
                 }
@@ -43,30 +48,37 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </returns>
         public bool Run(ConsoleTheme theme, int right, int top)
         {
-            bool val  = true;
+            bool val = true;
             bool done = false;
-            do {
+            do
+            {
                 Draw(theme, right, top);
                 ConsoleKeyInfo k = Console.ReadKey(true);
-                switch (k.Key) {
+                switch (k.Key)
+                {
                     case ConsoleKey.UpArrow:
-                        do {
+                        do
+                        {
                             selectedOption = (selectedOption + options.Count - 1) % options.Count;
                         } while (options[selectedOption] == null || !options[selectedOption].Enabled);
                         break;
                     case ConsoleKey.DownArrow:
-                        do {
+                        do
+                        {
                             selectedOption = (selectedOption + 1) % options.Count;
                         } while (options[selectedOption] == null || !options[selectedOption].Enabled);
                         break;
                     case ConsoleKey.Enter:
-                        if (options[selectedOption].CloseParent) {
+                        if (options[selectedOption].CloseParent)
+                        {
                             done = true;
                         }
-                        if (options[selectedOption].OnExec != null) {
+                        if (options[selectedOption].OnExec != null)
+                        {
                             val = options[selectedOption].OnExec(theme);
                         }
-                        if (options[selectedOption].SubMenu != null) {
+                        if (options[selectedOption].SubMenu != null)
+                        {
                             options[selectedOption].SubMenu.Run(
                                 theme,
                                 right - 2,
@@ -86,9 +98,10 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         private void Draw(ConsoleTheme theme, int right, int top)
         {
-            if (options.Count > 0) {
+            if (options.Count > 0)
+            {
                 right = Formatting.ConvertCoord(right, Console.WindowWidth);
-                top   = Formatting.ConvertCoord(top,   Console.WindowHeight);
+                top = Formatting.ConvertCoord(top, Console.WindowHeight);
                 Console.CursorVisible = false;
                 // Space, vertical line, space, options, space, vertical line, space
                 int w = longestLength + 6;
@@ -98,37 +111,51 @@ namespace CKAN.ConsoleUI.Toolkit {
                 Console.BackgroundColor = theme.MenuBg;
                 Console.ForegroundColor = theme.MenuFg;
                 string fullHorizLine = new string(Symbols.horizLine, longestLength + 2);
-                for (int index = -1, y = top; y < top + h; ++index, ++y) {
+                for (int index = -1, y = top; y < top + h; ++index, ++y)
+                {
                     Console.SetCursorPosition(right - w + 1, y);
                     // Left padding
                     Console.Write(" ");
-                    if (index < 0) {
+                    if (index < 0)
+                    {
                         // Draw top line
                         Console.Write(Symbols.upperLeftCorner + fullHorizLine + Symbols.upperRightCorner);
-                    } else if (index >= options.Count) {
+                    }
+                    else if (index >= options.Count)
+                    {
                         // Draw bottom line
                         Console.Write(Symbols.lowerLeftCorner + fullHorizLine + Symbols.lowerRightCorner);
-                    } else {
+                    }
+                    else
+                    {
                         ConsoleMenuOption opt = options[index];
-                        if (opt == null) {
+                        if (opt == null)
+                        {
                             // Draw separator
                             Console.Write(Symbols.leftTee + fullHorizLine + Symbols.rightTee);
-                        } else {
+                        }
+                        else
+                        {
                             // Draw menu option
                             Console.Write(Symbols.vertLine);
-                            if (!opt.Enabled) {
+                            if (!opt.Enabled)
+                            {
                                 Console.ForegroundColor = theme.MenuDisabledFg;
                             }
-                            if (index == selectedOption) {
+                            if (index == selectedOption)
+                            {
                                 // Draw highlighted menu option
                                 Console.BackgroundColor = theme.MenuSelectedBg;
                                 Console.Write(" " + AnnotatedCaption(opt) + " ");
                                 Console.BackgroundColor = theme.MenuBg;
-                            } else {
+                            }
+                            else
+                            {
                                 // Draw normal menu option
                                 Console.Write(" " + AnnotatedCaption(opt) + " ");
                             }
-                            if (!opt.Enabled) {
+                            if (!opt.Enabled)
+                            {
                                 Console.ForegroundColor = theme.MenuFg;
                             }
                             Console.Write(Symbols.vertLine);
@@ -157,22 +184,30 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         private string AnnotatedCaption(ConsoleMenuOption opt)
         {
-            if (opt.SubMenu != null) {
+            if (opt.SubMenu != null)
+            {
                 return opt.Caption.PadRight(longestLength - 1) + submenuIndicator;
-            } else if (opt.RadioActive != null) {
-                if (opt.RadioActive()) {
+            }
+            else if (opt.RadioActive != null)
+            {
+                if (opt.RadioActive())
+                {
                     return $"({Symbols.dot}) {opt.Caption}".PadRight(longestLength);
-                } else {
+                }
+                else
+                {
                     return $"( ) {opt.Caption}".PadRight(longestLength);
                 }
-            } else {
+            }
+            else
+            {
                 return opt.Caption.PadRight(longestLength - opt.Key.Length) + opt.Key;
             }
         }
 
         private List<ConsoleMenuOption> options;
-        private int                     longestLength;
-        private int                     selectedOption = 0;
+        private int longestLength;
+        private int selectedOption = 0;
 
         private static readonly string submenuIndicator = ">";
     }
@@ -180,7 +215,8 @@ namespace CKAN.ConsoleUI.Toolkit {
     /// <summary>
     /// Object representing an option in a menu
     /// </summary>
-    public class ConsoleMenuOption {
+    public class ConsoleMenuOption
+    {
 
         /// <summary>
         /// Initialize the option
@@ -197,32 +233,32 @@ namespace CKAN.ConsoleUI.Toolkit {
                 Func<ConsoleTheme, bool> exec = null, Func<bool> radio = null, ConsolePopupMenu submenu = null,
                 bool enabled = true)
         {
-            Caption     = cap;
-            Key         = key;
-            Tooltip     = tt;
+            Caption = cap;
+            Key = key;
+            Tooltip = tt;
             CloseParent = close;
-            OnExec      = exec;
-            SubMenu     = submenu;
+            OnExec = exec;
+            SubMenu = submenu;
             RadioActive = radio;
-            Enabled     = enabled;
+            Enabled = enabled;
         }
 
         /// <summary>
         /// Text to show in the menu for this option
         /// </summary>
-        public readonly string           Caption;
+        public readonly string Caption;
         /// <summary>
         /// Text for hotkey to show to the right of the text
         /// </summary>
-        public readonly string           Key;
+        public readonly string Key;
         /// <summary>
         /// Tooltip to show in footer when this option is highlighted
         /// </summary>
-        public readonly string           Tooltip;
+        public readonly string Tooltip;
         /// <summary>
         /// If true, close the menu after activation, otherwise keep it open
         /// </summary>
-        public readonly bool             CloseParent;
+        public readonly bool CloseParent;
         /// <summary>
         /// Function to call if the user chooses this option
         /// </summary>
@@ -230,7 +266,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// If set, this option is a radio button, and this function returns its value
         /// </summary>
-        public readonly Func<bool>       RadioActive;
+        public readonly Func<bool> RadioActive;
         /// <summary>
         /// Submenu to open for this option
         /// </summary>
@@ -238,7 +274,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Function to call to check whether this option is enabled
         /// </summary>
-        public readonly bool             Enabled;
+        public readonly bool Enabled;
     }
 
 }

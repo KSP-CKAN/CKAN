@@ -31,7 +31,7 @@ namespace CKAN.Versioning
         public GameVersionRange(GameVersion lower, GameVersion upper)
             : this(lower?.ToVersionRange().Lower, upper?.ToVersionRange().Upper) { }
 
-        public override string ToString() =>_string;
+        public override string ToString() => _string;
 
         public GameVersionRange IntersectWith(GameVersionRange other)
         {
@@ -85,8 +85,8 @@ namespace CKAN.Versioning
 
         private static string SameVersionString(GameVersion v)
             => v == null ? "???"
-             : v.IsAny   ? Properties.Resources.CkanModuleAllVersions
-             :             v.ToString();
+             : v.IsAny ? Properties.Resources.CkanModuleAllVersions
+             : v.ToString();
 
         /// <summary>
         /// Generate a string describing a range of KSP versions.
@@ -125,14 +125,14 @@ namespace CKAN.Versioning
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj is GameVersionRange && Equals((GameVersionRange) obj);
+            return obj is GameVersionRange && Equals((GameVersionRange)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((Lower != null ? Lower.GetHashCode() : 0)*397) ^ (Upper != null ? Upper.GetHashCode() : 0);
+                return ((Lower != null ? Lower.GetHashCode() : 0) * 397) ^ (Upper != null ? Upper.GetHashCode() : 0);
             }
         }
 

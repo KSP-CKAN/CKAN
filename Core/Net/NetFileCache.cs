@@ -24,7 +24,7 @@ namespace CKAN
     /// </summary>
 
     // We require fancy permissions to use the FileSystemWatcher
-    [PermissionSet(SecurityAction.Demand, Name="FullTrust")]
+    [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     public class NetFileCache : IDisposable
     {
         private FileSystemWatcher watcher;
@@ -33,7 +33,7 @@ namespace CKAN
         private string cachePath;
         private GameInstanceManager manager;
         private static readonly Regex cacheFileRegex = new Regex("^[0-9A-F]{8}-", RegexOptions.Compiled);
-        private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
+        private static readonly ILog log = LogManager.GetLogger(typeof(NetFileCache));
 
         static NetFileCache()
         {
@@ -722,7 +722,7 @@ namespace CKAN
         /// Hash, in all-caps hexadecimal format
         /// </returns>
         private string GetFileHash<T>(string filePath, string hashSuffix, Dictionary<string, string> cache, IProgress<long> progress)
-            where T: HashAlgorithm, new()
+            where T : HashAlgorithm, new()
         {
             string hash = null;
             string hashFile = $"{filePath}.{hashSuffix}";
@@ -738,9 +738,9 @@ namespace CKAN
             }
             else
             {
-                using (FileStream     fs     = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                using (BufferedStream bs     = new BufferedStream(fs))
-                using (T              hasher = new T())
+                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                using (BufferedStream bs = new BufferedStream(fs))
+                using (T hasher = new T())
                 {
                     hash = BitConverter.ToString(hasher.ComputeHash(bs, progress)).Replace("-", "");
                     cache.Add(filePath, hash);
@@ -753,7 +753,7 @@ namespace CKAN
             }
         }
 
-        private Dictionary<string, string> sha1Cache   = new Dictionary<string, string>();
+        private Dictionary<string, string> sha1Cache = new Dictionary<string, string>();
         private Dictionary<string, string> sha256Cache = new Dictionary<string, string>();
     }
 }
