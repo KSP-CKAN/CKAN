@@ -30,6 +30,10 @@
   <ItemGroup>
     <PackageReference Include="ILRepack" Version="2.0.18" />
     <PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net45" Version="1.0.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">
@@ -52,17 +56,10 @@
       <InputAssemblies Include="fr-FR\$(AssemblyName).resources.dll" />
       <InputAssemblies Include="ru-RU\$(AssemblyName).resources.dll" />
     </ItemGroup>
-    <ILRepack OutputAssembly="AutoUpdater.exe"
-              MainAssembly="$(AssemblyName).exe"
-              InputAssemblies="@(InputAssemblies)"
-              OutputType="$(OutputType)"
-              WorkingDirectory="$(OutputPath)"
-              Internalize="true"
-              Parallel="true" />
+    <ILRepack OutputAssembly="AutoUpdater.exe" MainAssembly="$(AssemblyName).exe" InputAssemblies="@(InputAssemblies)" OutputType="$(OutputType)" WorkingDirectory="$(OutputPath)" Internalize="true" Parallel="true" />
     <ItemGroup>
       <Repacked Include="$(OutputPath)AutoUpdater.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(Repacked)"
-          DestinationFolder="..\_build\repack\$(Configuration)" />
+    <Copy SourceFiles="@(Repacked)" DestinationFolder="..\_build\repack\$(Configuration)" />
   </Target>
 </Project>
