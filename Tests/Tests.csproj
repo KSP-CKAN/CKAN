@@ -15,7 +15,8 @@
     <Deterministic>true</Deterministic>
     <Configurations>Debug;Release;Debug_NetCore;Release_NetCore</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
+    <LangVersion>latest</LangVersion>
+    <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
   <Choose>
     <When Condition="$(Configuration.EndsWith('NetCore'))">
@@ -25,7 +26,7 @@
     </When>
     <Otherwise>
       <PropertyGroup>
-        <TargetFramework>net45</TargetFramework>
+        <TargetFramework>net472</TargetFramework>
       </PropertyGroup>
     </Otherwise>
   </Choose>
@@ -42,15 +43,17 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.4.1" />
-    <PackageReference Include="SharpZipLib" Version="1.3.3" />
-    <PackageReference Include="log4net" Version="2.0.10" />
-    <PackageReference Include="Moq" Version="4.14.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="SharpZipLib" Version="1.4.1" />
+    <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="Moq" Version="4.17.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
     <PackageReference Include="YamlDotNet" Version="9.1.0" />
-    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -69,10 +72,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AutoUpdate\CKAN-autoupdate.csproj" />
+    <ProjectReference Include="..\Cmdline\CKAN-cmdline.csproj" />
+    <ProjectReference Include="..\ConsoleUI\CKAN-ConsoleUI.csproj" />
     <ProjectReference Include="..\Core\CKAN-core.csproj" />
+    <ProjectReference Include="..\GUI\CKAN-GUI.csproj" />
+    <ProjectReference Include="..\Netkan\CKAN-netkan.csproj" />
   </ItemGroup>
   <Choose>
-    <When Condition=" '$(TargetFramework)' == 'net45' ">
+    <When Condition=" '$(TargetFramework)' == 'net472' ">
       <ItemGroup>
         <ProjectReference Include="..\Cmdline\CKAN-cmdline.csproj" />
         <ProjectReference Include="..\ConsoleUI\CKAN-ConsoleUI.csproj" />
@@ -86,6 +94,10 @@
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Target Name="BeforeBuild">

@@ -16,8 +16,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>7</LangVersion>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFramework>net45</TargetFramework>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFramework>net472</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,6 +29,7 @@
   <ItemGroup>
     <PackageReference Include="ILRepack" Version="2.0.18" />
     <PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">
@@ -52,17 +52,10 @@
       <InputAssemblies Include="fr-FR\$(AssemblyName).resources.dll" />
       <InputAssemblies Include="ru-RU\$(AssemblyName).resources.dll" />
     </ItemGroup>
-    <ILRepack OutputAssembly="AutoUpdater.exe"
-              MainAssembly="$(AssemblyName).exe"
-              InputAssemblies="@(InputAssemblies)"
-              OutputType="$(OutputType)"
-              WorkingDirectory="$(OutputPath)"
-              Internalize="true"
-              Parallel="true" />
+    <ILRepack OutputAssembly="AutoUpdater.exe" MainAssembly="$(AssemblyName).exe" InputAssemblies="@(InputAssemblies)" OutputType="$(OutputType)" WorkingDirectory="$(OutputPath)" Internalize="true" Parallel="true" />
     <ItemGroup>
       <Repacked Include="$(OutputPath)AutoUpdater.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(Repacked)"
-          DestinationFolder="..\_build\repack\$(Configuration)" />
+    <Copy SourceFiles="@(Repacked)" DestinationFolder="..\_build\repack\$(Configuration)" />
   </Target>
 </Project>
