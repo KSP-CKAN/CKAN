@@ -241,6 +241,10 @@ namespace CKAN
 
             // Find the directory our executable is stored in.
             string exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			if (exeDir.Length == 0)
+			{
+				return null;
+			}
 
             log.DebugFormat("Checking if {0} is in my exe dir: {1}",
                 game.ShortName, exeDir);
