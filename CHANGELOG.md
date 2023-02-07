@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Red highlight for dependencies on missing DLC (#3698 by: HebaruSan; reviewed: techman83)
+- [GUI] Clarify mod list saving options, add menu hotkeys (#3771 by: HebaruSan; reviewed: techman83)
 
 ### Bugfixes
 
