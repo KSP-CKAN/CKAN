@@ -711,7 +711,7 @@ namespace CKAN
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
         public string GetFileHashSha256(string filePath, IProgress<long> progress)
-            => GetFileHash<SHA256Managed>(filePath, "sha256", sha256Cache, progress);
+            => GetFileHash<SHA256CryptoServiceProvider>(filePath, "sha256", sha256Cache, progress);
 
         /// <summary>
         /// Calculate the hash of a file
