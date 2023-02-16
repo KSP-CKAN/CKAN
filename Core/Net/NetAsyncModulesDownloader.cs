@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 using log4net;
 
@@ -58,6 +59,7 @@ namespace CKAN
 
             try
             {
+                cancelTokenSrc = new CancellationTokenSource();
                 // Start the downloads!
                 downloader.DownloadAndWait(unique_downloads
                     .Select(item => new Net.DownloadTarget(
@@ -89,17 +91,21 @@ namespace CKAN
         /// </summary>
         public void CancelDownload()
         {
+            // Cancel downloads
             downloader.CancelDownload();
+            // Cancel validation/store
+            cancelTokenSrc?.Cancel();
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncModulesDownloader));
 
-        private const    string             defaultMimeType = "application/octet-stream";
+        private const    string                  defaultMimeType = "application/octet-stream";
 
-        private          List<CkanModule>   modules;
-        private readonly NetAsyncDownloader downloader;
-        private          IUser              User => downloader.User;
-        private readonly NetModuleCache     cache;
+        private          List<CkanModule>        modules;
+        private readonly NetAsyncDownloader      downloader;
+        private          IUser                   User => downloader.User;
+        private readonly NetModuleCache          cache;
+        private          CancellationTokenSource cancelTokenSrc;
 
         private void ModuleDownloadComplete(Uri url, string filename, Exception error, string etag)
         {
@@ -120,7 +126,9 @@ namespace CKAN
                     User.RaiseMessage(Properties.Resources.NetAsyncDownloaderValidating, module);
                     cache.Store(module, filename,
                         new Progress<long>(percent => StoreProgress?.Invoke(module, 100 - percent, 100)),
-                        module.StandardName());
+                        module.StandardName(),
+                        false,
+                        cancelTokenSrc.Token);
                     File.Delete(filename);
                 }
                 catch (InvalidModuleFileKraken kraken)
@@ -133,6 +141,17 @@ namespace CKAN
                     }
                     // If there was an error in STORING, delete the file so we can try it from scratch later
                     File.Delete(filename);
+                }
+                catch (OperationCanceledException exc)
+                {
+                    log.WarnFormat("Cancellation token threw, validation incomplete: {0}", filename);
+                    User.RaiseMessage(exc.Message);
+                    if (module != null)
+                    {
+                        // Finish out the progress bar
+                        StoreProgress?.Invoke(module, 0, 100);
+                    }
+                    // Don't delete because there might be nothing wrong
                 }
                 catch (FileNotFoundException e)
                 {
