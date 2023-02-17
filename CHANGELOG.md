@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Use changeset tab for reinstall (#3726, #3728, #3739 by: HebaruSan; reviewed: techman83)
 - [Core] Fix handling of empty builds.json file (#3733 by: HebaruSan; reviewed: DasSkelett)
 - [Core] Fix FIPS-mode exceptions on Windows for SHA256 (#3774 by: HebaruSan; reviewed: techman83)
+- [Core] Support cancellation of download checksums (#3778 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 
