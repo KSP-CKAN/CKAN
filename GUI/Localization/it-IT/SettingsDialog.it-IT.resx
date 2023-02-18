@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>48</value>
+  </metadata>
+  <data name="RepositoryGroupBox.Text" xml:space="preserve">
+    <value>Repository Metadati</value>
+  </data>
+  <data name="NewRepoButton.Text" xml:space="preserve">
+    <value>Nuova</value>
+  </data>
+  <data name="UpRepoButton.Text" xml:space="preserve">
+    <value>Su</value>
+  </data>
+  <data name="DownRepoButton.Text" xml:space="preserve">
+    <value>Giù</value>
+  </data>
+  <data name="DeleteRepoButton.Text" xml:space="preserve">
+    <value>Elimina</value>
+  </data>
+  <data name="AuthTokensGroupBox.Text" xml:space="preserve">
+    <value>Token Di Autenticazione</value>
+  </data>
+  <data name="NewAuthTokenButton.Text" xml:space="preserve">
+    <value>Nuova</value>
+  </data>
+  <data name="DeleteAuthTokenButton.Text" xml:space="preserve">
+    <value>Elimina</value>
+  </data>
+  <data name="CacheGroupBox.Text" xml:space="preserve">
+    <value>Cache del Download</value>
+  </data>
+  <data name="CacheSummary.Text" xml:space="preserve">
+    <value>N file, M MB</value>
+  </data>
+  <data name="CacheLimitPreLabel.Text" xml:space="preserve">
+    <value>Dimensione cache massima:</value>
+  </data>
+  <data name="CacheLimitPostLabel.Text" xml:space="preserve">
+    <value>MB (vuoto per illimitato)</value>
+  </data>
+  <data name="ChangeCacheButton.Text" xml:space="preserve">
+    <value>Modifica...</value>
+  </data>
+  <data name="ClearCacheButton.Text" xml:space="preserve">
+    <value>Pulisci</value>
+  </data>
+  <data name="PurgeToLimitMenuItem.Text" xml:space="preserve">
+    <value>Pulisci al limite</value>
+  </data>
+  <data name="PurgeAllMenuItem.Text" xml:space="preserve">
+    <value>Pulisci tutto</value>
+  </data>
+  <data name="ResetCacheButton.Text" xml:space="preserve">
+    <value>Ripristina</value>
+  </data>
+  <data name="OpenCacheButton.Text" xml:space="preserve">
+    <value>Apri</value>
+  </data>
+  <data name="AutoUpdateGroupBox.Text" xml:space="preserve">
+    <value>Aggiornamenti Automatici</value>
+  </data>
+  <data name="LocalVersionPreLabel.Text" xml:space="preserve">
+    <value>Versione locale:</value>
+  </data>
+  <data name="LocalVersionLabel.Text" xml:space="preserve">
+    <value>v0.0.0</value>
+  </data>
+  <data name="LatestVersionPreLabel.Text" xml:space="preserve">
+    <value>Ultima versione:</value>
+  </data>
+  <data name="LatestVersionLabel.Text" xml:space="preserve">
+    <value>???</value>
+  </data>
+  <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve">
+    <value>Verifica gli aggiornamenti CKAN all'avvio</value>
+  </data>
+  <data name="CheckForUpdatesButton.Text" xml:space="preserve">
+    <value>Verifica aggiornamenti</value>
+  </data>
+  <data name="InstallUpdateButton.Text" xml:space="preserve">
+    <value>Installa aggiornamento</value>
+  </data>
+  <data name="BehaviourGroupBox.Text" xml:space="preserve">
+    <value>Comportamento</value>
+  </data>
+  <data name="EnableTrayIconCheckBox.Text" xml:space="preserve">
+    <value>Attiva l'icona ridotta</value>
+  </data>
+  <data name="MinimizeToTrayCheckBox.Text" xml:space="preserve">
+    <value>Riduci a icona nella barra delle applicazioni</value>
+  </data>
+  <data name="RefreshPreLabel.Text" xml:space="preserve">
+    <value>Aggiorna modlist ogni</value>
+  </data>
+  <data name="RefreshPostLabel.Text" xml:space="preserve">
+    <value>minuto(i)</value>
+  </data>
+  <data name="PauseRefreshCheckBox.Text" xml:space="preserve">
+    <value>Sospendi l'aggiornamento</value>
+  </data>
+  <data name="MoreSettingsGroupBox.Text" xml:space="preserve">
+    <value>Altre Impostazioni</value>
+  </data>
+  <data name="LanguageSelectionLabel.Text" xml:space="preserve">
+    <value>Lingua (richiede riavvio):</value>
+  </data>
+  <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve">
+    <value>Aggiorna repository all'avvio</value>
+  </data>
+  <data name="HideEpochsCheckbox.Text" xml:space="preserve">
+    <value>Nascondere i tempi Posix nell'elenco dei mod (è necessario il riavvio)</value>
+  </data>
+  <data name="HideVCheckbox.Text" xml:space="preserve">
+    <value>Nascondi "v" nella lista delle mod (richiede il riavvio)</value>
+  </data>
+  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve">
+    <value>Ordina automaticamente per la colonna "Aggiornamento" quando si fa clic su "Aggiungi aggiornamenti disponibili"</value>
+  </data>
+  <data name="RepoNameHeader.Text" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="RepoURLHeader.Text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="AuthHostHeader.Text" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="AuthTokenHeader.Text" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Impostazioni</value>
+  </data>
+</root>
