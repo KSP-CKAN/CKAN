@@ -142,7 +142,7 @@
     <value>Échec du téléchargement de "{0}", essai du lien de secours "{1}"</value>
   </data>
   <data name="NetAsyncDownloaderValidating" xml:space="preserve">
-    <value>Téléchargement de {0} terminé, validation et stockage en cache...</value>
+    <value>Téléchargement de {0} terminé, validation et mise en cache...</value>
   </data>
   <data name="NetFileCacheCannotFind" xml:space="preserve">
     <value>Impossible de trouver le dossier du cache : {0}</value>
@@ -572,14 +572,14 @@ Si vous êtes certain que ce n'est pas le cas, alors supprimez :
     <value>Pas assez d'espace dans le dossier temporaire pour télécharger les modules !</value>
   </data>
   <data name="NotEnoughSpaceToCache" xml:space="preserve">
-    <value>Pas assez d'espace dans le dossier de cache pour stocker les modules !</value>
+    <value>Pas assez d'espace dans le dossier de cache pour enregistrer les modules !</value>
   </data>
   <data name="NotEnoughSpaceToInstall" xml:space="preserve">
     <value>Pas assez d'espace dans le dossier de jeu pour installer des modules !</value>
   </data>
   <data name="KrakenNotEnoughSpace" xml:space="preserve">
     <value>{0}
-Besoin de stocker {3} à {1}, mais seulement {2} est disponible !
+Besoin d'enregistrer {3} dans {1}, mais seulement {2} est disponible !
 Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser un autre emplacement.
 </value>
   </data>
