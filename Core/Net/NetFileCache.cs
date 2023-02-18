@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System.Threading;
 using System.Security.Permissions;
 using System.Security.Cryptography;
 
@@ -699,8 +700,8 @@ namespace CKAN
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha1(string filePath, IProgress<long> progress)
-            => GetFileHash<SHA1CryptoServiceProvider>(filePath, "sha1", sha1Cache, progress);
+        public string GetFileHashSha1(string filePath, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
+            => GetFileHash<SHA1CryptoServiceProvider>(filePath, "sha1", sha1Cache, progress, cancelToken);
 
         /// <summary>
         /// Calculate the SHA256 hash of a file
@@ -710,8 +711,8 @@ namespace CKAN
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha256(string filePath, IProgress<long> progress)
-            => GetFileHash<SHA256Managed>(filePath, "sha256", sha256Cache, progress);
+        public string GetFileHashSha256(string filePath, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
+            => GetFileHash<SHA256CryptoServiceProvider>(filePath, "sha256", sha256Cache, progress, cancelToken);
 
         /// <summary>
         /// Calculate the hash of a file
@@ -721,7 +722,7 @@ namespace CKAN
         /// <returns>
         /// Hash, in all-caps hexadecimal format
         /// </returns>
-        private string GetFileHash<T>(string filePath, string hashSuffix, Dictionary<string, string> cache, IProgress<long> progress)
+        private string GetFileHash<T>(string filePath, string hashSuffix, Dictionary<string, string> cache, IProgress<long> progress, CancellationToken cancelToken)
             where T: HashAlgorithm, new()
         {
             string hash = null;
@@ -742,7 +743,7 @@ namespace CKAN
                 using (BufferedStream bs     = new BufferedStream(fs))
                 using (T              hasher = new T())
                 {
-                    hash = BitConverter.ToString(hasher.ComputeHash(bs, progress)).Replace("-", "");
+                    hash = BitConverter.ToString(hasher.ComputeHash(bs, progress, cancelToken)).Replace("-", "");
                     cache.Add(filePath, hash);
                     if (Path.GetDirectoryName(hashFile) == Path.GetFullPath(cachePath))
                     {

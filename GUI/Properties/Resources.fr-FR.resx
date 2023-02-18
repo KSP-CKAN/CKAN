@@ -729,7 +729,7 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
     <value>Chemin invalide : {0}</value>
   </data>
   <data name="SettingsDialogCacheDescrip" xml:space="preserve">
-    <value>Choisissez un dossier pour stocker les téléchargements de mods de CKAN :</value>
+    <value>Choisissez un dossier pour enregistrer les mods téléchargés par CKAN :</value>
   </data>
   <data name="SettingsDialogDeleteConfirm" xml:space="preserve">
     <value>Voulez-vous vraiment supprimer {0} fichiers en cache et libérer {1} ?</value>

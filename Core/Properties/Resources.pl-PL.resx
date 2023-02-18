@@ -141,6 +141,9 @@
   <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve">
     <value>Nie udało się pobrać "{0}", próbuje ponownie z "{1}"</value>
   </data>
+  <data name="NetAsyncDownloaderValidating" xml:space="preserve">
+    <value>Zakończono pobieranie {0}, weryfikowanie i zapisywanie do pamięci podręcznej...</value>
+  </data>
   <data name="NetFileCacheCannotFind" xml:space="preserve">
     <value>Nie można znaleźć folderu cache: {0}</value>
   </data>
@@ -394,9 +397,6 @@ Czy chcesz je zainstalować ponownie teraz?</value>
   <data name="ModuleInstallerAboutToInstall" xml:space="preserve">
     <value>Zainstaluje:</value>
   </data>
-  <data name="ModuleInstallerModuleCached" xml:space="preserve">
-    <value> * {0} {1} (zapisany w folderze cache)</value>
-  </data>
   <data name="ModuleInstallerUserDeclined" xml:space="preserve">
     <value>Użytkownik odrzucił listę instalacji</value>
   </data>
@@ -627,5 +627,26 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
   </data>
   <data name="SanityCheckerConflictsWith" xml:space="preserve">
     <value>{0} koliduje z {1}</value>
+  </data>
+  <data name="NetModuleCacheMetapackage" xml:space="preserve">
+    <value>{0} {1} (metapackage)</value>
+  </data>
+  <data name="NetModuleCacheModuleCached" xml:space="preserve">
+    <value>{0} {1} (zapisany w folderze cache)</value>
+  </data>
+  <data name="NetModuleCacheModuleHostSize" xml:space="preserve">
+    <value>{0} {1} ({2}, {3})</value>
+  </data>
+  <data name="NetModuleCacheModuleResuming" xml:space="preserve">
+    <value>{0} {1} ({2}, {3} pozostało)</value>
+  </data>
+  <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve">
+    <value> * Instalacja: {0} {1} ({2}, {3} pozostało)</value>
+  </data>
+  <data name="ModuleInstallerUpgradeUpgradingResuming" xml:space="preserve">
+    <value> * Aktualizacja: {0} {1} do {2} ({3}, {4} pozostało)</value>
+  </data>
+  <data name="ModpackName" xml:space="preserve">
+    <value>zainstalowano-{0}</value>
   </data>
 </root>

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Security.Cryptography;
 
 namespace CKAN
@@ -109,9 +110,9 @@ namespace CKAN
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha1(string filePath, IProgress<long> progress)
+        public string GetFileHashSha1(string filePath, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
         {
-            return cache.GetFileHashSha1(filePath, progress);
+            return cache.GetFileHashSha1(filePath, progress, cancelToken);
         }
 
         /// <summary>
@@ -122,9 +123,9 @@ namespace CKAN
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha256(string filePath, IProgress<long> progress)
+        public string GetFileHashSha256(string filePath, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
         {
-            return cache.GetFileHashSha256(filePath, progress);
+            return cache.GetFileHashSha256(filePath, progress, cancelToken);
         }
 
         /// <summary>
@@ -139,7 +140,7 @@ namespace CKAN
         /// <returns>
         /// Name of the new file in the cache
         /// </returns>
-        public string Store(CkanModule module, string path, IProgress<long> progress, string description = null, bool move = false)
+        public string Store(CkanModule module, string path, IProgress<long> progress, string description = null, bool move = false, CancellationToken cancelToken = default(CancellationToken))
         {
             // ZipValid takes a lot longer than the hash steps, so scale them 60:20:20
             const int zipValidPercent   = 60;
@@ -158,6 +159,8 @@ namespace CKAN
                     Properties.Resources.NetModuleCacheBadLength,
                     module, path, fi.Length, module.download_size));
 
+            cancelToken.ThrowIfCancellationRequested();
+
             // Check valid CRC
             string invalidReason;
             if (!NetFileCache.ZipValid(path, out invalidReason, new Progress<long>(percent =>
@@ -168,12 +171,14 @@ namespace CKAN
                     module, path, invalidReason));
             }
 
+            cancelToken.ThrowIfCancellationRequested();
+
             // Some older metadata doesn't have hashes
             if (module.download_hash != null)
             {
                 // Check SHA1 match
                 string sha1 = GetFileHashSha1(path, new Progress<long>(percent =>
-                    progress?.Report(zipValidPercent + percent * hashSha1Percent / 100)));
+                    progress?.Report(zipValidPercent + percent * hashSha1Percent / 100)), cancelToken);
                 if (sha1 != module.download_hash.sha1)
                 {
                     throw new InvalidModuleFileKraken(module, path, string.Format(
@@ -183,7 +188,7 @@ namespace CKAN
 
                 // Check SHA256 match
                 string sha256 = GetFileHashSha256(path, new Progress<long>(percent =>
-                    progress?.Report(zipValidPercent + hashSha1Percent + percent * hashSha256Percent / 100)));
+                    progress?.Report(zipValidPercent + hashSha1Percent + percent * hashSha256Percent / 100)), cancelToken);
                 if (sha256 != module.download_hash.sha256)
                 {
                     throw new InvalidModuleFileKraken(module, path, string.Format(
@@ -191,6 +196,8 @@ namespace CKAN
                         module, path, sha256, module.download_hash.sha256));
                 }
             }
+
+            cancelToken.ThrowIfCancellationRequested();
 
             // If no exceptions, then everything is fine
             var success = cache.Store(module.download, path, description ?? module.StandardName(), move);

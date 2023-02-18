@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Red highlight for dependencies on missing DLC (#3698 by: HebaruSan; reviewed: techman83)
+- [GUI] Clarify mod list saving options, add menu hotkeys (#3771 by: HebaruSan; reviewed: techman83)
+- [Multiple] Italian translation and other localization fixes (#3780, #3781 by: frankieorabona, WujekFoliarz, vinix38, Kalessin1; reviewed: HebaruSan)
+- [Core] Fix mkbundle executable crash (#3767 by: memchr; reviewed: HebaruSan)
 
 ### Bugfixes
 
@@ -14,6 +17,8 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix GUI freeze with non-empty changeset at startup (#3708 by: HebaruSan; reviewed: techman83)
 - [GUI] Use changeset tab for reinstall (#3726, #3728, #3739 by: HebaruSan; reviewed: techman83)
 - [Core] Fix handling of empty builds.json file (#3733 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Fix FIPS-mode exceptions on Windows for SHA256 (#3774 by: HebaruSan; reviewed: techman83)
+- [Core] Support cancellation of download checksums (#3778 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 
