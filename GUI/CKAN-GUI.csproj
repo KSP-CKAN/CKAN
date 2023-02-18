@@ -390,6 +390,9 @@
     <EmbeddedResource Include="Localization\pt-BR\AboutDialog.pt-BR.resx">
       <DependentUpon>..\..\Dialogs\AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\AboutDialog.it-IT.resx">
+      <DependentUpon>..\..\Dialogs\AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\AboutDialog.pl-PL.resx">
       <DependentUpon>..\..\Dialogs\AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -418,6 +421,9 @@
       <DependentUpon>..\..\Dialogs\AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\AskUserForAutoUpdatesDialog.pt-BR.resx">
+      <DependentUpon>..\..\Dialogs\AskUserForAutoUpdatesDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\AskUserForAutoUpdatesDialog.it-IT.resx">
       <DependentUpon>..\..\Dialogs\AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\tr-TR\AskUserForAutoUpdatesDialog.tr-TR.resx">
@@ -450,6 +456,9 @@
     <EmbeddedResource Include="Localization\pt-BR\CloneFakeGameDialog.pt-BR.resx">
       <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\CloneFakeGameDialog.it-IT.resx">
+      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\CloneFakeGameDialog.pl-PL.resx">
       <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -477,6 +486,9 @@
     <EmbeddedResource Include="Localization\pt-BR\CompatibleGameVersionsDialog.pt-BR.resx">
       <DependentUpon>..\..\Dialogs\CompatibleGameVersionsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\CompatibleGameVersionsDialog.it-IT.resx">
+      <DependentUpon>..\..\Dialogs\CompatibleGameVersionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\CompatibleGameVersionsDialog.pl-PL.resx">
       <DependentUpon>..\..\Dialogs\CompatibleGameVersionsDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -502,6 +514,9 @@
       <DependentUpon>..\..\Controls\Changeset.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\Changeset.pt-BR.resx">
+      <DependentUpon>..\..\Controls\Changeset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\Changeset.it-IT.resx">
       <DependentUpon>..\..\Controls\Changeset.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\tr-TR\Changeset.tr-TR.resx">
@@ -534,6 +549,9 @@
     <EmbeddedResource Include="Localization\pt-BR\ChooseProvidedMods.pt-BR.resx">
       <DependentUpon>..\..\Controls\ChooseProvidedMods.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\ChooseProvidedMods.it-IT.resx">
+      <DependentUpon>..\..\Controls\ChooseProvidedMods.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\ChooseProvidedMods.pl-PL.resx">
       <DependentUpon>..\..\Controls\ChooseProvidedMods.cs</DependentUpon>
     </EmbeddedResource>
@@ -559,6 +577,9 @@
       <DependentUpon>..\..\Controls\ChooseRecommendedMods.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\ChooseRecommendedMods.pt-BR.resx">
+      <DependentUpon>..\..\Controls\ChooseRecommendedMods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\ChooseRecommendedMods.it-IT.resx">
       <DependentUpon>..\..\Controls\ChooseRecommendedMods.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\tr-TR\ChooseRecommendedMods.tr-TR.resx">
@@ -591,6 +612,9 @@
     <EmbeddedResource Include="Localization\pt-BR\Wait.pt-BR.resx">
       <DependentUpon>..\..\Controls\Wait.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\Wait.it-IT.resx">
+      <DependentUpon>..\..\Controls\Wait.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\Wait.pl-PL.resx">
       <DependentUpon>..\..\Controls\Wait.cs</DependentUpon>
     </EmbeddedResource>
@@ -616,6 +640,9 @@
       <DependentUpon>..\..\Controls\DeleteDirectories.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\DeleteDirectories.pt-BR.resx">
+      <DependentUpon>..\..\Controls\DeleteDirectories.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\DeleteDirectories.it-IT.resx">
       <DependentUpon>..\..\Controls\DeleteDirectories.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\DeleteDirectories.pl-PL.resx">
@@ -654,6 +681,9 @@
     <EmbeddedResource Include="Localization\pt-BR\EditModpack.pt-BR.resx">
       <DependentUpon>..\..\Controls\EditModpack.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\EditModpack.it-IT.resx">
+      <DependentUpon>..\..\Controls\EditModpack.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\EditModpack.pl-PL.resx">
       <DependentUpon>..\..\Controls\EditModpack.cs</DependentUpon>
     </EmbeddedResource>
@@ -676,6 +706,9 @@
       <DependentUpon>..\..\Dialogs\EditLabelsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\EditLabelsDialog.pt-BR.resx">
+      <DependentUpon>..\..\Dialogs\EditLabelsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\EditLabelsDialog.it-IT.resx">
       <DependentUpon>..\..\Dialogs\EditLabelsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\EditLabelsDialog.pl-PL.resx">
@@ -705,6 +738,9 @@
     <EmbeddedResource Include="Localization\pt-BR\ErrorDialog.pt-BR.resx">
       <DependentUpon>..\..\Dialogs\ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\ErrorDialog.it-IT.resx">
+      <DependentUpon>..\..\Dialogs\ErrorDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\ErrorDialog.pl-PL.resx">
       <DependentUpon>..\..\Dialogs\ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -730,6 +766,9 @@
       <DependentUpon>..\..\Dialogs\GameCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\GameCommandLineOptionsDialog.pt-BR.resx">
+      <DependentUpon>..\..\Dialogs\GameCommandLineOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\GameCommandLineOptionsDialog.it-IT.resx">
       <DependentUpon>..\..\Dialogs\GameCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\GameCommandLineOptionsDialog.pl-PL.resx">
@@ -769,6 +808,9 @@
     <EmbeddedResource Include="Localization\pt-BR\Main.pt-BR.resx">
       <DependentUpon>..\..\Main\Main.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\Main.it-IT.resx">
+      <DependentUpon>..\..\Main\Main.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\Main.pl-PL.resx">
       <DependentUpon>..\..\Main\Main.cs</DependentUpon>
     </EmbeddedResource>
@@ -803,6 +845,9 @@
       <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\Versions.pt-BR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\Versions.it-IT.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Versions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\tr-TR\Versions.tr-TR.resx">
@@ -847,6 +892,9 @@
     <EmbeddedResource Include="Localization\pt-BR\ManageMods.pt-BR.resx">
       <DependentUpon>..\..\Controls\ManageMods.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\ManageMods.it-IT.resx">
+      <DependentUpon>..\..\Controls\ManageMods.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\ManageMods.pl-PL.resx">
       <DependentUpon>..\..\Controls\ManageMods.cs</DependentUpon>
     </EmbeddedResource>
@@ -874,6 +922,9 @@
     <EmbeddedResource Include="Localization\pt-BR\EditModSearch.pt-BR.resx">
       <DependentUpon>..\..\Controls\EditModSearch.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\EditModSearch.it-IT.resx">
+      <DependentUpon>..\..\Controls\EditModSearch.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\EditModSearch.pl-PL.resx">
       <DependentUpon>..\..\Controls\EditModSearch.cs</DependentUpon>
     </EmbeddedResource>
@@ -899,6 +950,9 @@
       <DependentUpon>..\..\Controls\EditModSearchDetails.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\EditModSearchDetails.pt-BR.resx">
+      <DependentUpon>..\..\Controls\EditModSearchDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\EditModSearchDetails.it-IT.resx">
       <DependentUpon>..\..\Controls\EditModSearchDetails.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\EditModSearchDetails.pl-PL.resx">
@@ -931,6 +985,9 @@
     <EmbeddedResource Include="Localization\pt-BR\ModInfo.pt-BR.resx">
       <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\ModInfo.it-IT.resx">
+      <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\ru-RU\ModInfo.ru-RU.resx">
       <DependentUpon>..\..\Controls\ModInfo.cs</DependentUpon>
     </EmbeddedResource>
@@ -958,6 +1015,9 @@
     <EmbeddedResource Include="Localization\pt-BR\Metadata.pt-BR.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\Metadata.it-IT.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\tr-TR\Metadata.tr-TR.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
     </EmbeddedResource>
@@ -967,7 +1027,6 @@
     <EmbeddedResource Include="Localization\zh-CN\Metadata.zh-CN.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Metadata.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="Localization\de-DE\Relationships.de-DE.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
     </EmbeddedResource>
@@ -984,6 +1043,9 @@
       <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\Relationships.pt-BR.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\Relationships.it-IT.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Relationships.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\ru-RU\Relationships.ru-RU.resx">
@@ -1010,6 +1072,9 @@
     <EmbeddedResource Include="Localization\pt-BR\Contents.pt-BR.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\Contents.it-IT.resx">
+      <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\tr-TR\Contents.tr-TR.resx">
       <DependentUpon>..\..\Controls\ModInfoTabs\Contents.cs</DependentUpon>
     </EmbeddedResource>
@@ -1032,6 +1097,9 @@
       <DependentUpon>..\..\Dialogs\ManageGameInstancesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\ManageGameInstancesDialog.pt-BR.resx">
+      <DependentUpon>..\..\Dialogs\ManageGameInstancesDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\ManageGameInstancesDialog.it-IT.resx">
       <DependentUpon>..\..\Dialogs\ManageGameInstancesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\ManageGameInstancesDialog.pl-PL.resx">
@@ -1061,6 +1129,9 @@
     <EmbeddedResource Include="Localization\pt-BR\NewRepoDialog.pt-BR.resx">
       <DependentUpon>..\..\Dialogs\NewRepoDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\NewRepoDialog.it-IT.resx">
+      <DependentUpon>..\..\Dialogs\NewRepoDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\NewRepoDialog.pl-PL.resx">
       <DependentUpon>..\..\Dialogs\NewRepoDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -1088,6 +1159,9 @@
     <EmbeddedResource Include="Localization\pt-BR\NewUpdateDialog.pt-BR.resx">
       <DependentUpon>..\..\Dialogs\NewUpdateDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\NewUpdateDialog.it-IT.resx">
+      <DependentUpon>..\..\Dialogs\NewUpdateDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\NewUpdateDialog.pl-PL.resx">
       <DependentUpon>..\..\Dialogs\NewUpdateDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -1113,6 +1187,9 @@
       <DependentUpon>..\..\Dialogs\PluginsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\PluginsDialog.pt-BR.resx">
+      <DependentUpon>..\..\Dialogs\PluginsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\PluginsDialog.it-IT.resx">
       <DependentUpon>..\..\Dialogs\PluginsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\PluginsDialog.pl-PL.resx">
@@ -1163,6 +1240,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.it-IT.resx">
+      <LogicalName>CKAN.GUI.Properties.Resources.it-IT.resources</LogicalName>
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.pl-PL.resx">
       <LogicalName>CKAN.GUI.Properties.Resources.pl-PL.resources</LogicalName>
       <SubType>Designer</SubType>
@@ -1202,6 +1285,9 @@
     <EmbeddedResource Include="Localization\pt-BR\RenameInstanceDialog.pt-BR.resx">
       <DependentUpon>..\..\Dialogs\RenameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\RenameInstanceDialog.it-IT.resx">
+      <DependentUpon>..\..\Dialogs\RenameInstanceDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\RenameInstanceDialog.pl-PL.resx">
       <DependentUpon>..\..\Dialogs\RenameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -1227,6 +1313,9 @@
       <DependentUpon>..\..\Dialogs\SelectionDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\SelectionDialog.pt-BR.resx">
+      <DependentUpon>..\..\Dialogs\SelectionDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\SelectionDialog.it-IT.resx">
       <DependentUpon>..\..\Dialogs\SelectionDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\SelectionDialog.pl-PL.resx">
@@ -1259,6 +1348,9 @@
     <EmbeddedResource Include="Localization\pt-BR\SettingsDialog.pt-BR.resx">
       <DependentUpon>..\..\Dialogs\SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\SettingsDialog.it-IT.resx">
+      <DependentUpon>..\..\Dialogs\SettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\SettingsDialog.pl-PL.resx">
       <DependentUpon>..\..\Dialogs\SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -1284,6 +1376,9 @@
       <DependentUpon>..\..\Dialogs\YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pt-BR\YesNoDialog.pt-BR.resx">
+      <DependentUpon>..\..\Dialogs\YesNoDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\it-IT\YesNoDialog.it-IT.resx">
       <DependentUpon>..\..\Dialogs\YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\pl-PL\YesNoDialog.pl-PL.resx">

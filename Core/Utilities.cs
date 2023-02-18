@@ -23,6 +23,7 @@ namespace CKAN
             "ko-KR",
             "pl-PL",
             "tr-TR",
+            "it-IT",
         };
 
         /// <summary>

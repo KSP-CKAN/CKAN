@@ -124,67 +124,67 @@
     <value>True</value>
   </data>
   <data name="fileToolStripMenuItem.Text" xml:space="preserve">
-    <value>Fichier</value>
+    <value>&amp;Fichier</value>
   </data>
   <data name="manageGameInstancesMenuItem.Text" xml:space="preserve">
-    <value>Gérer les instances de jeu</value>
+    <value>&amp;Gérer les instances de jeu</value>
   </data>
   <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
-    <value>Ouvrir le dossier du jeu</value>
+    <value>&amp;Ouvrir le dossier du jeu</value>
   </data>
   <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Installer depuis .ckan...</value>
   </data>
   <data name="exportModListToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Sauvegarder la liste des mods installés...</value>
+    <value>Créer un fichier &amp;texte avec les mods installés (ne peut pas être réimporté)...</value>
   </data>
   <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve">
-    <value>Exporter modpack...</value>
+    <value>&amp;Sauver le modpack dans un fichier (peut être réimporté)...</value>
   </data>
   <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
     <value>Importer des &amp;mods téléchargés...</value>
   </data>
   <data name="auditRecommendationsMenuItem.Text" xml:space="preserve">
-    <value>Voir les recommandations</value>
+    <value>Voir les &amp;recommandations</value>
   </data>
   <data name="ExitToolButton.Text" xml:space="preserve">
     <value>&amp;Quitter</value>
   </data>
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Options</value>
+    <value>&amp;Options</value>
   </data>
   <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Options CKAN</value>
+    <value>&amp;Paramètres CKAN</value>
   </data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Plugins CKAN</value>
+    <value>Plugins &amp;CKAN</value>
   </data>
   <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve">
-    <value>Filtres d'installation</value>
+    <value>&amp;Filtres d'installation</value>
   </data>
   <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve">
-    <value>Ligne de commande du jeu</value>
+    <value>&amp;Ligne de commande du jeu</value>
   </data>
   <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Versions de jeu compatibles</value>
+    <value>&amp;Versions de jeu compatibles</value>
   </data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve">
-    <value>Aide</value>
+    <value>&amp;Aide</value>
   </data>
   <data name="userGuideToolStripMenuItem.Text" xml:space="preserve">
-    <value>Guide d'utilisation</value>
+    <value>Guide d'&amp;utilisation</value>
   </data>
   <data name="discordToolStripMenuItem.Text" xml:space="preserve">
-    <value>Discord</value>
+    <value>&amp;Discord</value>
   </data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve">
-    <value>Signaler un problème avec le client CKAN</value>
+    <value>Signaler un problème avec le &amp;client CKAN</value>
   </data>
   <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve">
-    <value>Signaler un problème avec les métadonnées d'un mod</value>
+    <value>Signaler un problème avec les &amp;métadonnées d'un mod</value>
   </data>
   <data name="aboutToolStripMenuItem.Text" xml:space="preserve">
-    <value>À propos</value>
+    <value>&amp;À Propos</value>
   </data>
   <data name="ManageModsTabPage.Text" xml:space="preserve">
     <value>Gérer les mods</value>
@@ -238,7 +238,7 @@
     <value>Quitter</value>
   </data>
   <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
-    <value>Temps de jeu...</value>
+    <value>&amp;Temps de jeu...</value>
   </data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve">
     <value>CKAN</value>

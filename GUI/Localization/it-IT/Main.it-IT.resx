@@ -124,121 +124,118 @@
     <value>True</value>
   </data>
   <data name="fileToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Plik</value>
+    <value>&amp;File</value>
   </data>
   <data name="manageGameInstancesMenuItem.Text" xml:space="preserve">
-    <value>&amp;Zarządzaj instalacjami gry</value>
+    <value>&amp;Gestione istanze di gioco</value>
   </data>
   <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Otwórz folder gry</value>
+    <value>&amp;Apri Cartella Di Gioco</value>
   </data>
   <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Zainstaluj z .ckan...</value>
+    <value>&amp;Installa da .ckan...</value>
   </data>
   <data name="exportModListToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Zapisz listę modyfikacji (nie można ponownie zaimportować)...</value>
+    <value>&amp;Salva lista delle mod installate (non può essere re-importata)...</value>
   </data>
   <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Eksportuj paczkę modów (można ponownie zaimportować)...</value>
+    <value>&amp;Esporta modpack (può essere re-importato)...</value>
   </data>
   <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Importuj &amp;pobrane mody...</value>
-  </data>
-  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve">
-    <value>Audytuj &amp;rekomendacje</value>
+    <value>Importa mods &amp;scaricate...</value>
   </data>
   <data name="ExitToolButton.Text" xml:space="preserve">
-    <value>Wyjdź</value>
+    <value>&amp;Uscita</value>
   </data>
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Ustawienia</value>
+    <value>&amp;Impostazioni</value>
   </data>
   <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Ustawienia &amp;CKAN</value>
+    <value>&amp;Impostazioni CKAN</value>
   </data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Pluginy CKAN</value>
+    <value>&amp;Plugin CKAN</value>
   </data>
   <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve">
-    <value>$Filtry instalacji</value>
+    <value>&amp;Filtri Di Installazione</value>
   </data>
   <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Wiersz poleceń gry</value>
+    <value>&amp;Linea di comando del gioco</value>
   </data>
   <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Kompatybilne wersje gry</value>
+    <value>&amp;Versioni compatibili del gioco</value>
   </data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Pomoc</value>
+    <value>&amp;Guida</value>
   </data>
   <data name="userGuideToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Instrukcja obsługi</value>
+    <value>&amp;Guida utente</value>
   </data>
   <data name="discordToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Discord</value>
   </data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve">
-    <value>Zgłoś problem z &amp;klientem CKAN</value>
+    <value>Segnala un problema con il &amp;client CKAN</value>
   </data>
   <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve">
-    <value>Zgłoś problem z &amp;metadanymi modyfikacji</value>
+    <value>Segnala un problema con i &amp;metadati delle mod</value>
   </data>
   <data name="aboutToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;O programie</value>
+    <value>&amp;Informazioni</value>
   </data>
   <data name="ManageModsTabPage.Text" xml:space="preserve">
-    <value>Zarządzaj modami</value>
+    <value>Gestione mod</value>
   </data>
   <data name="ChangesetTabPage.Text" xml:space="preserve">
-    <value>Lista zmian</value>
+    <value>Riepilogo delle modifiche</value>
   </data>
   <data name="WaitTabPage.Text" xml:space="preserve">
-    <value>Logi statusu</value>
+    <value>Registro</value>
   </data>
   <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve">
-    <value>Wybierz mody</value>
+    <value>Scegli mod</value>
   </data>
   <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve">
-    <value>Wybierz zalecane, sugerowane lub pomocnicze modyfikacje</value>
+    <value>Scegli le mod consigliate, suggerite o supportate</value>
   </data>
   <data name="PlayTimeTabPage.Text" xml:space="preserve">
-    <value>Czas gry</value>
+    <value>Tempo Di Gioco</value>
   </data>
   <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve">
-    <value>Usuń foldery</value>
+    <value>Elimina Cartelle</value>
   </data>
   <data name="EditModpackTabPage.Text" xml:space="preserve">
-    <value>Edytuj paczkę modów</value>
+    <value>Modifica ModPack</value>
   </data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve">
     <value>CKAN</value>
   </data>
   <data name="updatesToolStripMenuItem.Text" xml:space="preserve">
-    <value>N dostępne aktualizacje</value>
+    <value>Non sono disponibili aggiornamenti</value>
   </data>
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve">
-    <value>Odśwież</value>
+    <value>Ricarica</value>
   </data>
   <data name="pauseToolStripMenuItem.Text" xml:space="preserve">
-    <value>Wstrzymaj</value>
+    <value>Pausa</value>
   </data>
   <data name="openCKANToolStripMenuItem.Text" xml:space="preserve">
-    <value>Otwórz CKAN</value>
+    <value>Apri CKAN</value>
   </data>
   <data name="openGameToolStripMenuItem.Text" xml:space="preserve">
-    <value>Uruchom grę</value>
+    <value>Avvia Gioco</value>
   </data>
   <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
-    <value>Otwórz folder gry</value>
+    <value>Apri Cartella Di Gioco</value>
   </data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve">
-    <value>Ustawienia CKAN</value>
+    <value>Impostazioni CKAN</value>
   </data>
   <data name="quitToolStripMenuItem.Text" xml:space="preserve">
-    <value>Zakończ</value>
+    <value>Esci</value>
   </data>
   <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
-    <value>Czas gry...</value>
+    <value>Tempo di &amp;Gioco...</value>
   </data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve">
     <value>CKAN</value>

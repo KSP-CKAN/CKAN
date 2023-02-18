@@ -192,173 +192,173 @@
     <value>..\Resources\triToggleBoth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CKANFileFilter" xml:space="preserve">
-    <value>metadane CKAN (*.ckan)|*.ckan</value>
+    <value>Metadati CKAN (*.ckan)|*.ckan</value>
   </data>
   <data name="ExportInstalledModsDialogTitle" xml:space="preserve">
-    <value>Eksportuj listę modyfikacji</value>
+    <value>Esporta Lista Mod</value>
   </data>
   <data name="AboutDialogLabel2Text" xml:space="preserve">
-    <value>Wersja {0}</value>
+    <value>Versione {0}</value>
   </data>
   <data name="BuildIDFilterDescription" xml:space="preserve">
-    <value>Zbuduj plik metadanych</value>
+    <value>Generazione file metadati</value>
   </data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve">
-    <value>Wprowadź nazwę dla nowej instalacji.</value>
+    <value>Inserire un nome per la nuova istanza.</value>
   </data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve">
-    <value>Wprowadź ścieżkę dla nowej instalacji.</value>
+    <value>Inserire un percorso per la nuova istanza.</value>
   </data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve">
-    <value>"Klonowanie instalacji..."</value>
+    <value>" Clonazione dell'istanza..."</value>
   </data>
   <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve">
-    <value>Wersja dla DLC {0} jest nieprawidłowa. Spróbuj na przykład "1.0.0".</value>
+    <value>La versione per il DLC {0} è malformattata. Prova ad esempio "1.0.0".</value>
   </data>
   <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve">
-    <value>Instalacja, którą chcesz sklonować jest nieprawidłowa: {0}</value>
+    <value>L'istanza che volevi clonare non è valida: {0}</value>
   </data>
   <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve">
-    <value>Folder docelowy nie jest pusty: {0}</value>
+    <value>La cartella di destinazione non è vuota: {0}</value>
   </data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve">
-    <value>Klonowanie nie powiodło się: {0}</value>
+    <value>Clonazione fallita: {0}</value>
   </data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve">
-    <value>Pomyślnie sklonowano instalacje.</value>
+    <value>Istanza clonata con successo.</value>
   </data>
   <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve">
-    <value>Tworzenie nowej instalacji...</value>
+    <value>Creazione di una nuova istanza...</value>
   </data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve">
-    <value>Ta nazwa jest już w użyciu.</value>
+    <value>Questo nome è già utilizzato.</value>
   </data>
   <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve">
-    <value>Nie udało się utworzyć udawanej instalacji: {0}</value>
+    <value>Creazione di un'istanza fittizia fallita: {0}</value>
   </data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve">
-    <value>Pomyślnie utworzono instalacje.</value>
+    <value>Istanza creata con successo.</value>
   </data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve">
-    <value>&lt;BRAK&gt;</value>
+    <value>&lt;NESSUNA&gt;</value>
   </data>
   <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve">
-    <value>Gra została zaktualizowana od czasu ostatniej weryfikacji kompatybilnych wersji gry. Upewnij się, że ustawienia są poprawne.</value>
+    <value>Il gioco è stato aggiornato da quando hai impostato le versioni compatibili. Controlla queste impostazioni.</value>
   </data>
   <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve">
-    <value>{0} (poprzednia wersja gry: {1})</value>
+    <value>{0} (versione di gioco precedente: {1})</value>
   </data>
   <data name="CompatibleGameVersionsDialogInvalidFormat" xml:space="preserve">
-    <value>Wersja ma nieprawidłowy format</value>
+    <value>La versione ha un formato non valido</value>
   </data>
   <data name="CompatibleGameVersionsDialogErrorTitle" xml:space="preserve">
-    <value>Błąd</value>
+    <value>Errore</value>
   </data>
   <data name="ConfigurationParseError" xml:space="preserve">
-    <value>Błąd podczas przetwarzania "{0}"{1}
-Spróbuj przenieść {2} z {3} i uruchomić ponownie CKAN.</value>
+    <value>Errore nel tentativo di interpretare "{0}"{1}
+Prova a spostare {2} da {3} e a riavviare CKAN.</value>
   </data>
   <data name="GUIModNSlashA" xml:space="preserve">
-    <value>N/A</value>
+    <value>N/D</value>
   </data>
   <data name="GUIModUnknown" xml:space="preserve">
-    <value>Nieznane</value>
+    <value>Sconosciuta</value>
   </data>
   <data name="GUIModMethodNotCKAN" xml:space="preserve">
-    <value>Metoda nie może być wywołana, chyba że to CKAN</value>
+    <value>Il metodo non può essere chiamato se non è IsCKAN</value>
   </data>
   <data name="GUIModGameCompatibilityLong" xml:space="preserve">
-    <value>{0} (używanie modyfikacji w wersji {1})</value>
+    <value>{0} (usando la versione mod {1})</value>
   </data>
   <data name="MainAutoUpdateFailed" xml:space="preserve">
-    <value>Błąd przy automatycznej aktualizacji:&#xD;&#xA;{0}</value>
+    <value>Errore durante l'aggiornamento automatico:&#xD;&#xA;{0}</value>
   </data>
   <data name="MainQuitWithConflicts" xml:space="preserve">
-    <value>Istnieją konflikty. Na pewno wyjść?&#xD;&#xA;&#xD;&#xA;{0}</value>
+    <value>Ci sono conflitti. Vuoi davvero uscire? &#xD;&#xA;&#xD;&#xA;{0}</value>
   </data>
   <data name="MainQuit" xml:space="preserve">
-    <value>Zakończ</value>
+    <value>Esci</value>
   </data>
   <data name="MainGoBack" xml:space="preserve">
-    <value>Powrót</value>
+    <value>Torna indietro</value>
   </data>
   <data name="MainQuitWithUnmetDeps" xml:space="preserve">
-    <value>Istnieją niespełnione zależności. Na pewno wyjść?</value>
+    <value>Ci sono dipendenze non soddisfatte. Vuoi davvero uscire?</value>
   </data>
   <data name="MainQuitWithUnappliedChanges" xml:space="preserve">
-    <value>Masz niezastosowane zmiany. Na pewno wyjść?
+    <value>Hai delle modifiche non applicate. Vuoi davvero uscire?
 
 {0}</value>
   </data>
   <data name="MainUpgradingWaitTitle" xml:space="preserve">
-    <value>Aktualizowanie CKAN</value>
+    <value>Aggiornamento Di Ckan</value>
   </data>
   <data name="MainUpgradingTo" xml:space="preserve">
-    <value>Aktualizowanie CKAN do {0}</value>
+    <value>Aggiornamento di CKAN a {0}</value>
   </data>
   <data name="MainDepNotSatisfied" xml:space="preserve">
-    <value>{0} potrzebuje {1}, który nie jest kompatybilny z aktualnie zainstalowaną wersją gry</value>
+    <value>{0} dipende da {1}, che non è compatibile con la versione di gioco attualmente installata</value>
   </data>
   <data name="MainFilterAll" xml:space="preserve">
-    <value>Filtr (wszystkie)</value>
+    <value>Filtro (Tutto)</value>
   </data>
   <data name="MainFilterIncompatible" xml:space="preserve">
-    <value>Filtr (niekompatybilne)</value>
+    <value>Filtro (Incompatibile)</value>
   </data>
   <data name="MainFilterInstalled" xml:space="preserve">
-    <value>Filtr (zainstalowane)</value>
+    <value>Filtro (Installato)</value>
   </data>
   <data name="MainFilterUpgradeable" xml:space="preserve">
-    <value>Filtr (Nieaktualne)</value>
+    <value>Filtro (Aggiornabile)</value>
   </data>
   <data name="MainFilterReplaceable" xml:space="preserve">
-    <value>Filtr (Zastępowalne)</value>
+    <value>Filtro (Sostituibile)</value>
   </data>
   <data name="MainFilterCached" xml:space="preserve">
-    <value>Filtr (Pobrane na dysku)</value>
+    <value>Filtro (In Cache)</value>
   </data>
   <data name="MainFilterUncached" xml:space="preserve">
-    <value>Filtr (Nie pobrane)</value>
+    <value>Filtro (Senza Cache)</value>
   </data>
   <data name="MainFilterNew" xml:space="preserve">
-    <value>Filtruj (Nowe)</value>
+    <value>Filtro (Nuovo)</value>
   </data>
   <data name="MainFilterNotInstalled" xml:space="preserve">
-    <value>Filtr (Nie zainstalowane)</value>
+    <value>Filtro (Non installato)</value>
   </data>
   <data name="MainFilterCompatible" xml:space="preserve">
-    <value>Filtr (Kompatybilne)</value>
+    <value>Filtro (Compatibile)</value>
   </data>
   <data name="MainFilterLabel" xml:space="preserve">
-    <value>Etykieta ({0})</value>
+    <value>Etichetta ({0})</value>
   </data>
   <data name="MainFilterTag" xml:space="preserve">
     <value>Tag ({0})</value>
   </data>
   <data name="MainFilterUntagged" xml:space="preserve">
-    <value>Tag (Nieoznaczony)</value>
+    <value>Tag (Non Tag)</value>
   </data>
   <data name="MainLaunchWithIncompatible" xml:space="preserve">
-    <value>Niektóre zainstalowane moduły są niekompatybilne! Uruchamianie gry może nie być bezpieczne. Na pewno uruchomić?
+    <value>Alcuni moduli installati sono incompatibili! Potrebbe non essere sicuro lanciare il gioco. Vuoi veramente lanciare il gioco?
 
 {0}</value>
   </data>
   <data name="MainLaunchDontShow" xml:space="preserve">
-    <value>Nie pokazuj tego ponownie dla tych modyfikacji na {0} {1}</value>
+    <value>Non chiedere più queste mod su {0} versione {1}</value>
   </data>
   <data name="MainLaunch" xml:space="preserve">
-    <value>Uruchom</value>
+    <value>Avvia</value>
   </data>
   <data name="MainLaunchFailed" xml:space="preserve">
-    <value>Nie można uruchomić gry.
+    <value>Impossibile avviare il gioco.
 
 {0}</value>
   </data>
   <data name="MainModPack" xml:space="preserve">
-    <value>CKAN modpack (*.ckan)</value>
+    <value>Modpack CKAN (*.ckan)</value>
   </data>
   <data name="MainPlainText" xml:space="preserve">
-    <value>Zwykły tekst (*.txt)</value>
+    <value>Testo semplice (*.txt)</value>
   </data>
   <data name="MainMarkdown" xml:space="preserve">
     <value>Markdown (*.md)</value>
@@ -367,176 +367,177 @@ Spróbuj przenieść {2} z {3} i uruchomić ponownie CKAN.</value>
     <value>BBCode (*.txt)</value>
   </data>
   <data name="MainCSV" xml:space="preserve">
-    <value>Format CSV (.csv)</value>
+    <value>Valori separati da virgole (*.csv)</value>
   </data>
   <data name="MainTSV" xml:space="preserve">
-    <value>Format TSV (.tsv)</value>
+    <value>Valori separati da tabulazione (*.tsv)</value>
   </data>
   <data name="MainNotFound" xml:space="preserve">
-    <value>Nie znaleziono.</value>
+    <value>Non trovato.</value>
   </data>
   <data name="MainReinstallConfirm" xml:space="preserve">
-    <value>Czy chcesz ponownie zainstalować {0}?</value>
+    <value>Vuoi reinstallare {0}?</value>
   </data>
   <data name="MainCantInstallDLC" xml:space="preserve">
-    <value>CKAN nie może zainstalować dodatku {0}!</value>
+    <value>CKAN non può installare l'espansione {0}!</value>
   </data>
   <data name="MainCorruptedRegistry" xml:space="preserve">
-    <value>Uszkodzony rejestr zarchiwizowany do {0}: {1}
+    <value>Registro corrotto archiviato in {0}: {1}
 
-Oznacza to, że CKAN zapomniał o wszystkich zainstalowanych modyfikacjach, ale wciąż znajdują się w GameData. Możesz je ponownie zainstalować importując plik {2}.</value>
+Questo significa che CKAN si è dimenticato di tutte le tue mod installate, ma sono ancora presenti in GameData. Puoi reinstallarle importando il file {2}.</value>
   </data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve">
-    <value>{0} nie jest obsługiwany w bieżącej wersji gry i może w ogóle nie działać. Jeśli masz jakieś problemy z nim, NIE powinieneś poprosić twórców o pomoc.
+    <value>{0} non è supportato dalle versioni del gioco attualmente compatibili ({1}) e potrebbe non funzionare affatto. Se hai qualche problema, NON devi chiedere aiuto ai suoi manutentori.
 
-Czy na pewno chcesz go zainstalować?</value>
+Vuoi davvero installarlo?</value>
   </data>
   <data name="ModpackInstallIncompatiblePrompt" xml:space="preserve">
-    <value>Niektóre wybrane mody (lub ich zależności) nie są obsługiwane przez twoje kompatybilne wersje gry ({1}) i mogą w ogóle nie działać. Jeśli masz jakieś problemu, NIE proś nikogo o pomoc.
+    <value>Alcune delle mod selezionate (o le loro dipendenze) non sono supportate dalle versioni del gioco attualmente compatibili ({1}) e potrebbero non funzionare affatto. Se hai problemi con queste mod, NON devi chiedere aiuto ai loro manutentori.
 
 {0}
 
-Na pewno chcesz je zainstalować? Anulowanie przerwie całą instalację.</value>
+Sei sicuro di volerli installare? L'annullamento interromperà l'intera installazione.</value>
   </data>
   <data name="AllModVersionsInstallYes" xml:space="preserve">
-    <value>Rozmiar instalacji</value>
+    <value>Installa</value>
   </data>
   <data name="AllModVersionsInstallNo" xml:space="preserve">
-    <value>Anuluj</value>
+    <value>Annulla</value>
   </data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve">
-    <value>Aktualizacja wybrana przez użytkownika do wersji {0}.</value>
+    <value>Aggiorna la versione selezionata dall'utente alla versione {0}.</value>
   </data>
   <data name="MainImportTitle" xml:space="preserve">
-    <value>Importuj modyfikacje</value>
+    <value>Importa Mod</value>
   </data>
   <data name="MainImportFilter" xml:space="preserve">
-    <value>Mody (*.zip)|*.zip</value>
+    <value>Mod (*.zip)| *.zip</value>
   </data>
   <data name="MainImportWaitTitle" xml:space="preserve">
-    <value>Logi statusu</value>
+    <value>Registro</value>
   </data>
   <data name="MainInstallWaitTitle" xml:space="preserve">
-    <value>Logi statusu</value>
+    <value>Registro</value>
   </data>
   <data name="MainInstallDepNotSatisfied" xml:space="preserve">
-    <value>{0} wymaga {1}, ale nie jest wymieniony w indeksie lub nie jest dostępny dla Twojej wersji gry.</value>
+    <value>{0} richiede {1} ma non è elencato nell'indice o non è disponibile per la tua versione del gioco.</value>
   </data>
   <data name="MainInstallNotFound" xml:space="preserve">
-    <value>Moduł {0} jest wymagany, ale nie jest wymieniony w indeksie lub nie jest dostępny dla Twojej wersji.</value>
+    <value>Il modulo {0} è necessario ma non è elencato nell'indice o non è disponibile per la tua versione del gioco.</value>
   </data>
   <data name="MainInstallBadMetadata" xml:space="preserve">
-    <value>Wykryto nieprawidłowe metadane dla modułu {0}: {1}</value>
+    <value>Rilevati metadati errati per il modulo {0}: {1}</value>
   </data>
   <data name="MainInstallFileExists" xml:space="preserve">
-    <value>O nie! Próbowaliśmy nadpisać plik należący do innego moda!
-Spróbuj użyć `ckan update` i spróbować ponownie.
+    <value>Oh no! Abbiamo cercato di sovrascrivere un file di proprietà di un altra mod!
+Prova a eseguire 'ckan update` e ritenta.
 
-Jeśli problem się powtórzy, może być to błąd programu.
-Proszę to zgłosić tutaj:
+Se il problema si ripresenta, potrebbe trattarsi di un bug del pacchetto.
+Segnalalo a:
 
-https://github.com/KSP-CKAN/NetKAN/issues/new
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 
-Podaj następujące informacje w twoim zgłoszeniu (Oczywiście po angielsku):
-Plik           : {0}
-Instalowany mod : {1}
-Konfliktujący mod     : {2}
-Wersja CKAN    : {3}
-</value>
+Per favore, includi le seguenti informazioni nella tua segnalazione:
+
+File : {0}
+Mod di installazione: {1}
+Mod proprietario: {2}
+Versione CKAN: {3}</value>
   </data>
   <data name="MainInstallUnownedFileExists" xml:space="preserve">
-    <value>O nie!
+    <value>Oh no!
 
-Wygląda na to, że próbujesz zainstalować moda, który jest już zainstalowany
-lub konfliktuje z innym już zainstalowanym modem.
+Sembra che tu stia cercando di installare una mod che è già installata,
+o che è in conflitto con un'altra mod già installata.
 
-Jako funkcja bezpieczeństwa, CKAN *nigdy* nie nadpisze bądź przestawi plików których sam nie zainstalował
+Come caratteristica di sicurezza, CKAN non sovrascriverà o modificherà mai un file
+che non è stato installato da lui stesso.
 
-Jeśli chcesz zainstalować {0} przez CKAN'a,
-proszę ręcznie odinstalować moda do którego należy:
+Se vuoi installare {0} tramite CKAN,
+disinstalla manualmente la mod che possiedi:
 
 {1}
 
-i spróbuj ponownie.</value>
+e riprova.</value>
   </data>
   <data name="MainInstallGameDataReverted" xml:space="preserve">
-    <value>Twój folder GameData wrócił do pierwotnego stanu.</value>
+    <value>La cartella GameData è stata ripristinata allo stato originale.</value>
   </data>
   <data name="MainInstallOpenSettingsPrompt" xml:space="preserve">
     <value>{0}
 
-Otworzyć ustawienia?</value>
+Aprire le impostazioni ora?</value>
   </data>
   <data name="MainInstallOpenSettings" xml:space="preserve">
-    <value>Otwórz Ustawienia</value>
+    <value>Apri Impostazioni</value>
   </data>
   <data name="MainInstallNo" xml:space="preserve">
-    <value>Nie</value>
+    <value>No</value>
   </data>
   <data name="MainInstallModSuccess" xml:space="preserve">
-    <value>Moduł "{0}" został pomyślnie zainstalowany</value>
+    <value>Il modulo "{0}" è stato installato con successo</value>
   </data>
   <data name="MainInstallSuccess" xml:space="preserve">
-    <value>Udało się!</value>
+    <value>Successo!</value>
   </data>
   <data name="MainInstallCancelTooLate" xml:space="preserve">
-    <value>Anulowano zbyt późno, proces zakończony!</value>
+    <value>La cancellazione è avvenuta troppo tardi, il processo è terminato!</value>
   </data>
   <data name="MainInstallCancelAfterInstall" xml:space="preserve">
-    <value>Użytkownik anulował proces ręcznie, ale wszystkie modyfikacje zostały już (od)zainstalowane/zaktualizowane.</value>
+    <value>L'utente ha annullato il processo manualmente, ma tutte le mod sono già state (dis)installate/aggiornate.</value>
   </data>
   <data name="MainInstallProcessComplete" xml:space="preserve">
-    <value>Proces zakończony!</value>
+    <value>Processo completato!</value>
   </data>
   <data name="MainInstallProcessCanceled" xml:space="preserve">
-    <value>Proces anulowany przez użytkownika!</value>
+    <value>Processo annullato dall'utente!</value>
   </data>
   <data name="MainInstallCanceledManually" xml:space="preserve">
-    <value>Użytkownik anulował proces ręcznie!</value>
+    <value>L'utente ha annullato il processo manualmente!</value>
   </data>
   <data name="MainInstallInstallCanceled" xml:space="preserve">
-    <value>(Od)Instalacja/aktualizacja anulowana!</value>
+    <value>(Dis)Installa/Aggiornamento annullato!</value>
   </data>
   <data name="MainInstallErrorInstalling" xml:space="preserve">
-    <value>Błąd podczas instalacji!</value>
+    <value>Errore durante l'installazione!</value>
   </data>
   <data name="MainInstallUnknownError" xml:space="preserve">
-    <value>Wystąpił nieznany błąd. Proszę spróbować ponownie!</value>
+    <value>Si è verificato un errore sconosciuto. Per favore riprova!</value>
   </data>
   <data name="MainInstallKnownError" xml:space="preserve">
-    <value>Jeśli powyższa wiadomość wskazuje na błąd pobierania, spróbuj ponownie. W przeciwnym razie skontaktuj się z nami.
-Jeśli podejrzewasz problem z metadanymi moda: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
-Jeśli podejrzewasz błąd w programie: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value>
+    <value>Se il messaggio precedente indica un errore di download, riprova. In caso contrario, apri un problema per consentirci di indagare.
+Se sospetti un problema di metadati: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+Se sospetti un bug nel client: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value>
   </data>
   <data name="MainInstallFailed" xml:space="preserve">
-    <value>Instalacja zakończyła się niepowodzeniem!</value>
+    <value>Installazione fallita!</value>
   </data>
   <data name="MainInstallProvidedBy" xml:space="preserve">
-    <value>Moduł {0} jest dostarczony przez więcej niż jeden dostępny moduł. Wybierz jeden z następujących:</value>
+    <value>Il modulo {0} è fornito da più di un modulo disponibile, scegli uno dei seguenti moduli:</value>
   </data>
   <data name="MainInstallCantInstallDLC" xml:space="preserve">
-    <value>CKAN nie może zainstalować dodatku '{0}' dla ciebie.</value>
+    <value>CKAN non può installare l'espansione '{0}' per te.</value>
   </data>
   <data name="ModInfoNSlashA" xml:space="preserve">
-    <value>N/A</value>
+    <value>N/D</value>
   </data>
   <data name="ModInfoVirtual" xml:space="preserve">
-    <value>{0} (wirtualny)</value>
+    <value>{0} (virtuale)</value>
   </data>
   <data name="ModInfoNotIndexed" xml:space="preserve">
-    <value>{0} (nieindeksowany)</value>
+    <value>{0} (non indicizzata)</value>
   </data>
   <data name="ModInfoNotCached" xml:space="preserve">
-    <value>Ten mod nie jest pobrany na dysku, kliknij "Pobierz" aby zobaczyć zawartość</value>
+    <value>Questa mod non è nella cache, clicca 'Download' per visualizzare l'anteprima dei contenuti</value>
   </data>
   <data name="ModInfoCached" xml:space="preserve">
-    <value>Moduł jest w folderze cache, podgląd dostępny</value>
+    <value>Modulo memorizzato nella cache, anteprima disponibile</value>
   </data>
   <data name="ModInfoNoDownload" xml:space="preserve">
-    <value>Moduł nie ma linku do pobrania</value>
+    <value>Il modulo non ha download</value>
   </data>
   <data name="ModInfoHomepageLabel" xml:space="preserve">
-    <value>Strona główna:</value>
+    <value>Pagina principale:</value>
   </data>
   <data name="ModInfoSpaceDockLabel" xml:space="preserve">
     <value>SpaceDock:</value>
@@ -545,386 +546,380 @@ Jeśli podejrzewasz błąd w programie: https://github.com/KSP-CKAN/CKAN/issues/
     <value>Curse:</value>
   </data>
   <data name="ModInfoRepositoryLabel" xml:space="preserve">
-    <value>Repozytorium:</value>
+    <value>Repository:</value>
   </data>
   <data name="ModInfoBugTrackerLabel" xml:space="preserve">
     <value>Bug tracker:</value>
   </data>
   <data name="ModInfoContinuousIntegrationLabel" xml:space="preserve">
-    <value>Ciągła integracja:</value>
+    <value>Integrazione continua:</value>
   </data>
   <data name="ModInfoLicenseLabel" xml:space="preserve">
-    <value>Licencja:</value>
+    <value>Licenza:</value>
   </data>
   <data name="ModInfoManualLabel" xml:space="preserve">
-    <value>Instrukcja:</value>
+    <value>Manuale:</value>
   </data>
   <data name="ModInfoMetanetkanLabel" xml:space="preserve">
     <value>Metanetkan:</value>
   </data>
   <data name="ModInfoRemoteAvcLabel" xml:space="preserve">
-    <value>Plik wersji zdalnej:</value>
+    <value>File versione remota:</value>
   </data>
   <data name="ModInfoStoreLabel" xml:space="preserve">
-    <value>Sklep:</value>
+    <value>Negozio:</value>
   </data>
   <data name="ModInfoSteamStoreLabel" xml:space="preserve">
-    <value>Sklep steam:</value>
+    <value>Negozio di Steam:</value>
   </data>
   <data name="ModInfoToolTipReverseRelationships" xml:space="preserve">
-    <value>Kliknij Ctrl lub Shift, aby przykleić</value>
+    <value>Fai clic con il tasto Ctrl o Shift per renderlo persistente</value>
   </data>
   <data name="DownloadFailed" xml:space="preserve">
-    <value>Pobieranie nie powiodło się!</value>
+    <value>Download non riuscito!</value>
   </data>
   <data name="ValidatingDownload" xml:space="preserve">
-    <value>Weryfikuje {0}</value>
+    <value>Validazione di {0}</value>
   </data>
   <data name="MainModListWaitTitle" xml:space="preserve">
-    <value>Ładowanie modułów</value>
+    <value>Caricamento moduli</value>
   </data>
   <data name="MainModListLoadingRegistry" xml:space="preserve">
-    <value>Ładowanie rejestru...</value>
+    <value>Caricamento del registro...</value>
   </data>
   <data name="MainModListLoadingInstalled" xml:space="preserve">
-    <value>Ładowanie zainstalowanych modułów...</value>
+    <value>Caricamento dei moduli installati...</value>
   </data>
   <data name="MainModListLoadingAvailable" xml:space="preserve">
-    <value>Ładowanie dostępnych modułów...</value>
+    <value>Caricamento dei moduli disponibili...</value>
   </data>
   <data name="MainModListLoadingIncompatible" xml:space="preserve">
-    <value>Ładowanie niekompatybilnych modułów...</value>
+    <value>Caricamento dei moduli incompatibili...</value>
   </data>
   <data name="MainModListRestoringChangeset" xml:space="preserve">
-    <value>Przywracanie zestawu zmian...</value>
-  </data>
-  <data name="MainModListPreservingNew" xml:space="preserve">
-    <value>Zachowywanie nowych flag...</value>
+    <value>Ripristino del set di cambiamento...</value>
   </data>
   <data name="MainModListPopulatingList" xml:space="preserve">
-    <value>Wypełnianie listy modów...</value>
+    <value>Popolando la lista mod...</value>
   </data>
   <data name="MainModListUpdatingFilters" xml:space="preserve">
-    <value>Aktualizowanie filtrów...</value>
+    <value>Aggiornamento dei filtri...</value>
   </data>
   <data name="MainModListCompatible" xml:space="preserve">
-    <value>Kompatybilne ({0})</value>
+    <value>Compatibile ({0})</value>
   </data>
   <data name="MainModListInstalled" xml:space="preserve">
-    <value>Zainstalowane ({0})</value>
+    <value>Installato ({0})</value>
   </data>
   <data name="MainModListUpgradeable" xml:space="preserve">
-    <value>Nieaktualne ({0})</value>
+    <value>Aggiornabile ({0})</value>
   </data>
   <data name="MainModListReplaceable" xml:space="preserve">
-    <value>Zastępowalne ({0})</value>
+    <value>Sostituibile ({0})</value>
   </data>
   <data name="MainModListCached" xml:space="preserve">
-    <value>Zapisane na dysku ({0})</value>
+    <value>In Cache ({0})</value>
   </data>
   <data name="MainModListUncached" xml:space="preserve">
-    <value>Nie pobrane ({0})</value>
+    <value>Senza Cache ({0})</value>
   </data>
   <data name="MainModListNewlyCompatible" xml:space="preserve">
-    <value>Nowo kompatybilne ({0})</value>
+    <value>Nuovamente compatibile ({0})</value>
   </data>
   <data name="MainModListNotInstalled" xml:space="preserve">
-    <value>Niezainstalowane ({0})</value>
+    <value>Non installato ({0})</value>
   </data>
   <data name="MainModListIncompatible" xml:space="preserve">
-    <value>Niekompatybilne ({0})</value>
+    <value>Incompatibile ({0})</value>
   </data>
   <data name="MainModListAll" xml:space="preserve">
-    <value>Wszystkie ({0})</value>
-  </data>
-  <data name="MainModListUpdatingTray" xml:space="preserve">
-    <value>Aktualizowanie zasobnika...</value>
+    <value>Tutte ({0})</value>
   </data>
   <data name="MainModListAutoDetected" xml:space="preserve">
     <value>AD</value>
   </data>
   <data name="MainModListUnknownFilter" xml:space="preserve">
-    <value>Nieznany typ filtra {0} w IsModInFilter</value>
+    <value>Tipo di filtro sconosciuto {0} in IsModInFilter</value>
   </data>
   <data name="MainRecommendationsTitle" xml:space="preserve">
-    <value>Wybierz zalecane, sugerowane lub pomocnicze modyfikacje</value>
+    <value>Scegli le mod consigliate, suggerite o supportate</value>
   </data>
   <data name="MainRecommendationsNoneFound" xml:space="preserve">
-    <value>Nie znaleziono rekomendowanych, zasugerowanych lub wspierających modów.</value>
+    <value>Non sono state trovate mod raccomandate, suggerite o supportate.</value>
   </data>
   <data name="MainRepoWaitTitle" xml:space="preserve">
-    <value>Aktualizowanie repozytoriów</value>
+    <value>Aggiornare i repository</value>
   </data>
   <data name="MainRepoScanning" xml:space="preserve">
-    <value>Skanowanie DLC i ręcznie zainstalowanych modułów...</value>
+    <value>Scansione dei DLC e dei moduli installati manualmente...</value>
   </data>
   <data name="MainRepoContacting" xml:space="preserve">
-    <value>Łączenie z repozytorium...</value>
+    <value>Sto contattando il repository...</value>
   </data>
   <data name="MainRepoUpdating" xml:space="preserve">
-    <value>Aktualizowanie repozytoriów...</value>
+    <value>Aggiornamento repository...</value>
   </data>
   <data name="MainRepoFailedToConnect" xml:space="preserve">
-    <value>Nie udało się połączyć z repozytorium. Wyjątek: {0}</value>
+    <value>Impossibile connettersi al repository. Eccezione: {0}</value>
   </data>
   <data name="MainRepoUpToDate" xml:space="preserve">
-    <value>Repozytoria są już aktualne.</value>
+    <value>Repository già aggiornati.</value>
   </data>
   <data name="MainRepoFailed" xml:space="preserve">
-    <value>Aktualizacja repozytorium nie powiodła się!</value>
+    <value>Aggiornamento repository fallito!</value>
   </data>
   <data name="MainRepoSuccess" xml:space="preserve">
-    <value>Repozytoria pomyślnie zaktualizowane.</value>
+    <value>Repository aggiornati con successo.</value>
   </data>
   <data name="MainRepoAutoRefreshPrompt" xml:space="preserve">
-    <value>Czy chcesz, aby CKAN odświeżał listę modów za każdym razem, gdy jest uruchamiany? (Zawsze możesz odświeżyć ręcznie za pomocą przycisku odśwież.)</value>
+    <value>Vuoi che CKAN aggiorni la modlist ogni volta che viene caricata? (Puoi sempre aggiornarla manualmente utilizzando il pulsante in alto)</value>
   </data>
   <data name="MainRepoBalloonTipDetails" xml:space="preserve">
-    <value>{0} aktualizacji dostępnych</value>
+    <value>{0} aggiornamento(i) disponibile(i)</value>
   </data>
   <data name="MainRepoBalloonTipTooltip" xml:space="preserve">
-    <value>Kliknij, aby zaktualizować</value>
+    <value>Clicca per aggiornare</value>
   </data>
   <data name="MainTrayIconResume" xml:space="preserve">
-    <value>Wznów</value>
+    <value>Riprendi</value>
   </data>
   <data name="MainTrayIconPause" xml:space="preserve">
-    <value>Wstrzymaj</value>
+    <value>Pausa</value>
   </data>
   <data name="MainTrayNoUpdates" xml:space="preserve">
-    <value>Brak dostępnych aktualizacji</value>
+    <value>Nessun aggiornamento disponibile</value>
   </data>
   <data name="MainTrayUpdatesAvailable" xml:space="preserve">
-    <value>{0} dostępne aktualizacje</value>
+    <value>{0} aggiornamento(i) disponibile(i)</value>
   </data>
   <data name="MainWaitPleaseWait" xml:space="preserve">
-    <value>Proszę czekać</value>
+    <value>Attendere prego</value>
   </data>
   <data name="MainWaitDone" xml:space="preserve">
-    <value>Wszystko gotowe!</value>
+    <value>Tutto fatto!</value>
   </data>
   <data name="ManageGameInstancesNotValid" xml:space="preserve">
-    <value>Folder {0} nie jest prawidłowym folderem gry.</value>
+    <value>La cartella {0} non è una cartella di gioco valida.</value>
   </data>
   <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve">
-    <value>Folder "{0}" nie istnieje.</value>
+    <value>La cartella "{0}" non esiste.</value>
   </data>
   <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve">
-    <value>{0} (NIEPRAWIDŁOWY)</value>
+    <value>{0} (NON VALIDA)</value>
   </data>
   <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve">
-    <value>{0} (ZABLOKOWANY)</value>
+    <value>{0} (BLOCCATA)</value>
   </data>
   <data name="NewRepoDialogFailed" xml:space="preserve">
-    <value>Nie udało się pobrać listy głównej.</value>
+    <value>Recupero della lista principale non riuscito.</value>
   </data>
   <data name="PluginsDialogFilter" xml:space="preserve">
-    <value>Pluginy CKAN (*.dll)|*.dll</value>
+    <value>Plugin CKAN (*.dll)|*.dll</value>
   </data>
   <data name="SettingsDialogSummmary" xml:space="preserve">
-    <value>{0} plików, {1}, {2} wolne</value>
+    <value>{0} file, {1}, {2} liberi</value>
   </data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve">
-    <value>Nieprawidłowa ścieżka: {0}</value>
+    <value>Percorso non valido: {0}</value>
   </data>
   <data name="SettingsDialogCacheDescrip" xml:space="preserve">
-    <value>Wybierz folder do przechowywania plików z modyfikacjami CKAN:</value>
+    <value>Scegli una cartella per memorizzare i download delle mod di CKAN:</value>
   </data>
   <data name="SettingsDialogDeleteConfirm" xml:space="preserve">
-    <value>Czy na pewno chcesz usunąć {0} plików w folderze cache, zwalniając {1}?</value>
+    <value>Vuoi davvero eliminare {0} file memorizzati nella cache, liberando {1}?</value>
   </data>
   <data name="AddAuthTokenTitle" xml:space="preserve">
-    <value>Dodaj token uwierzytelniania</value>
+    <value>Aggiungi Token Di Autenticazione</value>
   </data>
   <data name="AddAuthTokenHost" xml:space="preserve">
     <value>Host:</value>
   </data>
   <data name="AddAuthTokenToken" xml:space="preserve">
-    <value>Token:</value>
+    <value>Gettone:</value>
   </data>
   <data name="AddAuthTokenAccept" xml:space="preserve">
-    <value>&amp;Zaakceptuj</value>
+    <value>&amp;Accetta</value>
   </data>
   <data name="AddAuthTokenCancel" xml:space="preserve">
-    <value>&amp;Anuluj</value>
+    <value>&amp;Annulla</value>
   </data>
   <data name="AddAuthTokenHostRequired" xml:space="preserve">
-    <value>Pole hosta jest wymagane.</value>
+    <value>Il campo host è obbligatorio.</value>
   </data>
   <data name="AddAuthTokenTokenRequired" xml:space="preserve">
-    <value>Pole tokenu jest wymagane.</value>
+    <value>Il campo Token è obbligatorio.</value>
   </data>
   <data name="AddAuthTokenInvalidHost" xml:space="preserve">
-    <value>{0} nie jest prawidłową nazwą hosta.</value>
+    <value>{0} non è un nome host valido.</value>
   </data>
   <data name="AddAuthTokenDupHost" xml:space="preserve">
-    <value>{0} ma już token uwierzytelniania.</value>
+    <value>{0} ha già un token di autenticazione.</value>
   </data>
   <data name="SettingsDialogUpdateFailed" xml:space="preserve">
-    <value>Błąd podczas aktualizacji.
-Nie można zaktualizować automatycznie, ponieważ ckan.exe jest tylko do odczytu lub nie możemy go nadpisać. Proszę zaktualizować ręcznie przez https://github.com/KSP-CKAN/CKAN/releases/latest.</value>
+    <value>Errore durante l'aggiornamento.
+Impossibile aggiornare automaticamente, perché ckan.exe è in sola lettura o non siamo autorizzati a sovrascriverlo. Per favore aggiorna manualmente tramite https://github.com/KSP-CKAN/CKAN/releases/latest.</value>
   </data>
   <data name="URLHandlersPrompt" xml:space="preserve">
-    <value>CKAN wymaga uprawnień do obsługi linków ckan://.
-Czy chcesz zezwolić na to CKAN-owi? Jeśli klikniesz nie, nie zobaczysz tej wiadomości ponownie.</value>
+    <value>CKAN richiede l'autorizzazione per aggiungere un gestore per gli URL ckan:/.
+Vuoi consentire a CKAN di farlo? Se fai clic su no, non vedrai più questo messaggio.</value>
   </data>
   <data name="UtilCopyLink" xml:space="preserve">
-    <value>&amp;Kopiuj adres linku</value>
+    <value>&amp;Copia indirizzo link</value>
   </data>
   <data name="StatusInstanceLabelTextWithPlayTime" xml:space="preserve">
-    <value>Instalacja gry: {0} ({1} {2}, grano {3}godz.)</value>
+    <value>Istanza di gioco: {0} ({1} {2}, giocato {3}h)</value>
   </data>
   <data name="StatusInstanceLabelText" xml:space="preserve">
-    <value>Instalacja gry: {0} ({1} {2})</value>
+    <value>Istanza di gioco: {0} ({1} {2})</value>
   </data>
   <data name="ModuleLabelListFavourites" xml:space="preserve">
-    <value>Ulubione</value>
+    <value>Preferiti</value>
   </data>
   <data name="ModuleLabelListHidden" xml:space="preserve">
-    <value>Ukryte</value>
+    <value>Nascosto</value>
   </data>
   <data name="ModuleLabelListHeld" xml:space="preserve">
-    <value>Trzymane</value>
+    <value>Mantenuta</value>
   </data>
   <data name="ModuleLabelListGlobal" xml:space="preserve">
-    <value>Globalne</value>
+    <value>Globale</value>
   </data>
   <data name="EditLabelsDialogConfirmDelete" xml:space="preserve">
-    <value>Czy na pewno chcesz usunąć {0}? Tej operacji nie da się cofnąć!</value>
+    <value>Sei sicuro di voler eliminare {0}? Non sarà possibile annullare l'operazione!</value>
   </data>
   <data name="EditLabelsDialogSavePrompt" xml:space="preserve">
-    <value>Zapisać zmiany?</value>
+    <value>Salvare le modifiche?</value>
   </data>
   <data name="EditLabelsDialogNoRecord" xml:space="preserve">
-    <value>Brak edycji wpisu!</value>
+    <value>Nessun record modificato!</value>
   </data>
   <data name="EditLabelsDialogNameRequired" xml:space="preserve">
-    <value>Nazwa jest wymagana!</value>
+    <value>Nome richiesto!</value>
   </data>
   <data name="EditLabelsDialogAlreadyExists" xml:space="preserve">
-    <value>{0} już istnieje w {1}!</value>
+    <value>{0} esiste già in {1}!</value>
   </data>
   <data name="EditLabelsDialogDelete" xml:space="preserve">
-    <value>Skasuj</value>
+    <value>Elimina</value>
   </data>
   <data name="EditLabelsDialogCancel" xml:space="preserve">
-    <value>Anuluj</value>
+    <value>Annulla</value>
   </data>
   <data name="EditLabelsDialogSave" xml:space="preserve">
-    <value>Zapisz</value>
+    <value>Salva</value>
   </data>
   <data name="EditLabelsDialogDiscard" xml:space="preserve">
-    <value>Odrzuć</value>
+    <value>Scarta</value>
   </data>
   <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve">
-    <value>OSTRZEŻENIE: INSTALOWANIE MODUŁU Z ETYKIETKĄ {0} ({1})</value>
+    <value>ATTENZIONE: INSTALLAZIONE DEL MODULO CON ETICHETTA {0} ({1})</value>
   </data>
   <data name="EditLabelsToolTipName" xml:space="preserve">
-    <value>Etykieta pojawi się w menu etykiet pod tą nazwą, musi być unikalna dla każdej instalacji</value>
+    <value>L'etichetta apparirà nel menu Etichette con questo nome, che deve essere univoco per ogni installazione</value>
   </data>
   <data name="EditLabelsToolTipColor" xml:space="preserve">
-    <value>Wiersze dla modułów z tą etykietą zostaną wyświetlone z tym kolorem tła</value>
+    <value>Le righe per i moduli con questa etichetta saranno disegnate con questo colore di sfondo</value>
   </data>
   <data name="EditLabelsToolTipInstance" xml:space="preserve">
-    <value>Instalacja, dla której ta etykieta jest dostępna, pozostaw puste dla wszystkich</value>
+    <value>L'istanza per la quale questa etichetta è disponibile, lascia vuoto per tutti</value>
   </data>
   <data name="EditLabelsToolTipHide" xml:space="preserve">
-    <value>Jeśli zaznaczone, moduły z tą etykietą zostaną ukryte przed standardowymi filtrami</value>
+    <value>Se selezionato, i moduli con questa etichetta saranno nascosti dai filtri standard</value>
   </data>
   <data name="EditLabelsToolTipNotifyOnChanges" xml:space="preserve">
-    <value>Jeśli zaznaczone, powiadomienie zostanie wyświetlone, jeśli ten moduł zmieni się z niezgodnego na kompatybilny</value>
+    <value>Se selezionata, verrà visualizzata una notifica se questo modulo cambia da incompatibile a compatibile</value>
   </data>
   <data name="EditLabelsToolTipRemoveOnChanges" xml:space="preserve">
-    <value>Jeśli zaznaczone, moduł który zmienia się z niekompatybilnego na kompatybilny zostanie usunięty z tej etykiety</value>
+    <value>Se è selezionata, un modulo che passa da incompatibile a compatibile verrà rimosso da questa etichetta</value>
   </data>
   <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve">
-    <value>Jeśli zaznaczone, lista zmian powiadomi cię, że ta modyfikacja ma zostać zainstalowana</value>
+    <value>Se selezionata, la schermata di impostazione delle modifiche ti avviserà se questa mod sta per essere installata</value>
   </data>
   <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve">
-    <value>Jeśli zaznaczone, moduły zostaną usunięte z tej etykiety, jeśli są zainstalowane</value>
+    <value>Se selezionata, i moduli saranno rimossi da questa etichetta se sono installati</value>
   </data>
   <data name="EditLabelsToolTipHoldVersion" xml:space="preserve">
-    <value>Jeśli zaznaczone, moduły nie zostaną zaktualizowane</value>
+    <value>Se è selezionata, i moduli non verranno aggiornati</value>
   </data>
   <data name="EditLabelsToolTipMoveUp" xml:space="preserve">
-    <value>Przesuń do góry</value>
+    <value>Sposta in alto</value>
   </data>
   <data name="EditLabelsToolTipMoveDown" xml:space="preserve">
-    <value>Przenieś w dół</value>
+    <value>Sposta in basso</value>
   </data>
   <data name="MainLabelsUpdateMessage" xml:space="preserve">
-    <value>Niektóre ze śledzonych modów zostały zaktualizowane:
+    <value>Alcune delle mod che stai osservando sono state aggiornate:
 
 {0}</value>
   </data>
   <data name="MainLabelsUpdateTitle" xml:space="preserve">
-    <value>Aktualizuj powiadomienia</value>
+    <value>Notifica di Aggiornamento</value>
   </data>
   <data name="MainLabelsUntagged" xml:space="preserve">
-    <value>Nietagowane ({0})</value>
+    <value>Senza Tag ({0})</value>
   </data>
   <data name="EditModpackBadIdentifier" xml:space="preserve">
-    <value>Identyfikator musi zawierać TYLKO litery, cyfry, myślniki i musi zaczynać się literą lub cyfrą</value>
+    <value>L'identificatore deve contenere SOLO lettere, numeri e trattini e deve iniziare con una lettera o un numero</value>
   </data>
   <data name="EditModpackBadName" xml:space="preserve">
-    <value>Nazwa jest wymagana</value>
+    <value>Nome richiesto</value>
   </data>
   <data name="EditModpackBadVersion" xml:space="preserve">
-    <value>Wersja jest wymagana</value>
+    <value>Versione obbligatoria</value>
   </data>
   <data name="EditModpackBadGameVersions" xml:space="preserve">
-    <value>Minimalna wersja gry musi być mniejsza lub równa maksymalnej wersji gry</value>
+    <value>La versione minima del gioco deve essere inferiore o uguale alla versione massima del gioco</value>
   </data>
   <data name="EditModpackTooltipIdentifier" xml:space="preserve">
-    <value>Wewnętrzna nazwa tego modpacka; tylko litery, cyfry i myślniki</value>
+    <value>Nome interno di questo modpack; solo lettere, numeri e trattini</value>
   </data>
   <data name="EditModpackTooltipName" xml:space="preserve">
-    <value>Publicznie widoczna nazwa paczki modów</value>
+    <value>Nome pubblico visibile di questo modpack</value>
   </data>
   <data name="EditModpackTooltipAbstract" xml:space="preserve">
-    <value>Krótki opis tej paczki modów</value>
+    <value>Breve descrizione di questo modPack</value>
   </data>
   <data name="EditModpackTooltipVersion" xml:space="preserve">
-    <value>Numer wersji dla tego paczki modów</value>
+    <value>Il numero della versione di questo modpack</value>
   </data>
   <data name="EditModpackTooltipGameVersionMin" xml:space="preserve">
-    <value>Najwcześniejsza kompatybilna wersja gry, zostaw puste dla wszystkich</value>
+    <value>Ultima versione di gioco compatibile, vuota per tutti</value>
   </data>
   <data name="EditModpackTooltipGameVersionMax" xml:space="preserve">
-    <value>Najnowsza kompatybilna wersja gry, zostaw puste dla wszystkich</value>
+    <value>Ultima versione di gioco compatibile, vuota per tutti</value>
   </data>
   <data name="EditModpackTooltipLicense" xml:space="preserve">
-    <value>Licencja dla tej paczki modów</value>
+    <value>La licenza per questo modpack</value>
   </data>
   <data name="EditModpackTooltipIncludeVersions" xml:space="preserve">
-    <value>Jeśli zaznaczone, paczka modów będzie zawierać konkretne wersje wyświetlanych modów</value>
+    <value>Se selezionato, il modpack includerà le versioni esatte delle mod visualizzate, altrimenti andrà bene qualsiasi versione</value>
   </data>
   <data name="EditModpackTooltipDepends" xml:space="preserve">
-    <value>Przenieś wybrane modyfikacje do grupy Zależności. Te modyfikacje zostaną na pewno zainstalowane.</value>
+    <value>Sposta le mod selezionate nel gruppo Dipendenze. Queste mod saranno sicuramente installate.</value>
   </data>
   <data name="EditModpackTooltipRecommends" xml:space="preserve">
-    <value>Przenieś wybrane modyfikacje do grupy Rekomendowanych. Użytkownik może usunąć te modyfikacje podczas instalacji.</value>
+    <value>Sposta le mod selezionate nel gruppo Raccomandazioni. Un utente può rinunciare a queste mod durante l'installazione.</value>
   </data>
   <data name="EditModpackTooltipSuggests" xml:space="preserve">
-    <value>Przenieś wybrane modyfikacje do grupy Zasugerowanych. Te modyfikacje będą dostępne do instalacji, ale musisz je wyraźnie wybrać.</value>
+    <value>Sposta le mod selezionate nel gruppo Suggerite. Queste mod saranno disponibili per l'installazione, ma dovrai selezionarle esplicitamente.</value>
   </data>
   <data name="EditModpackTooltipIgnore" xml:space="preserve">
-    <value>Przenieś zainstalowane mody do grupy ignorowanych. Te mody nie pojawią się w modpacku.</value>
+    <value>Sposta le mod selezionate nel gruppo Ignorate. Queste mod non saranno incluse nel modpack.</value>
   </data>
   <data name="EditModpackTooltipCancel" xml:space="preserve">
-    <value>Przerwij tworzenie modpacka</value>
+    <value>Interrompi la creazione del modpack</value>
   </data>
   <data name="EditModpackTooltipExport" xml:space="preserve">
-    <value>Wybierz nazwę i zapisz paczkę modów</value>
+    <value>Scegliere un nome file e salvare il modpack</value>
   </data>
   <data name="TriStateToggleYesTooltip" xml:space="preserve">
-    <value>Tak</value>
+    <value>Sì</value>
   </data>
   <data name="TriStateToggleBothTooltip" xml:space="preserve">
-    <value>Tak lub nie</value>
+    <value>Sì o No</value>
   </data>
   <data name="TriStateToggleNoTooltip" xml:space="preserve">
-    <value>Nie</value>
+    <value>No</value>
   </data>
   <data name="ModSearchDescriptionPrefix" xml:space="preserve">
     <value>desc:</value>
@@ -933,10 +928,10 @@ Czy chcesz zezwolić na to CKAN-owi? Jeśli klikniesz nie, nie zobaczysz tej wia
     <value>lang:</value>
   </data>
   <data name="ModSearchDependsPrefix" xml:space="preserve">
-    <value>dep:</value>
+    <value>dip:</value>
   </data>
   <data name="ModSearchRecommendsPrefix" xml:space="preserve">
-    <value>rec:</value>
+    <value>rac:</value>
   </data>
   <data name="ModSearchSuggestsPrefix" xml:space="preserve">
     <value>sug:</value>
@@ -948,7 +943,7 @@ Czy chcesz zezwolić na to CKAN-owi? Jeśli klikniesz nie, nie zobaczysz tej wia
     <value>tag:</value>
   </data>
   <data name="ModSearchLabelPrefix" xml:space="preserve">
-    <value>label:</value>
+    <value>etichetta:</value>
   </data>
   <data name="ModSearchYesPrefix" xml:space="preserve">
     <value>is:</value>
@@ -957,91 +952,91 @@ Czy chcesz zezwolić na to CKAN-owi? Jeśli klikniesz nie, nie zobaczysz tej wia
     <value>not:</value>
   </data>
   <data name="ModSearchCompatibleSuffix" xml:space="preserve">
-    <value>kompatybilne</value>
+    <value>compatibile</value>
   </data>
   <data name="ModSearchInstalledSuffix" xml:space="preserve">
-    <value>zainstalowane</value>
+    <value>installata</value>
   </data>
   <data name="ModSearchCachedSuffix" xml:space="preserve">
-    <value>w-folderze-cache</value>
+    <value>in-Cache</value>
   </data>
   <data name="ModSearchNewlyCompatibleSuffix" xml:space="preserve">
-    <value>nowo-kompatybilne</value>
+    <value>nuovamente-compatibile</value>
   </data>
   <data name="ModSearchUpgradeableSuffix" xml:space="preserve">
-    <value>nieaktualne</value>
+    <value>aggiornabile</value>
   </data>
   <data name="ModSearchReplaceableSuffix" xml:space="preserve">
-    <value>zastępowalne</value>
+    <value>sostituibile</value>
   </data>
   <data name="EditModSearchTooltipExpandButton" xml:space="preserve">
-    <value>Rozwiń lub zwiń pola wyszukiwania szczegółowego (Ctrl-Shift-F)</value>
+    <value>Espandi o comprimi i campi di ricerca dettagliata (Ctrl-Shift-F)</value>
   </data>
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve">
-    <value>Połącz nowe wyszukiwanie z aktualnymi wyszukiwaniami</value>
+    <value>Combina una nuova ricerca con le tue ricerche attuali</value>
   </data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve">
-    <value>Odznacz aby odinstalować wszystkie mody, zaznacz aby wyczyścić zestaw zmian</value>
+    <value>Deseleziona per disinstallare tutte le mods, controlla per cancellare il set di modifiche</value>
   </data>
   <data name="TotalPlayTime" xml:space="preserve">
-    <value>Całkowity czas gry: {0} godzin</value>
+    <value>Tempo totale di gioco: {0} ore</value>
   </data>
   <data name="ChangeTypeNone" xml:space="preserve">
-    <value>Brak</value>
+    <value>Nessuno</value>
   </data>
   <data name="ChangeTypeInstall" xml:space="preserve">
-    <value>Rozmiar instalacji</value>
+    <value>Installa</value>
   </data>
   <data name="ChangeTypeRemove" xml:space="preserve">
-    <value>Usuń</value>
+    <value>Rimuovi</value>
   </data>
   <data name="ChangeTypeUpdate" xml:space="preserve">
-    <value>Zaktualizuj</value>
+    <value>Aggiorna</value>
   </data>
   <data name="ChangeTypeReplace" xml:space="preserve">
-    <value>Zastąp</value>
+    <value>Sostituisci</value>
   </data>
   <data name="ModDownloadsFailedMessage" xml:space="preserve">
-    <value>Nie udało się pobrać następujących modyfikacji. Możesz ponowić próbę lub przerwać i spróbować ponownie, możesz usunąć niektóre modyfikacje (i dowolne modyfikacje, które ich wymagają) z zestawu zmian. Modyfikacje, które dzielą ten sam link pobierania, zostaną automatycznie zaktualizowane do tego samego wyboru.</value>
+    <value>Non è stato possibile scaricare le seguenti mod. Puoi riprovare o annullare e, se riprovi, puoi scegliere di rimuovere alcune mod (e tutte le mod che dipendono da esse) dall'elenco delle modifiche. Le mod che condividono lo stesso link di download saranno automaticamente aggiornate alla stessa scelta.</value>
   </data>
   <data name="ModDownloadsFailedColHdr" xml:space="preserve">
     <value>Mod</value>
   </data>
   <data name="ModDownloadsFailedAbortBtn" xml:space="preserve">
-    <value>Przerwij cały zestaw zmian</value>
+    <value>Interrompi il changeset</value>
   </data>
   <data name="RepoDownloadsFailedMessage" xml:space="preserve">
-    <value>Następujące repozytoria nie mogły się pobrać. Możesz ponowić próbę lub przerwać, jeśli spróbujesz ponownie, możesz wybrać usunięcie niektórych repozytoriów. Pamiętaj, że wszystkie pominięte repozytoria zostaną NA ZAWSZE usunięte z konfiguracji!</value>
+    <value>Il download dei seguenti repository non è riuscito. Puoi riprovare o interrompere e, se riprovi, puoi scegliere di rimuovere alcuni repository. Nota che tutti i repository che salti saranno PERMANENTEMENTE rimossi dalla tua configurazione!</value>
   </data>
   <data name="RepoDownloadsFailedColHdr" xml:space="preserve">
-    <value>Repozytorium</value>
+    <value>Repository</value>
   </data>
   <data name="RepoDownloadsFailedAbortBtn" xml:space="preserve">
-    <value>Przerwij całą aktualizację</value>
+    <value>Interrompi l'aggiornamento</value>
   </data>
   <data name="RelationshipTypeProvides" xml:space="preserve">
-    <value>Zapewnia</value>
+    <value>Fornisce</value>
   </data>
   <data name="RelationshipTypeDepends" xml:space="preserve">
-    <value>Zależne</value>
+    <value>Dipendenti</value>
   </data>
   <data name="RelationshipTypeRecommends" xml:space="preserve">
-    <value>Zalecenia</value>
+    <value>Raccomandate</value>
   </data>
   <data name="RelationshipTypeSuggests" xml:space="preserve">
-    <value>Sugerowane</value>
+    <value>Suggerite</value>
   </data>
   <data name="RelationshipTypeSupports" xml:space="preserve">
-    <value>Wspiera</value>
+    <value>Supporta</value>
   </data>
   <data name="RelationshipTypeConflicts" xml:space="preserve">
-    <value>Konflikty</value>
+    <value>Conflitto</value>
   </data>
   <data name="AuthorSearchName">
-    <value>Według autora {0}</value>
+    <value>Mod di {0}</value>
   </data>
   <data name="FilterLinkToolTip">
-    <value>Kliknij, aby wyszukać
-Kliknij razem z Ctrl lub Shift, aby połączyć z bieżącym wyszukiwaniem</value>
+    <value>Clicca per cercare
+Ctrl-clic o Shift-click per combinare con la ricerca corrente</value>
   </data>
 </root>
