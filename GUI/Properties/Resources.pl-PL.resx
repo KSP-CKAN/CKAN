@@ -963,10 +963,10 @@ Czy chcesz zezwolić na to CKAN-owi? Jeśli klikniesz nie, nie zobaczysz tej wia
     <value>zainstalowane</value>
   </data>
   <data name="ModSearchCachedSuffix" xml:space="preserve">
-    <value>w folderze cache</value>
+    <value>w-folderze-cache</value>
   </data>
   <data name="ModSearchNewlyCompatibleSuffix" xml:space="preserve">
-    <value>nowo kompatybilne</value>
+    <value>nowo-kompatybilne</value>
   </data>
   <data name="ModSearchUpgradeableSuffix" xml:space="preserve">
     <value>nieaktualne</value>
