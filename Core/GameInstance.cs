@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Transactions;
+using System.Diagnostics;
+
 using ChinhDo.Transactions.FileManager;
 using log4net;
 using Newtonsoft.Json;
@@ -241,6 +243,16 @@ namespace CKAN
 
             // Find the directory our executable is stored in.
             string exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (string.IsNullOrEmpty(exeDir))
+            {
+                exeDir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                if (string.IsNullOrEmpty(exeDir))
+                {
+                    log.InfoFormat("Executing assembly path and main module path not found");
+                    return null;
+                }
+                log.InfoFormat("Executing assembly path not found, main module path is {0}", exeDir);
+            }
 
             log.DebugFormat("Checking if {0} is in my exe dir: {1}",
                 game.ShortName, exeDir);

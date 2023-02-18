@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Red highlight for dependencies on missing DLC (#3698 by: HebaruSan; reviewed: techman83)
 - [GUI] Clarify mod list saving options, add menu hotkeys (#3771 by: HebaruSan; reviewed: techman83)
 - [Multiple] Italian translation and other localization fixes (#3780, #3781 by: frankieorabona, WujekFoliarz, vinix38, Kalessin1; reviewed: HebaruSan)
+- [Core] Fix mkbundle executable crash (#3767 by: memchr; reviewed: HebaruSan)
 
 ### Bugfixes
 
