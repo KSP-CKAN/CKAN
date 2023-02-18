@@ -909,7 +909,7 @@ Czy chcesz zezwolić na to CKAN-owi? Jeśli klikniesz nie, nie zobaczysz tej wia
     <value>Przenieś wybrane modyfikacje do grupy Zasugerowanych. Te modyfikacje będą dostępne do instalacji, ale musisz je wyraźnie wybrać.</value>
   </data>
   <data name="EditModpackTooltipIgnore" xml:space="preserve">
-    <value>Przenieś wybrane modyfikacje do grupy Ignorowanych. Te modyfikacje nie będą zawarte w paczce modów. </value>
+    <value>Przenieś zainstalowane mody do grupy ignorowanych. Te mody nie pojawią się w modpacku.</value>
   </data>
   <data name="EditModpackTooltipCancel" xml:space="preserve">
     <value>Przerwij tworzenie modpacka</value>
