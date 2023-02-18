@@ -44,12 +44,12 @@
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.4.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="SharpZipLib" Version="1.4.1" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Moq" Version="4.17.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="System.Linq" Version="4.3.0" />
-    <PackageReference Include="YamlDotNet" Version="9.1.0" />
+    <PackageReference Include="YamlDotNet" Version="13.0.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
   </ItemGroup>

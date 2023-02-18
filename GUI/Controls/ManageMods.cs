@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Drawing;
 using System.Collections.ObjectModel;
@@ -847,9 +847,10 @@ namespace CKAN.GUI
                 // Don't let anything ever prevent us from unfreezing the changeset
                 freezeChangeSet = false;
                 ModGrid.Refresh();
-                UpdateChangeSetAndConflicts(
+                Task updateTask = UpdateChangeSetAndConflicts(
                     Main.Instance.CurrentInstance,
                     RegistryManager.Instance(Main.Instance.CurrentInstance).registry);
+                updateTask.RunSynchronously();
             }
         }
 
@@ -1192,7 +1193,7 @@ namespace CKAN.GUI
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
-            // C# 7.0: Executes the task and discards it
+            // C# 7.0: Executes the updateTask and discards it
             _ = UpdateChangeSetAndConflicts(Main.Instance.CurrentInstance, registry);
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListUpdatingFilters);
