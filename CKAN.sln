@@ -1,21 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30225.117
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33402.96
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-core", "Core\CKAN-core.csproj", "{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CKAN-core", "Core\CKAN-core.csproj", "{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-autoupdate", "AutoUpdate\CKAN-autoupdate.csproj", "{E5B1C768-349E-4DAF-A134-56E4ECF1EEEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CKAN-autoupdate", "AutoUpdate\CKAN-autoupdate.csproj", "{E5B1C768-349E-4DAF-A134-56E4ECF1EEEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-cmdline", "Cmdline\CKAN-cmdline.csproj", "{E97D81F6-85E2-4F1F-906D-BE21766602E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CKAN-cmdline", "Cmdline\CKAN-cmdline.csproj", "{E97D81F6-85E2-4F1F-906D-BE21766602E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-ConsoleUI", "ConsoleUI\CKAN-ConsoleUI.csproj", "{DA5C7023-9A3B-4204-AE2F-BBA6C388B436}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CKAN-ConsoleUI", "ConsoleUI\CKAN-ConsoleUI.csproj", "{DA5C7023-9A3B-4204-AE2F-BBA6C388B436}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-GUI", "GUI\CKAN-GUI.csproj", "{A79F9D54-315C-472B-928F-713A5860B2BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-netkan", "Netkan\CKAN-netkan.csproj", "{4336F356-33DB-442A-BF74-5E89AF47A5B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{4F41255E-8BC1-465B-82D5-1C5665BC099A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{4F41255E-8BC1-465B-82D5-1C5665BC099A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +74,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F1CF2029-80B8-41D0-97E9-0403923F85BE}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

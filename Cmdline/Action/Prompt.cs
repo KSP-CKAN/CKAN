@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
@@ -111,7 +111,7 @@ namespace CKAN.CmdLine
                 :                               null;
         }
 
-        private string[] GetOptions(TypeInfo ti, string prefix)
+        private string[] GetOptions(System.Reflection.TypeInfo ti, string prefix)
         {
             return ti.DeclaredProperties
                 .Select(p => p.GetCustomAttribute<OptionAttribute>()?.LongName)
