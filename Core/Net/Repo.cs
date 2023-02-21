@@ -37,7 +37,9 @@ namespace CKAN
         /// </summary>
         public static RepoUpdateResult UpdateAllRepositories(RegistryManager registry_manager, GameInstance ksp, NetAsyncDownloader downloader, NetModuleCache cache, IUser user)
         {
-            var repos = registry_manager.registry.Repositories.Values.ToArray();
+            var repos = registry_manager.registry.Repositories.Values
+                .DistinctBy(r => r.uri)
+                .ToArray();
 
             // Get latest copy of the game versions data (remote build map)
             user.RaiseMessage(Properties.Resources.NetRepoUpdatingBuildMap);
