@@ -37,7 +37,9 @@ namespace CKAN
         /// </summary>
         public static RepoUpdateResult UpdateAllRepositories(RegistryManager registry_manager, GameInstance ksp, NetAsyncDownloader downloader, NetModuleCache cache, IUser user)
         {
-            var repos = registry_manager.registry.Repositories.Values.ToArray();
+            var repos = registry_manager.registry.Repositories.Values
+                .DistinctBy(r => r.uri)
+                .ToArray();
 
             // Get latest copy of the game versions data (remote build map)
             user.RaiseMessage(Properties.Resources.NetRepoUpdatingBuildMap);
@@ -139,7 +141,7 @@ namespace CKAN
             // Create a handle for the tar stream
             using (TarInputStream tarStream = new TarInputStream(gzipStream, Encoding.UTF8))
             {
-                user.RaiseMessage("Loading modules from {0} repository...", repo.name);
+                user.RaiseMessage(Properties.Resources.NetRepoLoadingModulesFromRepo, repo.name);
                 TarEntry entry;
                 int prevPercent = 0;
                 while ((entry = tarStream.GetNextEntry()) != null)
@@ -150,7 +152,7 @@ namespace CKAN
                     {
                         downloadCounts = JsonConvert.DeserializeObject<SortedDictionary<string, int>>(
                             tarStreamString(tarStream, entry));
-                        user.RaiseMessage("Loaded download counts from {0} repository", repo.name);
+                        user.RaiseMessage(Properties.Resources.NetRepoLoadedDownloadCounts, repo.name);
                     }
                     else if (filename.EndsWith(".ckan"))
                     {
@@ -158,7 +160,9 @@ namespace CKAN
                         var percent = (int)(100 * inputStream.Position / inputStream.Length);
                         if (percent > prevPercent)
                         {
-                            user.RaiseProgress($"Loading modules from {repo.name} repository", percent);
+                            user.RaiseProgress(
+                                string.Format(Properties.Resources.NetRepoLoadingModulesFromRepo, repo.name),
+                                percent);
                             prevPercent = percent;
                         }
 
@@ -227,7 +231,9 @@ namespace CKAN
                         var percent = (int)(100 * index / zipfile.Count);
                         if (percent > prevPercent)
                         {
-                            user.RaiseProgress($"Loading modules from {repo.name} repository", percent);
+                            user.RaiseProgress(
+                                string.Format(Properties.Resources.NetRepoLoadingModulesFromRepo, repo.name),
+                                percent);
                         }
 
                         // Read each file into a string.

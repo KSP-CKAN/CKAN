@@ -68,7 +68,6 @@ namespace CKAN.Extensions
             => source.Aggregate(TimeSpan.Zero,
                                 (a, b) => a + b);
 
-
         /// <summary>
         /// Select : SelectMany :: Zip : ZipMany
         /// </summary>
@@ -78,6 +77,15 @@ namespace CKAN.Extensions
         /// <returns>Flattened sequence of values from func applies to seq1 and seq2</returns>
         public static IEnumerable<V> ZipMany<T, U, V>(this IEnumerable<T> seq1, IEnumerable<U> seq2, Func<T, U, IEnumerable<V>> func)
             => seq1.Zip(seq2, func).SelectMany(seqs => seqs);
+
+        /// <summary>
+        /// Eliminate duplicate elements based on the value returned by a callback
+        /// </summary>
+        /// <param name="seq">Sequence of elements to check</param>
+        /// <param name="func">Function to return unique value per element</param>
+        /// <returns>Sequence where each element has a unique return value</returns>
+        public static IEnumerable<T> DistinctBy<T, U>(this IEnumerable<T> seq, Func<T, U> func)
+            => seq.GroupBy(func).Select(grp => grp.First());
 
     }
 

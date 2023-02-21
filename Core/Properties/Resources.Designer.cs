@@ -156,6 +156,12 @@ namespace CKAN.Properties {
         internal static string NetRepoInconsistenciesHeader {
             get { return (string)(ResourceManager.GetObject("NetRepoInconsistenciesHeader", resourceCulture)); }
         }
+        internal static string NetRepoLoadingModulesFromRepo {
+            get { return (string)(ResourceManager.GetObject("NetRepoLoadingModulesFromRepo", resourceCulture)); }
+        }
+        internal static string NetRepoLoadedDownloadCounts {
+            get { return (string)(ResourceManager.GetObject("NetRepoLoadedDownloadCounts", resourceCulture)); }
+        }
 
         internal static string JsonRelationshipConverterAnyOfCombined {
             get { return (string)(ResourceManager.GetObject("JsonRelationshipConverterAnyOfCombined", resourceCulture)); }

@@ -155,6 +155,8 @@ You should reinstall them in order to preserve consistency with the repository.
 
 Do you wish to reinstall now?</value></data>
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve"><value>The following inconsistencies were found:</value></data>
+  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve"><value>Loading modules from {0} repository...</value></data>
+  <data name="NetRepoLoadedDownloadCounts" xml:space="preserve"><value>Loaded download counts from {0} repository</value></data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve"><value>`any_of` should not be combined with `{0}`</value></data>
   <data name="RegistryFileConflict" xml:space="preserve"><value>{0} wishes to install {1}, but this file is registered to {2}</value></data>
   <data name="RegistryFileNotRemoved" xml:space="preserve"><value>{0} is registered to {1} but has not been removed!</value></data>
