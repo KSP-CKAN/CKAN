@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix FIPS-mode exceptions on Windows for SHA256 (#3774 by: HebaruSan; reviewed: techman83)
 - [Core] Support cancellation of download checksums (#3778 by: HebaruSan; reviewed: techman83)
 - [Core] Skip duplicate repo URLs during update (#3786 by: HebaruSan; reviewed: techman83)
+- [Core] Mark new deps of upgrades as auto-installed (#3702 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 
