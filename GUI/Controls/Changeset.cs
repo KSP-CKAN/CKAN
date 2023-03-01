@@ -15,7 +15,10 @@ namespace CKAN.GUI
             InitializeComponent();
         }
 
-        public void LoadChangeset(List<ModChange> changes, List<ModuleLabel> AlertLabels)
+        public void LoadChangeset(
+            List<ModChange> changes,
+            List<ModuleLabel> AlertLabels,
+            Dictionary<CkanModule, string> conflicts)
         {
             changeset = changes;
             alertLabels = AlertLabels;
@@ -25,11 +28,12 @@ namespace CKAN.GUI
                 // Changeset sorting is handled upstream in the resolver
                 ChangesListView.Items.AddRange(changes
                     .Where(ch => ch.ChangeType != GUIModChangeType.None)
-                    .Select(makeItem)
+                    .Select(ch => makeItem(ch, conflicts))
                     .ToArray());
                 ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             }
+            ConfirmChangesButton.Enabled = conflicts == null || !conflicts.Any();
         }
 
         protected override void OnVisibleChanged(EventArgs e)
@@ -71,7 +75,7 @@ namespace CKAN.GUI
             OnCancelChanges?.Invoke(false);
         }
 
-        private ListViewItem makeItem(ModChange change)
+        private ListViewItem makeItem(ModChange change, Dictionary<CkanModule, string> conflicts)
         {
             var descr = change.Description;
             CkanModule m = change.Mod;
@@ -80,16 +84,19 @@ namespace CKAN.GUI
             {
                 change.NameAndStatus,
                 change.ChangeType.ToI18nString(),
-                warnLbl != null
-                    ? string.Format(
-                        Properties.Resources.MainChangesetWarningInstallingModuleWithLabel,
-                        warnLbl.Name,
-                        descr)
-                    : descr
+                conflicts != null && conflicts.TryGetValue(m, out string confDescr)
+                    ? string.Format("{0} ({1})", confDescr, descr)
+                    : warnLbl != null
+                        ? string.Format(
+                            Properties.Resources.MainChangesetWarningInstallingModuleWithLabel,
+                            warnLbl.Name,
+                            descr)
+                        : descr
             })
             {
                 Tag         = m,
                 ForeColor   = warnLbl != null ? Color.Red : SystemColors.WindowText,
+                BackColor   = conflicts != null && conflicts.ContainsKey(m) ? Color.LightCoral : Color.Empty,
                 ToolTipText = descr,
             };
         }

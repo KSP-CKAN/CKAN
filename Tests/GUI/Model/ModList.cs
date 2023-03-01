@@ -19,7 +19,7 @@ namespace Tests.GUI
     public class ModListTests
     {
         [Test]
-        public void ComputeChangeSetFromModList_WithEmptyList_HasEmptyChangeSet()
+        public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
         {
             var item = new ModList(delegate { });
             Assert.That(item.ComputeUserChangeSet(null, null), Is.Empty);

@@ -112,6 +112,7 @@ namespace CKAN.GUI
             this.menuStrip2.CanOverflow = true;
             this.menuStrip2.Location = new System.Drawing.Point(0, 0);
             this.menuStrip2.Name = "menuStrip2";
+            this.menuStrip2.ShowItemToolTips = true;
             this.menuStrip2.Size = new System.Drawing.Size(5876, 48);
             this.menuStrip2.TabStop = true;
             this.menuStrip2.TabIndex = 4;
@@ -149,6 +150,7 @@ namespace CKAN.GUI
             //
             // ApplyToolButton
             //
+            this.ApplyToolButton.AutoToolTip = false;
             this.ApplyToolButton.Image = global::CKAN.GUI.Properties.Resources.apply;
             this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ApplyToolButton.Name = "ApplyToolButton";

@@ -7,13 +7,14 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private void UpdateChangesDialog(List<ModChange> changeset)
+        private void UpdateChangesDialog(List<ModChange> changeset, Dictionary<CkanModule, string> conflicts)
         {
             Changeset.LoadChangeset(
                 changeset,
                 ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                     .Where(l => l.AlertOnInstall)
-                    .ToList());
+                    .ToList(),
+                conflicts);
         }
 
         private void Changeset_OnSelectedItemsChanged(ListView.SelectedListViewItemCollection items)
@@ -26,7 +27,7 @@ namespace CKAN.GUI
             if (reset)
             {
                 ManageMods.ClearChangeSet();
-                UpdateChangesDialog(null);
+                UpdateChangesDialog(null, null);
             }
             tabController.ShowTab("ManageModsTabPage");
         }

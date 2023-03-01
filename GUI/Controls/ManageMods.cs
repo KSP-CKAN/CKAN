@@ -84,16 +84,10 @@ namespace CKAN.GUI
             }
         }
 
-        private List<bool> descending
-        {
-            get
-            {
-                return Main.Instance.configuration.MultiSortDescending;
-            }
-        }
+        private List<bool> descending => Main.Instance.configuration.MultiSortDescending;
 
         public event Action<GUIMod> OnSelectedModuleChanged;
-        public event Action<List<ModChange>> OnChangeSetChanged;
+        public event Action<List<ModChange>, Dictionary<GUIMod, string>> OnChangeSetChanged;
         public event Action OnRegistryChanged;
 
         public event Action<List<ModChange>> StartChangeSet;
@@ -101,7 +95,7 @@ namespace CKAN.GUI
 
         private List<ModChange> ChangeSet
         {
-            get { return currentChangeSet; }
+            get => currentChangeSet;
             set
             {
                 var orig = currentChangeSet;
@@ -124,13 +118,13 @@ namespace CKAN.GUI
                     ApplyToolButton.Enabled = false;
                     InstallAllCheckbox.Checked = true;
                 }
-                OnChangeSetChanged?.Invoke(ChangeSet);
+                OnChangeSetChanged?.Invoke(ChangeSet, Conflicts);
             });
         }
 
         private Dictionary<GUIMod, string> Conflicts
         {
-            get { return conflicts; }
+            get => conflicts;
             set
             {
                 var orig = conflicts;
@@ -1589,30 +1583,17 @@ namespace CKAN.GUI
 
         public bool AllowClose()
         {
-            if (Conflicts != null)
+            if (Conflicts != null && Conflicts.Any())
             {
-                if (Conflicts.Any())
+                // Ask if they want to resolve conflicts
+                string confDescrip = Conflicts
+                    .Select(kvp => kvp.Value)
+                    .Aggregate((a, b) => $"{a}, {b}");
+                if (!Main.Instance.YesNoDialog(string.Format(Properties.Resources.MainQuitWithConflicts, confDescrip),
+                    Properties.Resources.MainQuit,
+                    Properties.Resources.MainGoBack))
                 {
-                    // Ask if they want to resolve conflicts
-                    string confDescrip = Conflicts
-                        .Select(kvp => kvp.Value)
-                        .Aggregate((a, b) => $"{a}, {b}");
-                    if (!Main.Instance.YesNoDialog(string.Format(Properties.Resources.MainQuitWithConflicts, confDescrip),
-                        Properties.Resources.MainQuit,
-                        Properties.Resources.MainGoBack))
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    // The Conflicts dictionary is empty even when there are unmet dependencies.
-                    if (!Main.Instance.YesNoDialog(Properties.Resources.MainQuitWithUnmetDeps,
-                        Properties.Resources.MainQuit,
-                        Properties.Resources.MainGoBack))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
             else if (ChangeSet?.Any() ?? false)
@@ -1654,40 +1635,23 @@ namespace CKAN.GUI
             var user_change_set = mainModList.ComputeUserChangeSet(registry, inst.VersionCriteria());
             try
             {
+                var gameVersion = inst.VersionCriteria();
                 var module_installer = new ModuleInstaller(inst, Main.Instance.Manager.Cache, Main.Instance.currentUser);
-                full_change_set = mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, inst.VersionCriteria()).ToList();
-            }
-            catch (InconsistentKraken k)
-            {
-                // Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
-                Main.Instance.AddStatusMessage(k.ShortDescription);
-                user_change_set = mainModList.ComputeUserChangeSet(registry, inst.VersionCriteria());
-                new_conflicts = ModList.ComputeConflictsFromModList(registry, user_change_set, inst.VersionCriteria());
-                full_change_set = null;
-            }
-            catch (TooManyModsProvideKraken)
-            {
-                // Can be thrown by ComputeChangeSetFromModList if the user cancels out of it.
-                // We can just rerun it as the ModInfo has been removed.
-                too_many_provides_thrown = true;
+                var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, module_installer, gameVersion);
+                full_change_set = tuple.Item1.ToList();
+                new_conflicts = tuple.Item2.ToDictionary(
+                    item => new GUIMod(item.Key, registry, gameVersion),
+                    item => item.Value);
+                Main.Instance.AddStatusMessage(string.Join(";", new_conflicts.Values));
             }
             catch (DependencyNotSatisfiedKraken k)
             {
                 Main.Instance.currentUser.RaiseError(
                     Properties.Resources.MainDepNotSatisfied,
-                    k.parent,
-                    k.module
-                );
+                    k.parent, k.module);
 
                 // Uncheck the box
                 MarkModForInstall(k.parent.identifier, true);
-            }
-
-            if (too_many_provides_thrown)
-            {
-                await UpdateChangeSetAndConflicts(inst, registry);
-                new_conflicts = Conflicts;
-                full_change_set = ChangeSet;
             }
 
             Conflicts = new_conflicts;
