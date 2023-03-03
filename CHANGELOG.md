@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Support cancellation of download checksums (#3778 by: HebaruSan; reviewed: techman83)
 - [Core] Skip duplicate repo URLs during update (#3786 by: HebaruSan; reviewed: techman83)
 - [Core] Mark new deps of upgrades as auto-installed (#3702 by: HebaruSan; reviewed: techman83)
+- [GUI] Fix index -1 exception in Manage Instances (#3800 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 
