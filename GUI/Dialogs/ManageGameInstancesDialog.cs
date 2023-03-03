@@ -79,8 +79,8 @@ namespace CKAN.GUI
             var allSameGame = _manager.Instances.Select(i => i.Value.game).Distinct().Count() <= 1;
             var hasPlayTime = _manager.Instances.Any(instance => (instance.Value.playTime?.Time ?? TimeSpan.Zero) > TimeSpan.Zero);
 
-            AddOrRemoveColumn(GameInstancesListView, Game, !allSameGame);
-            AddOrRemoveColumn(GameInstancesListView, GamePlayTime, hasPlayTime);
+            AddOrRemoveColumn(GameInstancesListView, Game, !allSameGame, GameInstallVersion.Index);
+            AddOrRemoveColumn(GameInstancesListView, GamePlayTime, hasPlayTime, GameInstallPath.Index);
 
             GameInstancesListView.Items.AddRange(_manager.Instances
                 .OrderByDescending(instance => instance.Value.Version())
@@ -95,11 +95,11 @@ namespace CKAN.GUI
             GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
-        private void AddOrRemoveColumn(ListView listView, ColumnHeader column, bool condition)
+        private void AddOrRemoveColumn(ListView listView, ColumnHeader column, bool condition, int index)
         {
             if (condition && !listView.Columns.Contains(column))
             {
-                listView.Columns.Insert(column.Index, column);
+                listView.Columns.Insert(index, column);
             }
             else if (!condition && listView.Columns.Contains(column))
             {
