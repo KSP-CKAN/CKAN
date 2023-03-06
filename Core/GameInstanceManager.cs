@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Transactions;
+
 using Autofac;
 using ChinhDo.Transactions.FileManager;
 using log4net;
+
 using CKAN.Versioning;
 using CKAN.Configuration;
 using CKAN.Games;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -543,8 +546,12 @@ namespace CKAN
                 }
             }
 
-            string failReason;
-            TrySetupCache(Configuration.DownloadCacheDir, out failReason);
+            if (!TrySetupCache(Configuration.DownloadCacheDir, out string failReason))
+            {
+                log.ErrorFormat("Cache not found at configured path {0}: {1}", Configuration.DownloadCacheDir, failReason);
+                // Fall back to default path to minimize chance of ending up in an invalid state at startup
+                TrySetupCache("", out failReason);
+            }
         }
 
         /// <summary>
@@ -567,6 +574,8 @@ namespace CKAN
                 }
                 else
                 {
+                    // Make sure we can access it
+                    var bytesFree = new DirectoryInfo(path).GetDrive().AvailableFreeSpace;
                     Cache = new NetModuleCache(this, path);
                     Configuration.DownloadCacheDir = path;
                 }
@@ -575,17 +584,12 @@ namespace CKAN
             }
             catch (DirectoryNotFoundKraken)
             {
+                Configuration.DownloadCacheDir = origPath;
                 failureReason = string.Format(Properties.Resources.GameInstancePathNotFound, path);
                 return false;
             }
-            catch (PathErrorKraken ex)
+            catch (Exception ex)
             {
-                failureReason = ex.Message;
-                return false;
-            }
-            catch (IOException ex)
-            {
-                // MoveFrom failed, possibly full disk, so undo the change
                 Configuration.DownloadCacheDir = origPath;
                 failureReason = ex.Message;
                 return false;

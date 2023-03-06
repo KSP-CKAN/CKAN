@@ -16,9 +16,6 @@ namespace CKAN.GUI
         private static readonly ILog log = LogManager.GetLogger(typeof(SettingsDialog));
 
         private IUser m_user;
-        private long m_cacheSize;
-        private int  m_cacheFileCount;
-        private long m_cacheFreeSpace;
         private IConfiguration config;
 
         private List<Repository> _sortedRepos = new List<Repository>();
@@ -62,6 +59,20 @@ namespace CKAN.GUI
             UpdateRefreshRate();
 
             UpdateCacheInfo(config.DownloadCacheDir);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (CachePath.Text != config.DownloadCacheDir
+                && !Main.Instance.Manager.TrySetupCache(CachePath.Text, out string failReason))
+            {
+                m_user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
+                e.Cancel = true;
+            }
+            else
+            {
+                base.OnFormClosing(e);
+            }
         }
 
         private void UpdateRefreshRate()
@@ -113,48 +124,48 @@ namespace CKAN.GUI
             LanguageSelectionComboBox.SelectedIndex = LanguageSelectionComboBox.FindStringExact(config.Language);
         }
 
-        private bool updatingCache = false;
-
         private void UpdateCacheInfo(string newPath)
         {
-            string failReason;
-            if (updatingCache)
+            CachePath.Text = newPath;
+            // Background thread in case GetSizeInfo takes a while
+            Task.Factory.StartNew(() =>
             {
-                return;
-            }
-            if (newPath == config.DownloadCacheDir
-                || Main.Instance.Manager.TrySetupCache(newPath, out failReason))
-            {
-                updatingCache = true;
-                Task.Factory.StartNew(() =>
+                try
                 {
-                    // This might take a little while if the cache is big
-                    Main.Instance.Manager.Cache.GetSizeInfo(out m_cacheFileCount, out m_cacheSize, out m_cacheFreeSpace);
+                    // Make a temporary cache object to validate the path without changing the setting till close
+                    var cache = new NetModuleCache(newPath);
+                    cache.GetSizeInfo(out int cacheFileCount, out long cacheSize, out long cacheFreeSpace);
+
                     Util.Invoke(this, () =>
                     {
                         if (config.CacheSizeLimit.HasValue)
                         {
-                            // Show setting in MB
+                            // Show setting in MiB
                             CacheLimit.Text = (config.CacheSizeLimit.Value / 1024 / 1024).ToString();
                         }
-                        CachePath.Text = config.DownloadCacheDir;
-                        CacheSummary.Text = string.Format(Properties.Resources.SettingsDialogSummmary, m_cacheFileCount, CkanModule.FmtSize(m_cacheSize), CkanModule.FmtSize(m_cacheFreeSpace));
+                        CacheSummary.Text = string.Format(
+                            Properties.Resources.SettingsDialogSummmary,
+                            cacheFileCount, CkanModule.FmtSize(cacheSize), CkanModule.FmtSize(cacheFreeSpace));
                         CacheSummary.ForeColor   = SystemColors.ControlText;
                         OpenCacheButton.Enabled  = true;
-                        ClearCacheButton.Enabled = (m_cacheSize > 0);
+                        ClearCacheButton.Enabled = (cacheSize > 0);
                         PurgeToLimitMenuItem.Enabled = (config.CacheSizeLimit.HasValue
-                            && m_cacheSize > config.CacheSizeLimit.Value);
-                        updatingCache = false;
+                            && cacheSize > config.CacheSizeLimit.Value);
                     });
-                });
-            }
-            else
-            {
-                CacheSummary.Text        = string.Format(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
-                CacheSummary.ForeColor   = Color.Red;
-                OpenCacheButton.Enabled  = false;
-                ClearCacheButton.Enabled = false;
-            }
+
+                }
+                catch (Exception ex)
+                {
+                    Util.Invoke(this, () =>
+                    {
+                        CacheSummary.Text        = string.Format(Properties.Resources.SettingsDialogSummaryInvalid,
+                                                                 ex.Message);
+                        CacheSummary.ForeColor   = Color.Red;
+                        OpenCacheButton.Enabled  = false;
+                        ClearCacheButton.Enabled = false;
+                    });
+                }
+            });
         }
 
         private void CachePath_TextChanged(object sender, EventArgs e)
@@ -205,6 +216,14 @@ namespace CKAN.GUI
             // Purge old downloads if we're over the limit
             if (config.CacheSizeLimit.HasValue)
             {
+                // Switch main cache since user seems committed to this path
+                if (CachePath.Text != config.DownloadCacheDir
+                    && !Main.Instance.Manager.TrySetupCache(CachePath.Text, out string failReason))
+                {
+                    m_user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
+                    return;
+                }
+
                 Main.Instance.Manager.Cache.EnforceSizeLimit(
                     config.CacheSizeLimit.Value,
                     RegistryManager.Instance(Main.Instance.CurrentInstance).registry
@@ -215,13 +234,22 @@ namespace CKAN.GUI
 
         private void PurgeAllMenuItem_Click(object sender, EventArgs e)
         {
+            // Switch main cache since user seems committed to this path
+            if (CachePath.Text != config.DownloadCacheDir
+                && !Main.Instance.Manager.TrySetupCache(CachePath.Text, out string failReason))
+            {
+                m_user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
+                return;
+            }
+
+            Main.Instance.Manager.Cache.GetSizeInfo(
+                out int cacheFileCount, out long cacheSize, out long cacheFreeSpace);
+
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
-            string confirmationText = String.Format
-            (
+            string confirmationText = String.Format(
                 Properties.Resources.SettingsDialogDeleteConfirm,
-                m_cacheFileCount,
-                CkanModule.FmtSize(m_cacheSize)
-            );
+                cacheFileCount,
+                CkanModule.FmtSize(cacheSize));
 
             if (deleteConfirmationDialog.ShowYesNoDialog(this, confirmationText) == DialogResult.Yes)
             {
@@ -245,7 +273,7 @@ namespace CKAN.GUI
         private void ResetCacheButton_Click(object sender, EventArgs e)
         {
             // Reset to default cache path
-            UpdateCacheInfo("");
+            UpdateCacheInfo(JsonConfiguration.DefaultDownloadCacheDir);
         }
 
         private void OpenCacheButton_Click(object sender, EventArgs e)
@@ -300,7 +328,7 @@ namespace CKAN.GUI
                 }
                 catch (Exception)
                 {
-                    Main.Instance.currentUser.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
+                    m_user.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
                 }
             }
         }

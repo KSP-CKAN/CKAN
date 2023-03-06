@@ -129,9 +129,9 @@
   <data name="NewAuthTokenButton.Text" xml:space="preserve"><value>New</value></data>
   <data name="DeleteAuthTokenButton.Text" xml:space="preserve"><value>Delete</value></data>
   <data name="CacheGroupBox.Text" xml:space="preserve"><value>Download Cache</value></data>
-  <data name="CacheSummary.Text" xml:space="preserve"><value>N files, M MB</value></data>
+  <data name="CacheSummary.Text" xml:space="preserve"><value>N files, M MiB</value></data>
   <data name="CacheLimitPreLabel.Text" xml:space="preserve"><value>Maximum cache size:</value></data>
-  <data name="CacheLimitPostLabel.Text" xml:space="preserve"><value>MB (empty for unlimited)</value></data>
+  <data name="CacheLimitPostLabel.Text" xml:space="preserve"><value>MiB (empty for unlimited)</value></data>
   <data name="ChangeCacheButton.Text" xml:space="preserve"><value>Change...</value></data>
   <data name="ClearCacheButton.Text" xml:space="preserve"><value>Purge</value></data>
   <data name="PurgeToLimitMenuItem.Text" xml:space="preserve"><value>Purge to limit</value></data>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -68,8 +68,8 @@ namespace CKAN
                     Properties.Resources.NetFileCacheCannotFind, cachePath));
             }
 
-            // Files go here while they're downloading
-            Directory.CreateDirectory(InProgressPath);
+            // Make sure we can access it
+            var bytesFree = new DirectoryInfo(cachePath)?.GetDrive()?.AvailableFreeSpace ?? 0;
 
             // Establish a watch on our cache. This means we can cache the directory contents,
             // and discard that cache if we spot changes.
@@ -107,14 +107,18 @@ namespace CKAN
             watcher.Dispose();
         }
 
+        // Files go here while they're downloading
         private string InProgressPath => Path.Combine(cachePath, "downloading");
 
         private string GetInProgressFileName(string hash, string description)
-            => Directory.EnumerateFiles(InProgressPath)
-                .Where(path => new FileInfo(path).Name.StartsWith(hash))
-                .FirstOrDefault()
-                // If not found, return the name to create
-                ?? Path.Combine(InProgressPath, $"{hash}-{description}");
+        {
+            Directory.CreateDirectory(InProgressPath);
+            return Directory.EnumerateFiles(InProgressPath)
+                            .Where(path => new FileInfo(path).Name.StartsWith(hash))
+                            .FirstOrDefault()
+                   // If not found, return the name to create
+                   ?? Path.Combine(InProgressPath, $"{hash}-{description}");
+        }
 
         public string GetInProgressFileName(Uri url, string description)
             => GetInProgressFileName(NetFileCache.CreateURLHash(url),
@@ -300,7 +304,7 @@ namespace CKAN
             numFiles = 0;
             numBytes = 0;
             GetSizeInfo(cachePath, ref numFiles, ref numBytes);
-            bytesFree = new DirectoryInfo(cachePath).GetDrive()?.AvailableFreeSpace ?? 0;
+            bytesFree = new DirectoryInfo(cachePath)?.GetDrive()?.AvailableFreeSpace ?? 0;
             foreach (var legacyDir in legacyDirs())
             {
                 GetSizeInfo(legacyDir, ref numFiles, ref numBytes);
