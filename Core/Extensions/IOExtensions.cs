@@ -28,6 +28,8 @@ namespace CKAN.Extensions
             return true;
         }
 
+        private static readonly char[] pathDelims = new char[] {Path.DirectorySeparatorChar};
+
         /// <summary>
         /// Check whether a given path is an ancestor of another
         /// </summary>
@@ -36,10 +38,8 @@ namespace CKAN.Extensions
         /// <returns>true if child is a descendant of parent, false otherwise</returns>
         public static bool IsAncestorOf(this DirectoryInfo parent, DirectoryInfo child)
             => StringArrayStartsWith(
-                child.FullName.Split(new char[] {Path.DirectorySeparatorChar},
-                                     StringSplitOptions.RemoveEmptyEntries),
-                parent.FullName.Split(new char[] {Path.DirectorySeparatorChar},
-                                      StringSplitOptions.RemoveEmptyEntries));
+                child.FullName.Split(pathDelims, StringSplitOptions.RemoveEmptyEntries),
+                parent.FullName.Split(pathDelims, StringSplitOptions.RemoveEmptyEntries));
 
         /// <summary>
         /// Extension method to fill in the gap of getting from a
@@ -51,7 +51,8 @@ namespace CKAN.Extensions
         /// <returns>The DriveInfo associated with this directory</returns>
         public static DriveInfo GetDrive(this DirectoryInfo dir)
             => DriveInfo.GetDrives()
-                        .Where(dr => dr.RootDirectory.IsAncestorOf(dir))
+                        .Where(dr => dr.RootDirectory == dir
+                                     || dr.RootDirectory.IsAncestorOf(dir))
                         .OrderByDescending(dr => dr.RootDirectory.FullName.Length)
                         .FirstOrDefault();
 
