@@ -216,7 +216,7 @@ namespace CKAN.NetKAN.Processors
                     }
                 },
                 {
-                    "Game",
+                    "GameId",
                     new MessageAttributeValue()
                     {
                         DataType    = "String",
