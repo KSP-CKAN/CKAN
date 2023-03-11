@@ -78,20 +78,23 @@ Task("docker-inflator")
     // Restart the Inflator
     var netkanImage = "kspckan/netkan";
     DockerPull(netkanImage);
-    DockerRun(new DockerContainerRunSettings()
+    var runSettings = new DockerContainerRunSettings()
+    {
+        Env = new string[]
         {
-            Env = new string[]
-            {
-                "AWS_ACCESS_KEY_ID",
-                "AWS_SECRET_ACCESS_KEY",
-                "AWS_DEFAULT_REGION"
-            }
-        },
-        netkanImage,
+            "AWS_ACCESS_KEY_ID",
+            "AWS_SECRET_ACCESS_KEY",
+            "AWS_DEFAULT_REGION"
+        }
+    };
+    DockerRun(runSettings, netkanImage,
         "redeploy-service",
         "--cluster",      "NetKANCluster",
-        "--service-name", "Inflator"
-    );
+        "--service-name", "InflatorKsp");
+    DockerRun(runSettings, netkanImage,
+        "redeploy-service",
+        "--cluster",      "NetKANCluster",
+        "--service-name", "InflatorKsp2");
 });
 
 Task("docker-metadata")
