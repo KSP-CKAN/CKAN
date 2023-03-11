@@ -373,8 +373,8 @@ namespace CKAN.GUI
                     Value = "-"
                 };
 
-            var name   = new DataGridViewTextBoxCell { Value = mod.Name.Replace("&", "&&") };
-            var author = new DataGridViewTextBoxCell { Value = string.Join(", ", mod.Authors).Replace("&", "&&") };
+            var name   = new DataGridViewTextBoxCell { Value = ToGridText(mod.Name)                       };
+            var author = new DataGridViewTextBoxCell { Value = ToGridText(string.Join(", ", mod.Authors)) };
 
             var installVersion = new DataGridViewTextBoxCell()
             {
@@ -403,7 +403,7 @@ namespace CKAN.GUI
             var installSize   = new DataGridViewTextBoxCell { Value = mod.InstallSize                 };
             var releaseDate   = new DataGridViewTextBoxCell { Value = mod.ToModule().release_date     };
             var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate                 };
-            var desc          = new DataGridViewTextBoxCell { Value = mod.Abstract.Replace("&", "&&") };
+            var desc          = new DataGridViewTextBoxCell { Value = ToGridText(mod.Abstract)        };
 
             item.Cells.AddRange(selecting, autoInstalled, updating, replacing, name, author, installVersion, latestVersion, compat, downloadSize, installSize, releaseDate, installDate, downloadCount, desc);
 
@@ -413,6 +413,9 @@ namespace CKAN.GUI
 
             return item;
         }
+
+        private static string ToGridText(string text)
+            => Platform.IsMono ? text.Replace("&", "&&") : text;
 
         public Color GetRowBackground(GUIMod mod, bool conflicted, string instanceName)
         {
