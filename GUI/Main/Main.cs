@@ -503,9 +503,9 @@ namespace CKAN.GUI
             }
         }
 
-        public void UpdateModContentsTree(CkanModule module, bool force = false)
+        public void RefreshModContentsTree()
         {
-            ModInfo.UpdateModContentsTree(module, force);
+            ModInfo.RefreshModContentsTree();
         }
 
         private void ExitToolButton_Click(object sender, EventArgs e)

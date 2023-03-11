@@ -23,15 +23,18 @@ namespace CKAN.GUI
                 if (value != selectedModule)
                 {
                     selectedModule = value;
-                    UpdateModContentsTree(selectedModule.ToModule());
+                    Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(selectedModule.ToModule()));
                 }
             }
             get => selectedModule;
         }
 
-        public void UpdateModContentsTree(CkanModule module, bool force = false)
+        public void Refresh()
         {
-            Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(module, force));
+            if (currentModContentsModule != null)
+            {
+                Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(currentModContentsModule, true));
+            }
         }
 
         public event Action<GUIMod> OnDownloadClick;
