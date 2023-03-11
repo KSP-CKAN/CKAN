@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 
+using log4net;
+
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.Extensions;
@@ -62,7 +64,26 @@ namespace CKAN.NetKAN.Validators
                     var badPaths = string.Join("\r\n", duplicates);
                     throw new Kraken($"Multiple files attempted to install to:\r\n{badPaths}");
                 }
+
+                // Not a perfect check (subject to false negatives)
+                // but better than nothing
+                if (mod.install != null)
+                {
+                    var unmatchedIncludeOnlys = mod.install
+                        .Where(stanza => stanza.include_only != null)
+                        .SelectMany(stanza => stanza.include_only)
+                        .Distinct()
+                        .Where(incl => !allFiles.Any(f => f.Contains(incl)))
+                        .ToList();
+                    if (unmatchedIncludeOnlys.Any())
+                    {
+                        log.WarnFormat("No matches for includes_only: {0}",
+                                       string.Join(", ", unmatchedIncludeOnlys));
+                    }
+                }
             }
         }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(InstallsFilesValidator));
     }
 }
