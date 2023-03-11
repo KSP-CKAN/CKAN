@@ -25,6 +25,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Mark new deps of upgrades as auto-installed (#3702 by: HebaruSan; reviewed: techman83)
 - [GUI] Fix index -1 exception in Manage Instances (#3800 by: HebaruSan; reviewed: techman83)
 - [Multiple] Cache path setting fixes (#3804 by: HebaruSan; reviewed: techman83)
+- [GUI] Make grid ampersand workaround platform specific (#3807 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 
