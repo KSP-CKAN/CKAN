@@ -16,7 +16,7 @@ namespace CKAN.NetKAN.Validators
 
         public void Validate(Metadata metadata)
         {
-            Log.Info("Validating that metadata vref is consistent with download contents");
+            Log.Debug("Validating that metadata vref is consistent with download contents");
 
             JObject json = metadata.Json();
             var noVersion = metadata.Version == null;
@@ -35,7 +35,7 @@ namespace CKAN.NetKAN.Validators
                 var zipFilePath = _http.DownloadModule(metadata);
                 if (!string.IsNullOrEmpty(zipFilePath))
                 {
-                    bool hasVref = (metadata.Vref != null);
+                    bool hasAvcVref = (metadata.Vref?.Source == "ksp-avc");
 
                     string path        = null;
                     bool   installable = false;
@@ -69,11 +69,11 @@ namespace CKAN.NetKAN.Validators
 
                     bool hasVersionFile = (path != null);
 
-                    if (hasVref && !hasVersionFile)
+                    if (hasAvcVref && !hasVersionFile)
                     {
                         Log.Warn("$vref present, version file missing");
                     }
-                    else if (!hasVref && hasVersionFile && installable)
+                    else if (!hasAvcVref && hasVersionFile && installable)
                     {
                         Log.WarnFormat("$vref absent, version file present: {0}", path);
                     }

@@ -1,7 +1,9 @@
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Validators;
+using CKAN.Games;
 
 namespace Tests.NetKAN.Validators
 {
@@ -55,7 +57,7 @@ namespace Tests.NetKAN.Validators
             }
 
             // Act
-            var val = new MatchesKnownGameVersionsValidator();
+            var val = new MatchesKnownGameVersionsValidator(new KerbalSpaceProgram());
             val.Validate(new Metadata(json));
         }
     }

@@ -108,6 +108,7 @@
     <Compile Include="Sources\Spacedock\SpacedockError.cs" />
     <Compile Include="Sources\Spacedock\SpacedockMod.cs" />
     <Compile Include="Sources\Spacedock\SpacedockUser.cs" />
+    <Compile Include="Sources\SpaceWarp\SpaceWarpInfo.cs" />
     <Compile Include="Transformers\AvcKrefTransformer.cs" />
     <Compile Include="Transformers\AvcTransformer.cs" />
     <Compile Include="Transformers\CurseTransformer.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Transformers\OptimusPrimeTransformer.cs" />
     <Compile Include="Transformers\PropertySortTransformer.cs" />
     <Compile Include="Transformers\SpacedockTransformer.cs" />
+    <Compile Include="Transformers\SpaceWarpInfoTransformer.cs" />
     <Compile Include="Transformers\StagingTransformer.cs" />
     <Compile Include="Transformers\StagingLinksTransformer.cs" />
     <Compile Include="Transformers\StripNetkanMetadataTransformer.cs" />

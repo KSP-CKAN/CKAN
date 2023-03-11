@@ -9,6 +9,7 @@ using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Sources.Gitlab;
 using CKAN.NetKAN.Sources.Jenkins;
 using CKAN.NetKAN.Sources.Spacedock;
+using CKAN.Games;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -29,6 +30,7 @@ namespace CKAN.NetKAN.Transformers
             string githubToken,
             string gitlabToken,
             bool prerelease,
+            IGame game,
             IValidator validator
         )
         {
@@ -37,7 +39,7 @@ namespace CKAN.NetKAN.Transformers
             var glApi = new GitlabApi(http, gitlabToken);
             _transformers = InjectVersionedOverrideTransformers(new List<ITransformer>
             {
-                new StagingTransformer(),
+                new StagingTransformer(game),
                 new MetaNetkanTransformer(http, ghApi),
                 new SpacedockTransformer(new SpacedockApi(http), ghApi),
                 new CurseTransformer(new CurseApi(http)),
@@ -46,9 +48,10 @@ namespace CKAN.NetKAN.Transformers
                 new HttpTransformer(),
                 new JenkinsTransformer(new JenkinsApi(http)),
                 new AvcKrefTransformer(http, ghApi),
-                new InternalCkanTransformer(http, moduleService),
+                new InternalCkanTransformer(http, moduleService, game),
+                new SpaceWarpInfoTransformer(http, moduleService, game),
                 new AvcTransformer(http, moduleService, ghApi),
-                new LocalizationsTransformer(http, moduleService),
+                new LocalizationsTransformer(http, moduleService, game),
                 new VersionEditTransformer(),
                 new ForcedVTransformer(),
                 new EpochTransformer(),
@@ -57,7 +60,7 @@ namespace CKAN.NetKAN.Transformers
                 // specify a before or after property.
                 new VersionedOverrideTransformer(before: new string[] { null }, after: new string[] { null }),
                 new DownloadAttributeTransformer(http, fileService),
-                new InstallSizeTransformer(http, moduleService),
+                new InstallSizeTransformer(http, moduleService, game),
                 new GeneratedByTransformer(),
                 new OptimusPrimeTransformer(),
                 new StripNetkanMetadataTransformer(),

@@ -19,13 +19,15 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
+        private readonly IGame _game;
 
         public string Name { get { return "internal_ckan"; } }
 
-        public InternalCkanTransformer(IHttpService http, IModuleService moduleService)
+        public InternalCkanTransformer(IHttpService http, IModuleService moduleService, IGame game)
         {
             _http = http;
             _moduleService = moduleService;
+            _game = game;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
@@ -39,7 +41,7 @@ namespace CKAN.NetKAN.Transformers
                 var moduleJson = metadata.Json();
                 moduleJson.SafeAdd("version", "1");
                 CkanModule mod = CkanModule.FromJson(moduleJson.ToString());
-                GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
+                GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
 
                 var internalJson = _moduleService.GetInternalCkan(mod, _http.DownloadModule(metadata), inst);
 

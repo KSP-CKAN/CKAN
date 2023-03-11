@@ -76,7 +76,7 @@ namespace CKAN.NetKAN.Transformers
             if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
             {
                 Log.DebugFormat("Writing ksp_version from SpaceDock: {0}", latestVersion.KSP_version);
-                json["ksp_version"] = latestVersion.KSP_version.ToString();
+                json["ksp_version"] = latestVersion.KSP_version.WithoutBuild.ToString();
             }
 
             json.SafeAdd("name", sdMod.name);

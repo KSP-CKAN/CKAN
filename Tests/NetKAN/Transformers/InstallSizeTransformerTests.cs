@@ -7,6 +7,7 @@ using Moq;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
+using CKAN.Games;
 using Tests.Data;
 
 namespace Tests.NetKAN.Transformers
@@ -24,9 +25,9 @@ namespace Tests.NetKAN.Transformers
             mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                  .Returns(TestData.DogeCoinFlagZip());
 
-            var modSvc = new ModuleService();
+            var modSvc = new ModuleService(new KerbalSpaceProgram());
 
-            ITransformer sut = new InstallSizeTransformer(mHttp.Object, modSvc);
+            ITransformer sut = new InstallSizeTransformer(mHttp.Object, modSvc, new KerbalSpaceProgram());
 
             // Act
             var result = sut.Transform(new Metadata(json), opts).First();

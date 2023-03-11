@@ -13,10 +13,11 @@ namespace CKAN.NetKAN.Validators
 {
     internal sealed class HarmonyValidator : IValidator
     {
-        public HarmonyValidator(IHttpService http, IModuleService moduleService)
+        public HarmonyValidator(IHttpService http, IModuleService moduleService, IGame game)
         {
             _http          = http;
             _moduleService = moduleService;
+            _game          = game;
         }
 
         public void Validate(Metadata metadata)
@@ -25,14 +26,14 @@ namespace CKAN.NetKAN.Validators
             CkanModule mod  = CkanModule.FromJson(json.ToString());
             // The Harmony2 module is allowed to install a Harmony DLL;
             // anybody else must have "provides":["Harmony1"] to do so
-            if (!mod.IsDLC && mod.identifier != "Harmony2")
+            if (_game.ShortName == "KSP" && !mod.IsDLC && mod.identifier != "Harmony2")
             {
                 // Need to peek at the mod's files
                 var package = _http.DownloadModule(metadata);
                 if (!string.IsNullOrEmpty(package))
                 {
                     ZipFile zip = new ZipFile(package);
-                    GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
+                    GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
 
                     var harmonyDLLs = _moduleService.GetPlugins(mod, zip, inst)
                         .Select(instF => instF.source.Name)
@@ -55,6 +56,7 @@ namespace CKAN.NetKAN.Validators
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly IGame          _game;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(HarmonyValidator));
     }

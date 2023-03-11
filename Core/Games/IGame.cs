@@ -29,6 +29,7 @@ namespace CKAN.Games
         string[] AdjustCommandLine(string[] args, GameVersion installedVersion);
 
         // Which versions exist and which is present?
+        void              RefreshVersions();
         List<GameVersion> KnownVersions { get; }
         GameVersion       DetectVersion(DirectoryInfo where);
         string            CompatibleVersionsFile { get; }

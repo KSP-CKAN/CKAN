@@ -65,7 +65,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="builds.json" />
+    <EmbeddedResource Include="builds-ksp.json" />
+    <EmbeddedResource Include="builds-ksp2.json" />
     <EmbeddedResource Include="..\CKAN.schema">
       <LogicalName>CKAN.Core.CKAN.schema</LogicalName>
     </EmbeddedResource>

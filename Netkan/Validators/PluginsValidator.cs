@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+
 using CKAN.Extensions;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
@@ -13,15 +14,16 @@ namespace CKAN.NetKAN.Validators
 {
     internal sealed class PluginsValidator : IValidator
     {
-        public PluginsValidator(IHttpService http, IModuleService moduleService)
+        public PluginsValidator(IHttpService http, IModuleService moduleService, IGame game)
         {
             _http          = http;
             _moduleService = moduleService;
+            _game          = game;
         }
 
         public void Validate(Metadata metadata)
         {
-            Log.Info("Validating that metadata is appropriate for DLLs");
+            Log.Debug("Validating that metadata is appropriate for DLLs");
 
             JObject    json = metadata.Json();
             CkanModule mod  = CkanModule.FromJson(json.ToString());
@@ -31,7 +33,7 @@ namespace CKAN.NetKAN.Validators
                 if (!string.IsNullOrEmpty(package))
                 {
                     ZipFile      zip  = new ZipFile(package);
-                    GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
+                    GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
 
                     var plugins    = _moduleService.GetPlugins(mod, zip, inst).ToList();
                     bool hasPlugin = plugins.Any();
@@ -76,6 +78,7 @@ namespace CKAN.NetKAN.Validators
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly IGame          _game;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(PluginsValidator));
     }

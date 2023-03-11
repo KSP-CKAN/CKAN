@@ -43,7 +43,7 @@ namespace CKAN
 
             // Get latest copy of the game versions data (remote build map)
             user.RaiseMessage(Properties.Resources.NetRepoUpdatingBuildMap);
-            ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh();
+            ksp.game.RefreshVersions();
 
             // Check if the ETags have changed, quit if not
             user.RaiseProgress(Properties.Resources.NetRepoCheckingForUpdates, 0);

@@ -55,6 +55,9 @@ namespace CKAN.NetKAN
         [Option("version", HelpText = "Display the netkan version number and exit")]
         public bool Version { get; set; }
 
+        [Option("game", DefaultValue = "KSP", HelpText = "Short name of the game for which to inflate mods")]
+        public string Game { get; set; }
+
         [ValueOption(0)]
         public string File { get; set; }
     }

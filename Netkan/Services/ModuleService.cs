@@ -12,12 +12,20 @@ using CKAN.NetKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.Extensions;
 using CKAN.NetKAN.Sources.Avc;
+using CKAN.NetKAN.Sources.SpaceWarp;
 using CKAN.Games;
 
 namespace CKAN.NetKAN.Services
 {
     internal sealed class ModuleService : IModuleService
     {
+        public ModuleService(IGame game)
+        {
+            this.game = game;
+        }
+
+        private IGame game;
+
         private static readonly ILog Log = LogManager.GetLogger(typeof(ModuleService));
 
         public AvcVersion GetInternalAvc(CkanModule module, string zipFilePath, string internalFilePath = null)
@@ -66,7 +74,7 @@ namespace CKAN.NetKAN.Services
             try
             {
                 ModuleInstaller.FindInstallableFiles(module, filePath,
-                    new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser()));
+                    new GameInstance(game, "/", "dummy", new NullUser()));
             }
             catch (BadMetadataKraken)
             {
@@ -97,7 +105,7 @@ namespace CKAN.NetKAN.Services
 
         public IEnumerable<string> FileDestinations(CkanModule module, string filePath)
         {
-            var inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", null, false);
+            var inst = new GameInstance(game, "/", "dummy", null, false);
             return ModuleInstaller
                 .FindInstallableFiles(module, filePath, inst)
                 .Where(f => !f.source.IsDirectory)
@@ -230,7 +238,7 @@ namespace CKAN.NetKAN.Services
             const string versionExt = ".version";
 
             // Get all our version files
-            var ksp = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
+            var ksp = new GameInstance(game, "/", "dummy", new NullUser());
             var files = ModuleInstaller.FindInstallableFiles(module, zipfile, ksp)
                 .Select(x => x.source)
                 .Where(source => source.Name.EndsWith(versionExt,
@@ -315,5 +323,18 @@ namespace CKAN.NetKAN.Services
                 }
             }
         }
+
+        private const string SpaceWarpInfoFilename = "swinfo.json";
+
+        public SpaceWarpInfo GetSpaceWarpInfo(CkanModule module, ZipFile zip, GameInstance inst, string internalFilePath = null)
+            => (string.IsNullOrWhiteSpace(internalFilePath)
+                    ? GetFilesBySuffix(module, zip, SpaceWarpInfoFilename, inst)
+                    : ModuleInstaller.FindInstallableFiles(module, zip, inst)
+                        .Where(instF => instF.source.Name == internalFilePath))
+                .Select(instF => instF.source)
+                .Select(entry =>
+                    JsonConvert.DeserializeObject<SpaceWarpInfo>(
+                        new StreamReader(zip.GetInputStream(entry)).ReadToEnd()))
+                .FirstOrDefault();
     }
 }

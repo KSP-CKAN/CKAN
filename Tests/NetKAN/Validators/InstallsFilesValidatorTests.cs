@@ -1,10 +1,12 @@
-﻿using CKAN;
+﻿using Moq;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+
+using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Validators;
-using Moq;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
+using CKAN.Games;
 
 namespace Tests.NetKAN.Validators
 {
@@ -27,7 +29,7 @@ namespace Tests.NetKAN.Validators
             json["version"] = "1.0.0";
             json["download"] = "https://www.awesome-mod.example/AwesomeMod.zip";
 
-            var sut = new InstallsFilesValidator(mHttp.Object, mModuleService.Object);
+            var sut = new InstallsFilesValidator(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram());
 
             // Act
             TestDelegate act = () => sut.Validate(new Metadata(json));
@@ -54,7 +56,7 @@ namespace Tests.NetKAN.Validators
             json["version"] = "1.0.0";
             json["download"] = "https://www.awesome-mod.example/AwesomeMod.zip";
 
-            var sut = new InstallsFilesValidator(mHttp.Object, mModuleService.Object);
+            var sut = new InstallsFilesValidator(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram());
 
             // Act
             TestDelegate act = () => sut.Validate(new Metadata(json));

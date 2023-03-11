@@ -12,11 +12,13 @@ namespace CKAN.NetKAN.Validators
     {
         private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
+        private readonly IGame _game;
 
-        public InstallsFilesValidator(IHttpService http, IModuleService moduleService)
+        public InstallsFilesValidator(IHttpService http, IModuleService moduleService, IGame game)
         {
             _http = http;
             _moduleService = moduleService;
+            _game = game;
         }
 
         public void Validate(Metadata metadata)
@@ -31,7 +33,7 @@ namespace CKAN.NetKAN.Validators
                 {
                     throw new Kraken(string.Format(
                         "Module contains no files matching: {0}",
-                        mod.DescribeInstallStanzas(new KerbalSpaceProgram())
+                        mod.DescribeInstallStanzas(_game)
                     ));
                 }
 
