@@ -139,12 +139,22 @@ namespace CKAN.Games
             return allowedFolders.TryGetValue(name, out path);
         }
 
-        public void RebuildSubdirectories(GameInstance inst)
+        public void RebuildSubdirectories(string absGameRoot)
         {
-            string[] FoldersToCheck = { "Ships/VAB", "Ships/SPH", "Ships/@thumbs/VAB", "Ships/@thumbs/SPH" };
-            foreach (string sRelativePath in FoldersToCheck)
+            string[][] FoldersToCheck = {
+                new string[] { "Ships"                   },
+                new string[] { "Ships", "VAB"            },
+                new string[] { "Ships", "SPH"            },
+                new string[] { "Ships", "@thumbs"        },
+                new string[] { "Ships", "@thumbs", "VAB" },
+                new string[] { "Ships", "@thumbs", "SPH" },
+                new string[] { "saves"                   },
+                new string[] { "saves", "scenarios"      },
+                new string[] { "saves", "training"       },
+            };
+            foreach (string[] sRelativePath in FoldersToCheck)
             {
-                string sAbsolutePath = inst.ToAbsoluteGameDir(sRelativePath);
+                string sAbsolutePath = Path.Combine(absGameRoot, Path.Combine(sRelativePath));
                 if (!Directory.Exists(sAbsolutePath))
                     Directory.CreateDirectory(sAbsolutePath);
             }

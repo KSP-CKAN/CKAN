@@ -24,7 +24,7 @@ namespace CKAN.Games
         string[] CreateableDirs { get; }
         bool     IsReservedDirectory(GameInstance inst, string path);
         bool     AllowInstallationIn(string name, out string path);
-        void     RebuildSubdirectories(GameInstance inst);
+        void     RebuildSubdirectories(string absGameRoot);
         string   DefaultCommandLine { get; }
         string[] AdjustCommandLine(string[] args, GameVersion installedVersion);
 

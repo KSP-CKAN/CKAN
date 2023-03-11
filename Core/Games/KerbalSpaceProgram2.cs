@@ -131,8 +131,12 @@ namespace CKAN.Games
         public bool AllowInstallationIn(string name, out string path)
             => allowedFolders.TryGetValue(name, out path);
 
-        public void RebuildSubdirectories(GameInstance inst)
+        public void RebuildSubdirectories(string absGameRoot)
         {
+            const string dataDir = "KSP2_x64_Data";
+            var path = Path.Combine(absGameRoot, dataDir);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
         }
 
         public string DefaultCommandLine =>
@@ -178,7 +182,8 @@ namespace CKAN.Games
         public GameVersion DetectVersion(DirectoryInfo where)
             => GameVersion.Parse(
                 FileVersionInfo.GetVersionInfo(
-                    Path.Combine(where.FullName, "KSP2_x64.exe")).ProductVersion);
+                    Path.Combine(where.FullName, "KSP2_x64.exe")).ProductVersion
+                ?? versions.Last().ToString());
 
         public string CompatibleVersionsFile => "compatible_game_versions.json";
 
