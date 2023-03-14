@@ -51,7 +51,7 @@ namespace CKAN.CmdLine
                 {
                     // First the commands with three string arguments
                     case "fake":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan instance {verb} [{Properties.Resources.Options}] name path version [--MakingHistory <version>] [--BreakingGround <version>]");
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan instance {verb} [{Properties.Resources.Options}] name path version [--game KSP|KSP2] [--MakingHistory <version>] [--BreakingGround <version>]");
                         break;
 
                     case "clone":
@@ -123,6 +123,9 @@ namespace CKAN.CmdLine
         [ValueOption(0)] public string name { get; set; }
         [ValueOption(1)] public string path { get; set; }
         [ValueOption(2)] public string version { get; set; }
+
+        [Option("game", DefaultValue = "KSP", HelpText = "The game of the instance to be faked, either KSP or KSP2")]
+        public string gameId { get; set; }
 
         [Option("MakingHistory", DefaultValue = "none", HelpText = "The version of the Making History DLC to be faked.")]
         public string makingHistoryVersion { get; set; }
@@ -538,6 +541,7 @@ namespace CKAN.CmdLine
             if (options.name == null || options.path == null || options.version == null)
             {
                 User.RaiseMessage("instance fake <name> <{0}> <version> " +
+                    "[--game KSP|KSP2] " +
                 	"[--MakingHistory <version>] [--BreakingGround <version>] - {1}",
                     Properties.Resources.Path, Properties.Resources.ArgumentMissing);
                 return badArgument();
@@ -549,6 +553,12 @@ namespace CKAN.CmdLine
             string path = options.path;
             GameVersion version;
             bool setDefault = options.setDefault;
+            IGame game = GameInstanceManager.GameByShortName(options.gameId);
+            if (game == null)
+            {
+                User.RaiseMessage(Properties.Resources.InstanceFakeBadGame, options.gameId);
+                return badArgument();
+            }
 
             // options.<DLC>Version is "none" if the DLC should not be simulated.
             Dictionary<DLC.IDlcDetector, GameVersion> dlcs = new Dictionary<DLC.IDlcDetector, GameVersion>();
@@ -592,7 +602,7 @@ namespace CKAN.CmdLine
             // Get the full version including build number.
             try
             {
-                version = version.RaiseVersionSelectionDialog(new KerbalSpaceProgram(), User);
+                version = version.RaiseVersionSelectionDialog(game, User);
             }
             catch (BadGameVersionKraken)
             {
@@ -612,7 +622,7 @@ namespace CKAN.CmdLine
             try
             {
                 // Pass all arguments to CKAN.GameInstanceManager.FakeInstance() and create a new one.
-                Manager.FakeInstance(new KerbalSpaceProgram(), installName, path, version, dlcs);
+                Manager.FakeInstance(game, installName, path, version, dlcs);
                 if (setDefault)
                 {
                     User.RaiseMessage(Properties.Resources.InstanceFakeDefault);

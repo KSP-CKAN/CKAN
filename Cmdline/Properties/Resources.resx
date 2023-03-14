@@ -196,6 +196,7 @@ Try to add the new instance manually with "ckan instance add".
   <data name="InstanceFakeMakingHistory" xml:space="preserve"><value>Please check the Making History DLC version argument - Format it like Maj.Min.Patch - e.g. 1.1.0</value></data>
   <data name="InstanceFakeBreakingGround" xml:space="preserve"><value>Please check the Breaking Ground DLC version argument - Format it like Maj.Min.Patch - e.g. 1.1.0</value></data>
   <data name="InstanceFakeVersion" xml:space="preserve"><value>Please check the version argument - Format it like Maj.Min.Patch[.Build] - e.g. 1.6.0 or 1.2.2.1622</value></data>
+  <data name="InstanceFakeBadGame" xml:space="preserve"><value>No such game {0}!</value></data>
   <data name="InstanceFakeBadGameVersion" xml:space="preserve"><value>Couldn't find a valid game version for your input.
 Make sure to enter at least the version major and minor values in the form Maj.Min - e.g. 1.5</value></data>
   <data name="InstanceFakeCancelled" xml:space="preserve"><value>Selection cancelled! Please call 'ckan instance fake' again</value></data>

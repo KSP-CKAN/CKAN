@@ -277,26 +277,22 @@ namespace CKAN
                     throw new BadInstallLocationKraken(Properties.Resources.GameInstanceFakeNotEmpty);
                 }
 
-                log.DebugFormat("Creating folder structure and text files at {0} for KSP version {1}", Path.GetFullPath(newPath), version.ToString());
+                log.DebugFormat("Creating folder structure and text files at {0} for {1} version {2}", Path.GetFullPath(newPath), game.ShortName, version.ToString());
 
                 // Create a KSP root directory, containing a GameData folder, a buildID.txt/buildID64.txt and a readme.txt
                 fileMgr.CreateDirectory(newPath);
-                fileMgr.CreateDirectory(Path.Combine(newPath, "GameData"));
-                fileMgr.CreateDirectory(Path.Combine(newPath, "Ships"));
-                fileMgr.CreateDirectory(Path.Combine(newPath, "Ships", "VAB"));
-                fileMgr.CreateDirectory(Path.Combine(newPath, "Ships", "SPH"));
-                fileMgr.CreateDirectory(Path.Combine(newPath, "Ships", "@thumbs"));
-                fileMgr.CreateDirectory(Path.Combine(newPath, "Ships", "@thumbs", "VAB"));
-                fileMgr.CreateDirectory(Path.Combine(newPath, "Ships", "@thumbs", "SPH"));
-                fileMgr.CreateDirectory(Path.Combine(newPath, "saves"));
-                fileMgr.CreateDirectory(Path.Combine(newPath, "saves", "scenarios"));
-                fileMgr.CreateDirectory(Path.Combine(newPath, "saves", "training"));
+                fileMgr.CreateDirectory(Path.Combine(newPath, game.PrimaryModDirectoryRelative));
+                game.RebuildSubdirectories(newPath);
 
                 // Don't write the buildID.txts if we have no build, otherwise it would be -1.
                 if (version.IsBuildDefined)
                 {
-                    fileMgr.WriteAllText(Path.Combine(newPath, "buildID.txt"), String.Format("build id = {0}", version.Build));
-                    fileMgr.WriteAllText(Path.Combine(newPath, "buildID64.txt"), String.Format("build id = {0}", version.Build));
+                    foreach (var b in game.BuildIDFiles)
+                    {
+                        fileMgr.WriteAllText(
+                            Path.Combine(newPath, b),
+                            String.Format("build id = {0}", version.Build));
+                    }
                 }
 
                 // Create the readme.txt WITHOUT build number.

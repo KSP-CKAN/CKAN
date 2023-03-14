@@ -282,6 +282,9 @@ namespace CKAN.CmdLine.Properties {
         internal static string InstanceFakeVersion {
             get { return (string)(ResourceManager.GetObject("InstanceFakeVersion", resourceCulture)); }
         }
+        internal static string InstanceFakeBadGame {
+            get { return (string)(ResourceManager.GetObject("InstanceFakeBadGame", resourceCulture)); }
+        }
         internal static string InstanceFakeBadGameVersion {
             get { return (string)(ResourceManager.GetObject("InstanceFakeBadGameVersion", resourceCulture)); }
         }

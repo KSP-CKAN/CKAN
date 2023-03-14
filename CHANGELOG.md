@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Italian translation and other localization fixes (#3780, #3781 by: frankieorabona, WujekFoliarz, vinix38, Kalessin1; reviewed: HebaruSan)
 - [Core] Fix mkbundle executable crash (#3767 by: memchr; reviewed: HebaruSan)
 - [GUI] Show conflicts in changeset (#3727 by: HebaruSan; reviewed: techman83)
-- [Multiple] KSP2 support (#3797, #3808 by: HebaruSan; reviewed: techman83)
+- [Multiple] KSP2 support (#3797, #3808, #3811 by: HebaruSan; reviewed: techman83)
 
 ### Bugfixes
 

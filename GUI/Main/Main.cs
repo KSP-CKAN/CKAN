@@ -430,7 +430,7 @@ namespace CKAN.GUI
 
                 pluginController = new PluginController(pluginsPath);
 
-                CurrentInstance.game.RebuildSubdirectories(CurrentInstance);
+                CurrentInstance.game.RebuildSubdirectories(CurrentInstance.GameDir());
             }
 
             log.Info("GUI started");
