@@ -45,6 +45,7 @@ namespace CKAN.GUI
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.AuditRecommendationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.DownloadStatisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewPlayTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewUnmanagedFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
@@ -109,6 +110,10 @@ namespace CKAN.GUI
             this.DeleteDirectories = new CKAN.GUI.DeleteDirectories();
             this.EditModpackTabPage = new System.Windows.Forms.TabPage();
             this.EditModpack = new CKAN.GUI.EditModpack();
+            this.DownloadStatisticsTabPage = new System.Windows.Forms.TabPage();
+            this.DownloadStatistics = new CKAN.GUI.DownloadStatistics();
+            this.DownloadStatisticsButtonPanel = new CKAN.GUI.LeftRightRowPanel();
+            this.DownloadStatisticsOKButton = new System.Windows.Forms.Button();
             this.MainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -130,6 +135,8 @@ namespace CKAN.GUI
             this.minimizedContextMenuStrip.SuspendLayout();
             this.DeleteDirectoriesTabPage.SuspendLayout();
             this.EditModpackTabPage.SuspendLayout();
+            this.DownloadStatisticsTabPage.SuspendLayout();
+            this.DownloadStatistics.SuspendLayout();
             this.SuspendLayout();
             //
             // MainMenu
@@ -161,6 +168,7 @@ namespace CKAN.GUI
             this.toolStripSeparator3,
             this.AuditRecommendationsToolStripMenuItem,
             this.toolStripSeparator7,
+            this.DownloadStatisticsToolStripMenuItem,
             this.ViewPlayTimeToolStripMenuItem,
             this.ViewUnmanagedFilesToolStripMenuItem,
             this.toolStripSeparator8,
@@ -251,6 +259,13 @@ namespace CKAN.GUI
             //
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(278, 6);
+            //
+            // DownloadStatisticsToolStripMenuItem
+            //
+            this.DownloadStatisticsToolStripMenuItem.Name = "DownloadStatisticsToolStripMenuItem";
+            this.DownloadStatisticsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.DownloadStatisticsToolStripMenuItem.Click += new System.EventHandler(this.DownloadStatisticsToolStripMenuItem_Click);
+            resources.ApplyResources(this.DownloadStatisticsToolStripMenuItem, "DownloadStatisticsToolStripMenuItem");
             //
             // ViewPlayTimeToolStripMenuItem
             //
@@ -483,6 +498,7 @@ namespace CKAN.GUI
             this.MainTabControl.Controls.Add(this.ChooseProvidedModsTabPage);
             this.MainTabControl.Controls.Add(this.DeleteDirectoriesTabPage);
             this.MainTabControl.Controls.Add(this.EditModpackTabPage);
+            this.MainTabControl.Controls.Add(this.DownloadStatisticsTabPage);
             this.MainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainTabControl.Location = new System.Drawing.Point(0, 35);
             this.MainTabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -738,6 +754,46 @@ namespace CKAN.GUI
             this.EditModpack.TabIndex = 32;
             this.EditModpack.OnSelectedItemsChanged += this.EditModpack_OnSelectedItemsChanged;
             //
+            // DownloadStatisticsTabPage
+            //
+            this.DownloadStatisticsTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.DownloadStatisticsTabPage.Controls.Add(this.DownloadStatistics);
+            this.DownloadStatisticsTabPage.Controls.Add(this.DownloadStatisticsButtonPanel);
+            this.DownloadStatisticsTabPage.Location = new System.Drawing.Point(0, 0);
+            this.DownloadStatisticsTabPage.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.DownloadStatisticsTabPage.Name = "DownloadStatisticsTabPage";
+            this.DownloadStatisticsTabPage.Padding = new System.Windows.Forms.Padding(6, 6, 6, 0);
+            this.DownloadStatisticsTabPage.Size = new System.Drawing.Size(500, 500);
+            this.DownloadStatisticsTabPage.TabIndex = 33;
+            resources.ApplyResources(this.DownloadStatisticsTabPage, "DownloadStatisticsTabPage");
+            //
+            // DownloadStatistics
+            //
+            this.DownloadStatistics.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DownloadStatistics.Location = new System.Drawing.Point(0, 0);
+            this.DownloadStatistics.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.DownloadStatistics.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.DownloadStatistics.Name = "DownloadStatistics";
+            this.DownloadStatistics.Size = new System.Drawing.Size(500, 500);
+            this.DownloadStatistics.TabIndex = 34;
+            //
+            // DownloadStatisticsButtonPanel
+            //
+            this.DownloadStatisticsButtonPanel.RightControls.Add(this.DownloadStatisticsOKButton);
+            this.DownloadStatisticsButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.DownloadStatisticsButtonPanel.Name = "DownloadStatisticsButtonPanel";
+            //
+            // DownloadStatisticsOKButton
+            //
+            this.DownloadStatisticsOKButton.AutoSize = true;
+            this.DownloadStatisticsOKButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+            this.DownloadStatisticsOKButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DownloadStatisticsOKButton.Name = "DownloadStatisticsOKButton";
+            this.DownloadStatisticsOKButton.Size = new System.Drawing.Size(112, 30);
+            this.DownloadStatisticsOKButton.TabIndex = 35;
+            this.DownloadStatisticsOKButton.Click += new System.EventHandler(this.DownloadStatisticsOKButton_Click);
+            resources.ApplyResources(this.DownloadStatisticsOKButton, "DownloadStatisticsOKButton");
+            //
             // minimizeNotifyIcon
             //
             this.minimizeNotifyIcon.ContextMenuStrip = this.minimizedContextMenuStrip;
@@ -891,6 +947,10 @@ namespace CKAN.GUI
             this.DeleteDirectoriesTabPage.PerformLayout();
             this.EditModpackTabPage.ResumeLayout(false);
             this.EditModpackTabPage.PerformLayout();
+            this.DownloadStatisticsTabPage.ResumeLayout(false);
+            this.DownloadStatisticsTabPage.PerformLayout();
+            this.DownloadStatistics.ResumeLayout(false);
+            this.DownloadStatistics.PerformLayout();
             this.minimizedContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -914,6 +974,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem AuditRecommendationsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem DownloadStatisticsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ViewPlayTimeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ViewUnmanagedFilesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
@@ -965,6 +1026,10 @@ namespace CKAN.GUI
         private CKAN.GUI.DeleteDirectories DeleteDirectories;
         private System.Windows.Forms.TabPage EditModpackTabPage;
         private CKAN.GUI.EditModpack EditModpack;
+        private System.Windows.Forms.TabPage DownloadStatisticsTabPage;
+        private CKAN.GUI.DownloadStatistics DownloadStatistics;
+        private CKAN.GUI.LeftRightRowPanel DownloadStatisticsButtonPanel;
+        private System.Windows.Forms.Button DownloadStatisticsOKButton;
         private System.Windows.Forms.NotifyIcon minimizeNotifyIcon;
         private System.Windows.Forms.ContextMenuStrip minimizedContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem updatesToolStripMenuItem;

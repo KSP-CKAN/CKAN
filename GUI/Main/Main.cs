@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 #if NET5_0_OR_GREATER
@@ -482,6 +483,7 @@ namespace CKAN.GUI
             }
 
             configuration?.Save();
+
             configuration = GUIConfigForInstance(Manager.SteamLibrary, CurrentInstance);
 
             var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");

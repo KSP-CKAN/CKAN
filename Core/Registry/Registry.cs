@@ -1283,6 +1283,15 @@ namespace CKAN
                                 .ToDictionary(grp => NetFileCache.CreateURLHash(grp.Key),
                                               grp => grp.ToList());
 
+        public IReadOnlyDictionary<string, Uri> GetDownloadUrlsByHash()
+            => (repoDataMgr?.GetAllAvailableModules(Repositories.Values)
+                           ?? Enumerable.Empty<AvailableModule>())
+                            .SelectMany(am => am.module_version.Values)
+                            .SelectMany(m => m.download ?? Enumerable.Empty<Uri>())
+                            .Distinct()
+                            .ToDictionary(url => NetFileCache.CreateURLHash(url),
+                                          url => url);
+
         /// <summary>
         /// Return all hosts from latest versions of all available modules,
         /// sorted by number of occurrences, most common first

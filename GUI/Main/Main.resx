@@ -136,6 +136,7 @@
   <data name="ExportModPackToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Export modpack (can be re-imported)...</value></data>
   <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve"><value>Audit &amp;recommendations</value></data>
   <data name="AuditRecommendationsToolStripMenuItem.ToolTipText" xml:space="preserve"><value>Review recommendations and suggestions of all installed mods</value></data>
+  <data name="DownloadStatisticsToolStripMenuItem.Text" xml:space="preserve"><value>Download statistics...</value></data>
   <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve"><value>Play &amp;time...</value></data>
   <data name="ViewPlayTimeToolStripMenuItem.ToolTipText" xml:space="preserve"><value>See and edit how long you've played each game instance</value></data>
   <data name="ViewUnmanagedFilesToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Unmanaged files...</value></data>
@@ -177,4 +178,6 @@
   <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Edit Modpack</value></data>
   <data name="UnmanagedFilesTabPage.Text" xml:space="preserve"><value>Unmanaged Files</value></data>
   <data name="InstallationHistoryTabPage.Text" xml:space="preserve"><value>Installation History</value></data>
+  <data name="DownloadStatisticsTabPage.Text" xml:space="preserve"><value>Download Statistics</value></data>
+  <data name="DownloadStatisticsOKButton.Text" xml:space="preserve"><value>OK</value></data>
 </root>
