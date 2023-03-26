@@ -330,16 +330,17 @@ namespace CKAN.NetKAN.Services
             Error = (sender, e) => e.ErrorContext.Handled = true
         };
 
+        public SpaceWarpInfo ParseSpaceWarpJson(string json)
+            => JsonConvert.DeserializeObject<SpaceWarpInfo>(json, ignoreJsonErrors);
+
         public SpaceWarpInfo GetSpaceWarpInfo(CkanModule module, ZipFile zip, GameInstance inst, string internalFilePath = null)
             => (string.IsNullOrWhiteSpace(internalFilePath)
                     ? GetFilesBySuffix(module, zip, SpaceWarpInfoFilename, inst)
                     : ModuleInstaller.FindInstallableFiles(module, zip, inst)
                         .Where(instF => instF.source.Name == internalFilePath))
                 .Select(instF => instF.source)
-                .Select(entry =>
-                    JsonConvert.DeserializeObject<SpaceWarpInfo>(
-                        new StreamReader(zip.GetInputStream(entry)).ReadToEnd(),
-                        ignoreJsonErrors))
+                .Select(entry => ParseSpaceWarpJson(
+                    new StreamReader(zip.GetInputStream(entry)).ReadToEnd()))
                 .FirstOrDefault();
     }
 }

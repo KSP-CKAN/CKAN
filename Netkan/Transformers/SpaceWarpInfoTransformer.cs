@@ -3,11 +3,13 @@ using System.Collections.Generic;
 
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using Newtonsoft.Json.Linq;
 
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.SpaceWarp;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Extensions;
+using CKAN.NetKAN.Sources.Github;
 using CKAN.Versioning;
 using CKAN.Games;
 
@@ -15,11 +17,12 @@ namespace CKAN.NetKAN.Transformers
 {
     internal sealed class SpaceWarpInfoTransformer : ITransformer
     {
-        public SpaceWarpInfoTransformer(IHttpService httpSvc, IModuleService modSvc, IGame game)
+        public SpaceWarpInfoTransformer(IHttpService httpSvc, IGithubApi githubApi, IModuleService modSvc, IGame game)
         {
-            this.httpSvc = httpSvc;
-            this.modSvc  = modSvc;
-            this.game    = game;
+            this.httpSvc   = httpSvc;
+            this.githubApi = githubApi;
+            this.modSvc    = modSvc;
+            this.game      = game;
         }
 
         public string Name => "space_warp_info";
@@ -38,6 +41,28 @@ namespace CKAN.NetKAN.Transformers
                 {
                     log.Info("Found swinfo.json file");
                     var json = metadata.Json();
+
+                    if (swinfo.version_check != null
+                        && Uri.IsWellFormedUriString(swinfo.version_check.OriginalString, UriKind.Absolute))
+                    {
+                        var resourcesJson = (JObject)json["resources"];
+                        if (resourcesJson == null)
+                        {
+                            json["resources"] = resourcesJson = new JObject();
+                        }
+                        resourcesJson.SafeAdd("remote-swinfo", swinfo.version_check.OriginalString);
+
+                        var remoteInfo = modSvc.ParseSpaceWarpJson(
+                            githubApi?.DownloadText(swinfo.version_check)
+                            ?? httpSvc.DownloadText(swinfo.version_check));
+                        if (swinfo.version == remoteInfo?.version)
+                        {
+                            log.InfoFormat("Using remote swinfo.json file: {0}",
+                                           swinfo.version_check);
+                            swinfo = remoteInfo;
+                        }
+                    }
+
                     json.SafeAdd("name",     swinfo.name);
                     json.SafeAdd("author",   swinfo.author);
                     json.SafeAdd("abstract", swinfo.description);
@@ -59,6 +84,7 @@ namespace CKAN.NetKAN.Transformers
         }
 
         private readonly IHttpService   httpSvc;
+        private readonly IGithubApi     githubApi;
         private readonly IModuleService modSvc;
         private readonly IGame          game;
 

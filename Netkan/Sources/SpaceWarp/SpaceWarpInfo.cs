@@ -14,6 +14,7 @@ namespace CKAN.NetKAN.Sources.SpaceWarp
         public string description;
         public string source;
         public string version;
+        public Uri version_check;
         public Dependency[] dependencies;
         public VersionMinMax ksp2_version;
     }

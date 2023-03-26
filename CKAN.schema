@@ -229,6 +229,11 @@
                     "type"        : "string",
                     "format"      : "uri"
                 },
+                "remote-swinfo" : {
+                    "description" : "Mod's remote hosted swinfo file",
+                    "type"        : "string",
+                    "format"      : "uri"
+                },
                 "store": {
                     "description" : "Purchase DLC here",
                     "type"        : "string",

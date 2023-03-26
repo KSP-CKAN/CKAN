@@ -338,6 +338,7 @@ Try `ckan list` for a list of installed mods.</value></data>
   <data name="ShowStore" xml:space="preserve"><value>  Store:	{0}</value></data>
   <data name="ShowSteamStore" xml:space="preserve"><value>  Steam store:	{0}</value></data>
   <data name="ShowVersionFile" xml:space="preserve"><value>  Version file:	{0}</value></data>
+  <data name="ShowSpaceWarpInfo" xml:space="preserve"><value>  SWInfo file:	{0}</value></data>
   <data name="ShowFileName" xml:space="preserve"><value>Filename: {0}</value></data>
   <data name="ShowVersionHeader" xml:space="preserve"><value>Version</value></data>
   <data name="ShowGameVersionsHeader" xml:space="preserve"><value>Game Versions</value></data>

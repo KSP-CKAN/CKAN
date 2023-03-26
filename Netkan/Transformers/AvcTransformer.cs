@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Validators;
 using CKAN.NetKAN.Sources.Avc;
+using CKAN.Games;
 using CKAN.Versioning;
 using CKAN.NetKAN.Sources.Github;
 
@@ -29,12 +32,12 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name { get { return "avc"; } }
 
-        public AvcTransformer(IHttpService http, IModuleService moduleService, IGithubApi github)
+        public AvcTransformer(IHttpService http, IModuleService moduleService, IGithubApi github, IGame game)
         {
             _http          = http;
             _moduleService = moduleService;
             _github        = github;
-            _vrefValidator = new VrefValidator(_http, _moduleService);
+            _vrefValidator = new VrefValidator(_http, _moduleService, game);
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)

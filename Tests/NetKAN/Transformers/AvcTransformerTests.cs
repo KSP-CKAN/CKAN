@@ -1,8 +1,11 @@
 using System.Linq;
+
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+
 using CKAN;
+using CKAN.Games;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Avc;
@@ -15,6 +18,7 @@ namespace Tests.NetKAN.Transformers
     public sealed class AvcTransformerTests
     {
         private TransformOptions opts = new TransformOptions(1, null, null, false, null);
+        private IGame game = new KerbalSpaceProgram();
 
         [Test]
         public void AddsMissingVersionInfo()
@@ -32,7 +36,7 @@ namespace Tests.NetKAN.Transformers
             mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -70,7 +74,7 @@ namespace Tests.NetKAN.Transformers
             mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -208,7 +212,7 @@ namespace Tests.NetKAN.Transformers
             mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
             // Act
             var result = sut.Transform(new Metadata(json), opts).First();
@@ -240,7 +244,7 @@ namespace Tests.NetKAN.Transformers
             mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -271,7 +275,7 @@ namespace Tests.NetKAN.Transformers
                     version = new ModuleVersion("1.2.3")
                 });
 
-            ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+            ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
             JObject json = new JObject();
             json["spec_version"]                = 1;
