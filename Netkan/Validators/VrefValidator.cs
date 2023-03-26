@@ -1,17 +1,20 @@
 using log4net;
 using Newtonsoft.Json.Linq;
 using ICSharpCode.SharpZipLib.Zip;
+
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
+using CKAN.Games;
 
 namespace CKAN.NetKAN.Validators
 {
     internal sealed class VrefValidator : IValidator
     {
-        public VrefValidator(IHttpService http, IModuleService moduleService)
+        public VrefValidator(IHttpService http, IModuleService moduleService, IGame game)
         {
             _http          = http;
             _moduleService = moduleService;
+            _game          = game;
         }
 
         public void Validate(Metadata metadata)
@@ -37,7 +40,7 @@ namespace CKAN.NetKAN.Validators
                 {
                     bool hasAvcVref = (metadata.Vref?.Source == "ksp-avc");
 
-                    string path        = null;
+                    string avcPath     = null;
                     bool   installable = false;
                     try
                     {
@@ -49,7 +52,7 @@ namespace CKAN.NetKAN.Validators
                             {
                                 // This will throw if there's a syntax error
                                 var avc = ModuleService.GetInternalAvc(zipfile, verFileAndInstallable.Item1);
-                                path        = verFileAndInstallable.Item1.Name;
+                                avcPath     = verFileAndInstallable.Item1.Name;
                                 installable = verFileAndInstallable.Item2;
                             }
                         }
@@ -63,19 +66,34 @@ namespace CKAN.NetKAN.Validators
                     {
                         // If FindInternalAvc throws anything else, then there's a version file with a syntax error.
                         // This shouldn't cause the inflation to fail, but it does deprive us of the path.
-                        path = "";
+                        avcPath = "";
                         installable = false;
                     }
 
-                    bool hasVersionFile = (path != null);
+                    bool hasVersionFile = (avcPath != null);
 
                     if (hasAvcVref && !hasVersionFile)
                     {
-                        Log.Warn("$vref present, version file missing");
+                        Log.Warn("$vref is ksp-avc, version file missing");
                     }
                     else if (!hasAvcVref && hasVersionFile && installable)
                     {
-                        Log.WarnFormat("$vref absent, version file present: {0}", path);
+                        Log.WarnFormat("$vref is not ksp-avc, version file present: {0}", avcPath);
+                    }
+
+                    bool hasSWVref = (metadata.Vref?.Source == "space-warp");
+                    GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
+                    using (var zipfile = new ZipFile(zipFilePath))
+                    {
+                        bool hasSWInfo = _moduleService.GetSpaceWarpInfo(mod, zipfile, inst) != null;
+                        if (hasSWVref && !hasSWInfo)
+                        {
+                            Log.Warn("$vref is space-warp, swinfo.json file missing");
+                        }
+                        else if (!hasSWVref && hasSWInfo)
+                        {
+                            Log.Warn("$vref is not space-warp, swinfo.json file present");
+                        }
                     }
                 }
             }
@@ -83,6 +101,7 @@ namespace CKAN.NetKAN.Validators
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly IGame          _game;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(VrefValidator));
     }

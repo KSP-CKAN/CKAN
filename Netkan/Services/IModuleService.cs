@@ -20,6 +20,7 @@ namespace CKAN.NetKAN.Services
         IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip, GameInstance inst);
         IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, GameInstance inst);
 
+        SpaceWarpInfo ParseSpaceWarpJson(string json);
         SpaceWarpInfo GetSpaceWarpInfo(CkanModule module, ZipFile zip, GameInstance inst, string internalFilePath = null);
 
         IEnumerable<ZipEntry> FileSources(CkanModule module, ZipFile zip, GameInstance inst);

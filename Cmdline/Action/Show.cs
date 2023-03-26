@@ -161,7 +161,7 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseMessage("{0}", module.name);
                 }
-                
+
                 if (!string.IsNullOrEmpty(module.description))
                 {
                     user.RaiseMessage("");
@@ -176,7 +176,7 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ShowModuleInfoHeader);
                 user.RaiseMessage(Properties.Resources.ShowVersion, module.version);
-                
+
                 if (module.author != null)
                 {
                     user.RaiseMessage(Properties.Resources.ShowAuthor, string.Join(", ", module.author));
@@ -187,7 +187,7 @@ namespace CKAN.CmdLine
                     // You do now. #673.
                     user.RaiseMessage(Properties.Resources.ShowAuthorUnknown);
                 }
-                
+
                 if (module.release_status != null)
                 {
                     user.RaiseMessage(Properties.Resources.ShowStatus, module.release_status);
@@ -290,6 +290,10 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseMessage(Properties.Resources.ShowVersionFile, Uri.EscapeUriString(module.resources.remoteAvc.ToString()));
                 }
+                if (module.resources.remoteSWInfo != null)
+                {
+                    user.RaiseMessage(Properties.Resources.ShowSpaceWarpInfo, Uri.EscapeUriString(module.resources.remoteSWInfo.ToString()));
+                }
             }
 
             if (!opts.without_files && !module.IsDLC)
@@ -297,7 +301,7 @@ namespace CKAN.CmdLine
                 // Compute the CKAN filename.
                 string file_uri_hash = NetFileCache.CreateURLHash(module.download);
                 string file_name = CkanModule.StandardName(module.identifier, module.version);
-                
+
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ShowFileName, file_uri_hash + "-" + file_name);
             }

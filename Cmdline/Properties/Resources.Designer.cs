@@ -600,6 +600,9 @@ namespace CKAN.CmdLine.Properties {
         internal static string ShowVersionFile {
             get { return (string)(ResourceManager.GetObject("ShowVersionFile", resourceCulture)); }
         }
+        internal static string ShowSpaceWarpInfo {
+            get { return (string)(ResourceManager.GetObject("ShowSpaceWarpInfo", resourceCulture)); }
+        }
         internal static string ShowFileName {
             get { return (string)(ResourceManager.GetObject("ShowFileName", resourceCulture)); }
         }

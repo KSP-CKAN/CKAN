@@ -624,6 +624,7 @@ are described. Unless specified otherwise, these are URLs:
 - `manual` : The mod's manual, if it exists.
 - `metanetkan` :  (**v1.27**) URL of the module's remote hosted netkan
 - `remote-avc` : URL of remote version file. If set in the netkan file, will be used to find the online copy of the version file. Otherwise the `URL` property from the internal version file will be assigned to this field and used instead.
+- `remote-swinfo` : URL of remote `swinfo.json` file. The `version_check` property from the internal `swinfo.json` file will be assigned to this field.
 - `store`:  (**v1.28**) URL where you can purchase a DLC
 - `steamstore`:  (**v1.28**) URL where you can purchase a DLC on Steam
 
@@ -1001,6 +1002,7 @@ When used, the following fields are auto-generated:
 - `author`
 - `abstract`
 - `version`
+- `resources.remote-swinfo` (if the `version_check` property is present in the `swinfo.json` file)
 
 ##### `x_netkan_epoch`
 
