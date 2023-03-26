@@ -325,6 +325,10 @@ namespace CKAN.NetKAN.Services
         }
 
         private const string SpaceWarpInfoFilename = "swinfo.json";
+        private static readonly JsonSerializerSettings ignoreJsonErrors = new JsonSerializerSettings()
+        {
+            Error = (sender, e) => e.ErrorContext.Handled = true
+        };
 
         public SpaceWarpInfo GetSpaceWarpInfo(CkanModule module, ZipFile zip, GameInstance inst, string internalFilePath = null)
             => (string.IsNullOrWhiteSpace(internalFilePath)
@@ -334,7 +338,8 @@ namespace CKAN.NetKAN.Services
                 .Select(instF => instF.source)
                 .Select(entry =>
                     JsonConvert.DeserializeObject<SpaceWarpInfo>(
-                        new StreamReader(zip.GetInputStream(entry)).ReadToEnd()))
+                        new StreamReader(zip.GetInputStream(entry)).ReadToEnd(),
+                        ignoreJsonErrors))
                 .FirstOrDefault();
     }
 }
