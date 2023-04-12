@@ -124,12 +124,12 @@ namespace CKAN.GUI
                     {
                         visibleGuiModule.PropertyChanged += visibleGuiModule_PropertyChanged;
                     }
+
+                    if (value != null)
+                    {
+                        Refresh(value);
+                    }
                 }
-                if (value == null)
-                {
-                    return;
-                }
-                Refresh(value);
             }
         }
 
