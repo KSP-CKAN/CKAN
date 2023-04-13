@@ -170,28 +170,25 @@ namespace CKAN
 
         /// <summary>
         /// Is the mod installed and does it have a newer version compatible with version
-        /// We can't update AD mods
         /// </summary>
         public static bool HasUpdate(this IRegistryQuerier querier, string identifier, GameVersionCriteria version)
         {
             CkanModule newest_version;
             try
             {
+                // Check if it's both installed and available
                 newest_version = querier.LatestAvailable(identifier, version);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            if (newest_version == null
-                || !querier.IsInstalled(identifier, false)
-                || !newest_version.version.IsGreaterThan(querier.InstalledVersion(identifier)))
-            {
-                return false;
-            }
-            // All quick checks pass. Now check the relationships.
-            try
-            {
+                if (newest_version == null || !querier.IsInstalled(identifier, false))
+                {
+                    return false;
+                }
+                // Check if the installed module is up to date
+                if (newest_version.version <= querier.InstalledVersion(identifier)
+                    && !querier.MetadataChanged(identifier))
+                {
+                    return false;
+                }
+                // All quick checks pass. Now check the relationships.
                 var instMod = querier.InstalledModule(identifier);
                 RelationshipResolver resolver = new RelationshipResolver(
                     new CkanModule[] { newest_version },
@@ -211,6 +208,22 @@ namespace CKAN
                 return false;
             }
             return true;
+        }
+
+        private static bool MetadataChanged(this IRegistryQuerier querier, string identifier)
+        {
+            try
+            {
+                var installed = querier.InstalledModule(identifier)?.Module;
+                return installed != null
+                    && (!querier.GetModuleByVersion(identifier, installed.version)?.MetadataEquals(installed)
+                        ?? false);
+            }
+            catch
+            {
+                // Treat exceptions as not-changed
+                return false;
+            }
         }
 
         /// <summary>

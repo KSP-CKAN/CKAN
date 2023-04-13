@@ -146,12 +146,6 @@
   <data name="NetRepoUpdatedAll" xml:space="preserve"><value>Репозитории обновлены</value></data>
   <data name="NetRepoNoModules" xml:space="preserve"><value>Не найдено ни одного модуля!</value></data>
   <data name="NetRepoFailedDownload" xml:space="preserve"><value>Не удалось загрузить «{0}»: {1}</value></data>
-  <data name="NetRepoChangedModulesReinstallPrompt" xml:space="preserve"><value>С последнего обновления были изменены метаданные следующих модификаций:
-
-{0}
-Ради сохранения согласованности с репозиторием рекомендуется их переустановка.
-
-Хотите ли вы переустановить их сейчас?</value></data>
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve"><value>Найдены следующие несоответствия:</value></data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve"><value>`any_of` не должно сочетаться с `{0}`</value></data>
   <data name="RegistryFileConflict" xml:space="preserve"><value>{0} желает установить {1}, который принадлежит {2}</value></data>
@@ -277,7 +271,6 @@ https://github.com/KSP-CKAN/CKAN/wiki/SSL-certificate-errors</value></data>
 
 Если вы уверены, что это не так, удалите:
 "{0}"</value></data>
-  <data name="KrakenReinstallModule" xml:space="preserve"><value>Метаданные изменены, рекомендуется переустановка: {0}</value></data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve"><value>{0} конфликтует с {1}</value></data>
   <data name="RelationshipResolverRequiredButResolver" xml:space="preserve"><value>Необходима {0}, но в ресольвере несовместимая версия</value></data>
   <data name="RelationshipResolverRequiredButInstalled" xml:space="preserve"><value>Необходима {0}, но установлена несовместимая версия</value></data>

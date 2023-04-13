@@ -150,9 +150,6 @@ namespace CKAN.Properties {
         internal static string NetRepoFailedDownload {
             get { return (string)(ResourceManager.GetObject("NetRepoFailedDownload", resourceCulture)); }
         }
-        internal static string NetRepoChangedModulesReinstallPrompt {
-            get { return (string)(ResourceManager.GetObject("NetRepoChangedModulesReinstallPrompt", resourceCulture)); }
-        }
         internal static string NetRepoInconsistenciesHeader {
             get { return (string)(ResourceManager.GetObject("NetRepoInconsistenciesHeader", resourceCulture)); }
         }
@@ -534,9 +531,6 @@ namespace CKAN.Properties {
         }
         internal static string KrakenAlreadyRunning {
             get { return (string)(ResourceManager.GetObject("KrakenAlreadyRunning", resourceCulture)); }
-        }
-        internal static string KrakenReinstallModule {
-            get { return (string)(ResourceManager.GetObject("KrakenReinstallModule", resourceCulture)); }
         }
         internal static string NotEnoughSpaceToDownload {
             get { return (string)(ResourceManager.GetObject("NotEnoughSpaceToDownload", resourceCulture)); }

@@ -407,6 +407,9 @@ Na pewno chcesz je zainstalować? Anulowanie przerwie całą instalację.</value
   <data name="MainChangesetUpdateSelected" xml:space="preserve">
     <value>Aktualizacja wybrana przez użytkownika do wersji {0}.</value>
   </data>
+  <data name="MainChangesetReinstall" xml:space="preserve">
+    <value>Zainstaluj ponownie (Metadane zmienione)</value>
+  </data>
   <data name="MainImportTitle" xml:space="preserve">
     <value>Importuj modyfikacje</value>
   </data>

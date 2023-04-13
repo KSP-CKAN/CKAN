@@ -225,6 +225,7 @@ Are you sure you want to install them? Cancelling will abort the entire installa
   <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Install</value></data>
   <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Cancel</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Update selected by user to version {0}.</value></data>
+  <data name="MainChangesetReinstall" xml:space="preserve"><value>Re-install (metadata changed)</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Import Mods</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Status log</value></data>

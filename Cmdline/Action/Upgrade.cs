@@ -107,7 +107,7 @@ namespace CKAN.CmdLine
                                 continue;
                             }
 
-                            if (latest.version.IsGreaterThan(mod.Value))
+                            if (latest.version.IsGreaterThan(mod.Value) || registry.HasUpdate(mod.Key, instance.VersionCriteria()))
                             {
                                 // Upgradable
                                 log.InfoFormat("New version {0} found for {1}",

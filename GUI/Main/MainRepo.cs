@@ -155,20 +155,6 @@ namespace CKAN.GUI
                         EnableMainWindow();
                         break;
 
-                    case ReinstallModuleKraken rmk:
-                        // Re-enable the UI for the install flow
-                        EnableMainWindow();
-                        Wait.StartWaiting(InstallMods, PostInstallMods, true,
-                            new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                                rmk.Modules
-                                    .Select(m => new ModChange(m, GUIModChangeType.Update))
-                                    .ToList(),
-                                RelationshipResolver.DependsOnlyOpts()
-                            )
-                        );
-                        // Don't mess with the UI, let the install flow control it
-                        break;
-
                     case Exception exc:
                         AddStatusMessage(Properties.Resources.MainRepoFailed);
                         currentUser.RaiseMessage(exc.Message);

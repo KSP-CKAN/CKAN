@@ -206,14 +206,6 @@ Installa il pacchetto `mono-complete` o un pacchetto equivalente per il tuo sist
   <data name="NetRepoFailedDownload" xml:space="preserve">
     <value>Impossibile scaricare {0}: {1}</value>
   </data>
-  <data name="NetRepoChangedModulesReinstallPrompt" xml:space="preserve">
-    <value>Le seguenti mod hanno cambiato i loro metadati dall'ultimo aggiornamento:
-
-{0}
-Dovresti reinstallarle per mantenere la coerenza con il repository.
-
-Vuoi reinstallare ora?</value>
-  </data>
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve">
     <value>Sono state rilevate le seguenti incoerenze:</value>
   </data>
@@ -564,9 +556,6 @@ Prendi in considerazione l'aggiunta di un token di autenticazione per aumentare 
 
 Se sei sicuro che non sia questo il caso, elimina:
 "{0}"</value>
-  </data>
-  <data name="KrakenReinstallModule" xml:space="preserve">
-    <value>Metadati cambiati, reinstallazione raccomandata: {0}</value>
   </data>
   <data name="NotEnoughSpaceToDownload" xml:space="preserve">
     <value>Spazio insufficiente nella cartella temporanea per scaricare i moduli!</value>

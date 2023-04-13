@@ -856,9 +856,12 @@ namespace CKAN.GUI
                 {
                     mod.SetInstallChecked(row, Installed, mod.IsInstalled);
                 }
-                else if (mod.SelectedMod != mod.InstalledMod?.Module)
+                else if (mod.InstalledMod != null)
                 {
-                    mod.SelectedMod = mod.InstalledMod?.Module;
+                    var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+                    mod.SelectedMod = registry.GetModuleByVersion(
+                        mod.InstalledMod.identifier, mod.InstalledMod.Module.version)
+                        ?? mod.InstalledMod.Module;
                 }
                 mod.SetUpgradeChecked(row, UpdateCol, false);
                 mod.SetReplaceChecked(row, ReplaceCol, false);

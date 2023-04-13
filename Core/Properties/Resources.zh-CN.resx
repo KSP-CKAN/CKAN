@@ -146,12 +146,6 @@
   <data name="NetRepoUpdatedAll" xml:space="preserve"><value>数据库已更新</value></data>
   <data name="NetRepoNoModules" xml:space="preserve"><value>没有找到模组!</value></data>
   <data name="NetRepoFailedDownload" xml:space="preserve"><value>下载 {0} 失败: {1}</value></data>
-  <data name="NetRepoChangedModulesReinstallPrompt" xml:space="preserve"><value>以下模组自上次更新后更改了它们的元数据:
-
-{0}
-您应该重新安装它们以保持与数据库的一致性。
-
-您想要现在重新安装吗？</value></data>
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve"><value>发现以下冲突:</value></data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve"><value>`any_of` 不应该与 `{0}` 结合使用</value></data>
   <data name="RegistryFileConflict" xml:space="preserve"><value>{0} 想要安装 {1}，但该文件已被 {2} 注册</value></data>
@@ -276,7 +270,6 @@ https://github.com/KSP-CKAN/CKAN/wiki/SSL-certificate-errors</value></data>
 
 如果您确定这里不是，请删除:
 "{0}"</value></data>
-  <data name="KrakenReinstallModule" xml:space="preserve"><value>元数据已更改，推荐重新安装: {0}</value></data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve"><value>{0} 与 {1} 冲突</value></data>
   <data name="RelationshipResolverRequiredButResolver" xml:space="preserve"><value>需要 {0} ，但解析器内有一个不兼容版本</value></data>
   <data name="RelationshipResolverRequiredButInstalled" xml:space="preserve"><value>需要 {0} ，但有一个已安装的不兼容版本</value></data>

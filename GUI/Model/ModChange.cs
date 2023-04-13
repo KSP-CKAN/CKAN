@@ -87,12 +87,7 @@ namespace CKAN.GUI
         }
 
         public virtual string NameAndStatus
-        {
-            get
-            {
-                return Main.Instance.Manager.Cache.DescribeAvailability(Mod);
-            }
-        }
+            => Main.Instance.Manager.Cache.DescribeAvailability(Mod);
 
         private string DescribeGroup(IEnumerable<SelectionReason> reasons)
             => reasons.First().DescribeWith(reasons.Skip(1));
@@ -116,24 +111,18 @@ namespace CKAN.GUI
         }
 
         public override string NameAndStatus
-        {
-            get
-            {
-                return Main.Instance.Manager.Cache.DescribeAvailability(targetMod);
-            }
-        }
+            => Main.Instance.Manager.Cache.DescribeAvailability(targetMod);
 
         public override string Description
-        {
-            get
-            {
-                return string.Format(
-                    Properties.Resources.MainChangesetUpdateSelected,
-                    targetMod.version
-                );
-            }
-        }
+            => IsReinstall
+                ? Properties.Resources.MainChangesetReinstall
+                : string.Format(Properties.Resources.MainChangesetUpdateSelected,
+                                targetMod.version);
 
         public readonly CkanModule targetMod;
+
+        private bool IsReinstall
+            => targetMod.identifier == Mod.identifier
+                && targetMod.version == Mod.version;
     }
 }
