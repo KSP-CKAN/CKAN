@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.32.1
 
+### Bugfixes
 
+- [GUI] Only update Versions tab when the mod changes (#3822 by: HebaruSan; reviewed: techman83)
 
 ## v1.32.0 (Kepler)
 
