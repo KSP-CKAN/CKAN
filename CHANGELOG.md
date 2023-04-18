@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Only update Versions tab when the mod changes (#3822 by: HebaruSan; reviewed: techman83)
 
+### Internal
+
+- [Netkan] Warnings for missing swinfo.json deps (#3827 by: HebaruSan)
+
 ## v1.32.0 (Kepler)
 
 ### Features

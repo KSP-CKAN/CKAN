@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
@@ -10,6 +11,7 @@ using CKAN.NetKAN.Sources.SpaceWarp;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Sources.Github;
+using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.Games;
 
@@ -73,6 +75,17 @@ namespace CKAN.NetKAN.Transformers
                     {
                         log.InfoFormat("Found compatibility: {0}–{1}", minVer, maxVer);
                         ModuleService.ApplyVersions(json, null, minVer, maxVer);
+                    }
+                    var moduleDeps = mod.depends.Select(r => (r as ModuleRelationshipDescriptor)?.name)
+                                                .Where(ident => ident != null)
+                                                .ToHashSet();
+                    var missingDeps = swinfo.dependencies.Select(dep => dep.id)
+                                                         .Except(moduleDeps)
+                                                         .ToList();
+                    if (missingDeps.Any())
+                    {
+                        log.WarnFormat("Dependencies from swinfo.json missing from module: {0}",
+                                       string.Join(", ", missingDeps));
                     }
                     log.DebugFormat("Transformed metadata:{0}{1}",
                                     Environment.NewLine, json);
