@@ -514,6 +514,9 @@ namespace CKAN.GUI.Properties {
         internal static string MainChangesetUpdateSelected {
             get { return (string)(ResourceManager.GetObject("MainChangesetUpdateSelected", resourceCulture)); }
         }
+        internal static string MainChangesetReinstall {
+            get { return (string)(ResourceManager.GetObject("MainChangesetReinstall", resourceCulture)); }
+        }
 
         internal static string MainImportTitle {
             get { return (string)(ResourceManager.GetObject("MainImportTitle", resourceCulture)); }

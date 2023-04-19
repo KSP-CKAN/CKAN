@@ -135,7 +135,8 @@ namespace CKAN.GUI
             IsInstalled      = true;
             IsInstallChecked = true;
             InstalledMod     = instMod;
-            selectedMod      = instMod.Module;
+            selectedMod      = registry.GetModuleByVersion(instMod.identifier, instMod.Module.version)
+                               ?? instMod.Module;
             IsAutoInstalled  = instMod.AutoInstalled;
             InstallDate      = instMod.InstallTime;
             InstalledVersion = instMod.Module.version.ToString();

@@ -44,10 +44,6 @@ namespace CKAN.CmdLine
             {
                 UpdateRepository(instance);
             }
-            catch (ReinstallModuleKraken rmk)
-            {
-                Upgrade.UpgradeModules(manager, user, instance, false, rmk.Modules);
-            }
             catch (MissingCertificateKraken kraken)
             {
                 // Handling the kraken means we have prettier output.

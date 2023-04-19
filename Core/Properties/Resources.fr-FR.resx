@@ -206,14 +206,6 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
   <data name="NetRepoFailedDownload" xml:space="preserve">
     <value>Échec du téléchargement de {0} : {1}</value>
   </data>
-  <data name="NetRepoChangedModulesReinstallPrompt" xml:space="preserve">
-    <value>Les mods suivants ont eu leurs métadonnées changées depuis la dernière mise à jour :
-
-{0}
-Vous devriez les réinstaller pour préserver la cohérence avec le répertoire.
-
-Souhaitez-vous réinstaller maintenant ?</value>
-  </data>
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve">
     <value>Les incohérences suivantes ont été trouvées :</value>
   </data>
@@ -564,9 +556,6 @@ Pensez à ajouter un jeton d'authentification pour augmenter la limite avant bri
 
 Si vous êtes certain que ce n'est pas le cas, alors supprimez :
 "{0}"</value>
-  </data>
-  <data name="KrakenReinstallModule" xml:space="preserve">
-    <value>Changement de métadonnées, réinstallation recommandée : {0}</value>
   </data>
   <data name="NotEnoughSpaceToDownload" xml:space="preserve">
     <value>Pas assez d'espace dans le dossier temporaire pour télécharger les modules !</value>

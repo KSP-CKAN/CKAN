@@ -206,14 +206,6 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   <data name="NetRepoFailedDownload" xml:space="preserve">
     <value>Nie udało się pobrać {0}: {1}</value>
   </data>
-  <data name="NetRepoChangedModulesReinstallPrompt" xml:space="preserve">
-    <value>Następujące modyfikacje zmieniły swoje metadane od ostatniej aktualizacji:
-
-{0}
-Powinieneś je ponownie zainstalować, aby zachować spójność z repozytorium.
-
-Czy chcesz je zainstalować ponownie teraz?</value>
-  </data>
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve">
     <value>Znaleziono następujące niespójności:</value>
   </data>
@@ -564,9 +556,6 @@ Rozważ dodanie tokenu uwierzytelniającego, aby zwiększyć limit ograniczania.
 
 Jeśli jesteś pewien, że tak nie jest, to usuń:
 "{0}"</value>
-  </data>
-  <data name="KrakenReinstallModule" xml:space="preserve">
-    <value>Metadane zmienione, zalecana ponowna instalacja: {0}</value>
   </data>
   <data name="NotEnoughSpaceToDownload" xml:space="preserve">
     <value>Za mało miejsca w folderze tymczasowym do pobrania modułów!</value>

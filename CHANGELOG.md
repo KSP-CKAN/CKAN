@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [GUI] Only update Versions tab when the mod changes (#3822 by: HebaruSan; reviewed: techman83)
+- [Multiple] Treat reinstalling a changed module as an update (#3828 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 

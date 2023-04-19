@@ -407,6 +407,9 @@ Voulez-vous vraiment les installer ? L'annulation annulera toute l'installation.
   <data name="MainChangesetUpdateSelected" xml:space="preserve">
     <value>Mise à jour demandée vers la version {0}.</value>
   </data>
+  <data name="MainChangesetReinstall" xml:space="preserve">
+    <value>Réinstallation (Changement de métadonnées)</value>
+  </data>
   <data name="MainImportTitle" xml:space="preserve">
     <value>Importer des Mods</value>
   </data>

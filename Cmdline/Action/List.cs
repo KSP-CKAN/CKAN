@@ -86,7 +86,7 @@ namespace CKAN.CmdLine
                                 {
                                     log.DebugFormat(" {0} installed version not found in registry", mod.Key);
                                 }
-                                    
+
                                 // Check if mod is replaceable
                                 if (current.replaced_by != null)
                                 {
@@ -99,7 +99,7 @@ namespace CKAN.CmdLine
                                     }
                                 }
                             }
-                            else if (latest.version.IsEqualTo(current_version))
+                            else if (latest.version.IsEqualTo(current_version) && !registry.HasUpdate(mod.Key, instance.VersionCriteria()))
                             {
                                 // Up to date
                                 log.InfoFormat("Latest {0} is {1}", mod.Key, latest.version);
@@ -116,7 +116,7 @@ namespace CKAN.CmdLine
                                     }
                                 }
                             }
-                            else if (latest.version.IsGreaterThan(mod.Value))
+                            else if (latest.version.IsGreaterThan(mod.Value) || registry.HasUpdate(mod.Key, instance.VersionCriteria()))
                             {
                                 // Upgradable
                                 bullet = "^";

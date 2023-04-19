@@ -624,6 +624,79 @@ namespace CKAN
             return Equals((CkanModule)obj);
         }
 
+        public bool MetadataEquals(CkanModule other)
+        {
+            if ((install == null) != (other.install == null)
+                    || (install != null
+                        && install.Length != other.install.Length))
+            {
+                return false;
+            }
+            else if (install != null)
+            {
+                for (int i = 0; i < install.Length; i++)
+                {
+                    if (!install[i].Equals(other.install[i]))
+                        return false;
+                }
+            }
+            if (install_size != other.install_size)
+            {
+                return false;
+            }
+
+            if (!RelationshipsAreEquivalent(conflicts,  other.conflicts))
+                return false;
+
+            if (!RelationshipsAreEquivalent(depends,    other.depends))
+                return false;
+
+            if (!RelationshipsAreEquivalent(recommends, other.recommends))
+                return false;
+
+            if (provides != other.provides)
+            {
+                if (provides == null || other.provides == null)
+                    return false;
+                else if (!provides.OrderBy(i => i).SequenceEqual(other.provides.OrderBy(i => i)))
+                    return false;
+            }
+            return true;
+        }
+
+        private static bool RelationshipsAreEquivalent(List<RelationshipDescriptor> a, List<RelationshipDescriptor> b)
+        {
+            if (a == b)
+                // If they're the same exact object they must be equivalent
+                return true;
+
+            if (a == null || b == null)
+                // If they're not the same exact object and either is null then must not be equivalent
+                return false;
+
+            if (a.Count != b.Count)
+                // If their counts different they must not be equivalent
+                return false;
+
+            // Sort the lists so we can compare each relationship
+            var aSorted = a.OrderBy(i => i.ToString()).ToList();
+            var bSorted = b.OrderBy(i => i.ToString()).ToList();
+
+            for (var i = 0; i < a.Count; i++)
+            {
+                var aRel = aSorted[i];
+                var bRel = bSorted[i];
+
+                if (!aRel.Equals(bRel))
+                {
+                    return false;
+                }
+            }
+
+            // If we couldn't find any differences they must be equivalent
+            return true;
+        }
+
         public override int GetHashCode()
         {
             unchecked

@@ -601,16 +601,4 @@ namespace CKAN
         }
     }
 
-    public class ReinstallModuleKraken : Kraken
-    {
-        public readonly List<CkanModule> Modules;
-
-        public ReinstallModuleKraken(List<CkanModule> modules)
-            : base(string.Format(Properties.Resources.KrakenReinstallModule,
-                string.Join(", ", modules)))
-        {
-            Modules = modules;
-        }
-    }
-
 }

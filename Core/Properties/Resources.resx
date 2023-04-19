@@ -148,12 +148,6 @@ Install the `mono-complete` package or equivalent for your operating system.</va
   <data name="NetRepoUpdatedAll" xml:space="preserve"><value>Repositories updated</value></data>
   <data name="NetRepoNoModules" xml:space="preserve"><value>No modules found!</value></data>
   <data name="NetRepoFailedDownload" xml:space="preserve"><value>Failed to download {0}: {1}</value></data>
-  <data name="NetRepoChangedModulesReinstallPrompt" xml:space="preserve"><value>The following mods have had their metadata changed since last update:
-
-{0}
-You should reinstall them in order to preserve consistency with the repository.
-
-Do you wish to reinstall now?</value></data>
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve"><value>The following inconsistencies were found:</value></data>
   <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve"><value>Loading modules from {0} repository...</value></data>
   <data name="NetRepoLoadedDownloadCounts" xml:space="preserve"><value>Loaded download counts from {0} repository</value></data>
@@ -281,7 +275,6 @@ Consider adding an authentication token to increase the throttling limit.</value
 
 If you're certain this is not the case, then delete:
 "{0}"</value></data>
-  <data name="KrakenReinstallModule" xml:space="preserve"><value>Metadata changed, reinstallation recommended: {0}</value></data>
   <data name="NotEnoughSpaceToDownload" xml:space="preserve"><value>Not enough space in temp folder to download modules!</value></data>
   <data name="NotEnoughSpaceToCache" xml:space="preserve"><value>Not enough space in cache folder to store modules!</value></data>
   <data name="NotEnoughSpaceToInstall" xml:space="preserve"><value>Not enough space in game folder to install modules!</value></data>

@@ -194,6 +194,7 @@
   <data name="AllModVersionsInstallYes" xml:space="preserve"><value>설치</value></data>
   <data name="AllModVersionsInstallNo" xml:space="preserve"><value>취소하기</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>유저가 선택한 것을 버전 {0}으로 업데이트 하기.</value></data>
+  <data name="MainChangesetReinstall" xml:space="preserve"><value> ()</value></data>
   <data name="MainChangesetNewInstall" xml:space="preserve"><value>유저가 선택한 모드를 설치하기.</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>모드들 가져오기</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>모드들 (*.zip)|*.zip</value></data>

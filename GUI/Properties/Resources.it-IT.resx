@@ -407,6 +407,9 @@ Sei sicuro di volerli installare? L'annullamento interromperà l'intera installa
   <data name="MainChangesetUpdateSelected" xml:space="preserve">
     <value>Aggiorna la versione selezionata dall'utente alla versione {0}.</value>
   </data>
+  <data name="MainChangesetReinstall" xml:space="preserve">
+    <value>Reinstallazione (Metadati cambiati)</value>
+  </data>
   <data name="MainImportTitle" xml:space="preserve">
     <value>Importa Mod</value>
   </data>
