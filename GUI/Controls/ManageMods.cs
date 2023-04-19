@@ -1045,7 +1045,7 @@ namespace CKAN.GUI
                     Main.Instance.Manager.Cache.Purge(mod);
                 }
                 selected.UpdateIsCached();
-                Main.Instance.UpdateModContentsTree(selected.ToCkanModule(), true);
+                Main.Instance.RefreshModContentsTree();
             }
         }
 

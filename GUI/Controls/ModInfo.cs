@@ -42,9 +42,9 @@ namespace CKAN.GUI
             get => selectedModule;
         }
 
-        public void UpdateModContentsTree(CkanModule module, bool force = false)
+        public void RefreshModContentsTree()
         {
-            Contents.UpdateModContentsTree(module, force);
+            Contents.Refresh();
         }
 
         public event Action<GUIMod>            OnDownloadClick;

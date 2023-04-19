@@ -264,7 +264,7 @@ namespace CKAN.GUI
                 }
 
                 // finally, clear the preview contents list
-                Main.Instance.UpdateModContentsTree(null, true);
+                Main.Instance.RefreshModContentsTree();
 
                 UpdateCacheInfo(config.DownloadCacheDir);
             }
