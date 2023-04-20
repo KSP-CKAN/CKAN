@@ -118,7 +118,7 @@ namespace CKAN.GUI
 
         private void AddNewPluginButton_Click(object sender, EventArgs e)
         {
-            if (m_AddNewPluginDialog.ShowDialog() == DialogResult.OK)
+            if (m_AddNewPluginDialog.ShowDialog(this) == DialogResult.OK)
             {
                 var path = m_AddNewPluginDialog.FileName;
                 Main.Instance.pluginController.AddNewAssemblyToPluginsPath(path);

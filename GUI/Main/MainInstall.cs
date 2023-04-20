@@ -7,6 +7,9 @@ using System.Transactions;
 
 using CKAN.Extensions;
 
+// Don't warn if we use our own obsolete properties
+#pragma warning disable 0618
+
 namespace CKAN.GUI
 {
     using ModChanges = List<ModChange>;

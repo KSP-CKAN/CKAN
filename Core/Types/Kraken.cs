@@ -474,9 +474,8 @@ namespace CKAN
         }
 
         public override string ToString()
-        {
-            return String.Format(Properties.Resources.KrakenAlreadyRunning, lockfilePath);
-        }
+            => string.Format(Properties.Resources.KrakenAlreadyRunning,
+                             lockfilePath.Replace('/', Path.DirectorySeparatorChar));
     }
 
     /// <summary>

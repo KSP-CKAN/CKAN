@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using CKAN.Exporters;
 using CKAN.Types;
+
+// Don't warn if we use our own obsolete properties
+#pragma warning disable 0618
 
 namespace CKAN.GUI
 {
@@ -65,7 +69,7 @@ namespace CKAN.GUI
                 Filter = string.Join("|", specialExportOptions.Select(i => i.ToString()).ToArray()),
                 Title  = Properties.Resources.ExportInstalledModsDialogTitle
             };
-            if (dlg.ShowDialog() == DialogResult.OK)
+            if (dlg.ShowDialog(this) == DialogResult.OK)
             {
                 var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
                 using (var stream = new FileStream(dlg.FileName, fileMode))

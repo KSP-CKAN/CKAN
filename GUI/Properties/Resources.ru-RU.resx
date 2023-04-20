@@ -185,6 +185,8 @@
   <data name="MainCorruptedRegistry" xml:space="preserve"><value>Повреждение реестра, архивированного в {0}: {1}
 
 Это означает, что CKAN «забыл» о всех установленных модификациях, но сами они продолжают находиться в GameData. Вы можете переустановить их, импортировав файлы {2}.</value></data>
+  <data name="MainDeleteLockfileYes" xml:space="preserve"><value>Принуд.</value></data>
+  <data name="MainDeleteLockfileNo" xml:space="preserve"><value>Отмена</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} не поддерживается установленной версией игры и может не заработать.
 
 Вы действительно хотите установить его?</value></data>

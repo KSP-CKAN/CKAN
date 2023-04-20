@@ -377,7 +377,7 @@ namespace CKAN.GUI
                 Filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray()),
                 Title  = Properties.Resources.ExportInstalledModsDialogTitle
             };
-            if (dlg.ShowDialog() == DialogResult.OK)
+            if (dlg.ShowDialog(Main.Instance) == DialogResult.OK)
             {
                 selectedOption = exportOptions[dlg.FilterIndex - 1];
                 filename       = dlg.FileName;

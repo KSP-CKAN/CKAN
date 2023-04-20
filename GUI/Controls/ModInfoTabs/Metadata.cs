@@ -121,7 +121,7 @@ namespace CKAN.GUI
                 merge);
         }
 
-        private GameInstanceManager manager => Main.Instance.manager;
+        private GameInstanceManager manager => Main.Instance.Manager;
 
         private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {

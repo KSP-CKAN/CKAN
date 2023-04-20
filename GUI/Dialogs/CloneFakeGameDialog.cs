@@ -74,7 +74,7 @@ namespace CKAN.GUI
             };
 
             // Show the FileDialog and let the user search for the game directory.
-            if (instanceDialog.ShowDialog() != DialogResult.OK || !File.Exists(instanceDialog.FileName))
+            if (instanceDialog.ShowDialog(this) != DialogResult.OK || !File.Exists(instanceDialog.FileName))
                 return;
 
             // Write the path to the textbox
@@ -327,7 +327,7 @@ namespace CKAN.GUI
 
         private void buttonPathBrowser_Click(object sender, EventArgs e)
         {
-            if (folderBrowserDialogNewPath.ShowDialog().Equals(DialogResult.OK))
+            if (folderBrowserDialogNewPath.ShowDialog(this).Equals(DialogResult.OK))
             {
                 textBoxNewPath.Text = folderBrowserDialogNewPath.SelectedPath;
             }

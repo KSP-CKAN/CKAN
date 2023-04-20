@@ -1,6 +1,9 @@
 using System;
 using System.Windows.Forms;
 
+// Don't warn if we use our own obsolete properties
+#pragma warning disable 0618
+
 namespace CKAN.GUI
 {
     public partial class Main

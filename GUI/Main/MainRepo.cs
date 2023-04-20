@@ -12,6 +12,9 @@ using Autofac;
 using CKAN.Versioning;
 using CKAN.Configuration;
 
+// Don't warn if we use our own obsolete properties
+#pragma warning disable 0618
+
 namespace CKAN.GUI
 {
     public partial class Main
@@ -208,7 +211,6 @@ namespace CKAN.GUI
                 {
                     configuration.RefreshOnStartup = false;
                 }
-                configuration.Save();
             }
         }
 

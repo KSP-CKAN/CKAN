@@ -211,9 +211,12 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Not found.</value></data>
   <data name="MainReinstallConfirm" xml:space="preserve"><value>Do you want to reinstall {0}?</value></data>
   <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN can't install expansion {0}!</value></data>
+  <data name="MainLoadingGameInstance" xml:space="preserve"><value>Loading game instance</value></data>
   <data name="MainCorruptedRegistry" xml:space="preserve"><value>Corrupted registry archived to {0}: {1}
 
 This means that CKAN forgot about all your installed mods, but they are still in GameData. You can reinstall them by importing the {2} file.</value></data>
+  <data name="MainDeleteLockfileYes" xml:space="preserve"><value>Force</value></data>
+  <data name="MainDeleteLockfileNo" xml:space="preserve"><value>Cancel</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} is not supported on your current compatible game versions ({1}) and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
 
 Do you really want to install it?</value></data>

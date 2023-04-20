@@ -32,7 +32,12 @@ namespace CKAN.GUI
             }
             else
             {
-                new Main(args, manager, showConsole);
+                var main = new Main(args, manager);
+                if (!showConsole)
+                {
+                    Util.HideConsoleWindow();
+                }
+                Application.Run(main);
             }
         }
 

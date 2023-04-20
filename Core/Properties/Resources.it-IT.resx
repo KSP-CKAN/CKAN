@@ -552,10 +552,11 @@ Consulta questa pagina per aiuto:
 Prendi in considerazione l'aggiunta di un token di autenticazione per aumentare il limite prima del throttling.</value>
   </data>
   <data name="KrakenAlreadyRunning" xml:space="preserve">
-    <value>CKAN è già in esecuzione per questa istanza!
+    <value>File di blocco con ID di processo attivo trovato a {0}
 
-Se sei sicuro che non sia questo il caso, elimina:
-"{0}"</value>
+Ciò significa che probabilmente un'altra istanza di CKAN sta accedendo a questa istanza. Puoi eliminare il file per continuare, ma è molto probabile che i dati vengano danneggiati.
+
+Vuoi eliminare questo file di blocco per forzare l'accesso?</value>
   </data>
   <data name="NotEnoughSpaceToDownload" xml:space="preserve">
     <value>Spazio insufficiente nella cartella temporanea per scaricare i moduli!</value>

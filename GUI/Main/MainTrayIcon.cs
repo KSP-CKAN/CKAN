@@ -46,7 +46,6 @@ namespace CKAN.GUI
                 {
                     // Save the window state
                     configuration.IsWindowMaximised = WindowState == FormWindowState.Maximized;
-                    configuration.Save();
                 }
             }
             else

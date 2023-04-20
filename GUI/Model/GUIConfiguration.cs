@@ -5,6 +5,8 @@ using System.Drawing;
 using System.IO;
 using System.Xml.Serialization;
 
+using CKAN.Games;
+
 namespace CKAN.GUI
 {
     [XmlRootAttribute("Configuration")]
@@ -100,14 +102,14 @@ namespace CKAN.GUI
             SaveConfiguration(this);
         }
 
-        public static GUIConfiguration LoadOrCreateConfiguration(string path)
+        public static GUIConfiguration LoadOrCreateConfiguration(string path, IGame game)
         {
             if (!File.Exists(path) || new FileInfo(path).Length == 0)
             {
                 var configuration = new GUIConfiguration
                 {
                     path = path,
-                    CommandLineArguments = Main.Instance.CurrentInstance.game.DefaultCommandLine
+                    CommandLineArguments = game.DefaultCommandLine
                 };
 
                 SaveConfiguration(configuration);

@@ -219,11 +219,6 @@
   <data name="InstanceListDefaultToggle" xml:space="preserve"><value>Default</value></data>
   <data name="InstanceListLoadingError" xml:space="preserve"><value>Error loading {0}:
 {1}</value></data>
-  <data name="InstanceListLocked" xml:space="preserve"><value>Lock file with live process ID found at {0}
-
-This means that another instance of CKAN probably is accessing this instance. You can delete the file to continue, but data corruption is very likely.
-
-Do you want to delete this lock file to force access?</value></data>
   <data name="InstanceListNoVersion" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
   <data name="InstallTitle" xml:space="preserve"><value>Installing, Upgrading, and Removing Mods</value></data>
   <data name="InstallMessage" xml:space="preserve"><value>Calculating...</value></data>

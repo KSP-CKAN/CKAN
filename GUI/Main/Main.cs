@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
@@ -16,45 +17,54 @@ using Autofac;
 using CKAN.Extensions;
 using CKAN.Versioning;
 
+// Don't warn if we use our own obsolete properties
+#pragma warning disable 0618
+
 namespace CKAN.GUI
 {
     public partial class Main : Form, IMessageFilter
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
 
+        // Stuff we set in the constructor and never change
+        public readonly GUIUser currentUser;
+        [Obsolete("Main.tabController should be private. Find a better way to access this object.")]
+        public readonly TabController tabController;
+        private readonly GameInstanceManager manager;
+        public GameInstanceManager Manager => manager;
+        public GameInstance CurrentInstance => Manager.CurrentInstance;
+        private string focusIdent;
+
+        // Stuff we set when the game instance changes
         public GUIConfiguration configuration;
-
-        public ControlFactory controlFactory;
-
-        public TabController tabController;
-
         public PluginController pluginController;
-
-        public volatile GameInstanceManager manager;
-
-        public GameInstance CurrentInstance
-        {
-            get { return manager.CurrentInstance; }
-        }
-
-        public GameInstanceManager Manager
-        {
-            get { return manager; }
-            set { manager = value; }
-        }
 
         private bool needRegistrySave = false;
 
-        public string[] commandLineArgs;
-
-        public GUIUser currentUser;
-
+        [Obsolete("Main.Instance is a global singleton. Find a better way to access this object.")]
         public static Main Instance { get; private set; }
 
-        public Main(string[] cmdlineArgs, GameInstanceManager mgr, bool showConsole)
+        /// <summary>
+        /// Set up the main form's core properties quickly.
+        /// This should have NO UI interactions!
+        /// A constructor just initializes the object, it doesn't ask the user questions.
+        /// That's the job of OnLoad or OnShown.
+        /// </summary>
+        /// <param name="cmdlineArgs">The strings from the command line that launched us</param>
+        /// <param name="mgr">Game instance manager created by the cmdline handler</param>
+        public Main(string[] cmdlineArgs, GameInstanceManager mgr)
         {
             log.Info("Starting the GUI");
-            commandLineArgs = cmdlineArgs;
+            if (cmdlineArgs.Length >= 2)
+            {
+                focusIdent = cmdlineArgs[1];
+                if (focusIdent.StartsWith("//"))
+                    focusIdent = focusIdent.Substring(2);
+                else if (focusIdent.StartsWith("ckan://"))
+                    focusIdent = focusIdent.Substring(7);
+                if (focusIdent.EndsWith("/"))
+                    focusIdent = focusIdent.Substring(0, focusIdent.Length - 1);
+            }
 
             Configuration.IConfiguration mainConfig = ServiceLocator.Container.Resolve<Configuration.IConfiguration>();
 
@@ -75,25 +85,10 @@ namespace CKAN.GUI
             Application.AddMessageFilter(this);
 
             InitializeComponent();
-
-            Instance = this;
-
-            currentUser = new GUIUser(this, this.Wait);
-            if (mgr != null)
-            {
-                // With a working GUI, assign a GUIUser to the GameInstanceManager to replace the ConsoleUser
-                mgr.User = currentUser;
-                manager = mgr;
-            }
-            else
-            {
-                manager = new GameInstanceManager(currentUser);
-            }
-
-            controlFactory = new ControlFactory();
-
             // React when the user clicks a tag or filter link in mod info
             ModInfo.OnChangeFilter += ManageMods.Filter;
+
+            Instance = this;
 
             // Replace mono's broken, ugly toolstrip renderer
             if (Platform.IsMono)
@@ -108,76 +103,17 @@ namespace CKAN.GUI
             // Initialize all user interaction dialogs.
             RecreateDialogs();
 
-            // Make sure we have an instance
-            if (CurrentInstance == null)
-            {
-                // Maybe we can find an instance automatically (e.g., portable, only, default)
-                manager.GetPreferredInstance();
-            }
-            // A loop that ends when we have a valid instance or the user gives up
-            do
-            {
-                if (CurrentInstance == null && !InstancePromptAtStart())
-                {
-                    // User cancelled, give up
-                    return;
-                }
-                // We now have a tentative instance. Check if it's locked.
-                try
-                {
-                    // This will throw RegistryInUseKraken if locked by another process
-                    var regMgr = RegistryManager.Instance(CurrentInstance);
-                    // Tell the user their registry was reset if it was corrupted
-                    if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
-                        && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
-                    {
-                        errorDialog.ShowErrorDialog(Properties.Resources.MainCorruptedRegistry,
-                            regMgr.previousCorruptedPath, regMgr.previousCorruptedMessage,
-                            Path.Combine(Path.GetDirectoryName(regMgr.previousCorruptedPath) ?? "", regMgr.LatestInstalledExportFilename()));
-                        regMgr.previousCorruptedMessage = null;
-                        regMgr.previousCorruptedPath    = null;
-                        // But the instance is actually fine because a new registry was just created
-                    }
-                }
-                catch (RegistryInUseKraken kraken)
-                {
-                    errorDialog.ShowErrorDialog(kraken.ToString());
-                    // Couldn't get the lock, there is no current instance
-                    manager.CurrentInstance = null;
-                    if (manager.Instances.All(inst => !inst.Value.Valid || inst.Value.IsMaybeLocked))
-                    {
-                        // Everything's invalid or locked, give up
-                        Application.Exit();
-                        return;
-                    }
-                }
-            } while (CurrentInstance == null);
-            // We can only reach this point if CurrentInstance is not null
-            // AND we acquired the lock for it successfully
-
-            // Get the instance's GUI onfig
-            configuration = GUIConfiguration.LoadOrCreateConfiguration(
-                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"));
-
-            tabController = new TabController(MainTabControl);
-            tabController.ShowTab("ManageModsTabPage");
-
-            if (!showConsole)
-            {
-                Util.HideConsoleWindow();
-            }
-
-            // Disable the modinfo controls until a mod has been choosen. This has an effect if the modlist is empty.
-            ActiveModInfo = null;
-
             // WinForms on Mac OS X has a nasty bug where the UI thread hogs the CPU,
             // making our download speeds really slow unless you move the mouse while
             // downloading. Yielding periodically addresses that.
             // https://bugzilla.novell.com/show_bug.cgi?id=663433
             if (Platform.IsMac)
             {
-                var timer = new Timer { Interval = 2 };
-                timer.Tick += (sender, e) => { Thread.Yield(); };
+                var timer = new Timer
+                {
+                    Interval = 2
+                };
+                timer.Tick += (sender, e) => Thread.Yield();;
                 timer.Start();
             }
 
@@ -187,44 +123,216 @@ namespace CKAN.GUI
                 HandleCreated += (sender, e) => X11.SetWMClass("CKAN", "CKAN", Handle);
             }
 
-            Application.Run(this);
-
-            if (CurrentInstance != null)
+            currentUser = new GUIUser(this, this.Wait);
+            if (mgr != null)
             {
-                var registry = RegistryManager.Instance(Manager.CurrentInstance);
-                registry?.Dispose();
+                // With a working GUI, assign a GUIUser to the GameInstanceManager to replace the ConsoleUser
+                mgr.User = currentUser;
+                manager = mgr;
             }
+            else
+            {
+                manager = new GameInstanceManager(currentUser);
+            }
+
+            tabController = new TabController(MainTabControl);
+            tabController.ShowTab("ManageModsTabPage");
+
+            // Disable the modinfo controls until a mod has been choosen. This has an effect if the modlist is empty.
+            ActiveModInfo = null;
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            // Try to get an instance
+            if (CurrentInstance == null)
+            {
+                // Maybe we can find an instance automatically (e.g., portable, only, default)
+                manager.GetPreferredInstance();
+            }
+
+            // We need a config object to get the window geometry, but we don't need the registry lock yet
+            configuration = CurrentInstance != null
+                ? GUIConfiguration.LoadOrCreateConfiguration(
+                    Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
+                    CurrentInstance.game)
+                // No instance, just get the defaults
+                : new GUIConfiguration();
+
+            // This must happen before Shown, and it depends on the configuration
+            SetStartPosition();
+            Size = configuration.WindowSize;
+            WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
+
+            URLHandlers.RegisterURLHandler(configuration, currentUser);
+
+            try
+            {
+                splitContainer1.SplitterDistance = configuration.PanelPosition;
+            }
+            catch
+            {
+                // SplitContainer is mis-designed to throw exceptions
+                // if the min/max limits are exceeded rather than simply obeying them.
+            }
+
+            log.Info("GUI started");
+            base.OnLoad(e);
+        }
+
+        /// <summary>
+        /// Form.Visible says true even when the form hasn't shown yet.
+        /// This value will tell the truth.
+        /// </summary>
+        public bool actuallyVisible { get; private set; } = false;
+
+        protected override void OnShown(EventArgs e)
+        {
+            actuallyVisible = true;
+
+            tabController.RenameTab("WaitTabPage", Properties.Resources.MainLoadingGameInstance);
+            ShowWaitDialog();
+            DisableMainWindow();
+            Wait.StartWaiting(
+                (sender, evt) =>
+                {
+                    Wait.AddLogMessage(Properties.Resources.MainModListLoadingRegistry);
+                    // Make sure we have a lockable instance
+                    do
+                    {
+                        if (CurrentInstance == null && !InstancePromptAtStart())
+                        {
+                            // User cancelled, give up
+                            evt.Result = false;
+                            return;
+                        }
+                        for (RegistryManager regMgr = null;
+                             CurrentInstance != null && regMgr == null;)
+                        {
+                            // We now have a tentative instance. Check if it's locked.
+                            try
+                            {
+                                // This will throw RegistryInUseKraken if locked by another process
+                                regMgr = RegistryManager.Instance(CurrentInstance);
+                                // Tell the user their registry was reset if it was corrupted
+                                if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
+                                    && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
+                                {
+                                    errorDialog.ShowErrorDialog(Properties.Resources.MainCorruptedRegistry,
+                                        regMgr.previousCorruptedPath, regMgr.previousCorruptedMessage,
+                                        Path.Combine(Path.GetDirectoryName(regMgr.previousCorruptedPath) ?? "", regMgr.LatestInstalledExportFilename()));
+                                    regMgr.previousCorruptedMessage = null;
+                                    regMgr.previousCorruptedPath    = null;
+                                    // But the instance is actually fine because a new registry was just created
+                                }
+                            }
+                            catch (RegistryInUseKraken kraken)
+                            {
+                                if (Main.Instance.YesNoDialog(
+                                    kraken.ToString(),
+                                    Properties.Resources.MainDeleteLockfileYes,
+                                    Properties.Resources.MainDeleteLockfileNo))
+                                {
+                                    // Delete it
+                                    File.Delete(kraken.lockfilePath);
+                                    // Loop back around to re-acquire the lock
+                                }
+                                else
+                                {
+                                    // Couldn't get the lock, there is no current instance
+                                    manager.CurrentInstance = null;
+                                    if (manager.Instances.Values.All(inst => !inst.Valid || inst.IsMaybeLocked))
+                                    {
+                                        // Everything's invalid or locked, give up
+                                        evt.Result = false;
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    } while (CurrentInstance == null);
+                    // We can only reach this point if CurrentInstance is not null
+                    // AND we acquired the lock for it successfully
+                    if (!configuration.CheckForUpdatesOnLaunchNoNag && AutoUpdate.CanUpdate)
+                    {
+                        log.Debug("Asking user if they wish for auto-updates");
+                        if (new AskUserForAutoUpdatesDialog().ShowDialog(this) == DialogResult.OK)
+                            configuration.CheckForUpdatesOnLaunch = true;
+                        configuration.CheckForUpdatesOnLaunchNoNag = true;
+                    }
+                    evt.Result = true;
+                },
+                (sender, evt) =>
+                {
+                    // Application.Exit doesn't work if the window is disabled!
+                    EnableMainWindow();
+                    if ((bool)evt.Result)
+                    {
+                        HideWaitDialog();
+                        CheckTrayState();
+                        bool autoUpdating = CheckForCKANUpdate();
+                        Console.CancelKeyPress += (sender2, evt2) =>
+                        {
+                            // Hide tray icon on Ctrl-C
+                            minimizeNotifyIcon.Visible = false;
+                        };
+                        InitRefreshTimer();
+                        CurrentInstanceUpdated(!autoUpdating);
+                    }
+                    else
+                    {
+                        Application.Exit();
+                    }
+                },
+                false,
+                null);
+
+            base.OnShown(e);
         }
 
         private bool InstancePromptAtStart()
         {
-            Hide();
-            var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog();
-            if (result != DialogResult.OK)
+            bool gotInstance = false;
+            Util.Invoke(this, () =>
             {
-                Application.Exit();
-                return false;
-            }
-            return true;
+                var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog(this);
+                gotInstance = result == DialogResult.OK;
+            });
+            return gotInstance;
         }
 
         private void manageGameInstancesMenuItem_Click(object sender, EventArgs e)
         {
             var old_instance = CurrentInstance;
-            var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog();
+            var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog(this);
             if (result == DialogResult.OK && !Equals(old_instance, CurrentInstance))
             {
-                try
+                for (bool done = false; !done;)
                 {
-                    ManageMods.ModGrid.ClearSelection();
-                    CurrentInstanceUpdated(true);
-                }
-                catch (RegistryInUseKraken kraken)
-                {
-                    // Couldn't get the lock, revert to previous instance
-                    errorDialog.ShowErrorDialog(kraken.ToString());
-                    manager.CurrentInstance = old_instance;
-                    CurrentInstanceUpdated(false);
+                    try
+                    {
+                        ManageMods.ModGrid.ClearSelection();
+                        CurrentInstanceUpdated(true);
+                        done = true;
+                    }
+                    catch (RegistryInUseKraken kraken)
+                    {
+                        if (Main.Instance.YesNoDialog(
+                            kraken.ToString(),
+                            Properties.Resources.MainDeleteLockfileYes,
+                            Properties.Resources.MainDeleteLockfileNo))
+                        {
+                            // Delete it
+                            File.Delete(kraken.lockfilePath);
+                        }
+                        else
+                        {
+                            // Couldn't get the lock, revert to previous instance
+                            manager.CurrentInstance = old_instance;
+                            CurrentInstanceUpdated(false);
+                            done = true;
+                        }
+                    }
                 }
             }
         }
@@ -247,8 +355,10 @@ namespace CKAN.GUI
         /// <param name="allowRepoUpdate">true if a repo update is allowed if needed (e.g. on initial load), false otherwise</param>
         private void CurrentInstanceUpdated(bool allowRepoUpdate)
         {
+            // This will throw RegistryInUseKraken if locked by another process
+            var regMgr = RegistryManager.Instance(CurrentInstance);
             log.Debug("Current instance updated, scanning");
-            CurrentInstance.Scan();
+
             Util.Invoke(this, () =>
             {
                 Text = $"CKAN {Meta.GetVersion()} - {CurrentInstance.game.ShortName} {CurrentInstance.Version()}    --    {CurrentInstance.GameDir().Replace('/', Path.DirectorySeparatorChar)}";
@@ -258,14 +368,12 @@ namespace CKAN.GUI
             if (CurrentInstance.CompatibleVersionsAreFromDifferentGameVersion)
             {
                 new CompatibleGameVersionsDialog(CurrentInstance, !actuallyVisible)
-                    .ShowDialog();
+                    .ShowDialog(this);
             }
 
-            // This will throw RegistryInUseKraken if locked by another process
-            var regMgr   = RegistryManager.Instance(CurrentInstance);
             var registry = regMgr.registry;
             if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
-                                                && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
+                && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
             {
                 errorDialog.ShowErrorDialog(Properties.Resources.MainCorruptedRegistry,
                     regMgr.previousCorruptedPath, regMgr.previousCorruptedMessage,
@@ -275,11 +383,19 @@ namespace CKAN.GUI
             }
             registry.BuildTagIndex(ManageMods.mainModList.ModuleTags);
 
+            configuration?.Save();
             configuration = GUIConfiguration.LoadOrCreateConfiguration(
-                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"));
+                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
+                CurrentInstance.game);
 
-            bool repoUpdateNeeded = configuration.RefreshOnStartup
-                || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
+            var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
+            if (!Directory.Exists(pluginsPath))
+                Directory.CreateDirectory(pluginsPath);
+            pluginController = new PluginController(pluginsPath, true);
+
+            CurrentInstance.game.RebuildSubdirectories(CurrentInstance.GameDir());
+
+            bool repoUpdateNeeded = configuration.RefreshOnStartup || !registry.HasAnyAvailable();
             if (allowRepoUpdate)
             {
                 // If not allowing, don't do anything
@@ -298,29 +414,6 @@ namespace CKAN.GUI
         }
 
         /// <summary>
-        /// Form.Visible says true even when the form hasn't shown yet.
-        /// This value will tell the truth.
-        /// </summary>
-        public bool actuallyVisible { get; private set; } = false;
-
-        protected override void OnShown(EventArgs e)
-        {
-            actuallyVisible = true;
-
-            try
-            {
-                splitContainer1.SplitterDistance = configuration.PanelPosition;
-            }
-            catch
-            {
-                // SplitContainer is mis-designed to throw exceptions
-                // if the min/max limits are exceeded rather than simply obeying them.
-            }
-
-            base.OnShown(e);
-        }
-
-        /// <summary>
         /// Open the user guide when the user presses F1
         /// </summary>
         protected override void OnHelpRequested(HelpEventArgs evt)
@@ -330,6 +423,12 @@ namespace CKAN.GUI
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            if (CurrentInstance != null)
+            {
+                var registry = RegistryManager.Instance(Manager.CurrentInstance);
+                registry?.Dispose();
+            }
+
             // Stop all running play time timers
             foreach (var inst in manager.Instances.Values)
             {
@@ -371,70 +470,6 @@ namespace CKAN.GUI
                 // Just make sure it's fully on screen
                 Location = Util.ClampedLocation(configuration.WindowLoc, configuration.WindowSize, screen);
             }
-        }
-
-        protected override void OnLoad(EventArgs e)
-        {
-            SetStartPosition();
-            Size = configuration.WindowSize;
-            WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
-
-            if (!configuration.CheckForUpdatesOnLaunchNoNag && AutoUpdate.CanUpdate)
-            {
-                log.Debug("Asking user if they wish for auto-updates");
-                if (new AskUserForAutoUpdatesDialog().ShowDialog() == DialogResult.OK)
-                    configuration.CheckForUpdatesOnLaunch = true;
-
-                configuration.CheckForUpdatesOnLaunchNoNag = true;
-                configuration.Save();
-            }
-
-            bool autoUpdating = CheckForCKANUpdate();
-            CheckTrayState();
-            Console.CancelKeyPress += (sender, evt) =>
-            {
-                // Hide tray icon on Ctrl-C
-                minimizeNotifyIcon.Visible = false;
-            };
-            InitRefreshTimer();
-
-            URLHandlers.RegisterURLHandler(configuration, currentUser);
-
-            if (CurrentInstance != null)
-            {
-                CurrentInstanceUpdated(!autoUpdating);
-            }
-
-            if (commandLineArgs.Length >= 2)
-            {
-                var identifier = commandLineArgs[1];
-                if (identifier.StartsWith("//"))
-                    identifier = identifier.Substring(2);
-                else if (identifier.StartsWith("ckan://"))
-                    identifier = identifier.Substring(7);
-
-                if (identifier.EndsWith("/"))
-                    identifier = identifier.Substring(0, identifier.Length - 1);
-
-                log.Debug("Attempting to select mod from startup parameters");
-                ManageMods.FocusMod(identifier, true, true);
-                ManageMods.ModGrid.Refresh();
-                log.Debug("Failed to select mod from startup parameters");
-            }
-
-            if (CurrentInstance != null)
-            {
-                var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
-                if (!Directory.Exists(pluginsPath))
-                    Directory.CreateDirectory(pluginsPath);
-
-                pluginController = new PluginController(pluginsPath);
-
-                CurrentInstance.game.RebuildSubdirectories(CurrentInstance.GameDir());
-            }
-
-            log.Info("GUI started");
-            base.OnLoad(e);
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -515,7 +550,7 @@ namespace CKAN.GUI
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new AboutDialog().ShowDialog();
+            new AboutDialog().ShowDialog(this);
         }
 
         private void GameCommandlineToolStripMenuItem_Click(object sender, EventArgs e)
@@ -524,7 +559,6 @@ namespace CKAN.GUI
             if (dialog.ShowGameCommandLineOptionsDialog(configuration.CommandLineArguments) == DialogResult.OK)
             {
                 configuration.CommandLineArguments = dialog.GetResult();
-                configuration.Save();
             }
         }
 
@@ -539,7 +573,7 @@ namespace CKAN.GUI
         private void pluginsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Enabled = false;
-            pluginsDialog.ShowDialog();
+            pluginsDialog.ShowDialog(this);
             Enabled = true;
         }
 
@@ -559,7 +593,7 @@ namespace CKAN.GUI
                 Multiselect = true,
             };
 
-            if (open_file_dialog.ShowDialog() == DialogResult.OK)
+            if (open_file_dialog.ShowDialog(this) == DialogResult.OK)
             {
                 // We'll need to make some registry changes to do this.
                 RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
@@ -636,7 +670,7 @@ namespace CKAN.GUI
                 Instance.manager.CurrentInstance,
                 !actuallyVisible
             );
-            if (dialog.ShowDialog() != DialogResult.Cancel)
+            if (dialog.ShowDialog(this) != DialogResult.Cancel)
             {
                 // This takes a while, so don't do it if they cancel out
                 RefreshModList();
@@ -777,7 +811,7 @@ namespace CKAN.GUI
 
         private void openGameDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Utilities.ProcessStartURL(Instance.manager.CurrentInstance.GameDir());
+            Utilities.ProcessStartURL(manager.CurrentInstance.GameDir());
         }
 
         private void openGameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -875,11 +909,19 @@ namespace CKAN.GUI
             DisableMainWindow();
             Wait.StartWaiting(
                 ManageMods.Update,
-                (sender, e) => {
+                (sender, e) =>
+                {
                     UpdateTrayInfo();
                     HideWaitDialog();
                     EnableMainWindow();
                     SetupDefaultSearch();
+                    if (!string.IsNullOrEmpty(focusIdent))
+                    {
+                        log.Debug("Attempting to select mod from startup parameters");
+                        ManageMods.FocusMod(focusIdent, true, true);
+                        // Only do it the first time
+                        focusIdent = null;
+                    }
                 },
                 false,
                 oldModules);

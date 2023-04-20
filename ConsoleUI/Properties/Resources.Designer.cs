@@ -362,9 +362,6 @@ namespace CKAN.ConsoleUI.Properties {
         internal static string InstanceListLoadingError {
             get { return (string)(ResourceManager.GetObject("InstanceListLoadingError", resourceCulture)); }
         }
-        internal static string InstanceListLocked {
-            get { return (string)(ResourceManager.GetObject("InstanceListLocked", resourceCulture)); }
-        }
         internal static string InstanceListNoVersion {
             get { return (string)(ResourceManager.GetObject("InstanceListNoVersion", resourceCulture)); }
         }

@@ -210,12 +210,6 @@
   <data name="InstanceListDefaultToggle" xml:space="preserve"><value>По умолчанию</value></data>
   <data name="InstanceListLoadingError" xml:space="preserve"><value>Ошибка загрузки «{0}»:
 {1}</value></data>
-  <data name="InstanceListLocked" xml:space="preserve"><value>Блокирующий файл с ID процесса найден в {0}
-
-Это может означать, что другой процесс CKAN работает с этой сборкой. 
-Вы можете удалить этот файл, но в таком случае вероятно повреждение данных.
-
-Хотите ли вы удалить блокирующий файл для получения доступа?</value></data>
   <data name="InstanceListNoVersion" xml:space="preserve"><value>&lt;НЕТ&gt;</value></data>
   <data name="InstallTitle" xml:space="preserve"><value>Установка, обновление и удаление модификаций</value></data>
   <data name="InstallMessage" xml:space="preserve"><value>Вычисление...</value></data>

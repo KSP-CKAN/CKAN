@@ -1,7 +1,11 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+
 using CKAN.Versioning;
+
+// Don't warn if we use our own obsolete properties
+#pragma warning disable 0618
 
 namespace CKAN.GUI
 {
@@ -30,7 +34,7 @@ namespace CKAN.GUI
                         log.Debug("Found higher ckan version");
                         var release_notes = AutoUpdate.Instance.latestUpdate.ReleaseNotes;
                         var dialog = new NewUpdateDialog(latest_version.ToString(), release_notes);
-                        if (dialog.ShowDialog() == DialogResult.OK)
+                        if (dialog.ShowDialog(this) == DialogResult.OK)
                         {
                             UpdateCKAN();
                             return true;

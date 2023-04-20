@@ -421,13 +421,6 @@
     <value>Błąd ładowania {0}:
 {1}</value>
   </data>
-  <data name="InstanceListLocked" xml:space="preserve">
-    <value>Plik blokady znaleziony w {0}
-
-Oznacza to, że inna instancja CKAN prawdopodobnie ma dostęp do tej instalacji gry. Możesz usunąć plik, aby kontynuować, ale uszkodzenie danych jest bardzo prawdopodobne.
-
-Czy chcesz usunąć ten plik blokady, aby wymusić dostęp?</value>
-  </data>
   <data name="InstanceListNoVersion" xml:space="preserve">
     <value>&lt;BRAK&gt;</value>
   </data>
