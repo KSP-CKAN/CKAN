@@ -40,6 +40,7 @@ namespace CKAN.NetKAN.Transformers
             // Blank lines to separate the table from the description
             table.AppendLine("Resource | URL");
             table.AppendLine(":-- | :--");
+            table.AppendLine($"download | <{metadata.Download}>");
             foreach (var prop in resourcesJson.Properties().OrderBy(prop => prop.Name))
             {
                 table.AppendLine($"{prop.Name} | <{prop.Value}>");
