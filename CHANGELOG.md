@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Netkan] Warnings for missing swinfo.json deps (#3827 by: HebaruSan)
+- [Build] Stop building on Mono 6.6 and earlier (#3832 by: HebaruSan)
 
 ## v1.32.0 (Kepler)
 
