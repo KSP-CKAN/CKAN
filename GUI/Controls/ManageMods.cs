@@ -1647,7 +1647,10 @@ namespace CKAN.GUI
                 new_conflicts = tuple.Item2.ToDictionary(
                     item => new GUIMod(item.Key, registry, gameVersion),
                     item => item.Value);
-                Main.Instance.AddStatusMessage(string.Join(";", new_conflicts.Values));
+                if (new_conflicts.Count > 0)
+                {
+                    Main.Instance.AddStatusMessage(string.Join(";", new_conflicts.Values));
+                }
             }
             catch (DependencyNotSatisfiedKraken k)
             {

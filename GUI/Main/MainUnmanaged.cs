@@ -7,18 +7,18 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private void viewPlayTimeStripMenuItem_Click(object sender, EventArgs e)
+        private void viewUnmanagedFilesStripMenuItem_Click(object sender, EventArgs e)
         {
-            PlayTime.loadAllPlayTime(manager);
-            tabController.ShowTab("PlayTimeTabPage", 2);
+            UnmanagedFiles.Refresh();
+            tabController.ShowTab("UnmanagedFilesTabPage", 2);
             DisableMainWindow();
         }
 
-        private void PlayTime_Done()
+        private void UnmanagedFiles_Done()
         {
             UpdateStatusBar();
             tabController.ShowTab("ManageModsTabPage");
-            tabController.HideTab("PlayTimeTabPage");
+            tabController.HideTab("UnmanagedFilesTabPage");
             EnableMainWindow();
         }
     }
