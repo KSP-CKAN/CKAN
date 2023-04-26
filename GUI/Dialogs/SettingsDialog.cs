@@ -204,7 +204,7 @@ namespace CKAN.GUI
                 SelectedPath        = config.DownloadCacheDir,
                 ShowNewFolderButton = true
             };
-            DialogResult result = cacheChooser.ShowDialog();
+            DialogResult result = cacheChooser.ShowDialog(this);
             if (result == DialogResult.OK)
             {
                 UpdateCacheInfo(cacheChooser.SelectedPath);
@@ -309,7 +309,7 @@ namespace CKAN.GUI
         private void NewRepoButton_Click(object sender, EventArgs e)
         {
             var dialog = new NewRepoDialog();
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 try
                 {
@@ -548,25 +548,21 @@ namespace CKAN.GUI
         private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             Main.Instance.configuration.CheckForUpdatesOnLaunch = CheckUpdateOnLaunchCheckbox.Checked;
-            Main.Instance.configuration.Save();
         }
 
         private void RefreshOnStartupCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             Main.Instance.configuration.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
-            Main.Instance.configuration.Save();
         }
 
         private void HideEpochsCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             Main.Instance.configuration.HideEpochs = HideEpochsCheckbox.Checked;
-            Main.Instance.configuration.Save();
         }
 
         private void HideVCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             Main.Instance.configuration.HideV = HideVCheckbox.Checked;
-            Main.Instance.configuration.Save();
         }
 
         private void LanguageSelectionComboBox_SelectionChanged(object sender, EventArgs e)
@@ -577,20 +573,17 @@ namespace CKAN.GUI
         private void AutoSortUpdateCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Main.Instance.configuration.AutoSortByUpdate = AutoSortUpdateCheckBox.Checked;
-            Main.Instance.configuration.Save();
         }
 
         private void EnableTrayIconCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             MinimizeToTrayCheckBox.Enabled = Main.Instance.configuration.EnableTrayIcon = EnableTrayIconCheckBox.Checked;
-            Main.Instance.configuration.Save();
             Main.Instance.CheckTrayState();
         }
 
         private void MinimizeToTrayCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Main.Instance.configuration.MinimizeToTray = MinimizeToTrayCheckBox.Checked;
-            Main.Instance.configuration.Save();
             Main.Instance.CheckTrayState();
         }
 
@@ -609,7 +602,6 @@ namespace CKAN.GUI
         private void PauseRefreshCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Main.Instance.configuration.RefreshPaused = PauseRefreshCheckBox.Checked;
-            Main.Instance.configuration.Save();
 
             if (Main.Instance.configuration.RefreshPaused)
                 Main.Instance.refreshTimer.Stop();

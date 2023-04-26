@@ -494,8 +494,17 @@ namespace CKAN.GUI.Properties {
         internal static string MainCantInstallDLC {
             get { return (string)(ResourceManager.GetObject("MainCantInstallDLC", resourceCulture)); }
         }
+        internal static string MainLoadingGameInstance {
+            get { return (string)(ResourceManager.GetObject("MainLoadingGameInstance", resourceCulture)); }
+        }
         internal static string MainCorruptedRegistry {
             get { return (string)(ResourceManager.GetObject("MainCorruptedRegistry", resourceCulture)); }
+        }
+        internal static string MainDeleteLockfileYes {
+            get { return (string)(ResourceManager.GetObject("MainDeleteLockfileYes", resourceCulture)); }
+        }
+        internal static string MainDeleteLockfileNo {
+            get { return (string)(ResourceManager.GetObject("MainDeleteLockfileNo", resourceCulture)); }
         }
 
         internal static string AllModVersionsInstallPrompt {

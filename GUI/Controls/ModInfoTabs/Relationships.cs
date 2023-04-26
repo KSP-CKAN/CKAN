@@ -73,7 +73,7 @@ namespace CKAN.GUI
         }
 
         private GUIMod              selectedModule;
-        private GameInstanceManager manager => Main.Instance.manager;
+        private GameInstanceManager manager => Main.Instance.Manager;
 
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {

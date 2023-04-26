@@ -1122,7 +1122,9 @@ namespace CKAN.GUI
         {
             log.Info("Updating the mod list");
 
-            Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingRegistry);
+            Main.Instance.Wait.AddLogMessage(Properties.Resources.MainRepoScanning);
+            Main.Instance.CurrentInstance.Scan();
+
             GameVersionCriteria versionCriteria = Main.Instance.CurrentInstance.VersionCriteria();
             IRegistryQuerier registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
 

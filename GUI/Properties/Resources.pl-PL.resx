@@ -386,6 +386,8 @@ Spróbuj przenieść {2} z {3} i uruchomić ponownie CKAN.</value>
 
 Oznacza to, że CKAN zapomniał o wszystkich zainstalowanych modyfikacjach, ale wciąż znajdują się w GameData. Możesz je ponownie zainstalować importując plik {2}.</value>
   </data>
+  <data name="MainDeleteLockfileYes" xml:space="preserve"><value>Wymuś</value></data>
+  <data name="MainDeleteLockfileNo" xml:space="preserve"><value>Anuluj</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve">
     <value>{0} nie jest obsługiwany w bieżącej wersji gry i może w ogóle nie działać. Jeśli masz jakieś problemy z nim, NIE powinieneś poprosić twórców o pomoc.
 

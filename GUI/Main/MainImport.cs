@@ -3,6 +3,9 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+// Don't warn if we use our own obsolete properties
+#pragma warning disable 0618
+
 namespace CKAN.GUI
 {
     public partial class Main
@@ -26,7 +29,7 @@ namespace CKAN.GUI
                 Filter           = Properties.Resources.MainImportFilter,
                 Multiselect      = true
             };
-            if (dlg.ShowDialog() == DialogResult.OK
+            if (dlg.ShowDialog(this) == DialogResult.OK
                     && dlg.FileNames.Length > 0)
             {
                 // Show WaitTabPage (status page) and lock it.

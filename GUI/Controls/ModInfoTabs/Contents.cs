@@ -41,7 +41,7 @@ namespace CKAN.GUI
 
         private GUIMod              selectedModule;
         private CkanModule          currentModContentsModule;
-        private GameInstanceManager manager => Main.Instance.manager;
+        private GameInstanceManager manager => Main.Instance.Manager;
 
         private void ContentsPreviewTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {

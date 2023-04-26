@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.32.1
 
+### Features
+
+- [GUI] Allow GUI users to delete registry lockfiles (#3829 by: HebaruSan; reviewed: techman83)
+
 ### Bugfixes
 
 - [GUI] Fix NRE on purging cache in GUI (#3810 by: HebaruSan; reviewed: techman83)

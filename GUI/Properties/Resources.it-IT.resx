@@ -386,6 +386,8 @@ Prova a spostare {2} da {3} e a riavviare CKAN.</value>
 
 Questo significa che CKAN si è dimenticato di tutte le tue mod installate, ma sono ancora presenti in GameData. Puoi reinstallarle importando il file {2}.</value>
   </data>
+  <data name="MainDeleteLockfileYes" xml:space="preserve"><value>Forza</value></data>
+  <data name="MainDeleteLockfileNo" xml:space="preserve"><value>Annulla</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve">
     <value>{0} non è supportato dalle versioni del gioco attualmente compatibili ({1}) e potrebbe non funzionare affatto. Se hai qualche problema, NON devi chiedere aiuto ai suoi manutentori.
 

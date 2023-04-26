@@ -185,7 +185,7 @@ namespace CKAN.ConsoleUI {
                 } catch (RegistryInUseKraken k) {
 
                     ConsoleMessageDialog md = new ConsoleMessageDialog(
-                        string.Format(Properties.Resources.InstanceListLocked, k.lockfilePath),
+                        k.ToString(),
                         new List<string>() {
                             Properties.Resources.Cancel,
                             Properties.Resources.Force

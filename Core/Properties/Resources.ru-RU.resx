@@ -267,10 +267,12 @@ https://github.com/KSP-CKAN/CKAN/wiki/SSL-certificate-errors</value></data>
   <data name="KrakenMissingCertificateNotUnix" xml:space="preserve"><value>О нет! Загрузка не завершена из-за ошибки сертификата!</value></data>
   <data name="KrakenDownloadThrottled" xml:space="preserve"><value>Загрузка из {0} была ограничена.
 Для увеличения квоты добавьте токен аутентификации.</value></data>
-  <data name="KrakenAlreadyRunning" xml:space="preserve"><value>CKAN уже запущен для этой сборки!
+  <data name="KrakenAlreadyRunning" xml:space="preserve"><value>Блокирующий файл с ID процесса найден в {0}
 
-Если вы уверены, что это не так, удалите:
-"{0}"</value></data>
+Это может означать, что другой процесс CKAN работает с этой сборкой.
+Вы можете удалить этот файл, но в таком случае вероятно повреждение данных.
+
+Хотите ли вы удалить блокирующий файл для получения доступа?</value></data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve"><value>{0} конфликтует с {1}</value></data>
   <data name="RelationshipResolverRequiredButResolver" xml:space="preserve"><value>Необходима {0}, но в ресольвере несовместимая версия</value></data>
   <data name="RelationshipResolverRequiredButInstalled" xml:space="preserve"><value>Необходима {0}, но установлена несовместимая версия</value></data>

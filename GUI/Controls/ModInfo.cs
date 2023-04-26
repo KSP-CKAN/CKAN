@@ -94,7 +94,7 @@ namespace CKAN.GUI
             LoadTab(ModInfoTabControl.SelectedTab.Name, SelectedModule);
         }
 
-        private GameInstanceManager manager => Main.Instance.manager;
+        private GameInstanceManager manager => Main.Instance.Manager;
 
         private int StringHeight(string text, Font font, int maxWidth)
             => (int)CreateGraphics().MeasureString(text, font, maxWidth).Height;

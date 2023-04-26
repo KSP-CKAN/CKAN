@@ -9,9 +9,14 @@ namespace CKAN.GUI
         private PluginsDialog pluginsDialog;
         private YesNoDialog yesNoDialog;
         private SelectionDialog selectionDialog;
+        public ControlFactory controlFactory;
 
         public void RecreateDialogs()
         {
+            if (controlFactory == null)
+            {
+                controlFactory = new ControlFactory();
+            }
             errorDialog = controlFactory.CreateControl<ErrorDialog>();
             pluginsDialog = controlFactory.CreateControl<PluginsDialog>();
             yesNoDialog = controlFactory.CreateControl<YesNoDialog>();

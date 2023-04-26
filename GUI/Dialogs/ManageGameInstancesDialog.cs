@@ -156,7 +156,7 @@ namespace CKAN.GUI
 
         private void AddToCKANMenuItem_Click(object sender, EventArgs e)
         {
-            if (_instanceDialog.ShowDialog() != DialogResult.OK
+            if (_instanceDialog.ShowDialog(this) != DialogResult.OK
                     || !File.Exists(_instanceDialog.FileName))
                 return;
 
@@ -187,7 +187,7 @@ namespace CKAN.GUI
         {
             var old_instance = Main.Instance.CurrentInstance;
 
-            var result = new CloneFakeGameDialog(_manager, _user).ShowDialog();
+            var result = new CloneFakeGameDialog(_manager, _user).ShowDialog(this);
             if (result == DialogResult.OK && !Equals(old_instance, Main.Instance.CurrentInstance))
             {
                 DialogResult = DialogResult.OK;

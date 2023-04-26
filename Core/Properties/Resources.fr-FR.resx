@@ -552,10 +552,11 @@ Consultez cette page pour obtenir de l'aide :
 Pensez à ajouter un jeton d'authentification pour augmenter la limite avant bridage.</value>
   </data>
   <data name="KrakenAlreadyRunning" xml:space="preserve">
-    <value>CKAN est déjà lancé pour cette instance !
+    <value>Fichier verrou avec un ID de processus actif à {0}
 
-Si vous êtes certain que ce n'est pas le cas, alors supprimez :
-"{0}"</value>
+Cela veut probablement dire qu'une autre instance de CKAN s'occupe de cette instance. Vous pouvez supprimer ce fichier pour continuer, mais cela risque fortement de corrompre des données.
+
+Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
   </data>
   <data name="NotEnoughSpaceToDownload" xml:space="preserve">
     <value>Pas assez d'espace dans le dossier temporaire pour télécharger les modules !</value>

@@ -552,10 +552,11 @@ Odwiedź tę stronę, aby uzyskać pomoc:
 Rozważ dodanie tokenu uwierzytelniającego, aby zwiększyć limit ograniczania.</value>
   </data>
   <data name="KrakenAlreadyRunning" xml:space="preserve">
-    <value>CKAN jest już uruchomiony z tą instalacją gry!
+    <value>Plik blokady znaleziony w {0}
 
-Jeśli jesteś pewien, że tak nie jest, to usuń:
-"{0}"</value>
+Oznacza to, że inna instancja CKAN prawdopodobnie ma dostęp do tej instalacji gry. Możesz usunąć plik, aby kontynuować, ale uszkodzenie danych jest bardzo prawdopodobne.
+
+Czy chcesz usunąć ten plik blokady, aby wymusić dostęp?</value>
   </data>
   <data name="NotEnoughSpaceToDownload" xml:space="preserve">
     <value>Za mało miejsca w folderze tymczasowym do pobrania modułów!</value>

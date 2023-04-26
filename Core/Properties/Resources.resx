@@ -271,10 +271,12 @@ Consult this page for help:
   <data name="KrakenMissingCertificateNotUnix" xml:space="preserve"><value>Oh no! Our download failed with a certificate error!</value></data>
   <data name="KrakenDownloadThrottled" xml:space="preserve"><value>Download from {0} was throttled.
 Consider adding an authentication token to increase the throttling limit.</value></data>
-  <data name="KrakenAlreadyRunning" xml:space="preserve"><value>CKAN is already running for this instance!
+  <data name="KrakenAlreadyRunning" xml:space="preserve"><value>Lock file with live process ID found at:
+{0}
 
-If you're certain this is not the case, then delete:
-"{0}"</value></data>
+Another active CKAN process probably is accessing this game folder. Check your operating system's task manager application. If you are sure the lock file is stale, you may delete it to continue, but if it's not, then it's very likely that the two running CKANs will clash and corrupt your mod registry and game folder.
+
+Do you want to delete this lock file to force access?</value></data>
   <data name="NotEnoughSpaceToDownload" xml:space="preserve"><value>Not enough space in temp folder to download modules!</value></data>
   <data name="NotEnoughSpaceToCache" xml:space="preserve"><value>Not enough space in cache folder to store modules!</value></data>
   <data name="NotEnoughSpaceToInstall" xml:space="preserve"><value>Not enough space in game folder to install modules!</value></data>
