@@ -78,6 +78,8 @@
             this.ChooseRecommendedMods = new CKAN.GUI.ChooseRecommendedMods();
             this.PlayTimeTabPage = new System.Windows.Forms.TabPage();
             this.PlayTime = new CKAN.GUI.PlayTime();
+            this.UnmanagedFilesTabPage = new System.Windows.Forms.TabPage();
+            this.UnmanagedFiles = new CKAN.GUI.UnmanagedFiles();
             this.ChooseProvidedModsTabPage = new System.Windows.Forms.TabPage();
             this.ChooseProvidedMods = new CKAN.GUI.ChooseProvidedMods();
             this.minimizeNotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
@@ -96,6 +98,7 @@
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewPlayTimeStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewUnmanagedFilesStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteDirectoriesTabPage = new System.Windows.Forms.TabPage();
             this.DeleteDirectories = new CKAN.GUI.DeleteDirectories();
             this.EditModpackTabPage = new System.Windows.Forms.TabPage();
@@ -114,6 +117,8 @@
             this.ChooseProvidedModsTabPage.SuspendLayout();
             this.PlayTimeTabPage.SuspendLayout();
             this.PlayTime.SuspendLayout();
+            this.UnmanagedFilesTabPage.SuspendLayout();
+            this.UnmanagedFiles.SuspendLayout();
             this.minimizedContextMenuStrip.SuspendLayout();
             this.DeleteDirectoriesTabPage.SuspendLayout();
             this.EditModpackTabPage.SuspendLayout();
@@ -148,6 +153,7 @@
             this.auditRecommendationsMenuItem,
             this.toolStripSeparator7,
             this.viewPlayTimeStripMenuItem,
+            this.viewUnmanagedFilesStripMenuItem,
             this.toolStripSeparator8,
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -419,6 +425,7 @@
             this.MainTabControl.Controls.Add(this.WaitTabPage);
             this.MainTabControl.Controls.Add(this.ChooseRecommendedModsTabPage);
             this.MainTabControl.Controls.Add(this.PlayTimeTabPage);
+            this.MainTabControl.Controls.Add(this.UnmanagedFilesTabPage);
             this.MainTabControl.Controls.Add(this.ChooseProvidedModsTabPage);
             this.MainTabControl.Controls.Add(this.DeleteDirectoriesTabPage);
             this.MainTabControl.Controls.Add(this.EditModpackTabPage);
@@ -553,6 +560,29 @@
             this.PlayTime.Size = new System.Drawing.Size(500, 500);
             this.PlayTime.TabIndex = 32;
             this.PlayTime.Done += PlayTime_Done;
+            //
+            // UnmanagedFilesTabPage
+            //
+            this.UnmanagedFilesTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.UnmanagedFilesTabPage.Controls.Add(this.UnmanagedFiles);
+            this.UnmanagedFilesTabPage.Location = new System.Drawing.Point(4, 29);
+            this.UnmanagedFilesTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.UnmanagedFilesTabPage.Name = "UnmanagedFilesTabPage";
+            this.UnmanagedFilesTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.UnmanagedFilesTabPage.Size = new System.Drawing.Size(1536, 948);
+            this.UnmanagedFilesTabPage.TabIndex = 24;
+            resources.ApplyResources(this.UnmanagedFilesTabPage, "UnmanagedFilesTabPage");
+            //
+            // UnmanagedFiles
+            //
+            this.UnmanagedFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.UnmanagedFiles.Location = new System.Drawing.Point(0, 0);
+            this.UnmanagedFiles.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.UnmanagedFiles.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.UnmanagedFiles.Name = "UnmanagedFiles";
+            this.UnmanagedFiles.Size = new System.Drawing.Size(500, 500);
+            this.UnmanagedFiles.TabIndex = 32;
+            this.UnmanagedFiles.Done += UnmanagedFiles_Done;
             //
             // ChooseProvidedModsTabPage
             //
@@ -726,6 +756,13 @@
             this.viewPlayTimeStripMenuItem.Click += new System.EventHandler(this.viewPlayTimeStripMenuItem_Click);
             resources.ApplyResources(this.viewPlayTimeStripMenuItem, "viewPlayTimeStripMenuItem");
             //
+            // viewUnmanagedFilesStripMenuItem
+            //
+            this.viewUnmanagedFilesStripMenuItem.Name = "viewUnmanagedFilesStripMenuItem";
+            this.viewUnmanagedFilesStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewUnmanagedFilesStripMenuItem.Click += new System.EventHandler(this.viewUnmanagedFilesStripMenuItem_Click);
+            resources.ApplyResources(this.viewUnmanagedFilesStripMenuItem, "viewUnmanagedFilesStripMenuItem");
+            //
             // Main
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -766,6 +803,10 @@
             this.PlayTimeTabPage.PerformLayout();
             this.PlayTime.ResumeLayout(false);
             this.PlayTime.PerformLayout();
+            this.UnmanagedFilesTabPage.ResumeLayout(false);
+            this.UnmanagedFilesTabPage.PerformLayout();
+            this.UnmanagedFiles.ResumeLayout(false);
+            this.UnmanagedFiles.PerformLayout();
             this.DeleteDirectoriesTabPage.ResumeLayout(false);
             this.DeleteDirectoriesTabPage.PerformLayout();
             this.EditModpackTabPage.ResumeLayout(false);
@@ -826,6 +867,8 @@
         private CKAN.GUI.ChooseRecommendedMods ChooseRecommendedMods;
         private System.Windows.Forms.TabPage PlayTimeTabPage;
         private CKAN.GUI.PlayTime PlayTime;
+        private System.Windows.Forms.TabPage UnmanagedFilesTabPage;
+        private CKAN.GUI.UnmanagedFiles UnmanagedFiles;
         private System.Windows.Forms.TabPage ChooseProvidedModsTabPage;
         private CKAN.GUI.ChooseProvidedMods ChooseProvidedMods;
         private System.Windows.Forms.TabPage DeleteDirectoriesTabPage;
@@ -848,5 +891,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewPlayTimeStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewUnmanagedFilesStripMenuItem;
     }
 }

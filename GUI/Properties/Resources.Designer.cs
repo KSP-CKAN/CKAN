@@ -237,6 +237,46 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap expandAll {
+            get {
+                object obj = ResourceManager.GetObject("expandAll", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap collapseAll {
+            get {
+                object obj = ResourceManager.GetObject("collapseAll", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap resetCollapse {
+            get {
+                object obj = ResourceManager.GetObject("resetCollapse", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap delete {
+            get {
+                object obj = ResourceManager.GetObject("delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap smile {
             get {
                 object obj = ResourceManager.GetObject("smile", resourceCulture);
@@ -1158,6 +1198,19 @@ namespace CKAN.GUI.Properties {
         }
         public static string FilterLinkToolTip {
             get { return (string)(ResourceManager.GetObject("FilterLinkToolTip", resourceCulture)); }
+        }
+
+        public static string FolderContainsManagedFiles {
+            get { return (string)(ResourceManager.GetObject("FolderContainsManagedFiles", resourceCulture)); }
+        }
+        public static string DeleteUnmanagedFileConfirmation {
+            get { return (string)(ResourceManager.GetObject("DeleteUnmanagedFileConfirmation", resourceCulture)); }
+        }
+        internal static string DeleteUnmanagedFileDelete {
+            get { return (string)(ResourceManager.GetObject("DeleteUnmanagedFileDelete", resourceCulture)); }
+        }
+        internal static string DeleteUnmanagedFileCancel {
+            get { return (string)(ResourceManager.GetObject("DeleteUnmanagedFileCancel", resourceCulture)); }
         }
     }
 }

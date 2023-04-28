@@ -14,9 +14,7 @@ namespace CKAN.Games
         public string ShortName => "KSP";
 
         public bool GameInFolder(DirectoryInfo where)
-        {
-            return Directory.Exists(Path.Combine(where.FullName, "GameData"));
-        }
+            => Directory.Exists(Path.Combine(where.FullName, "GameData"));
 
         /// <summary>
         /// Finds the Steam KSP path. Returns null if the folder cannot be located.
@@ -96,15 +94,19 @@ namespace CKAN.Games
         public string PrimaryModDirectoryRelative => "GameData";
 
         public string PrimaryModDirectory(GameInstance inst)
-        {
-            return CKANPathUtils.NormalizePath(
+            => CKANPathUtils.NormalizePath(
                 Path.Combine(inst.GameDir(), PrimaryModDirectoryRelative));
-        }
 
         public string[] StockFolders => new string[]
         {
             "GameData/Squad",
-            "GameData/SquadExpansion"
+            "GameData/SquadExpansion",
+            "KSP_Data",
+            "KSP_x64_Data",
+            "KSPLauncher_Data",
+            "Launcher_Data",
+            "MonoBleedingEdge",
+            "PDLauncher",
         };
 
         public string[] ReservedPaths => new string[]
@@ -123,21 +125,17 @@ namespace CKAN.Games
         /// <param name="path"></param>
         /// <returns></returns>
         public bool IsReservedDirectory(GameInstance inst, string path)
-        {
-            return path == inst.GameDir() || path == inst.CkanDir()
-                || path == PrimaryModDirectory(inst)
-                || path == Missions(inst)
-                || path == Scenarios(inst) || path == Tutorial(inst)
-                || path == Ships(inst)     || path == ShipsThumbs(inst)
-                || path == ShipsVab(inst)  || path == ShipsThumbsVAB(inst)
-                || path == ShipsSph(inst)  || path == ShipsThumbsSPH(inst)
-                || path == ShipsScript(inst);
-        }
+            => path == inst.GameDir() || path == inst.CkanDir()
+            || path == PrimaryModDirectory(inst)
+            || path == Missions(inst)
+            || path == Scenarios(inst) || path == Tutorial(inst)
+            || path == Ships(inst)     || path == ShipsThumbs(inst)
+            || path == ShipsVab(inst)  || path == ShipsThumbsVAB(inst)
+            || path == ShipsSph(inst)  || path == ShipsThumbsSPH(inst)
+            || path == ShipsScript(inst);
 
         public bool AllowInstallationIn(string name, out string path)
-        {
-            return allowedFolders.TryGetValue(name, out path);
-        }
+            => allowedFolders.TryGetValue(name, out path);
 
         public void RebuildSubdirectories(string absGameRoot)
         {
@@ -218,64 +216,34 @@ namespace CKAN.Games
         public Uri RepositoryListURL => new Uri("https://raw.githubusercontent.com/KSP-CKAN/CKAN-meta/master/repositories.json");
 
         private string Missions(GameInstance inst)
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(inst.GameDir(), "Missions"));
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "Missions"));
 
         private string Ships(GameInstance inst)
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(inst.GameDir(), "Ships"));
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "Ships"));
 
         private string ShipsVab(GameInstance inst)
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(Ships(inst), "VAB"));
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(Ships(inst), "VAB"));
 
         private string ShipsSph(GameInstance inst)
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(Ships(inst), "SPH"));
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(Ships(inst), "SPH"));
 
         private string ShipsThumbs(GameInstance inst)
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(Ships(inst), "@thumbs"));
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(Ships(inst), "@thumbs"));
 
         private string ShipsThumbsSPH(GameInstance inst)
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(ShipsThumbs(inst), "SPH"));
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(ShipsThumbs(inst), "SPH"));
 
         private string ShipsThumbsVAB(GameInstance inst)
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(ShipsThumbs(inst), "VAB"));
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(ShipsThumbs(inst), "VAB"));
 
         private string ShipsScript(GameInstance inst)
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(Ships(inst), "Script"));
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(Ships(inst), "Script"));
 
         private string Tutorial(GameInstance inst)
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(inst.GameDir(), "saves", "training"));
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "saves", "training"));
 
         private string Scenarios(GameInstance inst)
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(inst.GameDir(), "saves", "scenarios"));
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "saves", "scenarios"));
 
         private readonly Dictionary<string, string> allowedFolders = new Dictionary<string, string>
         {

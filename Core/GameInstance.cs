@@ -180,14 +180,10 @@ namespace CKAN
         }
 
         private string CompatibleGameVersionsFile()
-        {
-            return Path.Combine(CkanDir(), game.CompatibleVersionsFile);
-        }
+            => Path.Combine(CkanDir(), game.CompatibleVersionsFile);
 
         public List<GameVersion> GetCompatibleVersions()
-        {
-            return new List<GameVersion>(this._compatibleVersions);
-        }
+            => new List<GameVersion>(this._compatibleVersions);
 
         public HashSet<string> GetSuppressedCompatWarningIdentifiers =>
             SuppressedCompatWarningIdentifiers.LoadFrom(Version(), SuppressedCompatWarningIdentifiersFile).Identifiers;
@@ -204,12 +200,9 @@ namespace CKAN
 
         public string[] InstallFilters
         {
-            get
-            {
-                return File.Exists(InstallFiltersFile)
+            get => File.Exists(InstallFiltersFile)
                     ? JsonConvert.DeserializeObject<string[]>(File.ReadAllText(InstallFiltersFile))
                     : new string[] { };
-            }
 
             set
             {
@@ -322,9 +315,7 @@ namespace CKAN
         #region Things which would be better as Properties
 
         public string GameDir()
-        {
-            return gameDir;
-        }
+            => gameDir;
 
         public string CkanDir()
         {
@@ -338,24 +329,13 @@ namespace CKAN
         }
 
         public string DownloadCacheDir()
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(CkanDir(), "downloads"));
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(CkanDir(), "downloads"));
 
         public string InstallHistoryDir()
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(CkanDir(), "history")
-            );
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(CkanDir(), "history"));
 
         public string TempDir()
-        {
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(CkanDir(), "temp")
-            );
-        }
+            => CKANPathUtils.NormalizePath(Path.Combine(CkanDir(), "temp"));
 
         public GameVersion Version()
         {
@@ -367,9 +347,7 @@ namespace CKAN
         }
 
         public GameVersionCriteria VersionCriteria()
-        {
-            return new GameVersionCriteria(Version(), _compatibleVersions);
-        }
+            => new GameVersionCriteria(Version(), _compatibleVersions);
 
         #endregion
 
@@ -439,18 +417,14 @@ namespace CKAN
         /// Returns path relative to this KSP's GameDir.
         /// </summary>
         public string ToRelativeGameDir(string path)
-        {
-            return CKANPathUtils.ToRelative(path, GameDir());
-        }
+            => CKANPathUtils.ToRelative(path, GameDir());
 
         /// <summary>
         /// Given a path relative to this KSP's GameDir, returns the
         /// absolute path on the system.
         /// </summary>
         public string ToAbsoluteGameDir(string path)
-        {
-            return CKANPathUtils.ToAbsolute(path, GameDir());
-        }
+            => CKANPathUtils.ToAbsolute(path, GameDir());
 
         /// <summary>
         /// https://xkcd.com/208/
@@ -485,25 +459,42 @@ namespace CKAN
                 : null;
         }
 
+        /// <summary>
+        /// Generate a sequence of files in the game folder that weren't installed by CKAN
+        /// </summary>
+        /// <param name="registry">A Registry object that knows which files CKAN installed in this folder</param>
+        /// <returns>Relative file paths as strings</returns>
+        public IEnumerable<string> UnmanagedFiles(Registry registry)
+            => Directory.EnumerateFiles(gameDir, "*", SearchOption.AllDirectories)
+                        .Select(CKANPathUtils.NormalizePath)
+                        .Where(absPath => !absPath.StartsWith(CkanDir()))
+                        .Select(ToRelativeGameDir)
+                        .Where(relPath =>
+                            !game.StockFolders.Any(f => relPath.StartsWith($"{f}/"))
+                            && registry.FileOwner(relPath) == null);
+
+        /// <summary>
+        /// Check whether a given path contains any files or folders installed by CKAN
+        /// </summary>
+        /// <param name="registry">A Registry object that knows which files CKAN installed in this folder</param>
+        /// <param name="absPath">Absolute path to a folder to check</param>
+        /// <returns>true if any descendants of given path were installed by CKAN, false otherwise</returns>
+        public bool HasManagedFiles(Registry registry, string absPath)
+            => registry.FileOwner(ToRelativeGameDir(absPath)) != null
+               || Directory.EnumerateFileSystemEntries(absPath, "*", SearchOption.AllDirectories)
+                           .Any(f => registry.FileOwner(ToRelativeGameDir(f)) != null);
+
         public override string ToString()
-        {
-            return string.Format(Properties.Resources.GameInstanceToString, game.ShortName, gameDir);
-        }
+            => string.Format(Properties.Resources.GameInstanceToString, game.ShortName, gameDir);
 
         public bool Equals(GameInstance other)
-        {
-            return other != null && gameDir.Equals(other.GameDir());
-        }
+            => other != null && gameDir.Equals(other.GameDir());
 
         public override bool Equals(object obj)
-        {
-            return Equals(obj as GameInstance);
-        }
+            => Equals(obj as GameInstance);
 
         public override int GetHashCode()
-        {
-            return gameDir.GetHashCode();
-        }
+            => gameDir.GetHashCode();
     }
 
 }

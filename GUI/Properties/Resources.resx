@@ -130,6 +130,10 @@
   <data name="update" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\update.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="backward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\backward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="filter" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\filter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="expandAll" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\expandAll.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="collapseAll" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\collapseAll.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="resetCollapse" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\resetCollapse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
+  <data name="delete" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="forward" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="textClear" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\textClear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
   <data name="star" type="System.Resources.ResXFileRef, System.Windows.Forms"><value>..\Resources\star.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value></data>
@@ -466,4 +470,10 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="AuthorSearchName"><value>Mods by {0}</value></data>
   <data name="FilterLinkToolTip"><value>Click to search
 Ctrl-click or Shift-click to combine with current search</value></data>
+  <data name="FolderContainsManagedFiles"><value>Can't delete {0} because it contains files that were installed by CKAN.
+If you wish to remove this folder, uninstall these mods normally.</value></data>
+  <data name="DeleteUnmanagedFileConfirmation"><value>Are you sure you want to delete {0}?
+This action cannot be undone!</value></data>
+  <data name="DeleteUnmanagedFileDelete" xml:space="preserve"><value>Delete</value></data>
+  <data name="DeleteUnmanagedFileCancel" xml:space="preserve"><value>Cancel</value></data>
 </root>
