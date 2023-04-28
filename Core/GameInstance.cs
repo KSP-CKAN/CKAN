@@ -122,20 +122,6 @@ namespace CKAN
                 User.RaiseMessage(Properties.Resources.GameInstanceCreatingDir, InstallHistoryDir());
                 txFileMgr.CreateDirectory(InstallHistoryDir());
             }
-
-            // Clear any temporary files we find. If the directory
-            // doesn't exist, then no sweat; FilesystemTransaction
-            // will auto-create it as needed.
-            // Create our temporary directories, or clear them if they
-            // already exist.
-            if (Directory.Exists(TempDir()))
-            {
-                var directory = new DirectoryInfo(TempDir());
-                foreach (FileInfo file in directory.GetFiles())
-                    txFileMgr.Delete(file.FullName);
-                foreach (DirectoryInfo subDirectory in directory.GetDirectories())
-                    txFileMgr.DeleteDirectory(subDirectory.FullName);
-            }
             log.InfoFormat("Initialised {0}", CkanDir());
         }
 
@@ -334,8 +320,6 @@ namespace CKAN
         public string InstallHistoryDir()
             => CKANPathUtils.NormalizePath(Path.Combine(CkanDir(), "history"));
 
-        public string TempDir()
-            => CKANPathUtils.NormalizePath(Path.Combine(CkanDir(), "temp"));
 
         public GameVersion Version()
         {
