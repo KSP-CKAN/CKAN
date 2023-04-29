@@ -1133,20 +1133,20 @@ namespace CKAN.GUI
             gui_mods.UnionWith(
                 registry.InstalledModules
                     .Where(instMod => !instMod.Module.IsDLC)
-                    .Select(instMod => new GUIMod(instMod, registry, versionCriteria))
-            );
+                    .Select(instMod => new GUIMod(instMod, registry, versionCriteria, null,
+                        Main.Instance.configuration.HideEpochs, Main.Instance.configuration.HideV)));
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingAvailable);
             gui_mods.UnionWith(
                 registry.CompatibleModules(versionCriteria)
                     .Where(m => !m.IsDLC)
-                    .Select(m => new GUIMod(m, registry, versionCriteria))
-            );
+                    .Select(m => new GUIMod(m, registry, versionCriteria, null,
+                        Main.Instance.configuration.HideEpochs, Main.Instance.configuration.HideV)));
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingIncompatible);
             gui_mods.UnionWith(
                 registry.IncompatibleModules(versionCriteria)
                     .Where(m => !m.IsDLC)
-                    .Select(m => new GUIMod(m, registry, versionCriteria, true))
-            );
+                    .Select(m => new GUIMod(m, registry, versionCriteria, true,
+                        Main.Instance.configuration.HideEpochs, Main.Instance.configuration.HideV)));
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListPreservingNew);
             var toNotify = new HashSet<GUIMod>();
@@ -1187,7 +1187,7 @@ namespace CKAN.GUI
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListPopulatingList);
             // Update our mod listing
-            mainModList.ConstructModList(gui_mods.ToList(), Main.Instance.CurrentInstance.Name, ChangeSet, Main.Instance.configuration.HideEpochs, Main.Instance.configuration.HideV);
+            mainModList.ConstructModList(gui_mods.ToList(), Main.Instance.CurrentInstance.Name, ChangeSet);
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 

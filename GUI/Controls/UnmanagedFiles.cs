@@ -23,13 +23,21 @@ namespace CKAN.GUI
         {
             this.inst = inst;
             this.registry = RegistryManager.Instance(inst).registry;
-            Util.Invoke(GameFolderTree, _UpdateGameFolderTree);
+            Util.Invoke(this, _UpdateGameFolderTree);
         }
 
         /// <summary>
         /// Invoked when the user clicks OK
         /// </summary>
         public event Action Done;
+
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.UnmanagedFiles);
+        }
 
         private void _UpdateGameFolderTree()
         {

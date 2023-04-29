@@ -292,22 +292,19 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="modules">A list of modules that may require updating</param>
         /// <param name="mc">Changes the user has made</param>
-        /// <param name="hideEpochs">If true, remove epochs from the displayed versions</param>
-        /// <param name="hideV">If true, strip 'v' prefix from versions</param>
         /// <returns>The mod list</returns>
         public IEnumerable<DataGridViewRow> ConstructModList(
-            IEnumerable<GUIMod> modules, string instanceName, IEnumerable<ModChange> mc = null,
-            bool hideEpochs = false, bool hideV = false)
+            IEnumerable<GUIMod> modules, string instanceName, IEnumerable<ModChange> mc = null)
         {
             List<ModChange> changes = mc?.ToList();
             full_list_of_mod_rows = modules.ToDictionary(
                 gm => gm.Identifier,
-                gm => MakeRow(gm, changes, instanceName, hideEpochs, hideV)
+                gm => MakeRow(gm, changes, instanceName)
             );
             return full_list_of_mod_rows.Values;
         }
 
-        private DataGridViewRow MakeRow(GUIMod mod, List<ModChange> changes, string instanceName, bool hideEpochs = false, bool hideV = false)
+        private DataGridViewRow MakeRow(GUIMod mod, List<ModChange> changes, string instanceName)
         {
             DataGridViewRow item = new DataGridViewRow() {Tag = mod};
 
@@ -378,23 +375,12 @@ namespace CKAN.GUI
 
             var installVersion = new DataGridViewTextBoxCell()
             {
-                Value = hideEpochs
-                    ? (hideV
-                        ? ModuleInstaller.StripEpoch(ModuleInstaller.StripV(mod.InstalledVersion ?? ""))
-                        : ModuleInstaller.StripEpoch(mod.InstalledVersion ?? ""))
-                    : (hideV
-                        ? ModuleInstaller.StripV(mod.InstalledVersion ?? "")
-                        : mod.InstalledVersion ?? "")
+                Value = mod.InstalledVersion
             };
 
             var latestVersion = new DataGridViewTextBoxCell()
             {
-                Value =
-                    hideEpochs ?
-                        (hideV ? ModuleInstaller.StripEpoch(ModuleInstaller.StripV(mod.LatestVersion))
-                        : ModuleInstaller.StripEpoch(mod.LatestVersion))
-                    : (hideV ? ModuleInstaller.StripV(mod.LatestVersion)
-                        : mod.LatestVersion)
+                Value = mod.LatestVersion
             };
 
             var downloadCount = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"       };

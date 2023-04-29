@@ -731,8 +731,9 @@ namespace CKAN.GUI
             ActiveModInfo = module == null ? null : new GUIMod(
                 module,
                 RegistryManager.Instance(CurrentInstance).registry,
-                CurrentInstance.VersionCriteria()
-            );
+                CurrentInstance.VersionCriteria(),
+                configuration.HideEpochs,
+                configuration.HideV);
         }
 
         private void ManageMods_OnChangeSetChanged(List<ModChange> changeset, Dictionary<GUIMod, string> conflicts)

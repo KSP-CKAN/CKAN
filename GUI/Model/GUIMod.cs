@@ -112,15 +112,11 @@ namespace CKAN.GUI
         /// otherwise false.
         /// </returns>
         public bool IsInstallable()
-        {
-            // Compatible mods are installable, but so are mods that are already installed
-            return !IsIncompatible || IsInstalled;
-        }
+           // Compatible mods are installable, but so are mods that are already installed
+           => !IsIncompatible || IsInstalled;
 
         public string Version
-        {
-            get { return IsInstalled ? InstalledVersion : LatestVersion; }
-        }
+            => IsInstalled ? InstalledVersion : LatestVersion;
 
         /// <summary>
         /// Initialize a GUIMod based on an InstalledModule
@@ -129,8 +125,8 @@ namespace CKAN.GUI
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="current_game_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(InstalledModule instMod, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null)
-            : this(instMod.Module, registry, current_game_version, incompatible)
+        public GUIMod(InstalledModule instMod, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null, bool hideEpochs = false, bool hideV = false)
+            : this(instMod.Module, registry, current_game_version, incompatible, hideEpochs, hideV)
         {
             IsInstalled      = true;
             IsInstallChecked = true;
@@ -139,7 +135,8 @@ namespace CKAN.GUI
                                ?? instMod.Module;
             IsAutoInstalled  = instMod.AutoInstalled;
             InstallDate      = instMod.InstallTime;
-            InstalledVersion = instMod.Module.version.ToString();
+
+            InstalledVersion = instMod.Module.version.ToString(hideEpochs, hideV);
             if (LatestVersion == null || LatestVersion.Equals("-"))
             {
                 LatestVersion = InstalledVersion;
@@ -155,8 +152,8 @@ namespace CKAN.GUI
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="current_game_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(CkanModule mod, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null)
-            : this(mod.identifier, registry, current_game_version, incompatible)
+        public GUIMod(CkanModule mod, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null, bool hideEpochs = false, bool hideV = false)
+            : this(mod.identifier, registry, current_game_version, incompatible, hideEpochs, hideV)
         {
             Mod           = mod;
             IsCKAN        = mod is CkanModule;
@@ -200,7 +197,7 @@ namespace CKAN.GUI
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="current_game_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(string identifier, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null)
+        public GUIMod(string identifier, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null, bool hideEpochs = false, bool hideV = false)
         {
             Identifier     = identifier;
             IsAutodetected = registry.IsAutodetected(identifier);
@@ -246,11 +243,11 @@ namespace CKAN.GUI
 
             if (latest_version != null)
             {
-                LatestVersion = latest_version.ToString();
+                LatestVersion = latest_version.ToString(hideEpochs, hideV);
             }
             else if (latest_available_for_any_ksp != null)
             {
-                LatestVersion = latest_available_for_any_ksp.version.ToString();
+                LatestVersion = latest_available_for_any_ksp.version.ToString(hideEpochs, hideV);
             }
             else
             {
