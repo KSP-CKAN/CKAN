@@ -19,6 +19,7 @@ namespace CKAN
         public const string PlayTime = "https://github.com/KSP-CKAN/CKAN/pull/3543";
         public const string DownloadsFailed = "https://github.com/KSP-CKAN/CKAN/pull/3635";
         public const string UnmanagedFiles = "https://github.com/KSP-CKAN/CKAN/pull/3833";
+        public const string InstallationHistory = "https://github.com/KSP-CKAN/CKAN/pull/3834";
 
         public const string Discord = "https://discord.gg/Mb4nXQD";
     }

@@ -320,6 +320,10 @@ namespace CKAN
         public string InstallHistoryDir()
             => CKANPathUtils.NormalizePath(Path.Combine(CkanDir(), "history"));
 
+        public IOrderedEnumerable<FileInfo> InstallHistoryFiles()
+            => Directory.EnumerateFiles(InstallHistoryDir(), "*.ckan")
+                        .Select(f => new FileInfo(f))
+                        .OrderByDescending(fi => fi.CreationTime);
 
         public GameVersion Version()
         {

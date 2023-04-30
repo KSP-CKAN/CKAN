@@ -80,6 +80,8 @@
             this.PlayTime = new CKAN.GUI.PlayTime();
             this.UnmanagedFilesTabPage = new System.Windows.Forms.TabPage();
             this.UnmanagedFiles = new CKAN.GUI.UnmanagedFiles();
+            this.InstallationHistoryTabPage = new System.Windows.Forms.TabPage();
+            this.InstallationHistory = new CKAN.GUI.InstallationHistory();
             this.ChooseProvidedModsTabPage = new System.Windows.Forms.TabPage();
             this.ChooseProvidedMods = new CKAN.GUI.ChooseProvidedMods();
             this.minimizeNotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
@@ -99,6 +101,7 @@
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewPlayTimeStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewUnmanagedFilesStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.installationHistoryStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteDirectoriesTabPage = new System.Windows.Forms.TabPage();
             this.DeleteDirectories = new CKAN.GUI.DeleteDirectories();
             this.EditModpackTabPage = new System.Windows.Forms.TabPage();
@@ -119,6 +122,8 @@
             this.PlayTime.SuspendLayout();
             this.UnmanagedFilesTabPage.SuspendLayout();
             this.UnmanagedFiles.SuspendLayout();
+            this.InstallationHistoryTabPage.SuspendLayout();
+            this.InstallationHistory.SuspendLayout();
             this.minimizedContextMenuStrip.SuspendLayout();
             this.DeleteDirectoriesTabPage.SuspendLayout();
             this.EditModpackTabPage.SuspendLayout();
@@ -144,6 +149,7 @@
             this.manageGameInstancesMenuItem,
             this.openGameDirectoryToolStripMenuItem,
             this.toolStripSeparator1,
+            this.installationHistoryStripMenuItem,
             this.installFromckanToolStripMenuItem,
             this.importDownloadsToolStripMenuItem,
             this.toolStripSeparator2,
@@ -426,6 +432,7 @@
             this.MainTabControl.Controls.Add(this.ChooseRecommendedModsTabPage);
             this.MainTabControl.Controls.Add(this.PlayTimeTabPage);
             this.MainTabControl.Controls.Add(this.UnmanagedFilesTabPage);
+            this.MainTabControl.Controls.Add(this.InstallationHistoryTabPage);
             this.MainTabControl.Controls.Add(this.ChooseProvidedModsTabPage);
             this.MainTabControl.Controls.Add(this.DeleteDirectoriesTabPage);
             this.MainTabControl.Controls.Add(this.EditModpackTabPage);
@@ -583,6 +590,31 @@
             this.UnmanagedFiles.Size = new System.Drawing.Size(500, 500);
             this.UnmanagedFiles.TabIndex = 32;
             this.UnmanagedFiles.Done += UnmanagedFiles_Done;
+            //
+            // InstallationHistoryTabPage
+            //
+            this.InstallationHistoryTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.InstallationHistoryTabPage.Controls.Add(this.InstallationHistory);
+            this.InstallationHistoryTabPage.Location = new System.Drawing.Point(4, 29);
+            this.InstallationHistoryTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.InstallationHistoryTabPage.Name = "InstallationHistoryTabPage";
+            this.InstallationHistoryTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.InstallationHistoryTabPage.Size = new System.Drawing.Size(1536, 948);
+            this.InstallationHistoryTabPage.TabIndex = 24;
+            resources.ApplyResources(this.InstallationHistoryTabPage, "InstallationHistoryTabPage");
+            //
+            // InstallationHistory
+            //
+            this.InstallationHistory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.InstallationHistory.Location = new System.Drawing.Point(0, 0);
+            this.InstallationHistory.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.InstallationHistory.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.InstallationHistory.Name = "InstallationHistory";
+            this.InstallationHistory.Size = new System.Drawing.Size(500, 500);
+            this.InstallationHistory.TabIndex = 32;
+            this.InstallationHistory.OnSelectedModuleChanged += InstallationHistory_OnSelectedModuleChanged;
+            this.InstallationHistory.Install += InstallationHistory_Install;
+            this.InstallationHistory.Done += InstallationHistory_Done;
             //
             // ChooseProvidedModsTabPage
             //
@@ -763,6 +795,13 @@
             this.viewUnmanagedFilesStripMenuItem.Click += new System.EventHandler(this.viewUnmanagedFilesStripMenuItem_Click);
             resources.ApplyResources(this.viewUnmanagedFilesStripMenuItem, "viewUnmanagedFilesStripMenuItem");
             //
+            // installationHistoryStripMenuItem
+            //
+            this.installationHistoryStripMenuItem.Name = "installationHistoryStripMenuItem";
+            this.installationHistoryStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.installationHistoryStripMenuItem.Click += new System.EventHandler(this.installationHistoryStripMenuItem_Click);
+            resources.ApplyResources(this.installationHistoryStripMenuItem, "installationHistoryStripMenuItem");
+            //
             // Main
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -807,6 +846,10 @@
             this.UnmanagedFilesTabPage.PerformLayout();
             this.UnmanagedFiles.ResumeLayout(false);
             this.UnmanagedFiles.PerformLayout();
+            this.InstallationHistoryTabPage.ResumeLayout(false);
+            this.InstallationHistoryTabPage.PerformLayout();
+            this.InstallationHistory.ResumeLayout(false);
+            this.InstallationHistory.PerformLayout();
             this.DeleteDirectoriesTabPage.ResumeLayout(false);
             this.DeleteDirectoriesTabPage.PerformLayout();
             this.EditModpackTabPage.ResumeLayout(false);
@@ -869,6 +912,8 @@
         private CKAN.GUI.PlayTime PlayTime;
         private System.Windows.Forms.TabPage UnmanagedFilesTabPage;
         private CKAN.GUI.UnmanagedFiles UnmanagedFiles;
+        private System.Windows.Forms.TabPage InstallationHistoryTabPage;
+        private CKAN.GUI.InstallationHistory InstallationHistory;
         private System.Windows.Forms.TabPage ChooseProvidedModsTabPage;
         private CKAN.GUI.ChooseProvidedMods ChooseProvidedMods;
         private System.Windows.Forms.TabPage DeleteDirectoriesTabPage;
@@ -892,5 +937,6 @@
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewPlayTimeStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewUnmanagedFilesStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem installationHistoryStripMenuItem;
     }
 }

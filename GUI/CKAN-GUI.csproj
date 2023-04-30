@@ -237,6 +237,12 @@
     <Compile Include="Controls\UnmanagedFiles.Designer.cs">
       <DependentUpon>UnmanagedFiles.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\InstallationHistory.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InstallationHistory.Designer.cs">
+      <DependentUpon>InstallationHistory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\EditModSearches.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -338,6 +344,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main\MainUnmanaged.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainHistory.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main\MainWait.cs">
@@ -879,6 +888,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UnmanagedFiles.resx">
       <DependentUpon>UnmanagedFiles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\InstallationHistory.resx">
+      <DependentUpon>InstallationHistory.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PlayTime.resx">
       <DependentUpon>PlayTime.cs</DependentUpon>
