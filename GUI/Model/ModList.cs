@@ -125,11 +125,9 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="registry"></param>
         /// <param name="changeSet"></param>
-        /// <param name="installer">A module installer for the current game instance</param>
         /// <param name="version">The version of the current game instance</param>
         public Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>> ComputeFullChangeSetFromUserChangeSet(
-            IRegistryQuerier registry, HashSet<ModChange> changeSet, ModuleInstaller installer,
-            GameVersionCriteria version)
+            IRegistryQuerier registry, HashSet<ModChange> changeSet, GameVersionCriteria version)
         {
             var modules_to_install = new List<CkanModule>();
             var modules_to_remove = new HashSet<CkanModule>();

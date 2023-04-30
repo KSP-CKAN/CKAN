@@ -1641,8 +1641,7 @@ namespace CKAN.GUI
             try
             {
                 var gameVersion = inst.VersionCriteria();
-                var module_installer = new ModuleInstaller(inst, Main.Instance.Manager.Cache, Main.Instance.currentUser);
-                var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, module_installer, gameVersion);
+                var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, gameVersion);
                 full_change_set = tuple.Item1.ToList();
                 new_conflicts = tuple.Item2.ToDictionary(
                     item => new GUIMod(item.Key, registry, gameVersion),
