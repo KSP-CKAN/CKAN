@@ -86,9 +86,16 @@ namespace CKAN.Versioning
         /// The return value should not be considered safe for use in file paths.
         /// </remarks>
         public override string ToString()
-        {
-            return _string;
-        }
+            => _string;
+
+        public string ToString(bool hideEpoch, bool hideV)
+            => hideEpoch
+                ? hideV
+                    ? ModuleInstaller.StripEpoch(ModuleInstaller.StripV(_string))
+                    : ModuleInstaller.StripEpoch(_string)
+                : hideV
+                    ? ModuleInstaller.StripV(_string)
+                    : _string;
     }
 
     public partial class ModuleVersion : IEquatable<ModuleVersion>

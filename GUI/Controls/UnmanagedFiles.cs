@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading.Tasks;
 
+using CKAN.Games;
+
 namespace CKAN.GUI
 {
     public partial class UnmanagedFiles : UserControl
@@ -17,9 +19,11 @@ namespace CKAN.GUI
             GameFolderTree.TreeViewNodeSorter = new DirsFirstSorter();
         }
 
-        public void Refresh()
+        public void LoadFiles(GameInstance inst)
         {
-            Util.Invoke(GameFolderTree, _UpdateGameFolderTree);
+            this.inst = inst;
+            this.registry = RegistryManager.Instance(inst).registry;
+            Util.Invoke(this, _UpdateGameFolderTree);
         }
 
         /// <summary>
@@ -27,7 +31,13 @@ namespace CKAN.GUI
         /// </summary>
         public event Action Done;
 
-        private GameInstanceManager manager => Main.Instance.Manager;
+        /// <summary>
+        /// Open the user guide when the user presses F1
+        /// </summary>
+        protected override void OnHelpRequested(HelpEventArgs evt)
+        {
+            evt.Handled = Util.TryOpenWebPage(HelpURLs.UnmanagedFiles);
+        }
 
         private void _UpdateGameFolderTree()
         {
@@ -37,14 +47,13 @@ namespace CKAN.GUI
             GameFolderTree.Nodes.Clear();
             var rootNode = GameFolderTree.Nodes.Add(
                 "",
-                manager.CurrentInstance.GameDir().Replace('/', Path.DirectorySeparatorChar),
+                inst.GameDir().Replace('/', Path.DirectorySeparatorChar),
                 "folder", "folder");
 
             UseWaitCursor = true;
             Task.Factory.StartNew(() =>
             {
-                var registry = RegistryManager.Instance(manager.CurrentInstance).registry;
-                var paths = manager.CurrentInstance?.UnmanagedFiles(registry).ToArray()
+                var paths = inst?.UnmanagedFiles(registry).ToArray()
                     ?? new string[] { };
                 Util.Invoke(this, () =>
                 {
@@ -55,7 +64,7 @@ namespace CKAN.GUI
                     }
                     rootNode.Expand();
                     rootNode.EnsureVisible();
-                    ExpandDefaultModDir();
+                    ExpandDefaultModDir(inst.game);
                     // The nodes don't have children at first, so the sort needs to be re-applied after they're added
                     GameFolderTree.Sort();
                     GameFolderTree.EndUpdate();
@@ -68,9 +77,9 @@ namespace CKAN.GUI
             => Enumerable.Range(1, pathPieces.Length)
                          .Select(numPieces => string.Join("/", pathPieces.Take(numPieces)));
 
-        private void ExpandDefaultModDir()
+        private void ExpandDefaultModDir(IGame game)
         {
-            foreach (string path in ParentPaths(manager.CurrentInstance.game.PrimaryModDirectoryRelative.Split(new char[] {'/'})))
+            foreach (string path in ParentPaths(game.PrimaryModDirectoryRelative.Split(new char[] {'/'})))
             {
                 foreach (var node in GameFolderTree.Nodes.Find(path, true))
                 {
@@ -126,7 +135,7 @@ namespace CKAN.GUI
             GameFolderTree.BeginUpdate();
             GameFolderTree.CollapseAll();
             GameFolderTree.Nodes[0].Expand();
-            ExpandDefaultModDir();
+            ExpandDefaultModDir(inst.game);
             GameFolderTree.Nodes[0].EnsureVisible();
             GameFolderTree.EndUpdate();
             GameFolderTree.Focus();
@@ -141,9 +150,8 @@ namespace CKAN.GUI
         private void DeleteButton_Click(object sender, EventArgs e)
         {
             var relPath = GameFolderTree.SelectedNode?.Name;
-            var registry = RegistryManager.Instance(manager.CurrentInstance).registry;
-            var absPath = manager.CurrentInstance.ToAbsoluteGameDir(relPath);
-            if (manager.CurrentInstance.HasManagedFiles(registry, absPath))
+            var absPath = inst.ToAbsoluteGameDir(relPath);
+            if (inst.HasManagedFiles(registry, absPath))
             {
                 Main.Instance.ErrorDialog(Properties.Resources.FolderContainsManagedFiles, relPath);
             }
@@ -184,7 +192,7 @@ namespace CKAN.GUI
         {
             if (node != null)
             {
-                string location = manager.CurrentInstance.ToAbsoluteGameDir(node.Name);
+                string location = inst.ToAbsoluteGameDir(node.Name);
 
                 if (File.Exists(location))
                 {
@@ -203,6 +211,9 @@ namespace CKAN.GUI
                 Utilities.ProcessStartURL(location);
             }
         }
+
+        private GameInstance inst;
+        private Registry     registry;
     }
 
     internal class DirsFirstSorter : IComparer, IComparer<TreeNode>
