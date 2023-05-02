@@ -381,10 +381,19 @@ Essayez de déplacer {2} en dehors de {3} et redémarrez CKAN.</value>
   <data name="MainCantInstallDLC" xml:space="preserve">
     <value>CKAN ne peut pas installer l'extension {0} !</value>
   </data>
+  <data name="MainLoadingGameInstance" xml:space="preserve">
+    <value>Chargement de l'instance de jeu</value>
+  </data>
   <data name="MainCorruptedRegistry" xml:space="preserve">
     <value>Registre corrompu archivé à {0} : {1}
 
 Cela veut dire que CKAN a oublié tous les mods que vous avez installé, mais ceux-ci sont toujours présents dans le dossier GameData. Vous pouvez les réinstaller en important le fichier {2}</value>
+  </data>
+  <data name="MainDeleteLockfileYes" xml:space="preserve">
+    <value>Forcer</value>
+  </data>
+  <data name="MainDeleteLockfileNo" xml:space="preserve">
+    <value>Annuler</value>
   </data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve">
     <value>{0} n'est pas supporté par vos versions de jeu compatibles ({1}) et pourrait ne pas marcher du tout. Si vous avez des problèmes avec, vous NE devez PAS demander de l'aide à ses développeurs.
@@ -408,7 +417,7 @@ Voulez-vous vraiment les installer ? L'annulation annulera toute l'installation.
     <value>Mise à jour demandée vers la version {0}.</value>
   </data>
   <data name="MainChangesetReinstall" xml:space="preserve">
-    <value>Réinstallation (Changement de métadonnées)</value>
+    <value>Réinstaller (métadonnées modifiées)</value>
   </data>
   <data name="MainImportTitle" xml:space="preserve">
     <value>Importer des Mods</value>
@@ -568,6 +577,9 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   </data>
   <data name="ModInfoRemoteAvcLabel" xml:space="preserve">
     <value>Fichier version distant :</value>
+  </data>
+  <data name="ModInfoRemoteSWInfoLabel" xml:space="preserve">
+    <value>Fichier swinfo.json distant :</value>
   </data>
   <data name="ModInfoStoreLabel" xml:space="preserve">
     <value>Magasin :</value>
