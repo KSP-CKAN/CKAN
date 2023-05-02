@@ -209,6 +209,12 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve">
     <value>Les incohérences suivantes ont été trouvées :</value>
   </data>
+  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve">
+    <value>Chargement des modules du répertoire {0} ...</value>
+  </data>
+  <data name="NetRepoLoadedDownloadCounts" xml:space="preserve">
+    <value>Réception des compteurs de téléchargement du répertoire {0}</value>
+  </data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve">
     <value>`any_of` ne devrait pas être combiné avec `{0}`</value>
   </data>
@@ -552,10 +558,11 @@ Consultez cette page pour obtenir de l'aide :
 Pensez à ajouter un jeton d'authentification pour augmenter la limite avant bridage.</value>
   </data>
   <data name="KrakenAlreadyRunning" xml:space="preserve">
-    <value>CKAN est déjà lancé pour cette instance !
+    <value>Fichier verrou avec un ID de processus actif à {0}
 
-Si vous êtes certain que ce n'est pas le cas, alors supprimez :
-"{0}"</value>
+Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu. 
+
+Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
   </data>
   <data name="NotEnoughSpaceToDownload" xml:space="preserve">
     <value>Pas assez d'espace dans le dossier temporaire pour télécharger les modules !</value>
