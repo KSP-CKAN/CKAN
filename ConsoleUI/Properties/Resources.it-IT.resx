@@ -421,13 +421,6 @@
     <value>Errore nel caricamento di {0}:
 {1}</value>
   </data>
-  <data name="InstanceListLocked" xml:space="preserve">
-    <value>File di blocco con ID di processo attivo trovato a {0}
-
-Ciò significa che probabilmente un'altra istanza di CKAN sta accedendo a questa istanza. Puoi eliminare il file per continuare, ma è molto probabile che i dati vengano danneggiati.
-
-Vuoi eliminare questo file di blocco per forzare l'accesso?</value>
-  </data>
   <data name="InstanceListNoVersion" xml:space="preserve">
     <value>&lt;NESSUNA&gt;</value>
   </data>
@@ -907,7 +900,7 @@ Se la disinstalli, CKAN non sarà in grado di reinstallarla.</value>
   <data name="ExitBody" xml:space="preserve">
     <value>STAI UTILIZZANDO {1}.
 
-Grazie per aver scaricato {0}. Ci auguriamo che tu ti diverta 
+Grazie per aver scaricato {0}. Ci auguriamo che tu ti diverta
 a usarlo come ci siamo divertiti noi a crearlo.
 
 Se hai pagato per {0}, cerca di ottenere il rimborso,
