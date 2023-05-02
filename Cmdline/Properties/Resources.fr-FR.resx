@@ -340,6 +340,9 @@ Essayez d'ajouter l'instance manuellement avec "ckan instance add".
   <data name="InstanceFakeVersion" xml:space="preserve">
     <value>Veuillez vérifier l'argument de version - Le format est du type Màj.Min.Patch[.Build] - ex : 1.6.0 ou 1.2.2.1622</value>
   </data>
+  <data name="InstanceFakeBadGame" xml:space="preserve">
+    <value>Le jeu {0} n'existe pas !</value>
+  </data>
   <data name="InstanceFakeBadGameVersion" xml:space="preserve">
     <value>Impossible de trouver une version de jeu valide pour votre saisie.
 Soyez sûr d'avoir saisi au moins les valeurs de version majeure et mineure au format Màj.Min - ex: 1.5</value>
@@ -684,6 +687,9 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   </data>
   <data name="ShowVersionFile" xml:space="preserve">
     <value>  Fichier Version :	{0}</value>
+  </data>
+  <data name="ShowSpaceWarpInfo" xml:space="preserve">
+    <value>Fichier SWInfo: {0}</value>
   </data>
   <data name="ShowFileName" xml:space="preserve">
     <value>Nom du fichier : {0}</value>
