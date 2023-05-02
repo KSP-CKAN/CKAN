@@ -421,13 +421,6 @@
     <value>Erreur lors du chargement de {0} :
 {1}</value>
   </data>
-  <data name="InstanceListLocked" xml:space="preserve">
-    <value>Fichier verrou avec un ID de processus actif à {0}
-
-Cela veut probablement dire qu'une autre instance de CKAN s'occupe de cette instance. Vous pouvez supprimer ce fichier pour continuer, mais cela risque fortement de corrompre des données.
-
-Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
-  </data>
   <data name="InstanceListNoVersion" xml:space="preserve">
     <value>&lt;AUCUNE&gt;</value>
   </data>
