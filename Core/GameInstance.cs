@@ -352,25 +352,22 @@ namespace CKAN
         /// </returns>
         public bool Scan()
         {
-            if (Directory.Exists(game.PrimaryModDirectory(this)))
+            var manager = RegistryManager.Instance(this);
+            using (TransactionScope tx = CkanTransaction.CreateTransactionScope())
             {
-                var manager = RegistryManager.Instance(this);
-                using (TransactionScope tx = CkanTransaction.CreateTransactionScope())
+                log.DebugFormat("Scanning for DLLs in {0}",
+                    game.PrimaryModDirectory(this));
+                var oldDlls = manager.registry.InstalledDlls.ToHashSet();
+                manager.registry.ClearDlls();
+
+                if (Directory.Exists(game.PrimaryModDirectory(this)))
                 {
-                    log.DebugFormat("Scanning for DLLs in {0}",
-                        game.PrimaryModDirectory(this));
-                    var oldDlls = manager.registry.InstalledDlls.ToHashSet();
-                    manager.registry.ClearDlls();
-
-                    // TODO: It would be great to optimise this to skip .git directories and the like.
-                    // Yes, I keep my GameData in git.
-
-                    // Alas, EnumerateFiles is *case-sensitive* in its pattern, which causes
+                    // EnumerateFiles is *case-sensitive* in its pattern, which causes
                     // DLL files to be missed under Linux; we have to pick .dll, .DLL, or scanning
                     // GameData *twice*.
                     //
                     // The least evil is to walk it once, and filter it ourselves.
-                    IEnumerable<string> files = Directory
+                    var files = Directory
                         .EnumerateFiles(game.PrimaryModDirectory(this), "*", SearchOption.AllDirectories)
                         .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
                         .Select(CKANPathUtils.NormalizePath)
@@ -381,20 +378,20 @@ namespace CKAN
                     {
                         manager.registry.RegisterDll(this, dll);
                     }
-                    var newDlls = manager.registry.InstalledDlls.ToHashSet();
-                    bool dllChanged = !oldDlls.SetEquals(newDlls);
-                    bool dlcChanged = manager.ScanDlc();
-
-                    if (dllChanged || dlcChanged)
-                    {
-                        manager.Save(false);
-                    }
-
-                    log.Debug("Scan completed, committing transaction");
-                    tx.Complete();
-
-                    return dllChanged || dlcChanged;
                 }
+                var newDlls = manager.registry.InstalledDlls.ToHashSet();
+                bool dllChanged = !oldDlls.SetEquals(newDlls);
+                bool dlcChanged = manager.ScanDlc();
+
+                if (dllChanged || dlcChanged)
+                {
+                    manager.Save(false);
+                }
+
+                log.Debug("Scan completed, committing transaction");
+                tx.Complete();
+
+                return dllChanged || dlcChanged;
             }
             return false;
         }

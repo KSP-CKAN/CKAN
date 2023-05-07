@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix NRE on purging cache in GUI (#3810 by: HebaruSan; reviewed: techman83)
 - [GUI] Only update Versions tab when the mod changes (#3822 by: HebaruSan; reviewed: techman83)
 - [Multiple] Treat reinstalling a changed module as an update (#3828 by: HebaruSan; reviewed: techman83)
+- [Core] Scan for DLLs with or without primary mod dir (#3837 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 
