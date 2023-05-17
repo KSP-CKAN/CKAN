@@ -124,14 +124,12 @@
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>新しいインスタンスの名前を入力してください。</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>新しいインスタンスの場所を入力してください。</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"インスタンスを複製中..."</value></data>
-  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve"><value>{0} DLCのバージョンが正しくフォーマットされていません。次のようにお試しください。例:"1.0.0"</value></data>
   <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>複製しようとしているインスタンスが正常ではありません。: {0}</value></data>
   <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>複製先のフォルダが空ではありません: {0}</value></data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>インスタンスの複製に失敗しました。: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>インスタンスの複製に成功しました。</value></data>
   <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>新規インスタンスを作成中...</value></data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>この名前は既に使われています。</value></data>
-  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>インスタンスの作成に失敗しました。: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>インスタンスの作成に成功しました。</value></data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
   <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>最新の対応するゲームバージョンを確認したため、ゲームはアップデートされました。設定が正しいか確認してください。</value></data>

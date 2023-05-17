@@ -133,8 +133,8 @@
   <data name="AddToCKANMenuItem.Text" xml:space="preserve">
     <value>CKAN에 인스턴스 추가</value>
   </data>
-  <data name="CloneFakeInstanceMenuItem.Text" xml:space="preserve">
-    <value>인스턴스 복사 혹은 위조</value>
+  <data name="CloneGameInstanceMenuItem.Text" xml:space="preserve">
+    <value>복제 인스턴스</value>
   </data>
   <data name="RenameButton.Text" xml:space="preserve">
     <value>이름 변경</value>

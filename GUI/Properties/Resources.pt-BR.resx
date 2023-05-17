@@ -122,14 +122,12 @@
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Por favor informe o nome da nova instância.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Por favor informe o caminho da nova instância.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"Clonando instância..."</value></data>
-  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve"><value>A versão para a DLC {0} está malformatada. Tente "1.0.0" como exemplo.</value></data>
   <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>A instância que você queria clonar não é válida: {0}</value></data>
   <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>O diretório de destino não está vazio: {0}</value></data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>A clonagem falhou: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>Instância clonada com sucesso.</value></data>
   <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>Criando nova instância...</value></data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>Este nome já está sendo usado.</value></data>
-  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>A criação da instância falsificada falhou: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>Instância criada com sucesso.</value></data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
   <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>O jogo foi atualizado desde que você revisou as versões compatíveis do jogo. Por favor, garanta que estas configurações estejam corretas.</value></data>

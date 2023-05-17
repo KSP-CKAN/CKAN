@@ -114,7 +114,7 @@
   <data name="SelectButton.Text" xml:space="preserve"><value>选择</value></data>
   <data name="AddNewButton.Text" xml:space="preserve"><value>新游戏实例</value></data>
   <data name="AddToCKANMenuItem.Text" xml:space="preserve"><value>添加实例到CKAN</value></data>
-  <data name="CloneFakeInstanceMenuItem.Text" xml:space="preserve"><value>克隆或伪装新实例</value></data>
+  <data name="CloneGameInstanceMenuItem.Text" xml:space="preserve"><value>克隆实例</value></data>
   <data name="RenameButton.Text" xml:space="preserve"><value>重命名</value></data>
   <data name="SetAsDefaultCheckbox.Text" xml:space="preserve"><value>设为默认</value></data>
   <data name="ForgetButton.Text" xml:space="preserve"><value>忽略</value></data>

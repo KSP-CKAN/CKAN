@@ -117,55 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="radioButtonClone.Text" xml:space="preserve">
-    <value>존재하는 KSP 인스턴스를 복사</value>
-  </data>
   <data name="labelOldInstance.Text" xml:space="preserve">
-    <value>복사할 인스턴스:</value>
+    <value>Instância para clonar:</value>
   </data>
   <data name="labelOldPath.Text" xml:space="preserve">
-    <value>복사할 경로:</value>
+    <value>Casminho para clonar:</value>
   </data>
   <data name="buttonInstancePathSelection.Text" xml:space="preserve">
-    <value>선택하기</value>
-  </data>
-  <data name="radioButtonFake.Text" xml:space="preserve">
-    <value>위조 KSP 인스턴스 만들기</value>
-  </data>
-  <data name="labelVersion.Text" xml:space="preserve">
-    <value>버전:</value>
-  </data>
-  <data name="labelDlcVersions.Text" xml:space="preserve">
-    <value>DLC 버전 (비워둘 경우 없음):</value>
-  </data>
-  <data name="labelMakingHistory.Text" xml:space="preserve">
-    <value>Making History</value>
-  </data>
-  <data name="labelBreakingGround.Text" xml:space="preserve">
-    <value>Breaking Ground</value>
+    <value>Selecionar...</value>
   </data>
   <data name="labelNewName.Text" xml:space="preserve">
-    <value>새로운 인스턴스의 이름:</value>
+    <value>Nome da nova instância:</value>
   </data>
   <data name="labelNewPath.Text" xml:space="preserve">
-    <value>새로운 인스턴스의 경로:</value>
+    <value>Caminho da nova instância:</value>
   </data>
   <data name="buttonPathBrowser.Text" xml:space="preserve">
-    <value>선택하기</value>
+    <value>Selecionar...</value>
   </data>
   <data name="checkBoxSetAsDefault.Text" xml:space="preserve">
-    <value>새로운 인스턴스를 기본으로 설정</value>
+    <value>Definir a nova instância como padrão</value>
   </data>
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
-    <value>새로운 인스턴스로 바꾸기</value>
+    <value>Trocar para a nova instância</value>
   </data>
   <data name="buttonOK.Text" xml:space="preserve">
-    <value>만들기</value>
+    <value>Criar</value>
   </data>
   <data name="buttonCancel.Text" xml:space="preserve">
-    <value>취소하기</value>
+    <value>Cancelar</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>복사 혹은 위조</value>
+    <value>Clonar instância</value>
   </data>
 </root>

@@ -46,7 +46,7 @@
             this.InstanceListContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openDirectoryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddToCKANMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CloneFakeInstanceMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CloneGameInstanceMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameButton = new System.Windows.Forms.Button();
             this.SetAsDefaultCheckbox = new System.Windows.Forms.CheckBox();
             this.ForgetButton = new System.Windows.Forms.Button();
@@ -149,7 +149,7 @@
             //
             this.AddNewMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AddToCKANMenuItem,
-            this.CloneFakeInstanceMenuItem});
+            this.CloneGameInstanceMenuItem});
             this.AddNewMenu.Name = "AddNewMenu";
             this.AddNewMenu.Size = new System.Drawing.Size(222, 48);
             //
@@ -160,12 +160,12 @@
             this.AddToCKANMenuItem.Click += new System.EventHandler(this.AddToCKANMenuItem_Click);
             resources.ApplyResources(this.AddToCKANMenuItem, "AddToCKANMenuItem");
             //
-            // CloneFakeInstanceMenuItem
+            // CloneGameInstanceMenuItem
             //
-            this.CloneFakeInstanceMenuItem.Name = "CloneFakeInstanceMenuItem";
-            this.CloneFakeInstanceMenuItem.Size = new System.Drawing.Size(216, 22);
-            this.CloneFakeInstanceMenuItem.Click += new System.EventHandler(this.CloneFakeInstanceMenuItem_Click);
-            resources.ApplyResources(this.CloneFakeInstanceMenuItem, "CloneFakeInstanceMenuItem");
+            this.CloneGameInstanceMenuItem.Name = "CloneGameInstanceMenuItem";
+            this.CloneGameInstanceMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.CloneGameInstanceMenuItem.Click += new System.EventHandler(this.CloneGameInstanceMenuItem_Click);
+            resources.ApplyResources(this.CloneGameInstanceMenuItem, "CloneGameInstanceMenuItem");
             //
             // RenameButton
             //
@@ -246,7 +246,7 @@
         private System.Windows.Forms.ContextMenuStrip InstanceListContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem openDirectoryMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AddToCKANMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem CloneFakeInstanceMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem CloneGameInstanceMenuItem;
         private System.Windows.Forms.Button RenameButton;
         private System.Windows.Forms.CheckBox SetAsDefaultCheckbox;
         private System.Windows.Forms.Button ForgetButton;

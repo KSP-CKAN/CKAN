@@ -154,14 +154,12 @@
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Please enter a name for the new instance.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Please enter a path for the new instance.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"Cloning instance..."</value></data>
-  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve"><value>The version for the {0} DLC is malformatted. Try "1.0.0" for example.</value></data>
   <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>The instance you wanted to clone is not valid: {0}</value></data>
   <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>The destination folder is not empty: {0}</value></data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>Clone failed: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>Successfully cloned instance.</value></data>
   <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>Creating new instance...</value></data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>This name is already used.</value></data>
-  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>Fake instance creation failed: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>Successfully created instance.</value></data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
   <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>The game has been updated since you last reviewed your compatible game versions. Please make sure that settings are correct.</value></data>

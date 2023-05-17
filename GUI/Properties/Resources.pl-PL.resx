@@ -212,9 +212,6 @@
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve">
     <value>"Klonowanie instalacji..."</value>
   </data>
-  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve">
-    <value>Wersja dla DLC {0} jest nieprawidłowa. Spróbuj na przykład "1.0.0".</value>
-  </data>
   <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve">
     <value>Instalacja, którą chcesz sklonować jest nieprawidłowa: {0}</value>
   </data>
@@ -232,9 +229,6 @@
   </data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve">
     <value>Ta nazwa jest już w użyciu.</value>
-  </data>
-  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve">
-    <value>Nie udało się utworzyć udawanej instalacji: {0}</value>
   </data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve">
     <value>Pomyślnie utworzono instalacje.</value>

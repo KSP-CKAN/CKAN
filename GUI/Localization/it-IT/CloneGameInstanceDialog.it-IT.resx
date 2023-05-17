@@ -117,55 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="radioButtonClone.Text" xml:space="preserve">
-    <value>Cloner une instance existante de KSP</value>
-  </data>
   <data name="labelOldInstance.Text" xml:space="preserve">
-    <value>Instance à cloner :</value>
+    <value>Istanza da clonare:</value>
   </data>
   <data name="labelOldPath.Text" xml:space="preserve">
-    <value>Chemin à cloner :</value>
+    <value>Percorso della clonazione:</value>
   </data>
   <data name="buttonInstancePathSelection.Text" xml:space="preserve">
-    <value>Parcourir</value>
-  </data>
-  <data name="radioButtonFake.Text" xml:space="preserve">
-    <value>Falsifier une nouvelle instance de KSP</value>
-  </data>
-  <data name="labelVersion.Text" xml:space="preserve">
-    <value>Version :</value>
-  </data>
-  <data name="labelDlcVersions.Text" xml:space="preserve">
-    <value>Versions DLC (vide si absent) :</value>
-  </data>
-  <data name="labelMakingHistory.Text" xml:space="preserve">
-    <value>Making History</value>
-  </data>
-  <data name="labelBreakingGround.Text" xml:space="preserve">
-    <value>Breaking Ground</value>
+    <value>Seleziona...</value>
   </data>
   <data name="labelNewName.Text" xml:space="preserve">
-    <value>Nom de la nouvelle instance :</value>
+    <value>Nome per la nuova istanza:</value>
   </data>
   <data name="labelNewPath.Text" xml:space="preserve">
-    <value>Chemin de la nouvelle instance :</value>
+    <value>Percorso per la nuova istanza:</value>
   </data>
   <data name="buttonPathBrowser.Text" xml:space="preserve">
-    <value>Parcourir</value>
+    <value>Seleziona...</value>
   </data>
   <data name="checkBoxSetAsDefault.Text" xml:space="preserve">
-    <value>Marquer par défaut</value>
+    <value>Imposta nuova istanza come predefinita</value>
   </data>
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
-    <value>Basculer à la nouvelle instance</value>
+    <value>Passa alla nuova istanza</value>
   </data>
   <data name="buttonOK.Text" xml:space="preserve">
-    <value>Créer</value>
+    <value>Crea</value>
   </data>
   <data name="buttonCancel.Text" xml:space="preserve">
-    <value>Annuler</value>
+    <value>Annulla</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Cloner ou Falsifier une Instance KSP</value>
+    <value>Clonare un'istanza</value>
   </data>
 </root>

@@ -117,21 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="radioButtonClone.Text" xml:space="preserve"><value>既存のKSPインスタンスを複製する</value></data>
-  <data name="labelOldInstance.Text" xml:space="preserve"><value>複製するインスタンス:</value></data>
-  <data name="labelOldPath.Text" xml:space="preserve"><value>複製の保存先:</value></data>
-  <data name="buttonInstancePathSelection.Text" xml:space="preserve"><value>選択...</value></data>
-  <data name="radioButtonFake.Text" xml:space="preserve"><value>新しいKSPインスタンスを作成する</value></data>
-  <data name="labelVersion.Text" xml:space="preserve"><value>バージョン:</value></data>
-  <data name="labelDlcVersions.Text" xml:space="preserve"><value>DLCのバージョン(ない場合は空):</value></data>
-  <data name="labelMakingHistory.Text" xml:space="preserve"><value>Making History</value></data>
-  <data name="labelBreakingGround.Text" xml:space="preserve"><value>Breaking Ground</value></data>
-  <data name="labelNewName.Text" xml:space="preserve"><value>新しいインスタンスの名前:</value></data>
-  <data name="labelNewPath.Text" xml:space="preserve"><value>新しいインスタンスの保存先:</value></data>
-  <data name="buttonPathBrowser.Text" xml:space="preserve"><value>選択...</value></data>
-  <data name="checkBoxSetAsDefault.Text" xml:space="preserve"><value>デフォルトに設定</value></data>
-  <data name="checkBoxSwitchInstance.Text" xml:space="preserve"><value>新しいインスタンスに切替</value></data>
-  <data name="buttonOK.Text" xml:space="preserve"><value>作成</value></data>
-  <data name="buttonCancel.Text" xml:space="preserve"><value>取り消し</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>KSPインスタンスを複製または作成</value></data>
+  <data name="labelOldInstance.Text" xml:space="preserve"><value>Instance to clone:</value></data>
+  <data name="labelOldPath.Text" xml:space="preserve"><value>Path to clone:</value></data>
+  <data name="buttonInstancePathSelection.Text" xml:space="preserve"><value>Select...</value></data>
+  <data name="labelNewName.Text" xml:space="preserve"><value>Name for the new instance:</value></data>
+  <data name="labelNewPath.Text" xml:space="preserve"><value>Path for the new instance:</value></data>
+  <data name="buttonPathBrowser.Text" xml:space="preserve"><value>Select...</value></data>
+  <data name="checkBoxSetAsDefault.Text" xml:space="preserve"><value>Set new instance as default</value></data>
+  <data name="checkBoxSwitchInstance.Text" xml:space="preserve"><value>Switch to new instance</value></data>
+  <data name="buttonOK.Text" xml:space="preserve"><value>Create</value></data>
+  <data name="buttonCancel.Text" xml:space="preserve"><value>Cancel</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Clone Game Instance</value></data>
 </root>

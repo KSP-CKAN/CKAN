@@ -122,14 +122,12 @@
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Введите название новой сборки.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Введите путь к папке новой сборки.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>«Клонирование...»</value></data>
-  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve"><value>Неверный формат версии DLC {0}. Пример оформления версии: «1.0.0».</value></data>
   <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>Сборка, которую вы пытаетесь клонировать, не является пригодной сборкой игры: {0}</value></data>
   <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>Конечная папка не пуста: {0}</value></data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>Клонирование не удалось: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>Клонирование успешно завершено.</value></data>
   <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>Создание новой сборки...</value></data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>Это название уже используется.</value></data>
-  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>Не удалось создать псевдо-сборку: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>Создание успешно завершено.</value></data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;НЕТ&gt;</value></data>
   <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>Игра была обновлена с последнего изменения данных настроек. Убедитесь в их правильности.</value></data>
