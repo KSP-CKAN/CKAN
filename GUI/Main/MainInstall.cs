@@ -194,7 +194,9 @@ namespace CKAN.GUI
                     {
                         // Get full changeset (toInstall only includes user's selections, not dependencies)
                         var crit = CurrentInstance.VersionCriteria();
-                        var fullChangeset = new RelationshipResolver(toInstall, null, opts.Value, registry, crit).ModList().ToList();
+                        var fullChangeset = new RelationshipResolver(
+                            toInstall.Concat(toUpgrade), toUninstall, opts.Value, registry, crit
+                        ).ModList().ToList();
                         var dfd = new DownloadsFailedDialog(
                             Properties.Resources.ModDownloadsFailedMessage,
                             Properties.Resources.ModDownloadsFailedColHdr,
@@ -203,7 +205,7 @@ namespace CKAN.GUI
                                 fullChangeset.Where(m => m.download == kvp.Key.download).ToArray(),
                                 kvp.Value)),
                             (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
-                        Util.Invoke(this, () => dfd.ShowDialog(this));
+                        Util.Invoke(dfd, () => dfd.ShowDialog(this));
                         var skip = dfd.Wait()?.Select(m => m as CkanModule).ToArray();
                         var abort = dfd.Abort;
                         dfd.Dispose();
