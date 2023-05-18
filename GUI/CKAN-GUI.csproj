@@ -70,11 +70,11 @@
     <Compile Include="Dialogs\ManageGameInstancesDialog.Designer.cs">
       <DependentUpon>ManageGameInstancesDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\CloneFakeGameDialog.cs">
+    <Compile Include="Dialogs\CloneGameInstanceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\CloneFakeGameDialog.Designer.cs">
-      <DependentUpon>CloneFakeGameDialog.cs</DependentUpon>
+    <Compile Include="Dialogs\CloneGameInstanceDialog.Designer.cs">
+      <DependentUpon>CloneGameInstanceDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\CompatibleGameVersionsDialog.cs">
       <SubType>Form</SubType>
@@ -459,35 +459,35 @@
     <EmbeddedResource Include="Localization\ja-JP\AskUserForAutoUpdatesDialog.ja-JP.resx">
       <DependentUpon>..\..\Dialogs\AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\CloneFakeGameDialog.resx">
-      <DependentUpon>CloneFakeGameDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogs\CloneGameInstanceDialog.resx">
+      <DependentUpon>CloneGameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\de-DE\CloneFakeGameDialog.de-DE.resx">
-      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\de-DE\CloneGameInstanceDialog.de-DE.resx">
+      <DependentUpon>..\..\Dialogs\CloneGameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\fr-FR\CloneFakeGameDialog.fr-FR.resx">
-      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\fr-FR\CloneGameInstanceDialog.fr-FR.resx">
+      <DependentUpon>..\..\Dialogs\CloneGameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\zh-CN\CloneFakeGameDialog.zh-CN.resx">
-      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\zh-CN\CloneGameInstanceDialog.zh-CN.resx">
+      <DependentUpon>..\..\Dialogs\CloneGameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\pt-BR\CloneFakeGameDialog.pt-BR.resx">
-      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\pt-BR\CloneGameInstanceDialog.pt-BR.resx">
+      <DependentUpon>..\..\Dialogs\CloneGameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\it-IT\CloneFakeGameDialog.it-IT.resx">
-      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\it-IT\CloneGameInstanceDialog.it-IT.resx">
+      <DependentUpon>..\..\Dialogs\CloneGameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\pl-PL\CloneFakeGameDialog.pl-PL.resx">
-      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\pl-PL\CloneGameInstanceDialog.pl-PL.resx">
+      <DependentUpon>..\..\Dialogs\CloneGameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\ko-KR\CloneFakeGameDialog.ko-KR.resx">
-      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\ko-KR\CloneGameInstanceDialog.ko-KR.resx">
+      <DependentUpon>..\..\Dialogs\CloneGameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\ru-RU\CloneFakeGameDialog.ru-RU.resx">
-      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\ru-RU\CloneGameInstanceDialog.ru-RU.resx">
+      <DependentUpon>..\..\Dialogs\CloneGameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Localization\ja-JP\CloneFakeGameDialog.ja-JP.resx">
-      <DependentUpon>..\..\Dialogs\CloneFakeGameDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Localization\ja-JP\CloneGameInstanceDialog.ja-JP.resx">
+      <DependentUpon>..\..\Dialogs\CloneGameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\CompatibleGameVersionsDialog.resx">
       <DependentUpon>CompatibleGameVersionsDialog.cs</DependentUpon>

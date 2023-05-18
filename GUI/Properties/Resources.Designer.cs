@@ -371,9 +371,6 @@ namespace CKAN.GUI.Properties {
         internal static string CloneFakeKspDialogInstanceNotValid {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogInstanceNotValid", resourceCulture)); }
         }
-        internal static string CloneFakeKspDialogDlcVersionMalformatted {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogDlcVersionMalformatted", resourceCulture)); }
-        }
         internal static string CloneFakeKspDialogDestinationNotEmpty {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogDestinationNotEmpty", resourceCulture)); }
         }
@@ -388,9 +385,6 @@ namespace CKAN.GUI.Properties {
         }
         internal static string CloneFakeKspDialogNameAlreadyUsed {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogNameAlreadyUsed", resourceCulture)); }
-        }
-        internal static string CloneFakeKspDialogFakeFailed {
-            get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogFakeFailed", resourceCulture)); }
         }
         internal static string CloneFakeKspDialogSuccessfulCreate {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogSuccessfulCreate", resourceCulture)); }

@@ -63,8 +63,8 @@ namespace CKAN.GUI
             // Set the renderer for the AddNewMenu
             if (Platform.IsMono)
             {
-                this.AddNewMenu.Renderer = new FlatToolStripRenderer();
-                this.InstanceListContextMenuStrip.Renderer = new FlatToolStripRenderer();
+                AddNewMenu.Renderer = new FlatToolStripRenderer();
+                InstanceListContextMenuStrip.Renderer = new FlatToolStripRenderer();
             }
 
             UpdateInstancesList();
@@ -183,15 +183,15 @@ namespace CKAN.GUI
             }
         }
 
-        private void CloneFakeInstanceMenuItem_Click(object sender, EventArgs e)
+        private void CloneGameInstanceMenuItem_Click(object sender, EventArgs e)
         {
             var old_instance = Main.Instance.CurrentInstance;
 
-            var result = new CloneFakeGameDialog(_manager, _user).ShowDialog(this);
+            var result = new CloneGameInstanceDialog(_manager, _user, (string)GameInstancesListView.SelectedItems[0].Tag).ShowDialog(this);
             if (result == DialogResult.OK && !Equals(old_instance, Main.Instance.CurrentInstance))
             {
                 DialogResult = DialogResult.OK;
-                this.Close();
+                Close();
             }
 
             UpdateInstancesList();
@@ -331,7 +331,7 @@ namespace CKAN.GUI
 
         private void UpdateButtonState()
         {
-            RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = HasSelections;
+            RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = CloneGameInstanceMenuItem.Enabled = HasSelections;
             ForgetButton.Enabled = HasSelections && (string)GameInstancesListView.SelectedItems[0].Tag != _manager.CurrentInstance?.Name;
         }
     }

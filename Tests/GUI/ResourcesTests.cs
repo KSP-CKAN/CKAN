@@ -56,7 +56,7 @@ namespace Tests.GUI
             TestCase(typeof(CKAN.GUI.Main)),
             TestCase(typeof(CKAN.GUI.AboutDialog)),
             TestCase(typeof(CKAN.GUI.AskUserForAutoUpdatesDialog)),
-            TestCase(typeof(CKAN.GUI.CloneFakeGameDialog)),
+            TestCase(typeof(CKAN.GUI.CloneGameInstanceDialog)),
             TestCase(typeof(CKAN.GUI.CompatibleGameVersionsDialog)),
             TestCase(typeof(CKAN.GUI.EditLabelsDialog)),
             TestCase(typeof(CKAN.GUI.ErrorDialog)),

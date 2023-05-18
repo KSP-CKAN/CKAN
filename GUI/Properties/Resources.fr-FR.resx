@@ -212,9 +212,6 @@
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve">
     <value>"Clonage de l'instance..."</value>
   </data>
-  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve">
-    <value>La version pour le DLC {0} est mal formatée. Essayez "1.0.0" par exemple.</value>
-  </data>
   <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve">
     <value>L'instance que vous voulez cloner n'est pas valide : {0}</value>
   </data>
@@ -232,9 +229,6 @@
   </data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve">
     <value>Ce nom est déjà utilisé.</value>
-  </data>
-  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve">
-    <value>Échec de la création d'une instance artificielle : {0}</value>
   </data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve">
     <value>Instance créée avec succès.</value>

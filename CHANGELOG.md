@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Allow GUI users to delete registry lockfiles (#3829 by: HebaruSan; reviewed: techman83)
 - [GUI] Show unmanaged files in game folder (#3833 by: HebaruSan; reviewed: techman83)
 - [GUI] Installation history tab (#3834 by: HebaruSan; reviewed: techman83)
+- [GUI] Hide fake instance creation in GUI (#3839 by: HebaruSan; reviewed: techman83)
 
 ### Bugfixes
 

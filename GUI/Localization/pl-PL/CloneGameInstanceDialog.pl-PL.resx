@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="radioButtonClone.Text" xml:space="preserve">
-    <value>Sklonuj istniejącą instalacje KSP</value>
-  </data>
   <data name="labelOldInstance.Text" xml:space="preserve">
     <value>Instalacja do klonowania:</value>
   </data>
@@ -128,21 +125,6 @@
   </data>
   <data name="buttonInstancePathSelection.Text" xml:space="preserve">
     <value>Wybierz...</value>
-  </data>
-  <data name="radioButtonFake.Text" xml:space="preserve">
-    <value>Stwórz udawaną instalacje KSP</value>
-  </data>
-  <data name="labelVersion.Text" xml:space="preserve">
-    <value>Wersja:</value>
-  </data>
-  <data name="labelDlcVersions.Text" xml:space="preserve">
-    <value>Wersje DLC (puste = brak DLC):</value>
-  </data>
-  <data name="labelMakingHistory.Text" xml:space="preserve">
-    <value>Making History</value>
-  </data>
-  <data name="labelBreakingGround.Text" xml:space="preserve">
-    <value>Breaking Ground</value>
   </data>
   <data name="labelNewName.Text" xml:space="preserve">
     <value>Nazwa nowej instalacji:</value>
@@ -166,6 +148,6 @@
     <value>Anuluj</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Sklonuj lub utwórz udawaną instalację KSP</value>
+    <value>Sklonuj lub utwórz udawaną instalację</value>
   </data>
 </root>

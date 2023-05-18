@@ -133,8 +133,8 @@
   <data name="AddToCKANMenuItem.Text" xml:space="preserve">
     <value>Ajouter une instance à CKAN</value>
   </data>
-  <data name="CloneFakeInstanceMenuItem.Text" xml:space="preserve">
-    <value>Cloner ou falsifier une nouvelle instance</value>
+  <data name="CloneGameInstanceMenuItem.Text" xml:space="preserve">
+    <value>Cloner une nouvelle instance</value>
   </data>
   <data name="RenameButton.Text" xml:space="preserve">
     <value>Renommer</value>

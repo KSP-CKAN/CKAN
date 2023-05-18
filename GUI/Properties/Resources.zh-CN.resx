@@ -124,14 +124,12 @@
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>请输入新实例名称.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>请输入新实例路径.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"正在克隆实例..."</value></data>
-  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve"><value>{0} DLC版本格式错误. 尝试例如 "1.0.0".</value></data>
   <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>您想要克隆的实例不可用: {0}</value></data>
   <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>目标文件夹并非空文件夹: {0}</value></data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>克隆失败: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>成功克隆实例.</value></data>
   <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>正在创建新实例...</value></data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>该名称已被占用.</value></data>
-  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve"><value>伪装实例创建失败: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>成功创建实例.</value></data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
   <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>游戏已经在您上次确认您的兼容游戏版本后更新. 请确认设置是否正确.</value></data>

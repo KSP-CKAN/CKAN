@@ -212,9 +212,6 @@
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve">
     <value>" Clonazione dell'istanza..."</value>
   </data>
-  <data name="CloneFakeKspDialogDlcVersionMalformatted" xml:space="preserve">
-    <value>La versione per il DLC {0} è malformattata. Prova ad esempio "1.0.0".</value>
-  </data>
   <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve">
     <value>L'istanza che volevi clonare non è valida: {0}</value>
   </data>
@@ -232,9 +229,6 @@
   </data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve">
     <value>Questo nome è già utilizzato.</value>
-  </data>
-  <data name="CloneFakeKspDialogFakeFailed" xml:space="preserve">
-    <value>Creazione di un'istanza fittizia fallita: {0}</value>
   </data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve">
     <value>Istanza creata con successo.</value>
