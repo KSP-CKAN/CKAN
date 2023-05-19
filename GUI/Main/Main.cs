@@ -166,6 +166,8 @@ namespace CKAN.GUI
 
             URLHandlers.RegisterURLHandler(configuration, currentUser);
 
+            Util.Invoke(this, () => Text = $"CKAN {Meta.GetVersion()}");
+
             try
             {
                 splitContainer1.SplitterDistance = configuration.PanelPosition;
