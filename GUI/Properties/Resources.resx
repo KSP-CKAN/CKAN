@@ -331,6 +331,7 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="MainModListAll" xml:space="preserve"><value>All ({0})</value></data>
   <data name="MainModListUpdatingTray" xml:space="preserve"><value>Updating tray...</value></data>
   <data name="MainModListAutoDetected" xml:space="preserve"><value>AD</value></data>
+  <data name="MainModListAutoInstalledToolTip" xml:space="preserve"><value>If checked, auto-uninstall this mod if everything that depends on it is removed</value></data>
   <data name="MainModListUnknownFilter" xml:space="preserve"><value>Unknown filter type {0} in IsModInFilter</value></data>
   <data name="MainRecommendationsTitle" xml:space="preserve"><value>Choose recommended, suggested, or supporting mods</value></data>
   <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>No recommended, suggested, or supporting mods found.</value></data>
