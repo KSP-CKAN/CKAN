@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
@@ -54,14 +55,21 @@ namespace CKAN.NetKAN.Transformers
                         }
                         resourcesJson.SafeAdd("remote-swinfo", swinfo.version_check.OriginalString);
 
-                        var remoteInfo = modSvc.ParseSpaceWarpJson(
-                            githubApi?.DownloadText(swinfo.version_check)
-                            ?? httpSvc.DownloadText(swinfo.version_check));
-                        if (swinfo.version == remoteInfo?.version)
+                        try
                         {
-                            log.InfoFormat("Using remote swinfo.json file: {0}",
-                                           swinfo.version_check);
-                            swinfo = remoteInfo;
+                            var remoteInfo = modSvc.ParseSpaceWarpJson(
+                                githubApi?.DownloadText(swinfo.version_check)
+                                ?? httpSvc.DownloadText(swinfo.version_check));
+                            if (swinfo.version == remoteInfo?.version)
+                            {
+                                log.InfoFormat("Using remote swinfo.json file: {0}",
+                                               swinfo.version_check);
+                                swinfo = remoteInfo;
+                            }
+                        }
+                        catch (Exception exc)
+                        {
+                            throw new Kraken($"Error fetching remote swinfo {swinfo.version_check}: {exc.Message}");
                         }
                     }
 
