@@ -774,6 +774,9 @@ namespace CKAN.GUI.Properties {
         internal static string MainModListAutoDetected {
             get { return (string)(ResourceManager.GetObject("MainModListAutoDetected", resourceCulture)); }
         }
+        internal static string MainModListAutoInstalledToolTip {
+            get { return (string)(ResourceManager.GetObject("MainModListAutoInstalledToolTip", resourceCulture)); }
+        }
         internal static string MainModListUnknownFilter {
             get { return (string)(ResourceManager.GetObject("MainModListUnknownFilter", resourceCulture)); }
         }

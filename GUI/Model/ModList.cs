@@ -337,7 +337,8 @@ namespace CKAN.GUI
             var autoInstalled = mod.IsInstalled && !mod.IsAutodetected
                 ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                 {
-                    Value = mod.IsAutoInstalled
+                    Value = mod.IsAutoInstalled,
+                    ToolTipText = Properties.Resources.MainModListAutoInstalledToolTip,
                 }
                 : new DataGridViewTextBoxCell()
                 {

@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Show unmanaged files in game folder (#3833 by: HebaruSan; reviewed: techman83)
 - [GUI] Installation history tab (#3834 by: HebaruSan; reviewed: techman83)
 - [GUI] Hide fake instance creation in GUI (#3839 by: HebaruSan; reviewed: techman83)
+- [GUI] Tooltip for auto-installed checkboxes (#3842 by: HebaruSan; reviewed: techman83)
 
 ### Bugfixes
 
