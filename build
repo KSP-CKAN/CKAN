@@ -1,14 +1,24 @@
 #!/bin/sh
 set -e
 
+configuration="Debug"
 arg0=""
 remainingArgs=""
 
+# .net framework not available on macos
+if [ "$(uname)" = "Darwin" ]; then
+    configuration="Debug_NetCore"
+fi
+
 if [ $# -gt 0 ]; then
-    arg0="$1"
+    configuration="$1"
 fi
 
 if [ $# -gt 1 ]; then
+    arg0="$2"
+fi
+
+if [ $# -gt 2 ]; then
     skippedFirst=false
     for i in "$@"; do
         if $skippedFirst; then
@@ -59,5 +69,5 @@ if $useExperimental; then
     cakeArgs="$cakeArgs --experimental"
 fi
 
-mono "$cakeExe" "$scriptFile" $cakeArgs $remainingArgs
+mono "$cakeExe" "$scriptFile" "--configuration=$configuration" $cakeArgs $remainingArgs
 exit $?
