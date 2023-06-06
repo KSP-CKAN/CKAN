@@ -21,18 +21,18 @@ jobs:
         run: apt-get install -y xvfb
 
       - name: Build ckan.exe and netkan.exe
-        run: ./build --configuration=Release
+        run: ./build Release
       - name: Run tests
-        run: xvfb-run ./build test+only --configuration=Release --where="Category!=FlakyNetwork"
+        run: xvfb-run ./build Release test+only --where="Category!=FlakyNetwork"
 
       - name: Build dmg
-        run: ./build osx --configuration=Release --exclusive
+        run: ./build Release osx --exclusive
       - name: Build deb
         env:
           CODENAME: stable
-        run: ./build deb --configuration=Release --exclusive
+        run: ./build Release deb --exclusive
       - name: Build rpm
-        run: ./build rpm --configuration=Release --exclusive
+        run: ./build Release rpm --exclusive
       - name: Import GPG key
         env:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
@@ -44,13 +44,13 @@ jobs:
         env:
           CODENAME: stable
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
-        run: ./build deb-sign --configuration=Release --exclusive
+        run: ./build Release deb-sign --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
       - name: Build rpm repository
         env:
           CODENAME: stable
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
-        run: ./build rpm-repo --configuration=Release --exclusive
+        run: ./build Release rpm-repo --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
 
       - name: Get release data

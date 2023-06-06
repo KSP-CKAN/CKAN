@@ -7,23 +7,23 @@
 #
 # To build the container:
 # $ docker build -t ckan .
-# 
+#
 # To use the container to update all mods:
 # $ docker run --rm -v ${KSPDIR}:/kspdir ckan
-# 
+#
 # To use the container to install MechJeb:
 # $ docker run --rm -v ${KSPDIR}:/kspdir ckan install MechJeb
-# 
+#
 # Both of the last two lines require that the ${KSPDIR} value be set.
-# 
+#
 # There is a docker-compose.yml supplied which will automatically do this for Linux users.
-# 
+#
 # To use the YAML file to build the container:
 # $ docker-compose build ckan
-# 
+#
 # To use the YAML file to update all mods:
 # $ docker-compose run --rm ckan
-# 
+#
 # To use the YAML file to install MechJeb
 # $ docker-compose run --rm ckan install MechJeb
 
@@ -56,7 +56,7 @@ COPY . /source
 WORKDIR /source
 ARG config
 ENV config ${config:-Release}
-RUN ./build --configuration=${config}
+RUN ./build Debug --configuration=${config}
 RUN mkdir /build
 RUN cp _build/repack/${config}/ckan.exe /build/ckan.exe
 ENTRYPOINT ["/root/entrypoint.sh"]

@@ -105,13 +105,13 @@ After Cake is installed by NuGet, the bootstrapper scripts then parse the comman
 The bootstrapper scripts use the following command line:
 
 ```
-./build [<target>] [<cake-args>...]
+./build [<configuration>] [<target>] [<cake-args>...]
 ```
 
 Which is then used to execute Cake with the following command line:
 
 ```
-cake.exe build.cake [--target=<target>] [<cake-args>...]
+cake.exe build.cake --configuration=<configuration or "Debug"> [--target=<target>] [<cake-args>...]
 ```
 
 The first argument is the Cake script to execute. This is always `build.cake` and does not ever need to be changed. The
@@ -205,8 +205,8 @@ push. GitHub's operation is pretty simple:
 
 - A bunch of packages are installed to make the build work.
 - Some commands are executed to simulate a graphical environment for testing.
-- The solution is built using `./build --configuration=$BUILD_CONFIGURATION`
-- The solution is tested using `./build test+only --configuration=$BUILD_CONFIGURATION --exclude=FlakyNetwork`
+- The solution is built using `./build $BUILD_CONFIGURATION`
+- The solution is tested using `./build $BUILD_CONFIGURATION test+only --exclude=FlakyNetwork`
     - The `--exclude=FlakyNetwork` argument is used to not execute tests that rely upon a network connection and could
       thus behave nondeterministically (frustrating behavior for a CI system).
 - The built executables (`ckan.exe` and `netkan.exe`) are uploaded to Amazon S3 if the following conditions are met:

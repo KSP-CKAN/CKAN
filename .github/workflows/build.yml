@@ -53,9 +53,9 @@ jobs:
           key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
 
       - name: Build ckan.exe and netkan.exe
-        run: ./build --configuration=${{ matrix.configuration}}
+        run: ./build ${{ matrix.configuration}}
       - name: Run tests
-        run: xvfb-run ./build test+only --configuration=${{ matrix.configuration }} --where="Category!=FlakyNetwork"
+        run: xvfb-run ./build ${{ matrix.configuration }} test+only --where="Category!=FlakyNetwork"
       - name: Run inflator container smoke test
         run: |
           cd _build
@@ -125,9 +125,9 @@ jobs:
           key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
 
       - name: Build with .NET Core
-        run: ./build --configuration=${{ matrix.configuration }}
+        run: ./build ${{ matrix.configuration }}
       - name: Test with .NET Core
-        run: ./build test+only --configuration=${{ matrix.configuration }}
+        run: ./build ${{ matrix.configuration }} test+only
 
       - name: Send Discord Notification
         env:

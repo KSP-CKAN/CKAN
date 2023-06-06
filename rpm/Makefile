@@ -50,7 +50,7 @@ $(REPORPM): $(RPM) $(REPOFILE)
 	    --addsign $@
 
 $(EXESRC):
-	cd .. && ./build --configuration=$(CONFIGURATION)
+	cd .. && ./build $(CONFIGURATION)
 
 clean:
 	rm -r "$(TOPDIR)"
