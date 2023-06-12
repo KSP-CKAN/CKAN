@@ -48,13 +48,18 @@ namespace CKAN.Extensions
         /// that's a prefix of the dir's FullName.
         /// </summary>
         /// <param name="dir">Any DirectoryInfo object</param>
-        /// <returns>The DriveInfo associated with this directory</returns>
+        /// <returns>The DriveInfo associated with this directory, if any, else null</returns>
         public static DriveInfo GetDrive(this DirectoryInfo dir)
-            => DriveInfo.GetDrives()
-                        .Where(dr => dr.RootDirectory == dir
-                                     || dr.RootDirectory.IsAncestorOf(dir))
-                        .OrderByDescending(dr => dr.RootDirectory.FullName.Length)
-                        .FirstOrDefault();
+            => Platform.IsMono
+                // Mono's DriveInfo.GetDrives doesn't return mounted filesystems, so we
+                // can't get the drive for a dir on Linux or Mac
+                ? null
+                : DriveInfo.GetDrives()
+                           .Where(dr => dr.IsReady
+                                        && dr.DriveType != DriveType.NoRootDirectory
+                                        && dr.RootDirectory.IsAncestorOf(dir))
+                           .OrderByDescending(dr => dr.RootDirectory.FullName.Length)
+                           .FirstOrDefault();
 
         /// <summary>
         /// A version of Stream.CopyTo with progress updates.
