@@ -1277,7 +1277,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.ko-KR.resx">
-      <LogicalName>CKAN.Properties.Resources.ko-KR.resources</LogicalName>
+      <LogicalName>CKAN.GUI.Properties.Resources.ko-KR.resources</LogicalName>
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

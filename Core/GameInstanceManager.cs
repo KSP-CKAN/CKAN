@@ -572,7 +572,7 @@ namespace CKAN
                 else
                 {
                     // Make sure we can access it
-                    var bytesFree = new DirectoryInfo(path).GetDrive().AvailableFreeSpace;
+                    var bytesFree = new DirectoryInfo(path).GetDrive()?.AvailableFreeSpace;
                     Cache = new NetModuleCache(this, path);
                     Configuration.DownloadCacheDir = path;
                 }

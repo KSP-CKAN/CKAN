@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Treat reinstalling a changed module as an update (#3828 by: HebaruSan; reviewed: techman83)
 - [Core] Scan for DLLs with or without primary mod dir (#3837 by: HebaruSan; reviewed: techman83)
 - [GUI] Show download errors for upgrades (#3840 by: HebaruSan; reviewed: techman83)
+- [Core] Stop trying to check free space on Mono (#3850 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 
