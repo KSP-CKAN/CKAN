@@ -180,10 +180,14 @@ namespace CKAN.Games
         public List<GameVersion> KnownVersions => versions;
 
         public GameVersion DetectVersion(DirectoryInfo where)
-            => GameVersion.Parse(
-                FileVersionInfo.GetVersionInfo(
-                    Path.Combine(where.FullName, "KSP2_x64.exe")).ProductVersion
-                ?? versions.Last().ToString());
+            => VersionFromFile(Path.Combine(where.FullName, "KSP2_x64.exe"));
+
+        private GameVersion VersionFromFile(string path)
+            => File.Exists(path)
+                ? GameVersion.Parse(
+                    FileVersionInfo.GetVersionInfo(path).ProductVersion
+                    ?? versions.Last().ToString())
+                : null;
 
         public string CompatibleVersionsFile => "compatible_game_versions.json";
 
