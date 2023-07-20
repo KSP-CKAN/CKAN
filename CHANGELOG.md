@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
-- [Netkan] Warnings for missing swinfo.json deps (#3827 by: HebaruSan)
+- [Netkan] Warnings for missing swinfo.json deps (#3827, #3858 by: HebaruSan)
 - [Build] Stop building on Mono 6.6 and earlier (#3832 by: HebaruSan)
 - [Netkan] Add download link to staging PRs (#3831 by: HebaruSan)
 - [Netkan] Clarify remote swinfo network errors (#3843 by: HebaruSan; reviewed: )
