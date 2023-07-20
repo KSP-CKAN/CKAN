@@ -87,9 +87,14 @@ namespace CKAN.NetKAN.Transformers
                     var moduleDeps = mod.depends.Select(r => (r as ModuleRelationshipDescriptor)?.name)
                                                 .Where(ident => ident != null)
                                                 .ToHashSet();
-                    var missingDeps = swinfo.dependencies.Select(dep => dep.id)
-                                                         .Except(moduleDeps)
-                                                         .ToList();
+                    var missingDeps = swinfo.dependencies
+                        .Select(dep => dep.id)
+                        .Where(depId => !moduleDeps.Contains(
+                            // Remove up to last period
+                            depId.Substring(depId.LastIndexOf('.') + 1),
+                            // Case insensitive
+                            StringComparer.InvariantCultureIgnoreCase))
+                        .ToList();
                     if (missingDeps.Any())
                     {
                         log.WarnFormat("Dependencies from swinfo.json missing from module: {0}",
