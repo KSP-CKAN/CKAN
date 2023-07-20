@@ -35,6 +35,7 @@ namespace CKAN.Extensions
                 {
                     // Done!
                     hashAlgo.TransformFinalBlock(buffer, 0, bytesRead);
+                    progress.Report(100);
                     break;
                 }
                 else

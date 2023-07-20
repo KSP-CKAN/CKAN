@@ -141,6 +141,9 @@ namespace CKAN
                     }
                     // If there was an error in STORING, delete the file so we can try it from scratch later
                     File.Delete(filename);
+
+                    // Tell downloader there is a problem with this file
+                    throw;
                 }
                 catch (OperationCanceledException exc)
                 {

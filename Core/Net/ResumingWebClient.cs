@@ -140,6 +140,7 @@ namespace CKAN
                                                                  bytesDownloaded, contentLength);
                                     }),
                                     cancelTokenSrc.Token);
+                                // Make sure caller knows we've finished
                                 DownloadProgress?.Invoke(100, contentLength, contentLength);
                                 cancelTokenSrc = null;
                             }

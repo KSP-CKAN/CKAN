@@ -312,13 +312,11 @@ namespace CKAN
         /// true to queue, false to start immediately
         /// </returns>
         private bool shouldQueue(Net.DownloadTarget target)
-        {
-            return downloads.Any(dl =>
+            => downloads.Any(dl =>
                     (!dl.target.url.IsAbsoluteUri || dl.target.url.Host == target.url.Host)
                     && dl.bytesLeft > 0
                     // Consider done if already tried and failed
                     && dl.error == null);
-        }
 
         private void triggerCompleted()
         {
@@ -391,52 +389,71 @@ namespace CKAN
         /// </summary>
         private void FileDownloadComplete(int index, Exception error, bool canceled, string etag)
         {
-            // Make sure the threads don't trip on one another
-            lock (dlMutex)
+            if (error != null)
             {
-                if (error != null)
-                {
-                    log.InfoFormat("Error downloading {0}: {1}", downloads[index].target.url, error.Message);
+                log.InfoFormat("Error downloading {0}: {1}", downloads[index].target.url, error.Message);
 
-                    // Check whether we were already downloading the fallback url
-                    if (!canceled && !downloads[index].triedFallback && downloads[index].target.fallbackUrl != null)
-                    {
-                        log.InfoFormat("Trying fallback URL: {0}", downloads[index].target.fallbackUrl);
-                        // Encode spaces to avoid confusing URL parsers
-                        User.RaiseMessage(Properties.Resources.NetAsyncDownloaderTryingFallback,
-                            downloads[index].target.url.ToString().Replace(" ", "%20"),
-                            downloads[index].target.fallbackUrl.ToString().Replace(" ", "%20")
-                        );
-                        // Try the fallbackUrl
-                        downloads[index].triedFallback = true;
-                        downloads[index].Download(downloads[index].target.fallbackUrl, downloads[index].path);
-                        // Short circuit the completion process so the fallback can run
-                        return;
-                    }
-                    else
-                    {
-                        downloads[index].error = error;
-                    }
+                // Check whether we were already downloading the fallback url
+                if (!canceled && !downloads[index].triedFallback && downloads[index].target.fallbackUrl != null)
+                {
+                    log.InfoFormat("Trying fallback URL: {0}", downloads[index].target.fallbackUrl);
+                    // Encode spaces to avoid confusing URL parsers
+                    User.RaiseMessage(Properties.Resources.NetAsyncDownloaderTryingFallback,
+                        downloads[index].target.url.ToString().Replace(" ", "%20"),
+                        downloads[index].target.fallbackUrl.ToString().Replace(" ", "%20")
+                    );
+                    // Try the fallbackUrl
+                    downloads[index].triedFallback = true;
+                    downloads[index].Download(downloads[index].target.fallbackUrl, downloads[index].path);
+                    // Short circuit the completion process so the fallback can run
+                    return;
                 }
                 else
                 {
-                    log.InfoFormat("Finished downloading {0}", downloads[index].target.url);
+                    downloads[index].error = error;
                 }
+            }
+            else
+            {
+                log.InfoFormat("Finished downloading {0}", downloads[index].target.url);
+                downloads[index].bytesLeft = 0;
+            }
 
+            // Make sure the threads don't trip on one another
+            lock (dlMutex)
+            {
+                // Start next download, if any
                 if (!canceled)
                 {
                     var next = queuedDownloads.FirstOrDefault(dl =>
                         !dl.url.IsAbsoluteUri || dl.url.Host == downloads[index].target.url.Host);
                     if (next != null)
                     {
+                        log.DebugFormat("Attempting to start queued download {0}", next.url);
                         // Start this host's next queued download
                         queuedDownloads.Remove(next);
                         DownloadModule(next);
                     }
                 }
+            }
 
+            try
+            {
+                // Tell calling code that this file is ready
                 onOneCompleted?.Invoke(downloads[index].target.url, downloads[index].path, downloads[index].error, etag);
+            }
+            catch (Exception exc)
+            {
+                if (downloads[index].error == null)
+                {
+                    // Capture anything that goes wrong with the post-download process as well
+                    downloads[index].error = exc;
+                }
+            }
 
+            // Make sure the threads don't trip on one another
+            lock (dlMutex)
+            {
                 if (++completed_downloads >= downloads.Count + queuedDownloads.Count)
                 {
                     log.DebugFormat("Triggering completion at {0} completed, {1} started, {2} queued", completed_downloads, downloads.Count, queuedDownloads.Count);
