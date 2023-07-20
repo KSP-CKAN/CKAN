@@ -72,16 +72,7 @@ namespace CKAN
                 .ToArray();
 
             // Loading done, commit etags
-            foreach (var kvp in savedEtags)
-            {
-                var repo = repos.Where(r => r.uri == kvp.Key).FirstOrDefault();
-                var etag = kvp.Value;
-                if (repo != null)
-                {
-                    log.DebugFormat("Setting etag for {0}: {1}", repo.name, etag);
-                    repo.last_server_etag = etag;
-                }
-            }
+            registry_manager.registry.SetETags(savedEtags);
 
             // Clean up temp files
             foreach (var f in files)
