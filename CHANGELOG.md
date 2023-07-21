@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Stop trying to check free space on Mono (#3850 by: HebaruSan; reviewed: techman83)
 - [Core] Handle missing KSP2 exe (#3854 by: HebaruSan; reviewed: techman83)
 - [Core] Linux network fixes (#3859 by: HebaruSan; reviewed: techman83)
+- [Core] Include repo etags in transactions (#3860 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 

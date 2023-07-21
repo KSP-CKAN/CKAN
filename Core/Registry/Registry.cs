@@ -442,6 +442,29 @@ namespace CKAN
 
         #endregion
 
+        /// <summary>
+        /// Set the etag values of the repositories
+        /// Provided in the API so it can enlist us in the transaction
+        /// </summary>
+        /// <param name="savedEtags">Mapping from repo URLs to etags received from servers</param>
+        public void SetETags(Dictionary<Uri, string> savedEtags)
+        {
+            log.Debug("Setting repo etags");
+
+            // Make sure etags get reverted if the transaction fails
+            EnlistWithTransaction();
+
+            foreach (var kvp in savedEtags)
+            {
+                var etag = kvp.Value;
+                foreach (var repo in repositories.Values.Where(r => r.uri == kvp.Key))
+                {
+                    log.DebugFormat("Setting etag for {0}: {1}", repo.name, etag);
+                    repo.last_server_etag = etag;
+                }
+            }
+        }
+
         public void SetAllAvailable(IEnumerable<CkanModule> newAvail)
         {
             log.DebugFormat(
