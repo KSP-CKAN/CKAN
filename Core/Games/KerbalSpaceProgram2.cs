@@ -96,7 +96,7 @@ namespace CKAN.Games
             return null;
         }
 
-        public string PrimaryModDirectoryRelative => "BepInEx/plugins";
+        public string PrimaryModDirectoryRelative => "GameData/Mods";
 
         public string PrimaryModDirectory(GameInstance inst)
             => CKANPathUtils.NormalizePath(
@@ -115,6 +115,8 @@ namespace CKAN.Games
 
         public string[] CreateableDirs => new string[]
         {
+            "GameData",
+            "GameData/Mods",
             "BepInEx",
             "BepInEx/plugins",
         };
@@ -200,6 +202,9 @@ namespace CKAN.Games
 
         public Uri RepositoryListURL => new Uri("https://raw.githubusercontent.com/KSP-CKAN/KSP2-CKAN-meta/main/repositories.json");
 
+        // Key: Allowed value of install_to
+        // Value: Relative path
+        // (PrimaryModDirectoryRelative is allowed implicitly)
         private readonly Dictionary<string, string> allowedFolders = new Dictionary<string, string>
         {
             { "BepInEx",         "BepInEx"         },
