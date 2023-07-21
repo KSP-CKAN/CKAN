@@ -70,9 +70,11 @@ namespace CKAN.Extensions
         public static void CopyTo(this Stream src, Stream dest, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
         {
             // CopyTo says its default buffer is 81920, but we want more than 1 update for a 100 KiB file
-            const int bufSize = 8192;
+            const int bufSize = 16384;
             var buffer = new byte[bufSize];
             long total = 0;
+            // Make sure we get an initial progress notification at the start
+            progress.Report(total);
             var lastProgressTime = DateTime.Now;
             while (true)
             {
@@ -91,6 +93,8 @@ namespace CKAN.Extensions
                     lastProgressTime = now;
                 }
             }
+            // Make sure we get a final progress notification after we're done
+            progress.Report(total);
         }
 
         private static readonly TimeSpan progressInterval = TimeSpan.FromMilliseconds(200);
