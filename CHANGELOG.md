@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.33.1
 
+### Bugfixes
 
+- [GUI] Fix exception at startup w/o default game inst (#3863 by: HebaruSan)
 
 ## v1.33.0 (Lagrange)
 
