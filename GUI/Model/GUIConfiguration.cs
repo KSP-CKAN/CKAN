@@ -99,7 +99,10 @@ namespace CKAN.GUI
 
         public void Save()
         {
-            SaveConfiguration(this);
+            if (!string.IsNullOrEmpty(path))
+            {
+                SaveConfiguration(this);
+            }
         }
 
         public static GUIConfiguration LoadOrCreateConfiguration(string path, IGame game)

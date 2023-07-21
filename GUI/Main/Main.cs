@@ -255,13 +255,6 @@ namespace CKAN.GUI
                     } while (CurrentInstance == null);
                     // We can only reach this point if CurrentInstance is not null
                     // AND we acquired the lock for it successfully
-                    if (!configuration.CheckForUpdatesOnLaunchNoNag && AutoUpdate.CanUpdate)
-                    {
-                        log.Debug("Asking user if they wish for auto-updates");
-                        if (new AskUserForAutoUpdatesDialog().ShowDialog(this) == DialogResult.OK)
-                            configuration.CheckForUpdatesOnLaunch = true;
-                        configuration.CheckForUpdatesOnLaunchNoNag = true;
-                    }
                     evt.Result = true;
                 },
                 (sender, evt) =>
@@ -389,6 +382,14 @@ namespace CKAN.GUI
             configuration = GUIConfiguration.LoadOrCreateConfiguration(
                 Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
                 CurrentInstance.game);
+
+            if (!configuration.CheckForUpdatesOnLaunchNoNag && AutoUpdate.CanUpdate)
+            {
+                log.Debug("Asking user if they wish for auto-updates");
+                if (new AskUserForAutoUpdatesDialog().ShowDialog(this) == DialogResult.OK)
+                    configuration.CheckForUpdatesOnLaunch = true;
+                configuration.CheckForUpdatesOnLaunchNoNag = true;
+            }
 
             var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
             if (!Directory.Exists(pluginsPath))
