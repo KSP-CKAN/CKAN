@@ -446,9 +446,18 @@
                     "pattern"     : "^Missions"
                 },
                 {
+                    "description" : "KSP2 default mods folder",
+                    "enum"        : [ "GameData/Mods" ]
+                },
+                {
+                    "description" : "KSP2 default mods folder with subfolder",
+                    "type"        : "string",
+                    "pattern"     : "^GameData/Mods/"
+                },
+                {
                     "description" : "KSP2 BepInEx plugins folder",
                     "type"        : "string",
-                    "pattern"     : "BepInEx/plugins"
+                    "pattern"     : "^BepInEx/plugins$"
                 }
             ]
         },

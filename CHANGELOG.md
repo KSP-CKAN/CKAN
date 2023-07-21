@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Installation history tab (#3834 by: HebaruSan; reviewed: techman83)
 - [GUI] Hide fake instance creation in GUI (#3839 by: HebaruSan; reviewed: techman83)
 - [GUI] Tooltip for auto-installed checkboxes (#3842 by: HebaruSan; reviewed: techman83)
+- [Core] Default `install_to` to GameData/Mods for KSP2 (#3861 by: HebaruSan; reviewed: techman83)
 
 ### Bugfixes
 
