@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.33.3
 
+### Bugfixes
 
+- [GUI] Updated Chinese translation to reduce misunderstandings (#3864 by: Fierce-Cat; reviewed: HebaruSan)
 
 ## v1.33.2 (Laplace)
 

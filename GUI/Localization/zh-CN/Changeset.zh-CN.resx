@@ -120,6 +120,7 @@
   <data name="Mod.Text" xml:space="preserve"><value>Mod</value></data>
   <data name="ChangeType.Text" xml:space="preserve"><value>更改</value></data>
   <data name="Reason.Text" xml:space="preserve"><value>操作理由</value></data>
-  <data name="CancelChangesButton.Text" xml:space="preserve"><value>清除</value></data>
+ <data name="BackButton.Text" xml:space="preserve"><value>返回</value></data>
+  <data name="CancelChangesButton.Text" xml:space="preserve"><value>取消更改</value></data>
   <data name="ConfirmChangesButton.Text" xml:space="preserve"><value>应用</value></data>
 </root>
