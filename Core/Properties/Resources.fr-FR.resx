@@ -209,6 +209,12 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve">
     <value>Les incohérences suivantes ont été trouvées :</value>
   </data>
+  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve">
+    <value>Chargement des modules du répertoire {0} ...</value>
+  </data>
+  <data name="NetRepoLoadedDownloadCounts" xml:space="preserve">
+    <value>Réception des compteurs de téléchargement du répertoire {0}</value>
+  </data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve">
     <value>`any_of` ne devrait pas être combiné avec `{0}`</value>
   </data>
@@ -554,7 +560,7 @@ Pensez à ajouter un jeton d'authentification pour augmenter la limite avant bri
   <data name="KrakenAlreadyRunning" xml:space="preserve">
     <value>Fichier verrou avec un ID de processus actif à {0}
 
-Cela veut probablement dire qu'une autre instance de CKAN s'occupe de cette instance. Vous pouvez supprimer ce fichier pour continuer, mais cela risque fortement de corrompre des données.
+Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu. 
 
 Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
   </data>

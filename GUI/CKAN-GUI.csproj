@@ -678,6 +678,9 @@
     <EmbeddedResource Include="Dialogs\DownloadsFailedDialog.resx">
       <DependentUpon>DownloadsFailedDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ru-RU\DownloadsFailedDialog.ru-RU.resx">
+      <DependentUpon>..\..\Dialogs\DownloadsFailedDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\EditLabelsDialog.resx">
       <DependentUpon>EditLabelsDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -810,6 +813,9 @@
     <EmbeddedResource Include="Localization\fr-FR\InstallFiltersDialog.fr-FR.resx">
       <DependentUpon>..\..\Dialogs\InstallFiltersDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ru-RU\InstallFiltersDialog.ru-RU.resx">
+      <DependentUpon>..\..\Dialogs\InstallFiltersDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -899,6 +905,9 @@
       <DependentUpon>..\..\Controls\PlayTime.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\fr-FR\PlayTime.fr-FR.resx">
+      <DependentUpon>..\..\Controls\PlayTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\ru-RU\PlayTime.ru-RU.resx">
       <DependentUpon>..\..\Controls\PlayTime.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ManageMods.resx">

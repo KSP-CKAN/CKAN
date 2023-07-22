@@ -375,13 +375,20 @@ Spróbuj przenieść {2} z {3} i uruchomić ponownie CKAN.</value>
   <data name="MainCantInstallDLC" xml:space="preserve">
     <value>CKAN nie może zainstalować dodatku {0}!</value>
   </data>
+  <data name="MainLoadingGameInstance" xml:space="preserve">
+    <value>Ładowanie instancji gry</value>
+  </data>
   <data name="MainCorruptedRegistry" xml:space="preserve">
     <value>Uszkodzony rejestr zarchiwizowany do {0}: {1}
 
 Oznacza to, że CKAN zapomniał o wszystkich zainstalowanych modyfikacjach, ale wciąż znajdują się w GameData. Możesz je ponownie zainstalować importując plik {2}.</value>
   </data>
-  <data name="MainDeleteLockfileYes" xml:space="preserve"><value>Wymuś</value></data>
-  <data name="MainDeleteLockfileNo" xml:space="preserve"><value>Anuluj</value></data>
+  <data name="MainDeleteLockfileYes" xml:space="preserve">
+    <value>Wymuś</value>
+  </data>
+  <data name="MainDeleteLockfileNo" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve">
     <value>{0} nie jest obsługiwany w bieżącej wersji gry i może w ogóle nie działać. Jeśli masz jakieś problemy z nim, NIE powinieneś poprosić twórców o pomoc.
 
@@ -563,6 +570,9 @@ Jeśli podejrzewasz błąd w programie: https://github.com/KSP-CKAN/CKAN/issues/
   </data>
   <data name="ModInfoRemoteAvcLabel" xml:space="preserve">
     <value>Plik wersji zdalnej:</value>
+  </data>
+  <data name="ModInfoRemoteSWInfoLabel" xml:space="preserve">
+    <value>Plik swinfo.json:</value>
   </data>
   <data name="ModInfoStoreLabel" xml:space="preserve">
     <value>Sklep:</value>

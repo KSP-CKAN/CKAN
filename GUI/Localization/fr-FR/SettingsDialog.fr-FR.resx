@@ -148,13 +148,13 @@
     <value>Cache des Téléchargements</value>
   </data>
   <data name="CacheSummary.Text" xml:space="preserve">
-    <value>N fichiers, M Mo</value>
+    <value>N fichiers, M Mio</value>
   </data>
   <data name="CacheLimitPreLabel.Text" xml:space="preserve">
     <value>Taille de cache max :</value>
   </data>
   <data name="CacheLimitPostLabel.Text" xml:space="preserve">
-    <value>Mo (vide pour illimité)</value>
+    <value>Mio (vide pour illimité)</value>
   </data>
   <data name="ChangeCacheButton.Text" xml:space="preserve">
     <value>Changer...</value>
