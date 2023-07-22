@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading.Tasks;
 
+using log4net;
+
 using CKAN.Games;
 
 namespace CKAN.GUI
@@ -19,9 +21,10 @@ namespace CKAN.GUI
             GameFolderTree.TreeViewNodeSorter = new DirsFirstSorter();
         }
 
-        public void LoadFiles(GameInstance inst)
+        public void LoadFiles(GameInstance inst, IUser user)
         {
             this.inst = inst;
+            this.user = user;
             this.registry = RegistryManager.Instance(inst).registry;
             Util.Invoke(this, _UpdateGameFolderTree);
         }
@@ -151,6 +154,7 @@ namespace CKAN.GUI
         {
             var relPath = GameFolderTree.SelectedNode?.Name;
             var absPath = inst.ToAbsoluteGameDir(relPath);
+            log.DebugFormat("Trying to delete {0}", absPath);
             if (inst.HasManagedFiles(registry, absPath))
             {
                 Main.Instance.ErrorDialog(Properties.Resources.FolderContainsManagedFiles, relPath);
@@ -161,15 +165,22 @@ namespace CKAN.GUI
                 Properties.Resources.DeleteUnmanagedFileDelete,
                 Properties.Resources.DeleteUnmanagedFileCancel))
             {
-                if (File.Exists(absPath))
+                try
                 {
-                    File.Delete(absPath);
+                    if (File.Exists(absPath))
+                    {
+                        File.Delete(absPath);
+                    }
+                    else if (Directory.Exists(absPath))
+                    {
+                        Directory.Delete(absPath, true);
+                    }
+                    GameFolderTree.Nodes.Remove(GameFolderTree.SelectedNode);
                 }
-                else if (Directory.Exists(absPath))
+                catch (Exception exc)
                 {
-                    Directory.Delete(absPath, true);
+                    user.RaiseError(exc.Message);
                 }
-                GameFolderTree.Nodes.Remove(GameFolderTree.SelectedNode);
             }
         }
 
@@ -213,7 +224,9 @@ namespace CKAN.GUI
         }
 
         private GameInstance inst;
+        private IUser        user;
         private Registry     registry;
+        private static readonly ILog log = LogManager.GetLogger(typeof(UnmanagedFiles));
     }
 
     internal class DirsFirstSorter : IComparer, IComparer<TreeNode>
