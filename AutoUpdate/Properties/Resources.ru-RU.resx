@@ -121,7 +121,7 @@
     <value>Использование</value>
   </data>
   <data name="DownloadNotFound" xml:space="preserve">
-    <value>Загруженный ckan.exe не найден по пути: {0}</value>
+    <value>Загруженный файл ckan.exe не найден по пути: {0}</value>
   </data>
   <data name="FailedToWait" xml:space="preserve">
     <value>Не удалось дождаться закрытия CKAN: {0}</value>

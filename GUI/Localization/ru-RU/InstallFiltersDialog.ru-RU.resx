@@ -117,16 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CancelCurrentActionButton.Text" xml:space="preserve">
-    <value>Отмена</value>
+  <data name="GlobalFiltersGroupBox.Text" xml:space="preserve">
+    <value>Глобальные фильтры</value>
   </data>
-  <data name="RetryCurrentActionButton.Text" xml:space="preserve">
-    <value>Повторить</value>
+  <data name="InstanceFiltersGroupBox.Text" xml:space="preserve">
+    <value>Фильтры сборки</value>
   </data>
-  <data name="OkButton.Text" xml:space="preserve">
-    <value>OK</value>
+  <data name="AddMiniAVCButton.Text" xml:space="preserve">
+    <value>Добавить MiniAVC</value>
   </data>
-  <data name="MessageTextBox.Text" xml:space="preserve">
-    <value>Ожидание завершения операции</value>
+  <data name="WarningLabel.Text" xml:space="preserve">
+    <value>ВАЖНО: Изменения фильтров установки вступят в силу при последующих установках модификаций; установленные файлы не затрагиваются.</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Установить фильтры</value>
   </data>
 </root>

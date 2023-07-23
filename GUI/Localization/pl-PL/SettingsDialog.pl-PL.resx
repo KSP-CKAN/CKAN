@@ -148,13 +148,13 @@
     <value>Pliki cache</value>
   </data>
   <data name="CacheSummary.Text" xml:space="preserve">
-    <value>N plików, M MB</value>
+    <value>N plików, M MiB</value>
   </data>
   <data name="CacheLimitPreLabel.Text" xml:space="preserve">
     <value>Limit rozmiaru cache:</value>
   </data>
   <data name="CacheLimitPostLabel.Text" xml:space="preserve">
-    <value>MB (zostaw puste, jeśli nie chcesz limitu)</value>
+    <value>MiB (zostaw puste, jeśli nie chcesz limitu)</value>
   </data>
   <data name="ChangeCacheButton.Text" xml:space="preserve">
     <value>Zmień...</value>

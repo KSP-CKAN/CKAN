@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [GUI] Updated Chinese translation to reduce misunderstandings (#3864 by: Fierce-Cat; reviewed: HebaruSan)
+- [Multiple] Translation updates from Crowdin (#3866 by: Nikita, Вячеслав Бучин, vinix, WujekFoliarz; reviewed: HebaruSan)
 
 ## v1.33.2 (Laplace)
 
