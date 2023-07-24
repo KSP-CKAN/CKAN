@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Updated Chinese translation to reduce misunderstandings (#3864 by: Fierce-Cat; reviewed: HebaruSan)
 - [Multiple] Translation updates from Crowdin (#3866 by: Nikita, Вячеслав Бучин, vinix, WujekFoliarz; reviewed: HebaruSan)
+- [Multiple] Fix deletion of unmanaged files (#3865 by: HebaruSan; reviewed: techman83)
 
 ## v1.33.2 (Laplace)
 

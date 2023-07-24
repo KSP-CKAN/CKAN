@@ -466,8 +466,9 @@ namespace CKAN
         /// <returns>true if any descendants of given path were installed by CKAN, false otherwise</returns>
         public bool HasManagedFiles(Registry registry, string absPath)
             => registry.FileOwner(ToRelativeGameDir(absPath)) != null
-               || Directory.EnumerateFileSystemEntries(absPath, "*", SearchOption.AllDirectories)
-                           .Any(f => registry.FileOwner(ToRelativeGameDir(f)) != null);
+               || (Directory.Exists(absPath)
+                   && Directory.EnumerateFileSystemEntries(absPath, "*", SearchOption.AllDirectories)
+                               .Any(f => registry.FileOwner(ToRelativeGameDir(f)) != null));
 
         public override string ToString()
             => string.Format(Properties.Resources.GameInstanceToString, game.ShortName, gameDir);
