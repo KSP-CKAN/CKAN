@@ -32,7 +32,7 @@ class CkanRepo(Repo):
         return Path(self.working_dir) / 'CHANGELOG.md'
 
     def prepend_line(self, path: Path, new_line: str) -> None:
-        with open(path, 'r+') as changelog:
+        with open(path, 'r+', encoding='utf-8') as changelog:
             lines = [new_line, *changelog.readlines()]
             changelog.seek(0)
             changelog.writelines(lines)
