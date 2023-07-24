@@ -133,8 +133,8 @@
   <data name="AddToCKANMenuItem.Text" xml:space="preserve">
     <value>Dodaj instalacje do CKAN</value>
   </data>
-  <data name="CloneFakeInstanceMenuItem.Text" xml:space="preserve">
-    <value>Sklonuj lub utwórz udawaną instalację KSP</value>
+  <data name="CloneGameInstanceMenuItem.Text" xml:space="preserve">
+    <value>Sklonuj instancję</value>
   </data>
   <data name="RenameButton.Text" xml:space="preserve">
     <value>Zmień nazwę</value>
