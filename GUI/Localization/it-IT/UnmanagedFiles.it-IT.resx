@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -117,37 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="labelOldInstance.Text" xml:space="preserve">
-    <value>克隆的实例</value>
+  <data name="OKButton.Text" xml:space="preserve">
+    <value>OK</value>
   </data>
-  <data name="labelOldPath.Text" xml:space="preserve">
-    <value>克隆的路径</value>
+  <data name="RefreshButton.Text" xml:space="preserve">
+    <value>Ricarica</value>
   </data>
-  <data name="buttonInstancePathSelection.Text" xml:space="preserve">
-    <value>选择...</value>
+  <data name="ExpandAllButton.Text" xml:space="preserve">
+    <value>Espandi Tutto</value>
   </data>
-  <data name="labelNewName.Text" xml:space="preserve">
-    <value>新实例名称:</value>
+  <data name="CollapseAllButton.Text" xml:space="preserve">
+    <value>Comprimi Tutto</value>
   </data>
-  <data name="labelNewPath.Text" xml:space="preserve">
-    <value>新实例路径:</value>
+  <data name="ResetCollapseButton.Text" xml:space="preserve">
+    <value>Ripristina</value>
   </data>
-  <data name="buttonPathBrowser.Text" xml:space="preserve">
-    <value>选择...</value>
+  <data name="ShowInFolderButton.Text" xml:space="preserve">
+    <value>Visualizza nella cartella</value>
   </data>
-  <data name="checkBoxSetAsDefault.Text" xml:space="preserve">
-    <value>将新实例设为默认</value>
-  </data>
-  <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
-    <value>切换到新实例</value>
-  </data>
-  <data name="buttonOK.Text" xml:space="preserve">
-    <value>创建</value>
-  </data>
-  <data name="buttonCancel.Text" xml:space="preserve">
-    <value>取消</value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>克隆或伪装KSP实例</value>
+  <data name="DeleteButton.Text" xml:space="preserve">
+    <value>Elimina</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -117,37 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="labelOldInstance.Text" xml:space="preserve">
-    <value>克隆的实例</value>
+  <data name="TimestampColumn.Text" xml:space="preserve">
+    <value>Horodatage</value>
   </data>
-  <data name="labelOldPath.Text" xml:space="preserve">
-    <value>克隆的路径</value>
+  <data name="NotInstalledGroup.Header" xml:space="preserve">
+    <value>Non installé actuellement</value>
   </data>
-  <data name="buttonInstancePathSelection.Text" xml:space="preserve">
-    <value>选择...</value>
+  <data name="InstalledGroup.Header" xml:space="preserve">
+    <value>Installé actuellement</value>
   </data>
-  <data name="labelNewName.Text" xml:space="preserve">
-    <value>新实例名称:</value>
+  <data name="NameColumn.Text" xml:space="preserve">
+    <value>Nom</value>
   </data>
-  <data name="labelNewPath.Text" xml:space="preserve">
-    <value>新实例路径:</value>
+  <data name="VersionColumn.Text" xml:space="preserve">
+    <value>Version</value>
   </data>
-  <data name="buttonPathBrowser.Text" xml:space="preserve">
-    <value>选择...</value>
+  <data name="AuthorColumn.Text" xml:space="preserve">
+    <value>Auteurs</value>
   </data>
-  <data name="checkBoxSetAsDefault.Text" xml:space="preserve">
-    <value>将新实例设为默认</value>
+  <data name="DescriptionColumn.Text" xml:space="preserve">
+    <value>Description</value>
   </data>
-  <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
-    <value>切换到新实例</value>
+  <data name="SelectInstallMessage.Text" xml:space="preserve">
+    <value>Cliquez sur un horodatage à gauche pour voir quels mods ont été installés</value>
   </data>
-  <data name="buttonOK.Text" xml:space="preserve">
-    <value>创建</value>
+  <data name="NoModsMessage.Text" xml:space="preserve">
+    <value>Aucun mod n'a été installé</value>
   </data>
-  <data name="buttonCancel.Text" xml:space="preserve">
-    <value>取消</value>
+  <data name="InstallButton.Text" xml:space="preserve">
+    <value>Installer</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>克隆或伪装KSP实例</value>
+  <data name="OKButton.Text" xml:space="preserve">
+    <value>OK</value>
   </data>
 </root>

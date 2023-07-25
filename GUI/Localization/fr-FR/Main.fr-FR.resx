@@ -187,7 +187,7 @@
     <value>&amp;À Propos</value>
   </data>
   <data name="ManageModsTabPage.Text" xml:space="preserve">
-    <value>Gérer les mods</value>
+    <value>Gérer les Mods</value>
   </data>
   <data name="ChangesetTabPage.Text" xml:space="preserve">
     <value>Résumé des changements</value>
@@ -196,10 +196,10 @@
     <value>Registre</value>
   </data>
   <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve">
-    <value>Choisir des mods</value>
+    <value>Choisir des Mods</value>
   </data>
   <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve">
-    <value>Choisir des mods recommandés, suggérés ou supportés</value>
+    <value>Choisir des Mods Recommandés, Suggérés ou Supportés</value>
   </data>
   <data name="PlayTimeTabPage.Text" xml:space="preserve">
     <value>Temps de Jeu</value>
@@ -209,6 +209,12 @@
   </data>
   <data name="EditModpackTabPage.Text" xml:space="preserve">
     <value>Modifier le Modpack</value>
+  </data>
+  <data name="UnmanagedFilesTabPage.Text" xml:space="preserve">
+    <value>Fichiers non gérés</value>
+  </data>
+  <data name="InstallationHistoryTabPage.Text" xml:space="preserve">
+    <value>Historique d'installation</value>
   </data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve">
     <value>CKAN</value>
@@ -239,6 +245,12 @@
   </data>
   <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Temps de jeu...</value>
+  </data>
+  <data name="viewUnmanagedFilesStripMenuItem.Text" xml:space="preserve">
+    <value>Fichiers &amp;non gérés...</value>
+  </data>
+  <data name="installationHistoryStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Historique d'installation...</value>
   </data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve">
     <value>CKAN</value>
