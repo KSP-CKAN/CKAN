@@ -124,7 +124,7 @@
     <value>Chemin à cloner :</value>
   </data>
   <data name="buttonInstancePathSelection.Text" xml:space="preserve">
-    <value>Parcourir</value>
+    <value>Parcourir...</value>
   </data>
   <data name="labelNewName.Text" xml:space="preserve">
     <value>Nom de la nouvelle instance :</value>
@@ -133,7 +133,7 @@
     <value>Chemin de la nouvelle instance :</value>
   </data>
   <data name="buttonPathBrowser.Text" xml:space="preserve">
-    <value>Parcourir</value>
+    <value>Parcourir...</value>
   </data>
   <data name="checkBoxSetAsDefault.Text" xml:space="preserve">
     <value>Marquer par défaut</value>
@@ -148,6 +148,6 @@
     <value>Annuler</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Cloner une Instance</value>
+    <value>Cloner une Instance de Jeu</value>
   </data>
 </root>
