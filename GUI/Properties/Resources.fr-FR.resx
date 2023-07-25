@@ -152,6 +152,18 @@
   <data name="filter" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\filter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="expandAll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\expandAll.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="collapseAll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\collapseAll.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="resetCollapse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\resetCollapse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="forward" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\forward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -653,6 +665,9 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   <data name="MainModListAutoDetected" xml:space="preserve">
     <value>AD</value>
   </data>
+  <data name="MainModListAutoInstalledToolTip" xml:space="preserve">
+    <value>Si coché, désinstaller automatiquement ce mod si tout ce qui en dépend est supprimé</value>
+  </data>
   <data name="MainModListUnknownFilter" xml:space="preserve">
     <value>Type de filtre inconnu {0} dans IsModInFilter</value>
   </data>
@@ -1053,5 +1068,19 @@ Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus
   <data name="FilterLinkToolTip">
     <value>Cliquer pour rechercher
 Ctrl-clic ou Maj-clic pour combiner avec la recherche en cours</value>
+  </data>
+  <data name="FolderContainsManagedFiles">
+    <value>Impossible de supprimer {0} car il contient des fichiers qui ont été installés par CKAN.
+Si vous souhaitez supprimer ce dossier, désinstallez ces mods normalement.</value>
+  </data>
+  <data name="DeleteUnmanagedFileConfirmation">
+    <value>Êtes-vous sûr de vouloir supprimer {0} ?
+Cette action est irréversible !</value>
+  </data>
+  <data name="DeleteUnmanagedFileDelete" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="DeleteUnmanagedFileCancel" xml:space="preserve">
+    <value>Annuler</value>
   </data>
 </root>
