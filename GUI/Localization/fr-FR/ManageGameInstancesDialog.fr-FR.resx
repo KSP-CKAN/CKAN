@@ -134,7 +134,7 @@
     <value>Ajouter une instance à CKAN</value>
   </data>
   <data name="CloneGameInstanceMenuItem.Text" xml:space="preserve">
-    <value>Cloner une nouvelle instance</value>
+    <value>Cloner une instance</value>
   </data>
   <data name="RenameButton.Text" xml:space="preserve">
     <value>Renommer</value>
