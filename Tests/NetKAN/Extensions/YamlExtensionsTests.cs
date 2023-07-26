@@ -35,7 +35,7 @@ namespace Tests.NetKAN.Extensions
             });
 
             // Act
-            YamlMappingNode yaml = YamlExtensions.Parse(input);
+            YamlMappingNode yaml = YamlExtensions.Parse(input).First();
 
             // Assert
             Assert.AreEqual("v1.4",                               (string)yaml["spec_version"]);

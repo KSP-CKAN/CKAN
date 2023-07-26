@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+
 using log4net;
 using Newtonsoft.Json.Linq;
 
@@ -52,37 +54,42 @@ namespace CKAN.NetKAN.Transformers
 
                 Log.DebugFormat("Target netkan:{0}{1}", Environment.NewLine, targetFileText);
 
-                var targetJson = YamlExtensions.Parse(targetFileText).ToJObject();
-                var targetMetadata = new Metadata(targetJson);
+                var targetJsons = YamlExtensions.Parse(targetFileText)
+                                                .Select(ymap => ymap.ToJObject())
+                                                .ToArray();
 
-                if (targetMetadata.Kref == null || targetMetadata.Kref.Source != "netkan")
+                foreach (var targetJson in targetJsons)
                 {
-                    json["spec_version"] = ModuleVersion.Max(metadata.SpecVersion, targetMetadata.SpecVersion)
-                        .ToSpecVersionJson();
-
-                    if (targetJson["$kref"] != null)
+                    var targetMetadata =  new Metadata(targetJson);
+                    if (targetMetadata.Kref == null || targetMetadata.Kref.Source != "netkan")
                     {
-                        json["$kref"] = targetJson["$kref"];
+                        json["spec_version"] = ModuleVersion.Max(metadata.SpecVersion, targetMetadata.SpecVersion)
+                            .ToSpecVersionJson();
+
+                        if (targetJson["$kref"] != null)
+                        {
+                            json["$kref"] = targetJson["$kref"];
+                        }
+                        else
+                        {
+                            json.Remove("$kref");
+                        }
+
+                        json.SafeMerge("resources", targetJson["resources"]);
+
+                        foreach (var property in targetJson.Properties())
+                        {
+                            json.SafeAdd(property.Name, property.Value);
+                        }
+
+                        Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+
+                        yield return new Metadata(json);
                     }
                     else
                     {
-                        json.Remove("$kref");
+                        throw new Kraken("The target of a metanetkan may not also be a metanetkan.");
                     }
-
-                    json.SafeMerge("resources", targetJson["resources"]);
-
-                    foreach (var property in targetJson.Properties())
-                    {
-                        json.SafeAdd(property.Name, property.Value);
-                    }
-
-                    Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
-
-                    yield return new Metadata(json);
-                }
-                else
-                {
-                    throw new Kraken("The target of a metanetkan may not also be a metanetkan.");
                 }
             }
             else

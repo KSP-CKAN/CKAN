@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using CKAN.Versioning;
+
 using Newtonsoft.Json.Linq;
 using YamlDotNet.RepresentationModel;
+
+using CKAN.Versioning;
 using CKAN.NetKAN.Extensions;
 
 namespace CKAN.NetKAN.Model
@@ -20,7 +23,7 @@ namespace CKAN.NetKAN.Model
 
         private readonly JObject _json;
 
-        public string        Identifier      { get { return (string)_json["identifier"]; } }
+        public string        Identifier      => (string)_json["identifier"];
         public RemoteRef     Kref            { get; private set; }
         public RemoteRef     Vref            { get; private set; }
         public ModuleVersion SpecVersion     { get; private set; }
@@ -96,7 +99,10 @@ namespace CKAN.NetKAN.Model
             JToken downloadToken;
             if (json.TryGetValue(DownloadPropertyName, out downloadToken))
             {
-                Download = new Uri((string)downloadToken);
+                Download = new Uri(
+                    downloadToken.Type == JTokenType.String
+                        ? (string)downloadToken
+                        : (string)downloadToken.Children().First());
             }
 
             JToken stagedToken;
@@ -123,6 +129,41 @@ namespace CKAN.NetKAN.Model
         {
         }
 
+        public static Metadata Merge(Metadata[] modules)
+            => modules.Length == 1 ? modules[0]
+                                   : new Metadata(MergeJson(modules.Select(m => m._json)
+                                                                   .ToArray()));
+
+        private static JObject MergeJson(JObject[] jsons)
+        {
+            var mergeSettings = new JsonMergeSettings()
+            {
+                MergeArrayHandling     = MergeArrayHandling.Replace,
+                MergeNullValueHandling = MergeNullValueHandling.Merge,
+            };
+            var downloads = jsons.SelectMany(json => json[DownloadPropertyName] is JArray
+                                                         ? json[DownloadPropertyName].Children()
+                                                         : Enumerable.Repeat(json[DownloadPropertyName], 1))
+                                 .Distinct()
+                                 .ToArray();
+            var first = jsons.First();
+            foreach (var other in jsons.Skip(1))
+            {
+                if ((string)first["download_size"] != (string)other["download_size"]
+                    || (string)first["download_hash"]["sha1"] != (string)other["download_hash"]["sha1"]
+                    || (string)first["download_hash"]["sha256"] != (string)other["download_hash"]["sha256"])
+                {
+                    // Can't treat the URLs as equivalent if they're different files
+                    throw new Kraken(string.Format(
+                        "Download from {0} does not match download from {1}",
+                        first["download"], other["download"]));
+                }
+                first.Merge(other, mergeSettings);
+            }
+            first[DownloadPropertyName] = JArray.FromObject(downloads);
+            return first;
+        }
+
         public string[] Licenses
         {
             get
@@ -142,13 +183,7 @@ namespace CKAN.NetKAN.Model
             }
         }
 
-        public bool Redistributable
-        {
-            get
-            {
-                return Licenses.Any(lic => new License(lic).Redistributable);
-            }
-        }
+        public bool Redistributable => Licenses.Any(lic => new License(lic).Redistributable);
 
         public Uri FallbackDownload
         {
@@ -175,9 +210,6 @@ namespace CKAN.NetKAN.Model
             }
         }
 
-        public JObject Json()
-        {
-            return (JObject)_json.DeepClone();
-        }
+        public JObject Json() => (JObject)_json.DeepClone();
     }
 }

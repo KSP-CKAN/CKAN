@@ -57,8 +57,20 @@
         },
         "download" : {
             "description" : "URL where mod can be downloaded by tools",
-            "type"        : "string",
-            "format"      : "uri"
+            "oneOf" : [
+                {
+                    "type"   : "string",
+                    "format" : "uri"
+                },
+                {
+                    "type"        : "array",
+                    "items"       : {
+                        "type"    : "string",
+                        "format"  : "uri"
+                    },
+                    "uniqueItems" : true
+                }
+            ]
         },
         "download_size" : {
             "description" : "The size of the download in bytes",

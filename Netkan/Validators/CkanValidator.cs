@@ -17,6 +17,7 @@ namespace CKAN.NetKAN.Validators
             _validators = new List<IValidator>
             {
                 new IsCkanModuleValidator(),
+                new DownloadArrayValidator(),
                 new TagsValidator(),
                 new InstallsFilesValidator(downloader, moduleService, game),
                 new MatchesKnownGameVersionsValidator(game),

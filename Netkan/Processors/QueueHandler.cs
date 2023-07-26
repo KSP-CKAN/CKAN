@@ -131,7 +131,9 @@ namespace CKAN.NetKAN.Processors
         private IEnumerable<SendMessageBatchRequestEntry> Inflate(Message msg)
         {
             log.DebugFormat("Metadata returned: {0}", msg.Body);
-            var netkan = new Metadata(YamlExtensions.Parse(msg.Body));
+            var netkans = YamlExtensions.Parse(msg.Body)
+                                        .Select(ymap => new Metadata(ymap))
+                                        .ToArray();
 
             int releases = 1;
             MessageAttributeValue releasesAttr;
@@ -147,14 +149,15 @@ namespace CKAN.NetKAN.Processors
                 highVer = new ModuleVersion(highVerAttr.StringValue);
             }
 
-            log.InfoFormat("Inflating {0}", netkan.Identifier);
+            log.InfoFormat("Inflating {0}", netkans.First().Identifier);
             IEnumerable<Metadata> ckans = null;
             bool   caught        = false;
             string caughtMessage = null;
-            var    opts          = new TransformOptions(releases, null, highVer, netkan.Staged, netkan.StagingReason);
+            var    opts          = new TransformOptions(releases, null, highVer, netkans.First().Staged, netkans.First().StagingReason);
             try
             {
-                ckans = inflator.Inflate($"{netkan.Identifier}.netkan", netkan, opts);
+                ckans = inflator.Inflate($"{netkans[0].Identifier}.netkan", netkans, opts)
+                    .ToArray();
             }
             catch (Exception e)
             {
@@ -167,14 +170,14 @@ namespace CKAN.NetKAN.Processors
             }
             if (caught)
             {
-                yield return inflationMessage(null, netkan, opts, false, caughtMessage);
+                yield return inflationMessage(null, netkans.FirstOrDefault(), opts, false, caughtMessage);
             }
             if (ckans != null)
             {
                 foreach (Metadata ckan in ckans)
                 {
                     log.InfoFormat("Sending {0}-{1}", ckan.Identifier, ckan.Version);
-                    yield return inflationMessage(ckan, netkan, opts, true);
+                    yield return inflationMessage(ckan, netkans.FirstOrDefault(), opts, true);
                 }
             }
         }
@@ -231,7 +234,7 @@ namespace CKAN.NetKAN.Processors
                     new MessageAttributeValue()
                     {
                         DataType    = "String",
-                        StringValue = Program.CkanFileName(ckan)
+                        StringValue = Program.CkanFileName(ckan.Json())
                     }
                 );
             }

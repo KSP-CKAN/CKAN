@@ -170,6 +170,9 @@ A fully formed URL, indicating where a machine may download the
 described version of the mod. Note: This field is not required if the `kind` is `metapackage`
 or `dlc`.
 
+May also be an array of URLs (**v1.34**), any of which may be used to
+download the mod.
+
 ##### license
 
 The license (**v1.0**), or list of licenses (**v1.8**), under which the mod is released.
@@ -708,6 +711,11 @@ including lists and objects.
 NetKAN is the name the tool which is used to automatically generate CKAN files from a variety of sources. NetKAN
 consumes `.netkan` files to produce `.ckan` files. `.netkan` files are a *strict superset* of `.ckan` files. Every
 `.ckan` file is a valid `.netkan` file but not vice versa. NetKAN uses the following fields to produce `.ckan` files.
+
+If a mod is hosted on multiple servers, a `.netkan` file may contain multiple metadata documents
+(separated by `---` in YAML or separate top-level `{}` object blocks in JSON), one per server.
+These will all be checked for new releases and the results merged based on the value of their `version` properties,
+resulting in a `download` property containing an array of multiple download URLs.
 
 ##### YAML Option
 

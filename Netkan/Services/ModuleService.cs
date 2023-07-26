@@ -213,7 +213,8 @@ namespace CKAN.NetKAN.Services
         {
             using (var sr = new StreamReader(stream))
             {
-                return YamlExtensions.Parse(sr).ToJObject();
+                // Only one document per internal .ckan
+                return YamlExtensions.Parse(sr).FirstOrDefault()?.ToJObject();
             }
         }
 
