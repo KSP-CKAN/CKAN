@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Updated Chinese translation to reduce misunderstandings (#3864 by: Fierce-Cat; reviewed: HebaruSan)
 - [Multiple] Translation updates from Crowdin (#3866, #3868 by: Nikita, Вячеслав Бучин, vinix, WujekFoliarz; reviewed: HebaruSan)
 - [Multiple] Fix deletion of unmanaged files (#3865 by: HebaruSan; reviewed: techman83)
+- [Netkan] Fix Netkan swinfo transformer null list error (#3869 by: HebaruSan)
 
 ## v1.33.2 (Laplace)
 
