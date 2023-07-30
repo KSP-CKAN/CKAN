@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Translation updates from Crowdin (#3866, #3868 by: Nikita, Вячеслав Бучин, vinix, WujekFoliarz; reviewed: HebaruSan)
 - [Multiple] Fix deletion of unmanaged files (#3865 by: HebaruSan; reviewed: techman83)
 - [Build] Add missing dependency to .deb package (#3872 by: HebaruSan; reviewed: erkinalp)
+- [Core] Add missing resource string for upgrading (#3873 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 

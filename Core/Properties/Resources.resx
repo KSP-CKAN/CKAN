@@ -236,6 +236,7 @@ Overwrite?</value></data>
   <data name="ModuleInstallerRemoveAborted" xml:space="preserve"><value>Mod removal aborted at user request</value></data>
   <data name="ModuleInstallerRemovingMod" xml:space="preserve"><value>Removing {0}...</value></data>
   <data name="ModuleInstallerAboutToUpgrade" xml:space="preserve"><value>About to upgrade:</value></data>
+  <data name="ModuleInstallerUpgradeInstallingResuming" xml:space="preserve"><value> * Install: {0} {1} ({2}, {3} remaining)</value></data>
   <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve"><value> * Install: {0} {1} ({2}, {3})</value></data>
   <data name="ModuleInstallerUpgradeInstallingCached" xml:space="preserve"><value> * Install: {0} {1} (cached)</value></data>
   <data name="ModuleInstallerUpgradeReinstalling" xml:space="preserve"><value> * Re-install: {0} {1}</value></data>
