@@ -38,7 +38,7 @@ namespace Tests.Core.Types
             Assert.AreEqual("kOS - Kerbal OS", module.name);
             Assert.AreEqual("kOS", module.identifier);
             Assert.AreEqual("A programming and automation environment for KSP craft.", module.@abstract);
-            Assert.AreEqual("https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip", module.download.ToString());
+            Assert.AreEqual("https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip", module.download[0].ToString());
             Assert.AreEqual("GPL-3.0", module.license.First().ToString());
             Assert.AreEqual("0.14", module.version.ToString());
             Assert.AreEqual("stable", module.release_status.ToString());
@@ -65,7 +65,7 @@ namespace Tests.Core.Types
         public void SpacesPreservedInDownload()
         {
             CkanModule module = CkanModule.FromJson(TestData.DogeCoinFlag_101());
-            Assert.AreEqual("https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01", module.download.OriginalString);
+            Assert.AreEqual("https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01", module.download[0].OriginalString);
         }
 
         [Test]

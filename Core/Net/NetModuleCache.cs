@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.IO;
 using System.Threading;
 using System.Security.Cryptography;
@@ -48,29 +49,37 @@ namespace CKAN
             cache.MoveFrom(fromDir);
         }
         public bool IsCached(CkanModule m)
-        {
-            return cache.IsCached(m.download);
-        }
+            => m.download?.Any(dlUri => cache.IsCached(dlUri))
+                ?? false;
         public bool IsCached(CkanModule m, out string outFilename)
         {
-            return cache.IsCached(m.download, out outFilename);
+            if (m.download != null)
+            {
+                foreach (var dlUri in m.download)
+                {
+                    if (cache.IsCached(dlUri, out outFilename))
+                    {
+                        return true;
+                    }
+                }
+            }
+            outFilename = null;
+            return false;
         }
         public bool IsCachedZip(CkanModule m)
-        {
-            return cache.IsCachedZip(m.download);
-        }
+            => m.download?.Any(dlUri => cache.IsCachedZip(dlUri))
+                ?? false;
         public bool IsMaybeCachedZip(CkanModule m)
-        {
-            return cache.IsMaybeCachedZip(m.download, m.release_date);
-        }
+            => m.download?.Any(dlUri => cache.IsMaybeCachedZip(dlUri, m.release_date))
+                ?? false;
         public string GetCachedFilename(CkanModule m)
-        {
-            return cache.GetCachedFilename(m.download, m.release_date);
-        }
+            => m.download?.Select(dlUri => cache.GetCachedFilename(dlUri, m.release_date))
+                          .Where(filename => filename != null)
+                          .FirstOrDefault();
         public string GetCachedZip(CkanModule m)
-        {
-            return cache.GetCachedZip(m.download);
-        }
+            => m.download?.Select(dlUri => cache.GetCachedZip(dlUri))
+                          .Where(filename => filename != null)
+                          .FirstOrDefault();
         public void GetSizeInfo(out int numFiles, out long numBytes, out long bytesFree)
         {
             cache.GetSizeInfo(out numFiles, out numBytes, out bytesFree);
@@ -90,10 +99,13 @@ namespace CKAN
         private static string DescribeUncachedAvailability(CkanModule m, FileInfo fi)
             => fi.Exists
                 ? string.Format(Properties.Resources.NetModuleCacheModuleResuming,
-                    m.name, m.version, m.download.Host ?? "",
+                    m.name, m.version,
+                    string.Join(", ", m.download.Select(dl => dl.Host).Distinct()),
                     CkanModule.FmtSize(m.download_size - fi.Length))
                 : string.Format(Properties.Resources.NetModuleCacheModuleHostSize,
-                    m.name, m.version, m.download.Host ?? "", CkanModule.FmtSize(m.download_size));
+                    m.name, m.version,
+                    string.Join(", ", m.download.Select(dl => dl.Host).Distinct()),
+                    CkanModule.FmtSize(m.download_size));
 
         public string DescribeAvailability(CkanModule m)
             => m.IsMetapackage
@@ -200,22 +212,32 @@ namespace CKAN
             cancelToken.ThrowIfCancellationRequested();
 
             // If no exceptions, then everything is fine
-            var success = cache.Store(module.download, path, description ?? module.StandardName(), move);
+            var success = cache.Store(module.download[0], path, description ?? module.StandardName(), move);
             // Make sure completion is signalled so progress bars go away
             progress?.Report(100);
             return success;
         }
 
         /// <summary>
-        /// Remove a module's download file from the cache
+        /// Remove a module's download files from the cache
         /// </summary>
         /// <param name="module">Module to purge</param>
         /// <returns>
-        /// True if purged, false otherwise
+        /// True if all purged, false otherwise
         /// </returns>
         public bool Purge(CkanModule module)
         {
-            return cache.Remove(module.download);
+            if (module.download != null)
+            {
+                foreach (var dlUri in module.download)
+                {
+                    if (!cache.Remove(dlUri))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         private NetFileCache cache;

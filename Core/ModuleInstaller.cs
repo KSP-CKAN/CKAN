@@ -1051,14 +1051,14 @@ namespace CKAN
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingResuming,
                                 module.name, module.version,
-                                module.download.Host,
+                                string.Join(", ", module.download.Select(dl => dl.Host).Distinct()),
                                 CkanModule.FmtSize(module.download_size - inProgressFile.Length));
                         }
                         else
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingUncached,
                                 module.name, module.version,
-                                module.download.Host,
+                                string.Join(", ", module.download.Select(dl => dl.Host).Distinct()),
                                 CkanModule.FmtSize(module.download_size));
                         }
                     }
@@ -1093,13 +1093,15 @@ namespace CKAN
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingResuming,
                                     module.name, installed.version, module.version,
-                                    module.download.Host, CkanModule.FmtSize(module.download_size - inProgressFile.Length));
+                                    string.Join(", ", module.download.Select(dl => dl.Host).Distinct()),
+                                    CkanModule.FmtSize(module.download_size - inProgressFile.Length));
                             }
                             else
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingUncached,
                                     module.name, installed.version, module.version,
-                                    module.download.Host, CkanModule.FmtSize(module.download_size));
+                                    string.Join(", ", module.download.Select(dl => dl.Host).Distinct()),
+                                    CkanModule.FmtSize(module.download_size));
                             }
                         }
                         else

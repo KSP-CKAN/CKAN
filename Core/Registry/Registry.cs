@@ -1266,14 +1266,17 @@ namespace CKAN
                     CkanModule mod = kvp2.Value;
                     if (mod.download != null)
                     {
-                        string hash = NetFileCache.CreateURLHash(mod.download);
-                        if (index.ContainsKey(hash))
+                        foreach (var dlUri in mod.download)
                         {
-                            index[hash].Add(mod);
-                        }
-                        else
-                        {
-                            index.Add(hash, new List<CkanModule>() {mod});
+                            string hash = NetFileCache.CreateURLHash(dlUri);
+                            if (index.ContainsKey(hash))
+                            {
+                                index[hash].Add(mod);
+                            }
+                            else
+                            {
+                                index.Add(hash, new List<CkanModule>() {mod});
+                            }
                         }
                     }
                 }

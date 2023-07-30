@@ -6,6 +6,8 @@ using System.Threading;
 
 using log4net;
 
+using CKAN.Extensions;
+
 namespace CKAN
 {
     /// <summary>
@@ -28,7 +30,8 @@ namespace CKAN
             downloader.onOneCompleted += ModuleDownloadComplete;
             downloader.Progress += (target, remaining, total) =>
             {
-                var mod = modules.FirstOrDefault(m => m.download == target.url);
+                var mod = modules.FirstOrDefault(m => m.download?.Any(dlUri => target.urls.Contains(dlUri))
+                                                      ?? false);
                 if (mod != null && Progress != null)
                 {
                     Progress(mod, remaining, total);
@@ -37,41 +40,83 @@ namespace CKAN
             this.cache = cache;
         }
 
+        internal static List<HashSet<CkanModule>> GroupByDownloads(IEnumerable<CkanModule> modules)
+        {
+            // Each module is a vertex, each download URL is an edge
+            // We want to group the vertices by transitive connectedness
+            // We can go breadth first or depth first
+            // Once we encounter a mod, we never have to look at it again
+            var unsearched = modules.ToHashSet();
+            var groups = new List<HashSet<CkanModule>>();
+            while (unsearched.Count > 0)
+            {
+                // Find one group, remove it from unsearched, add it to groups
+                var searching = new List<CkanModule> { unsearched.First() };
+                unsearched.ExceptWith(searching);
+                var found = searching.ToHashSet();
+                // Breadth first search to find all modules any URLs in common, transitively
+                while (searching.Count > 0)
+                {
+                    var origin = searching.First();
+                    searching.Remove(origin);
+                    var neighbors = origin.download
+                        .SelectMany(dlUri => unsearched.Where(other => other.download.Contains(dlUri)))
+                        .ToHashSet();
+                    unsearched.ExceptWith(neighbors);
+                    searching.AddRange(neighbors);
+                    found.UnionWith(neighbors);
+                }
+                groups.Add(found);
+            }
+            return groups;
+        }
+
+        internal Net.DownloadTarget TargetFromModuleGroup(HashSet<CkanModule> group,
+                                                          string[]            preferredHosts)
+            => TargetFromModuleGroup(group, group.OrderBy(m => m.identifier).First(), preferredHosts);
+
+        private Net.DownloadTarget TargetFromModuleGroup(HashSet<CkanModule> group,
+                                                         CkanModule          first,
+                                                         string[]            preferredHosts)
+            => new Net.DownloadTarget(
+                group.SelectMany(mod => mod.download)
+                     .Concat(group.Select(mod => mod.InternetArchiveDownload)
+                                  .Where(uri => uri != null)
+                                  .OrderBy(uri => uri.ToString()))
+                     .Distinct()
+                     .OrderBy(u => u,
+                              new PreferredHostUriComparer(preferredHosts))
+                     .ToList(),
+                cache.GetInProgressFileName(first),
+                first.download_size,
+                string.IsNullOrEmpty(first.download_content_type)
+                    ? defaultMimeType
+                    : $"{first.download_content_type};q=1.0,{defaultMimeType};q=0.9");
+
         /// <summary>
         /// <see cref="IDownloader.DownloadModules(NetFileCache, IEnumerable{CkanModule})"/>
         /// </summary>
         public void DownloadModules(IEnumerable<CkanModule> modules)
         {
-            // Walk through all our modules, but only keep the first of each
-            // one that has a unique download path (including active downloads).
-            var currentlyActive = new HashSet<Uri>(this.modules.Select(m => m.download));
-            Dictionary<Uri, CkanModule> unique_downloads = modules
-                .GroupBy(module => module.download)
-                .Where(group => !currentlyActive.Contains(group.Key))
-                .ToDictionary(group => group.Key, group => group.First());
-
+            var activeURLs = this.modules.SelectMany(m => m.download)
+                                         .ToHashSet();
+            var moduleGroups = GroupByDownloads(modules);
             // Make sure we have enough space to download and cache
-            cache.CheckFreeSpace(unique_downloads.Values
-                .Select(m => m.download_size)
-                .Sum());
-
-            this.modules.AddRange(unique_downloads.Values);
+            cache.CheckFreeSpace(moduleGroups.Select(grp => grp.First().download_size)
+                                             .Sum());
+            // Add all the requested modules
+            this.modules.AddRange(moduleGroups.SelectMany(grp => grp));
 
             try
             {
                 cancelTokenSrc = new CancellationTokenSource();
+                var preferredHosts = ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts;
                 // Start the downloads!
-                downloader.DownloadAndWait(unique_downloads
-                    .Select(item => new Net.DownloadTarget(
-                        item.Key,
-                        item.Value.InternetArchiveDownload,
-                        cache.GetInProgressFileName(item.Value),
-                        item.Value.download_size,
-                        // Send the MIME type to use for the Accept header
-                        // The GitHub API requires this to include application/octet-stream
-                        string.IsNullOrEmpty(item.Value.download_content_type)
-                            ? defaultMimeType
-                            : $"{item.Value.download_content_type};q=1.0,{defaultMimeType};q=0.9"))
+                downloader.DownloadAndWait(moduleGroups
+                    // Skip any group that already has a URL in progress
+                    .Where(grp => grp.All(mod => mod.download.All(dlUri => !activeURLs.Contains(dlUri))))
+                    // Each group gets one target containing all the URLs
+                    .Select(grp => TargetFromModuleGroup(grp, preferredHosts))
                     .ToList());
                 this.modules.Clear();
                 AllComplete?.Invoke();
@@ -122,7 +167,8 @@ namespace CKAN
                 CkanModule module = null;
                 try
                 {
-                    module = modules.First(m => m.download == url);
+                    module = modules.First(m => m.download?.Any(dlUri => dlUri == url)
+                                                ?? false);
                     User.RaiseMessage(Properties.Resources.NetAsyncDownloaderValidating, module);
                     cache.Store(module, filename,
                         new Progress<long>(percent => StoreProgress?.Invoke(module, 100 - percent, 100)),

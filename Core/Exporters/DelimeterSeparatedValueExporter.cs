@@ -65,7 +65,7 @@ namespace CKAN.Exporters
                         QuoteIfNecessary(mod.Module.description),
                         QuoteIfNecessary(string.Join(";", mod.Module.author)),
                         QuoteIfNecessary(mod.Module.kind),
-                        WriteUri(mod.Module.download),
+                        WriteUri(mod.Module.download[0]),
                         mod.Module.download_size,
                         mod.Module.ksp_version,
                         mod.Module.ksp_version_min,

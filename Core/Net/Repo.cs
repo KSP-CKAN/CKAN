@@ -62,7 +62,7 @@ namespace CKAN
             downloader.onOneCompleted += (url, filename, error, etag) => savedEtags.Add(url, etag);
 
             // Download metadata from all repos
-            var targets = repos.Select(r => new Net.DownloadTarget(r.uri)).ToArray();
+            var targets = repos.Select(r => new Net.DownloadTarget(new List<Uri>() { r.uri })).ToArray();
             downloader.DownloadAndWait(targets);
 
             // If we get to this point, the downloads were successful

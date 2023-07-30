@@ -24,11 +24,12 @@ namespace CKAN
             return token.ToObject<T>() == null ? null : new List<T> { token.ToObject<T>() };
         }
 
-        public override bool CanWrite => false;
+        public override bool CanWrite => true;
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            var list = value as List<T>;
+            serializer.Serialize(writer, list?.Count == 1 ? list[0] : value);
         }
 
         /// <summary>

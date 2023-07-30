@@ -128,7 +128,8 @@ namespace CKAN
         public ModuleRelationshipDescriptor replaced_by;
 
         [JsonProperty("download", Order = 25, NullValueHandling = NullValueHandling.Ignore)]
-        public Uri download;
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<Uri>))]
+        public List<Uri> download;
 
         [JsonProperty("download_size", Order = 26, DefaultValueHandling = DefaultValueHandling.Ignore)]
         [DefaultValue(0)]
@@ -319,7 +320,7 @@ namespace CKAN
             this.author       = author;
             this.license      = license;
             this.version      = version;
-            this.download     = download;
+            this.download     = new List<Uri> { download };
             this.kind         = kind;
             this._comparator  = comparator ?? ServiceLocator.Container.Resolve<IGameComparator>();
             CheckHealth();
