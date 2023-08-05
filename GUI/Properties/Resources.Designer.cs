@@ -1221,5 +1221,21 @@ namespace CKAN.GUI.Properties {
         internal static string DeleteUnmanagedFileCancel {
             get { return (string)(ResourceManager.GetObject("DeleteUnmanagedFileCancel", resourceCulture)); }
         }
+
+        internal static string PreferredHostsPlaceholder {
+            get { return (string)(ResourceManager.GetObject("PreferredHostsPlaceholder", resourceCulture)); }
+        }
+        internal static string PreferredHostsTooltipMoveRight {
+            get { return (string)(ResourceManager.GetObject("PreferredHostsTooltipMoveRight", resourceCulture)); }
+        }
+        internal static string PreferredHostsTooltipMoveLeft {
+            get { return (string)(ResourceManager.GetObject("PreferredHostsTooltipMoveLeft", resourceCulture)); }
+        }
+        internal static string PreferredHostsTooltipMoveUp {
+            get { return (string)(ResourceManager.GetObject("PreferredHostsTooltipMoveUp", resourceCulture)); }
+        }
+        internal static string PreferredHostsTooltipMoveDown {
+            get { return (string)(ResourceManager.GetObject("PreferredHostsTooltipMoveDown", resourceCulture)); }
+        }
     }
 }

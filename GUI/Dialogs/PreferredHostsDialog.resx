@@ -117,55 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>32</value>
-  </metadata>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>&amp;File</value></data>
-  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve"><value>&amp;Manage game instances</value></data>
-  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Open game directory</value></data>
-  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Install from .ckan...</value></data>
-  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Save installed mod list (cannot be re-imported)...</value></data>
-  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Export modpack (can be re-imported)...</value></data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>Import &amp;downloaded mods...</value></data>
-  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve"><value>Audit &amp;recommendations</value></data>
-  <data name="ExitToolButton.Text" xml:space="preserve"><value>E&amp;xit</value></data>
-  <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Settings</value></data>
-  <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN &amp;settings</value></data>
-  <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN &amp;plugins</value></data>
-  <data name="preferredHostsToolStripMenuItem.Text" xml:space="preserve"><value>Preferred &amp;hosts</value></data>
-  <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve"><value>Installation &amp;filters</value></data>
-  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Game command-line</value></data>
-  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Compatible game versions</value></data>
-  <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Help</value></data>
-  <data name="userGuideToolStripMenuItem.Text" xml:space="preserve"><value>&amp;User guide</value></data>
-  <data name="discordToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Discord</value></data>
-  <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>Report an issue with the CKAN &amp;client</value></data>
-  <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>Report an issue with mod &amp;metadata</value></data>
-  <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>&amp;About</value></data>
-  <data name="ManageModsTabPage.Text" xml:space="preserve"><value>Manage Mods</value></data>
-  <data name="ChangesetTabPage.Text" xml:space="preserve"><value>Changeset</value></data>
-  <data name="WaitTabPage.Text" xml:space="preserve"><value>Status Log</value></data>
-  <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve"><value>Choose Mods</value></data>
-  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve"><value>Choose Recommended, Suggested, or Supporting Mods</value></data>
-  <data name="PlayTimeTabPage.Text" xml:space="preserve"><value>Play Time</value></data>
-  <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>Delete Directories</value></data>
-  <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Edit Modpack</value></data>
-  <data name="UnmanagedFilesTabPage.Text" xml:space="preserve"><value>Unmanaged Files</value></data>
-  <data name="InstallationHistoryTabPage.Text" xml:space="preserve"><value>Installation History</value></data>
-  <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
-  <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>N available updates</value></data>
-  <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Refresh</value></data>
-  <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>Pause</value></data>
-  <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>Open CKAN</value></data>
-  <data name="openGameToolStripMenuItem.Text" xml:space="preserve"><value>Launch Game</value></data>
-  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>Open Game Directory</value></data>
-  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>CKAN Settings</value></data>
-  <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>Quit</value></data>
-  <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve"><value>Play &amp;time...</value></data>
-  <data name="viewUnmanagedFilesStripMenuItem.Text" xml:space="preserve"><value>&amp;Unmanaged files...</value></data>
-  <data name="installationHistoryStripMenuItem.Text" xml:space="preserve"><value>Installation &amp;history...</value></data>
-  <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
+  <data name="ExplanationLabel.Text" xml:space="preserve"><value>If a module has multiple download URLs, they will be prioritised by host according to the list on the right.</value></data>
+  <data name="AvailableHostsLabel.Text" xml:space="preserve"><value>Available hosts (by popularity):</value></data>
+  <data name="PreferredHostsLabel.Text" xml:space="preserve"><value>Preferred hosts (by priority):</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Preferred Hosts</value></data>
 </root>

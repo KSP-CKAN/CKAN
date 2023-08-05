@@ -20,8 +20,8 @@ namespace CKAN.GUI
             this.ToolTip.SetToolTip(NameTextBox,             Properties.Resources.EditModpackTooltipName);
             this.ToolTip.SetToolTip(AbstractTextBox,         Properties.Resources.EditModpackTooltipAbstract);
             this.ToolTip.SetToolTip(VersionTextBox,          Properties.Resources.EditModpackTooltipVersion);
-            this.ToolTip.SetToolTip(GameVersionMinComboBox,   Properties.Resources.EditModpackTooltipGameVersionMin);
-            this.ToolTip.SetToolTip(GameVersionMaxComboBox,   Properties.Resources.EditModpackTooltipGameVersionMax);
+            this.ToolTip.SetToolTip(GameVersionMinComboBox,  Properties.Resources.EditModpackTooltipGameVersionMin);
+            this.ToolTip.SetToolTip(GameVersionMaxComboBox,  Properties.Resources.EditModpackTooltipGameVersionMax);
             this.ToolTip.SetToolTip(LicenseComboBox,         Properties.Resources.EditModpackTooltipLicense);
             this.ToolTip.SetToolTip(IncludeVersionsCheckbox, Properties.Resources.EditModpackTooltipIncludeVersions);
             this.ToolTip.SetToolTip(DependsRadioButton,      Properties.Resources.EditModpackTooltipDepends);

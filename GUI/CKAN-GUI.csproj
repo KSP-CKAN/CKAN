@@ -112,6 +112,12 @@
     <Compile Include="Dialogs\InstallFiltersDialog.Designer.cs">
       <DependentUpon>InstallFiltersDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\PreferredHostsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\PreferredHostsDialog.Designer.cs">
+      <DependentUpon>PreferredHostsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\NewRepoDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -815,6 +821,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Localization\ru-RU\InstallFiltersDialog.ru-RU.resx">
       <DependentUpon>..\..\Dialogs\InstallFiltersDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\PreferredHostsDialog.resx">
+      <DependentUpon>PreferredHostsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Localization\en-US\PreferredHostsDialog.en-US.resx">
+      <DependentUpon>..\..\Dialogs\PreferredHostsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>

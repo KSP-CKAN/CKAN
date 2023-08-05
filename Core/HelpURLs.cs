@@ -14,6 +14,7 @@ namespace CKAN
 
         public const string CloneFakeInstances = "https://github.com/KSP-CKAN/CKAN/pull/2627";
         public const string DeleteDirectories = "https://github.com/KSP-CKAN/CKAN/pull/2962";
+        public const string PreferredHosts = "https://github.com/KSP-CKAN/CKAN/pull/3877";
         public const string Filters = "https://github.com/KSP-CKAN/CKAN/pull/3458";
         public const string Labels = "https://github.com/KSP-CKAN/CKAN/pull/2936";
         public const string PlayTime = "https://github.com/KSP-CKAN/CKAN/pull/3543";

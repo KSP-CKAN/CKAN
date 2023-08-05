@@ -297,6 +297,76 @@ namespace Tests.Core.Registry
             }
         }
 
+        [Test,
+            // Empty registry, return nothing
+            TestCase(new string[] { },
+                     new string[] { }),
+            // One per host, sort by alphanumeric
+            TestCase(new string[]
+                     {
+                         @"{
+                            ""identifier"": ""ModA"",
+                            ""version"": ""1.0"",
+                            ""download"": [
+                                ""https://archive.org/"",
+                                ""https://spacedock.info/"",
+                                ""https://github.com/""
+                            ]
+                         }",
+                     },
+                     new string[]
+                     {
+                         "archive.org", "github.com", "spacedock.info"
+                     }),
+            // Multiple per host, sort by frequency
+            TestCase(new string[]
+                     {
+                         @"{
+                            ""identifier"": ""ModA"",
+                            ""version"": ""1.0"",
+                            ""download"": [
+                                ""https://archive.org/"",
+                                ""https://spacedock.info/"",
+                                ""https://github.com/""
+                            ]
+                         }",
+                         @"{
+                            ""identifier"": ""ModB"",
+                            ""version"": ""1.0"",
+                            ""download"": [
+                                ""https://spacedock.info/"",
+                                ""https://github.com/""
+                            ]
+                         }",
+                         @"{
+                            ""identifier"": ""ModC"",
+                            ""version"": ""1.0"",
+                            ""download"": [
+                                ""https://github.com/""
+                            ]
+                         }",
+                     },
+                     new string[]
+                     {
+                         "github.com", "spacedock.info", "archive.org"
+                     }),
+        ]
+        public void GetAllHosts_WithModules_ReturnsCorrectList(string[] modules,
+                                                               string[] correctAnswer)
+        {
+            // Arrange
+            foreach (var module in modules)
+            {
+                registry.AddAvailable(CkanModule.FromJson(module));
+            }
+
+            // Act
+            var allHosts = registry.GetAllHosts().ToArray();
+
+            // Assert
+            Assert.AreEqual(correctAnswer, allHosts);
+        }
+
         [Test]
         public void TxEmbeddedCommit()
         {
