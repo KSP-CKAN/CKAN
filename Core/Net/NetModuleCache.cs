@@ -100,11 +100,11 @@ namespace CKAN
             => fi.Exists
                 ? string.Format(Properties.Resources.NetModuleCacheModuleResuming,
                     m.name, m.version,
-                    string.Join(", ", m.download.Select(dl => dl.Host).Distinct()),
+                    string.Join(", ", ModuleInstaller.PrioritizedHosts(m.download)),
                     CkanModule.FmtSize(m.download_size - fi.Length))
                 : string.Format(Properties.Resources.NetModuleCacheModuleHostSize,
                     m.name, m.version,
-                    string.Join(", ", m.download.Select(dl => dl.Host).Distinct()),
+                    string.Join(", ", ModuleInstaller.PrioritizedHosts(m.download)),
                     CkanModule.FmtSize(m.download_size));
 
         public string DescribeAvailability(CkanModule m)

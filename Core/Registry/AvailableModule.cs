@@ -91,7 +91,7 @@ namespace CKAN
         /// <param name="toInstall">Modules that are planned to be installed</param>
         /// <returns></returns>
         public CkanModule Latest(
-            GameVersionCriteria      ksp_version  = null,
+            GameVersionCriteria     ksp_version  = null,
             RelationshipDescriptor  relationship = null,
             IEnumerable<CkanModule> installed    = null,
             IEnumerable<CkanModule> toInstall    = null

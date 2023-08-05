@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading;
 
 using log4net;
+using Autofac;
 
+using CKAN.Configuration;
 using CKAN.Extensions;
 
 namespace CKAN

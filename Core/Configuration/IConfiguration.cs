@@ -59,5 +59,12 @@ namespace CKAN.Configuration
         /// Paths that should be excluded from all installations
         /// </summary>
         string[] GlobalInstallFilters { get; set; }
+
+        /// <summary>
+        /// List of hosts in order of priority when there are multiple URLs to choose from.
+        /// The first null value represents where all other hosts should go.
+        /// </summary>
+        /// <value></value>
+        string[] PreferredHosts { get; set; }
     }
 }
