@@ -362,6 +362,10 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Invalid path: {0}</value></data>
   <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>Choose a folder for storing CKAN's mod downloads:</value></data>
   <data name="SettingsDialogDeleteConfirm" xml:space="preserve"><value>Do you really want to delete {0} cached files, freeing {1}?</value></data>
+  <data name="SettingsDialogRepoDeleteConfirm" xml:space="preserve"><value>Are you sure you want to delete the {0} repo? This can't be undone!</value></data>
+  <data name="SettingsDialogRepoDeleteDelete" xml:space="preserve"><value>Delete</value></data>
+  <data name="SettingsDialogRepoDeleteCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="SettingsDialogRepoAddDuplicateURL" xml:space="preserve"><value>Repository with URL already in list: {0}</value></data>
   <data name="AddAuthTokenTitle" xml:space="preserve"><value>Add Authentication Token</value></data>
   <data name="AddAuthTokenHost" xml:space="preserve"><value>Host:</value></data>
   <data name="AddAuthTokenToken" xml:space="preserve"><value>Token:</value></data>

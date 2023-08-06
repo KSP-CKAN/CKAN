@@ -150,6 +150,7 @@ Update recommended!</value></data>
   <data name="UserSelectionNotNumber" xml:space="preserve"><value>The input is not a number</value></data>
   <data name="UserSelectionTooLarge" xml:space="preserve"><value>The number in the input is too large</value></data>
   <data name="UserSelectionTooSmall" xml:space="preserve"><value>The number in the input is too small</value></data>
+  <data name="UserProgressDownloadSubstring" xml:space="preserve"><value>download</value><comment>Progress update messages containing this will display a percentage and overwrite the same line on the screen</comment></data>
   <data name="AuthTokenHostHeader" xml:space="preserve"><value>Host</value></data>
   <data name="AuthTokenTokenHeader" xml:space="preserve"><value>Token</value></data>
   <data name="AuthTokenHelpSummary" xml:space="preserve"><value>Manage authentication tokens</value></data>
@@ -293,10 +294,15 @@ Try `ckan list` for a list of installed mods.</value></data>
   <data name="RepoUnknownCommand" xml:space="preserve"><value>Unknown command: repo {0}</value></data>
   <data name="RepoAvailableHeader" xml:space="preserve"><value>Listing all (canonical) available CKAN repositories:</value></data>
   <data name="RepoAvailableFailed" xml:space="preserve"><value>Couldn't fetch CKAN repositories master list from {0}</value></data>
-  <data name="RepoListHeader" xml:space="preserve"><value>Listing all known repositories:</value></data>
+  <data name="RepoListPriorityHeader" xml:space="preserve"><value>Priority</value></data>
+  <data name="RepoListNameHeader" xml:space="preserve"><value>Name</value></data>
+  <data name="RepoListURLHeader" xml:space="preserve"><value>URL</value></data>
   <data name="RepoAddNotFound" xml:space="preserve"><value>Name {0} not found in master list, please provide name and uri</value></data>
   <data name="RepoAddDuplicate" xml:space="preserve"><value>Repository with name "{0}" already exists, aborting</value></data>
+  <data name="RepoAddDuplicateURL" xml:space="preserve"><value>Repository with URL "{0}" already exists, aborting</value></data>
   <data name="RepoAdded" xml:space="preserve"><value>Added repository '{0}' - '{1}'</value></data>
+  <data name="RepoPriorityNotFound" xml:space="preserve"><value>Couldn't find repository with name "{0}", aborting</value></data>
+  <data name="RepoPriorityInvalid" xml:space="preserve"><value>Invalid priority: {0}, allowed values are 0 to {1}</value></data>
   <data name="RepoForgetNotFound" xml:space="preserve"><value>Couldn't find repository with name "{0}", aborting</value></data>
   <data name="RepoForgetRemoving" xml:space="preserve"><value>Removing insensitive match "{0}"</value></data>
   <data name="RepoForgetRemoved" xml:space="preserve"><value>Successfully removed "{0}"</value></data>

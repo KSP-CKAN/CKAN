@@ -75,11 +75,11 @@ namespace CKAN
             = new Dictionary<string, HashSet<AvailableModule>>();
 
         /// <summary>
-        /// Returns all the activated registries, sorted by priority and name
+        /// Returns all the activated registries, sorted by name
         /// </summary>
         [JsonIgnore] public SortedDictionary<string, Repository> Repositories
         {
-            get { return this.repositories; }
+            get => this.repositories;
 
             // TODO writable only so it can be initialized, better ideas welcome
             set { this.repositories = value; }
@@ -89,38 +89,28 @@ namespace CKAN
         /// Returns all the installed modules
         /// </summary>
         [JsonIgnore] public IEnumerable<InstalledModule> InstalledModules
-        {
-            get { return installed_modules.Values; }
-        }
+            => installed_modules.Values;
 
         /// <summary>
         /// Returns the names of installed DLLs.
         /// </summary>
         [JsonIgnore] public IEnumerable<string> InstalledDlls
-        {
-            get { return installed_dlls.Keys; }
-        }
+            => installed_dlls.Keys;
 
         /// <summary>
         /// Returns the file path of a DLL.
         /// null if not found.
         /// </summary>
         public string DllPath(string identifier)
-        {
-            return installed_dlls.TryGetValue(identifier, out string path) ? path : null;
-        }
+            => installed_dlls.TryGetValue(identifier, out string path) ? path : null;
 
         /// <summary>
         /// A map between module identifiers and versions for official DLC that are installed.
         /// </summary>
         [JsonIgnore] public IDictionary<string, ModuleVersion> InstalledDlc
-        {
-            get {
-                return installed_modules.Values
-                    .Where(im => im.Module.IsDLC)
-                    .ToDictionary(im => im.Module.identifier, im => im.Module.version);
-            }
-        }
+            => installed_modules.Values
+                .Where(im => im.Module.IsDLC)
+                .ToDictionary(im => im.Module.identifier, im => im.Module.version);
 
         /// <summary>
         /// Find installed modules that are not compatible with the given versions
@@ -130,12 +120,10 @@ namespace CKAN
         /// Installed modules that are incompatible, if any
         /// </returns>
         public IEnumerable<InstalledModule> IncompatibleInstalled(GameVersionCriteria crit)
-        {
-            return installed_modules.Values
+        => installed_modules.Values
                 .Where(im => !im.Module.IsCompatibleKSP(crit)
                     && !(GetModuleByVersion(im.identifier, im.Module.version)?.IsCompatibleKSP(crit)
                         ?? false));
-        }
 
         #region Registry Upgrades
 
@@ -253,7 +241,20 @@ namespace CKAN
             if (repositories != null && repositories.TryGetValue(Repository.default_ckan_repo_name, out default_repo) && default_repo.uri == oldDefaultRepo)
             {
                 log.InfoFormat("Updating default metadata URL from {0} to {1}", oldDefaultRepo, ksp.game.DefaultRepositoryURL);
-                repositories["default"].uri = ksp.game.DefaultRepositoryURL;
+                repositories[Repository.default_ckan_repo_name].uri = ksp.game.DefaultRepositoryURL;
+            }
+
+            if (repositories != null)
+            {
+                // Fix duplicate priorities
+                var sorted = repositories.Values.OrderBy(r => r.priority)
+                                                // Break ties alphanumerically
+                                                .ThenBy(r => r.name)
+                                                .ToArray();
+                for (int i = 0; i < sorted.Length; ++i)
+                {
+                    sorted[i].priority = i;
+                }
             }
 
             registry_version = LATEST_REGISTRY_VERSION;

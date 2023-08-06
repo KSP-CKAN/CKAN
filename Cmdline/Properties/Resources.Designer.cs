@@ -151,6 +151,9 @@ namespace CKAN.CmdLine.Properties {
         internal static string UserSelectionTooSmall {
             get { return (string)(ResourceManager.GetObject("UserSelectionTooSmall", resourceCulture)); }
         }
+        internal static string UserProgressDownloadSubstring {
+            get { return (string)(ResourceManager.GetObject("UserProgressDownloadSubstring", resourceCulture)); }
+        }
 
         internal static string AuthTokenHostHeader {
             get { return (string)(ResourceManager.GetObject("AuthTokenHostHeader", resourceCulture)); }
@@ -464,8 +467,14 @@ namespace CKAN.CmdLine.Properties {
         internal static string RepoAvailableFailed {
             get { return (string)(ResourceManager.GetObject("RepoAvailableFailed", resourceCulture)); }
         }
-        internal static string RepoListHeader {
-            get { return (string)(ResourceManager.GetObject("RepoListHeader", resourceCulture)); }
+        internal static string RepoListPriorityHeader {
+            get { return (string)(ResourceManager.GetObject("RepoListPriorityHeader", resourceCulture)); }
+        }
+        internal static string RepoListNameHeader {
+            get { return (string)(ResourceManager.GetObject("RepoListNameHeader", resourceCulture)); }
+        }
+        internal static string RepoListURLHeader {
+            get { return (string)(ResourceManager.GetObject("RepoListURLHeader", resourceCulture)); }
         }
         internal static string RepoAddNotFound {
             get { return (string)(ResourceManager.GetObject("RepoAddNotFound", resourceCulture)); }
@@ -473,8 +482,17 @@ namespace CKAN.CmdLine.Properties {
         internal static string RepoAddDuplicate {
             get { return (string)(ResourceManager.GetObject("RepoAddDuplicate", resourceCulture)); }
         }
+        internal static string RepoAddDuplicateURL {
+            get { return (string)(ResourceManager.GetObject("RepoAddDuplicateURL", resourceCulture)); }
+        }
         internal static string RepoAdded {
             get { return (string)(ResourceManager.GetObject("RepoAdded", resourceCulture)); }
+        }
+        internal static string RepoPriorityNotFound {
+            get { return (string)(ResourceManager.GetObject("RepoPriorityNotFound", resourceCulture)); }
+        }
+        internal static string RepoPriorityInvalid {
+            get { return (string)(ResourceManager.GetObject("RepoPriorityInvalid", resourceCulture)); }
         }
         internal static string RepoForgetNotFound {
             get { return (string)(ResourceManager.GetObject("RepoForgetNotFound", resourceCulture)); }

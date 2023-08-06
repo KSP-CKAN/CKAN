@@ -876,6 +876,18 @@ namespace CKAN.GUI.Properties {
         internal static string SettingsDialogDeleteConfirm {
             get { return (string)(ResourceManager.GetObject("SettingsDialogDeleteConfirm", resourceCulture)); }
         }
+        internal static string SettingsDialogRepoDeleteConfirm {
+            get { return (string)(ResourceManager.GetObject("SettingsDialogRepoDeleteConfirm", resourceCulture)); }
+        }
+        internal static string SettingsDialogRepoDeleteDelete {
+            get { return (string)(ResourceManager.GetObject("SettingsDialogRepoDeleteDelete", resourceCulture)); }
+        }
+        internal static string SettingsDialogRepoDeleteCancel {
+            get { return (string)(ResourceManager.GetObject("SettingsDialogRepoDeleteCancel", resourceCulture)); }
+        }
+        internal static string SettingsDialogRepoAddDuplicateURL {
+            get { return (string)(ResourceManager.GetObject("SettingsDialogRepoAddDuplicateURL", resourceCulture)); }
+        }
         internal static string SettingsDialogUpdateFailed {
             get { return (string)(ResourceManager.GetObject("SettingsDialogUpdateFailed", resourceCulture)); }
         }

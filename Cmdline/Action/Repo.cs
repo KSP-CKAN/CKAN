@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+
 using Newtonsoft.Json;
 using CommandLine;
 using CommandLine.Text;
@@ -19,6 +20,9 @@ namespace CKAN.CmdLine
 
         [VerbOption("add",       HelpText = "Add a repository")]
         public RepoAddOptions AddOptions { get; set; }
+
+        [VerbOption("priority",  HelpText = "Set repository priority")]
+        public RepoPriorityOptions PriorityOptions { get; set; }
 
         [VerbOption("forget",    HelpText = "Forget a repository")]
         public RepoForgetOptions ForgetOptions { get; set; }
@@ -44,6 +48,7 @@ namespace CKAN.CmdLine
                 {
                     // First the commands with two arguments
                     case "add":
+                    case "priority":
                         ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name url");
                         break;
 
@@ -73,6 +78,12 @@ namespace CKAN.CmdLine
     {
         [ValueOption(0)] public string name { get; set; }
         [ValueOption(1)] public string uri { get; set; }
+    }
+
+    public class RepoPriorityOptions : InstanceSpecificOptions
+    {
+        [ValueOption(0)] public string name     { get; set; }
+        [ValueOption(1)] public int    priority { get; set; }
     }
 
     public class RepoDefaultOptions : InstanceSpecificOptions
@@ -138,6 +149,10 @@ namespace CKAN.CmdLine
                             exitCode = AddRepository((RepoAddOptions)suboptions);
                             break;
 
+                        case "priority":
+                            exitCode = SetRepositoryPriority((RepoPriorityOptions)suboptions);
+                            break;
+
                         case "remove":
                         case "forget":
                             exitCode = ForgetRepository((RepoForgetOptions)suboptions);
@@ -199,21 +214,39 @@ namespace CKAN.CmdLine
 
         private int ListRepositories()
         {
-            var manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
-            User.RaiseMessage(Properties.Resources.RepoListHeader);
-            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
+            var repositories = RegistryManager.Instance(MainClass.GetGameInstance(Manager)).registry.Repositories;
 
-            int maxNameLen = 0;
-            foreach (Repository repository in repositories.Values)
+            string priorityHeader = Properties.Resources.RepoListPriorityHeader;
+            string nameHeader     = Properties.Resources.RepoListNameHeader;
+            string urlHeader      = Properties.Resources.RepoListURLHeader;
+
+            var priorityWidth = Enumerable.Repeat(priorityHeader, 1)
+                                          .Concat(repositories.Values.Select(r => $"{r.priority}"))
+                                          .Max(str => str.Length);
+            var nameWidth     = Enumerable.Repeat(nameHeader, 1)
+                                          .Concat(repositories.Values.Select(r => r.name))
+                                          .Max(str => str.Length);
+            var urlWidth      = Enumerable.Repeat(urlHeader, 1)
+                                          .Concat(repositories.Values.Select(r => $"{r.uri}"))
+                                          .Max(str => str.Length);
+
+            const string columnFormat = "{0}  {1}  {2}";
+
+            User.RaiseMessage(columnFormat,
+                              priorityHeader.PadRight(priorityWidth),
+                              nameHeader.PadRight(nameWidth),
+                              urlHeader.PadRight(urlWidth));
+            User.RaiseMessage(columnFormat,
+                              new string('-', priorityWidth),
+                              new string('-', nameWidth),
+                              new string('-', urlWidth));
+            foreach (Repository repository in repositories.Values.OrderBy(r => r.priority))
             {
-                maxNameLen = Math.Max(maxNameLen, repository.name.Length);
+                User.RaiseMessage(columnFormat,
+                                  repository.priority.ToString().PadRight(priorityWidth),
+                                  repository.name.PadRight(nameWidth),
+                                  repository.uri);
             }
-
-            foreach (Repository repository in repositories.Values)
-            {
-                User.RaiseMessage("  {0}: {1}: {2}", repository.name.PadRight(maxNameLen), repository.priority, repository.uri);
-            }
-
             return Exit.OK;
         }
 
@@ -259,20 +292,76 @@ namespace CKAN.CmdLine
             }
 
             log.DebugFormat("About to add repository '{0}' - '{1}'", options.name, options.uri);
-            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
+            var repositories = manager.registry.Repositories;
 
             if (repositories.ContainsKey(options.name))
             {
                 User.RaiseMessage(Properties.Resources.RepoAddDuplicate, options.name);
                 return Exit.BADOPT;
             }
+            if (repositories.Values.Any(r => r.uri.ToString() == options.uri))
+            {
+                User.RaiseMessage(Properties.Resources.RepoAddDuplicateURL, options.uri);
+                return Exit.BADOPT;
+            }
 
-            repositories.Add(options.name, new Repository(options.name, options.uri));
+            repositories.Add(options.name,
+                new Repository(options.name, options.uri, manager.registry.Repositories.Count));
 
             User.RaiseMessage(Properties.Resources.RepoAdded, options.name, options.uri);
             manager.Save();
 
             return Exit.OK;
+        }
+
+        private int SetRepositoryPriority(RepoPriorityOptions options)
+        {
+            if (options.name == null)
+            {
+                User.RaiseMessage("priority <name> <priority> - {0}", Properties.Resources.ArgumentMissing);
+                return Exit.BADOPT;
+            }
+            var manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
+            if (options.priority < 0 || options.priority > manager.registry.Repositories.Count)
+            {
+                User.RaiseMessage(Properties.Resources.RepoPriorityInvalid,
+                    options.priority, manager.registry.Repositories.Count - 1);
+                return Exit.BADOPT;
+            }
+
+            if (manager.registry.Repositories.TryGetValue(options.name, out Repository repo))
+            {
+                if (options.priority != repo.priority)
+                {
+                    var sortedRepos = manager.registry.Repositories.Values
+                        .OrderBy(r => r.priority)
+                        .ToList();
+                    // Shift other repos up or down by 1 to make room in the list
+                    if (options.priority < repo.priority)
+                    {
+                        for (int i = options.priority; i < repo.priority; ++i)
+                        {
+                            sortedRepos[i].priority = i + 1;
+                        }
+                    }
+                    else
+                    {
+                        for (int i = repo.priority + 1; i <= options.priority; ++i)
+                        {
+                            sortedRepos[i].priority = i - 1;
+                        }
+                    }
+                    // Move chosen repo into new spot and save
+                    repo.priority = options.priority;
+                    manager.Save();
+                }
+                return ListRepositories();
+            }
+            else
+            {
+                User.RaiseMessage(Properties.Resources.RepoPriorityNotFound, options.name);
+                return Exit.BADOPT;
+            }
         }
 
         private int ForgetRepository(RepoForgetOptions options)
@@ -284,10 +373,9 @@ namespace CKAN.CmdLine
             }
 
             RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
-            var registry = manager.registry;
             log.DebugFormat("About to forget repository '{0}'", options.name);
 
-            var repos = registry.Repositories;
+            var repos = manager.registry.Repositories;
 
             string name = options.name;
             if (!repos.ContainsKey(options.name))
@@ -301,7 +389,12 @@ namespace CKAN.CmdLine
                 User.RaiseMessage(Properties.Resources.RepoForgetRemoving, name);
             }
 
-            registry.Repositories.Remove(name);
+            repos.Remove(name);
+            var remaining = repos.Values.OrderBy(r => r.priority).ToArray();
+            for (int i = 0; i < remaining.Length; ++i)
+            {
+                remaining[i].priority = i;
+            }
             User.RaiseMessage(Properties.Resources.RepoForgetRemoved, options.name);
             manager.Save();
 
@@ -310,16 +403,12 @@ namespace CKAN.CmdLine
 
         private int DefaultRepository(RepoDefaultOptions options)
         {
-            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
+            var inst = MainClass.GetGameInstance(Manager);
+            var uri = options.uri ?? inst.game.DefaultRepositoryURL.ToString();
 
-            if (options.uri == null)
-            {
-                User.RaiseMessage("default <uri> - {0}", Properties.Resources.ArgumentMissing);
-                return Exit.BADOPT;
-            }
-
-            log.DebugFormat("About to add repository '{0}' - '{1}'", Repository.default_ckan_repo_name, options.uri);
-            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
+            log.DebugFormat("About to add repository '{0}' - '{1}'", Repository.default_ckan_repo_name, uri);
+            RegistryManager manager = RegistryManager.Instance(inst);
+            var repositories = manager.registry.Repositories;
 
             if (repositories.ContainsKey(Repository.default_ckan_repo_name))
             {
@@ -327,9 +416,9 @@ namespace CKAN.CmdLine
             }
 
             repositories.Add(Repository.default_ckan_repo_name, new Repository(
-                    Repository.default_ckan_repo_name, options.uri));
+                    Repository.default_ckan_repo_name, uri, repositories.Count));
 
-            User.RaiseMessage(Properties.Resources.RepoSet, Repository.default_ckan_repo_name, options.uri);
+            User.RaiseMessage(Properties.Resources.RepoSet, Repository.default_ckan_repo_name, uri);
             manager.Save();
 
             return Exit.OK;
