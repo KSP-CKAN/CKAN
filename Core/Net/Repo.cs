@@ -39,6 +39,8 @@ namespace CKAN
         {
             var repos = registry_manager.registry.Repositories.Values
                 .DistinctBy(r => r.uri)
+                // Higher priority repo overwrites lower priority (SortedDictionary just sorts by name)
+                .OrderByDescending(r => r.priority)
                 .ToArray();
 
             // Get latest copy of the game versions data (remote build map)
@@ -203,7 +205,7 @@ namespace CKAN
             List<CkanModule> modules = new List<CkanModule>();
             using (var zipfile = new ZipFile(path))
             {
-                user.RaiseMessage("Loading modules from {0} repository...", repo.name);
+                user.RaiseMessage(Properties.Resources.NetRepoLoadingModulesFromRepo, repo.name);
                 int index = 0;
                 int prevPercent = 0;
                 foreach (ZipEntry entry in zipfile)

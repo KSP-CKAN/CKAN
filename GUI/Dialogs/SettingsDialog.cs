@@ -18,8 +18,6 @@ namespace CKAN.GUI
         private IUser m_user;
         private IConfiguration config;
 
-        private List<Repository> _sortedRepos = new List<Repository>();
-
         /// <summary>
         /// Initialize a settings window
         /// </summary>
@@ -87,31 +85,35 @@ namespace CKAN.GUI
         private void RefreshReposListBox(bool saveChanges = true)
         {
             var manager = RegistryManager.Instance(Main.Instance.CurrentInstance);
-            var registry = manager.registry;
+            ReposListBox.BeginUpdate();
+            ReposListBox.Items.Clear();
+            ReposListBox.Items.AddRange(manager.registry.Repositories.Values
+                // SortedDictionary just sorts by name
+                .OrderBy(r => r.priority)
+                .Select(r => new ListViewItem(new string[]
+                    {
+                        r.name, r.uri.ToString(),
+                    })
+                    {
+                        Tag = r,
+                    })
+                .ToArray());
+            ReposListBox.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            ReposListBox.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            ReposListBox.EndUpdate();
+            EnableDisableRepoButtons();
 
             if (saveChanges)
             {
-                // Give the Repository the priority it
-                // currently has in the gui
-                for (int i = 0; i < _sortedRepos.Count; i++)
+                UseWaitCursor = true;
+                // Save registry in background thread to keep GUI responsive
+                Task.Factory.StartNew(() =>
                 {
-                    _sortedRepos[i].priority = i;
-                }
-
-                _sortedRepos = new List<Repository>(registry.Repositories.Values);
-
-                _sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
-                ReposListBox.Items.Clear();
-
-                manager.Save();
+                    // Visual cue that we're doing something
+                    manager.Save();
+                    Util.Invoke(this, () => UseWaitCursor = false);
+                });
             }
-            else
-            {
-                _sortedRepos = new List<Repository>(registry.Repositories.Values);
-            }
-            ReposListBox.Items.AddRange(_sortedRepos.Select(r =>
-                new ListViewItem(new string[] { r.name, r.uri.ToString() })
-            ).ToArray());
         }
 
         private void UpdateLanguageSelectionComboBox()
@@ -283,6 +285,11 @@ namespace CKAN.GUI
 
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            EnableDisableRepoButtons();
+        }
+
+        private void EnableDisableRepoButtons()
+        {
             DeleteRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0;
             UpRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0
                 && ReposListBox.SelectedIndices[0] > 0
@@ -299,11 +306,20 @@ namespace CKAN.GUI
                 return;
             }
 
-            var item = _sortedRepos[ReposListBox.SelectedIndices[0]];
-            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
-            registry.Repositories.Remove(item.name);
-            RefreshReposListBox();
-            DeleteRepoButton.Enabled = false;
+            var repo = ReposListBox.SelectedItems[0].Tag as Repository;
+            YesNoDialog deleteConfirmationDialog = new YesNoDialog();
+            if (deleteConfirmationDialog.ShowYesNoDialog(this,
+                string.Format(Properties.Resources.SettingsDialogRepoDeleteConfirm,
+                              repo.name),
+                Properties.Resources.SettingsDialogRepoDeleteDelete,
+                Properties.Resources.SettingsDialogRepoDeleteCancel)
+                    == DialogResult.Yes)
+            {
+                var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+                registry.Repositories.Remove(repo.name);
+                RefreshReposListBox();
+                DeleteRepoButton.Enabled = false;
+            }
         }
 
         private void NewRepoButton_Click(object sender, EventArgs e)
@@ -311,25 +327,25 @@ namespace CKAN.GUI
             var dialog = new NewRepoDialog();
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                try
+                var repo = dialog.Selection;
+                var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+                if (registry.Repositories.Values.Any(other => other.uri == repo.uri))
                 {
-                    var repo = dialog.Selection;
-                    var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
-                    SortedDictionary<string, Repository> repositories = registry.Repositories;
-                    if (repositories.ContainsKey(repo.name))
-                    {
-                        repositories.Remove(repo.name);
-                    }
-
-                    repositories.Add(repo.name, repo);
-                    registry.Repositories = repositories;
-
-                    RefreshReposListBox();
+                    m_user.RaiseError(Properties.Resources.SettingsDialogRepoAddDuplicateURL, repo.uri);
+                    return;
                 }
-                catch (Exception)
+                if (registry.Repositories.TryGetValue(repo.name, out Repository existing))
                 {
-                    m_user.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
+                    repo.priority = existing.priority;
+                    registry.Repositories.Remove(repo.name);
                 }
+                else
+                {
+                    repo.priority = registry.Repositories.Count;
+                }
+                registry.Repositories.Add(repo.name, repo);
+
+                RefreshReposListBox();
             }
         }
 
@@ -341,9 +357,15 @@ namespace CKAN.GUI
                 return;
             }
 
-            var item = _sortedRepos[ReposListBox.SelectedIndices[0]];
-            _sortedRepos.RemoveAt(ReposListBox.SelectedIndices[0]);
-            _sortedRepos.Insert(ReposListBox.SelectedIndices[0] - 1, item);
+            var selected = ReposListBox.SelectedItems[0].Tag as Repository;
+            var prev     = ReposListBox.Items.Cast<ListViewItem>()
+                                             .Select(item => item.Tag as Repository)
+                                             .FirstOrDefault(r => r.priority == selected.priority - 1);
+            --selected.priority;
+            if (prev != null)
+            {
+                ++prev.priority;
+            }
             RefreshReposListBox();
         }
 
@@ -355,9 +377,15 @@ namespace CKAN.GUI
                 return;
             }
 
-            var item = _sortedRepos[ReposListBox.SelectedIndices[0]];
-            _sortedRepos.RemoveAt(ReposListBox.SelectedIndices[0]);
-            _sortedRepos.Insert(ReposListBox.SelectedIndices[0] + 1, item);
+            var selected = ReposListBox.SelectedItems[0].Tag as Repository;
+            var next     = ReposListBox.Items.Cast<ListViewItem>()
+                                             .Select(item => item.Tag as Repository)
+                                             .FirstOrDefault(r => r.priority == selected.priority + 1);
+            ++selected.priority;
+            if (next != null)
+            {
+                --next.priority;
+            }
             RefreshReposListBox();
         }
 

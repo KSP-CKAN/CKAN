@@ -123,7 +123,7 @@
   <data name="NetInvalidLocation" xml:space="preserve"><value>Invalid URL in Location header: {0}</value></data>
   <data name="NetAsyncDownloaderDownloading" xml:space="preserve"><value>Downloading "{0}"</value></data>
   <data name="NetAsyncDownloaderCancelled" xml:space="preserve"><value>Download cancelled by user</value></data>
-  <data name="NetAsyncDownloaderProgress" xml:space="preserve"><value>{0}/sec - downloading - {1} left</value></data>
+  <data name="NetAsyncDownloaderProgress" xml:space="preserve"><value>{0}/sec - downloading - {1} left</value><comment>Should contain UserProgressDownloadSubstring from CmdLine</comment></data>
   <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve"><value>Failed to download "{0}", trying fallback "{1}"</value></data>
   <data name="NetAsyncDownloaderValidating" xml:space="preserve"><value>Finished downloading {0}, validating and storing to cache...</value></data>
   <data name="NetFileCacheCannotFind" xml:space="preserve"><value>Cannot find cache directory: {0}</value></data>
@@ -149,7 +149,7 @@ Install the `mono-complete` package or equivalent for your operating system.</va
   <data name="NetRepoNoModules" xml:space="preserve"><value>No modules found!</value></data>
   <data name="NetRepoFailedDownload" xml:space="preserve"><value>Failed to download {0}: {1}</value></data>
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve"><value>The following inconsistencies were found:</value></data>
-  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve"><value>Loading modules from {0} repository...</value></data>
+  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve"><value>Loading modules from downloaded {0} repository...</value><comment>Should contain UserProgressDownloadSubstring from CmdLine</comment></data>
   <data name="NetRepoLoadedDownloadCounts" xml:space="preserve"><value>Loaded download counts from {0} repository</value></data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve"><value>`any_of` should not be combined with `{0}`</value></data>
   <data name="RegistryFileConflict" xml:space="preserve"><value>{0} wishes to install {1}, but this file is registered to {2}</value></data>

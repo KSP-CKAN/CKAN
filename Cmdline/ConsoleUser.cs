@@ -255,7 +255,7 @@ namespace CKAN.CmdLine
         /// <param name="percent">Progress in percent</param>
         public void RaiseProgress(string message, int percent)
         {
-            if (Regex.IsMatch(message, "download", RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(message, Properties.Resources.UserProgressDownloadSubstring, RegexOptions.IgnoreCase))
             {
                 // In headless mode, only print a new message if the percent has changed,
                 // to reduce clutter in Jenkins for large downloads
