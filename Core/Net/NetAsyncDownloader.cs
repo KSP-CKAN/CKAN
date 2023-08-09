@@ -300,7 +300,6 @@ namespace CKAN
                     int index = downloads.Count;
 
                     downloads.Add(dl);
-                    queuedDownloads.Remove(dl);
 
                     // Schedule for us to get back progress reports.
                     dl.Progress += (ProgressPercentage, BytesReceived, TotalBytesToReceive) =>
@@ -310,6 +309,7 @@ namespace CKAN
                     dl.Done += (sender, args, etag) =>
                         FileDownloadComplete(index, args.Error, args.Cancelled, etag);
                 }
+                queuedDownloads.Remove(dl);
 
                 // Encode spaces to avoid confusing URL parsers
                 User.RaiseMessage(Properties.Resources.NetAsyncDownloaderDownloading,
@@ -333,6 +333,8 @@ namespace CKAN
             // Ignore inactive downloads
             => downloads.Except(queuedDownloads)
                         .Any(dl => (!dl.CurrentUri.IsAbsoluteUri || dl.CurrentUri.Host == url.Host)
+                                   // Consider done if no bytes left
+                                   && dl.bytesLeft > 0
                                    // Consider done if already tried and failed
                                    && dl.error == null);
 
@@ -412,7 +414,6 @@ namespace CKAN
                 {
                     log.DebugFormat("Attempting to start queued download {0}", string.Join(", ", next.target.urls));
                     // Start this host's next queued download
-                    queuedDownloads.Remove(next);
                     DownloadModule(next);
                 }
             }
