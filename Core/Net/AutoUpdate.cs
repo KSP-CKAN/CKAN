@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Net;
@@ -151,13 +152,11 @@ namespace CKAN
                 new[]
                 {
                     new Net.DownloadTarget(
-                        latestUpdate.UpdaterDownload,
-                        null,
+                        new List<Uri> { latestUpdate.UpdaterDownload },
                         updaterFilename,
                         latestUpdate.UpdaterSize),
                     new Net.DownloadTarget(
-                        latestUpdate.ReleaseDownload,
-                        null,
+                        new List<Uri> {  latestUpdate.ReleaseDownload },
                         ckanFilename,
                         latestUpdate.ReleaseSize),
                 },

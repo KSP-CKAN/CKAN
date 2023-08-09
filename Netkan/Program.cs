@@ -89,7 +89,7 @@ namespace CKAN.NetKAN
                 {
                     Log.InfoFormat("Transforming {0}", Options.File);
 
-                    var netkan = ReadNetkan();
+                    var netkans = ReadNetkans();
                     Log.Info("Finished reading input");
 
                     var inf = new Inflator(
@@ -101,19 +101,18 @@ namespace CKAN.NetKAN
                         game
                     );
                     var ckans = inf.Inflate(
-                        Options.File,
-                        netkan,
-                        new TransformOptions(
-                            ParseReleases(Options.Releases),
-                            ParseSkipReleases(Options.SkipReleases),
-                            ParseHighestVersion(Options.HighestVersion),
-                            netkan.Staged,
-                            netkan.StagingReason
-                        )
-                    );
+                            Options.File,
+                            netkans,
+                            new TransformOptions(
+                                ParseReleases(Options.Releases),
+                                ParseSkipReleases(Options.SkipReleases),
+                                ParseHighestVersion(Options.HighestVersion),
+                                netkans[0].Staged,
+                                netkans[0].StagingReason))
+                        .ToArray();
                     foreach (Metadata ckan in ckans)
                     {
-                        WriteCkan(ckan);
+                        WriteCkan(ckan.Json());
                     }
                 }
                 else
@@ -179,31 +178,29 @@ namespace CKAN.NetKAN
             }
         }
 
-        private static Metadata ReadNetkan()
+        private static Metadata[] ReadNetkans()
         {
             if (!Options.File.EndsWith(".netkan"))
             {
                 Log.WarnFormat("Input is not a .netkan file");
             }
 
-            return new Metadata(YamlExtensions.Parse(File.OpenText(Options.File)));
+            return YamlExtensions.Parse(File.OpenText(Options.File))
+                                 .Select(ymap => new Metadata(ymap))
+                                 .ToArray();
         }
 
-        internal static string CkanFileName(Metadata metadata)
-        {
-            return Path.Combine(
-                Options.OutputDir,
-                string.Format(
-                    "{0}-{1}.ckan",
-                    metadata.Identifier,
-                    metadata.Version.ToString().Replace(':', '-')
-                )
-            );
-        }
+        internal static string CkanFileName(JObject json)
+        => Path.Combine(
+            Options.OutputDir,
+            string.Format(
+                "{0}-{1}.ckan",
+                (string)json["identifier"],
+                ((string)json["version"]).Replace(':', '-')));
 
-        private static void WriteCkan(Metadata metadata)
+        private static void WriteCkan(JObject json)
         {
-            var finalPath = CkanFileName(metadata);
+            var finalPath = CkanFileName(json);
 
             var sb = new StringBuilder();
             var sw = new StringWriter(sb);
@@ -215,7 +212,7 @@ namespace CKAN.NetKAN
                 writer.IndentChar = ' ';
 
                 var serializer = new JsonSerializer();
-                serializer.Serialize(writer, metadata.Json());
+                serializer.Serialize(writer, json);
             }
 
             File.WriteAllText(finalPath, sw + Environment.NewLine);

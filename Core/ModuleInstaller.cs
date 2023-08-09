@@ -66,7 +66,11 @@ namespace CKAN
         {
             log.Info("Downloading " + filename);
 
-            string tmp_file = Net.Download(module.download);
+            string tmp_file = Net.Download(module.download
+                .OrderBy(u => u,
+                         new PreferredHostUriComparer(
+                             ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts))
+                .First());
 
             return cache.Store(module, tmp_file, new Progress<long>(bytes => {}), filename, true);
         }
@@ -1051,14 +1055,14 @@ namespace CKAN
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingResuming,
                                 module.name, module.version,
-                                module.download.Host,
+                                string.Join(", ", PrioritizedHosts(module.download)),
                                 CkanModule.FmtSize(module.download_size - inProgressFile.Length));
                         }
                         else
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingUncached,
                                 module.name, module.version,
-                                module.download.Host,
+                                string.Join(", ", PrioritizedHosts(module.download)),
                                 CkanModule.FmtSize(module.download_size));
                         }
                     }
@@ -1093,13 +1097,15 @@ namespace CKAN
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingResuming,
                                     module.name, installed.version, module.version,
-                                    module.download.Host, CkanModule.FmtSize(module.download_size - inProgressFile.Length));
+                                    string.Join(", ", PrioritizedHosts(module.download)),
+                                    CkanModule.FmtSize(module.download_size - inProgressFile.Length));
                             }
                             else
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingUncached,
                                     module.name, installed.version, module.version,
-                                    module.download.Host, CkanModule.FmtSize(module.download_size));
+                                    string.Join(", ", PrioritizedHosts(module.download)),
+                                    CkanModule.FmtSize(module.download_size));
                             }
                         }
                         else
@@ -1226,6 +1232,11 @@ namespace CKAN
         }
 
         #endregion
+
+        public static IEnumerable<string> PrioritizedHosts(IEnumerable<Uri> urls)
+            => urls.OrderBy(u => u, new PreferredHostUriComparer(ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts))
+                   .Select(dl => dl.Host)
+                   .Distinct();
 
         /// <summary>
         /// Makes sure all the specified mods are downloaded.

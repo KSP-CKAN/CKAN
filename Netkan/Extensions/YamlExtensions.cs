@@ -9,16 +9,17 @@ namespace CKAN.NetKAN.Extensions
 {
     internal static class YamlExtensions
     {
-        public static YamlMappingNode Parse(string input)
+        public static YamlMappingNode[] Parse(string input)
         {
             return Parse(new StringReader(input));
         }
 
-        public static YamlMappingNode Parse(TextReader input)
+        public static YamlMappingNode[] Parse(TextReader input)
         {
             var stream = new YamlStream();
             stream.Load(input);
-            return stream.Documents.FirstOrDefault()?.RootNode as YamlMappingNode;
+            return stream.Documents.Select(doc => doc?.RootNode as YamlMappingNode)
+                                   .ToArray();
         }
 
         /// <summary>

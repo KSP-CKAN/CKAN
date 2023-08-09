@@ -299,7 +299,7 @@ namespace CKAN.CmdLine
             if (!opts.without_files && !module.IsDLC)
             {
                 // Compute the CKAN filename.
-                string file_uri_hash = NetFileCache.CreateURLHash(module.download);
+                string file_uri_hash = NetFileCache.CreateURLHash(module.download[0]);
                 string file_name = CkanModule.StandardName(module.identifier, module.version);
 
                 user.RaiseMessage("");

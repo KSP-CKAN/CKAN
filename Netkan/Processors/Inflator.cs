@@ -33,7 +33,7 @@ namespace CKAN.NetKAN.Processors
             transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, gitlabToken, prerelease, game, netkanValidator);
         }
 
-        internal IEnumerable<Metadata> Inflate(string filename, Metadata netkan, TransformOptions opts)
+        internal IEnumerable<Metadata> Inflate(string filename, Metadata[] netkans, TransformOptions opts)
         {
             log.DebugFormat("Inflating {0}", filename);
             try
@@ -41,17 +41,22 @@ namespace CKAN.NetKAN.Processors
                 // Tell the downloader that we're starting a new request
                 http.ClearRequestedURLs();
 
-                netkanValidator.ValidateNetkan(netkan, filename);
+                foreach (var netkan in netkans)
+                {
+                    netkanValidator.ValidateNetkan(netkan, filename);
+                }
                 log.Debug("Input successfully passed pre-validation");
 
-                IEnumerable<Metadata> ckans = transformer
-                    .Transform(netkan, opts)
+                var ckans = netkans
+                    .SelectMany(netkan => transformer.Transform(netkan, opts))
+                    .GroupBy(module => module.Version)
+                    .Select(grp => Metadata.Merge(grp.ToArray()))
                     .ToList();
                 log.Debug("Finished transformation");
 
                 foreach (Metadata ckan in ckans)
                 {
-                    ckanValidator.ValidateCkan(ckan, netkan);
+                    ckanValidator.ValidateCkan(ckan, netkans[0]);
                 }
                 log.Debug("Output successfully passed post-validation");
                 return ckans;

@@ -146,18 +146,16 @@ namespace CKAN
 
         public class DownloadTarget
         {
-            public Uri    url         { get; private set; }
-            public Uri    fallbackUrl { get; private set; }
-            public string filename    { get; private set; }
-            public long   size        { get; private set; }
-            public string mimeType    { get; private set; }
+            public List<Uri> urls     { get; private set; }
+            public string    filename { get; private set; }
+            public long      size     { get; private set; }
+            public string    mimeType { get; private set; }
 
-            public DownloadTarget(Uri url, Uri fallback = null, string filename = null, long size = 0, string mimeType = "")
+            public DownloadTarget(List<Uri> urls, string filename = null, long size = 0, string mimeType = "")
             {
                 TxFileManager FileTransaction = new TxFileManager();
 
-                this.url         = url;
-                this.fallbackUrl = fallback;
+                this.urls        = urls;
                 this.filename    = string.IsNullOrEmpty(filename)
                     ? FileTransaction.GetTempFileName()
                     : filename;
@@ -174,7 +172,7 @@ namespace CKAN
         public static string DownloadWithProgress(Uri url, string filename = null, IUser user = null)
         {
             var targets = new[] {
-                new DownloadTarget(url, null, filename)
+                new DownloadTarget(new List<Uri> { url }, filename)
             };
             DownloadWithProgress(targets, user);
             return targets.First().filename;
@@ -191,7 +189,7 @@ namespace CKAN
                 }
                 else
                 {
-                    File.Move(filename, downloadTargets.First(p => p.url == url).filename);
+                    File.Move(filename, downloadTargets.First(p => p.urls.Contains(url)).filename);
                 }
             };
             downloader.DownloadAndWait(downloadTargets);

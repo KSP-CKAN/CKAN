@@ -512,11 +512,16 @@ namespace CKAN.ConsoleUI {
 
         private string HostedOn()
         {
-            string dl = mod.download?.ToString() ?? "";
-            foreach (var kvp in hostDomains) {
-                if (dl.IndexOf(kvp.Key, StringComparison.CurrentCultureIgnoreCase) >= 0) {
-                    return string.Format(Properties.Resources.ModInfoHostedOn, kvp.Value);
-                }
+            if (mod.download != null && mod.download.Count > 0)
+            {
+                var downloadHosts = mod.download
+                    .Select(dlUri => dlUri.Host)
+                    .Select(host =>
+                        hostDomains.TryGetValue(host, out string name)
+                            ? name
+                            : host);
+                return string.Format(Properties.Resources.ModInfoHostedOn,
+                                     string.Join(", ", downloadHosts));
             }
             if (mod.resources != null) {
                 if (mod.resources.bugtracker != null) {
@@ -550,7 +555,7 @@ namespace CKAN.ConsoleUI {
                         :                                     Properties.Resources.ModInfoBuyFromKSPStoreOrSteamStore;
                 }
             }
-            return mod.download?.Host ?? "";
+            return "";
         }
 
         private void Download(ConsoleTheme theme)

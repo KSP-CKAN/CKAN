@@ -161,6 +161,8 @@ namespace Tests.Core.Configuration
 
         public string[] GlobalInstallFilters { get; set; } = new string[] { };
 
+        public string[] PreferredHosts { get; set; } = new string[] { };
+
         public void Dispose()
         {
             Directory.Delete(DownloadCacheDir, true);

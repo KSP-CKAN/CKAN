@@ -479,4 +479,9 @@ If you wish to remove this folder, uninstall these mods normally.</value></data>
 This action cannot be undone!</value></data>
   <data name="DeleteUnmanagedFileDelete" xml:space="preserve"><value>Delete</value></data>
   <data name="DeleteUnmanagedFileCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="PreferredHostsPlaceholder" xml:space="preserve"><value>&lt;ALL OTHER HOSTS&gt;</value><comment>This string should not be valid as a hostname</comment></data>
+  <data name="PreferredHostsTooltipMoveRight" xml:space="preserve"><value>Add selected host to preferences list</value></data>
+  <data name="PreferredHostsTooltipMoveLeft" xml:space="preserve"><value>Remove selected host from preferences list</value></data>
+  <data name="PreferredHostsTooltipMoveUp" xml:space="preserve"><value>Make selected host higher priority</value></data>
+  <data name="PreferredHostsTooltipMoveDown" xml:space="preserve"><value>Make selected host lower priority</value></data>
 </root>

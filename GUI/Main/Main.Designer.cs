@@ -46,6 +46,7 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.preferredHostsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.installFiltersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GameCommandlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compatibleGameVersionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -252,10 +253,11 @@
             //
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cKANSettingsToolStripMenuItem,
-            this.pluginsToolStripMenuItem,
             this.GameCommandlineToolStripMenuItem,
             this.compatibleGameVersionsToolStripMenuItem,
-            this.installFiltersToolStripMenuItem});
+            this.preferredHostsToolStripMenuItem,
+            this.installFiltersToolStripMenuItem,
+            this.pluginsToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
             resources.ApplyResources(this.settingsToolStripMenuItem, "settingsToolStripMenuItem");
@@ -273,6 +275,13 @@
             this.pluginsToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
             this.pluginsToolStripMenuItem.Click += new System.EventHandler(this.pluginsToolStripMenuItem_Click);
             resources.ApplyResources(this.pluginsToolStripMenuItem, "pluginsToolStripMenuItem");
+            //
+            // preferredHostsToolStripMenuItem
+            //
+            this.preferredHostsToolStripMenuItem.Name = "preferredHostsToolStripMenuItem";
+            this.preferredHostsToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
+            this.preferredHostsToolStripMenuItem.Click += new System.EventHandler(this.preferredHostsToolStripMenuItem_Click);
+            resources.ApplyResources(this.preferredHostsToolStripMenuItem, "preferredHostsToolStripMenuItem");
             //
             // installFiltersToolStripMenuItem
             //
@@ -878,6 +887,7 @@
         public System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cKANSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pluginsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem preferredHostsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem installFiltersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem GameCommandlineToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem compatibleGameVersionsToolStripMenuItem;

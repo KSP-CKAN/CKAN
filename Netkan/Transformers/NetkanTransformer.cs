@@ -73,9 +73,8 @@ namespace CKAN.NetKAN.Transformers
             Metadata[] modules = new Metadata[] { metadata };
             foreach (ITransformer tr in _transformers)
             {
-                modules = modules
-                    .SelectMany(meta => tr.Transform(meta, opts))
-                    .ToArray();
+                modules = modules.SelectMany(meta => tr.Transform(meta, opts))
+                                 .ToArray();
                 // The metadata should be valid after each step
                 foreach (Metadata meta in modules)
                 {

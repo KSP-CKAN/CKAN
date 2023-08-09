@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Newtonsoft.Json;
+
 using CKAN.Games;
 
 namespace CKAN.Configuration
@@ -23,20 +25,16 @@ namespace CKAN.Configuration
             public IList<GameInstanceEntry> GameInstances { get; set; } = new List<GameInstanceEntry>();
             public IDictionary<string, string> AuthTokens { get; set; } = new Dictionary<string, string>();
             public string[] GlobalInstallFilters { get; set; } = new string[] { };
+            public string[] PreferredHosts { get; set; } = new string[] { };
         }
 
         public class ConfigConverter : JsonPropertyNamesChangedConverter
         {
             protected override Dictionary<string, string> mapping
-            {
-                get
+                => new Dictionary<string, string>
                 {
-                    return new Dictionary<string, string>
-                    {
-                        { "KspInstances", "GameInstances" }
-                    };
-                }
-            }
+                    { "KspInstances", "GameInstances" }
+                };
         }
 
         private class GameInstanceEntry
@@ -321,6 +319,26 @@ namespace CKAN.Configuration
                 lock (_lock)
                 {
                     config.GlobalInstallFilters = value;
+                    SaveConfig();
+                }
+            }
+        }
+
+        public string[] PreferredHosts
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return config.PreferredHosts;
+                }
+            }
+
+            set
+            {
+                lock (_lock)
+                {
+                    config.PreferredHosts = value;
                     SaveConfig();
                 }
             }

@@ -1266,20 +1266,45 @@ namespace CKAN
                     CkanModule mod = kvp2.Value;
                     if (mod.download != null)
                     {
-                        string hash = NetFileCache.CreateURLHash(mod.download);
-                        if (index.ContainsKey(hash))
+                        foreach (var dlUri in mod.download)
                         {
-                            index[hash].Add(mod);
-                        }
-                        else
-                        {
-                            index.Add(hash, new List<CkanModule>() {mod});
+                            string hash = NetFileCache.CreateURLHash(dlUri);
+                            if (index.ContainsKey(hash))
+                            {
+                                index[hash].Add(mod);
+                            }
+                            else
+                            {
+                                index.Add(hash, new List<CkanModule>() {mod});
+                            }
                         }
                     }
                 }
             }
             return index;
         }
+
+        /// <summary>
+        /// Return all hosts from latest versions of all available modules,
+        /// sorted by number of occurrences, most common first
+        /// </summary>
+        /// <returns>Host strings without duplicates</returns>
+        public IEnumerable<string> GetAllHosts()
+            => available_modules.Values
+                // Pick all modules where download is not null
+                .Where(availMod => availMod?.Latest()?.download != null)
+                // Merge all the URLs into one sequence
+                .SelectMany(availMod => availMod.Latest().download)
+                // Skip relative URLs because they don't have hosts
+                .Where(dlUri => dlUri.IsAbsoluteUri)
+                // Group the URLs by host
+                .GroupBy(dlUri => dlUri.Host)
+                // Put most commonly used hosts first
+                .OrderByDescending(grp => grp.Count())
+                // Alphanumeric sort if same number of usages
+                .ThenBy(grp => grp.Key)
+                // Return the host from each group
+                .Select(grp => grp.Key);
 
         /// <summary>
         /// Partition all CkanModules in available_modules into

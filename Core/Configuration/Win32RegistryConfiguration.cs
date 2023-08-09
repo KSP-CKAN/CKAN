@@ -178,6 +178,11 @@ namespace CKAN.Configuration
         /// </summary>
         public string[] GlobalInstallFilters { get; set; }
 
+        /// <summary>
+        /// Not implemented because the Windows registry is deprecated
+        /// </summary>
+        public string[] PreferredHosts { get; set; }
+
         public static bool DoesRegistryConfigurationExist()
         {
             RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(CKAN_KEY_NO_PREFIX);

@@ -580,6 +580,16 @@ namespace CKAN.GUI
             Enabled = true;
         }
 
+        private void preferredHostsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Enabled = false;
+            var dlg = new PreferredHostsDialog(
+                ServiceLocator.Container.Resolve<Configuration.IConfiguration>(),
+                RegistryManager.Instance(CurrentInstance).registry);
+            dlg.ShowDialog(this);
+            Enabled = true;
+        }
+
         private void installFiltersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Enabled = false;

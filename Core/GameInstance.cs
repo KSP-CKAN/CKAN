@@ -393,7 +393,6 @@ namespace CKAN
 
                 return dllChanged || dlcChanged;
             }
-            return false;
         }
 
         #endregion

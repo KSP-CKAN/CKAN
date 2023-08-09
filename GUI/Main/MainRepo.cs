@@ -80,7 +80,7 @@ namespace CKAN.GUI
                         downloader.Progress += (target, remaining, total) =>
                         {
                             var repo = repos
-                                .Where(r => r.uri == target.url)
+                                .Where(r => target.urls.Contains(r.uri))
                                 .FirstOrDefault();
                             if (repo != null)
                             {

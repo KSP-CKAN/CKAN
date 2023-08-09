@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.33.3
 
+### Features
+
+- [Multiple] Support multiple download URLs per module (#3877 by: HebaruSan; reviewed: techman83)
+
 ### Bugfixes
 
 - [GUI] Updated Chinese translation to reduce misunderstandings (#3864 by: Fierce-Cat; reviewed: HebaruSan)
