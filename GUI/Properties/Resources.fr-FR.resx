@@ -674,6 +674,18 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   <data name="SettingsDialogDeleteConfirm" xml:space="preserve">
     <value>Voulez-vous vraiment supprimer {0} fichiers en cache et libérer {1} ?</value>
   </data>
+  <data name="SettingsDialogRepoDeleteConfirm" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir supprimer le dépôt {0} ? Cette action est irréversible !</value>
+  </data>
+  <data name="SettingsDialogRepoDeleteDelete" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="SettingsDialogRepoDeleteCancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="SettingsDialogRepoAddDuplicateURL" xml:space="preserve">
+    <value>Dépôt avec lien déjà dans la liste : {0}</value>
+  </data>
   <data name="AddAuthTokenTitle" xml:space="preserve">
     <value>Ajouter Jeton d'Authentification</value>
   </data>
@@ -998,5 +1010,21 @@ Cette action est irréversible !</value>
   </data>
   <data name="DeleteUnmanagedFileCancel" xml:space="preserve">
     <value>Annuler</value>
+  </data>
+  <data name="PreferredHostsPlaceholder" xml:space="preserve">
+    <value>&lt;TOUS LES AUTRES HÔTES&gt;</value>
+    <comment>This string should not be valid as a hostname</comment>
+  </data>
+  <data name="PreferredHostsTooltipMoveRight" xml:space="preserve">
+    <value>Ajouter l'hôte sélectionné à la liste des préférences</value>
+  </data>
+  <data name="PreferredHostsTooltipMoveLeft" xml:space="preserve">
+    <value>Retirer l'hôte sélectionné de la liste des préférences</value>
+  </data>
+  <data name="PreferredHostsTooltipMoveUp" xml:space="preserve">
+    <value>Augmenter la priorité de l'hôte sélectionné</value>
+  </data>
+  <data name="PreferredHostsTooltipMoveDown" xml:space="preserve">
+    <value>Diminuer la priorité de l'hôte sélectionné</value>
   </data>
 </root>
