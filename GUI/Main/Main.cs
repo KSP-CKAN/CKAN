@@ -152,12 +152,9 @@ namespace CKAN.GUI
             }
 
             // We need a config object to get the window geometry, but we don't need the registry lock yet
-            configuration = CurrentInstance != null
-                ? GUIConfiguration.LoadOrCreateConfiguration(
-                    Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
-                    CurrentInstance.game)
-                // No instance, just get the defaults
-                : new GUIConfiguration();
+            configuration = GUIConfigForInstance(
+                // Find the most recently used instance if no default instance
+                CurrentInstance ?? InstanceWithNewestGUIConfig(manager.Instances.Values));
 
             // This must happen before Shown, and it depends on the configuration
             SetStartPosition();
@@ -181,6 +178,22 @@ namespace CKAN.GUI
             log.Info("GUI started");
             base.OnLoad(e);
         }
+
+        private const string GUIConfigFilename = "GUIConfig.xml";
+
+        private static string GUIConfigPath(GameInstance inst)
+            => Path.Combine(inst.CkanDir(), GUIConfigFilename);
+
+        private static GUIConfiguration GUIConfigForInstance(GameInstance inst)
+            => inst == null ? new GUIConfiguration()
+                            : GUIConfiguration.LoadOrCreateConfiguration(GUIConfigPath(inst),
+                                                                         inst.game);
+
+        private static GameInstance InstanceWithNewestGUIConfig(IEnumerable<GameInstance> instances)
+            => instances.Where(inst => inst.Valid)
+                        .OrderByDescending(inst => File.GetLastWriteTime(GUIConfigPath(inst)))
+                        .ThenBy(inst => inst.Name)
+                        .FirstOrDefault();
 
         /// <summary>
         /// Form.Visible says true even when the form hasn't shown yet.
@@ -379,9 +392,7 @@ namespace CKAN.GUI
             registry.BuildTagIndex(ManageMods.mainModList.ModuleTags);
 
             configuration?.Save();
-            configuration = GUIConfiguration.LoadOrCreateConfiguration(
-                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
-                CurrentInstance.game);
+            configuration = GUIConfigForInstance(CurrentInstance);
 
             if (!configuration.CheckForUpdatesOnLaunchNoNag && AutoUpdate.CanUpdate)
             {

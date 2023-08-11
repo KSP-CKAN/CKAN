@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Add missing dependency to .deb package (#3872 by: HebaruSan; reviewed: erkinalp)
 - [Core] Add missing resource string for upgrading (#3873 by: HebaruSan; reviewed: techman83)
 - [Multiple] Repository management fixes (#3876 by: HebaruSan; reviewed: techman83)
+- [GUI] Restore window position without default instance (#3878 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 
