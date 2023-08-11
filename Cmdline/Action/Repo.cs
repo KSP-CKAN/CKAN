@@ -48,8 +48,11 @@ namespace CKAN.CmdLine
                 {
                     // First the commands with two arguments
                     case "add":
-                    case "priority":
                         ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name url");
+                        break;
+
+                    case "priority":
+                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name priority");
                         break;
 
                     // Then the commands with one argument
