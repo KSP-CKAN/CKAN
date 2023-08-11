@@ -7,11 +7,12 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Multiple] Support multiple download URLs per module (#3877 by: HebaruSan; reviewed: techman83)
+- [Multiple] French translation updates from Crowdin (#3879 by: vinix38; reviewed: HebaruSan)
 
 ### Bugfixes
 
 - [GUI] Updated Chinese translation to reduce misunderstandings (#3864 by: Fierce-Cat; reviewed: HebaruSan)
-- [Multiple] Translation updates from Crowdin (#3866, #3868 by: Nikita, Вячеслав Бучин, vinix, WujekFoliarz; reviewed: HebaruSan)
+- [Multiple] Translation updates from Crowdin (#3866, #3868 by: Nikita, Вячеслав Бучин, vinix38, WujekFoliarz; reviewed: HebaruSan)
 - [Multiple] Fix deletion of unmanaged files (#3865 by: HebaruSan; reviewed: techman83)
 - [Build] Add missing dependency to .deb package (#3872 by: HebaruSan; reviewed: erkinalp)
 - [Core] Add missing resource string for upgrading (#3873 by: HebaruSan; reviewed: techman83)

@@ -137,6 +137,7 @@
   </data>
   <data name="NetAsyncDownloaderProgress" xml:space="preserve">
     <value>{0}/sec - téléchargement en cours - {1} restant</value>
+    <comment>Should contain UserProgressDownloadSubstring from CmdLine</comment>
   </data>
   <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve">
     <value>Échec du téléchargement de "{0}", essai du lien de secours "{1}"</value>
@@ -210,7 +211,8 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
     <value>Les incohérences suivantes ont été trouvées :</value>
   </data>
   <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve">
-    <value>Chargement des modules du répertoire {0} ...</value>
+    <value>Chargement des modules depuis le dépôt téléchargé {0}...</value>
+    <comment>Should contain UserProgressDownloadSubstring from CmdLine</comment>
   </data>
   <data name="NetRepoLoadedDownloadCounts" xml:space="preserve">
     <value>Réception des compteurs de téléchargement du répertoire {0}</value>
@@ -461,6 +463,9 @@ Remplacer ?</value>
   </data>
   <data name="ModuleInstallerAboutToUpgrade" xml:space="preserve">
     <value>Vont être mis à jour :</value>
+  </data>
+  <data name="ModuleInstallerUpgradeInstallingResuming" xml:space="preserve">
+    <value> * Installation : {0} {1} ({2}, {3} restant)</value>
   </data>
   <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve">
     <value> * Installation : {0} {1} ({2}, {3})</value>

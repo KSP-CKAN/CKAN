@@ -159,6 +159,9 @@
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
     <value>Plugins &amp;CKAN</value>
   </data>
+  <data name="preferredHostsToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Hôtes préférés</value>
+  </data>
   <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Filtres d'installation</value>
   </data>

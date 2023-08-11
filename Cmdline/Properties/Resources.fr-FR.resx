@@ -210,6 +210,10 @@ Mise à jour conseillée !</value>
   <data name="UserSelectionTooSmall" xml:space="preserve">
     <value>Le nombre saisi est trop petit</value>
   </data>
+  <data name="UserProgressDownloadSubstring" xml:space="preserve">
+    <value>téléchargement</value>
+    <comment>Progress update messages containing this will display a percentage and overwrite the same line on the screen</comment>
+  </data>
   <data name="AuthTokenHostHeader" xml:space="preserve">
     <value>Hôte</value>
   </data>
@@ -553,8 +557,14 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   <data name="RepoAvailableFailed" xml:space="preserve">
     <value>Impossible d'obtenir la liste maîtresse des répertoires CKAN depuis {0}</value>
   </data>
-  <data name="RepoListHeader" xml:space="preserve">
-    <value>Liste de tous les répertoires connus :</value>
+  <data name="RepoListPriorityHeader" xml:space="preserve">
+    <value>Priorité</value>
+  </data>
+  <data name="RepoListNameHeader" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="RepoListURLHeader" xml:space="preserve">
+    <value>Lien</value>
   </data>
   <data name="RepoAddNotFound" xml:space="preserve">
     <value>Le nom {0} n'a pas été trouvé dans la liste maîtresse, veuillez fournir un nom et une adresse</value>
@@ -562,8 +572,17 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   <data name="RepoAddDuplicate" xml:space="preserve">
     <value>Un répertoire avec le nom "{0}" existe déjà, annulation</value>
   </data>
+  <data name="RepoAddDuplicateURL" xml:space="preserve">
+    <value>Un répertoire avec le lien "{0}" existe déjà, annulation</value>
+  </data>
   <data name="RepoAdded" xml:space="preserve">
     <value>Ajout du répertoire '{0}' - '{1}'</value>
+  </data>
+  <data name="RepoPriorityNotFound" xml:space="preserve">
+    <value>Impossible de trouver un répertoire avec le nom "{0}", annulation</value>
+  </data>
+  <data name="RepoPriorityInvalid" xml:space="preserve">
+    <value>Priorité invalide : {0}, les valeurs doivent être comprises entre 0 et {1}</value>
   </data>
   <data name="RepoForgetNotFound" xml:space="preserve">
     <value>Impossible de trouver un répertoire avec le nom "{0}", annulation</value>
