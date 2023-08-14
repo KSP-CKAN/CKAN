@@ -164,6 +164,9 @@ namespace CKAN.CmdLine.Properties {
         internal static string AuthTokenHelpSummary {
             get { return (string)(ResourceManager.GetObject("AuthTokenHelpSummary", resourceCulture)); }
         }
+        internal static string AuthTokenInvalidHostName {
+            get { return (string)(ResourceManager.GetObject("AuthTokenHelpSummary", resourceCulture)); }
+        }
 
         internal static string AvailableHeader {
             get { return (string)(ResourceManager.GetObject("AvailableHeader", resourceCulture)); }

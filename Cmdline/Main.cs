@@ -331,7 +331,7 @@ namespace CKAN.CmdLine
 
                 if (next_command == null)
                 {
-                    user.RaiseError(kraken.InconsistenciesPretty);
+                    user.RaiseError("{0}", kraken.InconsistenciesPretty);
                     user.RaiseError(Properties.Resources.ScanNotSaved);
                 }
                 else

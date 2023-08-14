@@ -110,7 +110,7 @@ namespace CKAN.CmdLine
             }
             else
             {
-                user.RaiseError("Invalid host name: {0}", opts.host);
+                user.RaiseError(Properties.Resources.AuthTokenInvalidHostName, opts.host);
             }
             return Exit.OK;
         }

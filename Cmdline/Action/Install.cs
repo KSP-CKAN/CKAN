@@ -88,9 +88,10 @@ namespace CKAN.CmdLine
                     }
                     catch (Kraken kraken)
                     {
-                        user.RaiseError(kraken.InnerException == null
-                            ? kraken.Message
-                            : $"{kraken.Message}: {kraken.InnerException.Message}");
+                        user.RaiseError("{0}",
+                            kraken.InnerException == null
+                                ? kraken.Message
+                                : $"{kraken.Message}: {kraken.InnerException.Message}");
                     }
                 }
 
@@ -142,7 +143,7 @@ namespace CKAN.CmdLine
                 }
                 catch (DependencyNotSatisfiedKraken ex)
                 {
-                    user.RaiseError(ex.Message);
+                    user.RaiseError("{0}", ex.Message);
                     user.RaiseMessage(Properties.Resources.InstallTryAgain);
                     return Exit.ERROR;
                 }
@@ -214,7 +215,7 @@ namespace CKAN.CmdLine
                 catch (InconsistentKraken ex)
                 {
                     // The prettiest Kraken formats itself for us.
-                    user.RaiseError(ex.InconsistenciesPretty);
+                    user.RaiseError("{0}", ex.InconsistenciesPretty);
                     user.RaiseMessage(Properties.Resources.InstallCancelled);
                     return Exit.ERROR;
                 }
@@ -226,12 +227,12 @@ namespace CKAN.CmdLine
                 catch (MissingCertificateKraken kraken)
                 {
                     // Another very pretty kraken.
-                    user.RaiseError(kraken.ToString());
+                    user.RaiseError("{0}", kraken.ToString());
                     return Exit.ERROR;
                 }
                 catch (DownloadThrottledKraken kraken)
                 {
-                    user.RaiseError(kraken.ToString());
+                    user.RaiseError("{0}", kraken.ToString());
                     user.RaiseMessage(Properties.Resources.InstallTryAuthToken, kraken.infoUrl);
                     return Exit.ERROR;
                 }
@@ -242,12 +243,12 @@ namespace CKAN.CmdLine
                 }
                 catch (ModuleDownloadErrorsKraken kraken)
                 {
-                    user.RaiseError(kraken.ToString());
+                    user.RaiseError("{0}", kraken.ToString());
                     return Exit.ERROR;
                 }
                 catch (DirectoryNotFoundKraken kraken)
                 {
-                    user.RaiseError(kraken.Message);
+                    user.RaiseError("{0}", kraken.Message);
                     return Exit.ERROR;
                 }
                 catch (ModuleIsDLCKraken kraken)
