@@ -637,13 +637,13 @@ namespace CKAN.CmdLine
             catch (BadInstallLocationKraken kraken)
             {
                 // The folder exists and is not empty.
-                User.RaiseError(kraken.Message);
+                User.RaiseError("{0}", kraken.Message);
                 return badArgument();
             }
             catch (WrongGameVersionKraken kraken)
             {
                 // Thrown because the specified game instance is too old for one of the selected DLCs.
-                User.RaiseError(kraken.Message);
+                User.RaiseError("{0}", kraken.Message);
                 return badArgument();
             }
             catch (NotKSPDirKraken kraken)
@@ -651,7 +651,7 @@ namespace CKAN.CmdLine
                 // Something went wrong adding the new instance to the registry,
                 // most likely because the newly created directory is somehow not valid.
                 log.Error(kraken);
-                User.RaiseError(kraken.Message);
+                User.RaiseError("{0}", kraken.Message);
                 return error();
             }
             catch (InvalidKSPInstanceKraken)

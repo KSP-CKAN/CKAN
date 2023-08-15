@@ -154,6 +154,7 @@ Update recommended!</value></data>
   <data name="AuthTokenHostHeader" xml:space="preserve"><value>Host</value></data>
   <data name="AuthTokenTokenHeader" xml:space="preserve"><value>Token</value></data>
   <data name="AuthTokenHelpSummary" xml:space="preserve"><value>Manage authentication tokens</value></data>
+  <data name="AuthTokenInvalidHostName" xml:space="preserve"><value>Invalid host name: {0}</value></data>
   <data name="AvailableHeader" xml:space="preserve"><value>Modules compatible with {0} {1}</value></data>
   <data name="CacheHelpSummary" xml:space="preserve"><value>Manage the download cache path of CKAN</value></data>
   <data name="CacheSet" xml:space="preserve"><value>Download cache set to {0}</value></data>
