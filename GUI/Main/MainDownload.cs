@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace CKAN.GUI
                 {
                     // Just pass to the existing worker
                     downloader.DownloadModules(new List<CkanModule> { module.ToCkanModule() });
-                    module.UpdateIsCached();
+                    UpdateCachedByDownloads(module);
                 });
             }
             else
@@ -82,13 +83,30 @@ namespace CKAN.GUI
             }
         }
 
+        private void UpdateCachedByDownloads(GUIMod module)
+        {
+            // Update all mods that share the same ZIP
+            var allGuiMods = ManageMods.AllGUIMods();
+            foreach (var otherMod in module.ToModule().GetDownloadsGroup(
+                allGuiMods.Values.Select(guiMod => guiMod.ToModule())))
+            {
+                allGuiMods[otherMod.identifier].UpdateIsCached();
+            }
+        }
+
         private void _PostModCaching(GUIMod module)
         {
-            module.UpdateIsCached();
-            // Update mod list in case is:cached or not:cached filters are active
-            RefreshModList();
+            UpdateCachedByDownloads(module);
+
+            // Reapply searches in case is:cached or not:cached is active
+            ManageMods.UpdateFilters();
+
             // User might have selected another row. Show current in tree.
             RefreshModContentsTree();
+
+            // Close progress tab and switch back to mod list
+            HideWaitDialog();
+            EnableMainWindow();
         }
     }
 }

@@ -487,10 +487,7 @@ namespace CKAN
         /// <returns>
         /// True if we have at least one available mod, false otherwise.
         /// </returns>
-        public bool HasAnyAvailable()
-        {
-            return available_modules.Count > 0;
-        }
+        public bool HasAnyAvailable() => available_modules.Count > 0;
 
         /// <summary>
         /// Mark a given module as available.
@@ -643,11 +640,9 @@ namespace CKAN
         /// </summary>
         /// <param name="identifier">Name of mod to check</param>
         public GameVersion LatestCompatibleKSP(string identifier)
-        {
-            return available_modules.ContainsKey(identifier)
-                ? available_modules[identifier].LatestCompatibleKSP()
+            => available_modules.TryGetValue(identifier, out AvailableModule availMod)
+                ? availMod.LatestCompatibleKSP()
                 : null;
-        }
 
         /// <summary>
         /// Find the minimum and maximum mod versions and compatible game versions

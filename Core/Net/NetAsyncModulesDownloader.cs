@@ -42,37 +42,6 @@ namespace CKAN
             this.cache = cache;
         }
 
-        internal static List<HashSet<CkanModule>> GroupByDownloads(IEnumerable<CkanModule> modules)
-        {
-            // Each module is a vertex, each download URL is an edge
-            // We want to group the vertices by transitive connectedness
-            // We can go breadth first or depth first
-            // Once we encounter a mod, we never have to look at it again
-            var unsearched = modules.ToHashSet();
-            var groups = new List<HashSet<CkanModule>>();
-            while (unsearched.Count > 0)
-            {
-                // Find one group, remove it from unsearched, add it to groups
-                var searching = new List<CkanModule> { unsearched.First() };
-                unsearched.ExceptWith(searching);
-                var found = searching.ToHashSet();
-                // Breadth first search to find all modules any URLs in common, transitively
-                while (searching.Count > 0)
-                {
-                    var origin = searching.First();
-                    searching.Remove(origin);
-                    var neighbors = origin.download
-                        .SelectMany(dlUri => unsearched.Where(other => other.download.Contains(dlUri)))
-                        .ToHashSet();
-                    unsearched.ExceptWith(neighbors);
-                    searching.AddRange(neighbors);
-                    found.UnionWith(neighbors);
-                }
-                groups.Add(found);
-            }
-            return groups;
-        }
-
         internal Net.DownloadTarget TargetFromModuleGroup(HashSet<CkanModule> group,
                                                           string[]            preferredHosts)
             => TargetFromModuleGroup(group, group.OrderBy(m => m.identifier).First(), preferredHosts);
@@ -102,7 +71,7 @@ namespace CKAN
         {
             var activeURLs = this.modules.SelectMany(m => m.download)
                                          .ToHashSet();
-            var moduleGroups = GroupByDownloads(modules);
+            var moduleGroups = CkanModule.GroupByDownloads(modules);
             // Make sure we have enough space to download and cache
             cache.CheckFreeSpace(moduleGroups.Select(grp => grp.First().download_size)
                                              .Sum());

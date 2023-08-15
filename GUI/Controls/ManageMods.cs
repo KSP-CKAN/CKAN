@@ -31,7 +31,9 @@ namespace CKAN.GUI
             FilterNotInstalledButton.ToolTipText    = Properties.Resources.FilterLinkToolTip;
             FilterIncompatibleButton.ToolTipText    = Properties.Resources.FilterLinkToolTip;
 
-            mainModList = new ModList(source => UpdateFilters());
+            mainModList = new ModList();
+            mainModList.ModFiltersUpdated += UpdateFilters;
+            UpdateFilters();
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchGameToolStripMenuItem.MouseHover += (sender, args) => launchGameToolStripMenuItem.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
@@ -929,8 +931,9 @@ namespace CKAN.GUI
             });
 
             ModGrid.ClearSelection();
-            var rows = ModGrid.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
-            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_key);
+            DataGridViewRow match = ModGrid.Rows.Cast<DataGridViewRow>()
+                .Where(row => row.Visible)
+                .FirstOrDefault(does_name_begin_with_key);
             if (match == null && first_match != null)
             {
                 // If there were no matches after the first match, cycle over to the beginning.
@@ -1031,6 +1034,13 @@ namespace CKAN.GUI
                 .ToList());
         }
 
+        public Dictionary<string, GUIMod> AllGUIMods()
+            => ModGrid.Rows.Cast<DataGridViewRow>()
+                .Select(row => row.Tag as GUIMod)
+                .Where(guiMod => guiMod != null)
+                .ToDictionary(guiMod => guiMod.Identifier,
+                              guiMod => guiMod);
+
         private void purgeContentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Purge other versions as well since the user is likely to want that
@@ -1044,7 +1054,18 @@ namespace CKAN.GUI
                 {
                     Main.Instance.Manager.Cache.Purge(mod);
                 }
-                selected.UpdateIsCached();
+
+                // Update all mods that share the same ZIP
+                var allGuiMods = AllGUIMods();
+                foreach (var otherMod in selected.ToModule().GetDownloadsGroup(
+                    allGuiMods.Values.Select(guiMod => guiMod.ToModule())))
+                {
+                    allGuiMods[otherMod.identifier].UpdateIsCached();
+                }
+
+                // Reapply searches in case is:cached or not:cached is active
+                UpdateFilters();
+
                 Main.Instance.RefreshModContentsTree();
             }
         }
@@ -1067,7 +1088,7 @@ namespace CKAN.GUI
             Util.Invoke(this, () => ModGrid.Focus());
         }
 
-        private void UpdateFilters()
+        public void UpdateFilters()
         {
             Util.Invoke(this, _UpdateFilters);
         }
@@ -1503,15 +1524,10 @@ namespace CKAN.GUI
             FocusMod(key, true);
         }
 
-        public GUIMod SelectedModule
-        {
-            get
-            {
-                return ModGrid.SelectedRows.Count == 0
-                    ? null
-                    : ModGrid.SelectedRows[0]?.Tag as GUIMod;
-            }
-        }
+        public GUIMod SelectedModule =>
+            ModGrid.SelectedRows.Count == 0
+                ? null
+                : ModGrid.SelectedRows[0]?.Tag as GUIMod;
 
         #region Navigation History
 
