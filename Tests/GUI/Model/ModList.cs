@@ -21,7 +21,7 @@ namespace Tests.GUI
         [Test]
         public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
         {
-            var item = new ModList(delegate { });
+            var item = new ModList();
             Assert.That(item.ComputeUserChangeSet(null, null), Is.Empty);
         }
 
@@ -42,7 +42,7 @@ namespace Tests.GUI
                 var ckan_mod = TestData.FireSpitterModule();
                 var registry = Registry.Empty();
                 registry.AddAvailable(ckan_mod);
-                var item = new ModList(delegate { });
+                var item = new ModList();
                 Assert.That(item.IsVisible(
                     new GUIMod(ckan_mod, registry, manager.CurrentInstance.VersionCriteria()),
                     manager.CurrentInstance.Name
@@ -61,7 +61,7 @@ namespace Tests.GUI
         [TestCaseSource("GetFilters")]
         public void CountModsByFilter_EmptyModList_ReturnsZero(GUIModFilter filter)
         {
-            var item = new ModList(delegate { });
+            var item = new ModList();
             Assert.That(item.CountModsByFilter(filter), Is.EqualTo(0));
         }
 
@@ -82,7 +82,7 @@ namespace Tests.GUI
                 var registry = Registry.Empty();
                 registry.AddAvailable(TestData.FireSpitterModule());
                 registry.AddAvailable(TestData.kOS_014_module());
-                var main_mod_list = new ModList(null);
+                var main_mod_list = new ModList();
                 var mod_list = main_mod_list.ConstructModList(
                     new List<GUIMod>
                     {
@@ -142,7 +142,7 @@ namespace Tests.GUI
             GameInstanceManager manager = new GameInstanceManager(new NullUser(), config);
             // A module with a ksp_version of "any" to repro our issue
             CkanModule anyVersionModule = TestData.DogeCoinFlag_101_module();
-            ModList modList = new ModList(null);
+            ModList modList = new ModList();
             DataGridView listGui = new DataGridView();
             CKAN.ModuleInstaller installer = new CKAN.ModuleInstaller(instance.KSP, manager.Cache, manager.User);
             NetAsyncModulesDownloader downloader = new NetAsyncModulesDownloader(manager.User, manager.Cache);

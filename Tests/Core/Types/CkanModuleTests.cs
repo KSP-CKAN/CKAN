@@ -227,5 +227,104 @@ namespace Tests.Core.Types
             Assert.IsNull(uri);
         }
 
+        [Test,
+            // No mods, nothing to group
+            TestCase(new string[] { },
+                     // null is removed as a workaround for limitations of params keyword
+                     null),
+            // One mod, one group
+            TestCase(new string[]
+                     {
+                        @"{
+                            ""identifier"": ""ModA"",
+                            ""version"": ""1.0"",
+                            ""download"": ""https://github.com/""
+                        }",
+                     },
+                     new string[] { "ModA" }),
+            // Two unrelated, two groups
+            TestCase(new string[]
+                     {
+                        @"{
+                            ""identifier"": ""ModA"",
+                            ""version"": ""1.0"",
+                            ""download"": ""https://github.com/""
+                        }",
+                        @"{
+                            ""identifier"": ""ModB"",
+                            ""version"": ""1.0"",
+                            ""download"": ""https://spacedock.info/""
+                        }",
+                     },
+                     new string[] { "ModA" },
+                     new string[] { "ModB" }),
+            // Same URL, one group
+            TestCase(new string[]
+                     {
+                        @"{
+                            ""identifier"": ""ModA"",
+                            ""version"": ""1.0"",
+                            ""download"": ""https://github.com/""
+                        }",
+                        @"{
+                            ""identifier"": ""ModB"",
+                            ""version"": ""1.0"",
+                            ""download"": ""https://github.com/""
+                        }",
+                     },
+                     new string[] { "ModA", "ModB" }),
+            // Transitively shared URLs in one group, unrelated separate
+            TestCase(new string[]
+                     {
+                        @"{
+                            ""identifier"": ""ModA"",
+                            ""version"": ""1.0"",
+                            ""download"": [ ""https://github.com/"", ""https://spacedock.info/"" ]
+                        }",
+                        @"{
+                            ""identifier"": ""ModB"",
+                            ""version"": ""1.0"",
+                            ""download"": [ ""https://curseforge.com/"" ]
+                        }",
+                        @"{
+                            ""identifier"": ""ModC"",
+                            ""version"": ""1.0"",
+                            ""download"": [ ""https://spacedock.info/"", ""https://archive.org/"" ]
+                        }",
+                        @"{
+                            ""identifier"": ""ModD"",
+                            ""version"": ""1.0"",
+                            ""download"": [ ""https://drive.google.com/"" ]
+                        }",
+                        @"{
+                            ""identifier"": ""ModE"",
+                            ""version"": ""1.0"",
+                            ""download"": [ ""https://archive.org/"", ""https://taniwha.org/"" ]
+                        }",
+                     },
+                     new string[] { "ModA", "ModC", "ModE" },
+                     new string[] { "ModB" },
+                     new string[] { "ModD" }),
+        ]
+        public void GroupByDownloads_WithModules_GroupsBySharedURLs(string[] moduleJsons, params string[][] correctGroups)
+        {
+            // Arrange
+            var modules = moduleJsons.Select(j => CkanModule.FromJson(j))
+                                     .ToArray();
+            // Turn [null] into [] as Workaround for params argument not allowing no values
+            // (params argument itself is a workaround for TestCase not allowing string[][])
+            correctGroups = correctGroups.Where(g => g != null).ToArray();
+
+            // Act
+            var result = CkanModule.GroupByDownloads(modules);
+            var groupIdentifiers = result.Select(grp => grp.OrderBy(m => m.identifier)
+                                                           .Select(m => m.identifier)
+                                                           .ToArray())
+                                         .OrderBy(grp => grp.First())
+                                         .ToArray();
+
+            // Assert
+            Assert.AreEqual(correctGroups, groupIdentifiers);
+        }
     }
 }

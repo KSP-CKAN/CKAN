@@ -36,20 +36,15 @@ namespace CKAN.GUI
         //identifier, row
         internal Dictionary<string, DataGridViewRow> full_list_of_mod_rows;
 
-        public ModList(Action<ModList> onModFiltersUpdated)
+        public ModList()
         {
             Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
-            if (onModFiltersUpdated != null)
-            {
-                ModFiltersUpdated += onModFiltersUpdated;
-                ModFiltersUpdated(this);
-            }
         }
 
         //TODO Move to relationship resolver and have it use this.
         public delegate Task<CkanModule> HandleTooManyProvides(TooManyModsProvideKraken kraken);
 
-        public event Action<ModList> ModFiltersUpdated;
+        public event Action ModFiltersUpdated;
         public ReadOnlyCollection<GUIMod> Modules { get; set; }
 
         public readonly ModuleLabelList ModuleLabels = ModuleLabelList.Load(ModuleLabelList.DefaultPath)
@@ -69,7 +64,7 @@ namespace CKAN.GUI
                 Main.Instance.configuration.DefaultSearches = activeSearches?.Select(s => s?.Combined ?? "").ToList()
                     ?? new List<string>() { "" };
 
-                ModFiltersUpdated?.Invoke(this);
+                ModFiltersUpdated?.Invoke();
             }
         }
 

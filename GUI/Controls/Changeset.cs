@@ -20,29 +20,19 @@ namespace CKAN.GUI
             List<ModuleLabel> AlertLabels,
             Dictionary<CkanModule, string> conflicts)
         {
-            changeset = changes;
-            alertLabels = AlertLabels;
-            ChangesListView.Items.Clear();
-            if (changes != null)
-            {
-                // Changeset sorting is handled upstream in the resolver
-                ChangesListView.Items.AddRange(changes
-                    .Where(ch => ch.ChangeType != GUIModChangeType.None)
-                    .Select(ch => makeItem(ch, conflicts))
-                    .ToArray());
-                ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-            }
+            changeset      = changes;
+            alertLabels    = AlertLabels;
+            this.conflicts = conflicts;
             ConfirmChangesButton.Enabled = conflicts == null || !conflicts.Any();
         }
 
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
-            if (Visible && Platform.IsMono)
+            if (Visible)
             {
-                // Workaround: make sure the ListView headers are drawn
-                Util.Invoke(ChangesListView, () => ChangesListView.EndUpdate());
+                // Update list on each refresh in case caching changed
+                UpdateList();
             }
         }
 
@@ -53,6 +43,23 @@ namespace CKAN.GUI
 
         public event Action<List<ModChange>> OnConfirmChanges;
         public event Action<bool> OnCancelChanges;
+
+        private void UpdateList()
+        {
+            ChangesListView.BeginUpdate();
+            ChangesListView.Items.Clear();
+            if (changeset != null)
+            {
+                // Changeset sorting is handled upstream in the resolver
+                ChangesListView.Items.AddRange(changeset
+                    .Where(ch => ch.ChangeType != GUIModChangeType.None)
+                    .Select(ch => makeItem(ch, conflicts))
+                    .ToArray());
+                ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            }
+            ChangesListView.EndUpdate();
+        }
 
         private void ChangesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -101,7 +108,8 @@ namespace CKAN.GUI
             };
         }
 
-        private List<ModChange>   changeset;
-        private List<ModuleLabel> alertLabels;
+        private List<ModChange>                changeset;
+        private List<ModuleLabel>              alertLabels;
+        private Dictionary<CkanModule, string> conflicts;
     }
 }

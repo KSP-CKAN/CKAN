@@ -6,10 +6,13 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using Autofac;
 using log4net;
 using Newtonsoft.Json;
+
 using CKAN.Versioning;
+using CKAN.Extensions;
 using CKAN.Games;
 
 namespace CKAN
@@ -806,6 +809,44 @@ namespace CKAN
              : bytes < K*K*K*K ? $"{bytes /K/K/K :N1} GiB"
              :                   $"{bytes /K/K/K/K :N1} TiB";
 
+        public HashSet<CkanModule> GetDownloadsGroup(IEnumerable<CkanModule> modules)
+            => OneDownloadGroupingPass(modules.ToHashSet(), this);
+
+        public static List<HashSet<CkanModule>> GroupByDownloads(IEnumerable<CkanModule> modules)
+        {
+            // Each module is a vertex, each download URL is an edge
+            // We want to group the vertices by transitive connectedness
+            // We can go breadth first or depth first
+            // Once we encounter a mod, we never have to look at it again
+            var unsearched = modules.ToHashSet();
+            var groups = new List<HashSet<CkanModule>>();
+            while (unsearched.Count > 0)
+            {
+                groups.Add(OneDownloadGroupingPass(unsearched, unsearched.First()));
+            }
+            return groups;
+        }
+
+        private static HashSet<CkanModule> OneDownloadGroupingPass(HashSet<CkanModule> unsearched,
+                                                                   CkanModule firstModule)
+        {
+            var searching = new List<CkanModule> { firstModule };
+            unsearched.ExceptWith(searching);
+            var found = searching.ToHashSet();
+            // Breadth first search to find all modules with any URLs in common, transitively
+            while (searching.Count > 0)
+            {
+                var origin = searching.First();
+                searching.Remove(origin);
+                var neighbors = origin.download
+                    .SelectMany(dlUri => unsearched.Where(other => other.download.Contains(dlUri)))
+                    .ToHashSet();
+                unsearched.ExceptWith(neighbors);
+                searching.AddRange(neighbors);
+                found.UnionWith(neighbors);
+            }
+            return found;
+        }
     }
 
     public class InvalidModuleAttributesException : Exception

@@ -93,7 +93,7 @@ namespace CKAN.GUI
         public bool IsUpgradeChecked { get; private set; }
         public bool IsReplaceChecked { get; private set; }
         public bool IsNew { get; set; }
-        public bool IsCKAN { get; private set; }
+        public bool IsCKAN => Mod != null;
         public string Abbrevation { get; private set; }
 
         public string SearchableName { get; private set; }
@@ -156,7 +156,6 @@ namespace CKAN.GUI
             : this(mod.identifier, registry, current_game_version, incompatible, hideEpochs, hideV)
         {
             Mod           = mod;
-            IsCKAN        = mod is CkanModule;
 
             Name          = mod.name.Trim();
             Abstract      = mod.@abstract.Trim();
@@ -288,10 +287,7 @@ namespace CKAN.GUI
         /// Get the CkanModule associated with this GUIMod.
         /// </summary>
         /// <returns>The CkanModule associated with this GUIMod or null if there is none</returns>
-        public CkanModule ToModule()
-        {
-            return Mod;
-        }
+        public CkanModule ToModule() => Mod;
 
         public IEnumerable<ModChange> GetModChanges()
         {
@@ -431,10 +427,7 @@ namespace CKAN.GUI
             }
         }
 
-        private bool Equals(GUIMod other)
-        {
-            return Equals(Identifier, other.Identifier);
-        }
+        private bool Equals(GUIMod other) => Equals(Identifier, other.Identifier);
 
         public override bool Equals(object obj)
         {
@@ -444,14 +437,8 @@ namespace CKAN.GUI
             return Equals((GUIMod) obj);
         }
 
-        public override int GetHashCode()
-        {
-            return Identifier?.GetHashCode() ?? 0;
-        }
+        public override int GetHashCode() => Identifier?.GetHashCode() ?? 0;
 
-        public override string ToString()
-        {
-            return $"{ToModule()}";
-        }
+        public override string ToString() => Mod.ToString();
     }
 }
