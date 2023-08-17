@@ -31,21 +31,24 @@ namespace CKAN.GUI
         Tag                      = 11,
     }
 
+    /// <summary>
+    /// The holder of the list of mods to be shown.
+    /// Should be a pure data model and avoid UI stuff, but it's not there yet.
+    /// </summary>
     public class ModList
     {
         //identifier, row
         internal Dictionary<string, DataGridViewRow> full_list_of_mod_rows;
 
-        public ModList()
-        {
-            Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
-        }
-
-        //TODO Move to relationship resolver and have it use this.
-        public delegate Task<CkanModule> HandleTooManyProvides(TooManyModsProvideKraken kraken);
-
         public event Action ModFiltersUpdated;
-        public ReadOnlyCollection<GUIMod> Modules { get; set; }
+        public ReadOnlyCollection<GUIMod> Modules { get; private set; } =
+            new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
+        public bool HasAnyInstalled { get; private set; }
+
+        // Unlike GUIMod.IsInstalled, DataGridViewRow.Visible can change on the fly without notifying us
+        public bool HasVisibleInstalled()
+            => full_list_of_mod_rows.Values.Any(row => ((row.Tag as GUIMod)?.IsInstalled ?? false)
+                                                       && row.Visible);
 
         public readonly ModuleLabelList ModuleLabels = ModuleLabelList.Load(ModuleLabelList.DefaultPath)
             ?? ModuleLabelList.GetDefaultLabels();
@@ -69,11 +72,9 @@ namespace CKAN.GUI
         }
 
         private static bool SearchesEqual(List<ModSearch> a, List<ModSearch> b)
-        {
-            return a == null ? b == null
+            => a == null ? b == null
                  : b == null ? false
                  : a.SequenceEqual(b);
-        }
 
         private static string FilterName(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
         {
@@ -99,13 +100,11 @@ namespace CKAN.GUI
         }
 
         public static SavedSearch FilterToSavedSearch(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
-        {
-            return new SavedSearch()
+            => new SavedSearch()
             {
                 Name   = FilterName(filter, tag, label),
                 Values = new List<string>() { new ModSearch(filter, tag, label).Combined },
             };
-        }
 
         private static readonly RelationshipResolverOptions conflictOptions = new RelationshipResolverOptions()
         {
@@ -169,9 +168,7 @@ namespace CKAN.GUI
                     .ToList(),
                 modules_to_install))
             {
-                //TODO This would be a good place to have an event that alters the row's graphics to show it will be removed
-                CkanModule depMod;
-                if (installed_modules.TryGetValue(dependent, out depMod))
+                if (installed_modules.TryGetValue(dependent, out CkanModule depMod))
                 {
                     CkanModule module_by_version = registry.GetModuleByVersion(depMod.identifier,
                     depMod.version)
@@ -234,50 +231,31 @@ namespace CKAN.GUI
         }
 
         public bool IsVisible(GUIMod mod, string instanceName)
-        {
-            return (activeSearches?.Any(s => s?.Matches(mod) ?? true) ?? true)
+            => (activeSearches?.Any(s => s?.Matches(mod) ?? true) ?? true)
                 && !HiddenByTagsOrLabels(mod, instanceName);
-        }
 
         private bool TagInSearches(ModuleTag tag)
-        {
-            return activeSearches?.Any(s => s?.TagNames.Contains(tag.Name) ?? false) ?? false;
-        }
+            => activeSearches?.Any(s => s?.TagNames.Contains(tag.Name) ?? false) ?? false;
 
         private bool LabelInSearches(ModuleLabel label)
-        {
-            return activeSearches?.Any(s => s?.Labels.Contains(label) ?? false) ?? false;
-        }
+            => activeSearches?.Any(s => s?.Labels.Contains(label) ?? false) ?? false;
 
         private bool HiddenByTagsOrLabels(GUIMod m, string instanceName)
-        {
             // "Hide" labels apply to all non-custom filters
-            if (ModuleLabels?.LabelsFor(instanceName)
-                .Where(l => !LabelInSearches(l) && l.Hide)
-                .Any(l => l.ModuleIdentifiers.Contains(m.Identifier))
+            => (ModuleLabels?.LabelsFor(instanceName)
+                             .Where(l => !LabelInSearches(l) && l.Hide)
+                             .Any(l => l.ModuleIdentifiers.Contains(m.Identifier))
                 ?? false)
-            {
-                return true;
-            }
-            if (ModuleTags?.Tags?.Values
-                .Where(t => !TagInSearches(t) && t.Visible == false)
-                .Any(t => t.ModuleIdentifiers.Contains(m.Identifier))
-                ?? false)
-            {
-                return true;
-            }
-            return false;
-        }
+               || (ModuleTags?.Tags?.Values
+                                    .Where(t => !TagInSearches(t) && t.Visible == false)
+                                    .Any(t => t.ModuleIdentifiers.Contains(m.Identifier))
+                   ?? false);
 
         public int CountModsBySearches(List<ModSearch> searches)
-        {
-            return Modules.Count(mod => searches?.Any(s => s?.Matches(mod) ?? true) ?? true);
-        }
+            => Modules.Count(mod => searches?.Any(s => s?.Matches(mod) ?? true) ?? true);
 
         public int CountModsByFilter(GUIModFilter filter)
-        {
-            return CountModsBySearches(new List<ModSearch>() { new ModSearch(filter, null, null) });
-        }
+            => CountModsBySearches(new List<ModSearch>() { new ModSearch(filter, null, null) });
 
         /// <summary>
         /// Constructs the mod list suitable for display to the user.
@@ -289,11 +267,12 @@ namespace CKAN.GUI
         public IEnumerable<DataGridViewRow> ConstructModList(
             IEnumerable<GUIMod> modules, string instanceName, IEnumerable<ModChange> mc = null)
         {
-            List<ModChange> changes = mc?.ToList();
-            full_list_of_mod_rows = modules.ToDictionary(
+            Modules = new ReadOnlyCollection<GUIMod>(modules.ToList());
+            var changes = mc?.ToList();
+            full_list_of_mod_rows = Modules.ToDictionary(
                 gm => gm.Identifier,
-                gm => MakeRow(gm, changes, instanceName)
-            );
+                gm => MakeRow(gm, changes, instanceName));
+            HasAnyInstalled = Modules.Any(m => m.IsInstalled);
             return full_list_of_mod_rows.Values;
         }
 
@@ -398,24 +377,13 @@ namespace CKAN.GUI
             => Platform.IsMono ? text.Replace("&", "&&") : text;
 
         public Color GetRowBackground(GUIMod mod, bool conflicted, string instanceName)
-        {
-            if (conflicted)
-            {
-                return Color.LightCoral;
-            }
-            DataGridViewRow row;
-            if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out row))
-            {
-                Color? myColor = ModuleLabels.LabelsFor(instanceName)
-                    .FirstOrDefault(l => l.ModuleIdentifiers.Contains(mod.Identifier))
-                    ?.Color;
-                if (myColor.HasValue)
-                {
-                    return myColor.Value;
-                }
-            }
-            return Color.Empty;
-        }
+            => conflicted ? Color.LightCoral
+                          : full_list_of_mod_rows.ContainsKey(mod.Identifier)
+                              ? ModuleLabels.LabelsFor(instanceName)
+                                            .FirstOrDefault(l => l.ModuleIdentifiers.Contains(mod.Identifier))
+                                            ?.Color
+                                ?? Color.Empty
+                              : Color.Empty;
 
         /// <summary>
         /// Update the color and visible state of the given row
@@ -436,13 +404,10 @@ namespace CKAN.GUI
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
         /// </summary>
         public string StripEpoch(string version)
-        {
             // If our version number starts with a string of digits, followed by
             // a colon, and then has no more colons, we're probably safe to assume
             // the first string of digits is an epoch
-            //return Regex.IsMatch(version, @"^[0-9][0-9]*:[^:]+$") ? Regex.Replace(version, @"^([^:]+):([^:]+)$", @"$2") : version;
-            return ContainsEpoch.IsMatch(version) ? RemoveEpoch.Replace(version, @"$2") : version;
-        }
+            => ContainsEpoch.IsMatch(version) ? RemoveEpoch.Replace(version, @"$2") : version;
 
         private static readonly Regex ContainsEpoch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
         private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
