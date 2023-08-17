@@ -153,17 +153,13 @@ namespace CKAN
         }
 
         // returns true if a url is already in the cache
-        public bool IsCached(Uri url)
-        {
-            return GetCachedFilename(url) != null;
-        }
+        public bool IsCached(Uri url) => GetCachedFilename(url) != null;
 
         // returns true if a url is already in the cache
         // returns the filename in the outFilename parameter
         public bool IsCached(Uri url, out string outFilename)
         {
             outFilename = GetCachedFilename(url);
-
             return outFilename != null;
         }
 
@@ -172,10 +168,7 @@ namespace CKAN
         /// validation tests. Prefer this over IsCached when working with
         /// zip files.
         /// </summary>
-        public bool IsCachedZip(Uri url)
-        {
-            return GetCachedZip(url) != null;
-        }
+        public bool IsCachedZip(Uri url) => GetCachedZip(url) != null;
 
         /// <summary>
         /// Returns true if a file matching the given URL is cached, but makes no
@@ -184,9 +177,7 @@ namespace CKAN
         /// Use IsCachedZip() for a slower but more reliable method.
         /// </summary>
         public bool IsMaybeCachedZip(Uri url, DateTime? remoteTimestamp = null)
-        {
-            return GetCachedFilename(url, remoteTimestamp) != null;
-        }
+            => GetCachedFilename(url, remoteTimestamp) != null;
 
         /// <summary>>
         /// Returns the filename of an already cached url or null otherwise
@@ -337,14 +328,12 @@ namespace CKAN
         }
 
         private HashSet<string> legacyDirs()
-        {
-            return manager?.Instances.Values
+            => manager?.Instances.Values
                 .Where(ksp => ksp.Valid)
                 .Select(ksp => ksp.DownloadCacheDir())
                 .Where(dir => Directory.Exists(dir))
                 .ToHashSet()
                 ?? new HashSet<string>();
-        }
 
         public void EnforceSizeLimit(long bytes, Registry registry)
         {

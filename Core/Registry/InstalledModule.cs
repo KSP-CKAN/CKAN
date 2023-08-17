@@ -89,30 +89,15 @@ namespace CKAN
         // registry format compatibility.
         [JsonProperty] private Dictionary<string, InstalledModuleFile> installed_files;
 
-        public IEnumerable<string> Files
-        {
-            get { return installed_files.Keys; }
-        }
-
-        public string identifier
-        {
-            get { return source_module.identifier; }
-        }
-
-        public CkanModule Module
-        {
-            get { return source_module; }
-        }
-
-        public DateTime InstallTime
-        {
-            get { return install_time; }
-        }
+        public IEnumerable<string> Files => installed_files.Keys;
+        public string identifier => source_module.identifier;
+        public CkanModule Module => source_module;
+        public DateTime InstallTime => install_time;
 
         public bool AutoInstalled
         {
-            get { return auto_installed;  }
-            set { 
+            get => auto_installed;
+            set {
                 if (Module.IsDLC)
                 {
                     throw new ModuleIsDLCKraken(Module);

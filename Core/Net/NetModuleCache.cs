@@ -123,9 +123,7 @@ namespace CKAN
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
         public string GetFileHashSha1(string filePath, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
-        {
-            return cache.GetFileHashSha1(filePath, progress, cancelToken);
-        }
+            => cache.GetFileHashSha1(filePath, progress, cancelToken);
 
         /// <summary>
         /// Calculate the SHA256 hash of a file
@@ -136,9 +134,7 @@ namespace CKAN
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
         public string GetFileHashSha256(string filePath, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
-        {
-            return cache.GetFileHashSha256(filePath, progress, cancelToken);
-        }
+            => cache.GetFileHashSha256(filePath, progress, cancelToken);
 
         /// <summary>
         /// Try to add a file to the module cache.

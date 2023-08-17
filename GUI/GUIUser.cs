@@ -17,10 +17,8 @@ namespace CKAN.GUI
         /// <summary>
         /// A GUIUser is obviously not headless. Returns false.
         /// </summary>
-        public bool Headless
-        {
-            get { return false; }
-        }
+        public bool Headless => false;
+
 
         /// <summary>
         /// Shows a small form with the question.
@@ -29,9 +27,7 @@ namespace CKAN.GUI
         /// <returns><c>true</c> if user pressed yes, <c>false</c> if no.</returns>
         /// <param name="question">Question.</param>
         public bool RaiseYesNoDialog(string question)
-        {
-            return main.YesNoDialog(question);
-        }
+            => main.YesNoDialog(question);
 
         /// <summary>
         /// Will show a small form with the message and a list to choose from.
@@ -40,9 +36,7 @@ namespace CKAN.GUI
         /// <param name="message">Message.</param>
         /// <param name="args">Array of offered options.</param>
         public int RaiseSelectionDialog(string message, params object[] args)
-        {
-            return main.SelectionDialog(message, args);
-        }
+            => main.SelectionDialog(message, args);
 
         /// <summary>
         /// Shows a message box containing the formatted error message.

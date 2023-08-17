@@ -47,14 +47,7 @@ namespace CKAN
         [JsonProperty] public readonly SortedDictionary<string, int> download_counts = new SortedDictionary<string, int>();
 
         public int? DownloadCount(string identifier)
-        {
-            int count;
-            if (download_counts.TryGetValue(identifier, out count))
-            {
-                return count;
-            }
-            return null;
-        }
+            => download_counts.TryGetValue(identifier, out int count) ? (int?)count : null;
 
         public void SetDownloadCounts(SortedDictionary<string, int> counts)
         {

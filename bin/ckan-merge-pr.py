@@ -14,19 +14,23 @@ from typing import List, Dict
 
 class CkanRepo(Repo):
 
-    def remote_master(self) -> RemoteReference:
-        return self.heads.master.tracking_branch()
+    def remote_primary(self) -> RemoteReference:
+        return next(filter(lambda ref: 'HEAD' in ref.name, self.refs))
 
-    def master_remote(self) -> Remote:
-        return self.remotes[self.remote_master().remote_name]
+    def primary_name(self) -> str:
+        full = self.remote_primary().ref.name
+        return full[full.index('/')+1:]
 
-    def on_master(self) -> bool:
-        return not self.head.is_detached and self.head.ref.name == 'master'
+    def primary_remote(self) -> Remote:
+        return self.remotes[self.remote_primary().remote_name]
 
-    def master_up_to_date(self) -> bool:
-        print(f'Fetching {self.master_remote().name}...')
-        self.master_remote().fetch()
-        return self.heads.master.commit.hexsha == self.remote_master().commit.hexsha
+    def on_primary_branch(self) -> bool:
+        return not self.head.is_detached and self.head.ref.name == self.primary_name()
+
+    def primary_branch_up_to_date(self) -> bool:
+        print(f'Fetching {self.primary_remote().name}...')
+        self.primary_remote().fetch()
+        return getattr(self.heads, self.primary_name()).commit.hexsha == self.remote_primary().commit.hexsha
 
     def changelog_path(self) -> Path:
         return Path(self.working_dir) / 'CHANGELOG.md'
@@ -38,7 +42,7 @@ class CkanRepo(Repo):
             changelog.writelines(lines)
 
     def user_edit_file(self, path: Path) -> None:
-        editor=self.config_reader().get('core', 'editor')
+        editor = self.config_reader().get('core', 'editor')
         run([editor, str(path)])
 
 class CkanPullRequest:
@@ -86,11 +90,11 @@ class CkanPullRequest:
         if not self_review and not self.approvers():
             print(f'PR #{self.pull_request.number} is not approved!')
             return False
-        if not repo.on_master():
-            print(f'Not on master branch!')
+        if not repo.on_primary_branch():
+            print('Not on primary branch!')
             return False
-        if not repo.master_up_to_date():
-            print(f'master branch is not up to date!')
+        if not repo.primary_branch_up_to_date():
+            print('Primary branch is not up to date!')
             return False
         branch = self.latest_commit(repo)
         if not branch:

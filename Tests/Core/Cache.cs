@@ -2,8 +2,10 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Globalization;
+
 using NUnit.Framework;
 using Tests.Data;
+
 using CKAN;
 
 namespace Tests.Core
