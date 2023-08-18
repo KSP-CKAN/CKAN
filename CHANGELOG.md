@@ -25,6 +25,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Netkan] Fix Netkan swinfo transformer null list error (#3869 by: HebaruSan)
+- [Tooling] Deduce primary branch name in merge script (#3884 by: HebaruSan; reviewed: techman83)
 
 ## v1.33.2 (Laplace)
 
