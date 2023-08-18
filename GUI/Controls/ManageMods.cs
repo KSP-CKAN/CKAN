@@ -33,7 +33,6 @@ namespace CKAN.GUI
 
             mainModList = new ModList();
             mainModList.ModFiltersUpdated += UpdateFilters;
-            UpdateFilters();
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchGameToolStripMenuItem.MouseHover += (sender, args) => launchGameToolStripMenuItem.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
@@ -63,6 +62,7 @@ namespace CKAN.GUI
         private DateTime lastSearchTime;
         private string lastSearchKey;
         private NavigationHistory<GUIMod> navHistory;
+        private static readonly Font uninstallingFont = new Font(SystemFonts.DefaultFont, FontStyle.Strikeout);
 
         private List<ModChange> currentChangeSet;
         private Dictionary<GUIMod, string> conflicts;
@@ -121,6 +121,24 @@ namespace CKAN.GUI
                     InstallAllCheckbox.Checked = true;
                 }
                 OnChangeSetChanged?.Invoke(ChangeSet, Conflicts);
+
+                var removing = (currentChangeSet ?? Enumerable.Empty<ModChange>())
+                    .Where(ch => ch?.ChangeType == GUIModChangeType.Remove)
+                    .Select(ch => ch.Mod.identifier)
+                    .ToHashSet();
+                foreach (var kvp in mainModList.full_list_of_mod_rows)
+                {
+                    if (removing.Contains(kvp.Key))
+                    {
+                        // Set strikeout font for rows being uninstalled
+                        kvp.Value.DefaultCellStyle.Font = uninstallingFont;
+                    }
+                    else if (kvp.Value.DefaultCellStyle.Font != null)
+                    {
+                        // Clear strikeout font for rows not being uninstalled
+                        kvp.Value.DefaultCellStyle.Font = null;
+                    }
+                }
             });
         }
 
@@ -395,19 +413,7 @@ namespace CKAN.GUI
                 {
                     EditModSearches.SetSearches(searches);
                 }
-
-                // Ask the configuration which columns to show.
-                foreach (DataGridViewColumn col in ModGrid.Columns)
-                {
-                    // Some columns are always shown, and others are handled by UpdateModsList()
-                    if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
-                    {
-                        col.Visible = !Main.Instance.configuration.HiddenColumnNames.Contains(col.Name);
-                    }
-                }
-
-                // If these columns aren't hidden by the user, show them if the search includes installed modules
-                setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
+                ShowHideColumns(searches);
             });
         }
 
@@ -417,19 +423,27 @@ namespace CKAN.GUI
             {
                 mainModList.SetSearches(searches);
                 EditModSearches.SetSearches(searches);
-
-                // Ask the configuration which columns to show.
-                foreach (DataGridViewColumn col in ModGrid.Columns)
-                {
-                    // Some columns are always shown, and others are handled by UpdateModsList()
-                    if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
-                    {
-                        col.Visible = !Main.Instance.configuration.HiddenColumnNames.Contains(col.Name);
-                    }
-                }
-
-                setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
+                ShowHideColumns(searches);
             });
+        }
+
+        private void ShowHideColumns(List<ModSearch> searches)
+        {
+            // Ask the configuration which columns to show.
+            foreach (DataGridViewColumn col in ModGrid.Columns)
+            {
+                // Some columns are always shown, and others are handled by UpdateModsList()
+                if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol"
+                    && !installedColumnNames.Contains(col.Name))
+                {
+                    col.Visible = !Main.Instance.configuration.HiddenColumnNames.Contains(col.Name);
+                }
+            }
+
+            // If these columns aren't hidden by the user, show them if the search includes installed modules
+            setInstalledColumnsVisible(mainModList.HasAnyInstalled
+                                       && !SearchesExcludeInstalled(searches)
+                                       && mainModList.HasVisibleInstalled());
         }
 
         private static readonly string[] installedColumnNames = new string[]
@@ -447,9 +461,7 @@ namespace CKAN.GUI
         }
 
         private static bool SearchesExcludeInstalled(List<ModSearch> searches)
-        {
-            return searches?.All(s => s != null && s.Installed == false) ?? false;
-        }
+            => searches?.All(s => s != null && s.Installed == false) ?? false;
 
         public void MarkAllUpdates()
         {
@@ -976,9 +988,10 @@ namespace CKAN.GUI
             if (guiMod != null)
             {
                 ModListContextMenuStrip.Show(Cursor.Position);
+                var isDownloadable = !guiMod.ToModule()?.IsMetapackage ?? false;
                 // Set the menu options
-                downloadContentsToolStripMenuItem.Enabled = !guiMod.ToModule().IsMetapackage &&  !guiMod.IsCached;
-                purgeContentsToolStripMenuItem.Enabled = !guiMod.ToModule().IsMetapackage && guiMod.IsCached;
+                downloadContentsToolStripMenuItem.Enabled = isDownloadable && !guiMod.IsCached;
+                purgeContentsToolStripMenuItem.Enabled    = isDownloadable && guiMod.IsCached;
                 reinstallToolStripMenuItem.Enabled = guiMod.IsInstalled && !guiMod.IsAutodetected;
                 return true;
             }
@@ -1035,11 +1048,8 @@ namespace CKAN.GUI
         }
 
         public Dictionary<string, GUIMod> AllGUIMods()
-            => ModGrid.Rows.Cast<DataGridViewRow>()
-                .Select(row => row.Tag as GUIMod)
-                .Where(guiMod => guiMod != null)
-                .ToDictionary(guiMod => guiMod.Identifier,
-                              guiMod => guiMod);
+            => mainModList.Modules.ToDictionary(guiMod => guiMod.Identifier,
+                                                guiMod => guiMod);
 
         private void purgeContentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1058,7 +1068,8 @@ namespace CKAN.GUI
                 // Update all mods that share the same ZIP
                 var allGuiMods = AllGUIMods();
                 foreach (var otherMod in selected.ToModule().GetDownloadsGroup(
-                    allGuiMods.Values.Select(guiMod => guiMod.ToModule())))
+                    allGuiMods.Values.Select(guiMod => guiMod.ToModule())
+                                     .Where(mod => mod != null)))
                 {
                     allGuiMods[otherMod.identifier].UpdateIsCached();
                 }
@@ -1080,7 +1091,9 @@ namespace CKAN.GUI
             mainModList.SetSearches(searches);
 
             // If these columns aren't hidden by the user, show them if the search includes installed modules
-            setInstalledColumnsVisible(!SearchesExcludeInstalled(searches));
+            setInstalledColumnsVisible(mainModList.HasAnyInstalled
+                                       && !SearchesExcludeInstalled(searches)
+                                       && mainModList.HasVisibleInstalled());
         }
 
         private void EditModSearches_SurrenderFocus()
@@ -1208,20 +1221,14 @@ namespace CKAN.GUI
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListPopulatingList);
             // Update our mod listing
-            mainModList.ConstructModList(gui_mods.ToList(), Main.Instance.CurrentInstance.Name, ChangeSet);
-            mainModList.Modules = new ReadOnlyCollection<GUIMod>(
-                mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
+            mainModList.ConstructModList(gui_mods, Main.Instance.CurrentInstance.Name, ChangeSet);
 
             // C# 7.0: Executes the task and discards it
             _ = UpdateChangeSetAndConflicts(Main.Instance.CurrentInstance, registry);
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListUpdatingFilters);
 
-            var has_any_updates      = gui_mods.Any(mod => mod.HasUpdate);
-            var has_unheld_updates   = gui_mods.Any(mod => mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
-            var has_any_installed    = gui_mods.Any(mod => mod.IsInstalled);
-            var has_any_replacements = gui_mods.Any(mod => mod.IsInstalled && mod.HasReplacement);
-
+            var has_unheld_updates = mainModList.Modules.Any(mod => mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
             Util.Invoke(menuStrip2, () =>
             {
                 FilterCompatibleButton.Text = String.Format(Properties.Resources.MainModListCompatible,
@@ -1257,9 +1264,8 @@ namespace CKAN.GUI
             // After the update / replacement, they are hidden again.
             Util.Invoke(ModGrid, () =>
             {
-                ModGrid.Columns["UpdateCol"].Visible     = has_any_updates;
-                ModGrid.Columns["AutoInstalled"].Visible = has_any_installed && !Main.Instance.configuration.HiddenColumnNames.Contains("AutoInstalled");
-                ModGrid.Columns["ReplaceCol"].Visible    = has_any_replacements;
+                UpdateCol.Visible  = mainModList.Modules.Any(mod => mod.HasUpdate);
+                ReplaceCol.Visible = mainModList.Modules.Any(mod => mod.IsInstalled && mod.HasReplacement);
             });
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListUpdatingTray);

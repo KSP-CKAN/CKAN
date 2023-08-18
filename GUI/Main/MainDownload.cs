@@ -88,7 +88,8 @@ namespace CKAN.GUI
             // Update all mods that share the same ZIP
             var allGuiMods = ManageMods.AllGUIMods();
             foreach (var otherMod in module.ToModule().GetDownloadsGroup(
-                allGuiMods.Values.Select(guiMod => guiMod.ToModule())))
+                allGuiMods.Values.Select(guiMod => guiMod.ToModule())
+                                 .Where(mod => mod != null)))
             {
                 allGuiMods[otherMod.identifier].UpdateIsCached();
             }

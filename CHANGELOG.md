@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Restore window position without default instance (#3878 by: HebaruSan; reviewed: techman83)
 - [CLI] Correctly print cmdline errors with braces (#3880 by: HebaruSan; reviewed: techman83)
 - [Multiple] Caching and changeset fixes (#3881 by: HebaruSan; reviewed: techman83)
+- [GUI] Mod list fixes and improvements (#3883 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 

@@ -420,7 +420,6 @@ namespace CKAN.GUI
                 }
                 else
                 {
-                    SetupDefaultSearch();
                     RefreshModList();
                 }
             }
