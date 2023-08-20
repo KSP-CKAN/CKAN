@@ -51,7 +51,7 @@ namespace CKAN
                 Untagged.Add(am.AllAvailable().First().identifier);
             }
         }
-        
+
         public static ModuleTagList Load(string path)
         {
             try

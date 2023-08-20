@@ -52,9 +52,7 @@ namespace CKAN.GUI
         /// True if active, false otherwise
         /// </returns>
         public bool AppliesTo(string instanceName)
-        {
-            return InstanceName == null || InstanceName == instanceName;
-        }
+            => InstanceName == null || InstanceName == instanceName;
 
         /// <summary>
         /// Add a module to this label's group

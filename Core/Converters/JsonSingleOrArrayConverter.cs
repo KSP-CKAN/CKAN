@@ -41,9 +41,6 @@ namespace CKAN
         /// <returns>
         /// false
         /// </returns>
-        public override bool CanConvert(Type object_type)
-        {
-            return false;
-        }
+        public override bool CanConvert(Type object_type) => false;
     }
 }

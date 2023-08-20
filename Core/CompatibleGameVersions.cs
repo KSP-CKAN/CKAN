@@ -14,15 +14,10 @@ namespace CKAN
     public class CompatibleGameVersionsConverter : JsonPropertyNamesChangedConverter
     {
         protected override Dictionary<string, string> mapping
-        {
-            get
+            => new Dictionary<string, string>
             {
-                return new Dictionary<string, string>
-                {
-                    { "VersionOfKspWhenWritten", "GameVersionWhenWritten" },
-                    { "CompatibleKspVersions",   "Versions" }
-                };
-            }
-        }
+                { "VersionOfKspWhenWritten", "GameVersionWhenWritten" },
+                { "CompatibleKspVersions",   "Versions" }
+            };
     }
 }

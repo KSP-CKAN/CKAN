@@ -43,7 +43,7 @@ namespace CKAN.ConsoleUI {
             }
             else
             {
-                Console.ResetColor();                
+                Console.ResetColor();
             }
             Console.Clear();
 
