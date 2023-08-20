@@ -649,5 +649,12 @@ namespace CKAN
         public static IGame GameByShortName(string shortName)
             => knownGames.FirstOrDefault(g => g.ShortName == shortName);
 
+        /// <summary>
+        /// Return the short names of all known games
+        /// </summary>
+        /// <returns>Sequence of short name strings</returns>
+        public static IEnumerable<string> AllGameShortNames()
+            => knownGames.Select(g => g.ShortName);
+
     }
 }

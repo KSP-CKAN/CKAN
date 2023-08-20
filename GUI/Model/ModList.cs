@@ -12,6 +12,7 @@ using log4net;
 
 using CKAN.Versioning;
 using CKAN.Extensions;
+using CKAN.Games;
 
 namespace CKAN.GUI
 {
@@ -230,9 +231,9 @@ namespace CKAN.GUI
                         false)));
         }
 
-        public bool IsVisible(GUIMod mod, string instanceName)
+        public bool IsVisible(GUIMod mod, string instanceName, IGame game)
             => (activeSearches?.Any(s => s?.Matches(mod) ?? true) ?? true)
-                && !HiddenByTagsOrLabels(mod, instanceName);
+                && !HiddenByTagsOrLabels(mod, instanceName, game);
 
         private bool TagInSearches(ModuleTag tag)
             => activeSearches?.Any(s => s?.TagNames.Contains(tag.Name) ?? false) ?? false;
@@ -240,11 +241,11 @@ namespace CKAN.GUI
         private bool LabelInSearches(ModuleLabel label)
             => activeSearches?.Any(s => s?.Labels.Contains(label) ?? false) ?? false;
 
-        private bool HiddenByTagsOrLabels(GUIMod m, string instanceName)
+        private bool HiddenByTagsOrLabels(GUIMod m, string instanceName, IGame game)
             // "Hide" labels apply to all non-custom filters
             => (ModuleLabels?.LabelsFor(instanceName)
                              .Where(l => !LabelInSearches(l) && l.Hide)
-                             .Any(l => l.ModuleIdentifiers.Contains(m.Identifier))
+                             .Any(l => l.ContainsModule(game, m.Identifier))
                 ?? false)
                || (ModuleTags?.Tags?.Values
                                     .Where(t => !TagInSearches(t) && t.Visible == false)
@@ -265,23 +266,23 @@ namespace CKAN.GUI
         /// <param name="mc">Changes the user has made</param>
         /// <returns>The mod list</returns>
         public IEnumerable<DataGridViewRow> ConstructModList(
-            IEnumerable<GUIMod> modules, string instanceName, IEnumerable<ModChange> mc = null)
+            IEnumerable<GUIMod> modules, string instanceName, IGame game, IEnumerable<ModChange> mc = null)
         {
             Modules = new ReadOnlyCollection<GUIMod>(modules.ToList());
             var changes = mc?.ToList();
             full_list_of_mod_rows = Modules.ToDictionary(
                 gm => gm.Identifier,
-                gm => MakeRow(gm, changes, instanceName));
+                gm => MakeRow(gm, changes, instanceName, game));
             HasAnyInstalled = Modules.Any(m => m.IsInstalled);
             return full_list_of_mod_rows.Values;
         }
 
-        private DataGridViewRow MakeRow(GUIMod mod, List<ModChange> changes, string instanceName)
+        private DataGridViewRow MakeRow(GUIMod mod, List<ModChange> changes, string instanceName, IGame game)
         {
             DataGridViewRow item = new DataGridViewRow() {Tag = mod};
 
             Color? myColor = ModuleLabels.LabelsFor(instanceName)
-                .FirstOrDefault(l => l.ModuleIdentifiers.Contains(mod.Identifier))
+                .FirstOrDefault(l => l.ContainsModule(game, mod.Identifier))
                 ?.Color;
             if (myColor.HasValue)
             {
@@ -380,7 +381,7 @@ namespace CKAN.GUI
             => conflicted ? Color.LightCoral
                           : full_list_of_mod_rows.ContainsKey(mod.Identifier)
                               ? ModuleLabels.LabelsFor(instanceName)
-                                            .FirstOrDefault(l => l.ModuleIdentifiers.Contains(mod.Identifier))
+                                            .FirstOrDefault(l => l.ContainsModule(Main.Instance.CurrentInstance.game, mod.Identifier))
                                             ?.Color
                                 ?? Color.Empty
                               : Color.Empty;
@@ -390,13 +391,13 @@ namespace CKAN.GUI
         /// after it has been added to or removed from a label group
         /// </summary>
         /// <param name="mod">The mod that needs an update</param>
-        public void ReapplyLabels(GUIMod mod, bool conflicted, string instanceName)
+        public void ReapplyLabels(GUIMod mod, bool conflicted, string instanceName, IGame game)
         {
             DataGridViewRow row;
             if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out row))
             {
                 row.DefaultCellStyle.BackColor = GetRowBackground(mod, conflicted, instanceName);
-                row.Visible = IsVisible(mod, instanceName);
+                row.Visible = IsVisible(mod, instanceName, game);
             }
         }
 

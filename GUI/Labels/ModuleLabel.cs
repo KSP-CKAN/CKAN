@@ -1,7 +1,14 @@
+using System;
+using System.Linq;
 using System.Drawing;
 using System.ComponentModel;
+using System.Collections;
 using System.Collections.Generic;
+
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+using CKAN.Games;
 
 namespace CKAN.GUI
 {
@@ -43,7 +50,30 @@ namespace CKAN.GUI
         public bool    HoldVersion;
 
         [JsonProperty("module_identifiers_by_game", NullValueHandling = NullValueHandling.Ignore)]
-        public HashSet<string> ModuleIdentifiers = new HashSet<string>();
+        [JsonConverter(typeof(JsonToGamesDictionaryConverter))]
+        private Dictionary<string, HashSet<string>> ModuleIdentifiers =
+            new Dictionary<string, HashSet<string>>();
+
+        /// <summary>
+        /// Return the number of modules associated with this label for a given game
+        /// </summary>
+        /// <param name="game">Game to check</param>
+        /// <returns>Number of modules</returns>
+        public int ModuleCount(IGame game)
+            => ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string> identifiers)
+                ? identifiers.Count
+                : 0;
+
+        /// <summary>
+        /// Return whether a given identifier is associated with this label for a given game
+        /// </summary>
+        /// <param name="game">The game to check</param>
+        /// <param name="identifier">The identifier to check</param>
+        /// <returns>true if this label applies to this identifier, false otherwise</returns>
+        public bool ContainsModule(IGame game, string identifier)
+            => ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string> identifiers)
+                ? identifiers.Contains(identifier)
+                : false;
 
         /// <summary>
         /// Check whether this label is active for a given game instance
@@ -59,18 +89,32 @@ namespace CKAN.GUI
         /// Add a module to this label's group
         /// </summary>
         /// <param name="identifier">The identifier of the module to add</param>
-        public void Add(string identifier)
+        public void Add(IGame game, string identifier)
         {
-            ModuleIdentifiers.Add(identifier);
+            if (ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string> identifiers))
+            {
+                identifiers.Add(identifier);
+            }
+            else
+            {
+                ModuleIdentifiers.Add(game.ShortName, new HashSet<string> {identifier});
+            }
         }
 
         /// <summary>
         /// Remove a module from this label's group
         /// </summary>
         /// <param name="identifier">The identifier of the module to remove</param>
-        public void Remove(string identifier)
+        public void Remove(IGame game, string identifier)
         {
-            ModuleIdentifiers.Remove(identifier);
+            if (ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string> identifiers))
+            {
+                identifiers.Remove(identifier);
+                if (identifiers.Count < 1)
+                {
+                    ModuleIdentifiers.Remove(game.ShortName);
+                }
+            }
         }
     }
 

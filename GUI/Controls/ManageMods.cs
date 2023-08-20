@@ -166,6 +166,7 @@ namespace CKAN.GUI
             {
                 // Mark old conflicts as non-conflicted
                 // (rows that are _still_ conflicted will be marked as such in the next loop)
+                var inst = Main.Instance.CurrentInstance;
                 foreach (GUIMod guiMod in prevConflicts.Keys)
                 {
                     DataGridViewRow row = mainModList.full_list_of_mod_rows[guiMod.Identifier];
@@ -174,7 +175,7 @@ namespace CKAN.GUI
                     {
                         cell.ToolTipText = null;
                     }
-                    mainModList.ReapplyLabels(guiMod, false, Main.Instance.CurrentInstance.Name);
+                    mainModList.ReapplyLabels(guiMod, false, inst.Name, inst.game);
                     if (row.Visible)
                     {
                         ModGrid.InvalidateRow(row.Index);
@@ -247,7 +248,7 @@ namespace CKAN.GUI
             foreach (ModuleLabel mlbl in mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name))
             {
                 FilterLabelsToolButton.DropDownItems.Add(new ToolStripMenuItem(
-                    $"{mlbl.Name} ({mlbl.ModuleIdentifiers.Count})",
+                    $"{mlbl.Name} ({mlbl.ModuleCount(Main.Instance.CurrentInstance.game)})",
                     null, customFilterButton_Click
                 )
                 {
@@ -271,7 +272,7 @@ namespace CKAN.GUI
                 LabelsContextMenuStrip.Items.Add(
                     new ToolStripMenuItem(mlbl.Name, null, labelMenuItem_Click)
                     {
-                        Checked      = mlbl.ModuleIdentifiers.Contains(module.Identifier),
+                        Checked      = mlbl.ContainsModule(Main.Instance.CurrentInstance.game, module.Identifier),
                         CheckOnClick = true,
                         Tag          = mlbl,
                     }
@@ -289,18 +290,19 @@ namespace CKAN.GUI
             var module = SelectedModule;
             if (item.Checked)
             {
-                mlbl.Add(module.Identifier);
+                mlbl.Add(Main.Instance.CurrentInstance.game, module.Identifier);
             }
             else
             {
-                mlbl.Remove(module.Identifier);
+                mlbl.Remove(Main.Instance.CurrentInstance.game, module.Identifier);
             }
             if (mlbl.HoldVersion)
             {
                 UpdateAllToolButton.Enabled = mainModList.Modules.Any(mod =>
                     mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
             }
-            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, Main.Instance.CurrentInstance.Name);
+            var inst = Main.Instance.CurrentInstance;
+            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game);
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
         }
 
@@ -310,9 +312,10 @@ namespace CKAN.GUI
             eld.ShowDialog(this);
             eld.Dispose();
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
+            var inst = Main.Instance.CurrentInstance;
             foreach (GUIMod module in mainModList.Modules)
             {
-                mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, Main.Instance.CurrentInstance.Name);
+                mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game);
             }
         }
 
@@ -1129,7 +1132,8 @@ namespace CKAN.GUI
             foreach (var row in rows)
             {
                 var mod = ((GUIMod) row.Tag);
-                row.Visible = mainModList.IsVisible(mod, Main.Instance.CurrentInstance.Name);
+                var inst = Main.Instance.CurrentInstance;
+                row.Visible = mainModList.IsVisible(mod, inst.Name, inst.game);
             }
 
             ApplyHeaderGlyphs();
@@ -1221,7 +1225,7 @@ namespace CKAN.GUI
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListPopulatingList);
             // Update our mod listing
-            mainModList.ConstructModList(gui_mods, Main.Instance.CurrentInstance.Name, ChangeSet);
+            mainModList.ConstructModList(gui_mods, Main.Instance.CurrentInstance.Name, Main.Instance.CurrentInstance.game, ChangeSet);
 
             // C# 7.0: Executes the task and discards it
             _ = UpdateChangeSetAndConflicts(Main.Instance.CurrentInstance, registry);

@@ -20,7 +20,7 @@ namespace CKAN.GUI
                 var toNotif = mods
                     .Where(m =>
                         notifLabs.Any(l =>
-                            l.ModuleIdentifiers.Contains(m.Identifier)))
+                            l.ContainsModule(CurrentInstance.game, m.Identifier)))
                     .Select(m => m.Name)
                     .Memoize();
                 if (toNotif.Any())
@@ -39,9 +39,9 @@ namespace CKAN.GUI
                 {
                     foreach (ModuleLabel l in ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                         .Where(l => l.RemoveOnChange
-                            && l.ModuleIdentifiers.Contains(mod.Identifier)))
+                            && l.ContainsModule(CurrentInstance.game, mod.Identifier)))
                     {
-                        l.Remove(mod.Identifier);
+                        l.Remove(CurrentInstance.game, mod.Identifier);
                     }
                 }
             });
@@ -50,17 +50,15 @@ namespace CKAN.GUI
         private void LabelsAfterInstall(CkanModule mod)
         {
             foreach (ModuleLabel l in ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                .Where(l => l.RemoveOnInstall && l.ModuleIdentifiers.Contains(mod.identifier)))
+                .Where(l => l.RemoveOnInstall && l.ContainsModule(CurrentInstance.game, mod.identifier)))
             {
-                l.Remove(mod.identifier);
+                l.Remove(CurrentInstance.game, mod.identifier);
             }
         }
 
         public bool LabelsHeld(string identifier)
-        {
-            return ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                .Any(l => l.HoldVersion && l.ModuleIdentifiers.Contains(identifier));
-        }
+            => ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                .Any(l => l.HoldVersion && l.ContainsModule(CurrentInstance.game, identifier));
 
         #endregion
     }

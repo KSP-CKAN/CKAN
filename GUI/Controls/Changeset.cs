@@ -86,7 +86,8 @@ namespace CKAN.GUI
         {
             var descr = change.Description;
             CkanModule m = change.Mod;
-            ModuleLabel warnLbl = alertLabels?.FirstOrDefault(l => l.ModuleIdentifiers.Contains(m.identifier));
+            ModuleLabel warnLbl = alertLabels?.FirstOrDefault(l =>
+                l.ContainsModule(Main.Instance.CurrentInstance.game, m.identifier));
             return new ListViewItem(new string[]
             {
                 change.NameAndStatus,
