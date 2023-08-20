@@ -49,7 +49,6 @@ namespace CKAN
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             object instance = Activator.CreateInstance(objectType);
-            var props = objectType.GetTypeInfo().DeclaredProperties.ToList();
             JObject jo = JObject.Load(reader);
             var changes = mapping;
             foreach (JProperty jp in jo.Properties())
@@ -59,13 +58,43 @@ namespace CKAN
                 {
                     name = jp.Name;
                 }
-                PropertyInfo prop = props.FirstOrDefault(pi => pi.CanWrite && (
-                    pi.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName == name
-                    || pi.Name == name));
-                prop?.SetValue(instance, jp.Value.ToObject(prop.PropertyType, serializer));
+                PropertyInfo prop = objectType.GetTypeInfo().DeclaredProperties.FirstOrDefault(pi =>
+                    pi.CanWrite
+                    && (pi.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName ?? pi.Name) == name);
+                if (prop != null)
+                {
+                    prop.SetValue(instance,
+                                  GetValue(prop.GetCustomAttribute<JsonConverterAttribute>(),
+                                           jp.Value, prop.PropertyType, serializer));
+                }
+                else
+                {
+                    // No property, maybe there's a field
+                    FieldInfo field = objectType.GetTypeInfo().DeclaredFields.FirstOrDefault(fi =>
+                        (fi.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName ?? fi.Name) == name);
+                    if (field != null)
+                    {
+                        field.SetValue(instance,
+                                       GetValue(field.GetCustomAttribute<JsonConverterAttribute>(),
+                                                jp.Value, field.FieldType, serializer));
+                    }
+                }
             }
             return instance;
         }
+
+        private static object GetValue(JsonConverterAttribute attrib,
+                                       JToken value, Type outputType, JsonSerializer serializer)
+            => attrib != null ? ApplyConverter((JsonConverter)Activator.CreateInstance(attrib.ConverterType,
+                                                                                       attrib.ConverterParameters),
+                                               value, outputType, serializer)
+                              : value.ToObject(outputType, serializer);
+
+        private static object ApplyConverter(JsonConverter converter,
+                                             JToken value, Type outputType, JsonSerializer serializer)
+            => converter.CanRead ? converter.ReadJson(new JTokenReader(value),
+                                                      outputType, null, serializer)
+                                 : value.ToObject(outputType, serializer);
 
         /// <summary>
         /// This is what you need to override in your child class

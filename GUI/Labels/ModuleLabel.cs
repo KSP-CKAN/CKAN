@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 namespace CKAN.GUI
 {
     [JsonObject(MemberSerialization.OptIn)]
+    [JsonConverter(typeof(ModuleIdentifiersRenamedConverter))]
     public class ModuleLabel
     {
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
@@ -41,7 +42,7 @@ namespace CKAN.GUI
         [DefaultValue(false)]
         public bool    HoldVersion;
 
-        [JsonProperty("module_identifiers", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("module_identifiers_by_game", NullValueHandling = NullValueHandling.Ignore)]
         public HashSet<string> ModuleIdentifiers = new HashSet<string>();
 
         /// <summary>
@@ -71,5 +72,17 @@ namespace CKAN.GUI
         {
             ModuleIdentifiers.Remove(identifier);
         }
+    }
+
+    /// <summary>
+    /// Protect old clients from trying to load a file they can't parse
+    /// </summary>
+    public class ModuleIdentifiersRenamedConverter : JsonPropertyNamesChangedConverter
+    {
+        protected override Dictionary<string, string> mapping
+            => new Dictionary<string, string>
+            {
+                { "module_identifiers", "module_identifiers_by_game" }
+            };
     }
 }
