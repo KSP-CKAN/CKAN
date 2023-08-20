@@ -18,11 +18,8 @@ namespace CKAN.GUI
         public IEnumerable<ModuleLabel> LabelsFor(string instanceName)
             => Labels.Where(l => l.AppliesTo(instanceName));
 
-        public static readonly string DefaultPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "CKAN",
-            "labels.json"
-        );
+        public static readonly string DefaultPath =
+            Path.Combine(CKANPathUtils.AppDataPath, "labels.json");
 
         public static ModuleLabelList GetDefaultLabels()
             => new ModuleLabelList()

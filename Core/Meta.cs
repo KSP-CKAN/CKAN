@@ -1,17 +1,27 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 
 namespace CKAN
 {
     public static class Meta
     {
+        /// <summary>
+        /// Programmatically generate the string "CKAN" from the assembly info attributes,
+        /// so we don't have to embed that string in many places
+        /// </summary>
+        /// <returns>"CKAN"</returns>
+        public static string GetProductName()
+            => Assembly.GetExecutingAssembly()
+                       .GetAssemblyAttribute<AssemblyProductAttribute>()
+                       .Product;
+
         public static string GetVersion(VersionFormat format = VersionFormat.Normal)
         {
-            var version = ((AssemblyInformationalVersionAttribute)
-                Assembly
-                    .GetExecutingAssembly()
-                    .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)[0]
-            ).InformationalVersion;
+            var version = Assembly
+                .GetExecutingAssembly()
+                .GetAssemblyAttribute<AssemblyInformationalVersionAttribute>()
+                .InformationalVersion;
 
             var dashIndex = version.IndexOf('-');
             var plusIndex = version.IndexOf('+');
@@ -38,5 +48,9 @@ namespace CKAN
 
             return "v" + version;
         }
+
+        private static T GetAssemblyAttribute<T>(this Assembly assembly)
+            => (T)assembly.GetCustomAttributes(typeof(T), false)
+                          .First();
     }
 }

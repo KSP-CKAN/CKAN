@@ -48,7 +48,7 @@ namespace CKAN.ConsoleUI {
             Console.Clear();
 
             // Specially formatted snippets
-            var ckanPiece = new FancyLinePiece("CKAN", theme.ExitInnerBg, theme.ExitHighlightFg);
+            var ckanPiece = new FancyLinePiece(Meta.GetProductName(), theme.ExitInnerBg, theme.ExitHighlightFg);
             var ckanVersionPiece = new FancyLinePiece($"CKAN {Meta.GetVersion()}", theme.ExitInnerBg, theme.ExitHighlightFg);
             var releaseLinkPiece = new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/releases/latest", theme.ExitInnerBg, theme.ExitLinkFg);
             var issuesLinkPiece = new FancyLinePiece("https://github.com/KSP-CKAN/CKAN/issues", theme.ExitInnerBg, theme.ExitLinkFg);

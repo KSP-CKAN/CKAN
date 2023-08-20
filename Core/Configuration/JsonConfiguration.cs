@@ -51,17 +51,10 @@ namespace CKAN.Configuration
         // CKAN_CONFIG_FILE environment variable.
         public static readonly string defaultConfigFile =
             Environment.GetEnvironmentVariable("CKAN_CONFIG_FILE")
-            ?? Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "CKAN",
-                "config.json"
-            );
+            ?? Path.Combine(CKANPathUtils.AppDataPath, "config.json");
 
-        public static readonly string DefaultDownloadCacheDir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "CKAN",
-            "downloads"
-        );
+        public static readonly string DefaultDownloadCacheDir =
+            Path.Combine(CKANPathUtils.AppDataPath, "downloads");
 
         // The actual config file state, and its location on the disk (we allow
         // the location to be changed for unit tests). Note that these are static

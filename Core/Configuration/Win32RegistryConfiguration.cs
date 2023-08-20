@@ -21,11 +21,8 @@ namespace CKAN.Configuration
         private const           string authTokenKey         = CKAN_KEY + @"\AuthTokens";
         private static readonly string authTokenKeyNoPrefix = StripPrefixKey(authTokenKey);
 
-        private static readonly string defaultDownloadCacheDir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "CKAN",
-            "downloads"
-        );
+        private static readonly string defaultDownloadCacheDir =
+            Path.Combine(CKANPathUtils.AppDataPath, "downloads");
 
         public string DownloadCacheDir
         {
