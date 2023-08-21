@@ -432,7 +432,7 @@
         },
         "install_to" : {
             "description" : "Where file should be installed to. As of v1.2, GameData may take a path",
-            "oneOf" : [
+            "anyOf" : [
                 {
                     "description" : "Spec version 1 targets",
                     "enum"        : [ "GameData", "Ships", "GameRoot", "Tutorial", "Scenarios" ]
