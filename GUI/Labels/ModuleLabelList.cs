@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Drawing;
 using System.Runtime.Serialization;
+
 using Newtonsoft.Json;
 
 namespace CKAN.GUI
@@ -15,19 +16,13 @@ namespace CKAN.GUI
         public ModuleLabel[] Labels = new ModuleLabel[] {};
 
         public IEnumerable<ModuleLabel> LabelsFor(string instanceName)
-        {
-            return Labels.Where(l => l.AppliesTo(instanceName));
-        }
+            => Labels.Where(l => l.AppliesTo(instanceName));
 
-        public static readonly string DefaultPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "CKAN",
-            "labels.json"
-        );
+        public static readonly string DefaultPath =
+            Path.Combine(CKANPathUtils.AppDataPath, "labels.json");
 
         public static ModuleLabelList GetDefaultLabels()
-        {
-            return new ModuleLabelList()
+            => new ModuleLabelList()
             {
                 Labels = new ModuleLabel[]
                 {
@@ -50,7 +45,6 @@ namespace CKAN.GUI
                     }
                 }
             };
-        }
 
         public static ModuleLabelList Load(string path)
         {

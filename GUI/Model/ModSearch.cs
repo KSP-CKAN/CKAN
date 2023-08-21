@@ -546,7 +546,8 @@ namespace CKAN.GUI
 
         private bool MatchesLabels(GUIMod mod)
             // Every label in Labels must contain this mod
-            => Labels.Count < 1 || Labels.All(lb => lb.ModuleIdentifiers.Contains(mod.Identifier));
+            => Labels.Count < 1 || Labels.All(lb =>
+                lb.ContainsModule(Main.Instance.CurrentInstance.game, mod.Identifier));
 
         private bool MatchesCompatible(GUIMod mod)
             => !Compatible.HasValue || Compatible.Value == !mod.IsIncompatible;

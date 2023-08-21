@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [CLI] Correctly print cmdline errors with braces (#3880 by: HebaruSan; reviewed: techman83)
 - [Multiple] Caching and changeset fixes (#3881 by: HebaruSan; reviewed: techman83)
 - [GUI] Mod list fixes and improvements (#3883 by: HebaruSan; reviewed: techman83)
+- [Multiple] Multi-game labels (#3885 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 

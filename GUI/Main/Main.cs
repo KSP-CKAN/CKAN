@@ -113,7 +113,7 @@ namespace CKAN.GUI
                 {
                     Interval = 2
                 };
-                timer.Tick += (sender, e) => Thread.Yield();;
+                timer.Tick += (sender, e) => Thread.Yield();
                 timer.Start();
             }
 

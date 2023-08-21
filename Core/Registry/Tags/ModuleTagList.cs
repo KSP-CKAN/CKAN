@@ -17,11 +17,8 @@ namespace CKAN
         [JsonProperty("hidden_tags")]
         public HashSet<string> HiddenTags = new HashSet<string>();
 
-        public static readonly string DefaultPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "CKAN",
-            "tags.json"
-        );
+        public static readonly string DefaultPath =
+            Path.Combine(CKANPathUtils.AppDataPath, "tags.json");
 
         public void BuildTagIndexFor(AvailableModule am)
         {
@@ -51,7 +48,7 @@ namespace CKAN
                 Untagged.Add(am.AllAvailable().First().identifier);
             }
         }
-        
+
         public static ModuleTagList Load(string path)
         {
             try

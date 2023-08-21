@@ -45,7 +45,8 @@ namespace Tests.GUI
                 var item = new ModList();
                 Assert.That(item.IsVisible(
                     new GUIMod(ckan_mod, registry, manager.CurrentInstance.VersionCriteria()),
-                    manager.CurrentInstance.Name
+                    manager.CurrentInstance.Name,
+                    manager.CurrentInstance.game
                 ));
 
                 manager.Dispose();
@@ -89,7 +90,8 @@ namespace Tests.GUI
                         new GUIMod(TestData.FireSpitterModule(), registry, manager.CurrentInstance.VersionCriteria()),
                         new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.VersionCriteria())
                     },
-                    manager.CurrentInstance.Name
+                    manager.CurrentInstance.Name,
+                    manager.CurrentInstance.game
                 );
                 Assert.That(mod_list, Has.Count.EqualTo(2));
 
@@ -187,7 +189,7 @@ namespace Tests.GUI
                 .Select(mod => new GUIMod(mod.Value.Latest(), registry, instance.KSP.VersionCriteria()))
                 .ToList();
 
-            listGui.Rows.AddRange(modList.ConstructModList(modules, null).ToArray());
+            listGui.Rows.AddRange(modList.ConstructModList(modules, null, instance.KSP.game).ToArray());
             // The header row adds one to the count
             Assert.AreEqual(modules.Count + 1, listGui.Rows.Count);
 

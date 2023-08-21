@@ -151,9 +151,8 @@ namespace CKAN.Games
 
         private static readonly Uri BuildMapUri =
             new Uri("https://raw.githubusercontent.com/KSP-CKAN/KSP2-CKAN-meta/main/builds.json");
-        private static readonly string cachedBuildMapPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "CKAN", "builds-ksp2.json");
+        private static readonly string cachedBuildMapPath =
+            Path.Combine(CKANPathUtils.AppDataPath, "builds-ksp2.json");
 
         private List<GameVersion> versions = JsonConvert.DeserializeObject<List<GameVersion>>(
             File.Exists(cachedBuildMapPath)

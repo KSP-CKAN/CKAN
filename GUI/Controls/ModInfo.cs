@@ -156,7 +156,7 @@ namespace CKAN.GUI
                     }
                 }
                 var labels = ModuleLabels?.LabelsFor(manager.CurrentInstance.Name)
-                    .Where(l => l.ModuleIdentifiers.Contains(mod.identifier))
+                    .Where(l => l.ContainsModule(Main.Instance.CurrentInstance.game, mod.identifier))
                     .OrderBy(l => l.Name);
                 if (labels != null)
                 {

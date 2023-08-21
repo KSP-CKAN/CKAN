@@ -9,6 +9,13 @@ namespace CKAN
 {
     public static class CKANPathUtils
     {
+        /// <summary>
+        /// Path to save CKAN data shared across all game instances
+        /// </summary>
+        public static readonly string AppDataPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            Meta.GetProductName());
+
         private static readonly ILog log = LogManager.GetLogger(typeof(CKANPathUtils));
 
         /// <summary>

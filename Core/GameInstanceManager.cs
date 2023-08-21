@@ -612,9 +612,7 @@ namespace CKAN
         }
 
         public static bool IsGameInstanceDir(DirectoryInfo path)
-        {
-            return knownGames.Any(g => g.GameInFolder(path));
-        }
+            => knownGames.Any(g => g.GameInFolder(path));
 
         /// <summary>
         /// Tries to determine the game that is installed at the given path
@@ -643,8 +641,20 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Return a game object based on its short name
+        /// </summary>
+        /// <param name="shortName">The short name to find</param>
+        /// <returns>A game object or null if none found</returns>
         public static IGame GameByShortName(string shortName)
             => knownGames.FirstOrDefault(g => g.ShortName == shortName);
+
+        /// <summary>
+        /// Return the short names of all known games
+        /// </summary>
+        /// <returns>Sequence of short name strings</returns>
+        public static IEnumerable<string> AllGameShortNames()
+            => knownGames.Select(g => g.ShortName);
 
     }
 }
