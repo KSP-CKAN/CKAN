@@ -52,6 +52,18 @@ namespace Tests.NetKAN.Validators
             );
         }
 
+        public void Validate_InstallToGameDataSlashmods_DoesNotThrow()
+        {
+            Assert.DoesNotThrow(
+                () => TryModule(boringModule, null, "install",
+                                JArray.Parse(@"[
+                                    {
+                                        ""find"":       ""BetterPartsManager"",
+                                        ""install_to"": ""GameData/Mods""
+                                    }
+                                ]")));
+        }
+
         private void TryModule(string json, string removeProperty = null, string addProperty = null, JToken addPropertyValue = null)
         {
             // Arrange
