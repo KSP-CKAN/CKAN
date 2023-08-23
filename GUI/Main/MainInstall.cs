@@ -60,7 +60,7 @@ namespace CKAN.GUI
             bool canceled = false;
             var opts = (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
 
-            RegistryManager registry_manager = RegistryManager.Instance(manager.CurrentInstance);
+            RegistryManager registry_manager = RegistryManager.Instance(Manager.CurrentInstance);
             Registry registry = registry_manager.registry;
             ModuleInstaller installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
             // Avoid accumulating multiple event handlers
@@ -392,9 +392,21 @@ namespace CKAN.GUI
                         break;
 
                     case TransactionalKraken exc:
+                        // Thrown when the Registry tries to enlist with multiple different transactions
                         // Want to see the stack trace for this one
                         currentUser.RaiseMessage(exc.ToString());
                         currentUser.RaiseError(exc.ToString());
+                        break;
+
+                    case TransactionException texc:
+                        // "Failed to roll back" is useless by itself,
+                        // so show all inner exceptions too
+                        foreach (var exc in texc.TraverseNodes<Exception>(ex => ex.InnerException)
+                                                .Reverse())
+                        {
+                            log.Error(exc.Message, exc);
+                            currentUser.RaiseMessage(exc.Message);
+                        }
                         break;
 
                     default:

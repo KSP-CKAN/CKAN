@@ -9,7 +9,7 @@ namespace CKAN.GUI
     {
         private void viewPlayTimeStripMenuItem_Click(object sender, EventArgs e)
         {
-            PlayTime.loadAllPlayTime(manager);
+            PlayTime.loadAllPlayTime(Manager);
             tabController.ShowTab("PlayTimeTabPage", 2);
             DisableMainWindow();
         }

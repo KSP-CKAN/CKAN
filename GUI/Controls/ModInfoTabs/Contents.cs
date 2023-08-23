@@ -29,7 +29,7 @@ namespace CKAN.GUI
             get => selectedModule;
         }
 
-        public void Refresh()
+        public void RefreshModContentsTree()
         {
             if (currentModContentsModule != null)
             {

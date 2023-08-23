@@ -143,7 +143,6 @@ namespace CKAN.GUI
                         default:
                             return false;
                     }
-                    break;
             }
             // Always refresh immediately on clear
             return string.IsNullOrEmpty(FilterCombinedTextBox.Text)

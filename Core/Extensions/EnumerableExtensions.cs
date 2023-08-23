@@ -87,6 +87,19 @@ namespace CKAN.Extensions
         public static IEnumerable<T> DistinctBy<T, U>(this IEnumerable<T> seq, Func<T, U> func)
             => seq.GroupBy(func).Select(grp => grp.First());
 
+        /// <summary>
+        /// Generate a sequence from a linked list
+        /// </summary>
+        /// <param name="start">The first node</param>
+        /// <param name="getNext">Function to go from one node to the next</param>
+        /// <returns>All the nodes in the list as a sequence</returns>
+        public static IEnumerable<T> TraverseNodes<T>(this T start, Func<T, T> getNext)
+        {
+            for (T t = start; t != null; t = getNext(t))
+            {
+                yield return t;
+            }
+        }
     }
 
     /// <summary>

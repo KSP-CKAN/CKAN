@@ -66,7 +66,7 @@ namespace CKAN.GUI
         {
             var haveSelection      = PreferredHostsListBox.SelectedIndex > -1;
             MoveLeftButton.Enabled = haveSelection
-                                     && PreferredHostsListBox.SelectedItem != placeholder;
+                                     && (string)PreferredHostsListBox.SelectedItem != placeholder;
             MoveUpButton.Enabled   = PreferredHostsListBox.SelectedIndex > 0;
             MoveDownButton.Enabled = haveSelection
                                      && PreferredHostsListBox.SelectedIndex < PreferredHostsListBox.Items.Count - 1;
@@ -115,7 +115,7 @@ namespace CKAN.GUI
             if (PreferredHostsListBox.SelectedIndex > -1)
             {
                 var fromWhere = PreferredHostsListBox.SelectedIndex;
-                var selected = PreferredHostsListBox.SelectedItem;
+                var selected  = (string)PreferredHostsListBox.SelectedItem;
                 if (selected != placeholder)
                 {
                     PreferredHostsListBox.Items.Remove(selected);

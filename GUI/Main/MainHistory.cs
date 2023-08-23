@@ -14,7 +14,7 @@ namespace CKAN.GUI
     {
         private void installationHistoryStripMenuItem_Click(object sender, EventArgs e)
         {
-            InstallationHistory.LoadHistory(manager.CurrentInstance, configuration);
+            InstallationHistory.LoadHistory(Manager.CurrentInstance, configuration);
             tabController.ShowTab("InstallationHistoryTabPage", 2);
             DisableMainWindow();
         }

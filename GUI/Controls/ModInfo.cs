@@ -44,7 +44,7 @@ namespace CKAN.GUI
 
         public void RefreshModContentsTree()
         {
-            Contents.Refresh();
+            Contents.RefreshModContentsTree();
         }
 
         public event Action<GUIMod>            OnDownloadClick;

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Timers;
 using System.Linq;
 using System.Windows.Forms;
+using System.Transactions;
 using Timer = System.Timers.Timer;
 
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ using Autofac;
 
 using CKAN.Versioning;
 using CKAN.Configuration;
+using CKAN.Extensions;
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
@@ -158,9 +160,23 @@ namespace CKAN.GUI
                         EnableMainWindow();
                         break;
 
-                    case Exception exc:
+                    case TransactionException texc:
+                        // "Failed to roll back" is useless by itself,
+                        // so show all inner exceptions too
+                        foreach (var exc in texc.TraverseNodes<Exception>(ex => ex.InnerException)
+                                                .Reverse())
+                        {
+                            log.Error(exc.Message, exc);
+                            currentUser.RaiseMessage(exc.Message);
+                        }
                         AddStatusMessage(Properties.Resources.MainRepoFailed);
+                        Wait.Finish();
+                        EnableMainWindow();
+                        break;
+
+                    case Exception exc:
                         currentUser.RaiseMessage(exc.Message);
+                        AddStatusMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
                         EnableMainWindow();
                         break;
