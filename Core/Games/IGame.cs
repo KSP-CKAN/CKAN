@@ -19,9 +19,10 @@ namespace CKAN.Games
         // What do we contain?
         string   PrimaryModDirectoryRelative { get; }
         string   PrimaryModDirectory(GameInstance inst);
-        string[] StockFolders   { get; }
-        string[] ReservedPaths  { get; }
-        string[] CreateableDirs { get; }
+        string[] StockFolders      { get; }
+        string[] ReservedPaths     { get; }
+        string[] CreateableDirs    { get; }
+        string[] AutoRemovableDirs { get; }
         bool     IsReservedDirectory(GameInstance inst, string path);
         bool     AllowInstallationIn(string name, out string path);
         void     RebuildSubdirectories(string absGameRoot);
@@ -39,5 +40,4 @@ namespace CKAN.Games
         Uri DefaultRepositoryURL { get; }
         Uri RepositoryListURL    { get; }
     }
-
 }

@@ -268,8 +268,10 @@ namespace CKAN.GUI
                 // Check again for registered files, since we may
                 // just have installed or upgraded some
                 possibleConfigOnlyDirs.RemoveWhere(
-                    d => Directory.EnumerateFileSystemEntries(d, "*", SearchOption.AllDirectories)
-                        .Any(f => registry.FileOwner(CurrentInstance.ToRelativeGameDir(f)) != null));
+                    d => !Directory.Exists(d)
+                         || Directory.EnumerateFileSystemEntries(d, "*", SearchOption.AllDirectories)
+                                     .Select(absF => CurrentInstance.ToRelativeGameDir(absF))
+                                     .Any(relF => registry.FileOwner(relF) != null));
                 if (possibleConfigOnlyDirs.Count > 0)
                 {
                     AddStatusMessage("");
