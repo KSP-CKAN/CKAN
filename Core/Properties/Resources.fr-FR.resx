@@ -641,9 +641,6 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   <data name="NetModuleCacheModuleResuming" xml:space="preserve">
     <value>{0} {1} ({2}, {3} restant)</value>
   </data>
-  <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve">
-    <value> * Installation : {0} {1} ({2}, {3} restant)</value>
-  </data>
   <data name="ModuleInstallerUpgradeUpgradingResuming" xml:space="preserve">
     <value> * Mise à jour : {0} {1} vers {2} ({3}, {4} restant)</value>
   </data>

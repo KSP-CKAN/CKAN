@@ -630,9 +630,6 @@ Libera spazio su quel dispositivo o modifica le impostazioni per utilizzare un'a
   <data name="NetModuleCacheModuleResuming" xml:space="preserve">
     <value>{0} {1} ({2}, {3} rimanenti)</value>
   </data>
-  <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve">
-    <value> * Installa: {0} {1} ({2}, {3} rimanenti)</value>
-  </data>
   <data name="ModuleInstallerUpgradeUpgradingResuming" xml:space="preserve">
     <value> * Aggiorna: {0} {1} a {2} ({3}, {4} rimanenti)</value>
   </data>
