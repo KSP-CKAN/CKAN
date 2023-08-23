@@ -630,9 +630,6 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
   <data name="NetModuleCacheModuleResuming" xml:space="preserve">
     <value>{0} {1} ({2}, {3} pozostało)</value>
   </data>
-  <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve">
-    <value> * Instalacja: {0} {1} ({2}, {3} pozostało)</value>
-  </data>
   <data name="ModuleInstallerUpgradeUpgradingResuming" xml:space="preserve">
     <value> * Aktualizacja: {0} {1} do {2} ({3}, {4} pozostało)</value>
   </data>

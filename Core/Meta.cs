@@ -23,31 +23,30 @@ namespace CKAN
                 .GetAssemblyAttribute<AssemblyInformationalVersionAttribute>()
                 .InformationalVersion;
 
-            var dashIndex = version.IndexOf('-');
-            var plusIndex = version.IndexOf('+');
-
             switch (format)
             {
                 case VersionFormat.Short:
-                    if (dashIndex >= 0)
-                        version = version.Substring(0, dashIndex);
-                    else if (plusIndex >= 0)
-                        version = version.Substring(0, plusIndex);
-
-                    break;
+                    return $"v{version.UpToCharacters(shortDelimiters)}";
                 case VersionFormat.Normal:
-                    if (plusIndex >= 0)
-                        version = version.Substring(0, plusIndex);
-
-                    break;
+                    return $"v{version.UpToCharacter('+')}";
                 case VersionFormat.Full:
-                    break;
+                    return $"v{version}";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(format), format, null);
             }
-
-            return "v" + version;
         }
+
+        private static readonly char[] shortDelimiters = new char[] { '-', '+' };
+
+        private static string UpToCharacter(this string orig, char what)
+            => orig.UpToIndex(orig.IndexOf(what));
+
+        private static string UpToCharacters(this string orig, char[] what)
+            => orig.UpToIndex(orig.IndexOfAny(what));
+
+        private static string UpToIndex(this string orig, int index)
+            => index == -1 ? orig
+                           : orig.Substring(0, index);
 
         private static T GetAssemblyAttribute<T>(this Assembly assembly)
             => (T)assembly.GetCustomAttributes(typeof(T), false)

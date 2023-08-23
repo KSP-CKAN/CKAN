@@ -304,7 +304,6 @@ Free up space on that device or change your settings to use another location.
   <data name="NetModuleCacheModuleCached" xml:space="preserve"><value>{0} {1} (cached)</value></data>
   <data name="NetModuleCacheModuleHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
   <data name="NetModuleCacheModuleResuming" xml:space="preserve"><value>{0} {1} ({2}, {3} remaining)</value></data>
-  <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve"><value> * Install: {0} {1} ({2}, {3} remaining)</value></data>
   <data name="ModuleInstallerUpgradeUpgradingResuming" xml:space="preserve"><value> * Upgrade: {0} {1} to {2} ({3}, {4} remaining)</value></data>
   <data name="ModpackName" xml:space="preserve"><value>installed-{0}</value></data>
 </root>
