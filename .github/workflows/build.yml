@@ -69,7 +69,7 @@ jobs:
         if: matrix.configuration == 'release' && ( matrix.mono == '6.8' || matrix.mono == 'latest' )
 
       - name: Upload ckan.exe artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ckan.exe
           path: _build/repack/Release/ckan.exe
