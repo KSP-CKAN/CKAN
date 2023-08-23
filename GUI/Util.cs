@@ -274,6 +274,36 @@ namespace CKAN.GUI
             };
         }
 
+        /// <summary>
+        /// Simple syntactic sugar around Graphics.MeasureString
+        /// </summary>
+        /// <param name="g">The graphics context</param>
+        /// <param name="font">The font to be used for the text</param>
+        /// <param name="text">String to measure size of</param>
+        /// <param name="maxWidth">Number of pixels allowed horizontally</param>
+        /// <returns>
+        /// Number of pixels needed vertically to fit the string
+        /// </returns>
+        public static int StringHeight(Graphics g, string text, Font font, int maxWidth)
+            => (int)g.MeasureString(text, font, (int)(maxWidth / XScale(g))).Height;
+
+        /// <summary>
+        /// Calculate how much vertical space is needed to display a label's text
+        /// </summary>
+        /// <param name="g">The graphics context</param>
+        /// <param name="lbl">The label</param>
+        /// <returns>
+        /// Number of pixels needed vertically to show the label's full text
+        /// </returns>
+        public static int LabelStringHeight(Graphics g, Label lbl)
+            => (int)(YScale(g) * (lbl.Margin.Vertical + lbl.Padding.Vertical
+                                  + StringHeight(g, lbl.Text, lbl.Font,
+                                                 (lbl.Width - lbl.Margin.Horizontal
+                                                            - lbl.Padding.Horizontal))));
+
+        private static float XScale(Graphics g) => g.DpiX / 96f;
+        private static float YScale(Graphics g) => g.DpiY / 96f;
+
         private static readonly ILog log = LogManager.GetLogger(typeof(Util));
     }
 }

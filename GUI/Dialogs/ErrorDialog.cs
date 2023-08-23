@@ -29,9 +29,10 @@ namespace CKAN.GUI
                     ClientSize.Width,
                     Math.Min(
                         maxHeight,
-                        padding + StringHeight(ErrorMessage.Text, ErrorMessage.Width - 4)
-                    )
-                );
+                        padding + Util.StringHeight(CreateGraphics(),
+                                                    ErrorMessage.Text,
+                                                    ErrorMessage.Font,
+                                                    ErrorMessage.Width - 4)));
                 if (!Visible)
                 {
                     StartPosition = Main.Instance.actuallyVisible
@@ -56,11 +57,6 @@ namespace CKAN.GUI
         {
             // Clear message on close so we start blank next time
             ErrorMessage.Text = "";
-        }
-
-        private int StringHeight(string text, int maxWidth)
-        {
-            return (int)CreateGraphics().MeasureString(text, ErrorMessage.Font, maxWidth).Height;
         }
 
         private const           int  maxHeight = 600;

@@ -34,6 +34,7 @@ namespace CKAN.GUI
                 .ToArray();
             Util.Invoke(this, () =>
             {
+                DeleteButton.Focus();
                 DirectoriesListView.Items.Clear();
                 DirectoriesListView.Items.AddRange(items);
                 DirectoriesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -77,6 +78,12 @@ namespace CKAN.GUI
                 toDelete = null;
                 return false;
             }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            ExplanationLabel.Height = Util.LabelStringHeight(CreateGraphics(), ExplanationLabel);
         }
 
         /// <summary>
