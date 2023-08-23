@@ -32,22 +32,22 @@ jobs:
       - name: Install runtime dependencies
         run: apt-get install -y xvfb
       - name: Restore cache for _build/tools
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: _build/tools
           key: build-tools-${{ hashFiles('build', 'build.ps1', 'build.cake') }}
       - name: Restore cache for _build/cake
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: _build/cake
           key: build-cake-${{ hashFiles('build.cake') }}
       - name: Restore cache for _build/lib/nuget
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: _build/lib/nuget
           key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
       - name: Restore cache for ~/.nuget/packages
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.nuget/packages
           key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
@@ -104,22 +104,22 @@ jobs:
         with:
           dotnet-version: '5.0.x'
       - name: Restore cache for _build/tools
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: _build/tools
           key: build-tools-${{ hashFiles('build', 'build.ps1', 'build.cake') }}
       - name: Restore cache for _build/cake
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: _build/cake
           key: build-cake-${{ hashFiles('build.cake') }}
       - name: Restore cache for _build/lib/nuget
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: _build/lib/nuget
           key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
       - name: Restore cache for ~/.nuget/packages
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.nuget/packages
           key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
