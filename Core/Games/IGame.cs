@@ -17,7 +17,8 @@ namespace CKAN.Games
         string MacPath();
 
         // What do we contain?
-        string   PrimaryModDirectoryRelative { get; }
+        string   PrimaryModDirectoryRelative     { get; }
+        string[] AlternateModDirectoriesRelative { get; }
         string   PrimaryModDirectory(GameInstance inst);
         string[] StockFolders   { get; }
         string[] ReservedPaths  { get; }

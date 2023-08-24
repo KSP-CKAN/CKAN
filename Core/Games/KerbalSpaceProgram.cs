@@ -92,6 +92,7 @@ namespace CKAN.Games
         }
 
         public string PrimaryModDirectoryRelative => "GameData";
+        public string[] AlternateModDirectoriesRelative => new string[] { };
 
         public string PrimaryModDirectory(GameInstance inst)
             => CKANPathUtils.NormalizePath(

@@ -97,6 +97,7 @@ namespace CKAN.Games
         }
 
         public string PrimaryModDirectoryRelative => "GameData/Mods";
+        public string[] AlternateModDirectoriesRelative => new string[] { "BepInEx/plugins" };
 
         public string PrimaryModDirectory(GameInstance inst)
             => CKANPathUtils.NormalizePath(
