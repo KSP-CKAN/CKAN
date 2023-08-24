@@ -565,6 +565,17 @@ depends:
     choice_help_text: Pick ModA if you prefer polka dots, ModB otherwise
 ```
 
+(**v1.34**) Clients implementing version `v1.34` or later of the spec *must* support
+the `suppress_recommendations` property in a relationship. If this property is `true`,
+then recommendations or suggestions will not be shown for the module satisfying this
+relationship or its (sole) dependencies.
+
+```yaml
+depends:
+  - name: OtherMod
+    suppress_recommendations: true
+```
+
 ##### depends
 
 A list of mods which are *required* for the current mod to operate.

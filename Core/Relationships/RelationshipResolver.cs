@@ -60,10 +60,15 @@ namespace CKAN
         /// </summary>
         public bool allow_incompatible = false;
 
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
+        /// <summary>
+        /// If true, get the list of mods that should be checked for
+        /// recommendations and suggestions.
+        /// Differs from normal resolution in that it stops when
+        /// ModuleRelationshipDescriptor.suppress_recommendations==true
+        /// </summary>
+        public bool get_recommenders = false;
+
+        public object Clone() => MemberwiseClone();
     }
 
     // TODO: RR currently conducts a depth-first resolution of requirements. While we do the
@@ -402,6 +407,12 @@ namespace CKAN
             foreach (RelationshipDescriptor descriptor in stanza)
             {
                 log.DebugFormat("Considering {0}", descriptor.ToString());
+
+                if (options.get_recommenders && descriptor.suppress_recommendations)
+                {
+                    log.DebugFormat("Skipping {0} because get_recommenders option is set");
+                    continue;
+                }
 
                 // If we already have this dependency covered,
                 // resolve its relationships if we haven't already.

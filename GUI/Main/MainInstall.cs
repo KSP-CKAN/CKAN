@@ -109,8 +109,7 @@ namespace CKAN.GUI
                 registry,
                 out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                 out Dictionary<CkanModule, List<string>> suggestions,
-                out Dictionary<CkanModule, HashSet<string>> supporters
-            ))
+                out Dictionary<CkanModule, HashSet<string>> supporters))
             {
                 tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
                 ChooseRecommendedMods.LoadRecommendations(

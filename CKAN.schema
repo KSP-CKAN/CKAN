@@ -409,6 +409,10 @@
                             "choice_help_text": {
                                 "description" : "Optional help text shown when user has to choose among multiple modules",
                                 "type"        : "string"
+                            },
+                            "suppress_recommendations": {
+                                "description" : "If true, don't check this mod or its dependencies for recommendations or suggestions",
+                                "type"        : "boolean"
                             }
                         },
                         "required" : [ "name" ]
