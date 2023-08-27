@@ -120,9 +120,6 @@
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>32</value>
   </metadata>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>Datei</value></data>
   <data name="manageGameInstancesMenuItem.Text" xml:space="preserve"><value>Spielinstanzen verwalten</value></data>
   <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>Spieleverzeichnis öffnen</value></data>

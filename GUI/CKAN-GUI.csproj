@@ -1315,6 +1315,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.tr-TR.resx">
+      <LogicalName>CKAN.GUI.Properties.Resources.tr-TR.resources</LogicalName>
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\RenameInstanceDialog.resx">
       <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>

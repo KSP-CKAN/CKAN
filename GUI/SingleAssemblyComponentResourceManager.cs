@@ -21,7 +21,7 @@ namespace CKAN.GUI
             bool createIfNotExists, bool tryParents)
         {
             ResourceSet rs;
-            if (!myResourceSets.TryGetValue(culture, out rs))
+            if (!myResourceSets.TryGetValue(culture, out rs) && createIfNotExists)
             {
                 // Lazy-load default language (without caring about duplicate assignment in race conditions, no harm done)
                 if (neutralResourcesCulture == null)
