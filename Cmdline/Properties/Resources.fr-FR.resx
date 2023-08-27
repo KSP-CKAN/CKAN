@@ -223,6 +223,9 @@ Mise à jour conseillée !</value>
   <data name="AuthTokenHelpSummary" xml:space="preserve">
     <value>Gérer les jetons d'authentification</value>
   </data>
+  <data name="AuthTokenInvalidHostName" xml:space="preserve">
+    <value>Nom d'hôte invalide : {0}</value>
+  </data>
   <data name="AvailableHeader" xml:space="preserve">
     <value>Modules compatibles avec {0} {1}</value>
   </data>

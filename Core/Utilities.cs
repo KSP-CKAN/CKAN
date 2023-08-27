@@ -24,6 +24,7 @@ namespace CKAN
             "pl-PL",
             "tr-TR",
             "it-IT",
+            "nl-NL",
         };
 
         /// <summary>
