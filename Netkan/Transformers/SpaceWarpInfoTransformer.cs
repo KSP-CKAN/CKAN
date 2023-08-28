@@ -92,7 +92,8 @@ namespace CKAN.NetKAN.Transformers
                         .Select(dep => dep.id)
                         .Where(depId => !moduleDeps.Contains(
                             // Remove up to last period
-                            depId.Substring(depId.LastIndexOf('.') + 1),
+                            Identifier.Sanitize(
+                                depId.Substring(depId.LastIndexOf('.') + 1), ""),
                             // Case insensitive
                             StringComparer.InvariantCultureIgnoreCase))
                         .ToList();
