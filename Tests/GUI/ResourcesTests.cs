@@ -3,6 +3,8 @@ using System.Linq;
 using System.Resources;
 using System.ComponentModel;
 using System.Globalization;
+using System.Collections;
+
 using NUnit.Framework;
 
 namespace Tests.GUI
@@ -17,17 +19,30 @@ namespace Tests.GUI
         /// This test covers the GUI/Properties/Resources.resx files.
         /// </summary>
         [Test]
-        public void PropertiesResources_LanguageResource_NotSet()
+        public void PropertiesResources_AllLocales_LanguageNotSetAndAllStrings()
         {
             // Arrange
             ResourceManager resources = new CKAN.GUI.SingleAssemblyResourceManager(
                 "CKAN.GUI.Properties.Resources", typeof(CKAN.GUI.Properties.Resources).Assembly);
 
             // Act/Assert
-            foreach (CultureInfo resourceCulture in cultures)
+            Assert.Multiple(() =>
             {
-                Assert.IsNull(resources.GetObject("$this.Language", resourceCulture));
-            }
+                foreach (CultureInfo resourceCulture in cultures)
+                {
+                    Assert.IsNull(resources.GetObject("$this.Language", resourceCulture));
+
+                    var resSet = resources.GetResourceSet(resourceCulture, false, false);
+                    if (resSet != null)
+                    {
+                        foreach (DictionaryEntry entry in resSet)
+                        {
+                            Assert.IsInstanceOf<string>(entry.Value,
+                                $"Resource '{entry.Key}' in locale '{resourceCulture.Name}' is not a string");
+                        }
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -75,16 +90,29 @@ namespace Tests.GUI
             TestCase(typeof(CKAN.GUI.SelectionDialog)),
             TestCase(typeof(CKAN.GUI.YesNoDialog)),
         ]
-        public void ControlOrDialog_LanguageResource_NotSet(Type t)
+        public void ControlOrDialog_AllLocales_LanguageNotSetAndAllStrings(Type t)
         {
             // Arrange
             ComponentResourceManager resources = new CKAN.GUI.SingleAssemblyComponentResourceManager(t);
 
             // Act/Assert
-            foreach (CultureInfo resourceCulture in cultures)
+            Assert.Multiple(() =>
             {
-                Assert.IsNull(resources.GetObject("$this.Language", resourceCulture));
-            }
+                foreach (CultureInfo resourceCulture in cultures)
+                {
+                    Assert.IsNull(resources.GetObject("$this.Language", resourceCulture));
+
+                    var resSet = resources.GetResourceSet(resourceCulture, false, false);
+                    if (resSet != null)
+                    {
+                        foreach (DictionaryEntry entry in resSet)
+                        {
+                            Assert.IsInstanceOf<string>(entry.Value,
+                                $"Resource '{t.Name} {entry.Key}' in locale '{resourceCulture.Name}' is not a string");
+                        }
+                    }
+                }
+            });
         }
 
         // The cultures to test
