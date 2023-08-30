@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
+
 using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
 
@@ -16,7 +17,7 @@ using Tests.Data;
 namespace Tests.Core
 {
     [TestFixture]
-    public class ModuleInstaller
+    public class ModuleInstallerTests
     {
         private string flag_path;
         private string dogezip;
@@ -604,6 +605,141 @@ namespace Tests.Core
 
                 manager.Dispose();
                 config.Dispose();
+            }
+        }
+
+        [Test,
+            // Empty dir
+            TestCase("GameData/SomeMod/Parts",
+                     new string[] {},
+                     new string[] {},
+                     new string[] {},
+                     new string[] {}),
+            // A few regular files and some thumbnails
+            TestCase("GameData/SomeMod/Parts",
+                     new string[] {},
+                     new string[]
+                     {
+                         "GameData/SomeMod/Parts/userfile.cfg",
+                         "GameData/SomeMod/Parts/userfile2.cfg",
+                         "GameData/SomeMod/Parts/@thumbs",
+                         "GameData/SomeMod/Parts/@thumbs/part1.png",
+                         "GameData/SomeMod/Parts/@thumbs/part3.png",
+                         "GameData/SomeMod/Parts/@thumbs/part4.png",
+                     },
+                     new string[]
+                     {
+                         "GameData/SomeMod/Parts/@thumbs/part1.png",
+                         "GameData/SomeMod/Parts/@thumbs/part3.png",
+                         "GameData/SomeMod/Parts/@thumbs/part4.png",
+                         "GameData/SomeMod/Parts/@thumbs",
+                     },
+                     new string[]
+                     {
+                         "GameData/SomeMod/Parts/userfile2.cfg",
+                         "GameData/SomeMod/Parts/userfile.cfg",
+                     }),
+            // Just regular files
+            TestCase("GameData/SomeMod/Parts",
+                     new string[] {},
+                     new string[]
+                     {
+                         "GameData/SomeMod/Parts/userfile.cfg",
+                         "GameData/SomeMod/Parts/userfile2.cfg",
+                     },
+                     new string[] {},
+                     new string[]
+                     {
+                         "GameData/SomeMod/Parts/userfile2.cfg",
+                         "GameData/SomeMod/Parts/userfile.cfg",
+                     }),
+            // Just thumbnails
+            TestCase("GameData/SomeMod/Parts",
+                     new string[] {},
+                     new string[]
+                     {
+                         "GameData/SomeMod/Parts/@thumbs",
+                         "GameData/SomeMod/Parts/@thumbs/part1.png",
+                         "GameData/SomeMod/Parts/@thumbs/part3.png",
+                         "GameData/SomeMod/Parts/@thumbs/part4.png",
+                     },
+                     new string[]
+                     {
+                         "GameData/SomeMod/Parts/@thumbs/part1.png",
+                         "GameData/SomeMod/Parts/@thumbs/part3.png",
+                         "GameData/SomeMod/Parts/@thumbs/part4.png",
+                         "GameData/SomeMod/Parts/@thumbs",
+                     },
+                     new string[] {}),
+            // A few regular files and some thumbnails, some of which are owned by another mod
+            TestCase("GameData/SomeMod/Parts",
+                     new string[]
+                     {
+                         "GameData/SomeMod/Parts/userfile2.cfg",
+                         "GameData/SomeMod/Parts/@thumbs/part1.png",
+                     },
+                     new string[]
+                     {
+                         "GameData/SomeMod/Parts/userfile.cfg",
+                         "GameData/SomeMod/Parts/userfile2.cfg",
+                         "GameData/SomeMod/Parts/@thumbs",
+                         "GameData/SomeMod/Parts/@thumbs/part1.png",
+                         "GameData/SomeMod/Parts/@thumbs/part3.png",
+                         "GameData/SomeMod/Parts/@thumbs/part4.png",
+                     },
+                     new string[]
+                     {
+                         "GameData/SomeMod/Parts/@thumbs/part3.png",
+                         "GameData/SomeMod/Parts/@thumbs/part4.png",
+                         "GameData/SomeMod/Parts/@thumbs",
+                     },
+                     new string[]
+                     {
+                         "GameData/SomeMod/Parts/@thumbs/part1.png",
+                         "GameData/SomeMod/Parts/userfile2.cfg",
+                         "GameData/SomeMod/Parts/userfile.cfg",
+                     }),
+        ]
+        public void GroupFilesByRemovable_WithFiles_CorrectOutput(string   relRoot,
+                                                                  string[] registeredFiles,
+                                                                  string[] relPaths,
+                                                                  string[] correctRemovable,
+                                                                  string[] correctNotRemovable)
+        {
+            // Arrange
+            using (var inst = new DisposableKSP())
+            {
+                var game     = new KerbalSpaceProgram();
+                var registry = CKAN.RegistryManager.Instance(inst.KSP).registry;
+                // Make files to be registered to another mod
+                var absFiles = registeredFiles.Select(f => inst.KSP.ToAbsoluteGameDir(f))
+                                              .ToArray();
+                foreach (var absPath in absFiles)
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(absPath));
+                    File.Create(absPath).Dispose();
+                }
+                // Register the other mod
+                registry.RegisterModule(CkanModule.FromJson(@"{
+                                            ""spec_version"": 1,
+                                            ""identifier"":   ""otherMod"",
+                                            ""version"":      ""1.0"",
+                                            ""download"":     ""https://github.com/""
+                                        }"),
+                                        absFiles, inst.KSP, false);
+
+                // Act
+                CKAN.ModuleInstaller.GroupFilesByRemovable(relRoot,
+                                                           registry,
+                                                           new string[] {},
+                                                           game,
+                                                           relPaths,
+                                                           out string[] removable,
+                                                           out string[] notRemovable);
+
+                // Assert
+                Assert.AreEqual(correctRemovable,    removable);
+                Assert.AreEqual(correctNotRemovable, notRemovable);
             }
         }
 

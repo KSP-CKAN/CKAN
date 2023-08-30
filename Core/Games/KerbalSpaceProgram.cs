@@ -120,6 +120,11 @@ namespace CKAN.Games
             "GameData", "Tutorial", "Scenarios", "Missions", "Ships/Script"
         };
 
+        public string[] AutoRemovableDirs => new string[]
+        {
+            "@thumbs"
+        };
+
         /// <summary>
         /// Checks the path against a list of reserved game directories
         /// </summary>

@@ -502,7 +502,7 @@ namespace CKAN.GUI
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
         {
-            Main.Instance.tabController.ShowTab("ChangesetTabPage", 1);
+            StartChangeSet?.Invoke(currentChangeSet);
         }
 
         public void MarkModForUpdate(string identifier, bool value)
@@ -759,7 +759,7 @@ namespace CKAN.GUI
             ModGrid.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-        private async void ModGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void ModGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             int row_index    = e.RowIndex;
             int column_index = e.ColumnIndex;
@@ -804,10 +804,9 @@ namespace CKAN.GUI
                             gui_mod.SetReplaceChecked(row, ReplaceCol);
                             break;
                     }
-                    await UpdateChangeSetAndConflicts(
+                    UpdateChangeSetAndConflicts(
                         Main.Instance.CurrentInstance,
-                        RegistryManager.Instance(Main.Instance.CurrentInstance).registry
-                    );
+                        RegistryManager.Instance(Main.Instance.CurrentInstance).registry);
                 }
             }
         }
@@ -1227,8 +1226,7 @@ namespace CKAN.GUI
             // Update our mod listing
             mainModList.ConstructModList(gui_mods, Main.Instance.CurrentInstance.Name, Main.Instance.CurrentInstance.game, ChangeSet);
 
-            // C# 7.0: Executes the task and discards it
-            _ = UpdateChangeSetAndConflicts(Main.Instance.CurrentInstance, registry);
+            UpdateChangeSetAndConflicts(Main.Instance.CurrentInstance, registry);
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListUpdatingFilters);
 
@@ -1651,7 +1649,7 @@ namespace CKAN.GUI
             Conflicts = null;
         }
 
-        public async Task UpdateChangeSetAndConflicts(GameInstance inst, IRegistryQuerier registry)
+        public void UpdateChangeSetAndConflicts(GameInstance inst, IRegistryQuerier registry)
         {
             if (freezeChangeSet)
             {
@@ -1662,7 +1660,6 @@ namespace CKAN.GUI
             List<ModChange> full_change_set = null;
             Dictionary<GUIMod, string> new_conflicts = null;
 
-            bool too_many_provides_thrown = false;
             var user_change_set = mainModList.ComputeUserChangeSet(registry, inst.VersionCriteria());
             try
             {

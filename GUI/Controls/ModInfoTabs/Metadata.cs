@@ -139,16 +139,9 @@ namespace CKAN.GUI
             }
         }
 
-        private int StringHeight(string text, Font font, int maxWidth)
-            => (int)CreateGraphics().MeasureString(text, font, maxWidth).Height;
-
         private int LinkLabelStringHeight(LinkLabel lb, int fitWidth)
             => lb.Padding.Vertical + lb.Margin.Vertical + 10
-                + StringHeight(lb.Text, lb.Font, fitWidth);
-
-        private int LabelStringHeight(Label lb)
-            => lb.Padding.Vertical + lb.Margin.Vertical + 10
-                + StringHeight(lb.Text, lb.Font, lb.Width);
+                + Util.StringHeight(CreateGraphics(), lb.Text, lb.Font, fitWidth);
 
         protected override void OnResize(EventArgs e)
         {
@@ -212,7 +205,7 @@ namespace CKAN.GUI
                 MetadataTable.RowStyles.Add(
                     new RowStyle(SizeType.Absolute, Math.Max(
                         // "Remote version file" wraps
-                        LabelStringHeight(lbl),
+                        Util.LabelStringHeight(CreateGraphics(), lbl),
                         LinkLabelStringHeight(llbl, RightColumnWidth))));
             }
         }
@@ -229,7 +222,7 @@ namespace CKAN.GUI
                     {
                         MetadataTable.RowStyles[row].Height = Math.Max(
                             // "Remote version file" wraps
-                            LabelStringHeight(lab),
+                            Util.LabelStringHeight(CreateGraphics(), lab),
                             LinkLabelStringHeight(link, rWidth));
                     }
                 }

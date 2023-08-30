@@ -122,6 +122,8 @@ namespace CKAN.Games
             "BepInEx/plugins",
         };
 
+        public string[] AutoRemovableDirs => new string[] { };
+
         /// <summary>
         /// Checks the path against a list of reserved game directories
         /// </summary>

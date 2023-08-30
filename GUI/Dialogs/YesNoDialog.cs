@@ -42,7 +42,7 @@ namespace CKAN.GUI
 
         private void Setup(string text, string yesText, string noText)
         {
-            var height = StringHeight(text, ClientSize.Width - 25) + 2 * 54;
+            var height = Util.StringHeight(CreateGraphics(), text, DescriptionLabel.Font, ClientSize.Width - 25) + 2 * 54;
             DescriptionLabel.Text = text;
             DescriptionLabel.TextAlign = text.Contains("\n")
                 ? HorizontalAlignment.Left
@@ -65,19 +65,6 @@ namespace CKAN.GUI
             SuppressCheckbox.Checked = false;
             SuppressCheckbox.Text = suppressText;
             SuppressCheckbox.Visible = true;
-        }
-
-        /// <summary>
-        /// Simple syntactic sugar around Graphics.MeasureString
-        /// </summary>
-        /// <param name="text">String to measure size of</param>
-        /// <param name="maxWidth">Number of pixels allowed horizontally</param>
-        /// <returns>
-        /// Number of pixels needed vertically to fit the string
-        /// </returns>
-        private int StringHeight(string text, int maxWidth)
-        {
-            return (int)CreateGraphics().MeasureString(text, DescriptionLabel.Font, maxWidth).Height;
         }
 
         public void HideYesNoDialog()

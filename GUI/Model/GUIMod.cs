@@ -41,11 +41,9 @@ namespace CKAN.GUI
                     }
                     Main.Instance.ManageMods.MarkModForInstall(Identifier, selectedMod == null);
 
-                    // C# 7.0: Executes the task and discards it
-                    _ = Main.Instance.ManageMods.UpdateChangeSetAndConflicts(
+                    Main.Instance.ManageMods.UpdateChangeSetAndConflicts(
                         Main.Instance.Manager.CurrentInstance,
-                        RegistryManager.Instance(Main.Instance.Manager.CurrentInstance).registry
-                    );
+                        RegistryManager.Instance(Main.Instance.Manager.CurrentInstance).registry);
 
                     OnPropertyChanged();
                 }

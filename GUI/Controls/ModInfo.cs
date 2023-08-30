@@ -44,7 +44,7 @@ namespace CKAN.GUI
 
         public void RefreshModContentsTree()
         {
-            Contents.Refresh();
+            Contents.RefreshModContentsTree();
         }
 
         public event Action<GUIMod>            OnDownloadClick;
@@ -96,13 +96,10 @@ namespace CKAN.GUI
 
         private GameInstanceManager manager => Main.Instance.Manager;
 
-        private int StringHeight(string text, Font font, int maxWidth)
-            => (int)CreateGraphics().MeasureString(text, font, maxWidth).Height;
-
         private int TextBoxStringHeight(TextBox tb)
             => tb.Padding.Vertical + tb.Margin.Vertical
-                + StringHeight(tb.Text, tb.Font,
-                               tb.Width - tb.Padding.Horizontal - tb.Margin.Horizontal);
+                + Util.StringHeight(CreateGraphics(), tb.Text, tb.Font,
+                                    tb.Width - tb.Padding.Horizontal - tb.Margin.Horizontal);
 
         private int DescriptionHeight => TextBoxStringHeight(MetadataModuleDescriptionTextBox);
 

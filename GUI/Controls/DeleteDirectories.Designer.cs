@@ -1,4 +1,4 @@
-﻿namespace CKAN.GUI
+namespace CKAN.GUI
 {
     partial class DeleteDirectories
     {
@@ -159,6 +159,7 @@
             this.DeleteButton.AutoSize = true;
             this.DeleteButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.DeleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DeleteButton.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
             this.DeleteButton.Name = "DeleteButton";
             this.DeleteButton.Size = new System.Drawing.Size(112, 30);
             this.DeleteButton.TabIndex = 4;

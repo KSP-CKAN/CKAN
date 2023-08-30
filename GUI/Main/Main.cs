@@ -28,16 +28,15 @@ namespace CKAN.GUI
 
         // Stuff we set in the constructor and never change
         public readonly GUIUser currentUser;
-        [Obsolete("Main.tabController should be private. Find a better way to access this object.")]
-        public readonly TabController tabController;
-        private readonly GameInstanceManager manager;
-        public GameInstanceManager Manager => manager;
+        public readonly GameInstanceManager Manager;
         public GameInstance CurrentInstance => Manager.CurrentInstance;
-        private string focusIdent;
 
         // Stuff we set when the game instance changes
         public GUIConfiguration configuration;
         public PluginController pluginController;
+
+        private readonly TabController tabController;
+        private string focusIdent;
 
         private bool needRegistrySave = false;
 
@@ -128,11 +127,11 @@ namespace CKAN.GUI
             {
                 // With a working GUI, assign a GUIUser to the GameInstanceManager to replace the ConsoleUser
                 mgr.User = currentUser;
-                manager = mgr;
+                Manager = mgr;
             }
             else
             {
-                manager = new GameInstanceManager(currentUser);
+                Manager = new GameInstanceManager(currentUser);
             }
 
             tabController = new TabController(MainTabControl);
@@ -148,13 +147,13 @@ namespace CKAN.GUI
             if (CurrentInstance == null)
             {
                 // Maybe we can find an instance automatically (e.g., portable, only, default)
-                manager.GetPreferredInstance();
+                Manager.GetPreferredInstance();
             }
 
             // We need a config object to get the window geometry, but we don't need the registry lock yet
             configuration = GUIConfigForInstance(
                 // Find the most recently used instance if no default instance
-                CurrentInstance ?? InstanceWithNewestGUIConfig(manager.Instances.Values));
+                CurrentInstance ?? InstanceWithNewestGUIConfig(Manager.Instances.Values));
 
             // This must happen before Shown, and it depends on the configuration
             SetStartPosition();
@@ -255,8 +254,8 @@ namespace CKAN.GUI
                                 else
                                 {
                                     // Couldn't get the lock, there is no current instance
-                                    manager.CurrentInstance = null;
-                                    if (manager.Instances.Values.All(inst => !inst.Valid || inst.IsMaybeLocked))
+                                    Manager.CurrentInstance = null;
+                                    if (Manager.Instances.Values.All(inst => !inst.Valid || inst.IsMaybeLocked))
                                     {
                                         // Everything's invalid or locked, give up
                                         evt.Result = false;
@@ -336,7 +335,7 @@ namespace CKAN.GUI
                         else
                         {
                             // Couldn't get the lock, revert to previous instance
-                            manager.CurrentInstance = old_instance;
+                            Manager.CurrentInstance = old_instance;
                             CurrentInstanceUpdated(false);
                             done = true;
                         }
@@ -443,7 +442,7 @@ namespace CKAN.GUI
             }
 
             // Stop all running play time timers
-            foreach (var inst in manager.Instances.Values)
+            foreach (var inst in Manager.Instances.Values)
             {
                 if (inst.Valid)
                 {
@@ -694,7 +693,7 @@ namespace CKAN.GUI
         private void CompatibleGameVersionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CompatibleGameVersionsDialog dialog = new CompatibleGameVersionsDialog(
-                Instance.manager.CurrentInstance,
+                Instance.Manager.CurrentInstance,
                 !actuallyVisible
             );
             if (dialog.ShowDialog(this) != DialogResult.Cancel)
@@ -839,7 +838,7 @@ namespace CKAN.GUI
 
         private void openGameDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Utilities.ProcessStartURL(manager.CurrentInstance.GameDir());
+            Utilities.ProcessStartURL(Manager.CurrentInstance.GameDir());
         }
 
         private void openGameToolStripMenuItem_Click(object sender, EventArgs e)

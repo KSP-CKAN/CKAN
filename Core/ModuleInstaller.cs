@@ -14,6 +14,7 @@ using Autofac;
 using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.Configuration;
+using CKAN.Games;
 
 namespace CKAN
 {
@@ -762,7 +763,7 @@ namespace CKAN
                 }
 
                 // Walk our registry to find all files for this mod.
-                IEnumerable<string> files = mod.Files;
+                var files = mod.Files.ToArray();
 
                 // We need case insensitive path matching on Windows
                 var directoriesToDelete = Platform.IsWindows
@@ -826,7 +827,7 @@ namespace CKAN
 
                 // Sort our directories from longest to shortest, to make sure we remove child directories
                 // before parents. GH #78.
-                foreach (string directory in directoriesToDelete.OrderBy(dir => dir.Length).Reverse())
+                foreach (string directory in directoriesToDelete.OrderByDescending(dir => dir.Length))
                 {
                     log.DebugFormat("Checking {0}...", directory);
                     // It is bad if any of this directories gets removed
@@ -838,16 +839,42 @@ namespace CKAN
                         continue;
                     }
 
-                    var contents = Directory
-                        .EnumerateFileSystemEntries(directory, "*", SearchOption.AllDirectories)
-                        .Select(f => ksp.ToRelativeGameDir(f))
-                        .Memoize();
-                    log.DebugFormat("Got contents: {0}", string.Join(", ", contents));
-                    var owners = contents.Select(f => registry.FileOwner(f));
-                    log.DebugFormat("Got owners: {0}", string.Join(", ", owners));
-                    if (!contents.Any())
-                    {
+                    // See what's left in this folder and what we can do about it
+                    GroupFilesByRemovable(ksp.ToRelativeGameDir(directory),
+                                          registry, files, ksp.game,
+                                          (Directory.Exists(directory)
+                                              ? Directory.EnumerateFileSystemEntries(directory, "*", SearchOption.AllDirectories)
+                                              : Enumerable.Empty<string>())
+                                           .Select(f => ksp.ToRelativeGameDir(f)),
+                                          out string[] removable,
+                                          out string[] notRemovable);
 
+                    // Delete the auto-removable files and dirs
+                    foreach (var relPath in removable)
+                    {
+                        var absPath = ksp.ToAbsoluteGameDir(relPath);
+                        if (File.Exists(absPath))
+                        {
+                            log.DebugFormat("Attempting transaction deletion of file {0}", absPath);
+                            file_transaction.Delete(absPath);
+                        }
+                        else if (Directory.Exists(absPath))
+                        {
+                            log.DebugFormat("Attempting deletion of directory {0}", absPath);
+                            try
+                            {
+                                Directory.Delete(absPath);
+                            }
+                            catch
+                            {
+                                // There might be files owned by other mods, oh well
+                                log.DebugFormat("Failed to delete {0}", absPath);
+                            }
+                        }
+                    }
+
+                    if (!notRemovable.Any())
+                    {
                         // We *don't* use our file_transaction to delete files here, because
                         // it fails if the system's temp directory is on a different device
                         // to KSP. However we *can* safely delete it now we know it's empty,
@@ -860,9 +887,10 @@ namespace CKAN
                         log.DebugFormat("Removing {0}", directory);
                         Directory.Delete(directory);
                     }
-                    else if (contents.All(f => registry.FileOwner(f) == null))
+                    else if (notRemovable.All(f => registry.FileOwner(f) == null && !files.Contains(f)))
                     {
-                        log.DebugFormat("Directory {0} contains only non-registered files, ask user about it later", directory);
+                        log.DebugFormat("Directory {0} contains only non-registered files, ask user about it later: {1}",
+                                        directory, string.Join(", ", notRemovable));
                         if (possibleConfigOnlyDirs == null)
                         {
                             possibleConfigOnlyDirs = new HashSet<string>();
@@ -877,6 +905,35 @@ namespace CKAN
                 log.InfoFormat("Removed {0}", modName);
                 transaction.Complete();
             }
+        }
+
+        internal static void GroupFilesByRemovable(string relRoot,
+                                                   Registry registry,
+                                                   string[] alreadyRemoving,
+                                                   IGame game,
+                                                   IEnumerable<string> relPaths,
+                                                   out string[] removable,
+                                                   out string[] notRemovable)
+        {
+            log.DebugFormat("Getting contents of {0}", relRoot);
+            var contents = relPaths
+                // Split into auto-removable and not-removable
+                // Removable must not be owned by other mods
+                .GroupBy(f => registry.FileOwner(f) == null
+                              // Also skip owned by this module since it's already deregistered
+                              && !alreadyRemoving.Contains(f)
+                              // Must have a removable dir name somewhere in path AFTER main dir
+                              && f.Substring(relRoot.Length)
+                                  .Split('/')
+                                  .Where(piece => !string.IsNullOrEmpty(piece))
+                                  .Any(piece => game.AutoRemovableDirs.Contains(piece)))
+                .ToDictionary(grp => grp.Key,
+                              grp => grp.OrderByDescending(f => f.Length)
+                                        .ToArray());
+            removable    = contents.TryGetValue(true,  out string[] val1) ? val1 : new string[] {};
+            notRemovable = contents.TryGetValue(false, out string[] val2) ? val2 : new string[] {};
+            log.DebugFormat("Got removable: {0}",    string.Join(", ", removable));
+            log.DebugFormat("Got notRemovable: {0}", string.Join(", ", notRemovable));
         }
 
         /// <summary>
