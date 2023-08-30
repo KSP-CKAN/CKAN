@@ -1,7 +1,11 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.Serialization;
+
 using Newtonsoft.Json;
+
 using CKAN.Extensions;
 using CKAN.Versioning;
 
@@ -12,18 +16,14 @@ namespace CKAN
         public bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc
-        )
-        {
-            return MatchesAny(modules, dlls, dlc, out CkanModule _);
-        }
+            IDictionary<string, ModuleVersion> dlc)
+            => MatchesAny(modules, dlls, dlc, out CkanModule _);
 
         public abstract bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
             IDictionary<string, ModuleVersion> dlc,
-            out CkanModule matched
-        );
+            out CkanModule matched);
 
         public abstract bool WithinBounds(CkanModule otherModule);
 
@@ -44,6 +44,15 @@ namespace CKAN
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string choice_help_text;
 
+        /// <summary>
+        /// If true, then don't show recommendations and suggestions of this module or its dependencies.
+        /// Otherwise recommendations and suggestions of everything in changeset will be included.
+        /// This is meant to allow the KSP-RO team to shorten the prompts that appear during their installation.
+        /// </summary>
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
+        public bool suppress_recommendations;
+
         // virtual ToString() already present in 'object'
     }
 
@@ -51,18 +60,19 @@ namespace CKAN
     {
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ModuleVersion max_version;
+
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ModuleVersion min_version;
-        //Why is the identifier called name?
-        public /* required */ string name;
+
+        // The identifier to match
+        public string name;
+
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ModuleVersion version;
 
         public override bool WithinBounds(CkanModule otherModule)
-        {
-            return otherModule.ProvidesList.Contains(name)
-                && WithinBounds(otherModule.version);
-        }
+            => otherModule.ProvidesList.Contains(name)
+               && WithinBounds(otherModule.version);
 
         /// <summary>
         /// Returns if the other version satisfies this RelationshipDescriptor.
@@ -113,8 +123,7 @@ namespace CKAN
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
             IDictionary<string, ModuleVersion> dlc,
-            out CkanModule matched
-        )
+            out CkanModule matched)
         {
             modules = modules?.AsCollection();
 
@@ -189,7 +198,8 @@ namespace CKAN
                 && max_version == modRel.max_version;
         }
 
-        public override bool ContainsAny(IEnumerable<string> identifiers) => identifiers.Contains(name);
+        public override bool ContainsAny(IEnumerable<string> identifiers)
+            => identifiers.Contains(name);
 
         public override bool StartsWith(string prefix)
             => name.IndexOf(prefix, StringComparison.CurrentCultureIgnoreCase) == 0;
@@ -231,17 +241,13 @@ namespace CKAN
         };
 
         public override bool WithinBounds(CkanModule otherModule)
-        {
-            return any_of?.Any(r => r.WithinBounds(otherModule))
-                ?? false;
-        }
+            => any_of?.Any(r => r.WithinBounds(otherModule)) ?? false;
 
         public override bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
             IDictionary<string, ModuleVersion> dlc,
-            out CkanModule matched
-        )
+            out CkanModule matched)
         {
             if (any_of != null)
             {

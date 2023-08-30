@@ -1308,6 +1308,20 @@ namespace CKAN
             }
         }
 
+        private static readonly RelationshipResolverOptions RecommenderOptions = new RelationshipResolverOptions()
+        {
+            // Only look at depends
+            with_recommends = false,
+
+            // Don't throw anything
+            without_toomanyprovides_kraken = true,
+            without_enforce_consistency    = true,
+            proceed_with_inconsistencies   = true,
+
+            // Skip relationships with suppress_recommendations==true
+            get_recommenders = true,
+        };
+
         /// <summary>
         /// Looks for optional related modules that could be installed alongside the given modules
         /// </summary>
@@ -1325,22 +1339,24 @@ namespace CKAN
             Registry registry,
             out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
             out Dictionary<CkanModule, List<string>> suggestions,
-            out Dictionary<CkanModule, HashSet<string>> supporters
-        )
+            out Dictionary<CkanModule, HashSet<string>> supporters)
         {
-            Dictionary<CkanModule, List<string>> dependersIndex = getDependersIndex(sourceModules, registry, toInstall);
+            // Get all dependencies except where suppress_recommendations==true
+            var resolver = new RelationshipResolver(sourceModules, null, RecommenderOptions,
+                                                    registry, ksp.VersionCriteria());
+            var recommenders = resolver.ModList().ToList();
+
+            var dependersIndex = getDependersIndex(recommenders, registry, toInstall);
             var instList = toInstall.ToList();
             recommendations = new Dictionary<CkanModule, Tuple<bool, List<string>>>();
             suggestions = new Dictionary<CkanModule, List<string>>();
             supporters = new Dictionary<CkanModule, HashSet<string>>();
-            foreach (CkanModule mod in sourceModules.Where(m => m.recommends != null))
+            foreach (CkanModule mod in recommenders.Where(m => m.recommends != null))
             {
                 foreach (RelationshipDescriptor rel in mod.recommends)
                 {
                     List<CkanModule> providers = rel.LatestAvailableWithProvides(
-                        registry,
-                        ksp.VersionCriteria()
-                    );
+                        registry, ksp.VersionCriteria());
                     int i = 0;
                     foreach (CkanModule provider in providers)
                     {
@@ -1355,21 +1371,18 @@ namespace CKAN
                                 provider,
                                 new Tuple<bool, List<string>>(
                                     !provider.IsDLC && (i == 0 || provider.identifier == (rel as ModuleRelationshipDescriptor)?.name),
-                                    dependers)
-                            );
+                                    dependers));
                             ++i;
                         }
                     }
                 }
             }
-            foreach (CkanModule mod in sourceModules.Where(m => m.suggests != null))
+            foreach (CkanModule mod in recommenders.Where(m => m.suggests != null))
             {
                 foreach (RelationshipDescriptor rel in mod.suggests)
                 {
                     List<CkanModule> providers = rel.LatestAvailableWithProvides(
-                        registry,
-                        ksp.VersionCriteria()
-                    );
+                        registry, ksp.VersionCriteria());
                     foreach (CkanModule provider in providers)
                     {
                         if (!registry.IsInstalled(provider.identifier)
@@ -1388,7 +1401,7 @@ namespace CKAN
             // Find installable modules with "supports" relationships
             var candidates = registry.CompatibleModules(ksp.VersionCriteria())
                 .Where(mod => !registry.IsInstalled(mod.identifier)
-                    && !toInstall.Any(m => m.identifier == mod.identifier))
+                              && !toInstall.Any(m => m.identifier == mod.identifier))
                 .Where(m => m?.supports != null)
                 .Except(recommendations.Keys)
                 .Except(suggestions.Keys);
@@ -1397,7 +1410,7 @@ namespace CKAN
             {
                 foreach (RelationshipDescriptor rel in mod.supports)
                 {
-                    if (rel.MatchesAny(sourceModules, null, null))
+                    if (rel.MatchesAny(recommenders, null, null))
                     {
                         var name = (rel as ModuleRelationshipDescriptor)?.name;
                         if (!string.IsNullOrEmpty(name))
@@ -1414,11 +1427,11 @@ namespace CKAN
                     }
                 }
             }
-            supporters.RemoveWhere(kvp => !CanInstall(
-                RelationshipResolver.DependsOnlyOpts(),
-                instList.Concat(new List<CkanModule>() { kvp.Key }).ToList(),
-                registry
-            ));
+            supporters.RemoveWhere(kvp =>
+                !CanInstall(
+                    RelationshipResolver.DependsOnlyOpts(),
+                    instList.Concat(new List<CkanModule>() { kvp.Key }).ToList(),
+                    registry));
 
             return recommendations.Any() || suggestions.Any() || supporters.Any();
         }
@@ -1427,8 +1440,7 @@ namespace CKAN
         private Dictionary<CkanModule, List<string>> getDependersIndex(
             IEnumerable<CkanModule> sourceModules,
             IRegistryQuerier        registry,
-            List<CkanModule>        toExclude
-        )
+            List<CkanModule>        toExclude)
         {
             Dictionary<CkanModule, List<string>> dependersIndex = new Dictionary<CkanModule, List<string>>();
             foreach (CkanModule mod in sourceModules)
@@ -1440,9 +1452,7 @@ namespace CKAN
                         foreach (RelationshipDescriptor rel in relations)
                         {
                             List<CkanModule> providers = rel.LatestAvailableWithProvides(
-                                registry,
-                                ksp.VersionCriteria()
-                            );
+                                registry, ksp.VersionCriteria());
                             foreach (CkanModule provider in providers)
                             {
                                 if (!registry.IsInstalled(provider.identifier)
