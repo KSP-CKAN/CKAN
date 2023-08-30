@@ -35,23 +35,26 @@ namespace CKAN.NetKAN.Validators
                 {
                     throw new Kraken(string.Format(
                         "Module contains no files matching: {0}",
-                        mod.DescribeInstallStanzas(_game)
-                    ));
+                        mod.DescribeInstallStanzas(_game)));
                 }
 
                 // Get the files the module will install
                 var allFiles = _moduleService.FileDestinations(mod, file).Memoize();
 
                 // Make sure no paths include GameData other than at the start
-                var gamedatas = allFiles
-                    .Where(p => p.StartsWith("GameData", StringComparison.InvariantCultureIgnoreCase)
-                         && p.LastIndexOf("/GameData/", StringComparison.InvariantCultureIgnoreCase) > 0)
-                    .OrderBy(f => f)
-                    .ToList();
-                if (gamedatas.Any())
+                foreach (var dir in Enumerable.Repeat<string>(_game.PrimaryModDirectoryRelative, 1)
+                                              .Concat(_game.AlternateModDirectoriesRelative))
                 {
-                    var badPaths = string.Join("\r\n", gamedatas);
-                    throw new Kraken($"GameData directory found within GameData:\r\n{badPaths}");
+                    var gamedatas = allFiles
+                        .Where(p => p.StartsWith(dir, StringComparison.InvariantCultureIgnoreCase)
+                                    && p.LastIndexOf($"/{dir}/", StringComparison.InvariantCultureIgnoreCase) > 0)
+                        .OrderBy(f => f)
+                        .ToList();
+                    if (gamedatas.Any())
+                    {
+                        var badPaths = string.Join("\r\n", gamedatas);
+                        throw new Kraken($"{dir} directory found within {dir}:\r\n{badPaths}");
+                    }
                 }
 
                 // Make sure we won't try to overwrite our own files

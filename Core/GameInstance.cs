@@ -355,28 +355,32 @@ namespace CKAN
             var manager = RegistryManager.Instance(this);
             using (TransactionScope tx = CkanTransaction.CreateTransactionScope())
             {
-                log.DebugFormat("Scanning for DLLs in {0}",
-                    game.PrimaryModDirectory(this));
                 var oldDlls = manager.registry.InstalledDlls.ToHashSet();
                 manager.registry.ClearDlls();
-
-                if (Directory.Exists(game.PrimaryModDirectory(this)))
+                foreach (var dir in Enumerable.Repeat<string>(game.PrimaryModDirectoryRelative, 1)
+                                              .Concat(game.AlternateModDirectoriesRelative)
+                                              .Select(d => ToAbsoluteGameDir(d)))
                 {
-                    // EnumerateFiles is *case-sensitive* in its pattern, which causes
-                    // DLL files to be missed under Linux; we have to pick .dll, .DLL, or scanning
-                    // GameData *twice*.
-                    //
-                    // The least evil is to walk it once, and filter it ourselves.
-                    var files = Directory
-                        .EnumerateFiles(game.PrimaryModDirectory(this), "*", SearchOption.AllDirectories)
-                        .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
-                        .Select(CKANPathUtils.NormalizePath)
-                        .Where(absPath => !game.StockFolders.Any(f =>
-                            ToRelativeGameDir(absPath).StartsWith($"{f}/")));
+                    log.DebugFormat("Scanning for DLLs in {0}", dir);
 
-                    foreach (string dll in files)
+                    if (Directory.Exists(dir))
                     {
-                        manager.registry.RegisterDll(this, dll);
+                        // EnumerateFiles is *case-sensitive* in its pattern, which causes
+                        // DLL files to be missed under Linux; we have to pick .dll, .DLL, or scanning
+                        // GameData *twice*.
+                        //
+                        // The least evil is to walk it once, and filter it ourselves.
+                        var files = Directory
+                            .EnumerateFiles(dir, "*", SearchOption.AllDirectories)
+                            .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
+                            .Select(CKANPathUtils.NormalizePath)
+                            .Where(absPath => !game.StockFolders.Any(f =>
+                                ToRelativeGameDir(absPath).StartsWith($"{f}/")));
+
+                        foreach (string dll in files)
+                        {
+                            manager.registry.RegisterDll(this, dll);
+                        }
                     }
                 }
                 var newDlls = manager.registry.InstalledDlls.ToHashSet();
@@ -432,9 +436,11 @@ namespace CKAN
         /// </returns>
         public string DllPathToIdentifier(string relative_path)
         {
-            if (!relative_path.StartsWith($"{game.PrimaryModDirectoryRelative}/", StringComparison.CurrentCultureIgnoreCase))
+            var paths = Enumerable.Repeat<string>(game.PrimaryModDirectoryRelative, 1)
+                                  .Concat(game.AlternateModDirectoriesRelative);
+            if (!paths.Any(p => relative_path.StartsWith($"{p}/", StringComparison.CurrentCultureIgnoreCase)))
             {
-                // DLLs only live in the primary mod directory
+                // DLLs only live in the primary or alternate mod directories
                 return null;
             }
             Match match = dllPattern.Match(relative_path);
