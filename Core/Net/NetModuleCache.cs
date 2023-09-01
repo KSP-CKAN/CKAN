@@ -94,7 +94,9 @@ namespace CKAN
         }
 
         public string GetInProgressFileName(CkanModule m)
-            => cache.GetInProgressFileName(m.download, m.StandardName());
+            => m.download == null
+                ? null
+                : cache.GetInProgressFileName(m.download, m.StandardName());
 
         private static string DescribeUncachedAvailability(CkanModule m, FileInfo fi)
             => fi.Exists
