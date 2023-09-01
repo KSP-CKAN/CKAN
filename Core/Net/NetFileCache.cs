@@ -126,10 +126,10 @@ namespace CKAN
 
         public string GetInProgressFileName(List<Uri> urls, string description)
         {
-            var filenames = urls.Select(url => GetInProgressFileName(NetFileCache.CreateURLHash(url), description))
-                                .ToArray();
-            return filenames.FirstOrDefault(filename => File.Exists(filename))
-                ?? filenames.FirstOrDefault();
+            var filenames = urls?.Select(url => GetInProgressFileName(NetFileCache.CreateURLHash(url), description))
+                                 .ToArray();
+            return filenames?.FirstOrDefault(filename => File.Exists(filename))
+                ?? filenames?.FirstOrDefault();
         }
 
         /// <summary>
