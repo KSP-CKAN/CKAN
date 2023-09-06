@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Fix Netkan swinfo transformer null list error (#3869 by: HebaruSan)
 - [Tooling] Deduce primary branch name in merge script (#3884 by: HebaruSan; reviewed: techman83)
 - [CLI] Parse quoted strings for `ckan prompt` (#3889 by: HebaruSan; reviewed: techman83)
+- [Build] Remove log4net, newtonsoft deps from deb package (#3900 by: HebaruSan; reviewed: techman83)
 
 ## v1.33.2 (Laplace)
 
