@@ -6,7 +6,6 @@ using Autofac;
 
 using CKAN.Versioning;
 using CKAN.Games;
-using CKAN.GameVersionProviders;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
