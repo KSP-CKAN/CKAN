@@ -41,19 +41,16 @@ namespace CKAN.NetKAN.Validators
                     {
                         Log.WarnFormat(
                             "Craft files installed outside Ships folder: {0}",
-                            string.Join(", ", badCrafts.Select(f => inst.ToRelativeGameDir(f.destination)).OrderBy(f => f))
-                        );
+                            string.Join(", ", badCrafts.Select(f => inst.ToRelativeGameDir(f.destination)).OrderBy(f => f)));
                     }
                 }
             }
         }
 
         private bool AllowedCraftPath(string path)
-        {
-            return path.StartsWith("Ships/")
-                || path.StartsWith("Missions/")
-                || path.StartsWith("GameData/ContractPacks/");
-        }
+            => path.StartsWith("Ships/")
+               || path.StartsWith("Missions/")
+               || path.StartsWith("GameData/ContractPacks/");
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;

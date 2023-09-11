@@ -1,10 +1,13 @@
-﻿using System;
+using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using CKAN;
+
 using NUnit.Framework;
+
 using Tests.Data;
-using System.IO;
+
+using CKAN;
 using CKAN.Versioning;
 using RelationshipDescriptor = CKAN.RelationshipDescriptor;
 

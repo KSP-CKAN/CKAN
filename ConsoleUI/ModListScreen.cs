@@ -7,6 +7,7 @@ using System.ComponentModel;
 using Autofac;
 
 using CKAN.ConsoleUI.Toolkit;
+using CKAN.Extensions;
 
 namespace CKAN.ConsoleUI {
 
@@ -490,7 +491,7 @@ namespace CKAN.ConsoleUI {
             var prevRepos   = new SortedDictionary<string, Repository>(registry.Repositories);
             var prevVerCrit = manager.CurrentInstance.VersionCriteria();
             LaunchSubScreen(theme, new GameInstanceEditScreen(manager, manager.CurrentInstance));
-            if (!SortedDictionaryEquals(registry.Repositories, prevRepos)) {
+            if (!registry.Repositories.DictionaryEquals(prevRepos)) {
                 // Repos changed, need to fetch them
                 UpdateRegistry(theme, false);
                 RefreshList(theme);
@@ -512,7 +513,7 @@ namespace CKAN.ConsoleUI {
                 plan.Reset();
                 registry = RegistryManager.Instance(manager.CurrentInstance).registry;
                 RefreshList(theme);
-            } else if (!SortedDictionaryEquals(registry.Repositories, prevRepos)) {
+            } else if (!registry.Repositories.DictionaryEquals(prevRepos)) {
                 // Repos changed, need to fetch them
                 UpdateRegistry(theme, false);
                 RefreshList(theme);
@@ -521,15 +522,6 @@ namespace CKAN.ConsoleUI {
                 RefreshList(theme);
             }
             return true;
-        }
-
-        private bool SortedDictionaryEquals<K, V>(SortedDictionary<K, V> a, SortedDictionary<K, V> b)
-        {
-            return a == null ? b == null
-                 : b == null ? false
-                 : a.Count == b.Count
-                    && a.Keys.All(k => b.ContainsKey(k))
-                    && b.Keys.All(k => a.ContainsKey(k) && a[k].Equals(b[k]));
         }
 
         private bool EditAuthTokens(ConsoleTheme theme)

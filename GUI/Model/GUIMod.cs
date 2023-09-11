@@ -49,7 +49,7 @@ namespace CKAN.GUI
                 }
             }
         }
-        private CkanModule      selectedMod = null;
+        private CkanModule selectedMod = null;
 
         /// <summary>
         /// Notify listeners when certain properties change.

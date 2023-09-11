@@ -1,12 +1,14 @@
 using System;
 using System.IO;
-using CKAN;
+
 using NUnit.Framework;
+
+using CKAN;
 
 namespace Tests.Core.Net
 {
     [TestFixture]
-    public class Net
+    public class NetTests
     {
         // TODO: Test certificate errors. How?
         // URL we expect to always be up.

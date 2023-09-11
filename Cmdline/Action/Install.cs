@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+
 using log4net;
 
 namespace CKAN.CmdLine

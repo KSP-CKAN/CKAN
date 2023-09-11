@@ -1,4 +1,4 @@
-﻿// Reference CKAN client
+// Reference CKAN client
 // Paul '@pjf' Fenwick
 //
 // License: CC-BY 4.0, LGPL, or MIT (your choice)

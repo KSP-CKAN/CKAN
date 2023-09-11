@@ -144,9 +144,7 @@ namespace CKAN
         /// Helper to call <see cref="IRegistryQuerier.GetModuleByVersion(string, ModuleVersion)"/>
         /// </summary>
         public static CkanModule GetModuleByVersion(this IRegistryQuerier querier, string ident, string version)
-        {
-            return querier.GetModuleByVersion(ident, new ModuleVersion(version));
-        }
+            => querier.GetModuleByVersion(ident, new ModuleVersion(version));
 
         /// <summary>
         ///     Check if a mod is installed (either via CKAN, DLL, or virtually)
@@ -155,18 +153,15 @@ namespace CKAN
         /// </summary>
         /// <returns><c>true</c>, if installed<c>false</c> otherwise.</returns>
         public static bool IsInstalled(this IRegistryQuerier querier, string identifier, bool with_provides = true)
-        {
-            return querier.InstalledVersion(identifier, with_provides) != null;
-        }
+            => querier.InstalledVersion(identifier, with_provides) != null;
 
         /// <summary>
         ///     Check if a mod is autodetected.
         /// </summary>
         /// <returns><c>true</c>, if autodetected<c>false</c> otherwise.</returns>
         public static bool IsAutodetected(this IRegistryQuerier querier, string identifier)
-        {
-            return querier.IsInstalled(identifier) && querier.InstalledVersion(identifier) is UnmanagedModuleVersion;
-        }
+            => querier.IsInstalled(identifier)
+                && querier.InstalledVersion(identifier) is UnmanagedModuleVersion;
 
         /// <summary>
         /// Is the mod installed and does it have a newer version compatible with version
@@ -352,12 +347,15 @@ namespace CKAN
         /// Sequence of removable auto-installed modules, if any
         /// </returns>
         private static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
-            this IRegistryQuerier querier,
+            this IRegistryQuerier              querier,
             List<InstalledModule>              installedModules,
             HashSet<string>                    dlls,
             IDictionary<string, ModuleVersion> dlc,
             GameVersionCriteria                crit)
         {
+            log.DebugFormat("Finding removable autoInstalled for: {0}",
+                            string.Join(", ", installedModules.Select(im => im.identifier)));
+
             var autoInstMods = installedModules.Where(im => im.AutoInstalled).ToList();
             var autoInstIds  = autoInstMods.Select(im => im.Module.identifier).ToHashSet();
 
@@ -367,19 +365,18 @@ namespace CKAN
             opts.without_enforce_consistency    = true;
             opts.proceed_with_inconsistencies   = true;
             var resolver = new RelationshipResolver(
-                installedModules
-                    // DLC silently crashes the resolver
-                    .Where(im => !im.Module.IsDLC)
-                    .Select(im => im.Module),
+                // DLC silently crashes the resolver
+                installedModules.Where(im => !im.Module.IsDLC)
+                                .Select(im => im.Module),
                 null,
                 opts, querier, crit);
 
+            var mods = resolver.ModList().ToHashSet();
             return autoInstMods.Where(
-                im => autoInstIds.IsSupersetOf(Registry.FindReverseDependencies(
-                    new List<string> { im.identifier },
-                    new List<CkanModule>(),
-                    resolver.ModList().ToHashSet(),
-                    dlls, dlc)));
+                im => autoInstIds.IsSupersetOf(
+                    Registry.FindReverseDependencies(new List<string> { im.identifier },
+                                                     new List<CkanModule>(),
+                                                     mods, dlls, dlc)));
         }
 
         /// <summary>
@@ -397,13 +394,11 @@ namespace CKAN
             this IRegistryQuerier querier,
             List<InstalledModule> installedModules,
             GameVersionCriteria   crit)
-        {
-            log.DebugFormat("Finding removable autoInstalled for: {0}", string.Join(", ", installedModules.Select(im => im.identifier)));
-            return querier == null
-                ? Enumerable.Empty<InstalledModule>()
-                : querier.FindRemovableAutoInstalled(
-                    installedModules, querier.InstalledDlls.ToHashSet(), querier.InstalledDlc, crit);
-        }
+            => querier?.FindRemovableAutoInstalled(installedModules,
+                                                   querier.InstalledDlls.ToHashSet(),
+                                                   querier.InstalledDlc,
+                                                   crit)
+                      ?? Enumerable.Empty<InstalledModule>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof(IRegistryQuerierHelpers));
     }

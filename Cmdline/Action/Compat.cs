@@ -1,7 +1,9 @@
 using System.Linq;
-using CKAN.Versioning;
+
 using CommandLine;
 using CommandLine.Text;
+
+using CKAN.Versioning;
 
 namespace CKAN.CmdLine
 {

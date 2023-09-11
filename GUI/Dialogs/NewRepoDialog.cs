@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -13,12 +13,7 @@ namespace CKAN.GUI
         }
 
         public Repository Selection
-        {
-            get
-            {
-                return new Repository(RepoNameTextBox.Text, RepoUrlTextBox.Text);
-            }
-        }
+            => new Repository(RepoNameTextBox.Text, RepoUrlTextBox.Text);
 
         private void NewRepoDialog_Load(object sender, EventArgs e)
         {

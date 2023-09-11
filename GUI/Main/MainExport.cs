@@ -76,8 +76,7 @@ namespace CKAN.GUI
                 {
                     new Exporter(specialExportOptions[dlg.FilterIndex - 1].ExportFileType).Export(
                         RegistryManager.Instance(CurrentInstance).registry,
-                        stream
-                    );
+                        stream);
                 }
             }
         }

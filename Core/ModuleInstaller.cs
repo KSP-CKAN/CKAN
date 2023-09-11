@@ -662,8 +662,7 @@ namespace CKAN
         /// </summary>
         public void UninstallList(
             IEnumerable<string> mods, ref HashSet<string> possibleConfigOnlyDirs,
-            RegistryManager registry_manager, bool ConfirmPrompt = true, List<CkanModule> installing = null
-        )
+            RegistryManager registry_manager, bool ConfirmPrompt = true, List<CkanModule> installing = null)
         {
             mods = mods.Memoize();
             // Pre-check, have they even asked for things which are installed?

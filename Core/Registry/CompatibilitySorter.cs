@@ -228,27 +228,11 @@ namespace CKAN
         /// nothing otherwise.
         /// </returns>
         private IEnumerable<string> RelationshipIdentifiers(RelationshipDescriptor rel)
-        {
-            var modRel = rel as ModuleRelationshipDescriptor;
-            if (modRel != null)
-            {
-                yield return modRel.name;
-            }
-            else
-            {
-                var anyRel = rel as AnyOfRelationshipDescriptor;
-                if (anyRel != null)
-                {
-                    foreach (RelationshipDescriptor subRel in anyRel.any_of)
-                    {
-                        foreach (string name in RelationshipIdentifiers(subRel))
-                        {
-                            yield return name;
-                        }
-                    }
-                }
-            }
-        }
+            => rel is ModuleRelationshipDescriptor modRel
+                ? Enumerable.Repeat<string>(modRel.name, 1)
+                : rel is AnyOfRelationshipDescriptor anyRel
+                    ? anyRel.any_of.SelectMany(RelationshipIdentifiers)
+                    : Enumerable.Empty<string>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof(CompatibilitySorter));
     }

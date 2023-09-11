@@ -1,6 +1,7 @@
-using CKAN.Versioning;
-﻿using CKAN.Games;
 using NUnit.Framework;
+
+using CKAN.Versioning;
+using CKAN.Games;
 
 #pragma warning disable 414
 

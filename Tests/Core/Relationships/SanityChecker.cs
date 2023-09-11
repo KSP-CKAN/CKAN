@@ -344,13 +344,12 @@ namespace Tests.Core.Relationships
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules));
         }
 
-        private static void TestDepends(
-            List<string> to_remove,
-            HashSet<CkanModule> mods,
-            HashSet<string> dlls,
-            Dictionary<string, ModuleVersion> dlc,
-            List<string> expected,
-            string message)
+        private static void TestDepends(List<string>                      to_remove,
+                                        HashSet<CkanModule>               mods,
+                                        HashSet<string>                   dlls,
+                                        Dictionary<string, ModuleVersion> dlc,
+                                        List<string>                      expected,
+                                        string                            message)
         {
             dlls = dlls ?? new HashSet<string>();
 

@@ -1,12 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CKAN;
+
 using log4net.Core;
 using NUnit.Framework;
+
+using CKAN;
+
 using Tests.Core.Configuration;
 using Tests.Data;
 
@@ -18,7 +21,7 @@ namespace Tests.Core
     [TestFixture]
     public class ModuleInstallerDirTest
     {
-        private GameInstanceManager           _manager;
+        private GameInstanceManager  _manager;
         private DisposableKSP        _instance;
         private FakeConfiguration    _config;
         private CKAN.RegistryManager _registryManager;

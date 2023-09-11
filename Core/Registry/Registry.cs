@@ -6,8 +6,8 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Transactions;
 
-using log4net;
 using Newtonsoft.Json;
+using log4net;
 
 using CKAN.Extensions;
 using CKAN.Versioning;
@@ -146,7 +146,7 @@ namespace CKAN
                     ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
                     : new Dictionary<string, string>();
 
-                foreach (KeyValuePair<string,string> tuple in installed_files)
+                foreach (KeyValuePair<string, string> tuple in installed_files)
                 {
                     string path = CKANPathUtils.NormalizePath(tuple.Key);
 
@@ -718,23 +718,21 @@ namespace CKAN
         /// <see cref="IRegistryQuerier.LatestAvailableWithProvides" />
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(
-            string identifier,
-            GameVersionCriteria ksp_version,
-            RelationshipDescriptor relationship_descriptor = null,
+            string                  identifier,
+            GameVersionCriteria     gameVersion,
+            RelationshipDescriptor  relationship_descriptor = null,
             IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null
-        )
+            IEnumerable<CkanModule> toInstall = null)
         {
             if (providers.TryGetValue(identifier, out HashSet<AvailableModule> provs))
             {
                 // For each AvailableModule, we want the latest one matching our constraints
                 return provs
                     .Select(am => am.Latest(
-                        ksp_version,
+                        gameVersion,
                         relationship_descriptor,
                         installed ?? InstalledModules.Select(im => im.Module),
-                        toInstall
-                    ))
+                        toInstall))
                     .Where(m => m?.ProvidesList?.Contains(identifier) ?? false)
                     .ToList();
             }
@@ -767,7 +765,10 @@ namespace CKAN
         /// Register the supplied module as having been installed, thereby keeping
         /// track of its metadata and files.
         /// </summary>
-        public void RegisterModule(CkanModule mod, IEnumerable<string> absolute_files, GameInstance ksp, bool autoInstalled)
+        public void RegisterModule(CkanModule          mod,
+                                   IEnumerable<string> absolute_files,
+                                   GameInstance        inst,
+                                   bool                autoInstalled)
         {
             log.DebugFormat("Registering module {0}", mod);
             EnlistWithTransaction();
@@ -782,12 +783,12 @@ namespace CKAN
 
             // We always work with relative files, so let's get some!
             IEnumerable<string> relative_files = absolute_files
-                .Select(x => ksp.ToRelativeGameDir(x))
+                .Select(x => inst.ToRelativeGameDir(x))
                 .Memoize();
 
             // For now, it's always cool if a module wants to register a directory.
             // We have to flip back to absolute paths to actually test this.
-            foreach (string file in relative_files.Where(file => !Directory.Exists(ksp.ToAbsoluteGameDir(file))))
+            foreach (string file in relative_files.Where(file => !Directory.Exists(inst.ToAbsoluteGameDir(file))))
             {
                 string owner;
                 if (installed_files.TryGetValue(file, out owner))
@@ -796,8 +797,7 @@ namespace CKAN
                     // (Although if it existed, we should have thrown a kraken well before this.)
                     inconsistencies.Add(string.Format(
                         Properties.Resources.RegistryFileConflict,
-                        mod.identifier, file, owner
-                    ));
+                        mod.identifier, file, owner));
                 }
             }
 
@@ -820,7 +820,7 @@ namespace CKAN
             }
 
             // Finally, register our module proper.
-            var installed = new InstalledModule(ksp, mod, relative_files, autoInstalled);
+            var installed = new InstalledModule(inst, mod, relative_files, autoInstalled);
             installed_modules.Add(mod.identifier, installed);
         }
 
@@ -830,16 +830,14 @@ namespace CKAN
         ///
         /// Throws an InconsistentKraken if not all files have been removed.
         /// </summary>
-        public void DeregisterModule(GameInstance ksp, string module)
+        public void DeregisterModule(GameInstance inst, string module)
         {
             log.DebugFormat("Deregistering module {0}", module);
             EnlistWithTransaction();
 
-            sorter = null;
-
             var inconsistencies = new List<string>();
 
-            var absolute_files = installed_modules[module].Files.Select(ksp.ToAbsoluteGameDir);
+            var absolute_files = installed_modules[module].Files.Select(inst.ToAbsoluteGameDir);
             // Note, this checks to see if a *file* exists; it doesn't
             // trigger on directories, which we allow to still be present
             // (they may be shared by multiple mods.
@@ -993,11 +991,9 @@ namespace CKAN
         /// <see cref = "IRegistryQuerier.InstalledModule" />
         /// </summary>
         public InstalledModule InstalledModule(string module)
-        {
-            return installed_modules.TryGetValue(module, out InstalledModule installedModule)
+            => installed_modules.TryGetValue(module, out InstalledModule installedModule)
                 ? installedModule
                 : null;
-        }
 
         /// <summary>
         /// Find modules provided by currently installed modules
@@ -1065,12 +1061,9 @@ namespace CKAN
         /// <see cref = "IRegistryQuerier.GetInstalledVersion" />
         /// </summary>
         public CkanModule GetInstalledVersion(string mod_identifier)
-        {
-            InstalledModule installedModule;
-            return installed_modules.TryGetValue(mod_identifier, out installedModule)
+            => installed_modules.TryGetValue(mod_identifier, out InstalledModule installedModule)
                 ? installedModule.Module
                 : null;
-        }
 
         /// <summary>
         /// Returns the module which owns this file, or null if not known.
@@ -1084,8 +1077,7 @@ namespace CKAN
             {
                 throw new PathErrorKraken(
                     file,
-                    "KSPUtils.FileOwner can only work with relative paths."
-                );
+                    "KSPUtils.FileOwner can only work with relative paths.");
             }
 
             string fileOwner;
@@ -1097,15 +1089,15 @@ namespace CKAN
         /// </summary>
         public void CheckSanity()
         {
-            IEnumerable<CkanModule> installed = from pair in installed_modules select pair.Value.Module;
-            SanityChecker.EnforceConsistency(installed, installed_dlls.Keys, InstalledDlc);
+            SanityChecker.EnforceConsistency(installed_modules.Select(pair => pair.Value.Module),
+                                             installed_dlls.Keys, InstalledDlc);
         }
 
         public List<string> GetSanityErrors()
-        {
-            var installed = from pair in installed_modules select pair.Value.Module;
-            return SanityChecker.ConsistencyErrors(installed, installed_dlls.Keys, InstalledDlc).ToList();
-        }
+            => SanityChecker.ConsistencyErrors(installed_modules.Select(pair => pair.Value.Module),
+                                               installed_dlls.Keys,
+                                               InstalledDlc)
+                            .ToList();
 
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
@@ -1117,7 +1109,7 @@ namespace CKAN
         /// <param name="dlls">Installed DLLs</param>
         /// <param name="dlc">Installed DLCs</param>
         /// <returns>List of modules whose dependencies are about to be or already removed.</returns>
-        internal static IEnumerable<string> FindReverseDependencies(
+        public static IEnumerable<string> FindReverseDependencies(
             List<string>                       modulesToRemove,
             List<CkanModule>                   modulesToInstall,
             HashSet<CkanModule>                origInstalled,
@@ -1181,7 +1173,9 @@ namespace CKAN
 
                     if (to_remove.IsSupersetOf(brokenIdents))
                     {
-                        log.DebugFormat("{0} is a superset of {1}, work done", string.Join(", ", to_remove), string.Join(", ", brokenIdents));
+                        log.DebugFormat("{0} is a superset of {1}, work done",
+                                        string.Join(", ", to_remove),
+                                        string.Join(", ", brokenIdents));
                         break;
                     }
 
@@ -1197,12 +1191,13 @@ namespace CKAN
         public IEnumerable<string> FindReverseDependencies(
             List<string>                       modulesToRemove,
             List<CkanModule>                   modulesToInstall = null,
-            Func<RelationshipDescriptor, bool> satisfiedFilter = null
-        )
-        {
-            var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
-            return FindReverseDependencies(modulesToRemove, modulesToInstall, installed, new HashSet<string>(installed_dlls.Keys), InstalledDlc, satisfiedFilter);
-        }
+            Func<RelationshipDescriptor, bool> satisfiedFilter = null)
+            => FindReverseDependencies(modulesToRemove,
+                                       modulesToInstall,
+                                       new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module)),
+                                       new HashSet<string>(installed_dlls.Keys),
+                                       InstalledDlc,
+                                       satisfiedFilter);
 
         /// <summary>
         /// Get a dictionary of all mod versions indexed by their downloads' SHA-1 hash.

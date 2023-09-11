@@ -11,6 +11,7 @@ using NUnit.Framework;
 
 using CKAN;
 using CKAN.Games;
+
 using Tests.Core.Configuration;
 using Tests.Data;
 

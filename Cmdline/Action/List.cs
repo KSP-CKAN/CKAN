@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+
+using log4net;
+
 using CKAN.Exporters;
 using CKAN.Types;
 using CKAN.Versioning;
-using log4net;
 
 namespace CKAN.CmdLine
 {

@@ -2,15 +2,18 @@ using System.IO;
 using System.Transactions;
 using System.Collections.Generic;
 using System.Linq;
+
+using NUnit.Framework;
+
+using Tests.Data;
+
 using CKAN;
 using CKAN.Versioning;
-using NUnit.Framework;
-using Tests.Data;
 
 namespace Tests.Core.Registry
 {
     [TestFixture]
-    public class Registry
+    public class RegistryTests
     {
         private static readonly CkanModule module = TestData.kOS_014_module();
         private static readonly string identifier = module.identifier;

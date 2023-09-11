@@ -35,14 +35,10 @@ namespace CKAN
     public class NameComparer : IEqualityComparer<CkanModule>
     {
         public bool Equals(CkanModule x, CkanModule y)
-        {
-            return x.identifier.Equals(y.identifier);
-        }
+            => x.identifier.Equals(y.identifier);
 
         public int GetHashCode(CkanModule obj)
-        {
-            return obj.identifier.GetHashCode();
-        }
+            => obj.identifier.GetHashCode();
     }
 
     /// <summary>
@@ -409,9 +405,7 @@ namespace CKAN
         }
 
         public string serialise()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
+            => JsonConvert.SerializeObject(this);
 
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext like_i_could_care)
@@ -472,23 +466,17 @@ namespace CKAN
             return module;
         }
 
-        public static readonly Regex idAndVersionMatcher = new Regex(
-            @"^(?<mod>[^=]*)=(?<version>.*)$",
-            RegexOptions.Compiled
-        );
+        public static readonly Regex idAndVersionMatcher =
+            new Regex(@"^(?<mod>[^=]*)=(?<version>.*)$",
+                      RegexOptions.Compiled);
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
-        /// TODO: Catch and display errors
         public static CkanModule FromFile(string filename)
-        {
-            string json = File.ReadAllText(filename);
-            return FromJson(json);
-        }
+            => FromJson(File.ReadAllText(filename));
 
         public static void ToFile(CkanModule module, string filename)
         {
-            var json = ToJson(module);
-            File.WriteAllText(filename, json);
+            File.WriteAllText(filename, ToJson(module));
         }
 
         public static string ToJson(CkanModule module)
@@ -524,24 +512,20 @@ namespace CKAN
         /// Returns true if we conflict with the given module.
         /// </summary>
         public bool ConflictsWith(CkanModule module)
-        {
             // We never conflict with ourselves, since we can't be installed at
             // the same time as another version of ourselves.
-            if (module.identifier == this.identifier) return false;
-
-            return UniConflicts(this, module) || UniConflicts(module, this);
-        }
+            => module.identifier == identifier
+                ? false
+                : UniConflicts(this, module) || UniConflicts(module, this);
 
         /// <summary>
         /// Checks if A conflicts with B, but not if B conflicts with A.
         /// Used by ConflictsWith.
         /// </summary>
         internal static bool UniConflicts(CkanModule mod1, CkanModule mod2)
-        {
-            return mod1?.conflicts?.Any(
-                conflict => conflict.MatchesAny(new CkanModule[] {mod2}, null, null)
-            ) ?? false;
-        }
+            => mod1?.conflicts?.Any(
+                   conflict => conflict.MatchesAny(new CkanModule[] {mod2}, null, null))
+               ?? false;
 
         /// <summary>
         /// Returns true if our mod is compatible with the KSP version specified.
@@ -555,70 +539,37 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns a human readable string indicating the highest compatible
-        /// version of KSP this module will run with. (Eg: 1.0.2,
-        /// "All versions", etc).
-        ///
-        /// This is for *human consumption only*, as the strings may change in the
-        /// future as we support additional locales.
-        /// </summary>
-        public string HighestCompatibleKSP()
-        {
-            GameVersion v = LatestCompatibleKSP();
-            if (v.IsAny)
-                return Properties.Resources.CkanModuleAllVersions;
-            else
-                return v.ToString();
-        }
-
-        /// <summary>
         /// Returns machine readable object indicating the highest compatible
         /// version of KSP this module will run with.
         /// </summary>
         public GameVersion LatestCompatibleKSP()
-        {
             // Find the highest compatible KSP version
-            if (ksp_version_max != null)
-                return ksp_version_max;
-            else if (ksp_version != null)
-                return ksp_version;
-            else
-                // No upper limit.
-                return GameVersion.Any;
-        }
+            => ksp_version_max ?? ksp_version
+               // No upper limit.
+               ?? GameVersion.Any;
 
         /// <summary>
         /// Returns machine readable object indicating the lowest compatible
         /// version of KSP this module will run with.
         /// </summary>
         public GameVersion EarliestCompatibleKSP()
-        {
             // Find the lowest compatible KSP version
-            if (ksp_version_min != null)
-                return ksp_version_min;
-            else if (ksp_version != null)
-                return ksp_version;
-            else
-                // No lower limit.
-                return GameVersion.Any;
-        }
+            => ksp_version_min ?? ksp_version
+               // No lower limit.
+               ?? GameVersion.Any;
 
         /// <summary>
         /// Returns true if this module provides the functionality requested.
         /// </summary>
         public bool DoesProvide(string identifier)
-        {
-            return this.identifier == identifier || provides.Contains(identifier);
-        }
+            => this.identifier == identifier || provides.Contains(identifier);
 
         public bool IsMetapackage => kind == "metapackage";
 
         public bool IsDLC => kind == "dlc";
 
         protected bool Equals(CkanModule other)
-        {
-            return string.Equals(identifier, other.identifier) && version.Equals(other.version);
-        }
+            => string.Equals(identifier, other.identifier) && version.Equals(other.version);
 
         public override bool Equals(object obj)
         {
@@ -710,9 +661,7 @@ namespace CKAN
         }
 
         bool IEquatable<CkanModule>.Equals(CkanModule other)
-        {
-            return Equals(other);
-        }
+            => Equals(other);
 
         /// <summary>
         /// Returns true if we support at least spec_version of the CKAN spec.
@@ -729,18 +678,14 @@ namespace CKAN
         /// Returns true if we support the CKAN spec used by this module.
         /// </summary>
         private bool IsSpecSupported()
-        {
-            return IsSpecSupported(spec_version);
-        }
+            => IsSpecSupported(spec_version);
 
         /// <summary>
         ///     Returns a standardised name for this module, in the form
         ///     "identifier-version.zip". For example, `RealSolarSystem-7.3.zip`
         /// </summary>
         public string StandardName()
-        {
-            return StandardName(identifier, version);
-        }
+            => StandardName(identifier, version);
 
         public static string StandardName(string identifier, ModuleVersion version)
         {
@@ -754,9 +699,7 @@ namespace CKAN
         }
 
         public override string ToString()
-        {
-            return string.Format("{0} {1}", identifier, version);
-        }
+            => string.Format("{0} {1}", identifier, version);
 
         public string DescribeInstallStanzas(IGame game)
         {

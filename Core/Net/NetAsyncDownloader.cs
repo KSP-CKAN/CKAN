@@ -117,7 +117,7 @@ namespace CKAN
             }
         }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
+        private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncDownloader));
 
         public readonly IUser User;
 

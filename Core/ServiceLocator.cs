@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+
 using Autofac;
 using CKAN.GameVersionProviders;
 using CKAN.Configuration;
@@ -40,11 +41,13 @@ namespace CKAN
 
             builder.RegisterType<JsonConfiguration>()
                 .As<IConfiguration>()
-                .SingleInstance(); // Technically not needed, but makes things easier
+                // Technically not needed, but makes things easier
+                .SingleInstance();
 
             builder.RegisterType<KspBuildMap>()
                 .As<IKspBuildMap>()
-                .SingleInstance(); // Since it stores cached data we want to keep it around
+                // Since it stores cached data we want to keep it around
+                .SingleInstance();
 
             builder.RegisterType<KspBuildIdVersionProvider>()
                 .As<IGameVersionProvider>()

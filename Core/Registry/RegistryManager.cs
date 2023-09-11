@@ -22,7 +22,7 @@ namespace CKAN
         private static readonly Dictionary<string, RegistryManager> registryCache =
             new Dictionary<string, RegistryManager>();
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
+        private static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         private readonly string path;
         public readonly string lockfilePath;
         private FileStream lockfileStream = null;
@@ -36,6 +36,7 @@ namespace CKAN
         /// If loading the registry failed, the parsing error text, else null.
         /// </summary>
         public string previousCorruptedMessage;
+
         /// <summary>
         /// If loading the registry failed, the location to which we moved it, else null.
         /// </summary>
@@ -129,10 +130,7 @@ namespace CKAN
             }
 
             log.DebugFormat("Dispose of registry at {0}", directory);
-            if (!registryCache.Remove(directory))
-            {
-                throw new RegistryInUseKraken(directory);
-            }
+            registryCache.Remove(directory);
         }
 
         /// <summary>

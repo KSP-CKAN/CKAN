@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 using System.IO;
+
 using NUnit.Framework;
+
 using CKAN;
 using CKAN.Games;
 
@@ -12,7 +14,7 @@ namespace Tests.Data
     /// </summary>
     public class DisposableKSP : IDisposable
     {
-        private readonly string _failureMessage = "Unexpected exception trying to delete disposable test container.";
+        private const string _failureMessage = "Unexpected exception trying to delete disposable test container.";
         private readonly string _goodKsp = TestData.good_ksp_dir();
         private readonly string _disposableDir;
 

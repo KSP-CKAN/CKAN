@@ -1,10 +1,13 @@
 using System;
 using System.IO;
+
 using NUnit.Framework;
-using Tests.Data;
+
 using CKAN;
 using CKAN.Versioning;
 using CKAN.Games;
+
+using Tests.Data;
 
 namespace Tests.Core
 {

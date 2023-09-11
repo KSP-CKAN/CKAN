@@ -1,14 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
-using Tests.Data;
 using System.IO;
+
+using NUnit.Framework;
+
+using Tests.Data;
 
 namespace Tests.Core.RegistryManager
 {
     [TestFixture]
-    public class RegistryManager
+    public class RegistryManagerTests
     {
         // Test lockfiles, see #1265
         [Test]
@@ -45,8 +47,7 @@ namespace Tests.Core.RegistryManager
             try
             {
                 lockfileStream = new FileStream(
-                    path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose
-                );
+                    path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
 
                 // Uh oh, the file *wasn't* locked.
                 return false;

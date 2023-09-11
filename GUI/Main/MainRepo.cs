@@ -42,7 +42,10 @@ namespace CKAN.GUI
             {
                 Wait.StartWaiting(UpdateRepo, PostUpdateRepo, true, null);
             }
-            catch { }
+            catch (Exception exc)
+            {
+                log.Error("Failed to start repo update!", exc);
+            }
 
             DisableMainWindow();
 
@@ -65,9 +68,9 @@ namespace CKAN.GUI
             Dictionary<string, bool> oldModules = registry.CompatibleModules(versionCriteria)
                 .ToDictionary(m => m.identifier, m => false);
             registry.IncompatibleModules(versionCriteria)
-                .Where(m => !oldModules.ContainsKey(m.identifier))
-                .ToList()
-                .ForEach(m => oldModules.Add(m.identifier, true));
+                    .Where(m => !oldModules.ContainsKey(m.identifier))
+                    .ToList()
+                    .ForEach(m => oldModules.Add(m.identifier, true));
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
@@ -81,9 +84,8 @@ namespace CKAN.GUI
                         var downloader = new NetAsyncDownloader(currentUser);
                         downloader.Progress += (target, remaining, total) =>
                         {
-                            var repo = repos
-                                .Where(r => target.urls.Contains(r.uri))
-                                .FirstOrDefault();
+                            var repo = repos.Where(r => target.urls.Contains(r.uri))
+                                            .FirstOrDefault();
                             if (repo != null)
                             {
                                 Wait.SetProgress(repo.name, remaining, total);

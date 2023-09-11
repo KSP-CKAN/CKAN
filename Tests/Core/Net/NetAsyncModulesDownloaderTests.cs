@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +12,7 @@ using CKAN.Extensions;
 namespace Tests.Core.Net
 {
     /// <summary>
-    /// Test the async downloader.
+    /// Test the async modules downloader.
     /// </summary>
 
     [TestFixture]
@@ -210,7 +210,7 @@ namespace Tests.Core.Net
 
             async.DownloadModules(modules);
 
-            Assert.IsTrue(cache.IsCachedZip(rAndS),"Module download successful");
+            Assert.IsTrue(cache.IsCachedZip(rAndS), "Module download successful");
         }
 
     }

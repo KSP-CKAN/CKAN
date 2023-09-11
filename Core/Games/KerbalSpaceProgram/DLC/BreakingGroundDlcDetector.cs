@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using CKAN.Games;
 
 namespace CKAN.DLC
@@ -9,11 +9,10 @@ namespace CKAN.DLC
     public sealed class BreakingGroundDlcDetector : StandardDlcDetectorBase
     {
         public BreakingGroundDlcDetector()
-            : base(
-                new KerbalSpaceProgram(),
-                "BreakingGround",
-                "Serenity",
-                new Versioning.GameVersion(1, 7, 1))
+            : base(new KerbalSpaceProgram(),
+                   "BreakingGround",
+                   "Serenity",
+                   new Versioning.GameVersion(1, 7, 1))
         { }
     }
 }

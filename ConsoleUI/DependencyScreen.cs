@@ -91,8 +91,7 @@ namespace CKAN.ConsoleUI {
                     LaunchSubScreen(theme, new ModInfoScreen(
                         manager, plan,
                         dependencyList.Selection.module,
-                        debug
-                    ));
+                        debug));
                 }
                 return true;
             });

@@ -217,7 +217,7 @@ namespace CKAN
             }
 
             // Identify the file using the stream method.
-            using (Stream stream = File.OpenRead (path))
+            using (Stream stream = File.OpenRead(path))
             {
                 type = IdentifyFile(stream);
             }

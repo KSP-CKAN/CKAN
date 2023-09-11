@@ -1,11 +1,14 @@
 using System;
 using System.Linq;
-using CKAN;
-using CKAN.Versioning;
-using NUnit.Framework;
-using Tests.Data;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+
+using CKAN;
+using CKAN.Versioning;
+
+using Tests.Data;
 
 namespace Tests.Core.Types
 {

@@ -1,4 +1,4 @@
-﻿using CKAN.Versioning;
+using CKAN.Versioning;
 
 namespace CKAN.GameVersionProviders
 {

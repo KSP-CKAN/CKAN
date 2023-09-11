@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Runtime.Serialization;
+
 using Newtonsoft.Json;
 
 namespace CKAN
@@ -18,13 +19,7 @@ namespace CKAN
         [JsonProperty("sha1_sum", NullValueHandling = NullValueHandling.Ignore)]
         private string sha1_sum;
 
-        public string Sha1
-        {
-            get
-            {
-                return sha1_sum;
-            }
-        }
+        public string Sha1 => sha1_sum;
 
         public InstalledModuleFile(string path, GameInstance ksp)
         {
@@ -76,9 +71,11 @@ namespace CKAN
     {
         #region Fields and Properties
 
-        [JsonProperty] private DateTime install_time;
+        [JsonProperty]
+        private DateTime install_time;
 
-        [JsonProperty] private CkanModule source_module;
+        [JsonProperty]
+        private CkanModule source_module;
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
@@ -120,15 +117,18 @@ namespace CKAN
                 : new Dictionary<string, InstalledModuleFile>();
             auto_installed = autoInstalled;
 
-            foreach (string file in relative_files)
+            if (ksp != null)
             {
-                if (Path.IsPathRooted(file))
+                foreach (string file in relative_files)
                 {
-                    throw new PathErrorKraken(file, "InstalledModule *must* have relative paths");
-                }
+                    if (Path.IsPathRooted(file))
+                    {
+                        throw new PathErrorKraken(file, "InstalledModule *must* have relative paths");
+                    }
 
-                // IMF needs a KSP object so it can compute the SHA1.
-                installed_files[file] = new InstalledModuleFile(file, ksp);
+                    // IMF needs a KSP object so it can compute the SHA1.
+                    installed_files[file] = new InstalledModuleFile(file, ksp);
+                }
             }
         }
 

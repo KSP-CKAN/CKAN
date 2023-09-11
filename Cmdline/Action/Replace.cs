@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using log4net;
 using CKAN.Versioning;
 
@@ -10,7 +11,7 @@ namespace CKAN.CmdLine
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Replace));
 
-        public IUser User { get; set; }
+        private IUser User;
 
         public Replace(CKAN.GameInstanceManager mgr, IUser user)
         {

@@ -17,6 +17,40 @@ namespace CKAN.GUI
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Make the ListView redraw itself.
+        /// Works around a problem where the headers aren't drawn when this tab activates.
+        /// </summary>
+        public void ForceRedraw()
+        {
+            VersionsListView.EndUpdate();
+        }
+
+        public GUIMod SelectedModule
+        {
+            set
+            {
+                if (!(visibleGuiModule?.Equals(value) ?? value?.Equals(visibleGuiModule) ?? true))
+                {
+                    // Listen for property changes (we only care about GUIMod.SelectedMod)
+                    if (visibleGuiModule != null)
+                    {
+                        visibleGuiModule.PropertyChanged -= visibleGuiModule_PropertyChanged;
+                    }
+                    visibleGuiModule = value;
+                    if (visibleGuiModule != null)
+                    {
+                        visibleGuiModule.PropertyChanged += visibleGuiModule_PropertyChanged;
+                    }
+
+                    if (value != null)
+                    {
+                        Refresh(value);
+                    }
+                }
+            }
+        }
+
         private GUIMod visibleGuiModule = null;
         private bool   ignoreItemCheck  = false;
 
@@ -97,40 +131,6 @@ namespace CKAN.GUI
                 item.Checked = module.Equals(visibleGuiModule.SelectedMod);
             }
             ignoreItemCheck = prevIgnore;
-        }
-
-        /// <summary>
-        /// Make the ListView redraw itself.
-        /// Works around a problem where the headers aren't drawn when this tab activates.
-        /// </summary>
-        public void ForceRedraw()
-        {
-            VersionsListView.EndUpdate();
-        }
-
-        public GUIMod SelectedModule
-        {
-            set
-            {
-                if (!(visibleGuiModule?.Equals(value) ?? value?.Equals(visibleGuiModule) ?? true))
-                {
-                    // Listen for property changes (we only care about GUIMod.SelectedMod)
-                    if (visibleGuiModule != null)
-                    {
-                        visibleGuiModule.PropertyChanged -= visibleGuiModule_PropertyChanged;
-                    }
-                    visibleGuiModule = value;
-                    if (visibleGuiModule != null)
-                    {
-                        visibleGuiModule.PropertyChanged += visibleGuiModule_PropertyChanged;
-                    }
-
-                    if (value != null)
-                    {
-                        Refresh(value);
-                    }
-                }
-            }
         }
 
         private List<CkanModule> getVersions(GUIMod gmod)

@@ -1,7 +1,9 @@
-﻿using CKAN;
-using CKAN.Versioning;
+
 using NUnit.Framework;
 using Tests.Data;
+
+using CKAN;
+using CKAN.Versioning;
 
 namespace Tests.Core.Registry
 {

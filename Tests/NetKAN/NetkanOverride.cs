@@ -37,7 +37,7 @@ namespace Tests.NetKAN
 
             Assert.AreEqual("doge",new_metadata["author"].ToString(),"Override processed");
 
-            // Make sure our original metadata iddn't change.
+            // Make sure our original metadata didn't change.
             OriginalAuthorUnchanged();
         }
 

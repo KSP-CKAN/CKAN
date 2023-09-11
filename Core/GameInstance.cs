@@ -40,7 +40,9 @@ namespace CKAN
         /// </summary>
         public string SanitizedName => string.Join("", Name.Split(Path.GetInvalidFileNameChars()));
         public GameVersion GameVersionWhenCompatibleVersionsWereStored { get; private set; }
-        public bool CompatibleVersionsAreFromDifferentGameVersion { get { return _compatibleVersions.Count > 0 && GameVersionWhenCompatibleVersionsWereStored != Version(); } }
+        public bool CompatibleVersionsAreFromDifferentGameVersion
+            => _compatibleVersions.Count > 0
+               && GameVersionWhenCompatibleVersionsWereStored != Version();
 
         private static readonly ILog log = LogManager.GetLogger(typeof(GameInstance));
 

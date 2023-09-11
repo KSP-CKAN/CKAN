@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+
 using Newtonsoft.Json;
 using Autofac;
+
 using CKAN.GameVersionProviders;
 using CKAN.Games;
 
@@ -18,8 +20,7 @@ namespace CKAN.Versioning
     {
         private static readonly Regex Pattern = new Regex(
             @"^(?<major>\d+)(?:\.(?<minor>\d+)(?:\.(?<patch>\d+)(?:\.(?<build>\d+))?)?)?$",
-            RegexOptions.Compiled
-        );
+            RegexOptions.Compiled);
 
         private const int Undefined = -1;
 

@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows.Forms;
+
 using NUnit.Framework;
+
 using Tests.Core.Configuration;
 using Tests.Data;
 
@@ -55,9 +57,7 @@ namespace Tests.GUI
         }
 
         public static Array GetFilters()
-        {
-            return Enum.GetValues(typeof(GUIModFilter));
-        }
+            => Enum.GetValues(typeof(GUIModFilter));
 
         [TestCaseSource("GetFilters")]
         public void CountModsByFilter_EmptyModList_ReturnsZero(GUIModFilter filter)

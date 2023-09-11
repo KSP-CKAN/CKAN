@@ -1,9 +1,12 @@
-﻿using System;
+using System;
 using System.Linq;
+
+using NUnit.Framework;
+
 using CKAN;
 using CKAN.GUI;
 using CKAN.Versioning;
-using NUnit.Framework;
+
 using Tests.Core;
 using Tests.Core.Configuration;
 using Tests.Data;

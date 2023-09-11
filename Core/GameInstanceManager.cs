@@ -111,7 +111,8 @@ namespace CKAN
 
                 if (path != null)
                 {
-                    GameInstance portableInst = new GameInstance(game, path, Properties.Resources.GameInstanceManagerPortable, User);
+                    GameInstance portableInst = new GameInstance(
+                        game, path, Properties.Resources.GameInstanceManagerPortable, User);
                     if (portableInst.Valid)
                     {
                         return portableInst;
@@ -256,7 +257,8 @@ namespace CKAN
         /// <param name="dlcs">The IDlcDetector implementations for the DLCs that should be faked and the requested dlc version as a dictionary.</param>
         /// <exception cref="InstanceNameTakenKraken">Thrown if the instance name is already in use.</exception>
         /// <exception cref="NotKSPDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if a write operation didn't complete for whatever reason.</exception>
-        public void FakeInstance(IGame game, string newName, string newPath, GameVersion version, Dictionary<DLC.IDlcDetector, GameVersion> dlcs = null)
+        public void FakeInstance(IGame game, string newName, string newPath, GameVersion version,
+                                 Dictionary<DLC.IDlcDetector, GameVersion> dlcs = null)
         {
             TxFileManager fileMgr = new TxFileManager();
             using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
@@ -265,7 +267,6 @@ namespace CKAN
                 {
                     throw new InstanceNameTakenKraken(newName);
                 }
-
 
                 if (!version.InBuildMap(game))
                 {
@@ -312,8 +313,7 @@ namespace CKAN
                                 string.Format(Properties.Resources.GameInstanceFakeDLCNotAllowed,
                                     game.ShortName,
                                     dlcDetector.ReleaseGameVersion,
-                                    dlcDetector.IdentifierBaseName
-                            ));
+                                    dlcDetector.IdentifierBaseName));
 
                         string dlcDir = Path.Combine(newPath, dlcDetector.InstallPath());
                         fileMgr.CreateDirectory(dlcDir);
@@ -490,9 +490,7 @@ namespace CKAN
         }
 
         public bool HasInstance(string name)
-        {
-            return instances.ContainsKey(name);
-        }
+            => instances.ContainsKey(name);
 
         public void ClearAutoStart()
         {
