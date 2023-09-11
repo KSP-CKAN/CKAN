@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 using CKAN.Versioning;
 
-namespace CKAN.Games
+namespace CKAN.Games.KerbalSpaceProgram2
 {
     public class KerbalSpaceProgram2 : IGame
     {

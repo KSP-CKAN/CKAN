@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using CKAN.Versioning;
 using CKAN.Configuration;
 
-namespace CKAN.GameVersionProviders
+namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
 {
     // <summary>
     // THIS IS NOT THE BUILD MAP! If you are trying to access the build map,

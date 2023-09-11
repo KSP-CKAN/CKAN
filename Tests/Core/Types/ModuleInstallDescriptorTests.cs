@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 
 using CKAN;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
 
 using Tests.Data;
 

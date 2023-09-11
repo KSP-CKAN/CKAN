@@ -1,7 +1,8 @@
 using System;
 
 using Autofac;
-using CKAN.GameVersionProviders;
+
+using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 using CKAN.Configuration;
 
 namespace CKAN

@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using CKAN.Configuration;
-using CKAN.GameVersionProviders;
+using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
+
 using Tests.Data;
 
 namespace Tests.Core.Configuration

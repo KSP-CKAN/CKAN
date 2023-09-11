@@ -6,7 +6,7 @@ using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Validators;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
 
 namespace Tests.NetKAN.Validators
 {

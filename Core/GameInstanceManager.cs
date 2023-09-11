@@ -11,6 +11,8 @@ using log4net;
 using CKAN.Versioning;
 using CKAN.Configuration;
 using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
+using CKAN.Games.KerbalSpaceProgram2;
 using CKAN.Extensions;
 
 namespace CKAN

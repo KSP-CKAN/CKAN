@@ -2,12 +2,14 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+
 using Autofac;
 using log4net;
-using CKAN.GameVersionProviders;
+
+using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 using CKAN.Versioning;
 
-namespace CKAN.Games
+namespace CKAN.Games.KerbalSpaceProgram
 {
     public class KerbalSpaceProgram : IGame
     {

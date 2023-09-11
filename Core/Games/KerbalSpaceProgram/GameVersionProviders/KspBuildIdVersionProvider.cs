@@ -6,7 +6,7 @@ using log4net;
 
 using CKAN.Versioning;
 
-namespace CKAN.GameVersionProviders
+namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public sealed class KspBuildIdVersionProvider : IGameVersionProvider

@@ -13,6 +13,7 @@ using log4net;
 using Newtonsoft.Json;
 
 using CKAN.DLC;
+using CKAN.Games.KerbalSpaceProgram.DLC;
 using CKAN.Versioning;
 
 namespace CKAN

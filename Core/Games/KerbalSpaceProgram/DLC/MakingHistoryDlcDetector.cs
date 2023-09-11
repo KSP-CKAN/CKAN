@@ -1,7 +1,8 @@
 using System.Collections.Generic;
-using CKAN.Games;
 
-namespace CKAN.DLC
+using CKAN.Games.KerbalSpaceProgram;
+
+namespace CKAN.Games.KerbalSpaceProgram.DLC
 {
     /// <summary>
     /// Represents an object that can detect the presence of the official Making History DLC in a KSP installation.

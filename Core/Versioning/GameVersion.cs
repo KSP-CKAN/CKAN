@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Autofac;
 
-using CKAN.GameVersionProviders;
 using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 
 namespace CKAN.Versioning
 {

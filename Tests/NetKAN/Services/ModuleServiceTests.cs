@@ -5,7 +5,7 @@ using NUnit.Framework;
 using CKAN;
 using CKAN.NetKAN.Services;
 using CKAN.Versioning;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
 
 using Tests.Data;
 

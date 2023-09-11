@@ -10,7 +10,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
 
 using CKAN;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
 
 using Tests.Core.Configuration;
 using Tests.Data;

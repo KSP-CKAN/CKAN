@@ -4,7 +4,7 @@ using System.IO;
 using NUnit.Framework;
 
 using CKAN;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
 
 namespace Tests.Data
 {

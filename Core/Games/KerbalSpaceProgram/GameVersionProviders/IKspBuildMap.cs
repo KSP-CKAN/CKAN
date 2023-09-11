@@ -1,7 +1,7 @@
 using CKAN.Versioning;
 using System.Collections.Generic;
 
-namespace CKAN.GameVersionProviders
+namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
 {
     public interface IKspBuildMap
     {

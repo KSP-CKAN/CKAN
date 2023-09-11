@@ -7,7 +7,8 @@ using NUnit.Framework;
 
 using CKAN;
 using CKAN.Versioning;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
+using CKAN.Games.KerbalSpaceProgram.DLC;
 
 using Tests.Core.Configuration;
 using Tests.Data;
@@ -198,8 +199,8 @@ namespace Tests.Core
             GameVersion version = GameVersion.Parse(baseVersion);
 
             Dictionary<CKAN.DLC.IDlcDetector, GameVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, GameVersion>() {
-                    { new CKAN.DLC.MakingHistoryDlcDetector(), mhVersion },
-                    { new CKAN.DLC.BreakingGroundDlcDetector(), bgVersion }
+                    { new MakingHistoryDlcDetector(), mhVersion },
+                    { new BreakingGroundDlcDetector(), bgVersion }
                 };
 
             Assert.Throws<WrongGameVersionKraken>(() =>
@@ -236,14 +237,14 @@ namespace Tests.Core
             GameVersion version = GameVersion.Parse("1.7.1");
 
             Dictionary<CKAN.DLC.IDlcDetector, GameVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, GameVersion>() {
-                    { new CKAN.DLC.MakingHistoryDlcDetector(), mhVersion },
-                    { new CKAN.DLC.BreakingGroundDlcDetector(), bgVersion }
+                    { new MakingHistoryDlcDetector(), mhVersion },
+                    { new BreakingGroundDlcDetector(), bgVersion }
                 };
 
             manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version, dlcs);
             CKAN.GameInstance newKSP = new CKAN.GameInstance(new KerbalSpaceProgram(), tempdir, name, new NullUser());
-            CKAN.DLC.MakingHistoryDlcDetector mhDetector = new CKAN.DLC.MakingHistoryDlcDetector();
-            CKAN.DLC.BreakingGroundDlcDetector bgDetector = new CKAN.DLC.BreakingGroundDlcDetector();
+            MakingHistoryDlcDetector mhDetector = new MakingHistoryDlcDetector();
+            BreakingGroundDlcDetector bgDetector = new BreakingGroundDlcDetector();
 
             Assert.IsTrue(manager.HasInstance(name));
             Assert.IsTrue(mhDetector.IsInstalled(newKSP, out string _, out UnmanagedModuleVersion detectedMhVersion));

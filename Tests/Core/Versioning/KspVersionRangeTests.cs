@@ -2,6 +2,7 @@ using NUnit.Framework;
 
 using CKAN.Versioning;
 using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
 
 #pragma warning disable 414
 

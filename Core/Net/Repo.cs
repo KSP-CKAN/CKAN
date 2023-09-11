@@ -13,7 +13,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using Newtonsoft.Json;
 
-using CKAN.GameVersionProviders;
+using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 using CKAN.Versioning;
 using CKAN.Extensions;
 
