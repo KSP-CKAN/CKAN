@@ -174,7 +174,7 @@ namespace CKAN
             GameVersion best = null;
             foreach (var pair in module_version)
             {
-                GameVersion v = pair.Value.LatestCompatibleKSP();
+                GameVersion v = pair.Value.LatestCompatibleGameVersion();
                 if (v.IsAny)
                     // Can't get later than Any, so stop
                     return v;

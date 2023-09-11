@@ -542,7 +542,7 @@ namespace CKAN
         /// Returns machine readable object indicating the highest compatible
         /// version of KSP this module will run with.
         /// </summary>
-        public GameVersion LatestCompatibleKSP()
+        public GameVersion LatestCompatibleGameVersion()
             // Find the highest compatible KSP version
             => ksp_version_max ?? ksp_version
                // No upper limit.
@@ -552,7 +552,7 @@ namespace CKAN
         /// Returns machine readable object indicating the lowest compatible
         /// version of KSP this module will run with.
         /// </summary>
-        public GameVersion EarliestCompatibleKSP()
+        public GameVersion EarliestCompatibleGameVersion()
             // Find the lowest compatible KSP version
             => ksp_version_min ?? ksp_version
                // No lower limit.
@@ -789,6 +789,44 @@ namespace CKAN
                 found.UnionWith(neighbors);
             }
             return found;
+        }
+
+        /// <summary>
+        /// Find the minimum and maximum mod versions and compatible game versions
+        /// for a list of modules (presumably different versions of the same mod).
+        /// </summary>
+        /// <param name="modVersions">The modules to inspect</param>
+        /// <param name="minMod">Return parameter for the lowest  mod  version</param>
+        /// <param name="maxMod">Return parameter for the highest mod  version</param>
+        /// <param name="minGame">Return parameter for the lowest  game version</param>
+        /// <param name="maxGame">Return parameter for the highest game version</param>
+        public static void GetMinMaxVersions(IEnumerable<CkanModule> modVersions,
+                out ModuleVersion minMod,  out ModuleVersion maxMod,
+                out GameVersion   minGame, out GameVersion   maxGame)
+        {
+            minMod  = maxMod  = null;
+            minGame = maxGame = null;
+            foreach (CkanModule rel in modVersions.Where(v => v != null))
+            {
+                if (minMod == null || minMod > rel.version)
+                {
+                    minMod = rel.version;
+                }
+                if (maxMod == null || maxMod < rel.version)
+                {
+                    maxMod = rel.version;
+                }
+                GameVersion relMin = rel.EarliestCompatibleGameVersion();
+                GameVersion relMax = rel.LatestCompatibleGameVersion();
+                if (minGame == null || !minGame.IsAny && (minGame > relMin || relMin.IsAny))
+                {
+                    minGame = relMin;
+                }
+                if (maxGame == null || !maxGame.IsAny && (maxGame < relMax || relMax.IsAny))
+                {
+                    maxGame = relMax;
+                }
+            }
         }
     }
 

@@ -87,7 +87,7 @@ namespace CKAN.CmdLine
                     user.RaiseMessage(Properties.Resources.SearchIncompatibleModsHeader);
                     foreach (CkanModule mod in matching_incompatible)
                     {
-                        Registry.GetMinMaxVersions(new List<CkanModule> { mod } , out _, out _, out var minKsp, out var maxKsp);
+                        CkanModule.GetMinMaxVersions(new List<CkanModule> { mod } , out _, out _, out var minKsp, out var maxKsp);
                         string GameVersion = Versioning.GameVersionRange.VersionSpan(ksp.game, minKsp, maxKsp).ToString();
 
                         user.RaiseMessage(Properties.Resources.SearchIncompatibleMod,

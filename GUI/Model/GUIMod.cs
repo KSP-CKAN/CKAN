@@ -175,7 +175,7 @@ namespace CKAN.GUI
             // set based on the the data we have from the CkanModule.
             if (GameCompatibilityVersion == null)
             {
-                GameCompatibilityVersion = mod.LatestCompatibleKSP();
+                GameCompatibilityVersion = mod.LatestCompatibleGameVersion();
                 GameCompatibility = GameCompatibilityVersion?.ToYalovString() ?? Properties.Resources.GUIModUnknown;
                 GameCompatibilityLong = string.Format(
                     Properties.Resources.GUIModGameCompatibilityLong,

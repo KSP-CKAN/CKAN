@@ -235,7 +235,7 @@ namespace CKAN
             if (releases != null && releases.Count > 0) {
                 ModuleVersion minMod = null, maxMod = null;
                 GameVersion   minKsp = null, maxKsp = null;
-                Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
+                CkanModule.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
                 return GameVersionRange.VersionSpan(game, minKsp, maxKsp);
             }
             return "";
@@ -254,7 +254,7 @@ namespace CKAN
         {
             ModuleVersion minMod = null, maxMod = null;
             GameVersion   minKsp = null, maxKsp = null;
-            Registry.GetMinMaxVersions(
+            CkanModule.GetMinMaxVersions(
                 new CkanModule[] { module },
                 out minMod, out maxMod,
                 out minKsp, out maxKsp

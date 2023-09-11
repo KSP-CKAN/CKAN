@@ -329,5 +329,103 @@ namespace Tests.Core.Types
             // Assert
             Assert.AreEqual(correctGroups, groupIdentifiers);
         }
+        [Test,
+            // No mods, nulls all around
+            TestCase(new string[] { },
+                     null, null, null, null),
+            // One module
+            TestCase(new string[]
+                     {
+                         @"{
+                             ""spec_version"": 1,
+                             ""identifier"":   ""testMod"",
+                             ""version"":      ""1.0"",
+                             ""ksp_version"":  ""1.0"",
+                             ""download"":     ""https://github.com/""
+                         }",
+                     },
+                     "1.0", "1.0", "1.0", "1.0"),
+            // Multiple modules
+            TestCase(new string[]
+                     {
+                         @"{
+                             ""spec_version"": 1,
+                             ""identifier"":   ""testMod"",
+                             ""version"":      ""1.0"",
+                             ""ksp_version"":  ""1.0"",
+                             ""download"":     ""https://github.com/""
+                         }",
+                         @"{
+                             ""spec_version"": 1,
+                             ""identifier"":   ""testMod"",
+                             ""version"":      ""1.1"",
+                             ""ksp_version"":  ""2.0"",
+                             ""download"":     ""https://github.com/""
+                         }",
+                     },
+                     "1.0", "1.1", "1.0", "2.0"),
+            // All unbounded
+            TestCase(new string[]
+                     {
+                         @"{
+                             ""spec_version"": 1,
+                             ""identifier"":   ""testMod"",
+                             ""version"":      ""1.0"",
+                             ""download"":     ""https://github.com/""
+                         }",
+                         @"{
+                             ""spec_version"": 1,
+                             ""identifier"":   ""testMod"",
+                             ""version"":      ""1.1"",
+                             ""download"":     ""https://github.com/""
+                         }",
+                     },
+                     "1.0", "1.1", "any", "any"),
+            // Some unbounded
+            TestCase(new string[]
+                     {
+                         @"{
+                             ""spec_version"":   1,
+                             ""identifier"":      ""testMod"",
+                             ""version"":         ""1.0"",
+                             ""ksp_version_max"": ""1.0"",
+                             ""download"":        ""https://github.com/""
+                         }",
+                         @"{
+                             ""spec_version"":    1,
+                             ""identifier"":      ""testMod"",
+                             ""version"":         ""1.1"",
+                             ""ksp_version_min"": ""2.0"",
+                             ""download"":        ""https://github.com/""
+                         }",
+                     },
+                     "1.0", "1.1", "any", "any"),
+        ]
+        public void GetMinMaxVersions_WithModules_GetsCorrectVersions(string[] moduleJsons,
+                                                                      string correctMinMod,
+                                                                      string correctMaxMod,
+                                                                      string correctMinGame,
+                                                                      string correctMaxGame)
+        {
+            // Arrange
+            var modules           = moduleJsons.Select(CkanModule.FromJson).ToList();
+            var correctMinModVer  = correctMinMod  != null ? new ModuleVersion(correctMinMod)  : null;
+            var correctMaxModVer  = correctMaxMod  != null ? new ModuleVersion(correctMaxMod)  : null;
+            var correctMinGameVer = correctMinGame != null ? GameVersion.Parse(correctMinGame) : null;
+            var correctMaxGameVer = correctMaxGame != null ? GameVersion.Parse(correctMaxGame) : null;
+
+            // Act
+            CkanModule.GetMinMaxVersions(modules,
+                                         out ModuleVersion minMod,
+                                         out ModuleVersion maxMod,
+                                         out GameVersion   minGame,
+                                         out GameVersion   maxGame);
+
+            // Assert
+            Assert.AreEqual(correctMinModVer,  minMod);
+            Assert.AreEqual(correctMaxModVer,  maxMod);
+            Assert.AreEqual(correctMinGameVer, minGame);
+            Assert.AreEqual(correctMaxGameVer, maxGame);
+        }
     }
 }

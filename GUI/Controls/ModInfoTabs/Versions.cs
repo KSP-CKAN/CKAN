@@ -168,7 +168,7 @@ namespace CKAN.GUI
             var items = versions.OrderByDescending(module => module.version)
                 .Select(module =>
             {
-                Registry.GetMinMaxVersions(
+                CkanModule.GetMinMaxVersions(
                     new List<CkanModule>() {module},
                     out ModuleVersion minMod, out ModuleVersion maxMod,
                     out GameVersion minKsp,   out GameVersion maxKsp);
