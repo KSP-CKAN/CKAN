@@ -8,7 +8,6 @@ namespace CKAN.Extensions
 {
     public static class IOExtensions
     {
-
         private static bool StringArrayStartsWith(string[] child, string[] parent)
         {
             if (parent.Length > child.Length)
@@ -95,6 +94,15 @@ namespace CKAN.Extensions
             }
             // Make sure we get a final progress notification after we're done
             progress.Report(total);
+        }
+
+        public static IEnumerable<byte> BytesFromStream(this Stream s)
+        {
+            int b;
+            while ((b = s.ReadByte()) != -1)
+            {
+                yield return Convert.ToByte(b);
+            }
         }
 
         private static readonly TimeSpan progressInterval = TimeSpan.FromMilliseconds(200);

@@ -1,4 +1,8 @@
 using System.IO;
+using System.Text;
+
+using ICSharpCode.SharpZipLib.GZip;
+using ICSharpCode.SharpZipLib.Tar;
 using NUnit.Framework;
 
 using CKAN;
@@ -41,6 +45,28 @@ namespace Tests.Core
         }
 
         [Test]
+        public void IdentifyFile_EmptyTar_Works()
+        {
+            // Arrange / Act
+            var path = Path.GetTempFileName();
+            using (var outputStream = File.OpenWrite(path))
+            using (var tarStream    = new TarOutputStream(outputStream, Encoding.UTF8))
+            {
+                tarStream.Finish();
+            }
+
+            // Assert
+            try
+            {
+                Assert.AreEqual(FileType.Tar, FileIdentifier.IdentifyFile(path));
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
+        [Test]
         public void IdentifyFile_TarGz_Works()
         {
             // Check that we have the tar.gz files to compare against.
@@ -53,6 +79,29 @@ namespace Tests.Core
             // Check that both files return a tar.gz type.
             Assert.AreEqual(FileType.TarGz, FileIdentifier.IdentifyFile(targz_file_1));
             Assert.AreEqual(FileType.TarGz, FileIdentifier.IdentifyFile(targz_file_2));
+        }
+
+        [Test]
+        public void IdentifyFile_EmptyTarGz_Works()
+        {
+            // Arrange / Act
+            var path = Path.GetTempFileName();
+            using (var outputStream = File.OpenWrite(path))
+            using (var gzipStream   = new GZipOutputStream(outputStream))
+            using (var tarStream    = new TarOutputStream(gzipStream, Encoding.UTF8))
+            {
+                tarStream.Finish();
+            }
+
+            // Assert
+            try
+            {
+                Assert.AreEqual(FileType.TarGz, FileIdentifier.IdentifyFile(path));
+            }
+            finally
+            {
+                File.Delete(path);
+            }
         }
 
         [Test]
