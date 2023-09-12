@@ -48,8 +48,8 @@ namespace Tests.GUI
                 Assert.That(item.IsVisible(
                     new GUIMod(ckan_mod, registry, manager.CurrentInstance.VersionCriteria()),
                     manager.CurrentInstance.Name,
-                    manager.CurrentInstance.game
-                ));
+                    manager.CurrentInstance.game,
+                    registry));
 
                 manager.Dispose();
                 config.Dispose();

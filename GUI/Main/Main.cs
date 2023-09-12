@@ -388,7 +388,6 @@ namespace CKAN.GUI
                 regMgr.previousCorruptedMessage = null;
                 regMgr.previousCorruptedPath = null;
             }
-            registry.BuildTagIndex(ManageMods.mainModList.ModuleTags);
 
             configuration?.Save();
             configuration = GUIConfigForInstance(CurrentInstance);
@@ -529,13 +528,14 @@ namespace CKAN.GUI
 
         private void SetupDefaultSearch()
         {
+            var registry = RegistryManager.Instance(CurrentInstance).registry;
             var def = configuration.DefaultSearches;
             if (def == null || def.Count < 1)
             {
                 // Fall back to old setting
                 ManageMods.Filter(ModList.FilterToSavedSearch(
                     (GUIModFilter)configuration.ActiveFilter,
-                    ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
+                    registry.Tags.GetOrDefault(configuration.TagFilter),
                     ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                         .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
                 ), false);

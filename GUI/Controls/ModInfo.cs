@@ -131,15 +131,18 @@ namespace CKAN.GUI
         }
 
         private ModuleLabelList ModuleLabels => Main.Instance.ManageMods.mainModList.ModuleLabels;
-        private ModuleTagList   ModuleTags   => Main.Instance.ManageMods.mainModList.ModuleTags;
 
         private void UpdateTagsAndLabels(CkanModule mod)
         {
+            var registry = RegistryManager.Instance(
+                manager.CurrentInstance
+            ).registry;
+
             Util.Invoke(MetadataTagsLabelsPanel, () =>
             {
                 MetadataTagsLabelsPanel.SuspendLayout();
                 MetadataTagsLabelsPanel.Controls.Clear();
-                var tags = ModuleTags?.Tags
+                var tags = registry?.Tags
                     .Where(t => t.Value.ModuleIdentifiers.Contains(mod.identifier))
                     .OrderBy(t => t.Key)
                     .Select(t => t.Value);

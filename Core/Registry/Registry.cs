@@ -482,6 +482,12 @@ namespace CKAN
         /// </returns>
         public bool HasAnyAvailable() => available_modules.Count > 0;
 
+        [JsonIgnore]
+        private Dictionary<string, ModuleTag> tags;
+
+        [JsonIgnore]
+        private HashSet<string> untagged;
+
         /// <summary>
         /// Mark a given module as available.
         /// </summary>
@@ -667,13 +673,73 @@ namespace CKAN
             }
         }
 
-        public void BuildTagIndex(ModuleTagList tags)
+        [JsonIgnore]
+        public Dictionary<string, ModuleTag> Tags
         {
-            tags.Tags.Clear();
-            tags.Untagged.Clear();
+            get
+            {
+                if (tags == null)
+                {
+                    BuildTagIndex();
+                }
+                return tags;
+            }
+        }
+
+        [JsonIgnore]
+        public HashSet<string> Untagged
+        {
+            get
+            {
+                if (untagged == null)
+                {
+                    BuildTagIndex();
+                }
+                return untagged;
+            }
+        }
+
+        /// <summary>
+        /// Assemble a mapping from tags to modules
+        /// </summary>
+        private void BuildTagIndex()
+        {
+            tags     = new Dictionary<string, ModuleTag>();
+            untagged = new HashSet<string>();
             foreach (AvailableModule am in available_modules.Values)
             {
-                tags.BuildTagIndexFor(am);
+                BuildTagIndexFor(am);
+            }
+        }
+
+        private void BuildTagIndexFor(AvailableModule am)
+        {
+            bool tagged = false;
+            foreach (CkanModule m in am.AllAvailable())
+            {
+                if (m.Tags != null)
+                {
+                    tagged = true;
+                    foreach (string tagName in m.Tags)
+                    {
+                        if (tags.TryGetValue(tagName, out ModuleTag tag))
+                        {
+                            tag.Add(m.identifier);
+                        }
+                        else
+                        {
+                            tags.Add(tagName, new ModuleTag()
+                            {
+                                Name              = tagName,
+                                ModuleIdentifiers = new HashSet<string>() { m.identifier },
+                            });
+                        }
+                    }
+                }
+            }
+            if (!tagged)
+            {
+                untagged.Add(am.AllAvailable().First().identifier);
             }
         }
 

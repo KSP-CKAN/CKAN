@@ -175,7 +175,8 @@ namespace CKAN.GUI
                     {
                         cell.ToolTipText = null;
                     }
-                    mainModList.ReapplyLabels(guiMod, false, inst.Name, inst.game);
+                    var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+                    mainModList.ReapplyLabels(guiMod, false, inst.Name, inst.game, registry);
                     if (row.Visible)
                     {
                         ModGrid.InvalidateRow(row.Index);
@@ -220,8 +221,9 @@ namespace CKAN.GUI
 
         private void FilterTagsToolButton_DropDown_Opening(object sender, CancelEventArgs e)
         {
+            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
             FilterTagsToolButton.DropDownItems.Clear();
-            foreach (var kvp in mainModList.ModuleTags.Tags.OrderBy(kvp => kvp.Key))
+            foreach (var kvp in registry.Tags.OrderBy(kvp => kvp.Key))
             {
                 FilterTagsToolButton.DropDownItems.Add(new ToolStripMenuItem(
                     $"{kvp.Key} ({kvp.Value.ModuleIdentifiers.Count})",
@@ -234,7 +236,7 @@ namespace CKAN.GUI
             }
             FilterTagsToolButton.DropDownItems.Add(untaggedFilterToolStripSeparator);
             FilterTagsToolButton.DropDownItems.Add(new ToolStripMenuItem(
-                string.Format(Properties.Resources.MainLabelsUntagged, mainModList.ModuleTags.Untagged.Count),
+                string.Format(Properties.Resources.MainLabelsUntagged, registry.Untagged.Count),
                 null, tagFilterButton_Click
             )
             {
@@ -302,7 +304,8 @@ namespace CKAN.GUI
                     mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
             }
             var inst = Main.Instance.CurrentInstance;
-            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game);
+            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game, registry);
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
         }
 
@@ -313,9 +316,10 @@ namespace CKAN.GUI
             eld.Dispose();
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
             var inst = Main.Instance.CurrentInstance;
+            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
             foreach (GUIMod module in mainModList.Modules)
             {
-                mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game);
+                mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game, registry);
             }
         }
 
@@ -595,13 +599,14 @@ namespace CKAN.GUI
                 ModListHeaderContextMenuStrip.Items.Add(new ToolStripSeparator());
 
                 // Add tags
+                var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
                 ModListHeaderContextMenuStrip.Items.AddRange(
-                    mainModList.ModuleTags.Tags.OrderBy(kvp => kvp.Key)
+                    registry.Tags.OrderBy(kvp => kvp.Key)
                     .Select(kvp => new ToolStripMenuItem()
                     {
                         Name    = kvp.Key,
                         Text    = kvp.Key,
-                        Checked = kvp.Value.Visible,
+                        Checked = !mainModList.ModuleTags.HiddenTags.Contains(kvp.Key),
                         Tag     = kvp.Value,
                     })
                     .ToArray()
@@ -633,8 +638,7 @@ namespace CKAN.GUI
             }
             else if (tag != null)
             {
-                tag.Visible = !clickedItem.Checked;
-                if (tag.Visible)
+                if (!clickedItem.Checked)
                 {
                     mainModList.ModuleTags.HiddenTags.Remove(tag.Name);
                 }
@@ -1127,12 +1131,13 @@ namespace CKAN.GUI
                 selected_mod = (GUIMod) ModGrid.CurrentRow.Tag;
             }
 
+            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
             ModGrid.Rows.Clear();
             foreach (var row in rows)
             {
                 var mod = ((GUIMod) row.Tag);
                 var inst = Main.Instance.CurrentInstance;
-                row.Visible = mainModList.IsVisible(mod, inst.Name, inst.game);
+                row.Visible = mainModList.IsVisible(mod, inst.Name, inst.game, registry);
             }
 
             ApplyHeaderGlyphs();
@@ -1256,8 +1261,6 @@ namespace CKAN.GUI
 
                 UpdateAllToolButton.Enabled = has_unheld_updates;
             });
-
-            (registry as Registry)?.BuildTagIndex(mainModList.ModuleTags);
 
             UpdateFilters();
 
