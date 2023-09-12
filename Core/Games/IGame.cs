@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+
+using CKAN.DLC;
 using CKAN.Versioning;
 
 namespace CKAN.Games
@@ -17,18 +19,19 @@ namespace CKAN.Games
         string MacPath();
 
         // What do we contain?
-        string   PrimaryModDirectoryRelative     { get; }
-        string[] AlternateModDirectoriesRelative { get; }
-        string   PrimaryModDirectory(GameInstance inst);
-        string[] StockFolders      { get; }
-        string[] ReservedPaths     { get; }
-        string[] CreateableDirs    { get; }
-        string[] AutoRemovableDirs { get; }
-        bool     IsReservedDirectory(GameInstance inst, string path);
-        bool     AllowInstallationIn(string name, out string path);
-        void     RebuildSubdirectories(string absGameRoot);
-        string   DefaultCommandLine { get; }
-        string[] AdjustCommandLine(string[] args, GameVersion installedVersion);
+        string         PrimaryModDirectoryRelative     { get; }
+        string[]       AlternateModDirectoriesRelative { get; }
+        string         PrimaryModDirectory(GameInstance inst);
+        string[]       StockFolders      { get; }
+        string[]       ReservedPaths     { get; }
+        string[]       CreateableDirs    { get; }
+        string[]       AutoRemovableDirs { get; }
+        bool           IsReservedDirectory(GameInstance inst, string path);
+        bool           AllowInstallationIn(string name, out string path);
+        void           RebuildSubdirectories(string absGameRoot);
+        string         DefaultCommandLine { get; }
+        string[]       AdjustCommandLine(string[] args, GameVersion installedVersion);
+        IDlcDetector[] DlcDetectors { get; }
 
         // Which versions exist and which is present?
         void              RefreshVersions();

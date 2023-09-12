@@ -121,8 +121,6 @@ namespace Tests.Core.Registry
         public void CompatibleModules_MHInstalled_IncludesModulesDependingOnMH()
         {
             // Arrange
-            registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0"));
-
             CkanModule DLCDepender = CkanModule.FromJson(@"{
                 ""identifier"": ""DLC-Depender"",
                 ""version"":    ""1.0.0"",
@@ -132,6 +130,10 @@ namespace Tests.Core.Registry
                 ]
             }");
             registry.AddAvailable(DLCDepender);
+                registry.SetDlcs(new Dictionary<string, ModuleVersion>()
+                {
+                    { "MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0") }
+                });
 
             // Act
             List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
@@ -144,8 +146,6 @@ namespace Tests.Core.Registry
         public void CompatibleModules_MH110Installed_IncludesModulesDependingOnMH110()
         {
             // Arrange
-            registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0"));
-
             CkanModule DLCDepender = CkanModule.FromJson(@"{
                 ""identifier"": ""DLC-Depender"",
                 ""version"":    ""1.0.0"",
@@ -156,6 +156,10 @@ namespace Tests.Core.Registry
                 } ]
             }");
             registry.AddAvailable(DLCDepender);
+                registry.SetDlcs(new Dictionary<string, ModuleVersion>()
+                {
+                    { "MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0") }
+                });
 
             // Act
             List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
@@ -168,8 +172,6 @@ namespace Tests.Core.Registry
         public void CompatibleModules_MH100Installed_ExcludesModulesDependingOnMH110()
         {
             // Arrange
-            registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.0.0"));
-
             CkanModule DLCDepender = CkanModule.FromJson(@"{
                 ""identifier"": ""DLC-Depender"",
                 ""version"":    ""1.0.0"",
@@ -180,6 +182,10 @@ namespace Tests.Core.Registry
                 } ]
             }");
             registry.AddAvailable(DLCDepender);
+                registry.SetDlcs(new Dictionary<string, ModuleVersion>()
+                {
+                    { "MakingHistory-DLC", new UnmanagedModuleVersion("1.0.0") }
+                });
 
             // Act
             List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();

@@ -9,6 +9,7 @@ using Autofac;
 using log4net;
 using Newtonsoft.Json;
 
+using CKAN.DLC;
 using CKAN.Versioning;
 
 namespace CKAN.Games.KerbalSpaceProgram2
@@ -151,6 +152,8 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public string[] AdjustCommandLine(string[] args, GameVersion installedVersion)
             => args;
+
+        public IDlcDetector[] DlcDetectors => new IDlcDetector[] { };
 
         private static readonly Uri BuildMapUri =
             new Uri("https://raw.githubusercontent.com/KSP-CKAN/KSP2-CKAN-meta/main/builds.json");

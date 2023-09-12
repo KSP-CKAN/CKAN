@@ -941,44 +941,42 @@ namespace CKAN
             installed_dlls = new Dictionary<string, string>();
         }
 
-        public void RegisterDlc(string identifier, UnmanagedModuleVersion version)
+        public bool SetDlcs(Dictionary<string, ModuleVersion> dlcs)
         {
-            CkanModule dlcModule = null;
-            if (available_modules.TryGetValue(identifier, out AvailableModule avail))
+            var installed = InstalledDlc;
+            if (!dlcs.DictionaryEquals(installed))
             {
-                dlcModule = avail.ByVersion(version);
-            }
-            if (dlcModule == null)
-            {
-                // Don't have the real thing, make a fake one
-                dlcModule = new CkanModule(
-                    new ModuleVersion("v1.28"),
-                    identifier,
-                    identifier,
-                    "An official expansion pack for KSP",
-                    null,
-                    new List<string>() { "SQUAD" },
-                    new List<License>() { new License("restricted") },
-                    version,
-                    null,
-                    "dlc"
-                );
-            }
-            installed_modules.Add(
-                identifier,
-                new InstalledModule(null, dlcModule, new string[] { }, false)
-            );
-        }
+                EnlistWithTransaction();
 
-        public void ClearDlc()
-        {
-            var installedDlcs = installed_modules.Values
-                .Where(instMod => instMod.Module.IsDLC)
-                .ToList();
-            foreach (var instMod in installedDlcs)
-            {
-                installed_modules.Remove(instMod.identifier);
+                foreach (var identifier in installed.Keys.Except(dlcs.Keys))
+                {
+                    installed_modules.Remove(identifier);
+                }
+
+                foreach (var kvp in dlcs)
+                {
+                    var identifier = kvp.Key;
+                    var version    = kvp.Value;
+                    // Overwrite everything in case there are version differences
+                    installed_modules[identifier] =
+                        new InstalledModule(null,
+                            GetModuleByVersion(identifier, version)
+                                ?? new CkanModule(
+                                    new ModuleVersion("v1.28"),
+                                    identifier,
+                                    identifier,
+                                    Properties.Resources.RegistryDefaultDLCAbstract,
+                                    null,
+                                    new List<string>() { "SQUAD" },
+                                    new List<License>() { new License("restricted") },
+                                    version,
+                                    null,
+                                    "dlc"),
+                            Enumerable.Empty<string>(), false);
+                }
+                return true;
             }
+            return false;
         }
 
         /// <summary>

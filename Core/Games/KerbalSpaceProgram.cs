@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using Autofac;
 using log4net;
 
+using CKAN.DLC;
 using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
+using CKAN.Games.KerbalSpaceProgram.DLC;
 using CKAN.Versioning;
 
 namespace CKAN.Games.KerbalSpaceProgram
@@ -185,6 +187,12 @@ namespace CKAN.Games.KerbalSpaceProgram
             }
             return args;
         }
+
+        public IDlcDetector[] DlcDetectors => new IDlcDetector[]
+        {
+            new BreakingGroundDlcDetector(),
+            new MakingHistoryDlcDetector(),
+        };
 
         public void RefreshVersions()
         {

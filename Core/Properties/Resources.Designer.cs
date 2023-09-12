@@ -170,6 +170,9 @@ namespace CKAN.Properties {
         internal static string RegistryFileNotRemoved {
             get { return (string)(ResourceManager.GetObject("RegistryFileNotRemoved", resourceCulture)); }
         }
+        internal static string RegistryDefaultDLCAbstract {
+            get { return (string)(ResourceManager.GetObject("RegistryDefaultDLCAbstract", resourceCulture)); }
+        }
         internal static string RegistryManagerDirectoryNotFound {
             get { return (string)(ResourceManager.GetObject("RegistryManagerDirectoryNotFound", resourceCulture)); }
         }

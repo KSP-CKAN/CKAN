@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using CKAN.DLC;
 using CKAN.Games.KerbalSpaceProgram.DLC;
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -550,87 +551,24 @@ namespace CKAN
         /// True if not the same list as last scan, false otherwise
         /// </returns>
         public bool ScanDlc()
-        {
-            var dlc = new Dictionary<string, ModuleVersion>(registry.InstalledDlc);
-            ModuleVersion foundVer;
-            bool changed = false;
+            => registry.SetDlcs(TestDlcScan(Path.Combine(gameInstance.CkanDir(), "dlc"))
+                                .Concat(WellKnownDlcScan())
+                                .ToDictionary());
 
-            registry.ClearDlc();
+        private IEnumerable<KeyValuePair<string, ModuleVersion>> TestDlcScan(string dlcDir)
+            => (Directory.Exists(dlcDir)
+                       ? Directory.EnumerateFiles(dlcDir, "*.dlc",
+                                                  SearchOption.TopDirectoryOnly)
+                       : Enumerable.Empty<string>())
+                   .Select(f => new KeyValuePair<string, ModuleVersion>(
+                       $"{Path.GetFileNameWithoutExtension(f)}-DLC",
+                       new UnmanagedModuleVersion(File.ReadAllText(f).Trim())));
 
-            var testDlc = TestDlcScan();
-            foreach (var i in testDlc)
-            {
-                if (!changed
-                    && (!dlc.TryGetValue(i.Key, out foundVer)
-                        || foundVer != i.Value))
-                {
-                    changed = true;
-                }
-                registry.RegisterDlc(i.Key, i.Value);
-            }
-
-            var wellKnownDlc = WellKnownDlcScan();
-            foreach (var i in wellKnownDlc)
-            {
-                if (!changed
-                    && (!dlc.TryGetValue(i.Key, out foundVer)
-                        || foundVer != i.Value))
-                {
-                    changed = true;
-                }
-                registry.RegisterDlc(i.Key, i.Value);
-            }
-
-            // Check if anything got removed
-            if (!changed)
-            {
-                foreach (var i in dlc)
-                {
-                    if (!registry.InstalledDlc.TryGetValue(i.Key, out foundVer)
-                        || foundVer != i.Value)
-                    {
-                        changed = true;
-                        break;
-                    }
-                }
-            }
-            return changed;
-        }
-
-        private Dictionary<string, UnmanagedModuleVersion> TestDlcScan()
-        {
-            var dlc = new Dictionary<string, UnmanagedModuleVersion>();
-
-            var dlcDirectory = Path.Combine(gameInstance.CkanDir(), "dlc");
-            if (Directory.Exists(dlcDirectory))
-            {
-                foreach (var f in Directory.EnumerateFiles(dlcDirectory, "*.dlc", SearchOption.TopDirectoryOnly))
-                {
-                    var id = $"{Path.GetFileNameWithoutExtension(f)}-DLC";
-                    var ver = File.ReadAllText(f).Trim();
-
-                    dlc[id] = new UnmanagedModuleVersion(ver);
-                }
-            }
-
-            return dlc;
-        }
-
-        private Dictionary<string, UnmanagedModuleVersion> WellKnownDlcScan()
-        {
-            var dlc = new Dictionary<string, UnmanagedModuleVersion>();
-
-            var detectors = new IDlcDetector[] { new BreakingGroundDlcDetector(), new MakingHistoryDlcDetector() };
-
-            foreach (var d in detectors)
-            {
-                if (d.IsInstalled(gameInstance, out var identifier, out var version))
-                {
-                    dlc[identifier] = version ?? new UnmanagedModuleVersion(null);
-                }
-            }
-
-            return dlc;
-        }
+        private IEnumerable<KeyValuePair<string, ModuleVersion>> WellKnownDlcScan()
+            => gameInstance.game.DlcDetectors
+                .Select(d => d.IsInstalled(gameInstance, out string identifier, out UnmanagedModuleVersion version)
+                             ? new KeyValuePair<string, ModuleVersion>(identifier, version)
+                             : new KeyValuePair<string, ModuleVersion>(null,       null))
+                .Where(pair => pair.Key != null);
     }
 }

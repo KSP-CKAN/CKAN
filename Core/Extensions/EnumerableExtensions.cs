@@ -25,6 +25,10 @@ namespace CKAN.Extensions
         }
 #endif
 
+        public static Dictionary<K, V> ToDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs)
+            => pairs.ToDictionary(kvp => kvp.Key,
+                                  kvp => kvp.Value);
+
         public static IEnumerable<T> Memoize<T>(this IEnumerable<T> source)
         {
             if (source == null)
