@@ -44,6 +44,11 @@ namespace CKAN.Versioning
             return IsEmpty(highestLow, lowestHigh) ? null : new GameVersionRange(highestLow, lowestHigh);
         }
 
+        // Same logic as above but without "new"
+        private bool Intersects(GameVersionRange other)
+            => !IsEmpty(GameVersionBound.Highest(Lower, other.Lower),
+                        GameVersionBound.Lowest(Upper, other.Upper));
+
         public bool IsSupersetOf(GameVersionRange other)
         {
             if (ReferenceEquals(other, null))
@@ -59,6 +64,14 @@ namespace CKAN.Versioning
 
             return lowerIsOkay && upperIsOkay;
         }
+
+        /// <summary>
+        /// Check whether a given game version is within this range
+        /// </summary>
+        /// <param name="ver">The game version to check</param>
+        /// <returns>True if within bounds, false otherwise</returns>
+        public bool Contains(GameVersion ver)
+            => Intersects(ver.ToVersionRange());
 
         private static bool IsEmpty(GameVersionBound lower, GameVersionBound upper)
             => upper.Value < lower.Value ||

@@ -638,9 +638,10 @@ namespace CKAN
         /// Return the latest game version compatible with the given mod.
         /// </summary>
         /// <param name="identifier">Name of mod to check</param>
-        public GameVersion LatestCompatibleKSP(string identifier)
+        public GameVersion LatestCompatibleGameVersion(List<GameVersion> realVersions,
+                                                       string            identifier)
             => available_modules.TryGetValue(identifier, out AvailableModule availMod)
-                ? availMod.LatestCompatibleKSP()
+                ? availMod.LatestCompatibleGameVersion(realVersions)
                 : null;
 
 

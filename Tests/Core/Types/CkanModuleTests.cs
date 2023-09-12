@@ -329,6 +329,111 @@ namespace Tests.Core.Types
             // Assert
             Assert.AreEqual(correctGroups, groupIdentifiers);
         }
+
+        [Test,
+            // Min without max game version, some compatible, uses latest
+            TestCase(@"{
+                         ""spec_version"":    1,
+                         ""identifier"":      ""testMod"",
+                         ""version"":         ""1.0"",
+                         ""ksp_version_min"": ""1.5"",
+                         ""download"":        ""https://github.com/""
+                     }",
+                     new string[]
+                     {
+                         "1.0", "1.1", "1.2", "1.3",
+                         "2.0", "2.1", "2.2",
+                     },
+                     "2.2"),
+            // Min without max game version, none compatible, returns Any
+            // (doesn't quite make sense, but there is no clearly correct behavior here)
+            TestCase(@"{
+                         ""spec_version"":    1,
+                         ""identifier"":      ""testMod"",
+                         ""version"":         ""1.0"",
+                         ""ksp_version_min"": ""3.0"",
+                         ""download"":        ""https://github.com/""
+                     }",
+                     new string[]
+                     {
+                         "1.0", "1.1", "1.2", "1.3",
+                         "2.0", "2.1", "2.2",
+                     },
+                     "any"),
+            // In range, uses latest compatible
+            TestCase(@"{
+                         ""spec_version"":    1,
+                         ""identifier"":      ""testMod"",
+                         ""version"":         ""1.0"",
+                         ""ksp_version_min"": ""1.0"",
+                         ""ksp_version_max"": ""1.9"",
+                         ""download"":        ""https://github.com/""
+                     }",
+                     new string[]
+                     {
+                         "1.0", "1.1", "1.2", "1.3",
+                         "2.0", "2.1", "2.2",
+                     },
+                     "1.3"),
+            // None compatible, falls back to mod's max
+            TestCase(@"{
+                         ""spec_version"":    1,
+                         ""identifier"":      ""testMod"",
+                         ""version"":         ""1.0"",
+                         ""ksp_version_min"": ""1.0"",
+                         ""ksp_version_max"": ""1.9"",
+                         ""download"":        ""https://github.com/""
+                     }",
+                     new string[]
+                     {
+                         "0.1", "0.2", "0.3",
+                         "2.0", "2.1", "2.2", "2.3",
+                     },
+                     "1.9"),
+            // Patch component wildcarding
+            TestCase(@"{
+                         ""spec_version"":     1,
+                         ""identifier"":       ""testMod"",
+                         ""version"":          ""1.0"",
+                         ""ksp_version_max"":  ""1.5"",
+                         ""download"":         ""https://github.com/""
+                     }",
+                     new string[]
+                     {
+                         "1.5.0", "1.5.1", "1.5.2", "1.5.3",
+                         "1.6.0", "1.6.1", "1.6.2",
+                     },
+                     "1.5.3"),
+            // Module more specific than real
+            TestCase(@"{
+                         ""spec_version"":     1,
+                         ""identifier"":       ""testMod"",
+                         ""version"":          ""1.0"",
+                         ""ksp_version_max"":  ""1.5.0.0"",
+                         ""download"":         ""https://github.com/""
+                     }",
+                     new string[]
+                     {
+                         "1.4", "1.5", "1.6",
+                     },
+                     "1.5"),
+        ]
+        public void LatestCompatibleRealGameVersion_WithVersions_Works(string   moduleJson,
+                                                                       string[] real,
+                                                                       string   correct)
+        {
+            // Arrange
+            var module         = CkanModule.FromJson(moduleJson);
+            var correctVersion = GameVersion.Parse(correct);
+            var realVersions   = real.Select(v => GameVersion.Parse(v)).ToList();
+
+            // Act
+            var latestCompat = module.LatestCompatibleRealGameVersion(realVersions);
+
+            // Assert
+            Assert.AreEqual(correctVersion, latestCompat);
+        }
+
         [Test,
             // No mods, nulls all around
             TestCase(new string[] { },

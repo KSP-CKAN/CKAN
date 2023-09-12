@@ -559,6 +559,22 @@ namespace CKAN
                ?? GameVersion.Any;
 
         /// <summary>
+        /// Return the latest game version from the given list that is
+        /// compatible with this module, without the build number.
+        /// </summary>
+        /// <param name="realVers">Game versions to test, sorted from earliest to latest</param>
+        /// <returns>The latest game version if any, else null</returns>
+        public GameVersion LatestCompatibleRealGameVersion(List<GameVersion> realVers)
+            => LatestCompatibleRealGameVersion(new GameVersionRange(EarliestCompatibleGameVersion(),
+                                                                    LatestCompatibleGameVersion()),
+                                               realVers);
+
+        private GameVersion LatestCompatibleRealGameVersion(GameVersionRange range,
+                                                            List<GameVersion> realVers)
+            => (realVers?.LastOrDefault(v => range.Contains(v))
+                        ?? LatestCompatibleGameVersion());
+
+        /// <summary>
         /// Returns true if this module provides the functionality requested.
         /// </summary>
         public bool DoesProvide(string identifier)

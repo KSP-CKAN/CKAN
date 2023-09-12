@@ -8,6 +8,7 @@ using Autofac;
 
 using CKAN.ConsoleUI.Toolkit;
 using CKAN.Extensions;
+using CKAN.Games;
 
 namespace CKAN.ConsoleUI {
 
@@ -20,9 +21,10 @@ namespace CKAN.ConsoleUI {
         /// Initialize the screen
         /// </summary>
         /// <param name="mgr">Game instance manager object containing the current instance</param>
+        /// <param name="game">The game of the current instance, used for getting known versions</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
         /// <param name="regTheme">The theme to use for the registry update flow, if needed</param>
-        public ModListScreen(GameInstanceManager mgr, bool dbg, ConsoleTheme regTheme)
+        public ModListScreen(GameInstanceManager mgr, IGame game, bool dbg, ConsoleTheme regTheme)
         {
             debug    = dbg;
             manager  = mgr;
@@ -48,8 +50,8 @@ namespace CKAN.ConsoleUI {
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = Properties.Resources.ModListMaxGameVersionHeader,
                         Width    = 20,
-                        Renderer = m => registry.LatestCompatibleKSP(m.identifier)?.ToString() ?? "",
-                        Comparer = (a, b) => registry.LatestCompatibleKSP(a.identifier).CompareTo(registry.LatestCompatibleKSP(b.identifier))
+                        Renderer = m => registry.LatestCompatibleGameVersion(game.KnownVersions, m.identifier)?.ToString() ?? "",
+                        Comparer = (a, b) => registry.LatestCompatibleGameVersion(game.KnownVersions, a.identifier).CompareTo(registry.LatestCompatibleGameVersion(game.KnownVersions, b.identifier))
                     }
                 },
                 1, 0, ListSortDirection.Descending,

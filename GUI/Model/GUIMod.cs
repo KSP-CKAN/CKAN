@@ -12,7 +12,8 @@ namespace CKAN.GUI
     public sealed class GUIMod : INotifyPropertyChanged
     {
         private CkanModule      Mod                 { get; set; }
-        private CkanModule      LatestCompatibleMod { get; set; }
+        public  CkanModule      LatestCompatibleMod { get; private set; }
+        public  CkanModule      LatestAvailableMod  { get; private set; }
         public  InstalledModule InstalledMod        { get; private set; }
 
         /// <summary>
@@ -81,8 +82,10 @@ namespace CKAN.GUI
         // version of this mod can handle. The "Long" version also indicates
         // to the user if a mod upgrade would be required. (#1270)
         public GameVersion GameCompatibilityVersion { get; private set; }
-        public string GameCompatibility { get; private set; }
-        public string GameCompatibilityLong { get; private set; }
+        public string GameCompatibility
+            => GameCompatibilityVersion == null ? Properties.Resources.GUIModUnknown
+               : GameCompatibilityVersion.IsAny ? GameVersion.AnyString
+               : GameCompatibilityVersion.ToString();
 
         public string Abstract { get; private set; }
         public string Description { get; private set; }
@@ -176,12 +179,6 @@ namespace CKAN.GUI
             if (GameCompatibilityVersion == null)
             {
                 GameCompatibilityVersion = mod.LatestCompatibleGameVersion();
-                GameCompatibility = GameCompatibilityVersion?.ToYalovString() ?? Properties.Resources.GUIModUnknown;
-                GameCompatibilityLong = string.Format(
-                    Properties.Resources.GUIModGameCompatibilityLong,
-                    GameCompatibility,
-                    mod.version
-                );
             }
 
             UpdateIsCached();
@@ -205,13 +202,20 @@ namespace CKAN.GUI
             }
 
             ModuleVersion latest_version = null;
-            try
+            if (incompatible != true)
             {
-                LatestCompatibleMod = registry.LatestAvailable(identifier, current_game_version);
-                latest_version = LatestCompatibleMod?.version;
-            }
-            catch (ModuleNotFoundKraken)
-            {
+                try
+                {
+                    LatestCompatibleMod = registry.LatestAvailable(identifier, current_game_version);
+                    latest_version = LatestCompatibleMod?.version;
+                }
+                catch (ModuleNotFoundKraken)
+                {
+                    if (!incompatible.HasValue)
+                    {
+                        incompatible = true;
+                    }
+                }
             }
 
             IsIncompatible = incompatible ?? LatestCompatibleMod == null;
@@ -219,32 +223,29 @@ namespace CKAN.GUI
             // Let's try to find the compatibility for this mod. If it's not in the registry at
             // all (because it's a DarkKAN mod) then this might fail.
 
-            CkanModule latest_available_for_any_ksp = null;
-
             try
             {
-                latest_available_for_any_ksp = registry.LatestAvailable(identifier, null);
+                LatestAvailableMod = registry.LatestAvailable(identifier, null);
             }
             catch
             { }
 
             // If there's known information for this mod in any form, calculate the highest compatible
             // KSP.
-            if (latest_available_for_any_ksp != null)
+            if (LatestAvailableMod != null)
             {
-                GameCompatibilityVersion = registry.LatestCompatibleKSP(identifier);
-                GameCompatibility = GameCompatibilityVersion?.ToYalovString()
-                    ?? Properties.Resources.GUIModUnknown;
-                GameCompatibilityLong = string.Format(Properties.Resources.GUIModGameCompatibilityLong, GameCompatibility, latest_available_for_any_ksp.version);
+                GameCompatibilityVersion = registry.LatestCompatibleGameVersion(
+                    Main.Instance?.Manager.CurrentInstance?.game.KnownVersions ?? new List<GameVersion>() {},
+                    identifier);
             }
 
             if (latest_version != null)
             {
                 LatestVersion = latest_version.ToString(hideEpochs, hideV);
             }
-            else if (latest_available_for_any_ksp != null)
+            else if (LatestAvailableMod != null)
             {
-                LatestVersion = latest_available_for_any_ksp.version.ToString(hideEpochs, hideV);
+                LatestVersion = LatestAvailableMod.version.ToString(hideEpochs, hideV);
             }
             else
             {

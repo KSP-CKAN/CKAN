@@ -169,19 +169,28 @@ namespace CKAN
         /// Returns the latest game version that is compatible with this mod.
         /// Checks all versions of the mod.
         /// </summary>
-        public GameVersion LatestCompatibleKSP()
+        public GameVersion LatestCompatibleGameVersion(List<GameVersion> realVersions)
         {
-            GameVersion best = null;
-            foreach (var pair in module_version)
+            // Cheat slightly for performance:
+            // Find the CkanModule with the highest ksp_version_max,
+            // then get the real lastest compatible of just that one mod
+            GameVersion best    = null;
+            CkanModule  bestMod = null;
+            foreach (var mod in module_version.Values)
             {
-                GameVersion v = pair.Value.LatestCompatibleGameVersion();
+                var v = mod.LatestCompatibleGameVersion();
                 if (v.IsAny)
+                {
                     // Can't get later than Any, so stop
-                    return v;
+                    return mod.LatestCompatibleRealGameVersion(realVersions);
+                }
                 else if (best == null || best < v)
-                    best = v;
+                {
+                    best    = v;
+                    bestMod = mod;
+                }
             }
-            return best;
+            return bestMod.LatestCompatibleRealGameVersion(realVersions);
         }
 
         /// <summary>

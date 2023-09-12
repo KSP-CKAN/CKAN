@@ -48,7 +48,7 @@ namespace CKAN
         /// Returns the max game version that is compatible with the given mod.
         /// </summary>
         /// <param name="identifier">Name of mod to check</param>
-        GameVersion LatestCompatibleKSP(string identifier);
+        GameVersion LatestCompatibleGameVersion(List<GameVersion> realVersions, string identifier);
 
         /// <summary>
         /// Returns all available versions of a module.

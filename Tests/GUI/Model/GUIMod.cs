@@ -85,7 +85,7 @@ namespace Tests.GUI
                 GUIMod m = new GUIMod(mainVersion, registry, tidy.KSP.VersionCriteria(), false);
 
                 // Assert
-                Assert.AreEqual("1.4.2", m.GameCompatibility);
+                Assert.AreEqual("1.4.2", m.GameCompatibilityVersion.ToString());
             }
         }
 

@@ -40,7 +40,7 @@ namespace CKAN.ConsoleUI {
                         }
                     }
                     if (manager.CurrentInstance != null) {
-                        new ModListScreen(manager, debug, theme).Run(theme);
+                        new ModListScreen(manager, manager.CurrentInstance.game, debug, theme).Run(theme);
                     }
 
                     new ExitScreen().Run(theme);
