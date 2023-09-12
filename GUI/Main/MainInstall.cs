@@ -196,16 +196,20 @@ namespace CKAN.GUI
                         var fullChangeset = new RelationshipResolver(
                             toInstall.Concat(toUpgrade), toUninstall, opts.Value, registry, crit
                         ).ModList().ToList();
-                        var dfd = new DownloadsFailedDialog(
-                            Properties.Resources.ModDownloadsFailedMessage,
-                            Properties.Resources.ModDownloadsFailedColHdr,
-                            Properties.Resources.ModDownloadsFailedAbortBtn,
-                            k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
-                                fullChangeset.Where(m => m.download == kvp.Key.download).ToArray(),
-                                kvp.Value)),
-                            (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
-                        Util.Invoke(dfd, () => dfd.ShowDialog(this));
-                        var skip = dfd.Wait()?.Select(m => m as CkanModule).ToArray();
+                        DownloadsFailedDialog dfd = null;
+                        Util.Invoke(dfd, () =>
+                        {
+                            dfd = new DownloadsFailedDialog(
+                                Properties.Resources.ModDownloadsFailedMessage,
+                                Properties.Resources.ModDownloadsFailedColHdr,
+                                Properties.Resources.ModDownloadsFailedAbortBtn,
+                                k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
+                                    fullChangeset.Where(m => m.download == kvp.Key.download).ToArray(),
+                                    kvp.Value)),
+                                (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
+                             dfd.ShowDialog(this);
+                        });
+                        var skip  = dfd.Wait()?.Select(m => m as CkanModule).ToArray();
                         var abort = dfd.Abort;
                         dfd.Dispose();
                         if (abort)

@@ -180,7 +180,7 @@ namespace CKAN.GUI
         {
             Retry = true;
             Data  = data;
-            Error = exc.Message;
+            Error = exc.GetBaseException().Message;
         }
 
         /// <summary>

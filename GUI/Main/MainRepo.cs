@@ -120,15 +120,20 @@ namespace CKAN.GUI
                     }
                     catch (DownloadErrorsKraken k)
                     {
-                        var dfd = new DownloadsFailedDialog(
-                            Properties.Resources.RepoDownloadsFailedMessage,
-                            Properties.Resources.RepoDownloadsFailedColHdr,
-                            Properties.Resources.RepoDownloadsFailedAbortBtn,
-                            k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
-                                new object[] { repos[kvp.Key] }, kvp.Value)),
-                            // Rows are only linked to themselves
-                            (r1, r2) => r1 == r2);
-                        Util.Invoke(this, () => dfd.ShowDialog(this));
+                        log.Debug("Caught download errors kraken");
+                        DownloadsFailedDialog dfd = null;
+                        Util.Invoke(this, () =>
+                        {
+                            dfd = new DownloadsFailedDialog(
+                                Properties.Resources.RepoDownloadsFailedMessage,
+                                Properties.Resources.RepoDownloadsFailedColHdr,
+                                Properties.Resources.RepoDownloadsFailedAbortBtn,
+                                k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
+                                    new object[] { repos[kvp.Key] }, kvp.Value)),
+                                // Rows are only linked to themselves
+                                (r1, r2) => r1 == r2);
+                            dfd.ShowDialog(this);
+                        });
                         var skip  = dfd.Wait()?.Select(r => r as Repository).ToArray();
                         var abort = dfd.Abort;
                         dfd.Dispose();
