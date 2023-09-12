@@ -47,11 +47,35 @@ namespace CKAN
         public readonly SortedDictionary<string, AvailableModule> Compatible
             = new SortedDictionary<string, AvailableModule>();
 
+        public ICollection<CkanModule> LatestCompatible
+        {
+            get
+            {
+                if (latestCompatible == null)
+                {
+                    latestCompatible = Compatible.Values.Select(avail => avail.Latest(CompatibleVersions)).ToList();
+                }
+                return latestCompatible;
+            }
+        }
+
         /// <summary>
         /// Mods that are incompatible with our versions
         /// </summary>
         public readonly SortedDictionary<string, AvailableModule> Incompatible
             = new SortedDictionary<string, AvailableModule>();
+
+        public ICollection<CkanModule> LatestIncompatible
+        {
+            get
+            {
+                if (latestIncompatible == null)
+                {
+                    latestIncompatible = Incompatible.Values.Select(avail => avail.Latest(null)).ToList();
+                }
+                return latestIncompatible;
+            }
+        }
 
         /// <summary>
         /// Mods that might be compatible or incompatible based on their dependencies
@@ -67,6 +91,9 @@ namespace CKAN
         private readonly Dictionary<string, InstalledModule> installed;
         private readonly HashSet<string> dlls;
         private readonly IDictionary<string, ModuleVersion> dlc;
+
+        private List<CkanModule> latestCompatible;
+        private List<CkanModule> latestIncompatible;
 
         /// <summary>
         /// Filter the provides mapping by compatibility

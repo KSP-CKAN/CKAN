@@ -629,22 +629,16 @@ namespace CKAN
         /// <summary>
         /// <see cref="IRegistryQuerier.CompatibleModules"/>
         /// </summary>
-        public IEnumerable<CkanModule> CompatibleModules(GameVersionCriteria ksp_version)
-        {
+        public IEnumerable<CkanModule> CompatibleModules(GameVersionCriteria crit)
             // Set up our compatibility partition
-            SetCompatibleVersion(ksp_version);
-            return sorter.Compatible.Values.Select(avail => avail.Latest(ksp_version)).ToList();
-        }
+            => SetCompatibleVersion(crit).LatestCompatible;
 
         /// <summary>
         /// <see cref="IRegistryQuerier.IncompatibleModules"/>
         /// </summary>
-        public IEnumerable<CkanModule> IncompatibleModules(GameVersionCriteria ksp_version)
-        {
+        public IEnumerable<CkanModule> IncompatibleModules(GameVersionCriteria crit)
             // Set up our compatibility partition
-            SetCompatibleVersion(ksp_version);
-            return sorter.Incompatible.Values.Select(avail => avail.Latest(null)).ToList();
-        }
+            => SetCompatibleVersion(crit).LatestIncompatible;
 
         /// <summary>
         /// Check whether any versions of this mod are installable (including dependencies) on the given game versions.
@@ -654,11 +648,8 @@ namespace CKAN
         /// <param name="crit">Game versions</param>
         /// <returns>true if any version is recursively compatible, false otherwise</returns>
         public bool IdentifierCompatible(string identifier, GameVersionCriteria crit)
-        {
             // Set up our compatibility partition
-            SetCompatibleVersion(crit);
-            return sorter.Compatible.ContainsKey(identifier);
-        }
+            => SetCompatibleVersion(crit).Compatible.ContainsKey(identifier);
 
         /// <summary>
         /// <see cref="IRegistryQuerier.LatestAvailable" />
@@ -995,6 +986,7 @@ namespace CKAN
 
             // Bye bye, module, it's been nice having you visit.
             installed_modules.Remove(module);
+
             // Installing and uninstalling mods can change compatibility due to conflicts,
             // so we'll need to reset the compatibility sorter
             InvalidateInstalledCaches();
