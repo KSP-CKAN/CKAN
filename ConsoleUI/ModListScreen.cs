@@ -478,7 +478,7 @@ namespace CKAN.ConsoleUI {
         private bool ScanForMods()
         {
             try {
-                manager.CurrentInstance.Scan();
+                manager.CurrentInstance.Scan(RegistryManager.Instance(manager.CurrentInstance));
             } catch (InconsistentKraken ex) {
                 // Warn about inconsistent state
                 RaiseError(Properties.Resources.ModListScanBad, ex.InconsistenciesPretty);

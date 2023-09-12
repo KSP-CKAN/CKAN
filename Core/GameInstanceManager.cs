@@ -324,7 +324,7 @@ namespace CKAN
                 }
 
                 // Add the new instance to the config
-                GameInstance new_instance = new GameInstance(game, newPath, newName, User, false);
+                GameInstance new_instance = new GameInstance(game, newPath, newName, User);
                 AddInstance(new_instance);
                 transaction.Complete();
             }
@@ -417,8 +417,9 @@ namespace CKAN
             // Don't try to Dispose a null CurrentInstance.
             if (CurrentInstance != null && !CurrentInstance.Equals(instances[name]))
             {
-                // Dispose of the old registry manager, to release the registry.
-                RegistryManager.Instance(CurrentInstance)?.Dispose();
+                // Dispose of the old registry manager to release the registry
+                // (without accidentally locking/loading/etc it).
+                RegistryManager.DisposeInstance(CurrentInstance);
             }
             CurrentInstance = instances[name];
         }

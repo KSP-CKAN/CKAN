@@ -58,13 +58,14 @@ namespace CKAN.GUI
             // Don't repeat this stuff if downloads fail
             AddStatusMessage(Properties.Resources.MainRepoScanning);
             log.Debug("Scanning before repo update");
-            bool scanChanged = CurrentInstance.Scan();
+            var regMgr = RegistryManager.Instance(CurrentInstance);
+            bool scanChanged = CurrentInstance.Scan(regMgr);
 
             AddStatusMessage(Properties.Resources.MainRepoUpdating);
 
             // Note the current mods' compatibility for the NewlyCompatible filter
             GameVersionCriteria versionCriteria = CurrentInstance.VersionCriteria();
-            var registry = RegistryManager.Instance(CurrentInstance).registry;
+            var registry = regMgr.registry;
             Dictionary<string, bool> oldModules = registry.CompatibleModules(versionCriteria)
                 .ToDictionary(m => m.identifier, m => false);
             registry.IncompatibleModules(versionCriteria)

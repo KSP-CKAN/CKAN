@@ -35,7 +35,7 @@ namespace Tests.Core
                 // Manually dispose of RegistryManager
                 // For some reason the KSP instance doesn't do this itself causing test failures because the registry
                 // lock file is still in use. So just dispose of it ourselves.
-                CKAN.RegistryManager.Instance(ksp).Dispose();
+                CKAN.RegistryManager.DisposeInstance(ksp);
             }
 
             Directory.Delete(ksp_dir, true);
@@ -80,13 +80,14 @@ namespace Tests.Core
         public void ScanDlls()
         {
             string path = Path.Combine(ksp.game.PrimaryModDirectory(ksp), "Example.dll");
-            var registry = CKAN.RegistryManager.Instance(ksp).registry;
+            var regMgr = CKAN.RegistryManager.Instance(ksp);
+            var registry = regMgr.registry;
 
             Assert.IsFalse(registry.IsInstalled("Example"), "Example should start uninstalled");
 
             File.WriteAllText(path, "Not really a DLL, are we?");
 
-            ksp.Scan();
+            ksp.Scan(regMgr);
 
             Assert.IsTrue(registry.IsInstalled("Example"), "Example installed");
 
@@ -100,7 +101,7 @@ namespace Tests.Core
             Assert.IsFalse(registry.IsInstalled("NewMod"));
             File.WriteAllText(path2, "This text is irrelevant. You will be assimilated");
 
-            ksp.Scan();
+            ksp.Scan(regMgr);
 
             Assert.IsTrue(registry.IsInstalled("NewMod"));
         }

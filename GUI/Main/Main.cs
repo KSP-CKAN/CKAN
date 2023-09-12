@@ -436,8 +436,7 @@ namespace CKAN.GUI
         {
             if (CurrentInstance != null)
             {
-                var registry = RegistryManager.Instance(Manager.CurrentInstance);
-                registry?.Dispose();
+                RegistryManager.DisposeInstance(Manager.CurrentInstance);
             }
 
             // Stop all running play time timers

@@ -278,6 +278,14 @@ namespace CKAN
             return registryCache[directory];
         }
 
+        public static void DisposeInstance(GameInstance inst)
+        {
+            if (registryCache.TryGetValue(inst.CkanDir(), out RegistryManager regMgr))
+            {
+                regMgr.Dispose();
+            }
+        }
+
         /// <summary>
         /// Call Dispose on all the registry managers in the cache.
         /// Useful for exiting without Dispose-related exceptions.
@@ -351,6 +359,7 @@ namespace CKAN
             log.InfoFormat("Creating new CKAN registry at {0}", path);
             registry = Registry.Empty();
             AscertainDefaultRepo();
+            gameInstance.Scan(this);
             Save();
         }
 

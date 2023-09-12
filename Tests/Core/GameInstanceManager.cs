@@ -252,7 +252,7 @@ namespace Tests.Core
             Assert.IsTrue(detectedBgVersion == new UnmanagedModuleVersion(bgVersion.ToString()));
 
             // Tidy up.
-            CKAN.RegistryManager.Instance(newKSP).ReleaseLock();
+            CKAN.RegistryManager.DisposeInstance(newKSP);
             Directory.Delete(tempdir, true);
         }
 

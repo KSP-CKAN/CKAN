@@ -55,7 +55,7 @@ namespace CKAN
         /// Will initialise a CKAN instance in the KSP dir if it does not already exist,
         /// if the directory contains a valid KSP install.
         /// </summary>
-        public GameInstance(IGame game, string gameDir, string name, IUser user, bool scan = true)
+        public GameInstance(IGame game, string gameDir, string name, IUser user)
         {
             this.game = game;
             Name = name;
@@ -74,7 +74,7 @@ namespace CKAN
             }
             if (Valid)
             {
-                SetupCkanDirectories(scan);
+                SetupCkanDirectories();
                 LoadCompatibleVersions();
             }
         }
@@ -97,7 +97,7 @@ namespace CKAN
         /// <summary>
         /// Create the CKAN directory and any supporting files.
         /// </summary>
-        private void SetupCkanDirectories(bool scan = true)
+        private void SetupCkanDirectories()
         {
             log.InfoFormat("Initialising {0}", CkanDir());
 
@@ -109,12 +109,6 @@ namespace CKAN
                 User.RaiseMessage(Properties.Resources.GameInstanceSettingUp);
                 User.RaiseMessage(Properties.Resources.GameInstanceCreatingDir, CkanDir());
                 txFileMgr.CreateDirectory(CkanDir());
-
-                if (scan)
-                {
-                    User.RaiseMessage(Properties.Resources.GameInstanceScanning);
-                    Scan();
-                }
             }
 
             playTime = TimeLog.Load(TimeLog.GetPath(CkanDir())) ?? new TimeLog();
@@ -352,9 +346,8 @@ namespace CKAN
         /// <returns>
         /// True if found anything different, false if same as before
         /// </returns>
-        public bool Scan()
+        public bool Scan(RegistryManager manager)
         {
-            var manager = RegistryManager.Instance(this);
             using (TransactionScope tx = CkanTransaction.CreateTransactionScope())
             {
                 var oldDlls = manager.registry.InstalledDlls.ToHashSet();

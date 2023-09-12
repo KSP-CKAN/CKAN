@@ -47,11 +47,7 @@ namespace Tests.Data
 
         public void Dispose()
         {
-            var registry = RegistryManager.Instance(KSP);
-            if (registry != null)
-            {
-                registry.Dispose();
-            }
+            RegistryManager.DisposeInstance(KSP);
 
             var i = 6;
             while (--i > 0)

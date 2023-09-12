@@ -32,7 +32,7 @@ namespace CKAN.NetKAN.Validators
                 if (!string.IsNullOrEmpty(package))
                 {
                     var zip       = new ZipFile(package);
-                    var inst      = new GameInstance(_game, "/", "dummy", null, false);
+                    var inst      = new GameInstance(_game, "/", "dummy", null);
                     var badCrafts = _moduleService.GetCrafts(mod, zip, inst)
                         .Where(f => !AllowedCraftPath(inst.ToRelativeGameDir(f.destination)))
                         .ToList();
