@@ -239,21 +239,26 @@ namespace CKAN.GUI
 
         private void Refresh(GUIMod gmod)
         {
-            Util.Invoke(this, () => VersionsListView.Items.Clear());
             var startingModule = gmod;
             var items          = getItems(gmod, getVersions(gmod));
-            // Make sure user hasn't switched to another mod while we were loading
-            if (startingModule.Equals(visibleGuiModule))
+            Util.Invoke(this, () =>
             {
-                // Only show checkboxes for non-DLC modules
-                VersionsListView.CheckBoxes = !gmod.ToModule().IsDLC;
-                ignoreItemCheck = true;
-                VersionsListView.Items.AddRange(items);
-                ignoreItemCheck = false;
-                // Check installability in the background because it's slow
-                UseWaitCursor = true;
-                Task.Factory.StartNew(() => checkInstallable(items));
-            }
+                VersionsListView.BeginUpdate();
+                VersionsListView.Items.Clear();
+                // Make sure user hasn't switched to another mod while we were loading
+                if (startingModule.Equals(visibleGuiModule))
+                {
+                    // Only show checkboxes for non-DLC modules
+                    VersionsListView.CheckBoxes = !gmod.ToModule().IsDLC;
+                    ignoreItemCheck = true;
+                    VersionsListView.Items.AddRange(items);
+                    ignoreItemCheck = false;
+                    VersionsListView.EndUpdate();
+                    // Check installability in the background because it's slow
+                    UseWaitCursor = true;
+                    Task.Factory.StartNew(() => checkInstallable(items));
+                }
+            });
         }
     }
 }

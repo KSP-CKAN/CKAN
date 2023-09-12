@@ -12,6 +12,9 @@ namespace CKAN.GUI
         {
             // Tell the base class that we want to draw things ourselves
             OwnerDraw = true;
+
+            // Don't flicker the entire listview when we change one row's background
+            DoubleBuffered = true;
         }
 
         protected override void OnDrawColumnHeader(DrawListViewColumnHeaderEventArgs e)
