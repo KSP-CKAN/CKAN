@@ -39,9 +39,9 @@ namespace CKAN.GUI
             EnableMainWindow();
         }
 
-        private void InstallationHistory_OnSelectedModuleChanged(GUIMod m)
+        private void InstallationHistory_OnSelectedModuleChanged(CkanModule m)
         {
-            ActiveModInfo = m;
+            ActiveModInfo = new GUIMod(m, RegistryManager.Instance(CurrentInstance).registry, CurrentInstance.VersionCriteria());
         }
 
     }

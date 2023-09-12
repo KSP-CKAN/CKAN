@@ -55,7 +55,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Invoked when the user selects a module
         /// </summary>
-        public event Action<GUIMod> OnSelectedModuleChanged;
+        public event Action<CkanModule> OnSelectedModuleChanged;
 
         /// <summary>
         /// Invoked when the user clicks the Install toolbar button
@@ -204,8 +204,7 @@ namespace CKAN.GUI
                                   .FirstOrDefault();
             if (mod != null)
             {
-                OnSelectedModuleChanged?.Invoke(new GUIMod(
-                    mod, registry, inst.VersionCriteria()));
+                OnSelectedModuleChanged?.Invoke(mod);
             }
         }
 
