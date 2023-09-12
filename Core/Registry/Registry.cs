@@ -993,50 +993,23 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Registers the given DLL as having been installed. This provides some support
-        /// for pre-CKAN modules.
-        ///
-        /// Does nothing if the DLL is already part of an installed module.
+        /// Set the list of manually installed DLLs to the given mapping.
+        /// Files registered to a mod are not allowed and will be ignored.
+        /// Does nothing if we already have this data.
         /// </summary>
-        public void RegisterDll(GameInstance ksp, string absolute_path)
+        /// <param name="dlls">Mapping from identifier to relative path</param>
+        public bool SetDlls(Dictionary<string, string> dlls)
         {
-            log.DebugFormat("Registering DLL {0}", absolute_path);
-            string relative_path = ksp.ToRelativeGameDir(absolute_path);
-
-            string dllIdentifier = ksp.DllPathToIdentifier(relative_path);
-            if (dllIdentifier == null)
+            var unregistered = dlls.Where(kvp => !installed_files.ContainsKey(kvp.Value))
+                                   .ToDictionary();
+            if (!unregistered.DictionaryEquals(installed_dlls))
             {
-                log.WarnFormat("Attempted to index {0} which is not a DLL", relative_path);
-                return;
+                EnlistWithTransaction();
+                InvalidateInstalledCaches();
+                installed_dlls = new Dictionary<string, string>(unregistered);
+                return true;
             }
-
-            string owner;
-            if (installed_files.TryGetValue(relative_path, out owner))
-            {
-                log.InfoFormat(
-                    "Not registering {0}, it belongs to {1}",
-                    relative_path,
-                    owner
-                );
-                return;
-            }
-
-            EnlistWithTransaction();
-
-            log.InfoFormat("Registering {0} from {1}", dllIdentifier, relative_path);
-
-            // We're fine if we overwrite an existing key.
-            installed_dlls[dllIdentifier] = relative_path;
-        }
-
-        /// <summary>
-        /// Clears knowledge of all DLLs from the registry.
-        /// </summary>
-        public void ClearDlls()
-        {
-            log.Debug("Clearing DLLs");
-            EnlistWithTransaction();
-            installed_dlls = new Dictionary<string, string>();
+            return false;
         }
 
         public bool SetDlcs(Dictionary<string, ModuleVersion> dlcs)

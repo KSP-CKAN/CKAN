@@ -335,67 +335,6 @@ namespace CKAN
 
         #endregion
 
-        #region CKAN/GameData Directory Maintenance
-
-        /// <summary>
-        /// Clears the registry of DLL data, and refreshes it by scanning GameData.
-        /// This operates as a transaction.
-        /// This *saves* the registry upon completion.
-        /// TODO: This would likely be better in the Registry class itself.
-        /// </summary>
-        /// <returns>
-        /// True if found anything different, false if same as before
-        /// </returns>
-        public bool Scan(RegistryManager manager)
-        {
-            using (TransactionScope tx = CkanTransaction.CreateTransactionScope())
-            {
-                var oldDlls = manager.registry.InstalledDlls.ToHashSet();
-                manager.registry.ClearDlls();
-                foreach (var dir in Enumerable.Repeat<string>(game.PrimaryModDirectoryRelative, 1)
-                                              .Concat(game.AlternateModDirectoriesRelative)
-                                              .Select(d => ToAbsoluteGameDir(d)))
-                {
-                    log.DebugFormat("Scanning for DLLs in {0}", dir);
-
-                    if (Directory.Exists(dir))
-                    {
-                        // EnumerateFiles is *case-sensitive* in its pattern, which causes
-                        // DLL files to be missed under Linux; we have to pick .dll, .DLL, or scanning
-                        // GameData *twice*.
-                        //
-                        // The least evil is to walk it once, and filter it ourselves.
-                        var files = Directory
-                            .EnumerateFiles(dir, "*", SearchOption.AllDirectories)
-                            .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
-                            .Select(CKANPathUtils.NormalizePath)
-                            .Where(absPath => !game.StockFolders.Any(f =>
-                                ToRelativeGameDir(absPath).StartsWith($"{f}/")));
-
-                        foreach (string dll in files)
-                        {
-                            manager.registry.RegisterDll(this, dll);
-                        }
-                    }
-                }
-                var newDlls = manager.registry.InstalledDlls.ToHashSet();
-                bool dllChanged = !oldDlls.SetEquals(newDlls);
-                bool dlcChanged = manager.ScanDlc();
-
-                if (dllChanged || dlcChanged)
-                {
-                    manager.Save(false);
-                }
-
-                log.Debug("Scan completed, committing transaction");
-                tx.Complete();
-
-                return dllChanged || dlcChanged;
-            }
-        }
-
-        #endregion
-
         /// <summary>
         /// Returns path relative to this KSP's GameDir.
         /// </summary>

@@ -87,7 +87,7 @@ namespace Tests.Core
 
             File.WriteAllText(path, "Not really a DLL, are we?");
 
-            ksp.Scan(regMgr);
+            regMgr.ScanUnmanagedFiles();
 
             Assert.IsTrue(registry.IsInstalled("Example"), "Example installed");
 
@@ -101,7 +101,7 @@ namespace Tests.Core
             Assert.IsFalse(registry.IsInstalled("NewMod"));
             File.WriteAllText(path2, "This text is irrelevant. You will be assimilated");
 
-            ksp.Scan(regMgr);
+            regMgr.ScanUnmanagedFiles();
 
             Assert.IsTrue(registry.IsInstalled("NewMod"));
         }

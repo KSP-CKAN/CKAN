@@ -323,7 +323,7 @@ namespace CKAN.CmdLine
         {
             try
             {
-                inst.Scan(RegistryManager.Instance(inst));
+                RegistryManager.Instance(inst).ScanUnmanagedFiles();
                 return Exit.OK;
             }
             catch (InconsistentKraken kraken)

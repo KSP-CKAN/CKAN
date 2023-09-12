@@ -28,7 +28,6 @@ namespace Tests.Core.Relationships
 
             manager = CKAN.RegistryManager.Instance(ksp.KSP);
             registry = manager.registry;
-            registry.ClearDlls();
             registry.Installed().Clear();
 
             var repos = new SortedDictionary<string, Repository>()

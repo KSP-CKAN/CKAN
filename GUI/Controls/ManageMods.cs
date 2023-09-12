@@ -1164,14 +1164,14 @@ namespace CKAN.GUI
         {
             log.Info("Updating the mod list");
 
-            Main.Instance.Wait.AddLogMessage(Properties.Resources.MainRepoScanning);
             var regMgr = RegistryManager.Instance(Main.Instance.CurrentInstance);
-            Main.Instance.CurrentInstance.Scan(regMgr);
-
-            GameVersionCriteria versionCriteria = Main.Instance.CurrentInstance.VersionCriteria();
             IRegistryQuerier registry = regMgr.registry;
 
+            Main.Instance.Wait.AddLogMessage(Properties.Resources.MainRepoScanning);
+            regMgr.ScanUnmanagedFiles();
+
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingInstalled);
+            var versionCriteria = Main.Instance.CurrentInstance.VersionCriteria();
             var gui_mods = new HashSet<GUIMod>();
             gui_mods.UnionWith(
                 registry.InstalledModules

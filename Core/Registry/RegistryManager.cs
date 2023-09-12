@@ -361,7 +361,7 @@ namespace CKAN
             log.InfoFormat("Creating new CKAN registry at {0}", path);
             registry = Registry.Empty();
             AscertainDefaultRepo();
-            gameInstance.Scan(this);
+            ScanUnmanagedFiles();
             Save();
         }
 
@@ -543,6 +543,46 @@ namespace CKAN
             {
                 name = inst.identifier,
             };
+
+        /// <summary>
+        /// Scans the game folder for DLL data and updates the registry.
+        /// This operates as a transaction.
+        /// </summary>
+        /// <returns>
+        /// True if found anything different, false if same as before
+        /// </returns>
+        public bool ScanUnmanagedFiles()
+        {
+            log.Info(Properties.Resources.GameInstanceScanning);
+            using (var tx = CkanTransaction.CreateTransactionScope())
+            {
+                var dlls = Enumerable.Repeat<string>(gameInstance.game.PrimaryModDirectoryRelative, 1)
+                                     .Concat(gameInstance.game.AlternateModDirectoriesRelative)
+                                     .Select(relDir => gameInstance.ToAbsoluteGameDir(relDir))
+                                     .Where(absDir => Directory.Exists(absDir))
+                                     // EnumerateFiles is *case-sensitive* in its pattern, which causes
+                                     // DLL files to be missed under Linux; we have to pick .dll, .DLL, or scanning
+                                     // GameData *twice*.
+                                     //
+                                     // The least evil is to walk it once, and filter it ourselves.
+                                     .SelectMany(absDir => Directory.EnumerateFiles(absDir, "*",
+                                                                                    SearchOption.AllDirectories))
+                                     .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
+                                     .Select(absPath => gameInstance.ToRelativeGameDir(absPath))
+                                     .Where(relPath => !gameInstance.game.StockFolders.Any(f => relPath.StartsWith($"{f}/")))
+                                     .ToDictionary(relPath => gameInstance.DllPathToIdentifier(relPath),
+                                                   relPath => relPath);
+                log.DebugFormat("Registering DLLs: {0}", string.Join(", ", dlls.Values));
+                var dllChanged = registry.SetDlls(dlls);
+
+                var dlcChanged = ScanDlc();
+
+                log.Debug("Scan completed, committing transaction");
+                tx.Complete();
+
+                return dllChanged || dlcChanged;
+            }
+        }
 
         /// <summary>
         /// Look for DLC installed in GameData

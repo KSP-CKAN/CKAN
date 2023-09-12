@@ -59,7 +59,7 @@ namespace CKAN.GUI
             AddStatusMessage(Properties.Resources.MainRepoScanning);
             log.Debug("Scanning before repo update");
             var regMgr = RegistryManager.Instance(CurrentInstance);
-            bool scanChanged = CurrentInstance.Scan(regMgr);
+            bool scanChanged = regMgr.ScanUnmanagedFiles();
 
             AddStatusMessage(Properties.Resources.MainRepoUpdating);
 

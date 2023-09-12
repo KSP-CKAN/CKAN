@@ -23,7 +23,6 @@ namespace Tests.Core.Net
             ksp = new DisposableKSP();
             manager = CKAN.RegistryManager.Instance(ksp.KSP);
             registry = manager.registry;
-            registry.ClearDlls();
             registry.Installed().Clear();
             downloader = new NetAsyncDownloader(new NullUser());
         }

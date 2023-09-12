@@ -21,14 +21,16 @@ namespace CKAN.ConsoleUI {
         /// Initialize the screen
         /// </summary>
         /// <param name="mgr">Game instance manager object containing the current instance</param>
+        /// <param name="regMgr">Registry manager for the current instance</param>
         /// <param name="game">The game of the current instance, used for getting known versions</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
         /// <param name="regTheme">The theme to use for the registry update flow, if needed</param>
-        public ModListScreen(GameInstanceManager mgr, IGame game, bool dbg, ConsoleTheme regTheme)
+        public ModListScreen(GameInstanceManager mgr, RegistryManager regMgr, IGame game, bool dbg, ConsoleTheme regTheme)
         {
             debug    = dbg;
             manager  = mgr;
-            registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+            this.regMgr   = regMgr;
+            this.registry = regMgr.registry;
 
             moduleList = new ConsoleListBox<CkanModule>(
                 1, 4, -1, -2,
@@ -480,7 +482,7 @@ namespace CKAN.ConsoleUI {
         private bool ScanForMods()
         {
             try {
-                manager.CurrentInstance.Scan(RegistryManager.Instance(manager.CurrentInstance));
+                regMgr.ScanUnmanagedFiles();
             } catch (InconsistentKraken ex) {
                 // Warn about inconsistent state
                 RaiseError(Properties.Resources.ModListScanBad, ex.InconsistenciesPretty);
@@ -513,7 +515,8 @@ namespace CKAN.ConsoleUI {
             if (!prevInst.Equals(manager.CurrentInstance)) {
                 // Game instance changed, reset everything
                 plan.Reset();
-                registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+                regMgr = RegistryManager.Instance(manager.CurrentInstance);
+                registry = regMgr.registry;
                 RefreshList(theme);
             } else if (!registry.Repositories.DictionaryEquals(prevRepos)) {
                 // Repos changed, need to fetch them
@@ -577,8 +580,8 @@ namespace CKAN.ConsoleUI {
         {
             try {
                 // Save the mod list as "depends" without the installed versions.
-                // Beacause that's supposed to work.
-                RegistryManager.Instance(manager.CurrentInstance).Save(true);
+                // Because that's supposed to work.
+                regMgr.Save(true);
                 string path = Path.Combine(
                     manager.CurrentInstance.CkanDir(),
                     $"{Properties.Resources.ModListExportPrefix}-{manager.CurrentInstance.Name}.ckan"
@@ -655,9 +658,10 @@ namespace CKAN.ConsoleUI {
             return total;
         }
 
-        private GameInstanceManager manager;
-        private Registry            registry;
-        private bool                debug;
+        private GameInstanceManager   manager;
+        private RegistryManager       regMgr;
+        private Registry              registry;
+        private bool                  debug;
 
         private ConsoleField               searchBox;
         private ConsoleListBox<CkanModule> moduleList;

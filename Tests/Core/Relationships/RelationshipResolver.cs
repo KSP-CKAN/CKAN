@@ -897,7 +897,14 @@ namespace Tests.Core.Relationships
         {
             using (var ksp = new DisposableKSP ())
             {
-                registry.RegisterDll(ksp.KSP, Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), "ModuleManager.dll"));
+                registry.SetDlls(new Dictionary<string, string>()
+                {
+                    {
+                        "ModuleManager",
+                        ksp.KSP.ToRelativeGameDir(Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP),
+                                                               "ModuleManager.dll"))
+                    }
+                });
 
                 var depends = new List<CKAN.RelationshipDescriptor>();
                 depends.Add(new CKAN.ModuleRelationshipDescriptor { name = "ModuleManager" });

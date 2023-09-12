@@ -245,8 +245,14 @@ namespace Tests.Core.Registry
                 }");
                 registry.AddAvailable(mod);
                 GameInstance gameInst = gameInstWrapper.KSP;
-                registry.RegisterDll(gameInst, Path.Combine(
-                    gameInst.GameDir(), "GameData", $"{mod.identifier}.dll"));
+                registry.SetDlls(new Dictionary<string, string>()
+                {
+                    {
+                        mod.identifier,
+                        gameInst.ToRelativeGameDir(Path.Combine(gameInst.GameDir(),
+                                                                "GameData", $"{mod.identifier}.dll"))
+                    }
+                });
                 GameVersionCriteria crit = new GameVersionCriteria(mod.ksp_version);
 
                 // Act
