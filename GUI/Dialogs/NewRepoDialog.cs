@@ -57,6 +57,17 @@ namespace CKAN.GUI
             RepoUrlTextBox.Text = r.uri.ToString();
         }
 
+        private void ReposListBox_DoubleClick(object sender, EventArgs r)
+        {
+            if (ReposListBox.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
         private void RepoUrlTextBox_TextChanged(object sender, EventArgs e)
         {
             RepoOK.Enabled = RepoNameTextBox.Text.Length > 0

@@ -71,6 +71,7 @@ namespace CKAN.GUI
             this.ReposListBox.Size = new System.Drawing.Size(464, 355);
             this.ReposListBox.TabIndex = 8;
             this.ReposListBox.SelectedIndexChanged += new System.EventHandler(this.ReposListBox_SelectedIndexChanged);
+            this.ReposListBox.DoubleClick += new System.EventHandler(this.ReposListBox_DoubleClick);
             //
             // RepoNameHeader
             //

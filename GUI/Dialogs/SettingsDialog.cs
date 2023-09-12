@@ -290,7 +290,11 @@ namespace CKAN.GUI
 
         private void EnableDisableRepoButtons()
         {
-            DeleteRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0;
+            DeleteRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0
+                // Don't allow deletion of the last repo; the default will be
+                // re-added automatically at load, so empty repos isn't a valid state.
+                // To remove the last one, add its replacement first.
+                && ReposListBox.Items.Count > 1;
             UpRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0
                 && ReposListBox.SelectedIndices[0] > 0
                 && ReposListBox.SelectedIndices[0] < ReposListBox.Items.Count;
