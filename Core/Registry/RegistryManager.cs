@@ -367,15 +367,15 @@ namespace CKAN
 
         private void AscertainDefaultRepo()
         {
-            var repositories = registry.Repositories ?? new SortedDictionary<string, Repository>();
-
-            if (repositories.Count == 0)
+            if (registry.Repositories == null || registry.Repositories.Count == 0)
             {
-                repositories.Add(Repository.default_ckan_repo_name,
-                    new Repository(Repository.default_ckan_repo_name, gameInstance.game.DefaultRepositoryURL));
+                log.InfoFormat("Fabricating repository: {0}", gameInstance.game.DefaultRepositoryURL);
+                var name = $"{gameInstance.game.ShortName}-{Repository.default_ckan_repo_name}";
+                registry.RepositoriesSet(new SortedDictionary<string, Repository>
+                {
+                    { name, new Repository(name, gameInstance.game.DefaultRepositoryURL) }
+                });
             }
-
-            registry.Repositories = repositories;
         }
 
         private string Serialize()

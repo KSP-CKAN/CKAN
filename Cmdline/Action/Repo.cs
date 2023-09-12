@@ -308,8 +308,8 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            repositories.Add(options.name,
-                new Repository(options.name, options.uri, manager.registry.Repositories.Count));
+            manager.registry.RepositoriesAdd(new Repository(options.name, options.uri,
+                                                            manager.registry.Repositories.Count));
 
             User.RaiseMessage(Properties.Resources.RepoAdded, options.name, options.uri);
             manager.Save();
@@ -392,7 +392,7 @@ namespace CKAN.CmdLine
                 User.RaiseMessage(Properties.Resources.RepoForgetRemoving, name);
             }
 
-            repos.Remove(name);
+            manager.registry.RepositoriesRemove(name);
             var remaining = repos.Values.OrderBy(r => r.priority).ToArray();
             for (int i = 0; i < remaining.Length; ++i)
             {
@@ -415,11 +415,11 @@ namespace CKAN.CmdLine
 
             if (repositories.ContainsKey(Repository.default_ckan_repo_name))
             {
-                repositories.Remove(Repository.default_ckan_repo_name);
+                manager.registry.RepositoriesRemove(Repository.default_ckan_repo_name);
             }
 
-            repositories.Add(Repository.default_ckan_repo_name, new Repository(
-                    Repository.default_ckan_repo_name, uri, repositories.Count));
+            manager.registry.RepositoriesAdd(
+                new Repository(Repository.default_ckan_repo_name, uri, repositories.Count));
 
             User.RaiseMessage(Properties.Resources.RepoSet, Repository.default_ckan_repo_name, uri);
             manager.Save();

@@ -577,7 +577,8 @@ namespace CKAN.GUI
         {
             // Flipping enabled here hides the main form itself.
             Enabled = false;
-            new SettingsDialog(currentUser).ShowDialog(this);
+            var dialog = new SettingsDialog(RegistryManager.Instance(CurrentInstance), currentUser);
+            dialog.ShowDialog(this);
             Enabled = true;
         }
 

@@ -23,7 +23,8 @@ namespace CKAN.ConsoleUI {
             ksp = k;
             try {
                 // If we can't parse the registry, just leave the repo list blank
-                registry = RegistryManager.Instance(ksp).registry;
+                regMgr   = RegistryManager.Instance(ksp);
+                registry = regMgr.registry;
             } catch { }
 
             // Show the repositories if we can
@@ -209,8 +210,8 @@ namespace CKAN.ConsoleUI {
         {
             if (repoEditList != null) {
                 // Copy the temp list of repositories to the registry
-                registry.Repositories = repoEditList;
-                RegistryManager.Instance(ksp).Save();
+                registry.RepositoriesSet(repoEditList);
+                regMgr.Save();
             }
             if (compatEditList != null) {
                 ksp.SetCompatibleVersions(compatEditList);
@@ -228,8 +229,9 @@ namespace CKAN.ConsoleUI {
             }
         }
 
-        private GameInstance ksp;
-        private Registry     registry;
+        private GameInstance    ksp;
+        private RegistryManager regMgr;
+        private Registry        registry;
 
         private SortedDictionary<string, Repository> repoEditList;
         private ConsoleListBox<Repository>           repoList;

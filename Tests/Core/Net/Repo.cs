@@ -37,13 +37,13 @@ namespace Tests.Core.Net
         [Test]
         public void UpdateRegistryTarGz()
         {
-            manager.registry.Repositories = new SortedDictionary<string, Repository>()
+            manager.registry.RepositoriesSet(new SortedDictionary<string, Repository>()
             {
                 {
                     "testRepo",
                     new Repository("testRepo", TestData.TestKANTarGz())
                 }
-            };
+            });
             CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
             // Test we've got an expected module.
             CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new GameVersionCriteria(GameVersion.Parse("0.25.0")));
@@ -54,13 +54,13 @@ namespace Tests.Core.Net
         [Test]
         public void UpdateRegistryZip()
         {
-            manager.registry.Repositories = new SortedDictionary<string, Repository>()
+            manager.registry.RepositoriesSet(new SortedDictionary<string, Repository>()
             {
                 {
                     "testRepo",
                     new Repository("testRepo", TestData.TestKANZip())
                 }
-            };
+            });
             CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
 
             // Test we've got an expected module.
@@ -74,13 +74,13 @@ namespace Tests.Core.Net
         {
             Assert.DoesNotThrow(delegate
             {
-                manager.registry.Repositories = new SortedDictionary<string, Repository>()
+                manager.registry.RepositoriesSet(new SortedDictionary<string, Repository>()
                 {
                     {
                         "testRepo",
                         new Repository("testRepo", TestData.BadKANTarGz())
                     }
-                };
+                });
                 CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
             });
         }
@@ -90,13 +90,13 @@ namespace Tests.Core.Net
         {
             Assert.DoesNotThrow(delegate
             {
-                manager.registry.Repositories = new SortedDictionary<string, Repository>()
+                manager.registry.RepositoriesSet(new SortedDictionary<string, Repository>()
                 {
                     {
                         "testRepo",
                         new Repository("testRepo", TestData.BadKANZip())
                     }
-                };
+                });
                 CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
             });
         }

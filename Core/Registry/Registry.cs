@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -60,22 +61,61 @@ namespace CKAN
             }
         }
 
-        // Index of which mods provide what, format:
-        //   providers[provided] = { provider1, provider2, ... }
-        // Built by BuildProvidesIndex, makes LatestAvailableWithProvides much faster.
+        /// <summary>
+        /// Returns all the activated registries.
+        /// ReadOnly to ensure calling code can't make changes that
+        /// should invalidate the available mod caches.
+        /// </summary>
         [JsonIgnore]
-        private Dictionary<string, HashSet<AvailableModule>> providers
-            = new Dictionary<string, HashSet<AvailableModule>>();
+        public ReadOnlyDictionary<string, Repository> Repositories
+            => repositories == null
+                ? null
+                : new ReadOnlyDictionary<string, Repository>(repositories);
 
         /// <summary>
-        /// Returns all the activated registries, sorted by name
+        /// Wrapper around assignment to this.repositories that invalidates
+        /// available mod caches
         /// </summary>
-        [JsonIgnore] public SortedDictionary<string, Repository> Repositories
+        /// <param name="value">The repositories dictionary to replace our current one</param>
+        public void RepositoriesSet(SortedDictionary<string, Repository> value)
         {
-            get => this.repositories;
+            EnlistWithTransaction();
+            InvalidateAvailableModCaches();
+            repositories = value;
+        }
+        /// <summary>
+        /// Wrapper around this.repositories.Clear() that invalidates
+        /// available mod caches
+        /// </summary>
+        public void RepositoriesClear()
+        {
+            EnlistWithTransaction();
+            InvalidateAvailableModCaches();
+            repositories.Clear();
+        }
 
-            // TODO writable only so it can be initialized, better ideas welcome
-            set { this.repositories = value; }
+        /// <summary>
+        /// Wrapper around this.repositories.Add() that invalidates
+        /// available mod caches
+        /// </summary>
+        /// <param name="repo"></param>
+        public void RepositoriesAdd(Repository repo)
+        {
+            EnlistWithTransaction();
+            InvalidateAvailableModCaches();
+            repositories.Add(repo.name, repo);
+        }
+
+        /// <summary>
+        /// Wrapper around this.repositories.Remove() that invalidates
+        /// available mod caches
+        /// </summary>
+        /// <param name="name"></param>
+        public void RepositoriesRemove(string name)
+        {
+            EnlistWithTransaction();
+            InvalidateAvailableModCaches();
+            repositories.Remove(name);
         }
 
         /// <summary>
@@ -251,7 +291,6 @@ namespace CKAN
             }
 
             registry_version = LATEST_REGISTRY_VERSION;
-            BuildProvidesIndex();
         }
 
         /// <summary>
@@ -301,7 +340,6 @@ namespace CKAN
             this.installed_files   = installed_files;
             this.repositories      = repositories;
             registry_version       = LATEST_REGISTRY_VERSION;
-            BuildProvidesIndex();
         }
 
         // If deserialsing, we don't want everything put back directly,
@@ -436,6 +474,7 @@ namespace CKAN
 
         #endregion
 
+        #region Stateful views of data from repo data manager based on which repos we use
         /// <summary>
         /// Set the etag values of the repositories
         /// Provided in the API so it can enlist us in the transaction
@@ -466,7 +505,7 @@ namespace CKAN
             EnlistWithTransaction();
             // Clear current modules
             available_modules = new Dictionary<string, AvailableModule>();
-            providers.Clear();
+            providers = null;
             // Add the new modules
             foreach (CkanModule module in newAvail)
             {
@@ -483,11 +522,19 @@ namespace CKAN
         public bool HasAnyAvailable() => available_modules.Count > 0;
 
         [JsonIgnore]
+        private CompatibilitySorter sorter;
+
+        [JsonIgnore]
         private Dictionary<string, ModuleTag> tags;
 
         [JsonIgnore]
         private HashSet<string> untagged;
 
+        // Index of which mods provide what, format:
+        //   providers[provided] = { provider1, provider2, ... }
+        // Built by BuildProvidesIndex, makes LatestAvailableWithProvides much faster.
+        [JsonIgnore]
+        private Dictionary<string, HashSet<AvailableModule>> providers;
         /// <summary>
         /// Mark a given module as available.
         /// </summary>
@@ -535,6 +582,48 @@ namespace CKAN
         public void RemoveAvailable(CkanModule module)
         {
             RemoveAvailable(module.identifier, module.version);
+        }
+
+        private void InvalidateAvailableModCaches()
+        {
+            log.Debug("Invalidating available mod caches");
+            // These member variables hold references to data from our repo data manager
+            // that reflects how the available modules look to this instance.
+            // Clear them when we have reason to believe the upstream available modules have changed.
+            providers = null;
+            sorter    = null;
+            tags      = null;
+            untagged  = null;
+        }
+
+        private void InvalidateInstalledCaches()
+        {
+            log.Debug("Invalidating installed mod caches");
+            // These member variables hold references to data that depends on installed modules.
+            // Clear them when the installed modules have changed.
+            sorter = null;
+        }
+
+        /// <summary>
+        /// Partition all CkanModules in available_modules into
+        /// compatible and incompatible groups.
+        /// </summary>
+        /// <param name="versCrit">Version criteria to determine compatibility</param>
+        public CompatibilitySorter SetCompatibleVersion(GameVersionCriteria versCrit)
+        {
+            if (!versCrit.Equals(sorter?.CompatibleVersions))
+            {
+                if (providers == null)
+                {
+                    BuildProvidesIndex();
+                }
+                sorter = new CompatibilitySorter(
+                    versCrit, available_modules, providers,
+                    installed_modules,
+                    InstalledDlls.ToHashSet(), InstalledDlc
+                );
+            }
+            return sorter;
         }
 
         /// <summary>
@@ -650,7 +739,7 @@ namespace CKAN
         /// </summary>
         private void BuildProvidesIndex()
         {
-            providers.Clear();
+            providers = new Dictionary<string, HashSet<AvailableModule>>();
             foreach (AvailableModule am in available_modules.Values)
             {
                 BuildProvidesIndexFor(am);
@@ -662,6 +751,10 @@ namespace CKAN
         /// </summary>
         private void BuildProvidesIndexFor(AvailableModule am)
         {
+            if (providers == null)
+            {
+                providers = new Dictionary<string, HashSet<AvailableModule>>();
+            }
             foreach (CkanModule m in am.AllAvailable())
             {
                 foreach (string provided in m.ProvidesList)
@@ -754,6 +847,10 @@ namespace CKAN
             IEnumerable<CkanModule> installed = null,
             IEnumerable<CkanModule> toInstall = null)
         {
+            if (providers == null)
+            {
+                BuildProvidesIndex();
+            }
             if (providers.TryGetValue(identifier, out HashSet<AvailableModule> provs))
             {
                 // For each AvailableModule, we want the latest one matching our constraints
@@ -773,6 +870,7 @@ namespace CKAN
             }
         }
 
+        #endregion
         /// <summary>
         /// Returns the specified CkanModule with the version specified,
         /// or null if it does not exist.
@@ -849,9 +947,13 @@ namespace CKAN
                 installed_files[file] = mod.identifier;
             }
 
-            // Finally, register our module proper.
-            var installed = new InstalledModule(inst, mod, relative_files, autoInstalled);
-            installed_modules.Add(mod.identifier, installed);
+            // Finally register our module proper
+            installed_modules.Add(mod.identifier,
+                                  new InstalledModule(inst, mod, relative_files, autoInstalled));
+
+            // Installing and uninstalling mods can change compatibility due to conflicts,
+            // so we'll need to reset the compatibility sorter
+            InvalidateInstalledCaches();
         }
 
         /// <summary>
@@ -893,6 +995,9 @@ namespace CKAN
 
             // Bye bye, module, it's been nice having you visit.
             installed_modules.Remove(module);
+            // Installing and uninstalling mods can change compatibility due to conflicts,
+            // so we'll need to reset the compatibility sorter
+            InvalidateInstalledCaches();
         }
 
         /// <summary>
@@ -948,6 +1053,7 @@ namespace CKAN
             if (!dlcs.DictionaryEquals(installed))
             {
                 EnlistWithTransaction();
+                InvalidateInstalledCaches();
 
                 foreach (var identifier in installed.Keys.Except(dlcs.Keys))
                 {
@@ -1317,23 +1423,5 @@ namespace CKAN
                 // Return the host from each group
                 .Select(grp => grp.Key);
 
-        /// <summary>
-        /// Partition all CkanModules in available_modules into
-        /// compatible and incompatible groups.
-        /// </summary>
-        /// <param name="versCrit">Version criteria to determine compatibility</param>
-        public void SetCompatibleVersion(GameVersionCriteria versCrit)
-        {
-            if (!versCrit.Equals(sorter?.CompatibleVersions))
-            {
-                sorter = new CompatibilitySorter(
-                    versCrit, available_modules, providers,
-                    installed_modules,
-                    InstalledDlls.ToHashSet(), InstalledDlc
-                );
-            }
-        }
-
-        [JsonIgnore] private CompatibilitySorter sorter;
     }
 }

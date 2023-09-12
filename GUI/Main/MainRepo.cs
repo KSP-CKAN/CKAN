@@ -142,7 +142,8 @@ namespace CKAN.GUI
                         {
                             foreach (var r in skip)
                             {
-                                registry.Repositories.Remove(r.name);
+                                registry.RepositoriesRemove(r.name);
+                                needRegistrySave = true;
                             }
                         }
 

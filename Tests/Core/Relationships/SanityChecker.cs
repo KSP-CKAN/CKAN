@@ -31,7 +31,7 @@ namespace Tests.Core.Relationships
             registry.ClearDlls();
             registry.Installed().Clear();
 
-            registry.Repositories = new SortedDictionary<string, Repository>()
+            var repos = new SortedDictionary<string, Repository>()
             {
                 {
                     "testRepo",
@@ -39,6 +39,7 @@ namespace Tests.Core.Relationships
                 }
             };
             var downloader = new NetAsyncDownloader(new NullUser());
+            registry.RepositoriesSet(repos);
             CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
         }
 

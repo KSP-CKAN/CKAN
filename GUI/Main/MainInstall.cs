@@ -377,7 +377,9 @@ namespace CKAN.GUI
                             }
                             // Now pretend they clicked the menu option for the settings
                             Enabled = false;
-                            new SettingsDialog(currentUser).ShowDialog(this);
+                            new SettingsDialog(RegistryManager.Instance(CurrentInstance),
+                                               currentUser)
+                                .ShowDialog(this);
                             Enabled = true;
                         }
                         break;
