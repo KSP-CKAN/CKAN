@@ -10,6 +10,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.Versioning;
 using CKAN.Games.KerbalSpaceProgram;
 
 using Tests.Core.Configuration;
@@ -20,38 +21,10 @@ namespace Tests.Core
     [TestFixture]
     public class ModuleInstallerTests
     {
-        private string flag_path;
-        private string dogezip;
-        private CkanModule dogemod;
-
-        private string mm_zip;
-        private CkanModule mm_mod;
-
-        private string mission_zip;
-        private CkanModule mission_mod;
-
-        private IUser nullUser;
+        private const string flag_path = "DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png";
+        private IUser nullUser = new NullUser();
 
         private DisposableKSP ksp = new DisposableKSP();
-
-        [SetUp]
-        public void Setup()
-        {
-            // By setting these for every test, we can make sure our tests can change
-            // them any way they like without harming other tests.
-
-            flag_path = "DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png";
-            dogezip = TestData.DogeCoinFlagZip();
-            dogemod = TestData.DogeCoinFlag_101_module();
-
-            mm_zip = TestData.ModuleManagerZip();
-            mm_mod = TestData.ModuleManagerModule();
-
-            mission_zip = TestData.MissionZip();
-            mission_mod = TestData.MissionModule();
-
-            nullUser = new NullUser();
-        }
 
         [OneTimeTearDown]
         public void TearDown()
@@ -890,21 +863,135 @@ namespace Tests.Core
         }
 
         [Test]
-        public void SuccessfulReplacement()
+        public void Replace_WithCompatibleModule_Succeeds()
         {
-            //Need to set up an installed DogeCoinFlag-101replaced mod that can validly be replaced by DogeTokenFlag-101
+            // Arrange
+            var user = new NullUser();
+            using (var inst = new DisposableKSP())
+            using (var repo = new TemporaryRepository(
+                @"{
+                    ""spec_version"": ""v1.4"",
+                    ""identifier"":   ""replaced"",
+                    ""version"":      ""1.0"",
+                    ""ksp_version"":  ""1.12"",
+                    ""replaced_by"": {
+                        ""name"": ""replacer""
+                    },
+                    ""download"":     ""https://awesomemod.example/AwesomeMod.zip"",
+                }",
+                @"{
+                    ""spec_version"": ""v1.4"",
+                    ""identifier"":   ""replacer"",
+                    ""version"":      ""1.0"",
+                    ""ksp_version"":  ""1.12"",
+                    ""download"":     ""https://awesomemod.example/AwesomeMod.zip"",
+                    ""install"": [
+                        {
+                            ""file"": ""DogeCoinFlag-1.01/GameData/DogeCoinFlag"",
+                            ""install_to"": ""GameData"",
+                            ""filter"" : [ ""Thumbs.db"", ""README.md"" ],
+                            ""filter_regexp"" : ""\\.bak$""
+                        }
+                    ]
+                }"))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var config = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager = new GameInstanceManager(nullUser, config)
+                {
+                    CurrentInstance = inst.KSP
+                })
+            {
+                var regMgr = CKAN.RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
+                var registry = regMgr.registry;
+                IRegistryQuerier querier = registry;
+                registry.RepositoriesAdd(repo.repo);
+                var replaced = registry.GetModuleByVersion("replaced", "1.0");
+                Assert.IsNotNull(replaced, "Replaced module should exist");
+                var replacer = registry.GetModuleByVersion("replacer", "1.0");
+                Assert.IsNotNull(replacer, "Replacer module should exist");
+                var installer = new CKAN.ModuleInstaller(inst.KSP, manager.Cache, nullUser);
+                HashSet<string> possibleConfigOnlyDirs = null;
+                var downloader = new NetAsyncModulesDownloader(user, manager.Cache);
 
-            // Assert that DogeCoinFlag has been removed and DogeTokenFlag has been installed
-            Assert.IsTrue(true);
+                // Act
+                registry.RegisterModule(replaced, Enumerable.Empty<string>(), inst.KSP, false);
+                manager.Cache.Store(replaced, TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
+                var replacement = querier.GetReplacement(replaced.identifier,
+                                                         new GameVersionCriteria(new GameVersion(1, 12)));
+                installer.Replace(Enumerable.Repeat<ModuleReplacement>(replacement, 1),
+                                  new RelationshipResolverOptions(),
+                                  downloader, ref possibleConfigOnlyDirs, regMgr,
+                                  false);
+
+                // Assert
+                CollectionAssert.AreEqual(
+                    Enumerable.Repeat<CkanModule>(replacer, 1),
+                    registry.InstalledModules.Select(im => im.Module));
+            }
         }
 
         [Test]
-        public void UnsuccessfulReplacement()
+        public void Replace_WithIncompatibleModule_Fails()
         {
-            //Need to set up an installed DogeCoinFlag-101-replaced mod in a KSP version too low for DogeTokenFlag-101
+            // Arrange
+            var user = new NullUser();
+            using (var inst = new DisposableKSP())
+            using (var repo = new TemporaryRepository(
+                @"{
+                    ""spec_version"": ""v1.4"",
+                    ""identifier"":   ""replaced"",
+                    ""version"":      ""1.0"",
+                    ""ksp_version"":  ""1.12"",
+                    ""replaced_by"": {
+                        ""name"": ""replacer""
+                    },
+                    ""download"":     ""https://awesomemod.example/AwesomeMod.zip"",
+                }",
+                @"{
+                    ""spec_version"": ""v1.4"",
+                    ""identifier"":   ""replacer"",
+                    ""version"":      ""1.0"",
+                    ""ksp_version"":  ""1.12"",
+                    ""download"":     ""https://awesomemod.example/AwesomeMod.zip"",
+                    ""install"": [
+                        {
+                            ""file"": ""DogeCoinFlag-1.01/GameData/DogeCoinFlag"",
+                            ""install_to"": ""GameData"",
+                            ""filter"" : [ ""Thumbs.db"", ""README.md"" ],
+                            ""filter_regexp"" : ""\\.bak$""
+                        }
+                    ]
+                }"))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var config = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager = new GameInstanceManager(nullUser, config)
+                {
+                    CurrentInstance = inst.KSP
+                })
+            {
+                var regMgr = CKAN.RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
+                var registry = regMgr.registry;
+                IRegistryQuerier querier = registry;
+                registry.RepositoriesAdd(repo.repo);
+                var replaced = registry.GetModuleByVersion("replaced", "1.0");
+                Assert.IsNotNull(replaced, "Replaced module should exist");
+                var replacer = registry.GetModuleByVersion("replacer", "1.0");
+                Assert.IsNotNull(replacer, "Replacer module should exist");
+                var installer = new CKAN.ModuleInstaller(inst.KSP, manager.Cache, nullUser);
+                var downloader = new NetAsyncModulesDownloader(user, manager.Cache);
 
-            // Assert that DogeCoinFlag has not been removed and DogeTokenFlag has not been installed
-            Assert.IsTrue(true);
+                // Act
+                registry.RegisterModule(replaced, Enumerable.Empty<string>(), inst.KSP, false);
+                manager.Cache.Store(replaced, TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
+                var replacement = querier.GetReplacement(replaced.identifier,
+                                                         new GameVersionCriteria(new GameVersion(1, 11)));
+
+                // Assert
+                Assert.IsNull(replacement);
+                CollectionAssert.AreEqual(
+                    Enumerable.Repeat<CkanModule>(replaced, 1),
+                    registry.InstalledModules.Select(im => im.Module));
+            }
         }
     }
 }
