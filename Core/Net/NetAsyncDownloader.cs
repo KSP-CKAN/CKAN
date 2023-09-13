@@ -177,6 +177,8 @@ namespace CKAN
             log.Debug("Waiting for downloads to finish...");
             complete_or_canceled.WaitOne();
 
+            log.Debug("Downloads finished");
+
             var old_download_canceled = download_canceled;
             // Set up the inter-thread comms for next time. Can not be done at the start
             // of the method as the thread could pause on the opening line long enough for
@@ -184,6 +186,8 @@ namespace CKAN
 
             download_canceled = false;
             complete_or_canceled.Reset();
+
+            log.Debug("Completion signal reset");
 
             // If the user cancelled our progress, then signal that.
             if (old_download_canceled)
@@ -247,6 +251,7 @@ namespace CKAN
             }
 
             // Yay! Everything worked!
+            log.Debug("Done downloading");
         }
 
         private static readonly Regex certificatePattern = new Regex(
@@ -294,22 +299,25 @@ namespace CKAN
             {
                 log.DebugFormat("Beginning download of {0}", string.Join(", ", dl.target.urls));
 
-                if (!downloads.Contains(dl))
+                lock (dlMutex)
                 {
-                    // We need a new variable for our closure/lambda, hence index = 1+prev max
-                    int index = downloads.Count;
+                    if (!downloads.Contains(dl))
+                    {
+                        // We need a new variable for our closure/lambda, hence index = 1+prev max
+                        int index = downloads.Count;
 
-                    downloads.Add(dl);
+                        downloads.Add(dl);
 
-                    // Schedule for us to get back progress reports.
-                    dl.Progress += (ProgressPercentage, BytesReceived, TotalBytesToReceive) =>
-                        FileProgressReport(index, ProgressPercentage, BytesReceived, TotalBytesToReceive);
+                        // Schedule for us to get back progress reports.
+                        dl.Progress += (ProgressPercentage, BytesReceived, TotalBytesToReceive) =>
+                            FileProgressReport(index, ProgressPercentage, BytesReceived, TotalBytesToReceive);
 
-                    // And schedule a notification if we're done (or if something goes wrong)
-                    dl.Done += (sender, args, etag) =>
-                        FileDownloadComplete(index, args.Error, args.Cancelled, etag);
+                        // And schedule a notification if we're done (or if something goes wrong)
+                        dl.Done += (sender, args, etag) =>
+                            FileDownloadComplete(index, args.Error, args.Cancelled, etag);
+                    }
+                    queuedDownloads.Remove(dl);
                 }
-                queuedDownloads.Remove(dl);
 
                 // Encode spaces to avoid confusing URL parsers
                 User.RaiseMessage(Properties.Resources.NetAsyncDownloaderDownloading,
@@ -451,6 +459,8 @@ namespace CKAN
             {
                 log.InfoFormat("Finished downloading {0}", string.Join(", ", dl.target.urls));
                 dl.bytesLeft = 0;
+                // Let calling code find out how big this file is
+                dl.target.size = new FileInfo(dl.target.filename).Length;
             }
 
             PopFromQueue(doneUri.Host);

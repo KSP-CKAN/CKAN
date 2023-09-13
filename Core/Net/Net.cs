@@ -140,7 +140,7 @@ namespace CKAN
         {
             public List<Uri> urls     { get; private set; }
             public string    filename { get; private set; }
-            public long      size     { get; private set; }
+            public long      size     { get; set; }
             public string    mimeType { get; private set; }
 
             public DownloadTarget(List<Uri> urls, string filename = null, long size = 0, string mimeType = "")

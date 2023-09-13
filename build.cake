@@ -2,7 +2,7 @@
 #addin "nuget:?package=semver&version=2.0.6"
 #addin "nuget:?package=Cake.Docker&version=0.11.0"
 #tool "nuget:?package=ILRepack&version=2.0.18"
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.11.1"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.12.0"
 
 using System.Text.RegularExpressions;
 using Semver;
