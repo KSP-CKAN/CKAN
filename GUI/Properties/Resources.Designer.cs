@@ -794,6 +794,9 @@ namespace CKAN.GUI.Properties {
         internal static string MainRepoContacting {
             get { return (string)(ResourceManager.GetObject("MainRepoContacting", resourceCulture)); }
         }
+        internal static string LoadingCachedRepoData {
+            get { return (string)(ResourceManager.GetObject("LoadingCachedRepoData", resourceCulture)); }
+        }
         internal static string MainRepoScanning {
             get { return (string)(ResourceManager.GetObject("MainRepoScanning", resourceCulture)); }
         }

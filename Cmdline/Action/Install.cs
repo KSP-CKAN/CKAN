@@ -9,20 +9,16 @@ namespace CKAN.CmdLine
 {
     public class Install : ICommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(Install));
-
-        public IUser user { get; set; }
-        private GameInstanceManager manager;
-
         /// <summary>
         /// Initialize the install command object
         /// </summary>
         /// <param name="mgr">GameInstanceManager containing our instances</param>
         /// <param name="user">IUser object for interaction</param>
-        public Install(GameInstanceManager mgr, IUser user)
+        public Install(GameInstanceManager mgr, RepositoryDataManager repoData, IUser user)
         {
-            manager   = mgr;
-            this.user = user;
+            manager       = mgr;
+            this.repoData = repoData;
+            this.user     = user;
         }
 
         /// <summary>
@@ -102,7 +98,9 @@ namespace CKAN.CmdLine
             }
             else
             {
-                Search.AdjustModulesCase(instance, options.modules);
+                Search.AdjustModulesCase(instance,
+                                         RegistryManager.Instance(instance, repoData).registry,
+                                         options.modules);
             }
 
             if (options.modules.Count == 0)
@@ -128,7 +126,7 @@ namespace CKAN.CmdLine
                 install_ops.without_enforce_consistency = true;
             }
 
-            RegistryManager regMgr = RegistryManager.Instance(instance);
+            var regMgr = RegistryManager.Instance(instance, repoData);
             List<string> modules = options.modules;
 
             for (bool done = false; !done; )
@@ -269,5 +267,11 @@ namespace CKAN.CmdLine
 
             return Exit.OK;
         }
+
+        private GameInstanceManager   manager;
+        private RepositoryDataManager repoData;
+        private IUser                 user;
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(Install));
     }
 }

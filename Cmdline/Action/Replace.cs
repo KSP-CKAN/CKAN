@@ -9,17 +9,12 @@ namespace CKAN.CmdLine
 {
     public class Replace : ICommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(Replace));
-
-        private IUser User;
-
-        public Replace(CKAN.GameInstanceManager mgr, IUser user)
+        public Replace(CKAN.GameInstanceManager mgr, RepositoryDataManager repoData, IUser user)
         {
-            manager = mgr;
-            User = user;
+            manager       = mgr;
+            this.repoData = repoData;
+            this.user     = user;
         }
-
-        private GameInstanceManager manager;
 
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
@@ -33,8 +28,8 @@ namespace CKAN.CmdLine
             if (options.modules.Count == 0 && ! options.replace_all)
             {
                 // What? No mods specified?
-                User.RaiseMessage("{0}: ckan replace Mod [Mod2, ...]", Properties.Resources.Usage);
-                User.RaiseMessage("  or   ckan replace --all");
+                user.RaiseMessage("{0}: ckan replace Mod [Mod2, ...]", Properties.Resources.Usage);
+                user.RaiseMessage("  or   ckan replace --all");
                 return Exit.BADOPT;
             }
 
@@ -47,7 +42,7 @@ namespace CKAN.CmdLine
                     allow_incompatible = options.allow_incompatible
                 };
 
-            var regMgr = RegistryManager.Instance(instance);
+            var regMgr = RegistryManager.Instance(instance, repoData);
             var registry = regMgr.registry;
             var to_replace = new List<ModuleReplacement>();
 
@@ -132,27 +127,27 @@ namespace CKAN.CmdLine
                     }
                     catch (ModuleNotFoundKraken kraken)
                     {
-                        User.RaiseMessage(Properties.Resources.ReplaceModuleNotFound, kraken.module);
+                        user.RaiseMessage(Properties.Resources.ReplaceModuleNotFound, kraken.module);
                     }
                 }
             }
             if (to_replace.Count() != 0)
             {
-                User.RaiseMessage("");
-                User.RaiseMessage(Properties.Resources.Replacing);
-                User.RaiseMessage("");
+                user.RaiseMessage("");
+                user.RaiseMessage(Properties.Resources.Replacing);
+                user.RaiseMessage("");
                 foreach (ModuleReplacement r in to_replace)
                 {
-                    User.RaiseMessage(Properties.Resources.ReplaceFound,
+                    user.RaiseMessage(Properties.Resources.ReplaceFound,
                         r.ReplaceWith.identifier, r.ReplaceWith.version,
                         r.ToReplace.identifier, r.ToReplace.version);
                 }
 
-                bool ok = User.RaiseYesNoDialog(Properties.Resources.ReplaceContinuePrompt);
+                bool ok = user.RaiseYesNoDialog(Properties.Resources.ReplaceContinuePrompt);
 
                 if (!ok)
                 {
-                    User.RaiseMessage(Properties.Resources.ReplaceCancelled);
+                    user.RaiseMessage(Properties.Resources.ReplaceCancelled);
                     return Exit.ERROR;
                 }
 
@@ -160,22 +155,28 @@ namespace CKAN.CmdLine
                 try
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
-                    new ModuleInstaller(instance, manager.Cache, User).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(User, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
-                    User.RaiseMessage("");
+                    new ModuleInstaller(instance, manager.Cache, user).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(user, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
+                    user.RaiseMessage("");
                 }
                 catch (DependencyNotSatisfiedKraken ex)
                 {
-                    User.RaiseMessage(Properties.Resources.ReplaceDependencyNotSatisfied,
+                    user.RaiseMessage(Properties.Resources.ReplaceDependencyNotSatisfied,
                         ex.parent, ex.module, ex.version, instance.game.ShortName);
                 }
             }
             else
             {
-                User.RaiseMessage(Properties.Resources.ReplaceNotFound);
+                user.RaiseMessage(Properties.Resources.ReplaceNotFound);
                 return Exit.OK;
             }
 
             return Exit.OK;
         }
+
+        private GameInstanceManager   manager;
+        private RepositoryDataManager repoData;
+        private IUser                 user;
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(Replace));
     }
 }

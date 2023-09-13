@@ -43,7 +43,7 @@ namespace CKAN.GUI
                         GetFiles(dlg.FileNames),
                         currentUser,
                         (CkanModule mod) => ManageMods.MarkModForInstall(mod.identifier, false),
-                        RegistryManager.Instance(CurrentInstance).registry
+                        RegistryManager.Instance(CurrentInstance, repoData).registry
                     );
                 }
                 finally

@@ -16,10 +16,12 @@ namespace CKAN.ConsoleUI {
         /// Initialize the screen.
         /// </summary>
         /// <param name="mgr">Game instance manager object for getting hte Instances</param>
+        /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="first">If true, this is the first screen after the splash, so Ctrl+Q exits, else Esc exits</param>
-        public GameInstanceListScreen(GameInstanceManager mgr, bool first = false)
+        public GameInstanceListScreen(GameInstanceManager mgr, RepositoryDataManager repoData, bool first = false)
         {
             manager = mgr;
+            this.repoData = repoData;
 
             AddObject(new ConsoleLabel(
                 1, 2, -1,
@@ -73,7 +75,7 @@ namespace CKAN.ConsoleUI {
                     new List<string>()
                 );
 
-                if (TryGetInstance(theme, instanceList.Selection, (ConsoleTheme th) => { d.Run(th, (ConsoleTheme thm) => {}); })) {
+                if (TryGetInstance(theme, instanceList.Selection, repoData, (ConsoleTheme th) => { d.Run(th, (ConsoleTheme thm) => {}); })) {
                     try {
                         manager.SetCurrentInstance(instanceList.Selection.Name);
                     } catch (Exception ex) {
@@ -106,10 +108,10 @@ namespace CKAN.ConsoleUI {
                     string.Format(Properties.Resources.InstanceListLoadingInstance, instanceList.Selection.Name),
                     new List<string>()
                 );
-                TryGetInstance(theme, instanceList.Selection, (ConsoleTheme th) => { d.Run(theme, (ConsoleTheme thm) => {}); });
+                TryGetInstance(theme, instanceList.Selection, repoData, (ConsoleTheme th) => { d.Run(theme, (ConsoleTheme thm) => {}); });
                 // Still launch the screen even if the load fails,
                 // because you need to be able to fix the name/path.
-                LaunchSubScreen(theme, new GameInstanceEditScreen(manager, instanceList.Selection));
+                LaunchSubScreen(theme, new GameInstanceEditScreen(manager, repoData, instanceList.Selection));
 
                 return true;
             });
@@ -166,11 +168,12 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="ksp">Game instance</param>
+        /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="render">Function that shows a loading message</param>
         /// <returns>
         /// True if successfully loaded, false if it's locked or the registry was corrupted, etc.
         /// </returns>
-        public static bool TryGetInstance(ConsoleTheme theme, GameInstance ksp, Action<ConsoleTheme> render)
+        public static bool TryGetInstance(ConsoleTheme theme, GameInstance ksp, RepositoryDataManager repoData, Action<ConsoleTheme> render)
         {
             bool retry;
             do {
@@ -180,7 +183,7 @@ namespace CKAN.ConsoleUI {
                     // Show loading message
                     render(theme);
                     // Try to get the lock; this will throw if another instance is in there
-                    RegistryManager.Instance(ksp);
+                    RegistryManager.Instance(ksp, repoData);
 
                 } catch (RegistryInUseKraken k) {
 
@@ -234,6 +237,7 @@ namespace CKAN.ConsoleUI {
         }
 
         private GameInstanceManager          manager;
+        private RepositoryDataManager        repoData;
         private ConsoleListBox<GameInstance> instanceList;
 
         private static readonly string defaultMark = Symbols.checkmark;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 
 using NUnit.Framework;
 using Tests.Data;
@@ -15,35 +16,27 @@ namespace Tests.Core.Registry
     [TestFixture]
     public class RegistryLive
     {
-        private static string test_registry = TestData.TestRegistry();
-        private DisposableKSP temp_ksp;
-        private CKAN.IRegistryQuerier registry;
-
-        [SetUp]
-        public void Setup()
-        {
-            // Make a fake KSP install
-            temp_ksp = new DisposableKSP(null, test_registry);
-
-            // Easy short-cut
-            registry = CKAN.RegistryManager.Instance(temp_ksp.KSP).registry;
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            temp_ksp.Dispose();
-        }
-
         [Test]
         public void LatestAvailable()
         {
-            CkanModule module =
-                registry.LatestAvailable("AGExt", new GameVersionCriteria (temp_ksp.KSP.Version()));
+            var user = new NullUser();
+            var repo = new Repository("test", "https://github.com/");
+            using (var temp_ksp = new DisposableKSP())
+            using (var repoData = new TemporaryRepositoryData(user, new Dictionary<Repository, RepositoryData>
+            {
+                { repo, RepositoryData.FromJson(TestData.TestRepository(), null) },
+            }))
+            {
+                var registry = RegistryManager.Instance(temp_ksp.KSP, repoData.Manager).registry;
+                registry.RepositoriesClear();
+                registry.RepositoriesAdd(repo);
 
-            Assert.AreEqual("AGExt", module.identifier);
-            Assert.AreEqual("1.24a", module.version.ToString());
+                CkanModule module =
+                    registry.LatestAvailable("AGExt", new GameVersionCriteria(temp_ksp.KSP.Version()));
+
+                Assert.AreEqual("AGExt", module.identifier);
+                Assert.AreEqual("1.24a", module.version.ToString());
+            }
         }
     }
 }
-

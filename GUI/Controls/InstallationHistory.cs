@@ -18,10 +18,10 @@ namespace CKAN.GUI
             InitializeComponent();
         }
 
-        public void LoadHistory(GameInstance inst, GUIConfiguration config)
+        public void LoadHistory(GameInstance inst, GUIConfiguration config, RepositoryDataManager repoData)
         {
             this.inst     = inst;
-            this.registry = RegistryManager.Instance(inst).registry;
+            this.registry = RegistryManager.Instance(inst, repoData).registry;
             this.config   = config;
             Util.Invoke(this, () =>
             {

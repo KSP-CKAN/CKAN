@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 using log4net;
 
@@ -15,11 +16,10 @@ namespace CKAN
     /// </summary>
     public interface IRegistryQuerier
     {
+        ReadOnlyDictionary<string, Repository> Repositories { get; }
         IEnumerable<InstalledModule> InstalledModules { get; }
         IEnumerable<string>          InstalledDlls    { get; }
         IDictionary<string, ModuleVersion> InstalledDlc { get; }
-
-        int? DownloadCount(string identifier);
 
         /// <summary>
         /// Returns a simple array of the latest compatible module for each identifier for

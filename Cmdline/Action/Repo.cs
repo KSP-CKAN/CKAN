@@ -101,7 +101,10 @@ namespace CKAN.CmdLine
 
     public class Repo : ISubCommand
     {
-        public Repo() { }
+        public Repo(RepositoryDataManager repoData)
+        {
+            this.repoData = repoData;
+        }
 
         // This is required by ISubCommand
         public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
@@ -217,7 +220,7 @@ namespace CKAN.CmdLine
 
         private int ListRepositories()
         {
-            var repositories = RegistryManager.Instance(MainClass.GetGameInstance(Manager)).registry.Repositories;
+            var repositories = RegistryManager.Instance(MainClass.GetGameInstance(Manager), repoData).registry.Repositories;
 
             string priorityHeader = Properties.Resources.RepoListPriorityHeader;
             string nameHeader     = Properties.Resources.RepoListNameHeader;
@@ -255,7 +258,7 @@ namespace CKAN.CmdLine
 
         private int AddRepository(RepoAddOptions options)
         {
-            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
+            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager), repoData);
 
             if (options.name == null)
             {
@@ -324,7 +327,7 @@ namespace CKAN.CmdLine
                 User.RaiseMessage("priority <name> <priority> - {0}", Properties.Resources.ArgumentMissing);
                 return Exit.BADOPT;
             }
-            var manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
+            var manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager), repoData);
             if (options.priority < 0 || options.priority > manager.registry.Repositories.Count)
             {
                 User.RaiseMessage(Properties.Resources.RepoPriorityInvalid,
@@ -375,7 +378,7 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
+            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager), repoData);
             log.DebugFormat("About to forget repository '{0}'", options.name);
 
             var repos = manager.registry.Repositories;
@@ -410,7 +413,7 @@ namespace CKAN.CmdLine
             var uri = options.uri ?? inst.game.DefaultRepositoryURL.ToString();
 
             log.DebugFormat("About to add repository '{0}' - '{1}'", Repository.default_ckan_repo_name, uri);
-            RegistryManager manager = RegistryManager.Instance(inst);
+            RegistryManager manager = RegistryManager.Instance(inst, repoData);
             var repositories = manager.registry.Repositories;
 
             if (repositories.ContainsKey(Repository.default_ckan_repo_name))
@@ -427,8 +430,9 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private GameInstanceManager Manager { get; set; }
-        private IUser               User    { get; set; }
+        private GameInstanceManager   Manager;
+        private RepositoryDataManager repoData;
+        private IUser                 User;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
     }

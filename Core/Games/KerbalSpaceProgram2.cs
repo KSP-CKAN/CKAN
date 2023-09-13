@@ -187,6 +187,12 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public List<GameVersion> KnownVersions => versions;
 
+        public GameVersion[] EmbeddedGameVersions
+            => JsonConvert.DeserializeObject<GameVersion[]>(
+                new StreamReader(Assembly.GetExecutingAssembly()
+                                         .GetManifestResourceStream("CKAN.builds-ksp2.json"))
+                    .ReadToEnd());
+
         public GameVersion[] ParseBuildsJson(JToken json)
             => json.ToObject<GameVersion[]>();
 

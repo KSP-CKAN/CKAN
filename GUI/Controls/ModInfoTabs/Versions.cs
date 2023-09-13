@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 
+using Autofac;
+
 using CKAN.Versioning;
 
 namespace CKAN.GUI
@@ -15,6 +17,7 @@ namespace CKAN.GUI
         public Versions()
         {
             InitializeComponent();
+            repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
         }
 
         /// <summary>
@@ -51,8 +54,9 @@ namespace CKAN.GUI
             }
         }
 
-        private GUIMod visibleGuiModule = null;
-        private bool   ignoreItemCheck  = false;
+        private RepositoryDataManager repoData;
+        private GUIMod                visibleGuiModule;
+        private bool                  ignoreItemCheck;
 
         private void VersionsListView_ItemCheck(object sender, ItemCheckEventArgs e)
         {
@@ -96,7 +100,7 @@ namespace CKAN.GUI
         private bool allowInstall(CkanModule module)
         {
             GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
-            IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
+            IRegistryQuerier registry = RegistryManager.Instance(currentInstance, repoData).registry;
             var installer = new ModuleInstaller(
                 currentInstance,
                 Main.Instance.Manager.Cache,
@@ -136,7 +140,7 @@ namespace CKAN.GUI
         private List<CkanModule> getVersions(GUIMod gmod)
         {
             GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
-            IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
+            IRegistryQuerier registry = RegistryManager.Instance(currentInstance, repoData).registry;
 
             // Can't be functional because AvailableByIdentifier throws exceptions
             var versions = new List<CkanModule>();
@@ -162,7 +166,7 @@ namespace CKAN.GUI
         private ListViewItem[] getItems(GUIMod gmod, List<CkanModule> versions)
         {
             GameInstance     currentInstance  = Main.Instance.Manager.CurrentInstance;
-            IRegistryQuerier registry         = RegistryManager.Instance(currentInstance).registry;
+            IRegistryQuerier registry         = RegistryManager.Instance(currentInstance, repoData).registry;
             ModuleVersion    installedVersion = registry.InstalledVersion(gmod.Identifier);
 
             var items = versions.OrderByDescending(module => module.version)
@@ -198,7 +202,7 @@ namespace CKAN.GUI
         private void checkInstallable(ListViewItem[] items)
         {
             GameInstance     currentInstance = Main.Instance.Manager.CurrentInstance;
-            IRegistryQuerier registry        = RegistryManager.Instance(currentInstance).registry;
+            IRegistryQuerier registry        = RegistryManager.Instance(currentInstance, repoData).registry;
             bool latestCompatibleVersionAlreadyFound = false;
             var installer = new ModuleInstaller(
                 currentInstance,

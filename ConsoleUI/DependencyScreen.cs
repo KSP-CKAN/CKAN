@@ -16,15 +16,16 @@ namespace CKAN.ConsoleUI {
         /// Initialize the screen
         /// </summary>
         /// <param name="mgr">Game instance manager containing instances</param>
+        /// <param name="registry">Registry of the current instance for finding mods</param>
         /// <param name="cp">Plan of mods to add and remove</param>
         /// <param name="rej">Mods that the user saw and did not select, in this pass or a previous pass</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public DependencyScreen(GameInstanceManager mgr, ChangePlan cp, HashSet<string> rej, bool dbg) : base()
+        public DependencyScreen(GameInstanceManager mgr, Registry registry, ChangePlan cp, HashSet<string> rej, bool dbg) : base()
         {
             debug     = dbg;
             manager   = mgr;
             plan      = cp;
-            registry  = RegistryManager.Instance(manager.CurrentInstance).registry;
+            this.registry = registry;
             installer = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
             rejected  = rej;
 
@@ -89,7 +90,7 @@ namespace CKAN.ConsoleUI {
             dependencyList.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 if (dependencyList.Selection != null) {
                     LaunchSubScreen(theme, new ModInfoScreen(
-                        manager, plan,
+                        manager, registry, plan,
                         dependencyList.Selection.module,
                         debug));
                 }

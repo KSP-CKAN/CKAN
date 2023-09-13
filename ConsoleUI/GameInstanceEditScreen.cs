@@ -16,14 +16,15 @@ namespace CKAN.ConsoleUI {
         /// Initialize the Screen
         /// </summary>
         /// <param name="mgr">Game instance manager containing the instances</param>
+        /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="k">Instance to edit</param>
-        public GameInstanceEditScreen(GameInstanceManager mgr, GameInstance k)
+        public GameInstanceEditScreen(GameInstanceManager mgr, RepositoryDataManager repoData, GameInstance k)
             : base(mgr, k.Name, k.GameDir())
         {
             ksp = k;
             try {
                 // If we can't parse the registry, just leave the repo list blank
-                regMgr   = RegistryManager.Instance(ksp);
+                regMgr   = RegistryManager.Instance(ksp, repoData);
                 registry = regMgr.registry;
             } catch { }
 

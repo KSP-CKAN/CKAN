@@ -20,26 +20,28 @@ namespace Tests.Core.Relationships
         private CKAN.RegistryManager manager;
         private CKAN.Registry registry;
         private DisposableKSP ksp;
+        private TemporaryRepositoryData repoData;
 
         [OneTimeSetUp]
         public void Setup()
         {
             ksp = new DisposableKSP();
 
-            manager = CKAN.RegistryManager.Instance(ksp.KSP);
-            registry = manager.registry;
-            registry.Installed().Clear();
-
             var repos = new SortedDictionary<string, Repository>()
             {
                 {
-                    "testRepo",
-                    new Repository("testRepo", TestData.TestKANZip())
+                    "testRepo", new Repository("testRepo", TestData.TestKANZip())
                 }
             };
-            var downloader = new NetAsyncDownloader(new NullUser());
+            var user = new NullUser();
+            repoData = new TemporaryRepositoryData(user, repos.Values);
+
+            manager = CKAN.RegistryManager.Instance(ksp.KSP, repoData.Manager);
+            registry = manager.registry;
+            registry.Installed().Clear();
+
             registry.RepositoriesSet(repos);
-            CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
+            var downloader = new NetAsyncDownloader(user);
         }
 
         [OneTimeTearDown]
@@ -47,6 +49,7 @@ namespace Tests.Core.Relationships
         {
             manager.Dispose();
             ksp.Dispose();
+            repoData.Dispose();
         }
 
         [Test]

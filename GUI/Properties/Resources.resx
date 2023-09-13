@@ -336,6 +336,7 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="MainRecommendationsTitle" xml:space="preserve"><value>Choose recommended, suggested, or supporting mods</value></data>
   <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>No recommended, suggested, or supporting mods found.</value></data>
   <data name="MainRepoWaitTitle" xml:space="preserve"><value>Updating repositories</value></data>
+  <data name="LoadingCachedRepoData" xml:space="preserve"><value>Loading cached repository data</value></data>
   <data name="MainRepoScanning" xml:space="preserve"><value>Scanning for DLCs and manually installed modules...</value></data>
   <data name="MainRepoContacting" xml:space="preserve"><value>Contacting repository...</value></data>
   <data name="MainRepoUpdating" xml:space="preserve"><value>Updating repositories...</value></data>

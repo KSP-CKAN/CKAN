@@ -38,6 +38,7 @@ namespace CKAN.Games
         // Which versions exist and which is present?
         void              RefreshVersions();
         List<GameVersion> KnownVersions { get; }
+        GameVersion[]     EmbeddedGameVersions { get; }
         GameVersion[]     ParseBuildsJson(JToken json);
         GameVersion       DetectVersion(DirectoryInfo where);
         string            CompatibleVersionsFile { get; }

@@ -2,9 +2,11 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using System.Reflection;
 
 using Autofac;
 using log4net;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using CKAN.DLC;
@@ -221,6 +223,15 @@ namespace CKAN.Games.KerbalSpaceProgram
                 return versions;
             }
         }
+
+        public GameVersion[] EmbeddedGameVersions
+            => JsonConvert.DeserializeObject<GameVersionProviders.JBuilds>(
+                new StreamReader(Assembly.GetExecutingAssembly()
+                                         .GetManifestResourceStream("CKAN.builds-ksp.json"))
+                    .ReadToEnd())
+                .Builds
+                .Select(b => GameVersion.Parse(b.Value))
+                .ToArray();
 
         public GameVersion[] ParseBuildsJson(JToken json)
             => json.ToObject<GameVersionProviders.JBuilds>()

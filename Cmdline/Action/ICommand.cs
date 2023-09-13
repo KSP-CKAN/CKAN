@@ -2,6 +2,6 @@
 {
     public interface ICommand
     {
-        int RunCommand(CKAN.GameInstance ksp, object options);
+        int RunCommand(CKAN.GameInstance instance, object options);
     }
 }

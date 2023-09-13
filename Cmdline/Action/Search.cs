@@ -8,11 +8,10 @@ namespace CKAN.CmdLine
 {
     public class Search : ICommand
     {
-        public IUser user { get; set; }
-
-        public Search(IUser user)
+        public Search(RepositoryDataManager repoData, IUser user)
         {
-            this.user = user;
+            this.repoData = repoData;
+            this.user     = user;
         }
 
         public int RunCommand(CKAN.GameInstance ksp, object raw_options)
@@ -129,7 +128,7 @@ namespace CKAN.CmdLine
             term   = String.IsNullOrWhiteSpace(term)   ? string.Empty : CkanModule.nonAlphaNums.Replace(term, "");
             author = String.IsNullOrWhiteSpace(author) ? string.Empty : CkanModule.nonAlphaNums.Replace(author, "");
 
-            var registry = RegistryManager.Instance(ksp).registry;
+            var registry = RegistryManager.Instance(ksp, repoData).registry;
 
             if (!searchIncompatible)
             {
@@ -178,14 +177,13 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Convert case insensitive mod names from the user to case sensitive identifiers
         /// </summary>
-        /// <param name="ksp">Game instance forgetting the mods</param>
+        /// <param name="instance">Game instance forgetting the mods</param>
         /// <param name="modules">List of strings to convert, format 'identifier' or 'identifier=version'</param>
-        public static void AdjustModulesCase(CKAN.GameInstance ksp, List<string> modules)
+        public static void AdjustModulesCase(CKAN.GameInstance instance, Registry registry, List<string> modules)
         {
-            IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
             // Get the list of all compatible and incompatible mods
-            List<CkanModule> mods = registry.CompatibleModules(ksp.VersionCriteria()).ToList();
-            mods.AddRange(registry.IncompatibleModules(ksp.VersionCriteria()));
+            List<CkanModule> mods = registry.CompatibleModules(instance.VersionCriteria()).ToList();
+            mods.AddRange(registry.IncompatibleModules(instance.VersionCriteria()));
             for (int i = 0; i < modules.Count; ++i)
             {
                 Match match = CkanModule.idAndVersionMatcher.Match(modules[i]);
@@ -203,5 +201,7 @@ namespace CKAN.CmdLine
             }
         }
 
+        private RepositoryDataManager repoData;
+        private IUser                 user;
     }
 }

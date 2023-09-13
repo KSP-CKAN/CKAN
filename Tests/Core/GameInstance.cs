@@ -77,36 +77,6 @@ namespace Tests.Core
         }
 
         [Test]
-        public void ScanDlls()
-        {
-            string path = Path.Combine(ksp.game.PrimaryModDirectory(ksp), "Example.dll");
-            var regMgr = CKAN.RegistryManager.Instance(ksp);
-            var registry = regMgr.registry;
-
-            Assert.IsFalse(registry.IsInstalled("Example"), "Example should start uninstalled");
-
-            File.WriteAllText(path, "Not really a DLL, are we?");
-
-            regMgr.ScanUnmanagedFiles();
-
-            Assert.IsTrue(registry.IsInstalled("Example"), "Example installed");
-
-            ModuleVersion version = registry.InstalledVersion("Example");
-            Assert.IsInstanceOf<UnmanagedModuleVersion>(version, "DLL detected as a DLL, not full mod");
-
-            // Now let's do the same with different case.
-
-            string path2 = Path.Combine(ksp.game.PrimaryModDirectory(ksp), "NewMod.DLL");
-
-            Assert.IsFalse(registry.IsInstalled("NewMod"));
-            File.WriteAllText(path2, "This text is irrelevant. You will be assimilated");
-
-            regMgr.ScanUnmanagedFiles();
-
-            Assert.IsTrue(registry.IsInstalled("NewMod"));
-        }
-
-        [Test]
         public void ToAbsolute()
         {
             Assert.AreEqual(

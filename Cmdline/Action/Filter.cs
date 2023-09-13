@@ -214,8 +214,8 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private GameInstanceManager manager { get; set; }
-        private IUser               user    { get; set; }
+        private GameInstanceManager manager;
+        private IUser               user;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Filter));
     }

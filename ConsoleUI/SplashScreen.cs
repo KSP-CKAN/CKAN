@@ -13,9 +13,11 @@ namespace CKAN.ConsoleUI {
         /// Initialize the screen
         /// </summary>
         /// <param name="mgr">Game instance manager object for getting instances</param>
-        public SplashScreen(GameInstanceManager mgr)
+        /// <param name="repoData">Repository data manager providing info from repos</param>
+        public SplashScreen(GameInstanceManager mgr, RepositoryDataManager repoData)
         {
             manager = mgr;
+            this.repoData = repoData;
         }
 
         /// <summary>
@@ -26,7 +28,7 @@ namespace CKAN.ConsoleUI {
         {
             // If there's a default instance, try to get the lock for it.
             GameInstance ksp = manager.CurrentInstance ?? manager.GetPreferredInstance();
-            if (ksp != null && !GameInstanceListScreen.TryGetInstance(theme, ksp, (ConsoleTheme th) => Draw(th, false))) {
+            if (ksp != null && !GameInstanceListScreen.TryGetInstance(theme, ksp, repoData, (ConsoleTheme th) => Draw(th, false))) {
                 Console.ResetColor();
                 Console.Clear();
                 Console.CursorVisible = true;
@@ -102,7 +104,8 @@ namespace CKAN.ConsoleUI {
             } catch { }
         }
 
-        private GameInstanceManager manager;
+        private GameInstanceManager   manager;
+        private RepositoryDataManager repoData;
     }
 
 }

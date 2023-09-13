@@ -60,7 +60,7 @@ namespace CKAN.GUI
             bool canceled = false;
             var opts = (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
 
-            RegistryManager registry_manager = RegistryManager.Instance(Manager.CurrentInstance);
+            RegistryManager registry_manager = RegistryManager.Instance(Manager.CurrentInstance, repoData);
             Registry registry = registry_manager.registry;
             ModuleInstaller installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
             // Avoid accumulating multiple event handlers
@@ -381,7 +381,7 @@ namespace CKAN.GUI
                             }
                             // Now pretend they clicked the menu option for the settings
                             Enabled = false;
-                            new SettingsDialog(RegistryManager.Instance(CurrentInstance),
+                            new SettingsDialog(RegistryManager.Instance(CurrentInstance, repoData),
                                                currentUser)
                                 .ShowDialog(this);
                             Enabled = true;
@@ -433,7 +433,7 @@ namespace CKAN.GUI
                 KeyValuePair<bool, ModChanges> result = (KeyValuePair<bool, ModChanges>) e.Result;
                 AddStatusMessage(Properties.Resources.MainInstallSuccess);
                 // Rebuilds the list of GUIMods
-                RefreshModList();
+                RefreshModList(false);
             }
         }
     }

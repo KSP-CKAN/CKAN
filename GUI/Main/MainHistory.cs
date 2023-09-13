@@ -14,7 +14,7 @@ namespace CKAN.GUI
     {
         private void installationHistoryStripMenuItem_Click(object sender, EventArgs e)
         {
-            InstallationHistory.LoadHistory(Manager.CurrentInstance, configuration);
+            InstallationHistory.LoadHistory(Manager.CurrentInstance, configuration, repoData);
             tabController.ShowTab("InstallationHistoryTabPage", 2);
             DisableMainWindow();
         }
@@ -23,7 +23,7 @@ namespace CKAN.GUI
         {
             InstallationHistory_Done();
             var tuple = ManageMods.mainModList.ComputeFullChangeSetFromUserChangeSet(
-                RegistryManager.Instance(CurrentInstance).registry,
+                RegistryManager.Instance(CurrentInstance, repoData).registry,
                 modules.Select(mod => new ModChange(mod, GUIModChangeType.Install))
                        .ToHashSet(),
                 CurrentInstance.VersionCriteria());
@@ -41,7 +41,7 @@ namespace CKAN.GUI
 
         private void InstallationHistory_OnSelectedModuleChanged(CkanModule m)
         {
-            ActiveModInfo = new GUIMod(m, RegistryManager.Instance(CurrentInstance).registry, CurrentInstance.VersionCriteria());
+            ActiveModInfo = new GUIMod(m, repoData, RegistryManager.Instance(CurrentInstance, repoData).registry, CurrentInstance.VersionCriteria());
         }
 
     }

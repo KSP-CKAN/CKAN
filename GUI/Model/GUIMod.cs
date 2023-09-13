@@ -5,6 +5,8 @@ using System.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
+using Autofac;
+
 using CKAN.Versioning;
 
 namespace CKAN.GUI
@@ -44,7 +46,8 @@ namespace CKAN.GUI
 
                     Main.Instance.ManageMods.UpdateChangeSetAndConflicts(
                         Main.Instance.Manager.CurrentInstance,
-                        RegistryManager.Instance(Main.Instance.Manager.CurrentInstance).registry);
+                        RegistryManager.Instance(Main.Instance.Manager.CurrentInstance,
+                            ServiceLocator.Container.Resolve<RepositoryDataManager>()).registry);
 
                     OnPropertyChanged();
                 }
@@ -126,8 +129,14 @@ namespace CKAN.GUI
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="current_game_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(InstalledModule instMod, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null, bool hideEpochs = false, bool hideV = false)
-            : this(instMod.Module, registry, current_game_version, incompatible, hideEpochs, hideV)
+        public GUIMod(InstalledModule       instMod,
+                      RepositoryDataManager repoDataMgr,
+                      IRegistryQuerier      registry,
+                      GameVersionCriteria   current_game_version,
+                      bool? incompatible = null,
+                      bool  hideEpochs   = false,
+                      bool  hideV        = false)
+            : this(instMod.Module, repoDataMgr, registry, current_game_version, incompatible, hideEpochs, hideV)
         {
             IsInstalled      = true;
             IsInstallChecked = true;
@@ -153,8 +162,14 @@ namespace CKAN.GUI
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="current_game_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(CkanModule mod, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null, bool hideEpochs = false, bool hideV = false)
-            : this(mod.identifier, registry, current_game_version, incompatible, hideEpochs, hideV)
+        public GUIMod(CkanModule            mod,
+                      RepositoryDataManager repoDataMgr,
+                      IRegistryQuerier      registry,
+                      GameVersionCriteria   current_game_version,
+                      bool? incompatible = null,
+                      bool  hideEpochs   = false,
+                      bool  hideV        = false)
+            : this(mod.identifier, repoDataMgr, registry, current_game_version, incompatible, hideEpochs, hideV)
         {
             Mod           = mod;
 
@@ -191,11 +206,17 @@ namespace CKAN.GUI
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="current_game_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(string identifier, IRegistryQuerier registry, GameVersionCriteria current_game_version, bool? incompatible = null, bool hideEpochs = false, bool hideV = false)
+        public GUIMod(string                identifier,
+                      RepositoryDataManager repoDataMgr,
+                      IRegistryQuerier      registry,
+                      GameVersionCriteria   current_game_version,
+                      bool? incompatible = null,
+                      bool  hideEpochs   = false,
+                      bool  hideV        = false)
         {
             Identifier     = identifier;
             IsAutodetected = registry.IsAutodetected(identifier);
-            DownloadCount  = registry.DownloadCount(identifier);
+            DownloadCount  = repoDataMgr.GetDownloadCount(registry.Repositories.Values, identifier);
             if (IsAutodetected)
             {
                 IsInstalled = true;

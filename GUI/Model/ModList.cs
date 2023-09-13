@@ -42,7 +42,7 @@ namespace CKAN.GUI
         internal Dictionary<string, DataGridViewRow> full_list_of_mod_rows;
 
         public event Action ModFiltersUpdated;
-        public ReadOnlyCollection<GUIMod> Modules { get; private set; } =
+        public IReadOnlyCollection<GUIMod> Modules { get; private set; } =
             new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
         public bool HasAnyInstalled { get; private set; }
 
@@ -265,10 +265,12 @@ namespace CKAN.GUI
         /// <param name="modules">A list of modules that may require updating</param>
         /// <param name="mc">Changes the user has made</param>
         /// <returns>The mod list</returns>
-        public IEnumerable<DataGridViewRow> ConstructModList(
-            IEnumerable<GUIMod> modules, string instanceName, IGame game, IEnumerable<ModChange> mc = null)
+        public IEnumerable<DataGridViewRow> ConstructModList(IReadOnlyCollection<GUIMod> modules,
+                                                             string                      instanceName,
+                                                             IGame                       game,
+                                                             IEnumerable<ModChange>      mc = null)
         {
-            Modules = new ReadOnlyCollection<GUIMod>(modules.ToList());
+            Modules = modules;
             var changes = mc?.ToList();
             full_list_of_mod_rows = Modules.ToDictionary(
                 gm => gm.Identifier,

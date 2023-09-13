@@ -52,7 +52,7 @@ namespace CKAN
 
         // We require our constructor to be private so we can
         // enforce this being an instance (via Instance() above)
-        private RegistryManager(string path, GameInstance inst)
+        private RegistryManager(string path, GameInstance inst, RepositoryDataManager repoData)
         {
             this.gameInstance = inst;
 
@@ -68,7 +68,7 @@ namespace CKAN
 
             try
             {
-                LoadOrCreate();
+                LoadOrCreate(repoData);
             }
             catch
             {
@@ -268,13 +268,13 @@ namespace CKAN
         /// Returns an instance of the registry manager for the game instance.
         /// The file `registry.json` is assumed.
         /// </summary>
-        public static RegistryManager Instance(GameInstance inst)
+        public static RegistryManager Instance(GameInstance inst, RepositoryDataManager repoData)
         {
             string directory = inst.CkanDir();
             if (!registryCache.ContainsKey(directory))
             {
                 log.DebugFormat("Preparing to load registry at {0}", directory);
-                registryCache[directory] = new RegistryManager(directory, inst);
+                registryCache[directory] = new RegistryManager(directory, inst, repoData);
             }
 
             return registryCache[directory];
@@ -301,7 +301,7 @@ namespace CKAN
             }
         }
 
-        private void Load()
+        private void Load(RepositoryDataManager repoData)
         {
             // Our registry needs to know our game instance when upgrading from older
             // registry formats. This lets us encapsulate that to make it available
@@ -314,29 +314,27 @@ namespace CKAN
             log.DebugFormat("Trying to load registry from {0}", path);
             string json = File.ReadAllText(path);
             log.Debug("Registry JSON loaded; parsing...");
-            // A 0-byte registry.json file loads as null without exceptions
-            registry = JsonConvert.DeserializeObject<Registry>(json, settings)
-                ?? Registry.Empty();
+            registry = new Registry(repoData);
+            JsonConvert.PopulateObject(json, registry, settings);
             log.Debug("Registry loaded and parsed");
-            ScanDlc();
             log.InfoFormat("Loaded CKAN registry at {0}", path);
         }
 
-        private void LoadOrCreate()
+        private void LoadOrCreate(RepositoryDataManager repoData)
         {
             try
             {
-                Load();
+                Load(repoData);
             }
             catch (FileNotFoundException)
             {
                 Create();
-                Load();
+                Load(repoData);
             }
             catch (DirectoryNotFoundException)
             {
                 Create();
-                Load();
+                Load(repoData);
             }
             catch (JsonException exc)
             {
@@ -346,7 +344,7 @@ namespace CKAN
                     path, previousCorruptedPath, previousCorruptedMessage);
                 File.Move(path, previousCorruptedPath);
                 Create();
-                Load();
+                Load(repoData);
             }
             catch (Exception ex)
             {

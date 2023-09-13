@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
+using Autofac;
+
 using CKAN.Versioning;
 using CKAN.Extensions;
 
@@ -43,6 +45,7 @@ namespace CKAN.GUI
         public Relationships()
         {
             InitializeComponent();
+            repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
 
             ToolTip.SetToolTip(ReverseRelationshipsCheckbox, Properties.Resources.ModInfoToolTipReverseRelationships);
 
@@ -72,8 +75,9 @@ namespace CKAN.GUI
             Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(module));
         }
 
-        private GUIMod              selectedModule;
-        private GameInstanceManager manager => Main.Instance.Manager;
+        private GUIMod                selectedModule;
+        private GameInstanceManager   manager => Main.Instance.Manager;
+        private RepositoryDataManager repoData;
 
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
@@ -119,7 +123,7 @@ namespace CKAN.GUI
             DependsGraphTree.BackColor = SystemColors.Window;
             DependsGraphTree.LineColor = SystemColors.WindowText;
             DependsGraphTree.Nodes.Clear();
-            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance, repoData).registry;
             TreeNode root = new TreeNode($"{module.name} {module.version}", 0, 0)
             {
                 Name = module.identifier,
@@ -133,7 +137,7 @@ namespace CKAN.GUI
 
         private void BeforeExpand(object sender, TreeViewCancelEventArgs args)
         {
-            IRegistryQuerier registry      = RegistryManager.Instance(manager.CurrentInstance).registry;
+            IRegistryQuerier registry      = RegistryManager.Instance(manager.CurrentInstance, repoData).registry;
             TreeNode         node          = args.Node;
             const int        modsPerUpdate = 10;
 

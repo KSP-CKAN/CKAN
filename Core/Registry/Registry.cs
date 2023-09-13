@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Transactions;
 
+using Autofac;
 using Newtonsoft.Json;
 using log4net;
 
@@ -17,7 +18,7 @@ using CKAN.Games;
 namespace CKAN
 {
     /// <summary>
-    /// This is the CKAN registry. All the modules that we know about or have installed
+    /// This is the CKAN registry. All the modules that we have installed
     /// are contained in here.
     /// </summary>
 
@@ -36,30 +37,11 @@ namespace CKAN
         [JsonProperty("sorted_repositories")]
         private SortedDictionary<string, Repository> repositories;
 
-        // TODO: These may be good as custom types, especially those which process
-        // paths (and flip from absolute to relative, and vice-versa).
-        [JsonProperty] internal Dictionary<string, AvailableModule> available_modules;
         // name => path
         [JsonProperty] private  Dictionary<string, string>          installed_dlls;
         [JsonProperty] private  Dictionary<string, InstalledModule> installed_modules;
         // filename (case insensitive on Windows) => module
         [JsonProperty] private  Dictionary<string, string>          installed_files;
-
-        [JsonProperty] public readonly SortedDictionary<string, int> download_counts = new SortedDictionary<string, int>();
-
-        public int? DownloadCount(string identifier)
-            => download_counts.TryGetValue(identifier, out int count) ? (int?)count : null;
-
-        public void SetDownloadCounts(SortedDictionary<string, int> counts)
-        {
-            if (counts != null)
-            {
-                foreach (var kvp in counts)
-                {
-                    download_counts[kvp.Key] = kvp.Value;
-                }
-            }
-        }
 
         /// <summary>
         /// Returns all the activated registries.
@@ -324,42 +306,65 @@ namespace CKAN
 
         #endregion
 
-        #region Constructors
+        #region Constructors / destructor
 
-        public Registry(
-            Dictionary<string, InstalledModule>  installed_modules,
-            Dictionary<string, string>           installed_dlls,
-            Dictionary<string, AvailableModule>  available_modules,
-            Dictionary<string, string>           installed_files,
-            SortedDictionary<string, Repository> repositories)
+        [JsonConstructor]
+        private Registry(RepositoryDataManager repoData)
+        {
+            if (repoData != null)
+            {
+                repoDataMgr = repoData;
+                repoDataMgr.Updated += RepositoriesUpdated;
+            }
+        }
+
+        ~Registry()
+        {
+            if (repoDataMgr != null)
+            {
+                repoDataMgr.Updated -= RepositoriesUpdated;
+            }
+        }
+
+        public Registry(RepositoryDataManager                repoData,
+                        Dictionary<string, InstalledModule>  installed_modules,
+                        Dictionary<string, string>           installed_dlls,
+                        Dictionary<string, string>           installed_files,
+                        SortedDictionary<string, Repository> repositories)
+            : this(repoData)
         {
             // Is there a better way of writing constructors than this? Srsly?
             this.installed_modules = installed_modules;
             this.installed_dlls    = installed_dlls;
-            this.available_modules = available_modules;
             this.installed_files   = installed_files;
             this.repositories      = repositories;
             registry_version       = LATEST_REGISTRY_VERSION;
         }
 
-        // If deserialsing, we don't want everything put back directly,
-        // thus making sure our version number is preserved, letting us
-        // detect registry version upgrades.
-        [JsonConstructor]
-        private Registry()
+        public Registry(RepositoryDataManager repoData,
+                        params Repository[] repositories)
+            : this(repoData,
+                   new Dictionary<string, InstalledModule>(),
+                   new Dictionary<string, string>(),
+                   new Dictionary<string, string>(),
+                   new SortedDictionary<string, Repository>(
+                       repositories.ToDictionary(r => r.name,
+                                                 r => r)))
+        {
+        }
+
+        public Registry(RepositoryDataManager repoData,
+                        IEnumerable<Repository> repositories)
+            : this(repoData, repositories.ToArray())
         {
         }
 
         public static Registry Empty()
-        {
-            return new Registry(
-                new Dictionary<string, InstalledModule>(),
-                new Dictionary<string, string>(),
-                new Dictionary<string, AvailableModule>(),
-                new Dictionary<string, string>(),
-                new SortedDictionary<string, Repository>()
-            );
-        }
+            => new Registry(null,
+                            new Dictionary<string, InstalledModule>(),
+                            new Dictionary<string, string>(),
+                            new Dictionary<string, string>(),
+                            new SortedDictionary<string, Repository>());
 
         #endregion
 
@@ -475,51 +480,9 @@ namespace CKAN
         #endregion
 
         #region Stateful views of data from repo data manager based on which repos we use
-        /// <summary>
-        /// Set the etag values of the repositories
-        /// Provided in the API so it can enlist us in the transaction
-        /// </summary>
-        /// <param name="savedEtags">Mapping from repo URLs to etags received from servers</param>
-        public void SetETags(Dictionary<Uri, string> savedEtags)
-        {
-            log.Debug("Setting repo etags");
 
-            // Make sure etags get reverted if the transaction fails
-            EnlistWithTransaction();
-
-            foreach (var kvp in savedEtags)
-            {
-                var etag = kvp.Value;
-                foreach (var repo in repositories.Values.Where(r => r.uri == kvp.Key))
-                {
-                    log.DebugFormat("Setting etag for {0}: {1}", repo.name, etag);
-                    repo.last_server_etag = etag;
-                }
-            }
-        }
-
-        public void SetAllAvailable(IEnumerable<CkanModule> newAvail)
-        {
-            log.DebugFormat(
-                "Setting all available modules, count {0}", newAvail);
-            EnlistWithTransaction();
-            // Clear current modules
-            available_modules = new Dictionary<string, AvailableModule>();
-            providers = null;
-            // Add the new modules
-            foreach (CkanModule module in newAvail)
-            {
-                AddAvailable(module);
-            }
-        }
-
-        /// <summary>
-        /// Check whether the available_modules list is empty
-        /// </summary>
-        /// <returns>
-        /// True if we have at least one available mod, false otherwise.
-        /// </returns>
-        public bool HasAnyAvailable() => available_modules.Count > 0;
+        [JsonIgnore]
+        private RepositoryDataManager repoDataMgr;
 
         [JsonIgnore]
         private CompatibilitySorter sorter;
@@ -535,54 +498,6 @@ namespace CKAN
         // Built by BuildProvidesIndex, makes LatestAvailableWithProvides much faster.
         [JsonIgnore]
         private Dictionary<string, HashSet<AvailableModule>> providers;
-        /// <summary>
-        /// Mark a given module as available.
-        /// </summary>
-        public void AddAvailable(CkanModule module)
-        {
-            log.DebugFormat("Adding available module {0}", module);
-            EnlistWithTransaction();
-
-            var identifier = module.identifier;
-            // If we've never seen this module before, create an entry for it.
-            if (!available_modules.ContainsKey(identifier))
-            {
-                log.DebugFormat("Adding new available module {0}", identifier);
-                available_modules[identifier] = new AvailableModule(identifier);
-            }
-
-            // Now register the actual version that we have.
-            // (It's okay to have multiple versions of the same mod.)
-
-            log.DebugFormat("Available: {0} version {1}", identifier, module.version);
-            available_modules[identifier].Add(module);
-            BuildProvidesIndexFor(available_modules[identifier]);
-            sorter = null;
-        }
-
-        /// <summary>
-        /// Remove the given module from the registry of available modules.
-        /// Does *nothing* if the module was not present to begin with.
-        /// </summary>
-        public void RemoveAvailable(string identifier, ModuleVersion version)
-        {
-            AvailableModule availableModule;
-            if (available_modules.TryGetValue(identifier, out availableModule))
-            {
-                log.DebugFormat("Removing available module {0} {1}",
-                    identifier, version);
-                EnlistWithTransaction();
-                availableModule.Remove(version);
-            }
-        }
-
-        /// <summary>
-        /// Removes the given module from the registry of available modules.
-        /// Does *nothing* if the module was not present to begin with.</summary>
-        public void RemoveAvailable(CkanModule module)
-        {
-            RemoveAvailable(module.identifier, module.version);
-        }
 
         private void InvalidateAvailableModCaches()
         {
@@ -604,6 +519,20 @@ namespace CKAN
             sorter = null;
         }
 
+        private void RepositoriesUpdated(Repository[] which)
+        {
+            if (Repositories.Values.Any(r => which.Contains(r)))
+            {
+                // One of our repos changed, old cached data is now junk
+                EnlistWithTransaction();
+                InvalidateAvailableModCaches();
+            }
+        }
+
+        public bool HasAnyAvailable()
+            => repositories != null && repoDataMgr != null
+                && repoDataMgr.GetAllAvailableModules(repositories.Values).Any();
+
         /// <summary>
         /// Partition all CkanModules in available_modules into
         /// compatible and incompatible groups.
@@ -618,10 +547,9 @@ namespace CKAN
                     BuildProvidesIndex();
                 }
                 sorter = new CompatibilitySorter(
-                    versCrit, available_modules, providers,
-                    installed_modules,
-                    InstalledDlls.ToHashSet(), InstalledDlc
-                );
+                    versCrit, repoDataMgr?.GetAllAvailDicts(repositories.Values),
+                    providers,
+                    installed_modules, InstalledDlls.ToHashSet(), InstalledDlc);
             }
             return sorter;
         }
@@ -651,28 +579,32 @@ namespace CKAN
             // Set up our compatibility partition
             => SetCompatibleVersion(crit).Compatible.ContainsKey(identifier);
 
+        private AvailableModule[] getAvail(string identifier)
+        {
+            var availMods = (repositories == null || repoDataMgr == null
+                                ? Enumerable.Empty<AvailableModule>()
+                                : repoDataMgr.GetAvailableModules(repositories.Values, identifier))
+                            .ToArray();
+            if (availMods.Length < 1)
+            {
+                throw new ModuleNotFoundKraken(identifier);
+            }
+            return availMods;
+        }
+
         /// <summary>
         /// <see cref="IRegistryQuerier.LatestAvailable" />
         /// </summary>
         public CkanModule LatestAvailable(
-            string module,
-            GameVersionCriteria ksp_version,
-            RelationshipDescriptor relationship_descriptor = null)
+            string identifier,
+            GameVersionCriteria gameVersion,
+            RelationshipDescriptor relationshipDescriptor = null)
         {
-            // TODO: Consider making this internal, because practically everything should
-            // be calling LatestAvailableWithProvides()
-            log.DebugFormat("Finding latest available for {0}", module);
-
-            // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
-
-            try
-            {
-                return available_modules[module].Latest(ksp_version, relationship_descriptor);
-            }
-            catch (KeyNotFoundException)
-            {
-                throw new ModuleNotFoundKraken(module);
-            }
+            log.DebugFormat("Finding latest available for {0}", identifier);
+            return getAvail(identifier)?.Select(am => am.Latest(gameVersion, relationshipDescriptor))
+                                        .Where(m => m != null)
+                                        .OrderByDescending(m => m.version)
+                                        .FirstOrDefault();
         }
 
         /// <summary>
@@ -685,13 +617,27 @@ namespace CKAN
         public IEnumerable<CkanModule> AvailableByIdentifier(string identifier)
         {
             log.DebugFormat("Finding all available versions for {0}", identifier);
+            return getAvail(identifier).SelectMany(am => am.AllAvailable())
+                                       .OrderByDescending(m => m.version);
+        }
+
+        /// <summary>
+        /// Returns the specified CkanModule with the version specified,
+        /// or null if it does not exist.
+        /// <see cref = "IRegistryQuerier.GetModuleByVersion" />
+        /// </summary>
+        public CkanModule GetModuleByVersion(string ident, ModuleVersion version)
+        {
+            log.DebugFormat("Trying to find {0} version {1}", ident, version);
             try
             {
-                return available_modules[identifier].AllAvailable();
+                return getAvail(ident)?.Select(am => am.ByVersion(version))
+                                       .Where(m => m != null)
+                                       .FirstOrDefault();
             }
-            catch (KeyNotFoundException)
+            catch
             {
-                throw new ModuleNotFoundKraken(identifier);
+                return null;
             }
         }
 
@@ -703,16 +649,11 @@ namespace CKAN
         /// JSON formatted string for all the available versions of the mod
         /// </returns>
         public string GetAvailableMetadata(string identifier)
-        {
-            try
-            {
-                return available_modules[identifier].FullMetadata();
-            }
-            catch
-            {
-                return null;
-            }
-        }
+            => repoDataMgr == null
+                ? ""
+                : string.Join("",
+                              repoDataMgr.GetAvailableModules(repositories.Values, identifier)
+                                         .Select(am => am.FullMetadata()));
 
         /// <summary>
         /// Return the latest game version compatible with the given mod.
@@ -720,10 +661,8 @@ namespace CKAN
         /// <param name="identifier">Name of mod to check</param>
         public GameVersion LatestCompatibleGameVersion(List<GameVersion> realVersions,
                                                        string            identifier)
-            => available_modules.TryGetValue(identifier, out AvailableModule availMod)
-                ? availMod.LatestCompatibleGameVersion(realVersions)
-                : null;
-
+            => getAvail(identifier).Select(am => am.LatestCompatibleGameVersion(realVersions))
+                                   .Max();
 
         /// <summary>
         /// Generate the providers index so we can find providing modules quicker
@@ -731,7 +670,7 @@ namespace CKAN
         private void BuildProvidesIndex()
         {
             providers = new Dictionary<string, HashSet<AvailableModule>>();
-            foreach (AvailableModule am in available_modules.Values)
+            foreach (AvailableModule am in repoDataMgr.GetAllAvailableModules(repositories?.Values))
             {
                 BuildProvidesIndexFor(am);
             }
@@ -791,7 +730,7 @@ namespace CKAN
         {
             tags     = new Dictionary<string, ModuleTag>();
             untagged = new HashSet<string>();
-            foreach (AvailableModule am in available_modules.Values)
+            foreach (AvailableModule am in repoDataMgr.GetAllAvailableModules(repositories.Values))
             {
                 BuildTagIndexFor(am);
             }
@@ -862,23 +801,6 @@ namespace CKAN
         }
 
         #endregion
-        /// <summary>
-        /// Returns the specified CkanModule with the version specified,
-        /// or null if it does not exist.
-        /// <see cref = "IRegistryQuerier.GetModuleByVersion" />
-        /// </summary>
-        public CkanModule GetModuleByVersion(string ident, ModuleVersion version)
-        {
-            log.DebugFormat("Trying to find {0} version {1}", ident, version);
-
-            if (!available_modules.ContainsKey(ident))
-            {
-                return null;
-            }
-
-            AvailableModule available = available_modules[ident];
-            return available.ByVersion(version);
-        }
 
         /// <summary>
         /// Register the supplied module as having been installed, thereby keeping
@@ -1308,9 +1230,8 @@ namespace CKAN
         public Dictionary<string, List<CkanModule>> GetSha1Index()
         {
             var index = new Dictionary<string, List<CkanModule>>();
-            foreach (var kvp in available_modules)
+            foreach (var am in repoDataMgr.GetAllAvailableModules(repositories.Values))
             {
-                AvailableModule am = kvp.Value;
                 foreach (var kvp2 in am.module_version)
                 {
                     CkanModule mod = kvp2.Value;
@@ -1340,9 +1261,9 @@ namespace CKAN
         public Dictionary<string, List<CkanModule>> GetDownloadHashIndex()
         {
             var index = new Dictionary<string, List<CkanModule>>();
-            foreach (var kvp in available_modules)
+            foreach (var am in repoDataMgr?.GetAllAvailableModules(repositories.Values)
+                               ?? Enumerable.Empty<AvailableModule>())
             {
-                AvailableModule am = kvp.Value;
                 foreach (var kvp2 in am.module_version)
                 {
                     CkanModule mod = kvp2.Value;
@@ -1372,21 +1293,33 @@ namespace CKAN
         /// </summary>
         /// <returns>Host strings without duplicates</returns>
         public IEnumerable<string> GetAllHosts()
-            => available_modules.Values
-                // Pick all modules where download is not null
-                .Where(availMod => availMod?.Latest()?.download != null)
-                // Merge all the URLs into one sequence
-                .SelectMany(availMod => availMod.Latest().download)
-                // Skip relative URLs because they don't have hosts
-                .Where(dlUri => dlUri.IsAbsoluteUri)
-                // Group the URLs by host
-                .GroupBy(dlUri => dlUri.Host)
-                // Put most commonly used hosts first
-                .OrderByDescending(grp => grp.Count())
-                // Alphanumeric sort if same number of usages
-                .ThenBy(grp => grp.Key)
-                // Return the host from each group
-                .Select(grp => grp.Key);
+            => repoDataMgr.GetAllAvailableModules(repositories.Values)
+                          // Pick all latest modules where download is not null
+                          // Merge all the URLs into one sequence
+                          .SelectMany(availMod => availMod?.Latest()?.download
+                                                  ?? Enumerable.Empty<Uri>())
+                          // Skip relative URLs because they don't have hosts
+                          .Where(dlUri => dlUri.IsAbsoluteUri)
+                          // Group the URLs by host
+                          .GroupBy(dlUri => dlUri.Host)
+                          // Put most commonly used hosts first
+                          .OrderByDescending(grp => grp.Count())
+                          // Alphanumeric sort if same number of usages
+                          .ThenBy(grp => grp.Key)
+                          // Return the host from each group
+                          .Select(grp => grp.Key);
+
+
+        // Older clients expect these properties and can handle them being empty ("{}") but not null
+        [JsonProperty("available_modules",
+                      NullValueHandling = NullValueHandling.Include)]
+        [JsonConverter(typeof(JsonAlwaysEmptyObjectConverter))]
+        private Dictionary<string, string> legacyAvailableModulesDoNotUse = new Dictionary<string, string>();
+
+        [JsonProperty("download_counts",
+                      NullValueHandling = NullValueHandling.Include)]
+        [JsonConverter(typeof(JsonAlwaysEmptyObjectConverter))]
+        private Dictionary<string, string> legacyDownloadCountsDoNotUse = new Dictionary<string, string>();
 
     }
 }

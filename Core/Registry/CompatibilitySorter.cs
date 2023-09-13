@@ -20,14 +20,12 @@ namespace CKAN
         /// <param name="providers">Dictionary mapping every identifier to the modules providing it</param>
         /// <param name="dlls">Collection of found dlls</param>
         /// <param name="dlc">Collection of installed DLCs</param>
-        public CompatibilitySorter(
-            GameVersionCriteria crit,
-            Dictionary<string, AvailableModule> available,
-            Dictionary<string, HashSet<AvailableModule>> providers,
-            Dictionary<string, InstalledModule> installed,
-            HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc
-        )
+        public CompatibilitySorter(GameVersionCriteria                              crit,
+                                   IEnumerable<Dictionary<string, AvailableModule>> available,
+                                   Dictionary<string, HashSet<AvailableModule>>     providers,
+                                   Dictionary<string, InstalledModule>              installed,
+                                   HashSet<string>                                  dlls,
+                                   IDictionary<string, ModuleVersion>               dlc)
         {
             CompatibleVersions = crit;
             this.installed = installed;
@@ -103,23 +101,34 @@ namespace CKAN
         /// <returns>
         /// Mapping from identifiers to compatible mods providing those identifiers
         /// </returns>
-        private Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(GameVersionCriteria crit, Dictionary<string, HashSet<AvailableModule>> providers)
+        private Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(
+            GameVersionCriteria                          crit,
+            Dictionary<string, HashSet<AvailableModule>> providers)
         {
+            log.Debug("Calculating compatible provider mapping");
             var compat = new Dictionary<string, HashSet<AvailableModule>>();
-            foreach (var kvp in providers)
+            foreach (var (ident, availMods) in providers)
             {
-                // Find providing non-DLC modules that are compatible with crit
-                var compatAvail = kvp.Value.Where(avm =>
-                    avm.AllAvailable().Any(ckm =>
-                        !ckm.IsDLC &&
-                        ckm.ProvidesList.Contains(kvp.Key) && ckm.IsCompatible(crit))
-                ).ToHashSet();
-                // Add compatible providers to mapping, if any
-                if (compatAvail.Any())
+                var compatGroups = availMods
+                    .GroupBy(availMod => availMod.AllAvailable()
+                                                 .Any(ckm => !ckm.IsDLC
+                                                             && ckm.ProvidesList.Contains(ident)
+                                                             && ckm.IsCompatible(crit)))
+                    .ToDictionary(grp => grp.Key,
+                                  grp => grp);
+                if (!compatGroups.ContainsKey(false))
                 {
-                    compat.Add(kvp.Key, compatAvail);
+                    // Everything is compatible, just re-use the same HashSet
+                    compat.Add(ident, availMods);
                 }
+                else if (compatGroups.TryGetValue(true, out var compatGroup))
+                {
+                    // Some are compatible, put them in a new HashSet
+                    compat.Add(ident, compatGroup.ToHashSet());
+                }
+                // Else if nothing compatible, just skip this one
             }
+            log.Debug("Done calculating compatible provider mapping");
             return compat;
         }
 
@@ -129,30 +138,36 @@ namespace CKAN
         /// </summary>
         /// <param name="available">All mods available from registry</param>
         /// <param name="providers">Mapping from identifiers to mods providing those identifiers</param>
-        private void PartitionModules(Dictionary<string, AvailableModule> available, Dictionary<string, HashSet<AvailableModule>> providers)
+        private void PartitionModules(IEnumerable<Dictionary<string, AvailableModule>> dicts,
+                                      Dictionary<string, HashSet<AvailableModule>> providers)
         {
-            // First get the ones that are trivially [in]compatible.
-            foreach (var kvp in available)
+            log.Debug("Partitioning modules by compatibility");
+            foreach (var available in dicts)
             {
-                if (kvp.Value.AllAvailable().All(m => !m.IsCompatible(CompatibleVersions)))
+                // First get the ones that are trivially [in]compatible.
+                foreach (var kvp in available)
                 {
-                    // No versions compatible == incompatible
-                    log.DebugFormat("Trivially incompatible: {0}", kvp.Key);
-                    Incompatible.Add(kvp.Key, kvp.Value);
-                }
-                else if (kvp.Value.AllAvailable().All(m => m.depends == null))
-                {
-                    // No dependencies == compatible
-                    log.DebugFormat("Trivially compatible: {0}", kvp.Key);
-                    Compatible.Add(kvp.Key, kvp.Value);
-                }
-                else
-                {
-                    // Need to investigate this one more later
-                    log.DebugFormat("Trivially indeterminate: {0}", kvp.Key);
-                    Indeterminate.Add(kvp.Key, kvp.Value);
+                    if (kvp.Value.AllAvailable().All(m => !m.IsCompatible(CompatibleVersions)))
+                    {
+                        // No versions compatible == incompatible
+                        log.DebugFormat("Trivially incompatible: {0}", kvp.Key);
+                        Incompatible.Add(kvp.Key, kvp.Value);
+                    }
+                    else if (kvp.Value.AllAvailable().All(m => m.depends == null))
+                    {
+                        // No dependencies == compatible
+                        log.DebugFormat("Trivially compatible: {0}", kvp.Key);
+                        Compatible.Add(kvp.Key, kvp.Value);
+                    }
+                    else
+                    {
+                        // Need to investigate this one more later
+                        log.DebugFormat("Trivially indeterminate: {0}", kvp.Key);
+                        Indeterminate.Add(kvp.Key, kvp.Value);
+                    }
                 }
             }
+            log.Debug("Trivial mods done, moving on to indeterminates");
             // We'll be modifying `indeterminate` during this loop, so `foreach` is out
             while (Indeterminate.Count > 0)
             {
@@ -160,6 +175,7 @@ namespace CKAN
                 log.DebugFormat("Checking: {0}", kvp.Key);
                 CheckDepends(kvp.Key, kvp.Value, providers);
             }
+            log.Debug("Done partitioning modules by compatibility");
         }
 
         /// <summary>

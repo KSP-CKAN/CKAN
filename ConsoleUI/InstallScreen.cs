@@ -15,9 +15,10 @@ namespace CKAN.ConsoleUI {
         /// Initialize the Screen
         /// </summary>
         /// <param name="mgr">Game instance manager containing instances</param>
+        /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="cp">Plan of mods to install or remove</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public InstallScreen(GameInstanceManager mgr, ChangePlan cp, bool dbg)
+        public InstallScreen(GameInstanceManager mgr, RepositoryDataManager repoData, ChangePlan cp, bool dbg)
             : base(
                 Properties.Resources.InstallTitle,
                 Properties.Resources.InstallMessage
@@ -26,6 +27,7 @@ namespace CKAN.ConsoleUI {
             debug   = dbg;
             manager = mgr;
             plan    = cp;
+            this.repoData = repoData;
         }
 
         /// <summary>
@@ -45,11 +47,13 @@ namespace CKAN.ConsoleUI {
                         // Reset this so we stop unless an exception sets it to true
                         retry = false;
 
+                        RegistryManager regMgr = RegistryManager.Instance(manager.CurrentInstance, repoData);
+
                         // GUI prompts user to choose recs/sugs,
                         // CmdLine assumes recs and ignores sugs
                         if (plan.Install.Count > 0) {
                             // Track previously rejected optional dependencies and don't prompt for them again.
-                            DependencyScreen ds = new DependencyScreen(manager, plan, rejected, debug);
+                            DependencyScreen ds = new DependencyScreen(manager, regMgr.registry, plan, rejected, debug);
                             if (ds.HaveOptions()) {
                                 LaunchSubScreen(theme, ds);
                             }
@@ -59,7 +63,6 @@ namespace CKAN.ConsoleUI {
 
                         HashSet<string> possibleConfigOnlyDirs = null;
 
-                        RegistryManager regMgr = RegistryManager.Instance(manager.CurrentInstance);
                         ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
                         inst.onReportModInstalled = OnModInstalled;
                         if (plan.Remove.Count > 0) {
@@ -152,7 +155,7 @@ namespace CKAN.ConsoleUI {
 
         private IEnumerable<ModuleReplacement> AllReplacements(IEnumerable<string> identifiers)
         {
-            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance, repoData).registry;
 
             foreach (string id in identifiers) {
                 ModuleReplacement repl = registry.GetReplacement(
@@ -172,9 +175,10 @@ namespace CKAN.ConsoleUI {
             without_enforce_consistency    = false
         };
 
-        private GameInstanceManager manager;
-        private ChangePlan plan;
-        private bool       debug;
+        private GameInstanceManager   manager;
+        private RepositoryDataManager repoData;
+        private ChangePlan            plan;
+        private bool                  debug;
     }
 
 }

@@ -58,6 +58,9 @@ namespace CKAN
                 .As<IGameVersionProvider>()
                 .Keyed<IGameVersionProvider>(GameVersionSource.Readme);
 
+            builder.RegisterType<RepositoryDataManager>()
+                   .SingleInstance();
+
             _container = builder.Build();
         }
     }

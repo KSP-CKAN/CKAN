@@ -15,7 +15,10 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Initialize the subcommand
         /// </summary>
-        public Mark() { }
+        public Mark(RepositoryDataManager repoData)
+        {
+            this.repoData = repoData;
+        }
 
         /// <summary>
         /// Run the subcommand
@@ -78,10 +81,10 @@ namespace CKAN.CmdLine
                 return exitCode;
             }
 
-            var  ksp      = MainClass.GetGameInstance(manager);
-            var  regMgr   = RegistryManager.Instance(ksp);
+            var instance = MainClass.GetGameInstance(manager);
+            var regMgr = RegistryManager.Instance(instance, repoData);
             bool needSave = false;
-            Search.AdjustModulesCase(ksp, opts.modules);
+            Search.AdjustModulesCase(instance, regMgr.registry, opts.modules);
             foreach (string id in opts.modules)
             {
                 InstalledModule im = regMgr.registry.InstalledModule(id);
@@ -116,8 +119,9 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private IUser               user    { get; set; }
-        private GameInstanceManager manager { get; set; }
+        private GameInstanceManager   manager;
+        private RepositoryDataManager repoData;
+        private IUser                 user;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Mark));
     }

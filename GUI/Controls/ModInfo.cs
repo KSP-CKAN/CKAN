@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading.Tasks;
 
+using Autofac;
+
 using CKAN.Versioning;
 
 namespace CKAN.GUI
@@ -135,7 +137,7 @@ namespace CKAN.GUI
         private void UpdateTagsAndLabels(CkanModule mod)
         {
             var registry = RegistryManager.Instance(
-                manager.CurrentInstance
+                manager.CurrentInstance, ServiceLocator.Container.Resolve<RepositoryDataManager>()
             ).registry;
 
             Util.Invoke(MetadataTagsLabelsPanel, () =>
