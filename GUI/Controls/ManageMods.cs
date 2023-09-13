@@ -211,7 +211,8 @@ namespace CKAN.GUI
 
         private void RefreshToolButton_Click(object sender, EventArgs e)
         {
-            Main.Instance.UpdateRepo();
+            // If user is holding Shift or Ctrl, force a full update
+            Main.Instance.UpdateRepo((Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0);
         }
 
         #region Filter dropdown
