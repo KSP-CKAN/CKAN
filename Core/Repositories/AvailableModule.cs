@@ -31,20 +31,27 @@ namespace CKAN
         {
         }
 
-        [OnDeserialized]
-        internal void DeserialisationFixes(StreamingContext context)
-        {
-            identifier = module_version.Values.LastOrDefault()?.identifier;
-            Debug.Assert(module_version.Values.All(m => identifier.Equals(m.identifier)));
-        }
-
         /// <param name="identifier">The module to keep track of</param>
         public AvailableModule(string identifier)
         {
             this.identifier = identifier;
         }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (AvailableModule));
+        public AvailableModule(string identifier, IEnumerable<CkanModule> modules)
+            : this(identifier)
+        {
+            foreach (var module in modules)
+            {
+                Add(module);
+            }
+        }
+
+        [OnDeserialized]
+        internal void DeserialisationFixes(StreamingContext context)
+        {
+            identifier = module_version.Values.LastOrDefault()?.identifier;
+            Debug.Assert(module_version.Values.All(m => identifier.Equals(m.identifier)));
+        }
 
         // The map of versions -> modules, that's what we're about!
         // First element is the oldest version, last is the newest.
@@ -70,7 +77,7 @@ namespace CKAN
                 throw new ArgumentException(
                     string.Format("This AvailableModule is for tracking {0} not {1}", identifier, module.identifier));
 
-            log.DebugFormat("Adding {0}", module);
+            log.DebugFormat("Adding to available module: {0}", module);
             module_version[module.version] = module;
         }
 
@@ -94,8 +101,7 @@ namespace CKAN
             GameVersionCriteria     ksp_version  = null,
             RelationshipDescriptor  relationship = null,
             IEnumerable<CkanModule> installed    = null,
-            IEnumerable<CkanModule> toInstall    = null
-        )
+            IEnumerable<CkanModule> toInstall    = null)
         {
             IEnumerable<CkanModule> modules = module_version.Values.Reverse();
             if (relationship != null)
@@ -197,17 +203,13 @@ namespace CKAN
         /// Returns the module with the specified version, or null if that does not exist.
         /// </summary>
         public CkanModule ByVersion(ModuleVersion v)
-        {
-            CkanModule module;
-            module_version.TryGetValue(v, out module);
-            return module;
-        }
+            => module_version.TryGetValue(v, out CkanModule module) ? module : null;
 
+        /// <summary>
+        /// Some code may expect this to be sorted in descending order
+        /// </summary>
         public IEnumerable<CkanModule> AllAvailable()
-        {
-            // Some code may expect this to be sorted in descending order
-            return module_version.Values.Reverse();
-        }
+            => module_version.Values.Reverse();
 
         /// <summary>
         /// Return the entire section of registry.json for this mod
@@ -218,17 +220,18 @@ namespace CKAN
         public string FullMetadata()
         {
             StringWriter sw = new StringWriter(new StringBuilder());
-            using (JsonTextWriter writer = new JsonTextWriter(sw) {
-                    Formatting  = Formatting.Indented,
-                    Indentation = 4,
-                    IndentChar  = ' '
-                })
+            using (JsonTextWriter writer = new JsonTextWriter(sw)
+            {
+                Formatting  = Formatting.Indented,
+                Indentation = 4,
+                IndentChar  = ' '
+            })
             {
                 new JsonSerializer().Serialize(writer, this);
             }
             return sw.ToString();
         }
 
+        private static readonly ILog log = LogManager.GetLogger(typeof(AvailableModule));
     }
-
 }

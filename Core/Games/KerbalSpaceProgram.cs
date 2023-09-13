@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using Autofac;
 using log4net;
+using Newtonsoft.Json.Linq;
 
 using CKAN.DLC;
 using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
@@ -220,6 +221,12 @@ namespace CKAN.Games.KerbalSpaceProgram
                 return versions;
             }
         }
+
+        public GameVersion[] ParseBuildsJson(JToken json)
+            => json.ToObject<GameVersionProviders.JBuilds>()
+                   .Builds
+                   .Select(b => GameVersion.Parse(b.Value))
+                   .ToArray();
 
         public GameVersion DetectVersion(DirectoryInfo where)
             => ServiceLocator.Container

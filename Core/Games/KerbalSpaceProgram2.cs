@@ -8,6 +8,7 @@ using System.Reflection;
 using Autofac;
 using log4net;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using CKAN.DLC;
 using CKAN.Versioning;
@@ -185,6 +186,9 @@ namespace CKAN.Games.KerbalSpaceProgram2
         }
 
         public List<GameVersion> KnownVersions => versions;
+
+        public GameVersion[] ParseBuildsJson(JToken json)
+            => json.ToObject<GameVersion[]>();
 
         public GameVersion DetectVersion(DirectoryInfo where)
             => VersionFromFile(Path.Combine(where.FullName, "KSP2_x64.exe"));

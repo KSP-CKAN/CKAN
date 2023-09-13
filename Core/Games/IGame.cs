@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
+using Newtonsoft.Json.Linq;
+
 using CKAN.DLC;
 using CKAN.Versioning;
 
@@ -36,6 +38,7 @@ namespace CKAN.Games
         // Which versions exist and which is present?
         void              RefreshVersions();
         List<GameVersion> KnownVersions { get; }
+        GameVersion[]     ParseBuildsJson(JToken json);
         GameVersion       DetectVersion(DirectoryInfo where);
         string            CompatibleVersionsFile { get; }
         string[]          BuildIDFiles { get; }
