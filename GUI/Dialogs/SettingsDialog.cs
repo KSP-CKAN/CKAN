@@ -15,6 +15,10 @@ namespace CKAN.GUI
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(SettingsDialog));
 
+        public bool RepositoryAdded   { get; private set; } = false;
+        public bool RepositoryRemoved { get; private set; } = false;
+        public bool RepositoryMoved   { get; private set; } = false;
+
         private IUser m_user;
         private IConfiguration config;
         private RegistryManager regMgr;
@@ -323,6 +327,7 @@ namespace CKAN.GUI
                 registry.RepositoriesRemove(repo.name);
                 RefreshReposListBox();
                 DeleteRepoButton.Enabled = false;
+                RepositoryRemoved = true;
             }
         }
 
@@ -348,6 +353,7 @@ namespace CKAN.GUI
                     repo.priority = registry.Repositories.Count;
                 }
                 registry.RepositoriesAdd(repo);
+                RepositoryAdded = true;
 
                 RefreshReposListBox();
             }
@@ -366,6 +372,7 @@ namespace CKAN.GUI
                                              .Select(item => item.Tag as Repository)
                                              .FirstOrDefault(r => r.priority == selected.priority - 1);
             --selected.priority;
+            RepositoryMoved = true;
             if (prev != null)
             {
                 ++prev.priority;
@@ -386,6 +393,7 @@ namespace CKAN.GUI
                                              .Select(item => item.Tag as Repository)
                                              .FirstOrDefault(r => r.priority == selected.priority + 1);
             ++selected.priority;
+            RepositoryMoved = true;
             if (next != null)
             {
                 --next.priority;

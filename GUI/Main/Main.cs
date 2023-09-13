@@ -580,6 +580,14 @@ namespace CKAN.GUI
             var dialog = new SettingsDialog(RegistryManager.Instance(CurrentInstance), currentUser);
             dialog.ShowDialog(this);
             Enabled = true;
+            if (dialog.RepositoryAdded)
+            {
+                UpdateRepo();
+            }
+            else if (dialog.RepositoryRemoved || dialog.RepositoryMoved)
+            {
+                RefreshModList();
+            }
         }
 
         private void pluginsToolStripMenuItem_Click(object sender, EventArgs e)
