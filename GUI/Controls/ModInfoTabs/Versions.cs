@@ -86,7 +86,7 @@ namespace CKAN.GUI
 
         private bool installable(ModuleInstaller installer, CkanModule module, IRegistryQuerier registry)
         {
-            return module.IsCompatibleKSP(Main.Instance.CurrentInstance.VersionCriteria())
+            return module.IsCompatible(Main.Instance.CurrentInstance.VersionCriteria())
                 && installer.CanInstall(
                     RelationshipResolver.DependsOnlyOpts(),
                     new List<CkanModule>() { module },

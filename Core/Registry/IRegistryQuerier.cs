@@ -306,7 +306,7 @@ namespace CKAN
                     replacement.ReplaceWith = querier.GetModuleByVersion(installedVersion.replaced_by.name, installedVersion.replaced_by.version);
                     if (replacement.ReplaceWith != null)
                     {
-                        if (replacement.ReplaceWith.IsCompatibleKSP(version))
+                        if (replacement.ReplaceWith.IsCompatible(version))
                         {
                             return replacement;
                         }

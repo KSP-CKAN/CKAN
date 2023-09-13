@@ -85,7 +85,7 @@ namespace CKAN
                 var compatAvail = kvp.Value.Where(avm =>
                     avm.AllAvailable().Any(ckm =>
                         !ckm.IsDLC &&
-                        ckm.ProvidesList.Contains(kvp.Key) && ckm.IsCompatibleKSP(crit))
+                        ckm.ProvidesList.Contains(kvp.Key) && ckm.IsCompatible(crit))
                 ).ToHashSet();
                 // Add compatible providers to mapping, if any
                 if (compatAvail.Any())
@@ -107,7 +107,7 @@ namespace CKAN
             // First get the ones that are trivially [in]compatible.
             foreach (var kvp in available)
             {
-                if (kvp.Value.AllAvailable().All(m => !m.IsCompatibleKSP(CompatibleVersions)))
+                if (kvp.Value.AllAvailable().All(m => !m.IsCompatible(CompatibleVersions)))
                 {
                     // No versions compatible == incompatible
                     log.DebugFormat("Trivially incompatible: {0}", kvp.Key);
@@ -145,7 +145,7 @@ namespace CKAN
         private void CheckDepends(string identifier, AvailableModule am, Dictionary<string, HashSet<AvailableModule>> providers)
         {
             Investigating.Push(identifier);
-            foreach (CkanModule m in am.AllAvailable().Where(m => m.IsCompatibleKSP(CompatibleVersions)))
+            foreach (CkanModule m in am.AllAvailable().Where(m => m.IsCompatible(CompatibleVersions)))
             {
                 log.DebugFormat("What about {0}?", m.version);
                 bool installable = true;

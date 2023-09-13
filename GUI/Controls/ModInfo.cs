@@ -122,7 +122,7 @@ namespace CKAN.GUI
                 VersionsTabPage.ImageKey     = "";
                 if (gmod.IsIncompatible)
                 {
-                    var pageToAlert = module.IsCompatibleKSP(crit) ? RelationshipTabPage : VersionsTabPage;
+                    var pageToAlert = module.IsCompatible(crit) ? RelationshipTabPage : VersionsTabPage;
                     pageToAlert.ImageKey = "Stop";
                 }
 

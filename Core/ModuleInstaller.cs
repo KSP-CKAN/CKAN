@@ -1571,7 +1571,7 @@ namespace CKAN
                     List<CkanModule> matches = index[sha1];
                     foreach (CkanModule mod in matches)
                     {
-                        if (mod.IsCompatibleKSP(ksp.VersionCriteria()))
+                        if (mod.IsCompatible(ksp.VersionCriteria()))
                         {
                             installable.Add(mod);
                         }

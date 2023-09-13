@@ -20,7 +20,7 @@ namespace Tests.Core.Types
         {
             CkanModule module = CkanModule.FromJson(TestData.kOS_014());
 
-            Assert.IsTrue(module.IsCompatibleKSP(new GameVersionCriteria(GameVersion.Parse("0.24.2"))));
+            Assert.IsTrue(module.IsCompatible(new GameVersionCriteria(GameVersion.Parse("0.24.2"))));
         }
 
         [Test]

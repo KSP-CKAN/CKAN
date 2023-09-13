@@ -140,7 +140,7 @@ namespace CKAN.GUI
                 LatestVersion = InstalledVersion;
             }
             // For mods not known to the registry LatestCompatibleMod is null, however the installed module might be compatible
-            IsIncompatible   = incompatible ?? LatestCompatibleMod == null && !instMod.Module.IsCompatibleKSP(current_game_version);
+            IsIncompatible   = incompatible ?? LatestCompatibleMod == null && !instMod.Module.IsCompatible(current_game_version);
         }
 
         /// <summary>

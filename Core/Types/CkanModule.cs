@@ -450,7 +450,7 @@ namespace CKAN
                 module = registry.GetModuleByVersion(ident, version);
 
                 if (module == null
-                        || (ksp_version != null && !module.IsCompatibleKSP(ksp_version)))
+                        || (ksp_version != null && !module.IsCompatible(ksp_version)))
                     throw new ModuleNotFoundKraken(ident, version,
                         string.Format(Properties.Resources.CkanModuleNotAvailable, ident, version));
             }
@@ -530,7 +530,7 @@ namespace CKAN
         /// <summary>
         /// Returns true if our mod is compatible with the KSP version specified.
         /// </summary>
-        public bool IsCompatibleKSP(GameVersionCriteria version)
+        public bool IsCompatible(GameVersionCriteria version)
         {
             var compat = _comparator.Compatible(version, this);
             log.DebugFormat("Checking compat of {0} with game versions {1}: {2}",

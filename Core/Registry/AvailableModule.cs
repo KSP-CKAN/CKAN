@@ -104,7 +104,7 @@ namespace CKAN
             }
             if (ksp_version != null)
             {
-                modules = modules.Where(m => m.IsCompatibleKSP(ksp_version));
+                modules = modules.Where(m => m.IsCompatible(ksp_version));
             }
             if (installed != null)
             {
