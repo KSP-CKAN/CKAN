@@ -152,27 +152,30 @@ namespace CKAN
         /// Start a new batch of downloads
         /// </summary>
         /// <param name="targets">The downloads to begin</param>
-        public void DownloadAndWait(ICollection<Net.DownloadTarget> targets)
+        public void DownloadAndWait(IList<Net.DownloadTarget> targets)
         {
-            if (downloads.Count + queuedDownloads.Count > completed_downloads)
+            lock (dlMutex)
             {
-                // Some downloads are still in progress, add to the current batch
-                foreach (Net.DownloadTarget target in targets)
+                if (downloads.Count + queuedDownloads.Count > completed_downloads)
                 {
-                    DownloadModule(new NetAsyncDownloaderDownloadPart(target));
+                    // Some downloads are still in progress, add to the current batch
+                    foreach (Net.DownloadTarget target in targets)
+                    {
+                        DownloadModule(new NetAsyncDownloaderDownloadPart(target));
+                    }
+                    // Wait for completion along with original caller
+                    // so we can handle completion tasks for the added mods
+                    complete_or_canceled.WaitOne();
+                    return;
                 }
-                // Wait for completion along with original caller
-                // so we can handle completion tasks for the added mods
-                complete_or_canceled.WaitOne();
-                return;
+
+                completed_downloads = 0;
+                // Make sure we are ready to start a fresh batch
+                complete_or_canceled.Reset();
+
+                // Start the downloads!
+                Download(targets);
             }
-
-            completed_downloads = 0;
-            // Make sure we are ready to start a fresh batch
-            complete_or_canceled.Reset();
-
-            // Start the download!
-            Download(targets);
 
             log.Debug("Waiting for downloads to finish...");
             complete_or_canceled.WaitOne();
@@ -242,7 +245,8 @@ namespace CKAN
                     }
                     // Otherwise just note the error and which download it came from,
                     // then throw them all at once later.
-                    exceptions.Add(new KeyValuePair<int, Exception>(i, downloads[i].error));
+                    exceptions.Add(new KeyValuePair<int, Exception>(
+                        targets.IndexOf(downloads[i].target), downloads[i].error));
                 }
             }
             if (exceptions.Count > 0)
@@ -338,13 +342,14 @@ namespace CKAN
         /// true to queue, false to start immediately
         /// </returns>
         private bool shouldQueue(Uri url)
-            // Ignore inactive downloads
-            => downloads.Except(queuedDownloads)
-                        .Any(dl => (!dl.CurrentUri.IsAbsoluteUri || dl.CurrentUri.Host == url.Host)
-                                   // Consider done if no bytes left
-                                   && dl.bytesLeft > 0
-                                   // Consider done if already tried and failed
-                                   && dl.error == null);
+            => !url.IsFile
+               // Ignore inactive downloads
+               && downloads.Except(queuedDownloads)
+                           .Any(dl => (!dl.CurrentUri.IsAbsoluteUri || dl.CurrentUri.Host == url.Host)
+                                      // Consider done if no bytes left
+                                      && dl.bytesLeft > 0
+                                      // Consider done if already tried and failed
+                                      && dl.error == null);
 
         private void triggerCompleted()
         {
