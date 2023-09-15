@@ -1,5 +1,8 @@
 using System;
 using System.Linq;
+
+using Autofac;
+
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
@@ -18,6 +21,7 @@ namespace CKAN.ConsoleUI {
         {
             if (ConsoleTheme.Themes.TryGetValue(themeName ?? "default", out ConsoleTheme theme))
             {
+                var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
                 // GameInstanceManager only uses its IUser object to construct game instance objects,
                 // which only use it to inform the user about the creation of the CKAN/ folder.
                 // These aren't really intended to be displayed, so the manager
@@ -26,7 +30,7 @@ namespace CKAN.ConsoleUI {
 
                 // The splash screen returns true when it's safe to run the rest of the app.
                 // This can be blocked by a lock file, for example.
-                if (new SplashScreen(manager).Run(theme)) {
+                if (new SplashScreen(manager, repoData).Run(theme)) {
 
                     if (manager.CurrentInstance == null) {
                         if (manager.Instances.Count == 0) {
@@ -36,11 +40,14 @@ namespace CKAN.ConsoleUI {
                             manager.GetPreferredInstance();
                         } else {
                             // Multiple instances, no default, pick one
-                            new GameInstanceListScreen(manager).Run(theme);
+                            new GameInstanceListScreen(manager, repoData).Run(theme);
                         }
                     }
                     if (manager.CurrentInstance != null) {
-                        new ModListScreen(manager, debug, theme).Run(theme);
+                        new ModListScreen(manager, repoData,
+                                          RegistryManager.Instance(manager.CurrentInstance, repoData),
+                                          manager.CurrentInstance.game,
+                                          debug, theme).Run(theme);
                     }
 
                     new ExitScreen().Run(theme);

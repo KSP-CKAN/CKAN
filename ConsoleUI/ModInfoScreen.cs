@@ -19,16 +19,17 @@ namespace CKAN.ConsoleUI {
         /// Initialize the Screen
         /// </summary>
         /// <param name="mgr">Game instance manager containing game instances</param>
+        /// <param name="registry">Registry of the current instance for finding mods</param>
         /// <param name="cp">Plan of other mods to be added or removed</param>
         /// <param name="m">The module to display</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public ModInfoScreen(GameInstanceManager mgr, ChangePlan cp, CkanModule m, bool dbg)
+        public ModInfoScreen(GameInstanceManager mgr, Registry registry, ChangePlan cp, CkanModule m, bool dbg)
         {
             debug    = dbg;
             mod      = m;
             manager  = mgr;
             plan     = cp;
-            registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+            this.registry = registry;
 
             int midL = Console.WindowWidth / 2 - 1;
 
@@ -485,7 +486,7 @@ namespace CKAN.ConsoleUI {
 
                 ModuleVersion minMod = null, maxMod = null;
                 GameVersion   minKsp = null, maxKsp = null;
-                Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
+                CkanModule.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
                 AddObject(new ConsoleLabel(
                     l + 2, t + 1, r - 2,
                     () => minMod == maxMod

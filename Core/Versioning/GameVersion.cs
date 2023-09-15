@@ -1,12 +1,14 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+
 using Newtonsoft.Json;
 using Autofac;
-using CKAN.GameVersionProviders;
+
 using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 
 namespace CKAN.Versioning
 {
@@ -18,8 +20,7 @@ namespace CKAN.Versioning
     {
         private static readonly Regex Pattern = new Regex(
             @"^(?<major>\d+)(?:\.(?<minor>\d+)(?:\.(?<patch>\d+)(?:\.(?<build>\d+))?)?)?$",
-            RegexOptions.Compiled
-        );
+            RegexOptions.Compiled);
 
         private const int Undefined = -1;
 
@@ -89,6 +90,11 @@ namespace CKAN.Versioning
         /// Indicates wheter or not all the components of the current <see cref="GameVersion"/> are undefined.
         /// </summary>
         public bool IsAny => !IsMajorDefined && !IsMinorDefined && !IsPatchDefined && !IsBuildDefined;
+
+        /// <summary>
+        /// Provide this resource string to other DLLs outside core
+        /// /// </summary>
+        public static string AnyString => Properties.Resources.GameVersionYalovAny;
 
         /// <summary>
         /// Check whether a version is null or Any.
@@ -232,65 +238,6 @@ namespace CKAN.Versioning
         /// </para>
         /// </returns>
         public override string ToString() => _string;
-
-        private static Dictionary<string, GameVersion> VersionsMax = new Dictionary<string, GameVersion>();
-
-        /// <summary>
-        /// Generate version mapping table once for all instances to share
-        /// </summary>
-        static GameVersion()
-        {
-            // Should be sorted
-            List<GameVersion> versions = ServiceLocator.Container.Resolve<IKspBuildMap>().KnownVersions;
-            VersionsMax[""] = versions.Last();
-            foreach (var v in versions)
-            {
-                // Add or replace
-                VersionsMax[$"{v.Major}"          ] = v;
-                VersionsMax[$"{v.Major}.{v.Minor}"] = v;
-            }
-        }
-
-        /// <summary>
-        /// Get a string to represent a game version.
-        /// </summary>
-        /// <returns>
-        /// String representing max game version.
-        /// Partly clamped to real versions, partly rounded up to imaginary versions.
-        /// </returns>
-        public string ToYalovString()
-        {
-            GameVersion value;
-
-            if (!IsMajorDefined
-                // 2.0.0
-                || _major > VersionsMax[""].Major
-                // 1.99.99
-                || (_major == VersionsMax[""].Major && VersionsMax.TryGetValue($"{_major}", out value) && _minor >= UptoNines(value.Minor)))
-            {
-                return Properties.Resources.GameVersionYalovAny;
-            }
-            else if (IsMinorDefined
-                && VersionsMax.TryGetValue($"{_major}.{_minor}", out value)
-                && (!IsPatchDefined || _patch >= UptoNines(value.Patch)))
-            {
-                return $"{_major}.{_minor}.{UptoNines(value.Patch)}";
-            }
-            else
-            {
-                return ToString();
-            }
-        }
-
-        /// <returns>
-        ///   0 - 9   //  9  - 99    //  99 - 999
-        ///   1 - 9   //  10 - 99    // 100 - 999
-        ///   8 - 9   //  98 - 99
-        /// </returns>
-        private static int UptoNines(int num)
-        {
-            return (int)Math.Pow(10, Math.Floor(Math.Log10(num + 1)) + 1) - 1;
-        }
 
         /// <summary>
         /// Strip off the build number if it's defined

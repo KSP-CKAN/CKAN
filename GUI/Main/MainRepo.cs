@@ -19,6 +19,9 @@ using CKAN.Extensions;
 
 namespace CKAN.GUI
 {
+    using RepoArgument = Tuple<bool, bool>;
+    using RepoResult   = Tuple<RepositoryDataManager.UpdateResult, Dictionary<string, bool>, bool>;
+
     public partial class Main
     {
         public Timer refreshTimer;
@@ -34,15 +37,19 @@ namespace CKAN.GUI
             return JsonConvert.DeserializeObject<RepositoryList>(json);
         }
 
-        public void UpdateRepo()
+        public void UpdateRepo(bool forceFullRefresh = false, bool refreshWithoutChanges = false)
         {
             tabController.RenameTab("WaitTabPage", Properties.Resources.MainRepoWaitTitle);
 
             try
             {
-                Wait.StartWaiting(UpdateRepo, PostUpdateRepo, true, null);
+                Wait.StartWaiting(UpdateRepo, PostUpdateRepo, true,
+                                  new RepoArgument(forceFullRefresh, refreshWithoutChanges));
             }
-            catch { }
+            catch (Exception exc)
+            {
+                log.Error("Failed to start repo update!", exc);
+            }
 
             DisableMainWindow();
 
@@ -52,22 +59,31 @@ namespace CKAN.GUI
 
         private void UpdateRepo(object sender, DoWorkEventArgs e)
         {
+            (bool forceFullRefresh, bool refreshWithoutChanges) = (RepoArgument)e.Argument;
             // Don't repeat this stuff if downloads fail
             AddStatusMessage(Properties.Resources.MainRepoScanning);
             log.Debug("Scanning before repo update");
-            bool scanChanged = CurrentInstance.Scan();
-
-            AddStatusMessage(Properties.Resources.MainRepoUpdating);
+            var regMgr = RegistryManager.Instance(CurrentInstance, repoData);
+            bool scanChanged = regMgr.ScanUnmanagedFiles();
 
             // Note the current mods' compatibility for the NewlyCompatible filter
-            GameVersionCriteria versionCriteria = CurrentInstance.VersionCriteria();
-            var registry = RegistryManager.Instance(CurrentInstance).registry;
-            Dictionary<string, bool> oldModules = registry.CompatibleModules(versionCriteria)
-                .ToDictionary(m => m.identifier, m => false);
+            var registry = regMgr.registry;
+
+            // Load cached data with progress bars instead of without if not already loaded
+            // (which happens if auto-update is enabled, otherwise this is a no-op).
+            // We need the old data to alert the user of newly compatible modules after update.
+            AddStatusMessage(Properties.Resources.LoadingCachedRepoData);
+            repoData.Prepopulate(
+                registry.Repositories.Values.ToList(),
+                new Progress<int>(p => currentUser.RaiseProgress(Properties.Resources.LoadingCachedRepoData, p)));
+
+            var versionCriteria = CurrentInstance.VersionCriteria();
+            var oldModules = registry.CompatibleModules(versionCriteria)
+                                     .ToDictionary(m => m.identifier, m => false);
             registry.IncompatibleModules(versionCriteria)
-                .Where(m => !oldModules.ContainsKey(m.identifier))
-                .ToList()
-                .ForEach(m => oldModules.Add(m.identifier, true));
+                    .Where(m => !oldModules.ContainsKey(m.identifier))
+                    .ToList()
+                    .ForEach(m => oldModules.Add(m.identifier, true));
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
@@ -81,9 +97,8 @@ namespace CKAN.GUI
                         var downloader = new NetAsyncDownloader(currentUser);
                         downloader.Progress += (target, remaining, total) =>
                         {
-                            var repo = repos
-                                .Where(r => target.urls.Contains(r.uri))
-                                .FirstOrDefault();
+                            var repo = repos.Where(r => target.urls.Contains(r.uri))
+                                            .FirstOrDefault();
                             if (repo != null)
                             {
                                 Wait.SetProgress(repo.name, remaining, total);
@@ -95,21 +110,21 @@ namespace CKAN.GUI
                             downloader.CancelDownload();
                         };
 
-                        RepoUpdateResult result = Repo.UpdateAllRepositories(
-                            RegistryManager.Instance(CurrentInstance),
-                            CurrentInstance, downloader, Manager.Cache, currentUser);
+                        AddStatusMessage(Properties.Resources.MainRepoUpdating);
+
+                        var updateResult = repoData.Update(repos, CurrentInstance.game,
+                                                           forceFullRefresh, downloader, currentUser);
 
                         if (canceled)
                         {
                             throw new CancelledActionKraken();
                         }
 
-                        if (result == RepoUpdateResult.NoChanges && scanChanged)
+                        if (updateResult == RepositoryDataManager.UpdateResult.NoChanges && scanChanged)
                         {
-                            result = RepoUpdateResult.Updated;
+                            updateResult = RepositoryDataManager.UpdateResult.Updated;
                         }
-                        e.Result = new KeyValuePair<RepoUpdateResult, Dictionary<string, bool>>(
-                            result, oldModules);
+                        e.Result = new RepoResult(updateResult, oldModules, refreshWithoutChanges);
 
                         // If we make it to the end, we are done
                         transaction.Complete();
@@ -117,29 +132,35 @@ namespace CKAN.GUI
                     }
                     catch (DownloadErrorsKraken k)
                     {
-                        var dfd = new DownloadsFailedDialog(
-                            Properties.Resources.RepoDownloadsFailedMessage,
-                            Properties.Resources.RepoDownloadsFailedColHdr,
-                            Properties.Resources.RepoDownloadsFailedAbortBtn,
-                            k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
-                                new object[] { repos[kvp.Key] }, kvp.Value)),
-                            // Rows are only linked to themselves
-                            (r1, r2) => r1 == r2);
-                        Util.Invoke(this, () => dfd.ShowDialog(this));
+                        log.Debug("Caught download errors kraken");
+                        DownloadsFailedDialog dfd = null;
+                        Util.Invoke(this, () =>
+                        {
+                            dfd = new DownloadsFailedDialog(
+                                Properties.Resources.RepoDownloadsFailedMessage,
+                                Properties.Resources.RepoDownloadsFailedColHdr,
+                                Properties.Resources.RepoDownloadsFailedAbortBtn,
+                                k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
+                                    new object[] { repos[kvp.Key] }, kvp.Value)),
+                                // Rows are only linked to themselves
+                                (r1, r2) => r1 == r2);
+                            dfd.ShowDialog(this);
+                        });
                         var skip  = dfd.Wait()?.Select(r => r as Repository).ToArray();
                         var abort = dfd.Abort;
                         dfd.Dispose();
                         if (abort)
                         {
-                            e.Result = new KeyValuePair<RepoUpdateResult, Dictionary<string, bool>>(
-                                RepoUpdateResult.Failed, oldModules);
+                            e.Result = new RepoResult(RepositoryDataManager.UpdateResult.Failed,
+                                                      oldModules, refreshWithoutChanges);
                             throw new CancelledActionKraken();
                         }
                         if (skip.Length > 0)
                         {
                             foreach (var r in skip)
                             {
-                                registry.Repositories.Remove(r.name);
+                                registry.RepositoriesRemove(r.name);
+                                needRegistrySave = true;
                             }
                         }
 
@@ -184,35 +205,34 @@ namespace CKAN.GUI
             }
             else
             {
-                var resultPair = e.Result as KeyValuePair<RepoUpdateResult, Dictionary<string, bool>>?;
-                RepoUpdateResult? result = resultPair?.Key;
-                Dictionary<string, bool> oldModules = resultPair?.Value;
+                (RepositoryDataManager.UpdateResult updateResult,
+                 Dictionary<string, bool>           oldModules,
+                 bool                               refreshWithoutChanges) = (RepoResult)e.Result;
 
-                switch (result)
+                switch (updateResult)
                 {
-                    case RepoUpdateResult.NoChanges:
+                    case RepositoryDataManager.UpdateResult.NoChanges:
                         AddStatusMessage(Properties.Resources.MainRepoUpToDate);
-                        HideWaitDialog();
-                        // Load rows if grid empty, otherwise keep current
-                        if (ManageMods.ModGrid.Rows.Count < 1)
+                        // Reload rows if user added a cached repo repo
+                        if (refreshWithoutChanges)
                         {
-                            RefreshModList();
+                            RefreshModList(false, oldModules);
                         }
                         else
                         {
+                            // Nothing changed, just go back
+                            HideWaitDialog();
                             EnableMainWindow();
                             Util.Invoke(this, ManageMods.ModGrid.Select);
                         }
-                        SetupDefaultSearch();
                         break;
 
-                    case RepoUpdateResult.Updated:
+                    case RepositoryDataManager.UpdateResult.Updated:
                     default:
                         AddStatusMessage(Properties.Resources.MainRepoSuccess);
                         ShowRefreshQuestion();
                         UpgradeNotification();
-                        EnableMainWindow();
-                        RefreshModList(oldModules);
+                        RefreshModList(false, oldModules);
                         break;
                 }
             }

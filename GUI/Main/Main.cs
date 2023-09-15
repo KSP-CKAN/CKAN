@@ -30,6 +30,7 @@ namespace CKAN.GUI
         public readonly GUIUser currentUser;
         public readonly GameInstanceManager Manager;
         public GameInstance CurrentInstance => Manager.CurrentInstance;
+        private RepositoryDataManager repoData;
 
         // Stuff we set when the game instance changes
         public GUIConfiguration configuration;
@@ -86,6 +87,7 @@ namespace CKAN.GUI
             InitializeComponent();
             // React when the user clicks a tag or filter link in mod info
             ModInfo.OnChangeFilter += ManageMods.Filter;
+            repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
 
             Instance = this;
 
@@ -227,7 +229,7 @@ namespace CKAN.GUI
                             try
                             {
                                 // This will throw RegistryInUseKraken if locked by another process
-                                regMgr = RegistryManager.Instance(CurrentInstance);
+                                regMgr = RegistryManager.Instance(CurrentInstance, repoData);
                                 // Tell the user their registry was reset if it was corrupted
                                 if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
                                     && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
@@ -363,7 +365,7 @@ namespace CKAN.GUI
         private void CurrentInstanceUpdated(bool allowRepoUpdate)
         {
             // This will throw RegistryInUseKraken if locked by another process
-            var regMgr = RegistryManager.Instance(CurrentInstance);
+            var regMgr = RegistryManager.Instance(CurrentInstance, repoData);
             log.Debug("Current instance updated, scanning");
 
             Util.Invoke(this, () =>
@@ -388,7 +390,6 @@ namespace CKAN.GUI
                 regMgr.previousCorruptedMessage = null;
                 regMgr.previousCorruptedPath = null;
             }
-            registry.BuildTagIndex(ManageMods.mainModList.ModuleTags);
 
             configuration?.Save();
             configuration = GUIConfigForInstance(CurrentInstance);
@@ -408,18 +409,18 @@ namespace CKAN.GUI
 
             CurrentInstance.game.RebuildSubdirectories(CurrentInstance.GameDir());
 
-            bool repoUpdateNeeded = configuration.RefreshOnStartup || !registry.HasAnyAvailable();
+            bool repoUpdateNeeded = configuration.RefreshOnStartup;
             if (allowRepoUpdate)
             {
                 // If not allowing, don't do anything
                 if (repoUpdateNeeded)
                 {
                     ManageMods.ModGrid.Rows.Clear();
-                    UpdateRepo();
+                    UpdateRepo(refreshWithoutChanges: true);
                 }
                 else
                 {
-                    RefreshModList();
+                    RefreshModList(registry.Repositories.Count > 0);
                 }
             }
             ManageMods.InstanceUpdated(CurrentInstance);
@@ -437,8 +438,7 @@ namespace CKAN.GUI
         {
             if (CurrentInstance != null)
             {
-                var registry = RegistryManager.Instance(Manager.CurrentInstance);
-                registry?.Dispose();
+                RegistryManager.DisposeInstance(Manager.CurrentInstance);
             }
 
             // Stop all running play time timers
@@ -519,7 +519,7 @@ namespace CKAN.GUI
                 using (var transaction = CkanTransaction.CreateTransactionScope())
                 {
                     // Save registry
-                    RegistryManager.Instance(CurrentInstance).Save(false);
+                    RegistryManager.Instance(CurrentInstance, repoData).Save(false);
                     transaction.Complete();
                 }
             }
@@ -529,13 +529,14 @@ namespace CKAN.GUI
 
         private void SetupDefaultSearch()
         {
+            var registry = RegistryManager.Instance(CurrentInstance, repoData).registry;
             var def = configuration.DefaultSearches;
             if (def == null || def.Count < 1)
             {
                 // Fall back to old setting
                 ManageMods.Filter(ModList.FilterToSavedSearch(
                     (GUIModFilter)configuration.ActiveFilter,
-                    ManageMods.mainModList.ModuleTags.Tags.GetOrDefault(configuration.TagFilter),
+                    registry.Tags.GetOrDefault(configuration.TagFilter),
                     ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                         .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)
                 ), false);
@@ -578,8 +579,17 @@ namespace CKAN.GUI
         {
             // Flipping enabled here hides the main form itself.
             Enabled = false;
-            new SettingsDialog(currentUser).ShowDialog(this);
+            var dialog = new SettingsDialog(RegistryManager.Instance(CurrentInstance, repoData), currentUser);
+            dialog.ShowDialog(this);
             Enabled = true;
+            if (dialog.RepositoryAdded)
+            {
+                UpdateRepo(refreshWithoutChanges: true);
+            }
+            else if (dialog.RepositoryRemoved || dialog.RepositoryMoved)
+            {
+                RefreshModList(false);
+            }
         }
 
         private void pluginsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -594,7 +604,7 @@ namespace CKAN.GUI
             Enabled = false;
             var dlg = new PreferredHostsDialog(
                 ServiceLocator.Container.Resolve<Configuration.IConfiguration>(),
-                RegistryManager.Instance(CurrentInstance).registry);
+                RegistryManager.Instance(CurrentInstance, repoData).registry);
             dlg.ShowDialog(this);
             Enabled = true;
         }
@@ -624,7 +634,7 @@ namespace CKAN.GUI
         private void InstallFromCkanFiles(string[] files)
         {
             // We'll need to make some registry changes to do this.
-            RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
+            RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance, repoData);
             var crit = CurrentInstance.VersionCriteria();
 
             var installed = registry_manager.registry.InstalledModules.Select(inst => inst.Module).ToList();
@@ -699,7 +709,7 @@ namespace CKAN.GUI
             if (dialog.ShowDialog(this) != DialogResult.Cancel)
             {
                 // This takes a while, so don't do it if they cancel out
-                RefreshModList();
+                RefreshModList(false);
             }
         }
 
@@ -756,7 +766,8 @@ namespace CKAN.GUI
 
             ActiveModInfo = module == null ? null : new GUIMod(
                 module,
-                RegistryManager.Instance(CurrentInstance).registry,
+                repoData,
+                RegistryManager.Instance(CurrentInstance, repoData).registry,
                 CurrentInstance.VersionCriteria(),
                 configuration.HideEpochs,
                 configuration.HideV);
@@ -852,7 +863,7 @@ namespace CKAN.GUI
             if (split.Length == 0)
                 return;
 
-            var registry = RegistryManager.Instance(CurrentInstance).registry;
+            var registry = RegistryManager.Instance(CurrentInstance, repoData).registry;
 
             var suppressedIdentifiers = CurrentInstance.GetSuppressedCompatWarningIdentifiers;
             var incomp = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria())
@@ -929,7 +940,7 @@ namespace CKAN.GUI
             tabController.ShowTab("ChangesetTabPage", 1);
         }
 
-        private void RefreshModList(Dictionary<string, bool> oldModules = null)
+        private void RefreshModList(bool allowAutoUpdate, Dictionary<string, bool> oldModules = null)
         {
             tabController.RenameTab("WaitTabPage", Properties.Resources.MainModListWaitTitle);
             ShowWaitDialog();
@@ -938,16 +949,23 @@ namespace CKAN.GUI
                 ManageMods.Update,
                 (sender, e) =>
                 {
-                    UpdateTrayInfo();
-                    HideWaitDialog();
-                    EnableMainWindow();
-                    SetupDefaultSearch();
-                    if (!string.IsNullOrEmpty(focusIdent))
+                    if (allowAutoUpdate && !(bool)e.Result)
                     {
-                        log.Debug("Attempting to select mod from startup parameters");
-                        ManageMods.FocusMod(focusIdent, true, true);
-                        // Only do it the first time
-                        focusIdent = null;
+                        UpdateRepo();
+                    }
+                    else
+                    {
+                        UpdateTrayInfo();
+                        HideWaitDialog();
+                        EnableMainWindow();
+                        SetupDefaultSearch();
+                        if (!string.IsNullOrEmpty(focusIdent))
+                        {
+                            log.Debug("Attempting to select mod from startup parameters");
+                            ManageMods.FocusMod(focusIdent, true, true);
+                            // Only do it the first time
+                            focusIdent = null;
+                        }
                     }
                 },
                 false,

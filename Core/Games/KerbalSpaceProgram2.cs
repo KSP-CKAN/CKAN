@@ -8,10 +8,12 @@ using System.Reflection;
 using Autofac;
 using log4net;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
+using CKAN.DLC;
 using CKAN.Versioning;
 
-namespace CKAN.Games
+namespace CKAN.Games.KerbalSpaceProgram2
 {
     public class KerbalSpaceProgram2 : IGame
     {
@@ -152,6 +154,8 @@ namespace CKAN.Games
         public string[] AdjustCommandLine(string[] args, GameVersion installedVersion)
             => args;
 
+        public IDlcDetector[] DlcDetectors => new IDlcDetector[] { };
+
         private static readonly Uri BuildMapUri =
             new Uri("https://raw.githubusercontent.com/KSP-CKAN/KSP2-CKAN-meta/main/builds.json");
         private static readonly string cachedBuildMapPath =
@@ -182,6 +186,15 @@ namespace CKAN.Games
         }
 
         public List<GameVersion> KnownVersions => versions;
+
+        public GameVersion[] EmbeddedGameVersions
+            => JsonConvert.DeserializeObject<GameVersion[]>(
+                new StreamReader(Assembly.GetExecutingAssembly()
+                                         .GetManifestResourceStream("CKAN.builds-ksp2.json"))
+                    .ReadToEnd());
+
+        public GameVersion[] ParseBuildsJson(JToken json)
+            => json.ToObject<GameVersion[]>();
 
         public GameVersion DetectVersion(DirectoryInfo where)
             => VersionFromFile(Path.Combine(where.FullName, "KSP2_x64.exe"));

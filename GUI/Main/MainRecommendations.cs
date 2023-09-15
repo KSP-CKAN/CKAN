@@ -30,7 +30,7 @@ namespace CKAN.GUI
         {
             // Run in a background task so GUI thread can react to user
             Task.Factory.StartNew(() => AuditRecommendations(
-                RegistryManager.Instance(CurrentInstance).registry,
+                RegistryManager.Instance(CurrentInstance, repoData).registry,
                 CurrentInstance.VersionCriteria()
             ));
         }

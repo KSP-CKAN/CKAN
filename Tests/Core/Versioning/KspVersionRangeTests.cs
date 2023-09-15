@@ -1,6 +1,8 @@
-using CKAN.Versioning;
-﻿using CKAN.Games;
 using NUnit.Framework;
+
+using CKAN.Versioning;
+using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
 
 #pragma warning disable 414
 
@@ -681,6 +683,47 @@ namespace Tests.Core.Versioning
             string s = GameVersionRange.VersionSpan(game, min, max);
             // Assert
             Assert.AreEqual("KSP 1.0.0–1.1.1", s);
+        }
+
+        [Test,
+            // Less than min
+            TestCase("1.0", "2.0", "0.5", false),
+            // Equal to min
+            TestCase("1.0", "2.0", "1.0", true),
+            // Equal to max
+            TestCase("1.0", "2.0", "2.0", true),
+            // In between
+            TestCase("1.0", "2.0", "1.5", true),
+            // Greater than max
+            TestCase("1.0", "2.0", "3.0", false),
+            // Single version range, equal
+            TestCase("1.0", "1.0", "1.0", true),
+            // Single version range, not equal
+            TestCase("1.0", "1.0", "2.0", false),
+            // Single version range, Any version
+            TestCase("1.0", "1.0", "any", true),
+            // Less or equal range, in range
+            TestCase("any", "1.0", "0.5", true),
+            // Less or equal range, out of range
+            TestCase("any", "1.0", "2.0", false),
+            // Greater or equal range, in range
+            TestCase("1.0", "any", "2.0", true),
+            // Greater or equal range, out of range
+            TestCase("1.0", "any", "0.5", false),
+            // Unbounded range, a version
+            TestCase("any", "any", "1.0", true),
+            // Unbounded range, Any version
+            TestCase("any", "any", "any", true),
+        ]
+        public void Contains_GameVersion_Works(string min, string max, string ver, bool contained)
+        {
+            // Arrange
+            var range   = new GameVersionRange(GameVersion.Parse(min),
+                                               GameVersion.Parse(max));
+            var gameVer = GameVersion.Parse(ver);
+
+            // Act / Assert
+            Assert.AreEqual(contained, range.Contains(gameVer));
         }
 
     }

@@ -1,6 +1,6 @@
-﻿using CKAN.Versioning;
+using CKAN.Versioning;
 
-namespace CKAN.GameVersionProviders
+namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
 {
     public interface IGameVersionProvider
     {

@@ -1,11 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+
+using CKAN.DLC;
 using CKAN.Versioning;
 using CKAN.Games;
 
-namespace CKAN.DLC
+namespace CKAN.Games.KerbalSpaceProgram.DLC
 {
     /// <summary>
     /// Base class for DLC Detectors that follow standard conventions.

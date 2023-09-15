@@ -60,7 +60,7 @@ namespace CKAN.GUI
             bool canceled = false;
             var opts = (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
 
-            RegistryManager registry_manager = RegistryManager.Instance(Manager.CurrentInstance);
+            RegistryManager registry_manager = RegistryManager.Instance(Manager.CurrentInstance, repoData);
             Registry registry = registry_manager.registry;
             ModuleInstaller installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
             // Avoid accumulating multiple event handlers
@@ -196,16 +196,20 @@ namespace CKAN.GUI
                         var fullChangeset = new RelationshipResolver(
                             toInstall.Concat(toUpgrade), toUninstall, opts.Value, registry, crit
                         ).ModList().ToList();
-                        var dfd = new DownloadsFailedDialog(
-                            Properties.Resources.ModDownloadsFailedMessage,
-                            Properties.Resources.ModDownloadsFailedColHdr,
-                            Properties.Resources.ModDownloadsFailedAbortBtn,
-                            k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
-                                fullChangeset.Where(m => m.download == kvp.Key.download).ToArray(),
-                                kvp.Value)),
-                            (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
-                        Util.Invoke(dfd, () => dfd.ShowDialog(this));
-                        var skip = dfd.Wait()?.Select(m => m as CkanModule).ToArray();
+                        DownloadsFailedDialog dfd = null;
+                        Util.Invoke(dfd, () =>
+                        {
+                            dfd = new DownloadsFailedDialog(
+                                Properties.Resources.ModDownloadsFailedMessage,
+                                Properties.Resources.ModDownloadsFailedColHdr,
+                                Properties.Resources.ModDownloadsFailedAbortBtn,
+                                k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
+                                    fullChangeset.Where(m => m.download == kvp.Key.download).ToArray(),
+                                    kvp.Value)),
+                                (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
+                             dfd.ShowDialog(this);
+                        });
+                        var skip  = dfd.Wait()?.Select(m => m as CkanModule).ToArray();
                         var abort = dfd.Abort;
                         dfd.Dispose();
                         if (abort)
@@ -377,7 +381,9 @@ namespace CKAN.GUI
                             }
                             // Now pretend they clicked the menu option for the settings
                             Enabled = false;
-                            new SettingsDialog(currentUser).ShowDialog(this);
+                            new SettingsDialog(RegistryManager.Instance(CurrentInstance, repoData),
+                                               currentUser)
+                                .ShowDialog(this);
                             Enabled = true;
                         }
                         break;
@@ -427,7 +433,7 @@ namespace CKAN.GUI
                 KeyValuePair<bool, ModChanges> result = (KeyValuePair<bool, ModChanges>) e.Result;
                 AddStatusMessage(Properties.Resources.MainInstallSuccess);
                 // Rebuilds the list of GUIMods
-                RefreshModList();
+                RefreshModList(false);
             }
         }
     }

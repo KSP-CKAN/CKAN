@@ -5,18 +5,17 @@ namespace CKAN.CmdLine
 {
     public class Available : ICommand
     {
-        public IUser user { get; set; }
-
-        public Available(IUser user)
+        public Available(RepositoryDataManager repoData, IUser user)
         {
-            this.user = user;
+            this.repoData = repoData;
+            this.user     = user;
         }
 
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
-            AvailableOptions opts       = (AvailableOptions)raw_options;
-            IRegistryQuerier registry   = RegistryManager.Instance(instance).registry;
-            
+            AvailableOptions opts     = (AvailableOptions)raw_options;
+            IRegistryQuerier registry = RegistryManager.Instance(instance, repoData).registry;
+
             var compatible = registry
                 .CompatibleModules(instance.VersionCriteria())
                 .Where(m => !m.IsDLC);
@@ -42,5 +41,8 @@ namespace CKAN.CmdLine
 
             return Exit.OK;
         }
+
+        private IUser                 user;
+        private RepositoryDataManager repoData;
     }
 }

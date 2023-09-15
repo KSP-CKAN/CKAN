@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using Autofac;
+
 using CKAN.Versioning;
-using CKAN.GameVersionProviders;
 using CKAN.Types;
 
 namespace CKAN.GUI

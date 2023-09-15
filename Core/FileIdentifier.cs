@@ -1,6 +1,8 @@
 using System.IO;
 using System.Linq;
 
+using CKAN.Extensions;
+
 namespace CKAN
 {
     public static class FileIdentifier
@@ -73,21 +75,26 @@ namespace CKAN
         /// <param name="stream">Stream to the file.</param>
         private static bool CheckTar(Stream stream)
         {
+            const int magicOffset = 257;
+            const int emptyLength = 10240;
+
             if (stream.CanSeek)
             {
                 // Rewind the stream to the origin of the file.
-                stream.Seek (0, SeekOrigin.Begin);
+                stream.Seek(0, SeekOrigin.Begin);
+            }
+
+            bool allNulls = true;
+            // Advance the stream position to offset 257. This method circumvents stream which can't seek.
+            for (int i = 0; i < magicOffset; ++i)
+            {
+                var b = stream.ReadByte();
+                allNulls = allNulls && b == 0;
             }
 
             // Define the buffer and magic types to compare against.
-            byte[] buffer = new byte[5];
             byte[] tar_identifier = { 0x75, 0x73, 0x74, 0x61, 0x72 };
-
-            // Advance the stream position to offset 257. This method circumvents stream which can't seek.
-            for (int i = 0; i < 257; i++)
-            {
-                stream.ReadByte();
-            }
+            byte[] buffer = new byte[tar_identifier.Length];
 
             // Read 5 bytes into the buffer.
             int bytes_read = stream.Read(buffer, 0, buffer.Length);
@@ -102,6 +109,14 @@ namespace CKAN
             if (buffer.SequenceEqual(tar_identifier))
             {
                 return true;
+            }
+
+            if (allNulls && buffer.SequenceEqual(new byte[] { 0, 0, 0, 0, 0 }))
+            {
+                // A tar with no files is 10240 nulls without the magic
+                var rest = stream.BytesFromStream().ToArray();
+                return magicOffset + tar_identifier.Length + rest.Length == emptyLength
+                       && rest.All(b => b == 0);
             }
 
             return false;
@@ -217,7 +232,7 @@ namespace CKAN
             }
 
             // Identify the file using the stream method.
-            using (Stream stream = File.OpenRead (path))
+            using (Stream stream = File.OpenRead(path))
             {
                 type = IdentifyFile(stream);
             }

@@ -42,7 +42,7 @@ namespace CKAN.GUI
         internal Dictionary<string, DataGridViewRow> full_list_of_mod_rows;
 
         public event Action ModFiltersUpdated;
-        public ReadOnlyCollection<GUIMod> Modules { get; private set; } =
+        public IReadOnlyCollection<GUIMod> Modules { get; private set; } =
             new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
         public bool HasAnyInstalled { get; private set; }
 
@@ -231,9 +231,9 @@ namespace CKAN.GUI
                         false)));
         }
 
-        public bool IsVisible(GUIMod mod, string instanceName, IGame game)
+        public bool IsVisible(GUIMod mod, string instanceName, IGame game, Registry registry)
             => (activeSearches?.Any(s => s?.Matches(mod) ?? true) ?? true)
-                && !HiddenByTagsOrLabels(mod, instanceName, game);
+                && !HiddenByTagsOrLabels(mod, instanceName, game, registry);
 
         private bool TagInSearches(ModuleTag tag)
             => activeSearches?.Any(s => s?.TagNames.Contains(tag.Name) ?? false) ?? false;
@@ -241,14 +241,14 @@ namespace CKAN.GUI
         private bool LabelInSearches(ModuleLabel label)
             => activeSearches?.Any(s => s?.Labels.Contains(label) ?? false) ?? false;
 
-        private bool HiddenByTagsOrLabels(GUIMod m, string instanceName, IGame game)
+        private bool HiddenByTagsOrLabels(GUIMod m, string instanceName, IGame game, Registry registry)
             // "Hide" labels apply to all non-custom filters
             => (ModuleLabels?.LabelsFor(instanceName)
                              .Where(l => !LabelInSearches(l) && l.Hide)
                              .Any(l => l.ContainsModule(game, m.Identifier))
                 ?? false)
-               || (ModuleTags?.Tags?.Values
-                                    .Where(t => !TagInSearches(t) && t.Visible == false)
+               || (registry?.Tags?.Values
+                                    .Where(t => !TagInSearches(t) && ModuleTags.HiddenTags.Contains(t.Name))
                                     .Any(t => t.ModuleIdentifiers.Contains(m.Identifier))
                    ?? false);
 
@@ -265,10 +265,12 @@ namespace CKAN.GUI
         /// <param name="modules">A list of modules that may require updating</param>
         /// <param name="mc">Changes the user has made</param>
         /// <returns>The mod list</returns>
-        public IEnumerable<DataGridViewRow> ConstructModList(
-            IEnumerable<GUIMod> modules, string instanceName, IGame game, IEnumerable<ModChange> mc = null)
+        public IEnumerable<DataGridViewRow> ConstructModList(IReadOnlyCollection<GUIMod> modules,
+                                                             string                      instanceName,
+                                                             IGame                       game,
+                                                             IEnumerable<ModChange>      mc = null)
         {
-            Modules = new ReadOnlyCollection<GUIMod>(modules.ToList());
+            Modules = modules;
             var changes = mc?.ToList();
             full_list_of_mod_rows = Modules.ToDictionary(
                 gm => gm.Identifier,
@@ -391,13 +393,13 @@ namespace CKAN.GUI
         /// after it has been added to or removed from a label group
         /// </summary>
         /// <param name="mod">The mod that needs an update</param>
-        public void ReapplyLabels(GUIMod mod, bool conflicted, string instanceName, IGame game)
+        public void ReapplyLabels(GUIMod mod, bool conflicted, string instanceName, IGame game, Registry registry)
         {
             DataGridViewRow row;
             if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out row))
             {
                 row.DefaultCellStyle.BackColor = GetRowBackground(mod, conflicted, instanceName);
-                row.Visible = IsVisible(mod, instanceName, game);
+                row.Visible = IsVisible(mod, instanceName, game, registry);
             }
         }
 

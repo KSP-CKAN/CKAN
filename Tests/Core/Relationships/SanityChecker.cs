@@ -20,26 +20,28 @@ namespace Tests.Core.Relationships
         private CKAN.RegistryManager manager;
         private CKAN.Registry registry;
         private DisposableKSP ksp;
+        private TemporaryRepositoryData repoData;
 
         [OneTimeSetUp]
         public void Setup()
         {
             ksp = new DisposableKSP();
 
-            manager = CKAN.RegistryManager.Instance(ksp.KSP);
-            registry = manager.registry;
-            registry.ClearDlls();
-            registry.Installed().Clear();
-
-            registry.Repositories = new SortedDictionary<string, Repository>()
+            var repos = new SortedDictionary<string, Repository>()
             {
                 {
-                    "testRepo",
-                    new Repository("testRepo", TestData.TestKANZip())
+                    "testRepo", new Repository("testRepo", TestData.TestKANZip())
                 }
             };
-            var downloader = new NetAsyncDownloader(new NullUser());
-            CKAN.Repo.UpdateAllRepositories(manager, ksp.KSP, downloader, null, new NullUser());
+            var user = new NullUser();
+            repoData = new TemporaryRepositoryData(user, repos.Values);
+
+            manager = CKAN.RegistryManager.Instance(ksp.KSP, repoData.Manager);
+            registry = manager.registry;
+            registry.Installed().Clear();
+
+            registry.RepositoriesSet(repos);
+            var downloader = new NetAsyncDownloader(user);
         }
 
         [OneTimeTearDown]
@@ -47,6 +49,7 @@ namespace Tests.Core.Relationships
         {
             manager.Dispose();
             ksp.Dispose();
+            repoData.Dispose();
         }
 
         [Test]
@@ -344,13 +347,12 @@ namespace Tests.Core.Relationships
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules));
         }
 
-        private static void TestDepends(
-            List<string> to_remove,
-            HashSet<CkanModule> mods,
-            HashSet<string> dlls,
-            Dictionary<string, ModuleVersion> dlc,
-            List<string> expected,
-            string message)
+        private static void TestDepends(List<string>                      to_remove,
+                                        HashSet<CkanModule>               mods,
+                                        HashSet<string>                   dlls,
+                                        Dictionary<string, ModuleVersion> dlc,
+                                        List<string>                      expected,
+                                        string                            message)
         {
             dlls = dlls ?? new HashSet<string>();
 

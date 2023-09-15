@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
+
 using NUnit.Framework;
+
 using CKAN;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
 
 namespace Tests.Data
 {
@@ -12,7 +14,7 @@ namespace Tests.Data
     /// </summary>
     public class DisposableKSP : IDisposable
     {
-        private readonly string _failureMessage = "Unexpected exception trying to delete disposable test container.";
+        private const string _failureMessage = "Unexpected exception trying to delete disposable test container.";
         private readonly string _goodKsp = TestData.good_ksp_dir();
         private readonly string _disposableDir;
 
@@ -22,34 +24,25 @@ namespace Tests.Data
         /// Creates a copy of the provided argument, or a known-good KSP install if passed null.
         /// Use .KSP to access the KSP object itself.
         /// </summary>
-        public DisposableKSP(string directoryToClone = null, string registryFile = null)
+        public DisposableKSP()
         {
-            directoryToClone = directoryToClone ?? _goodKsp;
             _disposableDir = TestData.NewTempDir();
-            Utilities.CopyDirectory(directoryToClone, _disposableDir, true);
-
-            // If we've been given a registry file, then copy it into position before
-            // creating our KSP object.
-
-            if (registryFile != null)
-            {
-                var registryDir = Path.Combine(_disposableDir, "CKAN");
-                var registryPath = Path.Combine(registryDir, "registry.json");
-                Directory.CreateDirectory(registryDir);
-                File.Copy(registryFile, registryPath, true);
-            }
-
+            Utilities.CopyDirectory(_goodKsp, _disposableDir, true);
             KSP = new GameInstance(new KerbalSpaceProgram(), _disposableDir, "disposable", new NullUser());
             Logging.Initialize();
         }
 
+        public DisposableKSP(string registryFile)
+            : this()
+        {
+            var registryDir = Path.Combine(_disposableDir, "CKAN");
+            Directory.CreateDirectory(registryDir);
+            File.Copy(registryFile, Path.Combine(registryDir, "registry.json"), true);
+        }
+
         public void Dispose()
         {
-            var registry = RegistryManager.Instance(KSP);
-            if (registry != null)
-            {
-                registry.Dispose();
-            }
+            RegistryManager.DisposeInstance(KSP);
 
             var i = 6;
             while (--i > 0)

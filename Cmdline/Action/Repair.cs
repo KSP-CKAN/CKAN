@@ -1,4 +1,4 @@
-﻿using CommandLine;
+using CommandLine;
 using CommandLine.Text;
 
 namespace CKAN.CmdLine
@@ -37,7 +37,10 @@ namespace CKAN.CmdLine
 
     public class Repair : ISubCommand
     {
-        public Repair() { }
+        public Repair(RepositoryDataManager repoData)
+        {
+            this.repoData = repoData;
+        }
 
         public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
         {
@@ -62,7 +65,8 @@ namespace CKAN.CmdLine
                     switch (option)
                     {
                         case "registry":
-                            exitCode = Registry(MainClass.GetGameInstance(manager));
+                            exitCode = Registry(RegistryManager.Instance
+                                (MainClass.GetGameInstance(manager), repoData));
                             break;
 
                         default:
@@ -76,15 +80,15 @@ namespace CKAN.CmdLine
         }
 
         private IUser User { get; set; }
+        private RepositoryDataManager repoData;
 
         /// <summary>
         /// Try to repair our registry.
         /// </summary>
-        private int Registry(CKAN.GameInstance ksp)
+        private int Registry(RegistryManager regMgr)
         {
-            RegistryManager manager = RegistryManager.Instance(ksp);
-            manager.registry.Repair();
-            manager.Save();
+            regMgr.registry.Repair();
+            regMgr.Save();
             User.RaiseMessage(Properties.Resources.Repaired);
             return Exit.OK;
         }

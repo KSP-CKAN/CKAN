@@ -40,7 +40,9 @@ namespace CKAN
         /// </summary>
         public string SanitizedName => string.Join("", Name.Split(Path.GetInvalidFileNameChars()));
         public GameVersion GameVersionWhenCompatibleVersionsWereStored { get; private set; }
-        public bool CompatibleVersionsAreFromDifferentGameVersion { get { return _compatibleVersions.Count > 0 && GameVersionWhenCompatibleVersionsWereStored != Version(); } }
+        public bool CompatibleVersionsAreFromDifferentGameVersion
+            => _compatibleVersions.Count > 0
+               && GameVersionWhenCompatibleVersionsWereStored != Version();
 
         private static readonly ILog log = LogManager.GetLogger(typeof(GameInstance));
 
@@ -53,7 +55,7 @@ namespace CKAN
         /// Will initialise a CKAN instance in the KSP dir if it does not already exist,
         /// if the directory contains a valid KSP install.
         /// </summary>
-        public GameInstance(IGame game, string gameDir, string name, IUser user, bool scan = true)
+        public GameInstance(IGame game, string gameDir, string name, IUser user)
         {
             this.game = game;
             Name = name;
@@ -72,7 +74,7 @@ namespace CKAN
             }
             if (Valid)
             {
-                SetupCkanDirectories(scan);
+                SetupCkanDirectories();
                 LoadCompatibleVersions();
             }
         }
@@ -95,7 +97,7 @@ namespace CKAN
         /// <summary>
         /// Create the CKAN directory and any supporting files.
         /// </summary>
-        private void SetupCkanDirectories(bool scan = true)
+        private void SetupCkanDirectories()
         {
             log.InfoFormat("Initialising {0}", CkanDir());
 
@@ -107,12 +109,6 @@ namespace CKAN
                 User.RaiseMessage(Properties.Resources.GameInstanceSettingUp);
                 User.RaiseMessage(Properties.Resources.GameInstanceCreatingDir, CkanDir());
                 txFileMgr.CreateDirectory(CkanDir());
-
-                if (scan)
-                {
-                    User.RaiseMessage(Properties.Resources.GameInstanceScanning);
-                    Scan();
-                }
             }
 
             playTime = TimeLog.Load(TimeLog.GetPath(CkanDir())) ?? new TimeLog();
@@ -336,68 +332,6 @@ namespace CKAN
 
         public GameVersionCriteria VersionCriteria()
             => new GameVersionCriteria(Version(), _compatibleVersions);
-
-        #endregion
-
-        #region CKAN/GameData Directory Maintenance
-
-        /// <summary>
-        /// Clears the registry of DLL data, and refreshes it by scanning GameData.
-        /// This operates as a transaction.
-        /// This *saves* the registry upon completion.
-        /// TODO: This would likely be better in the Registry class itself.
-        /// </summary>
-        /// <returns>
-        /// True if found anything different, false if same as before
-        /// </returns>
-        public bool Scan()
-        {
-            var manager = RegistryManager.Instance(this);
-            using (TransactionScope tx = CkanTransaction.CreateTransactionScope())
-            {
-                var oldDlls = manager.registry.InstalledDlls.ToHashSet();
-                manager.registry.ClearDlls();
-                foreach (var dir in Enumerable.Repeat<string>(game.PrimaryModDirectoryRelative, 1)
-                                              .Concat(game.AlternateModDirectoriesRelative)
-                                              .Select(d => ToAbsoluteGameDir(d)))
-                {
-                    log.DebugFormat("Scanning for DLLs in {0}", dir);
-
-                    if (Directory.Exists(dir))
-                    {
-                        // EnumerateFiles is *case-sensitive* in its pattern, which causes
-                        // DLL files to be missed under Linux; we have to pick .dll, .DLL, or scanning
-                        // GameData *twice*.
-                        //
-                        // The least evil is to walk it once, and filter it ourselves.
-                        var files = Directory
-                            .EnumerateFiles(dir, "*", SearchOption.AllDirectories)
-                            .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
-                            .Select(CKANPathUtils.NormalizePath)
-                            .Where(absPath => !game.StockFolders.Any(f =>
-                                ToRelativeGameDir(absPath).StartsWith($"{f}/")));
-
-                        foreach (string dll in files)
-                        {
-                            manager.registry.RegisterDll(this, dll);
-                        }
-                    }
-                }
-                var newDlls = manager.registry.InstalledDlls.ToHashSet();
-                bool dllChanged = !oldDlls.SetEquals(newDlls);
-                bool dlcChanged = manager.ScanDlc();
-
-                if (dllChanged || dlcChanged)
-                {
-                    manager.Save(false);
-                }
-
-                log.Debug("Scan completed, committing transaction");
-                tx.Complete();
-
-                return dllChanged || dlcChanged;
-            }
-        }
 
         #endregion
 

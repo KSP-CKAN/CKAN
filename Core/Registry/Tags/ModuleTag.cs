@@ -5,7 +5,6 @@ namespace CKAN
     public class ModuleTag
     {
         public string          Name;
-        public bool            Visible;
         public HashSet<string> ModuleIdentifiers = new HashSet<string>();
 
         /// <summary>

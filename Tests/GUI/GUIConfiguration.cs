@@ -1,11 +1,12 @@
-﻿using System.IO;
+using System.IO;
 
 using NUnit.Framework;
-using Tests.Data;
 
 using CKAN;
 using CKAN.GUI;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
+
+using Tests.Data;
 
 namespace Tests.GUI
 {

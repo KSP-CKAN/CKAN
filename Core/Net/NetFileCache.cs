@@ -356,7 +356,7 @@ namespace CKAN
                 // Prune the module lists to only those that are compatible
                 foreach (var kvp in hashMap)
                 {
-                    kvp.Value.RemoveAll(mod => !mod.IsCompatibleKSP(aggregateCriteria));
+                    kvp.Value.RemoveAll(mod => !mod.IsCompatible(aggregateCriteria));
                 }
 
                 // Now get all the files in all the caches, including in progress...

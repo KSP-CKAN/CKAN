@@ -2,7 +2,7 @@
 #addin "nuget:?package=semver&version=2.0.6"
 #addin "nuget:?package=Cake.Docker&version=0.11.0"
 #tool "nuget:?package=ILRepack&version=2.0.18"
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.11.1"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.12.0"
 
 using System.Text.RegularExpressions;
 using Semver;
@@ -371,8 +371,11 @@ Task("Test-CkanExecutable+Only")
     .WithCriteria(() => buildFramework == buildNetFramework)
     .Does(() =>
 {
-    if (RunExecutable(ckanFile, "version").FirstOrDefault() != string.Format("v{0}", GetVersion()))
-        throw new Exception("ckan.exe smoke test failed.");
+    var output = RunExecutable(ckanFile, "version").FirstOrDefault();
+    if (output != string.Format("v{0}", GetVersion()))
+    {
+        throw new Exception($"ckan.exe smoke test failed: {output}");
+    }
 });
 
 Task("Test-NetkanExecutable+Only")
@@ -380,8 +383,11 @@ Task("Test-NetkanExecutable+Only")
     .WithCriteria(() => buildFramework == buildNetFramework)
     .Does(() =>
 {
-    if (RunExecutable(netkanFile, "--version").FirstOrDefault() != string.Format("v{0}", GetVersion()))
-        throw new Exception("netkan.exe smoke test failed.");
+    var output = RunExecutable(netkanFile, "--version").FirstOrDefault();
+    if (output != string.Format("v{0}", GetVersion()))
+    {
+        throw new Exception($"netkan.exe smoke test failed: {output}");
+    }
 });
 
 Task("Version")
@@ -491,9 +497,13 @@ private IEnumerable<string> RunExecutable(FilePath executable, string arguments)
     );
 
     if (exitCode == 0)
+    {
         return output;
+    }
     else
+    {
         throw new Exception("Process failed with exit code: " + exitCode);
+    }
 }
 
 private string GetQuote(FilePath file)

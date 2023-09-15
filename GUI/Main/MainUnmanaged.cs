@@ -9,7 +9,7 @@ namespace CKAN.GUI
     {
         private void viewUnmanagedFilesStripMenuItem_Click(object sender, EventArgs e)
         {
-            UnmanagedFiles.LoadFiles(Manager.CurrentInstance, currentUser);
+            UnmanagedFiles.LoadFiles(Manager.CurrentInstance, repoData, currentUser);
             tabController.ShowTab("UnmanagedFilesTabPage", 2);
             DisableMainWindow();
         }

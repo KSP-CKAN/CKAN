@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -72,12 +72,12 @@ namespace CKAN.GUI
                                      && PreferredHostsListBox.SelectedIndex < PreferredHostsListBox.Items.Count - 1;
         }
 
-        private void AvailableHostsListBox_DoubleClick(object sender, EventArgs r)
+        private void AvailableHostsListBox_DoubleClick(object sender, EventArgs e)
         {
             MoveRightButton_Click(null, null);
         }
 
-        private void PreferredHostsListBox_DoubleClick(object sender, EventArgs r)
+        private void PreferredHostsListBox_DoubleClick(object sender, EventArgs e)
         {
             MoveLeftButton_Click(null, null);
         }

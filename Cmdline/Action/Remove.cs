@@ -2,26 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using log4net;
 
 namespace CKAN.CmdLine
 {
     public class Remove : ICommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(Remove));
-
-        public IUser user { get; set; }
-        private GameInstanceManager manager;
-
         /// <summary>
         /// Initialize the remove command object
         /// </summary>
         /// <param name="mgr">GameInstanceManager containing our instances</param>
         /// <param name="user">IUser object for interaction</param>
-        public Remove(GameInstanceManager mgr, IUser user)
+        public Remove(GameInstanceManager mgr, RepositoryDataManager repoData, IUser user)
         {
-            manager   = mgr;
-            this.user = user;
+            manager       = mgr;
+            this.repoData = repoData;
+            this.user     = user;
         }
 
         /// <summary>
@@ -35,7 +32,7 @@ namespace CKAN.CmdLine
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
             RemoveOptions options = (RemoveOptions) raw_options;
-            RegistryManager regMgr = RegistryManager.Instance(instance);
+            RegistryManager regMgr = RegistryManager.Instance(instance, repoData);
 
             // Use one (or more!) regex to select the modules to remove
             if (options.regex)
@@ -78,7 +75,7 @@ namespace CKAN.CmdLine
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
                     var installer = new ModuleInstaller(instance, manager.Cache, user);
-                    Search.AdjustModulesCase(instance, options.modules);
+                    Search.AdjustModulesCase(instance, regMgr.registry, options.modules);
                     installer.UninstallList(options.modules, ref possibleConfigOnlyDirs, regMgr);
                     user.RaiseMessage("");
                 }
@@ -114,5 +111,11 @@ namespace CKAN.CmdLine
 
             return Exit.OK;
         }
+
+        private GameInstanceManager   manager;
+        private RepositoryDataManager repoData;
+        private IUser                 user;
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(Remove));
     }
 }

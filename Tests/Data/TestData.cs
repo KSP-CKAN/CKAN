@@ -11,7 +11,6 @@ namespace Tests.Data
     static public class TestData
     {
         public static string DataDir()
-        {
             // FIXME: Come up with a better solution for test data
             // 1. This is fragile with respect to changes in directory structure.
             // 2. This forces us to disable ReSharper's test assembly shadow copying
@@ -19,63 +18,46 @@ namespace Tests.Data
             //    But this makes updates hard.
             // 4. A better, but much harder solution, is to not require harded files on disk for any of our tests, but that's
             //    a lot of work.
-            return Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "../../../../../../Tests/Data");
-        }
+            => Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName,
+                            "../../../../../../Tests/Data");
 
         public static string DataDir(string file)
-        {
-            return Path.Combine(DataDir(), file);
-        }
+            => Path.Combine(DataDir(), file);
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01.zip
         /// </summary>
         public static string DogeCoinFlagZip()
-        {
-            string such_zip_very_currency_wow = Path.Combine(DataDir(), "DogeCoinFlag-1.01.zip");
-
-            return such_zip_very_currency_wow;
-        }
+            => Path.Combine(DataDir(), "DogeCoinFlag-1.01.zip");
 
         public static string DogeCoinFlagAvcZip()
-        {
-            return Path.Combine(DataDir(), "DogeCoinFlag-1.01-avc.zip");
-        }
+            => Path.Combine(DataDir(), "DogeCoinFlag-1.01-avc.zip");
 
         /// <summary>
         /// Returns DogeCoinFlag.zip, with extra files inside.
         /// Great for testing filters.
         /// </summary>
         public static string DogeCoinFlagZipWithExtras()
-        {
-            return Path.Combine(DataDir(), "DogeCoinFlag-extra-files.zip");
-        }
+            => Path.Combine(DataDir(), "DogeCoinFlag-extra-files.zip");
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01-corrupt.zip
         /// </summary>
         public static string DogeCoinFlagZipCorrupt()
-        {
-            string such_zip_very_corrupt_wow = Path.Combine(DataDir(), "DogeCoinFlag-1.01-corrupt.zip");
-
-            return such_zip_very_corrupt_wow;
-        }
+            => Path.Combine(DataDir(), "DogeCoinFlag-1.01-corrupt.zip");
 
         /// <summary>
         /// Adds a plugins directory to the DogeCoinFlag directory to test.
         /// </summary>
         /// <returns>The coin plugin.</returns>
         public static string DogeCoinPluginZip()
-        {
-            return Path.Combine(DataDir(), "DogeCoinPlugin.zip");
-        }
+            => Path.Combine(DataDir(), "DogeCoinPlugin.zip");
 
         ///<summary>
         /// DogeCoinFlag 1.01 info. This doesn't contain any bugs.
         ///</summary>
         public static string DogeCoinFlag_101_LZMA()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": 1,
                     ""identifier"": ""DogeCoinFlag"",
@@ -108,11 +90,9 @@ namespace Tests.Data
                     ""ksp_version"": ""0.25""
                 }
             ";
-        }
 
-        public static readonly CkanModule DogeCoinFlag_101_LZMA_module = CkanModule.FromJson(
-            DogeCoinFlag_101_LZMA()
-        );
+        public static readonly CkanModule DogeCoinFlag_101_LZMA_module =
+            CkanModule.FromJson(DogeCoinFlag_101_LZMA());
 
         /// <summary>
         /// Test case for LZMA-format ZIPs
@@ -134,8 +114,7 @@ namespace Tests.Data
         /// install stanza doesn't actually refer to any files.
         ///</summary>
         public static string DogeCoinFlag_101_bugged()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": 1,
                     ""identifier"": ""DogeCoinFlag"",
@@ -166,19 +145,15 @@ namespace Tests.Data
                     ""ksp_version"": ""0.25""
                 }
             ";
-        }
 
         public static CkanModule DogeCoinFlag_101_bugged_module()
-        {
-            return CkanModule.FromJson(DogeCoinFlag_101_bugged());
-        }
+            => CkanModule.FromJson(DogeCoinFlag_101_bugged());
 
         ///<summary>
         /// DogeCoinFlag 1.01 info. This doesn't contain any bugs.
         ///</summary>
         public static string DogeCoinFlag_101()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": 1,
                     ""identifier"": ""DogeCoinFlag"",
@@ -215,14 +190,12 @@ namespace Tests.Data
                     ""ksp_version"": ""0.25""
                 }
             ";
-        }
 
         ///<summary>
         /// Replaced_by DogeCoinFlag 1.01 info. This doesn't contain any bugs.
         ///</summary>
         public static string DogeCoinFlag_101_replaced()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": ""v1.24"",
                     ""identifier"": ""DogeCoinFlag"",
@@ -255,14 +228,12 @@ namespace Tests.Data
                     ""ksp_version"": ""0.24""
                 }
             ";
-        }
 
         ///<summary>
         /// DogeTokenFlag 1.01 info. This is our replacement target.
         ///</summary>
         public static string DogeTokenFlag_101()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": 1,
                     ""identifier"": ""DogeTokenFlag"",
@@ -288,12 +259,9 @@ namespace Tests.Data
                     ""ksp_version"": ""0.25""
                 }
             ";
-        }
 
         public static CkanModule DogeCoinFlag_101_module()
-        {
-            return CkanModule.FromJson(DogeCoinFlag_101());
-        }
+            => CkanModule.FromJson(DogeCoinFlag_101());
 
         /// <summary>
         /// The Doge Coin flag we all love, but using `find` install stanzas.
@@ -327,8 +295,7 @@ namespace Tests.Data
 
         // Identical to DogeCoinFlag_101, but with a spec version over 9000!
         public static string FutureMetaData()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": ""v9000.0.1"",
                     ""identifier"": ""DogeCoinFlag"",
@@ -361,14 +328,12 @@ namespace Tests.Data
                     ""ksp_version"": ""0.25""
                 }
             ";
-        }
 
         ///<summary>
         /// DogeCoinPlugin info. This doesn't contain any bugs.
         ///</summary>
         public static string DogeCoinPlugin()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": ""v1.2"",
                     ""identifier"": ""DogeCoinPlugin"",
@@ -400,20 +365,16 @@ namespace Tests.Data
                     ""ksp_version"": ""0.25""
                 }
             ";
-        }
 
         public static CkanModule DogeCoinPlugin_module()
-        {
-            return CkanModule.FromJson(DogeCoinPlugin());
-        }
+            => CkanModule.FromJson(DogeCoinPlugin());
 
         /// <summary>
         /// Taurus HCV pod, which seems to cause weird KS errors when the unescaped
         /// download string is used.
         /// </summary>
         public static string RandSCapsuleDyne()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": 1,
                     ""name"": ""Taurus HCV - 3.75 m Stock-ish Crew Pod"",
@@ -443,41 +404,28 @@ namespace Tests.Data
                     ""download_size"": 8351916
                 }
             ";
-        }
 
         public static CkanModule RandSCapsuleDyneModule()
-        {
-            return CkanModule.FromJson(RandSCapsuleDyne());
-        }
+            => CkanModule.FromJson(RandSCapsuleDyne());
 
         // TestKAN in tar.gz format.
         public static Uri TestKANTarGz()
-        {
-            return new Uri(DataDir("CKAN-meta-testkan.tar.gz"));
-        }
+            => new Uri(DataDir("CKAN-meta-testkan.tar.gz"));
 
         // TestKAN in zip format.
         public static Uri TestKANZip()
-        {
-            return new Uri(DataDir("CKAN-meta-testkan.zip"));
-        }
+            => new Uri(DataDir("CKAN-meta-testkan.zip"));
 
         // A repo full of deliciously bad metadata in tar.gz format.
         public static Uri BadKANTarGz()
-        {
-            return new Uri(DataDir("CKAN-meta-badkan.tar.gz"));
-        }
+            => new Uri(DataDir("CKAN-meta-badkan.tar.gz"));
 
         // A repo full of deliciously bad metadata in zip format.
         public static Uri BadKANZip()
-        {
-            return new Uri(DataDir("CKAN-meta-badkan.zip"));
-        }
+            => new Uri(DataDir("CKAN-meta-badkan.zip"));
 
         public static string good_ksp_dir()
-        {
-            return Path.Combine(DataDir(), "KSP/KSP-0.25");
-        }
+            => Path.Combine(DataDir(), "KSP/KSP-0.25");
 
         public static IEnumerable<string> bad_ksp_dirs()
         {
@@ -491,8 +439,7 @@ namespace Tests.Data
         }
 
         public static string kOS_014()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": 1,
                     ""name""     : ""kOS - Kerbal OS"",
@@ -519,13 +466,10 @@ namespace Tests.Data
                         ""sha1"": ""C5A224AC4397770C0B19B4A6417F6C5052191608"",
                         ""sha256"": ""E0FB79C81D8FCDA8DB6E38B104106C3B7D078FDC06ACA2BC7834973B43D789CB""
                     }
-                }"
-            ;
-        }
+                }";
 
         public static string kOS_014_with_invalid_version_characters()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": 1,
                     ""name""     : ""kOS - Kerbal OS"",
@@ -555,14 +499,11 @@ namespace Tests.Data
                             ""install_to"" : ""GameData""
                         }
                     ]
-                }"
-            ;
-        }
+                }";
 
         // AFAIK kOS isn't multi-licensed, but we need somthing for testing. :)
         public static string kOS_014_multilicense()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": 1,
                     ""name""     : ""kOS - Kerbal OS"",
@@ -592,13 +533,10 @@ namespace Tests.Data
                             ""install_to"" : ""GameData""
                         }
                     ]
-                }"
-            ;
-        }
+                }";
 
         public static string kOS_014_epoch()
-        {
-            return @"
+            => @"
                 {
                     ""spec_version"": 1,
                     ""name""     : ""kOS - Kerbal OS"",
@@ -625,68 +563,47 @@ namespace Tests.Data
                         ""sha1"": ""C5A224AC4397770C0B19B4A6417F6C5052191608"",
                         ""sha256"": ""E0FB79C81D8FCDA8DB6E38B104106C3B7D078FDC06ACA2BC7834973B43D789CB""
                     }
-                }"
-            ;
-        }
+                }";
 
         public static CkanModule kOS_014_module()
-        {
-            return CkanModule.FromJson(kOS_014());
-        }
+            => CkanModule.FromJson(kOS_014());
 
         public static CkanModule kOS_014_epoch_module()
-        {
-            return CkanModule.FromJson(kOS_014_epoch());
-        }
+            => CkanModule.FromJson(kOS_014_epoch());
 
         public static string KS_CustomAsteroids_string()
-        {
-            return File.ReadAllText(Path.Combine(DataDir(), "KS/CustomAsteroids.json"));
-        }
+            => File.ReadAllText(Path.Combine(DataDir(), "KS/CustomAsteroids.json"));
 
         public static CkanModule FireSpitterModule()
-        {
-            return CkanModule.FromFile(Path.Combine(DataDir(), "Firespitter-6.3.5.ckan"));
-        }
+            => CkanModule.FromFile(Path.Combine(DataDir(), "Firespitter-6.3.5.ckan"));
 
         public static string KspAvcJson()
-        {
-            return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc.version"));
-        }
+            => File.ReadAllText(Path.Combine(DataDir(), "ksp-avc.version"));
 
 
         public static string KspAvcJsonOneLineVersion()
-        {
-            return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc-one-line.version"));
-        }
+            => File.ReadAllText(Path.Combine(DataDir(), "ksp-avc-one-line.version"));
 
         public static CkanModule ModuleManagerModule()
-        {
-            return CkanModule.FromFile(DataDir("ModuleManager-2.5.1.ckan"));
-        }
+            => CkanModule.FromFile(DataDir("ModuleManager-2.5.1.ckan"));
 
         public static string ModuleManagerZip()
-        {
-            return DataDir("ModuleManager-2.5.1.zip");
-        }
+            => DataDir("ModuleManager-2.5.1.zip");
 
         public static CkanModule MissionModule()
-        {
-            return CkanModule.FromFile(DataDir("MissionTest-1.0.ckan"));
-        }
+            => CkanModule.FromFile(DataDir("MissionTest-1.0.ckan"));
 
         public static string MissionZip()
-        {
-            return DataDir("MissionTest-1.0.zip");
-        }
+            => DataDir("MissionTest-1.0.zip");
+
+        public static string TestRepository()
+            => DataDir("repository.json");
 
         /// <summary>
         /// A path to our test registry.json file. Please copy before using.
         /// </summary>
         public static string TestRegistry()
-        {
-            return DataDir("registry.json");
-        }
+            => DataDir("registry.json");
 
         // Where's my mkdtemp? Instead we'll make a random file, delete it, and
         // fill its place with a directory.
@@ -701,8 +618,7 @@ namespace Tests.Data
         }
 
         public static string ConfigurationFile()
-        {
-            return @"<?xml version=""1.0"" encoding=""utf-8""?>
+            => @"<?xml version=""1.0"" encoding=""utf-8""?>
             <Configuration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
               <CommandLineArguments>KSP.exe -force-opengl</CommandLineArguments>
               <AutoCloseWaitDialog>false</AutoCloseWaitDialog>
@@ -722,11 +638,9 @@ namespace Tests.Data
                 <Y>136</Y>
               </WindowLoc>
             </Configuration>";
-        }
 
         public static string GoodJsonConfig()
-        {
-            return @"
+            => @"
             {
               ""GameInstances"": [
                 {
@@ -756,11 +670,9 @@ namespace Tests.Data
                 }
               }
             }";
-        }
 
         public static string MissingJsonConfig()
-        {
-            return @"
+            => @"
             {
               ""GameInstances"": [
                 {
@@ -782,11 +694,9 @@ namespace Tests.Data
                 }
               }
             }";
-        }
 
         public static string ExtraJsonConfig()
-        {
-            return @"
+            => @"
             {
               ""GameInstances"": [
                 {
@@ -819,11 +729,9 @@ namespace Tests.Data
                 ""ExtraSubToken"": ""value""
               }
             }";
-        }
 
         public static string BadJsonConfig()
-        {
-            return @"
+            => @"
             {
               ""GameInstances"":
                 {
@@ -853,7 +761,6 @@ namespace Tests.Data
                 }
               }
             }";
-        }
     }
 
     public class RandomModuleGenerator
@@ -881,7 +788,9 @@ namespace Tests.Data
                 identifier = identifier ?? Generator.Next().ToString(CultureInfo.InvariantCulture),
                 spec_version = new ModuleVersion(1.ToString(CultureInfo.InvariantCulture)),
                 ksp_version = ksp_version ?? GameVersion.Parse("0." + Generator.Next()),
-                version = version ?? new ModuleVersion(Generator.Next().ToString(CultureInfo.InvariantCulture))
+                version = version ?? new ModuleVersion(Generator.Next().ToString(CultureInfo.InvariantCulture)),
+                license = new List<License> { License.UnknownLicense },
+                download = new List<Uri> { new Uri("http://github.com/") },
             };
             mod.ksp_version_max = mod.ksp_version_min = null;
             mod.conflicts = conflicts;

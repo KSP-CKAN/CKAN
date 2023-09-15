@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.ComponentModel;
 
+using Autofac;
 using log4net;
 
 using CKAN.Extensions;
@@ -38,6 +39,8 @@ namespace CKAN.GUI
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
             ApplyToolButton.Enabled = false;
 
+            repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
+
             // History is read-only until the UI is started. We switch
             // out of it at the end of OnLoad() when we call NavInit().
             navHistory = new NavigationHistory<GUIMod> { IsReadOnly = true };
@@ -59,6 +62,7 @@ namespace CKAN.GUI
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ManageMods));
+        private RepositoryDataManager repoData;
         private DateTime lastSearchTime;
         private string lastSearchKey;
         private NavigationHistory<GUIMod> navHistory;
@@ -175,7 +179,8 @@ namespace CKAN.GUI
                     {
                         cell.ToolTipText = null;
                     }
-                    mainModList.ReapplyLabels(guiMod, false, inst.Name, inst.game);
+                    var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
+                    mainModList.ReapplyLabels(guiMod, false, inst.Name, inst.game, registry);
                     if (row.Visible)
                     {
                         ModGrid.InvalidateRow(row.Index);
@@ -206,7 +211,8 @@ namespace CKAN.GUI
 
         private void RefreshToolButton_Click(object sender, EventArgs e)
         {
-            Main.Instance.UpdateRepo();
+            // If user is holding Shift or Ctrl, force a full update
+            Main.Instance.UpdateRepo((Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0);
         }
 
         #region Filter dropdown
@@ -220,8 +226,9 @@ namespace CKAN.GUI
 
         private void FilterTagsToolButton_DropDown_Opening(object sender, CancelEventArgs e)
         {
+            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
             FilterTagsToolButton.DropDownItems.Clear();
-            foreach (var kvp in mainModList.ModuleTags.Tags.OrderBy(kvp => kvp.Key))
+            foreach (var kvp in registry.Tags.OrderBy(kvp => kvp.Key))
             {
                 FilterTagsToolButton.DropDownItems.Add(new ToolStripMenuItem(
                     $"{kvp.Key} ({kvp.Value.ModuleIdentifiers.Count})",
@@ -234,7 +241,7 @@ namespace CKAN.GUI
             }
             FilterTagsToolButton.DropDownItems.Add(untaggedFilterToolStripSeparator);
             FilterTagsToolButton.DropDownItems.Add(new ToolStripMenuItem(
-                string.Format(Properties.Resources.MainLabelsUntagged, mainModList.ModuleTags.Untagged.Count),
+                string.Format(Properties.Resources.MainLabelsUntagged, registry.Untagged.Count),
                 null, tagFilterButton_Click
             )
             {
@@ -302,7 +309,8 @@ namespace CKAN.GUI
                     mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
             }
             var inst = Main.Instance.CurrentInstance;
-            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game);
+            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
+            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game, registry);
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
         }
 
@@ -313,9 +321,10 @@ namespace CKAN.GUI
             eld.Dispose();
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
             var inst = Main.Instance.CurrentInstance;
+            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
             foreach (GUIMod module in mainModList.Modules)
             {
-                mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game);
+                mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game, registry);
             }
         }
 
@@ -595,13 +604,14 @@ namespace CKAN.GUI
                 ModListHeaderContextMenuStrip.Items.Add(new ToolStripSeparator());
 
                 // Add tags
+                var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
                 ModListHeaderContextMenuStrip.Items.AddRange(
-                    mainModList.ModuleTags.Tags.OrderBy(kvp => kvp.Key)
+                    registry.Tags.OrderBy(kvp => kvp.Key)
                     .Select(kvp => new ToolStripMenuItem()
                     {
                         Name    = kvp.Key,
                         Text    = kvp.Key,
-                        Checked = kvp.Value.Visible,
+                        Checked = !mainModList.ModuleTags.HiddenTags.Contains(kvp.Key),
                         Tag     = kvp.Value,
                     })
                     .ToArray()
@@ -633,8 +643,7 @@ namespace CKAN.GUI
             }
             else if (tag != null)
             {
-                tag.Visible = !clickedItem.Checked;
-                if (tag.Visible)
+                if (!clickedItem.Checked)
                 {
                     mainModList.ModuleTags.HiddenTags.Remove(tag.Name);
                 }
@@ -806,7 +815,7 @@ namespace CKAN.GUI
                     }
                     UpdateChangeSetAndConflicts(
                         Main.Instance.CurrentInstance,
-                        RegistryManager.Instance(Main.Instance.CurrentInstance).registry);
+                        RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry);
                 }
             }
         }
@@ -859,7 +868,7 @@ namespace CKAN.GUI
                 ModGrid.Refresh();
                 UpdateChangeSetAndConflicts(
                     Main.Instance.CurrentInstance,
-                    RegistryManager.Instance(Main.Instance.CurrentInstance).registry);
+                    RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry);
             }
         }
 
@@ -874,7 +883,7 @@ namespace CKAN.GUI
                 }
                 else if (mod.InstalledMod != null)
                 {
-                    var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+                    var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
                     mod.SelectedMod = registry.GetModuleByVersion(
                         mod.InstalledMod.identifier, mod.InstalledMod.Module.version)
                         ?? mod.InstalledMod.Module;
@@ -1011,7 +1020,7 @@ namespace CKAN.GUI
             if (module == null || !module.IsCKAN)
                 return;
 
-            IRegistryQuerier registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+            IRegistryQuerier registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
 
             // Find everything we need to re-install
             var revdep = registry.FindReverseDependencies(new List<string>() { module.Identifier })
@@ -1060,7 +1069,7 @@ namespace CKAN.GUI
             var selected = SelectedModule;
             if (selected != null)
             {
-                IRegistryQuerier registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+                IRegistryQuerier registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
                 var allAvail = registry.AvailableByIdentifier(selected.Identifier);
                 foreach (CkanModule mod in allAvail)
                 {
@@ -1127,12 +1136,13 @@ namespace CKAN.GUI
                 selected_mod = (GUIMod) ModGrid.CurrentRow.Tag;
             }
 
+            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
             ModGrid.Rows.Clear();
             foreach (var row in rows)
             {
                 var mod = ((GUIMod) row.Tag);
                 var inst = Main.Instance.CurrentInstance;
-                row.Visible = mainModList.IsVisible(mod, inst.Name, inst.game);
+                row.Visible = mainModList.IsVisible(mod, inst.Name, inst.game, registry);
             }
 
             ApplyHeaderGlyphs();
@@ -1152,37 +1162,50 @@ namespace CKAN.GUI
 
         public void Update(object sender, DoWorkEventArgs e)
         {
-            _UpdateModsList(e.Argument as Dictionary<string, bool>);
+            e.Result = _UpdateModsList(e.Argument as Dictionary<string, bool>);
         }
 
-        private void _UpdateModsList(Dictionary<string, bool> old_modules = null)
+        private bool _UpdateModsList(Dictionary<string, bool> old_modules = null)
         {
             log.Info("Updating the mod list");
 
-            Main.Instance.Wait.AddLogMessage(Properties.Resources.MainRepoScanning);
-            Main.Instance.CurrentInstance.Scan();
+            var regMgr = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData);
+            IRegistryQuerier registry = regMgr.registry;
 
-            GameVersionCriteria versionCriteria = Main.Instance.CurrentInstance.VersionCriteria();
-            IRegistryQuerier registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+            Main.Instance.Wait.AddLogMessage(Properties.Resources.LoadingCachedRepoData);
+            repoData.Prepopulate(
+                registry.Repositories.Values.ToList(),
+                new Progress<int>(p => Main.Instance.currentUser.RaiseProgress(
+                    Properties.Resources.LoadingCachedRepoData, p)));
+
+            if (!regMgr.registry.HasAnyAvailable())
+            {
+                // Abort the refresh so we can update the repo data
+                return false;
+            }
+
+            Main.Instance.Wait.AddLogMessage(Properties.Resources.MainRepoScanning);
+            regMgr.ScanUnmanagedFiles();
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingInstalled);
+            var versionCriteria = Main.Instance.CurrentInstance.VersionCriteria();
             var gui_mods = new HashSet<GUIMod>();
             gui_mods.UnionWith(
                 registry.InstalledModules
                     .Where(instMod => !instMod.Module.IsDLC)
-                    .Select(instMod => new GUIMod(instMod, registry, versionCriteria, null,
+                    .Select(instMod => new GUIMod(instMod, repoData, registry, versionCriteria, null,
                         Main.Instance.configuration.HideEpochs, Main.Instance.configuration.HideV)));
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingAvailable);
             gui_mods.UnionWith(
                 registry.CompatibleModules(versionCriteria)
                     .Where(m => !m.IsDLC)
-                    .Select(m => new GUIMod(m, registry, versionCriteria, null,
+                    .Select(m => new GUIMod(m, repoData, registry, versionCriteria, null,
                         Main.Instance.configuration.HideEpochs, Main.Instance.configuration.HideV)));
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingIncompatible);
             gui_mods.UnionWith(
                 registry.IncompatibleModules(versionCriteria)
                     .Where(m => !m.IsDLC)
-                    .Select(m => new GUIMod(m, registry, versionCriteria, true,
+                    .Select(m => new GUIMod(m, repoData, registry, versionCriteria, true,
                         Main.Instance.configuration.HideEpochs, Main.Instance.configuration.HideV)));
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListPreservingNew);
@@ -1224,7 +1247,10 @@ namespace CKAN.GUI
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListPopulatingList);
             // Update our mod listing
-            mainModList.ConstructModList(gui_mods, Main.Instance.CurrentInstance.Name, Main.Instance.CurrentInstance.game, ChangeSet);
+            mainModList.ConstructModList(gui_mods as IReadOnlyCollection<GUIMod>,
+                                         Main.Instance.CurrentInstance.Name,
+                                         Main.Instance.CurrentInstance.game,
+                                         ChangeSet);
 
             UpdateChangeSetAndConflicts(Main.Instance.CurrentInstance, registry);
 
@@ -1257,8 +1283,6 @@ namespace CKAN.GUI
                 UpdateAllToolButton.Enabled = has_unheld_updates;
             });
 
-            (registry as Registry)?.BuildTagIndex(mainModList.ModuleTags);
-
             UpdateFilters();
 
             // Hide update and replacement columns if not needed.
@@ -1273,6 +1297,7 @@ namespace CKAN.GUI
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListUpdatingTray);
 
             Util.Invoke(this, () => ModGrid.Focus());
+            return true;
         }
 
         public void MarkModForInstall(string identifier, bool uncheck = false)
@@ -1667,7 +1692,7 @@ namespace CKAN.GUI
                 var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, gameVersion);
                 full_change_set = tuple.Item1.ToList();
                 new_conflicts = tuple.Item2.ToDictionary(
-                    item => new GUIMod(item.Key, registry, gameVersion),
+                    item => new GUIMod(item.Key, repoData, registry, gameVersion),
                     item => item.Value);
                 if (new_conflicts.Count > 0)
                 {

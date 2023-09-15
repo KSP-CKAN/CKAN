@@ -2,29 +2,34 @@ using System.IO;
 using System.Transactions;
 using System.Collections.Generic;
 using System.Linq;
+
+using NUnit.Framework;
+
+using Tests.Data;
+
 using CKAN;
 using CKAN.Versioning;
-using NUnit.Framework;
-using Tests.Data;
 
 namespace Tests.Core.Registry
 {
     [TestFixture]
-    public class Registry
+    public class RegistryTests
     {
-        private static readonly CkanModule module = TestData.kOS_014_module();
-        private static readonly string identifier = module.identifier;
+        private string repoDataDir;
+
         private static readonly GameVersionCriteria v0_24_2 = new GameVersionCriteria(GameVersion.Parse("0.24.2"));
         private static readonly GameVersionCriteria v0_25_0 = new GameVersionCriteria (GameVersion.Parse("0.25.0"));
-
-        private CKAN.Registry registry;
 
         [SetUp]
         public void Setup()
         {
-            // Provide an empty registry before each test.
-            registry = CKAN.Registry.Empty();
-            Assert.IsNotNull(registry);
+            repoDataDir = TestData.NewTempDir();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            Directory.Delete(repoDataDir, true);
         }
 
         [Test]
@@ -32,118 +37,96 @@ namespace Tests.Core.Registry
         {
             CKAN.Registry registry = CKAN.Registry.Empty();
             Assert.IsInstanceOf<CKAN.Registry>(registry);
-
-        }
-
-        [Test]
-        public void AddAvailable()
-        {
-            // We shouldn't have kOS in our registry.
-            Assert.IsFalse(registry.available_modules.ContainsKey(module.identifier));
-
-            // Register
-            registry.AddAvailable(module);
-
-            // Make sure it's now there.
-            Assert.IsTrue(registry.available_modules.ContainsKey(module.identifier));
-        }
-
-        [Test]
-        public void RemoveAvailableByName()
-        {
-            // Add our module and test it's there.
-            registry.AddAvailable(module);
-            Assert.IsNotNull(registry.LatestAvailable(identifier, v0_24_2));
-
-            // Remove it, and make sure it's gone.
-            registry.RemoveAvailable(identifier, module.version);
-
-            Assert.IsNull(registry.LatestAvailable(identifier, v0_24_2));
-        }
-
-        [Test]
-        public void RemoveAvailableByModule()
-        {
-            // Add our module and test it's there.
-            registry.AddAvailable(module);
-            Assert.IsNotNull(registry.LatestAvailable(identifier, v0_24_2));
-
-            // Remove it, and make sure it's gone.
-            registry.RemoveAvailable(module);
-
-            Assert.IsNull(registry.LatestAvailable(identifier, v0_24_2));
         }
 
         [Test]
         public void LatestAvailable()
         {
-
-            registry.AddAvailable(module);
-
-            // Make sure it's there for 0.24.2
-            Assert.AreEqual(module.ToString(), registry.LatestAvailable(identifier, v0_24_2).ToString());
-
-            // But not for 0.25.0
-            Assert.IsNull(registry.LatestAvailable(identifier, v0_25_0));
-
-            // And that we fail if we ask for something we don't know.
-            Assert.Throws<ModuleNotFoundKraken>(delegate
+            var user = new NullUser();
+            using (var repo = new TemporaryRepository(TestData.kOS_014()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
-                registry.LatestAvailable("ToTheMun", v0_24_2);
-            });
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+
+                var identifier = "kOS";
+                var module = registry.GetModuleByVersion(identifier, "0.14");
+
+                // Make sure it's there for 0.24.2
+                Assert.AreEqual(module.ToString(), registry.LatestAvailable(identifier, v0_24_2).ToString());
+
+                // But not for 0.25.0
+                Assert.IsNull(registry.LatestAvailable(identifier, v0_25_0));
+
+                // And that we fail if we ask for something we don't know.
+                Assert.Throws<ModuleNotFoundKraken>(delegate
+                {
+                    registry.LatestAvailable("ToTheMun", v0_24_2);
+                });
+            }
         }
 
         [Test]
         public void CompatibleModules_NoDLCInstalled_ExcludesModulesDependingOnMH()
         {
             // Arrange
-            CkanModule DLCDepender = CkanModule.FromJson(@"{
+            var user = new NullUser();
+            using (var repo = new TemporaryRepository(@"{
                 ""identifier"": ""DLC-Depender"",
                 ""version"":    ""1.0.0"",
                 ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""depends"": [
                     { ""name"": ""MakingHistory-DLC"" }
                 ]
-            }");
-            registry.AddAvailable(DLCDepender);
+            }"))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
-            // Act
-            List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
+                // Act
+                List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
 
-            // Assert
-            Assert.IsFalse(avail.Contains(DLCDepender));
+                // Assert
+                Assert.IsFalse(avail.Contains(DLCDepender));
+            }
         }
 
         [Test]
         public void CompatibleModules_MHInstalled_IncludesModulesDependingOnMH()
         {
             // Arrange
-            registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0"));
-
-            CkanModule DLCDepender = CkanModule.FromJson(@"{
+            var user = new NullUser();
+            using (var repo = new TemporaryRepository(@"{
                 ""identifier"": ""DLC-Depender"",
                 ""version"":    ""1.0.0"",
                 ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""depends"": [
                     { ""name"": ""MakingHistory-DLC"" }
                 ]
-            }");
-            registry.AddAvailable(DLCDepender);
+            }"))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                registry.SetDlcs(new Dictionary<string, ModuleVersion>()
+                {
+                    { "MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0") }
+                });
+                var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
-            // Act
-            List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
+                // Act
+                List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
 
-            // Assert
-            Assert.IsTrue(avail.Contains(DLCDepender));
+                // Assert
+                Assert.IsTrue(avail.Contains(DLCDepender));
+            }
         }
 
         [Test]
         public void CompatibleModules_MH110Installed_IncludesModulesDependingOnMH110()
         {
             // Arrange
-            registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0"));
-
-            CkanModule DLCDepender = CkanModule.FromJson(@"{
+            var user = new NullUser();
+            using (var repo = new TemporaryRepository(@"{
                 ""identifier"": ""DLC-Depender"",
                 ""version"":    ""1.0.0"",
                 ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
@@ -151,23 +134,30 @@ namespace Tests.Core.Registry
                     ""name"": ""MakingHistory-DLC"",
                     ""version"": ""1.1.0""
                 } ]
-            }");
-            registry.AddAvailable(DLCDepender);
+            }"))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                registry.SetDlcs(new Dictionary<string, ModuleVersion>()
+                {
+                    { "MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0") }
+                });
+                var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
-            // Act
-            List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
+                // Act
+                List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
 
-            // Assert
-            Assert.IsTrue(avail.Contains(DLCDepender));
+                // Assert
+                Assert.IsTrue(avail.Contains(DLCDepender));
+            }
         }
 
         [Test]
         public void CompatibleModules_MH100Installed_ExcludesModulesDependingOnMH110()
         {
             // Arrange
-            registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.0.0"));
-
-            CkanModule DLCDepender = CkanModule.FromJson(@"{
+            var user = new NullUser();
+            using (var repo = new TemporaryRepository(@"{
                 ""identifier"": ""DLC-Depender"",
                 ""version"":    ""1.0.0"",
                 ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
@@ -175,69 +165,92 @@ namespace Tests.Core.Registry
                     ""name"": ""MakingHistory-DLC"",
                     ""version"": ""1.1.0""
                 } ]
-            }");
-            registry.AddAvailable(DLCDepender);
+            }"))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                registry.SetDlcs(new Dictionary<string, ModuleVersion>()
+                {
+                    { "MakingHistory-DLC", new UnmanagedModuleVersion("1.0.0") }
+                });
+                var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
-            // Act
-            List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
+                // Act
+                List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
 
-            // Assert
-            Assert.IsFalse(avail.Contains(DLCDepender));
+                // Assert
+                Assert.IsFalse(avail.Contains(DLCDepender));
+            }
         }
 
         [Test]
         public void CompatibleModules_PastAndFutureCompatibility_ReturnsCurrentOnly()
         {
             // Arrange
-            CkanModule modFor161 = CkanModule.FromJson(@"{
+            var user = new NullUser();
+            using (var repo = new TemporaryRepository(@"{
                 ""identifier"":  ""TypicalMod"",
                 ""version"":     ""0.9.0"",
                 ""download"":    ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""ksp_version"": ""1.6.1""
-            }");
-            CkanModule modFor173 = CkanModule.FromJson(@"{
+            }",
+            @"{
                 ""identifier"":  ""TypicalMod"",
                 ""version"":     ""1.0.0"",
                 ""download"":    ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""ksp_version"": ""1.7.3""
-            }");
-            CkanModule modFor181 = CkanModule.FromJson(@"{
+            }",
+            @"{
                 ""identifier"":  ""TypicalMod"",
                 ""version"":     ""1.1.0"",
                 ""download"":    ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""ksp_version"": ""1.8.1""
-            }");
-            registry.AddAvailable(modFor161);
-            registry.AddAvailable(modFor173);
-            registry.AddAvailable(modFor181);
+            }"))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                var modFor161 = registry.GetModuleByVersion("TypicalMod", "0.9.0");
+                var modFor173 = registry.GetModuleByVersion("TypicalMod", "1.0.0");
+                var modFor181 = registry.GetModuleByVersion("TypicalMod", "1.1.0");
 
-            // Act
-            GameVersionCriteria v173 = new GameVersionCriteria(GameVersion.Parse("1.7.3"));
-            List<CkanModule> compat = registry.CompatibleModules(v173).ToList();
+                // Act
+                GameVersionCriteria v173 = new GameVersionCriteria(GameVersion.Parse("1.7.3"));
+                List<CkanModule> compat = registry.CompatibleModules(v173).ToList();
 
-            // Assert
-            Assert.IsFalse(compat.Contains(modFor161));
-            Assert.IsTrue(compat.Contains(modFor173));
-            Assert.IsFalse(compat.Contains(modFor181));
+                // Assert
+                Assert.IsFalse(compat.Contains(modFor161));
+                Assert.IsTrue(compat.Contains(modFor173));
+                Assert.IsFalse(compat.Contains(modFor181));
+            }
         }
 
         [Test]
         public void HasUpdate_WithUpgradeableManuallyInstalledMod_ReturnsTrue()
         {
             // Arrange
-            using (var gameInstWrapper = new DisposableKSP())
-            {
-                CkanModule mod = CkanModule.FromJson(@"{
+            var user = new NullUser();
+            using (var repo = new TemporaryRepository(@"{
                     ""spec_version"": ""v1.4"",
                     ""identifier"":   ""AutoDetectedMod"",
                     ""version"":      ""1.0"",
                     ""ksp_version"":  ""1.11.1"",
                     ""download"":     ""https://mymods/AD/1.0""
-                }");
-                registry.AddAvailable(mod);
+                }"))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var gameInstWrapper = new DisposableKSP())
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                var mod = registry.GetModuleByVersion("AutoDetectedMod", "1.0");
+
                 GameInstance gameInst = gameInstWrapper.KSP;
-                registry.RegisterDll(gameInst, Path.Combine(
-                    gameInst.GameDir(), "GameData", $"{mod.identifier}.dll"));
+                registry.SetDlls(new Dictionary<string, string>()
+                {
+                    {
+                        mod.identifier,
+                        gameInst.ToRelativeGameDir(Path.Combine(gameInst.GameDir(),
+                                                                "GameData", $"{mod.identifier}.dll"))
+                    }
+                });
                 GameVersionCriteria crit = new GameVersionCriteria(mod.ksp_version);
 
                 // Act
@@ -252,23 +265,23 @@ namespace Tests.Core.Registry
         public void HasUpdate_OtherModDependsOnCurrent_ReturnsFalse()
         {
             // Arrange
+            var user = new NullUser();
             using (var gameInstWrapper = new DisposableKSP())
-            {
-                CkanModule olderDepMod = CkanModule.FromJson(@"{
+            using (var repo = new TemporaryRepository(@"{
                     ""spec_version"": ""v1.4"",
                     ""identifier"":   ""DependencyMod"",
                     ""version"":      ""1.0"",
                     ""ksp_version"":  ""1.11.1"",
                     ""download"":     ""https://mymods/DM/1.0""
-                }");
-                CkanModule newerDepMod = CkanModule.FromJson(@"{
+                }",
+                @"{
                     ""spec_version"": ""v1.4"",
                     ""identifier"":   ""DependencyMod"",
                     ""version"":      ""2.0"",
                     ""ksp_version"":  ""1.11.1"",
                     ""download"":     ""https://mymods/DM/2.0""
-                }");
-                CkanModule dependingMod = CkanModule.FromJson(@"{
+                }",
+                @"{
                     ""spec_version"": ""v1.4"",
                     ""identifier"":   ""DependingMod"",
                     ""version"":      ""1.0"",
@@ -280,10 +293,14 @@ namespace Tests.Core.Registry
                             ""version"": ""1.0""
                         }
                     ]
-                }");
-                registry.AddAvailable(olderDepMod);
-                registry.AddAvailable(newerDepMod);
-                registry.AddAvailable(dependingMod);
+                }"))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                CkanModule olderDepMod = registry.GetModuleByVersion("DependencyMod", "1.0");
+                CkanModule newerDepMod = registry.GetModuleByVersion("DependencyMod", "2.0");
+                CkanModule dependingMod = registry.GetModuleByVersion("DependingMod", "1.0");
+
                 GameInstance gameInst = gameInstWrapper.KSP;
                 registry.RegisterModule(olderDepMod,  new string[0], gameInst, false);
                 registry.RegisterModule(dependingMod, new string[0], gameInst, false);
@@ -355,67 +372,112 @@ namespace Tests.Core.Registry
                                                                string[] correctAnswer)
         {
             // Arrange
-            foreach (var module in modules)
+            var user = new NullUser();
+            using (var repo = new TemporaryRepository(modules))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
-                registry.AddAvailable(CkanModule.FromJson(module));
+                // Act
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                var allHosts = registry.GetAllHosts().ToArray();
+
+                // Assert
+                Assert.AreEqual(correctAnswer, allHosts);
             }
-
-            // Act
-            var allHosts = registry.GetAllHosts().ToArray();
-
-            // Assert
-            Assert.AreEqual(correctAnswer, allHosts);
         }
 
         [Test]
         public void TxEmbeddedCommit()
         {
             // Our registry should work when we initialise it inside our Tx and commit.
-
+            // This one seemingly just makes sure adding a mod adds it
+            // when the registry is created inside the transaction
+            var module = CkanModule.FromJson(@"{
+                             ""spec_version"": ""v1.4"",
+                             ""identifier"":   ""InstalledMod"",
+                             ""version"":      ""1.0"",
+                             ""download"":     ""https://github.com/""
+                         }");
             CKAN.Registry reg;
 
-            using (var scope = new TransactionScope())
+            using (var gameInstWrapper = new DisposableKSP())
+            using (var tScope = new TransactionScope())
             {
                 reg = CKAN.Registry.Empty();
-                reg.AddAvailable(module);
-                Assert.AreEqual(identifier, reg.LatestAvailable(identifier, null).identifier);
-                scope.Complete();
+                reg.RegisterModule(module, Enumerable.Empty<string>(),
+                                   gameInstWrapper.KSP, false);
+
+                CollectionAssert.AreEqual(
+                    Enumerable.Repeat<CkanModule>(module, 1),
+                    reg.InstalledModules.Select(im => im.Module));
+
+                tScope.Complete();
             }
-            Assert.AreEqual(identifier, reg.LatestAvailable(identifier, null).identifier);
+            CollectionAssert.AreEqual(
+                Enumerable.Repeat<CkanModule>(module, 1),
+                reg.InstalledModules.Select(im => im.Module));
         }
 
         [Test]
         public void TxCommit()
         {
             // Our registry should work fine on committed transactions.
+            // This one seemingly just makes sure adding a mod adds it
+            // when the registry is created outside the transaction
+            var module = CkanModule.FromJson(@"{
+                             ""spec_version"": ""v1.4"",
+                             ""identifier"":   ""InstalledMod"",
+                             ""version"":      ""1.0"",
+                             ""download"":     ""https://github.com/""
+                         }");
+            var registry = CKAN.Registry.Empty();
 
-            using (var scope = new TransactionScope())
+            using (var gameInstWrapper = new DisposableKSP())
+            using (var tScope = new TransactionScope())
             {
-                registry.AddAvailable(module);
-                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
+                registry.RegisterModule(module, Enumerable.Empty<string>(),
+                                        gameInstWrapper.KSP, false);
 
-                scope.Complete();
+                CollectionAssert.AreEqual(
+                    Enumerable.Repeat<CkanModule>(module, 1),
+                    registry.InstalledModules.Select(im => im.Module));
+
+                tScope.Complete();
             }
-            Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
+            CollectionAssert.AreEqual(
+                Enumerable.Repeat<CkanModule>(module, 1),
+                registry.InstalledModules.Select(im => im.Module));
         }
 
         [Test]
         public void TxRollback()
         {
             // Our registry should roll-back any changes it made during a transaction.
+            // This one makes sure that aborting the transaction rolls back the change
+            var registry = CKAN.Registry.Empty();
 
-            using (var scope = new TransactionScope())
+            using (var gameInstWrapper = new DisposableKSP())
+            using (var tScope = new TransactionScope())
             {
-                registry.AddAvailable(module);
-                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier,null).identifier);
+                var module = CkanModule.FromJson(@"{
+                                 ""spec_version"": ""v1.4"",
+                                 ""identifier"":   ""InstalledMod"",
+                                 ""version"":      ""1.0"",
+                                 ""download"":     ""https://github.com/""
+                             }");
+                registry.RegisterModule(module, Enumerable.Empty<string>(),
+                                        gameInstWrapper.KSP, false);
 
-                scope.Dispose(); // Rollback, our module should no longer be available.
+                CollectionAssert.AreEqual(
+                    Enumerable.Repeat<CkanModule>(module, 1),
+                    registry.InstalledModules.Select(im => im.Module));
+
+                // Rollback, our module should no longer be registered
+                tScope.Dispose();
             }
 
-            Assert.Throws<ModuleNotFoundKraken>(delegate
-            {
-                registry.LatestAvailable(identifier,null);
-            });
+            CollectionAssert.AreEqual(
+                Enumerable.Empty<CkanModule>(),
+                registry.InstalledModules.Select(im => im.Module));
         }
 
         [Test]
@@ -423,20 +485,38 @@ namespace Tests.Core.Registry
         {
             // Our registry doesn't understand how to do nested transactions,
             // make sure it throws on these.
+            // This one makes sure that one transaction inside another both work
+            // (except it doesn't check it? just that nothing throws?)
+            var registry = CKAN.Registry.Empty();
 
-            using (var scope = new TransactionScope())
+            using (var gameInstWrapper = new DisposableKSP())
+            using (var tScope = new TransactionScope())
             {
-                registry.AddAvailable(module);
+                var module = CkanModule.FromJson(@"{
+                                 ""spec_version"": ""v1.4"",
+                                 ""identifier"":   ""InstalledMod"",
+                                 ""version"":      ""1.0"",
+                                 ""download"":     ""https://github.com/""
+                             }");
+                registry.RegisterModule(module, Enumerable.Empty<string>(),
+                                        gameInstWrapper.KSP, false);
 
-                using (var scope2 = new TransactionScope(TransactionScopeOption.RequiresNew))
+                using (var tScope2 = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
                     Assert.Throws<TransactionalKraken>(delegate
                     {
-                        registry.AddAvailable(TestData.DogeCoinFlag_101_module());
+                        var module2 = CkanModule.FromJson(@"{
+                                          ""spec_version"": ""v1.4"",
+                                          ""identifier"":   ""InstalledMod2"",
+                                          ""version"":      ""1.0"",
+                                          ""download"":     ""https://github.com/""
+                                      }");
+                        registry.RegisterModule(module2, Enumerable.Empty<string>(),
+                                                gameInstWrapper.KSP, false);
                     });
-                    scope2.Complete();
+                    tScope2.Complete();
                 }
-                scope.Complete();
+                tScope.Complete();
             }
         }
 
@@ -445,20 +525,36 @@ namespace Tests.Core.Registry
         {
             // Our registry should be fine with ambient transactions, which join together.
             // Note the absence of TransactionScopeOption.RequiresNew
+            var registry = CKAN.Registry.Empty();
 
-            using (var scope = new TransactionScope())
+            using (var gameInstWrapper = new DisposableKSP())
+            using (var tScope = new TransactionScope())
             {
-                registry.AddAvailable(module);
+                var module = CkanModule.FromJson(@"{
+                                 ""spec_version"": ""v1.4"",
+                                 ""identifier"":   ""InstalledMod"",
+                                 ""version"":      ""1.0"",
+                                 ""download"":     ""https://github.com/""
+                             }");
+                registry.RegisterModule(module, Enumerable.Empty<string>(),
+                                        gameInstWrapper.KSP, false);
 
-                using (var scope2 = new TransactionScope())
+                using (var tScope2 = new TransactionScope())
                 {
                     Assert.DoesNotThrow(delegate
                     {
-                        registry.AddAvailable(TestData.DogeCoinFlag_101_module());
+                        var module2 = CkanModule.FromJson(@"{
+                                          ""spec_version"": ""v1.4"",
+                                          ""identifier"":   ""InstalledMod2"",
+                                          ""version"":      ""1.0"",
+                                          ""download"":     ""https://github.com/""
+                                      }");
+                        registry.RegisterModule(module2, Enumerable.Empty<string>(),
+                                                gameInstWrapper.KSP, false);
                     });
-                    scope2.Complete();
+                    tScope2.Complete();
                 }
-                scope.Complete();
+                tScope.Complete();
             }
         }
     }

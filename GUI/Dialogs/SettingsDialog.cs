@@ -15,16 +15,22 @@ namespace CKAN.GUI
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(SettingsDialog));
 
+        public bool RepositoryAdded   { get; private set; } = false;
+        public bool RepositoryRemoved { get; private set; } = false;
+        public bool RepositoryMoved   { get; private set; } = false;
+
         private IUser m_user;
         private IConfiguration config;
+        private RegistryManager regMgr;
 
         /// <summary>
         /// Initialize a settings window
         /// </summary>
-        public SettingsDialog(IUser user)
+        public SettingsDialog(RegistryManager regMgr, IUser user)
         {
             InitializeComponent();
-            m_user = user;
+            m_user        = user;
+            this.regMgr   = regMgr;
             if (Platform.IsMono)
             {
                 this.ClearCacheMenu.Renderer = new FlatToolStripRenderer();
@@ -84,10 +90,9 @@ namespace CKAN.GUI
 
         private void RefreshReposListBox(bool saveChanges = true)
         {
-            var manager = RegistryManager.Instance(Main.Instance.CurrentInstance);
             ReposListBox.BeginUpdate();
             ReposListBox.Items.Clear();
-            ReposListBox.Items.AddRange(manager.registry.Repositories.Values
+            ReposListBox.Items.AddRange(regMgr.registry.Repositories.Values
                 // SortedDictionary just sorts by name
                 .OrderBy(r => r.priority)
                 .Select(r => new ListViewItem(new string[]
@@ -110,7 +115,7 @@ namespace CKAN.GUI
                 Task.Factory.StartNew(() =>
                 {
                     // Visual cue that we're doing something
-                    manager.Save();
+                    regMgr.Save();
                     Util.Invoke(this, () => UseWaitCursor = false);
                 });
             }
@@ -228,8 +233,7 @@ namespace CKAN.GUI
 
                 Main.Instance.Manager.Cache.EnforceSizeLimit(
                     config.CacheSizeLimit.Value,
-                    RegistryManager.Instance(Main.Instance.CurrentInstance).registry
-                );
+                    regMgr.registry);
                 UpdateCacheInfo(config.DownloadCacheDir);
             }
         }
@@ -290,7 +294,11 @@ namespace CKAN.GUI
 
         private void EnableDisableRepoButtons()
         {
-            DeleteRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0;
+            DeleteRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0
+                // Don't allow deletion of the last repo; the default will be
+                // re-added automatically at load, so empty repos isn't a valid state.
+                // To remove the last one, add its replacement first.
+                && ReposListBox.Items.Count > 1;
             UpRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0
                 && ReposListBox.SelectedIndices[0] > 0
                 && ReposListBox.SelectedIndices[0] < ReposListBox.Items.Count;
@@ -315,10 +323,11 @@ namespace CKAN.GUI
                 Properties.Resources.SettingsDialogRepoDeleteCancel)
                     == DialogResult.Yes)
             {
-                var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
-                registry.Repositories.Remove(repo.name);
+                var registry = regMgr.registry;
+                registry.RepositoriesRemove(repo.name);
                 RefreshReposListBox();
                 DeleteRepoButton.Enabled = false;
+                RepositoryRemoved = true;
             }
         }
 
@@ -328,7 +337,7 @@ namespace CKAN.GUI
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 var repo = dialog.Selection;
-                var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+                var registry = regMgr.registry;
                 if (registry.Repositories.Values.Any(other => other.uri == repo.uri))
                 {
                     m_user.RaiseError(Properties.Resources.SettingsDialogRepoAddDuplicateURL, repo.uri);
@@ -337,13 +346,14 @@ namespace CKAN.GUI
                 if (registry.Repositories.TryGetValue(repo.name, out Repository existing))
                 {
                     repo.priority = existing.priority;
-                    registry.Repositories.Remove(repo.name);
+                    registry.RepositoriesRemove(repo.name);
                 }
                 else
                 {
                     repo.priority = registry.Repositories.Count;
                 }
-                registry.Repositories.Add(repo.name, repo);
+                registry.RepositoriesAdd(repo);
+                RepositoryAdded = true;
 
                 RefreshReposListBox();
             }
@@ -362,6 +372,7 @@ namespace CKAN.GUI
                                              .Select(item => item.Tag as Repository)
                                              .FirstOrDefault(r => r.priority == selected.priority - 1);
             --selected.priority;
+            RepositoryMoved = true;
             if (prev != null)
             {
                 ++prev.priority;
@@ -382,6 +393,7 @@ namespace CKAN.GUI
                                              .Select(item => item.Tag as Repository)
                                              .FirstOrDefault(r => r.priority == selected.priority + 1);
             ++selected.priority;
+            RepositoryMoved = true;
             if (next != null)
             {
                 --next.priority;

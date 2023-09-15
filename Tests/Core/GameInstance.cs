@@ -1,10 +1,13 @@
 using System;
 using System.IO;
+
 using NUnit.Framework;
-using Tests.Data;
+
 using CKAN;
 using CKAN.Versioning;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
+
+using Tests.Data;
 
 namespace Tests.Core
 {
@@ -32,7 +35,7 @@ namespace Tests.Core
                 // Manually dispose of RegistryManager
                 // For some reason the KSP instance doesn't do this itself causing test failures because the registry
                 // lock file is still in use. So just dispose of it ourselves.
-                CKAN.RegistryManager.Instance(ksp).Dispose();
+                CKAN.RegistryManager.DisposeInstance(ksp);
             }
 
             Directory.Delete(ksp_dir, true);
@@ -71,35 +74,6 @@ namespace Tests.Core
                 new DirectoryInfo(ksp.ToAbsoluteGameDir(dest)),
                 new DirectoryInfo(canonicalPath)
             );
-        }
-
-        [Test]
-        public void ScanDlls()
-        {
-            string path = Path.Combine(ksp.game.PrimaryModDirectory(ksp), "Example.dll");
-            var registry = CKAN.RegistryManager.Instance(ksp).registry;
-
-            Assert.IsFalse(registry.IsInstalled("Example"), "Example should start uninstalled");
-
-            File.WriteAllText(path, "Not really a DLL, are we?");
-
-            ksp.Scan();
-
-            Assert.IsTrue(registry.IsInstalled("Example"), "Example installed");
-
-            ModuleVersion version = registry.InstalledVersion("Example");
-            Assert.IsInstanceOf<UnmanagedModuleVersion>(version, "DLL detected as a DLL, not full mod");
-
-            // Now let's do the same with different case.
-
-            string path2 = Path.Combine(ksp.game.PrimaryModDirectory(ksp), "NewMod.DLL");
-
-            Assert.IsFalse(registry.IsInstalled("NewMod"));
-            File.WriteAllText(path2, "This text is irrelevant. You will be assimilated");
-
-            ksp.Scan();
-
-            Assert.IsTrue(registry.IsInstalled("NewMod"));
         }
 
         [Test]

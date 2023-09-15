@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+
+using log4net;
+
 using CKAN.Extensions;
 using CKAN.Versioning;
-using log4net;
 
 namespace CKAN
 {
@@ -20,8 +22,7 @@ namespace CKAN
         public static ICollection<string> ConsistencyErrors(
             IEnumerable<CkanModule> modules,
             IEnumerable<string> dlls,
-            IDictionary<string, ModuleVersion> dlc
-        )
+            IDictionary<string, ModuleVersion> dlc)
         {
             List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
             List<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts;
@@ -52,8 +53,7 @@ namespace CKAN
         public static void EnforceConsistency(
             IEnumerable<CkanModule> modules,
             IEnumerable<string> dlls = null,
-            IDictionary<string, ModuleVersion> dlc = null
-        )
+            IDictionary<string, ModuleVersion> dlc = null)
         {
             List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
             List<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts;
@@ -69,8 +69,7 @@ namespace CKAN
         public static bool IsConsistent(
             IEnumerable<CkanModule> modules,
             IEnumerable<string> dlls = null,
-            IDictionary<string, ModuleVersion> dlc = null
-        )
+            IDictionary<string, ModuleVersion> dlc = null)
         {
             List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
             List<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts;
@@ -82,8 +81,7 @@ namespace CKAN
             IEnumerable<string> dlls,
             IDictionary<string, ModuleVersion> dlc,
             out List<KeyValuePair<CkanModule, RelationshipDescriptor>> UnmetDepends,
-            out List<KeyValuePair<CkanModule, RelationshipDescriptor>> Conflicts
-        )
+            out List<KeyValuePair<CkanModule, RelationshipDescriptor>> Conflicts)
         {
             modules = modules?.Memoize();
             var dllSet = dlls?.ToHashSet();
@@ -103,28 +101,15 @@ namespace CKAN
         /// Each Key is the depending module, and each Value is the relationship.
         /// </returns>
         public static List<KeyValuePair<CkanModule, RelationshipDescriptor>> FindUnsatisfiedDepends(
-            IEnumerable<CkanModule> modules,
-            HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc
-        )
-        {
-            var unsat = new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
-            if (modules != null)
-            {
-                modules = modules.Memoize();
-                foreach (CkanModule m in modules.Where(m => m.depends != null))
-                {
-                    foreach (RelationshipDescriptor dep in m.depends)
-                    {
-                        if (!dep.MatchesAny(modules, dlls, dlc))
-                        {
-                            unsat.Add(new KeyValuePair<CkanModule, RelationshipDescriptor>(m, dep));
-                        }
-                    }
-                }
-            }
-            return unsat;
-        }
+            ICollection<CkanModule>            modules,
+            HashSet<string>                    dlls,
+            IDictionary<string, ModuleVersion> dlc)
+            => (modules?.Where(m => m.depends != null)
+                        .SelectMany(m => m.depends.Select(dep =>
+                            new KeyValuePair<CkanModule, RelationshipDescriptor>(m, dep)))
+                        .Where(kvp => !kvp.Value.MatchesAny(modules, dlls, dlc))
+                       ?? Enumerable.Empty<KeyValuePair<CkanModule, RelationshipDescriptor>>())
+                       .ToList();
 
         /// <summary>
         /// Find conflicts among the given modules and DLLs.
@@ -139,8 +124,7 @@ namespace CKAN
         public static List<KeyValuePair<CkanModule, RelationshipDescriptor>> FindConflicting(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc
-        )
+            IDictionary<string, ModuleVersion> dlc)
         {
             var confl = new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
             if (modules != null)
@@ -171,11 +155,10 @@ namespace CKAN
             public ModuleVersion ProvideeVersion { get; }
 
             public ProvidesInfo(
-                string providerIdentifier,
+                string        providerIdentifier,
                 ModuleVersion providerVersion,
-                string provideeIdentifier,
-                ModuleVersion provideeVersion
-            )
+                string        provideeIdentifier,
+                ModuleVersion provideeVersion)
             {
                 ProviderIdentifier = providerIdentifier;
                 ProviderVersion    = providerVersion;

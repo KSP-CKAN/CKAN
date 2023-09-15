@@ -124,14 +124,11 @@ namespace CKAN
                             log.DebugFormat("OnOpenReadCompleted got open stream, appending to {0}", destination);
                             using (var fileStream = new FileStream(destination, FileMode.Append, FileAccess.Write))
                             {
-                                try
+                                // file:// URLs don't support timeouts
+                                if (netStream.CanTimeout)
                                 {
                                     log.DebugFormat("Default stream read timeout is {0}", netStream.ReadTimeout);
                                     netStream.ReadTimeout = timeoutMs;
-                                }
-                                catch
-                                {
-                                    // file:// URLs don't support timeouts
                                 }
                                 cancelTokenSrc = new CancellationTokenSource();
                                 netStream.CopyTo(fileStream, new Progress<long>(bytesDownloaded =>

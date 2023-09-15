@@ -7,6 +7,8 @@ using System.ComponentModel;
 using Autofac;
 
 using CKAN.ConsoleUI.Toolkit;
+using CKAN.Extensions;
+using CKAN.Games;
 
 namespace CKAN.ConsoleUI {
 
@@ -19,13 +21,18 @@ namespace CKAN.ConsoleUI {
         /// Initialize the screen
         /// </summary>
         /// <param name="mgr">Game instance manager object containing the current instance</param>
+        /// <param name="repoData">Repository data manager providing info from repos</param>
+        /// <param name="regMgr">Registry manager for the current instance</param>
+        /// <param name="game">The game of the current instance, used for getting known versions</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
         /// <param name="regTheme">The theme to use for the registry update flow, if needed</param>
-        public ModListScreen(GameInstanceManager mgr, bool dbg, ConsoleTheme regTheme)
+        public ModListScreen(GameInstanceManager mgr, RepositoryDataManager repoData, RegistryManager regMgr, IGame game, bool dbg, ConsoleTheme regTheme)
         {
             debug    = dbg;
             manager  = mgr;
-            registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+            this.regMgr   = regMgr;
+            this.registry = regMgr.registry;
+            this.repoData = repoData;
 
             moduleList = new ConsoleListBox<CkanModule>(
                 1, 4, -1, -2,
@@ -47,8 +54,8 @@ namespace CKAN.ConsoleUI {
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = Properties.Resources.ModListMaxGameVersionHeader,
                         Width    = 20,
-                        Renderer = m => registry.LatestCompatibleKSP(m.identifier)?.ToString() ?? "",
-                        Comparer = (a, b) => registry.LatestCompatibleKSP(a.identifier).CompareTo(registry.LatestCompatibleKSP(b.identifier))
+                        Renderer = m => registry.LatestCompatibleGameVersion(game.KnownVersions, m.identifier)?.ToString() ?? "",
+                        Comparer = (a, b) => registry.LatestCompatibleGameVersion(game.KnownVersions, a.identifier).CompareTo(registry.LatestCompatibleGameVersion(game.KnownVersions, b.identifier))
                     }
                 },
                 1, 0, ListSortDirection.Descending,
@@ -163,7 +170,7 @@ namespace CKAN.ConsoleUI {
             );
             moduleList.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
                 if (moduleList.Selection != null) {
-                    LaunchSubScreen(theme, new ModInfoScreen(manager, plan, moduleList.Selection, debug));
+                    LaunchSubScreen(theme, new ModInfoScreen(manager, registry, plan, moduleList.Selection, debug));
                 }
                 return true;
             });
@@ -222,7 +229,7 @@ namespace CKAN.ConsoleUI {
                 InstalledModule im = registry.InstalledModule(moduleList.Selection.identifier);
                 if (im != null && !moduleList.Selection.IsDLC) {
                     im.AutoInstalled = !im.AutoInstalled;
-                    RegistryManager.Instance(manager.CurrentInstance).Save(false);
+                    regMgr.Save(false);
                 }
                 return true;
             });
@@ -333,7 +340,7 @@ namespace CKAN.ConsoleUI {
 
         private bool ImportDownloads(ConsoleTheme theme)
         {
-            DownloadImportDialog.ImportDownloads(theme, manager.CurrentInstance, manager.Cache, plan);
+            DownloadImportDialog.ImportDownloads(theme, manager.CurrentInstance, repoData, manager.Cache, plan);
             RefreshList(theme);
             return true;
         }
@@ -387,7 +394,7 @@ namespace CKAN.ConsoleUI {
                 }
             }
             try {
-                DependencyScreen ds = new DependencyScreen(manager, reinstall, new HashSet<string>(), debug);
+                DependencyScreen ds = new DependencyScreen(manager, registry, reinstall, new HashSet<string>(), debug);
                 if (ds.HaveOptions()) {
                     LaunchSubScreen(theme, ds);
                     bool needRefresh = false;
@@ -437,15 +444,11 @@ namespace CKAN.ConsoleUI {
                 );
                 recent.Clear();
                 try {
-                    var downloader = new NetAsyncDownloader(ps);
-
-                    Repo.UpdateAllRepositories(
-                        RegistryManager.Instance(manager.CurrentInstance),
-                        manager.CurrentInstance,
-                        downloader,
-                        manager.Cache,
-                        ps
-                    );
+                    repoData.Update(registry.Repositories.Values.ToArray(),
+                                    manager.CurrentInstance.game,
+                                    false,
+                                    new NetAsyncDownloader(ps),
+                                    ps);
                 } catch (Exception ex) {
                     // There can be errors while you re-install mods with changed metadata
                     ps.RaiseError(ex.Message + ex.StackTrace);
@@ -477,7 +480,7 @@ namespace CKAN.ConsoleUI {
         private bool ScanForMods()
         {
             try {
-                manager.CurrentInstance.Scan();
+                regMgr.ScanUnmanagedFiles();
             } catch (InconsistentKraken ex) {
                 // Warn about inconsistent state
                 RaiseError(Properties.Resources.ModListScanBad, ex.InconsistenciesPretty);
@@ -489,8 +492,8 @@ namespace CKAN.ConsoleUI {
         {
             var prevRepos   = new SortedDictionary<string, Repository>(registry.Repositories);
             var prevVerCrit = manager.CurrentInstance.VersionCriteria();
-            LaunchSubScreen(theme, new GameInstanceEditScreen(manager, manager.CurrentInstance));
-            if (!SortedDictionaryEquals(registry.Repositories, prevRepos)) {
+            LaunchSubScreen(theme, new GameInstanceEditScreen(manager, repoData, manager.CurrentInstance));
+            if (!registry.Repositories.DictionaryEquals(prevRepos)) {
                 // Repos changed, need to fetch them
                 UpdateRegistry(theme, false);
                 RefreshList(theme);
@@ -506,13 +509,14 @@ namespace CKAN.ConsoleUI {
             GameInstance prevInst = manager.CurrentInstance;
             var prevRepos = new SortedDictionary<string, Repository>(registry.Repositories);
             var prevVerCrit = prevInst.VersionCriteria();
-            LaunchSubScreen(theme, new GameInstanceListScreen(manager));
+            LaunchSubScreen(theme, new GameInstanceListScreen(manager, repoData));
             if (!prevInst.Equals(manager.CurrentInstance)) {
                 // Game instance changed, reset everything
                 plan.Reset();
-                registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+                regMgr = RegistryManager.Instance(manager.CurrentInstance, repoData);
+                registry = regMgr.registry;
                 RefreshList(theme);
-            } else if (!SortedDictionaryEquals(registry.Repositories, prevRepos)) {
+            } else if (!registry.Repositories.DictionaryEquals(prevRepos)) {
                 // Repos changed, need to fetch them
                 UpdateRegistry(theme, false);
                 RefreshList(theme);
@@ -521,15 +525,6 @@ namespace CKAN.ConsoleUI {
                 RefreshList(theme);
             }
             return true;
-        }
-
-        private bool SortedDictionaryEquals<K, V>(SortedDictionary<K, V> a, SortedDictionary<K, V> b)
-        {
-            return a == null ? b == null
-                 : b == null ? false
-                 : a.Count == b.Count
-                    && a.Keys.All(k => b.ContainsKey(k))
-                    && b.Keys.All(k => a.ContainsKey(k) && a[k].Equals(b[k]));
         }
 
         private bool EditAuthTokens(ConsoleTheme theme)
@@ -583,8 +578,8 @@ namespace CKAN.ConsoleUI {
         {
             try {
                 // Save the mod list as "depends" without the installed versions.
-                // Beacause that's supposed to work.
-                RegistryManager.Instance(manager.CurrentInstance).Save(true);
+                // Because that's supposed to work.
+                regMgr.Save(true);
                 string path = Path.Combine(
                     manager.CurrentInstance.CkanDir(),
                     $"{Properties.Resources.ModListExportPrefix}-{manager.CurrentInstance.Name}.ckan"
@@ -606,7 +601,7 @@ namespace CKAN.ConsoleUI {
 
         private bool ApplyChanges(ConsoleTheme theme)
         {
-            LaunchSubScreen(theme, new InstallScreen(manager, plan, debug));
+            LaunchSubScreen(theme, new InstallScreen(manager, repoData, plan, debug));
             RefreshList(theme);
             return true;
         }
@@ -661,9 +656,11 @@ namespace CKAN.ConsoleUI {
             return total;
         }
 
-        private GameInstanceManager manager;
-        private Registry            registry;
-        private bool                debug;
+        private GameInstanceManager   manager;
+        private RegistryManager       regMgr;
+        private Registry              registry;
+        private RepositoryDataManager repoData;
+        private bool                  debug;
 
         private ConsoleField               searchBox;
         private ConsoleListBox<CkanModule> moduleList;

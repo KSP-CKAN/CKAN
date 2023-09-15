@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using CKAN.Configuration;
-using CKAN.GameVersionProviders;
+using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
+
 using Tests.Data;
 
 namespace Tests.Core.Configuration
@@ -11,13 +13,11 @@ namespace Tests.Core.Configuration
     public class FakeConfiguration : IConfiguration, IDisposable
     {
         public FakeConfiguration(CKAN.GameInstance instance, string autostart)
-            : this(
-                new List<Tuple<string, string, string>>
-                {
-                    new Tuple<string, string, string>("test", instance.GameDir(), "KSP")
-                },
-                autostart
-            )
+            : this(new List<Tuple<string, string, string>>
+                   {
+                       new Tuple<string, string, string>("test", instance.GameDir(), "KSP")
+                   },
+                   autostart)
         {
         }
 
@@ -36,7 +36,7 @@ namespace Tests.Core.Configuration
         /// <summary>
         /// The instances in the fake registry
         /// </summary>
-        public List<Tuple<string, string, string>> Instances        { get; set; }
+        public List<Tuple<string, string, string>> Instances { get; set; }
         /// <summary>
         /// Build map for the fake registry
         /// </summary>
@@ -57,19 +57,17 @@ namespace Tests.Core.Configuration
         /// <summary>
         /// Number of instances in the fake registry
         /// </summary>
-        public int InstanceCount
-        {
-            get { return Instances.Count; }
-        }
+        public int InstanceCount => Instances.Count;
 
         // In the Win32Registry it is not possible to get null in autostart.
         private string _AutoStartInstance;
+
         /// <summary>
         /// The auto start instance for the fake registry
         /// </summary>
         public string AutoStartInstance
         {
-            get { return _AutoStartInstance ?? string.Empty; }
+            get => _AutoStartInstance ?? string.Empty;
             set
             {
                 _AutoStartInstance = value;
@@ -83,10 +81,7 @@ namespace Tests.Core.Configuration
         /// <returns>
         /// Name/path pair for the requested instance
         /// </returns>
-        public Tuple<string, string, string> GetInstance(int i)
-        {
-            return Instances[i];
-        }
+        public Tuple<string, string, string> GetInstance(int i) => Instances[i];
 
         /// <summary>
         /// Set the instance data for the fake registry
@@ -105,18 +100,12 @@ namespace Tests.Core.Configuration
         /// <summary>
         /// The instances in the fake registry
         /// </summary>
-        public IEnumerable<Tuple<string, string, string>> GetInstances()
-        {
-            return Instances;
-        }
+        public IEnumerable<Tuple<string, string, string>> GetInstances() => Instances;
 
         /// <summary>
         /// The build map of the fake registry
         /// </summary>
-        public JBuilds GetKSPBuilds()
-        {
-            return BuildMap;
-        }
+        public JBuilds GetKSPBuilds() => BuildMap;
 
         /// <summary>
         /// Set the build map for the fake registry
@@ -145,10 +134,7 @@ namespace Tests.Core.Configuration
         private string _Language;
         public string Language
         {
-            get
-            {
-                return _Language;
-            }
+            get => _Language;
 
             set
             {

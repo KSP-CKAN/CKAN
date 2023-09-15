@@ -26,7 +26,7 @@ namespace CKAN.GUI
                 AddStatusMessage("");
                 tabController.ShowTab("EditModpackTabPage", 2);
                 DisableMainWindow();
-                var mgr = RegistryManager.Instance(CurrentInstance);
+                var mgr = RegistryManager.Instance(CurrentInstance, repoData);
                 EditModpack.LoadModule(mgr.GenerateModpack(false, true), mgr.registry);
                 // This will block till the user is done
                 EditModpack.Wait(currentUser);
@@ -75,9 +75,8 @@ namespace CKAN.GUI
                 using (var stream = new FileStream(dlg.FileName, fileMode))
                 {
                     new Exporter(specialExportOptions[dlg.FilterIndex - 1].ExportFileType).Export(
-                        RegistryManager.Instance(CurrentInstance).registry,
-                        stream
-                    );
+                        RegistryManager.Instance(CurrentInstance, repoData).registry,
+                        stream);
                 }
             }
         }

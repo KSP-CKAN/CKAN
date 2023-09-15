@@ -16,14 +16,16 @@ namespace CKAN.ConsoleUI {
         /// Initialize the Screen
         /// </summary>
         /// <param name="mgr">Game instance manager containing the instances</param>
+        /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="k">Instance to edit</param>
-        public GameInstanceEditScreen(GameInstanceManager mgr, GameInstance k)
+        public GameInstanceEditScreen(GameInstanceManager mgr, RepositoryDataManager repoData, GameInstance k)
             : base(mgr, k.Name, k.GameDir())
         {
             ksp = k;
             try {
                 // If we can't parse the registry, just leave the repo list blank
-                registry = RegistryManager.Instance(ksp).registry;
+                regMgr   = RegistryManager.Instance(ksp, repoData);
+                registry = regMgr.registry;
             } catch { }
 
             // Show the repositories if we can
@@ -209,8 +211,8 @@ namespace CKAN.ConsoleUI {
         {
             if (repoEditList != null) {
                 // Copy the temp list of repositories to the registry
-                registry.Repositories = repoEditList;
-                RegistryManager.Instance(ksp).Save();
+                registry.RepositoriesSet(repoEditList);
+                regMgr.Save();
             }
             if (compatEditList != null) {
                 ksp.SetCompatibleVersions(compatEditList);
@@ -228,8 +230,9 @@ namespace CKAN.ConsoleUI {
             }
         }
 
-        private GameInstance ksp;
-        private Registry     registry;
+        private GameInstance    ksp;
+        private RegistryManager regMgr;
+        private Registry        registry;
 
         private SortedDictionary<string, Repository> repoEditList;
         private ConsoleListBox<Repository>           repoList;

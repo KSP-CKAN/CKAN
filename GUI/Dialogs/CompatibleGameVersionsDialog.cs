@@ -9,7 +9,6 @@ using System.Drawing;
 using Autofac;
 
 using CKAN.Versioning;
-using CKAN.GameVersionProviders;
 
 namespace CKAN.GUI
 {

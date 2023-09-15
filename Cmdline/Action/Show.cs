@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,9 +9,10 @@ namespace CKAN.CmdLine
 {
     public class Show : ICommand
     {
-        public Show(IUser user)
+        public Show(RepositoryDataManager repoData, IUser user)
         {
-            this.user = user;
+            this.repoData = repoData;
+            this.user     = user;
         }
 
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
@@ -26,7 +27,7 @@ namespace CKAN.CmdLine
 
             int combined_exit_code = Exit.OK;
             // Check installed modules for an exact match.
-            var registry = RegistryManager.Instance(instance).registry;
+            var registry = RegistryManager.Instance(instance, repoData).registry;
             foreach (string modName in options.modules)
             {
                 var installedModuleToShow = registry.InstalledModule(modName);
@@ -62,7 +63,7 @@ namespace CKAN.CmdLine
                         string.Join(", ", instance.VersionCriteria().Versions.Select(v => v.ToString())));
                     user.RaiseMessage(Properties.Resources.ShowLookingForClose);
 
-                    Search search = new Search(user);
+                    Search search = new Search(repoData, user);
                     var matches = search.PerformSearch(instance, modName);
 
                     // Display the results of the search.
@@ -321,7 +322,7 @@ namespace CKAN.CmdLine
             var gameVersions = modules.Select(m =>
             {
                 GameVersion minKsp = null, maxKsp = null;
-                Registry.GetMinMaxVersions(new List<CkanModule>() { m }, out _, out _, out minKsp, out maxKsp);
+                CkanModule.GetMinMaxVersions(new List<CkanModule>() { m }, out _, out _, out minKsp, out maxKsp);
                 return GameVersionRange.VersionSpan(inst.game, minKsp, maxKsp);
             }).ToList();
             string[] headers = new string[] {
@@ -363,5 +364,6 @@ namespace CKAN.CmdLine
         }
 
         private IUser user { get; set; }
+        private RepositoryDataManager repoData;
     }
 }

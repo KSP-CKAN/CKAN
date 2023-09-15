@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+
+using Autofac;
+
 using CKAN.Versioning;
 using CKAN.Games;
-using CKAN.GameVersionProviders;
 using CKAN.ConsoleUI.Toolkit;
-using Autofac;
 
 namespace CKAN.ConsoleUI {
 

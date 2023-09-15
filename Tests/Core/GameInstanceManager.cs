@@ -1,12 +1,17 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+
 using NUnit.Framework;
-using Tests.Core.Configuration;
-using Tests.Data;
+
 using CKAN;
 using CKAN.Versioning;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
+using CKAN.Games.KerbalSpaceProgram.DLC;
+
+using Tests.Core.Configuration;
+using Tests.Data;
 
 namespace Tests.Core
 {
@@ -128,7 +133,7 @@ namespace Tests.Core
             Assert.IsFalse(manager.HasInstance(badName));
 
             // Tidy up
-            System.IO.Directory.Delete(tempdir, true);
+            Directory.Delete(tempdir, true);
         }
 
         [Test]
@@ -138,14 +143,14 @@ namespace Tests.Core
             {
                 string instanceName = "newInstance";
                 string tempdir = TestData.NewTempDir();
-                System.IO.File.Create(System.IO.Path.Combine(tempdir, "shouldntbehere.txt")).Close();
+                File.Create(Path.Combine(tempdir, "shouldntbehere.txt")).Close();
 
                 Assert.Throws<PathErrorKraken>(() =>
                     manager.CloneInstance(KSP.KSP, instanceName, tempdir));
                 Assert.IsFalse(manager.HasInstance(instanceName));
 
                 // Tidy up.
-                System.IO.Directory.Delete(tempdir, true);
+                Directory.Delete(tempdir, true);
             }
         }
 
@@ -161,7 +166,7 @@ namespace Tests.Core
                 Assert.IsTrue(manager.HasInstance(instanceName));
 
                 // Tidy up.
-                System.IO.Directory.Delete(tempdir, true);
+                Directory.Delete(tempdir, true);
             }
         }
 
@@ -179,7 +184,7 @@ namespace Tests.Core
             Assert.IsFalse(manager.HasInstance(name));
 
             // Tidy up.
-            System.IO.Directory.Delete(tempdir, true);
+            Directory.Delete(tempdir, true);
         }
 
         [Test,
@@ -194,8 +199,8 @@ namespace Tests.Core
             GameVersion version = GameVersion.Parse(baseVersion);
 
             Dictionary<CKAN.DLC.IDlcDetector, GameVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, GameVersion>() {
-                    { new CKAN.DLC.MakingHistoryDlcDetector(), mhVersion },
-                    { new CKAN.DLC.BreakingGroundDlcDetector(), bgVersion }
+                    { new MakingHistoryDlcDetector(), mhVersion },
+                    { new BreakingGroundDlcDetector(), bgVersion }
                 };
 
             Assert.Throws<WrongGameVersionKraken>(() =>
@@ -203,7 +208,7 @@ namespace Tests.Core
             Assert.IsFalse(manager.HasInstance(name));
 
             // Tidy up.
-            System.IO.Directory.Delete(tempdir, true);
+            Directory.Delete(tempdir, true);
         }
 
         [Test]
@@ -212,14 +217,14 @@ namespace Tests.Core
             string name = "testname";
             string tempdir = TestData.NewTempDir();
             GameVersion version = GameVersion.Parse("1.5.1");
-            System.IO.File.Create(System.IO.Path.Combine(tempdir, "shouldntbehere.txt")).Close();
+            File.Create(Path.Combine(tempdir, "shouldntbehere.txt")).Close();
 
             Assert.Throws<BadInstallLocationKraken>(() =>
                 manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version));
             Assert.IsFalse(manager.HasInstance(name));
 
             // Tidy up.
-            System.IO.Directory.Delete(tempdir, true);
+            Directory.Delete(tempdir, true);
         }
 
         [Test]
@@ -232,14 +237,14 @@ namespace Tests.Core
             GameVersion version = GameVersion.Parse("1.7.1");
 
             Dictionary<CKAN.DLC.IDlcDetector, GameVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, GameVersion>() {
-                    { new CKAN.DLC.MakingHistoryDlcDetector(), mhVersion },
-                    { new CKAN.DLC.BreakingGroundDlcDetector(), bgVersion }
+                    { new MakingHistoryDlcDetector(), mhVersion },
+                    { new BreakingGroundDlcDetector(), bgVersion }
                 };
 
             manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version, dlcs);
             CKAN.GameInstance newKSP = new CKAN.GameInstance(new KerbalSpaceProgram(), tempdir, name, new NullUser());
-            CKAN.DLC.MakingHistoryDlcDetector mhDetector = new CKAN.DLC.MakingHistoryDlcDetector();
-            CKAN.DLC.BreakingGroundDlcDetector bgDetector = new CKAN.DLC.BreakingGroundDlcDetector();
+            MakingHistoryDlcDetector mhDetector = new MakingHistoryDlcDetector();
+            BreakingGroundDlcDetector bgDetector = new BreakingGroundDlcDetector();
 
             Assert.IsTrue(manager.HasInstance(name));
             Assert.IsTrue(mhDetector.IsInstalled(newKSP, out string _, out UnmanagedModuleVersion detectedMhVersion));
@@ -248,8 +253,8 @@ namespace Tests.Core
             Assert.IsTrue(detectedBgVersion == new UnmanagedModuleVersion(bgVersion.ToString()));
 
             // Tidy up.
-            CKAN.RegistryManager.Instance(newKSP).ReleaseLock();
-            System.IO.Directory.Delete(tempdir, true);
+            CKAN.RegistryManager.DisposeInstance(newKSP);
+            Directory.Delete(tempdir, true);
         }
 
         // GetPreferredInstance
@@ -290,9 +295,10 @@ namespace Tests.Core
         [Test] //37a33
         public void Ctor_InvalidAutoStart_DoesNotThrow()
         {
-            var config = new FakeConfiguration(tidy.KSP, "invalid");
-            Assert.DoesNotThrow(() => new GameInstanceManager(new NullUser(), config));
-            config.Dispose();
+            using (var config = new FakeConfiguration(tidy.KSP, "invalid"))
+            {
+                Assert.DoesNotThrow(() => new GameInstanceManager(new NullUser(), config));
+            }
         }
 
 

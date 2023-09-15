@@ -16,10 +16,10 @@ using CKAN.Configuration;
 namespace CKAN
 {
     /// <summary>
-    ///     Doing something with the network? Do it here.
+    /// Doing something with the network? Do it here.
     /// </summary>
 
-    public class Net
+    public static class Net
     {
         // The user agent that we report to web sites
         public static string UserAgentString = "Mozilla/4.0 (compatible; CKAN)";
@@ -64,21 +64,13 @@ namespace CKAN
         /// console if we detect missing certificates (common on a fresh Linux/mono install)
         /// </summary>
         public static string Download(Uri url, out string etag, string filename = null, IUser user = null)
-        {
-            return Download(url.OriginalString, out etag, filename, user);
-        }
+            => Download(url.OriginalString, out etag, filename, user);
 
         public static string Download(Uri url, string filename = null, IUser user = null)
-        {
-            string etag;
-            return Download(url, out etag, filename, user);
-        }
+            => Download(url, out string etag, filename, user);
 
         public static string Download(string url, string filename = null, IUser user = null)
-        {
-            string etag;
-            return Download(url, out etag, filename, user);
-        }
+            => Download(url, out string etag, filename, user);
 
         public static string Download(string url, out string etag, string filename = null, IUser user = null)
         {
@@ -148,7 +140,7 @@ namespace CKAN
         {
             public List<Uri> urls     { get; private set; }
             public string    filename { get; private set; }
-            public long      size     { get; private set; }
+            public long      size     { get; set; }
             public string    mimeType { get; private set; }
 
             public DownloadTarget(List<Uri> urls, string filename = null, long size = 0, string mimeType = "")
@@ -165,9 +157,7 @@ namespace CKAN
         }
 
         public static string DownloadWithProgress(string url, string filename = null, IUser user = null)
-        {
-            return DownloadWithProgress(new Uri(url), filename, user);
-        }
+            => DownloadWithProgress(new Uri(url), filename, user);
 
         public static string DownloadWithProgress(Uri url, string filename = null, IUser user = null)
         {

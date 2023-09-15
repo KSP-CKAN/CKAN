@@ -20,14 +20,12 @@ namespace CKAN
         /// <param name="providers">Dictionary mapping every identifier to the modules providing it</param>
         /// <param name="dlls">Collection of found dlls</param>
         /// <param name="dlc">Collection of installed DLCs</param>
-        public CompatibilitySorter(
-            GameVersionCriteria crit,
-            Dictionary<string, AvailableModule> available,
-            Dictionary<string, HashSet<AvailableModule>> providers,
-            Dictionary<string, InstalledModule> installed,
-            HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc
-        )
+        public CompatibilitySorter(GameVersionCriteria                              crit,
+                                   IEnumerable<Dictionary<string, AvailableModule>> available,
+                                   Dictionary<string, HashSet<AvailableModule>>     providers,
+                                   Dictionary<string, InstalledModule>              installed,
+                                   HashSet<string>                                  dlls,
+                                   IDictionary<string, ModuleVersion>               dlc)
         {
             CompatibleVersions = crit;
             this.installed = installed;
@@ -47,11 +45,35 @@ namespace CKAN
         public readonly SortedDictionary<string, AvailableModule> Compatible
             = new SortedDictionary<string, AvailableModule>();
 
+        public ICollection<CkanModule> LatestCompatible
+        {
+            get
+            {
+                if (latestCompatible == null)
+                {
+                    latestCompatible = Compatible.Values.Select(avail => avail.Latest(CompatibleVersions)).ToList();
+                }
+                return latestCompatible;
+            }
+        }
+
         /// <summary>
         /// Mods that are incompatible with our versions
         /// </summary>
         public readonly SortedDictionary<string, AvailableModule> Incompatible
             = new SortedDictionary<string, AvailableModule>();
+
+        public ICollection<CkanModule> LatestIncompatible
+        {
+            get
+            {
+                if (latestIncompatible == null)
+                {
+                    latestIncompatible = Incompatible.Values.Select(avail => avail.Latest(null)).ToList();
+                }
+                return latestIncompatible;
+            }
+        }
 
         /// <summary>
         /// Mods that might be compatible or incompatible based on their dependencies
@@ -68,6 +90,9 @@ namespace CKAN
         private readonly HashSet<string> dlls;
         private readonly IDictionary<string, ModuleVersion> dlc;
 
+        private List<CkanModule> latestCompatible;
+        private List<CkanModule> latestIncompatible;
+
         /// <summary>
         /// Filter the provides mapping by compatibility
         /// </summary>
@@ -76,23 +101,34 @@ namespace CKAN
         /// <returns>
         /// Mapping from identifiers to compatible mods providing those identifiers
         /// </returns>
-        private Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(GameVersionCriteria crit, Dictionary<string, HashSet<AvailableModule>> providers)
+        private Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(
+            GameVersionCriteria                          crit,
+            Dictionary<string, HashSet<AvailableModule>> providers)
         {
+            log.Debug("Calculating compatible provider mapping");
             var compat = new Dictionary<string, HashSet<AvailableModule>>();
-            foreach (var kvp in providers)
+            foreach (var (ident, availMods) in providers)
             {
-                // Find providing non-DLC modules that are compatible with crit
-                var compatAvail = kvp.Value.Where(avm =>
-                    avm.AllAvailable().Any(ckm =>
-                        !ckm.IsDLC &&
-                        ckm.ProvidesList.Contains(kvp.Key) && ckm.IsCompatibleKSP(crit))
-                ).ToHashSet();
-                // Add compatible providers to mapping, if any
-                if (compatAvail.Any())
+                var compatGroups = availMods
+                    .GroupBy(availMod => availMod.AllAvailable()
+                                                 .Any(ckm => !ckm.IsDLC
+                                                             && ckm.ProvidesList.Contains(ident)
+                                                             && ckm.IsCompatible(crit)))
+                    .ToDictionary(grp => grp.Key,
+                                  grp => grp);
+                if (!compatGroups.ContainsKey(false))
                 {
-                    compat.Add(kvp.Key, compatAvail);
+                    // Everything is compatible, just re-use the same HashSet
+                    compat.Add(ident, availMods);
                 }
+                else if (compatGroups.TryGetValue(true, out var compatGroup))
+                {
+                    // Some are compatible, put them in a new HashSet
+                    compat.Add(ident, compatGroup.ToHashSet());
+                }
+                // Else if nothing compatible, just skip this one
             }
+            log.Debug("Done calculating compatible provider mapping");
             return compat;
         }
 
@@ -102,30 +138,36 @@ namespace CKAN
         /// </summary>
         /// <param name="available">All mods available from registry</param>
         /// <param name="providers">Mapping from identifiers to mods providing those identifiers</param>
-        private void PartitionModules(Dictionary<string, AvailableModule> available, Dictionary<string, HashSet<AvailableModule>> providers)
+        private void PartitionModules(IEnumerable<Dictionary<string, AvailableModule>> dicts,
+                                      Dictionary<string, HashSet<AvailableModule>> providers)
         {
-            // First get the ones that are trivially [in]compatible.
-            foreach (var kvp in available)
+            log.Debug("Partitioning modules by compatibility");
+            foreach (var available in dicts)
             {
-                if (kvp.Value.AllAvailable().All(m => !m.IsCompatibleKSP(CompatibleVersions)))
+                // First get the ones that are trivially [in]compatible.
+                foreach (var kvp in available)
                 {
-                    // No versions compatible == incompatible
-                    log.DebugFormat("Trivially incompatible: {0}", kvp.Key);
-                    Incompatible.Add(kvp.Key, kvp.Value);
-                }
-                else if (kvp.Value.AllAvailable().All(m => m.depends == null))
-                {
-                    // No dependencies == compatible
-                    log.DebugFormat("Trivially compatible: {0}", kvp.Key);
-                    Compatible.Add(kvp.Key, kvp.Value);
-                }
-                else
-                {
-                    // Need to investigate this one more later
-                    log.DebugFormat("Trivially indeterminate: {0}", kvp.Key);
-                    Indeterminate.Add(kvp.Key, kvp.Value);
+                    if (kvp.Value.AllAvailable().All(m => !m.IsCompatible(CompatibleVersions)))
+                    {
+                        // No versions compatible == incompatible
+                        log.DebugFormat("Trivially incompatible: {0}", kvp.Key);
+                        Incompatible.Add(kvp.Key, kvp.Value);
+                    }
+                    else if (kvp.Value.AllAvailable().All(m => m.depends == null))
+                    {
+                        // No dependencies == compatible
+                        log.DebugFormat("Trivially compatible: {0}", kvp.Key);
+                        Compatible.Add(kvp.Key, kvp.Value);
+                    }
+                    else
+                    {
+                        // Need to investigate this one more later
+                        log.DebugFormat("Trivially indeterminate: {0}", kvp.Key);
+                        Indeterminate.Add(kvp.Key, kvp.Value);
+                    }
                 }
             }
+            log.Debug("Trivial mods done, moving on to indeterminates");
             // We'll be modifying `indeterminate` during this loop, so `foreach` is out
             while (Indeterminate.Count > 0)
             {
@@ -133,6 +175,7 @@ namespace CKAN
                 log.DebugFormat("Checking: {0}", kvp.Key);
                 CheckDepends(kvp.Key, kvp.Value, providers);
             }
+            log.Debug("Done partitioning modules by compatibility");
         }
 
         /// <summary>
@@ -145,7 +188,7 @@ namespace CKAN
         private void CheckDepends(string identifier, AvailableModule am, Dictionary<string, HashSet<AvailableModule>> providers)
         {
             Investigating.Push(identifier);
-            foreach (CkanModule m in am.AllAvailable().Where(m => m.IsCompatibleKSP(CompatibleVersions)))
+            foreach (CkanModule m in am.AllAvailable().Where(m => m.IsCompatible(CompatibleVersions)))
             {
                 log.DebugFormat("What about {0}?", m.version);
                 bool installable = true;
@@ -228,27 +271,11 @@ namespace CKAN
         /// nothing otherwise.
         /// </returns>
         private IEnumerable<string> RelationshipIdentifiers(RelationshipDescriptor rel)
-        {
-            var modRel = rel as ModuleRelationshipDescriptor;
-            if (modRel != null)
-            {
-                yield return modRel.name;
-            }
-            else
-            {
-                var anyRel = rel as AnyOfRelationshipDescriptor;
-                if (anyRel != null)
-                {
-                    foreach (RelationshipDescriptor subRel in anyRel.any_of)
-                    {
-                        foreach (string name in RelationshipIdentifiers(subRel))
-                        {
-                            yield return name;
-                        }
-                    }
-                }
-            }
-        }
+            => rel is ModuleRelationshipDescriptor modRel
+                ? Enumerable.Repeat<string>(modRel.name, 1)
+                : rel is AnyOfRelationshipDescriptor anyRel
+                    ? anyRel.any_of.SelectMany(RelationshipIdentifiers)
+                    : Enumerable.Empty<string>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof(CompatibilitySorter));
     }

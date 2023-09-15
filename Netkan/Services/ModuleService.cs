@@ -105,7 +105,7 @@ namespace CKAN.NetKAN.Services
 
         public IEnumerable<string> FileDestinations(CkanModule module, string filePath)
         {
-            var inst = new GameInstance(game, "/", "dummy", null, false);
+            var inst = new GameInstance(game, "/", "dummy", null);
             return ModuleInstaller
                 .FindInstallableFiles(module, filePath, inst)
                 .Where(f => !f.source.IsDirectory)

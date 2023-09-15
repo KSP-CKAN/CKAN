@@ -13,7 +13,9 @@ using log4net;
 using Newtonsoft.Json;
 
 using CKAN.DLC;
+using CKAN.Games.KerbalSpaceProgram.DLC;
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -22,7 +24,7 @@ namespace CKAN
         private static readonly Dictionary<string, RegistryManager> registryCache =
             new Dictionary<string, RegistryManager>();
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
+        private static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         private readonly string path;
         public readonly string lockfilePath;
         private FileStream lockfileStream = null;
@@ -36,6 +38,7 @@ namespace CKAN
         /// If loading the registry failed, the parsing error text, else null.
         /// </summary>
         public string previousCorruptedMessage;
+
         /// <summary>
         /// If loading the registry failed, the location to which we moved it, else null.
         /// </summary>
@@ -49,7 +52,7 @@ namespace CKAN
 
         // We require our constructor to be private so we can
         // enforce this being an instance (via Instance() above)
-        private RegistryManager(string path, GameInstance inst)
+        private RegistryManager(string path, GameInstance inst, RepositoryDataManager repoData)
         {
             this.gameInstance = inst;
 
@@ -65,7 +68,7 @@ namespace CKAN
 
             try
             {
-                LoadOrCreate();
+                LoadOrCreate(repoData);
             }
             catch
             {
@@ -129,10 +132,7 @@ namespace CKAN
             }
 
             log.DebugFormat("Dispose of registry at {0}", directory);
-            if (!registryCache.Remove(directory))
-            {
-                throw new RegistryInUseKraken(directory);
-            }
+            registryCache.Remove(directory);
         }
 
         /// <summary>
@@ -268,16 +268,24 @@ namespace CKAN
         /// Returns an instance of the registry manager for the game instance.
         /// The file `registry.json` is assumed.
         /// </summary>
-        public static RegistryManager Instance(GameInstance inst)
+        public static RegistryManager Instance(GameInstance inst, RepositoryDataManager repoData)
         {
             string directory = inst.CkanDir();
             if (!registryCache.ContainsKey(directory))
             {
                 log.DebugFormat("Preparing to load registry at {0}", directory);
-                registryCache[directory] = new RegistryManager(directory, inst);
+                registryCache[directory] = new RegistryManager(directory, inst, repoData);
             }
 
             return registryCache[directory];
+        }
+
+        public static void DisposeInstance(GameInstance inst)
+        {
+            if (registryCache.TryGetValue(inst.CkanDir(), out RegistryManager regMgr))
+            {
+                regMgr.Dispose();
+            }
         }
 
         /// <summary>
@@ -293,7 +301,7 @@ namespace CKAN
             }
         }
 
-        private void Load()
+        private void Load(RepositoryDataManager repoData)
         {
             // Our registry needs to know our game instance when upgrading from older
             // registry formats. This lets us encapsulate that to make it available
@@ -306,29 +314,27 @@ namespace CKAN
             log.DebugFormat("Trying to load registry from {0}", path);
             string json = File.ReadAllText(path);
             log.Debug("Registry JSON loaded; parsing...");
-            // A 0-byte registry.json file loads as null without exceptions
-            registry = JsonConvert.DeserializeObject<Registry>(json, settings)
-                ?? Registry.Empty();
+            registry = new Registry(repoData);
+            JsonConvert.PopulateObject(json, registry, settings);
             log.Debug("Registry loaded and parsed");
-            ScanDlc();
             log.InfoFormat("Loaded CKAN registry at {0}", path);
         }
 
-        private void LoadOrCreate()
+        private void LoadOrCreate(RepositoryDataManager repoData)
         {
             try
             {
-                Load();
+                Load(repoData);
             }
             catch (FileNotFoundException)
             {
                 Create();
-                Load();
+                Load(repoData);
             }
             catch (DirectoryNotFoundException)
             {
                 Create();
-                Load();
+                Load(repoData);
             }
             catch (JsonException exc)
             {
@@ -338,7 +344,7 @@ namespace CKAN
                     path, previousCorruptedPath, previousCorruptedMessage);
                 File.Move(path, previousCorruptedPath);
                 Create();
-                Load();
+                Load(repoData);
             }
             catch (Exception ex)
             {
@@ -353,20 +359,21 @@ namespace CKAN
             log.InfoFormat("Creating new CKAN registry at {0}", path);
             registry = Registry.Empty();
             AscertainDefaultRepo();
+            ScanUnmanagedFiles();
             Save();
         }
 
         private void AscertainDefaultRepo()
         {
-            var repositories = registry.Repositories ?? new SortedDictionary<string, Repository>();
-
-            if (repositories.Count == 0)
+            if (registry.Repositories == null || registry.Repositories.Count == 0)
             {
-                repositories.Add(Repository.default_ckan_repo_name,
-                    new Repository(Repository.default_ckan_repo_name, gameInstance.game.DefaultRepositoryURL));
+                log.InfoFormat("Fabricating repository: {0}", gameInstance.game.DefaultRepositoryURL);
+                var name = $"{gameInstance.game.ShortName}-{Repository.default_ckan_repo_name}";
+                registry.RepositoriesSet(new SortedDictionary<string, Repository>
+                {
+                    { name, new Repository(name, gameInstance.game.DefaultRepositoryURL) }
+                });
             }
-
-            registry.Repositories = repositories;
         }
 
         private string Serialize()
@@ -536,93 +543,70 @@ namespace CKAN
             };
 
         /// <summary>
+        /// Scans the game folder for DLL data and updates the registry.
+        /// This operates as a transaction.
+        /// </summary>
+        /// <returns>
+        /// True if found anything different, false if same as before
+        /// </returns>
+        public bool ScanUnmanagedFiles()
+        {
+            log.Info(Properties.Resources.GameInstanceScanning);
+            using (var tx = CkanTransaction.CreateTransactionScope())
+            {
+                var dlls = Enumerable.Repeat<string>(gameInstance.game.PrimaryModDirectoryRelative, 1)
+                                     .Concat(gameInstance.game.AlternateModDirectoriesRelative)
+                                     .Select(relDir => gameInstance.ToAbsoluteGameDir(relDir))
+                                     .Where(absDir => Directory.Exists(absDir))
+                                     // EnumerateFiles is *case-sensitive* in its pattern, which causes
+                                     // DLL files to be missed under Linux; we have to pick .dll, .DLL, or scanning
+                                     // GameData *twice*.
+                                     //
+                                     // The least evil is to walk it once, and filter it ourselves.
+                                     .SelectMany(absDir => Directory.EnumerateFiles(absDir, "*",
+                                                                                    SearchOption.AllDirectories))
+                                     .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
+                                     .Select(absPath => gameInstance.ToRelativeGameDir(absPath))
+                                     .Where(relPath => !gameInstance.game.StockFolders.Any(f => relPath.StartsWith($"{f}/")))
+                                     .ToDictionary(relPath => gameInstance.DllPathToIdentifier(relPath),
+                                                   relPath => relPath);
+                log.DebugFormat("Registering DLLs: {0}", string.Join(", ", dlls.Values));
+                var dllChanged = registry.SetDlls(dlls);
+
+                var dlcChanged = ScanDlc();
+
+                log.Debug("Scan completed, committing transaction");
+                tx.Complete();
+
+                return dllChanged || dlcChanged;
+            }
+        }
+
+        /// <summary>
         /// Look for DLC installed in GameData
         /// </summary>
         /// <returns>
         /// True if not the same list as last scan, false otherwise
         /// </returns>
         public bool ScanDlc()
-        {
-            var dlc = new Dictionary<string, ModuleVersion>(registry.InstalledDlc);
-            ModuleVersion foundVer;
-            bool changed = false;
+            => registry.SetDlcs(TestDlcScan(Path.Combine(gameInstance.CkanDir(), "dlc"))
+                                .Concat(WellKnownDlcScan())
+                                .ToDictionary());
 
-            registry.ClearDlc();
+        private IEnumerable<KeyValuePair<string, ModuleVersion>> TestDlcScan(string dlcDir)
+            => (Directory.Exists(dlcDir)
+                       ? Directory.EnumerateFiles(dlcDir, "*.dlc",
+                                                  SearchOption.TopDirectoryOnly)
+                       : Enumerable.Empty<string>())
+                   .Select(f => new KeyValuePair<string, ModuleVersion>(
+                       $"{Path.GetFileNameWithoutExtension(f)}-DLC",
+                       new UnmanagedModuleVersion(File.ReadAllText(f).Trim())));
 
-            var testDlc = TestDlcScan();
-            foreach (var i in testDlc)
-            {
-                if (!changed
-                    && (!dlc.TryGetValue(i.Key, out foundVer)
-                        || foundVer != i.Value))
-                {
-                    changed = true;
-                }
-                registry.RegisterDlc(i.Key, i.Value);
-            }
-
-            var wellKnownDlc = WellKnownDlcScan();
-            foreach (var i in wellKnownDlc)
-            {
-                if (!changed
-                    && (!dlc.TryGetValue(i.Key, out foundVer)
-                        || foundVer != i.Value))
-                {
-                    changed = true;
-                }
-                registry.RegisterDlc(i.Key, i.Value);
-            }
-
-            // Check if anything got removed
-            if (!changed)
-            {
-                foreach (var i in dlc)
-                {
-                    if (!registry.InstalledDlc.TryGetValue(i.Key, out foundVer)
-                        || foundVer != i.Value)
-                    {
-                        changed = true;
-                        break;
-                    }
-                }
-            }
-            return changed;
-        }
-
-        private Dictionary<string, UnmanagedModuleVersion> TestDlcScan()
-        {
-            var dlc = new Dictionary<string, UnmanagedModuleVersion>();
-
-            var dlcDirectory = Path.Combine(gameInstance.CkanDir(), "dlc");
-            if (Directory.Exists(dlcDirectory))
-            {
-                foreach (var f in Directory.EnumerateFiles(dlcDirectory, "*.dlc", SearchOption.TopDirectoryOnly))
-                {
-                    var id = $"{Path.GetFileNameWithoutExtension(f)}-DLC";
-                    var ver = File.ReadAllText(f).Trim();
-
-                    dlc[id] = new UnmanagedModuleVersion(ver);
-                }
-            }
-
-            return dlc;
-        }
-
-        private Dictionary<string, UnmanagedModuleVersion> WellKnownDlcScan()
-        {
-            var dlc = new Dictionary<string, UnmanagedModuleVersion>();
-
-            var detectors = new IDlcDetector[] { new BreakingGroundDlcDetector(), new MakingHistoryDlcDetector() };
-
-            foreach (var d in detectors)
-            {
-                if (d.IsInstalled(gameInstance, out var identifier, out var version))
-                {
-                    dlc[identifier] = version ?? new UnmanagedModuleVersion(null);
-                }
-            }
-
-            return dlc;
-        }
+        private IEnumerable<KeyValuePair<string, ModuleVersion>> WellKnownDlcScan()
+            => gameInstance.game.DlcDetectors
+                .Select(d => d.IsInstalled(gameInstance, out string identifier, out UnmanagedModuleVersion version)
+                             ? new KeyValuePair<string, ModuleVersion>(identifier, version)
+                             : new KeyValuePair<string, ModuleVersion>(null,       null))
+                .Where(pair => pair.Key != null);
     }
 }

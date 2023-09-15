@@ -1,4 +1,4 @@
-﻿namespace CKAN.GameVersionProviders
+namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
 {
     public enum GameVersionSource
     {

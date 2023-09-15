@@ -1,12 +1,13 @@
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using Tests.Data;
 
 using CKAN;
 using CKAN.NetKAN.Services;
 using CKAN.Versioning;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
+
+using Tests.Data;
 
 namespace Tests.NetKAN.Services
 {

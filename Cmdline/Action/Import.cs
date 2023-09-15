@@ -1,26 +1,26 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+
 using log4net;
 
 namespace CKAN.CmdLine
 {
-
     /// <summary>
     /// Handler for "ckan import" command.
     /// Imports manually downloaded ZIP files into the cache.
     /// </summary>
     public class Import : ICommand
     {
-
         /// <summary>
         /// Initialize the command
         /// </summary>
         /// <param name="user">IUser object for user interaction</param>
-        public Import(GameInstanceManager mgr, IUser user)
+        public Import(GameInstanceManager mgr, RepositoryDataManager repoData, IUser user)
         {
-            manager   = mgr;
-            this.user = user;
+            manager       = mgr;
+            this.repoData = repoData;
+            this.user     = user;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Process exit code
         /// </returns>
-        public int RunCommand(CKAN.GameInstance ksp, object options)
+        public int RunCommand(CKAN.GameInstance instance, object options)
         {
             try
             {
@@ -45,19 +45,18 @@ namespace CKAN.CmdLine
                 else
                 {
                     log.InfoFormat("Importing {0} files", toImport.Count);
-                    List<string>    toInstall = new List<string>();
-                    RegistryManager regMgr = RegistryManager.Instance(ksp);
-                    ModuleInstaller inst      = new ModuleInstaller(ksp, manager.Cache, user);
-                    inst.ImportFiles(toImport, user, mod => toInstall.Add(mod.identifier), regMgr.registry, !opts.Headless);
+                    var toInstall = new List<string>();
+                    var installer = new ModuleInstaller(instance, manager.Cache, user);
+                    var regMgr    = RegistryManager.Instance(instance, repoData);
+                    installer.ImportFiles(toImport, user, mod => toInstall.Add(mod.identifier), regMgr.registry, !opts.Headless);
                     HashSet<string> possibleConfigOnlyDirs = null;
                     if (toInstall.Count > 0)
                     {
-                        inst.InstallList(
+                        installer.InstallList(
                             toInstall,
                             new RelationshipResolverOptions(),
                             regMgr,
-                            ref possibleConfigOnlyDirs
-                        );
+                            ref possibleConfigOnlyDirs);
                     }
                     return Exit.OK;
                 }
@@ -104,9 +103,11 @@ namespace CKAN.CmdLine
             }
         }
 
-        private        readonly GameInstanceManager manager;
-        private        readonly IUser      user;
-        private static readonly ILog       log = LogManager.GetLogger(typeof(Import));
+        private        readonly GameInstanceManager   manager;
+        private        readonly RepositoryDataManager repoData;
+        private        readonly IUser                 user;
+
+        private static readonly ILog                  log = LogManager.GetLogger(typeof(Import));
     }
 
 }

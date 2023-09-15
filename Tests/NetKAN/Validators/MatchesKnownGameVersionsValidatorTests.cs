@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Validators;
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
 
 namespace Tests.NetKAN.Validators
 {

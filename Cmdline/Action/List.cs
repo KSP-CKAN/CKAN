@@ -1,28 +1,28 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+
+using log4net;
+
 using CKAN.Exporters;
 using CKAN.Types;
 using CKAN.Versioning;
-using log4net;
 
 namespace CKAN.CmdLine
 {
     public class List : ICommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(List));
-
-        public IUser user { get; set; }
-
-        public List(IUser user)
+        public List(RepositoryDataManager repoData, IUser user)
         {
-            this.user = user;
+            this.repoData = repoData;
+            this.user     = user;
         }
 
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
             ListOptions options = (ListOptions) raw_options;
 
-            IRegistryQuerier registry = RegistryManager.Instance(instance).registry;
+            var regMgr   = RegistryManager.Instance(instance, repoData);
+            var registry = regMgr.registry;
 
             ExportFileType? exportFileType = null;
 
@@ -163,5 +163,10 @@ namespace CKAN.CmdLine
                 default:         return null;
             }
         }
+
+        private RepositoryDataManager repoData;
+        private IUser                 user;
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(List));
     }
 }

@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 using Newtonsoft.Json;
 
-using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
 
 namespace CKAN.Configuration
 {

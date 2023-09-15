@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,35 +12,29 @@ using CKAN.Extensions;
 namespace Tests.Core.Net
 {
     /// <summary>
-    /// Test the async downloader.
+    /// Test the async modules downloader.
     /// </summary>
 
     [TestFixture]
     public class NetAsyncModulesDownloaderTests
     {
-        private CKAN.GameInstanceManager      manager;
-        private CKAN.RegistryManager registry_manager;
-        private CKAN.Registry        registry;
-        private DisposableKSP        ksp;
-        private CKAN.IDownloader     async;
-        private NetModuleCache       cache;
-        private NetAsyncDownloader   downloader;
+        private CKAN.GameInstanceManager manager;
+        private CKAN.RegistryManager     registry_manager;
+        private CKAN.Registry            registry;
+        private DisposableKSP            ksp;
+        private CKAN.IDownloader         async;
+        private NetModuleCache           cache;
+        private NetAsyncDownloader       downloader;
+        private TemporaryRepositoryData  repoData;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncModulesDownloaderTests));
 
         [SetUp]
         public void Setup()
         {
-            manager = new GameInstanceManager(new NullUser());
-            // Give us a registry to play with.
-            ksp = new DisposableKSP();
-            registry_manager = CKAN.RegistryManager.Instance(ksp.KSP);
-            registry = registry_manager.registry;
-            registry.ClearDlls();
-            registry.Installed().Clear();
-            // Make sure we have a registry we can use.
+            var user = new NullUser();
 
-            registry.Repositories = new SortedDictionary<string, Repository>()
+            var repos = new SortedDictionary<string, Repository>()
             {
                 {
                     "testRepo",
@@ -48,12 +42,21 @@ namespace Tests.Core.Net
                 }
             };
 
-            downloader = new NetAsyncDownloader(new NullUser());
+            repoData = new TemporaryRepositoryData(user, repos.Values);
 
-            CKAN.Repo.UpdateAllRepositories(registry_manager, ksp.KSP, downloader, null, new NullUser());
+            manager = new GameInstanceManager(user);
+            // Give us a registry to play with.
+            ksp = new DisposableKSP();
+            registry_manager = CKAN.RegistryManager.Instance(ksp.KSP, repoData.Manager);
+            registry = registry_manager.registry;
+            registry.Installed().Clear();
+            // Make sure we have a registry we can use.
+            registry.RepositoriesSet(repos);
+
+            downloader = new NetAsyncDownloader(user);
 
             // Ready our downloader.
-            async = new CKAN.NetAsyncModulesDownloader(new NullUser(), manager.Cache);
+            async = new CKAN.NetAsyncModulesDownloader(user, manager.Cache);
 
             // General shortcuts
             cache = manager.Cache;
@@ -64,6 +67,7 @@ namespace Tests.Core.Net
         {
             manager.Dispose();
             ksp.Dispose();
+            repoData.Dispose();
         }
 
         [Test,
@@ -210,7 +214,7 @@ namespace Tests.Core.Net
 
             async.DownloadModules(modules);
 
-            Assert.IsTrue(cache.IsCachedZip(rAndS),"Module download successful");
+            Assert.IsTrue(cache.IsCachedZip(rAndS), "Module download successful");
         }
 
     }

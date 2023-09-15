@@ -5,18 +5,16 @@ namespace CKAN.CmdLine
 {
     public class Update : ICommand
     {
-        public IUser user { get; set; }
-        private GameInstanceManager manager;
-
         /// <summary>
         /// Initialize the update command object
         /// </summary>
         /// <param name="mgr">GameInstanceManager containing our instances</param>
         /// <param name="user">IUser object for interaction</param>
-        public Update(GameInstanceManager mgr, IUser user)
+        public Update(GameInstanceManager mgr, RepositoryDataManager repoData, IUser user)
         {
-            manager   = mgr;
-            this.user = user;
+            manager       = mgr;
+            this.repoData = repoData;
+            this.user     = user;
         }
 
         /// <summary>
@@ -36,7 +34,7 @@ namespace CKAN.CmdLine
             if (options.list_changes)
             {
                 // Get a list of compatible modules prior to the update.
-                var registry = RegistryManager.Instance(instance).registry;
+                var registry = RegistryManager.Instance(instance, repoData).registry;
                 compatible_prior = registry.CompatibleModules(instance.VersionCriteria()).ToList();
             }
 
@@ -53,7 +51,7 @@ namespace CKAN.CmdLine
 
             if (options.list_changes)
             {
-                var registry = RegistryManager.Instance(instance).registry;
+                var registry = RegistryManager.Instance(instance, repoData).registry;
                 PrintChanges(compatible_prior, registry.CompatibleModules(instance.VersionCriteria()).ToList());
             }
 
@@ -133,13 +131,16 @@ namespace CKAN.CmdLine
         /// <param name="repository">Repository to update. If null all repositories are used.</param>
         private void UpdateRepository(CKAN.GameInstance instance)
         {
-            RegistryManager registry_manager = RegistryManager.Instance(instance);
+            RegistryManager registry_manager = RegistryManager.Instance(instance, repoData);
 
-            var downloader = new NetAsyncDownloader(user);
-
-            CKAN.Repo.UpdateAllRepositories(registry_manager, instance, downloader, manager.Cache, user);
+            var result = repoData.Update(registry_manager.registry.Repositories.Values.ToArray(),
+                                         instance.game, false, new NetAsyncDownloader(user), user);
 
             user.RaiseMessage(Properties.Resources.UpdateSummary, registry_manager.registry.CompatibleModules(instance.VersionCriteria()).Count());
         }
+
+        private GameInstanceManager   manager;
+        private RepositoryDataManager repoData;
+        private IUser                 user;
     }
 }

@@ -118,7 +118,7 @@ namespace CKAN.GUI
         private void cKANSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             OpenWindow();
-            new SettingsDialog(currentUser).ShowDialog(this);
+            new SettingsDialog(RegistryManager.Instance(CurrentInstance, repoData), currentUser).ShowDialog(this);
         }
 
         private void minimizedContextMenuStrip_Opening(object sender, CancelEventArgs e)
@@ -142,9 +142,11 @@ namespace CKAN.GUI
             // Install
             Wait.StartWaiting(InstallMods, PostInstallMods, true,
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    ManageMods.mainModList.ComputeUserChangeSet(RegistryManager.Instance(CurrentInstance).registry, CurrentInstance.VersionCriteria()).ToList(),
-                    RelationshipResolver.DependsOnlyOpts()
-                )
+                    ManageMods.mainModList.ComputeUserChangeSet(
+                        RegistryManager.Instance(CurrentInstance, repoData).registry,
+                        CurrentInstance.VersionCriteria())
+                    .ToList(),
+                    RelationshipResolver.DependsOnlyOpts())
             );
         }
         #endregion

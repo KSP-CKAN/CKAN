@@ -13,9 +13,10 @@ namespace CKAN.CmdLine
 
     public class Prompt
     {
-        public Prompt(GameInstanceManager mgr)
+        public Prompt(GameInstanceManager mgr, RepositoryDataManager repoData)
         {
             manager = mgr;
+            this.repoData = repoData;
         }
 
         public int RunCommand(object raw_options)
@@ -184,7 +185,7 @@ namespace CKAN.CmdLine
         private string[] GetAvailIdentifiers(string prefix)
         {
             CKAN.GameInstance inst = MainClass.GetGameInstance(manager);
-            return RegistryManager.Instance(inst)
+            return RegistryManager.Instance(inst, repoData)
                                   .registry
                                   .CompatibleModules(inst.VersionCriteria())
                                   .Where(m => !m.IsDLC)
@@ -201,7 +202,7 @@ namespace CKAN.CmdLine
         private string[] GetInstIdentifiers(string prefix)
         {
             CKAN.GameInstance inst = MainClass.GetGameInstance(manager);
-            var registry = RegistryManager.Instance(inst).registry;
+            var registry = RegistryManager.Instance(inst, repoData).registry;
             return registry.Installed(false, false)
                            .Select(kvp => kvp.Key)
                            .Where(ident => ident.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase)
@@ -219,8 +220,9 @@ namespace CKAN.CmdLine
                       .Where(ident => ident.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
                       .ToArray();
 
-        private readonly GameInstanceManager manager;
-        private const string exitCommand = "exit";
+        private readonly GameInstanceManager   manager;
+        private readonly RepositoryDataManager repoData;
+        private const    string                exitCommand = "exit";
     }
 
 }

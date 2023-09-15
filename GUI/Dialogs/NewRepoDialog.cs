@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -13,12 +13,7 @@ namespace CKAN.GUI
         }
 
         public Repository Selection
-        {
-            get
-            {
-                return new Repository(RepoNameTextBox.Text, RepoUrlTextBox.Text);
-            }
-        }
+            => new Repository(RepoNameTextBox.Text, RepoUrlTextBox.Text);
 
         private void NewRepoDialog_Load(object sender, EventArgs e)
         {
@@ -60,6 +55,17 @@ namespace CKAN.GUI
             Repository r = ReposListBox.SelectedItems[0].Tag as Repository;
             RepoNameTextBox.Text = r.name;
             RepoUrlTextBox.Text = r.uri.ToString();
+        }
+
+        private void ReposListBox_DoubleClick(object sender, EventArgs r)
+        {
+            if (ReposListBox.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void RepoUrlTextBox_TextChanged(object sender, EventArgs e)

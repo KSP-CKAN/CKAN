@@ -8,46 +8,11 @@ namespace CKAN
 {
     public class ModuleTagList
     {
-        [JsonIgnore]
-        public Dictionary<string, ModuleTag> Tags = new Dictionary<string, ModuleTag>();
-
-        [JsonIgnore]
-        public HashSet<string> Untagged = new HashSet<string>();
-
         [JsonProperty("hidden_tags")]
         public HashSet<string> HiddenTags = new HashSet<string>();
 
         public static readonly string DefaultPath =
             Path.Combine(CKANPathUtils.AppDataPath, "tags.json");
-
-        public void BuildTagIndexFor(AvailableModule am)
-        {
-            bool tagged = false;
-            foreach (CkanModule m in am.AllAvailable())
-            {
-                if (m.Tags != null)
-                {
-                    tagged = true;
-                    foreach (string tagName in m.Tags)
-                    {
-                        ModuleTag tag = null;
-                        if (Tags.TryGetValue(tagName, out tag))
-                            tag.Add(m.identifier);
-                        else
-                            Tags.Add(tagName, new ModuleTag()
-                            {
-                                Name              = tagName,
-                                Visible           = !HiddenTags.Contains(tagName),
-                                ModuleIdentifiers = new HashSet<string>() { m.identifier },
-                            });
-                    }
-                }
-            }
-            if (!tagged)
-            {
-                Untagged.Add(am.AllAvailable().First().identifier);
-            }
-        }
 
         public static ModuleTagList Load(string path)
         {

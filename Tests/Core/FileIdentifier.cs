@@ -1,17 +1,23 @@
-﻿using System.IO;
-using CKAN;
+using System.IO;
+using System.Text;
+
+using ICSharpCode.SharpZipLib.GZip;
+using ICSharpCode.SharpZipLib.Tar;
 using NUnit.Framework;
+
+using CKAN;
+
 using Tests.Data;
 
 namespace Tests.Core
 {
     [TestFixture]
-    public class FileIdentifier
+    public class FileIdentifierTests
     {
         [Test]
-        public void IdentifyASCII()
+        public void IdentifyFile_ASCII_Works()
         {
-            // Check that we have the zip files to compare against.
+            // Check that we have the text files to compare against.
             string ascii_file_1 = TestData.DataDir("FileIdentifier/test_ascii.txt");
             string ascii_file_2 = TestData.DataDir("FileIdentifier/test_ascii.tmp");
 
@@ -19,14 +25,14 @@ namespace Tests.Core
             Assert.IsTrue(File.Exists(ascii_file_2));
 
             // Check that both files return a tar type.
-            Assert.IsTrue(CKAN.FileIdentifier.IdentifyFile(ascii_file_1) == FileType.ASCII);
-            Assert.IsTrue(CKAN.FileIdentifier.IdentifyFile(ascii_file_2) == FileType.ASCII);
+            Assert.AreEqual(FileType.ASCII, FileIdentifier.IdentifyFile(ascii_file_1));
+            Assert.AreEqual(FileType.ASCII, FileIdentifier.IdentifyFile(ascii_file_2));
         }
 
         [Test]
-        public void IdentifyTar()
+        public void IdentifyFile_Tar_Works()
         {
-            // Check that we have the zip files to compare against.
+            // Check that we have the tar files to compare against.
             string tar_file_1 = TestData.DataDir("FileIdentifier/test_tar.tar");
             string tar_file_2 = TestData.DataDir("FileIdentifier/test_tar.tmp");
 
@@ -34,14 +40,36 @@ namespace Tests.Core
             Assert.IsTrue(File.Exists(tar_file_2));
 
             // Check that both files return a tar type.
-            Assert.IsTrue(CKAN.FileIdentifier.IdentifyFile(tar_file_1) == FileType.Tar);
-            Assert.IsTrue(CKAN.FileIdentifier.IdentifyFile(tar_file_2) == FileType.Tar);
+            Assert.AreEqual(FileType.Tar, FileIdentifier.IdentifyFile(tar_file_1));
+            Assert.AreEqual(FileType.Tar, FileIdentifier.IdentifyFile(tar_file_2));
         }
 
         [Test]
-        public void IdentifyTarGz()
+        public void IdentifyFile_EmptyTar_Works()
         {
-            // Check that we have the zip files to compare against.
+            // Arrange / Act
+            var path = Path.GetTempFileName();
+            using (var outputStream = File.OpenWrite(path))
+            using (var tarStream    = new TarOutputStream(outputStream, Encoding.UTF8))
+            {
+                tarStream.Finish();
+            }
+
+            // Assert
+            try
+            {
+                Assert.AreEqual(FileType.Tar, FileIdentifier.IdentifyFile(path));
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
+        [Test]
+        public void IdentifyFile_TarGz_Works()
+        {
+            // Check that we have the tar.gz files to compare against.
             string targz_file_1 = TestData.DataDir("FileIdentifier/test_targz.tar.gz");
             string targz_file_2 = TestData.DataDir("FileIdentifier/test_targz.tmp");
 
@@ -49,12 +77,35 @@ namespace Tests.Core
             Assert.IsTrue(File.Exists(targz_file_2));
 
             // Check that both files return a tar.gz type.
-            Assert.IsTrue(CKAN.FileIdentifier.IdentifyFile(targz_file_1) == FileType.TarGz);
-            Assert.IsTrue(CKAN.FileIdentifier.IdentifyFile(targz_file_2) == FileType.TarGz);
+            Assert.AreEqual(FileType.TarGz, FileIdentifier.IdentifyFile(targz_file_1));
+            Assert.AreEqual(FileType.TarGz, FileIdentifier.IdentifyFile(targz_file_2));
         }
 
         [Test]
-        public void IdentifyZip()
+        public void IdentifyFile_EmptyTarGz_Works()
+        {
+            // Arrange / Act
+            var path = Path.GetTempFileName();
+            using (var outputStream = File.OpenWrite(path))
+            using (var gzipStream   = new GZipOutputStream(outputStream))
+            using (var tarStream    = new TarOutputStream(gzipStream, Encoding.UTF8))
+            {
+                tarStream.Finish();
+            }
+
+            // Assert
+            try
+            {
+                Assert.AreEqual(FileType.TarGz, FileIdentifier.IdentifyFile(path));
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
+        [Test]
+        public void IdentifyFile_Zip_Works()
         {
             // Check that we have the zip files to compare against.
             string zip_file_1 = TestData.DataDir("FileIdentifier/test_zip.zip");
@@ -64,8 +115,8 @@ namespace Tests.Core
             Assert.IsTrue(File.Exists(zip_file_2));
 
             // Check that both files return a zip type.
-            Assert.IsTrue(CKAN.FileIdentifier.IdentifyFile(zip_file_1) == FileType.Zip);
-            Assert.IsTrue(CKAN.FileIdentifier.IdentifyFile(zip_file_2) == FileType.Zip);
+            Assert.AreEqual(FileType.Zip, FileIdentifier.IdentifyFile(zip_file_1));
+            Assert.AreEqual(FileType.Zip, FileIdentifier.IdentifyFile(zip_file_2));
         }
     }
 }

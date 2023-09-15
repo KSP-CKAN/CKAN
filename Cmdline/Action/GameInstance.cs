@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using CommandLine;
 using CommandLine.Text;
 using log4net;
+
 using CKAN.Versioning;
 using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram.DLC;
 
 namespace CKAN.CmdLine
 {
@@ -566,7 +569,7 @@ namespace CKAN.CmdLine
             {
                 if (GameVersion.TryParse(options.makingHistoryVersion, out GameVersion ver))
                 {
-                    dlcs.Add(new DLC.MakingHistoryDlcDetector(), ver);
+                    dlcs.Add(new MakingHistoryDlcDetector(), ver);
                 }
                 else
                 {
@@ -578,7 +581,7 @@ namespace CKAN.CmdLine
             {
                 if (GameVersion.TryParse(options.breakingGroundVersion, out GameVersion ver))
                 {
-                    dlcs.Add(new DLC.BreakingGroundDlcDetector(), ver);
+                    dlcs.Add(new BreakingGroundDlcDetector(), ver);
                 }
                 else
                 {

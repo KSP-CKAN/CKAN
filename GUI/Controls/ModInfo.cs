@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading.Tasks;
 
+using Autofac;
+
 using CKAN.Versioning;
 
 namespace CKAN.GUI
@@ -122,7 +124,7 @@ namespace CKAN.GUI
                 VersionsTabPage.ImageKey     = "";
                 if (gmod.IsIncompatible)
                 {
-                    var pageToAlert = module.IsCompatibleKSP(crit) ? RelationshipTabPage : VersionsTabPage;
+                    var pageToAlert = module.IsCompatible(crit) ? RelationshipTabPage : VersionsTabPage;
                     pageToAlert.ImageKey = "Stop";
                 }
 
@@ -131,15 +133,18 @@ namespace CKAN.GUI
         }
 
         private ModuleLabelList ModuleLabels => Main.Instance.ManageMods.mainModList.ModuleLabels;
-        private ModuleTagList   ModuleTags   => Main.Instance.ManageMods.mainModList.ModuleTags;
 
         private void UpdateTagsAndLabels(CkanModule mod)
         {
+            var registry = RegistryManager.Instance(
+                manager.CurrentInstance, ServiceLocator.Container.Resolve<RepositoryDataManager>()
+            ).registry;
+
             Util.Invoke(MetadataTagsLabelsPanel, () =>
             {
                 MetadataTagsLabelsPanel.SuspendLayout();
                 MetadataTagsLabelsPanel.Controls.Clear();
-                var tags = ModuleTags?.Tags
+                var tags = registry?.Tags
                     .Where(t => t.Value.ModuleIdentifiers.Contains(mod.identifier))
                     .OrderBy(t => t.Key)
                     .Select(t => t.Value);

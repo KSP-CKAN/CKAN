@@ -40,7 +40,12 @@ namespace CKAN.GUI
                     MetadataTable.LayoutSettings.RowStyles[3].Height = 30;
                     MetadataModuleReleaseStatusTextBox.Text = module.release_status.ToString();
                 }
-                MetadataModuleGameCompatibilityTextBox.Text = gui_module.GameCompatibilityLong;
+
+                var compatMod = gui_module.LatestCompatibleMod ?? gui_module.LatestAvailableMod ?? gui_module.ToModule();
+                MetadataModuleGameCompatibilityTextBox.Text = string.Format(
+                    Properties.Resources.GUIModGameCompatibilityLong,
+                    gui_module.GameCompatibility,
+                    compatMod.version);
 
                 if (module.replaced_by == null)
                 {

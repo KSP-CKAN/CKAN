@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -156,4 +156,5 @@
   <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve"><value>Purge from cache</value></data>
   <data name="labelsToolStripMenuItem.Text" xml:space="preserve"><value>Labels</value></data>
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve"><value>Edit labels...</value></data>
+  <data name="RefreshToolButton.ToolTipText" xml:space="preserve"><value>Ctrl-click or Shift-click to re-download metadata even if there are no changes since last refresh</value></data>
 </root>

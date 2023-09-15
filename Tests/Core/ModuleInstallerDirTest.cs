@@ -1,12 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CKAN;
+
 using log4net.Core;
 using NUnit.Framework;
+
+using CKAN;
+using CKAN.Games;
+
 using Tests.Core.Configuration;
 using Tests.Data;
 
@@ -18,7 +22,7 @@ namespace Tests.Core
     [TestFixture]
     public class ModuleInstallerDirTest
     {
-        private GameInstanceManager           _manager;
+        private GameInstanceManager  _manager;
         private DisposableKSP        _instance;
         private FakeConfiguration    _config;
         private CKAN.RegistryManager _registryManager;
@@ -29,6 +33,9 @@ namespace Tests.Core
         private string               _gameDataDir;
         private IUser                _nullUser;
 
+        private TemporaryRepository repo;
+        private TemporaryRepositoryData repoData;
+
         /// <summary>
         /// Prep environment by setting up a single mod in
         /// a disposable KSP instance.
@@ -36,19 +43,24 @@ namespace Tests.Core
         [OneTimeSetUp]
         public void SetUp()
         {
-            _testModule = TestData.DogeCoinFlag_101_module();
-
-            _instance  = new DisposableKSP();
             _nullUser  = new NullUser();
+            _instance  = new DisposableKSP();
+            repo = new TemporaryRepository(TestData.DogeCoinFlag_101());
+            repoData = new TemporaryRepositoryData(_nullUser, repo.repo);
+
             _config    = new FakeConfiguration(_instance.KSP, _instance.KSP.Name);
             _manager   = new GameInstanceManager(_nullUser, _config);
-            _registryManager = CKAN.RegistryManager.Instance(_instance.KSP);
+            _registryManager = CKAN.RegistryManager.Instance(_instance.KSP, repoData.Manager);
             _registry  = _registryManager.registry;
+            _registry.RepositoriesClear();
+            _registry.RepositoriesAdd(repo.repo);
+            _testModule = _registry.GetModuleByVersion("DogeCoinFlag", "1.01");
+            Assert.IsNotNull(_testModule, "DogeCoinFlag 1.01 should exist");
+
             _installer = new CKAN.ModuleInstaller(_instance.KSP, _manager.Cache, _nullUser);
 
             _gameDir = _instance.KSP.GameDir();
             _gameDataDir = _instance.KSP.game.PrimaryModDirectory(_instance.KSP);
-            _registry.AddAvailable(_testModule);
             var testModFile = TestData.DogeCoinFlagZip();
             _manager.Cache.Store(_testModule, testModFile, new Progress<long>(bytes => {}));
             HashSet<string> possibleConfigOnlyDirs = null;
@@ -56,8 +68,7 @@ namespace Tests.Core
                 new List<string>() { _testModule.identifier },
                 new RelationshipResolverOptions(),
                 _registryManager,
-                ref possibleConfigOnlyDirs
-            );
+                ref possibleConfigOnlyDirs);
         }
 
         [OneTimeTearDown]
@@ -66,6 +77,8 @@ namespace Tests.Core
             _manager.Dispose();
             _config.Dispose();
             _instance.Dispose();
+            repo.Dispose();
+            repoData.Dispose();
         }
 
         /// <summary>

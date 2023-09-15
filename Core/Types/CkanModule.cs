@@ -35,14 +35,10 @@ namespace CKAN
     public class NameComparer : IEqualityComparer<CkanModule>
     {
         public bool Equals(CkanModule x, CkanModule y)
-        {
-            return x.identifier.Equals(y.identifier);
-        }
+            => x.identifier.Equals(y.identifier);
 
         public int GetHashCode(CkanModule obj)
-        {
-            return obj.identifier.GetHashCode();
-        }
+            => obj.identifier.GetHashCode();
     }
 
     /// <summary>
@@ -409,9 +405,7 @@ namespace CKAN
         }
 
         public string serialise()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
+            => JsonConvert.SerializeObject(this);
 
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext like_i_could_care)
@@ -456,7 +450,7 @@ namespace CKAN
                 module = registry.GetModuleByVersion(ident, version);
 
                 if (module == null
-                        || (ksp_version != null && !module.IsCompatibleKSP(ksp_version)))
+                        || (ksp_version != null && !module.IsCompatible(ksp_version)))
                     throw new ModuleNotFoundKraken(ident, version,
                         string.Format(Properties.Resources.CkanModuleNotAvailable, ident, version));
             }
@@ -472,23 +466,17 @@ namespace CKAN
             return module;
         }
 
-        public static readonly Regex idAndVersionMatcher = new Regex(
-            @"^(?<mod>[^=]*)=(?<version>.*)$",
-            RegexOptions.Compiled
-        );
+        public static readonly Regex idAndVersionMatcher =
+            new Regex(@"^(?<mod>[^=]*)=(?<version>.*)$",
+                      RegexOptions.Compiled);
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
-        /// TODO: Catch and display errors
         public static CkanModule FromFile(string filename)
-        {
-            string json = File.ReadAllText(filename);
-            return FromJson(json);
-        }
+            => FromJson(File.ReadAllText(filename));
 
         public static void ToFile(CkanModule module, string filename)
         {
-            var json = ToJson(module);
-            File.WriteAllText(filename, json);
+            File.WriteAllText(filename, ToJson(module));
         }
 
         public static string ToJson(CkanModule module)
@@ -524,29 +512,25 @@ namespace CKAN
         /// Returns true if we conflict with the given module.
         /// </summary>
         public bool ConflictsWith(CkanModule module)
-        {
             // We never conflict with ourselves, since we can't be installed at
             // the same time as another version of ourselves.
-            if (module.identifier == this.identifier) return false;
-
-            return UniConflicts(this, module) || UniConflicts(module, this);
-        }
+            => module.identifier == identifier
+                ? false
+                : UniConflicts(this, module) || UniConflicts(module, this);
 
         /// <summary>
         /// Checks if A conflicts with B, but not if B conflicts with A.
         /// Used by ConflictsWith.
         /// </summary>
         internal static bool UniConflicts(CkanModule mod1, CkanModule mod2)
-        {
-            return mod1?.conflicts?.Any(
-                conflict => conflict.MatchesAny(new CkanModule[] {mod2}, null, null)
-            ) ?? false;
-        }
+            => mod1?.conflicts?.Any(
+                   conflict => conflict.MatchesAny(new CkanModule[] {mod2}, null, null))
+               ?? false;
 
         /// <summary>
         /// Returns true if our mod is compatible with the KSP version specified.
         /// </summary>
-        public bool IsCompatibleKSP(GameVersionCriteria version)
+        public bool IsCompatible(GameVersionCriteria version)
         {
             var compat = _comparator.Compatible(version, this);
             log.DebugFormat("Checking compat of {0} with game versions {1}: {2}",
@@ -555,70 +539,53 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns a human readable string indicating the highest compatible
-        /// version of KSP this module will run with. (Eg: 1.0.2,
-        /// "All versions", etc).
-        ///
-        /// This is for *human consumption only*, as the strings may change in the
-        /// future as we support additional locales.
-        /// </summary>
-        public string HighestCompatibleKSP()
-        {
-            GameVersion v = LatestCompatibleKSP();
-            if (v.IsAny)
-                return Properties.Resources.CkanModuleAllVersions;
-            else
-                return v.ToString();
-        }
-
-        /// <summary>
         /// Returns machine readable object indicating the highest compatible
         /// version of KSP this module will run with.
         /// </summary>
-        public GameVersion LatestCompatibleKSP()
-        {
+        public GameVersion LatestCompatibleGameVersion()
             // Find the highest compatible KSP version
-            if (ksp_version_max != null)
-                return ksp_version_max;
-            else if (ksp_version != null)
-                return ksp_version;
-            else
-                // No upper limit.
-                return GameVersion.Any;
-        }
+            => ksp_version_max ?? ksp_version
+               // No upper limit.
+               ?? GameVersion.Any;
 
         /// <summary>
         /// Returns machine readable object indicating the lowest compatible
         /// version of KSP this module will run with.
         /// </summary>
-        public GameVersion EarliestCompatibleKSP()
-        {
+        public GameVersion EarliestCompatibleGameVersion()
             // Find the lowest compatible KSP version
-            if (ksp_version_min != null)
-                return ksp_version_min;
-            else if (ksp_version != null)
-                return ksp_version;
-            else
-                // No lower limit.
-                return GameVersion.Any;
-        }
+            => ksp_version_min ?? ksp_version
+               // No lower limit.
+               ?? GameVersion.Any;
+
+        /// <summary>
+        /// Return the latest game version from the given list that is
+        /// compatible with this module, without the build number.
+        /// </summary>
+        /// <param name="realVers">Game versions to test, sorted from earliest to latest</param>
+        /// <returns>The latest game version if any, else null</returns>
+        public GameVersion LatestCompatibleRealGameVersion(List<GameVersion> realVers)
+            => LatestCompatibleRealGameVersion(new GameVersionRange(EarliestCompatibleGameVersion(),
+                                                                    LatestCompatibleGameVersion()),
+                                               realVers);
+
+        private GameVersion LatestCompatibleRealGameVersion(GameVersionRange range,
+                                                            List<GameVersion> realVers)
+            => (realVers?.LastOrDefault(v => range.Contains(v))
+                        ?? LatestCompatibleGameVersion());
 
         /// <summary>
         /// Returns true if this module provides the functionality requested.
         /// </summary>
         public bool DoesProvide(string identifier)
-        {
-            return this.identifier == identifier || provides.Contains(identifier);
-        }
+            => this.identifier == identifier || provides.Contains(identifier);
 
         public bool IsMetapackage => kind == "metapackage";
 
         public bool IsDLC => kind == "dlc";
 
         protected bool Equals(CkanModule other)
-        {
-            return string.Equals(identifier, other.identifier) && version.Equals(other.version);
-        }
+            => string.Equals(identifier, other.identifier) && version.Equals(other.version);
 
         public override bool Equals(object obj)
         {
@@ -710,9 +677,7 @@ namespace CKAN
         }
 
         bool IEquatable<CkanModule>.Equals(CkanModule other)
-        {
-            return Equals(other);
-        }
+            => Equals(other);
 
         /// <summary>
         /// Returns true if we support at least spec_version of the CKAN spec.
@@ -729,18 +694,14 @@ namespace CKAN
         /// Returns true if we support the CKAN spec used by this module.
         /// </summary>
         private bool IsSpecSupported()
-        {
-            return IsSpecSupported(spec_version);
-        }
+            => IsSpecSupported(spec_version);
 
         /// <summary>
         ///     Returns a standardised name for this module, in the form
         ///     "identifier-version.zip". For example, `RealSolarSystem-7.3.zip`
         /// </summary>
         public string StandardName()
-        {
-            return StandardName(identifier, version);
-        }
+            => StandardName(identifier, version);
 
         public static string StandardName(string identifier, ModuleVersion version)
         {
@@ -754,9 +715,7 @@ namespace CKAN
         }
 
         public override string ToString()
-        {
-            return string.Format("{0} {1}", identifier, version);
-        }
+            => string.Format("{0} {1}", identifier, version);
 
         public string DescribeInstallStanzas(IGame game)
         {
@@ -846,6 +805,44 @@ namespace CKAN
                 found.UnionWith(neighbors);
             }
             return found;
+        }
+
+        /// <summary>
+        /// Find the minimum and maximum mod versions and compatible game versions
+        /// for a list of modules (presumably different versions of the same mod).
+        /// </summary>
+        /// <param name="modVersions">The modules to inspect</param>
+        /// <param name="minMod">Return parameter for the lowest  mod  version</param>
+        /// <param name="maxMod">Return parameter for the highest mod  version</param>
+        /// <param name="minGame">Return parameter for the lowest  game version</param>
+        /// <param name="maxGame">Return parameter for the highest game version</param>
+        public static void GetMinMaxVersions(IEnumerable<CkanModule> modVersions,
+                out ModuleVersion minMod,  out ModuleVersion maxMod,
+                out GameVersion   minGame, out GameVersion   maxGame)
+        {
+            minMod  = maxMod  = null;
+            minGame = maxGame = null;
+            foreach (CkanModule rel in modVersions.Where(v => v != null))
+            {
+                if (minMod == null || minMod > rel.version)
+                {
+                    minMod = rel.version;
+                }
+                if (maxMod == null || maxMod < rel.version)
+                {
+                    maxMod = rel.version;
+                }
+                GameVersion relMin = rel.EarliestCompatibleGameVersion();
+                GameVersion relMax = rel.LatestCompatibleGameVersion();
+                if (minGame == null || !minGame.IsAny && (minGame > relMin || relMin.IsAny))
+                {
+                    minGame = relMin;
+                }
+                if (maxGame == null || !maxGame.IsAny && (maxGame < relMax || relMax.IsAny))
+                {
+                    maxGame = relMax;
+                }
+            }
         }
     }
 

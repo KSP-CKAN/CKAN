@@ -2,12 +2,19 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using System.Reflection;
+
 using Autofac;
 using log4net;
-using CKAN.GameVersionProviders;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+using CKAN.DLC;
+using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
+using CKAN.Games.KerbalSpaceProgram.DLC;
 using CKAN.Versioning;
 
-namespace CKAN.Games
+namespace CKAN.Games.KerbalSpaceProgram
 {
     public class KerbalSpaceProgram : IGame
     {
@@ -184,30 +191,64 @@ namespace CKAN.Games
             return args;
         }
 
+        public IDlcDetector[] DlcDetectors => new IDlcDetector[]
+        {
+            new BreakingGroundDlcDetector(),
+            new MakingHistoryDlcDetector(),
+        };
+
         public void RefreshVersions()
         {
             ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh();
+            versions = null;
         }
 
-        public List<GameVersion> KnownVersions =>
-            ServiceLocator.Container.Resolve<IKspBuildMap>().KnownVersions;
+        private List<GameVersion> versions;
+
+        public List<GameVersion> KnownVersions
+        {
+            get
+            {
+                // There's a lot of duplicate real versions with different build IDs,
+                // skip all those extra checks when we use these
+                if (versions == null)
+                {
+                    versions = ServiceLocator.Container
+                                             .Resolve<IKspBuildMap>()
+                                             .KnownVersions
+                                             .Select(v => v.WithoutBuild)
+                                             .Distinct()
+                                             .ToList();
+                }
+                return versions;
+            }
+        }
+
+        public GameVersion[] EmbeddedGameVersions
+            => JsonConvert.DeserializeObject<GameVersionProviders.JBuilds>(
+                new StreamReader(Assembly.GetExecutingAssembly()
+                                         .GetManifestResourceStream("CKAN.builds-ksp.json"))
+                    .ReadToEnd())
+                .Builds
+                .Select(b => GameVersion.Parse(b.Value))
+                .ToArray();
+
+        public GameVersion[] ParseBuildsJson(JToken json)
+            => json.ToObject<GameVersionProviders.JBuilds>()
+                   .Builds
+                   .Select(b => GameVersion.Parse(b.Value))
+                   .ToArray();
 
         public GameVersion DetectVersion(DirectoryInfo where)
-        {
-            var buildIdVersionProvider = ServiceLocator.Container
-                .ResolveKeyed<IGameVersionProvider>(GameVersionSource.BuildId);
-            GameVersion version;
-            if (buildIdVersionProvider.TryGetVersion(where.FullName, out version))
-            {
-                return version;
-            }
-            else
-            {
-                var readmeVersionProvider = ServiceLocator.Container
-                    .ResolveKeyed<IGameVersionProvider>(GameVersionSource.Readme);
-                return readmeVersionProvider.TryGetVersion(where.FullName, out version) ? version : null;
-            }
-        }
+            => ServiceLocator.Container
+                .ResolveKeyed<IGameVersionProvider>(GameVersionSource.BuildId)
+                .TryGetVersion(where.FullName, out GameVersion verFromId)
+                    ? verFromId
+                    : ServiceLocator.Container
+                        .ResolveKeyed<IGameVersionProvider>(GameVersionSource.Readme)
+                        .TryGetVersion(where.FullName, out GameVersion verFromReadme)
+                            ? verFromReadme
+                            : null;
 
         public string CompatibleVersionsFile => "compatible_ksp_versions.json";
 

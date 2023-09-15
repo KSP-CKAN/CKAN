@@ -21,11 +21,11 @@ namespace CKAN.GUI
             GameFolderTree.TreeViewNodeSorter = new DirsFirstSorter();
         }
 
-        public void LoadFiles(GameInstance inst, IUser user)
+        public void LoadFiles(GameInstance inst, RepositoryDataManager repoData, IUser user)
         {
             this.inst = inst;
             this.user = user;
-            this.registry = RegistryManager.Instance(inst).registry;
+            this.registry = RegistryManager.Instance(inst, repoData).registry;
             Util.Invoke(this, _UpdateGameFolderTree);
         }
 

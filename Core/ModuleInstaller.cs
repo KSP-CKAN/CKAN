@@ -214,18 +214,6 @@ namespace CKAN
 
             EnforceCacheSizeLimit(registry_manager.registry);
 
-            if (!options.without_enforce_consistency)
-            {
-                // We can scan GameData as a separate transaction. Installing the mods
-                // leaves everything consistent, and this is just gravy. (And ScanGameData
-                // acts as a Tx, anyway, so we don't need to provide our own.)
-                User.RaiseProgress(
-                    string.Format(Properties.Resources.ModuleInstallerRescanning, ksp.game.PrimaryModDirectoryRelative),
-                    90);
-                log.Debug("Scanning after install");
-                ksp.Scan();
-            }
-
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
         }
 
@@ -662,8 +650,7 @@ namespace CKAN
         /// </summary>
         public void UninstallList(
             IEnumerable<string> mods, ref HashSet<string> possibleConfigOnlyDirs,
-            RegistryManager registry_manager, bool ConfirmPrompt = true, List<CkanModule> installing = null
-        )
+            RegistryManager registry_manager, bool ConfirmPrompt = true, List<CkanModule> installing = null)
         {
             mods = mods.Memoize();
             // Pre-check, have they even asked for things which are installed?
@@ -1572,7 +1559,7 @@ namespace CKAN
                     List<CkanModule> matches = index[sha1];
                     foreach (CkanModule mod in matches)
                     {
-                        if (mod.IsCompatibleKSP(ksp.VersionCriteria()))
+                        if (mod.IsCompatible(ksp.VersionCriteria()))
                         {
                             installable.Add(mod);
                         }

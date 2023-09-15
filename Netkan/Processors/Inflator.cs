@@ -23,8 +23,7 @@ namespace CKAN.NetKAN.Processors
             cache = FindCache(
                 new GameInstanceManager(new ConsoleUser(false)),
                 ServiceLocator.Container.Resolve<IConfiguration>(),
-                cacheDir
-            );
+                cacheDir);
 
             IModuleService moduleService = new ModuleService(game);
             IFileService   fileService   = new FileService(cache);

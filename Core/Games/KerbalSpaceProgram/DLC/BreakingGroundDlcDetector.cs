@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using CKAN.Games;
+using System.Collections.Generic;
 
-namespace CKAN.DLC
+using CKAN.Games.KerbalSpaceProgram;
+
+namespace CKAN.Games.KerbalSpaceProgram.DLC
 {
     /// <summary>
     /// Represents an object that can detect the presence of the official Making History DLC in a KSP installation.
@@ -9,11 +10,10 @@ namespace CKAN.DLC
     public sealed class BreakingGroundDlcDetector : StandardDlcDetectorBase
     {
         public BreakingGroundDlcDetector()
-            : base(
-                new KerbalSpaceProgram(),
-                "BreakingGround",
-                "Serenity",
-                new Versioning.GameVersion(1, 7, 1))
+            : base(new KerbalSpaceProgram(),
+                   "BreakingGround",
+                   "Serenity",
+                   new Versioning.GameVersion(1, 7, 1))
         { }
     }
 }
