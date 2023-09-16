@@ -272,6 +272,7 @@ namespace CKAN
 
         private IEnumerable<RepositoryData> GetRepoDatas(IEnumerable<Repository> repos)
             => repos?.OrderBy(repo => repo.priority)
+                     .ThenBy(repo => repo.name)
                      .Select(repo => GetRepoData(repo))
                      .Where(data => data != null)
                ?? Enumerable.Empty<RepositoryData>();

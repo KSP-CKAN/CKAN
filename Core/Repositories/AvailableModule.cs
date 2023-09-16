@@ -53,6 +53,11 @@ namespace CKAN
             Debug.Assert(module_version.Values.All(m => identifier.Equals(m.identifier)));
         }
 
+        public static AvailableModule Merge(IList<AvailableModule> availMods)
+            => availMods.Count == 1 ? availMods.First()
+                                    : new AvailableModule(availMods.First().identifier,
+                                                          availMods.Reverse().SelectMany(am => am.AllAvailable()));
+
         // The map of versions -> modules, that's what we're about!
         // First element is the oldest version, last is the newest.
         [JsonProperty]
@@ -71,7 +76,7 @@ namespace CKAN
         /// <summary>
         /// Record the given module version as being available.
         /// </summary>
-        public void Add(CkanModule module)
+        private void Add(CkanModule module)
         {
             if (!module.identifier.Equals(identifier))
                 throw new ArgumentException(
@@ -79,14 +84,6 @@ namespace CKAN
 
             log.DebugFormat("Adding to available module: {0}", module);
             module_version[module.version] = module;
-        }
-
-        /// <summary>
-        /// Remove the given version from our list of available.
-        /// </summary>
-        public void Remove(ModuleVersion version)
-        {
-            module_version.Remove(version);
         }
 
         /// <summary>

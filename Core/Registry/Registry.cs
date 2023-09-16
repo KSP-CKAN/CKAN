@@ -547,7 +547,11 @@ namespace CKAN
                     BuildProvidesIndex();
                 }
                 sorter = new CompatibilitySorter(
-                    versCrit, repoDataMgr?.GetAllAvailDicts(repositories.Values),
+                    versCrit,
+                    repoDataMgr?.GetAllAvailDicts(
+                        repositories.Values.OrderBy(r => r.priority)
+                                           // Break ties alphanumerically
+                                           .ThenBy(r => r.name)),
                     providers,
                     installed_modules, InstalledDlls.ToHashSet(), InstalledDlc);
             }

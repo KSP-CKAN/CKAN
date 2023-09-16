@@ -17,9 +17,10 @@ namespace Tests.Data
     /// </summary>
     public class TemporaryRepository : IDisposable
     {
-        public TemporaryRepository(params string[] fileContents)
+        public TemporaryRepository(int priority, params string[] fileContents)
         {
             path = Path.GetTempFileName();
+            repo = new Repository("temp", path, priority);
 
             using (var outputStream = File.OpenWrite(path))
             using (var gzipStream   = new GZipOutputStream(outputStream))
@@ -39,8 +40,12 @@ namespace Tests.Data
             }
         }
 
-        public Uri        uri  => new Uri(path);
-        public Repository repo => new Repository("temp", uri);
+        public TemporaryRepository(params string[] fileContents)
+            : this(0, fileContents)
+        { }
+
+        public          Uri        uri  => new Uri(path);
+        public readonly Repository repo;
 
         public void Dispose()
         {
