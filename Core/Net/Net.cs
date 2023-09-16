@@ -168,7 +168,7 @@ namespace CKAN
             return targets.First().filename;
         }
 
-        public static void DownloadWithProgress(ICollection<DownloadTarget> downloadTargets, IUser user = null)
+        public static void DownloadWithProgress(IList<DownloadTarget> downloadTargets, IUser user = null)
         {
             var downloader = new NetAsyncDownloader(user ?? new NullUser());
             downloader.onOneCompleted += (url, filename, error, etag) =>

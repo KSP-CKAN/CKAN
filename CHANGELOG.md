@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Show recommendations of full changeset with opt-out (#3892 by: HebaruSan; reviewed: techman83)
 - [Multiple] Dutch translation and icon duplication guardrails (#3897 by: HebaruSan; reviewed: techman83)
 - [GUI] Shorten toolbar button labels (#3903 by: HebaruSan; reviewed: techman83)
-- [Multiple] Refactor repository and available module handling (#3904 by: HebaruSan; reviewed: techman83)
+- [Multiple] Refactor repository and available module handling (#3904, #3907 by: HebaruSan; reviewed: techman83)
 
 ### Bugfixes
 
