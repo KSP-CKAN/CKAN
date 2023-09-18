@@ -12,7 +12,19 @@ using CKAN.Extensions;
 
 namespace CKAN.GUI
 {
-    using ModChanges = List<ModChange>;
+    using InstallResult = Tuple<bool, List<ModChange>>;
+
+    /// <summary>
+    /// Type expected by InstallMods in DoWorkEventArgs.Argument
+    /// Not a `using` because it's used by other files
+    /// </summary>
+    public class InstallArgument : Tuple<List<ModChange>, RelationshipResolverOptions>
+    {
+        public InstallArgument(List<ModChange> changes, RelationshipResolverOptions options)
+            : base(changes, options)
+        { }
+    }
+
     public partial class Main
     {
         /// <summary>
@@ -41,9 +53,8 @@ namespace CKAN.GUI
                 {
                     // Resolve the provides relationships in the dependencies
                     Wait.StartWaiting(InstallMods, PostInstallMods, true,
-                        new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                            userChangeSet,
-                            RelationshipResolver.DependsOnlyOpts()));
+                        new InstallArgument(userChangeSet,
+                                            RelationshipResolver.DependsOnlyOpts()));
                 }
             }
             catch
@@ -54,37 +65,45 @@ namespace CKAN.GUI
             }
         }
 
-        // this probably needs to be refactored
         private void InstallMods(object sender, DoWorkEventArgs e)
         {
             bool canceled = false;
-            var opts = (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
+            (List<ModChange> changes, RelationshipResolverOptions options) = (InstallArgument)e.Argument;
 
-            RegistryManager registry_manager = RegistryManager.Instance(Manager.CurrentInstance, repoData);
-            Registry registry = registry_manager.registry;
-            ModuleInstaller installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
+            var registry_manager = RegistryManager.Instance(Manager.CurrentInstance, repoData);
+            var registry = registry_manager.registry;
+            var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
             // Avoid accumulating multiple event handlers
             installer.onReportModInstalled -= OnModInstalled;
             installer.onReportModInstalled += OnModInstalled;
-            // setup progress callback
 
             // this will be the final list of mods we want to install
             var toInstall   = new List<CkanModule>();
             var toUninstall = new HashSet<CkanModule>();
             var toUpgrade   = new HashSet<CkanModule>();
 
+            // Check whether we need an explicit Remove call for auto-removals.
+            // If there's an Upgrade or a user-initiated Remove, they'll take care of it.
+            var needRemoveForAuto = changes.All(ch => ch.ChangeType == GUIModChangeType.Install
+                                                      || ch.IsAutoRemoval);
+
             // First compose sets of what the user wants installed, upgraded, and removed.
-            foreach (ModChange change in opts.Key)
+            foreach (ModChange change in changes)
             {
                 switch (change.ChangeType)
                 {
                     case GUIModChangeType.Remove:
-                        toUninstall.Add(change.Mod);
+                        // Let Upgrade and Remove handle auto-removals to avoid cascade-removal of depending mods.
+                        // Unless auto-removal is the ONLY thing in the changeset, in which case
+                        // filtering these out would give us a completely empty changeset.
+                        if (needRemoveForAuto || !change.IsAutoRemoval)
+                        {
+                            toUninstall.Add(change.Mod);
+                        }
                         break;
                     case GUIModChangeType.Update:
-                        toUpgrade.Add(change is ModUpgrade mu
-                            ? mu.targetMod
-                            : change.Mod);
+                        toUpgrade.Add(change is ModUpgrade mu ? mu.targetMod
+                                                              : change.Mod);
                         break;
                     case GUIModChangeType.Install:
                         toInstall.Add(change.Mod);
@@ -100,11 +119,12 @@ namespace CKAN.GUI
                 }
             }
 
+            Util.Invoke(this, () => UseWaitCursor = true);
             // Prompt for recommendations and suggestions, if any
             if (installer.FindRecommendations(
-                opts.Key.Where(ch => ch.ChangeType == GUIModChangeType.Install)
-                    .Select(ch => ch.Mod)
-                    .ToHashSet(),
+                changes.Where(ch => ch.ChangeType == GUIModChangeType.Install)
+                       .Select(ch => ch.Mod)
+                       .ToHashSet(),
                 toInstall,
                 registry,
                 out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
@@ -117,18 +137,23 @@ namespace CKAN.GUI
                     CurrentInstance.VersionCriteria(), Manager.Cache,
                     recommendations, suggestions, supporters);
                 tabController.SetTabLock(true);
+                Util.Invoke(this, () => UseWaitCursor = false);
                 var result = ChooseRecommendedMods.Wait();
                 tabController.SetTabLock(false);
                 tabController.HideTab("ChooseRecommendedModsTabPage");
                 if (result == null)
                 {
-                    e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
+                    e.Result = new InstallResult(false, changes);
                     throw new CancelledActionKraken();
                 }
                 else
                 {
                     toInstall = toInstall.Concat(result).Distinct().ToList();
                 }
+            }
+            else
+            {
+                Util.Invoke(this, () => UseWaitCursor = false);
             }
 
             // Now let's make all our changes.
@@ -165,7 +190,7 @@ namespace CKAN.GUI
                 {
                     try
                     {
-                        e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
+                        e.Result = new InstallResult(false, changes);
                         if (!canceled && toUninstall.Count > 0)
                         {
                             installer.UninstallList(toUninstall.Select(m => m.identifier),
@@ -174,7 +199,7 @@ namespace CKAN.GUI
                         }
                         if (!canceled && toInstall.Count > 0)
                         {
-                            installer.InstallList(toInstall, opts.Value, registry_manager, ref possibleConfigOnlyDirs, downloader, false);
+                            installer.InstallList(toInstall, options, registry_manager, ref possibleConfigOnlyDirs, downloader, false);
                             toInstall.Clear();
                         }
                         if (!canceled && toUpgrade.Count > 0)
@@ -184,7 +209,7 @@ namespace CKAN.GUI
                         }
                         if (canceled)
                         {
-                            e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
+                            e.Result = new InstallResult(false, changes);
                             throw new CancelledActionKraken();
                         }
                         resolvedAllProvidedMods = true;
@@ -194,7 +219,7 @@ namespace CKAN.GUI
                         // Get full changeset (toInstall only includes user's selections, not dependencies)
                         var crit = CurrentInstance.VersionCriteria();
                         var fullChangeset = new RelationshipResolver(
-                            toInstall.Concat(toUpgrade), toUninstall, opts.Value, registry, crit
+                            toInstall.Concat(toUpgrade), toUninstall, options, registry, crit
                         ).ModList().ToList();
                         DownloadsFailedDialog dfd = null;
                         Util.Invoke(dfd, () =>
@@ -215,7 +240,7 @@ namespace CKAN.GUI
                         if (abort)
                         {
                             canceled = true;
-                            e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
+                            e.Result = new InstallResult(false, changes);
                             throw new CancelledActionKraken();
                         }
 
@@ -253,7 +278,7 @@ namespace CKAN.GUI
                         }
                         else
                         {
-                            e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
+                            e.Result = new InstallResult(false, changes);
                             throw new CancelledActionKraken();
                         }
                     }
@@ -261,7 +286,7 @@ namespace CKAN.GUI
                 transaction.Complete();
             }
             HandlePossibleConfigOnlyDirs(registry, possibleConfigOnlyDirs);
-            e.Result = new KeyValuePair<bool, ModChanges>(true, opts.Key);
+            e.Result = new InstallResult(true, changes);
         }
 
         private void HandlePossibleConfigOnlyDirs(Registry registry, HashSet<string> possibleConfigOnlyDirs)
@@ -422,15 +447,14 @@ namespace CKAN.GUI
                 }
 
                 Wait.RetryEnabled = true;
-                FailWaitDialog(
-                    Properties.Resources.MainInstallErrorInstalling,
-                    Properties.Resources.MainInstallKnownError,
-                    Properties.Resources.MainInstallFailed);
+                FailWaitDialog(Properties.Resources.MainInstallErrorInstalling,
+                               Properties.Resources.MainInstallKnownError,
+                               Properties.Resources.MainInstallFailed);
             }
             else
             {
                 // The Result property throws if InstallMods threw (!!!)
-                KeyValuePair<bool, ModChanges> result = (KeyValuePair<bool, ModChanges>) e.Result;
+                (bool success, List<ModChange> changes) = (InstallResult)e.Result;
                 AddStatusMessage(Properties.Resources.MainInstallSuccess);
                 // Rebuilds the list of GUIMods
                 RefreshModList(false);

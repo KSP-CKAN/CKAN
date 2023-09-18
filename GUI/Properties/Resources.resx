@@ -211,7 +211,6 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainCSV" xml:space="preserve"><value>Comma-separated values (*.csv)</value></data>
   <data name="MainTSV" xml:space="preserve"><value>Tab-separated values (*.tsv)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Not found.</value></data>
-  <data name="MainReinstallConfirm" xml:space="preserve"><value>Do you want to reinstall {0}?</value></data>
   <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN can't install expansion {0}!</value></data>
   <data name="MainLoadingGameInstance" xml:space="preserve"><value>Loading game instance</value></data>
   <data name="MainCorruptedRegistry" xml:space="preserve"><value>Corrupted registry archived to {0}: {1}
@@ -231,6 +230,7 @@ Are you sure you want to install them? Cancelling will abort the entire installa
   <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Cancel</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Update selected by user to version {0}.</value></data>
   <data name="MainChangesetReinstall" xml:space="preserve"><value>Re-install (metadata changed)</value></data>
+  <data name="MainChangesetUserReinstall" xml:space="preserve"><value>Re-install (user requested)</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Import Mods</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Status log</value></data>

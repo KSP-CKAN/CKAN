@@ -178,7 +178,6 @@
   <data name="MainCSV" xml:space="preserve"><value>Значения, разделённые запятыми (*.csv)</value></data>
   <data name="MainTSV" xml:space="preserve"><value>Значения, разделённые табуляцией (*.tsv)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Не найдено.</value></data>
-  <data name="MainReinstallConfirm" xml:space="preserve"><value>Хотите ли вы переустановить {0}?</value></data>
   <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN не может установить дополнение {0}!</value></data>
   <data name="MainCorruptedRegistry" xml:space="preserve"><value>Повреждение реестра, архивированного в {0}: {1}
 

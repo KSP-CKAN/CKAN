@@ -178,7 +178,6 @@ Tentando mover {2} de {3} e reiniciar o CKAN.</value></data>
   <data name="MainCSV" xml:space="preserve"><value>Arquivo separado por vírgula (*.csv)</value></data>
   <data name="MainTSV" xml:space="preserve"><value>Arquivo separado por tabulação (*.tsv)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Não encontrado.</value></data>
-  <data name="MainReinstallConfirm" xml:space="preserve"><value>Você deseja reinstalar {0}?</value></data>
   <data name="MainCantInstallDLC" xml:space="preserve"><value>O CKAN não pode instalar a expansão{0}!</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} não é suportado peça versão atual do seu jogo e mode não funcionar. Se você tiver qualquer problema com isso, você NÃO deve pedir ajuda aos mantenedores.
 

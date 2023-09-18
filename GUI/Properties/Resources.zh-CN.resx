@@ -179,7 +179,6 @@
   <data name="MainCSV" xml:space="preserve"><value>Comma-separated values (*.csv)</value></data>
   <data name="MainTSV" xml:space="preserve"><value>Tab-separated values (*.tsv)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Not found.</value></data>
-  <data name="MainReinstallConfirm" xml:space="preserve"><value>您真的想要重新安装 {0}吗？</value></data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0}不支持您的当前游戏版本并很可能不能正常运行. 如果您遇到任何问题，请不要向其维护者求助.
 
 您真的想要安装它吗？</value></data>

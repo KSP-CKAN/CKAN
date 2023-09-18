@@ -363,11 +363,10 @@ namespace Tests.Core
         [Test]
         public void UninstallModNotFound()
         {
-            var user = new NullUser();
             using (var tidy = new DisposableKSP())
             using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
-            using (var repoData = new TemporaryRepositoryData(user))
-            using (var manager = new GameInstanceManager(new NullUser(), config)
+            using (var repoData = new TemporaryRepositoryData(nullUser))
+            using (var manager = new GameInstanceManager(nullUser, config)
                 {
                     CurrentInstance = tidy.KSP
                 })
@@ -866,7 +865,6 @@ namespace Tests.Core
         public void Replace_WithCompatibleModule_Succeeds()
         {
             // Arrange
-            var user = new NullUser();
             using (var inst = new DisposableKSP())
             using (var repo = new TemporaryRepository(
                 @"{
@@ -894,7 +892,7 @@ namespace Tests.Core
                         }
                     ]
                 }"))
-            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var config = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager = new GameInstanceManager(nullUser, config)
                 {
@@ -911,7 +909,7 @@ namespace Tests.Core
                 Assert.IsNotNull(replacer, "Replacer module should exist");
                 var installer = new CKAN.ModuleInstaller(inst.KSP, manager.Cache, nullUser);
                 HashSet<string> possibleConfigOnlyDirs = null;
-                var downloader = new NetAsyncModulesDownloader(user, manager.Cache);
+                var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache);
 
                 // Act
                 registry.RegisterModule(replaced, Enumerable.Empty<string>(), inst.KSP, false);
@@ -934,7 +932,6 @@ namespace Tests.Core
         public void Replace_WithIncompatibleModule_Fails()
         {
             // Arrange
-            var user = new NullUser();
             using (var inst = new DisposableKSP())
             using (var repo = new TemporaryRepository(
                 @"{
@@ -962,7 +959,7 @@ namespace Tests.Core
                         }
                     ]
                 }"))
-            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var config = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager = new GameInstanceManager(nullUser, config)
                 {
@@ -978,7 +975,7 @@ namespace Tests.Core
                 var replacer = registry.GetModuleByVersion("replacer", "1.0");
                 Assert.IsNotNull(replacer, "Replacer module should exist");
                 var installer = new CKAN.ModuleInstaller(inst.KSP, manager.Cache, nullUser);
-                var downloader = new NetAsyncModulesDownloader(user, manager.Cache);
+                var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache);
 
                 // Act
                 registry.RegisterModule(replaced, Enumerable.Empty<string>(), inst.KSP, false);
@@ -991,6 +988,173 @@ namespace Tests.Core
                 CollectionAssert.AreEqual(
                     Enumerable.Repeat<CkanModule>(replaced, 1),
                     registry.InstalledModules.Select(im => im.Module));
+            }
+        }
+
+        [Test,
+            // No mods, nothing installed
+            TestCase(new string[] { },
+                     new string[] { },
+                     new string[] { },
+                     new string[] { }),
+            // Uninstalling a mod that depends on an auto-installed mod
+            TestCase(new string[]
+                     {
+                         @"{
+                            ""spec_version"": 1,
+                            ""identifier"":   ""RemovingMod"",
+                            ""version"":      ""1.0"",
+                            ""depends"": [
+                                { ""name"": ""AutoRemovableMod"" }
+                            ],
+                            ""download"":     ""https://github.com/""
+                         }",
+                     },
+                     new string[]
+                     {
+                         @"{
+                            ""spec_version"": 1,
+                            ""identifier"":   ""AutoRemovableMod"",
+                            ""version"":      ""1.0"",
+                            ""download"":     ""https://github.com/""
+                         }",
+                     },
+                     new string[] { "RemovingMod" },
+                     new string[] { }),
+        ]
+        public void UninstallList_WithAutoInst_RemovesAutoRemovable(string[] regularMods,
+                                                                    string[] autoInstMods,
+                                                                    string[] removeIdentifiers,
+                                                                    string[] correctRemainingIdentifiers)
+        {
+            // Arrange
+            using (var inst    = new DisposableKSP())
+            using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager = new GameInstanceManager(nullUser, config)
+                {
+                    CurrentInstance = inst.KSP
+                })
+            using (var repo = new TemporaryRepository(regularMods.Concat(autoInstMods).ToArray()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            {
+                var installer = new CKAN.ModuleInstaller(inst.KSP, manager.Cache, nullUser);
+                var regMgr    = CKAN.RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
+                var registry  = regMgr.registry;
+                var possibleConfigOnlyDirs = new HashSet<string>();
+                foreach (var m in regularMods)
+                {
+                    registry.RegisterModule(CkanModule.FromJson(m),
+                                            Enumerable.Empty<string>(),
+                                            inst.KSP,
+                                            false);
+                }
+                foreach (var m in autoInstMods)
+                {
+                    registry.RegisterModule(CkanModule.FromJson(m),
+                                            Enumerable.Empty<string>(),
+                                            inst.KSP,
+                                            true);
+                }
+
+                // Act
+                installer.UninstallList(removeIdentifiers, ref possibleConfigOnlyDirs, regMgr, false, null);
+
+                // Assert
+                CollectionAssert.AreEquivalent(correctRemainingIdentifiers,
+                                               registry.InstalledModules.Select(im => im.identifier).ToArray());
+            }
+        }
+
+        [Test,
+            // No mods, nothing installed
+            TestCase(new string[] { },
+                     new string[] { },
+                     new string[] { },
+                     new string[] { }),
+            // Upgrading a mod that drops a dependency on an auto-installed mod
+            TestCase(new string[]
+                     {
+                         @"{
+                            ""spec_version"": 1,
+                            ""identifier"":   ""DogeCoinFlag"",
+                            ""version"":      ""1.0"",
+                            ""depends"": [
+                                { ""name"": ""RemovableMod"" }
+                            ],
+                            ""download"":     ""https://github.com/""
+                         }",
+                         @"{
+                            ""spec_version"": 1,
+                            ""identifier"":   ""DogeCoinFlag"",
+                            ""version"":      ""2.0"",
+                            ""download"":     ""https://awesomemod.example/AwesomeMod.zip"",
+                         }",
+                     },
+                     new string[]
+                     {
+                         @"{
+                            ""spec_version"": 1,
+                            ""identifier"":   ""RemovableMod"",
+                            ""version"":      ""1.0"",
+                            ""download"":     ""https://github.com/""
+                         }",
+                     },
+                     new string[] { "DogeCoinFlag" },
+                     new string[] { "DogeCoinFlag" }),
+        ]
+        public void Upgrade_WithAutoInst_RemovesAutoRemovable(string[] regularMods,
+                                                              string[] autoInstMods,
+                                                              string[] upgradeIdentifiers,
+                                                              string[] correctRemainingIdentifiers)
+        {
+            // Arrange
+            using (var inst    = new DisposableKSP())
+            using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager = new GameInstanceManager(nullUser, config)
+                {
+                    CurrentInstance = inst.KSP
+                })
+            using (var repo = new TemporaryRepository(regularMods.Concat(autoInstMods).ToArray()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            {
+                var installer  = new CKAN.ModuleInstaller(inst.KSP, manager.Cache, nullUser);
+                var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache);
+                var regMgr     = CKAN.RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
+                var registry   = regMgr.registry;
+                registry.RepositoriesSet(new SortedDictionary<string, Repository>()
+                {
+                    { "testRepo", repo.repo }
+                });
+                IRegistryQuerier querier = registry;
+                var possibleConfigOnlyDirs = new HashSet<string>();
+                foreach (var m in regularMods)
+                {
+                    var module = CkanModule.FromJson(m);
+                    manager.Cache.Store(module,
+                                        TestData.DogeCoinFlagZip(),
+                                        new Progress<long>(bytes => {}));
+                    if (!querier.IsInstalled(module.identifier, false))
+                    {
+                        registry.RegisterModule(module,
+                                                Enumerable.Empty<string>(),
+                                                inst.KSP,
+                                                false);
+                    }
+                }
+                foreach (var m in autoInstMods)
+                {
+                    registry.RegisterModule(CkanModule.FromJson(m),
+                                            Enumerable.Empty<string>(),
+                                            inst.KSP,
+                                            true);
+                }
+
+                // Act
+                installer.Upgrade(upgradeIdentifiers, downloader, ref possibleConfigOnlyDirs, regMgr, false);
+
+                // Assert
+                CollectionAssert.AreEquivalent(correctRemainingIdentifiers,
+                                               registry.InstalledModules.Select(im => im.identifier).ToArray());
             }
         }
     }

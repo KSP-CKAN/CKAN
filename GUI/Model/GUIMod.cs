@@ -317,7 +317,10 @@ namespace CKAN.GUI
                 ?? true;
             if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
             {
-                yield return new ModUpgrade(Mod, GUIModChangeType.Update, SelectedMod);
+                yield return new ModUpgrade(Mod,
+                                            GUIModChangeType.Update,
+                                            SelectedMod,
+                                            false);
             }
             else if (IsReplaceChecked)
             {

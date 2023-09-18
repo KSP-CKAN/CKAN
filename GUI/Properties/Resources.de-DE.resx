@@ -179,7 +179,6 @@ Versuche {2} aus {3} zu verschieben und CKAN neu zu starten.</value></data>
   <data name="MainModPack" xml:space="preserve"><value>CKAN Modpack (*.ckan)</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>Klartext (*.txt)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Nicht gefunden.</value></data>
-  <data name="MainReinstallConfirm" xml:space="preserve"><value>Möchtest du {0} neu installieren?</value></data>
   <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN kann die Erweiterung {0} nicht installieren!</value></data>
   <data name="MainCorruptedRegistry" xml:space="preserve"><value>Beschädigte Registry wurde nach {0} archiviert: {1}
 

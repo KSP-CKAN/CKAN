@@ -297,9 +297,6 @@ Essayez de déplacer {2} en dehors de {3} et redémarrez CKAN.</value>
   <data name="MainNotFound" xml:space="preserve">
     <value>Impossible de trouver.</value>
   </data>
-  <data name="MainReinstallConfirm" xml:space="preserve">
-    <value>Voulez-vous réinstaller {0} ?</value>
-  </data>
   <data name="MainCantInstallDLC" xml:space="preserve">
     <value>CKAN ne peut pas installer l'extension {0} !</value>
   </data>

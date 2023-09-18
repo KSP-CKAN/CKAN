@@ -1,32 +1,33 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel.DataAnnotations;
+
+using CKAN.Extensions;
 
 namespace CKAN.GUI
 {
     public enum GUIModChangeType
     {
+        [Display(Description  = "ChangeTypeNone",
+                 ResourceType = typeof(Properties.Resources))]
         None    = 0,
-        Install = 1,
-        Remove  = 2,
-        Update  = 3,
-        Replace = 4
-    }
 
-    public static class GUIModChangeTypeExtensions
-    {
-        public static string ToI18nString(this GUIModChangeType val)
-        {
-            switch (val)
-            {
-                case GUIModChangeType.None:    return Properties.Resources.ChangeTypeNone;
-                case GUIModChangeType.Install: return Properties.Resources.ChangeTypeInstall;
-                case GUIModChangeType.Remove:  return Properties.Resources.ChangeTypeRemove;
-                case GUIModChangeType.Update:  return Properties.Resources.ChangeTypeUpdate;
-                case GUIModChangeType.Replace: return Properties.Resources.ChangeTypeReplace;
-            }
-            throw new NotImplementedException(val.ToString());
-        }
+        [Display(Description  = "ChangeTypeInstall",
+                 ResourceType = typeof(Properties.Resources))]
+        Install = 1,
+
+        [Display(Description  = "ChangeTypeRemove",
+                 ResourceType = typeof(Properties.Resources))]
+        Remove  = 2,
+
+        [Display(Description  = "ChangeTypeUpdate",
+                 ResourceType = typeof(Properties.Resources))]
+        Update  = 3,
+
+        [Display(Description  = "ChangeTypeReplace",
+                 ResourceType = typeof(Properties.Resources))]
+        Replace = 4,
     }
 
     /// <summary>
@@ -45,6 +46,12 @@ namespace CKAN.GUI
         public GUIModChangeType  ChangeType { get; private set; }
         public SelectionReason[] Reasons    { get; private set; }
 
+        /// <summary>
+        /// true if the reason for this change is that an installed dependency is no longer needed,
+        /// false otherwise
+        /// </summary>
+        public readonly bool IsAutoRemoval;
+
         // If we don't have a Reason, the user probably wanted to install it
         public ModChange(CkanModule mod, GUIModChangeType changeType)
             : this(mod, changeType, new SelectionReason.UserRequested())
@@ -52,7 +59,7 @@ namespace CKAN.GUI
         }
 
         public ModChange(CkanModule mod, GUIModChangeType changeType, SelectionReason reason)
-            : this(mod, changeType, new SelectionReason[] { reason })
+            : this(mod, changeType, Enumerable.Repeat<SelectionReason>(reason, 1))
         {
         }
 
@@ -61,6 +68,7 @@ namespace CKAN.GUI
             Mod        = mod;
             ChangeType = changeType;
             Reasons    = reasons.ToArray();
+            IsAutoRemoval = Reasons.All(r => r is SelectionReason.NoLongerUsed);
         }
 
         public override bool Equals(object obj)
@@ -74,17 +82,13 @@ namespace CKAN.GUI
         private static int maxEnumVal = Enum.GetValues(typeof(GUIModChangeType)).Cast<int>().Max();
 
         public override int GetHashCode()
-        {
             // Distinguish between installing and removing
-            return Mod == null
+            => Mod == null
                 ? 0
                 : ((maxEnumVal + 1) * Mod.GetHashCode() + (int)ChangeType);
-        }
 
         public override string ToString()
-        {
-            return $"{ChangeType.ToI18nString()} {Mod} ({Description})";
-        }
+            => $"{ChangeType.Localize()} {Mod} ({Description})";
 
         public virtual string NameAndStatus
             => Main.Instance.Manager.Cache.DescribeAvailability(Mod);
@@ -104,10 +108,14 @@ namespace CKAN.GUI
 
     public class ModUpgrade : ModChange
     {
-        public ModUpgrade(CkanModule mod, GUIModChangeType changeType, CkanModule targetMod)
+        public ModUpgrade(CkanModule       mod,
+                          GUIModChangeType changeType,
+                          CkanModule       targetMod,
+                          bool             userReinstall)
             : base(mod, changeType)
         {
-            this.targetMod = targetMod;
+            this.targetMod     = targetMod;
+            this.userReinstall = userReinstall;
         }
 
         public override string NameAndStatus
@@ -115,7 +123,8 @@ namespace CKAN.GUI
 
         public override string Description
             => IsReinstall
-                ? Properties.Resources.MainChangesetReinstall
+                ? userReinstall ? Properties.Resources.MainChangesetUserReinstall
+                                : Properties.Resources.MainChangesetReinstall
                 : string.Format(Properties.Resources.MainChangesetUpdateSelected,
                                 targetMod.version);
 
@@ -124,5 +133,7 @@ namespace CKAN.GUI
         private bool IsReinstall
             => targetMod.identifier == Mod.identifier
                 && targetMod.version == Mod.version;
+
+        private readonly bool userReinstall;
     }
 }

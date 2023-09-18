@@ -35,7 +35,7 @@ namespace CKAN.GUI.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null))
                 {
@@ -50,7 +50,7 @@ namespace CKAN.GUI.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -62,7 +62,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap alert {
+        public static System.Drawing.Bitmap alert {
             get {
                 object obj = ResourceManager.GetObject("alert", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -72,7 +72,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap apply {
+        public static System.Drawing.Bitmap apply {
             get {
                 object obj = ResourceManager.GetObject("apply", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -82,14 +82,14 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap backward {
+        public static System.Drawing.Bitmap backward {
             get {
                 object obj = ResourceManager.GetObject("backward", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
 
-        internal static System.Drawing.Icon AppIcon {
+        public static System.Drawing.Icon AppIcon {
             get {
                 object obj = ResourceManager.GetObject("AppIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
@@ -99,7 +99,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to CKAN metadata (*.ckan)|*.ckan.
         /// </summary>
-        internal static string CKANFileFilter {
+        public static string CKANFileFilter {
             get {
                 return ResourceManager.GetString("CKANFileFilter", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Export Mod List.
         /// </summary>
-        internal static string ExportInstalledModsDialogTitle {
+        public static string ExportInstalledModsDialogTitle {
             get {
                 return ResourceManager.GetString("ExportInstalledModsDialogTitle", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap file {
+        public static System.Drawing.Bitmap file {
             get {
                 object obj = ResourceManager.GetObject("file", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -127,7 +127,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap filter {
+        public static System.Drawing.Bitmap filter {
             get {
                 object obj = ResourceManager.GetObject("filter", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -137,7 +137,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap folder {
+        public static System.Drawing.Bitmap folder {
             get {
                 object obj = ResourceManager.GetObject("folder", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -147,7 +147,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap folderZip {
+        public static System.Drawing.Bitmap folderZip {
             get {
                 object obj = ResourceManager.GetObject("folderZip", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -157,7 +157,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap forward {
+        public static System.Drawing.Bitmap forward {
             get {
                 object obj = ResourceManager.GetObject("forward", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -167,7 +167,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap info {
+        public static System.Drawing.Bitmap info {
             get {
                 object obj = ResourceManager.GetObject("info", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -177,7 +177,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ksp {
+        public static System.Drawing.Bitmap ksp {
             get {
                 object obj = ResourceManager.GetObject("ksp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -187,7 +187,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap stop {
+        public static System.Drawing.Bitmap stop {
             get {
                 object obj = ResourceManager.GetObject("stop", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -197,7 +197,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ballot {
+        public static System.Drawing.Bitmap ballot {
             get {
                 object obj = ResourceManager.GetObject("ballot", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -207,7 +207,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap refresh {
+        public static System.Drawing.Bitmap refresh {
             get {
                 object obj = ResourceManager.GetObject("refresh", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -217,7 +217,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap search {
+        public static System.Drawing.Bitmap search {
             get {
                 object obj = ResourceManager.GetObject("search", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -227,7 +227,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap settings {
+        public static System.Drawing.Bitmap settings {
             get {
                 object obj = ResourceManager.GetObject("settings", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -237,7 +237,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap expandAll {
+        public static System.Drawing.Bitmap expandAll {
             get {
                 object obj = ResourceManager.GetObject("expandAll", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -247,7 +247,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap collapseAll {
+        public static System.Drawing.Bitmap collapseAll {
             get {
                 object obj = ResourceManager.GetObject("collapseAll", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -257,7 +257,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap resetCollapse {
+        public static System.Drawing.Bitmap resetCollapse {
             get {
                 object obj = ResourceManager.GetObject("resetCollapse", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -267,7 +267,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap delete {
+        public static System.Drawing.Bitmap delete {
             get {
                 object obj = ResourceManager.GetObject("delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -277,7 +277,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap smile {
+        public static System.Drawing.Bitmap smile {
             get {
                 object obj = ResourceManager.GetObject("smile", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -287,7 +287,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap star {
+        public static System.Drawing.Bitmap star {
             get {
                 object obj = ResourceManager.GetObject("star", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -297,7 +297,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap textClear {
+        public static System.Drawing.Bitmap textClear {
             get {
                 object obj = ResourceManager.GetObject("textClear", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -307,7 +307,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap thumbup {
+        public static System.Drawing.Bitmap thumbup {
             get {
                 object obj = ResourceManager.GetObject("thumbup", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -317,7 +317,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap update {
+        public static System.Drawing.Bitmap update {
             get {
                 object obj = ResourceManager.GetObject("update", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -327,7 +327,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap triToggleYes {
+        public static System.Drawing.Bitmap triToggleYes {
             get {
                 object obj = ResourceManager.GetObject("triToggleYes", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -336,7 +336,7 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap triToggleBoth {
+        public static System.Drawing.Bitmap triToggleBoth {
             get {
                 object obj = ResourceManager.GetObject("triToggleBoth", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -345,844 +345,844 @@ namespace CKAN.GUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap triToggleNo {
+        public static System.Drawing.Bitmap triToggleNo {
             get {
                 object obj = ResourceManager.GetObject("triToggleNo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
 
-        internal static string AboutDialogLabel2Text {
+        public static string AboutDialogLabel2Text {
             get { return (string)(ResourceManager.GetObject("AboutDialogLabel2Text", resourceCulture)); }
         }
 
-        internal static string BuildIDFilterDescription {
+        public static string BuildIDFilterDescription {
             get { return (string)(ResourceManager.GetObject("BuildIDFilterDescription", resourceCulture)); }
         }
-        internal static string CloneFakeKspDialogEnterName {
+        public static string CloneFakeKspDialogEnterName {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogEnterName", resourceCulture)); }
         }
-        internal static string CloneFakeKspDialogEnterPath {
+        public static string CloneFakeKspDialogEnterPath {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogEnterPath", resourceCulture)); }
         }
-        internal static string CloneFakeKspDialogCloningInstance {
+        public static string CloneFakeKspDialogCloningInstance {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogCloningInstance", resourceCulture)); }
         }
-        internal static string CloneFakeKspDialogInstanceNotValid {
+        public static string CloneFakeKspDialogInstanceNotValid {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogInstanceNotValid", resourceCulture)); }
         }
-        internal static string CloneFakeKspDialogDestinationNotEmpty {
+        public static string CloneFakeKspDialogDestinationNotEmpty {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogDestinationNotEmpty", resourceCulture)); }
         }
-        internal static string CloneFakeKspDialogCloneFailed {
+        public static string CloneFakeKspDialogCloneFailed {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogCloneFailed", resourceCulture)); }
         }
-        internal static string CloneFakeKspDialogSuccessfulClone {
+        public static string CloneFakeKspDialogSuccessfulClone {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogSuccessfulClone", resourceCulture)); }
         }
-        internal static string CloneFakeKspDialogCreatingInstance {
+        public static string CloneFakeKspDialogCreatingInstance {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogCreatingInstance", resourceCulture)); }
         }
-        internal static string CloneFakeKspDialogNameAlreadyUsed {
+        public static string CloneFakeKspDialogNameAlreadyUsed {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogNameAlreadyUsed", resourceCulture)); }
         }
-        internal static string CloneFakeKspDialogSuccessfulCreate {
+        public static string CloneFakeKspDialogSuccessfulCreate {
             get { return (string)(ResourceManager.GetObject("CloneFakeKspDialogSuccessfulCreate", resourceCulture)); }
         }
 
-        internal static string CompatibleGameVersionsDialogNone {
+        public static string CompatibleGameVersionsDialogNone {
             get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogNone", resourceCulture)); }
         }
-        internal static string CompatibleGameVersionsDialogGameUpdated {
+        public static string CompatibleGameVersionsDialogGameUpdated {
             get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogGameUpdated", resourceCulture)); }
         }
-        internal static string CompatibleGameVersionsDialogVersionDetails {
+        public static string CompatibleGameVersionsDialogVersionDetails {
             get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogVersionDetails", resourceCulture)); }
         }
-        internal static string CompatibleGameVersionsDialogInvalidFormat {
+        public static string CompatibleGameVersionsDialogInvalidFormat {
             get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogInvalidFormat", resourceCulture)); }
         }
-        internal static string CompatibleGameVersionsDialogErrorTitle {
+        public static string CompatibleGameVersionsDialogErrorTitle {
             get { return (string)(ResourceManager.GetObject("CompatibleGameVersionsDialogErrorTitle", resourceCulture)); }
         }
 
-        internal static string ConfigurationParseError {
+        public static string ConfigurationParseError {
             get { return (string)(ResourceManager.GetObject("ConfigurationParseError", resourceCulture)); }
         }
 
-        internal static string GUIModNSlashA {
+        public static string GUIModNSlashA {
             get { return (string)(ResourceManager.GetObject("GUIModNSlashA", resourceCulture)); }
         }
-        internal static string GUIModUnknown {
+        public static string GUIModUnknown {
             get { return (string)(ResourceManager.GetObject("GUIModUnknown", resourceCulture)); }
         }
-        internal static string GUIModMethodNotCKAN {
+        public static string GUIModMethodNotCKAN {
             get { return (string)(ResourceManager.GetObject("GUIModMethodNotCKAN", resourceCulture)); }
         }
-        internal static string GUIModGameCompatibilityLong {
+        public static string GUIModGameCompatibilityLong {
             get { return (string)(ResourceManager.GetObject("GUIModGameCompatibilityLong", resourceCulture)); }
         }
 
-        internal static string MainAutoUpdateFailed {
+        public static string MainAutoUpdateFailed {
             get { return (string)(ResourceManager.GetObject("MainAutoUpdateFailed", resourceCulture)); }
         }
-        internal static string MainQuitWithConflicts {
+        public static string MainQuitWithConflicts {
             get { return (string)(ResourceManager.GetObject("MainQuitWithConflicts", resourceCulture)); }
         }
-        internal static string MainQuit {
+        public static string MainQuit {
             get { return (string)(ResourceManager.GetObject("MainQuit", resourceCulture)); }
         }
-        internal static string MainGoBack {
+        public static string MainGoBack {
             get { return (string)(ResourceManager.GetObject("MainGoBack", resourceCulture)); }
         }
-        internal static string MainQuitWithUnmetDeps {
+        public static string MainQuitWithUnmetDeps {
             get { return (string)(ResourceManager.GetObject("MainQuitWithUnmetDeps", resourceCulture)); }
         }
-        internal static string MainQuitWithUnappliedChanges {
+        public static string MainQuitWithUnappliedChanges {
             get { return (string)(ResourceManager.GetObject("MainQuitWithUnappliedChanges", resourceCulture)); }
         }
-        internal static string MainUpgradingWaitTitle {
+        public static string MainUpgradingWaitTitle {
             get { return (string)(ResourceManager.GetObject("MainUpgradingWaitTitle", resourceCulture)); }
         }
-        internal static string MainUpgradingTo {
+        public static string MainUpgradingTo {
             get { return (string)(ResourceManager.GetObject("MainUpgradingTo", resourceCulture)); }
         }
-        internal static string MainDepNotSatisfied {
+        public static string MainDepNotSatisfied {
             get { return (string)(ResourceManager.GetObject("MainDepNotSatisfied", resourceCulture)); }
         }
-        internal static string MainFilterAll {
+        public static string MainFilterAll {
             get { return (string)(ResourceManager.GetObject("MainFilterAll", resourceCulture)); }
         }
-        internal static string MainFilterIncompatible {
+        public static string MainFilterIncompatible {
             get { return (string)(ResourceManager.GetObject("MainFilterIncompatible", resourceCulture)); }
         }
-        internal static string MainFilterInstalled {
+        public static string MainFilterInstalled {
             get { return (string)(ResourceManager.GetObject("MainFilterInstalled", resourceCulture)); }
         }
-        internal static string MainFilterUpgradeable {
+        public static string MainFilterUpgradeable {
             get { return (string)(ResourceManager.GetObject("MainFilterUpgradeable", resourceCulture)); }
         }
-        internal static string MainFilterReplaceable {
+        public static string MainFilterReplaceable {
             get { return (string)(ResourceManager.GetObject("MainFilterReplaceable", resourceCulture)); }
         }
-        internal static string MainFilterCached {
+        public static string MainFilterCached {
             get { return (string)(ResourceManager.GetObject("MainFilterCached", resourceCulture)); }
         }
-        internal static string MainFilterUncached {
+        public static string MainFilterUncached {
             get { return (string)(ResourceManager.GetObject("MainFilterUncached", resourceCulture)); }
         }
-        internal static string MainFilterNew {
+        public static string MainFilterNew {
             get { return (string)(ResourceManager.GetObject("MainFilterNew", resourceCulture)); }
         }
-        internal static string MainFilterNotInstalled {
+        public static string MainFilterNotInstalled {
             get { return (string)(ResourceManager.GetObject("MainFilterNotInstalled", resourceCulture)); }
         }
-        internal static string MainFilterCompatible {
+        public static string MainFilterCompatible {
             get { return (string)(ResourceManager.GetObject("MainFilterCompatible", resourceCulture)); }
         }
-        internal static string MainFilterLabel {
+        public static string MainFilterLabel {
             get { return (string)(ResourceManager.GetObject("MainFilterLabel", resourceCulture)); }
         }
-        internal static string MainFilterTag {
+        public static string MainFilterTag {
             get { return (string)(ResourceManager.GetObject("MainFilterTag", resourceCulture)); }
         }
-        internal static string MainFilterUntagged {
+        public static string MainFilterUntagged {
             get { return (string)(ResourceManager.GetObject("MainFilterUntagged", resourceCulture)); }
         }
-        internal static string MainLaunchWithIncompatible {
+        public static string MainLaunchWithIncompatible {
             get { return (string)(ResourceManager.GetObject("MainLaunchWithIncompatible", resourceCulture)); }
         }
-        internal static string MainLaunchDontShow {
+        public static string MainLaunchDontShow {
             get { return (string)(ResourceManager.GetObject("MainLaunchDontShow", resourceCulture)); }
         }
-        internal static string MainLaunch {
+        public static string MainLaunch {
             get { return (string)(ResourceManager.GetObject("MainLaunch", resourceCulture)); }
         }
-        internal static string MainLaunchFailed {
+        public static string MainLaunchFailed {
             get { return (string)(ResourceManager.GetObject("MainLaunchFailed", resourceCulture)); }
         }
-        internal static string MainModPack {
+        public static string MainModPack {
             get { return (string)(ResourceManager.GetObject("MainModPack", resourceCulture)); }
         }
-        internal static string MainPlainText {
+        public static string MainPlainText {
             get { return (string)(ResourceManager.GetObject("MainPlainText", resourceCulture)); }
         }
-        internal static string MainMarkdown {
+        public static string MainMarkdown {
             get { return (string)(ResourceManager.GetObject("MainMarkdown", resourceCulture)); }
         }
-        internal static string MainBBCode {
+        public static string MainBBCode {
             get { return (string)(ResourceManager.GetObject("MainBBCode", resourceCulture)); }
         }
-        internal static string MainCSV {
+        public static string MainCSV {
             get { return (string)(ResourceManager.GetObject("MainCSV", resourceCulture)); }
         }
-        internal static string MainTSV {
+        public static string MainTSV {
             get { return (string)(ResourceManager.GetObject("MainTSV", resourceCulture)); }
         }
-        internal static string MainNotFound {
+        public static string MainNotFound {
             get { return (string)(ResourceManager.GetObject("MainNotFound", resourceCulture)); }
         }
-        internal static string MainReinstallConfirm {
-            get { return (string)(ResourceManager.GetObject("MainReinstallConfirm", resourceCulture)); }
-        }
-        internal static string MainCantInstallDLC {
+        public static string MainCantInstallDLC {
             get { return (string)(ResourceManager.GetObject("MainCantInstallDLC", resourceCulture)); }
         }
-        internal static string MainLoadingGameInstance {
+        public static string MainLoadingGameInstance {
             get { return (string)(ResourceManager.GetObject("MainLoadingGameInstance", resourceCulture)); }
         }
-        internal static string MainCorruptedRegistry {
+        public static string MainCorruptedRegistry {
             get { return (string)(ResourceManager.GetObject("MainCorruptedRegistry", resourceCulture)); }
         }
-        internal static string MainDeleteLockfileYes {
+        public static string MainDeleteLockfileYes {
             get { return (string)(ResourceManager.GetObject("MainDeleteLockfileYes", resourceCulture)); }
         }
-        internal static string MainDeleteLockfileNo {
+        public static string MainDeleteLockfileNo {
             get { return (string)(ResourceManager.GetObject("MainDeleteLockfileNo", resourceCulture)); }
         }
 
-        internal static string AllModVersionsInstallPrompt {
+        public static string AllModVersionsInstallPrompt {
             get { return (string)(ResourceManager.GetObject("AllModVersionsInstallPrompt", resourceCulture)); }
         }
-        internal static string ModpackInstallIncompatiblePrompt {
+        public static string ModpackInstallIncompatiblePrompt {
             get { return (string)(ResourceManager.GetObject("ModpackInstallIncompatiblePrompt", resourceCulture)); }
         }
-        internal static string AllModVersionsInstallYes {
+        public static string AllModVersionsInstallYes {
             get { return (string)(ResourceManager.GetObject("AllModVersionsInstallYes", resourceCulture)); }
         }
-        internal static string AllModVersionsInstallNo {
+        public static string AllModVersionsInstallNo {
             get { return (string)(ResourceManager.GetObject("AllModVersionsInstallNo", resourceCulture)); }
         }
 
-        internal static string MainChangesetUpdateSelected {
+        public static string MainChangesetUpdateSelected {
             get { return (string)(ResourceManager.GetObject("MainChangesetUpdateSelected", resourceCulture)); }
         }
-        internal static string MainChangesetReinstall {
+        public static string MainChangesetReinstall {
             get { return (string)(ResourceManager.GetObject("MainChangesetReinstall", resourceCulture)); }
         }
+        public static string MainChangesetUserReinstall {
+            get { return (string)(ResourceManager.GetObject("MainChangesetUserReinstall", resourceCulture)); }
+        }
 
-        internal static string MainImportTitle {
+        public static string MainImportTitle {
             get { return (string)(ResourceManager.GetObject("MainImportTitle", resourceCulture)); }
         }
-        internal static string MainImportFilter {
+        public static string MainImportFilter {
             get { return (string)(ResourceManager.GetObject("MainImportFilter", resourceCulture)); }
         }
-        internal static string MainImportWaitTitle {
+        public static string MainImportWaitTitle {
             get { return (string)(ResourceManager.GetObject("MainImportWaitTitle", resourceCulture)); }
         }
 
-        internal static string MainInstallWaitTitle {
+        public static string MainInstallWaitTitle {
             get { return (string)(ResourceManager.GetObject("MainInstallWaitTitle", resourceCulture)); }
         }
-        internal static string MainInstallDepNotSatisfied {
+        public static string MainInstallDepNotSatisfied {
             get { return (string)(ResourceManager.GetObject("MainInstallDepNotSatisfied", resourceCulture)); }
         }
-        internal static string MainInstallNotFound {
+        public static string MainInstallNotFound {
             get { return (string)(ResourceManager.GetObject("MainInstallNotFound", resourceCulture)); }
         }
-        internal static string MainInstallBadMetadata {
+        public static string MainInstallBadMetadata {
             get { return (string)(ResourceManager.GetObject("MainInstallBadMetadata", resourceCulture)); }
         }
-        internal static string MainInstallFileExists {
+        public static string MainInstallFileExists {
             get { return (string)(ResourceManager.GetObject("MainInstallFileExists", resourceCulture)); }
         }
-        internal static string MainInstallUnownedFileExists {
+        public static string MainInstallUnownedFileExists {
             get { return (string)(ResourceManager.GetObject("MainInstallUnownedFileExists", resourceCulture)); }
         }
-        internal static string MainInstallGameDataReverted {
+        public static string MainInstallGameDataReverted {
             get { return (string)(ResourceManager.GetObject("MainInstallGameDataReverted", resourceCulture)); }
         }
-        internal static string MainInstallOpenSettingsPrompt {
+        public static string MainInstallOpenSettingsPrompt {
             get { return (string)(ResourceManager.GetObject("MainInstallOpenSettingsPrompt", resourceCulture)); }
         }
-        internal static string MainInstallOpenSettings {
+        public static string MainInstallOpenSettings {
             get { return (string)(ResourceManager.GetObject("MainInstallOpenSettings", resourceCulture)); }
         }
-        internal static string MainInstallNo {
+        public static string MainInstallNo {
             get { return (string)(ResourceManager.GetObject("MainInstallNo", resourceCulture)); }
         }
-        internal static string MainInstallModSuccess {
+        public static string MainInstallModSuccess {
             get { return (string)(ResourceManager.GetObject("MainInstallModSuccess", resourceCulture)); }
         }
-        internal static string MainInstallSuccess {
+        public static string MainInstallSuccess {
             get { return (string)(ResourceManager.GetObject("MainInstallSuccess", resourceCulture)); }
         }
-        internal static string MainInstallCancelTooLate {
+        public static string MainInstallCancelTooLate {
             get { return (string)(ResourceManager.GetObject("MainInstallCancelTooLate", resourceCulture)); }
         }
-        internal static string MainInstallCancelAfterInstall {
+        public static string MainInstallCancelAfterInstall {
             get { return (string)(ResourceManager.GetObject("MainInstallCancelAfterInstall", resourceCulture)); }
         }
-        internal static string MainInstallProcessComplete {
+        public static string MainInstallProcessComplete {
             get { return (string)(ResourceManager.GetObject("MainInstallProcessComplete", resourceCulture)); }
         }
-        internal static string MainInstallProcessCanceled {
+        public static string MainInstallProcessCanceled {
             get { return (string)(ResourceManager.GetObject("MainInstallProcessCanceled", resourceCulture)); }
         }
-        internal static string MainInstallCanceledManually {
+        public static string MainInstallCanceledManually {
             get { return (string)(ResourceManager.GetObject("MainInstallCanceledManually", resourceCulture)); }
         }
-        internal static string MainInstallInstallCanceled {
+        public static string MainInstallInstallCanceled {
             get { return (string)(ResourceManager.GetObject("MainInstallInstallCanceled", resourceCulture)); }
         }
-        internal static string MainInstallErrorInstalling {
+        public static string MainInstallErrorInstalling {
             get { return (string)(ResourceManager.GetObject("MainInstallErrorInstalling", resourceCulture)); }
         }
-        internal static string MainInstallUnknownError {
+        public static string MainInstallUnknownError {
             get { return (string)(ResourceManager.GetObject("MainInstallUnknownError", resourceCulture)); }
         }
-        internal static string MainInstallKnownError {
+        public static string MainInstallKnownError {
             get { return (string)(ResourceManager.GetObject("MainInstallKnownError", resourceCulture)); }
         }
-        internal static string MainInstallFailed {
+        public static string MainInstallFailed {
             get { return (string)(ResourceManager.GetObject("MainInstallFailed", resourceCulture)); }
         }
-        internal static string MainInstallProvidedBy {
+        public static string MainInstallProvidedBy {
             get { return (string)(ResourceManager.GetObject("MainInstallProvidedBy", resourceCulture)); }
         }
-        internal static string MainInstallCantInstallDLC {
+        public static string MainInstallCantInstallDLC {
             get { return (string)(ResourceManager.GetObject("MainInstallCantInstallDLC", resourceCulture)); }
         }
 
-        internal static string ModInfoNSlashA {
+        public static string ModInfoNSlashA {
             get { return (string)(ResourceManager.GetObject("ModInfoNSlashA", resourceCulture)); }
         }
-        internal static string ModInfoVirtual {
+        public static string ModInfoVirtual {
             get { return (string)(ResourceManager.GetObject("ModInfoVirtual", resourceCulture)); }
         }
-        internal static string ModInfoNotIndexed {
+        public static string ModInfoNotIndexed {
             get { return (string)(ResourceManager.GetObject("ModInfoNotIndexed", resourceCulture)); }
         }
-        internal static string ModInfoNotCached {
+        public static string ModInfoNotCached {
             get { return (string)(ResourceManager.GetObject("ModInfoNotCached", resourceCulture)); }
         }
-        internal static string ModInfoCached {
+        public static string ModInfoCached {
             get { return (string)(ResourceManager.GetObject("ModInfoCached", resourceCulture)); }
         }
-        internal static string ModInfoNoDownload {
+        public static string ModInfoNoDownload {
             get { return (string)(ResourceManager.GetObject("ModInfoNoDownload", resourceCulture)); }
         }
-        internal static string ModInfoHomepageLabel {
+        public static string ModInfoHomepageLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoHomepageLabel", resourceCulture)); }
         }
-        internal static string ModInfoSpaceDockLabel {
+        public static string ModInfoSpaceDockLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoSpaceDockLabel", resourceCulture)); }
         }
-        internal static string ModInfoCurseLabel {
+        public static string ModInfoCurseLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoCurseLabel", resourceCulture)); }
         }
-        internal static string ModInfoRepositoryLabel {
+        public static string ModInfoRepositoryLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoRepositoryLabel", resourceCulture)); }
         }
-        internal static string ModInfoBugTrackerLabel {
+        public static string ModInfoBugTrackerLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoBugTrackerLabel", resourceCulture)); }
         }
-        internal static string ModInfoContinuousIntegrationLabel {
+        public static string ModInfoContinuousIntegrationLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoContinuousIntegrationLabel", resourceCulture)); }
         }
-        internal static string ModInfoLicenseLabel {
+        public static string ModInfoLicenseLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoLicenseLabel", resourceCulture)); }
         }
-        internal static string ModInfoManualLabel {
+        public static string ModInfoManualLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoManualLabel", resourceCulture)); }
         }
-        internal static string ModInfoMetanetkanLabel {
+        public static string ModInfoMetanetkanLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoMetanetkanLabel", resourceCulture)); }
         }
-        internal static string ModInfoRemoteAvcLabel {
+        public static string ModInfoRemoteAvcLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoRemoteAvcLabel", resourceCulture)); }
         }
-        internal static string ModInfoRemoteSWInfoLabel {
+        public static string ModInfoRemoteSWInfoLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoRemoteSWInfoLabel", resourceCulture)); }
         }
-        internal static string ModInfoStoreLabel {
+        public static string ModInfoStoreLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoStoreLabel", resourceCulture)); }
         }
-        internal static string ModInfoSteamStoreLabel {
+        public static string ModInfoSteamStoreLabel {
             get { return (string)(ResourceManager.GetObject("ModInfoSteamStoreLabel", resourceCulture)); }
         }
-        internal static string ModInfoToolTipReverseRelationships {
+        public static string ModInfoToolTipReverseRelationships {
             get { return (string)(ResourceManager.GetObject("ModInfoToolTipReverseRelationships", resourceCulture)); }
         }
-        internal static string DownloadFailed {
+        public static string DownloadFailed {
             get { return (string)(ResourceManager.GetObject("DownloadFailed", resourceCulture)); }
         }
-        internal static string ValidatingDownload {
+        public static string ValidatingDownload {
             get { return (string)(ResourceManager.GetObject("ValidatingDownload", resourceCulture)); }
         }
 
-        internal static string MainModListWaitTitle {
+        public static string MainModListWaitTitle {
             get { return (string)(ResourceManager.GetObject("MainModListWaitTitle", resourceCulture)); }
         }
-        internal static string MainModListLoadingRegistry {
+        public static string MainModListLoadingRegistry {
             get { return (string)(ResourceManager.GetObject("MainModListLoadingRegistry", resourceCulture)); }
         }
-        internal static string MainModListLoadingInstalled {
+        public static string MainModListLoadingInstalled {
             get { return (string)(ResourceManager.GetObject("MainModListLoadingInstalled", resourceCulture)); }
         }
-        internal static string MainModListLoadingAvailable {
+        public static string MainModListLoadingAvailable {
             get { return (string)(ResourceManager.GetObject("MainModListLoadingAvailable", resourceCulture)); }
         }
-        internal static string MainModListLoadingIncompatible {
+        public static string MainModListLoadingIncompatible {
             get { return (string)(ResourceManager.GetObject("MainModListLoadingIncompatible", resourceCulture)); }
         }
-        internal static string MainModListRestoringChangeset {
+        public static string MainModListRestoringChangeset {
             get { return (string)(ResourceManager.GetObject("MainModListRestoringChangeset", resourceCulture)); }
         }
-        internal static string MainModListPreservingNew {
+        public static string MainModListPreservingNew {
             get { return (string)(ResourceManager.GetObject("MainModListPreservingNew", resourceCulture)); }
         }
-        internal static string MainModListPopulatingList {
+        public static string MainModListPopulatingList {
             get { return (string)(ResourceManager.GetObject("MainModListPopulatingList", resourceCulture)); }
         }
-        internal static string MainModListUpdatingFilters {
+        public static string MainModListUpdatingFilters {
             get { return (string)(ResourceManager.GetObject("MainModListUpdatingFilters", resourceCulture)); }
         }
-        internal static string MainModListCompatible {
+        public static string MainModListCompatible {
             get { return (string)(ResourceManager.GetObject("MainModListCompatible", resourceCulture)); }
         }
-        internal static string MainModListInstalled {
+        public static string MainModListInstalled {
             get { return (string)(ResourceManager.GetObject("MainModListInstalled", resourceCulture)); }
         }
-        internal static string MainModListUpgradeable {
+        public static string MainModListUpgradeable {
             get { return (string)(ResourceManager.GetObject("MainModListUpgradeable", resourceCulture)); }
         }
-        internal static string MainModListReplaceable {
+        public static string MainModListReplaceable {
             get { return (string)(ResourceManager.GetObject("MainModListReplaceable", resourceCulture)); }
         }
-        internal static string MainModListCached {
+        public static string MainModListCached {
             get { return (string)(ResourceManager.GetObject("MainModListCached", resourceCulture)); }
         }
-        internal static string MainModListUncached {
+        public static string MainModListUncached {
             get { return (string)(ResourceManager.GetObject("MainModListUncached", resourceCulture)); }
         }
-        internal static string MainModListNewlyCompatible {
+        public static string MainModListNewlyCompatible {
             get { return (string)(ResourceManager.GetObject("MainModListNewlyCompatible", resourceCulture)); }
         }
-        internal static string MainModListNotInstalled {
+        public static string MainModListNotInstalled {
             get { return (string)(ResourceManager.GetObject("MainModListNotInstalled", resourceCulture)); }
         }
-        internal static string MainModListIncompatible {
+        public static string MainModListIncompatible {
             get { return (string)(ResourceManager.GetObject("MainModListIncompatible", resourceCulture)); }
         }
-        internal static string MainModListAll {
+        public static string MainModListAll {
             get { return (string)(ResourceManager.GetObject("MainModListAll", resourceCulture)); }
         }
-        internal static string MainModListUpdatingTray {
+        public static string MainModListUpdatingTray {
             get { return (string)(ResourceManager.GetObject("MainModListUpdatingTray", resourceCulture)); }
         }
-        internal static string MainModListAutoDetected {
+        public static string MainModListAutoDetected {
             get { return (string)(ResourceManager.GetObject("MainModListAutoDetected", resourceCulture)); }
         }
-        internal static string MainModListAutoInstalledToolTip {
+        public static string MainModListAutoInstalledToolTip {
             get { return (string)(ResourceManager.GetObject("MainModListAutoInstalledToolTip", resourceCulture)); }
         }
-        internal static string MainModListUnknownFilter {
+        public static string MainModListUnknownFilter {
             get { return (string)(ResourceManager.GetObject("MainModListUnknownFilter", resourceCulture)); }
         }
 
-        internal static string MainRecommendationsTitle {
+        public static string MainRecommendationsTitle {
             get { return (string)(ResourceManager.GetObject("MainRecommendationsTitle", resourceCulture)); }
         }
-        internal static string MainRecommendationsNoneFound {
+        public static string MainRecommendationsNoneFound {
             get { return (string)(ResourceManager.GetObject("MainRecommendationsNoneFound", resourceCulture)); }
         }
 
-        internal static string MainRepoWaitTitle {
+        public static string MainRepoWaitTitle {
             get { return (string)(ResourceManager.GetObject("MainRepoWaitTitle", resourceCulture)); }
         }
-        internal static string MainRepoContacting {
+        public static string MainRepoContacting {
             get { return (string)(ResourceManager.GetObject("MainRepoContacting", resourceCulture)); }
         }
-        internal static string LoadingCachedRepoData {
+        public static string LoadingCachedRepoData {
             get { return (string)(ResourceManager.GetObject("LoadingCachedRepoData", resourceCulture)); }
         }
-        internal static string MainRepoScanning {
+        public static string MainRepoScanning {
             get { return (string)(ResourceManager.GetObject("MainRepoScanning", resourceCulture)); }
         }
-        internal static string MainRepoUpdating {
+        public static string MainRepoUpdating {
             get { return (string)(ResourceManager.GetObject("MainRepoUpdating", resourceCulture)); }
         }
-        internal static string MainRepoFailedToConnect {
+        public static string MainRepoFailedToConnect {
             get { return (string)(ResourceManager.GetObject("MainRepoFailedToConnect", resourceCulture)); }
         }
-        internal static string MainRepoUpToDate {
+        public static string MainRepoUpToDate {
             get { return (string)(ResourceManager.GetObject("MainRepoUpToDate", resourceCulture)); }
         }
-        internal static string MainRepoFailed {
+        public static string MainRepoFailed {
             get { return (string)(ResourceManager.GetObject("MainRepoFailed", resourceCulture)); }
         }
-        internal static string MainRepoSuccess {
+        public static string MainRepoSuccess {
             get { return (string)(ResourceManager.GetObject("MainRepoSuccess", resourceCulture)); }
         }
-        internal static string MainRepoAutoRefreshPrompt {
+        public static string MainRepoAutoRefreshPrompt {
             get { return (string)(ResourceManager.GetObject("MainRepoAutoRefreshPrompt", resourceCulture)); }
         }
-        internal static string MainRepoBalloonTipDetails {
+        public static string MainRepoBalloonTipDetails {
             get { return (string)(ResourceManager.GetObject("MainRepoBalloonTipDetails", resourceCulture)); }
         }
-        internal static string MainRepoBalloonTipTooltip {
+        public static string MainRepoBalloonTipTooltip {
             get { return (string)(ResourceManager.GetObject("MainRepoBalloonTipTooltip", resourceCulture)); }
         }
 
-        internal static string MainTrayIconResume {
+        public static string MainTrayIconResume {
             get { return (string)(ResourceManager.GetObject("MainTrayIconResume", resourceCulture)); }
         }
-        internal static string MainTrayIconPause {
+        public static string MainTrayIconPause {
             get { return (string)(ResourceManager.GetObject("MainTrayIconPause", resourceCulture)); }
         }
-        internal static string MainTrayNoUpdates {
+        public static string MainTrayNoUpdates {
             get { return (string)(ResourceManager.GetObject("MainTrayNoUpdates", resourceCulture)); }
         }
-        internal static string MainTrayUpdatesAvailable {
+        public static string MainTrayUpdatesAvailable {
             get { return (string)(ResourceManager.GetObject("MainTrayUpdatesAvailable", resourceCulture)); }
         }
-        internal static string MainWaitPleaseWait {
+        public static string MainWaitPleaseWait {
             get { return (string)(ResourceManager.GetObject("MainWaitPleaseWait", resourceCulture)); }
         }
-        internal static string MainWaitDone {
+        public static string MainWaitDone {
             get { return (string)(ResourceManager.GetObject("MainWaitDone", resourceCulture)); }
         }
 
-        internal static string ManageGameInstancesNotValid {
+        public static string ManageGameInstancesNotValid {
             get { return (string)(ResourceManager.GetObject("ManageGameInstancesNotValid", resourceCulture)); }
         }
 
-        internal static string ManageGameInstancesDirectoryDeleted {
+        public static string ManageGameInstancesDirectoryDeleted {
             get { return (string)(ResourceManager.GetObject("ManageGameInstancesDirectoryDeleted", resourceCulture)); }
         }
 
-        internal static string ManageGameInstancesNameColumnInvalid {
+        public static string ManageGameInstancesNameColumnInvalid {
             get { return (string)(ResourceManager.GetObject("ManageGameInstancesNameColumnInvalid", resourceCulture)); }
         }
-        internal static string ManageGameInstancesNameColumnLocked {
+        public static string ManageGameInstancesNameColumnLocked {
             get { return (string)(ResourceManager.GetObject("ManageGameInstancesNameColumnLocked", resourceCulture)); }
         }
 
-        internal static string NewRepoDialogFailed {
+        public static string NewRepoDialogFailed {
             get { return (string)(ResourceManager.GetObject("NewRepoDialogFailed", resourceCulture)); }
         }
 
-        internal static string PluginsDialogFilter {
+        public static string PluginsDialogFilter {
             get { return (string)(ResourceManager.GetObject("PluginsDialogFilter", resourceCulture)); }
         }
 
-        internal static string SettingsDialogSummmary {
+        public static string SettingsDialogSummmary {
             get { return (string)(ResourceManager.GetObject("SettingsDialogSummmary", resourceCulture)); }
         }
-        internal static string SettingsDialogSummaryInvalid {
+        public static string SettingsDialogSummaryInvalid {
             get { return (string)(ResourceManager.GetObject("SettingsDialogSummaryInvalid", resourceCulture)); }
         }
-        internal static string SettingsDialogCacheDescrip {
+        public static string SettingsDialogCacheDescrip {
             get { return (string)(ResourceManager.GetObject("SettingsDialogCacheDescrip", resourceCulture)); }
         }
-        internal static string SettingsDialogDeleteConfirm {
+        public static string SettingsDialogDeleteConfirm {
             get { return (string)(ResourceManager.GetObject("SettingsDialogDeleteConfirm", resourceCulture)); }
         }
-        internal static string SettingsDialogRepoDeleteConfirm {
+        public static string SettingsDialogRepoDeleteConfirm {
             get { return (string)(ResourceManager.GetObject("SettingsDialogRepoDeleteConfirm", resourceCulture)); }
         }
-        internal static string SettingsDialogRepoDeleteDelete {
+        public static string SettingsDialogRepoDeleteDelete {
             get { return (string)(ResourceManager.GetObject("SettingsDialogRepoDeleteDelete", resourceCulture)); }
         }
-        internal static string SettingsDialogRepoDeleteCancel {
+        public static string SettingsDialogRepoDeleteCancel {
             get { return (string)(ResourceManager.GetObject("SettingsDialogRepoDeleteCancel", resourceCulture)); }
         }
-        internal static string SettingsDialogRepoAddDuplicateURL {
+        public static string SettingsDialogRepoAddDuplicateURL {
             get { return (string)(ResourceManager.GetObject("SettingsDialogRepoAddDuplicateURL", resourceCulture)); }
         }
-        internal static string SettingsDialogUpdateFailed {
+        public static string SettingsDialogUpdateFailed {
             get { return (string)(ResourceManager.GetObject("SettingsDialogUpdateFailed", resourceCulture)); }
         }
 
-        internal static string AddAuthTokenTitle {
+        public static string AddAuthTokenTitle {
             get { return (string)(ResourceManager.GetObject("AddAuthTokenTitle", resourceCulture)); }
         }
-        internal static string AddAuthTokenHost {
+        public static string AddAuthTokenHost {
             get { return (string)(ResourceManager.GetObject("AddAuthTokenHost", resourceCulture)); }
         }
-        internal static string AddAuthTokenToken {
+        public static string AddAuthTokenToken {
             get { return (string)(ResourceManager.GetObject("AddAuthTokenToken", resourceCulture)); }
         }
-        internal static string AddAuthTokenAccept {
+        public static string AddAuthTokenAccept {
             get { return (string)(ResourceManager.GetObject("AddAuthTokenAccept", resourceCulture)); }
         }
-        internal static string AddAuthTokenCancel {
+        public static string AddAuthTokenCancel {
             get { return (string)(ResourceManager.GetObject("AddAuthTokenCancel", resourceCulture)); }
         }
-        internal static string AddAuthTokenHostRequired {
+        public static string AddAuthTokenHostRequired {
             get { return (string)(ResourceManager.GetObject("AddAuthTokenHostRequired", resourceCulture)); }
         }
-        internal static string AddAuthTokenTokenRequired {
+        public static string AddAuthTokenTokenRequired {
             get { return (string)(ResourceManager.GetObject("AddAuthTokenTokenRequired", resourceCulture)); }
         }
-        internal static string AddAuthTokenInvalidHost {
+        public static string AddAuthTokenInvalidHost {
             get { return (string)(ResourceManager.GetObject("AddAuthTokenInvalidHost", resourceCulture)); }
         }
-        internal static string AddAuthTokenDupHost {
+        public static string AddAuthTokenDupHost {
             get { return (string)(ResourceManager.GetObject("AddAuthTokenDupHost", resourceCulture)); }
         }
 
-        internal static string URLHandlersPrompt {
+        public static string URLHandlersPrompt {
             get { return (string)(ResourceManager.GetObject("URLHandlersPrompt", resourceCulture)); }
         }
 
-        internal static string UtilCopyLink {
+        public static string UtilCopyLink {
             get { return (string)(ResourceManager.GetObject("UtilCopyLink", resourceCulture)); }
         }
 
-        internal static string StatusInstanceLabelText {
+        public static string StatusInstanceLabelText {
             get { return (string)(ResourceManager.GetObject("StatusInstanceLabelText", resourceCulture)); }
         }
-        internal static string StatusInstanceLabelTextWithPlayTime {
+        public static string StatusInstanceLabelTextWithPlayTime {
             get { return (string)(ResourceManager.GetObject("StatusInstanceLabelTextWithPlayTime", resourceCulture)); }
         }
-        internal static string ModuleLabelListFavourites {
+        public static string ModuleLabelListFavourites {
             get { return (string)(ResourceManager.GetObject("ModuleLabelListFavourites", resourceCulture)); }
         }
-        internal static string ModuleLabelListHidden {
+        public static string ModuleLabelListHidden {
             get { return (string)(ResourceManager.GetObject("ModuleLabelListHidden", resourceCulture)); }
         }
-        internal static string ModuleLabelListHeld {
+        public static string ModuleLabelListHeld {
             get { return (string)(ResourceManager.GetObject("ModuleLabelListHeld", resourceCulture)); }
         }
-        internal static string ModuleLabelListGlobal {
+        public static string ModuleLabelListGlobal {
             get { return (string)(ResourceManager.GetObject("ModuleLabelListGlobal", resourceCulture)); }
         }
-        internal static string EditLabelsDialogConfirmDelete {
+        public static string EditLabelsDialogConfirmDelete {
             get { return (string)(ResourceManager.GetObject("EditLabelsDialogConfirmDelete", resourceCulture)); }
         }
-        internal static string EditLabelsDialogSavePrompt {
+        public static string EditLabelsDialogSavePrompt {
             get { return (string)(ResourceManager.GetObject("EditLabelsDialogSavePrompt", resourceCulture)); }
         }
-        internal static string EditLabelsDialogNoRecord {
+        public static string EditLabelsDialogNoRecord {
             get { return (string)(ResourceManager.GetObject("EditLabelsDialogNoRecord", resourceCulture)); }
         }
-        internal static string EditLabelsDialogNameRequired {
+        public static string EditLabelsDialogNameRequired {
             get { return (string)(ResourceManager.GetObject("EditLabelsDialogNameRequired", resourceCulture)); }
         }
-        internal static string EditLabelsDialogAlreadyExists {
+        public static string EditLabelsDialogAlreadyExists {
             get { return (string)(ResourceManager.GetObject("EditLabelsDialogAlreadyExists", resourceCulture)); }
         }
-        internal static string EditLabelsDialogDelete {
+        public static string EditLabelsDialogDelete {
             get { return (string)(ResourceManager.GetObject("EditLabelsDialogDelete", resourceCulture)); }
         }
-        internal static string EditLabelsDialogCancel {
+        public static string EditLabelsDialogCancel {
             get { return (string)(ResourceManager.GetObject("EditLabelsDialogCancel", resourceCulture)); }
         }
-        internal static string EditLabelsDialogSave {
+        public static string EditLabelsDialogSave {
             get { return (string)(ResourceManager.GetObject("EditLabelsDialogSave", resourceCulture)); }
         }
-        internal static string EditLabelsDialogDiscard {
+        public static string EditLabelsDialogDiscard {
             get { return (string)(ResourceManager.GetObject("EditLabelsDialogDiscard", resourceCulture)); }
         }
-        internal static string MainChangesetWarningInstallingModuleWithLabel {
+        public static string MainChangesetWarningInstallingModuleWithLabel {
             get { return (string)(ResourceManager.GetObject("MainChangesetWarningInstallingModuleWithLabel", resourceCulture)); }
         }
-        internal static string EditLabelsToolTipName {
+        public static string EditLabelsToolTipName {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipName", resourceCulture)); }
         }
-        internal static string EditLabelsToolTipColor {
+        public static string EditLabelsToolTipColor {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipColor", resourceCulture)); }
         }
-        internal static string EditLabelsToolTipInstance {
+        public static string EditLabelsToolTipInstance {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipInstance", resourceCulture)); }
         }
-        internal static string EditLabelsToolTipHide {
+        public static string EditLabelsToolTipHide {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipHide", resourceCulture)); }
         }
-        internal static string EditLabelsToolTipNotifyOnChanges {
+        public static string EditLabelsToolTipNotifyOnChanges {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipNotifyOnChanges", resourceCulture)); }
         }
-        internal static string EditLabelsToolTipRemoveOnChanges {
+        public static string EditLabelsToolTipRemoveOnChanges {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipRemoveOnChanges", resourceCulture)); }
         }
-        internal static string EditLabelsToolTipAlertOnInstall {
+        public static string EditLabelsToolTipAlertOnInstall {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipAlertOnInstall", resourceCulture)); }
         }
-        internal static string EditLabelsToolTipRemoveOnInstall {
+        public static string EditLabelsToolTipRemoveOnInstall {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipRemoveOnInstall", resourceCulture)); }
         }
-        internal static string EditLabelsToolTipHoldVersion {
+        public static string EditLabelsToolTipHoldVersion {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipHoldVersion", resourceCulture)); }
         }
-        internal static string EditLabelsToolTipMoveUp {
+        public static string EditLabelsToolTipMoveUp {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipMoveUp", resourceCulture)); }
         }
-        internal static string EditLabelsToolTipMoveDown {
+        public static string EditLabelsToolTipMoveDown {
             get { return (string)(ResourceManager.GetObject("EditLabelsToolTipMoveDown", resourceCulture)); }
         }
-        internal static string MainLabelsUpdateMessage {
+        public static string MainLabelsUpdateMessage {
             get { return (string)(ResourceManager.GetObject("MainLabelsUpdateMessage", resourceCulture)); }
         }
-        internal static string MainLabelsUpdateTitle {
+        public static string MainLabelsUpdateTitle {
             get { return (string)(ResourceManager.GetObject("MainLabelsUpdateTitle", resourceCulture)); }
         }
-        internal static string MainLabelsUntagged {
+        public static string MainLabelsUntagged {
             get { return (string)(ResourceManager.GetObject("MainLabelsUntagged", resourceCulture)); }
         }
 
-        internal static string EditModpackBadIdentifier {
+        public static string EditModpackBadIdentifier {
             get { return (string)(ResourceManager.GetObject("EditModpackBadIdentifier", resourceCulture)); }
         }
-        internal static string EditModpackBadName {
+        public static string EditModpackBadName {
             get { return (string)(ResourceManager.GetObject("EditModpackBadName", resourceCulture)); }
         }
-        internal static string EditModpackBadVersion {
+        public static string EditModpackBadVersion {
             get { return (string)(ResourceManager.GetObject("EditModpackBadVersion", resourceCulture)); }
         }
-        internal static string EditModpackBadGameVersions {
+        public static string EditModpackBadGameVersions {
             get { return (string)(ResourceManager.GetObject("EditModpackBadGameVersions", resourceCulture)); }
         }
-        internal static string EditModpackTooltipIdentifier {
+        public static string EditModpackTooltipIdentifier {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipIdentifier", resourceCulture)); }
         }
-        internal static string EditModpackTooltipName {
+        public static string EditModpackTooltipName {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipName", resourceCulture)); }
         }
-        internal static string EditModpackTooltipAbstract {
+        public static string EditModpackTooltipAbstract {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipAbstract", resourceCulture)); }
         }
-        internal static string EditModpackTooltipVersion {
+        public static string EditModpackTooltipVersion {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipVersion", resourceCulture)); }
         }
-        internal static string EditModpackTooltipGameVersionMin {
+        public static string EditModpackTooltipGameVersionMin {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipGameVersionMin", resourceCulture)); }
         }
-        internal static string EditModpackTooltipGameVersionMax {
+        public static string EditModpackTooltipGameVersionMax {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipGameVersionMax", resourceCulture)); }
         }
-        internal static string EditModpackTooltipLicense {
+        public static string EditModpackTooltipLicense {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipLicense", resourceCulture)); }
         }
-        internal static string EditModpackTooltipIncludeVersions {
+        public static string EditModpackTooltipIncludeVersions {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipIncludeVersions", resourceCulture)); }
         }
-        internal static string EditModpackTooltipDepends {
+        public static string EditModpackTooltipDepends {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipDepends", resourceCulture)); }
         }
-        internal static string EditModpackTooltipRecommends {
+        public static string EditModpackTooltipRecommends {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipRecommends", resourceCulture)); }
         }
-        internal static string EditModpackTooltipSuggests {
+        public static string EditModpackTooltipSuggests {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipSuggests", resourceCulture)); }
         }
-        internal static string EditModpackTooltipIgnore {
+        public static string EditModpackTooltipIgnore {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipIgnore", resourceCulture)); }
         }
-        internal static string EditModpackTooltipCancel {
+        public static string EditModpackTooltipCancel {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipCancel", resourceCulture)); }
         }
-        internal static string EditModpackTooltipExport {
+        public static string EditModpackTooltipExport {
             get { return (string)(ResourceManager.GetObject("EditModpackTooltipExport", resourceCulture)); }
         }
 
-        internal static string TriStateToggleYesTooltip {
+        public static string TriStateToggleYesTooltip {
             get { return (string)(ResourceManager.GetObject("TriStateToggleYesTooltip", resourceCulture)); }
         }
-        internal static string TriStateToggleBothTooltip {
+        public static string TriStateToggleBothTooltip {
             get { return (string)(ResourceManager.GetObject("TriStateToggleBothTooltip", resourceCulture)); }
         }
-        internal static string TriStateToggleNoTooltip {
+        public static string TriStateToggleNoTooltip {
             get { return (string)(ResourceManager.GetObject("TriStateToggleNoTooltip", resourceCulture)); }
         }
 
-        internal static string ModSearchDescriptionPrefix {
+        public static string ModSearchDescriptionPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchDescriptionPrefix", resourceCulture)); }
         }
-        internal static string ModSearchLanguagePrefix {
+        public static string ModSearchLanguagePrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchLanguagePrefix", resourceCulture)); }
         }
-        internal static string ModSearchDependsPrefix {
+        public static string ModSearchDependsPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchDependsPrefix", resourceCulture)); }
         }
-        internal static string ModSearchRecommendsPrefix {
+        public static string ModSearchRecommendsPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchRecommendsPrefix", resourceCulture)); }
         }
-        internal static string ModSearchSuggestsPrefix {
+        public static string ModSearchSuggestsPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchSuggestsPrefix", resourceCulture)); }
         }
-        internal static string ModSearchConflictsPrefix {
+        public static string ModSearchConflictsPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchConflictsPrefix", resourceCulture)); }
         }
-        internal static string ModSearchTagPrefix {
+        public static string ModSearchTagPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchTagPrefix", resourceCulture)); }
         }
-        internal static string ModSearchLabelPrefix {
+        public static string ModSearchLabelPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchLabelPrefix", resourceCulture)); }
         }
-        internal static string ModSearchYesPrefix {
+        public static string ModSearchYesPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchYesPrefix", resourceCulture)); }
         }
-        internal static string ModSearchNoPrefix {
+        public static string ModSearchNoPrefix {
             get { return (string)(ResourceManager.GetObject("ModSearchNoPrefix", resourceCulture)); }
         }
-        internal static string ModSearchCompatibleSuffix {
+        public static string ModSearchCompatibleSuffix {
             get { return (string)(ResourceManager.GetObject("ModSearchCompatibleSuffix", resourceCulture)); }
         }
-        internal static string ModSearchInstalledSuffix {
+        public static string ModSearchInstalledSuffix {
             get { return (string)(ResourceManager.GetObject("ModSearchInstalledSuffix", resourceCulture)); }
         }
-        internal static string ModSearchCachedSuffix {
+        public static string ModSearchCachedSuffix {
             get { return (string)(ResourceManager.GetObject("ModSearchCachedSuffix", resourceCulture)); }
         }
-        internal static string ModSearchNewlyCompatibleSuffix {
+        public static string ModSearchNewlyCompatibleSuffix {
             get { return (string)(ResourceManager.GetObject("ModSearchNewlyCompatibleSuffix", resourceCulture)); }
         }
-        internal static string ModSearchUpgradeableSuffix {
+        public static string ModSearchUpgradeableSuffix {
             get { return (string)(ResourceManager.GetObject("ModSearchUpgradeableSuffix", resourceCulture)); }
         }
-        internal static string ModSearchReplaceableSuffix {
+        public static string ModSearchReplaceableSuffix {
             get { return (string)(ResourceManager.GetObject("ModSearchReplaceableSuffix", resourceCulture)); }
         }
-        internal static string EditModSearchTooltipExpandButton {
+        public static string EditModSearchTooltipExpandButton {
             get { return (string)(ResourceManager.GetObject("EditModSearchTooltipExpandButton", resourceCulture)); }
         }
-        internal static string EditModSearchesTooltipAddSearchButton {
+        public static string EditModSearchesTooltipAddSearchButton {
             get { return (string)(ResourceManager.GetObject("EditModSearchesTooltipAddSearchButton", resourceCulture)); }
         }
 
-        internal static string ManageModsInstallAllCheckboxTooltip {
+        public static string ManageModsInstallAllCheckboxTooltip {
             get { return (string)(ResourceManager.GetObject("ManageModsInstallAllCheckboxTooltip", resourceCulture)); }
         }
 
-        internal static string TotalPlayTime {
+        public static string TotalPlayTime {
             get { return (string)(ResourceManager.GetObject("TotalPlayTime", resourceCulture)); }
         }
 
-        internal static string ChangeTypeNone {
+        public static string ChangeTypeNone {
             get { return (string)(ResourceManager.GetObject("ChangeTypeNone", resourceCulture)); }
         }
-        internal static string ChangeTypeInstall {
+        public static string ChangeTypeInstall {
             get { return (string)(ResourceManager.GetObject("ChangeTypeInstall", resourceCulture)); }
         }
-        internal static string ChangeTypeRemove {
+        public static string ChangeTypeRemove {
             get { return (string)(ResourceManager.GetObject("ChangeTypeRemove", resourceCulture)); }
         }
-        internal static string ChangeTypeUpdate {
+        public static string ChangeTypeUpdate {
             get { return (string)(ResourceManager.GetObject("ChangeTypeUpdate", resourceCulture)); }
         }
-        internal static string ChangeTypeReplace {
+        public static string ChangeTypeReplace {
             get { return (string)(ResourceManager.GetObject("ChangeTypeReplace", resourceCulture)); }
         }
 
-        internal static string ModDownloadsFailedMessage {
+        public static string ModDownloadsFailedMessage {
             get { return (string)(ResourceManager.GetObject("ModDownloadsFailedMessage", resourceCulture)); }
         }
-        internal static string ModDownloadsFailedColHdr {
+        public static string ModDownloadsFailedColHdr {
             get { return (string)(ResourceManager.GetObject("ModDownloadsFailedColHdr", resourceCulture)); }
         }
-        internal static string ModDownloadsFailedAbortBtn {
+        public static string ModDownloadsFailedAbortBtn {
             get { return (string)(ResourceManager.GetObject("ModDownloadsFailedAbortBtn", resourceCulture)); }
         }
 
-        internal static string RepoDownloadsFailedMessage {
+        public static string RepoDownloadsFailedMessage {
             get { return (string)(ResourceManager.GetObject("RepoDownloadsFailedMessage", resourceCulture)); }
         }
-        internal static string RepoDownloadsFailedColHdr {
+        public static string RepoDownloadsFailedColHdr {
             get { return (string)(ResourceManager.GetObject("RepoDownloadsFailedColHdr", resourceCulture)); }
         }
-        internal static string RepoDownloadsFailedAbortBtn {
+        public static string RepoDownloadsFailedAbortBtn {
             get { return (string)(ResourceManager.GetObject("RepoDownloadsFailedAbortBtn", resourceCulture)); }
         }
 
@@ -1218,26 +1218,26 @@ namespace CKAN.GUI.Properties {
         public static string DeleteUnmanagedFileConfirmation {
             get { return (string)(ResourceManager.GetObject("DeleteUnmanagedFileConfirmation", resourceCulture)); }
         }
-        internal static string DeleteUnmanagedFileDelete {
+        public static string DeleteUnmanagedFileDelete {
             get { return (string)(ResourceManager.GetObject("DeleteUnmanagedFileDelete", resourceCulture)); }
         }
-        internal static string DeleteUnmanagedFileCancel {
+        public static string DeleteUnmanagedFileCancel {
             get { return (string)(ResourceManager.GetObject("DeleteUnmanagedFileCancel", resourceCulture)); }
         }
 
-        internal static string PreferredHostsPlaceholder {
+        public static string PreferredHostsPlaceholder {
             get { return (string)(ResourceManager.GetObject("PreferredHostsPlaceholder", resourceCulture)); }
         }
-        internal static string PreferredHostsTooltipMoveRight {
+        public static string PreferredHostsTooltipMoveRight {
             get { return (string)(ResourceManager.GetObject("PreferredHostsTooltipMoveRight", resourceCulture)); }
         }
-        internal static string PreferredHostsTooltipMoveLeft {
+        public static string PreferredHostsTooltipMoveLeft {
             get { return (string)(ResourceManager.GetObject("PreferredHostsTooltipMoveLeft", resourceCulture)); }
         }
-        internal static string PreferredHostsTooltipMoveUp {
+        public static string PreferredHostsTooltipMoveUp {
             get { return (string)(ResourceManager.GetObject("PreferredHostsTooltipMoveUp", resourceCulture)); }
         }
-        internal static string PreferredHostsTooltipMoveDown {
+        public static string PreferredHostsTooltipMoveDown {
             get { return (string)(ResourceManager.GetObject("PreferredHostsTooltipMoveDown", resourceCulture)); }
         }
     }

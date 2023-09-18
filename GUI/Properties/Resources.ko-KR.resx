@@ -181,7 +181,6 @@
   <data name="MainCSV" xml:space="preserve"><value>쉼표로 분리되는 값 (*.csv)</value></data>
   <data name="MainTSV" xml:space="preserve"><value>탭으로 분리되는 값 (*.csv)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>찾을 수 없었어요.</value></data>
-  <data name="MainReinstallConfirm" xml:space="preserve"><value>{0}를 재설치 할까요?</value></data>
   <data name="MainCantInstallDLC" xml:space="preserve"><value>CKAN은 {0} 확장을 설치할 수 없어요!</value></data>
   <data name="MainCorruptedRegistry" xml:space="preserve"><value>{0}에 아카이브된 손상된 레지스트리: {1}
 

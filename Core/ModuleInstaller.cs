@@ -686,7 +686,7 @@ namespace CKAN
                     .Select(im => im.identifier))
                 .ToList();
 
-            // If there us nothing to uninstall, skip out.
+            // If there is nothing to uninstall, skip out.
             if (!goners.Any())
             {
                 return;
@@ -1063,14 +1063,15 @@ namespace CKAN
         public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true, bool resolveRelationships = false, bool ConfirmPrompt = true)
         {
             modules = modules.Memoize();
+            var registry = registry_manager.registry;
 
             if (resolveRelationships)
             {
                 var resolver = new RelationshipResolver(
                     modules,
-                    modules.Select(m => registry_manager.registry.InstalledModule(m.identifier)?.Module).Where(m => m != null),
+                    modules.Select(m => registry.InstalledModule(m.identifier)?.Module).Where(m => m != null),
                     RelationshipResolver.DependsOnlyOpts(),
-                    registry_manager.registry,
+                    registry,
                     ksp.VersionCriteria()
                 );
                 modules = resolver.ModList().Memoize();
@@ -1088,7 +1089,7 @@ namespace CKAN
             // Let's discover what we need to do with each module!
             foreach (CkanModule module in modules)
             {
-                InstalledModule installed_mod = registry_manager.registry.InstalledModule(module.identifier);
+                InstalledModule installed_mod = registry.InstalledModule(module.identifier);
 
                 if (installed_mod == null)
                 {
@@ -1161,6 +1162,26 @@ namespace CKAN
                 }
             }
 
+            var removingIdents = to_remove.Select(im => im.identifier).ToHashSet();
+            var autoRemoving = registry
+                .FindRemovableAutoInstalled(
+                    // Conjure the future state of the installed modules list after upgrading
+                    registry.InstalledModules
+                            .Where(im => !removingIdents.Contains(im.identifier))
+                            .Concat(modules.Select(m => new InstalledModule(null, m, new string[0], false)))
+                            .ToList(),
+                    ksp.VersionCriteria())
+                .ToList();
+            if (autoRemoving.Count > 0)
+            {
+                foreach (var im in autoRemoving)
+                {
+                    User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeAutoRemoving,
+                                      im.Module.name, im.Module.version);
+                }
+                to_remove.AddRange(autoRemoving);
+            }
+
             if (ConfirmPrompt && !User.RaiseYesNoDialog(Properties.Resources.ModuleInstallerContinuePrompt))
             {
                 throw new CancelledActionKraken(Properties.Resources.ModuleInstallerUpgradeUserDeclined);
@@ -1169,14 +1190,12 @@ namespace CKAN
             // Start by making sure we've downloaded everything.
             DownloadModules(modules, netAsyncDownloader);
 
-            AddRemove(
-                ref possibleConfigOnlyDirs,
-                registry_manager,
-                modules,
-                to_remove,
-                enforceConsistency,
-                true
-            );
+            AddRemove(ref possibleConfigOnlyDirs,
+                      registry_manager,
+                      modules,
+                      to_remove,
+                      enforceConsistency,
+                      true);
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
         }
 
