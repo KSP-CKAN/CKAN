@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+
 using log4net;
+
 using CKAN.Extensions;
 using CKAN.Versioning;
 
@@ -31,7 +33,12 @@ namespace CKAN
             this.installed = installed;
             this.dlls = dlls;
             this.dlc  = dlc;
-            PartitionModules(available, CompatibleProviders(crit, providers));
+            var merged = available.SelectMany(dict => dict)
+                                  .GroupBy(kvp => kvp.Key,
+                                           kvp => kvp.Value)
+                                  .ToDictionary(grp => grp.Key,
+                                                grp => AvailableModule.Merge(grp.ToList()));
+            PartitionModules(merged, CompatibleProviders(crit, providers));
         }
 
         /// <summary>
@@ -138,33 +145,30 @@ namespace CKAN
         /// </summary>
         /// <param name="available">All mods available from registry</param>
         /// <param name="providers">Mapping from identifiers to mods providing those identifiers</param>
-        private void PartitionModules(IEnumerable<Dictionary<string, AvailableModule>> dicts,
+        private void PartitionModules(Dictionary<string, AvailableModule>          available,
                                       Dictionary<string, HashSet<AvailableModule>> providers)
         {
             log.Debug("Partitioning modules by compatibility");
-            foreach (var available in dicts)
+            // First get the ones that are trivially [in]compatible.
+            foreach (var kvp in available)
             {
-                // First get the ones that are trivially [in]compatible.
-                foreach (var kvp in available)
+                if (kvp.Value.AllAvailable().All(m => !m.IsCompatible(CompatibleVersions)))
                 {
-                    if (kvp.Value.AllAvailable().All(m => !m.IsCompatible(CompatibleVersions)))
-                    {
-                        // No versions compatible == incompatible
-                        log.DebugFormat("Trivially incompatible: {0}", kvp.Key);
-                        Incompatible.Add(kvp.Key, kvp.Value);
-                    }
-                    else if (kvp.Value.AllAvailable().All(m => m.depends == null))
-                    {
-                        // No dependencies == compatible
-                        log.DebugFormat("Trivially compatible: {0}", kvp.Key);
-                        Compatible.Add(kvp.Key, kvp.Value);
-                    }
-                    else
-                    {
-                        // Need to investigate this one more later
-                        log.DebugFormat("Trivially indeterminate: {0}", kvp.Key);
-                        Indeterminate.Add(kvp.Key, kvp.Value);
-                    }
+                    // No versions compatible == incompatible
+                    log.DebugFormat("Trivially incompatible: {0}", kvp.Key);
+                    Incompatible.Add(kvp.Key, kvp.Value);
+                }
+                else if (kvp.Value.AllAvailable().All(m => m.depends == null))
+                {
+                    // No dependencies == compatible
+                    log.DebugFormat("Trivially compatible: {0}", kvp.Key);
+                    Compatible.Add(kvp.Key, kvp.Value);
+                }
+                else
+                {
+                    // Need to investigate this one more later
+                    log.DebugFormat("Trivially indeterminate: {0}", kvp.Key);
+                    Indeterminate.Add(kvp.Key, kvp.Value);
                 }
             }
             log.Debug("Trivial mods done, moving on to indeterminates");
