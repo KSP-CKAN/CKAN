@@ -104,20 +104,20 @@ namespace CKAN.CmdLine
 
     internal class RenameOptions : CommonOptions
     {
-        [GameInstancesAttribute]
+        [GameInstances]
         [ValueOption(0)] public string old_name { get; set; }
         [ValueOption(1)] public string new_name { get; set; }
     }
 
     internal class ForgetOptions : CommonOptions
     {
-        [GameInstancesAttribute]
+        [GameInstances]
         [ValueOption(0)] public string name { get; set; }
     }
 
     internal class DefaultOptions : CommonOptions
     {
-        [GameInstancesAttribute]
+        [GameInstances]
         [ValueOption(0)] public string name { get; set; }
     }
 

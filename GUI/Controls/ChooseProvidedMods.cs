@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+using CKAN.GUI.Attributes;
+
 namespace CKAN.GUI
 {
     public partial class ChooseProvidedMods : UserControl
@@ -13,6 +15,7 @@ namespace CKAN.GUI
             InitializeComponent();
         }
 
+        [ForbidGUICalls]
         public void LoadProviders(string message, List<CkanModule> modules, NetModuleCache cache)
         {
             Util.Invoke(this, () =>
@@ -36,6 +39,7 @@ namespace CKAN.GUI
             });
         }
 
+        [ForbidGUICalls]
         public CkanModule Wait()
         {
             task = new TaskCompletionSource<CkanModule>();

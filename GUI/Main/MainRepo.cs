@@ -13,6 +13,7 @@ using Autofac;
 using CKAN.Versioning;
 using CKAN.Configuration;
 using CKAN.Extensions;
+using CKAN.GUI.Attributes;
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
@@ -57,6 +58,7 @@ namespace CKAN.GUI
             ShowWaitDialog();
         }
 
+        [ForbidGUICalls]
         private void UpdateRepo(object sender, DoWorkEventArgs e)
         {
             (bool forceFullRefresh, bool refreshWithoutChanges) = (RepoArgument)e.Argument;

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Autofac;
 
 using CKAN.Versioning;
+using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
@@ -88,6 +89,7 @@ namespace CKAN.GUI
             }
         }
 
+        [ForbidGUICalls]
         private bool installable(ModuleInstaller installer, CkanModule module, IRegistryQuerier registry)
         {
             return module.IsCompatible(Main.Instance.CurrentInstance.VersionCriteria())
@@ -199,6 +201,7 @@ namespace CKAN.GUI
             return items;
         }
 
+        [ForbidGUICalls]
         private void checkInstallable(ListViewItem[] items)
         {
             GameInstance     currentInstance = Main.Instance.Manager.CurrentInstance;

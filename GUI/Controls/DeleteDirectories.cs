@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
 using CKAN.Extensions;
+using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
@@ -21,6 +23,7 @@ namespace CKAN.GUI
         /// before the calling code switches to the tab.
         /// </summary>
         /// <param name="possibleConfigOnlyDirs">Directories that the user may want to delete</param>
+        [ForbidGUICalls]
         public void LoadDirs(GameInstance ksp, HashSet<string> possibleConfigOnlyDirs)
         {
             instance = ksp;
@@ -50,6 +53,7 @@ namespace CKAN.GUI
         /// <returns>
         /// true if user chose to delete, false otherwise
         /// </returns>
+        [ForbidGUICalls]
         public bool Wait(out HashSet<string> toDelete)
         {
             if (Platform.IsMono)

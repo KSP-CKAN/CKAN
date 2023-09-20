@@ -8,6 +8,7 @@ using Autofac;
 
 using CKAN.Versioning;
 using CKAN.Types;
+using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
@@ -33,6 +34,7 @@ namespace CKAN.GUI
             this.ToolTip.SetToolTip(ExportModpackButton,     Properties.Resources.EditModpackTooltipExport);
         }
 
+        [ForbidGUICalls]
         public void LoadModule(CkanModule module, IRegistryQuerier registry)
         {
             this.module = module;
@@ -64,6 +66,7 @@ namespace CKAN.GUI
 
         public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
 
+        [ForbidGUICalls]
         public bool Wait(IUser user)
         {
             if (Platform.IsMono)

@@ -16,6 +16,7 @@ using Autofac;
 
 using CKAN.Extensions;
 using CKAN.Versioning;
+using CKAN.GUI.Attributes;
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
@@ -972,6 +973,7 @@ namespace CKAN.GUI
                 oldModules);
         }
 
+        [ForbidGUICalls]
         private void EnableMainWindow()
         {
             Util.Invoke(this, () =>
@@ -988,6 +990,7 @@ namespace CKAN.GUI
             });
         }
 
+        [ForbidGUICalls]
         private void DisableMainWindow()
         {
             Util.Invoke(this, () =>

@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using CKAN.Extensions;
 using CKAN.Versioning;
+using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
@@ -16,6 +18,7 @@ namespace CKAN.GUI
             InitializeComponent();
         }
 
+        [ForbidGUICalls]
         public void LoadRecommendations(
             IRegistryQuerier registry,
             List<CkanModule> toInstall, HashSet<CkanModule> toUninstall,
@@ -38,6 +41,7 @@ namespace CKAN.GUI
             });
         }
 
+        [ForbidGUICalls]
         public HashSet<CkanModule> Wait()
         {
             if (Platform.IsMono)

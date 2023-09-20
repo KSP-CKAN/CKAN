@@ -1,6 +1,8 @@
 using System;
 using System.Windows.Forms;
 
+using CKAN.GUI.Attributes;
+
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
 
@@ -8,6 +10,7 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
+        [ForbidGUICalls]
         public void ShowWaitDialog()
         {
             Util.Invoke(this, () =>
@@ -69,6 +72,7 @@ namespace CKAN.GUI
             });
         }
 
+        [ForbidGUICalls]
         public void ResetProgress()
         {
             Wait.ProgressIndeterminate = true;
