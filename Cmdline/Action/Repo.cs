@@ -328,7 +328,7 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
             var manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager), repoData);
-            if (options.priority < 0 || options.priority > manager.registry.Repositories.Count)
+            if (options.priority < 0 || options.priority >= manager.registry.Repositories.Count)
             {
                 User.RaiseMessage(Properties.Resources.RepoPriorityInvalid,
                     options.priority, manager.registry.Repositories.Count - 1);
