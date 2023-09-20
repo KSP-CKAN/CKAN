@@ -180,7 +180,6 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainCSV" xml:space="preserve"><value>カンマ区切り形式 (*.csv)</value></data>
   <data name="MainTSV" xml:space="preserve"><value>タブ区切り形式 (*.tsv)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>見つかりませんでした。</value></data>
-  <data name="MainReinstallConfirm" xml:space="preserve"><value>{0}を再インストールしますか？</value></data>
   <data name="MainCantInstallDLC" xml:space="preserve"><value>CKANは拡張パック{0}をインストールできません。</value></data>
   <data name="MainCorruptedRegistry" xml:space="preserve"><value>破損したレジストリは次にアーカイブされます {0}: {1}
 

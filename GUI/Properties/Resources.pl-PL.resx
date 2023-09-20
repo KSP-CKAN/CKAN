@@ -297,9 +297,6 @@ Spróbuj przenieść {2} z {3} i uruchomić ponownie CKAN.</value>
   <data name="MainNotFound" xml:space="preserve">
     <value>Nie znaleziono.</value>
   </data>
-  <data name="MainReinstallConfirm" xml:space="preserve">
-    <value>Czy chcesz ponownie zainstalować {0}?</value>
-  </data>
   <data name="MainCantInstallDLC" xml:space="preserve">
     <value>CKAN nie może zainstalować dodatku {0}!</value>
   </data>

@@ -41,13 +41,12 @@ namespace CKAN.GUI
             try
             {
                 Wait.StartWaiting(InstallMods, PostInstallMods, true,
-                    new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                        changeset
+                    new InstallArgument(
                             // Only pass along user requested mods, so auto-installed can be determined
-                            .Where(ch => ch.Reasons.Any(r => r is SelectionReason.UserRequested)
-                                // Include all removes and upgrades
-                                || ch.ChangeType != GUIModChangeType.Install)
-                            .ToList(),
+                        changeset.Where(ch => ch.Reasons.Any(r => r is SelectionReason.UserRequested)
+                                              // Include all removes and upgrades
+                                              || ch.ChangeType != GUIModChangeType.Install)
+                                 .ToList(),
                         RelationshipResolver.DependsOnlyOpts()));
             }
             catch (InvalidOperationException)

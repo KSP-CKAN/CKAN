@@ -1016,46 +1016,21 @@ namespace CKAN.GUI
 
         private void reinstallToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GUIMod module = SelectedModule;
-            if (module == null || !module.IsCKAN)
-                return;
-
-            IRegistryQuerier registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
-
-            // Find everything we need to re-install
-            var revdep = registry.FindReverseDependencies(new List<string>() { module.Identifier })
-                .Select(ident => registry.InstalledModule(ident))
-                .ToHashSet();
-            var goners = revdep.Union(
-                registry.FindRemovableAutoInstalled(
-                    registry.InstalledModules
-                        .Where(im => !revdep.Contains(im))
-                        .ToList(),
-                    Main.Instance.CurrentInstance.VersionCriteria()));
-
-            // Build the list of changes
-            StartChangeSet?.Invoke(goners
-                .SelectMany(instMod => instMod.AutoInstalled
-                    ? new ModChange[]
-                    {
-                        new ModChange(instMod.Module, GUIModChangeType.Remove),
-                        // Let resolver find it so the auto-installed flag is set
-                    }
-                    : new ModChange[]
-                    {
-                        new ModChange(instMod.Module, GUIModChangeType.Remove),
-                        new ModChange(
-                            // Install current available mod from registry, if found
-                            registry.GetModuleByVersion(instMod.identifier, instMod.Module.version)
-                                ?? instMod.Module,
-                            GUIModChangeType.Install,
-                            // Preserve auto-installed checkbox
-                            instMod.AutoInstalled
-                                // We don't use the depending mod here, so just fake it
-                                ? (SelectionReason)new SelectionReason.Depends(module.ToModule())
-                                : new SelectionReason.UserRequested()),
-                    })
-                .ToList());
+            var module = SelectedModule?.ToModule();
+            if (module != null)
+            {
+                IRegistryQuerier registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
+                StartChangeSet?.Invoke(new List<ModChange>()
+                {
+                    // "Upgrade" to latest metadata for same module version
+                    // (avoids removing and re-installing dependencies)
+                    new ModUpgrade(module, GUIModChangeType.Update,
+                                   registry.GetModuleByVersion(module.identifier,
+                                                               module.version)
+                                           ?? module,
+                                   true)
+                });
+            }
         }
 
         public Dictionary<string, GUIMod> AllGUIMods()

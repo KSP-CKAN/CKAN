@@ -837,7 +837,7 @@ namespace CKAN
                 => Properties.Resources.RelationshipResolverUserReason;
         }
 
-        public class NoLongerUsed: SelectionReason
+        public class NoLongerUsed : SelectionReason
         {
             public override string Reason
                 => Properties.Resources.RelationshipResolverNoLongerUsedReason;

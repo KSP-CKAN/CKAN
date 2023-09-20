@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Multi-game labels (#3885 by: HebaruSan; reviewed: techman83)
 - [Multiple] Alternate mod dirs for validation and manual installs (#3891 by: HebaruSan; reviewed: techman83)
 - [Core] Fix archive.org fallback URLs for versions with spaces (#3899 by: HebaruSan)
+- [Multiple] Fix auto-remove during upgrade (#3913 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 

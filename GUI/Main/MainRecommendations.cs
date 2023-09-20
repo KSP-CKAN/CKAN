@@ -12,8 +12,6 @@ using CKAN.Versioning;
 
 namespace CKAN.GUI
 {
-    using ModChanges = List<ModChange>;
-
     public partial class Main
     {
         private void ChooseRecommendedMods_OnSelectedItemsChanged(ListView.SelectedListViewItemCollection items)
@@ -57,12 +55,10 @@ namespace CKAN.GUI
                 if (result != null && result.Any())
                 {
                     Wait.StartWaiting(InstallMods, PostInstallMods, true,
-                        new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
+                        new InstallArgument(
                             result.Select(mod => new ModChange(mod, GUIModChangeType.Install))
-                                .ToList(),
-                            RelationshipResolver.DependsOnlyOpts()
-                        )
-                    );
+                                  .ToList(),
+                            RelationshipResolver.DependsOnlyOpts()));
                 }
             }
             else

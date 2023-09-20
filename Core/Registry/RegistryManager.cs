@@ -568,8 +568,9 @@ namespace CKAN
                                      .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
                                      .Select(absPath => gameInstance.ToRelativeGameDir(absPath))
                                      .Where(relPath => !gameInstance.game.StockFolders.Any(f => relPath.StartsWith($"{f}/")))
-                                     .ToDictionary(relPath => gameInstance.DllPathToIdentifier(relPath),
-                                                   relPath => relPath);
+                                     .GroupBy(relPath => gameInstance.DllPathToIdentifier(relPath))
+                                     .ToDictionary(grp => grp.Key,
+                                                   grp => grp.First());
                 log.DebugFormat("Registering DLLs: {0}", string.Join(", ", dlls.Values));
                 var dllChanged = registry.SetDlls(dlls);
 

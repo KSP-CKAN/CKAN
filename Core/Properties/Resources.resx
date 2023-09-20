@@ -244,6 +244,7 @@ Overwrite?</value></data>
   <data name="ModuleInstallerUpgradeDowngrading" xml:space="preserve"><value> * Downgrade: {0} from {1} to {2}</value></data>
   <data name="ModuleInstallerUpgradeUpgradingUncached" xml:space="preserve"><value> * Upgrade: {0} {1} to {2} ({3}, {4})</value></data>
   <data name="ModuleInstallerUpgradeUpgradingCached" xml:space="preserve"><value> * Upgrade: {0} {1} to {2} (cached)</value></data>
+  <data name="ModuleInstallerUpgradeAutoRemoving" xml:space="preserve"><value> * Auto-remove: {0} {1}</value></data>
   <data name="ModuleInstallerUpgradeUserDeclined" xml:space="preserve"><value>User declined upgrade list</value></data>
   <data name="ModuleInstallerReplaceAutodetected" xml:space="preserve"><value>Can't replace {0} as it was not installed by CKAN.
 Please remove manually before trying to install it.</value></data>

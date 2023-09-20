@@ -91,7 +91,7 @@ namespace CKAN.GUI
             return new ListViewItem(new string[]
             {
                 change.NameAndStatus,
-                change.ChangeType.ToI18nString(),
+                change.ChangeType.Localize(),
                 conflicts != null && conflicts.TryGetValue(m, out string confDescr)
                     ? string.Format("{0} ({1})", confDescr, descr)
                     : warnLbl != null

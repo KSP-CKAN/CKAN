@@ -55,6 +55,7 @@ namespace CKAN.GUI
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
+            ModInfoTable.RowStyles[1].Height = TagsHeight;
             if (!string.IsNullOrEmpty(MetadataModuleDescriptionTextBox?.Text))
             {
                 MetadataModuleDescriptionTextBox.Height = DescriptionHeight;
@@ -104,6 +105,14 @@ namespace CKAN.GUI
                                     tb.Width - tb.Padding.Horizontal - tb.Margin.Horizontal);
 
         private int DescriptionHeight => TextBoxStringHeight(MetadataModuleDescriptionTextBox);
+
+        private int LinkLabelBottom(LinkLabel lbl)
+            => lbl == null ? 0
+                           : lbl.Bottom + lbl.Margin.Bottom + lbl.Padding.Bottom;
+
+        private int TagsHeight
+            => ModInfoTable.Padding.Vertical + ModInfoTable.Margin.Vertical
+                + LinkLabelBottom(MetadataTagsLabelsPanel.Controls.OfType<LinkLabel>().LastOrDefault());
 
         private void UpdateHeaderInfo(GUIMod gmod, GameVersionCriteria crit)
         {
@@ -170,6 +179,7 @@ namespace CKAN.GUI
                     }
                 }
                 MetadataTagsLabelsPanel.ResumeLayout();
+                ModInfoTable.RowStyles[1].Height = TagsHeight;
             });
         }
 

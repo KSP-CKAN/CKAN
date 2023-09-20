@@ -458,6 +458,9 @@ namespace CKAN.Properties {
         internal static string ModuleInstallerUpgradeUpgradingResuming {
             get { return (string)(ResourceManager.GetObject("ModuleInstallerUpgradeUpgradingResuming", resourceCulture)); }
         }
+        internal static string ModuleInstallerUpgradeAutoRemoving {
+            get { return (string)(ResourceManager.GetObject("ModuleInstallerUpgradeAutoRemoving", resourceCulture)); }
+        }
         internal static string ModuleInstallerUpgradeUserDeclined {
             get { return (string)(ResourceManager.GetObject("ModuleInstallerUpgradeUserDeclined", resourceCulture)); }
         }
