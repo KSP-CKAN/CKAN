@@ -1681,7 +1681,9 @@ namespace CKAN.GUI
                 var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, gameVersion);
                 full_change_set = tuple.Item1.ToList();
                 new_conflicts = tuple.Item2.ToDictionary(
-                    item => new GUIMod(item.Key, repoData, registry, gameVersion),
+                    item => new GUIMod(item.Key, repoData, registry, gameVersion, null,
+                                       Main.Instance.configuration.HideEpochs,
+                                       Main.Instance.configuration.HideV),
                     item => item.Value);
                 if (new_conflicts.Count > 0)
                 {

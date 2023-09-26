@@ -46,7 +46,8 @@ namespace Tests.GUI
 
                 var item = new ModList();
                 Assert.That(item.IsVisible(
-                    new GUIMod(ckan_mod, repoData.Manager, registry, manager.CurrentInstance.VersionCriteria()),
+                    new GUIMod(ckan_mod, repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
+                               null, false, false),
                     manager.CurrentInstance.Name,
                     manager.CurrentInstance.game,
                     registry));
@@ -83,8 +84,10 @@ namespace Tests.GUI
                 var mod_list = main_mod_list.ConstructModList(
                     new List<GUIMod>
                     {
-                        new GUIMod(TestData.FireSpitterModule(), repoData.Manager, registry, manager.CurrentInstance.VersionCriteria()),
-                        new GUIMod(TestData.kOS_014_module(), repoData.Manager, registry, manager.CurrentInstance.VersionCriteria())
+                        new GUIMod(TestData.FireSpitterModule(), repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
+                                   null, false, false),
+                        new GUIMod(TestData.kOS_014_module(), repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
+                                   null, false, false)
                     },
                     manager.CurrentInstance.Name,
                     manager.CurrentInstance.game
@@ -182,7 +185,8 @@ namespace Tests.GUI
                 Assert.IsNotNull(modList);
 
                 var modules = repoData.Manager.GetAllAvailableModules(Enumerable.Repeat<Repository>(repo.repo, 1))
-                    .Select(mod => new GUIMod(mod.Latest(), repoData.Manager, registry, instance.KSP.VersionCriteria()))
+                    .Select(mod => new GUIMod(mod.Latest(), repoData.Manager, registry, instance.KSP.VersionCriteria(),
+                                              null, false, false))
                     .ToList();
 
                 listGui.Rows.AddRange(modList.ConstructModList(modules, null, instance.KSP.game).ToArray());

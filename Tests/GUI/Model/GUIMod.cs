@@ -32,7 +32,8 @@ namespace Tests.GUI
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var ckan_mod = registry.GetModuleByVersion("kOS", "0.14");
 
-                var mod = new GUIMod(ckan_mod, repoData.Manager, registry, manager.CurrentInstance.VersionCriteria());
+                var mod = new GUIMod(ckan_mod, repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
+                                     null, false, false);
                 Assert.False(mod.IsUpgradeChecked);
             }
         }
@@ -58,7 +59,8 @@ namespace Tests.GUI
 
                     registry.RegisterModule(old_version, Enumerable.Empty<string>(), null, false);
 
-                    var mod = new GUIMod(old_version, repoData.Manager, registry, tidy.KSP.VersionCriteria());
+                    var mod = new GUIMod(old_version, repoData.Manager, registry, tidy.KSP.VersionCriteria(),
+                                         null, false, false);
                     Assert.True(mod.HasUpdate);
                 }
             }
@@ -91,7 +93,8 @@ namespace Tests.GUI
                 CkanModule prevVersion = registry.GetModuleByVersion("OutOfOrderMod", "1.1.0");
 
                 // Act
-                GUIMod m = new GUIMod(mainVersion, repoData.Manager, registry, tidy.KSP.VersionCriteria(), false);
+                GUIMod m = new GUIMod(mainVersion, repoData.Manager, registry, tidy.KSP.VersionCriteria(),
+                                      null, false, false);
 
                 // Assert
                 Assert.AreEqual("1.4.2", m.GameCompatibilityVersion.ToString());
