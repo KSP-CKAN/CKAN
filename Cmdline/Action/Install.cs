@@ -221,8 +221,7 @@ namespace CKAN.CmdLine
                 }
                 catch (InconsistentKraken ex)
                 {
-                    // The prettiest Kraken formats itself for us.
-                    user.RaiseError("{0}", ex.InconsistenciesPretty);
+                    user.RaiseError("{0}", ex.Message);
                     user.RaiseMessage(Properties.Resources.InstallCancelled);
                     return Exit.ERROR;
                 }

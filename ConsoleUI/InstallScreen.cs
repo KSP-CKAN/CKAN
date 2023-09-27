@@ -121,7 +121,7 @@ namespace CKAN.ConsoleUI {
                     } catch (MissingCertificateKraken ex) {
                         RaiseError(ex.ToString());
                     } catch (InconsistentKraken ex) {
-                        RaiseError(ex.InconsistenciesPretty);
+                        RaiseError(ex.Message);
                     } catch (TooManyModsProvideKraken ex) {
 
                         ConsoleChoiceDialog<CkanModule> ch = new ConsoleChoiceDialog<CkanModule>(

@@ -483,7 +483,7 @@ namespace CKAN.ConsoleUI {
                 regMgr.ScanUnmanagedFiles();
             } catch (InconsistentKraken ex) {
                 // Warn about inconsistent state
-                RaiseError(Properties.Resources.ModListScanBad, ex.InconsistenciesPretty);
+                RaiseError(Properties.Resources.ModListScanBad, ex.Message);
             }
             return true;
         }

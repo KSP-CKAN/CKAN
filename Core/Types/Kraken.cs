@@ -199,35 +199,24 @@ namespace CKAN
     /// </summary>
     public class InconsistentKraken : Kraken
     {
-        public string InconsistenciesPretty
-        {
-            get
-            {
-                return String.Join(Environment.NewLine,
-                    new string[] { Properties.Resources.KrakenInconsistenciesHeader }
-                    .Concat(inconsistencies.Select(msg => $"* {msg}")));
-            }
-        }
-
         public InconsistentKraken(ICollection<string> inconsistencies, Exception innerException = null)
-            : base(null, innerException)
+            : base(string.Join(Environment.NewLine,
+                               new string[] { Properties.Resources.KrakenInconsistenciesHeader }
+                                   .Concat(inconsistencies.Select(msg => $"* {msg}"))),
+                   innerException)
         {
             this.inconsistencies = inconsistencies;
         }
 
         public InconsistentKraken(string inconsistency, Exception innerException = null)
-            : base(null, innerException)
-        {
-            inconsistencies = new List<string> { inconsistency };
-        }
+            : this(new List<string> { inconsistency }, innerException)
+        { }
 
         public string ShortDescription
             => string.Join("; ", inconsistencies);
 
         public override string ToString()
-        {
-            return InconsistenciesPretty + Environment.NewLine + Environment.NewLine + StackTrace;
-        }
+            => Message + Environment.NewLine + Environment.NewLine + StackTrace;
 
         private readonly ICollection<string> inconsistencies;
     }

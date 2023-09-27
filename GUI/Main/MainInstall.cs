@@ -382,7 +382,7 @@ namespace CKAN.GUI
                         break;
 
                     case InconsistentKraken exc:
-                        currentUser.RaiseMessage(exc.InconsistenciesPretty);
+                        currentUser.RaiseMessage(exc.Message);
                         break;
 
                     case CancelledActionKraken exc:

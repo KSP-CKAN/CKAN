@@ -90,11 +90,11 @@ namespace CKAN
                 // automated tools do not care that no one picked a Scatterer config
                 if (gameInstance.User.Headless)
                 {
-                    log.InfoFormat("Loaded registry with inconsistencies:\r\n\r\n{0}", kraken.InconsistenciesPretty);
+                    log.InfoFormat("Loaded registry with inconsistencies:\r\n\r\n{0}", kraken.Message);
                 }
                 else
                 {
-                    log.ErrorFormat("Loaded registry with inconsistencies:\r\n\r\n{0}", kraken.InconsistenciesPretty);
+                    log.ErrorFormat("Loaded registry with inconsistencies:\r\n\r\n{0}", kraken.Message);
                 }
             }
         }
