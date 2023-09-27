@@ -65,7 +65,7 @@ namespace Tests.Core
             _manager.Cache.Store(_testModule, testModFile, new Progress<long>(bytes => {}));
             HashSet<string> possibleConfigOnlyDirs = null;
             _installer.InstallList(
-                new List<string>() { _testModule.identifier },
+                new List<CkanModule>() { _testModule },
                 new RelationshipResolverOptions(),
                 _registryManager,
                 ref possibleConfigOnlyDirs);

@@ -187,8 +187,15 @@ namespace CKAN.CmdLine
         {
             UpgradeModules(manager, user, instance, repoData,
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs) =>
-                    installer.Upgrade(identsAndVersions, downloader,
-                        ref possibleConfigOnlyDirs, regMgr, true),
+                    installer.Upgrade(
+                        identsAndVersions.Select(arg => CkanModule.FromIDandVersion(
+                                                            regMgr.registry, arg,
+                                                            instance.VersionCriteria()))
+                                         .ToList(),
+                        downloader,
+                        ref possibleConfigOnlyDirs,
+                        regMgr,
+                        true),
                 m => identsAndVersions.Add(m.identifier)
             );
         }

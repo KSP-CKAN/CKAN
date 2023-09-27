@@ -136,7 +136,15 @@ namespace CKAN.CmdLine
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
                     var installer = new ModuleInstaller(instance, manager.Cache, user);
-                    installer.InstallList(modules, install_ops, regMgr, ref possibleConfigOnlyDirs);
+                    installer.InstallList(modules.Select(arg => CkanModule.FromIDandVersion(
+                                                                    regMgr.registry, arg,
+                                                                    options.allow_incompatible
+                                                                        ? null
+                                                                        : instance.VersionCriteria()))
+                                                 .ToList(),
+                                          install_ops,
+                                          regMgr,
+                                          ref possibleConfigOnlyDirs);
                     user.RaiseMessage("");
                     done = true;
                 }

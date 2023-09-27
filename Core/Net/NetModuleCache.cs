@@ -157,7 +157,7 @@ namespace CKAN
             const int hashSha1Percent   = 20;
             const int hashSha256Percent = 20;
 
-            progress.Report(0);
+            progress?.Report(0);
             // Check file exists
             FileInfo fi = new FileInfo(path);
             if (!fi.Exists)

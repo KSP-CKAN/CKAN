@@ -70,61 +70,6 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Attempts to convert the identifiers to CkanModules and then calls RelationshipResolver.ctor(IEnumerable{CkanModule}, IEnumerable{CkanModule}, Registry, GameVersion)"/>
-        /// </summary>
-        /// <param name="modulesToInstall">Identifiers of modules to install, will be converted to CkanModules using CkanModule.FromIDandVersion</param>
-        /// <param name="modulesToRemove">Identifiers of modules to remove, will be converted to CkanModules using Registry.InstalledModule</param>
-        /// <param name="options">Options for the RelationshipResolver</param>
-        /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="versionCrit">The current KSP version criteria to consider</param>
-        public RelationshipResolver(IEnumerable<string> modulesToInstall, IEnumerable<string> modulesToRemove, RelationshipResolverOptions options, IRegistryQuerier registry,
-            GameVersionCriteria versionCrit) :
-                this(
-                    modulesToInstall?.Select(mod => TranslateModule(mod, options, registry, versionCrit)),
-                    modulesToRemove?
-                        .Select(mod =>
-                        {
-                            var match = CkanModule.idAndVersionMatcher.Match(mod);
-                            return match.Success ? match.Groups["mod"].Value : mod;
-                        })
-                        .Where(identifier => registry.InstalledModule(identifier) != null)
-                        .Select(identifier => registry.InstalledModule(identifier).Module),
-                    options, registry, versionCrit)
-        {
-            // Does nothing, just calls the other overloaded constructor
-        }
-
-        /// <summary>
-        /// Translate mods from identifiers in its default or identifier=version format into CkanModules,
-        /// optionally falling back to incompatible modules if no compatibles could be found.
-        /// </summary>
-        /// <param name="name">The identifier or identifier=version of the module</param>
-        /// <param name="options">If options.allow_incompatible is set, fall back to searching incompatible modules if no compatible has been found</param>
-        /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="versionCrit">The current KSP version criteria to consider</param>
-        /// <returns>A CkanModule</returns>
-        private static CkanModule TranslateModule(string name, RelationshipResolverOptions options, IRegistryQuerier registry, GameVersionCriteria versionCrit)
-        {
-            if (options.allow_incompatible)
-            {
-                try
-                {
-                    return CkanModule.FromIDandVersion(registry, name, versionCrit);
-                }
-                catch (ModuleNotFoundKraken)
-                {
-                    // No versions found matching our game version, so
-                    // look for incompatible versions.
-                    return CkanModule.FromIDandVersion(registry, name, null);
-                }
-            }
-            else
-            {
-                return CkanModule.FromIDandVersion(registry, name, versionCrit);
-            }
-        }
-
-        /// <summary>
         /// Returns the default options for relationship resolution.
         /// </summary>
         public static RelationshipResolverOptions DefaultOpts()

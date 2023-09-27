@@ -1,6 +1,7 @@
 using System;
 using System.Transactions;
 using System.Collections.Generic;
+using System.Linq;
 
 using CKAN.ConsoleUI.Toolkit;
 
@@ -76,7 +77,11 @@ namespace CKAN.ConsoleUI {
                             plan.Install.Clear();
                         }
                         if (plan.Upgrade.Count > 0) {
-                            inst.Upgrade(plan.Upgrade, dl, ref possibleConfigOnlyDirs, regMgr);
+                            inst.Upgrade(plan.Upgrade
+                                             .Select(ident => regMgr.registry.LatestAvailable(
+                                                                  ident, manager.CurrentInstance.VersionCriteria()))
+                                             .ToList(),
+                                         dl, ref possibleConfigOnlyDirs, regMgr);
                             plan.Upgrade.Clear();
                         }
                         if (plan.Replace.Count > 0) {

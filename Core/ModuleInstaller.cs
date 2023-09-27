@@ -112,19 +112,6 @@ namespace CKAN
             return full_path;
         }
 
-        public void InstallList(List<string> modules, RelationshipResolverOptions options, RegistryManager registry_manager, ref HashSet<string> possibleConfigOnlyDirs, IDownloader downloader = null)
-        {
-            var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
-            // Only pass the CkanModules of the parameters, so we can tell which are auto-installed,
-            // and relationships of metapackages, since metapackages aren't included in the RR modlist.
-            var list = resolver.ModList()
-                .Where(m => resolver.ReasonsFor(m).Any(reason =>
-                    reason is SelectionReason.UserRequested
-                    || (reason.Parent?.IsMetapackage ?? false)))
-                .ToList();
-            InstallList(list, options, registry_manager, ref possibleConfigOnlyDirs, downloader);
-        }
-
         /// <summary>
         ///     Installs all modules given a list of identifiers as a transaction. Resolves dependencies.
         ///     This *will* save the registry at the end of operation.
@@ -1038,26 +1025,6 @@ namespace CKAN
 
                 EnforceCacheSizeLimit(registry_manager.registry);
             }
-        }
-
-        /// <summary>
-        /// Upgrades the mods listed to the latest versions for the user's KSP.
-        /// Will *re-install* with warning even if an upgrade is not available.
-        /// Throws ModuleNotFoundKraken if module is not installed, or not available.
-        /// </summary>
-        public void Upgrade(IEnumerable<string> identifiers, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true)
-        {
-            // When upgrading, we are removing these mods first and install them again afterwards (but in different versions).
-            // So the list of identifiers of modulesToRemove and modulesToInstall is the same,
-            // RelationshipResolver take care of finding the right CkanModule for each identifier.
-            List<string> identifierList = identifiers.ToList();
-            var resolver = new RelationshipResolver(
-                identifierList,
-                identifierList,
-                RelationshipResolver.DependsOnlyOpts(),
-                registry_manager.registry, ksp.VersionCriteria()
-            );
-            Upgrade(resolver.ModList(), netAsyncDownloader, ref possibleConfigOnlyDirs, registry_manager, enforceConsistency);
         }
 
         /// <summary>
