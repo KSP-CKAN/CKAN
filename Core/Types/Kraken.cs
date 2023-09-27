@@ -7,6 +7,8 @@ using System.Collections.Generic;
 
 namespace CKAN
 {
+    using modRelList = List<Tuple<CkanModule, RelationshipDescriptor, CkanModule>>;
+
     /// <summary>
     /// Our application exceptions are called Krakens.
     /// </summary>
@@ -227,25 +229,23 @@ namespace CKAN
     public class BadRelationshipsKraken : InconsistentKraken
     {
         public BadRelationshipsKraken(
-            ICollection<KeyValuePair<CkanModule, RelationshipDescriptor>> depends,
-            ICollection<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts
+            modRelList depends,
+            modRelList conflicts
         ) : base(
-            (depends?.Select(dep => string.Format(Properties.Resources.KrakenMissingDependency, dep.Key, dep.Value))
+            (depends?.Select(dep => string.Format(Properties.Resources.KrakenMissingDependency, dep.Item1, dep.Item2))
                 ?? new string[] {}
             ).Concat(
-                conflicts?.Select(conf => string.Format(Properties.Resources.KrakenConflictsWith, conf.Key, conf.Value))
+                conflicts?.Select(conf => string.Format(Properties.Resources.KrakenConflictsWith, conf.Item1, conf.Item2))
                 ?? new string[] {}
             ).ToArray()
         )
         {
-            Depends   = depends?.ToList()
-                ?? new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
-            Conflicts = conflicts?.ToList()
-                ?? new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
+            Depends   = depends   ?? new modRelList();
+            Conflicts = conflicts ?? new modRelList();
         }
 
-        public readonly List<KeyValuePair<CkanModule, RelationshipDescriptor>> Depends;
-        public readonly List<KeyValuePair<CkanModule, RelationshipDescriptor>> Conflicts;
+        public readonly modRelList Depends;
+        public readonly modRelList Conflicts;
     }
 
     /// <summary>

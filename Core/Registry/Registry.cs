@@ -1181,9 +1181,9 @@ namespace CKAN
                     var brokenDeps = SanityChecker.FindUnsatisfiedDepends(hypothetical, dlls, dlc);
                     if (satisfiedFilter != null)
                     {
-                        brokenDeps.RemoveAll(kvp => satisfiedFilter(kvp.Value));
+                        brokenDeps.RemoveAll(kvp => satisfiedFilter(kvp.Item2));
                     }
-                    var brokenIdents = brokenDeps.Select(x => x.Key.identifier).ToHashSet();
+                    var brokenIdents = brokenDeps.Select(x => x.Item1.identifier).ToHashSet();
 
                     if (modulesToInstall != null)
                     {

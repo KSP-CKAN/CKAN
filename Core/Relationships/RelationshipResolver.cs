@@ -119,8 +119,8 @@ namespace CKAN
                 {
                     if (options.proceed_with_inconsistencies)
                     {
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(listed_mod, module));
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, listed_mod));
+                        conflicts.Add(new ModPair(listed_mod, module));
+                        conflicts.Add(new ModPair(module, listed_mod));
                     }
                     else
                     {
@@ -150,20 +150,11 @@ namespace CKAN
                                                  registry.InstalledDlls,
                                                  registry.InstalledDlc);
             }
-            catch (BadRelationshipsKraken k)
+            catch (BadRelationshipsKraken k) when (options.without_enforce_consistency)
             {
-                // Add to this.conflicts (catches conflicting DLLs and DLCs that the above loops miss)
-                foreach (var kvp in k.Conflicts)
-                {
-                    conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(
-                        kvp.Key, null
-                    ));
-                }
-                if (!options.without_enforce_consistency)
-                {
-                    // Only re-throw if caller asked for consistency enforcement
-                    throw;
-                }
+                conflicts.AddRange(k.Conflicts.Select(kvp => new ModPair(kvp.Item1, kvp.Item3))
+                                              .Where(kvp => !conflicts.Contains(kvp))
+                                              .ToArray());
             }
         }
 
@@ -285,8 +276,8 @@ namespace CKAN
                     CkanModule module = modlist.Values.FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
                     if (options.proceed_with_inconsistencies)
                     {
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
+                        conflicts.Add(new ModPair(module, reason.Parent));
+                        conflicts.Add(new ModPair(reason.Parent, module));
                         continue;
                     }
                     else
@@ -310,8 +301,8 @@ namespace CKAN
                     CkanModule module = installed_modules.FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
                     if (options.proceed_with_inconsistencies)
                     {
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
+                        conflicts.Add(new ModPair(module, reason.Parent));
+                        conflicts.Add(new ModPair(reason.Parent, module));
                         continue;
                     }
                     else
