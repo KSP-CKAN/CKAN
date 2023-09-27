@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 
@@ -38,6 +39,9 @@ namespace CKAN.Extensions
         public static Dictionary<K, V> ToDictionary<K, V>(this ParallelQuery<KeyValuePair<K, V>> pairs)
             => pairs.ToDictionary(kvp => kvp.Key,
                                   kvp => kvp.Value);
+
+        public static ConcurrentDictionary<K, V> ToConcurrentDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs)
+            => new ConcurrentDictionary<K, V>(pairs);
 
         // https://stackoverflow.com/a/55591477/2422988
         public static ParallelQuery<T> WithProgress<T>(this ParallelQuery<T> source,

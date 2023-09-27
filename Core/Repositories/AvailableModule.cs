@@ -53,10 +53,15 @@ namespace CKAN
             Debug.Assert(module_version.Values.All(m => identifier.Equals(m.identifier)));
         }
 
-        public static AvailableModule Merge(IList<AvailableModule> availMods)
-            => availMods.Count == 1 ? availMods.First()
-                                    : new AvailableModule(availMods.First().identifier,
-                                                          availMods.Reverse().SelectMany(am => am.AllAvailable()));
+        /// <summary>
+        /// Generate a new AvailableModule given its CkanModules
+        /// </summary>
+        /// <param name="availMods">Sequence of mods to be contained, expected to be IGrouping&lt;&gt;, so it should support O(1) Count(), even though IEnumerable&lt;&gt; in general does not</param>
+        /// <returns></returns>
+        public static AvailableModule Merge(IEnumerable<AvailableModule> availMods)
+            => availMods.Count() == 1 ? availMods.First()
+                                      : new AvailableModule(availMods.First().identifier,
+                                                            availMods.Reverse().SelectMany(am => am.AllAvailable()));
 
         // The map of versions -> modules, that's what we're about!
         // First element is the oldest version, last is the newest.
