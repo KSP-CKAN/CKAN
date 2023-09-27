@@ -3,6 +3,8 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Runtime.Serialization;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -26,6 +28,7 @@ namespace CKAN
         /// The available modules from this repository
         /// </summary>
         [JsonProperty("available_modules", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonParallelDictionaryConverter<AvailableModule>))]
         public readonly Dictionary<string, AvailableModule> AvailableModules;
 
         /// <summary>
@@ -92,19 +95,37 @@ namespace CKAN
         /// Load a previously cached repo data object from JSON on disk
         /// </summary>
         /// <param name="path">Filename of the JSON file to load</param>
+        /// <param name="progress">Progress notifier to receive updates of percent completion of this file</param>
         /// <returns>A repo data object or null if loading fails</returns>
-        public static RepositoryData FromJson(string path, IProgress<long> progress)
+        public static RepositoryData FromJson(string path, IProgress<int> progress)
         {
             try
             {
+                long fileSize = new FileInfo(path).Length;
                 log.DebugFormat("Trying to load repository data from {0}", path);
                 // Ain't OOP grand?!
                 using (var stream = File.Open(path, FileMode.Open))
-                using (var progressStream = new ReadProgressStream(stream, progress))
+                using (var progressStream = new ReadProgressStream(
+                    stream,
+                    progress == null
+                        ? null
+                        // Treat JSON parsing as the first 50%
+                        : new ProgressImmediate<long>(p => progress.Report((int)(50 * p / fileSize)))))
                 using (var reader = new StreamReader(progressStream))
                 using (var jStream = new JsonTextReader(reader))
                 {
-                    return new JsonSerializer().Deserialize<RepositoryData>(jStream);
+                    var settings = new JsonSerializerSettings()
+                    {
+                        Context = new StreamingContext(
+                            StreamingContextStates.Other,
+                            progress == null
+                                ? null
+                                : new ProgressImmediate<int>(p =>
+                                    // Treat CkanModule creation as the last 50%
+                                    progress.Report(50 + p / 2))),
+                    };
+                    return JsonSerializer.Create(settings)
+                                         .Deserialize<RepositoryData>(jStream);
                 }
             }
             catch (Exception exc)

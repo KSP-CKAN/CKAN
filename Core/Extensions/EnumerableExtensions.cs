@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace CKAN.Extensions
 {
@@ -33,6 +34,31 @@ namespace CKAN.Extensions
         public static Dictionary<K, V> ToDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs)
             => pairs.ToDictionary(kvp => kvp.Key,
                                   kvp => kvp.Value);
+
+        public static Dictionary<K, V> ToDictionary<K, V>(this ParallelQuery<KeyValuePair<K, V>> pairs)
+            => pairs.ToDictionary(kvp => kvp.Key,
+                                  kvp => kvp.Value);
+
+        // https://stackoverflow.com/a/55591477/2422988
+        public static ParallelQuery<T> WithProgress<T>(this ParallelQuery<T> source,
+                                                       long                  totalCount,
+                                                       IProgress<int>        progress)
+        {
+            long count       = 0;
+            int  prevPercent = -1;
+            return progress == null
+                ? source
+                : source.Select(item =>
+                {
+                    var percent = (int)(100 * Interlocked.Increment(ref count) / totalCount);
+                    if (percent > prevPercent)
+                    {
+                        progress.Report(percent);
+                        prevPercent = percent;
+                    }
+                    return item;
+                });
+        }
 
         public static IEnumerable<T> Memoize<T>(this IEnumerable<T> source)
         {

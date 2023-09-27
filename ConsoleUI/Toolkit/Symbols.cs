@@ -128,6 +128,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// and the letters in the splash screen ASCII art
         /// </summary>
         public static readonly char lowerHalfBlock = cp437c(0xdc);
+        /// <summary>
+        /// Full block used for most of a progress bar
+        /// </summary>
+        public static readonly char fullBlock = cp437c(0xdb);
+        /// <summary>
+        /// Left half block used for right edge of odd width progress bar
+        /// </summary>
+        public static readonly char leftHalfBlock = cp437c(0xdd);
 
         private static char   cp437c(byte num) { return dosCodePage.GetChars(new byte[] {num})[0]; }
         private static string cp437s(byte num) { return $"{cp437c(num)}";                          }

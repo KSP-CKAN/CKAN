@@ -42,6 +42,7 @@ namespace CKAN
         private Dictionary<string, string> installed_dlls;
 
         [JsonProperty]
+        [JsonConverter(typeof(JsonParallelDictionaryConverter<InstalledModule>))]
         private Dictionary<string, InstalledModule> installed_modules;
 
         // filename (case insensitive on Windows) => module

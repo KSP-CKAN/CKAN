@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+
 using CKAN.Versioning;
 using CKAN.ConsoleUI.Toolkit;
 
@@ -75,7 +77,9 @@ namespace CKAN.ConsoleUI {
                     new List<string>()
                 );
 
-                if (TryGetInstance(theme, instanceList.Selection, repoData, (ConsoleTheme th) => { d.Run(th, (ConsoleTheme thm) => {}); })) {
+                if (TryGetInstance(theme, instanceList.Selection, repoData,
+                                   (ConsoleTheme th) => { d.Run(th, (ConsoleTheme thm) => {}); },
+                                   null)) {
                     try {
                         manager.SetCurrentInstance(instanceList.Selection.Name);
                     } catch (Exception ex) {
@@ -108,7 +112,9 @@ namespace CKAN.ConsoleUI {
                     string.Format(Properties.Resources.InstanceListLoadingInstance, instanceList.Selection.Name),
                     new List<string>()
                 );
-                TryGetInstance(theme, instanceList.Selection, repoData, (ConsoleTheme th) => { d.Run(theme, (ConsoleTheme thm) => {}); });
+                TryGetInstance(theme, instanceList.Selection, repoData,
+                               (ConsoleTheme th) => { d.Run(theme, (ConsoleTheme thm) => {}); },
+                               null);
                 // Still launch the screen even if the load fails,
                 // because you need to be able to fix the name/path.
                 LaunchSubScreen(theme, new GameInstanceEditScreen(manager, repoData, instanceList.Selection));
@@ -170,10 +176,15 @@ namespace CKAN.ConsoleUI {
         /// <param name="ksp">Game instance</param>
         /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="render">Function that shows a loading message</param>
+        /// <param name="progress">Function to call with progress updates 0-100</param>
         /// <returns>
         /// True if successfully loaded, false if it's locked or the registry was corrupted, etc.
         /// </returns>
-        public static bool TryGetInstance(ConsoleTheme theme, GameInstance ksp, RepositoryDataManager repoData, Action<ConsoleTheme> render)
+        public static bool TryGetInstance(ConsoleTheme          theme,
+                                          GameInstance          ksp,
+                                          RepositoryDataManager repoData,
+                                          Action<ConsoleTheme>  render,
+                                          IProgress<int>        progress)
         {
             bool retry;
             do {
@@ -183,7 +194,10 @@ namespace CKAN.ConsoleUI {
                     // Show loading message
                     render(theme);
                     // Try to get the lock; this will throw if another instance is in there
-                    RegistryManager.Instance(ksp, repoData);
+                    var regMgr = RegistryManager.Instance(ksp, repoData);
+                    repoData.Prepopulate(regMgr.registry.Repositories.Values.ToList(),
+                                         progress);
+                    var compat = regMgr.registry.CompatibleModules(ksp.VersionCriteria());
 
                 } catch (RegistryInUseKraken k) {
 
@@ -215,7 +229,9 @@ namespace CKAN.ConsoleUI {
                 } catch (Exception e) {
 
                     ConsoleMessageDialog errd = new ConsoleMessageDialog(
-                        string.Format(Properties.Resources.InstanceListLoadingError, Path.Combine(ksp.CkanDir(), "registry.json"), e.Message),
+                        string.Format(Properties.Resources.InstanceListLoadingError,
+                                      Path.Combine(ksp.CkanDir(), "registry.json").Replace('/', Path.DirectorySeparatorChar),
+                                      e.ToString()),
                         new List<string>() { Properties.Resources.OK }
                     );
                     errd.Run(theme);

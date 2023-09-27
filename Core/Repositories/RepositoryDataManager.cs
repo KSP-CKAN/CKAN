@@ -100,7 +100,7 @@ namespace CKAN
                                                                                   new FileInfo(tuple.Item2).Length))
                                      .ToList();
             // Translate from file group offsets to percent
-            var progress = new ProgressFilesOffsetsToPercent(
+            var progress = new ProgressScalePercentsByFileSizes(
                 percentProgress, reposAndSizes.Select(tuple => tuple.Item2));
             foreach (var repo in reposAndSizes.Select(tuple => tuple.Item1))
             {
@@ -258,10 +258,11 @@ namespace CKAN
                 ? data
                 : LoadRepoData(repo, null);
 
-        private RepositoryData LoadRepoData(Repository repo, IProgress<long> progress)
+        private RepositoryData LoadRepoData(Repository repo, IProgress<int> progress)
         {
-            log.DebugFormat("Looking for data in {0}", GetRepoDataPath(repo));
-            var data = RepositoryData.FromJson(GetRepoDataPath(repo), progress);
+            var path = GetRepoDataPath(repo);
+            log.DebugFormat("Looking for data in {0}", path);
+            var data = RepositoryData.FromJson(path, progress);
             if (data != null)
             {
                 log.Debug("Found it! Adding...");
