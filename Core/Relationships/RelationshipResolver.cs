@@ -193,8 +193,7 @@ namespace CKAN
             // Even though we may resolve top-level suggests for our module,
             // we don't install suggestions all the way down unless with_all_suggests
             // is true.
-            var sub_options = (RelationshipResolverOptions) options.Clone();
-            sub_options.with_suggests = false;
+            var sub_options = options.WithoutSuggestions();
 
             old_stanza = old_stanza?.Memoize();
 
@@ -239,13 +238,14 @@ namespace CKAN
                                    SelectionReason                     reason,
                                    RelationshipResolverOptions         options,
                                    bool                                soft_resolve = false,
-                                   IEnumerable<RelationshipDescriptor> old_stanza = null)
+                                   IEnumerable<RelationshipDescriptor> old_stanza   = null)
         {
             if (stanza == null)
             {
                 return;
             }
 
+            var orig_options = options;
             foreach (RelationshipDescriptor descriptor in stanza)
             {
                 log.DebugFormat("Considering {0}", descriptor.ToString());
@@ -255,6 +255,7 @@ namespace CKAN
                     log.DebugFormat("Skipping {0} because get_recommenders option is set");
                     continue;
                 }
+                options = orig_options.OptionsFor(descriptor);
 
                 // If we already have this dependency covered,
                 // resolve its relationships if we haven't already.
@@ -676,7 +677,7 @@ namespace CKAN
     // TODO: It would be lovely to get rid of the `without` fields,
     // and replace them with `with` fields. Humans suck at inverting
     // cases in their heads.
-    public class RelationshipResolverOptions : ICloneable
+    public class RelationshipResolverOptions
     {
         /// <summary>
         /// If true, add recommended mods, and their recommendations.
@@ -732,7 +733,33 @@ namespace CKAN
         /// </summary>
         public bool get_recommenders = false;
 
-        public object Clone() => MemberwiseClone();
+        public RelationshipResolverOptions OptionsFor(RelationshipDescriptor descr)
+            => descr.suppress_recommendations ? WithoutRecommendations() : this;
+
+        private RelationshipResolverOptions WithoutRecommendations()
+        {
+            if (with_recommends || with_all_suggests || with_suggests)
+            {
+                var newOptions = (RelationshipResolverOptions)MemberwiseClone();
+                newOptions.with_recommends   = false;
+                newOptions.with_all_suggests = false;
+                newOptions.with_suggests     = false;
+                return newOptions;
+            }
+            return this;
+        }
+
+        public RelationshipResolverOptions WithoutSuggestions()
+        {
+            if (with_suggests)
+            {
+                var newOptions = (RelationshipResolverOptions)MemberwiseClone();
+                newOptions.with_suggests = false;
+                return newOptions;
+            }
+            return this;
+        }
+
     }
 
     /// <summary>
