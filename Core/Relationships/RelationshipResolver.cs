@@ -603,17 +603,9 @@ namespace CKAN
         public bool IsConsistent => !conflicts.Any();
 
         public List<SelectionReason> ReasonsFor(CkanModule mod)
-        {
-            if (mod == null) throw new ArgumentNullException();
-            if (!reasons.ContainsKey(mod) && !ModList().Contains(mod))
-            {
-                throw new ArgumentException(string.Format(
-                    Properties.Resources.RelationshipResolverModNotInList,
-                    mod.identifier));
-            }
-
-            return reasons[mod];
-        }
+            => reasons.TryGetValue(mod, out List<SelectionReason> r)
+                ? r
+                : new List<SelectionReason>();
 
         /// <summary>
         /// Indicates whether a module should be considered auto-installed in this change set.

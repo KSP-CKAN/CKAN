@@ -856,7 +856,7 @@ namespace Tests.Core.Relationships
         }
 
         [Test]
-        public void ReasonFor_WithModsNotInList_ThrowsArgumentException()
+        public void ReasonFor_WithModsNotInList_Empty()
         {
             var mod = generator.GeneratorRandomModule();
 
@@ -869,8 +869,8 @@ namespace Tests.Core.Relationships
                 var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
 
                 var mod_not_in_resolver_list = generator.GeneratorRandomModule();
-                CollectionAssert.DoesNotContain(relationship_resolver.ModList(),mod_not_in_resolver_list);
-                Assert.Throws<ArgumentException>(() => relationship_resolver.ReasonsFor(mod_not_in_resolver_list));
+                CollectionAssert.DoesNotContain(relationship_resolver.ModList(), mod_not_in_resolver_list);
+                Assert.IsEmpty(relationship_resolver.ReasonsFor(mod_not_in_resolver_list));
             }
         }
 
