@@ -102,8 +102,8 @@ namespace CKAN
         public CkanModule Latest(
             GameVersionCriteria     ksp_version  = null,
             RelationshipDescriptor  relationship = null,
-            IEnumerable<CkanModule> installed    = null,
-            IEnumerable<CkanModule> toInstall    = null)
+            ICollection<CkanModule> installed    = null,
+            ICollection<CkanModule> toInstall    = null)
         {
             IEnumerable<CkanModule> modules = module_version.Values.Reverse();
             if (relationship != null)
@@ -125,9 +125,8 @@ namespace CKAN
             return modules.FirstOrDefault();
         }
 
-        private static bool DependsAndConflictsOK(CkanModule module, IEnumerable<CkanModule> others)
+        private static bool DependsAndConflictsOK(CkanModule module, ICollection<CkanModule> others)
         {
-            others = others.Memoize();
             if (module.depends != null)
             {
                 foreach (RelationshipDescriptor rel in module.depends)
@@ -140,7 +139,7 @@ namespace CKAN
                     }
                 }
             }
-            var othersMinusSelf = others.Where(m => m.identifier != module.identifier).Memoize();
+            var othersMinusSelf = others.Where(m => m.identifier != module.identifier).ToList();
             if (module.conflicts != null)
             {
                 // Skip self-conflicts (but catch other modules providing self)

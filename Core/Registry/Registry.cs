@@ -609,10 +609,13 @@ namespace CKAN
         public CkanModule LatestAvailable(
             string identifier,
             GameVersionCriteria gameVersion,
-            RelationshipDescriptor relationshipDescriptor = null)
+            RelationshipDescriptor relationshipDescriptor = null,
+            ICollection<CkanModule> installed = null,
+            ICollection<CkanModule> toInstall = null)
         {
             log.DebugFormat("Finding latest available for {0}", identifier);
-            return getAvail(identifier)?.Select(am => am.Latest(gameVersion, relationshipDescriptor))
+            return getAvail(identifier)?.Select(am => am.Latest(gameVersion, relationshipDescriptor,
+                                                                installed, toInstall))
                                         .Where(m => m != null)
                                         .OrderByDescending(m => m.version)
                                         .FirstOrDefault();
@@ -793,8 +796,8 @@ namespace CKAN
             string                  identifier,
             GameVersionCriteria     gameVersion,
             RelationshipDescriptor  relationship_descriptor = null,
-            IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null)
+            ICollection<CkanModule> installed = null,
+            ICollection<CkanModule> toInstall = null)
         {
             if (providers == null)
             {

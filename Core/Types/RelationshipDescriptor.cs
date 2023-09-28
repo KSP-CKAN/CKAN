@@ -13,27 +13,25 @@ namespace CKAN
 {
     public abstract class RelationshipDescriptor : IEquatable<RelationshipDescriptor>
     {
-        public bool MatchesAny(
-            IEnumerable<CkanModule> modules,
-            HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc)
+        public bool MatchesAny(ICollection<CkanModule> modules,
+                               HashSet<string> dlls,
+                               IDictionary<string, ModuleVersion> dlc)
             => MatchesAny(modules, dlls, dlc, out CkanModule _);
 
-        public abstract bool MatchesAny(
-            IEnumerable<CkanModule> modules,
-            HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc,
-            out CkanModule matched);
+        public abstract bool MatchesAny(ICollection<CkanModule> modules,
+                                        HashSet<string> dlls,
+                                        IDictionary<string, ModuleVersion> dlc,
+                                        out CkanModule matched);
 
         public abstract bool WithinBounds(CkanModule otherModule);
 
         public abstract List<CkanModule> LatestAvailableWithProvides(
-            IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null);
+            IRegistryQuerier registry, GameVersionCriteria crit, ICollection<CkanModule> installed = null,
+            ICollection<CkanModule> toInstall = null);
 
         public abstract CkanModule ExactMatch(
-            IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null);
+            IRegistryQuerier registry, GameVersionCriteria crit, ICollection<CkanModule> installed = null,
+            ICollection<CkanModule> toInstall = null);
 
         public abstract bool Equals(RelationshipDescriptor other);
 
@@ -71,8 +69,11 @@ namespace CKAN
         public ModuleVersion version;
 
         public override bool WithinBounds(CkanModule otherModule)
-            => otherModule.ProvidesList.Contains(name)
-               && WithinBounds(otherModule.version);
+            // See if the real thing is there
+            => otherModule.identifier == name ? WithinBounds(otherModule.version)
+                                              // See if anyone else "provides" the target name
+                                              // Note that versions can't be checked for "provides"
+                                              : (otherModule.provides?.Contains(name) ?? false);
 
         /// <summary>
         /// Returns if the other version satisfies this RelationshipDescriptor.
@@ -101,14 +102,11 @@ namespace CKAN
         /// <returns>
         /// true if any of the modules match this descriptor, false otherwise.
         /// </returns>
-        public override bool MatchesAny(
-            IEnumerable<CkanModule> modules,
-            HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc,
-            out CkanModule matched)
+        public override bool MatchesAny(ICollection<CkanModule>            modules,
+                                        HashSet<string>                    dlls,
+                                        IDictionary<string, ModuleVersion> dlc,
+                                        out CkanModule                     matched)
         {
-            modules = modules?.AsCollection();
-
             // DLLs are considered to match any version
             if (dlls != null && dlls.Contains(name))
             {
@@ -116,59 +114,28 @@ namespace CKAN
                 return true;
             }
 
-            if (modules != null)
+            // .AsParallel() makes this slower, too many threads
+            matched = modules?.FirstOrDefault(WithinBounds);
+            if (matched != null)
             {
-                // See if anyone else "provides" the target name
-                // Note that versions can't be checked for "provides" clauses
-                var matches = modules
-                    .Where(m =>
-                        m.identifier != name
-                        && m.provides != null
-                        && m.provides.Contains(name))
-                    .ToList();
-                if (matches.Any())
-                {
-                    matched = matches.FirstOrDefault();
-                    return true;
-                }
-
-                // See if the real thing is there
-                foreach (var m in modules.Where(m => m.identifier == name))
-                {
-                    if (WithinBounds(m))
-                    {
-                        matched = m;
-                        return true;
-                    }
-                }
+                return true;
             }
 
-            if (dlc != null)
-            {
-                foreach (var d in dlc.Where(i => i.Key == name))
-                {
-                    if (WithinBounds(d.Value))
-                    {
-                        matched = null;
-                        return true;
-                    }
-                }
-            }
-
-            matched = null;
-            return false;
+            return dlc != null && dlc.TryGetValue(name, out ModuleVersion dlcVer)
+                               && WithinBounds(dlcVer);
         }
 
-        public override List<CkanModule> LatestAvailableWithProvides(
-            IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null)
+        public override List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier        registry,
+                                                                     GameVersionCriteria     crit,
+                                                                     ICollection<CkanModule> installed = null,
+                                                                     ICollection<CkanModule> toInstall = null)
             => registry.LatestAvailableWithProvides(name, crit, this, installed, toInstall);
 
-        public override CkanModule ExactMatch(
-            IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null)
-            => registry.LatestAvailableWithProvides(name, crit, this, installed, toInstall)
-                .FirstOrDefault(mod => mod.identifier == name);
+        public override CkanModule ExactMatch(IRegistryQuerier        registry,
+                                              GameVersionCriteria     crit,
+                                              ICollection<CkanModule> installed = null,
+                                              ICollection<CkanModule> toInstall = null)
+            => registry.LatestAvailable(name, crit, this, installed, toInstall);
 
         public override bool Equals(RelationshipDescriptor other)
             => Equals(other as ModuleRelationshipDescriptor);
@@ -225,36 +192,28 @@ namespace CKAN
         public override bool WithinBounds(CkanModule otherModule)
             => any_of?.Any(r => r.WithinBounds(otherModule)) ?? false;
 
-        public override bool MatchesAny(
-            IEnumerable<CkanModule> modules,
-            HashSet<string> dlls,
-            IDictionary<string, ModuleVersion> dlc,
-            out CkanModule matched)
+        public override bool MatchesAny(ICollection<CkanModule>            modules,
+                                        HashSet<string>                    dlls,
+                                        IDictionary<string, ModuleVersion> dlc,
+                                        out CkanModule                     matched)
         {
-            if (any_of != null)
-            {
-                foreach (RelationshipDescriptor rel in any_of)
-                {
-                    if (rel.MatchesAny(modules, dlls, dlc, out CkanModule whatMatched))
-                    {
-                        matched = whatMatched;
-                        return true;
-                    }
-                }
-            }
-            matched = null;
-            return false;
+            matched = any_of?.AsParallel()
+                             .Select(rel => rel.MatchesAny(modules, dlls, dlc, out CkanModule whatMached)
+                                                ? whatMached
+                                                : null)
+                             .FirstOrDefault(m => m != null);
+            return matched != null;
         }
 
         public override List<CkanModule> LatestAvailableWithProvides(
-            IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null)
+            IRegistryQuerier registry, GameVersionCriteria crit, ICollection<CkanModule> installed = null,
+            ICollection<CkanModule> toInstall = null)
             => any_of?.SelectMany(r => r.LatestAvailableWithProvides(registry, crit, installed, toInstall)).Distinct().ToList();
 
         // Exact match is not possible for any_of
         public override CkanModule ExactMatch(
-            IRegistryQuerier registry, GameVersionCriteria crit, IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null)
+            IRegistryQuerier registry, GameVersionCriteria crit, ICollection<CkanModule> installed = null,
+            ICollection<CkanModule> toInstall = null)
             => null;
 
         public override bool Equals(RelationshipDescriptor other)

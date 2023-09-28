@@ -328,8 +328,8 @@ namespace CKAN
                     candidates = descriptor
                         .LatestAvailableWithProvides(registry, versionCrit, new CkanModule[0])
                         .Where(mod => !modlist.ContainsKey(mod.identifier)
-                            && descriptor1.WithinBounds(mod)
-                            && MightBeInstallable(mod, null, new CkanModule[0]))
+                                      && descriptor1.WithinBounds(mod)
+                                      && MightBeInstallable(mod))
                         .ToList();
                 }
 
@@ -462,6 +462,13 @@ namespace CKAN
             }
         }
 
+        private bool MightBeInstallable(CkanModule              module,
+                                        CkanModule              stanzaSource = null,
+                                        ICollection<CkanModule> installed    = null)
+            => MightBeInstallable(module, stanzaSource,
+                                  installed ?? new List<CkanModule>(),
+                                  new List<string>());
+
         /// <summary>
         /// Tests that a module might be able to be installed via checking if dependencies
         /// exist for current version.
@@ -471,43 +478,42 @@ namespace CKAN
         /// <param name="installed">The list of installed modules in the current resolver state</param>
         /// <param name="compatible">For internal use</param>
         /// <returns>Whether its dependencies are compatible with the current game version</returns>
-        private bool MightBeInstallable(CkanModule module, CkanModule stanzaSource = null,
-            IEnumerable<CkanModule> installed = null, List<string> compatible = null)
+        private bool MightBeInstallable(CkanModule              module,
+                                        CkanModule              stanzaSource,
+                                        ICollection<CkanModule> installed,
+                                        List<string>            parentCompat)
         {
             if (module.IsDLC)
-                return false;
-            if (module.depends == null)
-                return true;
-            if (compatible == null)
             {
-                compatible = new List<string>();
+                return false;
             }
-            else if (compatible.Contains(module.identifier))
+            if (module.depends == null)
             {
                 return true;
             }
 
             // When checking the dependencies we assume that this module is installable
             // in case a dependent depends on it
-            compatible.Add(module.identifier);
+            var compatible = parentCompat.Append(module.identifier).ToList();
+            var dlls       = registry.InstalledDlls.ToHashSet();
+            var dlcs       = registry.InstalledDlc;
 
-            var toInstall = stanzaSource != null ? new List<CkanModule> {stanzaSource} : null;
+            var toInstall = stanzaSource != null
+                                ? new List<CkanModule> { stanzaSource }
+                                : null;
 
-            // Get list of lists of dependency choices
-            var needed = module.depends
+            // Note, .AsParallel() breaks this, too many threads for recursion
+            return (parentCompat.Count > 0 ? (IEnumerable<RelationshipDescriptor>)module.depends
+                                                  : module.depends.AsParallel())
                 // Skip dependencies satisfied by installed modules
-                .Where(depend => !depend.MatchesAny(installed, null, null))
+                .Where(rel => !rel.MatchesAny(installed, dlls, dlcs))
                 // ... or by modules that are about to be installed
-                .Select(depend => depend.LatestAvailableWithProvides(registry, versionCrit, installed, toInstall)).ToList();
-
-            log.DebugFormat("Trying to satisfy: {0}",
-                string.Join("; ", needed.Select(need =>
-                    string.Join(", ", need.Select(mod => mod.identifier)))));
-
-            // We need every dependency to have at least one possible module
-            var installable = needed.All(need => need.Any(mod => MightBeInstallable(mod, stanzaSource, installed, compatible)));
-            compatible.Remove(module.identifier);
-            return installable;
+                .Select(rel => rel.LatestAvailableWithProvides(registry, versionCrit,
+                                                               installed, toInstall))
+                // We need every dependency to have at least one possible module
+                .All(need => need.Any(mod => compatible.Contains(mod.identifier)
+                                             || MightBeInstallable(mod, stanzaSource,
+                                                                   installed, compatible)));
         }
 
 
