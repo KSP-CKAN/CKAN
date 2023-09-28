@@ -1174,24 +1174,29 @@ namespace CKAN.GUI
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingInstalled);
             var versionCriteria = Main.Instance.CurrentInstance.VersionCriteria();
-            var gui_mods = new HashSet<GUIMod>();
-            gui_mods.UnionWith(
-                registry.InstalledModules
-                    .Where(instMod => !instMod.Module.IsDLC)
-                    .Select(instMod => new GUIMod(instMod, repoData, registry, versionCriteria, null,
-                        Main.Instance.configuration.HideEpochs, Main.Instance.configuration.HideV)));
-            Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingAvailable);
-            gui_mods.UnionWith(
-                registry.CompatibleModules(versionCriteria)
-                    .Where(m => !m.IsDLC)
-                    .Select(m => new GUIMod(m, repoData, registry, versionCriteria, null,
-                        Main.Instance.configuration.HideEpochs, Main.Instance.configuration.HideV)));
-            Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingIncompatible);
-            gui_mods.UnionWith(
-                registry.IncompatibleModules(versionCriteria)
-                    .Where(m => !m.IsDLC)
-                    .Select(m => new GUIMod(m, repoData, registry, versionCriteria, true,
-                        Main.Instance.configuration.HideEpochs, Main.Instance.configuration.HideV)));
+
+            var gui_mods = registry.InstalledModules
+                                   .AsParallel()
+                                   .Where(instMod => !instMod.Module.IsDLC)
+                                   .Select(instMod => new GUIMod(
+                                                          instMod, repoData, registry, versionCriteria, null,
+                                                          Main.Instance.configuration.HideEpochs,
+                                                          Main.Instance.configuration.HideV))
+                                   .Concat(registry.CompatibleModules(versionCriteria)
+                                                   .AsParallel()
+                                                   .Where(m => !m.IsDLC)
+                                                   .Select(m => new GUIMod(
+                                                                    m, repoData, registry, versionCriteria, null,
+                                                                    Main.Instance.configuration.HideEpochs,
+                                                                    Main.Instance.configuration.HideV)))
+                                   .Concat(registry.IncompatibleModules(versionCriteria)
+                                                   .AsParallel()
+                                                   .Where(m => !m.IsDLC)
+                                                   .Select(m => new GUIMod(
+                                                                    m, repoData, registry, versionCriteria, true,
+                                                                    Main.Instance.configuration.HideEpochs,
+                                                                    Main.Instance.configuration.HideV)))
+                                   .ToHashSet();
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListPreservingNew);
             var toNotify = new HashSet<GUIMod>();
