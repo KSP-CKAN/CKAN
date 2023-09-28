@@ -1121,13 +1121,10 @@ namespace CKAN.GUI
 
             var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
             ModGrid.Rows.Clear();
-            foreach (var row in rows)
-            {
-                var mod = ((GUIMod) row.Tag);
-                var inst = Main.Instance.CurrentInstance;
-                row.Visible = mainModList.IsVisible(mod, inst.Name, inst.game, registry);
-            }
-
+            var instName = Main.Instance.CurrentInstance.Name;
+            var instGame = Main.Instance.CurrentInstance.game;
+            rows.AsParallel().ForAll(row =>
+                row.Visible = mainModList.IsVisible((GUIMod)row.Tag, instName, instGame, registry));
             ApplyHeaderGlyphs();
             ModGrid.Rows.AddRange(Sort(rows.Where(row => row.Visible)).ToArray());
 
