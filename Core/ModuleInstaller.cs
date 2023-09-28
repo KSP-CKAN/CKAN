@@ -1497,9 +1497,7 @@ namespace CKAN
                 }
                 else
                 {
-                    string problems = resolver.ConflictList.Values
-                        .Aggregate((a, b) => $"{a}, {b}");
-                    log.Debug($"Can't install {request}: {problems}");
+                    log.DebugFormat("Can't install {0}: {1}", request, string.Join("; ", resolver.ConflictDescriptions));
                     return false;
                 }
             }

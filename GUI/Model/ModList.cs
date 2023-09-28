@@ -121,7 +121,7 @@ namespace CKAN.GUI
         /// <param name="registry"></param>
         /// <param name="changeSet"></param>
         /// <param name="version">The version of the current game instance</param>
-        public Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>> ComputeFullChangeSetFromUserChangeSet(
+        public Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(
             IRegistryQuerier registry, HashSet<ModChange> changeSet, GameVersionCriteria version)
         {
             var modules_to_install = new List<CkanModule>();
@@ -192,7 +192,7 @@ namespace CKAN.GUI
                 conflictOptions, registry, version);
 
             // Replace Install entries in changeset with the ones from resolver to get all the reasons
-            return new Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>>(
+            return new Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>, List<string>>(
                 changeSet.Where(ch => !(ch.ChangeType is GUIModChangeType.Install))
                          .OrderBy(ch => ch.Mod.identifier)
                          .Union(resolver.ModList()
@@ -200,7 +200,8 @@ namespace CKAN.GUI
                                         .Except(upgrading)
                                         .Where(m => !m.IsMetapackage)
                                         .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonsFor(m)))),
-                resolver.ConflictList);
+                resolver.ConflictList,
+                resolver.ConflictDescriptions.ToList());
         }
 
         /// <summary>

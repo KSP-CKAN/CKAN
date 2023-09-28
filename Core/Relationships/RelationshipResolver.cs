@@ -97,17 +97,17 @@ namespace CKAN
         /// Add modules to consideration of the relationship resolver.
         /// </summary>
         /// <param name="modules">Modules to attempt to install</param>
-        private void AddModulesToInstall(IEnumerable<CkanModule> modules)
+        private void AddModulesToInstall(CkanModule[] modules)
         {
-            //Count may need to do a full enumeration. Might as well convert to array
-            var ckan_modules = modules as CkanModule[] ?? modules.ToArray();
-            log.DebugFormat("Processing relationships for {0} modules", ckan_modules.Count());
+            log.DebugFormat("Processing relationships for {0} modules", modules.Length);
 
             // Start by figuring out what versions we're installing, and then
             // adding them to the list. This *must* be pre-populated with all
             // user-specified modules, as they may be supplying things that provide
             // virtual packages.
-            foreach (CkanModule module in ckan_modules)
+
+            // This part can't be parallel, to preserve order of processing
+            foreach (CkanModule module in modules)
             {
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", module.identifier, module.version);
 
@@ -235,15 +235,16 @@ namespace CKAN
         ///
         /// See RelationshipResolverOptions for further adjustments that can be made.
         /// </summary>
-        private void ResolveStanza(IEnumerable<RelationshipDescriptor> stanza, SelectionReason reason,
-            RelationshipResolverOptions options, bool soft_resolve = false,
-            IEnumerable<RelationshipDescriptor> old_stanza = null)
+        private void ResolveStanza(List<RelationshipDescriptor>        stanza,
+                                   SelectionReason                     reason,
+                                   RelationshipResolverOptions         options,
+                                   bool                                soft_resolve = false,
+                                   IEnumerable<RelationshipDescriptor> old_stanza = null)
         {
             if (stanza == null)
             {
                 return;
             }
-            stanza = stanza.Memoize();
 
             foreach (RelationshipDescriptor descriptor in stanza)
             {
@@ -402,11 +403,24 @@ namespace CKAN
                     {
                         throw new InconsistentKraken(string.Format(
                             Properties.Resources.RelationshipResolverConflictsWith,
-                            conflicting_mod, candidate));
+                            conflictingModDescription(conflicting_mod, null),
+                            conflictingModDescription(candidate, reason.Parent)));
                     }
                 }
             }
         }
+
+        private string conflictingModDescription(CkanModule mod, CkanModule parent)
+            => mod == null
+                ? Properties.Resources.RelationshipResolverAnUnmanaged
+                : parent == null && ReasonsFor(mod).Any(r => r is SelectionReason.UserRequested
+                                                             || r is SelectionReason.Installed)
+                    // No parenthetical needed if it's user requested
+                    ? mod.ToString()
+                    // Explain why we're looking at this mod
+                    : string.Format(Properties.Resources.RelationshipResolverConflictingModDescription,
+                                    mod.ToString(),
+                                    string.Join(", ", UserReasonsFor(parent ?? mod).Select(m => m.ToString())));
 
         /// <summary>
         /// Adds the specified module to the list of modules we're installing.
@@ -516,7 +530,6 @@ namespace CKAN
                                                                    installed, compatible)));
         }
 
-
         /// <summary>
         /// Returns a list of all modules to install to satisfy the changes required.
         /// Each mod is after its dependencies and before its reverse dependencies.
@@ -569,28 +582,35 @@ namespace CKAN
 
         /// <summary>
         /// Returns a dictionary consisting of KeyValuePairs containing conflicting mods.
+        /// The keys are the mods that the user chose that led to the conflict being in the list!
+        /// Use this for coloring/labelling rows, use ConflictDescriptions for reporting the conflicts to the user.
         /// </summary>
         public Dictionary<CkanModule, String> ConflictList
-        {
-            get
-            {
-                return conflicts
-                    .GroupBy(kvp => kvp.Key)
-                    .ToDictionary(
-                        group => group.Key,
-                        group => group.Select(kvp => kvp.Value)
-                                      .Where(v => v != null)
-                                      .Distinct())
-                    .ToDictionary(
-                        kvp => kvp.Key,
-                        kvp => string.Format(
+            => conflicts
+                .SelectMany(kvp => UserReasonsFor(kvp.Key).Select(k => new KeyValuePair<CkanModule, ModPair>(k, kvp)))
+                .GroupBy(kvp => kvp.Key)
+                .ToDictionary(group => group.Key,
+                              group => string.Join(", ", group.Select(kvp => kvp.Value)
+                                                              .Distinct()
+                                                              .Select(origKvp => string.Format(
+                        Properties.Resources.RelationshipResolverConflictsWith,
+                        conflictingModDescription(origKvp.Key, null),
+                        conflictingModDescription(origKvp.Value, null)))));
+
+        /// <summary>
+        /// Return descriptions of all the current conflicts.
+        /// Avoids duplicates and explains why dependencies are in the list.
+        /// Use for reporting the conflicts to the user, use ConflictsList for coloring rows.
+        /// </summary>
+        /// <value></value>
+        public IEnumerable<string> ConflictDescriptions
+            => conflicts.Where(kvp => kvp.Value == null
+                                      // Pick the pair with the least distantly selected one first
+                                      || totalDependers(kvp.Key) < totalDependers(kvp.Value))
+                        .Select(kvp => string.Format(
                             Properties.Resources.RelationshipResolverConflictsWith,
-                            kvp.Key, (
-                                kvp.Value.Count() == 0
-                                    ? Properties.Resources.RelationshipResolverAnUnmanaged
-                                    : string.Join(", ", kvp.Value))));
-            }
-        }
+                            conflictingModDescription(kvp.Key,   null),
+                            conflictingModDescription(kvp.Value, null)));
 
         public bool IsConsistent => !conflicts.Any();
 
@@ -598,6 +618,9 @@ namespace CKAN
             => reasons.TryGetValue(mod, out List<SelectionReason> r)
                 ? r
                 : new List<SelectionReason>();
+
+        public IEnumerable<CkanModule> UserReasonsFor(CkanModule mod)
+            => allDependers(mod).Intersect(user_requested_mods);
 
         /// <summary>
         /// Indicates whether a module should be considered auto-installed in this change set.

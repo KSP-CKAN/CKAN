@@ -1051,10 +1051,12 @@ namespace Tests.Core.Relationships
                 modulesToRemove = new List<CkanModule>();
 
                 options.proceed_with_inconsistencies = false;
-                Assert.Throws<InconsistentKraken>(() =>
+                var exception = Assert.Throws<InconsistentKraken>(() =>
                 {
                     resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, null);
                 });
+                Assert.AreEqual($"{avp} conflicts with {eveDefaultConfig}",
+                                exception.ShortDescription);
 
                 // Scenario 2 - Try installing AVP, expect no exception for proceed_with_inconsistencies=true, but a conflict list
 
@@ -1064,7 +1066,10 @@ namespace Tests.Core.Relationships
                 {
                     resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, null);
                 });
-                CollectionAssert.AreEquivalent(new List<CkanModule> {avp, eveDefaultConfig}, resolver.ConflictList.Keys);
+                CollectionAssert.AreEquivalent(modulesToInstall,
+                                               resolver.ConflictList.Keys);
+                CollectionAssert.AreEquivalent(new List<string> {$"{avp} conflicts with {eveDefaultConfig}"},
+                                               resolver.ConflictList.Values);
 
                 // Scenario 3 - Try uninstalling eveDefaultConfig and installing avp, should work and result in no conflicts
 

@@ -1685,7 +1685,12 @@ namespace CKAN.GUI
                     item => item.Value);
                 if (new_conflicts.Count > 0)
                 {
-                    Main.Instance.AddStatusMessage(string.Join(";", new_conflicts.Values));
+                    Main.Instance.AddStatusMessage(string.Join("; ", tuple.Item3));
+                }
+                else
+                {
+                    // Clear the conflict area if no conflicts
+                    Main.Instance.AddStatusMessage("");
                 }
             }
             catch (DependencyNotSatisfiedKraken k)
