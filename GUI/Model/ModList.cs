@@ -272,9 +272,9 @@ namespace CKAN.GUI
         {
             Modules = modules;
             var changes = mc?.ToList();
-            full_list_of_mod_rows = Modules.ToDictionary(
-                gm => gm.Identifier,
-                gm => MakeRow(gm, changes, instanceName, game));
+            full_list_of_mod_rows = Modules.AsParallel()
+                                           .ToDictionary(gm => gm.Identifier,
+                                                         gm => MakeRow(gm, changes, instanceName, game));
             HasAnyInstalled = Modules.Any(m => m.IsInstalled);
             return full_list_of_mod_rows.Values;
         }
