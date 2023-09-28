@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
+using CKAN.GUI.Attributes;
+
 namespace CKAN.GUI
 {
     public partial class Wait : UserControl
@@ -19,6 +21,8 @@ namespace CKAN.GUI
             bgWorker.RunWorkerCompleted += RunWorkerCompleted;
         }
 
+
+        [ForbidGUICalls]
         public void StartWaiting(Action<object, DoWorkEventArgs>             mainWork,
                                  Action<object, RunWorkerCompletedEventArgs> postWork,
                                  bool cancelable,
@@ -38,6 +42,7 @@ namespace CKAN.GUI
 
         public bool RetryEnabled
         {
+            [ForbidGUICalls]
             set
             {
                 Util.Invoke(this, () =>
@@ -58,6 +63,7 @@ namespace CKAN.GUI
 
         public bool ProgressIndeterminate
         {
+            [ForbidGUICalls]
             set
             {
                 Util.Invoke(this, () =>
@@ -217,6 +223,7 @@ namespace CKAN.GUI
             });
         }
 
+        [ForbidGUICalls]
         public void Reset(bool cancelable)
         {
             Util.Invoke(this, () =>
@@ -250,12 +257,14 @@ namespace CKAN.GUI
                 MessageTextBox.Text = "(" + message + ")");
         }
 
+        [ForbidGUICalls]
         private void ClearLog()
         {
             Util.Invoke(this, () =>
                 LogTextBox.Text = "");
         }
 
+        [ForbidGUICalls]
         public void AddLogMessage(string message)
         {
             Util.Invoke(this, () =>

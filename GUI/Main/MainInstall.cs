@@ -6,6 +6,7 @@ using System.Linq;
 using System.Transactions;
 
 using CKAN.Extensions;
+using CKAN.GUI.Attributes;
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
@@ -65,6 +66,7 @@ namespace CKAN.GUI
             }
         }
 
+        [ForbidGUICalls]
         private void InstallMods(object sender, DoWorkEventArgs e)
         {
             bool canceled = false;
@@ -222,7 +224,7 @@ namespace CKAN.GUI
                             toInstall.Concat(toUpgrade), toUninstall, options, registry, crit
                         ).ModList().ToList();
                         DownloadsFailedDialog dfd = null;
-                        Util.Invoke(dfd, () =>
+                        Util.Invoke(this, () =>
                         {
                             dfd = new DownloadsFailedDialog(
                                 Properties.Resources.ModDownloadsFailedMessage,
@@ -289,6 +291,7 @@ namespace CKAN.GUI
             e.Result = new InstallResult(true, changes);
         }
 
+        [ForbidGUICalls]
         private void HandlePossibleConfigOnlyDirs(Registry registry, HashSet<string> possibleConfigOnlyDirs)
         {
             if (possibleConfigOnlyDirs != null)

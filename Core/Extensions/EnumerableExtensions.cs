@@ -16,6 +16,7 @@ namespace CKAN.Extensions
         }
 
 #if NET45
+
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
         {
             if (source == null)
@@ -23,6 +24,10 @@ namespace CKAN.Extensions
 
             return new HashSet<T>(source);
         }
+
+        public static IEnumerable<T> Append<T>(this IEnumerable<T> source, T next)
+            => source.Concat(Enumerable.Repeat<T>(next, 1));
+
 #endif
 
         public static Dictionary<K, V> ToDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs)

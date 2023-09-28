@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+
 using log4net;
+
+using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
@@ -12,6 +15,7 @@ namespace CKAN.GUI
             InitializeComponent();
         }
 
+        [ForbidGUICalls]
         public void ShowErrorDialog(string text, params object[] args)
         {
             Util.Invoke(Main.Instance, () =>

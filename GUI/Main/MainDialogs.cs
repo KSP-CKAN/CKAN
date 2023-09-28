@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using CKAN.GUI.Attributes;
+
 namespace CKAN.GUI
 {
     public partial class Main
@@ -23,6 +25,7 @@ namespace CKAN.GUI
             selectionDialog = controlFactory.CreateControl<SelectionDialog>();
         }
 
+        [ForbidGUICalls]
         public void AddStatusMessage(string text, params object[] args)
         {
             string msg = String.Format(text, args);
@@ -33,6 +36,7 @@ namespace CKAN.GUI
             Wait.AddLogMessage(msg);
         }
 
+        [ForbidGUICalls]
         public void ErrorDialog(string text, params object[] args)
         {
             errorDialog.ShowErrorDialog(String.Format(text, args));

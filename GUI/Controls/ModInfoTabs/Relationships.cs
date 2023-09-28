@@ -10,6 +10,7 @@ using Autofac;
 
 using CKAN.Versioning;
 using CKAN.Extensions;
+using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
@@ -158,6 +159,7 @@ namespace CKAN.GUI
             }
         }
 
+        [ForbidGUICalls]
         private void ExpandOnePage(IRegistryQuerier registry, TreeNode parent, int start, int length)
         {
             // Should already have children, since the user is expanding it

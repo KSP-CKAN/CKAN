@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
+using CKAN.GUI.Attributes;
+
 namespace CKAN.GUI
 {
     public partial class Main
@@ -37,6 +39,7 @@ namespace CKAN.GUI
             }
         }
 
+        [ForbidGUICalls]
         private void CacheMod(object sender, DoWorkEventArgs e)
         {
             ResetProgress();
@@ -83,6 +86,7 @@ namespace CKAN.GUI
             }
         }
 
+        [ForbidGUICalls]
         private void UpdateCachedByDownloads(GUIMod module)
         {
             // Update all mods that share the same ZIP

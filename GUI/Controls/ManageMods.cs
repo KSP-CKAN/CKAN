@@ -12,6 +12,7 @@ using log4net;
 
 using CKAN.Extensions;
 using CKAN.Versioning;
+using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
@@ -102,6 +103,7 @@ namespace CKAN.GUI
         private List<ModChange> ChangeSet
         {
             get => currentChangeSet;
+            [ForbidGUICalls]
             set
             {
                 var orig = currentChangeSet;
@@ -111,6 +113,7 @@ namespace CKAN.GUI
             }
         }
 
+        [ForbidGUICalls]
         private void ChangeSetUpdated()
         {
             Util.Invoke(this, () =>
@@ -149,12 +152,15 @@ namespace CKAN.GUI
         private Dictionary<GUIMod, string> Conflicts
         {
             get => conflicts;
+            [ForbidGUICalls]
             set
             {
                 var orig = conflicts;
                 conflicts = value;
                 if (orig != value)
-                    ConflictsUpdated(orig);
+                {
+                    Util.Invoke(this, () => ConflictsUpdated(orig));
+                }
             }
         }
 
@@ -1033,6 +1039,7 @@ namespace CKAN.GUI
             }
         }
 
+        [ForbidGUICalls]
         public Dictionary<string, GUIMod> AllGUIMods()
             => mainModList.Modules.ToDictionary(guiMod => guiMod.Identifier,
                                                 guiMod => guiMod);
@@ -1087,6 +1094,7 @@ namespace CKAN.GUI
             Util.Invoke(this, () => ModGrid.Focus());
         }
 
+        [ForbidGUICalls]
         public void UpdateFilters()
         {
             Util.Invoke(this, _UpdateFilters);
@@ -1135,11 +1143,13 @@ namespace CKAN.GUI
             }
         }
 
+        [ForbidGUICalls]
         public void Update(object sender, DoWorkEventArgs e)
         {
             e.Result = _UpdateModsList(e.Argument as Dictionary<string, bool>);
         }
 
+        [ForbidGUICalls]
         private bool _UpdateModsList(Dictionary<string, bool> old_modules = null)
         {
             log.Info("Updating the mod list");
@@ -1275,6 +1285,7 @@ namespace CKAN.GUI
             return true;
         }
 
+        [ForbidGUICalls]
         public void MarkModForInstall(string identifier, bool uncheck = false)
         {
             Util.Invoke(this, () => _MarkModForInstall(identifier, uncheck));
@@ -1649,6 +1660,7 @@ namespace CKAN.GUI
             Conflicts = null;
         }
 
+        [ForbidGUICalls]
         public void UpdateChangeSetAndConflicts(GameInstance inst, IRegistryQuerier registry)
         {
             if (freezeChangeSet)

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using log4net;
 
+using CKAN.GUI.Attributes;
+
 namespace CKAN.GUI
 {
     /// <summary>
@@ -66,6 +68,7 @@ namespace CKAN.GUI
                 + BottomButtonPanel.Height);
         }
 
+        [ForbidGUICalls]
         public object[] Wait() => task.Task.Result;
 
         /// <summary>

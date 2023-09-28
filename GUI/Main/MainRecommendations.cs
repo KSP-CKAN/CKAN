@@ -6,6 +6,7 @@ using System.Linq;
 
 using CKAN.Extensions;
 using CKAN.Versioning;
+using CKAN.GUI.Attributes;
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
@@ -33,6 +34,7 @@ namespace CKAN.GUI
             ));
         }
 
+        [ForbidGUICalls]
         private void AuditRecommendations(IRegistryQuerier registry, GameVersionCriteria versionCriteria)
         {
             var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
