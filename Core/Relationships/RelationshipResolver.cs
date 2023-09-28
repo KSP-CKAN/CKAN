@@ -519,67 +519,53 @@ namespace CKAN
 
         /// <summary>
         /// Returns a list of all modules to install to satisfy the changes required.
-        /// Each mod should be after its dependencies and before its reverse dependencies.
-        /// Circular dependencies throw a wrench into that, but for now we treat them the same
-        /// and let the chips fall where they may.
+        /// Each mod is after its dependencies and before its reverse dependencies.
         /// </summary>
         public IEnumerable<CkanModule> ModList()
+            => modlist.Values
+                      .Distinct()
+                      .AsParallel()
+                      // Put user choices at the bottom; .OrderBy(bool) -> false first
+                      .OrderBy(m => ReasonsFor(m).Any(r => r is SelectionReason.UserRequested))
+                      // Put dependencies before dependers
+                      .ThenByDescending(totalDependers)
+                      // Resolve ties in name order
+                      .ThenBy(m => m.name);
+
+        // The more nodes of the reverse-dependency graph we can paint, the higher up in the list it goes
+        private int totalDependers(CkanModule module)
+            => allDependers(module).Count();
+
+        private static bool AnyRelationship(SelectionReason r)
+            => r is SelectionReason.Depends
+                || r is SelectionReason.Recommended
+                || r is SelectionReason.Suggested;
+
+        private IEnumerable<T> BreadthFirstSearch<T>(IEnumerable<T>                      startingGroup,
+                                                     Func<T, HashSet<T>, IEnumerable<T>> getNextGroup)
         {
-            var sortedDepsFirst = new List<CkanModule>();
-            try
+            var found    = startingGroup.ToHashSet();
+            var toSearch = new Queue<T>(found);
+
+            while (toSearch.Count > 0)
             {
-                var modules = modlist.Values
-                    .Distinct()
-                    .OrderBy(m => m.depends?.Count ?? 0)
-                    .ThenBy(m => m.name);
-                foreach (var module in modules)
+                var searching = toSearch.Dequeue();
+                yield return searching;
+                foreach (var nextNode in getNextGroup(searching, found))
                 {
-                    try
-                    {
-                        var reasons = ReasonsFor(module);
-                        var userReq = reasons.Any(r => r is SelectionReason.UserRequested);
-                        var index = reasons
-                            // Ignore non-dependencies
-                            .Where(r =>
-                                !(r is SelectionReason.UserRequested
-                                    || r is SelectionReason.Installed
-                                    || (userReq
-                                        // Ignore if depending mod is not user requested
-                                        && ReasonsFor(r.Parent).All(parentR =>
-                                            !(parentR is SelectionReason.UserRequested)))))
-                            .Select(r => sortedDepsFirst.IndexOf(r.Parent))
-                            // Ignore parents not added yet
-                            .Except(Enumerable.Repeat<int>(-1, 1))
-                            // Put it at the earliest point where a depender needs it
-                            // (throws into below catch block if empty)
-                            .Min();
-                        log.DebugFormat("Parent found: {0}, {1}", index, module);
-                        sortedDepsFirst.Insert(index, module);
-                    }
-                    catch (ArgumentException)
-                    {
-                        // ReasonsFor throws this for mods without reasons, just add it to the end
-                        log.DebugFormat("Reasons for parent not found: {0}", module);
-                        sortedDepsFirst.Add(module);
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        // No index, just append
-                        log.DebugFormat("Valid parent not added yet: {0}", module);
-                        sortedDepsFirst.Add(module);
-                    }
-                }
-                if (sortedDepsFirst.Count > 0)
-                {
-                    log.DebugFormat("Returning sorted: {0}", string.Join(", ", sortedDepsFirst));
+                    found.Add(nextNode);
+                    toSearch.Enqueue(nextNode);
                 }
             }
-            catch (Exception ex)
-            {
-                log.Debug("Failed to get mod list", ex);
-            }
-            return sortedDepsFirst;
         }
+
+        private IEnumerable<CkanModule> allDependers(CkanModule                  module,
+                                                     Func<SelectionReason, bool> followReason = null)
+            => BreadthFirstSearch(Enumerable.Repeat<CkanModule>(module, 1),
+                                  (searching, found) =>
+                                      ReasonsFor(searching).Where(followReason ?? AnyRelationship)
+                                                           .Select(r => r.Parent)
+                                                           .Except(found));
 
         /// <summary>
         /// Returns a dictionary consisting of KeyValuePairs containing conflicting mods.
