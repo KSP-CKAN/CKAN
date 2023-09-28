@@ -12,7 +12,8 @@ namespace CKAN
     /// </summary>
     public class Kraken : Exception
     {
-        public Kraken(string reason = null, Exception innerException = null) : base(reason, innerException)
+        public Kraken(string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
         }
     }
@@ -63,11 +64,8 @@ namespace CKAN
     /// </summary>
     public class BadInstallLocationKraken : Kraken
     {
-        // Okay C#, you really need a keyword in your class declaration that says we call our
-        // parent constructors by default. This sort of thing is unacceptable in a modern
-        // programming langauge.
-
-        public BadInstallLocationKraken(string reason = null, Exception innerException = null) : base(reason, innerException)
+        public BadInstallLocationKraken(string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
         }
     }
@@ -77,11 +75,10 @@ namespace CKAN
         public readonly string module;
         public readonly string version;
 
-        // TODO: Is there a way to set the stringify version of this?
         public ModuleNotFoundKraken(string module, string version, string reason, Exception innerException = null)
-            : base(
-                reason ?? string.Format(Properties.Resources.KrakenDependencyNotSatisfied, module, version),
-                innerException)
+            : base(reason
+                   ?? string.Format(Properties.Resources.KrakenDependencyNotSatisfied, module, version),
+                   innerException)
         {
             this.module  = module;
             this.version = version;
@@ -112,11 +109,17 @@ namespace CKAN
         /// <param name="reason">Message parameter for base class</param>
         /// <param name="innerException">Originating exception parameter for base class</param>
         public DependencyNotSatisfiedKraken(CkanModule parentModule,
-            string module, string version = null, string reason = null, Exception innerException = null)
+                                            string     module,
+                                            string     version        = null,
+                                            string     reason         = null,
+                                            Exception  innerException = null)
             : base(module, version,
-                reason ?? string.Format(Properties.Resources.KrakenParentDependencyNotSatisfied,
-                    parentModule.identifier, module, version ?? Properties.Resources.KrakenAny),
-                innerException)
+                   reason ?? string.Format(
+                       Properties.Resources.KrakenParentDependencyNotSatisfied,
+                       parentModule.identifier,
+                       module,
+                       version ?? Properties.Resources.KrakenAny),
+                   innerException)
         {
             parent = parentModule;
         }
@@ -176,20 +179,17 @@ namespace CKAN
         public readonly string requested;
         public readonly string choice_help_text;
 
-        public TooManyModsProvideKraken(string requested, List<CkanModule> modules, string choice_help_text = null, Exception innerException = null)
-            : base(FormatMessage(requested, modules, choice_help_text), innerException)
+        public TooManyModsProvideKraken(string           requested,
+                                        List<CkanModule> modules,
+                                        string           choice_help_text = null,
+                                        Exception        innerException   = null)
+            : base(choice_help_text ?? string.Format(Properties.Resources.KrakenProvidedByMoreThanOne,
+                                                     requested),
+                   innerException)
         {
             this.requested        = requested;
             this.modules          = modules;
             this.choice_help_text = choice_help_text;
-        }
-
-        private static string FormatMessage(string requested, List<CkanModule> modules, string choice_help_text = null)
-        {
-            return choice_help_text
-                ?? string.Format(
-                    Properties.Resources.KrakenProvidedByMoreThanOne,
-                    requested);
         }
     }
 
@@ -199,8 +199,6 @@ namespace CKAN
     /// </summary>
     public class InconsistentKraken : Kraken
     {
-        public readonly ICollection<string> inconsistencies;
-
         public string InconsistenciesPretty
         {
             get
@@ -208,14 +206,6 @@ namespace CKAN
                 return String.Join(Environment.NewLine,
                     new string[] { Properties.Resources.KrakenInconsistenciesHeader }
                     .Concat(inconsistencies.Select(msg => $"* {msg}")));
-            }
-        }
-
-        public string ShortDescription
-        {
-            get
-            {
-                return String.Join("; ", inconsistencies);
             }
         }
 
@@ -231,10 +221,15 @@ namespace CKAN
             inconsistencies = new List<string> { inconsistency };
         }
 
+        public string ShortDescription
+            => string.Join("; ", inconsistencies);
+
         public override string ToString()
         {
             return InconsistenciesPretty + Environment.NewLine + Environment.NewLine + StackTrace;
         }
+
+        private readonly ICollection<string> inconsistencies;
     }
 
     /// <summary>
@@ -295,9 +290,9 @@ namespace CKAN
             = new List<KeyValuePair<int, Exception>>();
 
         public DownloadErrorsKraken(List<KeyValuePair<int, Exception>> errors)
-            : base(String.Join(Environment.NewLine,
-                new string[] { Properties.Resources.KrakenDownloadErrorsHeader, "" }
-                .Concat(errors.Select(e => e.Value.Message))))
+            : base(string.Join(Environment.NewLine,
+                               new string[] { Properties.Resources.KrakenDownloadErrorsHeader, "" }
+                               .Concat(errors.Select(e => e.Value.Message))))
         {
             Exceptions = new List<KeyValuePair<int, Exception>>(errors);
         }

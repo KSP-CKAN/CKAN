@@ -133,7 +133,12 @@ namespace CKAN
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// Propagates a CancelledActionKraken if the user cancelled the install.
         /// </summary>
-        public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, RegistryManager registry_manager, ref HashSet<string> possibleConfigOnlyDirs, IDownloader downloader = null, bool ConfirmPrompt = true)
+        public void InstallList(ICollection<CkanModule>     modules,
+                                RelationshipResolverOptions options,
+                                RegistryManager             registry_manager,
+                                ref HashSet<string>         possibleConfigOnlyDirs,
+                                IDownloader                 downloader = null,
+                                bool                        ConfirmPrompt = true)
         {
             // TODO: Break this up into smaller pieces! It's huge!
             if (modules.Count == 0)
@@ -1060,7 +1065,13 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true, bool resolveRelationships = false, bool ConfirmPrompt = true)
+        public void Upgrade(IEnumerable<CkanModule> modules,
+                            IDownloader             netAsyncDownloader,
+                            ref HashSet<string>     possibleConfigOnlyDirs,
+                            RegistryManager         registry_manager,
+                            bool                    enforceConsistency   = true,
+                            bool                    resolveRelationships = false,
+                            bool                    ConfirmPrompt        = true)
         {
             modules = modules.Memoize();
             var registry = registry_manager.registry;

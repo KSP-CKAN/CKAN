@@ -83,30 +83,12 @@ namespace CKAN
         /// <param name="other"></param>
         /// <returns>True if other_version is within the bounds</returns>
         public bool WithinBounds(ModuleVersion other)
-        {
             // UnmanagedModuleVersions with unknown versions always satisfy the bound
-            if (other is UnmanagedModuleVersion unmanagedModuleVersion && unmanagedModuleVersion.IsUnknownVersion)
-                return true;
-
-            if (version == null)
-            {
-                if (max_version == null && min_version == null)
-                    return true;
-
-                var minSat = min_version == null || min_version <= other;
-                var maxSat = max_version == null || max_version >= other;
-
-                if (minSat && maxSat)
-                    return true;
-            }
-            else
-            {
-                if (version.Equals(other))
-                    return true;
-            }
-
-            return false;
-        }
+            => (other is UnmanagedModuleVersion unmanagedModuleVersion
+                    && unmanagedModuleVersion.IsUnknownVersion)
+               || (version?.Equals(other)
+                          ?? ((min_version == null || min_version <= other)
+                              && (max_version == null || max_version >= other)));
 
         /// <summary>
         /// Check whether any of the modules in a given list match this descriptor.
@@ -189,14 +171,14 @@ namespace CKAN
                 .FirstOrDefault(mod => mod.identifier == name);
 
         public override bool Equals(RelationshipDescriptor other)
-        {
-            ModuleRelationshipDescriptor modRel = other as ModuleRelationshipDescriptor;
-            return modRel != null
-                && name        == modRel.name
-                && version     == modRel.version
-                && min_version == modRel.min_version
-                && max_version == modRel.max_version;
-        }
+            => Equals(other as ModuleRelationshipDescriptor);
+
+        protected bool Equals(ModuleRelationshipDescriptor other)
+            => other != null
+                && name        == other.name
+                && version     == other.version
+                && min_version == other.min_version
+                && max_version == other.max_version;
 
         public override bool ContainsAny(IEnumerable<string> identifiers)
             => identifiers.Contains(name);
@@ -237,7 +219,7 @@ namespace CKAN
             "name",
             "version",
             "min_version",
-            "max_version"
+            "max_version",
         };
 
         public override bool WithinBounds(CkanModule otherModule)
@@ -276,11 +258,11 @@ namespace CKAN
             => null;
 
         public override bool Equals(RelationshipDescriptor other)
-        {
-            AnyOfRelationshipDescriptor anyRel = other as AnyOfRelationshipDescriptor;
-            return anyRel != null
-                && (any_of?.SequenceEqual(anyRel.any_of) ?? anyRel.any_of == null);
-        }
+            => Equals(other as AnyOfRelationshipDescriptor);
+
+        protected bool Equals(AnyOfRelationshipDescriptor other)
+            => other != null
+                && (any_of?.SequenceEqual(other.any_of) ?? other.any_of == null);
 
         public override bool ContainsAny(IEnumerable<string> identifiers)
             => any_of?.Any(r => r.ContainsAny(identifiers)) ?? false;

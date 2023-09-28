@@ -260,7 +260,7 @@ Please remove manually before trying to install it.</value></data>
   <data name="KrakenParentDependencyNotSatisfied" xml:space="preserve"><value>{0} dependency on {1} version {2} not satisfied</value></data>
   <data name="KrakenAny" xml:space="preserve"><value>(any)</value></data>
   <data name="KrakenProvidedByMoreThanOne" xml:space="preserve"><value>Module {0} is provided by more than one available module. Please choose one of the following:</value></data>
-  <data name="KrakenInconsistenciesHeader" xml:space="preserve"><value>The following inconsistencies were found:</value></data>
+  <data name="KrakenInconsistenciesHeader" xml:space="preserve"><value>Inconsistencies were found:</value></data>
   <data name="KrakenMissingDependency" xml:space="preserve"><value>{0} missing dependency {1}</value></data>
   <data name="KrakenConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve"><value>Uh oh, the following things went wrong when downloading...</value></data>

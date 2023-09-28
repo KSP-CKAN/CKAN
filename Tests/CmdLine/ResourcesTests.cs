@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Resources;
 using System.Globalization;
+
 using NUnit.Framework;
 
 namespace Tests.CmdLine

@@ -2,128 +2,46 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using log4net;
+
 using CKAN.Versioning;
 using CKAN.Extensions;
 
 namespace CKAN
 {
-
-    // TODO: It would be lovely to get rid of the `without` fields,
-    // and replace them with `with` fields. Humans suck at inverting
-    // cases in their heads.
-    public class RelationshipResolverOptions : ICloneable
-    {
-        /// <summary>
-        /// If true, add recommended mods, and their recommendations.
-        /// </summary>
-        public bool with_recommends = true;
-
-        /// <summary>
-        /// If true, add suggests, but not suggested suggests. :)
-        /// </summary>
-        public bool with_suggests = false;
-
-        /// <summary>
-        /// If true, add suggested modules, and *their* suggested modules, too!
-        /// </summary>
-        public bool with_all_suggests = false;
-
-        /// <summary>
-        /// If true, surpresses the TooManyProvides kraken when resolving
-        /// relationships. Otherwise, we just pick the first.
-        /// </summary>
-        public bool without_toomanyprovides_kraken = false;
-
-        /// <summary>
-        /// If true, we skip our sanity check at the end of our relationship
-        /// resolution. Note that non-sane resolutions can't actually be
-        /// installed, so this is mostly useful for giving the user feedback
-        /// on failed resolutions.
-        /// </summary>
-        public bool without_enforce_consistency = false;
-
-        /// <summary>
-        /// If true, we'll populate the `conflicts` field, rather than immediately
-        /// throwing a kraken when inconsistencies are detected. Again, these
-        /// solutions are non-installable, so mostly of use to provide user
-        /// feedback when things go wrong.
-        /// </summary>
-        public bool proceed_with_inconsistencies = false;
-
-        /// <summary>
-        /// If true, then if a module has no versions that are compatible with
-        /// the current game version, then we will consider incompatible versions
-        /// of that module.
-        /// This replaces the former behavior of ignoring compatibility for
-        /// `install identifier=version` commands.
-        /// </summary>
-        public bool allow_incompatible = false;
-
-        /// <summary>
-        /// If true, get the list of mods that should be checked for
-        /// recommendations and suggestions.
-        /// Differs from normal resolution in that it stops when
-        /// ModuleRelationshipDescriptor.suppress_recommendations==true
-        /// </summary>
-        public bool get_recommenders = false;
-
-        public object Clone() => MemberwiseClone();
-    }
-
-    // TODO: RR currently conducts a depth-first resolution of requirements. While we do the
-    // right thing in processing all dependencies first, then recommends, and then suggests,
-    // we could find that a recommendation many layers deep prevents a recommendation in the
-    // original mod's recommends list.
-    //
-    // If we resolved in things breadth-first order, we're less likely to encounter surprises
-    // where a nth-deep recommend blocks a top-level recommend.
-
-    // TODO: Add mechanism so that clients can add mods with relationshup other than UserAdded.
-    // Currently only made to support the with_{} options.
-
+    using ModPair = KeyValuePair<CkanModule, CkanModule>;
 
     /// <summary>
-    /// A class used to resolve relationships between mods. Primarily used to satisfy missing dependencies and to check for conflicts on proposed installs.
+    /// Resolves relationships between mods. Primarily used to satisfy missing dependencies and to check for conflicts on proposed installs.
     /// </summary>
     /// <remarks>
     /// All constructors start with currently installed modules, to remove <see cref="RelationshipResolver.RemoveModsFromInstalledList" />
     /// </remarks>
     public class RelationshipResolver
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
         /// <summary>
-        /// The list of all additional mods that need to be installed to satisfy all relationships.
+        /// Creates a new resolver that will find a way to install all the modules specified.
         /// </summary>
-        private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
-        private readonly List<CkanModule> user_requested_mods = new List<CkanModule>();
-
-        //TODO As the conflict detection gets more advanced there is a greater need to have messages in here
-        // as recreating them from reasons is no longer possible.
-        private readonly List<KeyValuePair<CkanModule, CkanModule>> conflicts =
-            new List<KeyValuePair<CkanModule, CkanModule>>();
-        private readonly Dictionary<CkanModule, List<SelectionReason>> reasons =
-            new Dictionary<CkanModule, List<SelectionReason>>(new NameComparer());
-
-        private readonly IRegistryQuerier registry;
-        private readonly GameVersionCriteria GameVersion;
-        private readonly RelationshipResolverOptions options;
-        /// <summary>
-        /// The list of already installed modules.
-        /// </summary>
-        private readonly HashSet<CkanModule> installed_modules;
-
-        private HashSet<CkanModule> alreadyResolved = new HashSet<CkanModule>();
-
-        private void AddReason(CkanModule module, SelectionReason reason)
+        /// <param name="modulesToInstall">Modules to install</param>
+        /// <param name="modulesToRemove">Modules to remove</param>
+        /// <param name="options">Options for the RelationshipResolver</param>
+        /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="versionCrit">The current KSP version criteria to consider</param>
+        public RelationshipResolver(IEnumerable<CkanModule>     modulesToInstall,
+                                    IEnumerable<CkanModule>     modulesToRemove,
+                                    RelationshipResolverOptions options,
+                                    IRegistryQuerier            registry,
+                                    GameVersionCriteria         versionCrit)
+            : this(options, registry, versionCrit)
         {
-            if (reasons.TryGetValue(module, out List<SelectionReason> modReasons))
+            if (modulesToRemove != null)
             {
-                modReasons.Add(reason);
+                RemoveModsFromInstalledList(modulesToRemove);
             }
-            else
+            if (modulesToInstall != null)
             {
-                reasons.Add(module, new List<SelectionReason>() { reason });
+                AddModulesToInstall(modulesToInstall.ToArray());
             }
         }
 
@@ -132,14 +50,18 @@ namespace CKAN
         /// </summary>
         /// <param name="options">Options for the RelationshipResolver</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="GameVersion">The current KSP version criteria to consider</param>
-        public RelationshipResolver(RelationshipResolverOptions options, IRegistryQuerier registry, GameVersionCriteria GameVersion)
+        /// <param name="versionCrit">The current KSP version criteria to consider</param>
+        private RelationshipResolver(RelationshipResolverOptions options,
+                                     IRegistryQuerier            registry,
+                                     GameVersionCriteria         versionCrit)
         {
-            this.registry = registry;
-            this.GameVersion = GameVersion;
-            this.options = options;
+            this.options     = options;
+            this.registry    = registry;
+            this.versionCrit = versionCrit;
 
-            installed_modules = new HashSet<CkanModule>(registry.InstalledModules.Select(i_module => i_module.Module));
+            installed_modules = registry.InstalledModules
+                                        .Select(i_module => i_module.Module)
+                                        .ToHashSet();
             var installed_relationship = new SelectionReason.Installed();
             foreach (var module in installed_modules)
             {
@@ -154,11 +76,11 @@ namespace CKAN
         /// <param name="modulesToRemove">Identifiers of modules to remove, will be converted to CkanModules using Registry.InstalledModule</param>
         /// <param name="options">Options for the RelationshipResolver</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="GameVersion">The current KSP version criteria to consider</param>
+        /// <param name="versionCrit">The current KSP version criteria to consider</param>
         public RelationshipResolver(IEnumerable<string> modulesToInstall, IEnumerable<string> modulesToRemove, RelationshipResolverOptions options, IRegistryQuerier registry,
-            GameVersionCriteria GameVersion) :
+            GameVersionCriteria versionCrit) :
                 this(
-                    modulesToInstall?.Select(mod => TranslateModule(mod, options, registry, GameVersion)),
+                    modulesToInstall?.Select(mod => TranslateModule(mod, options, registry, versionCrit)),
                     modulesToRemove?
                         .Select(mod =>
                         {
@@ -167,7 +89,7 @@ namespace CKAN
                         })
                         .Where(identifier => registry.InstalledModule(identifier) != null)
                         .Select(identifier => registry.InstalledModule(identifier).Module),
-                    options, registry, GameVersion)
+                    options, registry, versionCrit)
         {
             // Does nothing, just calls the other overloaded constructor
         }
@@ -179,15 +101,15 @@ namespace CKAN
         /// <param name="name">The identifier or identifier=version of the module</param>
         /// <param name="options">If options.allow_incompatible is set, fall back to searching incompatible modules if no compatible has been found</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="GameVersion">The current KSP version criteria to consider</param>
+        /// <param name="versionCrit">The current KSP version criteria to consider</param>
         /// <returns>A CkanModule</returns>
-        private static CkanModule TranslateModule(string name, RelationshipResolverOptions options, IRegistryQuerier registry, GameVersionCriteria GameVersion)
+        private static CkanModule TranslateModule(string name, RelationshipResolverOptions options, IRegistryQuerier registry, GameVersionCriteria versionCrit)
         {
             if (options.allow_incompatible)
             {
                 try
                 {
-                    return CkanModule.FromIDandVersion(registry, name, GameVersion);
+                    return CkanModule.FromIDandVersion(registry, name, versionCrit);
                 }
                 catch (ModuleNotFoundKraken)
                 {
@@ -198,60 +120,33 @@ namespace CKAN
             }
             else
             {
-                return CkanModule.FromIDandVersion(registry, name, GameVersion);
+                return CkanModule.FromIDandVersion(registry, name, versionCrit);
             }
         }
 
         /// <summary>
-        /// Creates a new resolver that will find a way to install all the modules specified.
+        /// Returns the default options for relationship resolution.
         /// </summary>
-        /// <param name="modulesToInstall">Modules to install</param>
-        /// <param name="modulesToRemove">Modules to remove</param>
-        /// <param name="options">Options for the RelationshipResolver</param>
-        /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="GameVersion">The current KSP version criteria to consider</param>
-        public RelationshipResolver(IEnumerable<CkanModule> modulesToInstall, IEnumerable<CkanModule> modulesToRemove, RelationshipResolverOptions options, IRegistryQuerier registry,
-            GameVersionCriteria GameVersion)
-            : this(options, registry, GameVersion)
-        {
-            if (modulesToRemove != null)
-            {
-                RemoveModsFromInstalledList(modulesToRemove);
-            }
-            if (modulesToInstall != null)
-            {
-                AddModulesToInstall(modulesToInstall);
-            }
-        }
-
-        /// <summary>
-        ///     Returns the default options for relationship resolution.
-        /// </summary>
-
-        // TODO: This should just be able to return a new RelationshipResolverOptions
-        // and the defaults in the class definition should do the right thing.
         public static RelationshipResolverOptions DefaultOpts()
-        {
-            return new RelationshipResolverOptions
+            // TODO: This should just be able to return a new RelationshipResolverOptions
+            // and the defaults in the class definition should do the right thing.
+            => new RelationshipResolverOptions
             {
                 with_recommends   = true,
                 with_suggests     = false,
-                with_all_suggests = false
+                with_all_suggests = false,
             };
-        }
 
         /// <summary>
         /// Options to install without recommendations.
         /// </summary>
         public static RelationshipResolverOptions DependsOnlyOpts()
-        {
-            return new RelationshipResolverOptions
+            => new RelationshipResolverOptions
             {
                 with_recommends   = false,
                 with_suggests     = false,
-                with_all_suggests = false
+                with_all_suggests = false,
             };
-        }
 
         /// <summary>
         /// Add modules to consideration of the relationship resolver.
@@ -272,7 +167,9 @@ namespace CKAN
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", module.identifier, module.version);
 
                 // Need to check against installed mods and those to install.
-                var conflictingModules = modlist.Values.Concat(installed_modules).Where(listed_mod => listed_mod.ConflictsWith(module));
+                var conflictingModules = modlist.Values
+                                                .Concat(installed_modules)
+                                                .Where(listed_mod => listed_mod.ConflictsWith(module));
                 foreach (CkanModule listed_mod in conflictingModules)
                 {
                     if (options.proceed_with_inconsistencies)
@@ -303,12 +200,10 @@ namespace CKAN
 
             try
             {
-                // Finally, let's do a sanity check that our solution is actually sane.
-                SanityChecker.EnforceConsistency(
-                    modlist.Values.Concat(installed_modules),
-                    registry.InstalledDlls,
-                    registry.InstalledDlc
-                );
+                // Check that our solution is actually sane
+                SanityChecker.EnforceConsistency(modlist.Values.Concat(installed_modules),
+                                                 registry.InstalledDlls,
+                                                 registry.InstalledDlc);
             }
             catch (BadRelationshipsKraken k)
             {
@@ -345,7 +240,9 @@ namespace CKAN
         /// Resolves all relationships for a module.
         /// May recurse to ResolveStanza, which may add additional modules to be installed.
         /// </summary>
-        private void Resolve(CkanModule module, RelationshipResolverOptions options, IEnumerable<RelationshipDescriptor> old_stanza = null)
+        private void Resolve(CkanModule                          module,
+                             RelationshipResolverOptions         options,
+                             IEnumerable<RelationshipDescriptor> old_stanza = null)
         {
             if (alreadyResolved.Contains(module))
             {
@@ -358,7 +255,7 @@ namespace CKAN
             }
 
             // Even though we may resolve top-level suggests for our module,
-            // we don't install suggestions all the down unless with_all_suggests
+            // we don't install suggestions all the way down unless with_all_suggests
             // is true.
             var sub_options = (RelationshipResolverOptions) options.Clone();
             sub_options.with_suggests = false;
@@ -367,6 +264,14 @@ namespace CKAN
 
             log.DebugFormat("Resolving dependencies for {0}", module.identifier);
             ResolveStanza(module.depends, new SelectionReason.Depends(module), sub_options, false, old_stanza);
+
+            // TODO: RR currently conducts a depth-first resolution of requirements. While we do the
+            // right thing in processing all dependencies first, then recommends, and then suggests,
+            // we could find that a recommendation many layers deep prevents a recommendation in the
+            // original mod's recommends list.
+            //
+            // If we resolved in things breadth-first order, we're less likely to encounter surprises
+            // where a nth-deep recommend blocks a top-level recommend.
 
             if (options.with_recommends)
             {
@@ -431,8 +336,8 @@ namespace CKAN
                 }
                 else if (descriptor.ContainsAny(modlist.Keys))
                 {
-                    CkanModule module = modlist.Values
-                        .FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
+                    // Two installing mods depend on different versions of this dependency
+                    CkanModule module = modlist.Values.FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
                     if (options.proceed_with_inconsistencies)
                     {
                         conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
@@ -448,17 +353,16 @@ namespace CKAN
                 }
 
                 // If it's already installed, skip.
-                if (descriptor.MatchesAny(
-                    installed_modules,
-                    registry.InstalledDlls.ToHashSet(),
-                    registry.InstalledDlc))
+                if (descriptor.MatchesAny(installed_modules,
+                                          registry.InstalledDlls.ToHashSet(),
+                                          registry.InstalledDlc))
                 {
                     continue;
                 }
                 else if (descriptor.ContainsAny(installed_modules.Select(im => im.identifier)))
                 {
-                    CkanModule module = installed_modules
-                        .FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
+                    // We need a different version of the mod than is already installed
+                    CkanModule module = installed_modules.FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
                     if (options.proceed_with_inconsistencies)
                     {
                         conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
@@ -476,17 +380,17 @@ namespace CKAN
                 // Pass mod list in case an older version of a module is conflict-free while later versions have conflicts
                 var descriptor1 = descriptor;
                 List<CkanModule> candidates = descriptor
-                    .LatestAvailableWithProvides(registry, GameVersion, installed_modules, modlist.Values)
+                    .LatestAvailableWithProvides(registry, versionCrit, installed_modules, modlist.Values)
                     .Where(mod => !modlist.ContainsKey(mod.identifier)
-                        && descriptor1.WithinBounds(mod)
-                        && MightBeInstallable(mod, reason.Parent, installed_modules))
+                                  && descriptor1.WithinBounds(mod)
+                                  && MightBeInstallable(mod, reason.Parent, installed_modules))
                     .ToList();
                 if (!candidates.Any())
                 {
                     // Nothing found, try again while simulating an empty mod list
                     // Necessary for e.g. proceed_with_inconsistencies, conflicts will still be caught below
                     candidates = descriptor
-                        .LatestAvailableWithProvides(registry, GameVersion, new CkanModule[0])
+                        .LatestAvailableWithProvides(registry, versionCrit, new CkanModule[0])
                         .Where(mod => !modlist.ContainsKey(mod.identifier)
                             && descriptor1.WithinBounds(mod)
                             && MightBeInstallable(mod, null, new CkanModule[0]))
@@ -506,7 +410,6 @@ namespace CKAN
                 if (candidates.Count > 1)
                 {
                     // Oh no, too many to pick from!
-                    // TODO: It would be great if instead we picked the one with the most recommendations.
                     if (options.without_toomanyprovides_kraken)
                     {
                         continue;
@@ -519,7 +422,7 @@ namespace CKAN
                         List<CkanModule> provide = candidates
                             .Where(cand => old_stanza.Any(rel => rel.WithinBounds(cand)))
                             .ToList();
-                        if (!provide.Any() || provide.Count() > 1)
+                        if (provide.Count != 1)
                         {
                             //We still have either nothing, or too many to pick from
                             //Just throw the TMP now
@@ -538,11 +441,9 @@ namespace CKAN
                 // Finally, check our candidate against everything which might object
                 // to it being installed; that's all the mods which are fixed in our
                 // list thus far, as well as everything on the system.
+                var fixed_mods = modlist.Values.Concat(installed_modules).ToHashSet();
 
-                var fixed_mods = new HashSet<CkanModule>(modlist.Values);
-                fixed_mods.UnionWith(installed_modules);
-
-                CkanModule conflicting_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
+                var conflicting_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
                 if (conflicting_mod == null)
                 {
                     // Okay, looks like we want this one. Adding.
@@ -558,8 +459,8 @@ namespace CKAN
                     if (options.proceed_with_inconsistencies)
                     {
                         Add(candidate, reason);
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(conflicting_mod, candidate));
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(candidate, conflicting_mod));
+                        conflicts.Add(new ModPair(conflicting_mod, candidate));
+                        conflicts.Add(new ModPair(candidate, conflicting_mod));
                     }
                     else
                     {
@@ -649,7 +550,8 @@ namespace CKAN
             {
                 return true;
             }
-            //When checking the dependencies we assume that this module is installable
+
+            // When checking the dependencies we assume that this module is installable
             // in case a dependent depends on it
             compatible.Add(module.identifier);
 
@@ -660,7 +562,7 @@ namespace CKAN
                 // Skip dependencies satisfied by installed modules
                 .Where(depend => !depend.MatchesAny(installed, null, null))
                 // ... or by modules that are about to be installed
-                .Select(depend => depend.LatestAvailableWithProvides(registry, GameVersion, installed, toInstall)).ToList();
+                .Select(depend => depend.LatestAvailableWithProvides(registry, versionCrit, installed, toInstall)).ToList();
 
             log.DebugFormat("Trying to satisfy: {0}",
                 string.Join("; ", needed.Select(need =>
@@ -738,7 +640,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns a dictionary consisting of keyValuePairs containing conflicting mods.
+        /// Returns a dictionary consisting of KeyValuePairs containing conflicting mods.
         /// </summary>
         public Dictionary<CkanModule, String> ConflictList
         {
@@ -762,10 +664,7 @@ namespace CKAN
             }
         }
 
-        public bool IsConsistent
-        {
-            get { return !conflicts.Any(); }
-        }
+        public bool IsConsistent => !conflicts.Any();
 
         public List<SelectionReason> ReasonsFor(CkanModule mod)
         {
@@ -790,10 +689,107 @@ namespace CKAN
         /// true if auto-installed, false otherwise
         /// </returns>
         public bool IsAutoInstalled(CkanModule mod)
+            => ReasonsFor(mod).All(reason => reason is SelectionReason.Depends
+                                             && !reason.Parent.IsMetapackage);
+
+        private void AddReason(CkanModule module, SelectionReason reason)
         {
-            return ReasonsFor(mod).All(reason =>
-                reason is SelectionReason.Depends && !reason.Parent.IsMetapackage);
+            if (reasons.TryGetValue(module, out List<SelectionReason> modReasons))
+            {
+                modReasons.Add(reason);
+            }
+            else
+            {
+                reasons.Add(module, new List<SelectionReason>() { reason });
+            }
         }
+
+        /// <summary>
+        /// The list of all additional mods that need to be installed to satisfy all relationships.
+        /// </summary>
+        private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
+        private readonly List<CkanModule> user_requested_mods = new List<CkanModule>();
+
+        //TODO As the conflict detection gets more advanced there is a greater need to have messages in here
+        // as recreating them from reasons is no longer possible.
+        private readonly List<ModPair> conflicts = new List<ModPair>();
+        private readonly Dictionary<CkanModule, List<SelectionReason>> reasons =
+            new Dictionary<CkanModule, List<SelectionReason>>(new NameComparer());
+
+        private readonly IRegistryQuerier            registry;
+        private readonly GameVersionCriteria         versionCrit;
+        private readonly RelationshipResolverOptions options;
+
+        /// <summary>
+        /// The list of already installed modules.
+        /// </summary>
+        private readonly HashSet<CkanModule> installed_modules;
+
+        private HashSet<CkanModule> alreadyResolved = new HashSet<CkanModule>();
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(RelationshipResolver));
+    }
+
+    // TODO: It would be lovely to get rid of the `without` fields,
+    // and replace them with `with` fields. Humans suck at inverting
+    // cases in their heads.
+    public class RelationshipResolverOptions : ICloneable
+    {
+        /// <summary>
+        /// If true, add recommended mods, and their recommendations.
+        /// </summary>
+        public bool with_recommends = true;
+
+        /// <summary>
+        /// If true, add suggests, but not suggested suggests. :)
+        /// </summary>
+        public bool with_suggests = false;
+
+        /// <summary>
+        /// If true, add suggested modules, and *their* suggested modules, too!
+        /// </summary>
+        public bool with_all_suggests = false;
+
+        /// <summary>
+        /// If true, surpresses the TooManyProvides kraken when resolving
+        /// relationships. Otherwise, we just pick the first.
+        /// </summary>
+        public bool without_toomanyprovides_kraken = false;
+
+        /// <summary>
+        /// If true, we skip our sanity check at the end of our relationship
+        /// resolution. Note that non-sane resolutions can't actually be
+        /// installed, so this is mostly useful for giving the user feedback
+        /// on failed resolutions.
+        /// </summary>
+        public bool without_enforce_consistency = false;
+
+        /// <summary>
+        /// If true, we'll populate the `conflicts` field, rather than immediately
+        /// throwing a kraken when inconsistencies are detected. Again, these
+        /// solutions are non-installable, so mostly of use to provide user
+        /// feedback when things go wrong.
+        /// </summary>
+        public bool proceed_with_inconsistencies = false;
+
+        /// <summary>
+        /// If true, then if a module has no versions that are compatible with
+        /// the current game version, then we will consider incompatible versions
+        /// of that module.
+        /// This replaces the former behavior of ignoring compatibility for
+        /// `install identifier=version` commands.
+        /// </summary>
+        public bool allow_incompatible = false;
+
+        /// <summary>
+        /// If true, get the list of mods that should be checked for
+        /// recommendations and suggestions.
+        /// Differs from normal resolution in that it stops when
+        /// ModuleRelationshipDescriptor.suppress_recommendations==true
+        /// </summary>
+        public bool get_recommenders = false;
+
+        public object Clone() => MemberwiseClone();
     }
 
     /// <summary>

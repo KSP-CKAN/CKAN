@@ -91,13 +91,10 @@ namespace CKAN.GUI
 
         [ForbidGUICalls]
         private bool installable(ModuleInstaller installer, CkanModule module, IRegistryQuerier registry)
-        {
-            return module.IsCompatible(Main.Instance.CurrentInstance.VersionCriteria())
-                && installer.CanInstall(
-                    RelationshipResolver.DependsOnlyOpts(),
-                    new List<CkanModule>() { module },
-                    registry);
-        }
+            => module.IsCompatible(Main.Instance.CurrentInstance.VersionCriteria())
+                && installer.CanInstall(RelationshipResolver.DependsOnlyOpts(),
+                                        new List<CkanModule>() { module },
+                                        registry);
 
         private bool allowInstall(CkanModule module)
         {

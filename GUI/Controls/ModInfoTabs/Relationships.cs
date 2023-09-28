@@ -296,9 +296,10 @@ namespace CKAN.GUI
             else
             {
                 // Several found or not same id, return a "provides" node
-                return providesNode(relDescr.ToString(), relationship,
-                    dependencyModules.Select(dep => indexedNode(registry, dep, relationship, relDescr, crit))
-                );
+                return providesNode(relDescr.ToString(),
+                                    relationship,
+                                    dependencyModules.Select(dep => indexedNode(
+                                        registry, dep, relationship, relDescr, crit)));
             }
         }
 

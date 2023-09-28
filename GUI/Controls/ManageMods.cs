@@ -1220,7 +1220,7 @@ namespace CKAN.GUI
                 // Copy the new mod flag from the old list.
                 var old_new_mods = new HashSet<GUIMod>(
                     mainModList.Modules.Where(m => m.IsNew));
-                foreach (var gui_mod in gui_mods.Where(m => old_new_mods.Contains(m)))
+                foreach (var gui_mod in gui_mods.Intersect(old_new_mods))
                 {
                     gui_mod.IsNew = true;
                 }

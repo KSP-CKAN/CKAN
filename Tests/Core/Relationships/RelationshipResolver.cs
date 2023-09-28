@@ -996,7 +996,7 @@ namespace Tests.Core.Relationships
 
                 new RelationshipResolver(
                     new CkanModule[] { mod }, null, RelationshipResolver.DefaultOpts(),
-                    registry, new GameVersionCriteria (GameVersion.Parse("1.0.0")));
+                    registry, new GameVersionCriteria(GameVersion.Parse("1.0.0")));
             }
         }
 

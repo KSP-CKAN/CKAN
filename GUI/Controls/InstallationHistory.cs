@@ -88,8 +88,7 @@ namespace CKAN.GUI
                                               .First();
                     var modRows = CkanModule.FromFile(path.FullName)
                                             .depends
-                                            .Select(rel => rel as ModuleRelationshipDescriptor)
-                                            .Where(rel => rel != null)
+                                            .OfType<ModuleRelationshipDescriptor>()
                                             .Select(ItemFromRelationship)
                                             .Where(row => row != null)
                                             .ToArray();
@@ -213,8 +212,8 @@ namespace CKAN.GUI
             Install?.Invoke(ModsListView.Items
                                         .Cast<ListViewItem>()
                                         .Where(lvi => lvi.Group == NotInstalledGroup)
-                                        .Select(lvi => lvi.Tag as CkanModule)
-                                        .Where(mod => mod != null)
+                                        .Select(lvi => lvi.Tag)
+                                        .OfType<CkanModule>()
                                         .ToArray());
         }
 

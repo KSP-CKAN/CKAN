@@ -360,9 +360,7 @@ namespace CKAN.GUI
                 {
                     if (rels != null)
                     {
-                        foreach (var rel in rels
-                            .Select(rel => rel as ModuleRelationshipDescriptor)
-                            .Where(rel => rel != null))
+                        foreach (var rel in rels.OfType<ModuleRelationshipDescriptor>())
                         {
                             rel.version     = null;
                             rel.min_version = null;

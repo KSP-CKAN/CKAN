@@ -133,8 +133,7 @@ namespace CKAN.GUI
         };
 
         private Dictionary<CkanModule, String> FindConflicts()
-        {
-            return new RelationshipResolver(
+            => new RelationshipResolver(
                 RecommendedModsListView.CheckedItems.Cast<ListViewItem>()
                     .Select(item => item.Tag as CkanModule)
                     .Concat(toInstall)
@@ -142,14 +141,12 @@ namespace CKAN.GUI
                 toUninstall,
                 conflictOptions, registry, GameVersion
             ).ConflictList;
-        }
 
         private IEnumerable<ListViewItem> getRecSugRows(
             NetModuleCache cache,
             Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
             Dictionary<CkanModule, List<string>> suggestions,
-            Dictionary<CkanModule, HashSet<string>> supporters
-        )
+            Dictionary<CkanModule, HashSet<string>> supporters)
         {
             foreach (var kvp in recommendations)
             {

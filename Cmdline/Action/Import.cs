@@ -52,11 +52,10 @@ namespace CKAN.CmdLine
                     HashSet<string> possibleConfigOnlyDirs = null;
                     if (toInstall.Count > 0)
                     {
-                        installer.InstallList(
-                            toInstall,
-                            new RelationshipResolverOptions(),
-                            regMgr,
-                            ref possibleConfigOnlyDirs);
+                        installer.InstallList(toInstall,
+                                              new RelationshipResolverOptions(),
+                                              regMgr,
+                                              ref possibleConfigOnlyDirs);
                     }
                     return Exit.OK;
                 }

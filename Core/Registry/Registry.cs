@@ -38,10 +38,15 @@ namespace CKAN
         private SortedDictionary<string, Repository> repositories;
 
         // name => path
-        [JsonProperty] private  Dictionary<string, string>          installed_dlls;
-        [JsonProperty] private  Dictionary<string, InstalledModule> installed_modules;
+        [JsonProperty]
+        private Dictionary<string, string> installed_dlls;
+
+        [JsonProperty]
+        private Dictionary<string, InstalledModule> installed_modules;
+
         // filename (case insensitive on Windows) => module
-        [JsonProperty] private  Dictionary<string, string>          installed_files;
+        [JsonProperty]
+        private Dictionary<string, string> installed_files;
 
         /// <summary>
         /// Returns all the activated registries.
@@ -65,6 +70,7 @@ namespace CKAN
             InvalidateAvailableModCaches();
             repositories = value;
         }
+
         /// <summary>
         /// Wrapper around this.repositories.Clear() that invalidates
         /// available mod caches
@@ -789,11 +795,8 @@ namespace CKAN
             {
                 // For each AvailableModule, we want the latest one matching our constraints
                 return provs
-                    .Select(am => am.Latest(
-                        gameVersion,
-                        relationship_descriptor,
-                        installed ?? InstalledModules.Select(im => im.Module),
-                        toInstall))
+                    .Select(am => am.Latest(gameVersion, relationship_descriptor,
+                                            installed, toInstall))
                     .Where(m => m?.ProvidesList?.Contains(identifier) ?? false)
                     .ToList();
             }
@@ -1117,12 +1120,6 @@ namespace CKAN
             SanityChecker.EnforceConsistency(installed_modules.Select(pair => pair.Value.Module),
                                              installed_dlls.Keys, InstalledDlc);
         }
-
-        public List<string> GetSanityErrors()
-            => SanityChecker.ConsistencyErrors(installed_modules.Select(pair => pair.Value.Module),
-                                               installed_dlls.Keys,
-                                               InstalledDlc)
-                            .ToList();
 
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.

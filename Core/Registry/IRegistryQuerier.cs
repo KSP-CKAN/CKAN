@@ -16,10 +16,10 @@ namespace CKAN
     /// </summary>
     public interface IRegistryQuerier
     {
-        ReadOnlyDictionary<string, Repository> Repositories { get; }
-        IEnumerable<InstalledModule> InstalledModules { get; }
-        IEnumerable<string>          InstalledDlls    { get; }
-        IDictionary<string, ModuleVersion> InstalledDlc { get; }
+        ReadOnlyDictionary<string, Repository> Repositories     { get; }
+        IEnumerable<InstalledModule>           InstalledModules { get; }
+        IEnumerable<string>                    InstalledDlls    { get; }
+        IDictionary<string, ModuleVersion>     InstalledDlc     { get; }
 
         /// <summary>
         /// Returns a simple array of the latest compatible module for each identifier for
@@ -81,9 +81,9 @@ namespace CKAN
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// </summary>
-        IEnumerable<string> FindReverseDependencies(
-            List<string> modulesToRemove, List<CkanModule> modulesToInstall = null, Func<RelationshipDescriptor, bool> satisfiedFilter = null
-        );
+        IEnumerable<string> FindReverseDependencies(List<string> modulesToRemove,
+                                                    List<CkanModule> modulesToInstall = null,
+                                                    Func<RelationshipDescriptor, bool> satisfiedFilter = null);
 
         /// <summary>
         /// Gets the installed version of a mod. Does not check for provided or autodetected mods.

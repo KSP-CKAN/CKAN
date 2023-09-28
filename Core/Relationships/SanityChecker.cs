@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using log4net;
-
 using CKAN.Extensions;
 using CKAN.Versioning;
 
@@ -13,47 +11,14 @@ namespace CKAN
     /// </summary>
     public static class SanityChecker
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(SanityChecker));
-
-        /// <summary>
-        ///     Checks the list of modules for consistency errors, returning a list of
-        ///     errors found. The list will be empty if everything is fine.
-        /// </summary>
-        public static ICollection<string> ConsistencyErrors(
-            IEnumerable<CkanModule> modules,
-            IEnumerable<string> dlls,
-            IDictionary<string, ModuleVersion> dlc)
-        {
-            List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
-            List<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts;
-            var errors = new HashSet<string>();
-            if (!CheckConsistency(modules, dlls, dlc, out unmetDepends, out conflicts))
-            {
-                foreach (var kvp in unmetDepends)
-                {
-                    errors.Add(string.Format(
-                        Properties.Resources.SanityCheckerUnsatisfiedDependency,
-                        kvp.Key, kvp.Value));
-                }
-                foreach (var kvp in conflicts)
-                {
-                    errors.Add(string.Format(
-                        Properties.Resources.SanityCheckerConflictsWith,
-                        kvp.Key, kvp.Value));
-                }
-            }
-            return errors;
-        }
-
         /// <summary>
         /// Ensures all modules in the list provided can co-exist.
         /// Throws a BadRelationshipsKraken describing the problems otherwise.
         /// Does nothing if the modules can happily co-exist.
         /// </summary>
-        public static void EnforceConsistency(
-            IEnumerable<CkanModule> modules,
-            IEnumerable<string> dlls = null,
-            IDictionary<string, ModuleVersion> dlc = null)
+        public static void EnforceConsistency(IEnumerable<CkanModule>            modules,
+                                              IEnumerable<string>                dlls = null,
+                                              IDictionary<string, ModuleVersion> dlc  = null)
         {
             List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
             List<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts;
@@ -65,16 +30,13 @@ namespace CKAN
 
         /// <summary>
         /// Returns true if the mods supplied can co-exist. This checks depends/pre-depends/conflicts only.
+        /// This is only used by tests!
         /// </summary>
-        public static bool IsConsistent(
-            IEnumerable<CkanModule> modules,
-            IEnumerable<string> dlls = null,
-            IDictionary<string, ModuleVersion> dlc = null)
-        {
-            List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
-            List<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts;
-            return CheckConsistency(modules, dlls, dlc, out unmetDepends, out conflicts);
-        }
+        public static bool IsConsistent(IEnumerable<CkanModule>            modules,
+                                        IEnumerable<string>                dlls = null,
+                                        IDictionary<string, ModuleVersion> dlc  = null)
+            => CheckConsistency(modules, dlls, dlc,
+                                out var _, out var _);
 
         private static bool CheckConsistency(
             IEnumerable<CkanModule> modules,
@@ -147,24 +109,6 @@ namespace CKAN
             return confl;
         }
 
-        private sealed class ProvidesInfo
-        {
-            public string ProviderIdentifier     { get; }
-            public ModuleVersion ProviderVersion { get; }
-            public string ProvideeIdentifier     { get; }
-            public ModuleVersion ProvideeVersion { get; }
 
-            public ProvidesInfo(
-                string        providerIdentifier,
-                ModuleVersion providerVersion,
-                string        provideeIdentifier,
-                ModuleVersion provideeVersion)
-            {
-                ProviderIdentifier = providerIdentifier;
-                ProviderVersion    = providerVersion;
-                ProvideeIdentifier = provideeIdentifier;
-                ProvideeVersion    = provideeVersion;
-            }
-        }
     }
 }

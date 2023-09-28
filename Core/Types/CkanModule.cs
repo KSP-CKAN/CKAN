@@ -574,12 +574,6 @@ namespace CKAN
             => (realVers?.LastOrDefault(v => range.Contains(v))
                         ?? LatestCompatibleGameVersion());
 
-        /// <summary>
-        /// Returns true if this module provides the functionality requested.
-        /// </summary>
-        public bool DoesProvide(string identifier)
-            => this.identifier == identifier || provides.Contains(identifier);
-
         public bool IsMetapackage => kind == "metapackage";
 
         public bool IsDLC => kind == "dlc";

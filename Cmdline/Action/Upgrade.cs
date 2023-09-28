@@ -134,7 +134,7 @@ namespace CKAN.CmdLine
             }
             catch (ModuleNotFoundKraken kraken)
             {
-                user.RaiseMessage(Properties.Resources.UpgradeNotFound, kraken.module);
+                user.RaiseMessage(Properties.Resources.UpgradeNotFound, $"{kraken.module} {kraken.version}");
                 return Exit.ERROR;
             }
             catch (InconsistentKraken kraken)
@@ -166,7 +166,7 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for output</param>
         /// <param name="instance">Game instance to use</param>
         /// <param name="modules">List of modules to upgrade</param>
-        public void UpgradeModules(GameInstanceManager manager, IUser user, CKAN.GameInstance instance, bool ConfirmPrompt, List<CkanModule> modules)
+        private void UpgradeModules(GameInstanceManager manager, IUser user, CKAN.GameInstance instance, bool ConfirmPrompt, List<CkanModule> modules)
         {
             UpgradeModules(manager, user, instance, repoData,
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs) =>
@@ -183,7 +183,7 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for output</param>
         /// <param name="instance">Game instance to use</param>
         /// <param name="identsAndVersions">List of identifier[=version] to upgrade</param>
-        public void UpgradeModules(GameInstanceManager manager, IUser user, CKAN.GameInstance instance, List<string> identsAndVersions)
+        private void UpgradeModules(GameInstanceManager manager, IUser user, CKAN.GameInstance instance, List<string> identsAndVersions)
         {
             UpgradeModules(manager, user, instance, repoData,
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs) =>

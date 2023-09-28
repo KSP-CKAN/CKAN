@@ -134,9 +134,10 @@ namespace CKAN
 
         private static RepositoryData FromTarGz(string path, IGame game, IProgress<long> progress)
         {
-            using (var inputStream = File.OpenRead(path))
-            using (var gzipStream  = new GZipInputStream(inputStream))
-            using (var tarStream   = new TarInputStream(gzipStream, Encoding.UTF8))
+            using (var inputStream    = File.OpenRead(path))
+            using (var progressStream = new ReadProgressStream(inputStream, progress))
+            using (var gzipStream     = new GZipInputStream(progressStream))
+            using (var tarStream      = new TarInputStream(gzipStream, Encoding.UTF8))
             {
                 var modules = new List<CkanModule>();
                 SortedDictionary<string, int> counts = null;
@@ -179,7 +180,9 @@ namespace CKAN
 
         private static RepositoryData FromZip(string path, IGame game, IProgress<long> progress)
         {
-            using (var zipfile = new ZipFile(path))
+            using (var inputStream = File.OpenRead(path))
+            using (var progressStream = new ReadProgressStream(inputStream, progress))
+            using (var zipfile = new ZipFile(progressStream))
             {
                 var modules = new List<CkanModule>();
                 SortedDictionary<string, int> counts = null;
