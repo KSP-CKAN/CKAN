@@ -712,9 +712,12 @@ namespace CKAN
         {
             get
             {
-                if (tags == null)
+                lock (tagMutex)
                 {
-                    BuildTagIndex();
+                    if (tags == null)
+                    {
+                        BuildTagIndex();
+                    }
                 }
                 return tags;
             }
@@ -725,13 +728,18 @@ namespace CKAN
         {
             get
             {
-                if (untagged == null)
+                lock (tagMutex)
                 {
-                    BuildTagIndex();
+                    if (untagged == null)
+                    {
+                        BuildTagIndex();
+                    }
                 }
                 return untagged;
             }
         }
+
+        private object tagMutex = new object();
 
         /// <summary>
         /// Assemble a mapping from tags to modules
