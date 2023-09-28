@@ -174,7 +174,8 @@ namespace CKAN.GUI
                     CkanModule module_by_version = registry.GetModuleByVersion(depMod.identifier,
                     depMod.version)
                         ?? registry.InstalledModule(dependent).Module;
-                    changeSet.Add(new ModChange(module_by_version, GUIModChangeType.Remove));
+                    changeSet.Add(new ModChange(module_by_version, GUIModChangeType.Remove,
+                                                new SelectionReason.DependencyRemoved()));
                     modules_to_remove.Add(module_by_version);
                 }
             }

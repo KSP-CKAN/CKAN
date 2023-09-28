@@ -296,6 +296,7 @@ Free up space on that device or change your settings to use another location.
   <data name="RelationshipResolverModNotInList" xml:space="preserve"><value>Mod {0} is not in the list</value></data>
   <data name="RelationshipResolverInstalledReason" xml:space="preserve"><value>Currently installed</value></data>
   <data name="RelationshipResolverUserReason" xml:space="preserve"><value>Requested by user</value></data>
+  <data name="RelationshipResolverDependencyRemoved" xml:space="preserve"><value>Dependency removed</value></data>
   <data name="RelationshipResolverNoLongerUsedReason" xml:space="preserve"><value>Auto-installed, depending modules removed</value></data>
   <data name="RelationshipResolverReplacementReason" xml:space="preserve"><value>Replacing {0}</value></data>
   <data name="RelationshipResolverSuggestedReason" xml:space="preserve"><value>Suggested by {0}</value></data>

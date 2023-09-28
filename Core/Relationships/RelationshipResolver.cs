@@ -776,6 +776,12 @@ namespace CKAN
                 => Properties.Resources.RelationshipResolverUserReason;
         }
 
+        public class DependencyRemoved : SelectionReason
+        {
+            public override string Reason
+                => Properties.Resources.RelationshipResolverDependencyRemoved;
+        }
+
         public class NoLongerUsed : SelectionReason
         {
             public override string Reason
