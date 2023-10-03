@@ -23,7 +23,7 @@ namespace Tests.Core.Relationships
         [SetUp]
         public void Setup()
         {
-            options = RelationshipResolver.DefaultOpts();
+            options = RelationshipResolverOptions.DefaultOpts();
             generator = new RandomModuleGenerator(new Random(0451));
             //Sanity checker means even incorrect RelationshipResolver logic was passing
             options.without_enforce_consistency = true;
@@ -33,7 +33,7 @@ namespace Tests.Core.Relationships
         public void Constructor_WithoutModules_AlwaysReturns()
         {
             var registry = CKAN.Registry.Empty();
-            options = RelationshipResolver.DefaultOpts();
+            options = RelationshipResolverOptions.DefaultOpts();
             Assert.DoesNotThrow(() => new RelationshipResolver(new List<CkanModule>(),
                 null, options, registry, null));
         }
@@ -984,7 +984,7 @@ namespace Tests.Core.Relationships
                 CkanModule mod = generator.GeneratorRandomModule(depends: depends);
 
                 new RelationshipResolver(
-                    new CkanModule[] { mod }, null, RelationshipResolver.DefaultOpts(),
+                    new CkanModule[] { mod }, null, RelationshipResolverOptions.DefaultOpts(),
                     registry, new GameVersionCriteria(GameVersion.Parse("1.0.0")));
             }
         }

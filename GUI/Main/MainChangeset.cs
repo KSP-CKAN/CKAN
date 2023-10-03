@@ -47,7 +47,7 @@ namespace CKAN.GUI
                                               // Include all removes and upgrades
                                               || ch.ChangeType != GUIModChangeType.Install)
                                  .ToList(),
-                        RelationshipResolver.DependsOnlyOpts()));
+                        RelationshipResolverOptions.DependsOnlyOpts()));
             }
             catch (InvalidOperationException)
             {

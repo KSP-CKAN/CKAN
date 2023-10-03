@@ -362,7 +362,7 @@ namespace CKAN
             var autoInstIds  = autoInstMods.Select(im => im.Module.identifier).ToHashSet();
 
             // Need to get the full changeset for this to work as intended
-            RelationshipResolverOptions opts = RelationshipResolver.DependsOnlyOpts();
+            RelationshipResolverOptions opts = RelationshipResolverOptions.DependsOnlyOpts();
             opts.without_toomanyprovides_kraken = true;
             opts.without_enforce_consistency    = true;
             opts.proceed_with_inconsistencies   = true;

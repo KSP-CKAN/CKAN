@@ -55,7 +55,7 @@ namespace CKAN.GUI
                     // Resolve the provides relationships in the dependencies
                     Wait.StartWaiting(InstallMods, PostInstallMods, true,
                         new InstallArgument(userChangeSet,
-                                            RelationshipResolver.DependsOnlyOpts()));
+                                            RelationshipResolverOptions.DependsOnlyOpts()));
                 }
             }
             catch

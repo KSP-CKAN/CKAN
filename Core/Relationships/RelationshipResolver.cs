@@ -70,30 +70,6 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns the default options for relationship resolution.
-        /// </summary>
-        public static RelationshipResolverOptions DefaultOpts()
-            // TODO: This should just be able to return a new RelationshipResolverOptions
-            // and the defaults in the class definition should do the right thing.
-            => new RelationshipResolverOptions
-            {
-                with_recommends   = true,
-                with_suggests     = false,
-                with_all_suggests = false,
-            };
-
-        /// <summary>
-        /// Options to install without recommendations.
-        /// </summary>
-        public static RelationshipResolverOptions DependsOnlyOpts()
-            => new RelationshipResolverOptions
-            {
-                with_recommends   = false,
-                with_suggests     = false,
-                with_all_suggests = false,
-            };
-
-        /// <summary>
         /// Add modules to consideration of the relationship resolver.
         /// </summary>
         /// <param name="modules">Modules to attempt to install</param>
@@ -190,15 +166,10 @@ namespace CKAN
                 alreadyResolved.Add(module);
             }
 
-            // Even though we may resolve top-level suggests for our module,
-            // we don't install suggestions all the way down unless with_all_suggests
-            // is true.
-            var sub_options = options.WithoutSuggestions();
-
             old_stanza = old_stanza?.Memoize();
 
             log.DebugFormat("Resolving dependencies for {0}", module.identifier);
-            ResolveStanza(module.depends, new SelectionReason.Depends(module), sub_options, false, old_stanza);
+            ResolveStanza(module.depends, new SelectionReason.Depends(module), options, false, old_stanza);
 
             // TODO: RR currently conducts a depth-first resolution of requirements. While we do the
             // right thing in processing all dependencies first, then recommends, and then suggests,
@@ -211,13 +182,19 @@ namespace CKAN
             if (options.with_recommends)
             {
                 log.DebugFormat("Resolving recommends for {0}", module.identifier);
-                ResolveStanza(module.recommends, new SelectionReason.Recommended(module), sub_options, true, old_stanza);
+                ResolveStanza(module.recommends, new SelectionReason.Recommended(module, 0),
+                              options.get_recommenders ? options.WithoutRecommendations()
+                                                       : options.WithoutSuggestions(),
+                              true, old_stanza);
             }
 
             if (options.with_suggests || options.with_all_suggests)
             {
                 log.DebugFormat("Resolving suggests for {0}", module.identifier);
-                ResolveStanza(module.suggests, new SelectionReason.Suggested(module), sub_options, true, old_stanza);
+                ResolveStanza(module.suggests, new SelectionReason.Suggested(module),
+                              options.get_recommenders ? options.WithoutRecommendations()
+                                                       : options.WithoutSuggestions(),
+                              true, old_stanza);
             }
         }
 
@@ -252,7 +229,7 @@ namespace CKAN
 
                 if (options.get_recommenders && descriptor.suppress_recommendations)
                 {
-                    log.DebugFormat("Skipping {0} because get_recommenders option is set");
+                    log.DebugFormat("Skipping {0} because get_recommenders option is set", descriptor.ToString());
                     continue;
                 }
                 options = orig_options.OptionsFor(descriptor);
@@ -339,10 +316,10 @@ namespace CKAN
                 {
                     if (!soft_resolve)
                     {
-                        log.InfoFormat("Dependency on {0} found but it is not listed in the index, or not available for your version of KSP.", descriptor.ToString());
+                        log.InfoFormat("Dependency on {0} found but it is not listed in the index, or not available for your game version.", descriptor.ToString());
                         throw new DependencyNotSatisfiedKraken(reason.Parent, descriptor.ToString());
                     }
-                    log.InfoFormat("{0} is recommended/suggested but it is not listed in the index, or not available for your version of KSP.", descriptor.ToString());
+                    log.InfoFormat("{0} is recommended/suggested but it is not listed in the index, or not available for your game version.", descriptor.ToString());
                     continue;
                 }
                 if (candidates.Count > 1)
@@ -350,6 +327,16 @@ namespace CKAN
                     // Oh no, too many to pick from!
                     if (options.without_toomanyprovides_kraken)
                     {
+                        if (options.get_recommenders)
+                        {
+                            for (int i = 0; i < candidates.Count; ++i)
+                            {
+                                var cand = candidates[i];
+                                Add(cand, reason is SelectionReason.Recommended rec
+                                              ? rec.WithIndex(i)
+                                              : reason);
+                            }
+                        }
                         continue;
                     }
 
@@ -388,25 +375,22 @@ namespace CKAN
                     Add(candidate, reason);
                     Resolve(candidate, options, stanza);
                 }
+                else if (options.proceed_with_inconsistencies)
+                {
+                    Add(candidate, reason);
+                    conflicts.Add(new ModPair(conflicting_mod, candidate));
+                    conflicts.Add(new ModPair(candidate, conflicting_mod));
+                }
                 else if (soft_resolve)
                 {
                     log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);
                 }
                 else
                 {
-                    if (options.proceed_with_inconsistencies)
-                    {
-                        Add(candidate, reason);
-                        conflicts.Add(new ModPair(conflicting_mod, candidate));
-                        conflicts.Add(new ModPair(candidate, conflicting_mod));
-                    }
-                    else
-                    {
-                        throw new InconsistentKraken(string.Format(
-                            Properties.Resources.RelationshipResolverConflictsWith,
-                            conflictingModDescription(conflicting_mod, null),
-                            conflictingModDescription(candidate, reason.Parent)));
-                    }
+                    throw new InconsistentKraken(string.Format(
+                        Properties.Resources.RelationshipResolverConflictsWith,
+                        conflictingModDescription(conflicting_mod, null),
+                        conflictingModDescription(candidate, reason.Parent)));
                 }
             }
         }
@@ -581,6 +565,47 @@ namespace CKAN
                                                            .Select(r => r.Parent)
                                                            .Except(found));
 
+        public IEnumerable<CkanModule> Dependencies()
+            => BreadthFirstSearch(user_requested_mods,
+                                  (searching, found) =>
+                                      modlist.Values
+                                             .Except(found)
+                                             .Where(m => ReasonsFor(m).Any(r => r is SelectionReason.Depends
+                                                                                && r.Parent == searching)));
+
+        public IEnumerable<CkanModule> Recommendations(HashSet<CkanModule> dependencies)
+            => modlist.Values.Except(dependencies)
+                             .Where(m => ReasonsFor(m).Any(r => r is SelectionReason.Recommended
+                                                                && dependencies.Contains(r.Parent)))
+                             .OrderByDescending(totalDependers);
+
+        public IEnumerable<CkanModule> Suggestions(HashSet<CkanModule> dependencies,
+                                                   List<CkanModule>    recommendations)
+            => modlist.Values.Except(dependencies)
+                             .Except(recommendations)
+                             .Where(m => ReasonsFor(m).Any(r => r is SelectionReason.Suggested
+                                                                && dependencies.Contains(r.Parent)))
+                             .OrderByDescending(totalDependers);
+
+        public ParallelQuery<KeyValuePair<CkanModule, HashSet<string>>> Supporters(
+            HashSet<CkanModule>     supported,
+            IEnumerable<CkanModule> toExclude)
+            => registry.CompatibleModules(versionCrit)
+                       .Except(toExclude)
+                       .AsParallel()
+                       // Find installable modules with "supports" relationships
+                       .Where(mod => !registry.IsInstalled(mod.identifier)
+                                     && mod.supports != null)
+                       // Find each module that "supports" something we're installing
+                       .Select(mod => new KeyValuePair<CkanModule, HashSet<string>>(
+                                          mod,
+                                          mod.supports
+                                             .Where(rel => rel.MatchesAny(supported, null, null))
+                                             .Select(rel => (rel as ModuleRelationshipDescriptor)?.name)
+                                             .Where(name => !string.IsNullOrEmpty(name))
+                                             .ToHashSet()))
+                       .Where(kvp => kvp.Value.Count > 0);
+
         /// <summary>
         /// Returns a dictionary consisting of KeyValuePairs containing conflicting mods.
         /// The keys are the mods that the user chose that led to the conflict being in the list!
@@ -680,6 +705,40 @@ namespace CKAN
     public class RelationshipResolverOptions
     {
         /// <summary>
+        /// Default options for relationship resolution.
+        /// </summary>
+        public static RelationshipResolverOptions DefaultOpts()
+            => new RelationshipResolverOptions();
+
+        /// <summary>
+        /// Options to install without recommendations.
+        /// </summary>
+        public static RelationshipResolverOptions DependsOnlyOpts()
+            => new RelationshipResolverOptions()
+            {
+                with_recommends   = false,
+                with_suggests     = false,
+                with_all_suggests = false,
+            };
+
+        /// <summary>
+        /// Options to find all dependencies, recommendations, and suggestions
+        /// of anything in the changeset (except when suppress_recommendations==true),
+        /// without throwing exceptions, so the calling code can decide what to do about conflicts
+        /// </summary>
+        public static RelationshipResolverOptions KitchenSinkOpts()
+            => new RelationshipResolverOptions()
+            {
+                with_recommends                = true,
+                with_suggests                  = true,
+                with_all_suggests              = true,
+                without_toomanyprovides_kraken = true,
+                without_enforce_consistency    = true,
+                proceed_with_inconsistencies   = true,
+                get_recommenders               = true,
+            };
+
+        /// <summary>
         /// If true, add recommended mods, and their recommendations.
         /// </summary>
         public bool with_recommends = true;
@@ -736,7 +795,7 @@ namespace CKAN
         public RelationshipResolverOptions OptionsFor(RelationshipDescriptor descr)
             => descr.suppress_recommendations ? WithoutRecommendations() : this;
 
-        private RelationshipResolverOptions WithoutRecommendations()
+        public RelationshipResolverOptions WithoutRecommendations()
         {
             if (with_recommends || with_all_suggests || with_suggests)
             {
@@ -770,8 +829,7 @@ namespace CKAN
     {
         // Currently assumed to exist for any relationship other than UserRequested or Installed
         public virtual CkanModule Parent { get; protected set; }
-        public abstract string Reason { get; }
-        public virtual string DescribeWith(IEnumerable<SelectionReason> others) => Reason;
+        public virtual string DescribeWith(IEnumerable<SelectionReason> others) => ToString();
 
         public class Installed : SelectionReason
         {
@@ -784,7 +842,7 @@ namespace CKAN
                 }
             }
 
-            public override string Reason
+            public override string ToString()
                 => Properties.Resources.RelationshipResolverInstalledReason;
         }
 
@@ -799,19 +857,19 @@ namespace CKAN
                 }
             }
 
-            public override string Reason
+            public override string ToString()
                 => Properties.Resources.RelationshipResolverUserReason;
         }
 
         public class DependencyRemoved : SelectionReason
         {
-            public override string Reason
+            public override string ToString()
                 => Properties.Resources.RelationshipResolverDependencyRemoved;
         }
 
         public class NoLongerUsed : SelectionReason
         {
-            public override string Reason
+            public override string ToString()
                 => Properties.Resources.RelationshipResolverNoLongerUsedReason;
         }
 
@@ -823,7 +881,7 @@ namespace CKAN
                 Parent = module;
             }
 
-            public override string Reason
+            public override string ToString()
                 => string.Format(Properties.Resources.RelationshipResolverReplacementReason, Parent.name);
         }
 
@@ -835,7 +893,7 @@ namespace CKAN
                 Parent = module;
             }
 
-            public override string Reason
+            public override string ToString()
                 => string.Format(Properties.Resources.RelationshipResolverSuggestedReason, Parent.name);
         }
 
@@ -847,7 +905,7 @@ namespace CKAN
                 Parent = module;
             }
 
-            public override string Reason
+            public override string ToString()
                 => string.Format(Properties.Resources.RelationshipResolverDependsReason, Parent.name);
 
             public override string DescribeWith(IEnumerable<SelectionReason> others)
@@ -857,13 +915,22 @@ namespace CKAN
 
         public sealed class Recommended : SelectionReason
         {
-            public Recommended(CkanModule module)
+            public Recommended(CkanModule module, int providesIndex)
             {
-                if (module == null) throw new ArgumentNullException();
-                Parent = module;
+                if (module == null)
+                {
+                    throw new ArgumentNullException();
+                }
+                Parent        = module;
+                ProvidesIndex = providesIndex;
             }
 
-            public override string Reason
+            public readonly int ProvidesIndex;
+
+            public Recommended WithIndex(int providesIndex)
+                => new Recommended(Parent, providesIndex);
+
+            public override string ToString()
                 => string.Format(Properties.Resources.RelationshipResolverRecommendedReason, Parent.name);
         }
     }

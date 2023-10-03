@@ -95,11 +95,20 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        private bool installable(ModuleInstaller installer, CkanModule module, IRegistryQuerier registry)
-            => module.IsCompatible(Main.Instance.CurrentInstance.VersionCriteria())
-                && installer.CanInstall(RelationshipResolver.DependsOnlyOpts(),
-                                        new List<CkanModule>() { module },
-                                        registry);
+        private static bool installable(ModuleInstaller     installer,
+                                        CkanModule          module,
+                                        IRegistryQuerier    registry)
+            => installable(installer, module, registry, Main.Instance.CurrentInstance.VersionCriteria());
+
+        [ForbidGUICalls]
+        private static bool installable(ModuleInstaller     installer,
+                                        CkanModule          module,
+                                        IRegistryQuerier    registry,
+                                        GameVersionCriteria crit)
+            => module.IsCompatible(crit)
+                && installer.CanInstall(new List<CkanModule>() { module },
+                                        RelationshipResolverOptions.DependsOnlyOpts(),
+                                        registry, crit);
 
         private bool allowInstall(CkanModule module)
         {
