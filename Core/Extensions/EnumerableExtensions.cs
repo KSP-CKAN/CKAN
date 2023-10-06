@@ -141,6 +141,7 @@ namespace CKAN.Extensions
         }
 
 #if NET45
+
         /// <summary>
         /// Make pairs out of the elements of two sequences
         /// </summary>
@@ -149,7 +150,6 @@ namespace CKAN.Extensions
         /// <returns>Sequence of pairs of one element from seq1 and one from seq2</returns>
         public static IEnumerable<Tuple<T1, T2>> Zip<T1, T2>(this IEnumerable<T1> seq1, IEnumerable<T2> seq2)
             => seq1.Zip(seq2, (item1, item2) => new Tuple<T1, T2>(item1, item2));
-#endif
 
         /// <summary>
         /// Enable a `foreach` over a sequence of tuples
@@ -180,6 +180,24 @@ namespace CKAN.Extensions
         }
 
         /// <summary>
+        /// Enable a `foreach` over a sequence of tuples
+        /// </summary>
+        /// <param name="tuple">A tuple to deconstruct</param>
+        /// <param name="item1">Set to the first value from the tuple</param>
+        /// <param name="item2">Set to the second value from the tuple</param>
+        public static void Deconstruct<T1, T2, T3, T4>(this Tuple<T1, T2, T3, T4> tuple,
+                                                       out  T1                    item1,
+                                                       out  T2                    item2,
+                                                       out  T3                    item3,
+                                                       out  T4                    item4)
+        {
+            item1 = tuple.Item1;
+            item2 = tuple.Item2;
+            item3 = tuple.Item3;
+            item4 = tuple.Item4;
+        }
+
+        /// <summary>
         /// Enable a `foreach` over a sequence of key value pairs
         /// </summary>
         /// <param name="tuple">A tuple to deconstruct</param>
@@ -190,6 +208,9 @@ namespace CKAN.Extensions
             key = kvp.Key;
             val = kvp.Value;
         }
+
+#endif
+
     }
 
     /// <summary>
