@@ -32,7 +32,7 @@ namespace CKAN.GUI
         /// null otherwise.
         /// Used for generating this mod's part of the change set.
         /// </summary>
-        public  CkanModule      SelectedMod
+        public CkanModule SelectedMod
         {
             get => selectedMod;
             set
@@ -40,24 +40,6 @@ namespace CKAN.GUI
                 if (!(selectedMod?.Equals(value) ?? value?.Equals(selectedMod) ?? true))
                 {
                     selectedMod = value;
-
-                    if (IsInstalled && HasUpdate)
-                    {
-                        var isLatest = (LatestCompatibleMod?.Equals(selectedMod) ?? false);
-                        if (IsUpgradeChecked ^ isLatest)
-                        {
-                            // Try upgrading if they pick the latest
-                            Main.Instance.ManageMods.MarkModForUpdate(Identifier, isLatest);
-                        }
-
-                    }
-                    Main.Instance.ManageMods.MarkModForInstall(Identifier, selectedMod == null);
-
-                    Main.Instance.ManageMods.UpdateChangeSetAndConflicts(
-                        currentInstance,
-                        RegistryManager.Instance(currentInstance,
-                            ServiceLocator.Container.Resolve<RepositoryDataManager>()).registry);
-
                     OnPropertyChanged();
                 }
             }
@@ -77,7 +59,7 @@ namespace CKAN.GUI
         public string Name { get; private set; }
         public bool IsInstalled { get; private set; }
         public bool IsAutoInstalled { get; private set; }
-        public bool HasUpdate { get; private set; }
+        public bool HasUpdate { get; set; }
         public bool HasReplacement { get; private set; }
         public bool IsIncompatible { get; private set; }
         public bool IsAutodetected { get; private set; }
@@ -102,9 +84,6 @@ namespace CKAN.GUI
         public string Abstract { get; private set; }
         public string Description { get; private set; }
         public string Identifier { get; private set; }
-        public bool IsInstallChecked { get; set; }
-        public bool IsUpgradeChecked { get; private set; }
-        public bool IsReplaceChecked { get; private set; }
         public bool IsNew { get; set; }
         public bool IsCKAN => Mod != null;
         public string Abbrevation { get; private set; }
@@ -148,7 +127,6 @@ namespace CKAN.GUI
             : this(instMod.Module, repoDataMgr, registry, current_game_version, incompatible, hideEpochs, hideV)
         {
             IsInstalled      = true;
-            IsInstallChecked = true;
             InstalledMod     = instMod;
             selectedMod      = registry.GetModuleByVersion(instMod.identifier, instMod.Module.version)
                                ?? instMod.Module;
@@ -187,7 +165,6 @@ namespace CKAN.GUI
             Description   = mod.description?.Trim() ?? string.Empty;
             Abbrevation   = new string(Name.Split(' ').Where(s => s.Length > 0).Select(s => s[0]).ToArray());
 
-            HasUpdate      = registry.HasUpdate(mod.identifier, current_game_version);
             HasReplacement = registry.GetReplacement(mod, current_game_version) != null;
             DownloadSize   = mod.download_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.download_size);
             InstallSize    = mod.install_size  == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.install_size);
@@ -206,7 +183,7 @@ namespace CKAN.GUI
                 if (GameCompatibilityVersion.IsAny)
                 {
                     GameCompatibilityVersion = mod.LatestCompatibleRealGameVersion(
-                        manager.CurrentInstance?.game.KnownVersions
+                        currentInstance?.game.KnownVersions
                         ?? new List<GameVersion>() {});
                 }
             }
@@ -327,124 +304,34 @@ namespace CKAN.GUI
         /// <returns>The CkanModule associated with this GUIMod or null if there is none</returns>
         public CkanModule ToModule() => Mod;
 
-        public IEnumerable<ModChange> GetModChanges()
+        public IEnumerable<ModChange> GetModChanges(bool replaceChecked)
         {
-            bool selectedIsInstalled = SelectedMod?.Equals(InstalledMod?.Module)
-                ?? InstalledMod?.Module.Equals(SelectedMod)
-                // Both null
-                ?? true;
-            if (IsInstalled && IsInstallChecked && HasUpdate && IsUpgradeChecked)
-            {
-                yield return new ModUpgrade(Mod,
-                                            GUIModChangeType.Update,
-                                            SelectedMod,
-                                            false);
-            }
-            else if (IsReplaceChecked)
+            if (replaceChecked)
             {
                 yield return new ModChange(Mod, GUIModChangeType.Replace);
             }
-            else if (!selectedIsInstalled)
+            else if (!(SelectedMod?.Equals(InstalledMod?.Module)
+                  ?? InstalledMod?.Module.Equals(SelectedMod)
+                  // Both null
+                  ?? true))
             {
-                if (InstalledMod != null)
+                if (InstalledMod != null && SelectedMod == LatestAvailableMod)
                 {
-                    yield return new ModChange(InstalledMod.Module, GUIModChangeType.Remove);
+                    yield return new ModUpgrade(Mod,
+                                                GUIModChangeType.Update,
+                                                SelectedMod,
+                                                false);
                 }
-                if (SelectedMod != null)
+                else
                 {
-                    yield return new ModChange(SelectedMod, GUIModChangeType.Install);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Set the properties to match a change set element.
-        /// Doesn't update grid, use SetInstallChecked or SetUpgradeChecked
-        /// if you need to update the grid.
-        /// </summary>
-        /// <param name="change">Type of change</param>
-        public void SetRequestedChange(GUIModChangeType change)
-        {
-            switch (change)
-            {
-                case GUIModChangeType.Install:
-                    IsInstallChecked = true;
-                    IsUpgradeChecked = false;
-                    break;
-                case GUIModChangeType.Remove:
-                    IsInstallChecked = false;
-                    IsUpgradeChecked = false;
-                    IsReplaceChecked = false;
-                    break;
-                case GUIModChangeType.Update:
-                    IsInstallChecked = true;
-                    IsUpgradeChecked = true;
-                    break;
-                case GUIModChangeType.Replace:
-                    IsInstallChecked = true;
-                    IsReplaceChecked = true;
-                    break;
-            }
-        }
-
-        public void SetUpgradeChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
-        {
-            if (row?.Cells[col.Index] is DataGridViewCheckBoxCell update_cell)
-            {
-                var old_value = (bool) update_cell.Value;
-
-                bool value = set_value_to ?? old_value;
-                IsUpgradeChecked = value;
-                if (old_value != value)
-                {
-                    update_cell.Value = value;
-                    SelectedMod = value ? LatestCompatibleMod
-                                        : IsAutodetected ? null
-                                                         : (SelectedMod ?? InstalledMod?.Module);
-                }
-                else if (!set_value_to.HasValue)
-                {
-                    var isLatest = (LatestCompatibleMod?.Equals(selectedMod) ?? false);
-                    SelectedMod = value ? LatestCompatibleMod
-                                        : isLatest ? InstalledMod?.Module
-                                                   : SelectedMod;
-                }
-            }
-        }
-
-        public void SetInstallChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
-        {
-            if (row?.Cells[col.Index] is DataGridViewCheckBoxCell install_cell)
-            {
-                bool changeTo = set_value_to ?? (bool)install_cell.Value;
-                if (IsInstallChecked != changeTo)
-                {
-                    IsInstallChecked = changeTo;
-                }
-                SelectedMod = changeTo ? (SelectedMod ?? Mod) : null;
-                // Setting this property causes ModGrid_CellValueChanged to be called,
-                // which calls SetInstallChecked again. Treat it conservatively.
-                if ((bool)install_cell.Value != IsInstallChecked)
-                {
-                    install_cell.Value = IsInstallChecked;
-                    // This call is needed to force the UI to update,
-                    // otherwise the checkbox will look checked when it's unchecked or vice versa
-                    row.DataGridView?.RefreshEdit();
-                }
-            }
-        }
-
-        public void SetReplaceChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
-        {
-            if (row.Cells[col.Index] is DataGridViewCheckBoxCell replace_cell)
-            {
-                var old_value = (bool) replace_cell.Value;
-
-                bool value = set_value_to ?? old_value;
-                IsReplaceChecked = value;
-                if (old_value != value)
-                {
-                    replace_cell.Value = value;
+                    if (InstalledMod != null)
+                    {
+                        yield return new ModChange(InstalledMod.Module, GUIModChangeType.Remove);
+                    }
+                    if (SelectedMod != null)
+                    {
+                        yield return new ModChange(SelectedMod, GUIModChangeType.Install);
+                    }
                 }
             }
         }

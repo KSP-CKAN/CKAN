@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Linq;
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
@@ -42,9 +43,18 @@ namespace CKAN.GUI
                     new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser).ImportFiles(
                         GetFiles(dlg.FileNames),
                         currentUser,
-                        (CkanModule mod) => ManageMods.MarkModForInstall(mod.identifier, false),
-                        RegistryManager.Instance(CurrentInstance, repoData).registry
-                    );
+                        (CkanModule mod) =>
+                        {
+                            if (ManageMods.mainModList
+                                          .full_list_of_mod_rows
+                                          .TryGetValue(mod.identifier,
+                                                       out DataGridViewRow row)
+                                && row.Tag is GUIMod gmod)
+                            {
+                                gmod.SelectedMod = mod;
+                            }
+                        },
+                        RegistryManager.Instance(CurrentInstance, repoData).registry);
                 }
                 finally
                 {
@@ -56,14 +66,8 @@ namespace CKAN.GUI
         }
 
         private HashSet<FileInfo> GetFiles(string[] filenames)
-        {
-            HashSet<FileInfo> files = new HashSet<FileInfo>();
-            foreach (string fn in filenames)
-            {
-                files.Add(new FileInfo(fn));
-            }
-            return files;
-        }
+            => filenames.Select(fn => new FileInfo(fn))
+                        .ToHashSet();
 
         private static readonly string[] downloadPaths = new string[]
         {

@@ -75,31 +75,29 @@ namespace CKAN.GUI
 
         private void VersionsListView_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            if (ignoreItemCheck || e.CurrentValue == e.NewValue)
+            if (!ignoreItemCheck && e.CurrentValue != e.NewValue
+                && VersionsListView.Items[e.Index].Tag is CkanModule module)
             {
-                return;
-            }
-            ListViewItem item   = VersionsListView.Items[e.Index];
-            CkanModule   module = item.Tag as CkanModule;
-            switch (e.NewValue)
-            {
-                case CheckState.Checked:
-                    if (allowInstall(module))
-                    {
-                        // Add this version to the change set
-                        visibleGuiModule.SelectedMod = module;
-                    }
-                    else
-                    {
-                        // Abort! Abort!
-                        e.NewValue = CheckState.Unchecked;
-                    }
-                    break;
+                switch (e.NewValue)
+                {
+                    case CheckState.Checked:
+                        if (allowInstall(module))
+                        {
+                            // Add this version to the change set
+                            visibleGuiModule.SelectedMod = module;
+                        }
+                        else
+                        {
+                            // Abort! Abort!
+                            e.NewValue = CheckState.Unchecked;
+                        }
+                        break;
 
-                case CheckState.Unchecked:
-                    // Remove or cancel installation
-                    visibleGuiModule.SelectedMod = null;
-                    break;
+                    case CheckState.Unchecked:
+                        // Remove or cancel installation
+                        visibleGuiModule.SelectedMod = null;
+                        break;
+                }
             }
         }
 
@@ -225,10 +223,13 @@ namespace CKAN.GUI
             Partitioner.Create(items, true)
                        // Distribute across cores
                        .AsParallel()
-                       // Abort when they switch to another mod
-                       .WithCancellation(cancelTokenSrc.Token)
                        // Return them as they're processed
                        .WithMergeOptions(ParallelMergeOptions.NotBuffered)
+                       // Abort when they switch to another mod
+                       .WithCancellation(cancelTokenSrc.Token)
+                       // Check the important ones first
+                       .OrderBy(item => (item.Tag as CkanModule) != visibleGuiModule.InstalledMod?.Module
+                                        && (item.Tag as CkanModule) != visibleGuiModule.SelectedMod)
                        // Slow step to be performed across multiple cores
                        .Where(item => installable(installer, item.Tag as CkanModule, registry))
                        // Jump back to GUI thread for the updates for each compatible item

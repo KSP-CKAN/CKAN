@@ -79,6 +79,7 @@ namespace CKAN.GUI
 
         public event Action<string> RaiseMessage;
         public event Action<string> RaiseError;
+        public event Action<string> SetStatusBar;
         public event Action         ClearStatusBar;
         public event Action<string> LaunchGame;
         public event Action         EditCommandLines;
@@ -150,10 +151,9 @@ namespace CKAN.GUI
                 }
                 OnChangeSetChanged?.Invoke(ChangeSet, Conflicts);
 
-                var removing = (currentChangeSet ?? Enumerable.Empty<ModChange>())
-                    .Where(ch => ch?.ChangeType == GUIModChangeType.Remove)
-                    .Select(ch => ch.Mod.identifier)
-                    .ToHashSet();
+                var removing = changeIdentifiersOfType(GUIModChangeType.Remove)
+                               .Except(changeIdentifiersOfType(GUIModChangeType.Install))
+                               .ToHashSet();
                 foreach (var kvp in mainModList.full_list_of_mod_rows)
                 {
                     if (removing.Contains(kvp.Key))
@@ -169,6 +169,11 @@ namespace CKAN.GUI
                 }
             });
         }
+
+        private IEnumerable<string> changeIdentifiersOfType(GUIModChangeType changeType)
+            => (currentChangeSet ?? Enumerable.Empty<ModChange>())
+                .Where(ch => ch?.ChangeType == changeType)
+                .Select(ch => ch.Mod.identifier);
 
         private Dictionary<GUIMod, string> Conflicts
         {
@@ -507,14 +512,16 @@ namespace CKAN.GUI
         {
             WithFrozenChangeset(() =>
             {
-                foreach (var row in mainModList.full_list_of_mod_rows.Values)
+                foreach (var gmod in mainModList.full_list_of_mod_rows
+                                                .Values
+                                                .Select(row => row.Tag)
+                                                .OfType<GUIMod>())
                 {
-                    var mod = row.Tag as GUIMod;
-                    if (mod?.HasUpdate ?? false)
+                    if (gmod?.HasUpdate ?? false)
                     {
-                        if (!Main.Instance.LabelsHeld(mod.Identifier))
+                        if (!Main.Instance.LabelsHeld(gmod.Identifier))
                         {
-                            mod.SetUpgradeChecked(row, UpdateCol, true);
+                            gmod.SelectedMod = gmod.LatestAvailableMod;
                         }
                     }
                 }
@@ -542,18 +549,6 @@ namespace CKAN.GUI
         private void ApplyToolButton_Click(object sender, EventArgs e)
         {
             StartChangeSet?.Invoke(currentChangeSet, Conflicts);
-        }
-
-        public void MarkModForUpdate(string identifier, bool value)
-        {
-            Util.Invoke(this, () => _MarkModForUpdate(identifier, value));
-        }
-
-        private void _MarkModForUpdate(string identifier, bool value)
-        {
-            DataGridViewRow row = mainModList.full_list_of_mod_rows[identifier];
-            var mod = (GUIMod)row.Tag;
-            mod.SetUpgradeChecked(row, UpdateCol, value);
         }
 
         private void LaunchGameToolStripMenuItem_MouseHover(object sender, EventArgs e)
@@ -860,51 +855,78 @@ namespace CKAN.GUI
 
         private void ModGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            int row_index    = e.RowIndex;
-            int column_index = e.ColumnIndex;
-
-            if (row_index < 0 || column_index < 0)
+            if (e.RowIndex >= 0)
             {
-                return;
-            }
-
-            DataGridView     grid     = sender as DataGridView;
-            DataGridViewRow  row      = grid?.Rows[row_index];
-            DataGridViewCell gridCell = row?.Cells[column_index];
-
-            if (gridCell is DataGridViewLinkCell)
-            {
-                // Launch URLs if found in grid
-                DataGridViewLinkCell cell = gridCell as DataGridViewLinkCell;
-                string cmd = cell?.Value.ToString();
-                if (!string.IsNullOrEmpty(cmd))
+                var row = ModGrid?.Rows?[e.RowIndex];
+                switch (row?.Cells[e.ColumnIndex])
                 {
-                    Utilities.ProcessStartURL(cmd);
+                    case DataGridViewLinkCell linkCell:
+                        // Launch URLs if found in grid
+                        string cmd = linkCell.Value.ToString();
+                        if (!string.IsNullOrEmpty(cmd))
+                        {
+                            Utilities.ProcessStartURL(cmd);
+                        }
+                        break;
+
+                    case DataGridViewCheckBoxCell checkCell:
+                        // checked is a keyword in C#
+                        var nowChecked = (bool)checkCell.Value;
+                        if (row?.Tag is GUIMod gmod)
+                        {
+                            switch (ModGrid.Columns[e.ColumnIndex].Name)
+                            {
+                                case "Installed":
+                                    gmod.SelectedMod = nowChecked ? gmod.InstalledMod?.Module
+                                                                      ?? gmod.LatestAvailableMod
+                                                                  : null;
+                                    break;
+                                case "UpdateCol":
+                                    gmod.SelectedMod = nowChecked
+                                        ? gmod.SelectedMod != null
+                                          && gmod.InstalledMod.Module.version < gmod.SelectedMod.version
+                                            ? gmod.SelectedMod
+                                            : gmod.LatestAvailableMod
+                                        : gmod.InstalledMod?.Module;
+                                    break;
+                                case "AutoInstalled":
+                                    gmod.SetAutoInstallChecked(row, AutoInstalled);
+                                    OnRegistryChanged?.Invoke();
+                                    break;
+                            }
+                        }
+                        break;
                 }
             }
-            else
+        }
+
+        private void guiModule_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (sender is GUIMod gmod
+                && mainModList.full_list_of_mod_rows.TryGetValue(gmod.Identifier,
+                                                                 out DataGridViewRow row))
             {
-                if (row?.Tag is GUIMod gui_mod)
+                switch (e.PropertyName)
                 {
-                    switch (ModGrid.Columns[column_index].Name)
-                    {
-                        case "Installed":
-                            gui_mod.SetInstallChecked(row, Installed);
-                            // The above will call UpdateChangeSetAndConflicts, so we don't need to.
-                            return;
-                        case "AutoInstalled":
-                            gui_mod.SetAutoInstallChecked(row, AutoInstalled);
-                            OnRegistryChanged?.Invoke();
-                            break;
-                        case "UpdateCol":
-                            gui_mod.SetUpgradeChecked(row, UpdateCol);
-                            break;
-                        case "ReplaceCol":
-                            gui_mod.SetReplaceChecked(row, ReplaceCol);
-                            break;
-                    }
-                    UpdateChangeSetAndConflicts(currentInstance,
-                        RegistryManager.Instance(currentInstance, repoData).registry);
+                    case "SelectedMod":
+                        if (row.Cells[Installed.Index] is DataGridViewCheckBoxCell instCell)
+                        {
+                            instCell.Value = gmod.SelectedMod != null;
+                        }
+                        if (row.Cells[UpdateCol.Index] is DataGridViewCheckBoxCell upgCell)
+                        {
+                            upgCell.Value = gmod.InstalledMod != null
+                                            && gmod.SelectedMod != null
+                                            && gmod.InstalledMod.Module.version < gmod.SelectedMod.version;
+                        }
+
+                        // This call is needed to force the UI to update,
+                        // otherwise the checkboxes can look checked when unchecked or vice versa
+                        ModGrid.RefreshEdit();
+                        // Update the changeset
+                        UpdateChangeSetAndConflicts(currentInstance,
+                            RegistryManager.Instance(currentInstance, repoData).registry);
+                        break;
                 }
             }
         }
@@ -923,27 +945,14 @@ namespace CKAN.GUI
                 }
                 else if (change.IsUserRequested)
                 {
+                    guiMod.SelectedMod = guiMod.InstalledMod?.Module;
                     switch (change.ChangeType)
                     {
-                        case GUIModChangeType.Install:
-                            if (guiMod.IsAutodetected)
-                            {
-                                guiMod.SetUpgradeChecked(row, UpdateCol, false);
-                            }
-                            else
-                            {
-                                guiMod.SetInstallChecked(row, Installed, false);
-                                return;
-                            }
-                            break;
-                        case GUIModChangeType.Remove:
-                            guiMod.SetInstallChecked(row, Installed, true);
-                            return;
-                        case GUIModChangeType.Update:
-                            guiMod.SetUpgradeChecked(row, UpdateCol, false);
-                            break;
                         case GUIModChangeType.Replace:
-                            guiMod.SetReplaceChecked(row, ReplaceCol, false);
+                            if (row.Cells[ReplaceCol.Index] is DataGridViewCheckBoxCell checkCell)
+                            {
+                                checkCell.Value = false;
+                            }
                             break;
                     }
                 }
@@ -988,14 +997,7 @@ namespace CKAN.GUI
                     {
                         if (row.Tag is GUIMod gmod)
                         {
-                            if (gmod.IsUpgradeChecked)
-                            {
-                                gmod.SetUpgradeChecked(row, UpdateCol, false);
-                            }
-                            if (gmod.IsInstallChecked)
-                            {
-                                gmod.SetInstallChecked(row, Installed, false);
-                            }
+                            gmod.SelectedMod = null;
                         }
                     }
                 }
@@ -1008,20 +1010,14 @@ namespace CKAN.GUI
             {
                 foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
                 {
-                    GUIMod mod = row.Tag as GUIMod;
-                    if (mod.IsInstallChecked != mod.IsInstalled)
+                    if (row.Tag is GUIMod gmod)
                     {
-                        mod.SetInstallChecked(row, Installed, mod.IsInstalled);
+                        gmod.SelectedMod = gmod.InstalledMod?.Module;
                     }
-                    else if (mod.InstalledMod != null)
+                    if (row.Cells[ReplaceCol.Index] is DataGridViewCheckBoxCell checkCell)
                     {
-                        var registry = RegistryManager.Instance(currentInstance, repoData).registry;
-                        mod.SelectedMod = registry.GetModuleByVersion(
-                            mod.InstalledMod.identifier, mod.InstalledMod.Module.version)
-                            ?? mod.InstalledMod.Module;
+                        checkCell.Value = false;
                     }
-                    mod.SetUpgradeChecked(row, UpdateCol,  false);
-                    mod.SetReplaceChecked(row, ReplaceCol, false);
                 }
                 // Marking a mod as AutoInstalled can immediately queue it for removal if there is no dependent mod.
                 // Reset the state of the AutoInstalled checkbox for these by deducing it from the changeset.
@@ -1320,35 +1316,22 @@ namespace CKAN.GUI
             regMgr.ScanUnmanagedFiles();
 
             RaiseMessage?.Invoke(Properties.Resources.MainModListLoadingInstalled);
-            var versionCriteria = currentInstance.VersionCriteria();
 
-            var installedIdents = registry.InstalledModules
-                                          .Select(im => im.identifier)
-                                          .ToHashSet();
-            var guiMods = registry.InstalledModules
-                                  .AsParallel()
-                                  .Where(instMod => !instMod.Module.IsDLC)
-                                  .Select(instMod => new GUIMod(
-                                                         instMod, repoData, registry, versionCriteria, null,
-                                                         guiConfig.HideEpochs,
-                                                         guiConfig.HideV))
-                                  .Concat(registry.CompatibleModules(versionCriteria)
-                                                  .Where(m => !installedIdents.Contains(m.identifier))
-                                                  .AsParallel()
-                                                  .Where(m => !m.IsDLC)
-                                                  .Select(m => new GUIMod(
-                                                                   m, repoData, registry, versionCriteria, null,
-                                                                   guiConfig.HideEpochs,
-                                                                   guiConfig.HideV)))
-                                  .Concat(registry.IncompatibleModules(versionCriteria)
-                                                  .Where(m => !installedIdents.Contains(m.identifier))
-                                                  .AsParallel()
-                                                  .Where(m => !m.IsDLC)
-                                                  .Select(m => new GUIMod(
-                                                                   m, repoData, registry, versionCriteria, true,
-                                                                   guiConfig.HideEpochs,
-                                                                   guiConfig.HideV)))
-                                  .ToHashSet();
+            var guiMods = mainModList.GetGUIMods(registry, repoData, currentInstance, guiConfig)
+                                     .ToHashSet();
+
+            foreach (var gmod in mainModList.full_list_of_mod_rows
+                                            ?.Values
+                                             .Select(row => row.Tag)
+                                             .OfType<GUIMod>()
+                                            ?? Enumerable.Empty<GUIMod>())
+            {
+                gmod.PropertyChanged -= guiModule_PropertyChanged;
+            }
+            foreach (var gmod in guiMods)
+            {
+                gmod.PropertyChanged += guiModule_PropertyChanged;
+            }
 
             RaiseMessage?.Invoke(Properties.Resources.MainModListPreservingNew);
             var toNotify = new HashSet<GUIMod>();
@@ -1375,11 +1358,11 @@ namespace CKAN.GUI
             else
             {
                 // Copy the new mod flag from the old list.
-                var old_new_mods = new HashSet<GUIMod>(
-                    mainModList.Modules.Where(m => m.IsNew));
-                foreach (var gui_mod in guiMods.Intersect(old_new_mods))
+                var oldNewMods = mainModList.Modules.Where(m => m.IsNew)
+                                                    .ToHashSet();
+                foreach (var guiMod in guiMods.Intersect(oldNewMods))
                 {
-                    gui_mod.IsNew = true;
+                    guiMod.IsNew = true;
                 }
             }
             LabelsAfterUpdate?.Invoke(toNotify);
@@ -1435,22 +1418,6 @@ namespace CKAN.GUI
             ClearStatusBar?.Invoke();
             Util.Invoke(this, () => ModGrid.Focus());
             return true;
-        }
-
-        [ForbidGUICalls]
-        public void MarkModForInstall(string identifier, bool uncheck = false)
-        {
-            Util.Invoke(this, () => _MarkModForInstall(identifier, uncheck));
-        }
-
-        private void _MarkModForInstall(string identifier, bool uninstall)
-        {
-            DataGridViewRow row = mainModList?.full_list_of_mod_rows?[identifier];
-            var mod = (GUIMod)row?.Tag;
-            if (mod?.Identifier == identifier)
-            {
-                mod.SetInstallChecked(row, Installed, !uninstall);
-            }
         }
 
         private void ModGrid_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -1850,6 +1817,12 @@ namespace CKAN.GUI
             ModGrid.CurrentCell = null;
         }
 
+        public HashSet<ModChange> ComputeUserChangeSet()
+            => mainModList.ComputeUserChangeSet(
+                  RegistryManager.Instance(currentInstance, repoData).registry,
+                  currentInstance.VersionCriteria(),
+                  ReplaceCol);
+
         [ForbidGUICalls]
         public void UpdateChangeSetAndConflicts(GameInstance inst, IRegistryQuerier registry)
         {
@@ -1862,10 +1835,20 @@ namespace CKAN.GUI
             List<ModChange> full_change_set = null;
             Dictionary<GUIMod, string> new_conflicts = null;
 
-            var user_change_set = mainModList.ComputeUserChangeSet(registry, inst.VersionCriteria());
+            var gameVersion = inst.VersionCriteria();
+            var user_change_set = mainModList.ComputeUserChangeSet(registry, gameVersion, ReplaceCol);
             try
             {
-                var gameVersion = inst.VersionCriteria();
+                // Set the target versions of upgrading mods based on what's actually allowed
+                foreach (var ch in user_change_set.OfType<ModUpgrade>())
+                {
+                    if (mainModList.full_list_of_mod_rows[ch.Mod.identifier].Tag is GUIMod gmod)
+                    {
+                       // This setter calls UpdateChangeSetAndConflicts, so there's a risk of
+                       // an infinite loop here. Tread lightly!
+                       gmod.SelectedMod = ch.targetMod;
+                    }
+                }
                 var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, gameVersion);
                 full_change_set = tuple.Item1.ToList();
                 new_conflicts = tuple.Item2.ToDictionary(
@@ -1874,7 +1857,7 @@ namespace CKAN.GUI
                     item => item.Value);
                 if (new_conflicts.Count > 0)
                 {
-                    RaiseMessage?.Invoke(string.Join("; ", tuple.Item3));
+                    SetStatusBar?.Invoke(string.Join("; ", tuple.Item3));
                 }
                 else
                 {
@@ -1886,9 +1869,11 @@ namespace CKAN.GUI
             {
                 RaiseError?.Invoke(string.Format(Properties.Resources.MainDepNotSatisfied,
                                                  k.parent, k.module));
-
                 // Uncheck the box
-                MarkModForInstall(k.parent.identifier, true);
+                if (mainModList.full_list_of_mod_rows[k.parent.identifier].Tag is GUIMod gmod)
+                {
+                    gmod.SelectedMod = null;
+                }
             }
 
             Conflicts = new_conflicts;

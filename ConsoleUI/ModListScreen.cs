@@ -82,7 +82,7 @@ namespace CKAN.ConsoleUI {
                             case "i":
                                 return registry.IsInstalled(m.identifier, false);
                             case "u":
-                                return registry.HasUpdate(m.identifier, manager.CurrentInstance.VersionCriteria());
+                                return upgradeableGroups?[true].Any(upg => upg.identifier == m.identifier) ?? false;
                             case "n":
                                 // Filter new
                                 return recent.Contains(m.identifier);
@@ -188,7 +188,7 @@ namespace CKAN.ConsoleUI {
             );
             moduleList.AddTip("+", Properties.Resources.ModListUpgradeTip,
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
-                    && registry.HasUpdate(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria())
+                    && (upgradeableGroups?[true].Any(upg => upg.identifier == moduleList.Selection.identifier) ?? false)
             );
             moduleList.AddTip("+", Properties.Resources.ModListReplaceTip,
                 () => moduleList.Selection != null
@@ -199,7 +199,7 @@ namespace CKAN.ConsoleUI {
                     if (!registry.IsInstalled(moduleList.Selection.identifier, false)) {
                         plan.ToggleInstall(moduleList.Selection);
                     } else if (registry.IsInstalled(moduleList.Selection.identifier, false)
-                            && registry.HasUpdate(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria())) {
+                            && (upgradeableGroups?[true].Any(upg => upg.identifier == moduleList.Selection.identifier) ?? false)) {
                         plan.ToggleUpgrade(moduleList.Selection);
                     } else if (registry.GetReplacement(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()) != null) {
                         plan.ToggleReplace(moduleList.Selection.identifier);
@@ -367,21 +367,13 @@ namespace CKAN.ConsoleUI {
 
         private bool HasAnyUpgradeable()
         {
-            foreach (string identifier in registry.Installed(true).Select(kvp => kvp.Key)) {
-                if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria())) {
-                    return true;
-                }
-            }
-            return false;
+            return (upgradeableGroups?[true].Count ?? 0) > 0;
         }
 
         private bool UpgradeAll(ConsoleTheme theme)
         {
-            foreach (string identifier in registry.Installed(true).Select(kvp => kvp.Key)) {
-                if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria())) {
-                    plan.Upgrade.Add(identifier);
-                }
-            }
+            plan.Upgrade.UnionWith(upgradeableGroups?[true].Select(m => m.identifier)
+                                   ?? Enumerable.Empty<string>());
             return true;
         }
 
@@ -564,17 +556,20 @@ namespace CKAN.ConsoleUI {
                 {
                     UpdateRegistry(theme, false);
                 }
-                allMods = new List<CkanModule>(registry.CompatibleModules(manager.CurrentInstance.VersionCriteria()));
+                var crit = manager.CurrentInstance.VersionCriteria();
+                allMods = new List<CkanModule>(registry.CompatibleModules(crit));
                 foreach (InstalledModule im in registry.InstalledModules) {
                     CkanModule m = null;
                     try {
-                        m = registry.LatestAvailable(im.identifier, manager.CurrentInstance.VersionCriteria());
+                        m = registry.LatestAvailable(im.identifier, crit);
                     } catch (ModuleNotFoundKraken) { }
                     if (m == null) {
                         // Add unavailable installed mods to the list
                         allMods.Add(im.Module);
                     }
                 }
+                upgradeableGroups = registry
+                                    .CheckUpgradeable(crit, new HashSet<string>());
             }
             return allMods;
         }
@@ -621,7 +616,8 @@ namespace CKAN.ConsoleUI {
         /// </returns>
         public string StatusSymbol(CkanModule m)
         {
-            return StatusSymbol(plan.GetModStatus(manager, registry, m.identifier));
+            return StatusSymbol(plan.GetModStatus(manager, registry, m.identifier,
+                                                  upgradeableGroups?[true] ?? new List<CkanModule>()));
         }
 
         /// <summary>
@@ -664,8 +660,9 @@ namespace CKAN.ConsoleUI {
         private readonly GameInstanceManager   manager;
         private RegistryManager       regMgr;
         private Registry              registry;
-        private readonly RepositoryDataManager repoData;
-        private readonly bool                  debug;
+        private readonly RepositoryDataManager              repoData;
+        private          Dictionary<bool, List<CkanModule>> upgradeableGroups;
+        private readonly bool                               debug;
 
         private readonly ConsoleField               searchBox;
         private readonly ConsoleListBox<CkanModule> moduleList;
@@ -773,15 +770,19 @@ namespace CKAN.ConsoleUI {
         /// <param name="manager">Game instance manager containing the instances</param>
         /// <param name="registry">Registry of instance being displayed</param>
         /// <param name="identifier">The mod</param>
+        /// <param name="upgradeable">List of modules that can be upgraded</param>
         /// <returns>
         /// Status of mod
         /// </returns>
-        public InstallStatus GetModStatus(GameInstanceManager manager, IRegistryQuerier registry, string identifier)
+        public InstallStatus GetModStatus(GameInstanceManager manager,
+                                          IRegistryQuerier registry,
+                                          string identifier,
+                                          List<CkanModule> upgradeable)
         {
             if (registry.IsInstalled(identifier, false)) {
                 if (Remove.Contains(identifier)) {
                     return InstallStatus.Removing;
-                } else if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria())) {
+                } else if (upgradeable.Any(m => m.identifier == identifier)) {
                     if (Upgrade.Contains(identifier)) {
                         return InstallStatus.Upgrading;
                     } else {

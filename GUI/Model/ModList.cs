@@ -422,10 +422,52 @@ namespace CKAN.GUI
         private static readonly Regex ContainsEpoch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
         private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
 
-        public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier registry, GameVersionCriteria crit)
+        private IEnumerable<ModChange> rowChanges(DataGridViewRow row, DataGridViewColumn replaceCol)
+            => (row.Tag as GUIMod).GetModChanges(
+                   replaceCol != null && replaceCol.Visible
+                   && row.Cells[replaceCol.Index] is DataGridViewCheckBoxCell replaceCell
+                   && (bool)replaceCell.Value);
+
+        public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier    registry,
+                                                       GameVersionCriteria crit,
+                                                       DataGridViewColumn  replaceCol)
         {
             log.Debug("Computing user changeset");
-            var modChanges = Modules.SelectMany(mod => mod.GetModChanges());
+            var modChanges = full_list_of_mod_rows?.Values
+                                                   .SelectMany(row => rowChanges(row, replaceCol))
+                                                   .ToList()
+                                                  ?? new List<ModChange>();
+
+            // Inter-mod dependencies can block some upgrades, which can sometimes but not always
+            // be overcome by upgrading both mods. Try to pick the right target versions.
+            if (registry != null)
+            {
+                var upgrades = modChanges.OfType<ModUpgrade>()
+                                         .ToArray();
+                if (upgrades.Length > 0)
+                {
+                    var upgradeable = registry.CheckUpgradeable(crit,
+                                                                // Hold identifiers not chosen for upgrading
+                                                                registry.Installed(false)
+                                                                        .Select(kvp => kvp.Key)
+                                                                        .Except(upgrades.Select(ch => ch.Mod.identifier))
+                                                                        .ToHashSet())
+                                              [true]
+                                              .ToDictionary(m => m.identifier,
+                                                            m => m);
+                    foreach (var change in upgrades)
+                    {
+                        change.targetMod = upgradeable.TryGetValue(change.Mod.identifier,
+                                                                   out CkanModule allowedMod)
+                            // Upgrade to the version the registry says we should
+                            ? allowedMod
+                            // Not upgradeable!
+                            : change.Mod;
+                    }
+                    modChanges.RemoveAll(ch => ch is ModUpgrade upg && upg.Mod == upg.targetMod);
+                }
+            }
+
             return (registry == null
                 ? modChanges
                 : modChanges.Union(
@@ -435,6 +477,97 @@ namespace CKAN.GUI
                             new SelectionReason.NoLongerUsed()))))
                 .ToHashSet();
         }
+
+        /// <summary>
+        /// Check upgradeability of all rows and set GUIMod.HasUpdate appropriately
+        /// </summary>
+        /// <param name="inst">Current game instance</param>
+        /// <param name="registry">Current instance's registry</param>
+        /// <param name="ChangeSet">Currently pending changeset</param>
+        /// <param name="rows">The grid rows in case we need to replace some</param>
+        /// <returns>true if any mod can be updated, false otherwise</returns>
+        public bool ResetHasUpdate(GameInstance              inst,
+                                   IRegistryQuerier          registry,
+                                   List<ModChange>           ChangeSet,
+                                   DataGridViewRowCollection rows)
+        {
+            var upgGroups = registry.CheckUpgradeable(inst.VersionCriteria(),
+                                                      ModuleLabels.HeldIdentifiers(inst)
+                                                                  .ToHashSet());
+            foreach ((var upgradeable, var mods) in upgGroups)
+            {
+                foreach (var ident in mods.Select(m => m.identifier))
+                {
+                    var row = full_list_of_mod_rows[ident];
+                    if (row.Tag is GUIMod gmod && gmod.HasUpdate != upgradeable)
+                    {
+                        gmod.HasUpdate = upgradeable;
+                        if (row.Visible)
+                        {
+                            // Swap whether the row has an upgrade checkbox
+                            var newRow =
+                                full_list_of_mod_rows[ident] =
+                                    MakeRow(gmod, ChangeSet, inst.Name, inst.game);
+                            var rowIndex = row.Index;
+                            rows.Remove(row);
+                            rows.Insert(rowIndex, newRow);
+                        }
+                    }
+                }
+            }
+            return upgGroups[true].Count > 0;
+        }
+
+        /// <summary>
+        /// Get all the GUI mods for the given instance.
+        /// </summary>
+        /// <param name="registry">Registry of the instance</param>
+        /// <param name="repoData">Repo data of the instance</param>
+        /// <param name="inst">Game instance</param>
+        /// <param name="config">GUI config to use</param>
+        /// <returns>Sequence of GUIMods</returns>
+        public IEnumerable<GUIMod> GetGUIMods(IRegistryQuerier      registry,
+                                              RepositoryDataManager repoData,
+                                              GameInstance          inst,
+                                              GUIConfiguration      config)
+            => GetGUIMods(registry, repoData, inst, inst.VersionCriteria(),
+                          registry.InstalledModules.Select(im => im.identifier)
+                                                   .ToHashSet(),
+                          config.HideEpochs, config.HideV);
+
+        private IEnumerable<GUIMod> GetGUIMods(IRegistryQuerier      registry,
+                                               RepositoryDataManager repoData,
+                                               GameInstance          inst,
+                                               GameVersionCriteria   versionCriteria,
+                                               HashSet<string>       installedIdents,
+                                               bool                  hideEpochs,
+                                               bool                  hideV)
+            => registry.CheckUpgradeable(versionCriteria,
+                                         ModuleLabels.HeldIdentifiers(inst)
+                                                     .ToHashSet())
+                       .SelectMany(kvp => kvp.Value
+                                             .Where(mod => !registry.IsAutodetected(mod.identifier))
+                                             .Select(mod => new GUIMod(registry.InstalledModule(mod.identifier),
+                                                                       repoData, registry,
+                                                                       versionCriteria, null,
+                                                                       hideEpochs, hideV)
+                                                            {
+                                                                HasUpdate = kvp.Key,
+                                                            }))
+                       .Concat(registry.CompatibleModules(versionCriteria)
+                                       .Where(m => !installedIdents.Contains(m.identifier))
+                                       .AsParallel()
+                                       .Where(m => !m.IsDLC)
+                                       .Select(m => new GUIMod(m, repoData, registry,
+                                                               versionCriteria, null,
+                                                               hideEpochs, hideV)))
+                       .Concat(registry.IncompatibleModules(versionCriteria)
+                                       .Where(m => !installedIdents.Contains(m.identifier))
+                                       .AsParallel()
+                                       .Where(m => !m.IsDLC)
+                                       .Select(m => new GUIMod(m, repoData, registry,
+                                                               versionCriteria, true,
+                                                               hideEpochs, hideV)));
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModList));
     }

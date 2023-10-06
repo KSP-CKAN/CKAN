@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Transactions;
 
 using Autofac;
-using log4net;
 
 using CKAN.Versioning;
 using CKAN.Configuration;
+using CKAN.Extensions;
 
 namespace CKAN.CmdLine
 {
@@ -114,38 +114,17 @@ namespace CKAN.CmdLine
                 var registry = regMgr.registry;
                 if (options.upgrade_all)
                 {
-                    var to_upgrade = new List<CkanModule>();
-
-                    foreach (KeyValuePair<string, ModuleVersion> mod in registry.Installed(false))
+                    var to_upgrade = registry
+                                     .CheckUpgradeable(instance.VersionCriteria(), new HashSet<string>())
+                                     [true];
+                    if (to_upgrade.Count == 0)
                     {
-                        try
-                        {
-                            // Check if upgrades are available
-                            var latest = registry.LatestAvailable(mod.Key, instance.VersionCriteria());
-
-                            // This may be an unindexed mod. If so,
-                            // skip rather than crash. See KSP-CKAN/CKAN#841.
-                            if (latest == null || latest.IsDLC)
-                            {
-                                continue;
-                            }
-
-                            if (latest.version.IsGreaterThan(mod.Value) || registry.HasUpdate(mod.Key, instance.VersionCriteria()))
-                            {
-                                // Upgradable
-                                log.InfoFormat("New version {0} found for {1}",
-                                    latest.version, latest.identifier);
-                                to_upgrade.Add(latest);
-                            }
-
-                        }
-                        catch (ModuleNotFoundKraken)
-                        {
-                            log.InfoFormat("{0} is installed, but no longer in the registry",
-                                mod.Key);
-                        }
+                        user.RaiseMessage(Properties.Resources.UpgradeAllUpToDate);
                     }
-                    UpgradeModules(manager, user, instance, true, to_upgrade);
+                    else
+                    {
+                        UpgradeModules(manager, user, instance, to_upgrade);
+                    }
                 }
                 else
                 {
@@ -196,16 +175,15 @@ namespace CKAN.CmdLine
         private void UpgradeModules(GameInstanceManager manager,
                                     IUser               user,
                                     CKAN.GameInstance   instance,
-                                    bool                ConfirmPrompt,
                                     List<CkanModule>    modules)
         {
             UpgradeModules(
                 manager, user, instance, repoData,
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs) =>
                     installer.Upgrade(modules, downloader,
-                        ref possibleConfigOnlyDirs, regMgr, true, true, ConfirmPrompt),
-                m => modules.Add(m)
-            );
+                                      ref possibleConfigOnlyDirs,
+                                      regMgr, true, true, true),
+                m => modules.Add(m));
         }
 
         /// <summary>
@@ -223,18 +201,71 @@ namespace CKAN.CmdLine
             UpgradeModules(
                 manager, user, instance, repoData,
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs) =>
-                    installer.Upgrade(
-                        identsAndVersions.Select(arg => CkanModule.FromIDandVersion(
-                                                            regMgr.registry, arg,
-                                                            instance.VersionCriteria()))
-                                         .ToList(),
-                        downloader,
-                        ref possibleConfigOnlyDirs,
-                        regMgr,
-                        true),
-                m => identsAndVersions.Add(m.identifier)
-            );
+                {
+                    var crit     = instance.VersionCriteria();
+                    var registry = regMgr.registry;
+                    // Installed modules we're NOT upgrading
+                    var heldIdents = registry.Installed(false)
+                                             .Keys
+                                             .Except(identsAndVersions.Select(arg => UpToFirst(arg, '=')))
+                                             .ToHashSet();
+                    // The modules we'll have after upgrading as aggressively as possible
+                    var limiters = identsAndVersions.Select(req => CkanModule.FromIDandVersion(registry, req, crit)
+                                                                   ?? DefaultIfThrows(
+                                                                       () => registry.LatestAvailable(req, crit))
+                                                                   ?? registry.GetInstalledVersion(req))
+                                                    .Concat(heldIdents.Select(ident => registry.GetInstalledVersion(ident)))
+                                                    .Where(m => m != null)
+                                                    .ToList();
+                    // Modules allowed by THOSE modules' relationships
+                    var upgradeable = registry
+                                      .CheckUpgradeable(crit, heldIdents, limiters)
+                                      [true]
+                                      .ToDictionary(m => m.identifier,
+                                                    m => m);
+                    // Substitute back in the ident=ver requested versions
+                    var to_upgrade = new List<CkanModule>();
+                    foreach (var request in identsAndVersions)
+                    {
+                        var module = CkanModule.FromIDandVersion(registry, request, crit)
+                                     ?? (upgradeable.TryGetValue(request, out CkanModule m)
+                                        ? m
+                                        : null);
+                        if (module == null)
+                        {
+                            user.RaiseMessage(Properties.Resources.UpgradeAlreadyUpToDate, request);
+                        }
+                        else
+                        {
+                            to_upgrade.Add(module);
+                        }
+                    }
+                    if (to_upgrade.Count > 0)
+                    {
+                        installer.Upgrade(to_upgrade, downloader, ref possibleConfigOnlyDirs, regMgr, true);
+                    }
+                },
+                m => identsAndVersions.Add(m.identifier));
         }
+
+        public static T DefaultIfThrows<T>(Func<T> func)
+        {
+            try
+            {
+                return func();
+            }
+            catch
+            {
+                return default;
+            }
+        }
+
+        private static string UpToFirst(string orig, char toFind)
+            => UpTo(orig, orig.IndexOf(toFind));
+
+        private static string UpTo(string orig, int pos)
+            => pos >= 0 && pos < orig.Length ? orig.Substring(0, pos)
+                                             : orig;
 
         // Action<ref T> isn't allowed
         private delegate void AttemptUpgradeAction(ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs);
@@ -292,7 +323,5 @@ namespace CKAN.CmdLine
         private readonly IUser                 user;
         private readonly GameInstanceManager   manager;
         private readonly RepositoryDataManager repoData;
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(Upgrade));
     }
 }

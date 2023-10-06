@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Linq;
 
 using Newtonsoft.Json;
 
@@ -79,6 +80,11 @@ namespace CKAN.GUI
         /// </returns>
         public bool AppliesTo(string instanceName)
             => InstanceName == null || InstanceName == instanceName;
+
+        public IEnumerable<string> IdentifiersFor(IGame game)
+            => ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string> idents)
+                ? idents
+                : Enumerable.Empty<string>();
 
         /// <summary>
         /// Add a module to this label's group

@@ -75,16 +75,27 @@ namespace CKAN.ConsoleUI {
                         }
                         NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache);
                         if (plan.Install.Count > 0) {
-                            List<CkanModule> iList = new List<CkanModule>(plan.Install);
+                            var iList = plan.Install
+                                            .Select(m => registry.LatestAvailable(m.identifier,
+                                                                                  manager.CurrentInstance.VersionCriteria(),
+                                                                                  null,
+                                                                                  registry.InstalledModules
+                                                                                          .Select(im => im.Module)
+                                                                                          .ToArray(),
+                                                                                  plan.Install))
+                                            .ToArray();
                             inst.InstallList(iList, resolvOpts, regMgr, ref possibleConfigOnlyDirs, dl);
                             plan.Install.Clear();
                         }
                         if (plan.Upgrade.Count > 0) {
-                            inst.Upgrade(plan.Upgrade
-                                             .Select(ident => regMgr.registry.LatestAvailable(
-                                                                  ident, manager.CurrentInstance.VersionCriteria()))
-                                             .ToList(),
-                                         dl, ref possibleConfigOnlyDirs, regMgr);
+                            var upgGroups = registry
+                                            .CheckUpgradeable(manager.CurrentInstance.VersionCriteria(),
+                                                              // Hold identifiers not chosen for upgrading
+                                                              registry.Installed(false)
+                                                                      .Keys
+                                                                      .Except(plan.Upgrade)
+                                                                      .ToHashSet());
+                            inst.Upgrade(upgGroups[true], dl, ref possibleConfigOnlyDirs, regMgr);
                             plan.Upgrade.Clear();
                         }
                         if (plan.Replace.Count > 0) {

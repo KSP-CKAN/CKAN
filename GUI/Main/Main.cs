@@ -446,7 +446,6 @@ namespace CKAN.GUI
                 // If not allowing, don't do anything
                 if (repoUpdateNeeded)
                 {
-                    ManageMods.ModGrid.Rows.Clear();
                     UpdateRepo(refreshWithoutChanges: true);
                 }
                 else
@@ -877,6 +876,11 @@ namespace CKAN.GUI
         private void ManageMods_RaiseError(string error)
         {
             currentUser.RaiseError(error);
+        }
+
+        private void ManageMods_SetStatusBar(string message)
+        {
+            StatusLabel.ToolTipText = StatusLabel.Text = message;
         }
 
         private void ManageMods_ClearStatusBar()
