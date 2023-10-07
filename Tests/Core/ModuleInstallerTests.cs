@@ -407,13 +407,13 @@ namespace Tests.Core
                 Assert.IsFalse(File.Exists(mod_file_path));
 
                 // Copy the zip file to the cache directory.
-                Assert.IsFalse(manager.Cache.IsCachedZip(TestData.DogeCoinFlag_101_module()));
+                Assert.IsFalse(manager.Cache.IsCached(TestData.DogeCoinFlag_101_module()));
 
                 string cache_path = manager.Cache.Store(TestData.DogeCoinFlag_101_module(),
                                                         TestData.DogeCoinFlagZip(),
                                                         new Progress<long>(bytes => {}));
 
-                Assert.IsTrue(manager.Cache.IsCachedZip(TestData.DogeCoinFlag_101_module()));
+                Assert.IsTrue(manager.Cache.IsCached(TestData.DogeCoinFlag_101_module()));
                 Assert.IsTrue(File.Exists(cache_path));
 
                 var registry = CKAN.RegistryManager.Instance(manager.CurrentInstance, repoData.Manager).registry;

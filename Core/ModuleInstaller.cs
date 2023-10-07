@@ -102,7 +102,7 @@ namespace CKAN
                 filename = CkanModule.StandardName(module.identifier, module.version);
             }
 
-            string full_path = cache.GetCachedZip(module);
+            string full_path = cache.GetCachedFilename(module);
             if (full_path == null)
             {
                 return Download(module, filename, cache);
@@ -264,7 +264,7 @@ namespace CKAN
             }
 
             // Find ZIP in the cache if we don't already have it.
-            filename = filename ?? Cache.GetCachedZip(module);
+            filename = filename ?? Cache.GetCachedFilename(module);
 
             // If we *still* don't have a file, then kraken bitterly.
             if (filename == null)
@@ -1284,7 +1284,7 @@ namespace CKAN
         /// </summary>
         private void DownloadModules(IEnumerable<CkanModule> mods, IDownloader downloader)
         {
-            List<CkanModule> downloads = mods.Where(module => !Cache.IsCachedZip(module)).ToList();
+            List<CkanModule> downloads = mods.Where(module => !Cache.IsCached(module)).ToList();
 
             if (downloads.Count > 0)
             {

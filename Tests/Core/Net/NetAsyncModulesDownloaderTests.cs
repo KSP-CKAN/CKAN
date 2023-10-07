@@ -171,8 +171,8 @@ namespace Tests.Core.Net
             // Download our module.
             async.DownloadModules(modules);
 
-            // Assert that we have it, and it passes zip validation.
-            Assert.IsTrue(cache.IsCachedZip(kOS));
+            // Assert that we have it (which meansit passed zip validation)
+            Assert.IsTrue(cache.IsCached(kOS));
         }
 
         [Test]
@@ -189,13 +189,13 @@ namespace Tests.Core.Net
             modules.Add(kOS);
             modules.Add(quick_revert);
 
-            Assert.IsFalse(cache.IsCachedZip(kOS));
-            Assert.IsFalse(cache.IsCachedZip(quick_revert));
+            Assert.IsFalse(cache.IsCached(kOS));
+            Assert.IsFalse(cache.IsCached(quick_revert));
 
             async.DownloadModules(modules);
 
-            Assert.IsTrue(cache.IsCachedZip(kOS));
-            Assert.IsTrue(cache.IsCachedZip(quick_revert));
+            Assert.IsTrue(cache.IsCached(kOS));
+            Assert.IsTrue(cache.IsCached(quick_revert));
         }
 
         [Test]
@@ -210,11 +210,11 @@ namespace Tests.Core.Net
 
             modules.Add(rAndS);
 
-            Assert.IsFalse(cache.IsCachedZip(rAndS), "Module not yet downloaded");
+            Assert.IsFalse(cache.IsCached(rAndS), "Module not yet downloaded");
 
             async.DownloadModules(modules);
 
-            Assert.IsTrue(cache.IsCachedZip(rAndS), "Module download successful");
+            Assert.IsTrue(cache.IsCached(rAndS), "Module download successful");
         }
 
     }
