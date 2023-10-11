@@ -147,7 +147,7 @@ namespace CKAN.GUI
                                   RegistryManager.Instance(CurrentInstance, repoData).registry,
                                   CurrentInstance.VersionCriteria())
                               .ToList(),
-                    RelationshipResolver.DependsOnlyOpts())
+                    RelationshipResolverOptions.DependsOnlyOpts())
             );
         }
         #endregion

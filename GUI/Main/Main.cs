@@ -770,6 +770,7 @@ namespace CKAN.GUI
                 repoData,
                 RegistryManager.Instance(CurrentInstance, repoData).registry,
                 CurrentInstance.VersionCriteria(),
+                null,
                 configuration.HideEpochs,
                 configuration.HideV);
         }

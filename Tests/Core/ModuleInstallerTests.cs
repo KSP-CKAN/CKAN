@@ -407,13 +407,13 @@ namespace Tests.Core
                 Assert.IsFalse(File.Exists(mod_file_path));
 
                 // Copy the zip file to the cache directory.
-                Assert.IsFalse(manager.Cache.IsCachedZip(TestData.DogeCoinFlag_101_module()));
+                Assert.IsFalse(manager.Cache.IsCached(TestData.DogeCoinFlag_101_module()));
 
                 string cache_path = manager.Cache.Store(TestData.DogeCoinFlag_101_module(),
                                                         TestData.DogeCoinFlagZip(),
                                                         new Progress<long>(bytes => {}));
 
-                Assert.IsTrue(manager.Cache.IsCachedZip(TestData.DogeCoinFlag_101_module()));
+                Assert.IsTrue(manager.Cache.IsCached(TestData.DogeCoinFlag_101_module()));
                 Assert.IsTrue(File.Exists(cache_path));
 
                 var registry = CKAN.RegistryManager.Instance(manager.CurrentInstance, repoData.Manager).registry;
@@ -423,7 +423,7 @@ namespace Tests.Core
                 Assert.AreEqual(1, registry.CompatibleModules(ksp.KSP.VersionCriteria()).Count());
 
                 // Attempt to install it.
-                List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
+                var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                 HashSet<string> possibleConfigOnlyDirs = null;
                 new CKAN.ModuleInstaller(ksp.KSP, manager.Cache, nullUser)
@@ -433,47 +433,6 @@ namespace Tests.Core
                                  ref possibleConfigOnlyDirs);
 
                 // Check that the module is installed.
-                Assert.IsTrue(File.Exists(mod_file_path));
-            }
-        }
-
-        [Test]
-        public void InstallList_IdentifierEqualsVersionSyntax_InstallsModule()
-        {
-            // Arrange
-            using (var ksp = new DisposableKSP())
-            using (var config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
-            using (var repo = new TemporaryRepository(TestData.DogeCoinFlag_101()))
-            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
-            using (var manager = new GameInstanceManager(nullUser, config)
-                {
-                    CurrentInstance = ksp.KSP
-                })
-            {
-                var registry = CKAN.RegistryManager.Instance(ksp.KSP, repoData.Manager).registry;
-                registry.RepositoriesClear();
-                registry.RepositoriesAdd(repo.repo);
-
-                var inst = new CKAN.ModuleInstaller(ksp.KSP, manager.Cache, nullUser);
-
-                const string mod_file_name = "DogeCoinFlag/Flags/dogecoin.png";
-                string mod_file_path = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), mod_file_name);
-
-                var mod = registry.GetModuleByVersion("DogeCoinFlag", "1.01");
-                Assert.IsNotNull(mod, "DogeCoinFlag 1.01 should exist");
-                manager.Cache.Store(mod, TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
-                List<string> modules = new List<string>()
-                {
-                    $"{mod.identifier}={mod.version}"
-                };
-
-                // Act
-                HashSet<string> possibleConfigOnlyDirs = null;
-                inst.InstallList(modules, new RelationshipResolverOptions(),
-                                 CKAN.RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
-                                 ref possibleConfigOnlyDirs);
-
-                // Assert
                 Assert.IsTrue(File.Exists(mod_file_path));
             }
         }
@@ -503,7 +462,7 @@ namespace Tests.Core
                                     TestData.DogeCoinFlagZip(),
                                     new Progress<long>(bytes => {}));
 
-                List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
+                var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                 HashSet<string> possibleConfigOnlyDirs = null;
                 new CKAN.ModuleInstaller(manager.CurrentInstance, manager.Cache, nullUser)
@@ -516,7 +475,8 @@ namespace Tests.Core
 
                 // Attempt to uninstall it.
                 new CKAN.ModuleInstaller(manager.CurrentInstance, manager.Cache, nullUser)
-                    .UninstallList(modules, ref possibleConfigOnlyDirs,
+                    .UninstallList(modules.Select(m => m.identifier),
+                                   ref possibleConfigOnlyDirs,
                                    CKAN.RegistryManager.Instance(manager.CurrentInstance, repoData.Manager));
 
                 // Check that the module is not installed.
@@ -550,7 +510,7 @@ namespace Tests.Core
                                     TestData.DogeCoinFlagZip(),
                                     new Progress<long>(bytes => {}));
 
-                List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
+                var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                 HashSet<string> possibleConfigOnlyDirs = null;
                 new CKAN.ModuleInstaller(manager.CurrentInstance, manager.Cache, nullUser)
@@ -566,7 +526,7 @@ namespace Tests.Core
                                     TestData.DogeCoinPluginZip(),
                                     new Progress<long>(bytes => {}));
 
-                modules.Add(TestData.DogeCoinPlugin_module().identifier);
+                modules.Add(TestData.DogeCoinPlugin_module());
 
                 new CKAN.ModuleInstaller(manager.CurrentInstance, manager.Cache, nullUser)
                     .InstallList(modules,
@@ -581,11 +541,11 @@ namespace Tests.Core
 
                 // Uninstall both mods.
 
-                modules.Add(TestData.DogeCoinFlag_101_module().identifier);
-                modules.Add(TestData.DogeCoinPlugin_module().identifier);
+                modules.Add(TestData.DogeCoinFlag_101_module());
+                modules.Add(TestData.DogeCoinPlugin_module());
 
                 new CKAN.ModuleInstaller(manager.CurrentInstance, manager.Cache, nullUser)
-                    .UninstallList(modules,
+                    .UninstallList(modules.Select(m => m.identifier),
                                    ref possibleConfigOnlyDirs,
                                    CKAN.RegistryManager.Instance(manager.CurrentInstance, repoData.Manager));
 
@@ -760,7 +720,7 @@ namespace Tests.Core
                                             new Progress<long>(bytes => {}));
 
                         // Attempt to install it.
-                        List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
+                        var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                         HashSet<string> possibleConfigOnlyDirs = null;
                         new CKAN.ModuleInstaller(ksp.KSP, manager.Cache, nullUser)
@@ -1150,7 +1110,9 @@ namespace Tests.Core
                 }
 
                 // Act
-                installer.Upgrade(upgradeIdentifiers, downloader, ref possibleConfigOnlyDirs, regMgr, false);
+                installer.Upgrade(upgradeIdentifiers.Select(ident =>
+                                      registry.LatestAvailable(ident, inst.KSP.VersionCriteria())),
+                                  downloader, ref possibleConfigOnlyDirs, regMgr, false);
 
                 // Assert
                 CollectionAssert.AreEquivalent(correctRemainingIdentifiers,

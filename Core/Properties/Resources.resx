@@ -260,7 +260,7 @@ Please remove manually before trying to install it.</value></data>
   <data name="KrakenParentDependencyNotSatisfied" xml:space="preserve"><value>{0} dependency on {1} version {2} not satisfied</value></data>
   <data name="KrakenAny" xml:space="preserve"><value>(any)</value></data>
   <data name="KrakenProvidedByMoreThanOne" xml:space="preserve"><value>Module {0} is provided by more than one available module. Please choose one of the following:</value></data>
-  <data name="KrakenInconsistenciesHeader" xml:space="preserve"><value>The following inconsistencies were found:</value></data>
+  <data name="KrakenInconsistenciesHeader" xml:space="preserve"><value>Inconsistencies were found:</value></data>
   <data name="KrakenMissingDependency" xml:space="preserve"><value>{0} missing dependency {1}</value></data>
   <data name="KrakenConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve"><value>Uh oh, the following things went wrong when downloading...</value></data>
@@ -288,6 +288,7 @@ Need to store {3} to {1}, but only {2} is available!
 Free up space on that device or change your settings to use another location.
 </value></data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>
+  <data name="RelationshipResolverConflictingModDescription" xml:space="preserve"><value>{0} (needed for: {1})</value></data>
   <data name="RelationshipResolverRequiredButResolver" xml:space="preserve"><value>{0} required, but an incompatible version is in the resolver</value></data>
   <data name="RelationshipResolverRequiredButInstalled" xml:space="preserve"><value>{0} required, but an incompatible version is installed</value></data>
   <data name="RelationshipResolverAnUnmanaged" xml:space="preserve"><value>an unmanaged DLL or DLC</value></data>
@@ -295,6 +296,7 @@ Free up space on that device or change your settings to use another location.
   <data name="RelationshipResolverModNotInList" xml:space="preserve"><value>Mod {0} is not in the list</value></data>
   <data name="RelationshipResolverInstalledReason" xml:space="preserve"><value>Currently installed</value></data>
   <data name="RelationshipResolverUserReason" xml:space="preserve"><value>Requested by user</value></data>
+  <data name="RelationshipResolverDependencyRemoved" xml:space="preserve"><value>Dependency removed</value></data>
   <data name="RelationshipResolverNoLongerUsedReason" xml:space="preserve"><value>Auto-installed, depending modules removed</value></data>
   <data name="RelationshipResolverReplacementReason" xml:space="preserve"><value>Replacing {0}</value></data>
   <data name="RelationshipResolverSuggestedReason" xml:space="preserve"><value>Suggested by {0}</value></data>

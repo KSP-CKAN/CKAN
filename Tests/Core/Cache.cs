@@ -161,21 +161,21 @@ namespace Tests.Core
             // We could use any URL, but this one is awesome. <3
             Uri url = new Uri("http://kitte.nz/");
 
-            Assert.IsFalse(cache.IsCachedZip(url));
+            Assert.IsFalse(cache.IsCached(url));
 
             // Store a bad zip.
             cache.Store(url, TestData.DogeCoinFlagZipCorrupt());
 
-            // Make sure it's stored, but not valid as a zip
+            // Make sure it's stored
             Assert.IsTrue(cache.IsCached(url));
-            Assert.IsFalse(cache.IsCachedZip(url));
+            // Make sure it's not valid as a zip
+            Assert.IsFalse(NetModuleCache.ZipValid(cache.GetCachedFilename(url), out string invalidReason, null));
 
             // Store a good zip.
             cache.Store(url, TestData.DogeCoinFlagZip());
 
             // Make sure it's stored, and valid.
             Assert.IsTrue(cache.IsCached(url));
-            Assert.IsTrue(cache.IsCachedZip(url));
         }
 
         [Test]
@@ -189,7 +189,7 @@ namespace Tests.Core
             bool valid = false;
             string reason = "";
             Assert.DoesNotThrow(() =>
-                valid = NetFileCache.ZipValid(TestData.ZipWithBadChars, out reason, null));
+                valid = NetModuleCache.ZipValid(TestData.ZipWithBadChars, out reason, null));
 
             // The file is considered valid on Linux;
             // only check the reason if found invalid
@@ -212,7 +212,7 @@ namespace Tests.Core
             string reason = null;
 
             Assert.DoesNotThrow(() =>
-                valid = NetFileCache.ZipValid(TestData.ZipWithUnicodeChars, out reason, null));
+                valid = NetModuleCache.ZipValid(TestData.ZipWithUnicodeChars, out reason, null));
             Assert.IsTrue(valid, reason);
         }
 

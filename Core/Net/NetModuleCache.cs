@@ -4,6 +4,8 @@ using System.IO;
 using System.Threading;
 using System.Security.Cryptography;
 
+using ICSharpCode.SharpZipLib.Zip;
+
 namespace CKAN
 {
     /// <summary>
@@ -16,6 +18,12 @@ namespace CKAN
     /// </summary>
     public class NetModuleCache : IDisposable
     {
+        static NetModuleCache()
+        {
+            // SharpZibLib 1.1.0 changed this to default to false, but we depend on it for international mods.
+            // https://github.com/icsharpcode/SharpZipLib/issues/591
+            ZipStrings.UseUnicode = true;
+        }
 
         /// <summary>
         /// Initialize the cache
@@ -66,18 +74,11 @@ namespace CKAN
             outFilename = null;
             return false;
         }
-        public bool IsCachedZip(CkanModule m)
-            => m.download?.Any(dlUri => cache.IsCachedZip(dlUri))
-                ?? false;
         public bool IsMaybeCachedZip(CkanModule m)
             => m.download?.Any(dlUri => cache.IsMaybeCachedZip(dlUri, m.release_date))
                 ?? false;
         public string GetCachedFilename(CkanModule m)
             => m.download?.Select(dlUri => cache.GetCachedFilename(dlUri, m.release_date))
-                          .Where(filename => filename != null)
-                          .FirstOrDefault();
-        public string GetCachedZip(CkanModule m)
-            => m.download?.Select(dlUri => cache.GetCachedZip(dlUri))
                           .Where(filename => filename != null)
                           .FirstOrDefault();
         public void GetSizeInfo(out int numFiles, out long numBytes, out long bytesFree)
@@ -157,7 +158,7 @@ namespace CKAN
             const int hashSha1Percent   = 20;
             const int hashSha256Percent = 20;
 
-            progress.Report(0);
+            progress?.Report(0);
             // Check file exists
             FileInfo fi = new FileInfo(path);
             if (!fi.Exists)
@@ -172,8 +173,7 @@ namespace CKAN
             cancelToken.ThrowIfCancellationRequested();
 
             // Check valid CRC
-            string invalidReason;
-            if (!NetFileCache.ZipValid(path, out invalidReason, new Progress<long>(percent =>
+            if (!ZipValid(path, out string invalidReason, new Progress<long>(percent =>
                 progress?.Report(percent * zipValidPercent / 100))))
             {
                 throw new InvalidModuleFileKraken(module, path, string.Format(
@@ -214,6 +214,87 @@ namespace CKAN
             // Make sure completion is signalled so progress bars go away
             progress?.Report(100);
             return success;
+        }
+
+        /// <summary>
+        /// Check whether a ZIP file is valid
+        /// </summary>
+        /// <param name="filename">Path to zip file to check</param>
+        /// <param name="invalidReason">Description of problem with the file</param>
+        /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
+        /// <returns>
+        /// True if valid, false otherwise. See invalidReason param for explanation.
+        /// </returns>
+        public static bool ZipValid(string filename, out string invalidReason, IProgress<long> progress)
+        {
+            try
+            {
+                if (filename != null)
+                {
+                    using (ZipFile zip = new ZipFile(filename))
+                    {
+                        string zipErr = null;
+                        // Limit progress updates to 100 per ZIP file
+                        long highestPercent = -1;
+                        // Perform CRC and other checks
+                        if (zip.TestArchive(true, TestStrategy.FindFirstError,
+                            (TestStatus st, string msg) =>
+                            {
+                                // This delegate is called as TestArchive proceeds through its
+                                // steps, both routine and abnormal.
+                                // The second parameter is non-null if an error occurred.
+                                if (st != null && !st.EntryValid && !string.IsNullOrEmpty(msg))
+                                {
+                                    // Capture the error string so we can return it
+                                    zipErr = string.Format(
+                                        Properties.Resources.NetFileCacheZipError,
+                                        st.Operation, st.Entry?.Name, msg);
+                                }
+                                else if (st.Entry != null && progress != null)
+                                {
+                                    // Report progress
+                                    var percent = 100 * st.Entry.ZipFileIndex / zip.Count;
+                                    if (percent > highestPercent)
+                                    {
+                                        progress.Report(percent);
+                                        highestPercent = percent;
+                                    }
+                                }
+                            }))
+                        {
+                            invalidReason = "";
+                            return true;
+                        }
+                        else
+                        {
+                            invalidReason = zipErr ?? Properties.Resources.NetFileCacheZipTestArchiveFalse;
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    invalidReason = Properties.Resources.NetFileCacheNullFileName;
+                    return false;
+                }
+            }
+            catch (ZipException ze)
+            {
+                // Save the errors someplace useful
+                invalidReason = ze.Message;
+                return false;
+            }
+            catch (ArgumentException ex)
+            {
+                invalidReason = ex.Message;
+                return false;
+            }
+            catch (NotSupportedException nse) when (Platform.IsMono)
+            {
+                // SharpZipLib throws this if your locale isn't installed on Mono
+                invalidReason = string.Format(Properties.Resources.NetFileCacheMonoNotSupported, nse.Message);
+                return false;
+            }
         }
 
         /// <summary>

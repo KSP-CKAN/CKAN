@@ -84,8 +84,8 @@ namespace CKAN.NetKAN.Transformers
                         log.InfoFormat("Found compatibility: {0}–{1}", minVer, maxVer);
                         ModuleService.ApplyVersions(json, null, minVer, maxVer);
                     }
-                    var moduleDeps = (mod.depends?.Select(r => (r as ModuleRelationshipDescriptor)?.name)
-                                                  .Where(ident => ident != null)
+                    var moduleDeps = (mod.depends?.OfType<ModuleRelationshipDescriptor>()
+                                                  .Select(r => r.name)
                                       ?? Enumerable.Empty<string>())
                                       .ToHashSet();
                     var missingDeps = swinfo.dependencies

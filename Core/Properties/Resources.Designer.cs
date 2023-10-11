@@ -554,6 +554,9 @@ namespace CKAN.Properties {
         internal static string RelationshipResolverConflictsWith {
             get { return (string)(ResourceManager.GetObject("RelationshipResolverConflictsWith", resourceCulture)); }
         }
+        internal static string RelationshipResolverConflictingModDescription {
+            get { return (string)(ResourceManager.GetObject("RelationshipResolverConflictingModDescription", resourceCulture)); }
+        }
         internal static string RelationshipResolverRequiredButResolver {
             get { return (string)(ResourceManager.GetObject("RelationshipResolverRequiredButResolver", resourceCulture)); }
         }
@@ -574,6 +577,9 @@ namespace CKAN.Properties {
         }
         internal static string RelationshipResolverUserReason {
             get { return (string)(ResourceManager.GetObject("RelationshipResolverUserReason", resourceCulture)); }
+        }
+        internal static string RelationshipResolverDependencyRemoved {
+            get { return (string)(ResourceManager.GetObject("RelationshipResolverDependencyRemoved", resourceCulture)); }
         }
         internal static string RelationshipResolverNoLongerUsedReason {
             get { return (string)(ResourceManager.GetObject("RelationshipResolverNoLongerUsedReason", resourceCulture)); }

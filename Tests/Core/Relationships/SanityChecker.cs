@@ -129,7 +129,7 @@ namespace Tests.Core.Relationships
             mods.Add(registry.LatestAvailable("CustomBiomes", null));
             Assert.Contains(
                 "CustomBiomesData",
-                CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc).Select(kvp => kvp.Value.ToString()).ToList(),
+                CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc).Select(kvp => kvp.Item2.ToString()).ToList(),
                 "Missing CustomBiomesData"
             );
 
@@ -141,7 +141,7 @@ namespace Tests.Core.Relationships
 
             Assert.Contains(
                 "CustomBiomes",
-                CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc).Select(kvp => kvp.Value.ToString()).ToList(),
+                CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc).Select(kvp => kvp.Item2.ToString()).ToList(),
                 "Missing CustomBiomes"
             );
         }

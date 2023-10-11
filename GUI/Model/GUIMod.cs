@@ -133,9 +133,9 @@ namespace CKAN.GUI
                       RepositoryDataManager repoDataMgr,
                       IRegistryQuerier      registry,
                       GameVersionCriteria   current_game_version,
-                      bool? incompatible = null,
-                      bool  hideEpochs   = false,
-                      bool  hideV        = false)
+                      bool? incompatible,
+                      bool  hideEpochs,
+                      bool  hideV)
             : this(instMod.Module, repoDataMgr, registry, current_game_version, incompatible, hideEpochs, hideV)
         {
             IsInstalled      = true;
@@ -166,9 +166,9 @@ namespace CKAN.GUI
                       RepositoryDataManager repoDataMgr,
                       IRegistryQuerier      registry,
                       GameVersionCriteria   current_game_version,
-                      bool? incompatible = null,
-                      bool  hideEpochs   = false,
-                      bool  hideV        = false)
+                      bool? incompatible,
+                      bool  hideEpochs,
+                      bool  hideV)
             : this(mod.identifier, repoDataMgr, registry, current_game_version, incompatible, hideEpochs, hideV)
         {
             Mod           = mod;
@@ -210,9 +210,9 @@ namespace CKAN.GUI
                       RepositoryDataManager repoDataMgr,
                       IRegistryQuerier      registry,
                       GameVersionCriteria   current_game_version,
-                      bool? incompatible = null,
-                      bool  hideEpochs   = false,
-                      bool  hideV        = false)
+                      bool? incompatible,
+                      bool  hideEpochs,
+                      bool  hideV)
         {
             Identifier     = identifier;
             IsAutodetected = registry.IsAutodetected(identifier);

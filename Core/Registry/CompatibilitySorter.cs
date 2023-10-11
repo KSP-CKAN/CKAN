@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 
 using log4net;
@@ -33,12 +35,35 @@ namespace CKAN
             this.installed = installed;
             this.dlls = dlls;
             this.dlc  = dlc;
-            var merged = available.SelectMany(dict => dict)
-                                  .GroupBy(kvp => kvp.Key,
-                                           kvp => kvp.Value)
-                                  .ToDictionary(grp => grp.Key,
-                                                grp => AvailableModule.Merge(grp.ToList()));
-            PartitionModules(merged, CompatibleProviders(crit, providers));
+
+            // Running these independent prep steps in parallel isn't faster (they're each already parallel)
+
+            // Mapping from identifiers to trivially compatible mods providing those identifiers
+            log.Debug("Calculating compatible provider mapping");
+            var compatProv = CompatibleProviders(crit, providers);
+
+            // Split mods into compatible, incompatible, and indeterminate
+            log.Debug("Partitioning modules by compatibility");
+            var groups = getCompatGroups(available).ToArray();
+
+            Compatible = groups.FirstOrDefault(tuple => tuple.Item1 == true)
+                               ?.Item2
+                               ?? new ConcurrentDictionary<string, AvailableModule>();
+
+            Incompatible = groups.FirstOrDefault(tuple => tuple.Item1 == false)
+                                 ?.Item2
+                                 ?? new ConcurrentDictionary<string, AvailableModule>();
+
+            // Mods that might be compatible or incompatible based on their dependencies
+            var indeterminate = groups.FirstOrDefault(tuple => tuple.Item1 == null)
+                                  ?.Item2
+                                  ?? new ConcurrentDictionary<string, AvailableModule>();
+
+            // Sort out the complexly [in]compatible mods
+            indeterminate.AsParallel()
+                         .ForAll(kvp => CheckDepends(kvp.Key, kvp.Value,
+                                                     compatProv, new Stack<string>()));
+            log.Debug("Done partitioning modules by compatibility");
         }
 
         /// <summary>
@@ -49,8 +74,7 @@ namespace CKAN
         /// <summary>
         /// Mods that are compatible with our versions
         /// </summary>
-        public readonly SortedDictionary<string, AvailableModule> Compatible
-            = new SortedDictionary<string, AvailableModule>();
+        public readonly ConcurrentDictionary<string, AvailableModule> Compatible;
 
         public ICollection<CkanModule> LatestCompatible
         {
@@ -67,8 +91,7 @@ namespace CKAN
         /// <summary>
         /// Mods that are incompatible with our versions
         /// </summary>
-        public readonly SortedDictionary<string, AvailableModule> Incompatible
-            = new SortedDictionary<string, AvailableModule>();
+        public readonly ConcurrentDictionary<string, AvailableModule> Incompatible;
 
         public ICollection<CkanModule> LatestIncompatible
         {
@@ -81,17 +104,6 @@ namespace CKAN
                 return latestIncompatible;
             }
         }
-
-        /// <summary>
-        /// Mods that might be compatible or incompatible based on their dependencies
-        /// </summary>
-        private readonly SortedDictionary<string, AvailableModule> Indeterminate = new SortedDictionary<string, AvailableModule>();
-
-        /// <summary>
-        /// Mods for which we have an active call to CheckDepends right now
-        /// in the call stack, used to avoid infinite recursion on circular deps.
-        /// </summary>
-        private readonly Stack<string> Investigating = new Stack<string>();
 
         private readonly Dictionary<string, InstalledModule> installed;
         private readonly HashSet<string> dlls;
@@ -111,76 +123,40 @@ namespace CKAN
         private Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(
             GameVersionCriteria                          crit,
             Dictionary<string, HashSet<AvailableModule>> providers)
-        {
-            log.Debug("Calculating compatible provider mapping");
-            var compat = new Dictionary<string, HashSet<AvailableModule>>();
-            foreach (var (ident, availMods) in providers)
-            {
-                var compatGroups = availMods
-                    .GroupBy(availMod => availMod.AllAvailable()
-                                                 .Any(ckm => !ckm.IsDLC
-                                                             && ckm.ProvidesList.Contains(ident)
-                                                             && ckm.IsCompatible(crit)))
-                    .ToDictionary(grp => grp.Key,
-                                  grp => grp);
-                if (!compatGroups.ContainsKey(false))
-                {
-                    // Everything is compatible, just re-use the same HashSet
-                    compat.Add(ident, availMods);
-                }
-                else if (compatGroups.TryGetValue(true, out var compatGroup))
-                {
-                    // Some are compatible, put them in a new HashSet
-                    compat.Add(ident, compatGroup.ToHashSet());
-                }
-                // Else if nothing compatible, just skip this one
-            }
-            log.Debug("Done calculating compatible provider mapping");
-            return compat;
-        }
+            => providers
+                .AsParallel()
+                .Select(kvp => new KeyValuePair<string, HashSet<AvailableModule>>(
+                    kvp.Key,
+                    kvp.Value.Where(availMod => availMod.AllAvailable()
+                                                        .Any(ckm => !ckm.IsDLC
+                                                                    && ckm.ProvidesList.Contains(kvp.Key)
+                                                                    && ckm.IsCompatible(crit)))
+                             .ToHashSet()))
+                .Where(kvp => kvp.Value.Count > 0)
+                .ToDictionary();
 
-        /// <summary>
-        /// Split the given mods into compatible and incompatible.
-        /// Handles all levels of dependencies.
-        /// </summary>
-        /// <param name="available">All mods available from registry</param>
-        /// <param name="providers">Mapping from identifiers to mods providing those identifiers</param>
-        private void PartitionModules(Dictionary<string, AvailableModule>          available,
-                                      Dictionary<string, HashSet<AvailableModule>> providers)
-        {
-            log.Debug("Partitioning modules by compatibility");
-            // First get the ones that are trivially [in]compatible.
-            foreach (var kvp in available)
-            {
-                if (kvp.Value.AllAvailable().All(m => !m.IsCompatible(CompatibleVersions)))
-                {
-                    // No versions compatible == incompatible
-                    log.DebugFormat("Trivially incompatible: {0}", kvp.Key);
-                    Incompatible.Add(kvp.Key, kvp.Value);
-                }
-                else if (kvp.Value.AllAvailable().All(m => m.depends == null))
-                {
-                    // No dependencies == compatible
-                    log.DebugFormat("Trivially compatible: {0}", kvp.Key);
-                    Compatible.Add(kvp.Key, kvp.Value);
-                }
-                else
-                {
-                    // Need to investigate this one more later
-                    log.DebugFormat("Trivially indeterminate: {0}", kvp.Key);
-                    Indeterminate.Add(kvp.Key, kvp.Value);
-                }
-            }
-            log.Debug("Trivial mods done, moving on to indeterminates");
-            // We'll be modifying `indeterminate` during this loop, so `foreach` is out
-            while (Indeterminate.Count > 0)
-            {
-                var kvp = Indeterminate.First();
-                log.DebugFormat("Checking: {0}", kvp.Key);
-                CheckDepends(kvp.Key, kvp.Value, providers);
-            }
-            log.Debug("Done partitioning modules by compatibility");
-        }
+        private IEnumerable<Tuple<bool?, ConcurrentDictionary<string, AvailableModule>>> getCompatGroups(
+            IEnumerable<Dictionary<string, AvailableModule>> available)
+            // Merge AvailableModules with duplicate identifiers
+            => available.SelectMany(dict => dict)
+                        .GroupBy(kvp => kvp.Key,
+                                 kvp => kvp.Value)
+                        .ToDictionary(grp => grp.Key,
+                                      grp => AvailableModule.Merge(grp))
+                        // Group into trivially [in]compatible (false/true) and indeterminate (null)
+                        .AsParallel()
+                        .GroupBy(kvp => kvp.Value.AllAvailable()
+                                                 .All(m => !m.IsCompatible(CompatibleVersions))
+                                            // No versions compatible == incompatible
+                                            ? (bool?)false
+                                            : kvp.Value.AllAvailable()
+                                                       .All(m => m.depends == null)
+                                                 // No dependencies == compatible
+                                                 ? (bool?)true
+                                                 // Need to investigate this one more later
+                                                 : (bool?)null)
+                        .Select(grp => new Tuple<bool?, ConcurrentDictionary<string, AvailableModule>>(
+                                           grp.Key, grp.ToConcurrentDictionary()));
 
         /// <summary>
         /// Move an indeterminate module to Compatible or Incompatible
@@ -189,9 +165,18 @@ namespace CKAN
         /// <param name="identifier">Identifier of the module to check</param>
         /// <param name="am">The module to check</param>
         /// <param name="providers">Mapping from identifiers to mods providing those identifiers</param>
-        private void CheckDepends(string identifier, AvailableModule am, Dictionary<string, HashSet<AvailableModule>> providers)
+        /// <param name="investigating">Mods for which we have an active call to CheckDepends right now in the call stack, used to avoid infinite recursion on circular deps</param>
+        private void CheckDepends(string                                       identifier,
+                                  AvailableModule                              am,
+                                  Dictionary<string, HashSet<AvailableModule>> providers,
+                                  Stack<string>                                investigating)
         {
-            Investigating.Push(identifier);
+            if (Compatible.ContainsKey(identifier) || Incompatible.ContainsKey(identifier))
+            {
+                // Already checked this one on another branch, don't repeat
+                return;
+            }
+            investigating.Push(identifier);
             foreach (CkanModule m in am.AllAvailable().Where(m => m.IsCompatible(CompatibleVersions)))
             {
                 log.DebugFormat("What about {0}?", m.version);
@@ -201,7 +186,7 @@ namespace CKAN
                     foreach (RelationshipDescriptor rel in m.depends)
                     {
                         bool foundCompat = false;
-                        if (rel.MatchesAny(installed.Select(kvp => kvp.Value.Module), dlls, dlc))
+                        if (rel.MatchesAny(installed.Select(kvp => kvp.Value.Module).ToList(), dlls, dlc))
                         {
                             // Matches a DLL or DLC, cool
                             foundCompat = true;
@@ -221,15 +206,15 @@ namespace CKAN
                             {
                                 string ident = provider.AllAvailable().First().identifier;
                                 log.DebugFormat("Checking depends: {0}", ident);
-                                if (Investigating.Contains(ident))
+                                if (investigating.Contains(ident))
                                 {
                                     // Circular dependency, pretend it's fine for now
                                     foundCompat = true;
                                     break;
                                 }
-                                if (Indeterminate.ContainsKey(ident))
+                                if (!Compatible.ContainsKey(ident) && !Incompatible.ContainsKey(ident))
                                 {
-                                    CheckDepends(ident, provider, providers);
+                                    CheckDepends(ident, provider, providers, investigating);
                                 }
                                 if (Compatible.ContainsKey(ident))
                                 {
@@ -251,17 +236,15 @@ namespace CKAN
                 {
                     // Apparently everything is OK, so we are compatible
                     log.DebugFormat("Complexly compatible: {0}", identifier);
-                    Compatible.Add(identifier, am);
-                    Indeterminate.Remove(identifier);
-                    Investigating.Pop();
+                    Compatible.TryAdd(identifier, am);
+                    investigating.Pop();
                     return;
                 }
             }
             // None of the CkanModules can be installed!
             log.DebugFormat("Complexly incompatible: {0}", identifier);
-            Incompatible.Add(identifier, am);
-            Indeterminate.Remove(identifier);
-            Investigating.Pop();
+            Incompatible.TryAdd(identifier, am);
+            investigating.Pop();
         }
 
         /// <summary>

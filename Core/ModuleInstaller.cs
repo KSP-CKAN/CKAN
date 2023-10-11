@@ -102,7 +102,7 @@ namespace CKAN
                 filename = CkanModule.StandardName(module.identifier, module.version);
             }
 
-            string full_path = cache.GetCachedZip(module);
+            string full_path = cache.GetCachedFilename(module);
             if (full_path == null)
             {
                 return Download(module, filename, cache);
@@ -110,19 +110,6 @@ namespace CKAN
 
             log.DebugFormat("Using {0} (cached)", filename);
             return full_path;
-        }
-
-        public void InstallList(List<string> modules, RelationshipResolverOptions options, RegistryManager registry_manager, ref HashSet<string> possibleConfigOnlyDirs, IDownloader downloader = null)
-        {
-            var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
-            // Only pass the CkanModules of the parameters, so we can tell which are auto-installed,
-            // and relationships of metapackages, since metapackages aren't included in the RR modlist.
-            var list = resolver.ModList()
-                .Where(m => resolver.ReasonsFor(m).Any(reason =>
-                    reason is SelectionReason.UserRequested
-                    || (reason.Parent?.IsMetapackage ?? false)))
-                .ToList();
-            InstallList(list, options, registry_manager, ref possibleConfigOnlyDirs, downloader);
         }
 
         /// <summary>
@@ -133,7 +120,12 @@ namespace CKAN
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// Propagates a CancelledActionKraken if the user cancelled the install.
         /// </summary>
-        public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, RegistryManager registry_manager, ref HashSet<string> possibleConfigOnlyDirs, IDownloader downloader = null, bool ConfirmPrompt = true)
+        public void InstallList(ICollection<CkanModule>     modules,
+                                RelationshipResolverOptions options,
+                                RegistryManager             registry_manager,
+                                ref HashSet<string>         possibleConfigOnlyDirs,
+                                IDownloader                 downloader = null,
+                                bool                        ConfirmPrompt = true)
         {
             // TODO: Break this up into smaller pieces! It's huge!
             if (modules.Count == 0)
@@ -272,7 +264,7 @@ namespace CKAN
             }
 
             // Find ZIP in the cache if we don't already have it.
-            filename = filename ?? Cache.GetCachedZip(module);
+            filename = filename ?? Cache.GetCachedFilename(module);
 
             // If we *still* don't have a file, then kraken bitterly.
             if (filename == null)
@@ -1036,31 +1028,17 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Upgrades the mods listed to the latest versions for the user's KSP.
-        /// Will *re-install* with warning even if an upgrade is not available.
-        /// Throws ModuleNotFoundKraken if module is not installed, or not available.
-        /// </summary>
-        public void Upgrade(IEnumerable<string> identifiers, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true)
-        {
-            // When upgrading, we are removing these mods first and install them again afterwards (but in different versions).
-            // So the list of identifiers of modulesToRemove and modulesToInstall is the same,
-            // RelationshipResolver take care of finding the right CkanModule for each identifier.
-            List<string> identifierList = identifiers.ToList();
-            var resolver = new RelationshipResolver(
-                identifierList,
-                identifierList,
-                RelationshipResolver.DependsOnlyOpts(),
-                registry_manager.registry, ksp.VersionCriteria()
-            );
-            Upgrade(resolver.ModList(), netAsyncDownloader, ref possibleConfigOnlyDirs, registry_manager, enforceConsistency);
-        }
-
-        /// <summary>
         /// Upgrades or installs the mods listed to the specified versions for the user's KSP.
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true, bool resolveRelationships = false, bool ConfirmPrompt = true)
+        public void Upgrade(IEnumerable<CkanModule> modules,
+                            IDownloader             netAsyncDownloader,
+                            ref HashSet<string>     possibleConfigOnlyDirs,
+                            RegistryManager         registry_manager,
+                            bool                    enforceConsistency   = true,
+                            bool                    resolveRelationships = false,
+                            bool                    ConfirmPrompt        = true)
         {
             modules = modules.Memoize();
             var registry = registry_manager.registry;
@@ -1070,7 +1048,7 @@ namespace CKAN
                 var resolver = new RelationshipResolver(
                     modules,
                     modules.Select(m => registry.InstalledModule(m.identifier)?.Module).Where(m => m != null),
-                    RelationshipResolver.DependsOnlyOpts(),
+                    RelationshipResolverOptions.DependsOnlyOpts(),
                     registry,
                     ksp.VersionCriteria()
                 );
@@ -1306,27 +1284,13 @@ namespace CKAN
         /// </summary>
         private void DownloadModules(IEnumerable<CkanModule> mods, IDownloader downloader)
         {
-            List<CkanModule> downloads = mods.Where(module => !Cache.IsCachedZip(module)).ToList();
+            List<CkanModule> downloads = mods.Where(module => !Cache.IsCached(module)).ToList();
 
             if (downloads.Count > 0)
             {
                 downloader.DownloadModules(downloads);
             }
         }
-
-        private static readonly RelationshipResolverOptions RecommenderOptions = new RelationshipResolverOptions()
-        {
-            // Only look at depends
-            with_recommends = false,
-
-            // Don't throw anything
-            without_toomanyprovides_kraken = true,
-            without_enforce_consistency    = true,
-            proceed_with_inconsistencies   = true,
-
-            // Skip relationships with suppress_recommendations==true
-            get_recommenders = true,
-        };
 
         /// <summary>
         /// Looks for optional related modules that could be installed alongside the given modules
@@ -1339,148 +1303,50 @@ namespace CKAN
         /// <returns>
         /// true if anything found, false otherwise
         /// </returns>
-        public bool FindRecommendations(
-            HashSet<CkanModule> sourceModules,
-            List<CkanModule>    toInstall,
-            Registry registry,
-            out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
-            out Dictionary<CkanModule, List<string>> suggestions,
-            out Dictionary<CkanModule, HashSet<string>> supporters)
+        public bool FindRecommendations(HashSet<CkanModule>                                   sourceModules,
+                                        List<CkanModule>                                      toInstall,
+                                        Registry                                              registry,
+                                        out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
+                                        out Dictionary<CkanModule, List<string>>              suggestions,
+                                        out Dictionary<CkanModule, HashSet<string>>           supporters)
         {
-            // Get all dependencies except where suppress_recommendations==true
-            var resolver = new RelationshipResolver(sourceModules, null, RecommenderOptions,
-                                                    registry, ksp.VersionCriteria());
-            var recommenders = resolver.ModList().ToList();
+            var crit     = ksp.VersionCriteria();
+            var resolver = new RelationshipResolver(sourceModules, null,
+                                                    RelationshipResolverOptions.KitchenSinkOpts(),
+                                                    registry, crit);
+            var recommenders = resolver.Dependencies().ToHashSet();
 
-            var dependersIndex = getDependersIndex(recommenders, registry, toInstall);
-            var instList = toInstall.ToList();
-            recommendations = new Dictionary<CkanModule, Tuple<bool, List<string>>>();
-            suggestions = new Dictionary<CkanModule, List<string>>();
-            supporters = new Dictionary<CkanModule, HashSet<string>>();
-            foreach (CkanModule mod in recommenders.Where(m => m.recommends != null))
-            {
-                foreach (RelationshipDescriptor rel in mod.recommends)
-                {
-                    List<CkanModule> providers = rel.LatestAvailableWithProvides(
-                        registry, ksp.VersionCriteria());
-                    int i = 0;
-                    foreach (CkanModule provider in providers)
-                    {
-                        if (!registry.IsInstalled(provider.identifier)
-                            && !toInstall.Any(m => m.identifier == provider.identifier)
-                            && dependersIndex.TryGetValue(provider, out List<string> dependers)
-                            && (provider.IsDLC || CanInstall(RelationshipResolver.DependsOnlyOpts(),
-                                instList.Concat(new List<CkanModule>() { provider }).ToList(), registry)))
-                        {
-                            dependersIndex.Remove(provider);
-                            recommendations.Add(
-                                provider,
-                                new Tuple<bool, List<string>>(
-                                    !provider.IsDLC && (i == 0 || provider.identifier == (rel as ModuleRelationshipDescriptor)?.name),
-                                    dependers));
-                            ++i;
-                        }
-                    }
-                }
-            }
-            foreach (CkanModule mod in recommenders.Where(m => m.suggests != null))
-            {
-                foreach (RelationshipDescriptor rel in mod.suggests)
-                {
-                    List<CkanModule> providers = rel.LatestAvailableWithProvides(
-                        registry, ksp.VersionCriteria());
-                    foreach (CkanModule provider in providers)
-                    {
-                        if (!registry.IsInstalled(provider.identifier)
-                            && !toInstall.Any(m => m.identifier == provider.identifier)
-                            && dependersIndex.TryGetValue(provider, out List<string> dependers)
-                            && (provider.IsDLC || CanInstall(RelationshipResolver.DependsOnlyOpts(),
-                                instList.Concat(new List<CkanModule>() { provider }).ToList(), registry)))
-                        {
-                            dependersIndex.Remove(provider);
-                            suggestions.Add(provider, dependers);
-                        }
-                    }
-                }
-            }
+            recommendations = resolver.Recommendations(recommenders)
+                                      .ToDictionary(m => m,
+                                                    m => new Tuple<bool, List<string>>(
+                                                             resolver.ReasonsFor(m)
+                                                                     .Any(r => (r as SelectionReason.Recommended)
+                                                                                   ?.ProvidesIndex == 0),
+                                                             resolver.ReasonsFor(m)
+                                                                     .Where(r => r is SelectionReason.Recommended rec
+                                                                                 && recommenders.Contains(rec.Parent))
+                                                                     .Select(r => r.Parent.identifier)
+                                                                     .ToList()));
+            suggestions = resolver.Suggestions(recommenders,
+                                               recommendations.Keys.ToList())
+                                  .ToDictionary(m => m,
+                                                m => resolver.ReasonsFor(m)
+                                                             .Where(r => r is SelectionReason.Suggested sug
+                                                                         && recommenders.Contains(sug.Parent))
+                                                             .Select(r => r.Parent.identifier)
+                                                             .ToList());
 
-            // Find installable modules with "supports" relationships
-            var candidates = registry.CompatibleModules(ksp.VersionCriteria())
-                .Where(mod => !registry.IsInstalled(mod.identifier)
-                              && !toInstall.Any(m => m.identifier == mod.identifier))
-                .Where(m => m?.supports != null)
-                .Except(recommendations.Keys)
-                .Except(suggestions.Keys);
-            // Find each module that "supports" something we're installing
-            foreach (CkanModule mod in candidates)
-            {
-                foreach (RelationshipDescriptor rel in mod.supports)
-                {
-                    if (rel.MatchesAny(recommenders, null, null))
-                    {
-                        var name = (rel as ModuleRelationshipDescriptor)?.name;
-                        if (!string.IsNullOrEmpty(name))
-                        {
-                            if (supporters.TryGetValue(mod, out HashSet<string> others))
-                            {
-                                others.Add(name);
-                            }
-                            else
-                            {
-                                supporters.Add(mod, new HashSet<string>() { name });
-                            }
-                        }
-                    }
-                }
-            }
-            supporters.RemoveWhere(kvp =>
-                !CanInstall(
-                    RelationshipResolver.DependsOnlyOpts(),
-                    instList.Concat(new List<CkanModule>() { kvp.Key }).ToList(),
-                    registry));
+            var opts = RelationshipResolverOptions.DependsOnlyOpts();
+            supporters = resolver.Supporters(recommenders,
+                                             toInstall.Concat(recommendations.Keys)
+                                                      .Concat(suggestions.Keys))
+                                 .Where(kvp => CanInstall(toInstall.Append(kvp.Key).ToList(),
+                                                          opts, registry, crit))
+                                 .ToDictionary();
 
-            return recommendations.Any() || suggestions.Any() || supporters.Any();
-        }
-
-        // Build up the list of who recommends what
-        private Dictionary<CkanModule, List<string>> getDependersIndex(
-            IEnumerable<CkanModule> sourceModules,
-            IRegistryQuerier        registry,
-            List<CkanModule>        toExclude)
-        {
-            Dictionary<CkanModule, List<string>> dependersIndex = new Dictionary<CkanModule, List<string>>();
-            foreach (CkanModule mod in sourceModules)
-            {
-                foreach (List<RelationshipDescriptor> relations in new List<List<RelationshipDescriptor>>() { mod.recommends, mod.suggests })
-                {
-                    if (relations != null)
-                    {
-                        foreach (RelationshipDescriptor rel in relations)
-                        {
-                            List<CkanModule> providers = rel.LatestAvailableWithProvides(
-                                registry, ksp.VersionCriteria());
-                            foreach (CkanModule provider in providers)
-                            {
-                                if (!registry.IsInstalled(provider.identifier)
-                                    && !toExclude.Any(m => m.identifier == provider.identifier))
-                                {
-                                    if (dependersIndex.TryGetValue(provider, out List<string> dependers))
-                                    {
-                                        // Add the dependent mod to the list of reasons this dependency is shown.
-                                        dependers.Add(mod.identifier);
-                                    }
-                                    else
-                                    {
-                                        // Add a new entry if this provider isn't listed yet.
-                                        dependersIndex.Add(provider, new List<string>() { mod.identifier });
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return dependersIndex;
+            return recommendations.Count > 0
+                || suggestions.Count > 0
+                || supporters.Count > 0;
         }
 
         /// <summary>
@@ -1493,45 +1359,39 @@ namespace CKAN
         /// <returns>
         /// True if it's possible to install these mods, false otherwise
         /// </returns>
-        public bool CanInstall(
-            RelationshipResolverOptions opts,
-            List<CkanModule>            toInstall,
-            IRegistryQuerier            registry
-        )
+        public bool CanInstall(List<CkanModule>            toInstall,
+                               RelationshipResolverOptions opts,
+                               IRegistryQuerier            registry,
+                               GameVersionCriteria         crit)
         {
-            string request = toInstall.Select(m => m.identifier).Aggregate((a, b) => $"{a}, {b}");
+            string request = string.Join(", ", toInstall.Select(m => m.identifier));
             try
             {
-                RelationshipResolver resolver = new RelationshipResolver(
-                    toInstall,
-                    toInstall.Select(m => registry.InstalledModule(m.identifier)?.Module).Where(m => m != null),
-                    opts, registry, ksp.VersionCriteria()
-                );
+                var installed = toInstall.Select(m => registry.InstalledModule(m.identifier)?.Module)
+                                         .Where(m => m != null);
+                var resolver = new RelationshipResolver(toInstall, installed, opts, registry, crit);
 
-                if (resolver.ModList().Count() >= toInstall.Count(m => !m.IsMetapackage))
+                var resolverModList = resolver.ModList().ToList();
+                if (resolverModList.Count >= toInstall.Count(m => !m.IsMetapackage))
                 {
                     // We can install with no further dependencies
-                    string recipe = resolver.ModList()
-                        .Select(m => m.identifier)
-                        .Aggregate((a, b) => $"{a}, {b}");
+                    string recipe = string.Join(", ", resolverModList.Select(m => m.identifier));
                     log.Debug($"Installable: {request}: {recipe}");
                     return true;
                 }
                 else
                 {
-                    string problems = resolver.ConflictList.Values
-                        .Aggregate((a, b) => $"{a}, {b}");
-                    log.Debug($"Can't install {request}: {problems}");
+                    log.DebugFormat("Can't install {0}: {1}", request, string.Join("; ", resolver.ConflictDescriptions));
                     return false;
                 }
             }
             catch (TooManyModsProvideKraken k)
             {
                 // One of the dependencies is virtual
-                foreach (CkanModule mod in k.modules)
+                foreach (var mod in k.modules)
                 {
                     // Try each option recursively to see if any are successful
-                    if (CanInstall(opts, toInstall.Concat(new List<CkanModule>() { mod }).ToList(), registry))
+                    if (CanInstall(toInstall.Append(mod).ToList(), opts, registry, crit))
                     {
                         // Child call will emit debug output, so we don't need to here
                         return true;

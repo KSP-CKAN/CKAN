@@ -11,7 +11,7 @@ using CKAN;
 namespace Tests.Data
 {
     /// <summary>
-    /// A disposable repository backed by an auto-created ZIP file
+    /// A disposable repository backed by an auto-created tar.gz file
     /// containing the given modules.
     /// Will be automatically cleaned up on falling out of using() scope.
     /// </summary>

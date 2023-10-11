@@ -2,8 +2,10 @@ using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Autofac;
@@ -36,6 +38,8 @@ namespace CKAN.GUI
             {
                 if (!(visibleGuiModule?.Equals(value) ?? value?.Equals(visibleGuiModule) ?? true))
                 {
+                    // Stop background loading of row colors
+                    cancelTokenSrc?.Cancel();
                     // Listen for property changes (we only care about GUIMod.SelectedMod)
                     if (visibleGuiModule != null)
                     {
@@ -55,9 +59,10 @@ namespace CKAN.GUI
             }
         }
 
-        private RepositoryDataManager repoData;
-        private GUIMod                visibleGuiModule;
-        private bool                  ignoreItemCheck;
+        private RepositoryDataManager   repoData;
+        private GUIMod                  visibleGuiModule;
+        private bool                    ignoreItemCheck;
+        private CancellationTokenSource cancelTokenSrc;
 
         private void VersionsListView_ItemCheck(object sender, ItemCheckEventArgs e)
         {
@@ -90,14 +95,20 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        private bool installable(ModuleInstaller installer, CkanModule module, IRegistryQuerier registry)
-        {
-            return module.IsCompatible(Main.Instance.CurrentInstance.VersionCriteria())
-                && installer.CanInstall(
-                    RelationshipResolver.DependsOnlyOpts(),
-                    new List<CkanModule>() { module },
-                    registry);
-        }
+        private static bool installable(ModuleInstaller     installer,
+                                        CkanModule          module,
+                                        IRegistryQuerier    registry)
+            => installable(installer, module, registry, Main.Instance.CurrentInstance.VersionCriteria());
+
+        [ForbidGUICalls]
+        private static bool installable(ModuleInstaller     installer,
+                                        CkanModule          module,
+                                        IRegistryQuerier    registry,
+                                        GameVersionCriteria crit)
+            => module.IsCompatible(crit)
+                && installer.CanInstall(new List<CkanModule>() { module },
+                                        RelationshipResolverOptions.DependsOnlyOpts(),
+                                        registry, crit);
 
         private bool allowInstall(CkanModule module)
         {
@@ -204,51 +215,52 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         private void checkInstallable(ListViewItem[] items)
         {
-            GameInstance     currentInstance = Main.Instance.Manager.CurrentInstance;
-            IRegistryQuerier registry        = RegistryManager.Instance(currentInstance, repoData).registry;
-            bool latestCompatibleVersionAlreadyFound = false;
-            var installer = new ModuleInstaller(
-                currentInstance,
-                Main.Instance.Manager.Cache,
-                Main.Instance.currentUser);
-            foreach (ListViewItem item in items)
-            {
-                if (item.ListView == null)
-                {
-                    // User switched to another mod, quit
-                    break;
-                }
-                if (installable(installer, item.Tag as CkanModule, registry))
-                {
-                    if (!latestCompatibleVersionAlreadyFound)
-                    {
-                        latestCompatibleVersionAlreadyFound = true;
-                        Util.Invoke(this, () =>
-                        {
-                            item.BackColor = Color.Green;
-                            item.ForeColor = Color.White;
-                        });
-                    }
-                    else
-                    {
-                        Util.Invoke(this, () =>
-                        {
-                            item.BackColor = Color.LightGreen;
-                        });
-                    }
-                }
-            }
-            Util.Invoke(this, () =>
-            {
-                UseWaitCursor = false;
-            });
+            var currentInstance = Main.Instance.Manager.CurrentInstance;
+            var registry        = RegistryManager.Instance(currentInstance, repoData).registry;
+            var installer       = new ModuleInstaller(currentInstance,
+                                                      Main.Instance.Manager.Cache,
+                                                      Main.Instance.currentUser);
+            ListViewItem latestCompatible = null;
+            // Load balance the items so they're processed roughly in-order instead of blocks
+            Partitioner.Create(items, true)
+                       // Distribute across cores
+                       .AsParallel()
+                       // Abort when they switch to another mod
+                       .WithCancellation(cancelTokenSrc.Token)
+                       // Return them as they're processed
+                       .WithMergeOptions(ParallelMergeOptions.NotBuffered)
+                       // Slow step to be performed across multiple cores
+                       .Where(item => installable(installer, item.Tag as CkanModule, registry))
+                       // Jump back to GUI thread for the updates for each compatible item
+                       .ForAll(item => Util.Invoke(this, () =>
+                       {
+                           if (latestCompatible == null || item.Index < latestCompatible.Index)
+                           {
+                               if (latestCompatible != null)
+                               {
+                                   // Revert color of previous best guess
+                                   latestCompatible.BackColor = Color.LightGreen;
+                                   latestCompatible.ForeColor = SystemColors.ControlText;
+                               }
+                               latestCompatible = item;
+                               item.BackColor = Color.Green;
+                               item.ForeColor = Color.White;
+                           }
+                           else
+                           {
+                               item.BackColor = Color.LightGreen;
+                           }
+                       }));
+            Util.Invoke(this, () => UseWaitCursor = false);
         }
 
         private void Refresh(GUIMod gmod)
         {
+            // checkInstallable needs this to stop background threads on switch to another mod
+            cancelTokenSrc     = new CancellationTokenSource();
             var startingModule = gmod;
             var items          = getItems(gmod, getVersions(gmod));
-            Util.Invoke(this, () =>
+            Util.AsyncInvoke(this, () =>
             {
                 VersionsListView.BeginUpdate();
                 VersionsListView.Items.Clear();

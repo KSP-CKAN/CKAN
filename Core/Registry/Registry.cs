@@ -38,10 +38,16 @@ namespace CKAN
         private SortedDictionary<string, Repository> repositories;
 
         // name => path
-        [JsonProperty] private  Dictionary<string, string>          installed_dlls;
-        [JsonProperty] private  Dictionary<string, InstalledModule> installed_modules;
+        [JsonProperty]
+        private Dictionary<string, string> installed_dlls;
+
+        [JsonProperty]
+        [JsonConverter(typeof(JsonParallelDictionaryConverter<InstalledModule>))]
+        private Dictionary<string, InstalledModule> installed_modules;
+
         // filename (case insensitive on Windows) => module
-        [JsonProperty] private  Dictionary<string, string>          installed_files;
+        [JsonProperty]
+        private Dictionary<string, string> installed_files;
 
         /// <summary>
         /// Returns all the activated registries.
@@ -65,6 +71,7 @@ namespace CKAN
             InvalidateAvailableModCaches();
             repositories = value;
         }
+
         /// <summary>
         /// Wrapper around this.repositories.Clear() that invalidates
         /// available mod caches
@@ -602,10 +609,13 @@ namespace CKAN
         public CkanModule LatestAvailable(
             string identifier,
             GameVersionCriteria gameVersion,
-            RelationshipDescriptor relationshipDescriptor = null)
+            RelationshipDescriptor relationshipDescriptor = null,
+            ICollection<CkanModule> installed = null,
+            ICollection<CkanModule> toInstall = null)
         {
             log.DebugFormat("Finding latest available for {0}", identifier);
-            return getAvail(identifier)?.Select(am => am.Latest(gameVersion, relationshipDescriptor))
+            return getAvail(identifier)?.Select(am => am.Latest(gameVersion, relationshipDescriptor,
+                                                                installed, toInstall))
                                         .Where(m => m != null)
                                         .OrderByDescending(m => m.version)
                                         .FirstOrDefault();
@@ -706,9 +716,12 @@ namespace CKAN
         {
             get
             {
-                if (tags == null)
+                lock (tagMutex)
                 {
-                    BuildTagIndex();
+                    if (tags == null)
+                    {
+                        BuildTagIndex();
+                    }
                 }
                 return tags;
             }
@@ -719,13 +732,18 @@ namespace CKAN
         {
             get
             {
-                if (untagged == null)
+                lock (tagMutex)
                 {
-                    BuildTagIndex();
+                    if (untagged == null)
+                    {
+                        BuildTagIndex();
+                    }
                 }
                 return untagged;
             }
         }
+
+        private object tagMutex = new object();
 
         /// <summary>
         /// Assemble a mapping from tags to modules
@@ -778,8 +796,8 @@ namespace CKAN
             string                  identifier,
             GameVersionCriteria     gameVersion,
             RelationshipDescriptor  relationship_descriptor = null,
-            IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null)
+            ICollection<CkanModule> installed = null,
+            ICollection<CkanModule> toInstall = null)
         {
             if (providers == null)
             {
@@ -789,11 +807,8 @@ namespace CKAN
             {
                 // For each AvailableModule, we want the latest one matching our constraints
                 return provs
-                    .Select(am => am.Latest(
-                        gameVersion,
-                        relationship_descriptor,
-                        installed ?? InstalledModules.Select(im => im.Module),
-                        toInstall))
+                    .Select(am => am.Latest(gameVersion, relationship_descriptor,
+                                            installed, toInstall))
                     .Where(m => m?.ProvidesList?.Contains(identifier) ?? false)
                     .ToList();
             }
@@ -1118,12 +1133,6 @@ namespace CKAN
                                              installed_dlls.Keys, InstalledDlc);
         }
 
-        public List<string> GetSanityErrors()
-            => SanityChecker.ConsistencyErrors(installed_modules.Select(pair => pair.Value.Module),
-                                               installed_dlls.Keys,
-                                               InstalledDlc)
-                            .ToList();
-
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// Acts recursively and lazily.
@@ -1175,9 +1184,9 @@ namespace CKAN
                     var brokenDeps = SanityChecker.FindUnsatisfiedDepends(hypothetical, dlls, dlc);
                     if (satisfiedFilter != null)
                     {
-                        brokenDeps.RemoveAll(kvp => satisfiedFilter(kvp.Value));
+                        brokenDeps.RemoveAll(kvp => satisfiedFilter(kvp.Item2));
                     }
-                    var brokenIdents = brokenDeps.Select(x => x.Key.identifier).ToHashSet();
+                    var brokenIdents = brokenDeps.Select(x => x.Item1.identifier).ToHashSet();
 
                     if (modulesToInstall != null)
                     {

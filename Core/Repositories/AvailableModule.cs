@@ -53,10 +53,15 @@ namespace CKAN
             Debug.Assert(module_version.Values.All(m => identifier.Equals(m.identifier)));
         }
 
-        public static AvailableModule Merge(IList<AvailableModule> availMods)
-            => availMods.Count == 1 ? availMods.First()
-                                    : new AvailableModule(availMods.First().identifier,
-                                                          availMods.Reverse().SelectMany(am => am.AllAvailable()));
+        /// <summary>
+        /// Generate a new AvailableModule given its CkanModules
+        /// </summary>
+        /// <param name="availMods">Sequence of mods to be contained, expected to be IGrouping&lt;&gt;, so it should support O(1) Count(), even though IEnumerable&lt;&gt; in general does not</param>
+        /// <returns></returns>
+        public static AvailableModule Merge(IEnumerable<AvailableModule> availMods)
+            => availMods.Count() == 1 ? availMods.First()
+                                      : new AvailableModule(availMods.First().identifier,
+                                                            availMods.Reverse().SelectMany(am => am.AllAvailable()));
 
         // The map of versions -> modules, that's what we're about!
         // First element is the oldest version, last is the newest.
@@ -97,8 +102,8 @@ namespace CKAN
         public CkanModule Latest(
             GameVersionCriteria     ksp_version  = null,
             RelationshipDescriptor  relationship = null,
-            IEnumerable<CkanModule> installed    = null,
-            IEnumerable<CkanModule> toInstall    = null)
+            ICollection<CkanModule> installed    = null,
+            ICollection<CkanModule> toInstall    = null)
         {
             IEnumerable<CkanModule> modules = module_version.Values.Reverse();
             if (relationship != null)
@@ -120,9 +125,8 @@ namespace CKAN
             return modules.FirstOrDefault();
         }
 
-        private static bool DependsAndConflictsOK(CkanModule module, IEnumerable<CkanModule> others)
+        private static bool DependsAndConflictsOK(CkanModule module, ICollection<CkanModule> others)
         {
-            others = others.Memoize();
             if (module.depends != null)
             {
                 foreach (RelationshipDescriptor rel in module.depends)
@@ -135,7 +139,7 @@ namespace CKAN
                     }
                 }
             }
-            var othersMinusSelf = others.Where(m => m.identifier != module.identifier).Memoize();
+            var othersMinusSelf = others.Where(m => m.identifier != module.identifier).ToList();
             if (module.conflicts != null)
             {
                 // Skip self-conflicts (but catch other modules providing self)

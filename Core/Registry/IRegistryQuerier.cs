@@ -16,10 +16,10 @@ namespace CKAN
     /// </summary>
     public interface IRegistryQuerier
     {
-        ReadOnlyDictionary<string, Repository> Repositories { get; }
-        IEnumerable<InstalledModule> InstalledModules { get; }
-        IEnumerable<string>          InstalledDlls    { get; }
-        IDictionary<string, ModuleVersion> InstalledDlc { get; }
+        ReadOnlyDictionary<string, Repository> Repositories     { get; }
+        IEnumerable<InstalledModule>           InstalledModules { get; }
+        IEnumerable<string>                    InstalledDlls    { get; }
+        IDictionary<string, ModuleVersion>     InstalledDlc     { get; }
 
         /// <summary>
         /// Returns a simple array of the latest compatible module for each identifier for
@@ -42,7 +42,11 @@ namespace CKAN
         /// If no ksp_version is provided, the latest module for *any* KSP version is returned.
         /// <exception cref="ModuleNotFoundKraken">Throws if asked for a non-existent module.</exception>
         /// </summary>
-        CkanModule LatestAvailable(string identifier, GameVersionCriteria ksp_version, RelationshipDescriptor relationship_descriptor = null);
+        CkanModule LatestAvailable(string                  identifier,
+                                   GameVersionCriteria     ksp_version,
+                                   RelationshipDescriptor  relationship_descriptor = null,
+                                   ICollection<CkanModule> installed = null,
+                                   ICollection<CkanModule> toInstall = null);
 
         /// <summary>
         /// Returns the max game version that is compatible with the given mod.
@@ -63,13 +67,11 @@ namespace CKAN
         /// Returns an empty list if nothing is available for our system, which includes if no such module exists.
         /// If no KSP version is provided, the latest module for *any* KSP version is given.
         /// </summary>
-        List<CkanModule> LatestAvailableWithProvides(
-            string identifier,
-            GameVersionCriteria ksp_version,
-            RelationshipDescriptor relationship_descriptor = null,
-            IEnumerable<CkanModule> installed = null,
-            IEnumerable<CkanModule> toInstall = null
-        );
+        List<CkanModule> LatestAvailableWithProvides(string                  identifier,
+                                                     GameVersionCriteria     ksp_version,
+                                                     RelationshipDescriptor  relationship_descriptor = null,
+                                                     ICollection<CkanModule> installed = null,
+                                                     ICollection<CkanModule> toInstall = null);
 
         /// <summary>
         /// Checks the sanity of the registry, to ensure that all dependencies are met,
@@ -81,9 +83,9 @@ namespace CKAN
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// </summary>
-        IEnumerable<string> FindReverseDependencies(
-            List<string> modulesToRemove, List<CkanModule> modulesToInstall = null, Func<RelationshipDescriptor, bool> satisfiedFilter = null
-        );
+        IEnumerable<string> FindReverseDependencies(List<string> modulesToRemove,
+                                                    List<CkanModule> modulesToInstall = null,
+                                                    Func<RelationshipDescriptor, bool> satisfiedFilter = null);
 
         /// <summary>
         /// Gets the installed version of a mod. Does not check for provided or autodetected mods.
@@ -360,7 +362,7 @@ namespace CKAN
             var autoInstIds  = autoInstMods.Select(im => im.Module.identifier).ToHashSet();
 
             // Need to get the full changeset for this to work as intended
-            RelationshipResolverOptions opts = RelationshipResolver.DependsOnlyOpts();
+            RelationshipResolverOptions opts = RelationshipResolverOptions.DependsOnlyOpts();
             opts.without_toomanyprovides_kraken = true;
             opts.without_enforce_consistency    = true;
             opts.proceed_with_inconsistencies   = true;

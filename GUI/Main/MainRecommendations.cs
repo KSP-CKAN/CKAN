@@ -60,7 +60,7 @@ namespace CKAN.GUI
                         new InstallArgument(
                             result.Select(mod => new ModChange(mod, GUIModChangeType.Install))
                                   .ToList(),
-                            RelationshipResolver.DependsOnlyOpts()));
+                            RelationshipResolverOptions.DependsOnlyOpts()));
                 }
             }
             else

@@ -201,16 +201,19 @@ namespace Tests.Core.Net
             {
                 downloader.DownloadAndWait(targets);
             });
-            CollectionAssert.AreEquivalent(badIndices, exception.Exceptions.Select(kvp => kvp.Key).ToArray());
-            foreach (var kvp in exception.Exceptions)
+            Assert.Multiple(() =>
             {
-                var baseExc = kvp.Value.GetBaseException() as FileNotFoundException;
-                Assert.AreEqual(fromPaths[kvp.Key], baseExc.FileName);
-            }
-            foreach (var t in validTargets)
-            {
-                Assert.IsTrue(File.Exists(t.filename));
-            }
+                CollectionAssert.AreEquivalent(badIndices, exception.Exceptions.Select(kvp => kvp.Key).ToArray());
+                foreach (var kvp in exception.Exceptions)
+                {
+                    var baseExc = kvp.Value.GetBaseException() as FileNotFoundException;
+                    Assert.AreEqual(fromPaths[kvp.Key], baseExc.FileName);
+                }
+                foreach (var t in validTargets)
+                {
+                    Assert.IsTrue(File.Exists(t.filename));
+                }
+            });
         }
     }
 }

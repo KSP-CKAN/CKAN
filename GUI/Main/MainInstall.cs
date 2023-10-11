@@ -55,7 +55,7 @@ namespace CKAN.GUI
                     // Resolve the provides relationships in the dependencies
                     Wait.StartWaiting(InstallMods, PostInstallMods, true,
                         new InstallArgument(userChangeSet,
-                                            RelationshipResolver.DependsOnlyOpts()));
+                                            RelationshipResolverOptions.DependsOnlyOpts()));
                 }
             }
             catch
@@ -382,7 +382,7 @@ namespace CKAN.GUI
                         break;
 
                     case InconsistentKraken exc:
-                        currentUser.RaiseMessage(exc.InconsistenciesPretty);
+                        currentUser.RaiseMessage(exc.Message);
                         break;
 
                     case CancelledActionKraken exc:

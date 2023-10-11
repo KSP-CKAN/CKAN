@@ -136,7 +136,15 @@ namespace CKAN.CmdLine
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
                     var installer = new ModuleInstaller(instance, manager.Cache, user);
-                    installer.InstallList(modules, install_ops, regMgr, ref possibleConfigOnlyDirs);
+                    installer.InstallList(modules.Select(arg => CkanModule.FromIDandVersion(
+                                                                    regMgr.registry, arg,
+                                                                    options.allow_incompatible
+                                                                        ? null
+                                                                        : instance.VersionCriteria()))
+                                                 .ToList(),
+                                          install_ops,
+                                          regMgr,
+                                          ref possibleConfigOnlyDirs);
                     user.RaiseMessage("");
                     done = true;
                 }
@@ -213,8 +221,7 @@ namespace CKAN.CmdLine
                 }
                 catch (InconsistentKraken ex)
                 {
-                    // The prettiest Kraken formats itself for us.
-                    user.RaiseError("{0}", ex.InconsistenciesPretty);
+                    user.RaiseError("{0}", ex.Message);
                     user.RaiseMessage(Properties.Resources.InstallCancelled);
                     return Exit.ERROR;
                 }

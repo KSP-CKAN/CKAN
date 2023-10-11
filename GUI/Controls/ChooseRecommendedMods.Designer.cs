@@ -73,7 +73,6 @@
             this.RecommendedModsListView.UseCompatibleStateImageBehavior = false;
             this.RecommendedModsListView.View = System.Windows.Forms.View.Details;
             this.RecommendedModsListView.SelectedIndexChanged += new System.EventHandler(RecommendedModsListView_SelectedIndexChanged);
-            this.RecommendedModsListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(RecommendedModsListView_ItemChecked);
             this.RecommendedModsListView.Groups.Add(this.RecommendationsGroup);
             this.RecommendedModsListView.Groups.Add(this.SuggestionsGroup);
             this.RecommendedModsListView.Groups.Add(this.SupportedByGroup);

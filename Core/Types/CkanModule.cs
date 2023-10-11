@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 using Autofac;
 using log4net;
@@ -281,6 +282,11 @@ namespace CKAN
             // We don't have this passed in, so we'll ask the service locator
             // directly. Yuck.
             _comparator = ServiceLocator.Container.Resolve<IGameComparator>();
+            download_content_type = typeof(CkanModule).GetTypeInfo()
+                                                      .GetDeclaredField("download_content_type")
+                                                      .GetCustomAttribute<DefaultValueAttribute>()
+                                                      .Value
+                                                      .ToString();
         }
 
         /// <summary>
@@ -573,12 +579,6 @@ namespace CKAN
                                                             List<GameVersion> realVers)
             => (realVers?.LastOrDefault(v => range.Contains(v))
                         ?? LatestCompatibleGameVersion());
-
-        /// <summary>
-        /// Returns true if this module provides the functionality requested.
-        /// </summary>
-        public bool DoesProvide(string identifier)
-            => this.identifier == identifier || provides.Contains(identifier);
 
         public bool IsMetapackage => kind == "metapackage";
 

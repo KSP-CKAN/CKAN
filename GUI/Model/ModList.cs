@@ -121,7 +121,7 @@ namespace CKAN.GUI
         /// <param name="registry"></param>
         /// <param name="changeSet"></param>
         /// <param name="version">The version of the current game instance</param>
-        public Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>> ComputeFullChangeSetFromUserChangeSet(
+        public Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(
             IRegistryQuerier registry, HashSet<ModChange> changeSet, GameVersionCriteria version)
         {
             var modules_to_install = new List<CkanModule>();
@@ -174,7 +174,8 @@ namespace CKAN.GUI
                     CkanModule module_by_version = registry.GetModuleByVersion(depMod.identifier,
                     depMod.version)
                         ?? registry.InstalledModule(dependent).Module;
-                    changeSet.Add(new ModChange(module_by_version, GUIModChangeType.Remove));
+                    changeSet.Add(new ModChange(module_by_version, GUIModChangeType.Remove,
+                                                new SelectionReason.DependencyRemoved()));
                     modules_to_remove.Add(module_by_version);
                 }
             }
@@ -192,7 +193,7 @@ namespace CKAN.GUI
                 conflictOptions, registry, version);
 
             // Replace Install entries in changeset with the ones from resolver to get all the reasons
-            return new Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>>(
+            return new Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>, List<string>>(
                 changeSet.Where(ch => !(ch.ChangeType is GUIModChangeType.Install))
                          .OrderBy(ch => ch.Mod.identifier)
                          .Union(resolver.ModList()
@@ -200,7 +201,8 @@ namespace CKAN.GUI
                                         .Except(upgrading)
                                         .Where(m => !m.IsMetapackage)
                                         .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonsFor(m)))),
-                resolver.ConflictList);
+                resolver.ConflictList,
+                resolver.ConflictDescriptions.ToList());
         }
 
         /// <summary>
@@ -272,9 +274,9 @@ namespace CKAN.GUI
         {
             Modules = modules;
             var changes = mc?.ToList();
-            full_list_of_mod_rows = Modules.ToDictionary(
-                gm => gm.Identifier,
-                gm => MakeRow(gm, changes, instanceName, game));
+            full_list_of_mod_rows = Modules.AsParallel()
+                                           .ToDictionary(gm => gm.Identifier,
+                                                         gm => MakeRow(gm, changes, instanceName, game));
             HasAnyInstalled = Modules.Any(m => m.IsInstalled);
             return full_list_of_mod_rows.Values;
         }

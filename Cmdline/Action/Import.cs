@@ -45,18 +45,17 @@ namespace CKAN.CmdLine
                 else
                 {
                     log.InfoFormat("Importing {0} files", toImport.Count);
-                    var toInstall = new List<string>();
+                    var toInstall = new List<CkanModule>();
                     var installer = new ModuleInstaller(instance, manager.Cache, user);
                     var regMgr    = RegistryManager.Instance(instance, repoData);
-                    installer.ImportFiles(toImport, user, mod => toInstall.Add(mod.identifier), regMgr.registry, !opts.Headless);
+                    installer.ImportFiles(toImport, user, mod => toInstall.Add(mod), regMgr.registry, !opts.Headless);
                     HashSet<string> possibleConfigOnlyDirs = null;
                     if (toInstall.Count > 0)
                     {
-                        installer.InstallList(
-                            toInstall,
-                            new RelationshipResolverOptions(),
-                            regMgr,
-                            ref possibleConfigOnlyDirs);
+                        installer.InstallList(toInstall,
+                                              new RelationshipResolverOptions(),
+                                              regMgr,
+                                              ref possibleConfigOnlyDirs);
                     }
                     return Exit.OK;
                 }

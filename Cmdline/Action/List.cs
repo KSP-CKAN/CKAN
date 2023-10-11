@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 using log4net;
@@ -39,7 +40,9 @@ namespace CKAN.CmdLine
             if (!(options.porcelain) && exportFileType == null)
             {
                 user.RaiseMessage("");
-                user.RaiseMessage(Properties.Resources.ListGameFound, instance.game.ShortName, instance.GameDir());
+                user.RaiseMessage(Properties.Resources.ListGameFound,
+                                  instance.game.ShortName,
+                                  instance.GameDir().Replace('/', Path.DirectorySeparatorChar));
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ListGameVersion, instance.game.ShortName, instance.Version());
                 user.RaiseMessage("");

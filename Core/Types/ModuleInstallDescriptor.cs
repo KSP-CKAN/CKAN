@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Runtime.CompilerServices;
+using System.Reflection;
 
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
@@ -109,6 +110,11 @@ namespace CKAN
         [JsonConstructor]
         private ModuleInstallDescriptor()
         {
+            install_to = typeof(ModuleInstallDescriptor).GetTypeInfo()
+                                                        .GetDeclaredField("install_to")
+                                                        .GetCustomAttribute<DefaultValueAttribute>()
+                                                        .Value
+                                                        .ToString();
         }
 
         /// <summary>

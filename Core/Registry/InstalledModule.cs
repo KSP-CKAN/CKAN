@@ -146,10 +146,15 @@ namespace CKAN
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext context)
         {
+            if (installed_files == null)
+            {
+                installed_files = new Dictionary<string, InstalledModuleFile>();
+            }
             if (Platform.IsWindows)
             {
                 // We need case insensitive path matching on Windows
-                installed_files = new Dictionary<string, InstalledModuleFile>(installed_files, StringComparer.OrdinalIgnoreCase);
+                installed_files = new Dictionary<string, InstalledModuleFile>(installed_files,
+                                                                              StringComparer.OrdinalIgnoreCase);
             }
         }
 

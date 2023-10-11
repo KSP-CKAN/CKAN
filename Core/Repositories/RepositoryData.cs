@@ -3,6 +3,8 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Runtime.Serialization;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,9 +16,21 @@ using log4net;
 
 using CKAN.Versioning;
 using CKAN.Games;
+using CKAN.Extensions;
 
 namespace CKAN
 {
+    using ArchiveEntry = Tuple<CkanModule,
+                               SortedDictionary<string, int>,
+                               GameVersion[],
+                               Repository[],
+                               long>;
+
+    using ArchiveList = Tuple<List<CkanModule>,
+                              SortedDictionary<string, int>,
+                              GameVersion[],
+                              Repository[]>;
+
     /// <summary>
     /// Represents everything we retrieve from one metadata repository
     /// </summary>
@@ -26,6 +40,7 @@ namespace CKAN
         /// The available modules from this repository
         /// </summary>
         [JsonProperty("available_modules", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonParallelDictionaryConverter<AvailableModule>))]
         public readonly Dictionary<string, AvailableModule> AvailableModules;
 
         /// <summary>
@@ -48,6 +63,17 @@ namespace CKAN
         [JsonProperty("repositories", NullValueHandling = NullValueHandling.Ignore)]
         public readonly Repository[] Repositories;
 
+        private RepositoryData(Dictionary<string, AvailableModule> modules,
+                               SortedDictionary<string, int>       counts,
+                               GameVersion[]                       versions,
+                               Repository[]                        repos)
+        {
+            AvailableModules  = modules;
+            DownloadCounts    = counts;
+            KnownGameVersions = versions;
+            Repositories      = repos;
+        }
+
         /// <summary>
         /// Instantiate a repo data object
         /// </summary>
@@ -59,13 +85,18 @@ namespace CKAN
                               SortedDictionary<string, int> counts,
                               IEnumerable<GameVersion>      versions,
                               IEnumerable<Repository>       repos)
+            : this(modules?.GroupBy(m => m.identifier)
+                           .ToDictionary(grp => grp.Key,
+                                         grp => new AvailableModule(grp.Key, grp)),
+                   counts ?? new SortedDictionary<string, int>(),
+                   (versions ?? Enumerable.Empty<GameVersion>()).ToArray(),
+                   (repos ?? Enumerable.Empty<Repository>()).ToArray())
         {
-            AvailableModules  = modules?.GroupBy(m => m.identifier)
-                                        .ToDictionary(grp => grp.Key,
-                                                      grp => new AvailableModule(grp.Key, grp));
-            DownloadCounts    = counts ?? new SortedDictionary<string, int>();
-            KnownGameVersions = (versions ?? Enumerable.Empty<GameVersion>()).ToArray();
-            Repositories      = (repos ?? Enumerable.Empty<Repository>()).ToArray();
+        }
+
+        [JsonConstructor]
+        private RepositoryData()
+        {
         }
 
         /// <summary>
@@ -92,19 +123,37 @@ namespace CKAN
         /// Load a previously cached repo data object from JSON on disk
         /// </summary>
         /// <param name="path">Filename of the JSON file to load</param>
+        /// <param name="progress">Progress notifier to receive updates of percent completion of this file</param>
         /// <returns>A repo data object or null if loading fails</returns>
-        public static RepositoryData FromJson(string path, IProgress<long> progress)
+        public static RepositoryData FromJson(string path, IProgress<int> progress)
         {
             try
             {
+                long fileSize = new FileInfo(path).Length;
                 log.DebugFormat("Trying to load repository data from {0}", path);
                 // Ain't OOP grand?!
                 using (var stream = File.Open(path, FileMode.Open))
-                using (var progressStream = new ReadProgressStream(stream, progress))
+                using (var progressStream = new ReadProgressStream(
+                    stream,
+                    progress == null
+                        ? null
+                        // Treat JSON parsing as the first 50%
+                        : new ProgressImmediate<long>(p => progress.Report((int)(50 * p / fileSize)))))
                 using (var reader = new StreamReader(progressStream))
                 using (var jStream = new JsonTextReader(reader))
                 {
-                    return new JsonSerializer().Deserialize<RepositoryData>(jStream);
+                    var settings = new JsonSerializerSettings()
+                    {
+                        Context = new StreamingContext(
+                            StreamingContextStates.Other,
+                            progress == null
+                                ? null
+                                : new ProgressImmediate<int>(p =>
+                                    // Treat CkanModule creation as the last 50%
+                                    progress.Report(50 + p / 2))),
+                    };
+                    return JsonSerializer.Create(settings)
+                                         .Deserialize<RepositoryData>(jStream);
                 }
             }
             catch (Exception exc)
@@ -134,23 +183,36 @@ namespace CKAN
 
         private static RepositoryData FromTarGz(string path, IGame game, IProgress<long> progress)
         {
-            using (var inputStream = File.OpenRead(path))
-            using (var gzipStream  = new GZipInputStream(inputStream))
-            using (var tarStream   = new TarInputStream(gzipStream, Encoding.UTF8))
+            using (var inputStream    = File.OpenRead(path))
+            using (var progressStream = new ReadProgressStream(inputStream, progress))
+            using (var gzipStream     = new GZipInputStream(progressStream))
+            using (var tarStream      = new TarInputStream(gzipStream, Encoding.UTF8))
             {
-                var modules = new List<CkanModule>();
-                SortedDictionary<string, int> counts = null;
-                GameVersion[] versions = null;
-                Repository[] repos = null;
-
-                TarEntry entry;
-                while ((entry = tarStream.GetNextEntry()) != null)
-                {
-                    ProcessFileEntry(entry.Name, () => tarStreamString(tarStream, entry),
-                                     game, inputStream.Position, progress,
-                                     ref modules, ref counts, ref versions, ref repos);
-                }
+                (List<CkanModule>              modules,
+                 SortedDictionary<string, int> counts,
+                 GameVersion[]                 versions,
+                 Repository[]                  repos) = AggregateArchiveEntries(archiveEntriesFromTar(tarStream, game));
                 return new RepositoryData(modules, counts, versions, repos);
+            }
+        }
+
+        private static ParallelQuery<ArchiveEntry> archiveEntriesFromTar(TarInputStream tarStream, IGame game)
+            => Partitioner.Create(getTarEntries(tarStream))
+                          .AsParallel()
+                          .Select(tuple => getArchiveEntry(tuple.Item1.Name,
+                                                           () => tuple.Item2,
+                                                           game,
+                                                           tarStream.Position));
+
+        private static IEnumerable<Tuple<TarEntry, string>> getTarEntries(TarInputStream tarStream)
+        {
+            TarEntry entry;
+            while ((entry = tarStream.GetNextEntry()) != null)
+            {
+                if (!entry.Name.EndsWith(".frozen"))
+                {
+                    yield return new Tuple<TarEntry, string>(entry, tarStreamString(tarStream, entry));
+                }
             }
         }
 
@@ -179,63 +241,78 @@ namespace CKAN
 
         private static RepositoryData FromZip(string path, IGame game, IProgress<long> progress)
         {
-            using (var zipfile = new ZipFile(path))
+            using (var inputStream = File.OpenRead(path))
+            using (var progressStream = new ReadProgressStream(inputStream, progress))
+            using (var zipfile = new ZipFile(progressStream))
             {
-                var modules = new List<CkanModule>();
-                SortedDictionary<string, int> counts = null;
-                GameVersion[] versions = null;
-                Repository[] repos = null;
-
-                foreach (ZipEntry entry in zipfile)
-                {
-                    ProcessFileEntry(entry.Name, () => new StreamReader(zipfile.GetInputStream(entry)).ReadToEnd(),
-                                     game, entry.Offset, progress,
-                                     ref modules, ref counts, ref versions, ref repos);
-                }
+                (List<CkanModule>              modules,
+                 SortedDictionary<string, int> counts,
+                 GameVersion[]                 versions,
+                 Repository[]                  repos) = AggregateArchiveEntries(archiveEntriesFromZip(zipfile, game));
                 zipfile.Close();
                 return new RepositoryData(modules, counts, versions, repos);
             }
         }
 
-        private static void ProcessFileEntry(string                            filename,
-                                             Func<string>                      getContents,
-                                             IGame                             game,
-                                             long                              position,
-                                             IProgress<long>                   progress,
-                                             ref List<CkanModule>              modules,
-                                             ref SortedDictionary<string, int> counts,
-                                             ref GameVersion[]                 versions,
-                                             ref Repository[]                  repos)
-        {
-            if (filename.EndsWith("download_counts.json"))
-            {
-                counts = JsonConvert.DeserializeObject<SortedDictionary<string, int>>(getContents());
-            }
-            else if (filename.EndsWith("builds.json"))
-            {
-                versions = game.ParseBuildsJson(JToken.Parse(getContents()));
-            }
-            else if (filename.EndsWith("repositories.json"))
-            {
-                repos = JObject.Parse(getContents())["repositories"]
-                               .ToObject<Repository[]>();
-            }
-            else if (filename.EndsWith(".ckan"))
-            {
-                log.DebugFormat("Reading CKAN data from {0}", filename);
-                CkanModule module = ProcessRegistryMetadataFromJSON(getContents(), filename);
-                if (module != null)
-                {
-                    modules.Add(module);
-                }
-            }
-            else
-            {
-                // Skip things we don't want
-                log.DebugFormat("Skipping archive entry {0}", filename);
-            }
-            progress?.Report(position);
-        }
+        private static ParallelQuery<ArchiveEntry> archiveEntriesFromZip(ZipFile zipfile, IGame game)
+            => zipfile.Cast<ZipEntry>()
+                      .ToArray()
+                      .AsParallel()
+                      .Select(entry => getArchiveEntry(
+                                           entry.Name,
+                                           () => new StreamReader(zipfile.GetInputStream(entry)).ReadToEnd(),
+                                           game,
+                                           entry.Offset));
+
+        private static ArchiveList AggregateArchiveEntries(ParallelQuery<ArchiveEntry> entries)
+            => entries.Aggregate(new ArchiveList(new List<CkanModule>(), null, null, null),
+                                 (subtotal, item) =>
+                                    item == null
+                                         ? subtotal
+                                         : new ArchiveList(
+                                             item.Item1 == null
+                                                 ? subtotal.Item1
+                                                 : subtotal.Item1.Append(item.Item1).ToList(),
+                                             subtotal.Item2 ?? item.Item2,
+                                             subtotal.Item3 ?? item.Item3,
+                                             subtotal.Item4 ?? item.Item4),
+                                 (total, subtotal)
+                                     => new ArchiveList(total.Item1.Concat(subtotal.Item1).ToList(),
+                                                        total.Item2 ?? subtotal.Item2,
+                                                        total.Item3 ?? subtotal.Item3,
+                                                        total.Item4 ?? subtotal.Item4),
+                                 total => total);
+
+        private static ArchiveEntry getArchiveEntry(string       filename,
+                                                    Func<string> getContents,
+                                                    IGame        game,
+                                                    long         position)
+            => filename.EndsWith(".ckan")
+                ? new ArchiveEntry(ProcessRegistryMetadataFromJSON(getContents(), filename),
+                                   null,
+                                   null,
+                                   null,
+                                   position)
+            : filename.EndsWith("download_counts.json")
+                ? new ArchiveEntry(null,
+                                   JsonConvert.DeserializeObject<SortedDictionary<string, int>>(getContents()),
+                                   null,
+                                   null,
+                                   position)
+            : filename.EndsWith("builds.json")
+                ? new ArchiveEntry(null,
+                                   null,
+                                   game.ParseBuildsJson(JToken.Parse(getContents())),
+                                   null,
+                                   position)
+            : filename.EndsWith("repositories.json")
+                ? new ArchiveEntry(null,
+                                   null,
+                                   null,
+                                   JObject.Parse(getContents())["repositories"]
+                                          .ToObject<Repository[]>(),
+                                   position)
+            : null;
 
         private static CkanModule ProcessRegistryMetadataFromJSON(string metadata, string filename)
         {

@@ -20,11 +20,14 @@ namespace CKAN
         public override int Read(byte[] buffer, int offset, int count)
         {
             int amountRead = base.Read(buffer, offset, count);
-            long newProgress = Position;
-            if (newProgress > lastProgress)
+            if (progress != null)
             {
-                progress?.Report(newProgress);
-                lastProgress = newProgress;
+                long newProgress = Position;
+                if (newProgress > lastProgress)
+                {
+                    progress?.Report(newProgress);
+                    lastProgress = newProgress;
+                }
             }
             return amountRead;
         }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Diagnostics;
+
 using log4net;
 using log4net.Config;
 using log4net.Core;
@@ -40,5 +42,36 @@ namespace CKAN
                 }
             }
         }
+
+#if DEBUG
+
+        public static void WithTimeElapsed(Action<TimeSpan> elapsedCallback,
+                                           Action           toMeasure)
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+
+            toMeasure();
+
+            sw.Stop();
+            elapsedCallback(sw.Elapsed);
+        }
+
+        public static T WithTimeElapsed<T>(Action<TimeSpan> elapsedCallback,
+                                           Func<T>          toMeasure)
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+
+            T val = toMeasure();
+
+            sw.Stop();
+            elapsedCallback(sw.Elapsed);
+
+            return val;
+        }
+
+#endif
+
     }
 }

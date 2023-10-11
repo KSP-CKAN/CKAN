@@ -323,7 +323,7 @@ namespace CKAN.CmdLine
 
                 if (next_command == null)
                 {
-                    user.RaiseError("{0}", kraken.InconsistenciesPretty);
+                    user.RaiseError("{0}", kraken.Message);
                     user.RaiseError(Properties.Resources.ScanNotSaved);
                 }
                 else

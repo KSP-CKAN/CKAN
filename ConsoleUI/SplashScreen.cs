@@ -28,7 +28,10 @@ namespace CKAN.ConsoleUI {
         {
             // If there's a default instance, try to get the lock for it.
             GameInstance ksp = manager.CurrentInstance ?? manager.GetPreferredInstance();
-            if (ksp != null && !GameInstanceListScreen.TryGetInstance(theme, ksp, repoData, (ConsoleTheme th) => Draw(th, false))) {
+            if (ksp != null
+                && !GameInstanceListScreen.TryGetInstance(theme, ksp, repoData,
+                                                          (ConsoleTheme th) => Draw(th, false),
+                                                          new Progress<int>(p => drawProgressBar(theme, 22, 20, p)))) {
                 Console.ResetColor();
                 Console.Clear();
                 Console.CursorVisible = true;
@@ -94,6 +97,35 @@ namespace CKAN.ConsoleUI {
             }
         }
 
+        private void drawProgressBar(ConsoleTheme theme, int y, int w, int percent)
+        {
+            lock (progBarMutex)
+            {
+                try {
+                    var doubleWidth = percent * (w - 2) / 50;
+                    if (doubleWidth > lastProgDblW)
+                    {
+                        int lp = (Console.WindowWidth - w) / 2;
+                        var bar = new string(Symbols.fullBlock, percent * (w - 2) / 100);
+                        if ((doubleWidth & 1) == 1)
+                        {
+                            // "Cheat" an extra half character to make the bar more precise
+                            bar += Symbols.leftHalfBlock;
+                        }
+                        // This can throw if the screen is too small
+                        Console.SetCursorPosition(lp, y);
+                        Console.ForegroundColor = theme.SplashNormalFg;
+                        Console.Write("[");
+                        Console.ForegroundColor = theme.SplashAccentFg;
+                        Console.Write(bar.PadRight(w - 2, ' '));
+                        Console.ForegroundColor = theme.SplashNormalFg;
+                        Console.Write("]");
+                        lastProgDblW = doubleWidth;
+                    }
+                } catch { }
+            }
+        }
+
         private void drawCentered(int y, string val)
         {
             int lp = (Console.WindowWidth - val.Length) / 2;
@@ -106,6 +138,8 @@ namespace CKAN.ConsoleUI {
 
         private GameInstanceManager   manager;
         private RepositoryDataManager repoData;
+        private int                   lastProgDblW = -1;
+        private object                progBarMutex = new object();
     }
 
 }

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using log4net;
 
-namespace CKAN
+namespace CKAN.NetKAN
 {
     /// <summary>
     /// The commandline implementation of the IUser interface.

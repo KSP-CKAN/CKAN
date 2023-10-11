@@ -265,12 +265,11 @@ namespace CKAN.GUI
         private TreeNode findDependencyShallow(IRegistryQuerier registry, RelationshipDescriptor relDescr, RelationshipType relationship, GameVersionCriteria crit)
         {
             // Check if this dependency is installed
-            if (relDescr.MatchesAny(
-                registry.InstalledModules.Select(im => im.Module),
-                new HashSet<string>(registry.InstalledDlls),
-                // Maybe it's a DLC?
-                registry.InstalledDlc,
-                out CkanModule matched))
+            if (relDescr.MatchesAny(registry.InstalledModules.Select(im => im.Module).ToList(),
+                                    registry.InstalledDlls.ToHashSet(),
+                                    // Maybe it's a DLC?
+                                    registry.InstalledDlc,
+                                    out CkanModule matched))
             {
                 return matched != null
                     ? indexedNode(registry, matched, relationship, relDescr, crit)
@@ -281,7 +280,7 @@ namespace CKAN.GUI
             List<CkanModule> dependencyModules = relDescr.LatestAvailableWithProvides(
                 registry, crit,
                 // Ignore conflicts with installed mods
-                Enumerable.Empty<CkanModule>());
+                new List<CkanModule>());
             if (dependencyModules.Count == 0)
             {
                 // Nothing found, don't return a node
@@ -296,9 +295,10 @@ namespace CKAN.GUI
             else
             {
                 // Several found or not same id, return a "provides" node
-                return providesNode(relDescr.ToString(), relationship,
-                    dependencyModules.Select(dep => indexedNode(registry, dep, relationship, relDescr, crit))
-                );
+                return providesNode(relDescr.ToString(),
+                                    relationship,
+                                    dependencyModules.Select(dep => indexedNode(
+                                        registry, dep, relationship, relDescr, crit)));
             }
         }
 
