@@ -266,7 +266,7 @@ namespace CKAN.ConsoleUI {
                 int midL = Console.WindowWidth / 2 - 1;
                 int h    = Math.Min(11, numDeps + numConfs + 2);
                 const int lblW = 16;
-                int nameW = midL - 2 - lblW - 2;
+                int nameW = midL - 2 - lblW - 2 - 1;
                 int depsH = (h - 2) * numDeps / (numDeps + numConfs);
 
                 AddObject(new ConsoleFrame(
@@ -290,7 +290,7 @@ namespace CKAN.ConsoleUI {
                     );
                     AddObject(tb);
                     foreach (RelationshipDescriptor rd in mod.depends) {
-                        tb.AddLine(ScreenObject.FormatExactWidth(
+                        tb.AddLine(ScreenObject.TruncateLength(
                             // Show install status
                             ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString()))
                                 + rd.ToString(),
@@ -315,7 +315,7 @@ namespace CKAN.ConsoleUI {
                     // FUTURE: Find mods that conflict with this one
                     //         See GUI/MainModList.cs::ComputeConflictsFromModList
                     foreach (RelationshipDescriptor rd in mod.conflicts) {
-                        tb.AddLine(ScreenObject.FormatExactWidth(
+                        tb.AddLine(ScreenObject.TruncateLength(
                             // Show install status
                             ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString()))
                             + rd.ToString(),
