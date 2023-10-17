@@ -1413,54 +1413,29 @@ namespace CKAN.GUI
             {
                 switch (col.Name)
                 {
-                    case "ModName":
-                        return gmodA.Name.CompareTo(gmodB.Name);
-                    case "GameCompatibility":
-                        return GameCompatComparison(a, b);
-                    case "InstallDate":
-                        if (gmodA.InstallDate.HasValue)
-                        {
-                            return gmodB.InstallDate.HasValue
-                                ? gmodA.InstallDate.Value.CompareTo(gmodB.InstallDate.Value)
-                                : 1;
-                        }
-                        else
-                        {
-                            return gmodB.InstallDate.HasValue ? -1 : 0;
-                        }
-                    case "ReleaseDate":
-                        if (modA.release_date.HasValue)
-                        {
-                            return modB.release_date.HasValue
-                                ? modA.release_date.Value.CompareTo(modB.release_date.Value)
-                                : 1;
-                        }
-                        else
-                        {
-                            return modB.release_date.HasValue ? -1 : 0;
-                        }
-                    case "DownloadSize":
-                        return modA.download_size.CompareTo(modB.download_size);
-                    case "InstallSize":
-                        return modA.install_size.CompareTo(modB.install_size);
-                    case "DownloadCount":
-                        if (gmodA.DownloadCount.HasValue)
-                        {
-                            return gmodB.DownloadCount.HasValue
-                                ? gmodA.DownloadCount.Value.CompareTo(gmodB.DownloadCount.Value)
-                                : 1;
-                        }
-                        else
-                        {
-                            return gmodB.DownloadCount.HasValue ? -1 : 0;
-                        }
+                    case "ModName":           return gmodA.Name.CompareTo(gmodB.Name);
+                    case "GameCompatibility": return GameCompatComparison(a, b);
+                    case "InstallDate":       return CompareToNullable(gmodA.InstallDate,
+                                                                       gmodB.InstallDate);
+                    case "ReleaseDate":       return CompareToNullable(modA.release_date,
+                                                                       modB.release_date);
+                    case "DownloadSize":      return modA.download_size.CompareTo(modB.download_size);
+                    case "InstallSize":       return modA.install_size.CompareTo(modB.install_size);
+                    case "DownloadCount":     return CompareToNullable(gmodA.DownloadCount,
+                                                                       gmodB.DownloadCount);
                     default:
-                        var valA = cellA.Value as string ?? "";
-                        var valB = cellB.Value as string ?? "";
+                        var valA = (cellA.Value as string) ?? "";
+                        var valB = (cellB.Value as string) ?? "";
                         return valA.CompareTo(valB);
                 }
             }
         }
+
+        private static int CompareToNullable<T>(T? a, T? b) where T : struct, IComparable
+            => a.HasValue ? b.HasValue ? a.Value.CompareTo(b.Value)
+                                       : 1
+                          : b.HasValue ? -1
+                                       : 0;
 
         /// <summary>
         /// Compare two rows' GameVersions as max versions.
@@ -1519,11 +1494,9 @@ namespace CKAN.GUI
         /// Positive to sort a lessthan b, negative to sort b lessthan a
         /// </returns>
         private int VersionPieceCompare(bool definedA, int valA, bool definedB, int valB)
-        {
-            return definedA
+            => definedA
                 ? (definedB ? valA.CompareTo(valB) : -1)
                 : (definedB ? 1                    :  0);
-        }
 
         public void ResetFilterAndSelectModOnList(string key)
         {
