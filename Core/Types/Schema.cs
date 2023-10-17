@@ -1,7 +1,6 @@
 using System.IO;
 using System.Reflection;
 
-using Newtonsoft.Json;
 using NJsonSchema;
 
 namespace CKAN

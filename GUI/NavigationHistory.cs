@@ -28,11 +28,7 @@ namespace CKAN.GUI
 
         public void InvokeOnHistoryChange()
         {
-            var handler = OnHistoryChange;
-            if (handler != null)
-            {
-                handler();
-            }
+            OnHistoryChange?.Invoke();
         }
 
         #endregion

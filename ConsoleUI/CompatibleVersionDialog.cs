@@ -103,8 +103,8 @@ namespace CKAN.ConsoleUI {
 
         private List<GameVersion> options;
 
-        private ConsoleListBox<GameVersion> choices;
-        private ConsoleField                manualEntry;
-        private GameVersion                 choice;
+        private readonly ConsoleListBox<GameVersion> choices;
+        private readonly ConsoleField                manualEntry;
+        private          GameVersion                 choice;
     }
 }

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 using log4net;
-using Autofac;
 
-using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.Games;
 using CKAN.NetKAN.Model;

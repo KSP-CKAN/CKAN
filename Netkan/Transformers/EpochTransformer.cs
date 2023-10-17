@@ -22,14 +22,12 @@ namespace CKAN.NetKAN.Transformers
 
             var json = metadata.Json();
 
-            JToken epoch;
-            if (json.TryGetValue("x_netkan_epoch", out epoch))
+            if (json.TryGetValue("x_netkan_epoch", out JToken epoch))
             {
                 Log.InfoFormat("Executing epoch transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
-                uint epochNumber;
-                if (uint.TryParse(epoch.ToString(), out epochNumber))
+                if (uint.TryParse(epoch.ToString(), out uint epochNumber))
                 {
                     //Implicit if zero. No need to add
                     if (epochNumber != 0)
@@ -43,8 +41,7 @@ namespace CKAN.NetKAN.Transformers
                 }
             }
 
-            JToken allowOOO;
-            if (json.TryGetValue("x_netkan_allow_out_of_order", out allowOOO) && (bool)allowOOO)
+            if (json.TryGetValue("x_netkan_allow_out_of_order", out JToken allowOOO) && (bool)allowOOO)
             {
                 Log.Debug("Out of order versions enabled in netkan, skipping OOO check");
             }

@@ -106,10 +106,10 @@ namespace CKAN.CmdLine
             // Check if we have a default selection.
             int defaultSelection = -1;
 
-            if (args[0] is int)
+            if (args[0] is int v)
             {
                 // Check that the default selection makes sense.
-                defaultSelection = (int)args[0];
+                defaultSelection = v;
 
                 if (defaultSelection < 0 || defaultSelection > args.Length - 1)
                 {

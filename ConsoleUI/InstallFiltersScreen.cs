@@ -140,14 +140,14 @@ namespace CKAN.ConsoleUI {
             instance.InstallFilters           = instanceFilters.ToArray();
         }
 
-        private IConfiguration globalConfig;
-        private GameInstance   instance;
+        private readonly IConfiguration globalConfig;
+        private readonly GameInstance   instance;
 
         private List<string> globalFilters;
-        private List<string> instanceFilters;
+        private readonly List<string> instanceFilters;
 
-        private ConsoleListBox<string> globalList;
-        private ConsoleListBox<string> instanceList;
+        private readonly ConsoleListBox<string> globalList;
+        private readonly ConsoleListBox<string> instanceList;
 
         private static readonly string[] miniAVC = new string[] {
             "MiniAVC.dll",

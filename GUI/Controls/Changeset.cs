@@ -53,7 +53,7 @@ namespace CKAN.GUI
                 // Changeset sorting is handled upstream in the resolver
                 ChangesListView.Items.AddRange(changeset
                     .Where(ch => ch.ChangeType != GUIModChangeType.None)
-                    .Select(ch => makeItem(ch, conflicts))
+                    .Select(ch => MakeItem(ch, conflicts))
                     .ToArray());
                 ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -82,7 +82,7 @@ namespace CKAN.GUI
             OnCancelChanges?.Invoke(false);
         }
 
-        private ListViewItem makeItem(ModChange change, Dictionary<CkanModule, string> conflicts)
+        private ListViewItem MakeItem(ModChange change, Dictionary<CkanModule, string> conflicts)
         {
             var descr = change.Description;
             CkanModule m = change.Mod;

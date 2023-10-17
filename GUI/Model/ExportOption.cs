@@ -20,8 +20,6 @@ namespace CKAN.GUI
         }
 
         public override string ToString()
-        {
-            return _string;
-        }
+            => _string;
     }
 }

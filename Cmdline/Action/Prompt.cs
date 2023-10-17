@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 using CommandLine;
-using CommandLine.Text;
-using log4net;
 
 namespace CKAN.CmdLine
 {

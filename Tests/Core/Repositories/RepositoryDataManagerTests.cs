@@ -1,6 +1,4 @@
-using System.IO;
 using System.Linq;
-using System.Collections.Generic;
 
 using NUnit.Framework;
 
@@ -8,7 +6,6 @@ using Tests.Data;
 
 using CKAN;
 using CKAN.Versioning;
-using CKAN.Games;
 
 namespace Tests.Core.Repositories
 {

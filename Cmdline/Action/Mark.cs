@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 using CommandLine;
 using CommandLine.Text;
-using log4net;
 
 namespace CKAN.CmdLine
 {
@@ -120,10 +119,8 @@ namespace CKAN.CmdLine
         }
 
         private GameInstanceManager   manager;
-        private RepositoryDataManager repoData;
+        private readonly RepositoryDataManager repoData;
         private IUser                 user;
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(Mark));
     }
 
     internal class MarkSubOptions : VerbCommandOptions

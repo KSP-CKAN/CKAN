@@ -1,11 +1,7 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using Timer = System.Windows.Forms.Timer;
-
-using log4net;
 
 namespace CKAN.GUI
 {
@@ -86,7 +82,6 @@ namespace CKAN.GUI
             }
         }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(EditModSearch));
         private bool suppressSearch = false;
         private ModSearch currentSearch = null;
 
@@ -163,7 +158,7 @@ namespace CKAN.GUI
         /// which makes the UI seem unresponsive or buggy:
         /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
         /// </summary>
-        private EventHandler<EventArgs> handler;
+        private readonly EventHandler<EventArgs> handler;
 
         private void ExpandButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -208,25 +203,25 @@ namespace CKAN.GUI
             suppressSearch = true;
                 SearchDetails.FilterByNameTextBox.Text        = currentSearch?.Name
                                                                     ?? "";
-                SearchDetails.FilterByAuthorTextBox.Text      = currentSearch?.Authors.Aggregate("", combinePieces)
+                SearchDetails.FilterByAuthorTextBox.Text      = currentSearch?.Authors.Aggregate("", CombinePieces)
                                                                     ?? "";
                 SearchDetails.FilterByDescriptionTextBox.Text = currentSearch?.Description
                                                                     ?? "";
-                SearchDetails.FilterByLanguageTextBox.Text    = currentSearch?.Localizations.Aggregate("", combinePieces)
+                SearchDetails.FilterByLanguageTextBox.Text    = currentSearch?.Localizations.Aggregate("", CombinePieces)
                                                                     ?? "";
-                SearchDetails.FilterByDependsTextBox.Text     = currentSearch?.DependsOn.Aggregate("", combinePieces)
+                SearchDetails.FilterByDependsTextBox.Text     = currentSearch?.DependsOn.Aggregate("", CombinePieces)
                                                                     ?? "";
-                SearchDetails.FilterByRecommendsTextBox.Text  = currentSearch?.Recommends.Aggregate("", combinePieces)
+                SearchDetails.FilterByRecommendsTextBox.Text  = currentSearch?.Recommends.Aggregate("", CombinePieces)
                                                                     ?? "";
-                SearchDetails.FilterByConflictsTextBox.Text   = currentSearch?.ConflictsWith.Aggregate("", combinePieces)
+                SearchDetails.FilterByConflictsTextBox.Text   = currentSearch?.ConflictsWith.Aggregate("", CombinePieces)
                                                                     ?? "";
-                SearchDetails.FilterBySuggestsTextBox.Text    = currentSearch?.Suggests.Aggregate("", combinePieces)
+                SearchDetails.FilterBySuggestsTextBox.Text    = currentSearch?.Suggests.Aggregate("", CombinePieces)
                                                                     ?? "";
-                SearchDetails.FilterByTagsTextBox.Text        = currentSearch?.TagNames.Aggregate("", combinePieces)
+                SearchDetails.FilterByTagsTextBox.Text        = currentSearch?.TagNames.Aggregate("", CombinePieces)
                                                                     ?? "";
                 SearchDetails.FilterByLabelsTextBox.Text      = currentSearch?.Labels
                                                                     .Select(lb => lb.Name)
-                                                                    .Aggregate("", combinePieces)
+                                                                    .Aggregate("", CombinePieces)
                                                                     ?? "";
 
                 SearchDetails.CompatibleToggle.Value      = currentSearch?.Compatible;
@@ -238,7 +233,7 @@ namespace CKAN.GUI
             suppressSearch = false;
         }
 
-        private static string combinePieces(string joined, string piece)
+        private static string CombinePieces(string joined, string piece)
         {
             return string.IsNullOrEmpty(joined) ? piece : $"{joined} {piece}";
         }

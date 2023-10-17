@@ -10,7 +10,6 @@ using Newtonsoft.Json.Linq;
 
 using CKAN.NetKAN.Extensions;
 using CKAN.Versioning;
-using CKAN.Extensions;
 using CKAN.NetKAN.Sources.Avc;
 using CKAN.NetKAN.Sources.SpaceWarp;
 using CKAN.Games;
@@ -24,7 +23,7 @@ namespace CKAN.NetKAN.Services
             this.game = game;
         }
 
-        private IGame game;
+        private readonly IGame game;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(ModuleService));
 
@@ -275,8 +274,7 @@ namespace CKAN.NetKAN.Services
                     throw new Kraken(
                         string.Format("AVC: Invalid path to remote {0}, doesn't match any of: {1}",
                         internalFilePath,
-                        string.Join(", ", files.Select(f => f.Name))
-                    ));
+                        string.Join(", ", files.Select(f => f.Name))));
                 }
                 return new Tuple<ZipEntry, bool>(avcEntry, installable);
             }

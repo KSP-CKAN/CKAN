@@ -41,8 +41,7 @@ namespace CKAN.ConsoleUI {
                         Header   = Properties.Resources.AuthTokenListTokenHeader,
                         Width    = 50,
                         Renderer = (string s) => {
-                            string token;
-                            return ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(s, out token)
+                            return ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(s, out string token)
                                 ? token
                                 : Properties.Resources.AuthTokenListMissingToken;
                         }
@@ -103,7 +102,7 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
-        private ConsoleListBox<string> tokenList;
+        private readonly ConsoleListBox<string> tokenList;
 
         private static readonly Uri githubTokenURL = new Uri("https://github.com/settings/tokens");
     }

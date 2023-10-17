@@ -32,7 +32,7 @@ namespace CKAN
             return amountRead;
         }
 
-        private IProgress<long> progress;
+        private readonly IProgress<long> progress;
         private long lastProgress = 0;
     }
 
@@ -79,6 +79,6 @@ namespace CKAN
         public override long Seek(long offset, SeekOrigin origin)
             => inner.Seek(offset, origin);
 
-        private Stream inner;
+        private readonly Stream inner;
     }
 }

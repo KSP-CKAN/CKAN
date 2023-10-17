@@ -198,7 +198,7 @@ namespace CKAN.CmdLine
                         return Gui(manager, (GuiOptions)options, args);
 
                     case "consoleui":
-                        return ConsoleUi(manager, (ConsoleUIOptions)options, args);
+                        return ConsoleUi(manager, (ConsoleUIOptions)options);
 
                     case "prompt":
                         return new Prompt(manager, repoData).RunCommand(cmdline.options);
@@ -207,7 +207,7 @@ namespace CKAN.CmdLine
                         return Version(user);
 
                     case "update":
-                        return (new Update(manager, repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
+                        return (new Update(repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "available":
                         return (new Available(repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
@@ -265,7 +265,7 @@ namespace CKAN.CmdLine
             }
         }
 
-        internal static CkanModule LoadCkanFromFile(CKAN.GameInstance current_instance, string ckan_file)
+        internal static CkanModule LoadCkanFromFile(string ckan_file)
             => CkanModule.FromFile(ckan_file);
 
         private static int printMissingInstanceError(IUser user)
@@ -287,11 +287,11 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static int ConsoleUi(GameInstanceManager manager, ConsoleUIOptions opts, string[] args)
+        private static int ConsoleUi(GameInstanceManager manager, ConsoleUIOptions opts)
         {
             // Debug/verbose output just messes up the screen
             LogManager.GetRepository().Threshold = Level.Warn;
-            return CKAN.ConsoleUI.ConsoleUI.Main_(args, manager,
+            return CKAN.ConsoleUI.ConsoleUI.Main_(manager,
                 opts.Theme ?? Environment.GetEnvironmentVariable("CKAN_CONSOLEUI_THEME") ?? "default",
                 opts.Debug);
         }

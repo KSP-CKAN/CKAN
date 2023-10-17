@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
 using System.Drawing;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.ComponentModel;
 
@@ -63,10 +61,10 @@ namespace CKAN.GUI
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ManageMods));
-        private RepositoryDataManager repoData;
+        private readonly RepositoryDataManager repoData;
         private DateTime lastSearchTime;
         private string lastSearchKey;
-        private NavigationHistory<GUIMod> navHistory;
+        private readonly NavigationHistory<GUIMod> navHistory;
         private static readonly Font uninstallingFont = new Font(SystemFonts.DefaultFont, FontStyle.Strikeout);
 
         private List<ModChange> currentChangeSet;
@@ -74,7 +72,7 @@ namespace CKAN.GUI
         private bool freezeChangeSet = false;
 
         public readonly ModList mainModList;
-        private List<string> sortColumns
+        private List<string> SortColumns
         {
             get
             {
@@ -559,10 +557,7 @@ namespace CKAN.GUI
             var module = SelectedModule;
             if (module != null)
             {
-                if (OnSelectedModuleChanged != null)
-                {
-                    OnSelectedModuleChanged(module);
-                }
+                OnSelectedModuleChanged?.Invoke(module);
                 NavSelectMod(module);
             }
         }
@@ -635,10 +630,8 @@ namespace CKAN.GUI
         {
             // ClickedItem is of type ToolStripItem, we need ToolStripButton.
             ToolStripMenuItem  clickedItem = e.ClickedItem    as ToolStripMenuItem;
-            DataGridViewColumn col         = clickedItem?.Tag as DataGridViewColumn;
-            ModuleTag          tag         = clickedItem?.Tag as ModuleTag;
 
-            if (col != null)
+            if (clickedItem?.Tag is DataGridViewColumn col)
             {
                 col.Visible = !clickedItem.Checked;
                 Main.Instance.configuration.SetColumnVisibility(col.Name, !clickedItem.Checked);
@@ -647,7 +640,7 @@ namespace CKAN.GUI
                     InstallAllCheckbox.Visible = col.Visible;
                 }
             }
-            else if (tag != null)
+            else if (clickedItem?.Tag is ModuleTag tag)
             {
                 if (!clickedItem.Checked)
                 {
@@ -796,8 +789,7 @@ namespace CKAN.GUI
             }
             else
             {
-                GUIMod gui_mod = row?.Tag as GUIMod;
-                if (gui_mod != null)
+                if (row?.Tag is GUIMod gui_mod)
                 {
                     switch (ModGrid.Columns[column_index].Name)
                     {
@@ -807,10 +799,7 @@ namespace CKAN.GUI
                             return;
                         case "AutoInstalled":
                             gui_mod.SetAutoInstallChecked(row, AutoInstalled);
-                            if (OnRegistryChanged != null)
-                            {
-                                OnRegistryChanged();
-                            }
+                            OnRegistryChanged?.Invoke();
                             break;
                         case "UpdateCol":
                             gui_mod.SetUpgradeChecked(row, UpdateCol);
@@ -1227,10 +1216,7 @@ namespace CKAN.GUI
                     gui_mod.IsNew = true;
                 }
             }
-            if (LabelsAfterUpdate != null)
-            {
-                LabelsAfterUpdate(toNotify);
-            }
+            LabelsAfterUpdate?.Invoke(toNotify);
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListPopulatingList);
             // Update our mod listing
@@ -1310,13 +1296,13 @@ namespace CKAN.GUI
 
         private void SetSort(DataGridViewColumn col)
         {
-            if (sortColumns.Count == 1 && sortColumns[0] == col.Name)
+            if (SortColumns.Count == 1 && SortColumns[0] == col.Name)
             {
                 descending[0] = !descending[0];
             }
             else
             {
-                sortColumns.Clear();
+                SortColumns.Clear();
                 descending.Clear();
                 AddSort(col);
             }
@@ -1324,26 +1310,26 @@ namespace CKAN.GUI
 
         private void AddSort(DataGridViewColumn col, bool atStart = false)
         {
-            if (sortColumns.Count > 0 && sortColumns[sortColumns.Count - 1] == col.Name)
+            if (SortColumns.Count > 0 && SortColumns[SortColumns.Count - 1] == col.Name)
             {
                 descending[descending.Count - 1] = !descending[descending.Count - 1];
             }
             else
             {
-                int middlePosition = sortColumns.IndexOf(col.Name);
+                int middlePosition = SortColumns.IndexOf(col.Name);
                 if (middlePosition > -1)
                 {
-                    sortColumns.RemoveAt(middlePosition);
+                    SortColumns.RemoveAt(middlePosition);
                     descending.RemoveAt(middlePosition);
                 }
                 if (atStart)
                 {
-                    sortColumns.Insert(0, col.Name);
+                    SortColumns.Insert(0, col.Name);
                     descending.Insert(0, false);
                 }
                 else
                 {
-                    sortColumns.Add(col.Name);
+                    SortColumns.Add(col.Name);
                     descending.Add(false);
                 }
             }
@@ -1362,23 +1348,23 @@ namespace CKAN.GUI
             {
                 col.HeaderCell.SortGlyphDirection = SortOrder.None;
             }
-            for (int i = 0; i < sortColumns.Count; ++i)
+            for (int i = 0; i < SortColumns.Count; ++i)
             {
-                if (!ModGrid.Columns.Contains(sortColumns[i]))
+                if (!ModGrid.Columns.Contains(SortColumns[i]))
                 {
                     // Shouldn't be possible, but better safe than sorry.
                     continue;
                 }
-                ModGrid.Columns[sortColumns[i]].HeaderCell.SortGlyphDirection = descending[i]
+                ModGrid.Columns[SortColumns[i]].HeaderCell.SortGlyphDirection = descending[i]
                     ? SortOrder.Descending : SortOrder.Ascending;
             }
         }
 
         private int CompareRows(DataGridViewRow a, DataGridViewRow b)
         {
-            for (int i = 0; i < sortColumns.Count; ++i)
+            for (int i = 0; i < SortColumns.Count; ++i)
             {
-                var val = CompareColumn(a, b, ModGrid.Columns[sortColumns[i]]);
+                var val = CompareColumn(a, b, ModGrid.Columns[SortColumns[i]]);
                 if (val != 0)
                 {
                     return descending[i] ? -val : val;
@@ -1404,7 +1390,7 @@ namespace CKAN.GUI
             CkanModule modB = gmodB.ToModule();
             var cellA = a.Cells[col.Index];
             var cellB = b.Cells[col.Index];
-            if (col is DataGridViewCheckBoxColumn cbcol)
+            if (col is DataGridViewCheckBoxColumn)
             {
                 // Checked < non-"-" text < unchecked < "-" text
                 if (cellA is DataGridViewCheckBoxCell checkboxA)
@@ -1656,7 +1642,7 @@ namespace CKAN.GUI
             return true;
         }
 
-        public void InstanceUpdated(GameInstance inst)
+        public void InstanceUpdated()
         {
             ChangeSet = null;
             Conflicts = null;

@@ -60,9 +60,8 @@ namespace CKAN.NetKAN.Sources.Avc
             }
 
             //AVC uses -1 to indicate a wildcard.
-            int integer;
             string version;
-            if (major == null || int.TryParse(major, out integer) && integer == AvcWildcard)
+            if (major == null || int.TryParse(major, out int integer) && integer == AvcWildcard)
             {
                 return GameVersion.Any;
             }

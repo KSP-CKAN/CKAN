@@ -5,7 +5,7 @@ namespace CKAN.CmdLine
     // Does not need an instance, so this is not an ICommand
     public class Compare
     {
-        private IUser user;
+        private readonly IUser user;
 
         public Compare(IUser user)
         {

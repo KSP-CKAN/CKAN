@@ -1,10 +1,7 @@
 using System;
-using System.Net;
 using System.ComponentModel;
 
 using Newtonsoft.Json;
-
-using CKAN.Games;
 
 namespace CKAN
 {

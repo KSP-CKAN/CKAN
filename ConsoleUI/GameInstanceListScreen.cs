@@ -23,7 +23,6 @@ namespace CKAN.ConsoleUI {
         public GameInstanceListScreen(GameInstanceManager mgr, RepositoryDataManager repoData, bool first = false)
         {
             manager = mgr;
-            this.repoData = repoData;
 
             AddObject(new ConsoleLabel(
                 1, 2, -1,
@@ -252,9 +251,8 @@ namespace CKAN.ConsoleUI {
                 : " ";
         }
 
-        private GameInstanceManager          manager;
-        private RepositoryDataManager        repoData;
-        private ConsoleListBox<GameInstance> instanceList;
+        private readonly GameInstanceManager          manager;
+        private readonly ConsoleListBox<GameInstance> instanceList;
 
         private static readonly string defaultMark = Symbols.checkmark;
     }

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Microsoft.Win32;
+
 using log4net;
-using Newtonsoft.Json;
 
 namespace CKAN.Configuration
 {
-    // DEPRECATED: We now use a JSON configuration file. This still exists to facillitate migration.
+    // DEPRECATED: We now use a JSON configuration file. This still exists to facilitate migration.
     //
     // N.B., you can resume using this version by changing the instance created in ServiceLocator.
     public class Win32RegistryConfiguration : IConfiguration

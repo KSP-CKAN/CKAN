@@ -87,8 +87,7 @@ namespace CKAN.NetKAN.Transformers
                 sortedJson[propertyName] = json[propertyName];
             }
 
-            var resources = json["resources"] as JObject;
-            if (resources != null)
+            if (json["resources"] is JObject resources)
             {
                 var sortedResourcePropertyNames = resources
                     .Properties()
@@ -112,23 +111,17 @@ namespace CKAN.NetKAN.Transformers
         }
 
         private static double GetPropertySortOrder(string propertyName)
-        {
-            int sortOrder;
-            return PropertySortOrder.TryGetValue(propertyName, out sortOrder) ?
-                sortOrder :
-                propertyName.StartsWith("x_") ?
-                    DefaultSortOrder + 1 :
-                    DefaultSortOrder;
-        }
+            => PropertySortOrder.TryGetValue(propertyName, out int sortOrder)
+                ? sortOrder
+                : propertyName.StartsWith("x_")
+                    ? DefaultSortOrder + 1
+                    : DefaultSortOrder;
 
         private static double GetResourcePropertySortOrder(string propertyName)
-        {
-            int sortOrder;
-            return ResourcePropertySortOrder.TryGetValue(propertyName, out sortOrder) ?
-                sortOrder :
-                propertyName.StartsWith("x_") ?
-                    DefaultSortOrder + 1 :
-                    DefaultSortOrder;
-        }
+            => ResourcePropertySortOrder.TryGetValue(propertyName, out int sortOrder)
+                ? sortOrder
+                : propertyName.StartsWith("x_")
+                    ? DefaultSortOrder + 1
+                    : DefaultSortOrder;
     }
 }

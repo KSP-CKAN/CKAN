@@ -1,4 +1,3 @@
-using CKAN.NetKAN;
 using CKAN.NetKAN.Sources.Spacedock;
 using NUnit.Framework;
 using Tests.Data;

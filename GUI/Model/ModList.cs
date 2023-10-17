@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -74,8 +72,7 @@ namespace CKAN.GUI
 
         private static bool SearchesEqual(List<ModSearch> a, List<ModSearch> b)
             => a == null ? b == null
-                 : b == null ? false
-                 : a.SequenceEqual(b);
+                         : b != null && a.SequenceEqual(b);
 
         private static string FilterName(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
         {
@@ -303,10 +300,10 @@ namespace CKAN.GUI
                 : mod.IsInstallable()
                 ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                 {
-                    Value = myChange == null ? mod.IsInstalled
-                        : myChange.ChangeType == GUIModChangeType.Install ? true
-                        : myChange.ChangeType == GUIModChangeType.Remove  ? false
-                        : mod.IsInstalled
+                    Value = myChange == null
+                        ? mod.IsInstalled
+                        : myChange.ChangeType == GUIModChangeType.Install
+                          || (myChange.ChangeType != GUIModChangeType.Remove && mod.IsInstalled)
                 }
                 : new DataGridViewTextBoxCell()
                 {
@@ -327,9 +324,7 @@ namespace CKAN.GUI
             var updating = mod.IsInstallable() && mod.HasUpdate
                 ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                 {
-                    Value = myChange == null ? false
-                        : myChange.ChangeType == GUIModChangeType.Update ? true
-                        : false
+                    Value = myChange?.ChangeType == GUIModChangeType.Update
                 }
                 : new DataGridViewTextBoxCell()
                 {
@@ -339,9 +334,7 @@ namespace CKAN.GUI
             var replacing = (mod.IsInstalled && mod.HasReplacement)
                 ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                 {
-                    Value = myChange == null ? false
-                        : myChange.ChangeType == GUIModChangeType.Replace ? true
-                        : false
+                    Value = myChange?.ChangeType == GUIModChangeType.Replace
                 }
                 : new DataGridViewTextBoxCell()
                 {
@@ -397,8 +390,7 @@ namespace CKAN.GUI
         /// <param name="mod">The mod that needs an update</param>
         public void ReapplyLabels(GUIMod mod, bool conflicted, string instanceName, IGame game, Registry registry)
         {
-            DataGridViewRow row;
-            if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out row))
+            if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out DataGridViewRow row))
             {
                 row.DefaultCellStyle.BackColor = GetRowBackground(mod, conflicted, instanceName);
                 row.Visible = IsVisible(mod, instanceName, game, registry);

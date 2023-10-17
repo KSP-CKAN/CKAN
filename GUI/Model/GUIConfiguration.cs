@@ -188,10 +188,10 @@ namespace CKAN.GUI
 
         private static bool FixColumnName(List<string> columnNames, string oldName, string newName)
         {
-            int columnIndex = columnNames.IndexOf("KSPCompatibility");
+            int columnIndex = columnNames.IndexOf(oldName);
             if (columnIndex > -1)
             {
-                columnNames[columnIndex] = "GameCompatibility";
+                columnNames[columnIndex] = newName;
                 return true;
             }
             return false;

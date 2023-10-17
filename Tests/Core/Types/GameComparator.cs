@@ -3,7 +3,6 @@ using CKAN;
 using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
-using log4net;
 
 namespace Tests.Core.Types
 {

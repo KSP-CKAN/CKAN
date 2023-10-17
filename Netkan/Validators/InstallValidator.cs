@@ -14,7 +14,7 @@ namespace CKAN.NetKAN.Validators
             var json = metadata.Json();
             if (json.ContainsKey("install"))
             {
-                foreach (JObject stanza in json["install"])
+                foreach (JObject stanza in json["install"].Cast<JObject>())
                 {
                     string install_to = (string)stanza["install_to"];
                     if (string.IsNullOrEmpty(install_to))

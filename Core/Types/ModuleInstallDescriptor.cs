@@ -64,7 +64,7 @@ namespace CKAN
         [JsonIgnore]
         private Regex inst_pattern = null;
 
-        private static Regex trailingSlashPattern = new Regex("/$",
+        private static readonly Regex trailingSlashPattern = new Regex("/$",
             RegexOptions.Compiled);
 
         [OnDeserialized]

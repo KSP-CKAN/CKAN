@@ -1,6 +1,7 @@
 using System;
 using System.Transactions;
 using System.Reflection;
+
 using log4net;
 
 namespace CKAN
@@ -82,7 +83,7 @@ namespace CKAN
                     SetField(t, "s_cachedMaxTimeout", true);
                     SetField(t, "s_maximumTimeout",   timeout);
                 }
-            }            
+            }
         }
 
         private static void SetField(Type T, string fieldName, object value)

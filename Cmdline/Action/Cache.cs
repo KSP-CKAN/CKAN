@@ -1,6 +1,5 @@
 using CommandLine;
 using CommandLine.Text;
-using log4net;
 using Autofac;
 
 using CKAN.Configuration;
@@ -112,7 +111,7 @@ namespace CKAN.CmdLine
                     switch (option)
                     {
                         case "list":
-                            exitCode = ListCacheDirectory((CommonOptions)suboptions);
+                            exitCode = ListCacheDirectory();
                             break;
 
                         case "set":
@@ -120,15 +119,15 @@ namespace CKAN.CmdLine
                             break;
 
                         case "clear":
-                            exitCode = ClearCacheDirectory((CommonOptions)suboptions);
+                            exitCode = ClearCacheDirectory();
                             break;
 
                         case "reset":
-                            exitCode = ResetCacheDirectory((CommonOptions)suboptions);
+                            exitCode = ResetCacheDirectory();
                             break;
 
                         case "showlimit":
-                            exitCode = ShowCacheSizeLimit((CommonOptions)suboptions);
+                            exitCode = ShowCacheSizeLimit();
                             break;
 
                         case "setlimit":
@@ -145,7 +144,7 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
-        private int ListCacheDirectory(CommonOptions options)
+        private int ListCacheDirectory()
         {
             IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
             user.RaiseMessage(cfg.DownloadCacheDir);
@@ -161,8 +160,7 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            string failReason;
-            if (manager.TrySetupCache(options.Path, out failReason))
+            if (manager.TrySetupCache(options.Path, out string failReason))
             {
                 IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
                 user.RaiseMessage(Properties.Resources.CacheSet, cfg.DownloadCacheDir);
@@ -176,7 +174,7 @@ namespace CKAN.CmdLine
             }
         }
 
-        private int ClearCacheDirectory(CommonOptions options)
+        private int ClearCacheDirectory()
         {
             manager.Cache.RemoveAll();
             user.RaiseMessage(Properties.Resources.CacheCleared);
@@ -184,10 +182,9 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private int ResetCacheDirectory(CommonOptions options)
+        private int ResetCacheDirectory()
         {
-            string failReason;
-            if (manager.TrySetupCache("", out failReason))
+            if (manager.TrySetupCache("", out string failReason))
             {
                 IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
                 user.RaiseMessage(Properties.Resources.CacheReset, cfg.DownloadCacheDir);
@@ -200,7 +197,7 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private int ShowCacheSizeLimit(CommonOptions options)
+        private int ShowCacheSizeLimit()
         {
             IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
             if (cfg.CacheSizeLimit.HasValue)
@@ -225,7 +222,7 @@ namespace CKAN.CmdLine
             {
                 cfg.CacheSizeLimit = options.Megabytes * (long)1024 * (long)1024;
             }
-            return ShowCacheSizeLimit(null);
+            return ShowCacheSizeLimit();
         }
 
         private void printCacheInfo()
@@ -239,8 +236,6 @@ namespace CKAN.CmdLine
 
         private IUser               user;
         private GameInstanceManager manager;
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(Cache));
     }
 
 }

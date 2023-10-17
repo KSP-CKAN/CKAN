@@ -7,7 +7,6 @@ using CKAN;
 using CKAN.GUI;
 using CKAN.Versioning;
 
-using Tests.Core;
 using Tests.Core.Configuration;
 using Tests.Data;
 

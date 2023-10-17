@@ -111,14 +111,13 @@ namespace CKAN.GUI
                         // Have to specifically tell the mod list's panel to refresh
                         // after things settle out because otherwise it doesn't
                         // when coming back to the mods tab from updating the repo
-                        if (control is SplitContainer)
+                        if (control is SplitContainer splitter)
                         {
                             Task.Factory.StartNew(
                                 () =>
                                 {
                                     Thread.Sleep(500);
-
-                                    ((SplitContainer)control).Panel1.Refresh();
+                                    splitter.Panel1.Refresh();
                                 });
                         }
                     }
@@ -126,7 +125,7 @@ namespace CKAN.GUI
             }
         }
 
-        private TabControl m_TabControl;
+        private readonly TabControl m_TabControl;
 
         private bool m_TabLock;
 

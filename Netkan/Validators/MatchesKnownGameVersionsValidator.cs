@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Autofac;
 
 using CKAN.Versioning;
 using CKAN.NetKAN.Model;
@@ -20,13 +19,12 @@ namespace CKAN.NetKAN.Validators
             var mod = CkanModule.FromJson(metadata.Json().ToString());
             if (!mod.IsCompatible(new GameVersionCriteria(null, knownVersions)))
             {
-                GameVersion minKsp = null, maxKsp = null;
-                CkanModule.GetMinMaxVersions(new List<CkanModule>() {mod}, out _, out _, out minKsp, out maxKsp);
+                CkanModule.GetMinMaxVersions(new List<CkanModule>() { mod }, out _, out _, out GameVersion minKsp, out GameVersion maxKsp);
                 throw new Kraken($"{metadata.Identifier} doesn't match any valid game version: {GameVersionRange.VersionSpan(game, minKsp, maxKsp)}");
             }
         }
 
-        private List<GameVersion> knownVersions;
-        private IGame             game;
+        private readonly List<GameVersion> knownVersions;
+        private readonly IGame             game;
     }
 }

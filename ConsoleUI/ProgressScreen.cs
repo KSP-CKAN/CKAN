@@ -122,14 +122,14 @@ namespace CKAN.ConsoleUI {
             this.percent = percent / 100.0;
         }
 
-        private ConsoleProgressBar progress;
-        private ConsoleTextBox     messages;
+        private readonly ConsoleProgressBar progress;
+        private readonly ConsoleTextBox     messages;
 
         private ConsoleTheme yesNoTheme;
 
-        private string topMessage      = "";
-        private string taskDescription = "";
-        private double percent         = 0;
+        private          string topMessage      = "";
+        private readonly string taskDescription;
+        private          double percent         = 0;
     }
 
 }

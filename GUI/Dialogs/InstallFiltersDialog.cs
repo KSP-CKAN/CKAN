@@ -55,8 +55,8 @@ namespace CKAN.GUI
             );
         }
 
-        private IConfiguration globalConfig;
-        private GameInstance   instance;
+        private readonly IConfiguration globalConfig;
+        private readonly GameInstance   instance;
 
         private static readonly string[] delimiters = new string[]
         {

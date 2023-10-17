@@ -127,17 +127,18 @@ namespace CKAN.CmdLine
             if (!opts.without_files && !module.Module.IsDLC)
             {
                 // Display InstalledModule specific information.
-                ICollection<string> files = module.Files as ICollection<string>;
-                if (files == null)
+                if (module.Files is ICollection<string> files)
+                {
+                    user.RaiseMessage("");
+                    user.RaiseMessage(Properties.Resources.ShowFilesHeader, files.Count);
+                    foreach (string file in files)
+                    {
+                        user.RaiseMessage("  - {0}", file);
+                    }
+                }
+                else
                 {
                     throw new InvalidCastException();
-                }
-
-                user.RaiseMessage("");
-                user.RaiseMessage(Properties.Resources.ShowFilesHeader, files.Count);
-                foreach (string file in files)
-                {
-                    user.RaiseMessage("  - {0}", file);
                 }
             }
 
@@ -321,8 +322,7 @@ namespace CKAN.CmdLine
             var versions     = modules.Select(m => m.version.ToString()).ToList();
             var gameVersions = modules.Select(m =>
             {
-                GameVersion minKsp = null, maxKsp = null;
-                CkanModule.GetMinMaxVersions(new List<CkanModule>() { m }, out _, out _, out minKsp, out maxKsp);
+                CkanModule.GetMinMaxVersions(new List<CkanModule>() { m }, out _, out _, out GameVersion minKsp, out GameVersion maxKsp);
                 return GameVersionRange.VersionSpan(inst.game, minKsp, maxKsp);
             }).ToList();
             string[] headers = new string[] {
@@ -364,6 +364,6 @@ namespace CKAN.CmdLine
         }
 
         private IUser user { get; set; }
-        private RepositoryDataManager repoData;
+        private readonly RepositoryDataManager repoData;
     }
 }

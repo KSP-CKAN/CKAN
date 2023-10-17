@@ -9,7 +9,6 @@ using Tests.Data;
 
 using CKAN;
 using CKAN.Versioning;
-using CKAN.Games;
 using RelationshipDescriptor = CKAN.RelationshipDescriptor;
 
 namespace Tests.Core.Relationships

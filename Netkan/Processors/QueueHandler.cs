@@ -7,12 +7,10 @@ using System.Text;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using log4net;
-using log4net.Appender;
 using log4net.Core;
 using log4net.Filter;
 using log4net.Repository.Hierarchy;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 using CKAN.Versioning;
 using CKAN.NetKAN.Transformers;
@@ -136,15 +134,13 @@ namespace CKAN.NetKAN.Processors
                                         .ToArray();
 
             int releases = 1;
-            MessageAttributeValue releasesAttr;
-            if (msg.MessageAttributes.TryGetValue("Releases", out releasesAttr))
+            if (msg.MessageAttributes.TryGetValue("Releases", out MessageAttributeValue releasesAttr))
             {
                 releases = int.Parse(releasesAttr.StringValue);
             }
 
             ModuleVersion highVer = null;
-            MessageAttributeValue highVerAttr;
-            if (msg.MessageAttributes.TryGetValue("HighestVersion", out highVerAttr))
+            if (msg.MessageAttributes.TryGetValue("HighestVersion", out MessageAttributeValue highVerAttr))
             {
                 highVer = new ModuleVersion(highVerAttr.StringValue);
             }

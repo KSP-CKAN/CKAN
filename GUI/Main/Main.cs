@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
@@ -31,7 +29,7 @@ namespace CKAN.GUI
         public readonly GUIUser currentUser;
         public readonly GameInstanceManager Manager;
         public GameInstance CurrentInstance => Manager.CurrentInstance;
-        private RepositoryDataManager repoData;
+        private readonly RepositoryDataManager repoData;
 
         // Stuff we set when the game instance changes
         public GUIConfiguration configuration;
@@ -424,7 +422,7 @@ namespace CKAN.GUI
                     RefreshModList(registry.Repositories.Count > 0);
                 }
             }
-            ManageMods.InstanceUpdated(CurrentInstance);
+            ManageMods.InstanceUpdated();
         }
 
         /// <summary>
@@ -875,7 +873,7 @@ namespace CKAN.GUI
             {
                 // Warn that it might not be safe to run Game with incompatible modules installed
                 string incompatDescrip = incomp
-                    .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(CurrentInstance.game, m.Module)})")
+                    .Select(m => $"{m.Module} ({m.Module.CompatibleGameVersions(CurrentInstance.game)})")
                     .Aggregate((a, b) => $"{a}{Environment.NewLine}{b}");
                 var ver = CurrentInstance.Version();
                 var result = SuppressableYesNoDialog(

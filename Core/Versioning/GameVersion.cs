@@ -5,10 +5,8 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 using Newtonsoft.Json;
-using Autofac;
 
 using CKAN.Games;
-using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 
 namespace CKAN.Versioning
 {
@@ -305,14 +303,19 @@ namespace CKAN.Versioning
         /// </returns>
         public static GameVersion Parse(string input)
         {
-            if (ReferenceEquals(input, null))
+            if (input is null)
+            {
                 throw new ArgumentNullException("input");
+            }
 
-            GameVersion result;
-            if (TryParse(input, out result))
+            if (TryParse(input, out GameVersion result))
+            {
                 return result;
+            }
             else
+            {
                 throw new FormatException();
+            }
         }
 
         /// <summary>
@@ -333,8 +336,10 @@ namespace CKAN.Versioning
         {
             result = null;
 
-            if (ReferenceEquals(input, null))
+            if (input is null)
+            {
                 return false;
+            }
 
             if (input == "any")
             {
@@ -537,7 +542,7 @@ namespace CKAN.Versioning
         /// </returns>
         public bool Equals(GameVersion obj)
         {
-            if (ReferenceEquals(obj, null)) return false;
+            if (obj is null) return false;
             if (ReferenceEquals(obj, this)) return true;
             return _major == obj._major && _minor == obj._minor && _patch == obj._patch && _build == obj._build;
         }
@@ -556,9 +561,9 @@ namespace CKAN.Versioning
         /// </returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(obj, null)) return false;
+            if (obj is null) return false;
             if (ReferenceEquals(obj, this)) return true;
-            return obj is GameVersion && Equals((GameVersion) obj);
+            return obj is GameVersion gv && Equals(gv);
         }
 
         /// <summary>
@@ -640,15 +645,21 @@ namespace CKAN.Versioning
         /// </returns>
         public int CompareTo(object obj)
         {
-            if (ReferenceEquals(obj, null))
+            if (obj is null)
+            {
                 throw new ArgumentNullException("obj");
+            }
 
             var objGameVersion = obj as GameVersion;
 
             if (objGameVersion != null)
+            {
                 return CompareTo(objGameVersion);
+            }
             else
+            {
                 throw new ArgumentException("Object must be of type GameVersion.");
+            }
         }
 
         /// <summary>
@@ -687,11 +698,15 @@ namespace CKAN.Versioning
         /// </returns>
         public int CompareTo(GameVersion other)
         {
-            if (ReferenceEquals(other, null))
+            if (other is null)
+            {
                 throw new ArgumentNullException("other");
+            }
 
             if (Equals(this, other))
+            {
                 return 0;
+            }
 
             var majorCompare = _major.CompareTo(other._major);
 
@@ -727,11 +742,15 @@ namespace CKAN.Versioning
         /// </returns>
         public static bool operator <(GameVersion left, GameVersion right)
         {
-            if (ReferenceEquals(left, null))
+            if (left is null)
+            {
                 throw new ArgumentNullException("left");
+            }
 
-            if (ReferenceEquals(right, null))
+            if (right is null)
+            {
                 throw new ArgumentNullException("right");
+            }
 
             return left.CompareTo(right) < 0;
         }
@@ -747,11 +766,15 @@ namespace CKAN.Versioning
         /// </returns>
         public static bool operator >(GameVersion left, GameVersion right)
         {
-            if (ReferenceEquals(left, null))
+            if (left is null)
+            {
                 throw new ArgumentNullException("left");
+            }
 
-            if (ReferenceEquals(right, null))
+            if (right is null)
+            {
                 throw new ArgumentNullException("right");
+            }
 
             return left.CompareTo(right) > 0;
         }
@@ -767,11 +790,15 @@ namespace CKAN.Versioning
         /// </returns>
         public static bool operator <=(GameVersion left, GameVersion right)
         {
-            if (ReferenceEquals(left, null))
+            if (left is null)
+            {
                 throw new ArgumentNullException("left");
+            }
 
-            if (ReferenceEquals(right, null))
+            if (right is null)
+            {
                 throw new ArgumentNullException("right");
+            }
 
             return left.CompareTo(right) <= 0;
         }
@@ -787,11 +814,15 @@ namespace CKAN.Versioning
         /// </returns>
         public static bool operator >=(GameVersion left, GameVersion right)
         {
-            if (ReferenceEquals(left, null))
+            if (left is null)
+            {
                 throw new ArgumentNullException("left");
+            }
 
-            if (ReferenceEquals(right, null))
+            if (right is null)
+            {
                 throw new ArgumentNullException("right");
+            }
 
             return left.CompareTo(right) >= 0;
         }
@@ -872,7 +903,7 @@ namespace CKAN.Versioning
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var value = reader.Value == null ? null : reader.Value.ToString();
+            var value = reader.Value?.ToString();
 
             switch (value)
             {
@@ -889,15 +920,17 @@ namespace CKAN.Versioning
                     value = Regex.Replace(value, @"\.$", "");
 
                     if (GameVersion.TryParse(value, out result))
+                    {
                         return result;
+                    }
                     else
+                    {
                         throw new JsonException(string.Format("Could not parse KSP version: {0}", value));
+                    }
             }
         }
 
         public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(GameVersion);
-        }
+            => objectType == typeof(GameVersion);
     }
 }

@@ -22,7 +22,7 @@ namespace CKAN.CmdLine
 
             if (options.ckan_file != null)
             {
-                options.modules.Add(MainClass.LoadCkanFromFile(instance, options.ckan_file).identifier);
+                options.modules.Add(MainClass.LoadCkanFromFile(options.ckan_file).identifier);
             }
 
             if (options.modules.Count == 0 && ! options.replace_all)
@@ -173,9 +173,9 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private GameInstanceManager   manager;
-        private RepositoryDataManager repoData;
-        private IUser                 user;
+        private readonly GameInstanceManager   manager;
+        private readonly RepositoryDataManager repoData;
+        private readonly IUser                 user;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Replace));
     }

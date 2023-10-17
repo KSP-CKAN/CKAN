@@ -1,7 +1,7 @@
-using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using CKAN.Versioning;
 using CKAN.NetKAN.Model;
+using System.Linq;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -18,7 +18,7 @@ namespace CKAN.NetKAN.Validators
                     {
                         throw new Kraken("spec_version v1.2+ required for 'supports'");
                     }
-                    foreach (JObject rel in json[relName])
+                    foreach (JObject rel in json[relName].Cast<JObject>())
                     {
                         if (rel.ContainsKey("any_of"))
                         {
@@ -37,7 +37,7 @@ namespace CKAN.NetKAN.Validators
                             {
                                 throw new Kraken("spec_version v1.31+ required for choice_help_text in same relationship as 'any_of'");
                             }
-                            foreach (JObject opt in rel["any_of"])
+                            foreach (JObject opt in rel["any_of"].Cast<JObject>())
                             {
                                 string name = (string)opt["name"];
                                 if (!Identifier.ValidIdentifierPattern.IsMatch(name))

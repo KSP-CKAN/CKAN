@@ -201,7 +201,7 @@ Task("Restore-Nuget")
 });
 
 Task("Build-DotNet")
-    .Description("Intermediate - Call MSBuild/XBuild to build the CKAN.sln.")
+    .Description("Intermediate - Call MSBuild to build the CKAN.sln.")
     .IsDependentOn("Restore-Nuget")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
     .WithCriteria(() => buildFramework == buildNetFramework)
@@ -291,10 +291,10 @@ Task("Repack-Netkan")
     .IsDependentOn("Build-DotNet")
     .Does(() =>
 {
-    var netkanBinDirectory = outDirectory.Combine("NetKAN").Combine(configuration).Combine("bin");
+    var netkanBinDirectory = outDirectory.Combine("CKAN-NetKAN").Combine(configuration).Combine("bin").Combine(buildNetFramework);
     var assemblyPaths = GetFiles(string.Format("{0}/*.dll", netkanBinDirectory));
 
-    ILRepack(netkanFile, netkanBinDirectory.CombineWithFilePath("NetKAN.exe"), assemblyPaths,
+    ILRepack(netkanFile, netkanBinDirectory.CombineWithFilePath("CKAN-NetKAN.exe"), assemblyPaths,
         new ILRepackSettings
         {
             Libs = new List<DirectoryPath> { netkanBinDirectory.ToString() },

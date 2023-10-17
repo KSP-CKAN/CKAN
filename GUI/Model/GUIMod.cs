@@ -371,8 +371,7 @@ namespace CKAN.GUI
 
         public void SetUpgradeChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
         {
-            var update_cell = row?.Cells[col.Index] as DataGridViewCheckBoxCell;
-            if (update_cell != null)
+            if (row?.Cells[col.Index] is DataGridViewCheckBoxCell update_cell)
             {
                 var old_value = (bool) update_cell.Value;
 
@@ -394,8 +393,7 @@ namespace CKAN.GUI
 
         public void SetInstallChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
         {
-            var install_cell = row?.Cells[col.Index] as DataGridViewCheckBoxCell;
-            if (install_cell != null)
+            if (row?.Cells[col.Index] is DataGridViewCheckBoxCell install_cell)
             {
                 bool changeTo = set_value_to ?? (bool)install_cell.Value;
                 if (IsInstallChecked != changeTo)
@@ -408,20 +406,16 @@ namespace CKAN.GUI
                 if ((bool)install_cell.Value != IsInstallChecked)
                 {
                     install_cell.Value = IsInstallChecked;
-                    if (row.DataGridView != null)
-                    {
-                        // This call is needed to force the UI to update,
-                        // otherwise the checkbox will look checked when it's unchecked or vice versa
-                        row.DataGridView.RefreshEdit();
-                    }
+                    // This call is needed to force the UI to update,
+                    // otherwise the checkbox will look checked when it's unchecked or vice versa
+                    row.DataGridView?.RefreshEdit();
                 }
             }
         }
 
         public void SetReplaceChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
         {
-            var replace_cell = row.Cells[col.Index] as DataGridViewCheckBoxCell;
-            if (replace_cell != null)
+            if (row.Cells[col.Index] is DataGridViewCheckBoxCell replace_cell)
             {
                 var old_value = (bool) replace_cell.Value;
 
@@ -434,8 +428,7 @@ namespace CKAN.GUI
 
         public void SetAutoInstallChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
         {
-            var auto_cell = row.Cells[col.Index] as DataGridViewCheckBoxCell;
-            if (auto_cell != null)
+            if (row.Cells[col.Index] is DataGridViewCheckBoxCell auto_cell)
             {
                 var old_value = (bool) auto_cell.Value;
 
@@ -454,7 +447,7 @@ namespace CKAN.GUI
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
             return Equals((GUIMod) obj);

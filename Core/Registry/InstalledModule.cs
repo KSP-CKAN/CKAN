@@ -17,7 +17,7 @@ namespace CKAN
         // It's just sha1 now for registry compatibility.
 
         [JsonProperty("sha1_sum", NullValueHandling = NullValueHandling.Ignore)]
-        private string sha1_sum;
+        private readonly string sha1_sum;
 
         public string Sha1 => sha1_sum;
 
@@ -72,10 +72,10 @@ namespace CKAN
         #region Fields and Properties
 
         [JsonProperty]
-        private DateTime install_time;
+        private readonly DateTime install_time;
 
         [JsonProperty]
-        private CkanModule source_module;
+        private readonly CkanModule source_module;
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]

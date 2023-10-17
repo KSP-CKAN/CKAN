@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle ("NetKAN")]
+[assembly: AssemblyTitle ("CKAN-NetKAN")]
 [assembly: AssemblyDescription ("CKAN NetKAN Client")]
 
 [assembly: InternalsVisibleTo("CKAN.Tests")]

@@ -56,12 +56,12 @@ namespace CKAN
             }
         }
 
-        private IProgress<int> percentProgress;
-        private long[]         sizes;
-        private long           totalSize;
-        private long           doneSize     = 0;
-        private int            currentIndex = 0;
-        private int            basePercent  = 0;
-        private int            lastPercent  = -1;
+        private readonly IProgress<int> percentProgress;
+        private readonly long[]         sizes;
+        private readonly long           totalSize;
+        private          long           doneSize     = 0;
+        private          int            currentIndex = 0;
+        private          int            basePercent  = 0;
+        private          int            lastPercent  = -1;
     }
 }

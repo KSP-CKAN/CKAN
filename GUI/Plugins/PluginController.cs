@@ -12,7 +12,7 @@ namespace CKAN.GUI
 
         private static readonly ILog log = LogManager.GetLogger(typeof(PluginController));
 
-        private string m_PluginsPath = "";
+        private readonly string m_PluginsPath = "";
 
         public PluginController(string path, bool doActivate = true)
         {
@@ -188,8 +188,8 @@ namespace CKAN.GUI
             get { return m_DormantPlugins.ToList(); }
         }
 
-        private HashSet<IGUIPlugin> m_ActivePlugins = new HashSet<IGUIPlugin>();
-        private HashSet<IGUIPlugin> m_DormantPlugins = new HashSet<IGUIPlugin>();
+        private readonly HashSet<IGUIPlugin> m_ActivePlugins = new HashSet<IGUIPlugin>();
+        private readonly HashSet<IGUIPlugin> m_DormantPlugins = new HashSet<IGUIPlugin>();
 
     }
 

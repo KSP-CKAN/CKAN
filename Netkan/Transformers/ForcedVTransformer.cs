@@ -19,8 +19,7 @@ namespace CKAN.NetKAN.Transformers
         {
             var json = metadata.Json();
 
-            JToken forceV;
-            if (json.TryGetValue("x_netkan_force_v", out forceV) && (bool)forceV)
+            if (json.TryGetValue("x_netkan_force_v", out JToken forceV) && (bool)forceV)
             {
                 Log.InfoFormat("Executing forced-v transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);

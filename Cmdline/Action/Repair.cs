@@ -80,7 +80,7 @@ namespace CKAN.CmdLine
         }
 
         private IUser User { get; set; }
-        private RepositoryDataManager repoData;
+        private readonly RepositoryDataManager repoData;
 
         /// <summary>
         /// Try to repair our registry.

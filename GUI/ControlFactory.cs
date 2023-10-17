@@ -9,7 +9,7 @@ namespace CKAN.GUI
     /// </summary>
     public class ControlFactory
     {
-        private int m_MainThreadID;
+        private readonly int m_MainThreadID;
 
         public ControlFactory()
         {

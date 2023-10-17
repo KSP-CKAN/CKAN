@@ -9,7 +9,6 @@ using log4net;
 
 using CKAN.Extensions;
 using CKAN.Games;
-using CKAN.Versioning;
 
 namespace CKAN
 {

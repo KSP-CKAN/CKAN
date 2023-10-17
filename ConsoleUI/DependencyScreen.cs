@@ -202,17 +202,17 @@ namespace CKAN.ConsoleUI {
                 : notinstalled;
         }
 
-        private HashSet<CkanModule> accepted = new HashSet<CkanModule>();
-        private HashSet<string>     rejected;
+        private readonly HashSet<CkanModule> accepted = new HashSet<CkanModule>();
+        private readonly HashSet<string>     rejected;
 
-        private IRegistryQuerier    registry;
-        private GameInstanceManager manager;
-        private ModuleInstaller     installer;
-        private ChangePlan          plan;
-        private bool                debug;
+        private readonly IRegistryQuerier    registry;
+        private readonly GameInstanceManager manager;
+        private readonly ModuleInstaller     installer;
+        private readonly ChangePlan          plan;
+        private readonly bool                debug;
 
-        private Dictionary<CkanModule, Dependency> dependencies = new Dictionary<CkanModule, Dependency>();
-        private ConsoleListBox<Dependency>         dependencyList;
+        private readonly Dictionary<CkanModule, Dependency> dependencies = new Dictionary<CkanModule, Dependency>();
+        private readonly ConsoleListBox<Dependency>         dependencyList;
 
         private static readonly string notinstalled = " ";
         private static readonly string installing   = "+";

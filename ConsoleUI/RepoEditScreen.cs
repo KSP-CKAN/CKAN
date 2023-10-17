@@ -56,7 +56,7 @@ namespace CKAN.ConsoleUI {
             }
         }
 
-        private Repository repository;
+        private readonly Repository repository;
     }
 
 }

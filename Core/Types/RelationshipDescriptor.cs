@@ -2,11 +2,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.Serialization;
 
 using Newtonsoft.Json;
 
-using CKAN.Extensions;
 using CKAN.Versioning;
 
 namespace CKAN

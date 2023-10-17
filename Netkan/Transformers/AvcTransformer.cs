@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using log4net;
 using Newtonsoft.Json;
@@ -12,7 +11,6 @@ using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Validators;
 using CKAN.NetKAN.Sources.Avc;
 using CKAN.Games;
-using CKAN.Versioning;
 using CKAN.NetKAN.Sources.Github;
 
 namespace CKAN.NetKAN.Transformers

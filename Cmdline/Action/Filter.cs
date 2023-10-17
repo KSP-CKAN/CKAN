@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Autofac;
 using CommandLine;
 using CommandLine.Text;
-using log4net;
 
 namespace CKAN.CmdLine
 {
@@ -48,7 +47,7 @@ namespace CKAN.CmdLine
                     switch (option)
                     {
                         case "list":
-                            exitCode = ListFilters((FilterListOptions)suboptions, option);
+                            exitCode = ListFilters((FilterListOptions)suboptions);
                             break;
 
                         case "add":
@@ -69,7 +68,7 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
-        private int ListFilters(FilterListOptions opts, string verb)
+        private int ListFilters(FilterListOptions opts)
         {
             int exitCode = opts.Handle(manager, user);
             if (exitCode != Exit.OK)
@@ -216,8 +215,6 @@ namespace CKAN.CmdLine
 
         private GameInstanceManager manager;
         private IUser               user;
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(Filter));
     }
 
     internal class FilterSubOptions : VerbCommandOptions

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -89,12 +88,11 @@ namespace CKAN.NetKAN.Sources.Curse
 
         private string Call(string nameOrId)
         {
-            int id;
             // If it's numeric, use the old URL format,
             // otherwise use the new.
-            var url = Int32.TryParse(nameOrId, out id)
+            var url = Int32.TryParse(nameOrId, out int id)
                 ? CurseApiBaseOld + id
-                : CurseApiBase    + nameOrId;
+                : CurseApiBase + nameOrId;
             Log.InfoFormat("Calling {0}", url);
             return _http.DownloadText(new Uri(url));
         }

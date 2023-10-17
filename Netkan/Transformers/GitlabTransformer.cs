@@ -57,7 +57,7 @@ namespace CKAN.NetKAN.Transformers
                     return Enumerable.Repeat(metadata, 1);
                 }
                 return releases.Select(release => TransformOne(
-                    metadata, metadata.Json(), reference, project, release));
+                    metadata.Json(), project, release));
             }
             else
             {
@@ -66,7 +66,7 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private Metadata TransformOne(Metadata metadata, JObject json, GitlabRef reference, GitlabProject project, GitlabRelease release)
+        private Metadata TransformOne(JObject json, GitlabProject project, GitlabRelease release)
         {
             var opts = (json["x_netkan_gitlab"] as JObject)?.ToObject<GitlabOptions>()
                 ?? new GitlabOptions();
@@ -98,6 +98,6 @@ namespace CKAN.NetKAN.Transformers
         }
 
         private static readonly ILog       log = LogManager.GetLogger(typeof(GitlabTransformer));
-        private                 IGitlabApi api;
+        private        readonly IGitlabApi api;
     }
 }

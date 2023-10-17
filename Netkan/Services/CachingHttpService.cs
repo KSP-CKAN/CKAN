@@ -9,9 +9,9 @@ namespace CKAN.NetKAN.Services
     internal sealed class CachingHttpService : IHttpService
     {
         private readonly NetFileCache _cache;
-        private          HashSet<Uri> _requestedURLs  = new HashSet<Uri>();
-        private          bool         _overwriteCache = false;
-        private Dictionary<Uri, StringCacheEntry> _stringCache = new Dictionary<Uri, StringCacheEntry>();
+        private readonly HashSet<Uri> _requestedURLs  = new HashSet<Uri>();
+        private readonly bool         _overwriteCache = false;
+        private readonly Dictionary<Uri, StringCacheEntry> _stringCache = new Dictionary<Uri, StringCacheEntry>();
 
         // Re-use string value URLs within 15 minutes
         private static readonly TimeSpan stringCacheLifetime = new TimeSpan(0, 15, 0);

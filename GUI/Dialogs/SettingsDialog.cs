@@ -1,11 +1,12 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Threading.Tasks;
+
 using log4net;
 using Autofac;
+
 using CKAN.Versioning;
 using CKAN.Configuration;
 
@@ -19,9 +20,9 @@ namespace CKAN.GUI
         public bool RepositoryRemoved { get; private set; } = false;
         public bool RepositoryMoved   { get; private set; } = false;
 
-        private IUser m_user;
-        private IConfiguration config;
-        private RegistryManager regMgr;
+        private readonly IUser m_user;
+        private readonly IConfiguration config;
+        private readonly RegistryManager regMgr;
 
         /// <summary>
         /// Initialize a settings window
@@ -249,7 +250,7 @@ namespace CKAN.GUI
             }
 
             Main.Instance.Manager.Cache.GetSizeInfo(
-                out int cacheFileCount, out long cacheSize, out long cacheFreeSpace);
+                out int cacheFileCount, out long cacheSize, out _);
 
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
             string confirmationText = String.Format(
@@ -406,8 +407,7 @@ namespace CKAN.GUI
             AuthTokensListBox.Items.Clear();
             foreach (string host in config.GetAuthTokenHosts())
             {
-                string token;
-                if (config.TryGetAuthToken(host, out token))
+                if (config.TryGetAuthToken(host, out string token))
                 {
                     AuthTokensListBox.Items.Add(new ListViewItem(
                         new string[] { host, token })
@@ -525,8 +525,7 @@ namespace CKAN.GUI
                 m_user.RaiseError(Properties.Resources.AddAuthTokenInvalidHost, host);
                 return false;
             }
-            string oldToken;
-            if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out oldToken))
+            if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out _))
             {
                 m_user.RaiseError(Properties.Resources.AddAuthTokenDupHost, host);
                 return false;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -36,12 +35,13 @@ namespace CKAN.NetKAN.Model
         public Metadata(JObject json)
         {
             if (json == null)
+            {
                 throw new ArgumentNullException("json");
+            }
 
             _json = json;
 
-            JToken krefToken;
-            if (json.TryGetValue(KrefPropertyName, out krefToken))
+            if (json.TryGetValue(KrefPropertyName, out JToken krefToken))
             {
                 if (krefToken.Type == JTokenType.String)
                 {
@@ -53,8 +53,7 @@ namespace CKAN.NetKAN.Model
                 }
             }
 
-            JToken vrefToken;
-            if (json.TryGetValue(VrefPropertyName, out vrefToken))
+            if (json.TryGetValue(VrefPropertyName, out JToken vrefToken))
             {
                 if (vrefToken.Type == JTokenType.String)
                 {
@@ -66,8 +65,7 @@ namespace CKAN.NetKAN.Model
                 }
             }
 
-            JToken specVersionToken;
-            if (json.TryGetValue(SpecVersionPropertyName, out specVersionToken))
+            if (json.TryGetValue(SpecVersionPropertyName, out JToken specVersionToken))
             {
                 if (specVersionToken.Type == JTokenType.Integer && (int)specVersionToken == 1)
                 {
@@ -90,14 +88,12 @@ namespace CKAN.NetKAN.Model
                 throw new Kraken(string.Format("{0} must be specified.", SpecVersionPropertyName));
             }
 
-            JToken versionToken;
-            if (json.TryGetValue(VersionPropertyName, out versionToken))
+            if (json.TryGetValue(VersionPropertyName, out JToken versionToken))
             {
                 Version = new ModuleVersion((string)versionToken);
             }
 
-            JToken downloadToken;
-            if (json.TryGetValue(DownloadPropertyName, out downloadToken))
+            if (json.TryGetValue(DownloadPropertyName, out JToken downloadToken))
             {
                 Download = new Uri(
                     downloadToken.Type == JTokenType.String
@@ -105,20 +101,17 @@ namespace CKAN.NetKAN.Model
                         : (string)downloadToken.Children().First());
             }
 
-            JToken stagedToken;
-            if (json.TryGetValue(StagedPropertyName, out stagedToken))
+            if (json.TryGetValue(StagedPropertyName, out JToken stagedToken))
             {
                 Staged = (bool)stagedToken;
             }
 
-            JToken stagingReasonToken;
-            if (json.TryGetValue(StagingReasonPropertyName, out stagingReasonToken))
+            if (json.TryGetValue(StagingReasonPropertyName, out JToken stagingReasonToken))
             {
                 StagingReason = (string)stagingReasonToken;
             }
 
-            JToken updatedToken;
-            if (json.TryGetValue(UpdatedPropertyName, out updatedToken))
+            if (json.TryGetValue(UpdatedPropertyName, out JToken updatedToken))
             {
                 DateTime t = (DateTime)updatedToken;
                 RemoteTimestamp = t.ToUniversalTime();

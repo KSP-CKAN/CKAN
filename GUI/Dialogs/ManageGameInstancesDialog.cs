@@ -210,21 +210,18 @@ namespace CKAN.GUI
             }
 
             var selected = GameInstancesListView.SelectedItems[0];
-            var instName = selected?.Tag as string;
-            if (instName == null)
+            if (selected?.Tag is string instName)
             {
-                return;
-            }
-
-            try
-            {
-                _manager.SetCurrentInstance(instName);
-                DialogResult = DialogResult.OK;
-                Close();
-            }
-            catch (NotKSPDirKraken k)
-            {
-                _user.RaiseError(Properties.Resources.ManageGameInstancesNotValid, k.path);
+                try
+                {
+                    _manager.SetCurrentInstance(instName);
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                catch (NotKSPDirKraken k)
+                {
+                    _user.RaiseError(Properties.Resources.ManageGameInstancesNotValid, k.path);
+                }
             }
         }
 
@@ -238,20 +235,17 @@ namespace CKAN.GUI
             }
 
             var selected = GameInstancesListView.SelectedItems[0];
-            string instName = selected?.Tag as string;
-            if (instName == null)
+            if (selected?.Tag is string instName)
             {
-                return;
-            }
-
-            try
-            {
-                _manager.SetAutoStart(instName);
-                SetAsDefaultCheckbox.Checked = true;
-            }
-            catch (NotKSPDirKraken k)
-            {
-                _user.RaiseError(Properties.Resources.ManageGameInstancesNotValid, k.path);
+                try
+                {
+                    _manager.SetAutoStart(instName);
+                    SetAsDefaultCheckbox.Checked = true;
+                }
+                catch (NotKSPDirKraken k)
+                {
+                    _user.RaiseError(Properties.Resources.ManageGameInstancesNotValid, k.path);
+                }
             }
         }
 

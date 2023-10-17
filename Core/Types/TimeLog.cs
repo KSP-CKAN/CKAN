@@ -1,12 +1,8 @@
 using System;
 using System.IO;
-using System.Drawing;
-using System.ComponentModel;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace CKAN
 {
@@ -43,7 +39,7 @@ namespace CKAN
             return Time.TotalHours.ToString("N1");
         }
 
-        private Stopwatch playTime = new Stopwatch();
+        private readonly Stopwatch playTime = new Stopwatch();
 
         public void Start()
         {

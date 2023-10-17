@@ -11,23 +11,17 @@ namespace CKAN.NetKAN.Services
         }
 
         public long GetSizeBytes(string filePath)
-        {
-            return new FileInfo(filePath).Length;
-        }
+            => new FileInfo(filePath).Length;
 
         public string GetFileHashSha1(string filePath)
-        {
-            // Use shared implementation from Core.
-            // Also needs to be an instance method so it can be Moq'd for testing.
-            return cache.GetFileHashSha1(filePath, new Progress<long>(bytes => {}));
-        }
+        // Use shared implementation from Core.
+        // Also needs to be an instance method so it can be Moq'd for testing.
+            => cache.GetFileHashSha1(filePath, new Progress<long>(bytes => {}));
 
         public string GetFileHashSha256(string filePath)
-        {
-            // Use shared implementation from Core.
-            // Also needs to be an instance method so it can be Moq'd for testing.
-            return cache.GetFileHashSha256(filePath, new Progress<long>(bytes => {}));
-        }
+        // Use shared implementation from Core.
+        // Also needs to be an instance method so it can be Moq'd for testing.
+            => cache.GetFileHashSha256(filePath, new Progress<long>(bytes => {}));
 
         public string GetMimetype(string filePath)
         {
@@ -58,6 +52,6 @@ namespace CKAN.NetKAN.Services
             return mimetype;
         }
 
-        private NetFileCache cache;
+        private readonly NetFileCache cache;
     }
 }

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Transactions;
 using System.Diagnostics;
 
 using ChinhDo.Transactions.FileManager;
@@ -12,7 +11,6 @@ using log4net;
 using Newtonsoft.Json;
 
 using CKAN.Games;
-using CKAN.Extensions;
 using CKAN.Versioning;
 
 namespace CKAN
@@ -155,8 +153,7 @@ namespace CKAN
                     .Select(v => GameVersion.Parse(v)).ToList();
 
                 // Get version without throwing exceptions for null
-                GameVersion mainVer = null;
-                GameVersion.TryParse(compatibleGameVersions.GameVersionWhenWritten, out mainVer);
+                GameVersion.TryParse(compatibleGameVersions.GameVersionWhenWritten, out GameVersion mainVer);
                 GameVersionWhenCompatibleVersionsWereStored = mainVer;
             }
         }

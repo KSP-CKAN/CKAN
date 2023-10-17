@@ -6,8 +6,6 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
 
-using Autofac;
-
 using CKAN.Versioning;
 
 namespace CKAN.GUI

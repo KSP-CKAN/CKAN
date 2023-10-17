@@ -431,7 +431,7 @@ namespace CKAN.CmdLine
         }
 
         private GameInstanceManager   Manager;
-        private RepositoryDataManager repoData;
+        private readonly RepositoryDataManager repoData;
         private IUser                 User;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));

@@ -37,7 +37,7 @@ namespace CKAN.CmdLine
 
             if (options.ckan_file != null)
             {
-                options.modules.Add(MainClass.LoadCkanFromFile(instance, options.ckan_file).identifier);
+                options.modules.Add(MainClass.LoadCkanFromFile(options.ckan_file).identifier);
             }
 
             if (options.modules.Count == 0 && !options.upgrade_all)
@@ -252,9 +252,9 @@ namespace CKAN.CmdLine
             }
         }
 
-        private IUser                 user;
-        private GameInstanceManager   manager;
-        private RepositoryDataManager repoData;
+        private readonly IUser                 user;
+        private readonly GameInstanceManager   manager;
+        private readonly RepositoryDataManager repoData;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Upgrade));
     }

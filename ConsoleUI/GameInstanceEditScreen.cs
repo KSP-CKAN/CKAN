@@ -230,14 +230,14 @@ namespace CKAN.ConsoleUI {
             }
         }
 
-        private GameInstance    ksp;
-        private RegistryManager regMgr;
-        private Registry        registry;
+        private readonly GameInstance    ksp;
+        private readonly RegistryManager regMgr;
+        private readonly Registry        registry;
 
-        private SortedDictionary<string, Repository> repoEditList;
-        private ConsoleListBox<Repository>           repoList;
-        private List<GameVersion>                     compatEditList;
-        private ConsoleListBox<GameVersion>           compatList;
+        private readonly SortedDictionary<string, Repository> repoEditList;
+        private readonly ConsoleListBox<Repository>           repoList;
+        private readonly List<GameVersion>                    compatEditList;
+        private readonly ConsoleListBox<GameVersion>          compatList;
 
         private const int repoFrameTop      = pathRow           + 2;
         private const int repoListTop       = repoFrameTop      + 2;

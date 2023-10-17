@@ -64,8 +64,10 @@ namespace CKAN.ConsoleUI {
 
                         HashSet<string> possibleConfigOnlyDirs = null;
 
-                        ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
-                        inst.onReportModInstalled = OnModInstalled;
+                        ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this)
+                        {
+                            onReportModInstalled = OnModInstalled
+                        };
                         if (plan.Remove.Count > 0) {
                             inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, new List<CkanModule>(plan.Install));
                             plan.Remove.Clear();
@@ -180,10 +182,10 @@ namespace CKAN.ConsoleUI {
             without_enforce_consistency    = false
         };
 
-        private GameInstanceManager   manager;
-        private RepositoryDataManager repoData;
-        private ChangePlan            plan;
-        private bool                  debug;
+        private readonly GameInstanceManager   manager;
+        private readonly RepositoryDataManager repoData;
+        private readonly ChangePlan            plan;
+        private readonly bool                  debug;
     }
 
 }
