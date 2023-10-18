@@ -21,6 +21,7 @@
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>IDE1006</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
