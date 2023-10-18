@@ -69,12 +69,9 @@ namespace CKAN.GUI
         /// DOES NOT ACTUALLY CHECK IF IT EXISTS, just the format.
         /// </summary>
         public static bool CheckURLValid(string source)
-        {
-            Uri uri_result;
-            return Uri.TryCreate(source, UriKind.Absolute, out uri_result)
+            => Uri.TryCreate(source, UriKind.Absolute, out Uri uri_result)
                 && (uri_result.Scheme == Uri.UriSchemeHttp
                  || uri_result.Scheme == Uri.UriSchemeHttps);
-        }
 
         /// <summary>
         /// Open a URL, unless it's "N/A"

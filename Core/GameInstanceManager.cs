@@ -22,7 +22,7 @@ namespace CKAN
     /// </summary>
     public class GameInstanceManager : IDisposable
     {
-        private static IGame[] knownGames = new IGame[]
+        private static readonly IGame[] knownGames = new IGame[]
         {
             new KerbalSpaceProgram(),
             new KerbalSpaceProgram2(),
@@ -455,7 +455,7 @@ namespace CKAN
             }
         }
 
-        public GameInstance InstanceAt(string path, string name)
+        public GameInstance InstanceAt(string path)
         {
             var matchingGames = knownGames
                 .Where(g => g.GameInFolder(new DirectoryInfo(path)))
@@ -548,7 +548,7 @@ namespace CKAN
             {
                 log.ErrorFormat("Cache not found at configured path {0}: {1}", Configuration.DownloadCacheDir, failReason);
                 // Fall back to default path to minimize chance of ending up in an invalid state at startup
-                TrySetupCache("", out failReason);
+                TrySetupCache("", out _);
             }
         }
 

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
@@ -77,8 +76,8 @@ namespace CKAN.NetKAN.Transformers
                     json.SafeAdd("author",   swinfo.author);
                     json.SafeAdd("abstract", swinfo.description);
                     json.SafeAdd("version",  swinfo.version);
-                    GameVersion minVer = null, maxVer = null;
-                    if (GameVersion.TryParse(swinfo.ksp2_version.min, out minVer)
+                    GameVersion maxVer = null;
+                    if (GameVersion.TryParse(swinfo.ksp2_version.min, out GameVersion minVer)
                         || GameVersion.TryParse(swinfo.ksp2_version.max, out maxVer))
                     {
                         log.InfoFormat("Found compatibility: {0}–{1}", minVer, maxVer);

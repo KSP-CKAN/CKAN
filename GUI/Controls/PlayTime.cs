@@ -2,10 +2,8 @@
 using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 
-using CKAN.Versioning;
 using CKAN.Extensions;
 
 namespace CKAN.GUI

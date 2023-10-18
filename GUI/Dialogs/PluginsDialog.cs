@@ -11,7 +11,7 @@ namespace CKAN.GUI
             StartPosition = FormStartPosition.CenterScreen;
         }
 
-        private OpenFileDialog m_AddNewPluginDialog = new OpenFileDialog();
+        private readonly OpenFileDialog m_AddNewPluginDialog = new OpenFileDialog();
 
         private void PluginsDialog_Load(object sender, EventArgs e)
         {

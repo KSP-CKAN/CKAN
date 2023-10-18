@@ -3,7 +3,6 @@ using System.IO;
 using System.ComponentModel;
 using System.Globalization;
 using System.Resources;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace CKAN.GUI
@@ -20,8 +19,7 @@ namespace CKAN.GUI
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture,
             bool createIfNotExists, bool tryParents)
         {
-            ResourceSet rs;
-            if (!myResourceSets.TryGetValue(culture, out rs) && createIfNotExists)
+            if (!myResourceSets.TryGetValue(culture, out ResourceSet rs) && createIfNotExists)
             {
                 // Lazy-load default language (without caring about duplicate assignment in race conditions, no harm done)
                 if (neutralResourcesCulture == null)
@@ -54,8 +52,8 @@ namespace CKAN.GUI
             return rs;
         }
 
-        private Type        contextTypeInfo;
+        private readonly Type contextTypeInfo;
         private CultureInfo neutralResourcesCulture;
-        private Dictionary<CultureInfo, ResourceSet> myResourceSets = new Dictionary<CultureInfo, ResourceSet>();
+        private readonly Dictionary<CultureInfo, ResourceSet> myResourceSets = new Dictionary<CultureInfo, ResourceSet>();
     }
 }

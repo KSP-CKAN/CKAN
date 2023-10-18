@@ -4,7 +4,6 @@ using Autofac;
 using CKAN.Configuration;
 using CommandLine;
 using CommandLine.Text;
-using log4net;
 
 namespace CKAN.CmdLine
 {
@@ -49,7 +48,7 @@ namespace CKAN.CmdLine
                         switch (option)
                         {
                             case "list":
-                                exitCode = listAuthTokens(options);
+                                exitCode = listAuthTokens();
                                 break;
                             case "add":
                                 exitCode = addAuthToken((AddAuthTokenOptions)options);
@@ -64,7 +63,7 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
-        private int listAuthTokens(CommonOptions opts)
+        private int listAuthTokens()
         {
             string hostHeader  = Properties.Resources.AuthTokenHostHeader;
             string tokenHeader = Properties.Resources.AuthTokenTokenHeader;
@@ -76,8 +75,7 @@ namespace CKAN.CmdLine
                 foreach (string host in hosts)
                 {
                     longestHostLen = Math.Max(longestHostLen, host.Length);
-                    string token;
-                    if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out token))
+                    if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out string token))
                     {
                         longestTokenLen = Math.Max(longestTokenLen, token.Length);
                     }
@@ -92,8 +90,7 @@ namespace CKAN.CmdLine
                 );
                 foreach (string host in hosts)
                 {
-                    string token;
-                    if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out token))
+                    if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out string token))
                     {
                         user.RaiseMessage(fmt, host, token);
                     }
@@ -121,8 +118,7 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private                 IUser user;
-        private static readonly ILog  log = LogManager.GetLogger(typeof(AuthToken));
+        private IUser user;
     }
 
     internal class AuthTokenSubOptions : VerbCommandOptions

@@ -235,9 +235,7 @@ namespace CKAN
         {
             List<CkanModule> releases = querier.AvailableByIdentifier(identifier).ToList();
             if (releases != null && releases.Count > 0) {
-                ModuleVersion minMod = null, maxMod = null;
-                GameVersion   minKsp = null, maxKsp = null;
-                CkanModule.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
+                CkanModule.GetMinMaxVersions(releases, out _, out _, out GameVersion minKsp, out GameVersion maxKsp);
                 return GameVersionRange.VersionSpan(game, minKsp, maxKsp);
             }
             return "";
@@ -252,14 +250,12 @@ namespace CKAN
         /// <returns>
         /// String describing range of compatible game versions.
         /// </returns>
-        public static string CompatibleGameVersions(this IRegistryQuerier querier, IGame game, CkanModule module)
+        public static string CompatibleGameVersions(this CkanModule module, IGame game)
         {
-            ModuleVersion minMod = null, maxMod = null;
-            GameVersion   minKsp = null, maxKsp = null;
             CkanModule.GetMinMaxVersions(
                 new CkanModule[] { module },
-                out minMod, out maxMod,
-                out minKsp, out maxKsp
+                out _, out _,
+                out GameVersion minKsp, out GameVersion maxKsp
             );
             return GameVersionRange.VersionSpan(game, minKsp, maxKsp);
         }
@@ -301,8 +297,10 @@ namespace CKAN
             // Now we need to see if there is a compatible version of the replacement
             try
             {
-                ModuleReplacement replacement = new ModuleReplacement();
-                replacement.ToReplace = installedVersion;
+                ModuleReplacement replacement = new ModuleReplacement
+                {
+                    ToReplace = installedVersion
+                };
                 if (installedVersion.replaced_by.version != null)
                 {
                     replacement.ReplaceWith = querier.GetModuleByVersion(installedVersion.replaced_by.name, installedVersion.replaced_by.version);

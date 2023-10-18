@@ -16,7 +16,6 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Processors;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Extensions;
-using CKAN.Games;
 
 namespace CKAN.NetKAN
 {

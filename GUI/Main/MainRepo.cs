@@ -10,7 +10,6 @@ using Timer = System.Timers.Timer;
 using Newtonsoft.Json;
 using Autofac;
 
-using CKAN.Versioning;
 using CKAN.Configuration;
 using CKAN.Extensions;
 using CKAN.GUI.Attributes;

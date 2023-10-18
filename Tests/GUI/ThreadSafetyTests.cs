@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using Mono.Cecil;
-using MethodAttributes = Mono.Cecil.MethodAttributes;
 using Mono.Cecil.Cil;
 using NUnit.Framework;
 

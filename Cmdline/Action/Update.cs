@@ -10,9 +10,8 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <param name="mgr">GameInstanceManager containing our instances</param>
         /// <param name="user">IUser object for interaction</param>
-        public Update(GameInstanceManager mgr, RepositoryDataManager repoData, IUser user)
+        public Update(RepositoryDataManager repoData, IUser user)
         {
-            manager       = mgr;
             this.repoData = repoData;
             this.user     = user;
         }
@@ -139,8 +138,7 @@ namespace CKAN.CmdLine
             user.RaiseMessage(Properties.Resources.UpdateSummary, registry_manager.registry.CompatibleModules(instance.VersionCriteria()).Count());
         }
 
-        private GameInstanceManager   manager;
-        private RepositoryDataManager repoData;
-        private IUser                 user;
+        private readonly RepositoryDataManager repoData;
+        private readonly IUser                 user;
     }
 }

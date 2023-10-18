@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using CKAN.Versioning;

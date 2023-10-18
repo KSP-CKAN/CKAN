@@ -1,12 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows.Forms;
+
 using Autofac;
-using CKAN.Versioning;
+
 using CKAN.Games;
 
 namespace CKAN.GUI

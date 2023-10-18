@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using CKAN.NetKAN.Services;
-using CKAN.Versioning;
 
 // We could use OctoKit for this, but since we're only pinging the
 // release API, I'm happy enough without yet another dependency.

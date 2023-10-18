@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -59,7 +58,7 @@ namespace CKAN.GUI
             }
         }
 
-        private RepositoryDataManager   repoData;
+        private readonly RepositoryDataManager repoData;
         private GUIMod                  visibleGuiModule;
         private bool                    ignoreItemCheck;
         private CancellationTokenSource cancelTokenSrc;

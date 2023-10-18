@@ -13,7 +13,6 @@ using Tests.Data;
 
 using CKAN;
 using CKAN.GUI;
-using CKAN.Versioning;
 
 namespace Tests.GUI
 {

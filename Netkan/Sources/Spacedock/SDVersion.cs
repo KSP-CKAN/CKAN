@@ -1,15 +1,14 @@
 using System;
 using System.Text.RegularExpressions;
-using CKAN.Versioning;
-using log4net;
+
 using Newtonsoft.Json;
+
+using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Sources.Spacedock
 {
     public class SDVersion
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (SDVersion));
-
         // These all get filled by JSON deserialisation.
 
         [JsonConverter(typeof(JsonConvertGameVersion))]

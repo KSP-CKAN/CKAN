@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Collections.Generic;
 
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;

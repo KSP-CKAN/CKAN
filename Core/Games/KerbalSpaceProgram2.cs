@@ -5,7 +5,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
 
-using Autofac;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

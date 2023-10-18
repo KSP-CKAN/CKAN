@@ -1,7 +1,4 @@
-using System.CodeDom;
 using System.IO;
-using CKAN;
-using CKAN.NetKAN;
 using CKAN.NetKAN.Sources.Avc;
 using CKAN.Versioning;
 using Newtonsoft.Json;

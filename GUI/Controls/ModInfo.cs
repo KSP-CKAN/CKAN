@@ -1,11 +1,7 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Drawing;
-using System.ComponentModel;
 using System.Windows.Forms;
-using System.IO;
-using System.Threading.Tasks;
 
 using Autofac;
 
@@ -37,7 +33,7 @@ namespace CKAN.GUI
                     {
                         ModInfoTabControl.Enabled = true;
                         UpdateHeaderInfo(value, manager.CurrentInstance.VersionCriteria());
-                        LoadTab(ModInfoTabControl.SelectedTab.Name, value);
+                        LoadTab(value);
                     }
                 }
             }
@@ -64,7 +60,7 @@ namespace CKAN.GUI
 
         private GUIMod selectedModule;
 
-        private void LoadTab(string name, GUIMod gm)
+        private void LoadTab(GUIMod gm)
         {
             switch (ModInfoTabControl.SelectedTab.Name)
             {
@@ -94,7 +90,7 @@ namespace CKAN.GUI
         // When switching tabs ensure that the resulting tab is updated.
         private void ModInfoTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadTab(ModInfoTabControl.SelectedTab.Name, SelectedModule);
+            LoadTab(SelectedModule);
         }
 
         private GameInstanceManager manager => Main.Instance.Manager;

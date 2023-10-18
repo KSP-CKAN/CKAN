@@ -1,4 +1,3 @@
-
 namespace CKAN
 {
     public enum FileType

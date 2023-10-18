@@ -5,7 +5,6 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Transformers;
 
 namespace Tests.NetKAN.Transformers

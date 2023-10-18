@@ -150,11 +150,10 @@ namespace CKAN.CmdLine
                                 var instance = MainClass.GetGameInstance(_kspManager);
                                 var addOptions = (CompatAddOptions)suboptions;
 
-                                GameVersion GameVersion;
-                                if (GameVersion.TryParse(addOptions.Version, out GameVersion))
+                                if (GameVersion.TryParse(addOptions.Version, out GameVersion gv))
                                 {
                                     var newCompatibleVersion = instance.GetCompatibleVersions();
-                                    newCompatibleVersion.Add(GameVersion);
+                                    newCompatibleVersion.Add(gv);
                                     instance.SetCompatibleVersions(newCompatibleVersion);
                                 }
                                 else
@@ -170,13 +169,12 @@ namespace CKAN.CmdLine
                                 var instance = MainClass.GetGameInstance(_kspManager);
                                 var addOptions = (CompatForgetOptions)suboptions;
 
-                                GameVersion GameVersion;
-                                if (GameVersion.TryParse(addOptions.Version, out GameVersion))
+                                if (GameVersion.TryParse(addOptions.Version, out GameVersion gv))
                                 {
-                                    if (GameVersion != instance.Version())
+                                    if (gv != instance.Version())
                                     {
                                         var newCompatibleVersion = instance.GetCompatibleVersions();
-                                        newCompatibleVersion.RemoveAll(i => i == GameVersion);
+                                        newCompatibleVersion.RemoveAll(i => i == gv);
                                         instance.SetCompatibleVersions(newCompatibleVersion);
                                     }
                                     else

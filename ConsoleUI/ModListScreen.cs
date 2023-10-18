@@ -656,17 +656,17 @@ namespace CKAN.ConsoleUI {
             return total;
         }
 
-        private GameInstanceManager   manager;
+        private readonly GameInstanceManager   manager;
         private RegistryManager       regMgr;
         private Registry              registry;
-        private RepositoryDataManager repoData;
-        private bool                  debug;
+        private readonly RepositoryDataManager repoData;
+        private readonly bool                  debug;
 
-        private ConsoleField               searchBox;
-        private ConsoleListBox<CkanModule> moduleList;
+        private readonly ConsoleField               searchBox;
+        private readonly ConsoleListBox<CkanModule> moduleList;
 
-        private ChangePlan      plan   = new ChangePlan();
-        private HashSet<string> recent = new HashSet<string>();
+        private readonly ChangePlan      plan   = new ChangePlan();
+        private readonly HashSet<string> recent = new HashSet<string>();
 
         private int searchWidth => Math.Max(30, Math.Max(
             Properties.Resources.ModListSearchFocusedGhostText.Length,

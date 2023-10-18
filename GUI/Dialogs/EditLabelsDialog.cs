@@ -3,7 +3,6 @@ using System.Linq;
 using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
-using log4net;
 
 namespace CKAN.GUI
 {
@@ -139,8 +138,7 @@ namespace CKAN.GUI
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            string errMsg;
-            if (TrySave(out errMsg))
+            if (TrySave(out string errMsg))
             {
                 LabelSelectionTree.SelectedNode = null;
             }
@@ -274,8 +272,7 @@ namespace CKAN.GUI
                     Properties.Resources.EditLabelsDialogDiscard
                 ))
                 {
-                    string errMsg;
-                    if (!TrySave(out errMsg))
+                    if (!TrySave(out string errMsg))
                     {
                         user.RaiseError(errMsg);
                         return false;
@@ -375,7 +372,5 @@ namespace CKAN.GUI
 
         private readonly IUser           user;
         private readonly ModuleLabelList labels;
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(EditLabelsDialog));
     }
 }

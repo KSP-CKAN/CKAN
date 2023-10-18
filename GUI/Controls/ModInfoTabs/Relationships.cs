@@ -57,7 +57,6 @@ namespace CKAN.GUI
         {
             set
             {
-                var module = value?.ToModule();
                 if (value != selectedModule)
                 {
                     if (ReverseRelationshipsCheckbox.CheckState == CheckState.Checked)
@@ -78,7 +77,7 @@ namespace CKAN.GUI
 
         private GUIMod                selectedModule;
         private GameInstanceManager   manager => Main.Instance.Manager;
-        private RepositoryDataManager repoData;
+        private readonly RepositoryDataManager repoData;
 
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
@@ -87,8 +86,7 @@ namespace CKAN.GUI
 
         private bool ImMyOwnGrandpa(TreeNode node)
         {
-            CkanModule module = node.Tag as CkanModule;
-            if (module != null)
+            if (node.Tag is CkanModule module)
             {
                 for (TreeNode other = node.Parent; other != null; other = other.Parent)
                 {
@@ -216,15 +214,14 @@ namespace CKAN.GUI
         // Load one layer of grandchildren on demand
         private IEnumerable<TreeNode> GetChildren(IRegistryQuerier registry, TreeNode node)
         {
-            var module = node.Tag as CkanModule;
-            var crit   = manager.CurrentInstance.VersionCriteria();
+            var crit = manager.CurrentInstance.VersionCriteria();
             // Skip children of nodes from circular dependencies
             // Tag is null for non-indexed nodes
-            return ImMyOwnGrandpa(node) || module == null
-                ? Enumerable.Empty<TreeNode>()
-                : ReverseRelationshipsCheckbox.CheckState == CheckState.Unchecked
-                    ? ForwardRelationships(registry, node, module, crit)
-                    : ReverseRelationships(registry, node, module, crit);
+            return !ImMyOwnGrandpa(node) && node.Tag is CkanModule module
+                ? ReverseRelationshipsCheckbox.CheckState == CheckState.Unchecked
+                    ? ForwardRelationships(registry, module, crit)
+                    : ReverseRelationships(registry, module, crit)
+                : Enumerable.Empty<TreeNode>();
         }
 
         private IEnumerable<RelationshipDescriptor> GetModRelationships(CkanModule module, RelationshipType which)
@@ -250,7 +247,7 @@ namespace CKAN.GUI
             return Enumerable.Empty<RelationshipDescriptor>();
         }
 
-        private IEnumerable<TreeNode> ForwardRelationships(IRegistryQuerier registry, TreeNode node, CkanModule module, GameVersionCriteria crit)
+        private IEnumerable<TreeNode> ForwardRelationships(IRegistryQuerier registry, CkanModule module, GameVersionCriteria crit)
             => (module.provides?.Select(p => providedNode(p))
                     ?? Enumerable.Empty<TreeNode>())
                 .Concat(kindsOfRelationships.SelectMany(relationship =>
@@ -302,7 +299,7 @@ namespace CKAN.GUI
             }
         }
 
-        private IEnumerable<TreeNode> ReverseRelationships(IRegistryQuerier registry, TreeNode node, CkanModule module, GameVersionCriteria crit)
+        private IEnumerable<TreeNode> ReverseRelationships(IRegistryQuerier registry, CkanModule module, GameVersionCriteria crit)
         {
             var compat   = registry.CompatibleModules(crit).ToArray();
             var incompat = registry.IncompatibleModules(crit).ToArray();
@@ -333,8 +330,7 @@ namespace CKAN.GUI
         {
             int icon = (int)relationship + 1;
             bool missingDLC = module.IsDLC && !registry.InstalledDlc.ContainsKey(module.identifier);
-            bool compatible = crit == null ? false
-                : registry.IdentifierCompatible(module.identifier, crit);
+            bool compatible = crit != null && registry.IdentifierCompatible(module.identifier, crit);
             string suffix = compatible ? ""
                 : $" ({registry.CompatibleGameVersions(manager.CurrentInstance.game, module.identifier)})";
             return new TreeNode($"{module.name} {module.version}{suffix}", icon, icon)

@@ -42,8 +42,7 @@ namespace CKAN.NetKAN.Transformers
         {
             var json = metadata.Json();
 
-            JToken overrideList;
-            if (json.TryGetValue("x_netkan_override", out overrideList))
+            if (json.TryGetValue("x_netkan_override", out JToken overrideList))
             {
                 Log.InfoFormat("Executing override transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
@@ -85,12 +84,10 @@ namespace CKAN.NetKAN.Transformers
         /// </summary>
         private void ProcessOverrideStanza(JObject overrideStanza, JObject metadata)
         {
-            JToken jBefore;
-            JToken jAfter;
             string before = null;
             string after = null;
 
-            if (overrideStanza.TryGetValue("before", out jBefore))
+            if (overrideStanza.TryGetValue("before", out JToken jBefore))
             {
                 if (jBefore.Type == JTokenType.String)
                     before = (string)jBefore;
@@ -98,7 +95,7 @@ namespace CKAN.NetKAN.Transformers
                     throw new Kraken("override before property must be a string");
             }
 
-            if (overrideStanza.TryGetValue("after", out jAfter))
+            if (overrideStanza.TryGetValue("after", out JToken jAfter))
             {
                 if (jAfter.Type == JTokenType.String)
                     after = (string)jAfter;
@@ -110,9 +107,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 Log.InfoFormat("Processing override: {0}", overrideStanza);
 
-                JToken stanzaConstraints;
-
-                if (!overrideStanza.TryGetValue("version", out stanzaConstraints))
+                if (!overrideStanza.TryGetValue("version", out JToken stanzaConstraints))
                 {
                     throw new Kraken(
                         string.Format(
@@ -128,10 +123,10 @@ namespace CKAN.NetKAN.Transformers
                 {
                     constraints = new List<string> { stanzaConstraints.ToString() };
                 }
-                else if (stanzaConstraints is JArray)
+                else if (stanzaConstraints is JArray array)
                 {
                     // Pop the constraints in 'constraints'
-                    constraints = ((JArray)stanzaConstraints).Values().Select(x => x.ToString());
+                    constraints = array.Values().Select(x => x.ToString());
                 }
                 else
                 {
@@ -146,9 +141,7 @@ namespace CKAN.NetKAN.Transformers
                 // All the constraints pass; let's replace the metadata we have with what's
                 // in the override.
 
-                JToken overrideBlock;
-
-                if (overrideStanza.TryGetValue("override", out overrideBlock))
+                if (overrideStanza.TryGetValue("override", out JToken overrideBlock))
                 {
                     var overrides = overrideBlock as JObject;
                     if (gameVersionProperties.Any(p => overrides.ContainsKey(p)))
@@ -178,18 +171,17 @@ namespace CKAN.NetKAN.Transformers
 
                 // And let's delete anything that needs deleting.
 
-                JToken deleteList;
-                if (overrideStanza.TryGetValue("delete", out deleteList))
+                if (overrideStanza.TryGetValue("delete", out JToken deleteList))
                 {
-                    foreach (string key in (JArray)deleteList)
+                    foreach (string key in ((JArray)deleteList).Select(v => (string)v))
                     {
                         metadata.Remove(key);
                     }
                 }
             }
         }
-        
-        private string[] gameVersionProperties = new string[]
+
+        private readonly string[] gameVersionProperties = new string[]
         {
             "ksp_version", "ksp_version_min", "ksp_version_max"
         };

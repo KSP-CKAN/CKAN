@@ -201,7 +201,7 @@ namespace CKAN.CmdLine
             }
         }
 
-        private RepositoryDataManager repoData;
-        private IUser                 user;
+        private readonly RepositoryDataManager repoData;
+        private readonly IUser                 user;
     }
 }

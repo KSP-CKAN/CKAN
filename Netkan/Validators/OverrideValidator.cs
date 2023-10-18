@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Model;
+using System.Linq;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -15,7 +16,7 @@ namespace CKAN.NetKAN.Validators
                 {
                     throw new Kraken("Netkan overrides require an array");
                 }
-                foreach (JObject ovr in overrides)
+                foreach (JObject ovr in overrides.Cast<JObject>())
                 {
                     if (!ovr.ContainsKey("version"))
                     {

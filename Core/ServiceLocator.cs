@@ -1,5 +1,3 @@
-using System;
-
 using Autofac;
 
 using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;

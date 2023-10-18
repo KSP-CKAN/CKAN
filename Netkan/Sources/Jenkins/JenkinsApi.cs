@@ -5,6 +5,7 @@ using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Services;
+using System.Linq;
 
 namespace CKAN.NetKAN.Sources.Jenkins
 {
@@ -36,9 +37,8 @@ namespace CKAN.NetKAN.Sources.Jenkins
             string url = Regex.Replace(reference.BaseUri.ToString(), @"/$", "");
             JObject job = Call<JObject>($"{url}/api/json");
             JArray builds = (JArray)job["builds"];
-            string resultVal = null;
-            BuildTypeToResult.TryGetValue(options.BuildType, out resultVal);
-            foreach (JObject buildEntry in builds)
+            BuildTypeToResult.TryGetValue(options.BuildType, out string resultVal);
+            foreach (JObject buildEntry in builds.Cast<JObject>())
             {
                 Log.Info($"Processing {buildEntry["url"]}");
                 JenkinsBuild build = Call<JenkinsBuild>($"{buildEntry["url"]}api/json");
@@ -56,11 +56,6 @@ namespace CKAN.NetKAN.Sources.Jenkins
         private T Call<T>(Uri url)
         {
             return JsonConvert.DeserializeObject<T>(Call(url));
-        }
-
-        private string Call(string url)
-        {
-            return Call(new Uri(url));
         }
 
         private string Call(Uri url)
@@ -90,7 +85,7 @@ namespace CKAN.NetKAN.Sources.Jenkins
             { "unsuccessful", "FAILURE" }
         };
 
-        private IHttpService _http;
+        private readonly IHttpService _http;
         private static readonly ILog Log = LogManager.GetLogger(typeof(JenkinsApi));
     }
 }

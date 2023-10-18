@@ -16,9 +16,9 @@ namespace CKAN.GUI
         private static readonly ILog log = LogManager.GetLogger(typeof(URLHandlers));
         public  const  string UrlRegistrationArgument = "registerUrl";
 
-        private static string MimeAppsListPath = "mimeapps.list";
-        private static string ApplicationsPath = ".local/share/applications/";
-        private const  string HandlerFileName  = "ckan-handler.desktop";
+        private static readonly string MimeAppsListPath = "mimeapps.list";
+        private static readonly string ApplicationsPath = ".local/share/applications/";
+        private const           string HandlerFileName  = "ckan-handler.desktop";
 
         static URLHandlers()
         {

@@ -42,7 +42,7 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private IUser                 user;
-        private RepositoryDataManager repoData;
+        private readonly IUser                 user;
+        private readonly RepositoryDataManager repoData;
     }
 }

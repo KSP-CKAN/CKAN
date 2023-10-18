@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Model;
-using Newtonsoft.Json;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -68,11 +67,9 @@ namespace CKAN.NetKAN.Transformers
 
         private static VersionEditInfo GetVersionEditInfo(JObject json)
         {
-            JToken editProp;
-            if (json.TryGetValue("x_netkan_version_edit", out editProp) && editProp != null)
+            if (json.TryGetValue("x_netkan_version_edit", out JToken editProp) && editProp != null)
             {
-                JToken versionProp;
-                if (json.TryGetValue("version", out versionProp))
+                if (json.TryGetValue("version", out JToken versionProp))
                 {
                     if (versionProp.Type == JTokenType.String)
                     {

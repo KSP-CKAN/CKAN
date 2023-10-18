@@ -104,9 +104,7 @@ namespace CKAN.NetKAN.Transformers
 
             if (result.Any())
             {
-                var firstVersionedOverride = result.First() as VersionedOverrideTransformer;
-
-                if (firstVersionedOverride != null)
+                if (result.First() is VersionedOverrideTransformer firstVersionedOverride)
                 {
                     firstVersionedOverride.AddBefore("$all");
                     firstVersionedOverride.AddAfter("$none");

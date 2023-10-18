@@ -1,6 +1,6 @@
 using System.IO;
 using System.Linq;
-using log4net;
+
 using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 using Newtonsoft.Json.Linq;
@@ -85,7 +85,5 @@ namespace CKAN.NetKAN.Extensions
                                          : new JValue(yaml.Value);
             }
         }
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(YamlExtensions));
     }
 }

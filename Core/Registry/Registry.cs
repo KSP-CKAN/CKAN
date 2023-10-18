@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 using System.Transactions;
 
 using Autofac;
@@ -13,7 +12,6 @@ using log4net;
 
 using CKAN.Extensions;
 using CKAN.Versioning;
-using CKAN.Games;
 
 namespace CKAN
 {
@@ -43,7 +41,7 @@ namespace CKAN
 
         [JsonProperty]
         [JsonConverter(typeof(JsonParallelDictionaryConverter<InstalledModule>))]
-        private Dictionary<string, InstalledModule> installed_modules;
+        private readonly Dictionary<string, InstalledModule> installed_modules;
 
         // filename (case insensitive on Windows) => module
         [JsonProperty]
@@ -216,11 +214,10 @@ namespace CKAN
             // Fix control lock, which previously was indexed with an invalid identifier.
             if (registry_version < 2)
             {
-                InstalledModule control_lock_entry;
                 const string old_ident = "001ControlLock";
                 const string new_ident = "ControlLock";
 
-                if (installed_modules.TryGetValue("001ControlLock", out control_lock_entry))
+                if (installed_modules.TryGetValue("001ControlLock", out InstalledModule control_lock_entry))
                 {
                     if (ksp == null)
                     {
@@ -258,9 +255,8 @@ namespace CKAN
             // Any other repo we leave *as-is*, even if it's the github meta-repo, as it's been
             // custom-added by our user.
 
-            Repository default_repo;
             var oldDefaultRepo = new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.zip");
-            if (repositories != null && repositories.TryGetValue(Repository.default_ckan_repo_name, out default_repo) && default_repo.uri == oldDefaultRepo)
+            if (repositories != null && repositories.TryGetValue(Repository.default_ckan_repo_name, out Repository default_repo) && default_repo.uri == oldDefaultRepo)
             {
                 log.InfoFormat("Updating default metadata URL from {0} to {1}", oldDefaultRepo, ksp.game.DefaultRepositoryURL);
                 repositories[Repository.default_ckan_repo_name].uri = ksp.game.DefaultRepositoryURL;
@@ -489,7 +485,7 @@ namespace CKAN
         #region Stateful views of data from repo data manager based on which repos we use
 
         [JsonIgnore]
-        private RepositoryDataManager repoDataMgr;
+        private readonly RepositoryDataManager repoDataMgr;
 
         [JsonIgnore]
         private CompatibilitySorter sorter;
@@ -743,7 +739,7 @@ namespace CKAN
             }
         }
 
-        private object tagMutex = new object();
+        private readonly object tagMutex = new object();
 
         /// <summary>
         /// Assemble a mapping from tags to modules
@@ -850,8 +846,7 @@ namespace CKAN
             // We have to flip back to absolute paths to actually test this.
             foreach (string file in relative_files.Where(file => !Directory.Exists(inst.ToAbsoluteGameDir(file))))
             {
-                string owner;
-                if (installed_files.TryGetValue(file, out owner))
+                if (installed_files.TryGetValue(file, out string owner))
                 {
                     // Woah! Registering an already owned file? Not cool!
                     // (Although if it existed, we should have thrown a kraken well before this.)
@@ -1072,11 +1067,9 @@ namespace CKAN
         /// </summary>
         public ModuleVersion InstalledVersion(string modIdentifier, bool with_provides=true)
         {
-            InstalledModule installedModule;
-
             // If it's genuinely installed, return the details we have.
             // (Includes DLCs)
-            if (installed_modules.TryGetValue(modIdentifier, out installedModule))
+            if (installed_modules.TryGetValue(modIdentifier, out InstalledModule installedModule))
             {
                 return installedModule.Module.version;
             }
@@ -1093,8 +1086,7 @@ namespace CKAN
 
             var provided = ProvidedByInstalled();
 
-            ProvidesModuleVersion version;
-            return provided.TryGetValue(modIdentifier, out version) ? version : null;
+            return provided.TryGetValue(modIdentifier, out ProvidesModuleVersion version) ? version : null;
         }
 
         /// <summary>
@@ -1120,8 +1112,7 @@ namespace CKAN
                     "KSPUtils.FileOwner can only work with relative paths.");
             }
 
-            string fileOwner;
-            return installed_files.TryGetValue(file, out fileOwner) ? fileOwner : null;
+            return installed_files.TryGetValue(file, out string fileOwner) ? fileOwner : null;
         }
 
         /// <summary>
@@ -1327,12 +1318,12 @@ namespace CKAN
         [JsonProperty("available_modules",
                       NullValueHandling = NullValueHandling.Include)]
         [JsonConverter(typeof(JsonAlwaysEmptyObjectConverter))]
-        private Dictionary<string, string> legacyAvailableModulesDoNotUse = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> legacyAvailableModulesDoNotUse = new Dictionary<string, string>();
 
         [JsonProperty("download_counts",
                       NullValueHandling = NullValueHandling.Include)]
         [JsonConverter(typeof(JsonAlwaysEmptyObjectConverter))]
-        private Dictionary<string, string> legacyDownloadCountsDoNotUse = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> legacyDownloadCountsDoNotUse = new Dictionary<string, string>();
 
     }
 }

@@ -694,7 +694,7 @@ namespace CKAN
         /// </summary>
         private readonly HashSet<CkanModule> installed_modules;
 
-        private HashSet<CkanModule> alreadyResolved = new HashSet<CkanModule>();
+        private readonly HashSet<CkanModule> alreadyResolved = new HashSet<CkanModule>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof(RelationshipResolver));
     }
@@ -877,7 +877,10 @@ namespace CKAN
         {
             public Replacement(CkanModule module)
             {
-                if (module == null) throw new ArgumentNullException();
+                if (module == null)
+                {
+                    throw new ArgumentNullException();
+                }
                 Parent = module;
             }
 
@@ -889,7 +892,10 @@ namespace CKAN
         {
             public Suggested(CkanModule module)
             {
-                if (module == null) throw new ArgumentNullException();
+                if (module == null)
+                {
+                    throw new ArgumentNullException();
+                }
                 Parent = module;
             }
 
@@ -901,7 +907,10 @@ namespace CKAN
         {
             public Depends(CkanModule module)
             {
-                if (module == null) throw new ArgumentNullException();
+                if (module == null)
+                {
+                    throw new ArgumentNullException();
+                }
                 Parent = module;
             }
 

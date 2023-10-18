@@ -15,8 +15,7 @@ namespace CKAN.NetKAN.Transformers
         {
             var json = metadata.Json();
 
-            JToken optimusPrime;
-            if (json.TryGetValue("x_netkan_optimus_prime", out optimusPrime) && (bool)optimusPrime)
+            if (json.TryGetValue("x_netkan_optimus_prime", out JToken optimusPrime) && (bool)optimusPrime)
             {
                 Log.Info("Autobots roll out!");
             }

@@ -55,8 +55,8 @@ namespace CKAN.NetKAN.Sources.Gitlab
                 .Select(releaseJson => releaseJson.ToObject<GitlabRelease>());
         }
 
-        private IHttpService http;
-        private string       token;
+        private readonly IHttpService http;
+        private readonly string       token;
 
         private static readonly Uri apiBase = new Uri("https://gitlab.com/api/v4/projects/");
     }

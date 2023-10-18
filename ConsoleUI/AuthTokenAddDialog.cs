@@ -70,15 +70,14 @@ namespace CKAN.ConsoleUI {
 
         private bool validKey()
         {
-            string token;
-            return hostEntry.Value.Length  > 0
+            return hostEntry.Value.Length > 0
                 && tokenEntry.Value.Length > 0
                 && Uri.CheckHostName(hostEntry.Value) != UriHostNameType.Unknown
-                && !ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(hostEntry.Value, out token);
+                && !ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(hostEntry.Value, out _);
         }
 
-        private ConsoleField hostEntry;
-        private ConsoleField tokenEntry;
+        private readonly ConsoleField hostEntry;
+        private readonly ConsoleField tokenEntry;
 
         private const int wPad   = 2;
         private int labelW => Math.Max(6, Math.Max(

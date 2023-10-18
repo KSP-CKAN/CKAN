@@ -228,10 +228,7 @@ namespace CKAN.GUI
 
         private void RelationshipsListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            if (OnSelectedItemsChanged != null)
-            {
-                OnSelectedItemsChanged(RelationshipsListView.SelectedItems);
-            }
+            OnSelectedItemsChanged?.Invoke(RelationshipsListView.SelectedItems);
             var kinds = RelationshipsListView.SelectedItems.Cast<ListViewItem>()
                 .Select(lvi => lvi.Group)
                 .Distinct()
@@ -319,7 +316,7 @@ namespace CKAN.GUI
                 badField.Focus();
                 user.RaiseError(error);
             }
-            else if (TrySavePrompt(modpackExportOptions, out ExportOption selectedOption, out string filename))
+            else if (TrySavePrompt(modpackExportOptions, out _, out string filename))
             {
                 if (module.depends.Count == 0)
                 {
@@ -401,8 +398,8 @@ namespace CKAN.GUI
         private CkanModule                   module;
         private IUser                        user;
         private TaskCompletionSource<bool>   task;
-        private List<RelationshipDescriptor> ignored = new List<RelationshipDescriptor>();
-        private Dictionary<ListViewGroup, List<RelationshipDescriptor>> GroupToRelationships =
+        private readonly List<RelationshipDescriptor> ignored = new List<RelationshipDescriptor>();
+        private readonly Dictionary<ListViewGroup, List<RelationshipDescriptor>> GroupToRelationships =
             new Dictionary<ListViewGroup, List<RelationshipDescriptor>>();
     }
 }

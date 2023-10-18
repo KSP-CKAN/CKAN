@@ -112,9 +112,9 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private GameInstanceManager   manager;
-        private RepositoryDataManager repoData;
-        private IUser                 user;
+        private readonly GameInstanceManager   manager;
+        private readonly RepositoryDataManager repoData;
+        private readonly IUser                 user;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Remove));
     }

@@ -140,9 +140,10 @@ namespace CKAN.AutoUpdateHelper
 
                 string command = string.Format("+x \"{0}\"", path);
 
-                ProcessStartInfo permsinfo = new ProcessStartInfo("chmod", command);
-                permsinfo.UseShellExecute = false;
-                Process permsprocess = Process.Start(permsinfo);
+                var permsprocess = Process.Start(new ProcessStartInfo("chmod", command)
+                {
+                    UseShellExecute = false
+                });
                 permsprocess.WaitForExit();
             }
         }

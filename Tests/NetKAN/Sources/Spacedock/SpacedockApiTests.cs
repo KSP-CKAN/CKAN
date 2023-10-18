@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using CKAN;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Spacedock;

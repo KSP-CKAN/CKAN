@@ -31,14 +31,10 @@ namespace CKAN
     {
         public IUser User { get; set; }
 
-        // To allow the ModuleInstaller to work on multiple KSP instances, keep a list of each ModuleInstaller and return the correct one upon request.
-        private static SortedList<string, ModuleInstaller> instances = new SortedList<string, ModuleInstaller>();
-
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
-        private GameInstance ksp;
-
-        private NetModuleCache Cache;
+        private readonly GameInstance   ksp;
+        private readonly NetModuleCache Cache;
 
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
 

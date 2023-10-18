@@ -57,6 +57,16 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         /// <summary>
+        /// Truncate a string if it's longer than the limit
+        /// </summary>
+        /// <param name="val">String to truncate</param>
+        /// <param name="w">Maximum allowed length</param>
+        /// <returns>First 'w' characters of 'val', or whole string if short enough</returns>
+        public static string TruncateLength(string val, int w)
+            => val.Length <= w ? val
+                               : val.Substring(0, w);
+
+        /// <summary>
         /// Custom key bindings for this UI element
         /// </summary>
         public Dictionary<ConsoleKeyInfo, ConsoleScreen.KeyAction> Bindings =

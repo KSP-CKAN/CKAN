@@ -520,9 +520,8 @@ namespace CKAN
         public bool ConflictsWith(CkanModule module)
             // We never conflict with ourselves, since we can't be installed at
             // the same time as another version of ourselves.
-            => module.identifier == identifier
-                ? false
-                : UniConflicts(this, module) || UniConflicts(module, this);
+            => module.identifier != identifier
+                && (UniConflicts(this, module) || UniConflicts(module, this));
 
         /// <summary>
         /// Checks if A conflicts with B, but not if B conflicts with A.
@@ -589,7 +588,7 @@ namespace CKAN
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
             return Equals((CkanModule)obj);

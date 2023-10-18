@@ -5,7 +5,6 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 using CKAN.Versioning;
-using CKAN.NetKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Spacedock;
 using CKAN.NetKAN.Sources.Github;
@@ -40,7 +39,7 @@ namespace Tests.NetKAN.Transformers
                         }
                     }
                 });
-            
+
             var mGhApi = new Mock<IGithubApi>();
             mGhApi.Setup(i => i.GetRepo(It.IsAny<GithubRef>()))
                 .Returns(new GithubRepo

@@ -136,10 +136,10 @@ namespace CKAN.ConsoleUI {
             } catch { }
         }
 
-        private GameInstanceManager   manager;
-        private RepositoryDataManager repoData;
-        private int                   lastProgDblW = -1;
-        private object                progBarMutex = new object();
+        private readonly GameInstanceManager   manager;
+        private readonly RepositoryDataManager repoData;
+        private          int                   lastProgDblW = -1;
+        private readonly object                progBarMutex = new object();
     }
 
 }

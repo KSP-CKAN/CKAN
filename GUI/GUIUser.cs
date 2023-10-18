@@ -11,8 +11,8 @@ namespace CKAN.GUI
             this.wait = wait;
         }
 
-        private Main main;
-        private Wait wait;
+        private readonly Main main;
+        private readonly Wait wait;
 
         /// <summary>
         /// A GUIUser is obviously not headless. Returns false.

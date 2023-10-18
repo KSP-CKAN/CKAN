@@ -3,8 +3,6 @@ using System.IO;
 
 using NUnit.Framework;
 
-using CKAN;
-
 namespace Tests.Core.Net
 {
     [TestFixture]

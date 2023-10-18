@@ -12,8 +12,6 @@ using ChinhDo.Transactions.FileManager;
 using log4net;
 using Newtonsoft.Json;
 
-using CKAN.DLC;
-using CKAN.Games.KerbalSpaceProgram.DLC;
 using CKAN.Versioning;
 using CKAN.Extensions;
 
@@ -177,8 +175,7 @@ namespace CKAN
                     return;
                 }
                 log.DebugFormat("Lock file contents: {0}", contents);
-                Int32 pid;
-                if (Int32.TryParse(contents, out pid))
+                if (Int32.TryParse(contents, out int pid))
                 {
                     // File contains a valid integer.
                     try

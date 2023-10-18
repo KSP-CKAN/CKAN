@@ -80,7 +80,7 @@ namespace CKAN.CmdLine
                     // Parse the JSON file.
                     try
                     {
-                        CkanModule m = MainClass.LoadCkanFromFile(instance, filename);
+                        CkanModule m = MainClass.LoadCkanFromFile(filename);
                         options.modules.Add($"{m.identifier}={m.version}");
                     }
                     catch (Kraken kraken)
@@ -275,9 +275,9 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private GameInstanceManager   manager;
-        private RepositoryDataManager repoData;
-        private IUser                 user;
+        private readonly GameInstanceManager   manager;
+        private readonly RepositoryDataManager repoData;
+        private readonly IUser                 user;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Install));
     }

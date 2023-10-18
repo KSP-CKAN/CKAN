@@ -21,7 +21,10 @@ namespace CKAN.GUI
             Rectangle bgRect = e.Bounds;
             bgRect.Inflate(-2, -1);
             bgRect.Offset(0, 1);
-            e.Graphics.FillRectangle(new SolidBrush(BackColor), bgRect);
+            using (SolidBrush bgBrush = new SolidBrush(BackColor))
+            {
+                e.Graphics.FillRectangle(bgBrush, bgRect);
+            }
             // e.Index can be invalid (!!), so we need try/catch
             try
             {

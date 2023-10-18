@@ -266,7 +266,7 @@ namespace CKAN.ConsoleUI {
                 int midL = Console.WindowWidth / 2 - 1;
                 int h    = Math.Min(11, numDeps + numConfs + 2);
                 const int lblW = 16;
-                int nameW = midL - 2 - lblW - 2;
+                int nameW = midL - 2 - lblW - 2 - 1;
                 int depsH = (h - 2) * numDeps / (numDeps + numConfs);
 
                 AddObject(new ConsoleFrame(
@@ -290,7 +290,7 @@ namespace CKAN.ConsoleUI {
                     );
                     AddObject(tb);
                     foreach (RelationshipDescriptor rd in mod.depends) {
-                        tb.AddLine(ScreenObject.FormatExactWidth(
+                        tb.AddLine(ScreenObject.TruncateLength(
                             // Show install status
                             ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString()))
                                 + rd.ToString(),
@@ -315,7 +315,7 @@ namespace CKAN.ConsoleUI {
                     // FUTURE: Find mods that conflict with this one
                     //         See GUI/MainModList.cs::ComputeConflictsFromModList
                     foreach (RelationshipDescriptor rd in mod.conflicts) {
-                        tb.AddLine(ScreenObject.FormatExactWidth(
+                        tb.AddLine(ScreenObject.TruncateLength(
                             // Show install status
                             ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString()))
                             + rd.ToString(),
@@ -484,9 +484,7 @@ namespace CKAN.ConsoleUI {
 
             if (releases != null && releases.Count > 0) {
 
-                ModuleVersion minMod = null, maxMod = null;
-                GameVersion   minKsp = null, maxKsp = null;
-                CkanModule.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
+                CkanModule.GetMinMaxVersions(releases, out ModuleVersion minMod, out ModuleVersion maxMod, out GameVersion minKsp, out GameVersion maxKsp);
                 AddObject(new ConsoleLabel(
                     l + 2, t + 1, r - 2,
                     () => minMod == maxMod
@@ -592,11 +590,11 @@ namespace CKAN.ConsoleUI {
             { "forum.kerbalspaceprogram.com", "KSP Forums"       }
         };
 
-        private GameInstanceManager manager;
-        private IRegistryQuerier    registry;
-        private ChangePlan          plan;
-        private CkanModule          mod;
-        private bool                debug;
+        private readonly GameInstanceManager manager;
+        private readonly IRegistryQuerier    registry;
+        private readonly ChangePlan          plan;
+        private readonly CkanModule          mod;
+        private readonly bool                debug;
     }
 
 }

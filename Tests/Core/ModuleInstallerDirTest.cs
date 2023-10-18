@@ -2,14 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using log4net.Core;
 using NUnit.Framework;
 
 using CKAN;
-using CKAN.Games;
 
 using Tests.Core.Configuration;
 using Tests.Data;

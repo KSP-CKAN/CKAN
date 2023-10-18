@@ -28,7 +28,7 @@ namespace CKAN
         // Make sure this is the last static field so the others will be ready for the instance constructor!
         public static readonly License UnknownLicense = new License("unknown");
 
-        private string license;
+        private readonly string license;
 
         /// <summary>
         /// Takes a string and returns a license object.
