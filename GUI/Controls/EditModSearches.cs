@@ -155,7 +155,7 @@ namespace CKAN.GUI
             SurrenderFocus?.Invoke();
         }
 
-        private List<EditModSearch> editors = new List<EditModSearch>();
+        private readonly List<EditModSearch> editors = new List<EditModSearch>();
     }
 
 }

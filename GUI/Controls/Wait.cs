@@ -126,7 +126,7 @@ namespace CKAN.GUI
         private Action<object, DoWorkEventArgs>             bgLogic;
         private Action<object, RunWorkerCompletedEventArgs> postLogic;
 
-        private BackgroundWorker bgWorker = new BackgroundWorker()
+        private readonly BackgroundWorker bgWorker = new BackgroundWorker()
         {
             WorkerReportsProgress      = true,
             WorkerSupportsCancellation = true,
@@ -145,9 +145,9 @@ namespace CKAN.GUI
         private const int padding     = 5;
         private const int emptyHeight = 85;
 
-        private Dictionary<string, Label>       progressLabels = new Dictionary<string, Label>();
-        private Dictionary<string, ProgressBar> progressBars   = new Dictionary<string, ProgressBar>();
-        private Timer progressTimer = new Timer() { Interval = 3000 };
+        private readonly Dictionary<string, Label>       progressLabels = new Dictionary<string, Label>();
+        private readonly Dictionary<string, ProgressBar> progressBars   = new Dictionary<string, ProgressBar>();
+        private readonly Timer progressTimer = new Timer() { Interval = 3000 };
 
         /// <summary>
         /// Add new progress bars and remove completed ones (100%) in a single scheduled pass,

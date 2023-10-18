@@ -12,7 +12,7 @@ namespace CKAN.GUI
 {
     public partial class CompatibleGameVersionsDialog : Form
     {
-        private GameInstance _inst;
+        private readonly GameInstance _inst;
 
         /// <summary>
         /// Initialize the compatible game versions dialog

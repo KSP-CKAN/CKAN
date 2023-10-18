@@ -1,6 +1,5 @@
 using System;
 using System.Windows.Forms;
-using log4net;
 
 namespace CKAN.GUI
 {
@@ -64,8 +63,6 @@ namespace CKAN.GUI
         {
             SurrenderFocus?.Invoke();
         }
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(EditModSearchDetails));
 
         private void FilterTextBox_TextChanged(object sender, EventArgs e)
         {

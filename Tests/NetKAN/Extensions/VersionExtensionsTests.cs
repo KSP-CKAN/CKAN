@@ -1,4 +1,4 @@
-﻿using CKAN.NetKAN.Extensions;
+using CKAN.NetKAN.Extensions;
 using CKAN.Versioning;
 using NUnit.Framework;
 

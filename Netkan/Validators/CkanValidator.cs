@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;

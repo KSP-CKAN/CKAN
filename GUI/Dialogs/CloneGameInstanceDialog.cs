@@ -17,8 +17,8 @@ namespace CKAN.GUI
     /// </summary>
     public partial class CloneGameInstanceDialog : Form
     {
-        private GameInstanceManager manager;
-        private IUser               user;
+        private readonly GameInstanceManager manager;
+        private readonly IUser               user;
 
         public CloneGameInstanceDialog(GameInstanceManager manager, IUser user, string selectedInstanceName = null)
             : base()
@@ -113,8 +113,7 @@ namespace CKAN.GUI
 
             try
             {
-                GameInstance instanceToClone = null;
-                if (!manager.Instances.TryGetValue(comboBoxKnownInstance.SelectedItem as string, out instanceToClone)
+                if (!manager.Instances.TryGetValue(comboBoxKnownInstance.SelectedItem as string, out GameInstance instanceToClone)
                     || existingPath != instanceToClone.GameDir().Replace('/', Path.DirectorySeparatorChar))
                 {
                     IGame sourceGame = manager.DetermineGame(new DirectoryInfo(existingPath), user);

@@ -1,4 +1,4 @@
-﻿using CKAN;
+using CKAN;
 using NUnit.Framework;
 
 namespace Tests.Core

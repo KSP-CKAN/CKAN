@@ -1,4 +1,4 @@
-﻿namespace CKAN.GUI
+namespace CKAN.GUI
 {
     partial class ChooseProvidedMods
     {

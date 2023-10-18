@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using CKAN.NetKAN.Extensions;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;

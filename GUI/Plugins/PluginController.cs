@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -179,14 +179,10 @@ namespace CKAN.GUI
         }
 
         public List<IGUIPlugin> ActivePlugins
-        {
-            get { return m_ActivePlugins.ToList(); }
-        }
+            => m_ActivePlugins.ToList();
 
         public List<IGUIPlugin> DormantPlugins
-        {
-            get { return m_DormantPlugins.ToList(); }
-        }
+            => m_DormantPlugins.ToList();
 
         private readonly HashSet<IGUIPlugin> m_ActivePlugins = new HashSet<IGUIPlugin>();
         private readonly HashSet<IGUIPlugin> m_DormantPlugins = new HashSet<IGUIPlugin>();

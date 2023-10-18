@@ -48,7 +48,7 @@ namespace CKAN.GUI
 
         [JsonProperty("module_identifiers_by_game", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonToGamesDictionaryConverter))]
-        private Dictionary<string, HashSet<string>> ModuleIdentifiers =
+        private readonly Dictionary<string, HashSet<string>> ModuleIdentifiers =
             new Dictionary<string, HashSet<string>>();
 
         /// <summary>
@@ -69,8 +69,7 @@ namespace CKAN.GUI
         /// <returns>true if this label applies to this identifier, false otherwise</returns>
         public bool ContainsModule(IGame game, string identifier)
             => ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string> identifiers)
-                ? identifiers.Contains(identifier)
-                : false;
+               && identifiers.Contains(identifier);
 
         /// <summary>
         /// Check whether this label is active for a given game instance

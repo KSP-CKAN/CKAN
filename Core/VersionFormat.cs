@@ -1,4 +1,4 @@
-﻿namespace CKAN
+namespace CKAN
 {
     public enum VersionFormat
     {

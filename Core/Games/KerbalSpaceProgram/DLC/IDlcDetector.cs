@@ -1,4 +1,4 @@
-﻿using CKAN.Versioning;
+using CKAN.Versioning;
 using CKAN.Games;
 
 namespace CKAN.DLC

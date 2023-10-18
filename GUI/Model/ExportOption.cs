@@ -1,4 +1,4 @@
-﻿using CKAN.Types;
+using CKAN.Types;
 
 namespace CKAN.GUI
 {

@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Sources.Github

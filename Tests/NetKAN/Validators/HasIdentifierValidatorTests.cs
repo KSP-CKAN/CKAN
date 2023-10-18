@@ -1,4 +1,4 @@
-﻿using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Validators;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;

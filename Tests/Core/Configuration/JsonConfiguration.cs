@@ -1,4 +1,4 @@
-﻿using CKAN.Configuration;
+using CKAN.Configuration;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;

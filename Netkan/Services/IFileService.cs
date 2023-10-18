@@ -1,4 +1,4 @@
-﻿namespace CKAN.NetKAN.Services
+namespace CKAN.NetKAN.Services
 {
     internal interface IFileService
     {

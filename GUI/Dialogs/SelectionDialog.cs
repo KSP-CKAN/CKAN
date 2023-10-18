@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace CKAN.GUI
@@ -41,10 +41,10 @@ namespace CKAN.GUI
             Util.Invoke(OptionsList, OptionsList.Items.Clear);
 
             // Check if we have a default option.
-            if (args[0] is int)
+            if (args[0] is int v)
             {
                 // Check that the default selection makes sense.
-                defaultSelection = (int)args[0];
+                defaultSelection = v;
 
                 if (defaultSelection < 0 || defaultSelection > args.Length - 1)
                 {

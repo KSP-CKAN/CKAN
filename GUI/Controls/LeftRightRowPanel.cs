@@ -84,7 +84,7 @@ namespace CKAN
             }
         }
 
-        private FlowLayoutPanel LeftPanel;
-        private FlowLayoutPanel RightPanel;
+        private readonly FlowLayoutPanel LeftPanel;
+        private readonly FlowLayoutPanel RightPanel;
     }
 }

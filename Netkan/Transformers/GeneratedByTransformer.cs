@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CKAN.NetKAN.Model;
 using log4net;

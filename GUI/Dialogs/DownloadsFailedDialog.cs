@@ -6,8 +6,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 
-using log4net;
-
 using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
@@ -162,11 +160,9 @@ namespace CKAN.GUI
             Close();
         }
 
-        private List<DownloadRow> rows;
-        private Func<object, object, bool> rowsLinked;
-        private TaskCompletionSource<object[]> task = new TaskCompletionSource<object[]>();
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(DownloadsFailedDialog));
+        private readonly List<DownloadRow> rows;
+        private readonly Func<object, object, bool> rowsLinked;
+        private readonly TaskCompletionSource<object[]> task = new TaskCompletionSource<object[]>();
     }
 
     /// <summary>

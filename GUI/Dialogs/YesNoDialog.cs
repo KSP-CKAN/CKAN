@@ -74,7 +74,7 @@ namespace CKAN.GUI
 
         private const int maxHeight = 600;
         private TaskCompletionSource<Tuple<DialogResult, bool>> task;
-        private string defaultYes;
-        private string defaultNo;
+        private readonly string defaultYes;
+        private readonly string defaultNo;
     }
 }

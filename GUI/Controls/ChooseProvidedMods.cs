@@ -58,10 +58,7 @@ namespace CKAN.GUI
 
         private void ChooseProvidedModsListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (OnSelectedItemsChanged != null)
-            {
-                OnSelectedItemsChanged(ChooseProvidedModsListView.SelectedItems);
-            }
+            OnSelectedItemsChanged?.Invoke(ChooseProvidedModsListView.SelectedItems);
         }
 
         private void ChooseProvidedModsListView_ItemChecked(object sender, ItemCheckedEventArgs e)

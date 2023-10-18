@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 
 [assembly: AssemblyProduct("CKAN")]
 [assembly: AssemblyCompany("CKAN Contributors")]

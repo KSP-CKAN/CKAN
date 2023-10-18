@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using NUnit.Framework;
 using CKAN;

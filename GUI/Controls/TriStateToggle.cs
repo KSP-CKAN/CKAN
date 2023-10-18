@@ -36,7 +36,7 @@ namespace CKAN.GUI
 
         public bool? Value
         {
-            get 
+            get
             {
                 return YesRadioButton.Checked ? (bool?)true
                      : NoRadioButton.Checked  ? (bool?)false
@@ -97,9 +97,9 @@ namespace CKAN.GUI
         private const int buttonWidth   = 33;
         private const int buttonXOffset = buttonWidth - 1;
 
-        private ToolTip     ToolTip;
-        private RadioButton YesRadioButton;
-        private RadioButton BothRadioButton;
-        private RadioButton NoRadioButton;
+        private readonly ToolTip     ToolTip;
+        private readonly RadioButton YesRadioButton;
+        private readonly RadioButton BothRadioButton;
+        private readonly RadioButton NoRadioButton;
     }
 }

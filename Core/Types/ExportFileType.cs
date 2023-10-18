@@ -1,4 +1,4 @@
-﻿namespace CKAN.Types
+namespace CKAN.Types
 {
     public enum ExportFileType
     {
