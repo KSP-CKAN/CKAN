@@ -68,7 +68,7 @@
       <DependentUpon>%(Filename).cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Localization\**\*.resx">
-      <DependentUpon>..\..\..\$([System.IO.Directory]::GetFiles('GUI', '$([System.Text.RegularExpressions.Regex]::Replace(%(Filename), '\..*', '')).cs', System.IO.SearchOption.AllDirectories)[0])</DependentUpon>
+      <DependentUpon>$([System.IO.Directory]::GetFiles($(MSBuildProjectDirectory), '$([System.Text.RegularExpressions.Regex]::Replace(%(Filename), '\..*', '')).cs', System.IO.SearchOption.AllDirectories)[0])</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Target Name="BeforeBuild">
