@@ -176,10 +176,12 @@ namespace CKAN.CmdLine
         {
             CKAN.GameInstance inst = manager.CurrentInstance
                 ?? manager.GetPreferredInstance();
+            #pragma warning disable IDE0270
             if (inst == null)
             {
                 throw new NoGameInstanceKraken();
             }
+            #pragma warning restore IDE0270
             return inst;
         }
 

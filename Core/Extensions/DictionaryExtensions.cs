@@ -8,10 +8,9 @@ namespace CKAN.Extensions
         public static bool DictionaryEquals<K, V>(this IDictionary<K, V> a,
                                                   IDictionary<K, V> b)
             => a == null ? b == null
-             : b == null ? false
-             : a.Count == b.Count
-                && a.Keys.All(k => b.ContainsKey(k))
-                && b.Keys.All(k => a.ContainsKey(k) && a[k].Equals(b[k]));
+                         : b != null && a.Count == b.Count
+                           && a.Keys.All(k => b.ContainsKey(k))
+                           && b.Keys.All(k => a.ContainsKey(k) && a[k].Equals(b[k]));
 
         public static V GetOrDefault<K, V>(this Dictionary<K, V> dict, K key)
         {

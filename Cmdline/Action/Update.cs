@@ -132,8 +132,8 @@ namespace CKAN.CmdLine
         {
             RegistryManager registry_manager = RegistryManager.Instance(instance, repoData);
 
-            var result = repoData.Update(registry_manager.registry.Repositories.Values.ToArray(),
-                                         instance.game, false, new NetAsyncDownloader(user), user);
+            repoData.Update(registry_manager.registry.Repositories.Values.ToArray(),
+                            instance.game, false, new NetAsyncDownloader(user), user);
 
             user.RaiseMessage(Properties.Resources.UpdateSummary, registry_manager.registry.CompatibleModules(instance.VersionCriteria()).Count());
         }

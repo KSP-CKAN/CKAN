@@ -15,7 +15,7 @@ namespace CKAN
         public override object ReadJson(
             JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            string value = reader.Value == null ? null : reader.Value.ToString();
+            string value = reader.Value?.ToString();
 
             if (value == null)
                 return null;

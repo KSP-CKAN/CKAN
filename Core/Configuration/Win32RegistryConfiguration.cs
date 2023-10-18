@@ -4,8 +4,6 @@ using System.Linq;
 using System.IO;
 using Microsoft.Win32;
 
-using log4net;
-
 namespace CKAN.Configuration
 {
     // DEPRECATED: We now use a JSON configuration file. This still exists to facilitate migration.
@@ -13,8 +11,6 @@ namespace CKAN.Configuration
     // N.B., you can resume using this version by changing the instance created in ServiceLocator.
     public class Win32RegistryConfiguration : IConfiguration
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(Win32RegistryConfiguration));
-
         private const           string CKAN_KEY           = @"HKEY_CURRENT_USER\Software\CKAN";
         private static readonly string CKAN_KEY_NO_PREFIX = StripPrefixKey(CKAN_KEY);
 
