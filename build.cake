@@ -1,13 +1,13 @@
 #addin "nuget:?package=Cake.SemVer&version=4.0.0"
-#addin "nuget:?package=semver&version=2.0.6"
-#addin "nuget:?package=Cake.Docker&version=0.11.0"
+#addin "nuget:?package=semver&version=2.3.0"
+#addin "nuget:?package=Cake.Docker&version=0.11.1"
 #tool "nuget:?package=ILRepack&version=2.0.18"
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.12.0"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.16.3"
 
 using System.Text.RegularExpressions;
 using Semver;
 
-var buildNetCore = "net5.0";
+var buildNetCore = "net7.0";
 var buildNetFramework = "net45";
 
 var target = Argument<string>("target", "Default");
@@ -227,7 +227,7 @@ Task("Restore-DotNetCore")
 
 Task("Build-DotNetCore")
     .Description("Intermediate - Call .NET Core's MSBuild to build the ckan.dll.")
-    .IsDependentOn("Restore-Dotnetcore")
+    .IsDependentOn("Restore-DotNetCore")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
     .WithCriteria(() => buildFramework == buildNetCore)
     .Does(() =>
@@ -440,7 +440,7 @@ Teardown(context =>
 
 RunTarget(target);
 
-private SemVersion GetVersion()
+private Semver.SemVersion GetVersion()
 {
     var pattern = new Regex(@"^\s*##\s+v(?<version>\S+)\s?.*$");
     var rootDirectory = Context.Environment.WorkingDirectory;

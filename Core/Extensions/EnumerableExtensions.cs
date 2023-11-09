@@ -117,6 +117,8 @@ namespace CKAN.Extensions
         public static IEnumerable<V> ZipMany<T, U, V>(this IEnumerable<T> seq1, IEnumerable<U> seq2, Func<T, U, IEnumerable<V>> func)
             => seq1.Zip(seq2, func).SelectMany(seqs => seqs);
 
+#if NET45
+
         /// <summary>
         /// Eliminate duplicate elements based on the value returned by a callback
         /// </summary>
@@ -125,6 +127,8 @@ namespace CKAN.Extensions
         /// <returns>Sequence where each element has a unique return value</returns>
         public static IEnumerable<T> DistinctBy<T, U>(this IEnumerable<T> seq, Func<T, U> func)
             => seq.GroupBy(func).Select(grp => grp.First());
+
+#endif
 
         /// <summary>
         /// Generate a sequence from a linked list
