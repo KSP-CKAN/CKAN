@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using Semver;
 
 var buildNetCore = "net7.0";
-var buildNetFramework = "net45";
+var buildNetFramework = "net48";
 
 var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Debug");

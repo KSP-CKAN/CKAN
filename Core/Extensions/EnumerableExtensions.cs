@@ -117,7 +117,7 @@ namespace CKAN.Extensions
         public static IEnumerable<V> ZipMany<T, U, V>(this IEnumerable<T> seq1, IEnumerable<U> seq2, Func<T, U, IEnumerable<V>> func)
             => seq1.Zip(seq2, func).SelectMany(seqs => seqs);
 
-#if NET45
+#if NETFRAMEWORK
 
         /// <summary>
         /// Eliminate duplicate elements based on the value returned by a callback
@@ -144,7 +144,7 @@ namespace CKAN.Extensions
             }
         }
 
-#if NET45
+#if NETFRAMEWORK
 
         /// <summary>
         /// Make pairs out of the elements of two sequences
@@ -154,6 +154,10 @@ namespace CKAN.Extensions
         /// <returns>Sequence of pairs of one element from seq1 and one from seq2</returns>
         public static IEnumerable<Tuple<T1, T2>> Zip<T1, T2>(this IEnumerable<T1> seq1, IEnumerable<T2> seq2)
             => seq1.Zip(seq2, (item1, item2) => new Tuple<T1, T2>(item1, item2));
+
+#endif
+
+#if NET45
 
         /// <summary>
         /// Enable a `foreach` over a sequence of tuples
@@ -201,6 +205,8 @@ namespace CKAN.Extensions
             item4 = tuple.Item4;
         }
 
+#endif
+
         /// <summary>
         /// Enable a `foreach` over a sequence of key value pairs
         /// </summary>
@@ -212,8 +218,6 @@ namespace CKAN.Extensions
             key = kvp.Key;
             val = kvp.Value;
         }
-
-#endif
 
     }
 

@@ -86,9 +86,9 @@ namespace CKAN.GUI
             this.ModListContextMenuStrip.SuspendLayout();
             this.ModListHeaderContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // Tooltip
-            // 
+            //
             this.ToolTip.AutoPopDelay = 10000;
             this.ToolTip.InitialDelay = 250;
             this.ToolTip.ReshowDelay = 250;
@@ -300,6 +300,7 @@ namespace CKAN.GUI
             this.ModGrid.BackgroundColor = System.Drawing.SystemColors.Window;
             this.ModGrid.EnableHeadersVisualStyles = false;
             this.ModGrid.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.SystemColors.Control;
+            this.ModGrid.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Control;
             this.ModGrid.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ModGrid.DefaultCellStyle.ForeColor = System.Drawing.SystemColors.WindowText;
             this.ModGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
