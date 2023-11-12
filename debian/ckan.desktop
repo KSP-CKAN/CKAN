@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=CKAN
-Comment=Comprehensive Kerbal Archive Network client
+Comment=Comprehensive Kerbal Archive Network Client
 Icon=/usr/share/icons/ckan.ico
-Categories=Game;Utility
+Categories=PackageManager;
 Exec=/usr/bin/ckan
 Terminal=false
 Type=Application
