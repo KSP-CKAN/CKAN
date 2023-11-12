@@ -13,7 +13,7 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ForcedVTransformer));
 
-        public string Name { get { return "forced_v"; } }
+        public string Name => "forced_v";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {

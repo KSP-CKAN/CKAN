@@ -31,7 +31,7 @@ namespace CKAN.NetKAN.Transformers
         /// <summary>
         /// Name of this transformer
         /// </summary>
-        public string Name { get { return "localizations"; } }
+        public string Name => "localizations";
 
         /// <summary>
         /// Apply the locale transformation to the metadata

@@ -25,7 +25,7 @@ namespace CKAN.NetKAN.Transformers
         private readonly IHttpService _http;
         private readonly IGithubApi   _github;
 
-        public string Name { get { return "metanetkan"; } }
+        public string Name => "metanetkan";
 
         public MetaNetkanTransformer(IHttpService http, IGithubApi github)
         {
@@ -44,13 +44,16 @@ namespace CKAN.NetKAN.Transformers
 
                 // Make sure resources exist, save metanetkan
                 if (json["resources"] == null)
+                {
                     json["resources"] = new JObject();
+                }
+
                 var resourcesJson = (JObject)json["resources"];
                 resourcesJson.SafeAdd("metanetkan", metadata.Kref.Id);
 
                 var uri = new Uri(metadata.Kref.Id);
                 var targetFileText = _github?.DownloadText(uri)
-                    ?? _http.DownloadText(CKAN.Net.GetRawUri(uri));
+                    ?? _http.DownloadText(Net.GetRawUri(uri));
 
                 Log.DebugFormat("Target netkan:{0}{1}", Environment.NewLine, targetFileText);
 

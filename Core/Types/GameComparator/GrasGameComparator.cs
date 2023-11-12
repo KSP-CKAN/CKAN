@@ -9,22 +9,22 @@ namespace CKAN
     /// </summary>
     public class GrasGameComparator : BaseGameComparator
     {
-        static readonly StrictGameComparator strict = new StrictGameComparator();
-        static readonly GameVersion v103 = GameVersion.Parse("1.0.3");
-        static readonly GameVersion v104 = GameVersion.Parse("1.0.4");
+        private static readonly StrictGameComparator strict = new StrictGameComparator();
+        private static readonly GameVersion v103 = GameVersion.Parse("1.0.3");
+        private static readonly GameVersion v104 = GameVersion.Parse("1.0.4");
 
         public override bool Compatible(GameVersionCriteria gameVersionCriteria, CkanModule module)
         {
             // If it's strictly compatible, then it's compatible.
             if (strict.Compatible(gameVersionCriteria, module))
+            {
                 return true;
+            }
 
             // If we're in strict mode, and it's not strictly compatible, then it's
             // not compatible.
-            if (module.ksp_version_strict)
-                return false;
-
-            return base.Compatible(gameVersionCriteria, module);
+            return !module.ksp_version_strict
+                   && base.Compatible(gameVersionCriteria, module);
         }
 
         public override bool SingleVersionsCompatible (GameVersion gameVersion, CkanModule module)
@@ -34,10 +34,8 @@ namespace CKAN
 
             // If we're running KSP 1.0.4, then allow the mod to run if we would have
             // considered it compatible under 1.0.3 (as 1.0.4 was "just a hotfix").
-            if (gameVersion.Equals(v104))
-                return strict.SingleVersionsCompatible(v103, module);
-
-            return false;
+            return gameVersion.Equals(v104)
+                   && strict.SingleVersionsCompatible(v103, module);
         }
     }
 }

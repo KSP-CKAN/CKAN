@@ -82,15 +82,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Currently selected row's object
         /// </summary>
-        public RowT Selection {
-            get {
-                if (selectedRow >= 0 && selectedRow < (sortedFilteredData?.Count ?? 0)) {
-                    return sortedFilteredData[selectedRow];
-                } else {
-                    return default (RowT);
-                }
-            }
-        }
+        public RowT Selection
+            => selectedRow >= 0 && selectedRow < (sortedFilteredData?.Count ?? 0)
+                ? sortedFilteredData[selectedRow]
+                : default;
 
         /// <returns>
         /// Return the number of rows shown in the box
@@ -201,7 +196,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                     theme,
                     r, t + scrollTop, b,
                     sortedFilteredData.Count > 0
-                        ? t + 1 + scrollTop + (h - 2 - scrollTop) * selectedRow / sortedFilteredData.Count
+                        ? t + 1 + scrollTop + ((h - 2 - scrollTop) * selectedRow / sortedFilteredData.Count)
                         : -1
                 );
             }
@@ -251,7 +246,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                     break;
                 default:
                     // Go backwards if (k.Modifiers & ConsoleModifiers.Shift)
-                    if (!Char.IsControl(k.KeyChar)
+                    if (!char.IsControl(k.KeyChar)
                             && (k.Modifiers | ConsoleModifiers.Shift) == ConsoleModifiers.Shift) {
 
                         bool forward = (k.Modifiers & ConsoleModifiers.Shift) == 0;
@@ -350,30 +345,21 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         private string FmtHdr(int colIndex, int w)
-        {
-            ConsoleListBoxColumn<RowT> col = columns[colIndex];
-            if (colIndex == sortColIndex) {
-                return FormatExactWidth(
-                    col.Header + " " + (sortDir == ListSortDirection.Ascending ? sortUp : sortDown),
-                    w
-                );
-            } else {
-                return FormatExactWidth(col.Header, w);
-            }
-        }
+            => colIndex == sortColIndex
+                ? FormatExactWidth(
+                    columns[colIndex].Header + " "
+                        + (sortDir == ListSortDirection.Ascending ? sortUp : sortDown),
+                    w)
+                : FormatExactWidth(columns[colIndex].Header, w);
 
         private void filterAndSort()
         {
             // Keep the same row highlighted when the number of rows changes
             RowT oldSelect = Selection;
 
-            if (string.IsNullOrEmpty(filterStr) || filterCheck == null) {
-                sortedFilteredData = new List<RowT>(data);
-            } else {
-                sortedFilteredData = new List<RowT>(data).FindAll(
-                    r => filterCheck(r, filterStr)
-                );
-            }
+            sortedFilteredData = string.IsNullOrEmpty(filterStr) || filterCheck == null
+                ? new List<RowT>(data)
+                : new List<RowT>(data).FindAll(r => filterCheck(r, filterStr));
             // Semantic sort for versions rather than lexicographical
             if (sortColIndex >= 0 && sortColIndex < columns.Count) {
 
@@ -395,40 +381,31 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         private Comparison<RowT> getComparer(ConsoleListBoxColumn<RowT> col, bool ascending)
-        {
-            if (ascending) {
-                return col.Comparer
-                    ?? ((a, b) => col.Renderer(a).Trim().CompareTo(col.Renderer(b).Trim()));
-
-            } else if (col.Comparer != null) {
-                return (a, b) => col.Comparer(b, a);
-            } else {
-                return (a, b) => col.Renderer(b).Trim().CompareTo(col.Renderer(a).Trim());
-            }
-        }
+            => ascending
+                ? col.Comparer
+                    ?? ((a, b) => col.Renderer(a).Trim().CompareTo(col.Renderer(b).Trim()))
+                : col.Comparer != null
+                    ? (Comparison<RowT>)((RowT a, RowT b) => col.Comparer(b, a))
+                    : ((RowT a, RowT b) => col.Renderer(b).Trim().CompareTo(col.Renderer(a).Trim()));
 
         // Sometimes type safety can be a minor hindrance;
         // this would just be "first || second" in C
         private int IntOr(Func<int> first, Func<int> second)
         {
             int a = first();
-            if (a != 0) {
-                return a;
-            } else {
-                return second();
-            }
+            return a != 0 ? a : second();
         }
 
-        private List<RowT>                 sortedFilteredData;
-        private IList<RowT>                data;
-        private IList<ConsoleListBoxColumn<RowT>> columns;
-        private Func<RowT, string, bool>   filterCheck;
-        private ConsolePopupMenu           sortMenu;
+        private          List<RowT>                 sortedFilteredData;
+        private          IList<RowT>                data;
+        private readonly IList<ConsoleListBoxColumn<RowT>> columns;
+        private readonly Func<RowT, string, bool>   filterCheck;
+        private          ConsolePopupMenu           sortMenu;
 
-        private int               defaultSortColumn = 0;
-        private int               sortColIndex;
-        private ListSortDirection sortDir;
-        private string            filterStr         = "";
+        private readonly int               defaultSortColumn = 0;
+        private          int               sortColIndex;
+        private          ListSortDirection sortDir;
+        private          string            filterStr         = "";
 
         private int topRow      = 0;
         private int selectedRow = 0;

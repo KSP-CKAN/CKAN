@@ -78,7 +78,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Tell IUser clients that we have the ability to interact with the user
         /// </summary>
-        public bool Headless { get { return false; } }
+        public bool Headless => false;
 
         // These functions can be implemented the same on all screens,
         // so they are not virtual.
@@ -128,7 +128,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             ConsoleMessageDialog d = new ConsoleMessageDialog(
                 string.Join("", messagePieces) + message,
-                new List<string>(Array.ConvertAll<object, string>(args, p => p.ToString()))
+                new List<string>(Array.ConvertAll(args, p => p.ToString()))
             );
             messagePieces.Clear();
             int val = d.Run(userTheme);
@@ -191,7 +191,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         // But there's nothing intrinsic to the API that tells us which strings
         // to combine. So we'll just save them all and then combine them
         // when a function is called that takes input.
-        private List<string> messagePieces = new List<string>();
+        private readonly List<string> messagePieces = new List<string>();
 
         /// <summary>
         /// Update a user visible progress bar

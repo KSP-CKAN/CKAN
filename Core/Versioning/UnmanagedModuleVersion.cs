@@ -19,8 +19,6 @@ namespace CKAN.Versioning
         }
 
         public override string ToString()
-        {
-            return _string;
-        }
+            => _string;
     }
 }

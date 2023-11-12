@@ -28,17 +28,8 @@ namespace CKAN.ConsoleUI {
         /// True if valid, false otherwise
         /// </returns>
         protected override bool Valid()
-        {
-            if (name.Value != repository.name
-                    && !nameValid()) {
-                return false;
-            }
-            if (url.Value != repository.uri.ToString()
-                    && !urlValid()) {
-                return false;
-            }
-            return true;
-        }
+            => (name.Value == repository.name || nameValid())
+                && (url.Value == repository.uri.ToString() || urlValid());
 
         /// <summary>
         /// Save changes

@@ -81,7 +81,7 @@ namespace Tests.Core.Registry
                 var dlls      = new HashSet<string>();
                 var dlcs      = new Dictionary<string, ModuleVersion>();
                 var highPrio  = repoData.Manager
-                                        .GetAvailableModules(Enumerable.Repeat<Repository>(repo1.repo, 1),
+                                        .GetAvailableModules(Enumerable.Repeat(repo1.repo, 1),
                                                              identifier)
                                         .First()
                                         .Latest();

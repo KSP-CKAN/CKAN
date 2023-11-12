@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 
-using CKAN.Extensions;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
 using CKAN.Games;

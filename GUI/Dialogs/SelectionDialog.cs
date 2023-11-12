@@ -5,7 +5,7 @@ namespace CKAN.GUI
 {
     public partial class SelectionDialog : Form
     {
-        int currentSelected;
+        private int currentSelected;
 
         public SelectionDialog ()
         {
@@ -25,7 +25,7 @@ namespace CKAN.GUI
             int return_cancel = -1;
 
             // Validate input.
-            if (String.IsNullOrWhiteSpace(message))
+            if (string.IsNullOrWhiteSpace(message))
             {
                 throw new Kraken("Passed message string must be non-empty.");
             }
@@ -68,7 +68,7 @@ namespace CKAN.GUI
             // Further data validation.
             foreach (object argument in args)
             {
-                if (String.IsNullOrWhiteSpace(argument.ToString()))
+                if (string.IsNullOrWhiteSpace(argument.ToString()))
                 {
                     throw new Kraken("Candidate may not be empty.");
                 }
@@ -79,7 +79,7 @@ namespace CKAN.GUI
             {
                 if (defaultSelection == i)
                 {
-                    Util.Invoke(OptionsList, () => OptionsList.Items.Add(String.Concat(args[i].ToString(), "  -- Default")));
+                    Util.Invoke(OptionsList, () => OptionsList.Items.Add(string.Concat(args[i].ToString(), "  -- Default")));
 
                 }
                 else

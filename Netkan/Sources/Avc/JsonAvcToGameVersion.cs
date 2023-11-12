@@ -61,15 +61,15 @@ namespace CKAN.NetKAN.Sources.Avc
 
             //AVC uses -1 to indicate a wildcard.
             string version;
-            if (major == null || int.TryParse(major, out int integer) && integer == AvcWildcard)
+            if (major == null || (int.TryParse(major, out int integer) && integer == AvcWildcard))
             {
                 return GameVersion.Any;
             }
-            else if (minor == null || int.TryParse(minor, out integer) && integer == AvcWildcard)
+            else if (minor == null || (int.TryParse(minor, out integer) && integer == AvcWildcard))
             {
                 version = major;
             }
-            else if (patch == null || int.TryParse(patch, out integer) && integer == AvcWildcard)
+            else if (patch == null || (int.TryParse(patch, out integer) && integer == AvcWildcard))
             {
                 version = string.Join(".", major, minor);
             }
@@ -84,10 +84,7 @@ namespace CKAN.NetKAN.Sources.Avc
             return result;
         }
 
-        public override bool CanWrite
-        {
-            get { return false; }
-        }
+        public override bool CanWrite => false;
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
@@ -117,7 +114,7 @@ namespace CKAN.NetKAN.Sources.Avc
             string build = null;
 
             var token = JToken.Load(reader);
-            Log.DebugFormat("Read Token: {0}, {1}", new Object[] {token.Type, token.ToString()});
+            Log.DebugFormat("Read Token: {0}, {1}", new object[] {token.Type, token.ToString()});
             switch (token.Type)
             {
                 case JTokenType.String:
@@ -168,10 +165,7 @@ namespace CKAN.NetKAN.Sources.Avc
             return result;
         }
 
-        public override bool CanWrite
-        {
-            get { return false; }
-        }
+        public override bool CanWrite => false;
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {

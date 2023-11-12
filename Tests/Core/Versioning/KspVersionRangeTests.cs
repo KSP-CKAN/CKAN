@@ -10,6 +10,7 @@ namespace Tests.Core.Versioning
 {
     public sealed class GameVersionRangeTests
     {
+        #pragma warning disable 0414, IDE0052
         private static readonly object[] EqualityCases =
         {
             new object[]
@@ -426,6 +427,7 @@ namespace Tests.Core.Versioning
                 true
             },
         };
+        #pragma warning restore 0414, IDE0052
 
         [Test]
         public void CtorWorksCorrectly()

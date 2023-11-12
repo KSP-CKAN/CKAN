@@ -18,7 +18,9 @@ namespace CKAN
             string value = reader.Value?.ToString();
 
             if (value == null)
+            {
                 return null;
+            }
 
             try
             {
@@ -43,10 +45,7 @@ namespace CKAN
         /// Opt out of writing anything, otherwise things go horribly wrong when we try
         /// to write to the registry.
         /// </summary>
-        public override bool CanWrite
-        {
-            get { return false; }
-        }
+        public override bool CanWrite => false;
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {

@@ -8,13 +8,13 @@ namespace CKAN.Versioning
 {
     public class GameVersionCriteria : IEquatable<GameVersionCriteria>
     {
-        private List<GameVersion> _versions = new List<GameVersion>();
+        private readonly List<GameVersion> _versions = new List<GameVersion>();
 
         public GameVersionCriteria(GameVersion v)
         {
             if (v != null)
             {
-                this._versions.Add(v);
+                _versions.Add(v);
             }
         }
 
@@ -22,10 +22,10 @@ namespace CKAN.Versioning
         {
             if (v != null)
             {
-                this._versions.Add(v);
+                _versions.Add(v);
             }
-            this._versions.AddRange(compatibleVersions);
-            this._versions = this._versions.Distinct().ToList();
+            _versions.AddRange(compatibleVersions);
+            _versions = _versions.Distinct().ToList();
         }
 
         public IList<GameVersion> Versions => _versions.AsReadOnly();
@@ -46,14 +46,13 @@ namespace CKAN.Versioning
 
         // From IEquatable<GameVersionCriteria>
         public bool Equals(GameVersionCriteria other)
-            => other == null ? false
-                             : !_versions.Except(other._versions).Any()
-                                 && !other._versions.Except(_versions).Any();
+            => other != null && !_versions.Except(other._versions).Any()
+                             && !other._versions.Except(_versions).Any();
 
         public override int GetHashCode()
-            => _versions.Aggregate(19, (code, vers) => code * 31 + vers.GetHashCode());
+            => _versions.Aggregate(19, (code, vers) => (code * 31) + vers.GetHashCode());
 
-        public override String ToString()
+        public override string ToString()
             => string.Format(Properties.Resources.GameVersionCriteriaToString,
                              string.Join(", ", _versions.Select(v => v.ToString())));
 

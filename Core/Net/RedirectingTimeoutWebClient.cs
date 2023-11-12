@@ -54,10 +54,15 @@ namespace CKAN
         protected override WebResponse GetWebResponse(WebRequest request)
         {
             if (request == null)
+            {
                 return null;
+            }
+
             var response = base.GetWebResponse(request);
             if (response == null)
+            {
                 return null;
+            }
 
             if (response is HttpWebResponse hwr)
             {
@@ -85,8 +90,8 @@ namespace CKAN
             return response;
         }
 
-        private int    timeout;
-        private string mimeType;
+        private readonly int    timeout;
+        private readonly string mimeType;
         private static readonly Dictionary<Uri, Uri> permanentRedirects = new Dictionary<Uri, Uri>();
         private static readonly ILog log = LogManager.GetLogger(typeof(RedirectingTimeoutWebClient));
     }

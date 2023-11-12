@@ -69,15 +69,15 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Custom key bindings for this UI element
         /// </summary>
-        public Dictionary<ConsoleKeyInfo, ConsoleScreen.KeyAction> Bindings =
-            new Dictionary<ConsoleKeyInfo, ConsoleScreen.KeyAction>();
+        public Dictionary<ConsoleKeyInfo, ScreenContainer.KeyAction> Bindings =
+            new Dictionary<ConsoleKeyInfo, ScreenContainer.KeyAction>();
 
         /// <summary>
         /// Add a custom key binding
         /// </summary>
         /// <param name="k">Key to bind</param>
         /// <param name="a">Action to bind to key</param>
-        public void AddBinding(ConsoleKeyInfo k, ConsoleScreen.KeyAction a)
+        public void AddBinding(ConsoleKeyInfo k, ScreenContainer.KeyAction a)
         {
             Bindings.Add(k, a);
         }
@@ -87,7 +87,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         /// <param name="keys">Keys to bind</param>
         /// <param name="a">Action to bind to key</param>
-        public void AddBinding(IEnumerable<ConsoleKeyInfo> keys, ConsoleScreen.KeyAction a)
+        public void AddBinding(IEnumerable<ConsoleKeyInfo> keys, ScreenContainer.KeyAction a)
         {
             foreach (ConsoleKeyInfo k in keys) {
                 AddBinding(k, a);
@@ -189,12 +189,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         protected void Blur(bool forward)
         {
-            if (OnBlur != null) {
-                OnBlur(this, forward);
-            }
+            OnBlur?.Invoke(this, forward);
         }
 
-        private int left, top, right, bottom;
+        private readonly int left, top, right, bottom;
 
         private static readonly string scrollUp    = "^";
         private static readonly string scrollDown  = "v";

@@ -61,7 +61,7 @@ namespace CKAN.CmdLine
                         ckan_uri = new Uri(ckan_file);
                     }
 
-                    string filename = String.Empty;
+                    string filename = string.Empty;
 
                     // If it is a local file, we already know the filename. If it is remote, create a temporary file and download the remote resource.
                     if (ckan_uri.IsFile)

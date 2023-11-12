@@ -19,7 +19,9 @@ namespace CKAN.GUI
         public void StartDownload(GUIMod module)
         {
             if (module == null || !module.IsCKAN)
+            {
                 return;
+            }
 
             ShowWaitDialog();
             if (downloader != null)

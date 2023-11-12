@@ -21,7 +21,7 @@ namespace CKAN.NetKAN.Transformers
         private readonly List<ITransformer> _transformers;
         private readonly IValidator _validator;
 
-        public string Name { get { return "netkan"; } }
+        public string Name => "netkan";
 
         public NetkanTransformer(
             IHttpService http,
@@ -96,7 +96,9 @@ namespace CKAN.NetKAN.Transformers
                 before.Add(transformers[i].Name);
 
                 if (i - 1 >= 0)
+                {
                     after.Add(transformers[i - 1].Name);
+                }
 
                 result.Add(new VersionedOverrideTransformer(before, after));
                 result.Add(transformers[i]);

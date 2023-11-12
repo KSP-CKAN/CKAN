@@ -42,7 +42,7 @@ namespace CKAN
             this.priority = priority;
         }
 
-        public override bool Equals(Object other)
+        public override bool Equals(object other)
             => Equals(other as Repository);
 
         public bool Equals(Repository other)

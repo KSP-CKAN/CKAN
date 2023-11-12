@@ -51,7 +51,7 @@ namespace CKAN.GUI
             try
             {
                 var typeName = Path.GetFileNameWithoutExtension(dll);
-                typeName = String.Format("{0}.{1}", typeName, typeName);
+                typeName = string.Format("{0}.{1}", typeName, typeName);
 
                 Type type = assembly.GetType(typeName);
                 IGUIPlugin pluginInstance = (IGUIPlugin)Activator.CreateInstance(type);

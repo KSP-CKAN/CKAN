@@ -289,7 +289,10 @@ namespace CKAN.CmdLine
             try
             {
                 Type type = Type.GetType("Mono.Runtime");
-                if (type == null) return;
+                if (type == null)
+                {
+                    return;
+                }
 
                 MethodInfo display_name = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
                 if (display_name != null)
@@ -299,15 +302,15 @@ namespace CKAN.CmdLine
 
                     if (match.Success)
                     {
-                        int major = Int32.Parse(match.Groups["major"].Value);
-                        int minor = Int32.Parse(match.Groups["minor"].Value);
-                        int patch = Int32.Parse(match.Groups["revision"].Value);
+                        int major = int.Parse(match.Groups["major"].Value);
+                        int minor = int.Parse(match.Groups["minor"].Value);
+                        int patch = int.Parse(match.Groups["revision"].Value);
 
                         if (major < rec_major || (major == rec_major && minor < rec_minor))
                         {
                             user.RaiseMessage(Properties.Resources.OptionsMonoWarning,
-                                String.Join(".", major, minor, patch),
-                                String.Join(".", rec_major, rec_minor, rec_patch));
+                                string.Join(".", major, minor, patch),
+                                string.Join(".", rec_major, rec_minor, rec_patch));
                         }
                     }
                 }

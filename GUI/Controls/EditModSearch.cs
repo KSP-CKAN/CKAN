@@ -112,7 +112,7 @@ namespace CKAN.GUI
             }
             catch (Kraken k)
             {
-                Main.Instance.AddStatusMessage(k.Message);
+                Main.Instance?.AddStatusMessage(k.Message);
             }
         }
 
@@ -241,7 +241,9 @@ namespace CKAN.GUI
         private void SearchDetails_ApplySearch(object sender, EventArgs e)
         {
             if (suppressSearch)
+            {
                 return;
+            }
 
             var knownLabels = Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList();
 

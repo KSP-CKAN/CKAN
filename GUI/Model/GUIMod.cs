@@ -25,7 +25,7 @@ namespace CKAN.GUI
         /// </summary>
         public  CkanModule      SelectedMod
         {
-            get { return selectedMod; }
+            get => selectedMod;
             set
             {
                 if (!(selectedMod?.Equals(value) ?? value?.Equals(selectedMod) ?? true))
@@ -152,7 +152,7 @@ namespace CKAN.GUI
                 LatestVersion = InstalledVersion;
             }
             // For mods not known to the registry LatestCompatibleMod is null, however the installed module might be compatible
-            IsIncompatible   = incompatible ?? LatestCompatibleMod == null && !instMod.Module.IsCompatible(current_game_version);
+            IsIncompatible   = incompatible ?? (LatestCompatibleMod == null && !instMod.Module.IsCompatible(current_game_version));
         }
 
         /// <summary>
@@ -298,8 +298,11 @@ namespace CKAN.GUI
         public CkanModule ToCkanModule()
         {
             if (!IsCKAN)
+            {
                 throw new InvalidCastException(Properties.Resources.GUIModMethodNotCKAN);
-            var mod = Mod as CkanModule;
+            }
+
+            var mod = Mod;
             return mod;
         }
 
@@ -422,7 +425,9 @@ namespace CKAN.GUI
                 bool value = set_value_to ?? old_value;
                 IsReplaceChecked = value;
                 if (old_value != value)
+                {
                     replace_cell.Value = value;
+                }
             }
         }
 
@@ -447,9 +452,21 @@ namespace CKAN.GUI
 
         public override bool Equals(object obj)
         {
-            if (obj is null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((GUIMod) obj);
         }
 

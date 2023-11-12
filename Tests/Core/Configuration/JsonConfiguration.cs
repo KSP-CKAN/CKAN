@@ -60,8 +60,7 @@ namespace Tests.Core.Configuration
                 "host3"
             }, reg.GetAuthTokenHosts());
 
-            var token = "";
-            Assert.IsTrue(reg.TryGetAuthToken("host1", out token));
+            Assert.IsTrue(reg.TryGetAuthToken("host1", out string token));
             Assert.AreEqual("token1", token);
             Assert.IsTrue(reg.TryGetAuthToken("host2", out token));
             Assert.AreEqual("token2", token);
@@ -138,8 +137,7 @@ namespace Tests.Core.Configuration
                 "host3"
             }, reg.GetAuthTokenHosts());
 
-            var token = "";
-            Assert.IsTrue(reg.TryGetAuthToken("host1", out token));
+            Assert.IsTrue(reg.TryGetAuthToken("host1", out string token));
             Assert.AreEqual("token1", token);
             Assert.IsTrue(reg.TryGetAuthToken("host2", out token));
             Assert.AreEqual("token2", token);
@@ -183,13 +181,14 @@ namespace Tests.Core.Configuration
         public void AutoStartInstancePersists(string val, string expected)
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new JsonConfiguration(tmpFile1);
-
-            reg.AutoStartInstance = val;
+            _ = new JsonConfiguration(tmpFile1)
+            {
+                AutoStartInstance = val
+            };
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new JsonConfiguration(tmpFile2);
+            JsonConfiguration reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(expected, reg.AutoStartInstance);
 
@@ -221,14 +220,14 @@ namespace Tests.Core.Configuration
         public void DownloadCacheDirPersistsUnrooted()
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new JsonConfiguration(tmpFile1);
-
-
-            reg.DownloadCacheDir = "file";
+            _ = new JsonConfiguration(tmpFile1)
+            {
+                DownloadCacheDir = "file"
+            };
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new JsonConfiguration(tmpFile2);
+            JsonConfiguration reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(Path.GetFullPath("file"), reg.DownloadCacheDir);
 
@@ -241,14 +240,14 @@ namespace Tests.Core.Configuration
         public void DownloadCacheDirPersistsNull()
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new JsonConfiguration(tmpFile1);
-
-
-            reg.DownloadCacheDir = null;
+            _ = new JsonConfiguration(tmpFile1)
+            {
+                DownloadCacheDir = null
+            };
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new JsonConfiguration(tmpFile2);
+            JsonConfiguration reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
 
@@ -260,14 +259,14 @@ namespace Tests.Core.Configuration
         public void DownloadCacheDirPersistsEmpty()
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new JsonConfiguration(tmpFile1);
-
-
-            reg.DownloadCacheDir = "";
+            _ = new JsonConfiguration(tmpFile1)
+            {
+                DownloadCacheDir = ""
+            };
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new JsonConfiguration(tmpFile2);
+            JsonConfiguration reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
 
@@ -284,13 +283,14 @@ namespace Tests.Core.Configuration
         public void CacheSizeLimitPersists(long? val, long? expected)
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new JsonConfiguration(tmpFile1);
-
-            reg.CacheSizeLimit = val;
+            _ = new JsonConfiguration(tmpFile1)
+            {
+                CacheSizeLimit = val
+            };
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new JsonConfiguration(tmpFile2);
+            JsonConfiguration reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(expected, reg.CacheSizeLimit);
 
@@ -306,13 +306,14 @@ namespace Tests.Core.Configuration
         public void RefreshRatePersists(int val, int expected)
         {
             string tmpFile1 = Path.GetTempFileName();
-            var reg = new JsonConfiguration(tmpFile1);
-
-            reg.RefreshRate = val;
+            _ = new JsonConfiguration(tmpFile1)
+            {
+                RefreshRate = val
+            };
 
             string tmpFile2 = Path.GetTempFileName();
             File.Copy(tmpFile1, tmpFile2, true);
-            reg = new JsonConfiguration(tmpFile2);
+            JsonConfiguration reg = new JsonConfiguration(tmpFile2);
 
             Assert.AreEqual(expected, reg.RefreshRate);
 
@@ -336,8 +337,7 @@ namespace Tests.Core.Configuration
             CollectionAssert.Contains(reg.GetAuthTokenHosts(), "test_host1");
             CollectionAssert.Contains(reg.GetAuthTokenHosts(), "test_host2");
 
-            string token = "";
-            Assert.IsTrue(reg.TryGetAuthToken("test_host1", out token));
+            Assert.IsTrue(reg.TryGetAuthToken("test_host1", out string token));
             Assert.AreEqual("hunter2", token);
             Assert.IsTrue(reg.TryGetAuthToken("test_host2", out token));
             Assert.AreEqual("asdf", token);

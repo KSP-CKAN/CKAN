@@ -7,14 +7,12 @@ using System.Windows.Forms;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NUnit.Framework;
-
-using CKAN.Extensions;
 using CKAN.GUI.Attributes;
 
 namespace Tests.GUI
 {
     using MethodCall = List<MethodDefinition>;
-    using CallsDict  = Dictionary<MethodDefinition, List<MethodDefinition>>;
+    using CallsDict = Dictionary<MethodDefinition, List<MethodDefinition>>;
 
     [TestFixture]
     public class ThreadSafetyTests
@@ -46,7 +44,7 @@ namespace Tests.GUI
         }
 
         private IEnumerable<TypeDefinition> GetAllNestedTypes(TypeDefinition td)
-            => Enumerable.Repeat<TypeDefinition>(td, 1)
+            => Enumerable.Repeat(td, 1)
                          .Concat(td.NestedTypes.SelectMany(nested => GetAllNestedTypes(nested)));
 
         private IEnumerable<MethodCall> FindStartedTasks(MethodDefinition md)
@@ -137,13 +135,12 @@ namespace Tests.GUI
         // Any method on a type in WinForms or inheriting from anything in WinForms is presumed unsafe
         private bool unsafeType(TypeDefinition t)
             => t.Namespace == winformsNamespace
-                ? true
-                : (t.BaseType != null && unsafeType(t.BaseType.Resolve()));
+                || (t.BaseType != null && unsafeType(t.BaseType.Resolve()));
 
         private static readonly Type   forbidAttrib      = typeof(ForbidGUICallsAttribute);
         private static readonly string winformsNamespace = typeof(Control).Namespace;
 
-        private static HashSet<string> callOpCodes = new HashSet<string>
+        private static readonly HashSet<string> callOpCodes = new HashSet<string>
         {
             // Constructors
             "newobj",

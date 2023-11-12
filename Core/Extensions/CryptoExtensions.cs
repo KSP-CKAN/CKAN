@@ -21,7 +21,7 @@ namespace CKAN.Extensions
         /// <param name="cancelToken">A cancellation token that can be used to abort the hash</param>
         /// <returns>The requested hash of the input stream</returns>
         public static byte[] ComputeHash(this HashAlgorithm hashAlgo, Stream stream,
-            IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
+            IProgress<long> progress, CancellationToken cancelToken = default)
         {
             const int bufSize = 1024 * 1024;
             var buffer = new byte[bufSize];

@@ -16,7 +16,7 @@ namespace CKAN
     /// Resolves relationships between mods. Primarily used to satisfy missing dependencies and to check for conflicts on proposed installs.
     /// </summary>
     /// <remarks>
-    /// All constructors start with currently installed modules, to remove <see cref="RelationshipResolver.RemoveModsFromInstalledList" />
+    /// All constructors start with currently installed modules, to remove <see cref="RemoveModsFromInstalledList" />
     /// </remarks>
     public class RelationshipResolver
     {
@@ -559,7 +559,7 @@ namespace CKAN
 
         private IEnumerable<CkanModule> allDependers(CkanModule                  module,
                                                      Func<SelectionReason, bool> followReason = null)
-            => BreadthFirstSearch(Enumerable.Repeat<CkanModule>(module, 1),
+            => BreadthFirstSearch(Enumerable.Repeat(module, 1),
                                   (searching, found) =>
                                       ReasonsFor(searching).Where(followReason ?? AnyRelationship)
                                                            .Select(r => r.Parent)
@@ -611,7 +611,7 @@ namespace CKAN
         /// The keys are the mods that the user chose that led to the conflict being in the list!
         /// Use this for coloring/labelling rows, use ConflictDescriptions for reporting the conflicts to the user.
         /// </summary>
-        public Dictionary<CkanModule, String> ConflictList
+        public Dictionary<CkanModule, string> ConflictList
             => conflicts
                 .SelectMany(kvp => UserReasonsFor(kvp.Key).Select(k => new KeyValuePair<CkanModule, ModPair>(k, kvp)))
                 .GroupBy(kvp => kvp.Key)
@@ -879,7 +879,9 @@ namespace CKAN
             {
                 if (module == null)
                 {
+                    #pragma warning disable IDE0016
                     throw new ArgumentNullException();
+                    #pragma warning restore IDE0016
                 }
                 Parent = module;
             }
@@ -894,7 +896,9 @@ namespace CKAN
             {
                 if (module == null)
                 {
+                    #pragma warning disable IDE0016
                     throw new ArgumentNullException();
+                    #pragma warning restore IDE0016
                 }
                 Parent = module;
             }
@@ -909,7 +913,9 @@ namespace CKAN
             {
                 if (module == null)
                 {
+                    #pragma warning disable IDE0016
                     throw new ArgumentNullException();
+                    #pragma warning restore IDE0016
                 }
                 Parent = module;
             }
@@ -928,7 +934,9 @@ namespace CKAN
             {
                 if (module == null)
                 {
+                    #pragma warning disable IDE0016
                     throw new ArgumentNullException();
+                    #pragma warning restore IDE0016
                 }
                 Parent        = module;
                 ProvidesIndex = providesIndex;

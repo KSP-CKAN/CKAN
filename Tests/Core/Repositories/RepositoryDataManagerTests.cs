@@ -23,7 +23,7 @@ namespace Tests.Core.Repositories
                 var crit = new GameVersionCriteria(GameVersion.Parse("0.25.0"));
 
                 // Act
-                var versions = repoData.Manager.GetAvailableModules(Enumerable.Repeat<Repository>(testRepo, 1),
+                var versions = repoData.Manager.GetAvailableModules(Enumerable.Repeat(testRepo, 1),
                                                                     "FerramAerospaceResearch")
                                                .Select(am => am.Latest(crit).version.ToString())
                                                .ToArray();
@@ -45,7 +45,7 @@ namespace Tests.Core.Repositories
                 var crit = new GameVersionCriteria(GameVersion.Parse("0.25.0"));
 
                 // Act
-                var versions = repoData.Manager.GetAvailableModules(Enumerable.Repeat<Repository>(testRepo, 1),
+                var versions = repoData.Manager.GetAvailableModules(Enumerable.Repeat(testRepo, 1),
                                                                     "FerramAerospaceResearch")
                                                .Select(am => am.Latest(crit).version.ToString())
                                                .ToArray();

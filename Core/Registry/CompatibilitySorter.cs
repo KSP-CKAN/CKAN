@@ -148,11 +148,11 @@ namespace CKAN
                         .GroupBy(kvp => kvp.Value.AllAvailable()
                                                  .All(m => !m.IsCompatible(CompatibleVersions))
                                             // No versions compatible == incompatible
-                                            ? (bool?)false
+                                            ? false
                                             : kvp.Value.AllAvailable()
                                                        .All(m => m.depends == null)
                                                  // No dependencies == compatible
-                                                 ? (bool?)true
+                                                 ? true
                                                  // Need to investigate this one more later
                                                  : (bool?)null)
                         .Select(grp => new Tuple<bool?, ConcurrentDictionary<string, AvailableModule>>(

@@ -64,7 +64,7 @@ namespace Tests
                         method.Name))
                 .ToList();
             Assert.False(messages.Any(),
-                "Async void methods found!" + Environment.NewLine + String.Join(Environment.NewLine, messages));
+                "Async void methods found!" + Environment.NewLine + string.Join(Environment.NewLine, messages));
         }
 
         private static IEnumerable<MethodInfo> GetAsyncVoidMethods(this Assembly assembly)
@@ -82,7 +82,11 @@ namespace Tests
 
         private static IEnumerable<Type> GetLoadableTypes(this Assembly assembly)
         {
-            if (assembly == null) throw new ArgumentNullException("assembly");
+            if (assembly == null)
+            {
+                throw new ArgumentNullException("assembly");
+            }
+
             try
             {
                 return assembly.GetTypes();
@@ -117,18 +121,24 @@ namespace Tests
         {
             // Determine if the same file was referenced two times.
             if (file1 == file2)
+            {
                 return true;
+            }
 
             if (!File.Exists(file1) || !File.Exists(file2))
+            {
                 return false;
+            }
 
             using (FileStream fs1 = new FileStream(file1, FileMode.Open, FileAccess.Read),
                               fs2 = new FileStream(file2, FileMode.Open, FileAccess.Read))
             {
-                //// Check the file sizes. If they are not the same, the files 
+                //// Check the file sizes. If they are not the same, the files
                 //// are not the same.
                 if (fs1.Length != fs2.Length)
+                {
                     return false;
+                }
 
                 // Read and compare a byte from each file until either a
                 // non-matching set of bytes is found or until the end of
@@ -145,7 +155,7 @@ namespace Tests
 
                 // Make sure that file2 has not more bytes than file1.
                 // If not, the files are the same, after all these checks.
-                return ((file1byte - file2byte) == 0);
+                return (file1byte - file2byte) == 0;
             }
         }
     }

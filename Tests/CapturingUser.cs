@@ -52,7 +52,7 @@ namespace Tests
         public readonly List<string>                  RaisedMessages             = new List<string>();
 
 
-        private Func<string, bool>          yesNoAnswerer;
-        private Func<string, object[], int> selectionDialogAnswerer;
+        private readonly Func<string, bool>          yesNoAnswerer;
+        private readonly Func<string, object[], int> selectionDialogAnswerer;
     }
 }

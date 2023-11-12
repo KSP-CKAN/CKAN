@@ -14,7 +14,9 @@ namespace CKAN.ConsoleUI
         /// </summary>
         /// <param name="args">Command line arguments</param>
         [STAThread]
+        #pragma warning disable IDE0060
         public static void Main(string[] args)
+        #pragma warning restore IDE0060
         {
             Main_(null, null);
         }

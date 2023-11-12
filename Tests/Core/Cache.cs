@@ -169,7 +169,7 @@ namespace Tests.Core
             // Make sure it's stored
             Assert.IsTrue(cache.IsCached(url));
             // Make sure it's not valid as a zip
-            Assert.IsFalse(NetModuleCache.ZipValid(cache.GetCachedFilename(url), out string invalidReason, null));
+            Assert.IsFalse(NetModuleCache.ZipValid(cache.GetCachedFilename(url), out _, null));
 
             // Store a good zip.
             cache.Store(url, TestData.DogeCoinFlagZip());

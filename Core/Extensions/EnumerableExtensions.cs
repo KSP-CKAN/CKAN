@@ -10,12 +10,9 @@ namespace CKAN.Extensions
     public static class EnumerableExtensions
     {
         public static ICollection<T> AsCollection<T>(this IEnumerable<T> source)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            return source is ICollection<T> collection ? collection : source.ToArray();
-        }
+            => source == null
+                ? throw new ArgumentNullException(nameof(source))
+                : source is ICollection<T> collection ? collection : source.ToArray();
 
 #if NET45
 
@@ -249,19 +246,17 @@ namespace CKAN.Extensions
         }
 
         IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+            => GetEnumerator();
 
         private IEnumerator<T> GetMemoizingEnumerator()
         {
-            for (Int32 index = 0; TryGetItem(index, out T item); ++index)
+            for (int index = 0; TryGetItem(index, out T item); ++index)
             {
                 yield return item;
             }
         }
 
-        private bool TryGetItem(Int32 index, out T item)
+        private bool TryGetItem(int index, out T item)
         {
             lock (gate)
             {
@@ -270,12 +265,12 @@ namespace CKAN.Extensions
                     // The iteration may have completed while waiting for the lock
                     if (isCacheComplete)
                     {
-                        item = default(T);
+                        item = default;
                         return false;
                     }
                     if (!enumerator.MoveNext())
                     {
-                        item = default(T);
+                        item = default;
                         isCacheComplete = true;
                         enumerator.Dispose();
                         return false;
@@ -287,10 +282,8 @@ namespace CKAN.Extensions
             }
         }
 
-        private bool IsItemInCache(Int32 index)
-        {
-            return index < cache.Count;
-        }
+        private bool IsItemInCache(int index)
+            => index < cache.Count;
 
         private readonly IEnumerable<T> source;
         private          IEnumerator<T> enumerator;

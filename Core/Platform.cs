@@ -59,7 +59,9 @@ namespace CKAN
         private static bool IsOnMonoFourOrLater()
         {
             if (!IsMono)
+            {
                 return false;
+            }
 
             // Get Mono's display name and parse the version
             string display_name =

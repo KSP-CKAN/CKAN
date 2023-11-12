@@ -4,7 +4,6 @@ using System.IO;
 using System.Diagnostics;
 using System.Reflection;
 
-using log4net;
 using Newtonsoft.Json;
 
 using CKAN.Versioning;
@@ -168,7 +167,7 @@ namespace CKAN
             {
                 Verb      = "runas",
                 FileName  = updaterFilename,
-                Arguments = String.Format(@"{0} ""{1}"" ""{2}"" {3}", -pid, exePath, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch"),
+                Arguments = string.Format(@"{0} ""{1}"" ""{2}"" {3}", -pid, exePath, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch"),
                 UseShellExecute = false,
                 // Make child's stdin a pipe so it can tell when we exit
                 RedirectStandardInput = true,
@@ -188,13 +187,13 @@ namespace CKAN
 
                 string command = string.Format("+x \"{0}\"", fileName);
 
-                ProcessStartInfo permsinfo = new ProcessStartInfo("chmod", command);
-                permsinfo.UseShellExecute = false;
+                ProcessStartInfo permsinfo = new ProcessStartInfo("chmod", command)
+                {
+                    UseShellExecute = false
+                };
                 Process permsprocess = Process.Start(permsinfo);
                 permsprocess.WaitForExit();
             }
         }
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(AutoUpdate));
     }
 }

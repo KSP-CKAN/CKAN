@@ -167,7 +167,9 @@ namespace CKAN.Games.KerbalSpaceProgram
             {
                 string sAbsolutePath = Path.Combine(absGameRoot, Path.Combine(sRelativePath));
                 if (!Directory.Exists(sAbsolutePath))
+                {
                     Directory.CreateDirectory(sAbsolutePath);
+                }
             }
         }
 
@@ -225,7 +227,7 @@ namespace CKAN.Games.KerbalSpaceProgram
         }
 
         public GameVersion[] EmbeddedGameVersions
-            => JsonConvert.DeserializeObject<GameVersionProviders.JBuilds>(
+            => JsonConvert.DeserializeObject<JBuilds>(
                 new StreamReader(Assembly.GetExecutingAssembly()
                                          .GetManifestResourceStream("CKAN.builds-ksp.json"))
                     .ReadToEnd())
@@ -234,7 +236,7 @@ namespace CKAN.Games.KerbalSpaceProgram
                 .ToArray();
 
         public GameVersion[] ParseBuildsJson(JToken json)
-            => json.ToObject<GameVersionProviders.JBuilds>()
+            => json.ToObject<JBuilds>()
                    .Builds
                    .Select(b => GameVersion.Parse(b.Value))
                    .ToArray();
@@ -325,11 +327,7 @@ namespace CKAN.Games.KerbalSpaceProgram
             // Try with the lowercase version.
             installPath = Path.Combine(steamPath, "steamapps", "common", "Kerbal Space Program");
 
-            if (Directory.Exists(installPath))
-            {
-                return installPath;
-            }
-            return null;
+            return Directory.Exists(installPath) ? installPath : null;
         }
 
         /// <summary>

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using CKAN.Extensions;
 using CKAN.Versioning;
 
 namespace CKAN

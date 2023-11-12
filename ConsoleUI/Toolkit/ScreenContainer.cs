@@ -176,13 +176,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Currently focused ScreenObject
         /// </returns>
         protected ScreenObject Focused()
-        {
-            if (focusIndex >= 0 && focusIndex < objects.Count) {
-                return objects[focusIndex];
-            } else {
-                return null;
-            }
-        }
+            => focusIndex >= 0 && focusIndex < objects.Count
+                ? objects[focusIndex]
+                : null;
 
         /// <summary>
         /// Set the focus to a given ScreenObject
@@ -222,12 +218,9 @@ namespace CKAN.ConsoleUI.Toolkit {
                         Console.ForegroundColor = theme.FooterKeyFg;
                         Console.Write(tipList[i].Key);
                         Console.ForegroundColor = theme.FooterDescriptionFg;
-                        string remainder;
-                        if (tipList[i].Key == tipList[i].Description.Substring(0, 1)) {
-                            remainder = tipList[i].Description.Substring(1);
-                        } else {
-                            remainder = $" - {tipList[i].Description}";
-                        }
+                        string remainder = tipList[i].Key == tipList[i].Description.Substring(0, 1)
+                            ? tipList[i].Description.Substring(1)
+                            : $" - {tipList[i].Description}";
                         int maxW = Console.WindowWidth - Console.CursorLeft - 1;
                         if (remainder.Length > maxW && maxW > 0) {
                             Console.Write(remainder.Substring(0, maxW));
@@ -251,23 +244,21 @@ namespace CKAN.ConsoleUI.Toolkit {
                         focusIndex = 0;
                         break;
                     }
-                    if (forward) {
-                        focusIndex = (focusIndex + 1) % objects.Count;
-                    } else {
-                        focusIndex = (focusIndex + objects.Count - 1) % objects.Count;
-                    }
+                    focusIndex = forward
+                        ? (focusIndex + 1) % objects.Count
+                        : (focusIndex + objects.Count - 1) % objects.Count;
                 } while (!objects[focusIndex].Focusable());
             }
         }
 
         private bool done = false;
 
-        private List<ScreenObject> objects    = new List<ScreenObject>();
+        private readonly List<ScreenObject> objects    = new List<ScreenObject>();
         private int                focusIndex = 0;
 
-        private Dictionary<ConsoleKeyInfo, KeyAction> bindings   = new Dictionary<ConsoleKeyInfo, KeyAction>();
-        private List<ScreenTip>                       tips       = new List<ScreenTip>();
-        private object                                screenLock = new object();
+        private readonly Dictionary<ConsoleKeyInfo, KeyAction> bindings   = new Dictionary<ConsoleKeyInfo, KeyAction>();
+        private readonly List<ScreenTip>                       tips       = new List<ScreenTip>();
+        private readonly object                                screenLock = new object();
 
         private static readonly string tipSeparator = $" {Symbols.vertLine} ";
     }
@@ -287,7 +278,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             Key         = key;
             Description = descrip;
-            DisplayIf   = dispIf != null ? dispIf : () => true;
+            DisplayIf   = dispIf ?? (() => true);
         }
 
         /// <summary>

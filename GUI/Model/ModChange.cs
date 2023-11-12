@@ -59,7 +59,7 @@ namespace CKAN.GUI
         }
 
         public ModChange(CkanModule mod, GUIModChangeType changeType, SelectionReason reason)
-            : this(mod, changeType, Enumerable.Repeat<SelectionReason>(reason, 1))
+            : this(mod, changeType, Enumerable.Repeat(reason, 1))
         {
         }
 
@@ -73,9 +73,21 @@ namespace CKAN.GUI
 
         public override bool Equals(object obj)
         {
-            if (obj is null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return (obj as ModChange).Mod.Equals(Mod);
         }
 
@@ -85,7 +97,7 @@ namespace CKAN.GUI
             // Distinguish between installing and removing
             => Mod == null
                 ? 0
-                : ((maxEnumVal + 1) * Mod.GetHashCode() + (int)ChangeType);
+                : (((maxEnumVal + 1) * Mod.GetHashCode()) + (int)ChangeType);
 
         public override string ToString()
             => $"{ChangeType.Localize()} {Mod} ({Description})";

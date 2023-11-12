@@ -1496,10 +1496,9 @@ namespace CKAN
         {
             Match match = Regex.Match(version, @"^(?<num>\d\:)?[vV]+(ersion)?[_.]*(?<ver>\d.*)$");
 
-            if (match.Success)
-                return match.Groups["num"].Value + match.Groups["ver"].Value;
-            else
-                return version;
+            return match.Success
+                ? match.Groups["num"].Value + match.Groups["ver"].Value
+                : version;
         }
 
         /// <summary>

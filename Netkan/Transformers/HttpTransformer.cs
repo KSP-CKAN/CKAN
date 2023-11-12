@@ -12,7 +12,7 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(HttpTransformer));
 
-        public string Name { get { return "http"; } }
+        public string Name => "http";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {

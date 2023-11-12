@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
-using CKAN.Extensions;
-
 namespace CKAN
 {
     /// <summary>
@@ -61,8 +59,6 @@ namespace CKAN
         /// Returns the license as a string.
         /// </summary>
         public override string ToString()
-        {
-            return license;
-        }
+            => license;
     }
 }

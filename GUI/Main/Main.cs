@@ -58,11 +58,18 @@ namespace CKAN.GUI
             {
                 focusIdent = cmdlineArgs[1];
                 if (focusIdent.StartsWith("//"))
+                {
                     focusIdent = focusIdent.Substring(2);
+                }
                 else if (focusIdent.StartsWith("ckan://"))
+                {
                     focusIdent = focusIdent.Substring(7);
+                }
+
                 if (focusIdent.EndsWith("/"))
+                {
                     focusIdent = focusIdent.Substring(0, focusIdent.Length - 1);
+                }
             }
 
             Configuration.IConfiguration mainConfig = ServiceLocator.Container.Resolve<Configuration.IConfiguration>();
@@ -123,7 +130,7 @@ namespace CKAN.GUI
                 HandleCreated += (sender, e) => X11.SetWMClass("CKAN", "CKAN", Handle);
             }
 
-            currentUser = new GUIUser(this, this.Wait);
+            currentUser = new GUIUser(this, Wait);
             if (mgr != null)
             {
                 // With a working GUI, assign a GUIUser to the GameInstanceManager to replace the ConsoleUser
@@ -243,7 +250,7 @@ namespace CKAN.GUI
                             }
                             catch (RegistryInUseKraken kraken)
                             {
-                                if (Main.Instance.YesNoDialog(
+                                if (Instance.YesNoDialog(
                                     kraken.ToString(),
                                     Properties.Resources.MainDeleteLockfileYes,
                                     Properties.Resources.MainDeleteLockfileNo))
@@ -325,7 +332,7 @@ namespace CKAN.GUI
                     }
                     catch (RegistryInUseKraken kraken)
                     {
-                        if (Main.Instance.YesNoDialog(
+                        if (Instance.YesNoDialog(
                             kraken.ToString(),
                             Properties.Resources.MainDeleteLockfileYes,
                             Properties.Resources.MainDeleteLockfileNo))
@@ -397,13 +404,19 @@ namespace CKAN.GUI
             {
                 log.Debug("Asking user if they wish for auto-updates");
                 if (new AskUserForAutoUpdatesDialog().ShowDialog(this) == DialogResult.OK)
+                {
                     configuration.CheckForUpdatesOnLaunch = true;
+                }
+
                 configuration.CheckForUpdatesOnLaunchNoNag = true;
             }
 
             var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
             if (!Directory.Exists(pluginsPath))
+            {
                 Directory.CreateDirectory(pluginsPath);
+            }
+
             pluginController = new PluginController(pluginsPath, true);
 
             CurrentInstance.game.RebuildSubdirectories(CurrentInstance.GameDir());
@@ -688,7 +701,7 @@ namespace CKAN.GUI
             var myIncompat = toInstall.Where(mod => allIncompat.Contains(mod.identifier)).ToList();
             if (!myIncompat.Any()
                 // Confirm installation of incompatible like the Versions tab does
-                || Main.Instance.YesNoDialog(
+                || Instance.YesNoDialog(
                     string.Format(Properties.Resources.ModpackInstallIncompatiblePrompt,
                         string.Join(Environment.NewLine, myIncompat),
                         crit.ToSummaryString(CurrentInstance.game)),
@@ -861,7 +874,9 @@ namespace CKAN.GUI
         {
             var split = configuration.CommandLineArguments.Split(' ');
             if (split.Length == 0)
+            {
                 return;
+            }
 
             var registry = RegistryManager.Instance(CurrentInstance, repoData).registry;
 
@@ -985,7 +1000,7 @@ namespace CKAN.GUI
                  * if childcontrol had focus. Depending on optimization steps,
                  * parent.childcontrol.Enabled = true does not necessarily
                  * re-enable the parent.*/
-                this.Focus();
+                Focus();
             });
         }
 

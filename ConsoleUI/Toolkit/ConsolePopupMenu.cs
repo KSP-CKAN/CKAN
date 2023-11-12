@@ -66,13 +66,10 @@ namespace CKAN.ConsoleUI.Toolkit {
                         if (options[selectedOption].OnExec != null) {
                             val = options[selectedOption].OnExec(theme);
                         }
-                        if (options[selectedOption].SubMenu != null) {
-                            options[selectedOption].SubMenu.Run(
+                        options[selectedOption].SubMenu?.Run(
                                 theme,
                                 right - 2,
-                                top + selectedOption + 2
-                            );
-                        }
+                                top + selectedOption + 2);
                         break;
                     case ConsoleKey.F10:
                     case ConsoleKey.Escape:
@@ -156,23 +153,17 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         private string AnnotatedCaption(ConsoleMenuOption opt)
-        {
-            if (opt.SubMenu != null) {
-                return opt.Caption.PadRight(longestLength - 1) + submenuIndicator;
-            } else if (opt.RadioActive != null) {
-                if (opt.RadioActive()) {
-                    return $"({Symbols.dot}) {opt.Caption}".PadRight(longestLength);
-                } else {
-                    return $"( ) {opt.Caption}".PadRight(longestLength);
-                }
-            } else {
-                return opt.Caption.PadRight(longestLength - opt.Key.Length) + opt.Key;
-            }
-        }
+            => opt.SubMenu != null
+                ? opt.Caption.PadRight(longestLength - 1) + submenuIndicator
+                : opt.RadioActive != null
+                    ? opt.RadioActive()
+                        ? $"({Symbols.dot}) {opt.Caption}".PadRight(longestLength)
+                        : $"( ) {opt.Caption}".PadRight(longestLength)
+                    : opt.Caption.PadRight(longestLength - opt.Key.Length) + opt.Key;
 
-        private List<ConsoleMenuOption> options;
-        private int                     longestLength;
-        private int                     selectedOption = 0;
+        private readonly List<ConsoleMenuOption> options;
+        private readonly int                     longestLength;
+        private          int                     selectedOption = 0;
 
         private static readonly string submenuIndicator = ">";
     }

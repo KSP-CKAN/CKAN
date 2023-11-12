@@ -16,7 +16,7 @@ namespace CKAN.GUI
         public void LoadHistory(GameInstance inst, GUIConfiguration config, RepositoryDataManager repoData)
         {
             this.inst     = inst;
-            this.registry = RegistryManager.Instance(inst, repoData).registry;
+            registry = RegistryManager.Instance(inst, repoData).registry;
             this.config   = config;
             Util.Invoke(this, () =>
             {
@@ -38,7 +38,7 @@ namespace CKAN.GUI
                         Splitter.Panel1MinSize = Splitter.SplitterDistance =
                             TimestampColumn.Width
                                 + SystemInformation.VerticalScrollBarWidth
-                                + 4 * SystemInformation.BorderSize.Width;
+                                + (4 * SystemInformation.BorderSize.Width);
                         HistoryListView.EndUpdate();
                         HistoryListView_ItemSelectionChanged(null, null);
                         UseWaitCursor = false;
@@ -70,7 +70,7 @@ namespace CKAN.GUI
             evt.Handled = Util.TryOpenWebPage(HelpURLs.InstallationHistory);
         }
 
-        private void HistoryListView_ItemSelectionChanged(Object sender, ListViewItemSelectionChangedEventArgs e)
+        private void HistoryListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             UseWaitCursor = true;
             Task.Factory.StartNew(() =>
@@ -190,7 +190,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void ModsListView_ItemSelectionChanged(Object sender, ListViewItemSelectionChangedEventArgs e)
+        private void ModsListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             var mod = ModsListView.SelectedItems
                                   .Cast<ListViewItem>()

@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -12,7 +11,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class DownloadAttributeTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1, null, null, false, null);
+        private readonly TransformOptions opts = new TransformOptions(1, null, null, false, null);
 
         [Test]
         public void AddsDownloadAttributes()

@@ -22,7 +22,7 @@ namespace CKAN.ConsoleUI {
             int btnL = (Console.WindowWidth - btnW) / 2;
 
             ConsoleTextBox symbolTb = new ConsoleTextBox(
-                GetLeft() + 2, GetTop() + 2, Console.WindowWidth / 2 - 1, GetBottom() - 4,
+                GetLeft() + 2, GetTop() + 2, (Console.WindowWidth / 2) - 1, GetBottom() - 4,
                 false,
                 TextAlign.Center,
                 th => th.PopupBg,
@@ -51,7 +51,7 @@ namespace CKAN.ConsoleUI {
             ));
 
             ConsoleTextBox searchTb = new ConsoleTextBox(
-                Console.WindowWidth / 2 + 1, GetTop() + 3, GetRight() - 2, GetBottom() - 4,
+                (Console.WindowWidth / 2) + 1, GetTop() + 3, GetRight() - 2, GetBottom() - 4,
                 false,
                 TextAlign.Center,
                 th => th.PopupBg,

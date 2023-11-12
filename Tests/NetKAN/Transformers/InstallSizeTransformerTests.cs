@@ -38,6 +38,6 @@ namespace Tests.NetKAN.Transformers
             Assert.AreEqual(52291, (int)transformedJson["install_size"]);
         }
 
-        private TransformOptions opts = new TransformOptions(1, null, null, false, null);
+        private readonly TransformOptions opts = new TransformOptions(1, null, null, false, null);
     }
 }

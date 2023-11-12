@@ -12,7 +12,7 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class CurseTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1, null, null, false, null);
+        private readonly TransformOptions opts = new TransformOptions(1, null, null, false, null);
 
         // GH #199: Don't pre-fill KSP version fields if we see a ksp_min/max
         [Test]
@@ -47,10 +47,9 @@ namespace Tests.NetKAN.Transformers
                 license = "CC-BY",
                 title = "Dogecoin Flag",
                 description = "Such test. Very unit. Wow.",
-                members = new List<CurseModMember>{ new CurseModMember { username = "pjf" } }
+                members = new List<CurseModMember> { new CurseModMember { username = "pjf" } },
+                files = new List<CurseFile>() { new CurseFile() }
             };
-
-            cmod.files = new List<CurseFile>() { new CurseFile() };
             cmod.files[0].SetFileVersion("0.25");
             cmod.files[0].SetDownloadUrl("http://example.com/download.zip");
 

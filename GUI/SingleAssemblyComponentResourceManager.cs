@@ -24,7 +24,7 @@ namespace CKAN.GUI
                 // Lazy-load default language (without caring about duplicate assignment in race conditions, no harm done)
                 if (neutralResourcesCulture == null)
                 {
-                    neutralResourcesCulture = GetNeutralResourcesLanguage(this.MainAssembly);
+                    neutralResourcesCulture = GetNeutralResourcesLanguage(MainAssembly);
                 }
 
                 // If we're asking for the default language, then ask for the
@@ -35,7 +35,7 @@ namespace CKAN.GUI
                 }
                 string resourceFileName = GetResourceFileName(culture);
 
-                Stream store = this.MainAssembly.GetManifestResourceStream(contextTypeInfo, resourceFileName);
+                Stream store = MainAssembly.GetManifestResourceStream(contextTypeInfo, resourceFileName);
 
                 // If we found the appropriate resources in the local assembly
                 if (store != null)

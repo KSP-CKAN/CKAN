@@ -70,7 +70,9 @@ namespace CKAN
             new SortedDictionary<ModuleVersion, CkanModule>();
 
         [OnError]
+        #pragma warning disable IDE0051, IDE0060
         private void OnError(StreamingContext context, ErrorContext errorContext)
+        #pragma warning restore IDE0051, IDE0060
         {
             log.WarnFormat("Discarding CkanModule, failed to parse {0}: {1}",
                 errorContext.Path, errorContext.Error.GetBaseException().Message);
@@ -83,8 +85,10 @@ namespace CKAN
         private void Add(CkanModule module)
         {
             if (!module.identifier.Equals(identifier))
+            {
                 throw new ArgumentException(
                     string.Format("This AvailableModule is for tracking {0} not {1}", identifier, module.identifier));
+            }
 
             log.DebugFormat("Adding to available module: {0}", module);
             module_version[module.version] = module;

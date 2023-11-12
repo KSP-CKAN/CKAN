@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 
 using Newtonsoft.Json;
 using CommandLine;
@@ -139,7 +137,9 @@ namespace CKAN.CmdLine
                     Manager  = manager ?? new GameInstanceManager(User);
                     exitCode = options.Handle(Manager, User);
                     if (exitCode != Exit.OK)
+                    {
                         return;
+                    }
 
                     switch (option)
                     {
@@ -282,7 +282,7 @@ namespace CKAN.CmdLine
 
                 foreach (Repository candidate in repositoryList.repositories)
                 {
-                    if (String.Equals(candidate.name, options.name, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(candidate.name, options.name, StringComparison.OrdinalIgnoreCase))
                     {
                         options.name = candidate.name;
                         options.uri = candidate.uri.ToString();

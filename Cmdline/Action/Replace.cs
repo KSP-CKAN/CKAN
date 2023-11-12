@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 using log4net;
 using CKAN.Versioning;
@@ -9,7 +8,7 @@ namespace CKAN.CmdLine
 {
     public class Replace : ICommand
     {
-        public Replace(CKAN.GameInstanceManager mgr, RepositoryDataManager repoData, IUser user)
+        public Replace(GameInstanceManager mgr, RepositoryDataManager repoData, IUser user)
         {
             manager       = mgr;
             this.repoData = repoData;

@@ -14,7 +14,7 @@ namespace CKAN.Extensions
 
         public static V GetOrDefault<K, V>(this Dictionary<K, V> dict, K key)
         {
-            V val = default(V);
+            V val = default;
             if (key != null)
             {
                 dict.TryGetValue(key, out val);

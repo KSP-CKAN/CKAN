@@ -34,7 +34,7 @@ namespace CKAN.GUI
             this.regMgr   = regMgr;
             if (Platform.IsMono)
             {
-                this.ClearCacheMenu.Renderer = new FlatToolStripRenderer();
+                ClearCacheMenu.Renderer = new FlatToolStripRenderer();
             }
             config = ServiceLocator.Container.Resolve<IConfiguration>();
         }
@@ -253,7 +253,7 @@ namespace CKAN.GUI
                 out int cacheFileCount, out long cacheSize, out _);
 
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
-            string confirmationText = String.Format(
+            string confirmationText = string.Format(
                 Properties.Resources.SettingsDialogDeleteConfirm,
                 cacheFileCount,
                 CkanModule.FmtSize(cacheSize));
@@ -553,14 +553,8 @@ namespace CKAN.GUI
             {
                 AutoUpdate.Instance.FetchLatestReleaseInfo();
                 var latestVersion = AutoUpdate.Instance.latestUpdate.Version;
-                if (latestVersion.IsGreaterThan(new ModuleVersion(Meta.GetVersion(VersionFormat.Short))) && AutoUpdate.Instance.IsFetched())
-                {
-                    InstallUpdateButton.Enabled = true;
-                }
-                else
-                {
-                    InstallUpdateButton.Enabled = false;
-                }
+                InstallUpdateButton.Enabled = latestVersion.IsGreaterThan(new ModuleVersion(Meta.GetVersion(VersionFormat.Short)))
+                    && AutoUpdate.Instance.IsFetched();
 
                 LatestVersionLabel.Text = latestVersion.ToString();
             }
@@ -635,7 +629,9 @@ namespace CKAN.GUI
         private void RefreshTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
                 e.Handled = true;
+            }
         }
 
         private void PauseRefreshCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -643,9 +639,13 @@ namespace CKAN.GUI
             Main.Instance.configuration.RefreshPaused = PauseRefreshCheckBox.Checked;
 
             if (Main.Instance.configuration.RefreshPaused)
+            {
                 Main.Instance.refreshTimer.Stop();
+            }
             else
+            {
                 Main.Instance.refreshTimer.Start();
+            }
         }
     }
 }

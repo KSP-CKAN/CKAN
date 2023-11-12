@@ -107,7 +107,9 @@ namespace CKAN.GUI
                 var orig = currentChangeSet;
                 currentChangeSet = value;
                 if (!ReferenceEquals(orig, value))
+                {
                     ChangeSetUpdated();
+                }
             }
         }
 
@@ -216,7 +218,7 @@ namespace CKAN.GUI
         private void RefreshToolButton_Click(object sender, EventArgs e)
         {
             // If user is holding Shift or Ctrl, force a full update
-            Main.Instance.UpdateRepo((Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0);
+            Main.Instance.UpdateRepo((ModifierKeys & (Keys.Control | Keys.Shift)) != 0);
         }
 
         #region Filter dropdown
@@ -337,74 +339,74 @@ namespace CKAN.GUI
         private void tagFilterButton_Click(object sender, EventArgs e)
         {
             var clicked = sender as ToolStripMenuItem;
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Tag, clicked.Tag as ModuleTag, null), merge);
         }
 
         private void customFilterButton_Click(object sender, EventArgs e)
         {
             var clicked = sender as ToolStripMenuItem;
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, clicked.Tag as ModuleLabel), merge);
         }
 
         private void FilterCompatibleButton_Click(object sender, EventArgs e)
         {
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Compatible), merge);
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
         {
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Installed), merge);
         }
 
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.InstalledUpdateAvailable), merge);
         }
 
         private void FilterReplaceableButton_Click(object sender, EventArgs e)
         {
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Replaceable), merge);
         }
 
         private void FilterCachedButton_Click(object sender, EventArgs e)
         {
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Cached), merge);
         }
 
         private void FilterUncachedButton_Click(object sender, EventArgs e)
         {
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Uncached), merge);
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.NewInRepository), merge);
         }
 
         private void FilterNotInstalledButton_Click(object sender, EventArgs e)
         {
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.NotInstalled), merge);
         }
 
         private void FilterIncompatibleButton_Click(object sender, EventArgs e)
         {
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Incompatible), merge);
         }
 
         private void FilterAllButton_Click(object sender, EventArgs e)
         {
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             Filter(ModList.FilterToSavedSearch(GUIModFilter.All), merge);
         }
 
@@ -571,7 +573,7 @@ namespace CKAN.GUI
             // Left click -> sort by new column / change sorting direction.
             if (e.Button == MouseButtons.Left)
             {
-                if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                if ((ModifierKeys & Keys.Shift) == Keys.Shift)
                 {
                     AddSort(ModGrid.Columns[e.ColumnIndex]);
                 }
@@ -666,14 +668,20 @@ namespace CKAN.GUI
                 case Keys.Home:
                     // First row.
                     if (ModGrid.Rows.Count > 0) //Handles for empty filters
+                    {
                         ModGrid.CurrentCell = ModGrid.Rows[0].Cells[SelectableColumnIndex()];
+                    }
+
                     e.Handled = true;
                     break;
 
                 case Keys.End:
                     // Last row.
                     if (ModGrid.Rows.Count > 0) //Handles for empty filters
+                    {
                         ModGrid.CurrentCell = ModGrid.Rows[ModGrid.Rows.Count - 1].Cells[SelectableColumnIndex()];
+                    }
+
                     e.Handled = true;
                     break;
 
@@ -753,14 +761,20 @@ namespace CKAN.GUI
         private void ModGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left)
+            {
                 return;
+            }
 
             if (e.RowIndex < 0)
+            {
                 return;
+            }
 
             DataGridViewRow row = ModGrid.Rows[e.RowIndex];
             if (!(row.Cells[0] is DataGridViewCheckBoxCell))
+            {
                 return;
+            }
 
             // Need to change the state here, because the user hasn't clicked on a checkbox.
             row.Cells[0].Value = !(bool)row.Cells[0].Value;
@@ -773,7 +787,9 @@ namespace CKAN.GUI
             int column_index = e.ColumnIndex;
 
             if (row_index < 0 || column_index < 0)
+            {
                 return;
+            }
 
             DataGridView     grid     = sender as DataGridView;
             DataGridViewRow  row      = grid?.Rows[row_index];
@@ -785,7 +801,9 @@ namespace CKAN.GUI
                 DataGridViewLinkCell cell = gridCell as DataGridViewLinkCell;
                 string cmd = cell?.Value.ToString();
                 if (!string.IsNullOrEmpty(cmd))
+                {
                     Utilities.ProcessStartURL(cmd);
+                }
             }
             else
             {
@@ -927,11 +945,15 @@ namespace CKAN.GUI
                 GUIMod mod = row.Tag as GUIMod;
                 bool row_match;
                 if (exactMatch)
+                {
                     row_match = mod.Name == key || mod.Identifier == key;
+                }
                 else
+                {
                     row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
                                 mod.Abbrevation.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
                                 mod.Identifier.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                }
 
                 if (row_match && first_match == null)
                 {
@@ -964,7 +986,9 @@ namespace CKAN.GUI
 
                 ModGrid.CurrentCell = match.Cells[SelectableColumnIndex()];
                 if (showAsFirst)
+                {
                     ModGrid.FirstDisplayedScrollingRowIndex = match.Index;
+                }
             }
             else
             {
@@ -1092,7 +1116,9 @@ namespace CKAN.GUI
         private void _UpdateFilters()
         {
             if (ModGrid == null || mainModList?.full_list_of_mod_rows == null)
+            {
                 return;
+            }
 
             // Each time a row in DataGridViewRow is changed, DataGridViewRow updates the view. Which is slow.
             // To make the filtering process faster, Copy the list of rows. Filter out the hidden and replace the
@@ -1220,7 +1246,7 @@ namespace CKAN.GUI
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListPopulatingList);
             // Update our mod listing
-            mainModList.ConstructModList(gui_mods as IReadOnlyCollection<GUIMod>,
+            mainModList.ConstructModList(gui_mods,
                                          Main.Instance.CurrentInstance.Name,
                                          Main.Instance.CurrentInstance.game,
                                          ChangeSet);
@@ -1232,25 +1258,25 @@ namespace CKAN.GUI
             var has_unheld_updates = mainModList.Modules.Any(mod => mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
             Util.Invoke(menuStrip2, () =>
             {
-                FilterCompatibleButton.Text = String.Format(Properties.Resources.MainModListCompatible,
+                FilterCompatibleButton.Text = string.Format(Properties.Resources.MainModListCompatible,
                     mainModList.CountModsByFilter(GUIModFilter.Compatible));
-                FilterInstalledButton.Text = String.Format(Properties.Resources.MainModListInstalled,
+                FilterInstalledButton.Text = string.Format(Properties.Resources.MainModListInstalled,
                     mainModList.CountModsByFilter(GUIModFilter.Installed));
-                FilterInstalledUpdateButton.Text = String.Format(Properties.Resources.MainModListUpgradeable,
+                FilterInstalledUpdateButton.Text = string.Format(Properties.Resources.MainModListUpgradeable,
                     mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-                FilterReplaceableButton.Text = String.Format(Properties.Resources.MainModListReplaceable,
+                FilterReplaceableButton.Text = string.Format(Properties.Resources.MainModListReplaceable,
                     mainModList.CountModsByFilter(GUIModFilter.Replaceable));
-                FilterCachedButton.Text = String.Format(Properties.Resources.MainModListCached,
+                FilterCachedButton.Text = string.Format(Properties.Resources.MainModListCached,
                     mainModList.CountModsByFilter(GUIModFilter.Cached));
-                FilterUncachedButton.Text = String.Format(Properties.Resources.MainModListUncached,
+                FilterUncachedButton.Text = string.Format(Properties.Resources.MainModListUncached,
                     mainModList.CountModsByFilter(GUIModFilter.Uncached));
-                FilterNewButton.Text = String.Format(Properties.Resources.MainModListNewlyCompatible,
+                FilterNewButton.Text = string.Format(Properties.Resources.MainModListNewlyCompatible,
                     mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
-                FilterNotInstalledButton.Text = String.Format(Properties.Resources.MainModListNotInstalled,
+                FilterNotInstalledButton.Text = string.Format(Properties.Resources.MainModListNotInstalled,
                     mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
-                FilterIncompatibleButton.Text = String.Format(Properties.Resources.MainModListIncompatible,
+                FilterIncompatibleButton.Text = string.Format(Properties.Resources.MainModListIncompatible,
                     mainModList.CountModsByFilter(GUIModFilter.Incompatible));
-                FilterAllButton.Text = String.Format(Properties.Resources.MainModListAll,
+                FilterAllButton.Text = string.Format(Properties.Resources.MainModListAll,
                     mainModList.CountModsByFilter(GUIModFilter.All));
 
                 UpdateAllToolButton.Enabled = has_unheld_updates;
@@ -1517,7 +1543,9 @@ namespace CKAN.GUI
             navHistory.IsReadOnly = false;
             var currentMod = SelectedModule;
             if (currentMod != null)
+            {
                 navHistory.AddToHistory(currentMod);
+            }
         }
 
         private void NavUpdateUI()
@@ -1534,13 +1562,17 @@ namespace CKAN.GUI
         public void NavGoBackward()
         {
             if (navHistory.CanNavigateBackward)
+            {
                 NavGoToMod(navHistory.NavigateBackward());
+            }
         }
 
         public void NavGoForward()
         {
             if (navHistory.CanNavigateForward)
+            {
                 NavGoToMod(navHistory.NavigateForward());
+            }
         }
 
         private void NavGoToMod(GUIMod module)
@@ -1574,7 +1606,9 @@ namespace CKAN.GUI
 
                 case Keys.Control | Keys.S:
                     if (ChangeSet != null && ChangeSet.Any())
+                    {
                         ApplyToolButton_Click(null, null);
+                    }
 
                     return true;
             }

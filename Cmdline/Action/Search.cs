@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using CKAN.Games;
 
 namespace CKAN.CmdLine
 {
@@ -19,7 +18,7 @@ namespace CKAN.CmdLine
             SearchOptions options = (SearchOptions)raw_options;
 
             // Check the input.
-            if (String.IsNullOrWhiteSpace(options.search_term) && String.IsNullOrWhiteSpace(options.author_term))
+            if (string.IsNullOrWhiteSpace(options.search_term) && string.IsNullOrWhiteSpace(options.author_term))
             {
                 user.RaiseError(Properties.Resources.SearchNoTerm);
                 return Exit.BADOPT;
@@ -33,7 +32,7 @@ namespace CKAN.CmdLine
             }
 
             // Show how many matches we have.
-            if (options.all && !String.IsNullOrWhiteSpace(options.author_term))
+            if (options.all && !string.IsNullOrWhiteSpace(options.author_term))
             {
                 user.RaiseMessage(Properties.Resources.SearchFoundByAuthorWithIncompat,
                     matching_compatible.Count().ToString(),
@@ -41,21 +40,21 @@ namespace CKAN.CmdLine
                     options.search_term,
                     options.author_term);
             }
-            else if (options.all && String.IsNullOrWhiteSpace(options.author_term))
+            else if (options.all && string.IsNullOrWhiteSpace(options.author_term))
             {
                 user.RaiseMessage(Properties.Resources.SearchFoundWithIncompat,
                     matching_compatible.Count().ToString(),
                     matching_incompatible.Count().ToString(),
                     options.search_term);
             }
-            else if (!options.all && !String.IsNullOrWhiteSpace(options.author_term))
+            else if (!options.all && !string.IsNullOrWhiteSpace(options.author_term))
             {
                 user.RaiseMessage(Properties.Resources.SearchFoundByAuthor,
                     matching_compatible.Count().ToString(),
                     options.search_term,
                     options.author_term);
             }
-            else if (!options.all && String.IsNullOrWhiteSpace(options.author_term))
+            else if (!options.all && string.IsNullOrWhiteSpace(options.author_term))
             {
                 user.RaiseMessage(Properties.Resources.SearchFound,
                     matching_compatible.Count().ToString(),
@@ -77,7 +76,7 @@ namespace CKAN.CmdLine
                         mod.identifier,
                         mod.version,
                         mod.name,
-                        mod.author == null ? "N/A" : String.Join(", ", mod.author),
+                        mod.author == null ? "N/A" : string.Join(", ", mod.author),
                         mod.@abstract);
                 }
 
@@ -94,7 +93,7 @@ namespace CKAN.CmdLine
                             mod.version,
                             GameVersion,
                             mod.name,
-                            mod.author == null ? "N/A" : String.Join(", ", mod.author),
+                            mod.author == null ? "N/A" : string.Join(", ", mod.author),
                             mod.@abstract);
                     }
                 }
@@ -125,14 +124,22 @@ namespace CKAN.CmdLine
         public List<CkanModule> PerformSearch(CKAN.GameInstance ksp, string term, string author = null, bool searchIncompatible = false)
         {
             // Remove spaces and special characters from the search term.
-            term   = String.IsNullOrWhiteSpace(term)   ? string.Empty : CkanModule.nonAlphaNums.Replace(term, "");
-            author = String.IsNullOrWhiteSpace(author) ? string.Empty : CkanModule.nonAlphaNums.Replace(author, "");
+            term   = string.IsNullOrWhiteSpace(term)   ? string.Empty : CkanModule.nonAlphaNums.Replace(term, "");
+            author = string.IsNullOrWhiteSpace(author) ? string.Empty : CkanModule.nonAlphaNums.Replace(author, "");
 
             var registry = RegistryManager.Instance(ksp, repoData).registry;
 
-            if (!searchIncompatible)
-            {
-                return registry
+            return searchIncompatible
+                ? registry
+                    .IncompatibleModules(ksp.VersionCriteria())
+                    // Look for a match in each string.
+                    .Where(module => (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                            || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                            || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                            || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
+                            && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1))
+                    .ToList()
+                : registry
                     .CompatibleModules(ksp.VersionCriteria())
                     // Look for a match in each string.
                     .Where(module => (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
@@ -141,19 +148,6 @@ namespace CKAN.CmdLine
                             || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
                             && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1))
                     .ToList();
-            }
-            else
-            {
-                return registry
-                    .IncompatibleModules(ksp.VersionCriteria())
-                    // Look for a match in each string.
-                    .Where(module => (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                            || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                            || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                            || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
-                            && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1))
-                    .ToList();
-            }
         }
 
         /// <summary>

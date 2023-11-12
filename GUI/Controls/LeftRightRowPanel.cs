@@ -62,7 +62,9 @@ namespace CKAN
         /// true if the borders of the panels should be shown, false to hide them.
         /// Useful for debugging.
         /// </summary>
+        #pragma warning disable IDE0051
         private bool BordersVisible
+        #pragma warning restore IDE0051
         {
             get => BorderStyle == BorderStyle.FixedSingle;
             set

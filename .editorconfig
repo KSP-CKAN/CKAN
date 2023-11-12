@@ -1,0 +1,51 @@
+[*.cs]
+dotnet_analyzer_diagnostic.category-Style.severity = warning
+dotnet_analyzer_diagnostic.category-CodeQuality.severity = warning
+
+# Using `var` is good
+dotnet_diagnostic.IDE0008.severity = none
+
+# Don't need to enumerate every case for `switch` with `default`
+dotnet_diagnostic.IDE0010.severity = none
+
+# Don't "simplify" if statements that throw
+dotnet_diagnostic.IDE0016.severity = none
+
+# Expression bodies are good for methods
+dotnet_diagnostic.IDE0022.severity = none
+
+# Expression bodies are fine for operators
+dotnet_diagnostic.IDE0024.severity = none
+
+# Collection initialization simplification affects JObject, which is dumb
+dotnet_diagnostic.IDE0028.severity = none
+
+# "auto" properties seem pretty useless
+dotnet_diagnostic.IDE0032.severity = none
+
+# "local functions" are just weird, no thank you
+dotnet_diagnostic.IDE0039.severity = none
+
+# "if" statements should only be "simplified" if they're pure functional,
+# and these checks don't know that
+dotnet_diagnostic.IDE0045.severity = none
+dotnet_diagnostic.IDE0046.severity = none
+dotnet_diagnostic.IDE0270.severity = none
+
+# We use "unnecessary" parentheses for clarity
+dotnet_diagnostic.IDE0047.severity = none
+
+# Let me keep my extra spaces for aligning things
+dotnet_diagnostic.IDE0055.severity = none
+
+# OK to call functions that return values and not use them
+dotnet_diagnostic.IDE0058.severity = none
+
+# A `using` inside a namespace is useful as a typedef
+dotnet_diagnostic.IDE0065.severity = none
+
+# Allow namespaces to be independent of folder names
+dotnet_diagnostic.IDE0130.severity = none
+
+# Who cares if it's a JSON formatted string, in a test?
+dotnet_diagnostic.JSON002.severity = none

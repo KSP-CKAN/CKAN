@@ -387,10 +387,7 @@ namespace CKAN
     {
         public readonly string mod;
 
-        public override string Message
-        {
-            get { return string.Format(Properties.Resources.KrakenNotInstalled, mod); }
-        }
+        public override string Message => string.Format(Properties.Resources.KrakenNotInstalled, mod);
 
         // TODO: Since we override message, should we really allow users to pass in a reason
         // here? Is there a way we can check if that was set, and then access it directly from
@@ -453,7 +450,7 @@ namespace CKAN
         public RegistryInUseKraken(string path, string reason = null, Exception inner_exception = null)
             :base(reason, inner_exception)
         {
-            this.lockfilePath = path;
+            lockfilePath = path;
         }
 
         public override string ToString()
@@ -531,7 +528,7 @@ namespace CKAN
         public InstanceNameTakenKraken(string name, string reason = null)
             : base(reason)
         {
-            this.instName = name;
+            instName = name;
         }
     }
 

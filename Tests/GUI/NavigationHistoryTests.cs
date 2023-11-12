@@ -238,9 +238,10 @@ namespace Tests.GUI
         {
             // arrange
 
-            var nav = new NavigationHistory<int>();
-
-            nav.IsReadOnly = true;
+            var nav = new NavigationHistory<int>
+            {
+                IsReadOnly = true
+            };
 
             // act
 

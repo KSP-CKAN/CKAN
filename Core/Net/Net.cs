@@ -66,10 +66,10 @@ namespace CKAN
             => Download(url.OriginalString, out etag, filename, user);
 
         public static string Download(Uri url, string filename = null, IUser user = null)
-            => Download(url, out string etag, filename, user);
+            => Download(url, out _, filename, user);
 
         public static string Download(string url, string filename = null, IUser user = null)
-            => Download(url, out string etag, filename, user);
+            => Download(url, out _, filename, user);
 
         public static string Download(string url, out string etag, string filename = null, IUser user = null)
         {
@@ -323,9 +323,9 @@ namespace CKAN
                     log.InfoFormat("Remote GitHub URL is in raw format, using as is.");
                     return remoteUri;
                 }
-                if (segments.Count < 6 ||
-                    string.Compare(segments[3], "blob/", StringComparison.OrdinalIgnoreCase) != 0 &&
-                    string.Compare(segments[3], "tree/", StringComparison.OrdinalIgnoreCase) != 0)
+                if (segments.Count < 6
+                    || (string.Compare(segments[3], "blob/", StringComparison.OrdinalIgnoreCase) != 0
+                        && string.Compare(segments[3], "tree/", StringComparison.OrdinalIgnoreCase) != 0))
                 {
                     log.WarnFormat("Remote non-raw GitHub URL is in an unknown format, using as is.");
                     return remoteUri;

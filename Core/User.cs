@@ -33,10 +33,7 @@ namespace CKAN
         /// <summary>
         /// NullUser is headless. Variable not used for NullUser.
         /// </summary>
-        public bool Headless
-        {
-            get { return true; }
-        }
+        public bool Headless => true;
 
         /// <summary>
         /// NullUser returns true.

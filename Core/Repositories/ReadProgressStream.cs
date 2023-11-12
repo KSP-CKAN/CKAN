@@ -42,7 +42,9 @@ namespace CKAN
         {
             if (stream == null)
             {
+                #pragma warning disable IDE0016
                 throw new ArgumentNullException("stream");
+                #pragma warning restore IDE0016
             }
             inner = stream;
         }
@@ -56,10 +58,12 @@ namespace CKAN
         public override long Position
         {
             get => inner.Position;
+            #pragma warning disable IDE0027
             set
             {
                 inner.Position = value;
             }
+            #pragma warning restore IDE0027
         }
         public override void Flush()
         {

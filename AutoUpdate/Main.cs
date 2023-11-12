@@ -123,7 +123,7 @@ namespace CKAN.AutoUpdateHelper
             // Start CKAN
             if (IsOnMono())
             {
-                Process.Start("mono", String.Format("\"{0}\"", path));
+                Process.Start("mono", string.Format("\"{0}\"", path));
             }
             else
             {
@@ -171,7 +171,7 @@ namespace CKAN.AutoUpdateHelper
         /// </summary>
         /// <param name="sender">Source of unhandled exception</param>
         /// <param name="e">Info about the exception</param>
-        private static void UnhandledExceptionEventHandler(Object sender, UnhandledExceptionEventArgs e)
+        private static void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs e)
         {
             ReportError(Properties.Resources.UnhandledException, e.ExceptionObject);
         }

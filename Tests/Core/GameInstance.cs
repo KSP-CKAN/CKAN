@@ -13,7 +13,7 @@ namespace Tests.Core
     [TestFixture]
     public class GameInstanceTests
     {
-        private CKAN.GameInstance ksp;
+        private GameInstance ksp;
         private string ksp_dir;
         private IUser nullUser;
 
@@ -23,7 +23,7 @@ namespace Tests.Core
             ksp_dir = TestData.NewTempDir();
             nullUser = new NullUser();
             CKAN.Utilities.CopyDirectory(TestData.good_ksp_dir(), ksp_dir, true);
-            ksp = new CKAN.GameInstance(new KerbalSpaceProgram(), ksp_dir, "test", nullUser);
+            ksp = new GameInstance(new KerbalSpaceProgram(), ksp_dir, "test", nullUser);
         }
 
         [TearDown]
@@ -34,7 +34,7 @@ namespace Tests.Core
                 // Manually dispose of RegistryManager
                 // For some reason the KSP instance doesn't do this itself causing test failures because the registry
                 // lock file is still in use. So just dispose of it ourselves.
-                CKAN.RegistryManager.DisposeInstance(ksp);
+                RegistryManager.DisposeInstance(ksp);
             }
 
             Directory.Delete(ksp_dir, true);
@@ -67,8 +67,7 @@ namespace Tests.Core
             //Use Uri to avoid issues with windows vs linux line separators.
             var canonicalPath = new Uri(Path.Combine(ksp_dir, "saves", "training")).LocalPath;
             var game = new KerbalSpaceProgram();
-            string dest;
-            Assert.IsTrue(game.AllowInstallationIn("Tutorial", out dest));
+            Assert.IsTrue(game.AllowInstallationIn("Tutorial", out string dest));
             Assert.AreEqual(
                 new DirectoryInfo(ksp.ToAbsoluteGameDir(dest)),
                 new DirectoryInfo(canonicalPath)
@@ -79,7 +78,7 @@ namespace Tests.Core
         public void ToAbsolute()
         {
             Assert.AreEqual(
-                CKAN.CKANPathUtils.NormalizePath(
+                CKANPathUtils.NormalizePath(
                     Path.Combine(ksp_dir, "GameData/HydrazinePrincess")
                 ),
                 ksp.ToAbsoluteGameDir("GameData/HydrazinePrincess")
@@ -121,7 +120,7 @@ namespace Tests.Core
             File.WriteAllText(jsonpath, compatible_ksp_versions_json);
 
             // Act
-            CKAN.GameInstance my_ksp = new CKAN.GameInstance(new KerbalSpaceProgram(), gamedir, "missing-ver-test", nullUser);
+            GameInstance my_ksp = new GameInstance(new KerbalSpaceProgram(), gamedir, "missing-ver-test", nullUser);
 
             // Assert
             Assert.IsFalse(my_ksp.Valid);
@@ -155,7 +154,7 @@ namespace Tests.Core
             // Act & Assert
             Assert.DoesNotThrow(() =>
             {
-                CKAN.GameInstance my_ksp = new CKAN.GameInstance(new KerbalSpaceProgram(), gamedir, "null-compat-ver-test", nullUser);
+                GameInstance my_ksp = new GameInstance(new KerbalSpaceProgram(), gamedir, "null-compat-ver-test", nullUser);
             });
 
             Directory.Delete(gamedir, true);

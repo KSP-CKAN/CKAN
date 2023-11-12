@@ -35,12 +35,8 @@ namespace CKAN.ConsoleUI.Toolkit {
             // Main button text
             Console.SetCursorPosition(GetLeft(), GetTop());
             Console.BackgroundColor = theme.PopupButtonBg;
-            if (focused) {
-                Console.ForegroundColor = theme.PopupButtonSelectedFg;
-            } else {
-                Console.ForegroundColor = theme.PopupButtonFg;
-            }
-            Console.Write(ScreenObject.PadCenter(caption, w));
+            Console.ForegroundColor = focused ? theme.PopupButtonSelectedFg : theme.PopupButtonFg;
+            Console.Write(PadCenter(caption, w));
 
             // Right shadow
             if (theme.PopupButtonShadow.HasValue)
@@ -93,8 +89,8 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
         }
 
-        private          string caption;
-        private          Action choiceEvent;
+        private readonly string caption;
+        private readonly Action choiceEvent;
         private readonly string shadowStrip;
     }
 }

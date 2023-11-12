@@ -56,9 +56,8 @@ namespace CKAN
             {
                 ResetAgent();
                 // Check whether to use an auth token for this host
-                string token;
                 if (url.IsAbsoluteUri
-                    && ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(url.Host, out token)
+                    && ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(url.Host, out string token)
                         && !string.IsNullOrEmpty(token))
                 {
                     log.InfoFormat("Using auth token for {0}", url.Host);
@@ -129,8 +128,8 @@ namespace CKAN
         private readonly object dlMutex = new object();
         // NOTE: Never remove anything from this, because closures have indexes into it!
         // (Clearing completely after completion is OK)
-        private List<NetAsyncDownloaderDownloadPart> downloads       = new List<NetAsyncDownloaderDownloadPart>();
-        private List<NetAsyncDownloaderDownloadPart> queuedDownloads = new List<NetAsyncDownloaderDownloadPart>();
+        private readonly List<NetAsyncDownloaderDownloadPart> downloads       = new List<NetAsyncDownloaderDownloadPart>();
+        private readonly List<NetAsyncDownloaderDownloadPart> queuedDownloads = new List<NetAsyncDownloaderDownloadPart>();
         private int completed_downloads;
 
         // For inter-thread communication
@@ -228,7 +227,9 @@ namespace CKAN
                         {
                             throw new MissingCertificateKraken();
                         }
+                        #pragma warning disable IDE0011
                         else switch ((wex.Response as HttpWebResponse)?.StatusCode)
+                        #pragma warning restore IDE0011
                         {
                             // Handle HTTP 403 used for throttling
                             case HttpStatusCode.Forbidden:
@@ -314,7 +315,7 @@ namespace CKAN
 
                         // Schedule for us to get back progress reports.
                         dl.Progress += (ProgressPercentage, BytesReceived, TotalBytesToReceive) =>
-                            FileProgressReport(index, ProgressPercentage, BytesReceived, TotalBytesToReceive);
+                            FileProgressReport(index, BytesReceived, TotalBytesToReceive);
 
                         // And schedule a notification if we're done (or if something goes wrong)
                         dl.Done += (sender, args, etag) =>
@@ -364,7 +365,7 @@ namespace CKAN
         /// <param name="percent">The percent complete</param>
         /// <param name="bytesDownloaded">The bytes downloaded</param>
         /// <param name="bytesToDownload">The total amount of bytes we expect to download</param>
-        private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesToDownload)
+        private void FileProgressReport(int index, long bytesDownloaded, long bytesToDownload)
         {
             NetAsyncDownloaderDownloadPart download = downloads[index];
 
@@ -390,7 +391,10 @@ namespace CKAN
             foreach (NetAsyncDownloaderDownloadPart t in downloads.ToList())
             {
                 if (t == null)
+                {
                     continue;
+                }
+
                 if (t.bytesLeft > 0)
                 {
                     totalBytesPerSecond += t.bytesPerSecond;
@@ -403,14 +407,17 @@ namespace CKAN
             {
                 // Somehow managed to get a NullRef for t here
                 if (dl == null)
+                {
                     continue;
+                }
+
                 totalBytesLeft += dl.target.size;
                 totalSize += dl.target.size;
             }
 
             int totalPercentage = (int)(((totalSize - totalBytesLeft) * 100) / (totalSize));
             User.RaiseProgress(
-                String.Format(Properties.Resources.NetAsyncDownloaderProgress,
+                string.Format(Properties.Resources.NetAsyncDownloaderProgress,
                     CkanModule.FmtSize(totalBytesPerSecond),
                     CkanModule.FmtSize(totalBytesLeft)),
                 totalPercentage);

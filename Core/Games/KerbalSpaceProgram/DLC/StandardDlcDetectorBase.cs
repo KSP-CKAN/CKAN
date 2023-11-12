@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 
 using CKAN.DLC;
 using CKAN.Versioning;
-using CKAN.Games;
 
 namespace CKAN.Games.KerbalSpaceProgram.DLC
 {
@@ -25,7 +24,7 @@ namespace CKAN.Games.KerbalSpaceProgram.DLC
         private readonly string DirectoryBaseName;
         private readonly Dictionary<string, string> CanonicalVersions;
 
-        private IGame game;
+        private readonly IGame game;
 
         private static readonly Regex VersionPattern = new Regex(
             @"^Version\s+(?<version>\S+)",
@@ -38,10 +37,14 @@ namespace CKAN.Games.KerbalSpaceProgram.DLC
         protected StandardDlcDetectorBase(IGame game, string identifierBaseName, string directoryBaseName, GameVersion releaseGameVersion, Dictionary<string, string> canonicalVersions = null)
         {
             if (string.IsNullOrWhiteSpace(identifierBaseName))
+            {
                 throw new ArgumentException("Value must be provided.", nameof(identifierBaseName));
+            }
 
             if (string.IsNullOrWhiteSpace(directoryBaseName))
+            {
                 throw new ArgumentException("Value must be provided.", nameof(directoryBaseName));
+            }
 
             this.game = game;
             IdentifierBaseName = identifierBaseName;
@@ -71,7 +74,9 @@ namespace CKAN.Games.KerbalSpaceProgram.DLC
                             var versionStr = match.Groups["version"].Value;
 
                             if (CanonicalVersions.ContainsKey(versionStr))
+                            {
                                 versionStr = CanonicalVersions[versionStr];
+                            }
 
                             version = new UnmanagedModuleVersion(versionStr);
                             break;

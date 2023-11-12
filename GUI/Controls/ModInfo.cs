@@ -158,7 +158,7 @@ namespace CKAN.GUI
                     foreach (ModuleTag tag in tags)
                     {
                         MetadataTagsLabelsPanel.Controls.Add(TagLabelLink(
-                            tag.Name, tag, new LinkLabelLinkClickedEventHandler(this.TagLinkLabel_LinkClicked)
+                            tag.Name, tag, new LinkLabelLinkClickedEventHandler(TagLinkLabel_LinkClicked)
                         ));
                     }
                 }
@@ -170,7 +170,7 @@ namespace CKAN.GUI
                     foreach (ModuleLabel mlbl in labels)
                     {
                         MetadataTagsLabelsPanel.Controls.Add(TagLabelLink(
-                            mlbl.Name, mlbl, new LinkLabelLinkClickedEventHandler(this.LabelLinkLabel_LinkClicked)
+                            mlbl.Name, mlbl, new LinkLabelLinkClickedEventHandler(LabelLinkLabel_LinkClicked)
                         ));
                     }
                 }
@@ -198,7 +198,7 @@ namespace CKAN.GUI
         private void TagLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var link = sender as LinkLabel;
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             OnChangeFilter?.Invoke(
                 ModList.FilterToSavedSearch(GUIModFilter.Tag, link.Tag as ModuleTag, null),
                 merge);
@@ -207,7 +207,7 @@ namespace CKAN.GUI
         private void LabelLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var link = sender as LinkLabel;
-            var merge = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             OnChangeFilter?.Invoke(
                 ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, link.Tag as ModuleLabel),
                 merge);

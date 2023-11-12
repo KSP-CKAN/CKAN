@@ -84,11 +84,11 @@ namespace CKAN.ConsoleUI.Toolkit {
         public new ChoiceT Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
         {
             base.Run(theme, process);
-            return cancelled ? default(ChoiceT) : choices.Selection;
+            return cancelled ? default : choices.Selection;
         }
 
-        private ConsoleListBox<ChoiceT> choices;
-        private bool                    cancelled;
+        private readonly ConsoleListBox<ChoiceT> choices;
+        private          bool                    cancelled;
     }
 
 }

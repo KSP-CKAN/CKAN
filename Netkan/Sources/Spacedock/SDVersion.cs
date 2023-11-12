@@ -37,7 +37,9 @@ namespace CKAN.NetKAN.Sources.Spacedock
             )
             {
                 if (reader.Value == null)
+                {
                     return null;
+                }
 
                 string raw_version = reader.Value.ToString();
 

@@ -642,8 +642,7 @@ namespace CKAN
             try
             {
                 return getAvail(ident)?.Select(am => am.ByVersion(version))
-                                       .Where(m => m != null)
-                                       .FirstOrDefault();
+                                       .FirstOrDefault(m => m != null);
             }
             catch
             {
@@ -700,9 +699,13 @@ namespace CKAN
                 foreach (string provided in m.ProvidesList)
                 {
                     if (providers.TryGetValue(provided, out HashSet<AvailableModule> provs))
+                    {
                         provs.Add(am);
+                    }
                     else
+                    {
                         providers.Add(provided, new HashSet<AvailableModule>() { am });
+                    }
                 }
             }
         }
@@ -1082,7 +1085,10 @@ namespace CKAN
 
             // Finally we have our provided checks. We'll skip these if
             // withProvides is false.
-            if (!with_provides) return null;
+            if (!with_provides)
+            {
+                return null;
+            }
 
             var provided = ProvidedByInstalled();
 
@@ -1315,6 +1321,7 @@ namespace CKAN
 
 
         // Older clients expect these properties and can handle them being empty ("{}") but not null
+        #pragma warning disable IDE0052
         [JsonProperty("available_modules",
                       NullValueHandling = NullValueHandling.Include)]
         [JsonConverter(typeof(JsonAlwaysEmptyObjectConverter))]
@@ -1324,6 +1331,7 @@ namespace CKAN
                       NullValueHandling = NullValueHandling.Include)]
         [JsonConverter(typeof(JsonAlwaysEmptyObjectConverter))]
         private readonly Dictionary<string, string> legacyDownloadCountsDoNotUse = new Dictionary<string, string>();
+        #pragma warning restore IDE0052
 
     }
 }

@@ -17,11 +17,7 @@ namespace CKAN.NetKAN.Sources.Curse
         [JsonProperty] public string game;
         [JsonProperty] public List<CurseModMember> members;
 
-        public string[] authors {
-            get {
-                return members.Select(m => m.username).ToArray();
-            }
-        }
+        public string[] authors => members.Select(m => m.username).ToArray();
 
         private string _pageUrl;
         private string _name;
@@ -69,8 +65,14 @@ namespace CKAN.NetKAN.Sources.Curse
                 // Matches the longest sequence of letters and spaces ending in two letters from the beggining of the string
                 // This is to filter out version information
                 Match match = Regex.Match(title, "^([A-Za-z ]*[A-Za-z][A-Za-z])");
-                if (match.Groups.Count > 1) _name = match.Groups[1].Value;
-                else _name = "title"; ;
+                if (match.Groups.Count > 1)
+                {
+                    _name = match.Groups[1].Value;
+                }
+                else
+                {
+                    _name = "title";
+                };
             }
             return _name;
         }

@@ -10,8 +10,8 @@ namespace Tests.NetKAN
     [TestFixture]
     public class NetkanOverride
     {
-        JObject such_metadata;
-        private TransformOptions opts = new TransformOptions(1, null, null, false, null);
+        private JObject such_metadata;
+        private readonly TransformOptions opts = new TransformOptions(1, null, null, false, null);
 
         [SetUp]
         public void Setup()
@@ -106,10 +106,8 @@ namespace Tests.NetKAN
         [Test]
         public void DeleteOverride()
         {
-            JToken token;
-
-            Assert.IsTrue(such_metadata.TryGetValue("abstract", out token));
-            Assert.IsTrue(such_metadata.TryGetValue("author", out token));
+            Assert.IsTrue(such_metadata.TryGetValue("abstract", out _));
+            Assert.IsTrue(such_metadata.TryGetValue("author", out _));
 
             JObject new_metadata = ProcessOverrides(
                     such_metadata,
@@ -119,8 +117,8 @@ namespace Tests.NetKAN
                 }]");
 
 
-            Assert.IsFalse(new_metadata.TryGetValue("abstract", out token));
-            Assert.IsFalse(new_metadata.TryGetValue("author", out token));
+            Assert.IsFalse(new_metadata.TryGetValue("abstract", out _));
+            Assert.IsFalse(new_metadata.TryGetValue("author", out _));
         }
 
         [Test]

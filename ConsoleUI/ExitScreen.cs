@@ -59,7 +59,7 @@ namespace CKAN.ConsoleUI {
                     .Replace("{0}", ckanPiece).ToArray(),
                 new FancyLinePiece[] {
                     new FancyLinePiece(
-                        new string(Symbols.horizLine, Console.WindowWidth - 2 -2 * horizMargin),
+                        new string(Symbols.horizLine, Console.WindowWidth - 2 -(2 * horizMargin)),
                         theme.ExitInnerBg, theme.ExitNormalFg)
                 },
             }.Concat(
@@ -90,7 +90,7 @@ namespace CKAN.ConsoleUI {
             foreach (FancyLinePiece p in pieces) {
                 textLen += p.Text.Length;
             }
-            int boxW = Console.WindowWidth - 2 * horizMargin;
+            int boxW = Console.WindowWidth - (2 * horizMargin);
             int leftPad = (boxW - textLen) / 2;
             if (leftPad < 0) {
                 leftPad = 0;
@@ -157,7 +157,7 @@ namespace CKAN.ConsoleUI {
             var pieces = Text.Split(tokens, StringSplitOptions.None);
             return pieces.Length <= 1
                 // Stop making new objects if no tokens found
-                ? Enumerable.Repeat<FancyLinePiece>(this, 1)
+                ? Enumerable.Repeat(this, 1)
                 : pieces.SelectMany(InjectReplacement);
         }
 

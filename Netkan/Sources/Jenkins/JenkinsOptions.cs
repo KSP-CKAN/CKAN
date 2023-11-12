@@ -18,8 +18,10 @@ namespace CKAN.NetKAN.Sources.Jenkins
         [JsonProperty("asset_match")]
         public Regex AssetMatchPattern
         {
-            get { return _assetMatch ?? Constants.DefaultAssetMatchPattern; }
+            get => _assetMatch ?? Constants.DefaultAssetMatchPattern;
+            #pragma warning disable IDE0027
             set { _assetMatch = value; }
+            #pragma warning restore IDE0027
         }
     }
 }

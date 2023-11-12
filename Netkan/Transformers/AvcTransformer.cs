@@ -28,7 +28,7 @@ namespace CKAN.NetKAN.Transformers
         private readonly IGithubApi     _github;
         private readonly VrefValidator  _vrefValidator;
 
-        public string Name { get { return "avc"; } }
+        public string Name => "avc";
 
         public AvcTransformer(IHttpService http, IModuleService moduleService, IGithubApi github, IGame game)
         {
@@ -157,7 +157,7 @@ namespace CKAN.NetKAN.Transformers
 
             Log.InfoFormat("Remote AVC version file at: {0}", remoteUri);
 
-            return CKAN.Net.GetRawUri(remoteUri);
+            return Net.GetRawUri(remoteUri);
         }
     }
 }

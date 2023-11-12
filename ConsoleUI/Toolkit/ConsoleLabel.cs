@@ -33,16 +33,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             int w = GetRight() - GetLeft() + 1;
             Console.SetCursorPosition(GetLeft(), GetTop());
-            if (getBgColor == null) {
-                Console.BackgroundColor = theme.LabelBg;
-            } else {
-                Console.BackgroundColor = getBgColor(theme);
-            }
-            if (getFgColor == null) {
-                Console.ForegroundColor = theme.LabelFg;
-            } else {
-                Console.ForegroundColor = getFgColor(theme);
-            }
+            Console.BackgroundColor = getBgColor == null ? theme.LabelBg : getBgColor(theme);
+            Console.ForegroundColor = getFgColor == null ? theme.LabelFg : getFgColor(theme);
             try {
                 Console.Write(FormatExactWidth(labelFunc(), w));
             } catch (Exception ex) {
@@ -55,9 +47,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public override bool Focusable() { return false; }
 
-        private Func<string>       labelFunc;
-        private Func<ConsoleTheme, ConsoleColor> getBgColor;
-        private Func<ConsoleTheme, ConsoleColor> getFgColor;
+        private readonly Func<string>       labelFunc;
+        private readonly Func<ConsoleTheme, ConsoleColor> getBgColor;
+        private readonly Func<ConsoleTheme, ConsoleColor> getFgColor;
     }
 
 }

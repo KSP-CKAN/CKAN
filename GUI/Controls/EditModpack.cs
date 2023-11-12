@@ -18,20 +18,20 @@ namespace CKAN.GUI
         {
             InitializeComponent();
 
-            this.ToolTip.SetToolTip(IdentifierTextBox,       Properties.Resources.EditModpackTooltipIdentifier);
-            this.ToolTip.SetToolTip(NameTextBox,             Properties.Resources.EditModpackTooltipName);
-            this.ToolTip.SetToolTip(AbstractTextBox,         Properties.Resources.EditModpackTooltipAbstract);
-            this.ToolTip.SetToolTip(VersionTextBox,          Properties.Resources.EditModpackTooltipVersion);
-            this.ToolTip.SetToolTip(GameVersionMinComboBox,  Properties.Resources.EditModpackTooltipGameVersionMin);
-            this.ToolTip.SetToolTip(GameVersionMaxComboBox,  Properties.Resources.EditModpackTooltipGameVersionMax);
-            this.ToolTip.SetToolTip(LicenseComboBox,         Properties.Resources.EditModpackTooltipLicense);
-            this.ToolTip.SetToolTip(IncludeVersionsCheckbox, Properties.Resources.EditModpackTooltipIncludeVersions);
-            this.ToolTip.SetToolTip(DependsRadioButton,      Properties.Resources.EditModpackTooltipDepends);
-            this.ToolTip.SetToolTip(RecommendsRadioButton,   Properties.Resources.EditModpackTooltipRecommends);
-            this.ToolTip.SetToolTip(SuggestsRadioButton,     Properties.Resources.EditModpackTooltipSuggests);
-            this.ToolTip.SetToolTip(IgnoreRadioButton,       Properties.Resources.EditModpackTooltipIgnore);
-            this.ToolTip.SetToolTip(CancelExportButton,      Properties.Resources.EditModpackTooltipCancel);
-            this.ToolTip.SetToolTip(ExportModpackButton,     Properties.Resources.EditModpackTooltipExport);
+            ToolTip.SetToolTip(IdentifierTextBox,       Properties.Resources.EditModpackTooltipIdentifier);
+            ToolTip.SetToolTip(NameTextBox,             Properties.Resources.EditModpackTooltipName);
+            ToolTip.SetToolTip(AbstractTextBox,         Properties.Resources.EditModpackTooltipAbstract);
+            ToolTip.SetToolTip(VersionTextBox,          Properties.Resources.EditModpackTooltipVersion);
+            ToolTip.SetToolTip(GameVersionMinComboBox,  Properties.Resources.EditModpackTooltipGameVersionMin);
+            ToolTip.SetToolTip(GameVersionMaxComboBox,  Properties.Resources.EditModpackTooltipGameVersionMax);
+            ToolTip.SetToolTip(LicenseComboBox,         Properties.Resources.EditModpackTooltipLicense);
+            ToolTip.SetToolTip(IncludeVersionsCheckbox, Properties.Resources.EditModpackTooltipIncludeVersions);
+            ToolTip.SetToolTip(DependsRadioButton,      Properties.Resources.EditModpackTooltipDepends);
+            ToolTip.SetToolTip(RecommendsRadioButton,   Properties.Resources.EditModpackTooltipRecommends);
+            ToolTip.SetToolTip(SuggestsRadioButton,     Properties.Resources.EditModpackTooltipSuggests);
+            ToolTip.SetToolTip(IgnoreRadioButton,       Properties.Resources.EditModpackTooltipIgnore);
+            ToolTip.SetToolTip(CancelExportButton,      Properties.Resources.EditModpackTooltipCancel);
+            ToolTip.SetToolTip(ExportModpackButton,     Properties.Resources.EditModpackTooltipExport);
         }
 
         [ForbidGUICalls]

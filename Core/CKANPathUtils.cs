@@ -126,11 +126,9 @@ namespace CKAN
         {
             path = NormalizePath(path);
 
-            if (Regex.IsMatch(path, "/"))
-            {
-                return Regex.Replace(path, @"(^.*)/.+", "$1");
-            }
-            return String.Empty;
+            return Regex.IsMatch(path, "/")
+                ? Regex.Replace(path, @"(^.*)/.+", "$1")
+                : string.Empty;
         }
 
         /// <summary>
@@ -188,7 +186,7 @@ namespace CKAN
             {
                 throw new PathErrorKraken(
                     path,
-                    String.Format(Properties.Resources.PathUtilsAlreadyAbsolute, path)
+                    string.Format(Properties.Resources.PathUtilsAlreadyAbsolute, path)
                 );
             }
 
@@ -196,7 +194,7 @@ namespace CKAN
             {
                 throw new PathErrorKraken(
                     root,
-                    String.Format(Properties.Resources.PathUtilsNotRoot, root)
+                    string.Format(Properties.Resources.PathUtilsNotRoot, root)
                 );
             }
 

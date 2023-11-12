@@ -66,7 +66,7 @@ namespace CKAN.Extensions
         /// <param name="src">Stream from which to copy</param>
         /// <param name="dest">Stream to which to copy</param>
         /// <param name="progress">Callback to notify as we traverse the input, called with count of bytes received</param>
-        public static void CopyTo(this Stream src, Stream dest, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
+        public static void CopyTo(this Stream src, Stream dest, IProgress<long> progress, CancellationToken cancelToken = default)
         {
             // CopyTo says its default buffer is 81920, but we want more than 1 update for a 100 KiB file
             const int bufSize = 16384;

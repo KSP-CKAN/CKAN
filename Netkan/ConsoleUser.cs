@@ -95,7 +95,7 @@ namespace CKAN.NetKAN
             }
 
             // Validate input.
-            if (String.IsNullOrWhiteSpace(message))
+            if (string.IsNullOrWhiteSpace(message))
             {
                 throw new Kraken("Passed message string must be non-empty.");
             }
@@ -132,7 +132,7 @@ namespace CKAN.NetKAN
             // Further data validation.
             foreach (object argument in args)
             {
-                if (String.IsNullOrWhiteSpace(argument.ToString()))
+                if (string.IsNullOrWhiteSpace(argument.ToString()))
                 {
                     throw new Kraken("Candidate may not be empty.");
                 }
@@ -141,24 +141,24 @@ namespace CKAN.NetKAN
             // List options.
             for (int i = 0; i < args.Length; i++)
             {
-                string CurrentRow = String.Format("{0}", i + 1);
+                string CurrentRow = string.Format("{0}", i + 1);
 
                 if (i == defaultSelection)
                 {
                     CurrentRow += "*";
                 }
 
-                CurrentRow += String.Format(") {0}", args[i]);
+                CurrentRow += string.Format(") {0}", args[i]);
 
                 RaiseMessage(CurrentRow);
             }
 
             // Create message string.
-            string output = String.Format("Enter a number between {0} and {1} (To cancel press \"c\" or \"n\".", 1, args.Length);
+            string output = string.Format("Enter a number between {0} and {1} (To cancel press \"c\" or \"n\".", 1, args.Length);
 
             if (defaultSelection >= 0)
             {
-                output += String.Format(" \"Enter\" will select {0}.", defaultSelection + 1);
+                output += string.Format(" \"Enter\" will select {0}.", defaultSelection + 1);
             }
 
             output += "): ";
@@ -182,7 +182,7 @@ namespace CKAN.NetKAN
                 input = input.Trim().ToLower();
 
                 // Check for default selection.
-                if (String.IsNullOrEmpty(input))
+                if (string.IsNullOrEmpty(input))
                 {
                     if (defaultSelection >= 0)
                     {

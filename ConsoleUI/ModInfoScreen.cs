@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Linq;
 using System.Threading;
 
@@ -31,7 +29,7 @@ namespace CKAN.ConsoleUI {
             plan     = cp;
             this.registry = registry;
 
-            int midL = Console.WindowWidth / 2 - 1;
+            int midL = (Console.WindowWidth / 2) - 1;
 
             AddObject(new ConsoleLabel(
                 1, 1, -1,
@@ -58,8 +56,8 @@ namespace CKAN.ConsoleUI {
             ));
             AddObject(new ConsoleLabel(
                 13, 4, midL - 2,
-                () => string.Join(", ", Array.ConvertAll<License, string>(
-                        mod.license.ToArray(), (l => l.ToString())))
+                () => string.Join(", ", Array.ConvertAll(
+                        mod.license.ToArray(), l => l.ToString()))
             ));
             AddObject(new ConsoleLabel(
                 3, 5, 12,
@@ -74,13 +72,13 @@ namespace CKAN.ConsoleUI {
             if (mod.install_size > 0)
             {
                 AddObject(new ConsoleLabel(
-                    midL / 2, 5, midL / 2 + 9,
+                    midL / 2, 5, (midL / 2) + 9,
                     () => "Install:",
                     null,
                     th => th.DimLabelFg
                 ));
                 AddObject(new ConsoleLabel(
-                    midL / 2 + 9, 5, midL - 2,
+                    (midL / 2) + 9, 5, midL - 2,
                     () => CkanModule.FmtSize(mod.install_size)
                 ));
             }
@@ -263,7 +261,7 @@ namespace CKAN.ConsoleUI {
             int numConfs = mod.conflicts?.Count ?? 0;
 
             if (numDeps + numConfs > 0) {
-                int midL = Console.WindowWidth / 2 - 1;
+                int midL = (Console.WindowWidth / 2) - 1;
                 int h    = Math.Min(11, numDeps + numConfs + 2);
                 const int lblW = 16;
                 int nameW = midL - 2 - lblW - 2 - 1;
@@ -336,7 +334,7 @@ namespace CKAN.ConsoleUI {
 
         private int addVersionDisplay()
         {
-            int       boxLeft  = Console.WindowWidth / 2 + 1,
+            int       boxLeft  = (Console.WindowWidth / 2) + 1,
                       boxTop   = 3;
             const int boxRight = -1,
                       boxH     = 5;

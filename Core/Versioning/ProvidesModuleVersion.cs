@@ -29,8 +29,6 @@ namespace CKAN.Versioning
         /// The returned value is not a real version string and is for display purposes only.
         /// </remarks>
         public override string ToString()
-        {
-            return _string;
-        }
+            => _string;
     }
 }

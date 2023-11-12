@@ -9,6 +9,7 @@ namespace Tests.Core.Versioning
     [TestFixture]
     public class GameVersionTests
     {
+        #pragma warning disable 0414, IDE0052
         private static readonly object[] ParseCases =
         {
             new object[] { "1", new GameVersion(1) },
@@ -99,6 +100,7 @@ namespace Tests.Core.Versioning
                 )
             }
         };
+        #pragma warning restore 0414, IDE0052
 
         [Test]
         public void ParameterlessCtorWorksCorrectly()
@@ -301,8 +303,7 @@ namespace Tests.Core.Versioning
         public void TryParseWorksCorrectly(string s, GameVersion version)
         {
             // Act
-            GameVersion result;
-            var success = GameVersion.TryParse(s, out result);
+            var success = GameVersion.TryParse(s, out GameVersion result);
 
             // Assert
             Assert.IsTrue(success);
@@ -314,8 +315,7 @@ namespace Tests.Core.Versioning
         public void TryParseReturnsFalseOnInvalidParameter(string s)
         {
             // Act
-            GameVersion result;
-            var success = GameVersion.TryParse(s, out result);
+            var success = GameVersion.TryParse(s, out _);
 
             // Assert
             Assert.IsFalse(success);

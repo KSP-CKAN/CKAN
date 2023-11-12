@@ -77,8 +77,7 @@ namespace CKAN
             => GetRepoDatas(repos)
                 .Select(data => data.DownloadCounts.TryGetValue(identifier, out int count)
                                     ? (int?)count : null)
-                .Where(count => count != null)
-                .FirstOrDefault();
+                .FirstOrDefault(count => count != null);
 
         #endregion
 
@@ -144,10 +143,9 @@ namespace CKAN
                                 .DistinctBy(r => r.uri)
                                 .Where(r => r.uri.IsFile
                                             || skipETags
-                                            || (etags.TryGetValue(r.uri, out string etag)
-                                                ? !File.Exists(GetRepoDataPath(r))
-                                                  || etag != Net.CurrentETag(r.uri)
-                                                : true))
+                                            || (!etags.TryGetValue(r.uri, out string etag)
+                                                || !File.Exists(GetRepoDataPath(r))
+                                                || etag != Net.CurrentETag(r.uri)))
                                 .ToArray();
             if (toUpdate.Length < 1)
             {
