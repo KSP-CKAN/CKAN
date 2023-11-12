@@ -252,7 +252,4 @@
   <data name="installationHistoryStripMenuItem.Text" xml:space="preserve">
     <value>Installatiegeschiedenis...</value>
   </data>
-  <data name="minimizeNotifyIcon.Text" xml:space="preserve">
-    <value>CKAN</value>
-  </data>
 </root>
