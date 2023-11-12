@@ -36,6 +36,10 @@ jobs:
         run: |
           apt-get update || true
           apt-get install -y apt-transport-https
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7'
       - name: Installing build dependencies
         run: apt-get update && apt-get install -y git
       - name: Install runtime dependencies

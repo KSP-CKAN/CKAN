@@ -15,6 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7'
       - name: Installing build dependencies
         run: apt-get update && apt-get install -y git make sed libplist-utils xorriso gzip fakeroot lintian rpm wget jq dpkg-dev gpg createrepo
       - name: Installing runtime dependencies

@@ -1,6 +1,5 @@
 /_build/
 /.vs/
-/.vscode/
 /tools
 test-results
 *.userprefs

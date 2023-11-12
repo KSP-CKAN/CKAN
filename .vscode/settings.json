@@ -1,0 +1,17 @@
+{
+    "dotnet.preferCSharpExtension": false,
+    "dotnet.server.useOmnisharp": true,
+    "dotnet.defaultSolution": "CKAN.sln",
+    "dotnet.automaticallyCreateSolutionInWorkspace": false,
+    "dotnet.backgroundAnalysis.analyzerDiagnosticsScope": "fullSolution",
+    "dotnet.backgroundAnalysis.compilerDiagnosticsScope": "fullSolution",
+    "omnisharp.useModernNet": false,
+    "omnisharp.projectLoadTimeout": 600,
+    "python.defaultInterpreterPath": "py",
+    "files.watcherExclude": {
+        "**/_build/**": true
+    },
+    "nunitTestRunner.projectsPatterns": [
+        "_build/out/**/*.Tests.dll"
+    ]
+}

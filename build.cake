@@ -205,20 +205,15 @@ Task("Build-DotNet")
     .IsDependentOn("Restore-Nuget")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
     .WithCriteria(() => buildFramework == buildNetFramework)
-    .Does(() =>
-{
-    MSBuild(solution, settings =>
-    {
-        settings.Configuration = configuration;
-    });
-});
+    .Does(() => MSBuild(solution,
+                        settings => settings.SetConfiguration(configuration)));
 
 Task("Restore-DotNetCore")
     .Description("Intermediate - Download dependencies with NuGet when building for .NET Core.")
     .WithCriteria(() => buildFramework == buildNetCore)
     .Does(() =>
 {
-    DotNetCoreRestore(solution, new DotNetCoreRestoreSettings
+    DotNetRestore(solution, new DotNetRestoreSettings
     {
         ConfigFile = "nuget.config",
         EnvironmentVariables = new Dictionary<string, string> { { "Configuration", configuration } }
@@ -232,7 +227,7 @@ Task("Build-DotNetCore")
     .WithCriteria(() => buildFramework == buildNetCore)
     .Does(() =>
 {
-    DotNetCoreBuild(solution, new DotNetCoreBuildSettings
+    DotNetBuild(solution, new DotNetBuildSettings
     {
         Configuration = configuration,
         NoRestore = true
@@ -273,14 +268,31 @@ Task("Repack-Ckan")
         "{0}/*/*.resources.dll",
         outDirectory.Combine("CKAN-CmdLine").Combine(configuration).Combine("bin").Combine(buildNetFramework)
     )));
-
-    ILRepack(ckanFile, cmdLineBinDirectory.CombineWithFilePath("CKAN-CmdLine.exe"), assemblyPaths,
+    ILRepack(
+        ckanFile,
+        cmdLineBinDirectory.CombineWithFilePath("CKAN-CmdLine.exe"),
+        assemblyPaths,
         new ILRepackSettings
         {
             Libs = new List<DirectoryPath> { cmdLineBinDirectory.ToString() },
             TargetPlatform = TargetPlatformVersion.v4
-        }
-    );
+        });
+
+    var autoupdateBinDirectory = outDirectory.Combine("CKAN-AutoUpdateHelper")
+                                             .Combine(configuration)
+                                             .Combine("bin")
+                                             .Combine(buildNetFramework);
+    ILRepack(
+        repackDirectory.Combine(configuration)
+                       .CombineWithFilePath("AutoUpdater.exe"),
+        autoupdateBinDirectory.CombineWithFilePath("CKAN-AutoUpdateHelper.exe"),
+        GetFiles(string.Format("{0}/*/*.resources.dll",
+                               autoupdateBinDirectory)),
+        new ILRepackSettings
+        {
+            Libs = new List<DirectoryPath> { autoupdateBinDirectory.ToString() },
+            TargetPlatform = TargetPlatformVersion.v4
+        });
 
     CopyFile(ckanFile, buildDirectory.CombineWithFilePath("ckan.exe"));
 });
@@ -298,6 +310,7 @@ Task("Repack-Netkan")
         new ILRepackSettings
         {
             Libs = new List<DirectoryPath> { netkanBinDirectory.ToString() },
+            TargetPlatform = TargetPlatformVersion.v4
         }
     );
 
@@ -353,7 +366,7 @@ Task("Test-UnitTests+Only-DotNetCore")
 
     CreateDirectory(nunitOutputDirectory);
 
-    DotNetCoreTest(solution, new DotNetCoreTestSettings {
+    DotNetTest(solution, new DotNetTestSettings {
         NoBuild = true,
         Configuration= configuration,
         ResultsDirectory = nunitOutputDirectory,

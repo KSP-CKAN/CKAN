@@ -1,7 +1,8 @@
 <Project>
   <PropertyGroup>
     <AssemblyName>CKAN-AutoUpdateHelper</AssemblyName>
-    <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(MSBuildRuntimeType)' != 'Core' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(MSBuildRuntimeType)' == 'Core' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
     <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
@@ -29,10 +30,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ILRepack" Version="2.0.18" />
-    <PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">
       <Link>Properties\GlobalAssemblyVersionInfo.cs</Link>
     </Compile>
@@ -47,26 +44,5 @@
   <Target Name="BeforeBuild">
     <Exec Command="powershell ../build.ps1 Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
     <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
-  </Target>
-  <Target Name="ILRepack" AfterTargets="Build">
-    <ItemGroup>
-      <InputAssemblies Include="fr-FR\$(AssemblyName).resources.dll" />
-      <InputAssemblies Include="it-IT\$(AssemblyName).resources.dll" />
-      <InputAssemblies Include="pl-PL\$(AssemblyName).resources.dll" />
-      <InputAssemblies Include="pt-BR\$(AssemblyName).resources.dll" />
-      <InputAssemblies Include="ru-RU\$(AssemblyName).resources.dll" />
-    </ItemGroup>
-    <ILRepack OutputAssembly="AutoUpdater.exe"
-              MainAssembly="$(AssemblyName).exe"
-              InputAssemblies="@(InputAssemblies)"
-              OutputType="$(OutputType)"
-              WorkingDirectory="$(OutputPath)"
-              Internalize="true"
-              Parallel="true" />
-    <ItemGroup>
-      <Repacked Include="$(OutputPath)AutoUpdater.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(Repacked)"
-          DestinationFolder="..\_build\repack\$(Configuration)" />
   </Target>
 </Project>

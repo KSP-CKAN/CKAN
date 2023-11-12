@@ -31,6 +31,10 @@ jobs:
             echo 'odd_build=true' >> $GITHUB_OUTPUT
           fi
 
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7'
       - name: Installing build dependencies
         run: apt-get update && apt-get install -y git make sed gzip fakeroot lintian dpkg-dev gpg createrepo
       - name: Installing runtime dependencies

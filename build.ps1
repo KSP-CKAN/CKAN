@@ -23,11 +23,7 @@ $RootDir            = "${PSScriptRoot}"
 $ScriptFile         = "${RootDir}/build.cake"
 $BuildDir           = "${RootDir}/_build"
 $ToolsDir           = "${BuildDir}/tools"
-$PackagesDir        = "${BuildDir}/lib/nuget"
 $NugetExe           = "${ToolsDir}/NuGet/${NugetVersion}/nuget.exe"
-$PackagesConfigFile = "${RootDir}/packages.config"
-$CakeVersion        = (Select-Xml -Xml ([xml](Get-Content $PackagesConfigFile)) -XPath "//package[@id='Cake'][1]/@version").Node.Value
-$CakeExe            = "${PackagesDir}/Cake.${CakeVersion}/Cake.exe"
 
 # Download NuGet
 $NugetDir = Split-Path "$NugetExe" -Parent
@@ -42,7 +38,7 @@ if (!(Test-Path "$NugetExe")) {
 }
 
 # Install build packages
-Invoke-Expression "& '${NugetExe}' restore `"${PackagesConfigFile}`" -OutputDirectory `"${PackagesDir}`""
+dotnet tool install --global Cake.Tool
 
 # Build args
 $cakeArgs = @()
@@ -60,5 +56,5 @@ if ($UseExperimental) {
 }
 
 # Run Cake
-Invoke-Expression "& '${CakeExe}' '${ScriptFile}' ${cakeArgs} ${RemainingArgs}"
+dotnet cake "${ScriptFile}" ${cakeArgs} ${RemainingArgs}
 exit $LASTEXITCODE
