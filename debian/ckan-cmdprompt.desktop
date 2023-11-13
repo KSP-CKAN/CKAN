@@ -2,7 +2,7 @@
 Name=CKAN Command Prompt
 Comment=Comprehensive Kerbal Archive Network Command Prompt
 Icon=/usr/share/icons/ckan.ico
-Categories=PackageManager;ConsoleOnly;
+Categories=Game;PackageManager;ConsoleOnly;
 Exec=/usr/bin/ckan prompt
 Terminal=true
 Type=Application
