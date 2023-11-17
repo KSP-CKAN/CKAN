@@ -604,6 +604,15 @@ namespace CKAN.GUI
             Main.Instance.configuration.HideV = HideVCheckbox.Checked;
         }
 
+        private void LanguageSelectionComboBox_MouseWheel(object sender, MouseEventArgs e)
+        {
+            // Don't change values on scroll
+            if (e is HandledMouseEventArgs me)
+            {
+                me.Handled = true;
+            }
+        }
+
         private void LanguageSelectionComboBox_SelectionChanged(object sender, EventArgs e)
         {
             config.Language = LanguageSelectionComboBox.SelectedItem.ToString();
