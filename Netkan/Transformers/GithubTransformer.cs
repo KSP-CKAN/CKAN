@@ -19,7 +19,7 @@ namespace CKAN.NetKAN.Transformers
         private readonly IGithubApi _api;
         private readonly bool       _matchPreleases;
 
-        public string Name { get { return "github"; } }
+        public string Name => "github";
 
         public GithubTransformer(IGithubApi api, bool matchPreleases)
         {
@@ -84,11 +84,15 @@ namespace CKAN.NetKAN.Transformers
                         {
                             var match = ghRef.VersionFromAsset.Match(asset.Name);
                             if (!match.Success)
+                            {
                                 continue;
+                            }
 
                             var extractedVersion = match.Groups["version"];
                             if (!extractedVersion.Success)
+                            {
                                 throw new Exception("version_from_asset contains no 'version' capturing group");
+                            }
 
                             returnedAny = true;
                             yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel, asset, extractedVersion.Value);
@@ -130,25 +134,33 @@ namespace CKAN.NetKAN.Transformers
 
         private Metadata TransformOne(
             Metadata metadata, JObject json, GithubRef ghRef, GithubRepo ghRepo, GithubRelease ghRelease,
-            GithubReleaseAsset ghAsset, String version
+            GithubReleaseAsset ghAsset, string version
         )
         {
             if (!string.IsNullOrWhiteSpace(ghRepo.Description))
+            {
                 json.SafeAdd("abstract", ghRepo.Description);
+            }
 
             // GitHub says NOASSERTION if it can't figure out the repo's license
             if (!string.IsNullOrWhiteSpace(ghRepo.License?.Id)
                 && ghRepo.License.Id != "NOASSERTION")
+            {
                 json.SafeAdd("license", ghRepo.License.Id);
+            }
 
             // Make sure resources exist.
             if (json["resources"] == null)
+            {
                 json["resources"] = new JObject();
+            }
 
             var resourcesJson = (JObject)json["resources"];
 
             if (!string.IsNullOrWhiteSpace(ghRepo.Homepage))
+            {
                 resourcesJson.SafeAdd("homepage", ghRepo.Homepage);
+            }
 
             resourcesJson.SafeAdd("repository", ghRepo.HtmlUrl);
             if (ghRepo.HasIssues)
@@ -181,7 +193,8 @@ namespace CKAN.NetKAN.Transformers
                     var repoName = ghRef.Project;
                     for (var i = 1; i < repoName.Length - 1; ++i)
                     {
-                        if (char.IsLower(repoName[i - 1]) && char.IsUpper(repoName[i]) || repoName[i - 1] != ' ' && char.IsUpper(repoName[i]) && char.IsLower(repoName[i + 1]))
+                        if ((char.IsLower(repoName[i - 1]) && char.IsUpper(repoName[i]))
+                            || (repoName[i - 1] != ' ' && char.IsUpper(repoName[i]) && char.IsLower(repoName[i + 1])))
                         {
                             repoName = repoName.Insert(i, " ");
                         }
@@ -217,7 +230,10 @@ namespace CKAN.NetKAN.Transformers
                     case userType:
                         // Prepend repo owner
                         if (!authors.Contains(r.Owner.Login))
+                        {
                             authors.Insert(0, r.Owner.Login);
+                        }
+
                         break;
                     case orgType:
                         // Prepend org members

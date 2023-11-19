@@ -10,7 +10,7 @@ namespace Tests.Core.Net
     {
         // TODO: Test certificate errors. How?
         // URL we expect to always be up.
-        const string KnownURL = "http://example.com/";
+        private const string KnownURL = "http://example.com/";
         private static void BadDownload()
         {
             CKAN.Net.Download("cheese sandwich");

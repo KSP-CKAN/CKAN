@@ -150,40 +150,85 @@ namespace CKAN
         public bool Equals(ModuleInstallDescriptor otherStanza)
         {
             if (otherStanza == null)
+            {
                 // Not even the right type!
                 return false;
+            }
+
             if (CKANPathUtils.NormalizePath(file) != CKANPathUtils.NormalizePath(otherStanza.file))
+            {
                 return false;
+            }
+
             if (CKANPathUtils.NormalizePath(find) != CKANPathUtils.NormalizePath(otherStanza.find))
+            {
                 return false;
+            }
+
             if (find_regexp != otherStanza.find_regexp)
+            {
                 return false;
+            }
+
             if (CKANPathUtils.NormalizePath(install_to) != CKANPathUtils.NormalizePath(otherStanza.install_to))
+            {
                 return false;
+            }
+
             if (@as != otherStanza.@as)
+            {
                 return false;
+            }
+
             if ((filter == null) != (otherStanza.filter == null))
+            {
                 return false;
+            }
+
             if (filter != null
                 && !filter.SequenceEqual(otherStanza.filter))
+            {
                 return false;
+            }
+
             if ((filter_regexp == null) != (otherStanza.filter_regexp == null))
+            {
                 return false;
+            }
+
             if (filter_regexp != null
                 && !filter_regexp.SequenceEqual(otherStanza.filter_regexp))
+            {
                 return false;
+            }
+
             if (find_matches_files != otherStanza.find_matches_files)
+            {
                 return false;
+            }
+
             if ((include_only == null) != (otherStanza.include_only == null))
+            {
                 return false;
+            }
+
             if (include_only != null
                 && !include_only.SequenceEqual(otherStanza.include_only))
+            {
                 return false;
+            }
+
             if ((include_only_regexp == null) != (otherStanza.include_only_regexp == null))
+            {
                 return false;
+            }
+
             if (include_only_regexp != null
                 && !include_only_regexp.SequenceEqual(otherStanza.include_only_regexp))
+            {
                 return false;
+            }
+
             return true;
         }
 
@@ -302,14 +347,7 @@ namespace CKAN
                 return true;
             }
 
-            if (include_only != null || include_only_regexp != null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return include_only == null && include_only_regexp == null;
         }
 
         /// <summary>
@@ -334,8 +372,10 @@ namespace CKAN
 
             // The installation path cannot contain updirs
             if (install_to.Contains("/../") || install_to.EndsWith("/.."))
+            {
                 throw new BadInstallLocationKraken(string.Format(
                     Properties.Resources.ModuleInstallDescriptorInvalidInstallPath, install_to));
+            }
 
             if (ksp == null)
             {
@@ -376,7 +416,7 @@ namespace CKAN
             EnsurePattern();
 
             // `find` is supposed to match the "topmost" folder. Find it.
-            var shortestMatch = find == null ? (int?)null
+            var shortestMatch = find == null ? null
                 : zipfile.Cast<ZipEntry>()
                     .Select(entry => inst_pattern.Match(entry.Name.Replace('\\', '/')))
                     .Where(match => match.Success)
@@ -421,7 +461,7 @@ namespace CKAN
             if (files.Count == 0)
             {
                 // We have null as the first argument here, because we don't know which module we're installing
-                throw new BadMetadataKraken(null, String.Format(
+                throw new BadMetadataKraken(null, string.Format(
                     Properties.Resources.ModuleInstallDescriptorNoFilesFound, DescribeMatch()));
             }
 
@@ -456,7 +496,7 @@ namespace CKAN
                     RegexOptions.Compiled);
                 if (!leadingRE.IsMatch(outputName))
                 {
-                    throw new BadMetadataKraken(null, String.Format(
+                    throw new BadMetadataKraken(null, string.Format(
                         "Output file name ({0}) not matching leading path of stanza ({1})",
                         outputName, leadingPathToRemove));
                 }

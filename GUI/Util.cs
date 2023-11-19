@@ -51,10 +51,10 @@ namespace CKAN.GUI
         // hides the console window on windows
         // useful when running the GUI
         [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
+        private static extern IntPtr GetConsoleWindow();
 
         [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         public static void HideConsoleWindow()
         {
@@ -103,7 +103,9 @@ namespace CKAN.GUI
                 .Concat(prefixes.Select(p => p + url).Where(CheckURLValid)))
             {
                 if (Utilities.ProcessStartURL(fullUrl))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -120,11 +122,11 @@ namespace CKAN.GUI
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    Util.OpenLinkFromLinkLabel(url);
+                    OpenLinkFromLinkLabel(url);
                     break;
 
                 case MouseButtons.Right:
-                    Util.LinkContextMenu(url);
+                    LinkContextMenu(url);
                     break;
             }
         }
@@ -182,13 +184,25 @@ namespace CKAN.GUI
                 log.DebugFormat("Found screen: {0}", screen.WorkingArea);
                 // Slide the whole rectangle fully onto the screen
                 if (location.X < screen.WorkingArea.Left)
+                {
                     location.X = screen.WorkingArea.Left;
+                }
+
                 if (location.Y < screen.WorkingArea.Top)
+                {
                     location.Y = screen.WorkingArea.Top;
+                }
+
                 if (location.X + size.Width > screen.WorkingArea.Right)
+                {
                     location.X = screen.WorkingArea.Right - size.Width;
+                }
+
                 if (location.Y + size.Height > screen.WorkingArea.Bottom)
+                {
                     location.Y = screen.WorkingArea.Bottom - size.Height;
+                }
+
                 log.DebugFormat("Clamped location: {0}", location);
             }
             return location;
@@ -239,7 +253,7 @@ namespace CKAN.GUI
         {
             // Store the most recent event we received
             object receivedFrom = null;
-            EventT received     = default(EventT);
+            EventT received     = default;
 
             // Set up the timer that will track the delay
             Timer timer = new Timer() { Interval = timeoutMs };
@@ -259,7 +273,7 @@ namespace CKAN.GUI
                     {
                         doneFunc(sender, evt);
                         receivedFrom = null;
-                        received     = default(EventT);
+                        received     = default;
                     }
                     else
                     {

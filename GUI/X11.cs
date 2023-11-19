@@ -48,17 +48,11 @@ namespace CKAN.GUI
             .GetType("System.Windows.Forms.Hwnd");
 
         private static IntPtr DisplayHandle
-        {
-            get
-            {
-                return (IntPtr)MonoWinformsAssembly
-                    .GetType("System.Windows.Forms.XplatUIX11")
-                    .GetField(
-                        "DisplayHandle",
-                        BindingFlags.NonPublic | BindingFlags.Static
-                    ).GetValue(null);
-            }
-        }
+            => (IntPtr)MonoWinformsAssembly
+                .GetType("System.Windows.Forms.XplatUIX11")
+                .GetField("DisplayHandle",
+                          BindingFlags.NonPublic | BindingFlags.Static)
+                .GetValue(null);
 
         private static IntPtr GetWindow(IntPtr handle)
         {
@@ -77,6 +71,6 @@ namespace CKAN.GUI
         }
 
         [DllImport("libX11", EntryPoint = "XSetClassHint", CharSet = CharSet.Ansi)]
-        private extern static int XSetClassHint(IntPtr display, IntPtr window, IntPtr classHint);
+        private static extern int XSetClassHint(IntPtr display, IntPtr window, IntPtr classHint);
     }
 }

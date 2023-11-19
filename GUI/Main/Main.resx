@@ -164,5 +164,4 @@
   <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve"><value>Play &amp;time...</value></data>
   <data name="viewUnmanagedFilesStripMenuItem.Text" xml:space="preserve"><value>&amp;Unmanaged files...</value></data>
   <data name="installationHistoryStripMenuItem.Text" xml:space="preserve"><value>Installation &amp;history...</value></data>
-  <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
 </root>

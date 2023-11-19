@@ -25,11 +25,7 @@ rootDir=$(dirname $0)
 scriptFile="$rootDir/build.cake"
 buildDir="$rootDir/_build"
 toolsDir="$buildDir/tools"
-packagesDir="$buildDir/lib/nuget"
 nugetExe="$toolsDir/NuGet/$nugetVersion/nuget.exe"
-packagesConfigFile="$rootDir/packages.config"
-cakeVersion="$(sed -nE "/id=\"Cake\"/s/.*version=\"(.+)\".*/\1/p" $packagesConfigFile)"
-cakeExe="$packagesDir/Cake.$cakeVersion/Cake.exe"
 
 nugetDir="$(dirname $nugetExe)"
 if [ ! -d "$nugetDir" ]; then
@@ -40,7 +36,12 @@ if [ ! -f "$nugetExe" ]; then
     curl -L "https://dist.nuget.org/win-x86-commandline/v${nugetVersion}/nuget.exe" --output "$nugetExe"
 fi
 
-mono "$nugetExe" restore "$packagesConfigFile" -OutputDirectory "$packagesDir"
+# dotnet tool install idiotically returns failure if already installed,
+# so we have to ignore all errors from it
+# https://github.com/dotnet/sdk/issues/9500
+set +e
+dotnet tool install --global Cake.Tool
+set -e
 
 cakeArgs=""
 
@@ -59,5 +60,6 @@ if $useExperimental; then
     cakeArgs="$cakeArgs --experimental"
 fi
 
-mono "$cakeExe" "$scriptFile" $cakeArgs $remainingArgs
+export PATH="$PATH:$HOME/.dotnet/tools"
+dotnet cake "$scriptFile" $cakeArgs $remainingArgs
 exit $?

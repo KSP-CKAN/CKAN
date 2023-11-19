@@ -31,7 +31,7 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
                 }
             }
 
-            result = default(GameVersion);
+            result = default;
             return false;
         }
     }

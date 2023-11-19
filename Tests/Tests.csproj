@@ -1,7 +1,8 @@
 <Project>
   <PropertyGroup>
     <AssemblyName>CKAN.Tests</AssemblyName>
-    <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(MSBuildRuntimeType)' !='Core' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(MSBuildRuntimeType)' =='Core' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
     <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
@@ -15,22 +16,22 @@
     <Deterministic>true</Deterministic>
     <Configurations>Debug;Release;Debug_NetCore;Release_NetCore</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
+    <LangVersion>7.3</LangVersion>
     <NoWarn>IDE1006</NoWarn>
   </PropertyGroup>
   <Choose>
     <When Condition="$(Configuration.EndsWith('NetCore'))">
       <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
       </PropertyGroup>
     </When>
     <Otherwise>
       <PropertyGroup>
-        <TargetFramework>net45</TargetFramework>
+        <TargetFramework>net48</TargetFramework>
       </PropertyGroup>
     </Otherwise>
   </Choose>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
     <DefaultItemExcludes>$(DefaultItemExcludes);NetKAN\**;CmdLine\**;ConsoleUI\**;GUI\**;AutoUpdate\**</DefaultItemExcludes>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug_NetCore' ">
@@ -51,14 +52,14 @@
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
   </ItemGroup>
   <ItemGroup>
@@ -73,7 +74,7 @@
     <ProjectReference Include="..\Core\CKAN-core.csproj" />
   </ItemGroup>
   <Choose>
-    <When Condition=" '$(TargetFramework)' == 'net45' ">
+    <When Condition=" '$(TargetFramework)' == 'net48' ">
       <ItemGroup>
         <ProjectReference Include="..\Cmdline\CKAN-cmdline.csproj" />
         <ProjectReference Include="..\ConsoleUI\CKAN-ConsoleUI.csproj" />

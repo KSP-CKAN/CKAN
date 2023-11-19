@@ -17,7 +17,7 @@ namespace CKAN
             }
             catch
             {
-                return default(RepositoryList);
+                return default;
             }
         }
     }

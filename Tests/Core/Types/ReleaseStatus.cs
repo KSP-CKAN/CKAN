@@ -9,7 +9,7 @@ namespace Tests.Core.Types
 
         // These get used by our tests, but we have to disable 'used only once' (0414)
         // to stop the compiler from giving us warnings.
-        #pragma warning disable 0414
+        #pragma warning disable 0414, IDE0052
 
         private static readonly string[] GoodStatuses = {
             "stable", "testing", "development"
@@ -21,7 +21,7 @@ namespace Tests.Core.Types
             "42"
         };
 
-        #pragma warning restore 0414
+        #pragma warning restore 0414, IDE0052
 
         [Test][TestCaseSource("GoodStatuses")]
         public void ReleaseGood(string status)
@@ -49,4 +49,3 @@ namespace Tests.Core.Types
         }
     }
 }
-

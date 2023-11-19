@@ -17,11 +17,15 @@ namespace CKAN.Versioning
 
         public GameVersionBound(GameVersion value, bool inclusive)
         {
-            if (ReferenceEquals(value, null))
+            if (value is null)
+            {
                 throw new ArgumentNullException("value");
+            }
 
             if (!value.IsAny && !value.IsFullyDefined)
+            {
                 throw new ArgumentException("Version must be either fully undefined or fully defined.", "value");
+            }
 
             Value = value;
             Inclusive = inclusive;
@@ -68,16 +72,32 @@ namespace CKAN.Versioning
     {
         public bool Equals(GameVersionBound other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return Equals(Value, other.Value) && Inclusive == other.Inclusive;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj is GameVersionBound && Equals((GameVersionBound) obj);
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return obj is GameVersionBound bound && Equals(bound);
         }
 
         public override int GetHashCode()
@@ -104,13 +124,19 @@ namespace CKAN.Versioning
         public static GameVersionBound Lowest(params GameVersionBound[] versionBounds)
         {
             if (versionBounds == null)
+            {
                 throw new ArgumentNullException("versionBounds");
+            }
 
             if (!versionBounds.Any())
+            {
                 throw new ArgumentException("Value cannot be empty.", "versionBounds");
+            }
 
             if (versionBounds.Any(i => i == null))
+            {
                 throw new ArgumentException("Value cannot contain null.", "versionBounds");
+            }
 
             return versionBounds
                 .OrderBy(i => i == Unbounded)
@@ -129,13 +155,19 @@ namespace CKAN.Versioning
         public static GameVersionBound Highest(params GameVersionBound[] versionBounds)
         {
             if (versionBounds == null)
+            {
                 throw new ArgumentNullException("versionBounds");
+            }
 
             if (!versionBounds.Any())
+            {
                 throw new ArgumentException("Value cannot be empty.", "versionBounds");
+            }
 
             if (versionBounds.Any(i => i == null))
+            {
                 throw new ArgumentException("Value cannot contain null.", "versionBounds");
+            }
 
             return versionBounds
                 .OrderBy(i => i == Unbounded)

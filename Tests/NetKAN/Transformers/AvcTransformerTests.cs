@@ -18,8 +18,8 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class AvcTransformerTests
     {
-        private TransformOptions opts = new TransformOptions(1, null, null, false, null);
-        private IGame game = new KerbalSpaceProgram();
+        private readonly TransformOptions opts = new TransformOptions(1, null, null, false, null);
+        private readonly IGame game = new KerbalSpaceProgram();
 
         [Test]
         public void AddsMissingVersionInfo()
@@ -188,24 +188,36 @@ namespace Tests.NetKAN.Transformers
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             if (!string.IsNullOrWhiteSpace(existingKsp))
+            {
                 json["ksp_version"] = existingKsp;
+            }
 
             if (!string.IsNullOrWhiteSpace(existingKspMin))
+            {
                 json["ksp_version_min"] = existingKspMin;
+            }
 
             if (!string.IsNullOrWhiteSpace(existingKspMax))
+            {
                 json["ksp_version_max"] = existingKspMax;
+            }
 
             var avcVersion = new AvcVersion();
 
             if (!string.IsNullOrWhiteSpace(avcKsp))
+            {
                 avcVersion.ksp_version = GameVersion.Parse(avcKsp);
+            }
 
             if (!string.IsNullOrWhiteSpace(avcKspMin))
+            {
                 avcVersion.ksp_version_min = GameVersion.Parse(avcKspMin);
+            }
 
             if (!string.IsNullOrWhiteSpace(avcKspMax))
+            {
                 avcVersion.ksp_version_max = GameVersion.Parse(avcKspMax);
+            }
 
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();

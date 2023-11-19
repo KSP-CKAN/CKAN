@@ -1,7 +1,8 @@
 <Project>
   <PropertyGroup>
     <AssemblyName>CKAN-GUI</AssemblyName>
-    <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(MSBuildRuntimeType)' != 'Core' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(MSBuildRuntimeType)' == 'Core' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
     <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
@@ -14,20 +15,28 @@
     <Deterministic>true</Deterministic>
     <Configurations>Debug;Release</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
-    <TargetFramework>net45</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <TargetFramework>net48</TargetFramework>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>IDE1006</NoWarn>
+    <!-- dotnet build requires this and System.Resources.Extensions
+         to satisfy arbitrary validation checks that don't apply to us,
+         which helpfully break building with Mono.
+         https://github.com/dotnet/msbuild/issues/5787
+         https://stackoverflow.com/a/44966127/2422988 -->
+    <GenerateResourceUsePreserializedResources Condition="'$(MSBuildRuntimeType)'=='Core'">true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="ini-parser" Version="3.4.0" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Resources.Extensions" Version="4.6.0"
+                      Condition="'$(MSBuildRuntimeType)'=='Core'" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -27,20 +27,13 @@ namespace CKAN.ConsoleUI {
         /// The basic non-empty and unique checks are good enough for adding.
         /// </summary>
         protected override bool Valid()
-        {
-            if (!nameValid() || !pathValid()) {
-                return false;
-            }
-            return true;
-        }
+            => nameValid() && pathValid();
 
         /// <summary>
         /// Put description in top center
         /// </summary>
         protected override string CenterHeader()
-        {
-            return Properties.Resources.InstanceAddTitle;
-        }
+            => Properties.Resources.InstanceAddTitle;
 
         /// <summary>
         /// Add the instance

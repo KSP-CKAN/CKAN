@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Linq;
 
-using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.GUI.Attributes;
 

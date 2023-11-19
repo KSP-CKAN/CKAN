@@ -24,9 +24,9 @@ namespace CKAN.ConsoleUI.Toolkit {
             curDir       = new DirectoryInfo(startPath);
             filePattern  = filPat;
 
-            int w = (Console.WindowWidth > idealW + 2 * hPad)
+            int w = (Console.WindowWidth > idealW + (2 * hPad))
                 ? idealW
-                : Console.WindowWidth - 2 * hPad;
+                : Console.WindowWidth - (2 * hPad);
             int left  = (Console.WindowWidth - w) / 2;
             int right = -left;
 
@@ -73,8 +73,8 @@ namespace CKAN.ConsoleUI.Toolkit {
                         Width    = 9,
                         Renderer = (FileSystemInfo fi) => getLength(fi),
                         Comparer = (a, b) => {
-                            FileInfo fa = a as FileInfo, fb = b as FileInfo;
-                            return fa == null
+                            FileInfo fb = b as FileInfo;
+                            return !(a is FileInfo fa)
                                 ? (fb == null ? 0 : -1)
                                 : (fb == null ? 1 : fa.Length.CompareTo(fb.Length));
                         }
@@ -111,8 +111,8 @@ namespace CKAN.ConsoleUI.Toolkit {
             AddBinding(Keys.CtrlA, (object sender, ConsoleTheme theme) => {
                 foreach (FileSystemInfo fi in contents) {
                     if (!isDir(fi)) {
-                        FileInfo file = fi as FileInfo;
-                        if (file != null) {
+                        if (fi is FileInfo file)
+                        {
                             chosenFiles.Add(file);
                         }
                     }
@@ -137,18 +137,21 @@ namespace CKAN.ConsoleUI.Toolkit {
         private bool selectRow()
         {
             if (isDir(fileList.Selection)) {
-                DirectoryInfo di = fileList.Selection as DirectoryInfo;
-                if (di != null) {
+                if (fileList.Selection is DirectoryInfo di)
+                {
                     curDir = di;
                     pathField.Value = curDir.FullName;
                     fileList.SetData(getFileList());
                 }
             } else {
-                FileInfo fi = fileList.Selection as FileInfo;
-                if (fi != null) {
-                    if (chosenFiles.Contains(fi)) {
+                if (fileList.Selection is FileInfo fi)
+                {
+                    if (chosenFiles.Contains(fi))
+                    {
                         chosenFiles.Remove(fi);
-                    } else {
+                    }
+                    else
+                    {
                         chosenFiles.Add(fi);
                     }
                 }
@@ -226,18 +229,11 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         private string getLength(FileSystemInfo fi)
-        {
-            if (isDir(fi)) {
-                return Properties.Resources.FileSelectDirSize;
-            } else {
-                FileInfo file = fi as FileInfo;
-                if (file != null) {
-                    return CkanModule.FmtSize(file.Length);
-                } else {
-                    return Properties.Resources.FileSelectDirSize;
-                }
-            }
-        }
+            => isDir(fi)
+                ? Properties.Resources.FileSelectDirSize
+                : fi is FileInfo file
+                    ? CkanModule.FmtSize(file.Length)
+                    : Properties.Resources.FileSelectDirSize;
 
         private long totalChosenSize()
         {
@@ -250,12 +246,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         private string getRowSymbol(FileSystemInfo fi)
-        {
-            if (!isDir(fi) && chosenFiles.Contains(fi as FileInfo)) {
-                return chosen;
-            }
-            return "";
-        }
+            => !isDir(fi) && chosenFiles.Contains(fi as FileInfo)
+                ? chosen
+                : "";
 
         private string getRowName(FileSystemInfo fi)
         {
@@ -298,19 +291,19 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
         }
 
-        private List<FileSystemInfo>           contents;
-        private ConsoleField                   pathField;
-        private ConsoleListBox<FileSystemInfo> fileList;
-        private DirectoryInfo                  curDir;
+        private          List<FileSystemInfo>           contents;
+        private readonly ConsoleField                   pathField;
+        private readonly ConsoleListBox<FileSystemInfo> fileList;
+        private          DirectoryInfo                  curDir;
 
-        private HashSet<FileInfo> chosenFiles = new HashSet<FileInfo>();
+        private readonly HashSet<FileInfo> chosenFiles = new HashSet<FileInfo>();
 
-        private string filePattern;
+        private readonly string filePattern;
 
         private static readonly string chosen  = Symbols.checkmark;
 
         private const int idealW = 76;
-        private int labelW => Properties.Resources.FileSelectDirectory.Length;
+        private       int labelW => Properties.Resources.FileSelectDirectory.Length;
         private const int hPad   = 2;
         private const int top    =  2;
         private const int bottom = -2;

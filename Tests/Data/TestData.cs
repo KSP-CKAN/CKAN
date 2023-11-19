@@ -8,7 +8,7 @@ using CKAN.Versioning;
 
 namespace Tests.Data
 {
-    static public class TestData
+    public static class TestData
     {
         public static string DataDir()
             // FIXME: Come up with a better solution for test data
@@ -287,7 +287,7 @@ namespace Tests.Data
 
             doge.install[0].filter = null;
             doge.install[0].filter_regexp = null;
-            doge.install[0].include_only = new List<String> { "dogecoin.png" };
+            doge.install[0].include_only = new List<string> { "dogecoin.png" };
             doge.install[0].include_only_regexp = new List<string> { "\\.bak$" };
 
             return doge;
@@ -777,7 +777,7 @@ namespace Tests.Data
             List<RelationshipDescriptor> conflicts = null,
             List<RelationshipDescriptor> depends = null,
             List<RelationshipDescriptor> suggests = null,
-            List<String> provides = null,
+            List<string> provides = null,
             string identifier = null,
             ModuleVersion version = null)
         {

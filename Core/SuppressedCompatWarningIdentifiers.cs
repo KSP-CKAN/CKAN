@@ -8,7 +8,7 @@ using CKAN.Versioning;
 
 namespace CKAN
 {
-    class SuppressedCompatWarningIdentifiers
+    public class SuppressedCompatWarningIdentifiers
     {
         public GameVersion GameVersionWhenWritten;
         public HashSet<string> Identifiers = new HashSet<string>();

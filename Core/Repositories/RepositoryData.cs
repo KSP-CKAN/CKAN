@@ -150,7 +150,7 @@ namespace CKAN
                                 ? null
                                 : new ProgressImmediate<int>(p =>
                                     // Treat CkanModule creation as the last 50%
-                                    progress.Report(50 + p / 2))),
+                                    progress.Report(50 + (p / 2)))),
                     };
                     return JsonSerializer.Create(settings)
                                          .Deserialize<RepositoryData>(jStream);

@@ -20,7 +20,7 @@ namespace CKAN.NetKAN.Transformers
         private readonly HashSet<string> _before;
         private readonly HashSet<string> _after;
 
-        public string Name { get { return "versioned_override"; } }
+        public string Name => "versioned_override";
 
         public VersionedOverrideTransformer(IEnumerable<string> before, IEnumerable<string> after)
         {
@@ -90,17 +90,25 @@ namespace CKAN.NetKAN.Transformers
             if (overrideStanza.TryGetValue("before", out JToken jBefore))
             {
                 if (jBefore.Type == JTokenType.String)
+                {
                     before = (string)jBefore;
+                }
                 else
+                {
                     throw new Kraken("override before property must be a string");
+                }
             }
 
             if (overrideStanza.TryGetValue("after", out JToken jAfter))
             {
                 if (jAfter.Type == JTokenType.String)
+                {
                     after = (string)jAfter;
+                }
                 else
+                {
                     throw new Kraken("override after property must be a string");
+                }
             }
 
             if (_before.Contains(before) || _after.Contains(after))
@@ -136,7 +144,9 @@ namespace CKAN.NetKAN.Transformers
 
                 // If the constraints don't apply, then do nothing.
                 if (!ConstraintsApply(constraints, new ModuleVersion(metadata["version"].ToString())))
+                {
                     return;
+                }
 
                 // All the constraints pass; let's replace the metadata we have with what's
                 // in the override.
@@ -200,15 +210,19 @@ namespace CKAN.NetKAN.Transformers
                     RegexOptions.IgnorePatternWhitespace);
 
                 if (!match.Success)
+                {
                     throw new Kraken(
                         string.Format("Unable to parse x_netkan_override - {0}", constraint));
+                }
 
                 var op = match.Groups["op"].Value;
                 var desiredVersion = new ModuleVersion(match.Groups["version"].Value);
 
                 // This contstraint failed. This stanza is not for us.
                 if (!ConstraintPasses(op, version, desiredVersion))
+                {
                     return false;
+                }
             }
 
             // All the constraints passed! We want to apply this stanza!

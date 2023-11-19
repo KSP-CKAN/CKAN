@@ -41,13 +41,15 @@ namespace CKAN.Versioning
         /// <summary>
         /// Initializes a new instance of the <see cref="ModuleVersion"/> class using the specified string.
         /// </summary>
-        /// <param name="version">A <see cref="String"/> in the appropriate format.</param>
+        /// <param name="version">A <see cref="string"/> in the appropriate format.</param>
         public ModuleVersion(string version)
         {
             var match = Pattern.Match(version);
 
             if (!match.Success)
+            {
                 throw new FormatException("Input string was not in a correct format.");
+            }
 
             // If we have an epoch, then record it.
             if (match.Groups["epoch"].Value.Length > 0)
@@ -77,10 +79,10 @@ namespace CKAN.Versioning
 
         /// <summary>
         /// Converts the value of the current <see cref="ModuleVersion"/> object to its equivalent
-        /// <see cref="String"/> representation.
+        /// <see cref="string"/> representation.
         /// </summary>
         /// <returns>
-        /// The <see cref="String"/> representation of the current <see cref="ModuleVersion"/> object.
+        /// The <see cref="string"/> representation of the current <see cref="ModuleVersion"/> object.
         /// </returns>
         /// /// <remarks>
         /// The return value should not be considered safe for use in file paths.
@@ -103,7 +105,9 @@ namespace CKAN.Versioning
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
+            {
                 return true;
+            }
 
             return obj is ModuleVersion version && Equals(version);
         }
@@ -111,7 +115,9 @@ namespace CKAN.Versioning
         public bool Equals(ModuleVersion other)
         {
             if (ReferenceEquals(this, other))
+            {
                 return true;
+            }
 
             return CompareTo(other) == 0;
         }
@@ -312,30 +318,42 @@ namespace CKAN.Versioning
 
 
                 if (!int.TryParse(v1.Substring(0, minimumLength1), out var integer1))
+                {
                     integer1 = 0;
+                }
 
                 if (!int.TryParse(v2.Substring(0, minimumLength2), out var integer2))
+                {
                     integer2 = 0;
+                }
 
                 comparison.CompareTo = integer1.CompareTo(integer2);
                 return comparison;
             }
 
             if (other == null)
+            {
                 throw new ArgumentNullException(nameof(other));
+            }
 
             if (other._epoch == _epoch && other._version.Equals(_version))
+            {
                 return 0;
+            }
 
             // Compare epochs first.
             if (_epoch != other._epoch)
+            {
                 return _epoch > other._epoch ? 1 : -1;
+            }
 
             // Epochs are the same. Do the dance described in
             // https://github.com/KSP-CKAN/CKAN/blob/master/Spec.md#version-ordering
             var tuple = new Tuple<string, string>(_string, other._string);
             if (ComparisonCache.TryGetValue(tuple, out var ret))
+            {
                 return ret;
+            }
 
             Comparison comp;
             comp.FirstRemainder = _version;
@@ -602,10 +620,14 @@ namespace CKAN.Versioning
         public static ModuleVersion Max(ModuleVersion ver1, ModuleVersion ver2)
         {
             if (ver1 == null)
+            {
                 throw new ArgumentNullException(nameof(ver1));
+            }
 
             if (ver2 == null)
+            {
                 throw new ArgumentNullException(nameof(ver2));
+            }
 
             return ver1.IsGreaterThan(ver2) ? ver1 : ver2;
         }
@@ -623,10 +645,14 @@ namespace CKAN.Versioning
         public static ModuleVersion Min(ModuleVersion ver1, ModuleVersion ver2)
         {
             if (ver1 == null)
+            {
                 throw new ArgumentNullException(nameof(ver1));
+            }
 
             if (ver2 == null)
+            {
                 throw new ArgumentNullException(nameof(ver2));
+            }
 
             return ver1.IsLessThan(ver2) ? ver1 : ver2;
         }
@@ -634,9 +660,9 @@ namespace CKAN.Versioning
         /// <summary>
         /// Converts the specified string to a new instance of the <see cref="ModuleVersion"/> class.
         /// </summary>
-        /// <param name="version">A <see cref="String"/> in the appropriate format.</param>
+        /// <param name="version">A <see cref="string"/> in the appropriate format.</param>
         /// <returns>
-        /// A new <see cref="ModuleVersion"/> instance representing the specified <see cref="String"/>.
+        /// A new <see cref="ModuleVersion"/> instance representing the specified <see cref="string"/>.
         /// </returns>
         public static explicit operator ModuleVersion(string version)
         {

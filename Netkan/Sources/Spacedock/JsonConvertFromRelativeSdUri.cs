@@ -14,7 +14,10 @@ namespace CKAN.NetKAN.Sources.Spacedock
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.Value != null)
+            {
                 return ExpandPath(reader.Value.ToString());
+            }
+
             return null;
 
         }

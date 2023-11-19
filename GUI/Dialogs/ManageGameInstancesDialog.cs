@@ -119,12 +119,16 @@ namespace CKAN.GUI
             };
 
             if (includeGame)
+            {
                 list.Add(instance.game.ShortName);
+            }
 
             list.Add(FormatVersion(instance.Version()));
 
             if (includePlayTime)
+            {
                 list.Add(instance.playTime?.ToString() ?? "");
+            }
 
             list.Add(instance.GameDir().Replace('/', Path.DirectorySeparatorChar));
             return list.ToArray();
@@ -158,7 +162,9 @@ namespace CKAN.GUI
         {
             if (_instanceDialog.ShowDialog(this) != DialogResult.OK
                     || !File.Exists(_instanceDialog.FileName))
+            {
                 return;
+            }
 
             var path = Path.GetDirectoryName(_instanceDialog.FileName);
             try
@@ -254,7 +260,9 @@ namespace CKAN.GUI
             UpdateButtonState();
 
             if (GameInstancesListView.SelectedItems.Count == 0)
+            {
                 return;
+            }
 
             string instName = (string)GameInstancesListView.SelectedItems[0].Tag;
             SetAsDefaultCheckbox.Checked = _manager.AutoStartInstance?.Equals(instName) ?? false;
@@ -307,7 +315,9 @@ namespace CKAN.GUI
             // show the dialog, and only continue if the user selected "OK"
             _renameInstanceDialog = new RenameInstanceDialog();
             if (_renameInstanceDialog.ShowRenameInstanceDialog(instance) != DialogResult.OK)
+            {
                 return;
+            }
 
             // proceed with instance rename
             _manager.RenameInstance(instance, _renameInstanceDialog.GetResult());

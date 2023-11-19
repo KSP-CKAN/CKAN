@@ -20,7 +20,7 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly ICurseApi _api;
 
-        public string Name { get { return "curse"; } }
+        public string Name => "curse";
 
         public CurseTransformer(ICurseApi api)
         {
@@ -121,10 +121,22 @@ namespace CKAN.NetKAN.Transformers
             json.SafeAdd("name", curseMod.GetName());
             json.SafeAdd("abstract", curseMod.description);
 
-            if (useDownloadNameVersion)  json.SafeAdd("version", latestVersion.name);
-            else if (useFilenameVersion) json.SafeAdd("version", latestVersion.GetFilename());
-            else if (useCurseIdVersion)  json.SafeAdd("version", latestVersion.GetCurseIdVersion());
-            else                         json.SafeAdd("version", latestVersion.GetFileVersion());
+            if (useDownloadNameVersion)
+            {
+                json.SafeAdd("version", latestVersion.name);
+            }
+            else if (useFilenameVersion)
+            {
+                json.SafeAdd("version", latestVersion.GetFilename());
+            }
+            else if (useCurseIdVersion)
+            {
+                json.SafeAdd("version", latestVersion.GetCurseIdVersion());
+            }
+            else
+            {
+                json.SafeAdd("version", latestVersion.GetFileVersion());
+            }
 
             json.SafeAdd("author",   () => JToken.FromObject(curseMod.authors));
             json.Remove("$kref");

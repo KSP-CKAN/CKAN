@@ -67,8 +67,9 @@ namespace CKAN.NetKAN.Sources.Curse
             if (_filename == null)
             {
                 Match match = Regex.Match(GetDownloadUrl(), "[^/]*\\.zip");
-                if (match.Groups.Count > 0) _filename = match.Groups[0].Value;
-                else _filename = GetCurseIdVersion();
+                _filename = match.Groups.Count > 0
+                    ? match.Groups[0].Value
+                    : GetCurseIdVersion();
             }
             return _filename;
         }
@@ -83,9 +84,13 @@ namespace CKAN.NetKAN.Sources.Curse
             {
                 Match match = Regex.Match(GetDownloadUrl(), "(v?[0-9][0-9a-z.]*[0-9a-z])[^0-9]*\\.zip");
                 if (match.Groups.Count > 1)
+                {
                     _fileVersion = match.Groups[1].Value;
+                }
                 else
+                {
                     _fileVersion = GetCurseIdVersion();
+                }
             }
             return _fileVersion;
         }
@@ -118,7 +123,10 @@ namespace CKAN.NetKAN.Sources.Curse
                 else
                 {
                     if (reader.Value == null)
+                    {
                         return null;
+                    }
+
                     string raw_version = reader.Value.ToString();
                     return GameVersion.Parse(Regex.Replace(raw_version, @"-.*$", ""));
                 }

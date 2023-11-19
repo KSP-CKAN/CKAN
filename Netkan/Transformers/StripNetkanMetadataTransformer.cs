@@ -14,7 +14,7 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(StripNetkanMetadataTransformer));
 
-        public string Name { get { return "strip_netkan_metadata"; } }
+        public string Name => "strip_netkan_metadata";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
@@ -40,17 +40,20 @@ namespace CKAN.NetKAN.Transformers
                 {
                     propertiesToRemove.Add(property.Name);
                 }
-                else switch (property.Value.Type)
+                else
                 {
-                    case JTokenType.Object:
-                        Strip((JObject)property.Value);
-                        break;
-                    case JTokenType.Array:
-                        foreach (var element in ((JArray)property.Value).Where(i => i.Type == JTokenType.Object))
-                        {
-                            Strip((JObject)element);
-                        }
-                        break;
+                    switch (property.Value.Type)
+                    {
+                        case JTokenType.Object:
+                            Strip((JObject)property.Value);
+                            break;
+                        case JTokenType.Array:
+                            foreach (var element in ((JArray)property.Value).Where(i => i.Type == JTokenType.Object))
+                            {
+                                Strip((JObject)element);
+                            }
+                            break;
+                    }
                 }
             }
 

@@ -25,7 +25,7 @@ namespace CKAN.GUI
         {
             this.inst = inst;
             this.user = user;
-            this.registry = RegistryManager.Instance(inst, repoData).registry;
+            registry = RegistryManager.Instance(inst, repoData).registry;
             Util.Invoke(this, _UpdateGameFolderTree);
         }
 

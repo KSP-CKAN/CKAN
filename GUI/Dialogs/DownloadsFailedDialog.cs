@@ -59,8 +59,8 @@ namespace CKAN.GUI
                 ExplanationLabel.Height
                 + ExplanationLabel.Padding.Vertical
                 + DownloadsGrid.ColumnHeadersHeight
-                + DownloadsGrid.RowCount
-                    * DownloadsGrid.RowTemplate.Height
+                + (DownloadsGrid.RowCount
+                    * DownloadsGrid.RowTemplate.Height)
                 + DownloadsGrid.Margin.Vertical
                 + DownloadsGrid.Padding.Vertical
                 + BottomButtonPanel.Height);
@@ -190,7 +190,9 @@ namespace CKAN.GUI
         /// True if Skip column has a checkmark
         /// </summary>
         /// <value></value>
+        #pragma warning disable IDE0027
         public bool   Skip  { get => !Retry; set { Retry = !value; } }
+        #pragma warning restore IDE0027
         /// <summary>
         /// This row's data object
         /// </summary>

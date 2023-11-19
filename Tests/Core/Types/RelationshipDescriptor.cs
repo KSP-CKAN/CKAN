@@ -6,8 +6,7 @@ namespace Tests.Core.Types
     [TestFixture]
     public class RelationshipDescriptor
     {
-
-        ModuleVersion autodetected = new UnmanagedModuleVersion(null);
+        private readonly ModuleVersion autodetected = new UnmanagedModuleVersion(null);
 
         [Test]
         [TestCase("0.23","0.23", true)]

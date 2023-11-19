@@ -13,7 +13,6 @@ using log4net;
 using Newtonsoft.Json;
 
 using CKAN.Versioning;
-using CKAN.Extensions;
 using CKAN.Games;
 
 namespace CKAN
@@ -217,16 +216,18 @@ namespace CKAN
             get
             {
                 if (specVersion == null)
+                {
                     specVersion = new ModuleVersion("1");
+                }
+
                 return specVersion;
             }
+            #pragma warning disable IDE0027
             set
             {
-                if (value == null)
-                    specVersion = new ModuleVersion("1");
-                else
-                    specVersion = value;
+                specVersion = value ?? new ModuleVersion("1");
             }
+            #pragma warning restore IDE0027
         }
 
         [JsonProperty("tags", Order = 16, NullValueHandling = NullValueHandling.Ignore)]
@@ -327,7 +328,7 @@ namespace CKAN
             this.version      = version;
             this.download     = new List<Uri> { download };
             this.kind         = kind;
-            this._comparator  = comparator ?? ServiceLocator.Container.Resolve<IGameComparator>();
+            _comparator  = comparator ?? ServiceLocator.Container.Resolve<IGameComparator>();
             CheckHealth();
             CalculateSearchables();
         }
@@ -391,10 +392,10 @@ namespace CKAN
         /// </summary>
         private void CalculateSearchables()
         {
-            SearchableIdentifier  = identifier  == null ? string.Empty : CkanModule.nonAlphaNums.Replace(identifier, "");
-            SearchableName        = name        == null ? string.Empty : CkanModule.nonAlphaNums.Replace(name, "");
-            SearchableAbstract    = @abstract   == null ? string.Empty : CkanModule.nonAlphaNums.Replace(@abstract, "");
-            SearchableDescription = description == null ? string.Empty : CkanModule.nonAlphaNums.Replace(description, "");
+            SearchableIdentifier  = identifier  == null ? string.Empty : nonAlphaNums.Replace(identifier, "");
+            SearchableName        = name        == null ? string.Empty : nonAlphaNums.Replace(name, "");
+            SearchableAbstract    = @abstract   == null ? string.Empty : nonAlphaNums.Replace(@abstract, "");
+            SearchableDescription = description == null ? string.Empty : nonAlphaNums.Replace(description, "");
             SearchableAuthors = new List<string>();
 
             if (author == null)
@@ -405,7 +406,7 @@ namespace CKAN
             {
                 foreach (string auth in author)
                 {
-                    SearchableAuthors.Add(CkanModule.nonAlphaNums.Replace(auth, ""));
+                    SearchableAuthors.Add(nonAlphaNums.Replace(auth, ""));
                 }
             }
         }
@@ -457,8 +458,10 @@ namespace CKAN
 
                 if (module == null
                         || (ksp_version != null && !module.IsCompatible(ksp_version)))
+                {
                     throw new ModuleNotFoundKraken(ident, version,
                         string.Format(Properties.Resources.CkanModuleNotAvailable, ident, version));
+                }
             }
             else
             {
@@ -466,8 +469,10 @@ namespace CKAN
                       ?? registry.InstalledModule(mod)?.Module;
 
                 if (module == null)
+                {
                     throw new ModuleNotFoundKraken(mod, null,
                         string.Format(Properties.Resources.CkanModuleNotInstalledOrAvailable, mod));
+                }
             }
             return module;
         }
@@ -587,12 +592,9 @@ namespace CKAN
             => string.Equals(identifier, other.identifier) && version.Equals(other.version);
 
         public override bool Equals(object obj)
-        {
-            if (obj is null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((CkanModule)obj);
-        }
+            => !(obj is null)
+                && (ReferenceEquals(this, obj)
+                    || (obj.GetType() == GetType() && Equals((CkanModule)obj)));
 
         public bool MetadataEquals(CkanModule other)
         {
@@ -607,7 +609,9 @@ namespace CKAN
                 for (int i = 0; i < install.Length; i++)
                 {
                     if (!install[i].Equals(other.install[i]))
+                    {
                         return false;
+                    }
                 }
             }
             if (install_size != other.install_size)
@@ -616,20 +620,30 @@ namespace CKAN
             }
 
             if (!RelationshipsAreEquivalent(conflicts,  other.conflicts))
+            {
                 return false;
+            }
 
             if (!RelationshipsAreEquivalent(depends,    other.depends))
+            {
                 return false;
+            }
 
             if (!RelationshipsAreEquivalent(recommends, other.recommends))
+            {
                 return false;
+            }
 
             if (provides != other.provides)
             {
                 if (provides == null || other.provides == null)
+                {
                     return false;
+                }
                 else if (!provides.OrderBy(i => i).SequenceEqual(other.provides.OrderBy(i => i)))
+                {
                     return false;
+                }
             }
             return true;
         }
@@ -637,16 +651,22 @@ namespace CKAN
         private static bool RelationshipsAreEquivalent(List<RelationshipDescriptor> a, List<RelationshipDescriptor> b)
         {
             if (a == b)
+            {
                 // If they're the same exact object they must be equivalent
                 return true;
+            }
 
             if (a == null || b == null)
+            {
                 // If they're not the same exact object and either is null then must not be equivalent
                 return false;
+            }
 
             if (a.Count != b.Count)
+            {
                 // If their counts different they must not be equivalent
                 return false;
+            }
 
             // Sort the lists so we can compare each relationship
             var aSorted = a.OrderBy(i => i.ToString()).ToList();
@@ -833,11 +853,11 @@ namespace CKAN
                 }
                 GameVersion relMin = rel.EarliestCompatibleGameVersion();
                 GameVersion relMax = rel.LatestCompatibleGameVersion();
-                if (minGame == null || !minGame.IsAny && (minGame > relMin || relMin.IsAny))
+                if (minGame == null || (!minGame.IsAny && (minGame > relMin || relMin.IsAny)))
                 {
                     minGame = relMin;
                 }
-                if (maxGame == null || !maxGame.IsAny && (maxGame < relMax || relMax.IsAny))
+                if (maxGame == null || (!maxGame.IsAny && (maxGame < relMax || relMax.IsAny)))
                 {
                     maxGame = relMax;
                 }

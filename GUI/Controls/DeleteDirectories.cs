@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
-using CKAN.Extensions;
 using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
@@ -98,7 +96,7 @@ namespace CKAN.GUI
             evt.Handled = Util.TryOpenWebPage(HelpURLs.DeleteDirectories);
         }
 
-        private void DirectoriesListView_ItemSelectionChanged(Object sender, ListViewItemSelectionChangedEventArgs e)
+        private void DirectoriesListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             ContentsListView.Items.Clear();
             ContentsListView.Items.AddRange(

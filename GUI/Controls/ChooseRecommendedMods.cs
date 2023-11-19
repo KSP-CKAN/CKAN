@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.GUI.Attributes;
 
@@ -184,7 +183,9 @@ namespace CKAN.GUI
             foreach (ListViewItem item in RecommendedModsListView.Items)
             {
                 if (item.Checked != state)
+                {
                     item.Checked = state;
+                }
             }
             MarkConflicts();
             RecommendedModsListView.EndUpdate();

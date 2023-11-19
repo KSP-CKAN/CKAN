@@ -66,7 +66,7 @@ namespace CKAN.NetKAN.Transformers
             .Select((str, index) => new {index, str})
             .ToDictionary(t => t.str, t=> t.index);
 
-        public string Name { get { return "property_sort"; } }
+        public string Name => "property_sort";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {

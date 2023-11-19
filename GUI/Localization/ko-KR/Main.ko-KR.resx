@@ -237,7 +237,4 @@
   <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
     <value>플레이 타임...</value>
   </data>
-  <data name="minimizeNotifyIcon.Text" xml:space="preserve">
-    <value>CKAN</value>
-  </data>
 </root>

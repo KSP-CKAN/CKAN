@@ -11,7 +11,7 @@ namespace CKAN.NetKAN.Transformers
 {
     internal sealed class InstallSizeTransformer : ITransformer
     {
-        public string Name { get { return "install_size"; } }
+        public string Name => "install_size";
 
         public InstallSizeTransformer(IHttpService http, IModuleService moduleService, IGame game)
         {

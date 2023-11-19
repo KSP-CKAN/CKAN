@@ -31,7 +31,7 @@ namespace CKAN.ConsoleUI {
             debug    = dbg;
             manager  = mgr;
             this.regMgr   = regMgr;
-            this.registry = regMgr.registry;
+            registry = regMgr.registry;
             this.repoData = repoData;
 
             moduleList = new ConsoleListBox<CkanModule>(
@@ -75,7 +75,9 @@ namespace CKAN.ConsoleUI {
                         if (filter.Length <= 1) {
                             // Don't blank the list for just "~" by itself
                             return true;
-                        } else switch (filter.Substring(1, 1)) {
+                        } else
+                        {
+                            switch (filter.Substring(1, 1)) {
                             case "i":
                                 return registry.IsInstalled(m.identifier, false);
                             case "u":
@@ -106,6 +108,8 @@ namespace CKAN.ConsoleUI {
                                 }
                                 return false;
                         }
+                        }
+
                         return false;
                     } else {
                         filter = CkanModule.nonAlphaNums.Replace(filter, "");
@@ -347,7 +351,7 @@ namespace CKAN.ConsoleUI {
 
         private bool CaptureKey(ConsoleTheme theme)
         {
-            ConsoleKeyInfo k = default(ConsoleKeyInfo);
+            ConsoleKeyInfo k = default;
             ConsoleMessageDialog keyprompt = new ConsoleMessageDialog(Properties.Resources.ModListPressAKey, new List<string>());
             keyprompt.Run(theme, (ConsoleTheme th) => {
                 k = Console.ReadKey(true);
@@ -435,11 +439,11 @@ namespace CKAN.ConsoleUI {
             );
             LaunchSubScreen(theme, ps, (ConsoleTheme th) => {
                 HashSet<string> availBefore = new HashSet<string>(
-                    Array.ConvertAll<CkanModule, string>(
+                    Array.ConvertAll(
                         registry.CompatibleModules(
                             manager.CurrentInstance.VersionCriteria()
                         ).ToArray(),
-                        (l => l.identifier)
+                        l => l.identifier
                     )
                 );
                 recent.Clear();

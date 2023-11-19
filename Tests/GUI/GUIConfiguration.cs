@@ -13,7 +13,7 @@ namespace Tests.GUI
     [TestFixture]
     public class GuiConfigurationTests
     {
-        string tempDir;
+        private string tempDir;
 
         [OneTimeSetUp]
         public void Setup()

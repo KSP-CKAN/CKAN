@@ -22,7 +22,7 @@ namespace CKAN.Configuration
 
         public string DownloadCacheDir
         {
-            get { return GetRegistryValue(@"DownloadCacheDir", defaultDownloadCacheDir); }
+            get => GetRegistryValue(@"DownloadCacheDir", defaultDownloadCacheDir);
             set
             {
                 if (string.IsNullOrEmpty(value))
@@ -62,7 +62,7 @@ namespace CKAN.Configuration
 
         public int RefreshRate
         {
-            get { return GetRegistryValue(@"RefreshRate", 0); }
+            get => GetRegistryValue(@"RefreshRate", 0);
             set
             {
                 if (value <= 0)
@@ -76,24 +76,25 @@ namespace CKAN.Configuration
             }
         }
 
-        private int InstanceCount
-        {
-            get { return GetRegistryValue(@"KSPInstanceCount", 0); }
-        }
+        private int InstanceCount => GetRegistryValue(@"KSPInstanceCount", 0);
 
         public string AutoStartInstance
         {
-            get { return GetRegistryValue(@"KSPAutoStartInstance", ""); }
-            set { SetAutoStartInstance(value??String.Empty); }
+            get => GetRegistryValue(@"KSPAutoStartInstance", "");
+            #pragma warning disable IDE0027
+            set { SetAutoStartInstance(value ?? string.Empty); }
+            #pragma warning restore IDE0027
         }
 
         public string Language
         {
-            get { return GetRegistryValue<string>("Language", null); }
+            get => GetRegistryValue<string>("Language", null);
             set
             {
                 if (Utilities.AvailableLanguages.Contains(value))
+                {
                     SetRegistryValue("Language", value);
+                }
             }
         }
 

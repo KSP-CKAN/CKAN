@@ -10,7 +10,7 @@ namespace CKAN.NetKAN.Transformers
 {
     internal sealed class StagingLinksTransformer : ITransformer
     {
-        public string Name { get { return "staging_links"; } }
+        public string Name => "staging_links";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {

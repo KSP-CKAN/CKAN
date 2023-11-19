@@ -10,8 +10,8 @@ namespace CKAN.GUI
     /// <typeparam name="T"></typeparam>
     public class NavigationHistory<T>
     {
-        readonly List<T> m_navigationHistory;
-        int m_currentIndex;
+        private readonly List<T> m_navigationHistory;
+        private int m_currentIndex;
 
         public NavigationHistory()
         {
@@ -36,24 +36,12 @@ namespace CKAN.GUI
         /// <summary>
         /// Indicates whether it's possible to navigate backwards.
         /// </summary>
-        public bool CanNavigateBackward
-        {
-            get
-            {
-                return m_currentIndex > 0;
-            }
-        }
+        public bool CanNavigateBackward => m_currentIndex > 0;
 
         /// <summary>
         /// Indicates whether it's possible to navigate forwards.
         /// </summary>
-        public bool CanNavigateForward
-        {
-            get
-            {
-                return m_currentIndex < (m_navigationHistory.Count - 1);
-            }
-        }
+        public bool CanNavigateForward => m_currentIndex < (m_navigationHistory.Count - 1);
 
         /// <summary>
         /// Indicates whether the history is in read-only mode.
@@ -112,7 +100,7 @@ namespace CKAN.GUI
         {
             if (IsReadOnly)
             {
-                return default(T);
+                return default;
             }
 
             if (!CanNavigateBackward)
@@ -134,7 +122,7 @@ namespace CKAN.GUI
         {
             if (IsReadOnly)
             {
-                return default(T);
+                return default;
             }
 
             if (!CanNavigateForward)

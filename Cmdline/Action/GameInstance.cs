@@ -179,7 +179,9 @@ namespace CKAN.CmdLine
                     Manager  = manager ?? new GameInstanceManager(User);
                     exitCode = options.Handle(Manager, User);
                     if (exitCode != Exit.OK)
+                    {
                         return;
+                    }
 
                     switch (option)
                     {
@@ -461,7 +463,7 @@ namespace CKAN.CmdLine
                 string defaultInstance = Manager.Configuration.AutoStartInstance;
                 int defaultInstancePresent = 0;
 
-                if (!String.IsNullOrWhiteSpace(defaultInstance))
+                if (!string.IsNullOrWhiteSpace(defaultInstance))
                 {
                     defaultInstancePresent = 1;
                 }
@@ -477,7 +479,7 @@ namespace CKAN.CmdLine
                 }
 
                 // Mark the default instance for the user.
-                if (!String.IsNullOrWhiteSpace(defaultInstance))
+                if (!string.IsNullOrWhiteSpace(defaultInstance))
                 {
                     keys[0] = Manager.Instances.IndexOfKey(defaultInstance);
                 }

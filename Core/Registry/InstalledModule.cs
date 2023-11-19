@@ -24,6 +24,7 @@ namespace CKAN
         public InstalledModuleFile(string path, GameInstance ksp)
         {
             string absolute_path = ksp.ToAbsoluteGameDir(path);
+            // TODO: What is the net performance cost of calculating this? Big files are not quick to hash!
             sha1_sum = Sha1Sum(absolute_path);
         }
 
@@ -84,7 +85,8 @@ namespace CKAN
         // TODO: Our InstalledModuleFile already knows its path, so this could just
         // be a list. However we've left it as a dictionary for now to maintain
         // registry format compatibility.
-        [JsonProperty] private Dictionary<string, InstalledModuleFile> installed_files;
+        [JsonProperty]
+        private Dictionary<string, InstalledModuleFile> installed_files;
 
         public IEnumerable<string> Files => installed_files.Keys;
         public string identifier => source_module.identifier;

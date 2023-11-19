@@ -43,16 +43,19 @@ namespace CKAN.NetKAN.Validators
                 {
                     throw new Kraken("License should match spec");
                 }
-                else foreach (var lic in licenses)
+                else
                 {
-                    try
+                    foreach (var lic in licenses)
                     {
-                        // This will throw BadMetadataKraken if the license isn't known
-                        new License((string)lic);
-                    }
-                    catch
-                    {
-                        throw new Kraken($"License {lic} should match spec");
+                        try
+                        {
+                            // This will throw BadMetadataKraken if the license isn't known
+                            new License((string)lic);
+                        }
+                        catch
+                        {
+                            throw new Kraken($"License {lic} should match spec");
+                        }
                     }
                 }
             }

@@ -8,7 +8,6 @@ using log4net;
 using Newtonsoft.Json;
 
 using CKAN.Versioning;
-using CKAN.Configuration;
 
 namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
 {
@@ -39,7 +38,6 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
         private static readonly ILog Log = LogManager.GetLogger(typeof(KspBuildMap));
 
         private readonly object _buildMapLock = new object();
-        private readonly IConfiguration _configuration;
         private JBuilds _jBuilds;
 
         public GameVersion this[string buildId]
@@ -48,8 +46,7 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
             {
                 EnsureBuildMap();
 
-                string version;
-                return _jBuilds.Builds.TryGetValue(buildId, out version) ? GameVersion.Parse(version) : null;
+                return _jBuilds.Builds.TryGetValue(buildId, out string version) ? GameVersion.Parse(version) : null;
             }
         }
 
@@ -64,23 +61,29 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
             }
         }
 
-        public KspBuildMap(IConfiguration configuration)
+        public KspBuildMap()
         {
-            _configuration = configuration;
         }
 
         private void EnsureBuildMap()
         {
-            if (ReferenceEquals(_jBuilds, null))
+            if (_jBuilds is null)
             {
                 lock (_buildMapLock)
                 {
-                    if (ReferenceEquals(_jBuilds, null))
+                    if (_jBuilds is null)
                     {
                         // Check for a cached copy of the remote build map
-                        if (TrySetCachedBuildMap())   return;
+                        if (TrySetCachedBuildMap())
+                        {
+                            return;
+                        }
                         // If that doesn't exist, use the copy from when we were compiled
-                        if (TrySetEmbeddedBuildMap()) return;
+                        if (TrySetEmbeddedBuildMap())
+                        {
+                            return;
+                        }
+
                         Log.Warn("Could not load build map from cached or embedded copy");
                     }
                 }
@@ -93,7 +96,11 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
         public void Refresh()
         {
             Log.Debug("Refreshing build map from server");
-            if (TrySetRemoteBuildMap()) return;
+            if (TrySetRemoteBuildMap())
+            {
+                return;
+            }
+
             Log.Warn("Could not refresh the build map from remote server");
         }
 

@@ -22,7 +22,7 @@ namespace CKAN.NetKAN.Transformers
         private readonly ISpacedockApi _api;
         private readonly IGithubApi    _githubApi;
 
-        public string Name { get { return "spacedock"; } }
+        public string Name => "spacedock";
 
         public SpacedockTransformer(ISpacedockApi api, IGithubApi githubApi)
         {
@@ -84,14 +84,18 @@ namespace CKAN.NetKAN.Transformers
             json.SafeAdd("version", latestVersion.friendly_version.ToString());
             json.Remove("$kref");
             json.SafeAdd("download", latestVersion.download_path.OriginalString);
-            json.SafeAdd(Model.Metadata.UpdatedPropertyName, latestVersion.created);
+            json.SafeAdd(Metadata.UpdatedPropertyName, latestVersion.created);
 
             var authors = GetAuthors(sdMod);
 
             if (authors.Count == 1)
+            {
                 json.SafeAdd("author", sdMod.author);
+            }
             else if (authors.Count > 1)
+            {
                 json.SafeAdd("author", new JArray(authors));
+            }
 
             // SD provides users with the following default selection of licenses. Let's convert them to CKAN
             // compatible license strings if possible.
@@ -239,7 +243,9 @@ namespace CKAN.NetKAN.Transformers
             var result = new List<string> { mod.author };
 
             if (mod.shared_authors != null)
+            {
                 result.AddRange(mod.shared_authors.Select(i => i.Username).Distinct());
+            }
 
             return result;
         }

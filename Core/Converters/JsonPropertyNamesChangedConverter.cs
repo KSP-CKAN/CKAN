@@ -53,8 +53,7 @@ namespace CKAN
             var changes = mapping;
             foreach (JProperty jp in jo.Properties())
             {
-                string name;
-                if (!changes.TryGetValue(jp.Name, out name))
+                if (!changes.TryGetValue(jp.Name, out string name))
                 {
                     name = jp.Name;
                 }
@@ -72,12 +71,9 @@ namespace CKAN
                     // No property, maybe there's a field
                     FieldInfo field = objectType.GetTypeInfo().DeclaredFields.FirstOrDefault(fi =>
                         (fi.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName ?? fi.Name) == name);
-                    if (field != null)
-                    {
-                        field.SetValue(instance,
-                                       GetValue(field.GetCustomAttribute<JsonConverterAttribute>(),
-                                                jp.Value, field.FieldType, serializer));
-                    }
+                    field?.SetValue(instance,
+                                    GetValue(field.GetCustomAttribute<JsonConverterAttribute>(),
+                                             jp.Value, field.FieldType, serializer));
                 }
             }
             return instance;

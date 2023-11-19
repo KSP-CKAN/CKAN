@@ -44,7 +44,9 @@ namespace CKAN.NetKAN.Sources.Jenkins
                 JenkinsBuild build = Call<JenkinsBuild>($"{buildEntry["url"]}api/json");
                 // Make sure build status matches options.BuildType
                 if (resultVal == null || build.Result == resultVal)
+                {
                     yield return build;
+                }
             }
         }
 

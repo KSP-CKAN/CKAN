@@ -25,10 +25,12 @@ namespace CKAN
                 return _container;
             }
 
+            #pragma warning disable IDE0027
             set
             {
                 _container = value;
             }
+            #pragma warning restore IDE0027
         }
 
         private static void Init()

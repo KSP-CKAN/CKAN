@@ -42,7 +42,7 @@ namespace CKAN.NetKAN.Validators
                 var allFiles = _moduleService.FileDestinations(mod, file).Memoize();
 
                 // Make sure no paths include GameData other than at the start
-                foreach (var dir in Enumerable.Repeat<string>(_game.PrimaryModDirectoryRelative, 1)
+                foreach (var dir in Enumerable.Repeat(_game.PrimaryModDirectoryRelative, 1)
                                               .Concat(_game.AlternateModDirectoriesRelative))
                 {
                     var gamedatas = allFiles

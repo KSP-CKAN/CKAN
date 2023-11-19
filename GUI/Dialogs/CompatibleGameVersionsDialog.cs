@@ -21,7 +21,7 @@ namespace CKAN.GUI
         /// <param name="centerScreen">true to center the dialog on the screen, false to center on the parent</param>
         public CompatibleGameVersionsDialog(GameInstance inst, bool centerScreen)
         {
-            this._inst = inst;
+            _inst = inst;
             InitializeComponent();
 
             if (centerScreen)
@@ -145,7 +145,7 @@ namespace CKAN.GUI
         private void CancelButton_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-            this.Close();
+            Close();
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
@@ -155,7 +155,7 @@ namespace CKAN.GUI
             );
 
             DialogResult = DialogResult.OK;
-            this.Close();
+            Close();
         }
     }
 }

@@ -1,7 +1,8 @@
 <Project>
   <PropertyGroup>
     <AssemblyName>CKAN-ConsoleUI</AssemblyName>
-    <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(MSBuildRuntimeType)' != 'Core' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(MSBuildRuntimeType)' == 'Core' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
     <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
@@ -14,10 +15,10 @@
     <Deterministic>true</Deterministic>
     <Configurations>Debug;Release</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
-    <TargetFramework>net45</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <TargetFramework>net48</TargetFramework>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

@@ -148,16 +148,24 @@ namespace CKAN.NetKAN.Services
             var gameVerMaxes = new List<GameVersion>();
 
             if (!GameVersion.IsNullOrAny(existingMin))
+            {
                 gameVerMins.Add(existingMin);
+            }
 
             if (!GameVersion.IsNullOrAny(avcMin))
+            {
                 gameVerMins.Add(avcMin);
+            }
 
             if (!GameVersion.IsNullOrAny(existingMax))
+            {
                 gameVerMaxes.Add(existingMax);
+            }
 
             if (!GameVersion.IsNullOrAny(avcMax))
+            {
                 gameVerMaxes.Add(avcMax);
+            }
 
             var gameVerMin = gameVerMins.DefaultIfEmpty(null).Min();
             var gameVerMax = gameVerMaxes.DefaultIfEmpty(null).Max();
@@ -267,8 +275,7 @@ namespace CKAN.NetKAN.Services
             {
                 Regex internalRE = new Regex(internalFilePath, RegexOptions.Compiled);
                 ZipEntry avcEntry = files
-                    .Where(f => f.Name == internalFilePath || internalRE.IsMatch(f.Name))
-                    .FirstOrDefault();
+                    .FirstOrDefault(f => f.Name == internalFilePath || internalRE.IsMatch(f.Name));
                 if (avcEntry == null)
                 {
                     throw new Kraken(

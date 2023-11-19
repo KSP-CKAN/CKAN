@@ -44,7 +44,9 @@ namespace CKAN.CmdLine
                     manager  = mgr ?? new GameInstanceManager(user);
                     exitCode = options.Handle(manager, user);
                     if (exitCode != Exit.OK)
+                    {
                         return;
+                    }
 
                     switch (option)
                     {

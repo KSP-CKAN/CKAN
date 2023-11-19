@@ -7,7 +7,6 @@ using NUnit.Framework;
 
 using Tests.Data;
 using CKAN;
-using CKAN.Extensions;
 
 namespace Tests.Core.Net
 {
@@ -18,13 +17,12 @@ namespace Tests.Core.Net
     [TestFixture]
     public class NetAsyncModulesDownloaderTests
     {
-        private CKAN.GameInstanceManager manager;
-        private CKAN.RegistryManager     registry_manager;
+        private GameInstanceManager manager;
+        private RegistryManager registry_manager;
         private CKAN.Registry            registry;
         private DisposableKSP            ksp;
-        private CKAN.IDownloader         async;
+        private IDownloader async;
         private NetModuleCache           cache;
-        private NetAsyncDownloader       downloader;
         private TemporaryRepositoryData  repoData;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncModulesDownloaderTests));
@@ -47,16 +45,14 @@ namespace Tests.Core.Net
             manager = new GameInstanceManager(user);
             // Give us a registry to play with.
             ksp = new DisposableKSP();
-            registry_manager = CKAN.RegistryManager.Instance(ksp.KSP, repoData.Manager);
+            registry_manager = RegistryManager.Instance(ksp.KSP, repoData.Manager);
             registry = registry_manager.registry;
             registry.Installed().Clear();
             // Make sure we have a registry we can use.
             registry.RepositoriesSet(repos);
 
-            downloader = new NetAsyncDownloader(user);
-
             // Ready our downloader.
-            async = new CKAN.NetAsyncModulesDownloader(user, manager.Cache);
+            async = new NetAsyncModulesDownloader(user, manager.Cache);
 
             // General shortcuts
             cache = manager.Cache;

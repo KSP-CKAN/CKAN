@@ -33,7 +33,7 @@ namespace CKAN.GUI
             if (Menu != null)
             {
                 int arrowX = ClientRectangle.Width - 14,
-                    arrowY = ClientRectangle.Height / 2 - 1;
+                    arrowY = (ClientRectangle.Height / 2) - 1;
 
                 pevent.Graphics.FillPolygon(
                     Enabled ? SystemBrushes.ControlText : SystemBrushes.ButtonShadow,

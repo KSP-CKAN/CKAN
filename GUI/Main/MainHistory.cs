@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 
-using CKAN.Extensions;
-
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
 

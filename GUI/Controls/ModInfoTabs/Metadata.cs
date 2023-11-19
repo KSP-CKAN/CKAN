@@ -113,7 +113,7 @@ namespace CKAN.GUI
         {
             var link   = sender as LinkLabel;
             var author = link.Text;
-            var merge  = (Control.ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge  = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
             OnChangeFilter?.Invoke(
                 new SavedSearch()
                 {

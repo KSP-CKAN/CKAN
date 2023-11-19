@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -150,7 +148,7 @@ namespace Tests.GUI
                 Assert.IsNotNull(anyVersionModule, "DogeCoinFlag 1.01 should exist");
                 var modList = new ModList();
                 var listGui = new DataGridView();
-                var installer = new CKAN.ModuleInstaller(instance.KSP, manager.Cache, manager.User);
+                var installer = new ModuleInstaller(instance.KSP, manager.Cache, manager.User);
                 var downloader = new NetAsyncModulesDownloader(user, manager.Cache);
 
                 // Act
@@ -183,7 +181,7 @@ namespace Tests.GUI
                 Assert.IsNotNull(manager);
                 Assert.IsNotNull(modList);
 
-                var modules = repoData.Manager.GetAllAvailableModules(Enumerable.Repeat<Repository>(repo.repo, 1))
+                var modules = repoData.Manager.GetAllAvailableModules(Enumerable.Repeat(repo.repo, 1))
                     .Select(mod => new GUIMod(mod.Latest(), repoData.Manager, registry, instance.KSP.VersionCriteria(),
                                               null, false, false))
                     .ToList();

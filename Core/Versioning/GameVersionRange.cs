@@ -16,11 +16,15 @@ namespace CKAN.Versioning
 
         public GameVersionRange(GameVersionBound lower, GameVersionBound upper)
         {
-            if (ReferenceEquals(lower, null))
+            if (lower is null)
+            {
                 throw new ArgumentNullException("lower");
+            }
 
-            if (ReferenceEquals(upper, null))
+            if (upper is null)
+            {
                 throw new ArgumentNullException("upper");
+            }
 
             Lower = lower;
             Upper = upper;
@@ -35,8 +39,10 @@ namespace CKAN.Versioning
 
         public GameVersionRange IntersectWith(GameVersionRange other)
         {
-            if (ReferenceEquals(other, null))
+            if (other is null)
+            {
                 throw new ArgumentNullException("other");
+            }
 
             var highestLow = GameVersionBound.Highest(Lower, other.Lower);
             var lowestHigh = GameVersionBound.Lowest(Upper, other.Upper);
@@ -51,8 +57,10 @@ namespace CKAN.Versioning
 
         public bool IsSupersetOf(GameVersionRange other)
         {
-            if (ReferenceEquals(other, null))
+            if (other is null)
+            {
                 throw new ArgumentNullException("other");
+            }
 
             var lowerIsOkay = Lower.Value.IsAny
                 || (Lower.Value < other.Lower.Value)
@@ -84,12 +92,16 @@ namespace CKAN.Versioning
             sb.Append(versionRange.Lower.Inclusive ? '[' : '(');
 
             if (versionRange.Lower.Value != null)
+            {
                 sb.Append(versionRange.Lower.Value);
+            }
 
             sb.Append(',');
 
             if (versionRange.Upper.Value != null)
+            {
                 sb.Append(versionRange.Upper.Value);
+            }
 
             sb.Append(versionRange.Upper.Inclusive ? ']' : ')');
 
@@ -129,16 +141,32 @@ namespace CKAN.Versioning
     {
         public bool Equals(GameVersionRange other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return Equals(Lower, other.Lower) && Equals(Upper, other.Upper);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj is GameVersionRange && Equals((GameVersionRange) obj);
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return obj is GameVersionRange range && Equals(range);
         }
 
         public override int GetHashCode()

@@ -33,7 +33,7 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
 
             if (foundVersions.Count < 1)
             {
-                result = default(GameVersion);
+                result = default;
                 return false;
             }
             if (foundVersions.Count > 1)
@@ -66,7 +66,7 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
                 }
             }
 
-            result = default(GameVersion);
+            result = default;
             return false;
         }
 

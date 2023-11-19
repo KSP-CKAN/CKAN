@@ -11,7 +11,6 @@ using CKAN.NetKAN.Sources.SpaceWarp;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Sources.Github;
-using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.Games;
 

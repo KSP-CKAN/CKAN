@@ -28,7 +28,7 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         public void AddStatusMessage(string text, params object[] args)
         {
-            string msg = String.Format(text, args);
+            string msg = string.Format(text, args);
             // No newlines in status bar
             Util.Invoke(statusStrip1, () =>
                 StatusLabel.ToolTipText = StatusLabel.Text = msg.Replace("\r\n", " ").Replace("\n", " ")
@@ -39,7 +39,7 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         public void ErrorDialog(string text, params object[] args)
         {
-            errorDialog.ShowErrorDialog(String.Format(text, args));
+            errorDialog.ShowErrorDialog(string.Format(text, args));
         }
 
         public bool YesNoDialog(string text, string yesText = null, string noText = null)

@@ -10,12 +10,9 @@ namespace CKAN.Extensions
     public static class EnumerableExtensions
     {
         public static ICollection<T> AsCollection<T>(this IEnumerable<T> source)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            return source is ICollection<T> collection ? collection : source.ToArray();
-        }
+            => source == null
+                ? throw new ArgumentNullException(nameof(source))
+                : source is ICollection<T> collection ? collection : source.ToArray();
 
 #if NET45
 
@@ -117,6 +114,8 @@ namespace CKAN.Extensions
         public static IEnumerable<V> ZipMany<T, U, V>(this IEnumerable<T> seq1, IEnumerable<U> seq2, Func<T, U, IEnumerable<V>> func)
             => seq1.Zip(seq2, func).SelectMany(seqs => seqs);
 
+#if NETFRAMEWORK
+
         /// <summary>
         /// Eliminate duplicate elements based on the value returned by a callback
         /// </summary>
@@ -125,6 +124,8 @@ namespace CKAN.Extensions
         /// <returns>Sequence where each element has a unique return value</returns>
         public static IEnumerable<T> DistinctBy<T, U>(this IEnumerable<T> seq, Func<T, U> func)
             => seq.GroupBy(func).Select(grp => grp.First());
+
+#endif
 
         /// <summary>
         /// Generate a sequence from a linked list
@@ -140,7 +141,7 @@ namespace CKAN.Extensions
             }
         }
 
-#if NET45
+#if NETFRAMEWORK
 
         /// <summary>
         /// Make pairs out of the elements of two sequences
@@ -150,6 +151,10 @@ namespace CKAN.Extensions
         /// <returns>Sequence of pairs of one element from seq1 and one from seq2</returns>
         public static IEnumerable<Tuple<T1, T2>> Zip<T1, T2>(this IEnumerable<T1> seq1, IEnumerable<T2> seq2)
             => seq1.Zip(seq2, (item1, item2) => new Tuple<T1, T2>(item1, item2));
+
+#endif
+
+#if NET45
 
         /// <summary>
         /// Enable a `foreach` over a sequence of tuples
@@ -197,6 +202,8 @@ namespace CKAN.Extensions
             item4 = tuple.Item4;
         }
 
+#endif
+
         /// <summary>
         /// Enable a `foreach` over a sequence of key value pairs
         /// </summary>
@@ -208,8 +215,6 @@ namespace CKAN.Extensions
             key = kvp.Key;
             val = kvp.Value;
         }
-
-#endif
 
     }
 
@@ -241,19 +246,17 @@ namespace CKAN.Extensions
         }
 
         IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+            => GetEnumerator();
 
         private IEnumerator<T> GetMemoizingEnumerator()
         {
-            for (Int32 index = 0; TryGetItem(index, out T item); ++index)
+            for (int index = 0; TryGetItem(index, out T item); ++index)
             {
                 yield return item;
             }
         }
 
-        private bool TryGetItem(Int32 index, out T item)
+        private bool TryGetItem(int index, out T item)
         {
             lock (gate)
             {
@@ -262,12 +265,12 @@ namespace CKAN.Extensions
                     // The iteration may have completed while waiting for the lock
                     if (isCacheComplete)
                     {
-                        item = default(T);
+                        item = default;
                         return false;
                     }
                     if (!enumerator.MoveNext())
                     {
-                        item = default(T);
+                        item = default;
                         isCacheComplete = true;
                         enumerator.Dispose();
                         return false;
@@ -279,10 +282,8 @@ namespace CKAN.Extensions
             }
         }
 
-        private bool IsItemInCache(Int32 index)
-        {
-            return index < cache.Count;
-        }
+        private bool IsItemInCache(int index)
+            => index < cache.Count;
 
         private readonly IEnumerable<T> source;
         private          IEnumerator<T> enumerator;

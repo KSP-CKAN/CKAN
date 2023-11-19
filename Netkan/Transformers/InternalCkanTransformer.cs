@@ -21,7 +21,7 @@ namespace CKAN.NetKAN.Transformers
         private readonly IModuleService _moduleService;
         private readonly IGame _game;
 
-        public string Name { get { return "internal_ckan"; } }
+        public string Name => "internal_ckan";
 
         public InternalCkanTransformer(IHttpService http, IModuleService moduleService, IGame game)
         {

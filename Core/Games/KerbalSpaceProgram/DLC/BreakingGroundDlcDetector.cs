@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-
-using CKAN.Games.KerbalSpaceProgram;
-
 namespace CKAN.Games.KerbalSpaceProgram.DLC
 {
     /// <summary>

@@ -1,7 +1,6 @@
 using System.IO;
 using System.Globalization;
 using System.Resources;
-using System.Collections;
 using System.Reflection;
 using System.Collections.Generic;
 
@@ -9,7 +8,7 @@ namespace CKAN.CmdLine
 {
     // Thanks and credit to this guy: https://stackoverflow.com/q/1952638/2422988
 
-    class SingleAssemblyResourceManager : ResourceManager
+    public class SingleAssemblyResourceManager : ResourceManager
     {
         public SingleAssemblyResourceManager(string basename, Assembly assembly) : base(basename, assembly)
         {
@@ -23,7 +22,7 @@ namespace CKAN.CmdLine
                 // Lazy-load default language (without caring about duplicate assignment in race conditions, no harm done)
                 if (neutralResourcesCulture == null)
                 {
-                    neutralResourcesCulture = GetNeutralResourcesLanguage(this.MainAssembly);
+                    neutralResourcesCulture = GetNeutralResourcesLanguage(MainAssembly);
                 }
 
                 // If we're asking for the default language, then ask for the
@@ -34,7 +33,7 @@ namespace CKAN.CmdLine
                 }
                 string resourceFileName = GetResourceFileName(culture);
 
-                Stream store = this.MainAssembly.GetManifestResourceStream(resourceFileName);
+                Stream store = MainAssembly.GetManifestResourceStream(resourceFileName);
 
                 // If we found the appropriate resources in the local assembly
                 if (store != null)

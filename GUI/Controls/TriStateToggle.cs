@@ -28,7 +28,7 @@ namespace CKAN.GUI
             Controls.Add(BothRadioButton);
             Controls.Add(NoRadioButton);
 
-            Size = new Size(3 * buttonXOffset + 1, 20);
+            Size = new Size((3 * buttonXOffset) + 1, 20);
 
             ResumeLayout(false);
             PerformLayout();
@@ -36,12 +36,9 @@ namespace CKAN.GUI
 
         public bool? Value
         {
-            get
-            {
-                return YesRadioButton.Checked ? (bool?)true
-                     : NoRadioButton.Checked  ? (bool?)false
-                     :                          null;
-            }
+            get => YesRadioButton.Checked ? true
+                 : NoRadioButton.Checked ? (bool?)false
+                 : null;
             set
             {
                 if (!value.HasValue)
@@ -66,7 +63,7 @@ namespace CKAN.GUI
             var rb = new RadioButton()
             {
                 Appearance = Appearance.Button,
-                BackColor  = check ? SystemColors.Highlight : RadioButton.DefaultBackColor,
+                BackColor  = check ? SystemColors.Highlight : DefaultBackColor,
                 FlatStyle  = FlatStyle.Flat,
                 Location   = new Point(index * buttonXOffset, 0),
                 Size       = new Size(buttonWidth, 20),
@@ -90,7 +87,7 @@ namespace CKAN.GUI
             }
             else
             {
-                butt.BackColor = RadioButton.DefaultBackColor;
+                butt.BackColor = DefaultBackColor;
             }
         }
 

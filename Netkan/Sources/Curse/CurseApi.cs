@@ -75,7 +75,10 @@ namespace CKAN.NetKAN.Sources.Curse
             {
                 redirects++;
                 if (redirects > 6)
+                {
                     throw new Kraken("More than 6 redirects when resolving the following url: " + url);
+                }
+
                 redirUrl = new Uri(redirUrl, response.Headers["Location"]);
                 request = (HttpWebRequest) WebRequest.Create(redirUrl);
                 request.AllowAutoRedirect = false;
@@ -90,7 +93,7 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             // If it's numeric, use the old URL format,
             // otherwise use the new.
-            var url = Int32.TryParse(nameOrId, out int id)
+            var url = int.TryParse(nameOrId, out int id)
                 ? CurseApiBaseOld + id
                 : CurseApiBase + nameOrId;
             Log.InfoFormat("Calling {0}", url);

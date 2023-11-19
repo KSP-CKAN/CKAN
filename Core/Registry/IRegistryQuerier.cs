@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using log4net;
 
 using CKAN.Versioning;
-using CKAN.Extensions;
 using CKAN.Games;
 
 namespace CKAN
@@ -286,10 +285,14 @@ namespace CKAN
         {
             // Mod is not installed, so we don't care about replacements
             if (installedVersion == null)
+            {
                 return null;
+            }
             // No replaced_by relationship
             if (installedVersion.replaced_by == null)
+            {
                 return null;
+            }
 
             // Get the identifier from the replaced_by relationship, if it exists
             ModuleRelationshipDescriptor replacedBy = installedVersion.replaced_by;
@@ -324,7 +327,10 @@ namespace CKAN
                                 return replacement;
                             }
                         }
-                        else return replacement;
+                        else
+                        {
+                            return replacement;
+                        }
                     }
                 }
                 return null;

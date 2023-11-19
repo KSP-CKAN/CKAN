@@ -23,12 +23,7 @@ namespace CKAN.ConsoleUI {
         /// True if name and URL are valid, false otherwise.
         /// </returns>
         protected override bool Valid()
-        {
-            if (!nameValid() || !urlValid()) {
-                return false;
-            }
-            return true;
-        }
+            => nameValid() && urlValid();
 
         /// <summary>
         /// Save the new Repository

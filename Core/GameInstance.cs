@@ -125,7 +125,7 @@ namespace CKAN
 
         public void SetCompatibleVersions(List<GameVersion> compatibleVersions)
         {
-            this._compatibleVersions = compatibleVersions.Distinct().ToList();
+            _compatibleVersions = compatibleVersions.Distinct().ToList();
             SaveCompatibleVersions();
         }
 
@@ -144,7 +144,7 @@ namespace CKAN
 
         private void LoadCompatibleVersions()
         {
-            String path = CompatibleGameVersionsFile();
+            string path = CompatibleGameVersionsFile();
             if (File.Exists(path))
             {
                 CompatibleGameVersions compatibleGameVersions = JsonConvert.DeserializeObject<CompatibleGameVersions>(File.ReadAllText(path));
@@ -162,7 +162,7 @@ namespace CKAN
             => Path.Combine(CkanDir(), game.CompatibleVersionsFile);
 
         public List<GameVersion> GetCompatibleVersions()
-            => new List<GameVersion>(this._compatibleVersions);
+            => new List<GameVersion>(_compatibleVersions);
 
         public HashSet<string> GetSuppressedCompatWarningIdentifiers =>
             SuppressedCompatWarningIdentifiers.LoadFrom(Version(), SuppressedCompatWarningIdentifiersFile).Identifiers;
@@ -183,10 +183,12 @@ namespace CKAN
                     ? JsonConvert.DeserializeObject<string[]>(File.ReadAllText(InstallFiltersFile))
                     : new string[] { };
 
+            #pragma warning disable IDE0027
             set
             {
                 File.WriteAllText(InstallFiltersFile, JsonConvert.SerializeObject(value));
             }
+            #pragma warning restore IDE0027
         }
 
         private string InstallFiltersFile => Path.Combine(CkanDir(), "install_filters.json");
@@ -367,7 +369,7 @@ namespace CKAN
         /// </returns>
         public string DllPathToIdentifier(string relative_path)
         {
-            var paths = Enumerable.Repeat<string>(game.PrimaryModDirectoryRelative, 1)
+            var paths = Enumerable.Repeat(game.PrimaryModDirectoryRelative, 1)
                                   .Concat(game.AlternateModDirectoriesRelative);
             if (!paths.Any(p => relative_path.StartsWith($"{p}/", StringComparison.CurrentCultureIgnoreCase)))
             {

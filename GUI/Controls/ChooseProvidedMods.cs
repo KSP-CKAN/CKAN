@@ -46,13 +46,7 @@ namespace CKAN.GUI
             return task.Task.Result;
         }
 
-        public ListView.SelectedListViewItemCollection SelectedItems
-        {
-            get
-            {
-                return ChooseProvidedModsListView.SelectedItems;
-            }
-        }
+        public ListView.SelectedListViewItemCollection SelectedItems => ChooseProvidedModsListView.SelectedItems;
 
         public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
 

@@ -50,15 +50,12 @@ namespace CKAN
 
         public string AutoStartInstance
         {
-            get
-            {
-                return HasInstance(Configuration.AutoStartInstance)
-                    ? Configuration.AutoStartInstance
-                    : null;
-            }
+            get => HasInstance(Configuration.AutoStartInstance)
+                ? Configuration.AutoStartInstance
+                : null;
             private set
             {
-                if (!String.IsNullOrEmpty(value) && !HasInstance(value))
+                if (!string.IsNullOrEmpty(value) && !HasInstance(value))
                 {
                     throw new InvalidKSPInstanceKraken(value);
                 }
@@ -66,10 +63,7 @@ namespace CKAN
             }
         }
 
-        public SortedList<string, GameInstance> Instances
-        {
-            get { return new SortedList<string, GameInstance>(instances); }
-        }
+        public SortedList<string, GameInstance> Instances => new SortedList<string, GameInstance>(instances);
 
         public GameInstanceManager(IUser user, IConfiguration configuration = null)
         {
@@ -212,10 +206,7 @@ namespace CKAN
         public GameInstance AddInstance(string path, string name, IUser user)
         {
             var game = DetermineGame(new DirectoryInfo(path), user);
-            if (game == null)
-                return null;
-
-            return AddInstance(new GameInstance(game, path, name, user));
+            return game == null ? null : AddInstance(new GameInstance(game, path, name, user));
         }
 
         /// <summary>
@@ -294,12 +285,12 @@ namespace CKAN
                     {
                         fileMgr.WriteAllText(
                             Path.Combine(newPath, b),
-                            String.Format("build id = {0}", version.Build));
+                            string.Format("build id = {0}", version.Build));
                     }
                 }
 
                 // Create the readme.txt WITHOUT build number.
-                fileMgr.WriteAllText(Path.Combine(newPath, "readme.txt"), String.Format("Version {0}", new GameVersion(version.Major, version.Minor, version.Patch).ToString()));
+                fileMgr.WriteAllText(Path.Combine(newPath, "readme.txt"), string.Format("Version {0}", new GameVersion(version.Major, version.Minor, version.Patch).ToString()));
 
                 // Create the needed folder structure and the readme.txt for DLCs that should be simulated.
                 if (dlcs != null)
@@ -310,18 +301,20 @@ namespace CKAN
                         GameVersion dlcVersion = dlc.Value;
 
                         if (!dlcDetector.AllowedOnBaseVersion(version))
+                        {
                             throw new WrongGameVersionKraken(
                                 version,
                                 string.Format(Properties.Resources.GameInstanceFakeDLCNotAllowed,
                                     game.ShortName,
                                     dlcDetector.ReleaseGameVersion,
                                     dlcDetector.IdentifierBaseName));
+                        }
 
                         string dlcDir = Path.Combine(newPath, dlcDetector.InstallPath());
                         fileMgr.CreateDirectory(dlcDir);
                         fileMgr.WriteAllText(
                             Path.Combine(dlcDir, "readme.txt"),
-                            String.Format("Version {0}", dlcVersion));
+                            string.Format("Version {0}", dlcVersion));
                     }
                 }
 
@@ -337,7 +330,7 @@ namespace CKAN
         /// </summary>
         /// <returns> A unused valid instance name.</returns>
         /// <param name="name">The name to use as a base.</param>
-        /// <exception cref="CKAN.Kraken">Could not find a valid name.</exception>
+        /// <exception cref="Kraken">Could not find a valid name.</exception>
         public string GetNextValidInstanceName(string name)
         {
             // Check if the current name is valid
@@ -376,7 +369,7 @@ namespace CKAN
         {
             // Discard null, empty strings and white space only strings.
             // Look for the current name in the list of loaded instances.
-            return !String.IsNullOrWhiteSpace(name) && !HasInstance(name);
+            return !string.IsNullOrWhiteSpace(name) && !HasInstance(name);
         }
 
         /// <summary>
@@ -595,12 +588,12 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Releases all resource used by the <see cref="CKAN.GameInstance"/> object.
+        /// Releases all resource used by the <see cref="GameInstance"/> object.
         /// </summary>
-        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="CKAN.GameInstance"/>. The <see cref="Dispose"/>
-        /// method leaves the <see cref="CKAN.GameInstance"/> in an unusable state. After calling <see cref="Dispose"/>, you must
-        /// release all references to the <see cref="CKAN.GameInstance"/> so the garbage collector can reclaim the memory that
-        /// the <see cref="CKAN.GameInstance"/> was occupying.</remarks>
+        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="GameInstance"/>. The <see cref="Dispose"/>
+        /// method leaves the <see cref="GameInstance"/> in an unusable state. After calling <see cref="Dispose"/>, you must
+        /// release all references to the <see cref="GameInstance"/> so the garbage collector can reclaim the memory that
+        /// the <see cref="GameInstance"/> was occupying.</remarks>
         public void Dispose()
         {
             if (Cache != null)

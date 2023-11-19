@@ -60,7 +60,9 @@ namespace CKAN.CmdLine
                     }
                     exitCode = options.Handle(manager, User);
                     if (exitCode != Exit.OK)
+                    {
                         return;
+                    }
 
                     switch (option)
                     {

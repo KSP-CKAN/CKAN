@@ -9,7 +9,7 @@ using CKAN.Games;
 
 namespace CKAN.GUI
 {
-    [XmlRootAttribute("Configuration")]
+    [XmlRoot("Configuration")]
     public class GUIConfiguration
     {
         public string CommandLineArguments = "";
@@ -81,8 +81,10 @@ namespace CKAN.GUI
 
         public Point WindowLoc
         {
-            get { return windowLocation;  }
+            get => windowLocation;
+            #pragma warning disable IDE0027
             set { windowLocation = value; }
+            #pragma warning restore IDE0027
         }
 
         /// <summary>
@@ -139,7 +141,9 @@ namespace CKAN.GUI
                     if (e is InvalidOperationException) // Exception thrown in Windows / .NET
                     {
                         if (e.InnerException != null)
+                        {
                             additionalErrorData = ": " + e.InnerException.Message;
+                        }
                     }
                     else if (e is XmlException) // Exception thrown in Mono
                     {
@@ -209,7 +213,7 @@ namespace CKAN.GUI
         }
     }
 
-    [XmlRootAttribute("SavedSearch")]
+    [XmlRoot("SavedSearch")]
     public class SavedSearch
     {
         public string Name;

@@ -75,9 +75,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public override bool Focusable() { return false; }
 
-        private Func<string>       getTitle;
-        private Func<ConsoleTheme, ConsoleColor> getColor;
-        private bool               doubleBorder;
+        private readonly Func<string>       getTitle;
+        private readonly Func<ConsoleTheme, ConsoleColor> getColor;
+        private readonly bool               doubleBorder;
     }
 
 }

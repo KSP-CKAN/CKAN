@@ -106,7 +106,9 @@ namespace CKAN.CmdLine
                     manager  = mgr ?? new GameInstanceManager(user);
                     exitCode = options.Handle(manager, user);
                     if (exitCode != Exit.OK)
+                    {
                         return;
+                    }
 
                     switch (option)
                     {
@@ -214,14 +216,9 @@ namespace CKAN.CmdLine
         private int SetCacheSizeLimit(SetLimitOptions options)
         {
             IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-            if (options.Megabytes < 0)
-            {
-                cfg.CacheSizeLimit = null;
-            }
-            else
-            {
-                cfg.CacheSizeLimit = options.Megabytes * (long)1024 * (long)1024;
-            }
+            cfg.CacheSizeLimit = options.Megabytes < 0
+                ? null :
+                (long?)(options.Megabytes * 1024 * 1024);
             return ShowCacheSizeLimit();
         }
 

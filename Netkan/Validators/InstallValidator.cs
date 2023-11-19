@@ -35,13 +35,13 @@ namespace CKAN.NetKAN.Validators
                     }
                     if (metadata.SpecVersion < v1p29 && (
                         install_to.StartsWith("Ships/Script")
-                        || install_to.Equals("Ships") && (
+                        || (install_to.Equals("Ships") && (
                             // find: .../Script, install_to: Ships
                             ((string)stanza["find"])?.Split(new char[] {'/'})?.LastOrDefault() == "Script"
                             // file: .../Script, install_to: Ships
                             || ((string)stanza["file"])?.Split(new char[] {'/'})?.LastOrDefault() == "Script"
                             // install_to: Ships, as: Script
-                            || (((string)stanza["as"])?.EndsWith("Script") ?? false))))
+                            || (((string)stanza["as"])?.EndsWith("Script") ?? false)))))
                     {
                         throw new Kraken("spec_version v1.29+ required to install to Ships/Script");
                     }

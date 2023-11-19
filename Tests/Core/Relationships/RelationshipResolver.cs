@@ -975,9 +975,9 @@ namespace Tests.Core.Relationships
                     }
                 });
 
-                var depends = new List<CKAN.RelationshipDescriptor>
+                var depends = new List<RelationshipDescriptor>
                 {
-                    new CKAN.ModuleRelationshipDescriptor { name = "ModuleManager" }
+                    new ModuleRelationshipDescriptor { name = "ModuleManager" }
                 };
 
                 CkanModule mod = generator.GeneratorRandomModule(depends: depends);

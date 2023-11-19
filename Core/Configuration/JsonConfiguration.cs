@@ -78,10 +78,7 @@ namespace CKAN.Configuration
         // <summary>
         // Where the config file is located.
         // </summary>
-        public string ConfigFile
-        {
-            get => configFile;
-        }
+        public string ConfigFile => configFile;
 
         public string DownloadCacheDir
         {
@@ -128,14 +125,7 @@ namespace CKAN.Configuration
             {
                 lock (_lock)
                 {
-                    if (value < 0)
-                    {
-                        config.CacheSizeLimit = null;
-                    }
-                    else
-                    {
-                        config.CacheSizeLimit = value;
-                    }
+                    config.CacheSizeLimit = value < 0 ? null : value;
 
                     SaveConfig();
                 }
@@ -156,14 +146,7 @@ namespace CKAN.Configuration
             {
                 lock (_lock)
                 {
-                    if (value <= 0)
-                    {
-                        config.RefreshRate = null;
-                    }
-                    else
-                    {
-                        config.RefreshRate = value;
-                    }
+                    config.RefreshRate = value <= 0 ? null : (int?)value;
 
                     SaveConfig();
                 }

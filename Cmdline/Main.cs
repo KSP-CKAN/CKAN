@@ -6,11 +6,8 @@
 using System;
 using System.Net;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 
 using Autofac;
 using log4net;
@@ -154,7 +151,9 @@ namespace CKAN.CmdLine
             {
                 int exitCode = options.Handle(manager, user);
                 if (exitCode != Exit.OK)
+                {
                     return exitCode;
+                }
                 // Don't bother with instances or registries yet because some commands don't need them.
                 return RunSimpleAction(cmdline, options, args, user, manager);
             }
@@ -293,7 +292,7 @@ namespace CKAN.CmdLine
         {
             // Debug/verbose output just messes up the screen
             LogManager.GetRepository().Threshold = Level.Warn;
-            return CKAN.ConsoleUI.ConsoleUI.Main_(manager,
+            return ConsoleUI.ConsoleUI.Main_(manager,
                 opts.Theme ?? Environment.GetEnvironmentVariable("CKAN_CONSOLEUI_THEME") ?? "default",
                 opts.Debug);
         }
@@ -352,14 +351,7 @@ namespace CKAN.CmdLine
     public class CmdLineUtil
     {
         public static uint GetUID()
-        {
-            if (Platform.IsUnix || Platform.IsMac)
-            {
-                return getuid();
-            }
-
-            return 1;
-        }
+            => Platform.IsUnix || Platform.IsMac ? getuid() : 1;
 
         [DllImport("libc")]
         private static extern uint getuid();

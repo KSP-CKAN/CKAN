@@ -60,12 +60,7 @@ namespace CKAN
             }
 
             // Compare against the magic numbers.
-            if (buffer.SequenceEqual(gzip_identifier))
-            {
-                return true;
-            }
-
-            return false;
+            return buffer.SequenceEqual(gzip_identifier);
         }
 
         /// <summary>
@@ -148,12 +143,9 @@ namespace CKAN
             }
 
             // Compare against the magic numbers.
-            if (buffer.SequenceEqual(zip_identifier) || buffer.SequenceEqual(zip_identifier_empty) || buffer.SequenceEqual(zip_identifier_spanned))
-            {
-                return true;
-            }
-
-            return false;
+            return buffer.SequenceEqual(zip_identifier)
+                || buffer.SequenceEqual(zip_identifier_empty)
+                || buffer.SequenceEqual(zip_identifier_spanned);
         }
 
         /// <summary>
@@ -184,14 +176,7 @@ namespace CKAN
                 stream.Seek (0, SeekOrigin.Begin);
                 using (ICSharpCode.SharpZipLib.GZip.GZipInputStream gz_stream = new ICSharpCode.SharpZipLib.GZip.GZipInputStream (stream))
                 {
-                    if (CheckTar(gz_stream))
-                    {
-                        type = FileType.TarGz;
-                    }
-                    else
-                    {
-                        type = FileType.GZip;
-                    }
+                    type = CheckTar(gz_stream) ? FileType.TarGz : FileType.GZip;
                 }
             }
             else if (CheckTar(stream))

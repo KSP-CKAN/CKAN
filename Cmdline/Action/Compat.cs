@@ -82,7 +82,9 @@ namespace CKAN.CmdLine
                     _kspManager = manager ?? new GameInstanceManager(_user);
                     exitCode    = comOpts.Handle(_kspManager, _user);
                     if (exitCode != Exit.OK)
+                    {
                         return;
+                    }
 
                     switch (option)
                     {

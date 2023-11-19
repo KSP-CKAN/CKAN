@@ -63,8 +63,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public override bool Focusable() { return false; }
 
-        private Func<string> captionFunc;
-        private Func<double> percentFunc;
+        private readonly Func<string> captionFunc;
+        private readonly Func<double> percentFunc;
     }
 
 }

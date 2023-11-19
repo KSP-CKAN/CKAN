@@ -40,6 +40,8 @@ namespace CKAN.GUI
         public event Action OnCancel;
         public event Action OnOk;
 
+        #pragma warning disable IDE0027
+
         public bool RetryEnabled
         {
             [ForbidGUICalls]
@@ -72,6 +74,8 @@ namespace CKAN.GUI
                         : ProgressBarStyle.Continuous);
             }
         }
+
+        #pragma warning restore IDE0027
 
         public void SetProgress(string label, long remaining, long total)
         {

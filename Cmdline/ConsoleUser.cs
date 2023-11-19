@@ -93,7 +93,7 @@ namespace CKAN.CmdLine
             }
 
             // Validate input.
-            if (String.IsNullOrWhiteSpace(message))
+            if (string.IsNullOrWhiteSpace(message))
             {
                 throw new Kraken("Passed message string must be non-empty.");
             }
@@ -130,7 +130,7 @@ namespace CKAN.CmdLine
             // Further data validation.
             foreach (object argument in args)
             {
-                if (String.IsNullOrWhiteSpace(argument.ToString()))
+                if (string.IsNullOrWhiteSpace(argument.ToString()))
                 {
                     throw new Kraken("Candidate may not be empty.");
                 }
@@ -142,14 +142,14 @@ namespace CKAN.CmdLine
             // List options.
             for (int i = 0; i < args.Length; i++)
             {
-                string CurrentRow = String.Format("{0}", i + 1);
+                string CurrentRow = string.Format("{0}", i + 1);
 
                 if (i == defaultSelection)
                 {
                     CurrentRow += "*";
                 }
 
-                CurrentRow += String.Format(") {0}", args[i]);
+                CurrentRow += string.Format(") {0}", args[i]);
 
                 RaiseMessage(CurrentRow);
             }
@@ -176,7 +176,7 @@ namespace CKAN.CmdLine
                 input = input.Trim().ToLower();
 
                 // Check for default selection.
-                if (String.IsNullOrEmpty(input) && defaultSelection >= 0)
+                if (string.IsNullOrEmpty(input) && defaultSelection >= 0)
                 {
                     return defaultSelection;
                 }

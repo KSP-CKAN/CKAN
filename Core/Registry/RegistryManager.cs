@@ -52,7 +52,7 @@ namespace CKAN
         // enforce this being an instance (via Instance() above)
         private RegistryManager(string path, GameInstance inst, RepositoryDataManager repoData)
         {
-            this.gameInstance = inst;
+            gameInstance = inst;
 
             this.path    = Path.Combine(path, "registry.json");
             lockfilePath = InstanceRegistryLockPath(path);
@@ -103,19 +103,21 @@ namespace CKAN
         // what's going on here.
 
         /// <summary>
-        /// Releases all resource used by the <see cref="CKAN.RegistryManager"/> object.
+        /// Releases all resource used by the <see cref="RegistryManager"/> object.
         /// </summary>
-        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="CKAN.RegistryManager"/>. The
-        /// <see cref="Dispose"/> method leaves the <see cref="CKAN.RegistryManager"/> in an unusable state. After
-        /// calling <see cref="Dispose"/>, you must release all references to the <see cref="CKAN.RegistryManager"/> so
-        /// the garbage collector can reclaim the memory that the <see cref="CKAN.RegistryManager"/> was occupying.</remarks>
+        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="RegistryManager"/>. The
+        /// <see cref="Dispose"/> method leaves the <see cref="RegistryManager"/> in an unusable state. After
+        /// calling <see cref="Dispose"/>, you must release all references to the <see cref="RegistryManager"/> so
+        /// the garbage collector can reclaim the memory that the <see cref="RegistryManager"/> was occupying.</remarks>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        #pragma warning disable IDE0060
         protected void Dispose(bool safeToAlsoFreeManagedObjects)
+        #pragma warning restore IDE0060
         {
             // Right now we just release our lock, and leave everything else
             // to the GC, but if we were implementing the full pattern we'd also
@@ -135,7 +137,7 @@ namespace CKAN
 
         /// <summary>
         /// Releases unmanaged resources and performs other cleanup operations before the
-        /// <see cref="CKAN.RegistryManager"/> is reclaimed by garbage collection.
+        /// <see cref="RegistryManager"/> is reclaimed by garbage collection.
         /// </summary>
         ~RegistryManager()
         {
@@ -175,7 +177,7 @@ namespace CKAN
                     return;
                 }
                 log.DebugFormat("Lock file contents: {0}", contents);
-                if (Int32.TryParse(contents, out int pid))
+                if (int.TryParse(contents, out int pid))
                 {
                     // File contains a valid integer.
                     try
@@ -551,7 +553,7 @@ namespace CKAN
             log.Info(Properties.Resources.GameInstanceScanning);
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
-                var dlls = Enumerable.Repeat<string>(gameInstance.game.PrimaryModDirectoryRelative, 1)
+                var dlls = Enumerable.Repeat(gameInstance.game.PrimaryModDirectoryRelative, 1)
                                      .Concat(gameInstance.game.AlternateModDirectoriesRelative)
                                      .Select(relDir => gameInstance.ToAbsoluteGameDir(relDir))
                                      .Where(absDir => Directory.Exists(absDir))

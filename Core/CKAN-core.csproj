@@ -1,7 +1,8 @@
 <Project>
   <PropertyGroup>
     <AssemblyName>CKAN</AssemblyName>
-    <OutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(MSBuildRuntimeType)' != 'Core' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(MSBuildRuntimeType)' == 'Core' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
     <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
@@ -14,18 +15,18 @@
     <Deterministic>true</Deterministic>
     <Configurations>Debug;Release;Debug_NetCore;Release_NetCore</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
+    <LangVersion>7.3</LangVersion>
     <NoWarn>IDE1006</NoWarn>
   </PropertyGroup>
   <Choose>
     <When Condition="$(Configuration.EndsWith('NetCore'))">
       <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
       </PropertyGroup>
     </When>
     <Otherwise>
       <PropertyGroup>
-        <TargetFramework>net45</TargetFramework>
+        <TargetFramework>net48</TargetFramework>
       </PropertyGroup>
     </Otherwise>
   </Choose>
@@ -44,14 +45,14 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NJsonSchema" Version="10.9.0" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <PackageReference Include="ChinhDo.Transactions.FileManager" Version="1.2.0" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
     <PackageReference Include="System.Security.Permissions" Version="4.7.0" />

@@ -50,7 +50,9 @@ namespace CKAN.CmdLine
                 foreach (string mod in regMgr.registry.InstalledModules.Select(mod => mod.identifier))
                 {
                     if (justins.Any(re => re.IsMatch(mod)))
+                    {
                         selectedModules.Add(mod);
+                    }
                 }
 
                 // Replace the regular expressions with the selected modules

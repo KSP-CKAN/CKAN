@@ -42,7 +42,7 @@ namespace CKAN.GUI
 
         private void Setup(string text, string yesText, string noText)
         {
-            var height = Util.StringHeight(CreateGraphics(), text, DescriptionLabel.Font, ClientSize.Width - 25) + 2 * 54;
+            var height = Util.StringHeight(CreateGraphics(), text, DescriptionLabel.Font, ClientSize.Width - 25) + (2 * 54);
             DescriptionLabel.Text = text;
             DescriptionLabel.TextAlign = text.Contains("\n")
                 ? HorizontalAlignment.Left

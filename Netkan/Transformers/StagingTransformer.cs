@@ -18,7 +18,7 @@ namespace CKAN.NetKAN.Transformers
             currentRelease = game.KnownVersions.Max().ToVersionRange();
         }
 
-        public string Name { get { return "staging"; } }
+        public string Name => "staging";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {

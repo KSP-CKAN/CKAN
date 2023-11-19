@@ -116,7 +116,7 @@ namespace Tests.GUI
         }
 
         // The cultures to test
-        private static CultureInfo[] cultures = CKAN.Utilities.AvailableLanguages
+        private static readonly CultureInfo[] cultures = CKAN.Utilities.AvailableLanguages
             .Select(l => new CultureInfo(l))
             .ToArray();
     }

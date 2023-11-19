@@ -78,8 +78,7 @@ namespace CKAN
                 ?? false;
         public string GetCachedFilename(CkanModule m)
             => m.download?.Select(dlUri => cache.GetCachedFilename(dlUri, m.release_date))
-                          .Where(filename => filename != null)
-                          .FirstOrDefault();
+                          .FirstOrDefault(filename => filename != null);
         public void GetSizeInfo(out int numFiles, out long numBytes, out long bytesFree)
         {
             cache.GetSizeInfo(out numFiles, out numBytes, out bytesFree);
@@ -124,7 +123,7 @@ namespace CKAN
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha1(string filePath, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
+        public string GetFileHashSha1(string filePath, IProgress<long> progress, CancellationToken cancelToken = default)
             => cache.GetFileHashSha1(filePath, progress, cancelToken);
 
         /// <summary>
@@ -135,7 +134,7 @@ namespace CKAN
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha256(string filePath, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
+        public string GetFileHashSha256(string filePath, IProgress<long> progress, CancellationToken cancelToken = default)
             => cache.GetFileHashSha256(filePath, progress, cancelToken);
 
         /// <summary>
@@ -150,7 +149,7 @@ namespace CKAN
         /// <returns>
         /// Name of the new file in the cache
         /// </returns>
-        public string Store(CkanModule module, string path, IProgress<long> progress, string description = null, bool move = false, CancellationToken cancelToken = default(CancellationToken))
+        public string Store(CkanModule module, string path, IProgress<long> progress, string description = null, bool move = false, CancellationToken cancelToken = default)
         {
             // ZipValid takes a lot longer than the hash steps, so scale them 60:20:20
             const int zipValidPercent   = 60;
@@ -161,13 +160,17 @@ namespace CKAN
             // Check file exists
             FileInfo fi = new FileInfo(path);
             if (!fi.Exists)
+            {
                 throw new FileNotFoundKraken(path);
+            }
 
             // Check file size
             if (module.download_size > 0 && fi.Length != module.download_size)
+            {
                 throw new InvalidModuleFileKraken(module, path, string.Format(
                     Properties.Resources.NetModuleCacheBadLength,
                     module, path, fi.Length, module.download_size));
+            }
 
             cancelToken.ThrowIfCancellationRequested();
 
@@ -187,7 +190,7 @@ namespace CKAN
             {
                 // Check SHA1 match
                 string sha1 = GetFileHashSha1(path, new Progress<long>(percent =>
-                    progress?.Report(zipValidPercent + percent * hashSha1Percent / 100)), cancelToken);
+                    progress?.Report(zipValidPercent + (percent * hashSha1Percent / 100))), cancelToken);
                 if (sha1 != module.download_hash.sha1)
                 {
                     throw new InvalidModuleFileKraken(module, path, string.Format(
@@ -197,7 +200,7 @@ namespace CKAN
 
                 // Check SHA256 match
                 string sha256 = GetFileHashSha256(path, new Progress<long>(percent =>
-                    progress?.Report(zipValidPercent + hashSha1Percent + percent * hashSha256Percent / 100)), cancelToken);
+                    progress?.Report(zipValidPercent + hashSha1Percent + (percent * hashSha256Percent / 100))), cancelToken);
                 if (sha256 != module.download_hash.sha256)
                 {
                     throw new InvalidModuleFileKraken(module, path, string.Format(
@@ -318,6 +321,6 @@ namespace CKAN
             return true;
         }
 
-        private NetFileCache cache;
+        private readonly NetFileCache cache;
     }
 }

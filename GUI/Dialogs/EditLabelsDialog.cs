@@ -34,7 +34,7 @@ namespace CKAN.GUI
         {
             LabelSelectionTree.BeginUpdate();
             LabelSelectionTree.Nodes.Clear();
-            var groups = this.labels.Labels
+            var groups = labels.Labels
                 .GroupBy(l => l.InstanceName)
                 .OrderBy(g => g.Key == null)
                 .ThenBy(g => g.Key);
@@ -65,7 +65,7 @@ namespace CKAN.GUI
                 // Select the new node representing the label we're editing
                 LabelSelectionTree.SelectedNode = LabelSelectionTree.Nodes.Cast<TreeNode>()
                     .SelectMany(nd => nd.Nodes.Cast<TreeNode>())
-                    .FirstOrDefault(nd => nd.Tag as ModuleLabel == currentlyEditing);
+                    .FirstOrDefault(nd => (nd.Tag as ModuleLabel) == currentlyEditing);
                 LabelSelectionTree.BeforeSelect += LabelSelectionTree_BeforeSelect;
             }
             LabelSelectionTree.ExpandAll();
@@ -88,7 +88,7 @@ namespace CKAN.GUI
             evt.Cancel = Util.TryOpenWebPage(HelpURLs.Labels);
         }
 
-        private void LabelSelectionTree_BeforeSelect(Object sender, TreeViewCancelEventArgs e)
+        private void LabelSelectionTree_BeforeSelect(object sender, TreeViewCancelEventArgs e)
         {
             if (e.Node == null)
             {

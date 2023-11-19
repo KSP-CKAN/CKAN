@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using Newtonsoft.Json;
@@ -47,7 +46,7 @@ namespace CKAN
             {
                 throw new BadMetadataKraken(
                     null,
-                    String.Format(Properties.Resources.ReleaseStatusInvalid, status)
+                    string.Format(Properties.Resources.ReleaseStatusInvalid, status)
                 );
             }
 

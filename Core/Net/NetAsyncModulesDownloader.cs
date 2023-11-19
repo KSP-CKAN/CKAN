@@ -117,7 +117,7 @@ namespace CKAN
 
         private const    string                  defaultMimeType = "application/octet-stream";
 
-        private          List<CkanModule>        modules;
+        private readonly List<CkanModule>        modules;
         private readonly NetAsyncDownloader      downloader;
         private          IUser                   User => downloader.User;
         private readonly NetModuleCache          cache;

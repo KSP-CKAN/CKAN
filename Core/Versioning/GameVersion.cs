@@ -124,7 +124,9 @@ namespace CKAN.Versioning
         public GameVersion(int major)
         {
             if (major < 0)
+            {
                 throw new ArgumentOutOfRangeException("major");
+            }
 
             _major = major;
             _minor = Undefined;
@@ -143,10 +145,14 @@ namespace CKAN.Versioning
         public GameVersion(int major, int minor)
         {
             if (major < 0)
+            {
                 throw new ArgumentOutOfRangeException("major");
+            }
 
             if (minor < 0)
+            {
                 throw new ArgumentOutOfRangeException("minor");
+            }
 
             _major = major;
             _minor = minor;
@@ -166,13 +172,19 @@ namespace CKAN.Versioning
         public GameVersion(int major, int minor, int patch)
         {
             if (major < 0)
+            {
                 throw new ArgumentOutOfRangeException("major");
+            }
 
             if (minor < 0)
+            {
                 throw new ArgumentOutOfRangeException("minor");
+            }
 
             if (patch < 0)
+            {
                 throw new ArgumentOutOfRangeException("patch");
+            }
 
             _major = major;
             _minor = minor;
@@ -193,16 +205,24 @@ namespace CKAN.Versioning
         public GameVersion(int major, int minor, int patch, int build)
         {
             if (major < 0)
+            {
                 throw new ArgumentOutOfRangeException("major", major, $"{major}");
+            }
 
             if (minor < 0)
+            {
                 throw new ArgumentOutOfRangeException("minor", minor, $"{minor}");
+            }
 
             if (patch < 0)
+            {
                 throw new ArgumentOutOfRangeException("patch", patch, $"{patch}");
+            }
 
             if (build < 0)
+            {
                 throw new ArgumentOutOfRangeException("build", build, $"{build}");
+            }
 
             _major = major;
             _minor = minor;
@@ -213,12 +233,12 @@ namespace CKAN.Versioning
         }
 
         /// <summary>
-        /// Converts the value of the current <see cref="GameVersion"/> to its equivalent <see cref="String"/>
+        /// Converts the value of the current <see cref="GameVersion"/> to its equivalent <see cref="string"/>
         /// representation.
         /// </summary>
         /// <returns>
         /// <para>
-        /// The <see cref="String"/> representation of the values of the major, minor, patch, and build components of
+        /// The <see cref="string"/> representation of the values of the major, minor, patch, and build components of
         /// the current <see cref="GameVersion"/> object as depicted in the following format. Each component is
         /// separated by a period character ('.'). Square brackets ('[' and ']') indicate a component that will not
         /// appear in the return value if the component is not defined:
@@ -343,7 +363,7 @@ namespace CKAN.Versioning
 
             if (input == "any")
             {
-                result = GameVersion.Any;
+                result = Any;
                 return true;
             }
 
@@ -364,43 +384,71 @@ namespace CKAN.Versioning
                 if (majorGroup.Success)
                 {
                     if (!int.TryParse(majorGroup.Value, out major))
+                    {
                         return false;
-                    if (major < 0 || major == Int32.MaxValue)
+                    }
+
+                    if (major < 0 || major == int.MaxValue)
+                    {
                         major = Undefined;
+                    }
                 }
 
                 if (minorGroup.Success)
                 {
                     if (!int.TryParse(minorGroup.Value, out minor))
+                    {
                         return false;
-                    if (minor < 0 || minor == Int32.MaxValue)
+                    }
+
+                    if (minor < 0 || minor == int.MaxValue)
+                    {
                         minor = Undefined;
+                    }
                 }
 
                 if (patchGroup.Success)
                 {
                     if (!int.TryParse(patchGroup.Value, out patch))
+                    {
                         return false;
-                    if (patch < 0 || patch == Int32.MaxValue)
+                    }
+
+                    if (patch < 0 || patch == int.MaxValue)
+                    {
                         patch = Undefined;
+                    }
                 }
 
                 if (buildGroup.Success)
                 {
                     if (!int.TryParse(buildGroup.Value, out build))
+                    {
                         return false;
-                    if (build < 0 || build == Int32.MaxValue)
+                    }
+
+                    if (build < 0 || build == int.MaxValue)
+                    {
                         build = Undefined;
+                    }
                 }
 
                 if (minor == Undefined)
+                {
                     result = new GameVersion(major);
+                }
                 else if (patch == Undefined)
+                {
                     result = new GameVersion(major, minor);
+                }
                 else if (build == Undefined)
+                {
                     result = new GameVersion(major, minor, patch);
+                }
                 else
+                {
                     result = new GameVersion(major, minor, patch, build);
+                }
 
                 return true;
             }
@@ -542,8 +590,16 @@ namespace CKAN.Versioning
         /// </returns>
         public bool Equals(GameVersion obj)
         {
-            if (obj is null) return false;
-            if (ReferenceEquals(obj, this)) return true;
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(obj, this))
+            {
+                return true;
+            }
+
             return _major == obj._major && _minor == obj._minor && _patch == obj._patch && _build == obj._build;
         }
 
@@ -561,8 +617,16 @@ namespace CKAN.Versioning
         /// </returns>
         public override bool Equals(object obj)
         {
-            if (obj is null) return false;
-            if (ReferenceEquals(obj, this)) return true;
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(obj, this))
+            {
+                return true;
+            }
+
             return obj is GameVersion gv && Equals(gv);
         }
 
@@ -833,13 +897,19 @@ namespace CKAN.Versioning
         public static GameVersion Min(params GameVersion[] versions)
         {
             if (versions == null)
+            {
                 throw new ArgumentNullException("versions");
+            }
 
             if (!versions.Any())
+            {
                 throw new ArgumentException("Value cannot be empty.", "versions");
+            }
 
             if (versions.Any(i => i == null))
+            {
                 throw new ArgumentException("Value cannot contain null.", "versions");
+            }
 
             return versions.Min();
         }
@@ -847,13 +917,19 @@ namespace CKAN.Versioning
         public static GameVersion Max(params GameVersion[] versions)
         {
             if (versions == null)
+            {
                 throw new ArgumentNullException("versions");
+            }
 
             if (!versions.Any())
+            {
                 throw new ArgumentException("Value cannot be empty.", "versions");
+            }
 
             if (versions.Any(i => i == null))
+            {
                 throw new ArgumentException("Value cannot contain null.", "versions");
+            }
 
             return versions.Max();
         }

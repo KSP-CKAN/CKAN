@@ -20,7 +20,7 @@ namespace Tests.Core
         private DisposableKSP tidy;
         private const string nameInReg = "testing";
         private FakeConfiguration cfg;
-        GameInstanceManager manager;
+        private GameInstanceManager manager;
 
         [SetUp]
         public void SetUp()
@@ -126,7 +126,7 @@ namespace Tests.Core
         {
             string badName = "badInstance";
             string tempdir = TestData.NewTempDir();
-            CKAN.GameInstance badKSP = new CKAN.GameInstance(new KerbalSpaceProgram(), TestData.bad_ksp_dirs().First(), "badDir", new NullUser());
+            GameInstance badKSP = new GameInstance(new KerbalSpaceProgram(), TestData.bad_ksp_dirs().First(), "badDir", new NullUser());
 
             Assert.Throws<NotKSPDirKraken>(() =>
                 manager.CloneInstance(badKSP, badName, tempdir));
@@ -242,7 +242,7 @@ namespace Tests.Core
                 };
 
             manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version, dlcs);
-            CKAN.GameInstance newKSP = new CKAN.GameInstance(new KerbalSpaceProgram(), tempdir, name, new NullUser());
+            GameInstance newKSP = new GameInstance(new KerbalSpaceProgram(), tempdir, name, new NullUser());
             MakingHistoryDlcDetector mhDetector = new MakingHistoryDlcDetector();
             BreakingGroundDlcDetector bgDetector = new BreakingGroundDlcDetector();
 
@@ -253,7 +253,7 @@ namespace Tests.Core
             Assert.IsTrue(detectedBgVersion == new UnmanagedModuleVersion(bgVersion.ToString()));
 
             // Tidy up.
-            CKAN.RegistryManager.DisposeInstance(newKSP);
+            RegistryManager.DisposeInstance(newKSP);
             Directory.Delete(tempdir, true);
         }
 

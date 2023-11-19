@@ -19,7 +19,7 @@ namespace CKAN.NetKAN.Transformers
             _api      = api;
         }
 
-        public string Name { get { return "jenkins"; } }
+        public string Name => "jenkins";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {

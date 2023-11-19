@@ -407,13 +407,13 @@ namespace Tests.Core.Registry
                                    gameInstWrapper.KSP, false);
 
                 CollectionAssert.AreEqual(
-                    Enumerable.Repeat<CkanModule>(module, 1),
+                    Enumerable.Repeat(module, 1),
                     reg.InstalledModules.Select(im => im.Module));
 
                 tScope.Complete();
             }
             CollectionAssert.AreEqual(
-                Enumerable.Repeat<CkanModule>(module, 1),
+                Enumerable.Repeat(module, 1),
                 reg.InstalledModules.Select(im => im.Module));
         }
 
@@ -438,13 +438,13 @@ namespace Tests.Core.Registry
                                         gameInstWrapper.KSP, false);
 
                 CollectionAssert.AreEqual(
-                    Enumerable.Repeat<CkanModule>(module, 1),
+                    Enumerable.Repeat(module, 1),
                     registry.InstalledModules.Select(im => im.Module));
 
                 tScope.Complete();
             }
             CollectionAssert.AreEqual(
-                Enumerable.Repeat<CkanModule>(module, 1),
+                Enumerable.Repeat(module, 1),
                 registry.InstalledModules.Select(im => im.Module));
         }
 
@@ -468,7 +468,7 @@ namespace Tests.Core.Registry
                                         gameInstWrapper.KSP, false);
 
                 CollectionAssert.AreEqual(
-                    Enumerable.Repeat<CkanModule>(module, 1),
+                    Enumerable.Repeat(module, 1),
                     registry.InstalledModules.Select(im => im.Module));
 
                 // Rollback, our module should no longer be registered

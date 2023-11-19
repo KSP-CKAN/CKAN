@@ -1,14 +1,14 @@
 #addin "nuget:?package=Cake.SemVer&version=4.0.0"
-#addin "nuget:?package=semver&version=2.0.6"
-#addin "nuget:?package=Cake.Docker&version=0.11.0"
+#addin "nuget:?package=semver&version=2.3.0"
+#addin "nuget:?package=Cake.Docker&version=0.11.1"
 #tool "nuget:?package=ILRepack&version=2.0.18"
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.12.0"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.16.3"
 
 using System.Text.RegularExpressions;
 using Semver;
 
-var buildNetCore = "net5.0";
-var buildNetFramework = "net45";
+var buildNetCore = "net7.0";
+var buildNetFramework = "net48";
 
 var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Debug");
@@ -205,20 +205,15 @@ Task("Build-DotNet")
     .IsDependentOn("Restore-Nuget")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
     .WithCriteria(() => buildFramework == buildNetFramework)
-    .Does(() =>
-{
-    MSBuild(solution, settings =>
-    {
-        settings.Configuration = configuration;
-    });
-});
+    .Does(() => MSBuild(solution,
+                        settings => settings.SetConfiguration(configuration)));
 
 Task("Restore-DotNetCore")
     .Description("Intermediate - Download dependencies with NuGet when building for .NET Core.")
     .WithCriteria(() => buildFramework == buildNetCore)
     .Does(() =>
 {
-    DotNetCoreRestore(solution, new DotNetCoreRestoreSettings
+    DotNetRestore(solution, new DotNetRestoreSettings
     {
         ConfigFile = "nuget.config",
         EnvironmentVariables = new Dictionary<string, string> { { "Configuration", configuration } }
@@ -227,12 +222,12 @@ Task("Restore-DotNetCore")
 
 Task("Build-DotNetCore")
     .Description("Intermediate - Call .NET Core's MSBuild to build the ckan.dll.")
-    .IsDependentOn("Restore-Dotnetcore")
+    .IsDependentOn("Restore-DotNetCore")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
     .WithCriteria(() => buildFramework == buildNetCore)
     .Does(() =>
 {
-    DotNetCoreBuild(solution, new DotNetCoreBuildSettings
+    DotNetBuild(solution, new DotNetBuildSettings
     {
         Configuration = configuration,
         NoRestore = true
@@ -273,14 +268,31 @@ Task("Repack-Ckan")
         "{0}/*/*.resources.dll",
         outDirectory.Combine("CKAN-CmdLine").Combine(configuration).Combine("bin").Combine(buildNetFramework)
     )));
-
-    ILRepack(ckanFile, cmdLineBinDirectory.CombineWithFilePath("CKAN-CmdLine.exe"), assemblyPaths,
+    ILRepack(
+        ckanFile,
+        cmdLineBinDirectory.CombineWithFilePath("CKAN-CmdLine.exe"),
+        assemblyPaths,
         new ILRepackSettings
         {
             Libs = new List<DirectoryPath> { cmdLineBinDirectory.ToString() },
             TargetPlatform = TargetPlatformVersion.v4
-        }
-    );
+        });
+
+    var autoupdateBinDirectory = outDirectory.Combine("CKAN-AutoUpdateHelper")
+                                             .Combine(configuration)
+                                             .Combine("bin")
+                                             .Combine(buildNetFramework);
+    ILRepack(
+        repackDirectory.Combine(configuration)
+                       .CombineWithFilePath("AutoUpdater.exe"),
+        autoupdateBinDirectory.CombineWithFilePath("CKAN-AutoUpdateHelper.exe"),
+        GetFiles(string.Format("{0}/*/*.resources.dll",
+                               autoupdateBinDirectory)),
+        new ILRepackSettings
+        {
+            Libs = new List<DirectoryPath> { autoupdateBinDirectory.ToString() },
+            TargetPlatform = TargetPlatformVersion.v4
+        });
 
     CopyFile(ckanFile, buildDirectory.CombineWithFilePath("ckan.exe"));
 });
@@ -298,6 +310,7 @@ Task("Repack-Netkan")
         new ILRepackSettings
         {
             Libs = new List<DirectoryPath> { netkanBinDirectory.ToString() },
+            TargetPlatform = TargetPlatformVersion.v4
         }
     );
 
@@ -353,7 +366,7 @@ Task("Test-UnitTests+Only-DotNetCore")
 
     CreateDirectory(nunitOutputDirectory);
 
-    DotNetCoreTest(solution, new DotNetCoreTestSettings {
+    DotNetTest(solution, new DotNetTestSettings {
         NoBuild = true,
         Configuration= configuration,
         ResultsDirectory = nunitOutputDirectory,
@@ -440,7 +453,7 @@ Teardown(context =>
 
 RunTarget(target);
 
-private SemVersion GetVersion()
+private Semver.SemVersion GetVersion()
 {
     var pattern = new Regex(@"^\s*##\s+v(?<version>\S+)\s?.*$");
     var rootDirectory = Context.Environment.WorkingDirectory;

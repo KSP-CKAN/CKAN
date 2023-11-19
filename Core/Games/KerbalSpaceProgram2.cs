@@ -142,7 +142,9 @@ namespace CKAN.Games.KerbalSpaceProgram2
             const string dataDir = "KSP2_x64_Data";
             var path = Path.Combine(absGameRoot, dataDir);
             if (!Directory.Exists(path))
+            {
                 Directory.CreateDirectory(path);
+            }
         }
 
         public string DefaultCommandLine =>
@@ -244,11 +246,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
             // Try with the lowercase version.
             installPath = Path.Combine(steamPath, "steamapps", "common", "Kerbal Space Program 2");
 
-            if (Directory.Exists(installPath))
-            {
-                return installPath;
-            }
-            return null;
+            return Directory.Exists(installPath) ? installPath : null;
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(KerbalSpaceProgram2));

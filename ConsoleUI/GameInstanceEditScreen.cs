@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using CKAN.Versioning;
-using CKAN.Games;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
@@ -174,33 +173,22 @@ namespace CKAN.ConsoleUI {
                     return kvp.Value;
                 }
             }
-            return default(V);
+            return default;
         }
 
         /// <summary>
         /// Put description in top center
         /// </summary>
         protected override string CenterHeader()
-        {
-            return Properties.Resources.InstanceEditTitle;
-        }
+            => Properties.Resources.InstanceEditTitle;
 
         /// <summary>
         /// Return whether the fields are valid.
         /// Similar to adding, except leaving the fields unchanged is allowed.
         /// </summary>
         protected override bool Valid()
-        {
-            if (name.Value != ksp.Name
-                    && !nameValid()) {
-                return false;
-            }
-            if (path.Value != ksp.GameDir()
-                    && !pathValid()) {
-                return false;
-            }
-            return true;
-        }
+            => (name.Value == ksp.Name || nameValid())
+                && (path.Value == ksp.GameDir() || pathValid());
 
         /// <summary>
         /// Save the changes.

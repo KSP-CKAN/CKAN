@@ -18,7 +18,7 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(AvcKrefTransformer));
 
-        public string Name { get { return "avc-kref"; } }
+        public string Name => "avc-kref";
         private readonly IHttpService httpSvc;
         private readonly IGithubApi   githubSrc;
 
@@ -40,7 +40,7 @@ namespace CKAN.NetKAN.Transformers
                 var url = new Uri(metadata.Kref.Id);
                 AvcVersion remoteAvc = JsonConvert.DeserializeObject<AvcVersion>(
                     githubSrc?.DownloadText(url)
-                        ?? httpSvc.DownloadText(CKAN.Net.GetRawUri(url))
+                        ?? httpSvc.DownloadText(Net.GetRawUri(url))
                 );
 
                 json.SafeAdd("name",     remoteAvc.Name);
@@ -52,7 +52,10 @@ namespace CKAN.NetKAN.Transformers
                 {
                     // Make sure resources exist.
                     if (json["resources"] == null)
+                    {
                         json["resources"] = new JObject();
+                    }
+
                     var resourcesJson = (JObject)json["resources"];
                     resourcesJson.SafeAdd("repository", $"https://github.com/{remoteAvc.Github.Username}/{remoteAvc.Github.Repository}");
                 }

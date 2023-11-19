@@ -41,7 +41,7 @@ namespace CKAN.GUI
             }
         }
 
-        public static void UnhandledExceptionEventHandler(Object sender, UnhandledExceptionEventArgs e)
+        public static void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs e)
         {
             var exception = e.ExceptionObject;
 

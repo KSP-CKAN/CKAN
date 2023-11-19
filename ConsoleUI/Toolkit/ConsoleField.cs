@@ -1,5 +1,4 @@
 using System;
-using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI.Toolkit {
 
@@ -49,9 +48,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public event ChangeListener OnChange;
         private void Changed()
         {
-            if (OnChange != null) {
-                OnChange(this, Value);
-            }
+            OnChange?.Invoke(this, Value);
         }
 
         /// <summary>
@@ -89,11 +86,9 @@ namespace CKAN.ConsoleUI.Toolkit {
                 Console.ForegroundColor = theme.FieldGhostFg;
                 Console.Write(GhostText().PadRight(w));
             } else {
-                if (focused) {
-                    Console.ForegroundColor = theme.FieldFocusedFg;
-                } else {
-                    Console.ForegroundColor = theme.FieldBlurredFg;
-                }
+                Console.ForegroundColor = focused
+                    ? theme.FieldFocusedFg
+                    : theme.FieldBlurredFg;
                 Console.Write(FormatExactWidth(Value.Substring(leftPos), w));
             }
         }
@@ -126,11 +121,9 @@ namespace CKAN.ConsoleUI.Toolkit {
                     break;
                 case ConsoleKey.Delete:
                     if (Position < Value.Length) {
-                        if ((k.Modifiers & ConsoleModifiers.Control) == 0) {
-                            Value = Value.Substring(0, Position) + Value.Substring(Position + 1);
-                        } else {
-                            Value = Value.Substring(0, Position);
-                        }
+                        Value = (k.Modifiers & ConsoleModifiers.Control) == 0
+                            ? Value.Substring(0, Position) + Value.Substring(Position + 1)
+                            : Value.Substring(0, Position);
                         Changed();
                     }
                     break;
@@ -160,7 +153,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                     Blur((k.Modifiers & ConsoleModifiers.Shift) == 0);
                     break;
                 default:
-                    if (!Char.IsControl(k.KeyChar)) {
+                    if (!char.IsControl(k.KeyChar)) {
                         if (Position < Value.Length) {
                             Value = Value.Substring(0, Position) + k.KeyChar + Value.Substring(Position);
                         } else {

@@ -18,16 +18,16 @@ namespace Tests.Core
     [TestFixture]
     public class ModuleInstallerDirTest
     {
-        private GameInstanceManager  _manager;
-        private DisposableKSP        _instance;
-        private FakeConfiguration    _config;
-        private CKAN.RegistryManager _registryManager;
-        private CKAN.Registry        _registry;
-        private CKAN.ModuleInstaller _installer;
-        private CkanModule           _testModule;
-        private string               _gameDir;
-        private string               _gameDataDir;
-        private IUser                _nullUser;
+        private GameInstanceManager _manager;
+        private DisposableKSP       _instance;
+        private FakeConfiguration   _config;
+        private RegistryManager     _registryManager;
+        private CKAN.Registry       _registry;
+        private ModuleInstaller     _installer;
+        private CkanModule          _testModule;
+        private string              _gameDir;
+        private string              _gameDataDir;
+        private IUser               _nullUser;
 
         private TemporaryRepository repo;
         private TemporaryRepositoryData repoData;
@@ -46,14 +46,14 @@ namespace Tests.Core
 
             _config    = new FakeConfiguration(_instance.KSP, _instance.KSP.Name);
             _manager   = new GameInstanceManager(_nullUser, _config);
-            _registryManager = CKAN.RegistryManager.Instance(_instance.KSP, repoData.Manager);
+            _registryManager = RegistryManager.Instance(_instance.KSP, repoData.Manager);
             _registry  = _registryManager.registry;
             _registry.RepositoriesClear();
             _registry.RepositoriesAdd(repo.repo);
             _testModule = _registry.GetModuleByVersion("DogeCoinFlag", "1.01");
             Assert.IsNotNull(_testModule, "DogeCoinFlag 1.01 should exist");
 
-            _installer = new CKAN.ModuleInstaller(_instance.KSP, _manager.Cache, _nullUser);
+            _installer = new ModuleInstaller(_instance.KSP, _manager.Cache, _nullUser);
 
             _gameDir = _instance.KSP.GameDir();
             _gameDataDir = _instance.KSP.game.PrimaryModDirectory(_instance.KSP);
@@ -127,7 +127,7 @@ namespace Tests.Core
         public void TestSlashVariants()
         {
             var rawInstallDir = Path.Combine(_gameDataDir, _testModule.identifier);
-            var normalizedInstallDir = CKAN.CKANPathUtils.NormalizePath(rawInstallDir);
+            var normalizedInstallDir = CKANPathUtils.NormalizePath(rawInstallDir);
             var windowsInstallDir = normalizedInstallDir.Replace('/', '\\');
 
             Assert.DoesNotThrow(delegate ()
@@ -151,10 +151,12 @@ namespace Tests.Core
         [Test]
         public void TestCaseSensitivity()
         {
-            var paths = new HashSet<string>();
-            // add in all-uppercase and all-lowercase version
-            paths.Add(Path.Combine(_gameDataDir.ToUpper(), _testModule.identifier));
-            paths.Add(Path.Combine(_gameDataDir.ToLower(), _testModule.identifier));
+            var paths = new HashSet<string>()
+            {
+                // add in all-uppercase and all-lowercase version
+                Path.Combine(_gameDataDir.ToUpper(), _testModule.identifier),
+                Path.Combine(_gameDataDir.ToLower(), _testModule.identifier),
+            };
             // here we are looking for no PathErrorKraken
             Assert.DoesNotThrow(delegate()
             {

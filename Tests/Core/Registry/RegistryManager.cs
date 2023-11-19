@@ -63,10 +63,7 @@ namespace Tests.Core.Registry
             }
             finally
             {
-                if (lockfileStream != null)
-                {
-                    lockfileStream.Close();
-                }
+                lockfileStream?.Close();
             }
         }
 

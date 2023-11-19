@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace CKAN
 {
     [JsonConverter(typeof(CompatibleGameVersionsConverter))]
-    class CompatibleGameVersions
+    public class CompatibleGameVersions
     {
         public string GameVersionWhenWritten { get; set; }
 

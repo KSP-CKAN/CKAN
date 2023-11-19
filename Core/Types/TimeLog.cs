@@ -13,9 +13,7 @@ namespace CKAN
         public TimeSpan Time;
 
         public static string GetPath(string dir)
-        {
-            return Path.Combine(dir, filename);
-        }
+            => Path.Combine(dir, filename);
 
         public static TimeLog Load(string path)
         {
@@ -34,10 +32,8 @@ namespace CKAN
             File.WriteAllText(path, JsonConvert.SerializeObject(this, Formatting.Indented));
         }
 
-        public override String ToString()
-        {
-            return Time.TotalHours.ToString("N1");
-        }
+        public override string ToString()
+            => Time.TotalHours.ToString("N1");
 
         private readonly Stopwatch playTime = new Stopwatch();
 

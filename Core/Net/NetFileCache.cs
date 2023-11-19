@@ -27,11 +27,11 @@ namespace CKAN
     [PermissionSet(SecurityAction.Demand, Name="FullTrust")]
     public class NetFileCache : IDisposable
     {
-        private FileSystemWatcher watcher;
+        private readonly FileSystemWatcher watcher;
         // hash => full file path
         private Dictionary<string, string> cachedFiles;
-        private string cachePath;
-        private GameInstanceManager manager;
+        private readonly string cachePath;
+        private readonly GameInstanceManager manager;
         private static readonly Regex cacheFileRegex = new Regex("^[0-9A-F]{8}-", RegexOptions.Compiled);
         private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
 
@@ -85,12 +85,12 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Releases all resource used by the <see cref="CKAN.NetFileCache"/> object.
+        /// Releases all resource used by the <see cref="NetFileCache"/> object.
         /// </summary>
-        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="CKAN.NetFileCache"/>. The
-        /// <see cref="Dispose"/> method leaves the <see cref="CKAN.NetFileCache"/> in an unusable state. After calling
-        /// <see cref="Dispose"/>, you must release all references to the <see cref="CKAN.NetFileCache"/> so the garbage
-        /// collector can reclaim the memory that the <see cref="CKAN.NetFileCache"/> was occupying.</remarks>
+        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="NetFileCache"/>. The
+        /// <see cref="Dispose"/> method leaves the <see cref="NetFileCache"/> in an unusable state. After calling
+        /// <see cref="Dispose"/>, you must release all references to the <see cref="NetFileCache"/> so the garbage
+        /// collector can reclaim the memory that the <see cref="NetFileCache"/> was occupying.</remarks>
         public void Dispose()
         {
             // All we really need to do is clear our FileSystemWatcher.
@@ -106,19 +106,18 @@ namespace CKAN
         {
             Directory.CreateDirectory(InProgressPath);
             return Directory.EnumerateFiles(InProgressPath)
-                            .Where(path => new FileInfo(path).Name.StartsWith(hash))
-                            .FirstOrDefault()
+                            .FirstOrDefault(path => new FileInfo(path).Name.StartsWith(hash))
                    // If not found, return the name to create
                    ?? Path.Combine(InProgressPath, $"{hash}-{description}");
         }
 
         public string GetInProgressFileName(Uri url, string description)
-            => GetInProgressFileName(NetFileCache.CreateURLHash(url),
+            => GetInProgressFileName(CreateURLHash(url),
                                      description);
 
         public string GetInProgressFileName(List<Uri> urls, string description)
         {
-            var filenames = urls?.Select(url => GetInProgressFileName(NetFileCache.CreateURLHash(url), description))
+            var filenames = urls?.Select(url => GetInProgressFileName(CreateURLHash(url), description))
                                  .ToArray();
             return filenames?.FirstOrDefault(filename => File.Exists(filename))
                 ?? filenames?.FirstOrDefault();
@@ -204,18 +203,12 @@ namespace CKAN
             // for.
 
             string found = scanDirectory(files, hash, remoteTimestamp);
-            if (!string.IsNullOrEmpty(found))
-            {
-                return found;
-            }
-
-            return null;
+            return string.IsNullOrEmpty(found) ? null : found;
         }
 
         private string scanDirectory(Dictionary<string, string> files, string findHash, DateTime? remoteTimestamp = null)
         {
-            string file;
-            if (files.TryGetValue(findHash, out file))
+            if (files.TryGetValue(findHash, out string file))
             {
                 log.DebugFormat("Found file {0}", file);
                 // Check local vs remote timestamps; if local is older, then it's invalid.
@@ -315,7 +308,7 @@ namespace CKAN
                 // Now get all the files in all the caches, including in progress...
                 List<FileInfo> files = allFiles(true);
                 // ... and sort them by compatibility and timestamp...
-                files.Sort((a, b) => compareFiles(hashMap, aggregateCriteria, a, b));
+                files.Sort((a, b) => compareFiles(hashMap, a, b));
 
                 // ... and delete them till we're under the limit
                 foreach (FileInfo fi in files)
@@ -336,16 +329,14 @@ namespace CKAN
             }
         }
 
-        private int compareFiles(Dictionary<string, List<CkanModule>> hashMap, GameVersionCriteria crit, FileInfo a, FileInfo b)
+        private int compareFiles(Dictionary<string, List<CkanModule>> hashMap, FileInfo a, FileInfo b)
         {
             // Compatible modules for file A
-            List<CkanModule> modulesA;
-            hashMap.TryGetValue(a.Name.Substring(0, 8), out modulesA);
+            hashMap.TryGetValue(a.Name.Substring(0, 8), out List<CkanModule> modulesA);
             bool compatA = modulesA?.Any() ?? false;
 
             // Compatible modules for file B
-            List<CkanModule> modulesB;
-            hashMap.TryGetValue(b.Name.Substring(0, 8), out modulesB);
+            hashMap.TryGetValue(b.Name.Substring(0, 8), out List<CkanModule> modulesB);
             bool compatB = modulesB?.Any() ?? false;
 
             if (modulesA == null && modulesB != null)
@@ -423,7 +414,7 @@ namespace CKAN
                 "description isn't as filesystem safe as we thought... (#1266)"
             );
 
-            string fullName = String.Format("{0}-{1}", hash, Path.GetFileName(description));
+            string fullName = string.Format("{0}-{1}", hash, Path.GetFileName(description));
             string targetPath = Path.Combine(cachePath, fullName);
 
             // Purge hashes associated with the new file
@@ -486,8 +477,8 @@ namespace CKAN
         /// </summary>
         public void RemoveAll()
         {
-            var dirs = Enumerable.Repeat<string>(cachePath, 1)
-                .Concat(Enumerable.Repeat<string>(InProgressPath, 1))
+            var dirs = Enumerable.Repeat(cachePath, 1)
+                .Concat(Enumerable.Repeat(InProgressPath, 1))
                 .Concat(legacyDirs());
             foreach (string dir in dirs)
             {
@@ -573,7 +564,7 @@ namespace CKAN
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha1(string filePath, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
+        public string GetFileHashSha1(string filePath, IProgress<long> progress, CancellationToken cancelToken = default)
             => GetFileHash<SHA1CryptoServiceProvider>(filePath, "sha1", sha1Cache, progress, cancelToken);
 
         /// <summary>
@@ -584,7 +575,7 @@ namespace CKAN
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha256(string filePath, IProgress<long> progress, CancellationToken cancelToken = default(CancellationToken))
+        public string GetFileHashSha256(string filePath, IProgress<long> progress, CancellationToken cancelToken = default)
             => GetFileHash<SHA256CryptoServiceProvider>(filePath, "sha256", sha256Cache, progress, cancelToken);
 
         /// <summary>
@@ -598,9 +589,8 @@ namespace CKAN
         private string GetFileHash<T>(string filePath, string hashSuffix, Dictionary<string, string> cache, IProgress<long> progress, CancellationToken cancelToken)
             where T: HashAlgorithm, new()
         {
-            string hash = null;
             string hashFile = $"{filePath}.{hashSuffix}";
-            if (cache.TryGetValue(filePath, out hash))
+            if (cache.TryGetValue(filePath, out string hash))
             {
                 return hash;
             }
@@ -627,7 +617,7 @@ namespace CKAN
             }
         }
 
-        private Dictionary<string, string> sha1Cache   = new Dictionary<string, string>();
-        private Dictionary<string, string> sha256Cache = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> sha1Cache   = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> sha256Cache = new Dictionary<string, string>();
     }
 }

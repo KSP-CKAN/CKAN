@@ -5,7 +5,6 @@ using NUnit.Framework;
 using Tests.Data;
 
 using CKAN;
-using CKAN.Extensions;
 using CKAN.Versioning;
 
 // We're exercising FindReverseDependencies in here, because:
@@ -17,7 +16,7 @@ namespace Tests.Core.Relationships
     [TestFixture]
     public class SanityChecker
     {
-        private CKAN.RegistryManager manager;
+        private RegistryManager manager;
         private CKAN.Registry registry;
         private DisposableKSP ksp;
         private TemporaryRepositoryData repoData;
@@ -36,12 +35,11 @@ namespace Tests.Core.Relationships
             var user = new NullUser();
             repoData = new TemporaryRepositoryData(user, repos.Values);
 
-            manager = CKAN.RegistryManager.Instance(ksp.KSP, repoData.Manager);
+            manager = RegistryManager.Instance(ksp.KSP, repoData.Manager);
             registry = manager.registry;
             registry.Installed().Clear();
 
             registry.RepositoriesSet(repos);
-            var downloader = new NetAsyncDownloader(user);
         }
 
         [OneTimeTearDown]

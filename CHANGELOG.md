@@ -42,6 +42,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Remove log4net, newtonsoft deps from deb package (#3900 by: HebaruSan; reviewed: techman83)
 - [GUI] Add test to check GUI thread safety (#3914 by: HebaruSan; reviewed: techman83)
 - [Multiple] VSCode clean-up and other minor fixes (#3920 by: HebaruSan)
+- [Build] Modernize build system and .NET platform targets (#3929 by: HebaruSan; reviewed: techman83)
 
 ## v1.33.2 (Laplace)
 

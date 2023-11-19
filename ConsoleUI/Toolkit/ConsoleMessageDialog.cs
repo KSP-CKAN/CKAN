@@ -27,7 +27,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 CenterHeader = hdr;
             }
 
-            int btnW = btns.Count * buttonWidth + (btns.Count - 1) * buttonPadding;
+            int btnW = (btns.Count * buttonWidth) + ((btns.Count - 1) * buttonPadding);
             if (w < btnW + 4) {
                 // Widen the window to fit the buttons
                 // Buttons will NOT wrap - use ConsoleChoiceDialog
@@ -46,13 +46,13 @@ namespace CKAN.ConsoleUI.Toolkit {
             // Calculate vertical position including offset
             int t, b;
             if (vertOffset <= 0) {
-                t = (Console.WindowHeight - h) / 2 + vertOffset;
+                t = ((Console.WindowHeight - h) / 2) + vertOffset;
                 if (t < 1) {
                     t = 2;
                 }
                 b = t + h - 1;
             } else {
-                b = (Console.WindowHeight - h) / 2 + h - 1;
+                b = ((Console.WindowHeight - h) / 2) + h - 1;
                 if (b >= Console.WindowHeight - 1) {
                     b = Console.WindowHeight - 1;
                 }

@@ -83,71 +83,39 @@ namespace CKAN.Exporters
         }
 
         private string WriteUri(Uri uri)
-        {
-            return uri != null ? QuoteIfNecessary(uri.ToString()) : string.Empty;
-        }
+            => uri != null
+            ? QuoteIfNecessary(uri.ToString())
+            : string.Empty;
 
         private string WriteRepository(ResourcesDescriptor resources)
-        {
-            if (resources != null && resources.repository != null)
-            {
-                return QuoteIfNecessary(resources.repository.ToString());
-            }
-
-            return string.Empty;
-        }
+            => resources != null && resources.repository != null
+                ? QuoteIfNecessary(resources.repository.ToString())
+                : string.Empty;
 
         private string WriteHomepage(ResourcesDescriptor resources)
-        {
-            if (resources != null && resources.homepage != null)
-            {
-                return QuoteIfNecessary(resources.homepage.ToString());
-            }
-
-            return string.Empty;
-        }
+            => resources != null && resources.homepage != null
+                ? QuoteIfNecessary(resources.homepage.ToString())
+                : string.Empty;
 
         private string WriteBugtracker(ResourcesDescriptor resources)
-        {
-            if (resources != null && resources.bugtracker != null)
-            {
-                return QuoteIfNecessary(resources.bugtracker.ToString());
-            }
-
-            return string.Empty;
-        }
+            => resources != null && resources.bugtracker != null
+                ? QuoteIfNecessary(resources.bugtracker.ToString())
+                : string.Empty;
 
         private string WriteSpaceDock(ResourcesDescriptor resources)
-        {
-            if (resources != null && resources.spacedock != null)
-            {
-                return QuoteIfNecessary(resources.spacedock.ToString());
-            }
-
-            return string.Empty;
-        }
+            => resources != null && resources.spacedock != null
+                ? QuoteIfNecessary(resources.spacedock.ToString())
+                : string.Empty;
 
         private string WriteCurse(ResourcesDescriptor resources)
-        {
-            if (resources != null && resources.curse != null)
-            {
-                return QuoteIfNecessary(resources.curse.ToString());
-            }
-
-            return string.Empty;
-        }
+            => resources != null && resources.curse != null
+                ? QuoteIfNecessary(resources.curse.ToString())
+                : string.Empty;
 
         private string QuoteIfNecessary(string value)
-        {
-            if (value != null && value.IndexOf(_delimeter, StringComparison.Ordinal) >= 0)
-            {
-                return "\"" + value + "\"";
-            }
-            else
-            {
-                return value;
-            }
-        }
+            => value != null && value.IndexOf(_delimeter, StringComparison.Ordinal) >= 0
+                ? "\"" + value + "\""
+                : value;
 
         public enum Delimeter
         {

@@ -71,7 +71,9 @@ namespace CKAN.GUI
 
             // Show the FileDialog and let the user search for the game directory.
             if (instanceDialog.ShowDialog(this) != DialogResult.OK || !File.Exists(instanceDialog.FileName))
+            {
                 return;
+            }
 
             // Write the path to the textbox
             textBoxClonePath.Text = Path.GetDirectoryName(instanceDialog.FileName);
@@ -90,12 +92,12 @@ namespace CKAN.GUI
             string newPath = textBoxNewPath.Text;
 
             // Do some basic checks.
-            if (String.IsNullOrWhiteSpace(newName))
+            if (string.IsNullOrWhiteSpace(newName))
             {
                 user.RaiseError(Properties.Resources.CloneFakeKspDialogEnterName);
                 return;
             }
-            if (String.IsNullOrWhiteSpace(newPath))
+            if (string.IsNullOrWhiteSpace(newPath))
             {
                 user.RaiseError(Properties.Resources.CloneFakeKspDialogEnterPath);
                 return;

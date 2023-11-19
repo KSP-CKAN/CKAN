@@ -14,7 +14,7 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(EpochTransformer));
 
-        public string Name { get { return "epoch"; } }
+        public string Name => "epoch";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
@@ -31,7 +31,9 @@ namespace CKAN.NetKAN.Transformers
                 {
                     //Implicit if zero. No need to add
                     if (epochNumber != 0)
+                    {
                         json["version"] = epochNumber + ":" + json["version"];
+                    }
 
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
                 }
