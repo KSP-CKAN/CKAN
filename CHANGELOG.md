@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix archive.org fallback URLs for versions with spaces (#3899 by: HebaruSan)
 - [Multiple] Fix auto-remove during upgrade (#3913 by: HebaruSan; reviewed: techman83)
 - [Build] Clean up Linux .desktop files (#3927 by: irasponsible; reviewed: HebaruSan)
+- [GUI] Don't change language setting with scroll wheel (#3928 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 

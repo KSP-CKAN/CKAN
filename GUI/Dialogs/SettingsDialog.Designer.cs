@@ -563,6 +563,7 @@ namespace CKAN.GUI
             this.LanguageSelectionComboBox.TabIndex = 0;
             this.LanguageSelectionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.LanguageSelectionComboBox.SelectionChangeCommitted += new System.EventHandler(this.LanguageSelectionComboBox_SelectionChanged);
+            this.LanguageSelectionComboBox.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.LanguageSelectionComboBox_MouseWheel);
             //
             // RefreshOnStartupCheckbox
             //
