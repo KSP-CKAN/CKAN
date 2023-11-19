@@ -8,6 +8,9 @@ using System.Net;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using Autofac;
 using log4net;
@@ -195,8 +198,22 @@ namespace CKAN.CmdLine
             {
                 switch (cmdline.action)
                 {
+                    #if NETFRAMEWORK || WINDOWS
                     case "gui":
-                        return Gui(manager, (GuiOptions)options, args);
+                        #if NET6_0_OR_GREATER
+                        if (Platform.IsWindows)
+                        {
+                        #endif
+                            return Gui(manager, (GuiOptions)options, args);
+                        #if NET6_0_OR_GREATER
+                        }
+                        else
+                        {
+                            return Exit.ERROR;
+                        }
+                        #else
+                        #endif
+                    #endif
 
                     case "consoleui":
                         return ConsoleUi(manager, (ConsoleUIOptions)options);
@@ -275,6 +292,10 @@ namespace CKAN.CmdLine
             return Exit.ERROR;
         }
 
+        #if NETFRAMEWORK || WINDOWS
+        #if NET5_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+        #endif
         private static int Gui(GameInstanceManager manager, GuiOptions options, string[] args)
         {
             // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
@@ -287,6 +308,7 @@ namespace CKAN.CmdLine
 
             return Exit.OK;
         }
+        #endif
 
         private static int ConsoleUi(GameInstanceManager manager, ConsoleUIOptions opts)
         {

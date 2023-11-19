@@ -698,7 +698,7 @@ namespace CKAN.GUI
             this.minimizeNotifyIcon.ContextMenuStrip = this.minimizedContextMenuStrip;
             this.minimizeNotifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.minimizeNotifyIcon_MouseDoubleClick);
             this.minimizeNotifyIcon.BalloonTipClicked += new System.EventHandler(this.minimizeNotifyIcon_BalloonTipClicked);
-            this.minimizeNotifyIcon.Icon = Properties.Resources.AppIcon;
+            this.minimizeNotifyIcon.Icon = EmbeddedImages.AppIcon;
             resources.ApplyResources(this.minimizeNotifyIcon, "minimizeNotifyIcon");
             //
             // minimizedContextMenuStrip
@@ -825,7 +825,7 @@ namespace CKAN.GUI
             this.MinimumSize = new System.Drawing.Size(880, 400);
             this.Name = "Main";
             this.Resize += new System.EventHandler(this.Main_Resize);
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             resources.ApplyResources(this, "$this");
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

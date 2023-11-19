@@ -1,5 +1,8 @@
 using System;
 using System.Linq;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using NUnit.Framework;
 
@@ -12,6 +15,9 @@ using Tests.Data;
 
 namespace Tests.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     [TestFixture]
     public class GUIModTests
     {

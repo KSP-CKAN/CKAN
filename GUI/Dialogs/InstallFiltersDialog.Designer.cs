@@ -121,7 +121,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.InstanceFiltersGroupBox);
             this.Controls.Add(this.WarningLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.HelpButton = true;

@@ -825,11 +825,52 @@ namespace CKAN
     /// Used to keep track of the relationships between modules in the resolver.
     /// Intended to be used for displaying messages to the user.
     /// </summary>
-    public abstract class SelectionReason
+    public abstract class SelectionReason : IEquatable<SelectionReason>
     {
         // Currently assumed to exist for any relationship other than UserRequested or Installed
         public virtual CkanModule Parent { get; protected set; }
         public virtual string DescribeWith(IEnumerable<SelectionReason> others) => ToString();
+
+        public override bool Equals(object obj)
+            => Equals(obj as SelectionReason);
+
+        public bool Equals(SelectionReason rsn)
+        {
+            // Parent throws in some derived classes
+            try
+            {
+                return GetType() == rsn?.GetType()
+                       && Parent == rsn?.Parent;
+            }
+            catch
+            {
+                // If thrown, then the type check passed and Parent threw
+                return true;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            var typeCode = GetType().GetHashCode();
+            // Parent throws in some derived classes
+            try
+            {
+                #if NET5_0_OR_GREATER
+                return HashCode.Combine(typeCode,
+                                        Parent.GetHashCode());
+                #else
+                unchecked
+                {
+                    return (typeCode * 397) ^ Parent.GetHashCode();
+                }
+                #endif
+            }
+            catch
+            {
+                // If thrown, then we're type-only
+                return typeCode;
+            }
+        }
 
         public class Installed : SelectionReason
         {

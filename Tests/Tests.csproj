@@ -1,9 +1,10 @@
 <Project>
   <PropertyGroup>
     <AssemblyName>CKAN.Tests</AssemblyName>
-    <OutputPath Condition=" '$(MSBuildRuntimeType)' !='Core' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
-    <OutputPath Condition=" '$(MSBuildRuntimeType)' =='Core' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
-    <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
+    <OutputPath Condition=" '$(Configuration)' != '' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(Configuration)' == '' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
+    <BaseIntermediateOutputPath Condition=" '$(Configuration)' != '' ">..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath Condition=" '$(Configuration)' == '' ">..\_build\out\$(AssemblyName)\VSCodeIDE\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
@@ -14,33 +15,13 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <Deterministic>true</Deterministic>
-    <Configurations>Debug;Release;Debug_NetCore;Release_NetCore</Configurations>
+    <Configurations>Debug;Release;NoGUI</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>7.3</LangVersion>
     <NoWarn>IDE1006</NoWarn>
-  </PropertyGroup>
-  <Choose>
-    <When Condition="$(Configuration.EndsWith('NetCore'))">
-      <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <DefaultItemExcludes>$(DefaultItemExcludes);NetKAN\**;CmdLine\**;ConsoleUI\**;GUI\**;AutoUpdate\**</DefaultItemExcludes>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug_NetCore' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release_NetCore' ">
-    <Optimize>true</Optimize>
+    <TargetFrameworks>net48;net7.0;net7.0-windows</TargetFrameworks>
+    <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
+    <DefaultItemExcludes Condition=" '$(TargetFramework)' == 'net7.0' ">$(DefaultItemExcludes);AutoUpdate\**;GUI\**</DefaultItemExcludes>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
@@ -49,8 +30,9 @@
     <PackageReference Include="Moq" Version="4.14.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="YamlDotNet" Version="9.1.0" />
-    <PackageReference Include="NUnit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
+    <PackageReference Include="NUnit" Version="3.14.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="Microsoft.CSharp" />
@@ -58,9 +40,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">
@@ -71,27 +50,50 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\CKAN-core.csproj" />
+    <ProjectReference Include="..\Core\CKAN-core.csproj">
+      <SetTargetFramework>TargetFramework=$(BaseTargetFramework)</SetTargetFramework>
+      <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
+      <Name>CKAN-core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cmdline\CKAN-cmdline.csproj">
+      <SetTargetFramework>TargetFramework=$(TargetFramework)</SetTargetFramework>
+      <Project>{E97D81F6-85E2-4F1F-906D-BE21766602E5}</Project>
+      <Name>CKAN-CmdLine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ConsoleUI\CKAN-ConsoleUI.csproj">
+      <SetTargetFramework>TargetFramework=$(BaseTargetFramework)</SetTargetFramework>
+      <Project>{DA5C7023-9A3B-4204-AE2F-BBA6C388B436}</Project>
+      <Name>CKAN-ConsoleUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GUI\CKAN-GUI.csproj"
+                      Condition=" '$(TargetFramework)' != 'net7.0' ">
+      <SetTargetFramework>TargetFramework=$(TargetFramework)</SetTargetFramework>
+      <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
+      <Name>CKAN-GUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AutoUpdate\CKAN-autoupdate.csproj"
+                      Condition=" '$(TargetFramework)' != 'net7.0' ">
+      <SetTargetFramework>TargetFramework=$(TargetFramework)</SetTargetFramework>
+      <Project>{E5B1C768-349E-4DAF-A134-56E4ECF1EEEF}</Project>
+      <Name>CKAN-AutoUpdateHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Netkan\CKAN-netkan.csproj">
+      <SetTargetFramework>TargetFramework=$(BaseTargetFramework)</SetTargetFramework>
+      <Project>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</Project>
+      <Name>CKAN-NetKAN</Name>
+    </ProjectReference>
   </ItemGroup>
-  <Choose>
-    <When Condition=" '$(TargetFramework)' == 'net48' ">
-      <ItemGroup>
-        <ProjectReference Include="..\Cmdline\CKAN-cmdline.csproj" />
-        <ProjectReference Include="..\ConsoleUI\CKAN-ConsoleUI.csproj" />
-        <ProjectReference Include="..\GUI\CKAN-GUI.csproj" />
-        <ProjectReference Include="..\AutoUpdate\CKAN-autoupdate.csproj" />
-        <ProjectReference Include="..\Netkan\CKAN-netkan.csproj" />
-      </ItemGroup>
-    </When>
-  </Choose>
   <ItemGroup>
     <Content Include="log4net.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
-  <Target Name="BeforeBuild">
-    <Exec Command="powershell ../build.ps1 Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
-    <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
+  <Target Name="MakeAssemblyInfo" BeforeTargets="BeforeBuild">
+    <Exec Command="powershell.exe -ExecutionPolicy Unrestricted -Command &quot;.\build.ps1 Generate-GlobalAssemblyVersionInfo&quot;"
+          WorkingDirectory=".."
+          Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
+    <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo"
+          Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
   </Target>
 </Project>

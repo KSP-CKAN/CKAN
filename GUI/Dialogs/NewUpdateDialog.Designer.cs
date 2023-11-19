@@ -106,7 +106,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.ReleaseNotesTextbox);
             this.Controls.Add(this.VersionLabel);
             this.Controls.Add(this.label1);
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.MinimumSize = new System.Drawing.Size(354, 245);
             this.Name = "NewUpdateDialog";
             resources.ApplyResources(this, "$this");

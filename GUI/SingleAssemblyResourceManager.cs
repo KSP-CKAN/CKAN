@@ -10,7 +10,8 @@ namespace CKAN.GUI
 
     public class SingleAssemblyResourceManager : ResourceManager
     {
-        public SingleAssemblyResourceManager(string basename, Assembly assembly) : base(basename, assembly)
+        public SingleAssemblyResourceManager(string basename, Assembly assembly)
+            : base(basename, assembly)
         {
         }
 

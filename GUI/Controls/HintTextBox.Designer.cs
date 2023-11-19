@@ -36,7 +36,7 @@ namespace CKAN.GUI
             this.ClearIcon.BackColor = System.Drawing.Color.Transparent;
             this.ClearIcon.Visible = false;
             this.ClearIcon.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ClearIcon.Image = global::CKAN.GUI.Properties.Resources.textClear;
+            this.ClearIcon.Image = global::CKAN.GUI.EmbeddedImages.textClear;
             this.ClearIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.ClearIcon.Size = new System.Drawing.Size(18, 18);
             this.ClearIcon.Click += HintClearIcon_Click;

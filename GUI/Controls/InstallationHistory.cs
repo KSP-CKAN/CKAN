@@ -3,9 +3,15 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading.Tasks;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class InstallationHistory : UserControl
     {
         public InstallationHistory()

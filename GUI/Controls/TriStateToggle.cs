@@ -1,9 +1,15 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public class TriStateToggle : UserControl
     {
         public TriStateToggle()
@@ -18,11 +24,11 @@ namespace CKAN.GUI
                 ShowAlways   = true,
             };
 
-            YesRadioButton  = MakeRadioButton(0, Properties.Resources.triToggleYes,
+            YesRadioButton  = MakeRadioButton(0, EmbeddedImages.triToggleYes,
                 Properties.Resources.TriStateToggleYesTooltip);
-            BothRadioButton = MakeRadioButton(1, Properties.Resources.triToggleBoth,
+            BothRadioButton = MakeRadioButton(1, EmbeddedImages.triToggleBoth,
                 Properties.Resources.TriStateToggleBothTooltip, true);
-            NoRadioButton   = MakeRadioButton(2, Properties.Resources.triToggleNo,
+            NoRadioButton   = MakeRadioButton(2, EmbeddedImages.triToggleNo,
                 Properties.Resources.TriStateToggleNoTooltip);
             Controls.Add(YesRadioButton);
             Controls.Add(BothRadioButton);

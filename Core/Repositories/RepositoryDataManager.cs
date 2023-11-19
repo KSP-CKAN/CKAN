@@ -7,7 +7,9 @@ using Newtonsoft.Json;
 using ChinhDo.Transactions.FileManager;
 using log4net;
 
+#if NETFRAMEWORK
 using CKAN.Extensions;
+#endif
 using CKAN.Games;
 
 namespace CKAN

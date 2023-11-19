@@ -3,6 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Microsoft.Win32;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using IniParser;
 using IniParser.Exceptions;
@@ -11,6 +14,9 @@ using log4net;
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public static class URLHandlers
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(URLHandlers));
@@ -95,6 +101,9 @@ namespace CKAN.GUI
             }
         }
 
+        #if NET5_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+        #endif
         private static void RegisterURLHandler_Win32()
         {
             log.InfoFormat("Adding URL handler to registry");
@@ -130,6 +139,9 @@ namespace CKAN.GUI
                 .SetValue("", urlCmd);
         }
 
+        #if NET5_0_OR_GREATER
+        [SupportedOSPlatform("linux")]
+        #endif
         private static void RegisterURLHandler_Linux()
         {
             var parser = new FileIniDataParser();

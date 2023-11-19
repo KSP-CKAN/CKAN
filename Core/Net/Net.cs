@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -45,14 +47,27 @@ namespace CKAN
         /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
         /// </returns>
         public static string CurrentETag(Uri url)
-        {
-            WebRequest req = WebRequest.Create(url);
-            req.Method = "HEAD";
-            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
-            string val = resp.Headers["ETag"]?.Replace("\"", "");
-            resp.Close();
-            return val;
-        }
+            => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, url),
+                                    HttpCompletionOption.ResponseHeadersRead)
+                         .Result
+                         .Headers.ETag.ToString()
+                         .Replace("\"", "");
+
+        /// <summary>
+        /// "HttpClient is intended to be instantiated once and reused
+        ///  throughout the life of an application. In .NET Core and .NET 5+,
+        ///  HttpClient pools connections inside the handler instance and
+        ///  reuses a connection across multiple requests. If you instantiate
+        ///  an HttpClient class for every request, the number of sockets
+        ///  available under heavy loads will be exhausted. This exhaustion
+        ///  will result in SocketException errors."
+        /// </summary>
+        public static readonly HttpClient httpClient = new HttpClient();
+        public static readonly HttpClient nonRedirectingHttpClient = new HttpClient(
+            new HttpClientHandler()
+            {
+                AllowAutoRedirect = false,
+            });
 
         /// <summary>
         /// Downloads the specified url, and stores it in the filename given.
@@ -88,7 +103,10 @@ namespace CKAN
 
             try
             {
+                // This WebClient child class does some complicated stuff, let's keep using it for now
+                #pragma warning disable SYSLIB0014
                 var agent = new RedirectingTimeoutWebClient();
+                #pragma warning restore SYSLIB0014
                 agent.DownloadFile(url, filename);
                 etag = agent.ResponseHeaders.Get("ETag")?.Replace("\"", "");
             }
@@ -197,7 +215,10 @@ namespace CKAN
         {
             log.DebugFormat("About to download {0}", url.OriginalString);
 
+            // This WebClient child class does some complicated stuff, let's keep using it for now
+            #pragma warning disable SYSLIB0014
             WebClient agent = new RedirectingTimeoutWebClient(timeout, mimeType);
+            #pragma warning restore SYSLIB0014
 
             // Check whether to use an auth token for this host
             if (!string.IsNullOrEmpty(authToken)
@@ -232,46 +253,36 @@ namespace CKAN
             return null;
         }
 
-        public static Uri ResolveRedirect(Uri uri)
+        public static Uri ResolveRedirect(Uri url)
         {
-            const int maximumRequest = 5;
-
-            var currentUri = uri;
-            for (var i = 0; i < maximumRequest; i++)
+            const int maxRedirects = 6;
+            for (int redirects = 0; redirects <= maxRedirects; ++redirects)
             {
-                var client = new RedirectWebClient();
-
-                // The empty using is so that we dispose of the stream and don't block
-                // We don't ACTUALLY attempt to download the file, but it appears that if the client sees a
-                // Content Length in the response it thinks there will be a response body and blocks.
-                using (client.OpenRead(currentUri)) { }
-
-                var location = client.ResponseHeaders["Location"];
-
-                if (location == null)
+                var req = new HttpRequestMessage(HttpMethod.Head, url);
+                req.Headers.UserAgent.Clear();
+                req.Headers.UserAgent.Add(new ProductInfoHeaderValue(UserAgentString));
+                var response = nonRedirectingHttpClient.SendAsync(
+                    req, HttpCompletionOption.ResponseHeadersRead).Result;
+                if (response.Headers.Location == null)
                 {
-                    return currentUri;
+                    return url;
+                }
+
+                var location = response.Headers.Location.ToString();
+                if (Uri.IsWellFormedUriString(location, UriKind.Absolute))
+                {
+                    url = response.Headers.Location;
+                }
+                else if (Uri.IsWellFormedUriString(location, UriKind.Relative))
+                {
+                    url = new Uri(url, response.Headers.Location);
+                    log.DebugFormat("Relative URL {0} is absolute URL {1}", location, url);
                 }
                 else
                 {
-                    log.InfoFormat("{0} redirected to {1}", currentUri, location);
-
-                    if (Uri.IsWellFormedUriString(location, UriKind.Absolute))
-                    {
-                        currentUri = new Uri(location);
-                    }
-                    else if (Uri.IsWellFormedUriString(location, UriKind.Relative))
-                    {
-                        currentUri = new Uri(currentUri, location);
-                        log.DebugFormat("Relative URL {0} is absolute URL {1}", location, currentUri);
-                    }
-                    else
-                    {
-                        throw new Kraken(string.Format(Properties.Resources.NetInvalidLocation, location));
-                    }
+                    throw new Kraken(string.Format(Properties.Resources.NetInvalidLocation, location));
                 }
             }
-
             return null;
         }
 

@@ -1,12 +1,18 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
     /// <summary>
     /// A TabControl that obeys system colors to look less awful in a dark theme
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public class ThemedTabControl : TabControl
     {
         public ThemedTabControl() : base()

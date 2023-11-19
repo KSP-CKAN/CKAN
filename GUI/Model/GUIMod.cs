@@ -4,6 +4,9 @@ using System.Windows.Forms;
 using System.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using Autofac;
 
@@ -11,6 +14,9 @@ using CKAN.Versioning;
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public sealed class GUIMod : INotifyPropertyChanged
     {
         private CkanModule      Mod                 { get; set; }

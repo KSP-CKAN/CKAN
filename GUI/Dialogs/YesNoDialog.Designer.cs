@@ -112,7 +112,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.YesButton);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.Name = "YesNoDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             resources.ApplyResources(this, "$this");

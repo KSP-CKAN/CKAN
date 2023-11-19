@@ -301,26 +301,28 @@ namespace Tests.Core.Relationships
             }
         }
 
-        // Right now our RR always returns the modules it was provided. However
-        // if we've already got the same version(s) installed, it should be able to
-        // return a list *without* them. This isn't a hard error at the moment,
-        // since ModuleInstaller.InstallList will ignore already installed mods, but
-        // it would be nice to have. Discussed a little in GH #521.
-        [Test][Category("TODO")][Explicit]
-        public void ModList_WithInstalledModules_DoesNotContainThem()
+        [Test]
+        public void ModList_WithInstalledModules_ContainsThemWithReasonInstalled()
         {
-            var mod_a = generator.GeneratorRandomModule();
             var user = new NullUser();
+            var mod_a = generator.GeneratorRandomModule();
             using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_a)))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { mod_a };
 
-                registry.Installed().Add(mod_a.identifier, mod_a.version);
+                registry.RegisterModule(mod_a, new string[] { }, null, false);
 
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
-                CollectionAssert.IsEmpty(relationship_resolver.ModList());
+                var relationship_resolver = new RelationshipResolver(
+                    list, null, options, registry, null);
+                CollectionAssert.Contains(relationship_resolver.ModList(), mod_a);
+                CollectionAssert.AreEquivalent(new List<SelectionReason>
+                                          {
+                                              new SelectionReason.Installed(),
+                                              new SelectionReason.UserRequested(),
+                                          },
+                                          relationship_resolver.ReasonsFor(mod_a));
             }
         }
 

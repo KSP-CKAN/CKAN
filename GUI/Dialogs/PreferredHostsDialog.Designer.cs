@@ -198,7 +198,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.Splitter);
             this.Controls.Add(this.ExplanationLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(480, 300);

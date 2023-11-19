@@ -87,7 +87,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.label1);
             this.Controls.Add(this.AdditionalArguments);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.Name = "GameCommandLineOptionsDialog";
             resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);

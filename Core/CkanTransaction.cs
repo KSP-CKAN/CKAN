@@ -29,10 +29,10 @@ namespace CKAN
         private const double timeoutMs = 4294967294d;
         private static readonly TimeSpan maxCoretimeout = TimeSpan.FromMilliseconds(timeoutMs);
 
-        private static TransactionOptions transOpts = new TransactionOptions()
+        private static readonly TransactionOptions transOpts = new TransactionOptions()
         {
             IsolationLevel = IsolationLevel.ReadCommitted,
-            Timeout        = maxCoretimeout
+            Timeout        = maxCoretimeout,
         };
 
         /// <summary>

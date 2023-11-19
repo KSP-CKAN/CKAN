@@ -3,6 +3,9 @@ using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using CKAN.Extensions;
 
@@ -11,6 +14,9 @@ namespace CKAN.GUI
     /// <summary>
     /// Show the user's play time in each instance and allow editing
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class PlayTime : UserControl
     {
         /// <summary>

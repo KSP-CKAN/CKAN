@@ -5,6 +5,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using CKAN.GUI.Attributes;
 
@@ -32,6 +35,9 @@ namespace CKAN.GUI
     /// | [Abort whole changeset]                                |
     /// +--------------------------------------------------------+
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class DownloadsFailedDialog : Form
     {
         /// <summary>

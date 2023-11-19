@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using CKAN.Extensions;
 
@@ -34,6 +37,9 @@ namespace CKAN.GUI
     /// Everything the GUI needs to know about a change, including
     /// the mod itself, the change we're making, and the reason why.
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public class ModChange
     {
         public CkanModule        Mod        { get; private set; }
@@ -118,6 +124,9 @@ namespace CKAN.GUI
                             : reasons)));
     }
 
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public class ModUpgrade : ModChange
     {
         public ModUpgrade(CkanModule       mod,

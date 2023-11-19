@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using Newtonsoft.Json;
 
@@ -382,16 +385,18 @@ namespace CKAN.Configuration
                     // Ensure the directory exists
                     new FileInfo(configFile).Directory.Create();
 
-#if !NETCOREAPP
-                    // If we are not running on .NET Core, try to migrate from the real registry
-                    if (Win32RegistryConfiguration.DoesRegistryConfigurationExist())
+                    // Try to migrate from the real registry
+                    if (
+                        #if NET6_0_OR_GREATER
+                        Platform.IsWindows &&
+                        #endif
+                        Win32RegistryConfiguration.DoesRegistryConfigurationExist())
                     {
                         Migrate();
 
                         // TODO: At some point, we can uncomment this to clean up after ourselves.
                         // Win32RegistryConfiguration.DeleteAllKeys();
                     }
-#endif
 
                     SaveConfig();
                 }
@@ -401,6 +406,9 @@ namespace CKAN.Configuration
         // <summary>
         // Copy the configuration from the registry here.
         // </summary>
+        #if NET5_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+        #endif
         private void Migrate()
         {
             Win32RegistryConfiguration registry = new Win32RegistryConfiguration();

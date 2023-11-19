@@ -71,7 +71,7 @@ namespace CKAN.GUI
             //
             // RefreshButton
             //
-            this.RefreshButton.Image = global::CKAN.GUI.Properties.Resources.refresh;
+            this.RefreshButton.Image = global::CKAN.GUI.EmbeddedImages.refresh;
             this.RefreshButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.RefreshButton.Name = "RefreshButton";
             this.RefreshButton.Size = new System.Drawing.Size(114, 56);
@@ -81,7 +81,7 @@ namespace CKAN.GUI
             //
             // ExpandAllButton
             //
-            this.ExpandAllButton.Image = global::CKAN.GUI.Properties.Resources.expandAll;
+            this.ExpandAllButton.Image = global::CKAN.GUI.EmbeddedImages.expandAll;
             this.ExpandAllButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ExpandAllButton.Name = "ExpandAllButton";
             this.ExpandAllButton.Size = new System.Drawing.Size(114, 56);
@@ -91,7 +91,7 @@ namespace CKAN.GUI
             //
             // CollapseAllButton
             //
-            this.CollapseAllButton.Image = global::CKAN.GUI.Properties.Resources.collapseAll;
+            this.CollapseAllButton.Image = global::CKAN.GUI.EmbeddedImages.collapseAll;
             this.CollapseAllButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.CollapseAllButton.Name = "CollapseAllButton";
             this.CollapseAllButton.Size = new System.Drawing.Size(114, 56);
@@ -101,7 +101,7 @@ namespace CKAN.GUI
             //
             // ResetCollapseButton
             //
-            this.ResetCollapseButton.Image = global::CKAN.GUI.Properties.Resources.resetCollapse;
+            this.ResetCollapseButton.Image = global::CKAN.GUI.EmbeddedImages.resetCollapse;
             this.ResetCollapseButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ResetCollapseButton.Name = "ResetCollapseButton";
             this.ResetCollapseButton.Size = new System.Drawing.Size(114, 56);
@@ -111,7 +111,7 @@ namespace CKAN.GUI
             //
             // ShowInFolderButton
             //
-            this.ShowInFolderButton.Image = global::CKAN.GUI.Properties.Resources.search;
+            this.ShowInFolderButton.Image = global::CKAN.GUI.EmbeddedImages.search;
             this.ShowInFolderButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ShowInFolderButton.Name = "ShowInFolderButton";
             this.ShowInFolderButton.Size = new System.Drawing.Size(114, 56);
@@ -121,7 +121,7 @@ namespace CKAN.GUI
             //
             // DeleteButton
             //
-            this.DeleteButton.Image = global::CKAN.GUI.Properties.Resources.delete;
+            this.DeleteButton.Image = global::CKAN.GUI.EmbeddedImages.delete;
             this.DeleteButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.DeleteButton.Name = "DeleteButton";
             this.DeleteButton.Size = new System.Drawing.Size(114, 56);
@@ -138,8 +138,8 @@ namespace CKAN.GUI
                 // ImageList's default makes icons look like garbage
                 ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
             };
-            this.GameFolderTree.ImageList.Images.Add("folder", global::CKAN.GUI.Properties.Resources.folder);
-            this.GameFolderTree.ImageList.Images.Add("file", global::CKAN.GUI.Properties.Resources.file);
+            this.GameFolderTree.ImageList.Images.Add("folder", global::CKAN.GUI.EmbeddedImages.folder);
+            this.GameFolderTree.ImageList.Images.Add("file", global::CKAN.GUI.EmbeddedImages.file);
             this.GameFolderTree.ShowPlusMinus = true;
             this.GameFolderTree.ShowRootLines = false;
             this.GameFolderTree.Location = new System.Drawing.Point(3, 3);

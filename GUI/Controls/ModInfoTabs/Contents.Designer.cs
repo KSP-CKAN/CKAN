@@ -80,9 +80,9 @@ namespace CKAN.GUI
                 // ImageList's default makes icons look like garbage
                 ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
             };
-            this.ContentsPreviewTree.ImageList.Images.Add("folderZip", global::CKAN.GUI.Properties.Resources.folderZip);
-            this.ContentsPreviewTree.ImageList.Images.Add("folder", global::CKAN.GUI.Properties.Resources.folder);
-            this.ContentsPreviewTree.ImageList.Images.Add("file", global::CKAN.GUI.Properties.Resources.file);
+            this.ContentsPreviewTree.ImageList.Images.Add("folderZip", global::CKAN.GUI.EmbeddedImages.folderZip);
+            this.ContentsPreviewTree.ImageList.Images.Add("folder", global::CKAN.GUI.EmbeddedImages.folder);
+            this.ContentsPreviewTree.ImageList.Images.Add("file", global::CKAN.GUI.EmbeddedImages.file);
             this.ContentsPreviewTree.ShowPlusMinus = true;
             this.ContentsPreviewTree.ShowRootLines = false;
             this.ContentsPreviewTree.Location = new System.Drawing.Point(3, 65);

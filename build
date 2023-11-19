@@ -19,7 +19,7 @@ if [ $# -gt 1 ]; then
     done
 fi
 
-nugetVersion="5.6.0"
+nugetVersion="6.8.0"
 useExperimental=false
 rootDir=$(dirname $0)
 scriptFile="$rootDir/build.cake"
@@ -61,5 +61,5 @@ if $useExperimental; then
 fi
 
 export PATH="$PATH:$HOME/.dotnet/tools"
-dotnet cake "$scriptFile" $cakeArgs $remainingArgs
+dotnet cake --verbosity Minimal "$scriptFile" $cakeArgs $remainingArgs
 exit $?

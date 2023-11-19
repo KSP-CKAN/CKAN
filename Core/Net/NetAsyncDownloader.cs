@@ -86,7 +86,10 @@ namespace CKAN
 
             private void ResetAgent()
             {
+                // This WebClient child class does some complicated stuff, let's keep using it for now
+                #pragma warning disable SYSLIB0014
                 agent = new ResumingWebClient();
+                #pragma warning restore SYSLIB0014
 
                 agent.Headers.Add("User-Agent", Net.UserAgentString);
 
@@ -388,31 +391,34 @@ namespace CKAN
             long totalBytesLeft = 0;
             long totalSize = 0;
 
-            foreach (NetAsyncDownloaderDownloadPart t in downloads.ToList())
+            lock (dlMutex)
             {
-                if (t == null)
+                foreach (var t in downloads)
                 {
-                    continue;
-                }
+                    if (t == null)
+                    {
+                        continue;
+                    }
 
-                if (t.bytesLeft > 0)
+                    if (t.bytesLeft > 0)
+                    {
+                        totalBytesPerSecond += t.bytesPerSecond;
+                    }
+
+                    totalBytesLeft += t.bytesLeft;
+                    totalSize += t.size;
+                }
+                foreach (var dl in queuedDownloads)
                 {
-                    totalBytesPerSecond += t.bytesPerSecond;
-                }
+                    // Somehow managed to get a NullRef for dl here
+                    if (dl == null)
+                    {
+                        continue;
+                    }
 
-                totalBytesLeft += t.bytesLeft;
-                totalSize += t.size;
-            }
-            foreach (var dl in queuedDownloads.ToList())
-            {
-                // Somehow managed to get a NullRef for t here
-                if (dl == null)
-                {
-                    continue;
+                    totalBytesLeft += dl.target.size;
+                    totalSize += dl.target.size;
                 }
-
-                totalBytesLeft += dl.target.size;
-                totalSize += dl.target.size;
             }
 
             int totalPercentage = (int)(((totalSize - totalBytesLeft) * 100) / (totalSize));

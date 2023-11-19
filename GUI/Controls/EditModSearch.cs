@@ -2,6 +2,9 @@ using System;
 using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
@@ -10,6 +13,9 @@ namespace CKAN.GUI
     /// Contains several separate fields for searching different properties,
     /// plus a combined field that represents them all in a special syntax.
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class EditModSearch : UserControl
     {
         /// <summary>

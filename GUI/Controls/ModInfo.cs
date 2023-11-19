@@ -2,6 +2,9 @@ using System;
 using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using Autofac;
 
@@ -9,6 +12,9 @@ using CKAN.Versioning;
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class ModInfo : UserControl
     {
         public ModInfo()

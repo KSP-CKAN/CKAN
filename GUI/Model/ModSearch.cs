@@ -1,6 +1,9 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
@@ -8,6 +11,9 @@ namespace CKAN.GUI
     /// An object representing a search to be performed of the mod list.
     /// Create one with the constructor or Parse(), and use it with Matches().
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public sealed class ModSearch : IEquatable<ModSearch>
     {
         /// <summary>

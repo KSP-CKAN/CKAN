@@ -8,6 +8,9 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using log4net;
 using Autofac;
@@ -21,6 +24,9 @@ using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class Main : Form, IMessageFilter
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));

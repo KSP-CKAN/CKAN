@@ -9,6 +9,9 @@ using log4net;
 
 using CKAN.Extensions;
 
+// This WebClient child class does some complicated stuff, let's keep using it for now
+#pragma warning disable SYSLIB0014
+
 namespace CKAN
 {
     internal class ResumingWebClient : WebClient

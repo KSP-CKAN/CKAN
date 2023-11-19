@@ -1,6 +1,9 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+#if NET6_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 using System.Text.RegularExpressions;
 
 namespace CKAN
@@ -24,12 +27,18 @@ namespace CKAN
         /// Are we on a Mac?
         /// </summary>
         /// <value><c>true</c> if is mac; otherwise, <c>false</c>.</value>
+        #if NET6_0_OR_GREATER
+        [SupportedOSPlatformGuard("macos")]
+        #endif
         public static readonly bool IsMac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
         /// <summary>
         /// Are we on a Unix (including Linux, but *not* Mac) system.
         /// </summary>
         /// <value><c>true</c> if is unix; otherwise, <c>false</c>.</value>
+        #if NET6_0_OR_GREATER
+        [SupportedOSPlatformGuard("linux")]
+        #endif
         public static readonly bool IsUnix = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
         /// <summary>
@@ -37,6 +46,9 @@ namespace CKAN
         /// if we're not on Unix or Mac.
         /// </summary>
         /// <value><c>true</c> if is windows; otherwise, <c>false</c>.</value>
+        #if NET6_0_OR_GREATER
+        [SupportedOSPlatformGuard("windows")]
+        #endif
         public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         /// <summary>

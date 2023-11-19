@@ -8,9 +8,8 @@ using NUnit.Framework;
 namespace Tests.NetKAN.Sources.Curse
 {
     [TestFixture]
-    [Category("FlakyNetwork")]
     [Category("Online")]
-    [Explicit]
+    [Category("FlakyNetwork")]
     public sealed class CurseApiTests
     {
         private string       _cachePath;
@@ -35,7 +34,8 @@ namespace Tests.NetKAN.Sources.Curse
         }
 
         [Test]
-        [Category("FlakyNetwork"), Category("Online")]
+        [Category("Online")]
+        [Category("FlakyNetwork")]
         public void GetsOldModCorrectly()
         {
             // Arrange
@@ -60,7 +60,8 @@ namespace Tests.NetKAN.Sources.Curse
         }
 
         [Test]
-        [Category("FlakyNetwork"), Category("Online")]
+        [Category("Online")]
+        [Category("FlakyNetwork")]
         public void GetsModCorrectly()
         {
             // Arrange
@@ -85,7 +86,8 @@ namespace Tests.NetKAN.Sources.Curse
         }
 
         [Test]
-        [Category("FlakyNetwork"), Category("Online")]
+        [Category("Online")]
+        [Category("FlakyNetwork")]
         public void ThrowsWhenModMissing()
         {
             // Arrange

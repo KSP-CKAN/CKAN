@@ -118,7 +118,7 @@ namespace CKAN.GUI
             //
             // launchGameToolStripMenuItem
             //
-            this.launchGameToolStripMenuItem.Image = global::CKAN.GUI.Properties.Resources.ksp;
+            this.launchGameToolStripMenuItem.Image = global::CKAN.GUI.EmbeddedImages.ksp;
             this.launchGameToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.launchGameToolStripMenuItem.Name = "launchGameToolStripMenuItem";
             this.launchGameToolStripMenuItem.Size = new System.Drawing.Size(146, 56);
@@ -128,7 +128,7 @@ namespace CKAN.GUI
             //
             // RefreshToolButton
             //
-            this.RefreshToolButton.Image = global::CKAN.GUI.Properties.Resources.refresh;
+            this.RefreshToolButton.Image = global::CKAN.GUI.EmbeddedImages.refresh;
             this.RefreshToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.RefreshToolButton.Name = "RefreshToolButton";
             this.RefreshToolButton.Size = new System.Drawing.Size(114, 56);
@@ -138,7 +138,7 @@ namespace CKAN.GUI
             //
             // UpdateAllToolButton
             //
-            this.UpdateAllToolButton.Image = global::CKAN.GUI.Properties.Resources.update;
+            this.UpdateAllToolButton.Image = global::CKAN.GUI.EmbeddedImages.update;
             this.UpdateAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.UpdateAllToolButton.Name = "UpdateAllToolButton";
             this.UpdateAllToolButton.Size = new System.Drawing.Size(232, 56);
@@ -149,7 +149,7 @@ namespace CKAN.GUI
             // ApplyToolButton
             //
             this.ApplyToolButton.AutoToolTip = false;
-            this.ApplyToolButton.Image = global::CKAN.GUI.Properties.Resources.apply;
+            this.ApplyToolButton.Image = global::CKAN.GUI.EmbeddedImages.apply;
             this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ApplyToolButton.Name = "ApplyToolButton";
             this.ApplyToolButton.Size = new System.Drawing.Size(173, 56);
@@ -174,7 +174,7 @@ namespace CKAN.GUI
             this.FilterTagsToolButton,
             this.FilterLabelsToolButton});
             this.FilterToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterToolButton_DropDown_Opening);
-            this.FilterToolButton.Image = global::CKAN.GUI.Properties.Resources.filter;
+            this.FilterToolButton.Image = global::CKAN.GUI.EmbeddedImages.filter;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
             this.FilterToolButton.Size = new System.Drawing.Size(201, 56);
@@ -267,7 +267,7 @@ namespace CKAN.GUI
             //
             // NavBackwardToolButton
             //
-            this.NavBackwardToolButton.Image = global::CKAN.GUI.Properties.Resources.backward;
+            this.NavBackwardToolButton.Image = global::CKAN.GUI.EmbeddedImages.backward;
             this.NavBackwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.NavBackwardToolButton.Name = "NavBackwardToolButton";
             this.NavBackwardToolButton.Size = new System.Drawing.Size(44, 56);
@@ -277,7 +277,7 @@ namespace CKAN.GUI
             //
             // NavForwardToolButton
             //
-            this.NavForwardToolButton.Image = global::CKAN.GUI.Properties.Resources.forward;
+            this.NavForwardToolButton.Image = global::CKAN.GUI.EmbeddedImages.forward;
             this.NavForwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.NavForwardToolButton.Name = "NavForwardToolButton";
             this.NavForwardToolButton.Size = new System.Drawing.Size(44, 56);

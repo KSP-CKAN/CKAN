@@ -7,46 +7,41 @@
 using System.Text.RegularExpressions;
 using Semver;
 
-var buildNetCore = "net7.0";
 var buildNetFramework = "net48";
 
 var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Debug");
-var buildFramework = configuration.EndsWith("NetCore") ? buildNetCore : buildNetFramework;
 var solution = Argument<string>("solution", "CKAN.sln");
 
 var rootDirectory = Context.Environment.WorkingDirectory;
 var buildDirectory = rootDirectory.Combine("_build");
 var outDirectory = buildDirectory.Combine("out");
 var repackDirectory = buildDirectory.Combine("repack");
-var ckanFile = repackDirectory.Combine(configuration).CombineWithFilePath("ckan.exe");
-var netkanFile = repackDirectory.Combine(configuration).CombineWithFilePath("netkan.exe");
+var ckanFile = repackDirectory.Combine(configuration)
+                              .CombineWithFilePath("ckan.exe");
+var netkanFile = repackDirectory.Combine(configuration)
+                                .CombineWithFilePath("netkan.exe");
 
 Task("Default")
-    .Description("Build ckan.exe and netkan.exe, if not specified otherwise in Debug configuration for .NET Framework.")
+    .Description("Build ckan.exe and netkan.exe")
     .IsDependentOn("Ckan")
     .IsDependentOn("Netkan");
 
 Task("Debug")
-    .Description("Build ckan.exe and netkan.exe in Debug configuration, if not specified otherwise for .NET Framework.")
+    .Description("Build ckan.exe and netkan.exe in Debug configuration")
     .IsDependentOn("Default");
 
 Task("Release")
-    .Description("Build ckan.exe and netkan.exe in Release configuration, if not specified otherwise for .NET Framework.")
+    .Description("Build ckan.exe and netkan.exe in Release configuration")
     .IsDependentOn("Default");
 
 Task("Ckan")
-    .Description("Build only ckan.exe, if not specified otherwise in Debug configuration for .NET Framework.")
-    .IsDependentOn("Repack-Ckan")
-    .IsDependentOn("Build-DotNetCore");
+    .Description("Build only ckan.exe")
+    .IsDependentOn("Repack-Ckan");
 
 Task("Netkan")
-    .Description("Build only netkan.exe, if not specified otherwise in Debug configuration for .NET Framework.")
+    .Description("Build only netkan.exe")
     .IsDependentOn("Repack-Netkan");
-
-Task("DLL")
-    .Description("Build only ckan.dll (CKAN-Core) for .NET Core.")
-    .IsDependentOn("Build-DotNetCore");
 
 Task("docker-inflator")
     .Description("Build the Docker image for the Inflator and push it to Dockerhub.")
@@ -67,10 +62,10 @@ Task("docker-inflator")
     DockerBuild(
         new DockerImageBuildSettings()
         {
-            File = dockerFile.ToString(),
+            File = dockerFile.FullPath,
             Tag  = new string[] { mainTag }
         },
-        inflatorDirectory.ToString()
+        inflatorDirectory.FullPath
     );
     DockerTag(mainTag, latestTag);
     DockerPush(latestTag);
@@ -119,10 +114,10 @@ Task("docker-metadata")
     DockerBuild(
         new DockerImageBuildSettings()
         {
-            File = dockerFile.ToString(),
+            File = dockerFile.FullPath,
             Tag  = new string[] { mainTag }
         },
-        metadataDirectory.ToString()
+        metadataDirectory.FullPath
     );
     DockerTag(mainTag, latestTag);
     DockerPush(latestTag);
@@ -188,51 +183,76 @@ private void MakeIn(string dir, string args = null)
     }
 }
 
-Task("Restore-Nuget")
-    .Description("Intermediate - Download dependencies with NuGet when building for .NET Framework.")
-    .WithCriteria(() => buildFramework == buildNetFramework)
+Task("Restore")
+    .Description("Intermediate - Download dependencies")
     .Does(() =>
-{
-    NuGetRestore(solution, new NuGetRestoreSettings
     {
-        ConfigFile = "nuget.config",
-        EnvironmentVariables = new Dictionary<string, string> { { "Configuration", configuration } }
+        var nugetDirectory = buildDirectory.Combine("lib")
+                                           .Combine("nuget");
+        if (IsRunningOnWindows())
+        {
+            DotNetRestore(solution, new DotNetRestoreSettings
+            {
+                PackagesDirectory    = nugetDirectory,
+                EnvironmentVariables = new Dictionary<string, string> { { "Configuration", configuration } },
+            });
+        }
+        else
+        {
+            // NuGet is confused by multi-targeting, and
+            // Mono has no idea what "net7.0" is. Only restore for buildNetFramework.
+            DotNetRestore(solution, new DotNetRestoreSettings
+            {
+                PackagesDirectory    = nugetDirectory,
+                EnvironmentVariables = new Dictionary<string, string> { { "Configuration", configuration } },
+                MSBuildSettings      = new DotNetMSBuildSettings()
+                                           .SetConfiguration(configuration)
+                                           .WithProperty("TargetFramework",
+                                                         buildNetFramework),
+            });
+            DotNetRestore(solution, new DotNetRestoreSettings
+            {
+                PackagesDirectory    = nugetDirectory,
+                EnvironmentVariables = new Dictionary<string, string> { { "Configuration", "NoGUI" } },
+                MSBuildSettings      = new DotNetMSBuildSettings()
+                                           .SetConfiguration("NoGUI")
+                                           .WithProperty("TargetFramework",
+                                                         "net7.0"),
+            });
+        }
     });
-});
 
-Task("Build-DotNet")
-    .Description("Intermediate - Call MSBuild to build the CKAN.sln.")
-    .IsDependentOn("Restore-Nuget")
+Task("Build")
+    .Description("Intermediate - Build everything")
+    .IsDependentOn("Restore")
     .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
-    .WithCriteria(() => buildFramework == buildNetFramework)
-    .Does(() => MSBuild(solution,
-                        settings => settings.SetConfiguration(configuration)));
-
-Task("Restore-DotNetCore")
-    .Description("Intermediate - Download dependencies with NuGet when building for .NET Core.")
-    .WithCriteria(() => buildFramework == buildNetCore)
     .Does(() =>
-{
-    DotNetRestore(solution, new DotNetRestoreSettings
     {
-        ConfigFile = "nuget.config",
-        EnvironmentVariables = new Dictionary<string, string> { { "Configuration", configuration } }
+        // dotnet build won't let us compile WinForms on non-Windows,
+        // fall back to mono
+        if (IsRunningOnWindows())
+        {
+            DotNetBuild(solution, new DotNetBuildSettings
+            {
+                Configuration = configuration,
+                NoRestore     = true,
+            });
+        }
+        else
+        {
+            // Mono has no idea what "net7.0" is
+            MSBuild(solution,
+                    settings => settings.SetConfiguration(configuration)
+                                        .WithProperty("TargetFramework",
+                                                      buildNetFramework));
+            DotNetBuild(solution, new DotNetBuildSettings
+            {
+                Configuration = "NoGUI",
+                NoRestore     = true,
+                Framework     = "net7.0",
+            });
+        }
     });
-});
-
-Task("Build-DotNetCore")
-    .Description("Intermediate - Call .NET Core's MSBuild to build the ckan.dll.")
-    .IsDependentOn("Restore-DotNetCore")
-    .IsDependentOn("Generate-GlobalAssemblyVersionInfo")
-    .WithCriteria(() => buildFramework == buildNetCore)
-    .Does(() =>
-{
-    DotNetBuild(solution, new DotNetBuildSettings
-    {
-        Configuration = configuration,
-        NoRestore = true
-    });
-});
 
 Task("Generate-GlobalAssemblyVersionInfo")
     .Description("Intermediate - Calculate the version strings for the assembly.")
@@ -256,42 +276,62 @@ Task("Generate-GlobalAssemblyVersionInfo")
 
 Task("Repack-Ckan")
     .Description("Intermediate - Merge all the separate DLLs and EXEs to a single executable.")
-    .WithCriteria(() => buildFramework == buildNetFramework)
-    .IsDependentOn("Build-DotNet")
+    .IsDependentOn("Build")
     .Does(() =>
 {
-    var cmdLineBinDirectory = outDirectory.Combine("CKAN-CmdLine").Combine(configuration).Combine("bin").Combine(buildNetFramework);
+    CreateDirectory(repackDirectory.Combine(configuration));
+    var cmdLineBinDirectory = outDirectory.Combine("CKAN-CmdLine")
+                                          .Combine(configuration)
+                                          .Combine("bin")
+                                          .Combine(buildNetFramework);
     var assemblyPaths = GetFiles(string.Format("{0}/*.dll", cmdLineBinDirectory));
     assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-GUI.exe"));
     assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-ConsoleUI.exe"));
     assemblyPaths.Add(GetFiles(string.Format(
         "{0}/*/*.resources.dll",
-        outDirectory.Combine("CKAN-CmdLine").Combine(configuration).Combine("bin").Combine(buildNetFramework)
-    )));
+        outDirectory.Combine("CKAN-CmdLine")
+                    .Combine(configuration)
+                    .Combine("bin")
+                    .Combine(buildNetFramework))));
+    var ckanLogFile = repackDirectory.Combine(configuration)
+                                     .CombineWithFilePath($"ckan.log");
+    ReportRepacking(ckanFile, ckanLogFile);
     ILRepack(
         ckanFile,
         cmdLineBinDirectory.CombineWithFilePath("CKAN-CmdLine.exe"),
         assemblyPaths,
         new ILRepackSettings
         {
-            Libs = new List<DirectoryPath> { cmdLineBinDirectory.ToString() },
-            TargetPlatform = TargetPlatformVersion.v4
+            Libs           = new List<DirectoryPath> { cmdLineBinDirectory.FullPath },
+            TargetPlatform = TargetPlatformVersion.v4,
+            Parallel       = true,
+            Verbose        = false,
+            SetupProcessSettings = RepackSilently,
+            Log            = ckanLogFile.FullPath,
         });
 
     var autoupdateBinDirectory = outDirectory.Combine("CKAN-AutoUpdateHelper")
                                              .Combine(configuration)
                                              .Combine("bin")
                                              .Combine(buildNetFramework);
+    var updaterFile = repackDirectory.Combine(configuration)
+                                     .CombineWithFilePath("AutoUpdater.exe");
+    var updaterLogFile = repackDirectory.Combine(configuration)
+                                        .CombineWithFilePath($"AutoUpdater.log");
+    ReportRepacking(updaterFile, updaterLogFile);
     ILRepack(
-        repackDirectory.Combine(configuration)
-                       .CombineWithFilePath("AutoUpdater.exe"),
+        updaterFile,
         autoupdateBinDirectory.CombineWithFilePath("CKAN-AutoUpdateHelper.exe"),
         GetFiles(string.Format("{0}/*/*.resources.dll",
                                autoupdateBinDirectory)),
         new ILRepackSettings
         {
-            Libs = new List<DirectoryPath> { autoupdateBinDirectory.ToString() },
-            TargetPlatform = TargetPlatformVersion.v4
+            Libs           = new List<DirectoryPath> { autoupdateBinDirectory.FullPath },
+            TargetPlatform = TargetPlatformVersion.v4,
+            Parallel       = true,
+            Verbose        = false,
+            SetupProcessSettings = RepackSilently,
+            Log            = updaterLogFile.FullPath,
         });
 
     CopyFile(ckanFile, buildDirectory.CombineWithFilePath("ckan.exe"));
@@ -299,89 +339,72 @@ Task("Repack-Ckan")
 
 Task("Repack-Netkan")
     .Description("Intermediate - Merge all the separate DLLs and EXEs to a single executable.")
-    .WithCriteria(() => buildFramework == buildNetFramework)
-    .IsDependentOn("Build-DotNet")
+    .IsDependentOn("Build")
     .Does(() =>
 {
-    var netkanBinDirectory = outDirectory.Combine("CKAN-NetKAN").Combine(configuration).Combine("bin").Combine(buildNetFramework);
-    var assemblyPaths = GetFiles(string.Format("{0}/*.dll", netkanBinDirectory));
-
-    ILRepack(netkanFile, netkanBinDirectory.CombineWithFilePath("CKAN-NetKAN.exe"), assemblyPaths,
+    CreateDirectory(repackDirectory.Combine(configuration));
+    var netkanBinDirectory = outDirectory.Combine("CKAN-NetKAN")
+                                         .Combine(configuration)
+                                         .Combine("bin")
+                                         .Combine(buildNetFramework);
+    var netkanLogFile = repackDirectory.Combine(configuration)
+                                       .CombineWithFilePath($"netkan.log");
+    ReportRepacking(netkanFile, netkanLogFile);
+    ILRepack(
+        netkanFile,
+        netkanBinDirectory.CombineWithFilePath("CKAN-NetKAN.exe"),
+        GetFiles(string.Format("{0}/*.dll",
+                 netkanBinDirectory)),
         new ILRepackSettings
         {
-            Libs = new List<DirectoryPath> { netkanBinDirectory.ToString() },
-            TargetPlatform = TargetPlatformVersion.v4
+            Libs           = new List<DirectoryPath> { netkanBinDirectory.FullPath },
+            TargetPlatform = TargetPlatformVersion.v4,
+            Parallel       = true,
+            Verbose        = false,
+            SetupProcessSettings = RepackSilently,
+            Log            = netkanLogFile.FullPath,
         }
     );
 
     CopyFile(netkanFile, buildDirectory.CombineWithFilePath("netkan.exe"));
 });
 
+private void ReportRepacking(FilePath target, FilePath log)
+{
+    // ILRepack is extremly noisy by default and has no options to
+    // make it quieter other than shutting it up completely.
+    //
+    using (NormalVerbosity())
+    {
+        Information("Repacking {0}, logging details to {1}...",
+                    rootDirectory.GetRelativePath(target),
+                    rootDirectory.GetRelativePath(log));
+    }
+}
+
+private void RepackSilently(ProcessSettings settings)
+    => settings.SetRedirectStandardOutput(true)
+               .SetRedirectedStandardOutputHandler(s => "")
+               .SetRedirectStandardError(true)
+               .SetRedirectedStandardErrorHandler(s => "");
+
 Task("Test")
-    .Description("Run CKANs tests after compilation.")
+    .Description("Run tests after compilation.")
     .IsDependentOn("Default")
     .IsDependentOn("Test+Only");
 
 Task("Test+Only")
-    .Description("Only run CKANs tests, without compiling beforehand.")
-    .IsDependentOn("Test-UnitTests+Only")
-    .IsDependentOn("Test-Executables+Only");
-
-Task("Test-UnitTests+Only")
-    .Description("Intermediate - Only run CKANs unit tests, without compiling beforehand.")
-    .IsDependentOn("Test-UnitTests+Only-DotNetCore")
-    .WithCriteria(() => buildFramework == buildNetFramework)
-    .Does(() =>
-{
-    var where = Argument<string>("where", null);
-
-    var testFile = outDirectory
-        .Combine("CKAN.Tests")
-        .Combine(configuration)
-        .Combine("bin")
-        .Combine(buildFramework)
-        .CombineWithFilePath("CKAN.Tests.dll");
-
-    if (!FileExists(testFile))
-        throw new Exception("Test assembly not found: " + testFile);
-
-    var nunitOutputDirectory = buildDirectory.Combine("test/nunit");
-
-    CreateDirectory(nunitOutputDirectory);
-
-    NUnit3(testFile.FullPath, new NUnit3Settings {
-        Where = where,
-        Work = nunitOutputDirectory
-    });
-});
-
-Task("Test-UnitTests+Only-DotNetCore")
-    .Description("Intermediate - Only run CKANs unit tests using DotNetCoreTest, without compiling beforehand.")
-    .WithCriteria(() => buildFramework == buildNetCore)
-    .Does(() =>
-{
-    var where = Argument<string>("where", null);
-
-    var nunitOutputDirectory = buildDirectory.Combine("test/nunit");
-
-    CreateDirectory(nunitOutputDirectory);
-
-    DotNetTest(solution, new DotNetTestSettings {
-        NoBuild = true,
-        Configuration= configuration,
-        ResultsDirectory = nunitOutputDirectory,
-        Filter = where
-    });
-});
+    .Description("Run tests without compiling.")
+    .IsDependentOn("Test-Executables+Only")
+    .IsDependentOn("Test-UnitTests+Only");
 
 Task("Test-Executables+Only")
-    .Description("Intermediate - Only test CKANs executables, without compiling them beforhand.")
+    .Description("Intermediate - Test executables without compiling.")
     .IsDependentOn("Test-CkanExecutable+Only")
     .IsDependentOn("Test-NetkanExecutable+Only");
 
 Task("Test-CkanExecutable+Only")
-    .Description("Intermediate - Only test the ckan.exe, without compiling beforhand.")
-    .WithCriteria(() => buildFramework == buildNetFramework)
+    .Description("Intermediate - Test ckan.exe without compiling.")
     .Does(() =>
 {
     var output = RunExecutable(ckanFile, "version").FirstOrDefault();
@@ -392,8 +415,7 @@ Task("Test-CkanExecutable+Only")
 });
 
 Task("Test-NetkanExecutable+Only")
-    .Description("Intermediate - Only test the netkan.exe, without compiling beforhand.")
-    .WithCriteria(() => buildFramework == buildNetFramework)
+    .Description("Intermediate - Test netkan.exe without compiling.")
     .Does(() =>
 {
     var output = RunExecutable(netkanFile, "--version").FirstOrDefault();
@@ -403,11 +425,61 @@ Task("Test-NetkanExecutable+Only")
     }
 });
 
+Task("Test-UnitTests+Only")
+    .Description("Intermediate - Run unit tests without compiling.")
+    .Does(() =>
+{
+    var where = Argument<string>("where", null);
+    var nunitOutputDirectory = buildDirectory.Combine("test")
+                                             .Combine("nunit");
+    CreateDirectory(nunitOutputDirectory);
+    // Only Mono's msbuild can handle WinForms on Linux,
+    // but dotnet build can handle multi-targeting on Windows
+    if (IsRunningOnWindows())
+    {
+        DotNetTest(solution, new DotNetTestSettings
+        {
+            Configuration    = configuration,
+            NoBuild          = true,
+            Filter           = where,
+            ResultsDirectory = nunitOutputDirectory,
+            Verbosity        = DotNetVerbosity.Minimal,
+        });
+    }
+    else
+    {
+        DotNetTest(solution, new DotNetTestSettings
+        {
+            Configuration    = "NoGUI",
+            NoBuild          = true,
+            Filter           = where,
+            ResultsDirectory = nunitOutputDirectory,
+            Verbosity        = DotNetVerbosity.Minimal,
+        });
+        var testFile = outDirectory.Combine("CKAN.Tests")
+                                   .Combine(configuration)
+                                   .Combine("bin")
+                                   .Combine(buildNetFramework)
+                                   .CombineWithFilePath("CKAN.Tests.dll");
+        NUnit3(testFile.FullPath, new NUnit3Settings
+        {
+            Configuration = configuration,
+            Where         = where,
+            Work          = nunitOutputDirectory,
+            // Work around System.Runtime.Remoting.RemotingException : Tcp transport error.
+            Process       = NUnit3ProcessOption.InProcess,
+        });
+    }
+});
+
 Task("Version")
     .Description("Print the current CKAN version.")
     .Does(() =>
 {
-    Information(GetVersion().ToString());
+    using (NormalVerbosity())
+    {
+        Information(GetVersion().ToString());
+    }
 });
 
 Setup(context =>
@@ -420,7 +492,6 @@ Setup(context =>
             Warning($"Ignoring configuration argument: '{argConfiguration}'");
 
         configuration = "Release";
-        buildFramework = buildNetFramework;
     }
     else if (string.Equals(target, "Debug", StringComparison.OrdinalIgnoreCase))
     {
@@ -428,16 +499,6 @@ Setup(context =>
             Warning($"Ignoring configuration argument: '{argConfiguration}'");
 
         configuration = "Debug";
-        buildFramework = buildNetFramework;
-    }
-    else if (string.Equals(target, "DLL", StringComparison.OrdinalIgnoreCase))
-    {
-        if (argConfiguration == null || argConfiguration.StartsWith("Debug"))
-            configuration = "Debug_NetCore";
-        else if (argConfiguration.StartsWith("Release"))
-            configuration = "Release_NetCore";
-
-        buildFramework = buildNetCore;
     }
 });
 
@@ -447,7 +508,10 @@ Teardown(context =>
 
     if (quote != null)
     {
-        Information(quote);
+        using (NormalVerbosity())
+        {
+            Information(quote);
+        }
     }
 });
 

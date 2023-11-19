@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 using log4net;
@@ -25,73 +26,41 @@ namespace CKAN
         /// <returns>The path to Steam, or null if not found</returns>
         public static string SteamPath()
         {
-            // First check the registry.
-
-            const string reg_key = @"HKEY_CURRENT_USER\Software\Valve\Steam";
-            const string reg_value = @"SteamPath";
-
-            log.DebugFormat("Checking {0}\\{1} for Steam path", reg_key, reg_value);
-
-            var steam = (string)Microsoft.Win32.Registry.GetValue(reg_key, reg_value, null);
-
-            // If that directory exists, we've found Steam!
-            if (steam != null && Directory.Exists(steam))
+            foreach (var steam in SteamPaths.Where(p => !string.IsNullOrEmpty(p)))
             {
-                log.InfoFormat("Found Steam at {0}", steam);
-                return steam;
+                log.DebugFormat("Looking for Steam in {0}", steam);
+                if (Directory.Exists(steam))
+                {
+                    log.InfoFormat("Found Steam at {0}", steam);
+                    return steam;
+                }
             }
-
-            log.Debug("Couldn't find Steam via registry key, trying other locations...");
-
-            // Not in the registry, or missing file, but that's cool. This should find it on Linux
-            steam = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                ".local",
-                "share",
-                "Steam"
-            );
-
-            log.DebugFormat("Looking for Steam in {0}", steam);
-
-            if (Directory.Exists(steam))
-            {
-                log.InfoFormat("Found Steam at {0}", steam);
-                return steam;
-            }
-
-            // Try an alternative path.
-            steam = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                ".steam",
-                "steam"
-            );
-
-            log.DebugFormat("Looking for Steam in {0}", steam);
-
-            if (Directory.Exists(steam))
-            {
-                log.InfoFormat("Found Steam at {0}", steam);
-                return steam;
-            }
-
-            // Ok - Perhaps we're running OSX?
-
-            steam = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                Path.Combine("Library", "Application Support", "Steam")
-            );
-
-            log.DebugFormat("Looking for Steam in {0}", steam);
-
-            if (Directory.Exists(steam))
-            {
-                log.InfoFormat("Found Steam at {0}", steam);
-                return steam;
-            }
-
             log.Info("Steam not found on this system.");
             return null;
         }
+
+        private const string steamRegKey   = @"HKEY_CURRENT_USER\Software\Valve\Steam";
+        private const string steamRegValue = @"SteamPath";
+
+        private static string[] SteamPaths
+            => Platform.IsWindows ? new string[]
+            {
+                // First check the registry
+                (string)Microsoft.Win32.Registry.GetValue(steamRegKey, steamRegValue, null),
+            }
+            : Platform.IsUnix ? new string[]
+            {
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                             ".local", "share", "Steam"),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                             ".steam", "steam"),
+            }
+            : Platform.IsMac ? new string[]
+            {
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                             "Library", "Application Support", "Steam"),
+            }
+            : new string[] {};
 
         /// <summary>
         /// Normalizes the path by replacing all \ with / and removing any trailing slash.
@@ -99,11 +68,9 @@ namespace CKAN
         /// <param name="path">The path to normalize</param>
         /// <returns>The normalized path</returns>
         public static string NormalizePath(string path)
-        {
-            return path == null    ? null
-                 : path.Length < 2 ? path.Replace('\\', '/')
-                 : path.Replace('\\', '/').TrimEnd('/');
-        }
+            => path == null    ? null
+             : path.Length < 2 ? path.Replace('\\', '/')
+             : path.Replace('\\', '/').TrimEnd('/');
 
         /// <summary>
         /// Gets the last path element. Ex: /a/b/c returns c
@@ -111,9 +78,7 @@ namespace CKAN
         /// <returns>The last path element.</returns>
         /// <param name="path">The path to process.</param>
         public static string GetLastPathElement(string path)
-        {
-            return Regex.Replace(NormalizePath(path), @"^.*/", "");
-        }
+            => Regex.Replace(NormalizePath(path), @"^.*/", "");
 
         /// <summary>
         /// Gets the leading path elements. Ex: /a/b/c returns /a/b

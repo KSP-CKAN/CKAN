@@ -1,7 +1,9 @@
 using System;
 using System.IO;
 using System.Linq;
+
 using NUnit.Framework;
+
 using CKAN;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Github;
@@ -11,9 +13,9 @@ namespace Tests.NetKAN.Sources.Github
     [TestFixture]
     public sealed class GithubApiTests
     {
-        // Ironically, despite the fact that these run on travis-ci, which is strongly integrated
-        // to github, these sometimes cause test failures because github will throw random
-        // 403s. (Hence we disable them in travis with --exclude=FlakyNetwork)
+        // Ironically, despite the fact that these run in CI, which is strongly integrated
+        // with GitHub, these sometimes cause test failures because github will throw random
+        // 403s. (Hence we disable them in CI with --where="Category!=FlakyNetwork")
 
         private string       _cachePath;
         private NetFileCache _cache;
