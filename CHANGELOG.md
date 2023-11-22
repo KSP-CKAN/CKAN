@@ -43,6 +43,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Add test to check GUI thread safety (#3914 by: HebaruSan; reviewed: techman83)
 - [Multiple] VSCode clean-up and other minor fixes (#3920 by: HebaruSan)
 - [Build] Modernize build system and .NET platform targets (#3929 by: HebaruSan; reviewed: techman83)
+- [Spec] Add a note on policy on relationship metadata (#3930 by: JonnyOThan; reviewed: HebaruSan)
 
 ## v1.33.2 (Laplace)
 
