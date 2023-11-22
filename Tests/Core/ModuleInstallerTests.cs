@@ -1118,5 +1118,62 @@ namespace Tests.Core
                                                registry.InstalledModules.Select(im => im.identifier).ToArray());
             }
         }
+
+        [TestCase]
+        public void Install_WithMatchedUnmanagedDll_Throws()
+        {
+            const string unmanaged = "GameData/DogeCoinPlugin.1.0.0.dll";
+            var kraken = Assert.Throws<DllLocationMismatchKraken>(() =>
+                installTestPlugin(unmanaged,
+                                  TestData.DogeCoinPlugin(),
+                                  TestData.DogeCoinPluginZip()));
+            Assert.AreEqual(unmanaged, kraken.path);
+        }
+
+        [TestCase]
+        public void Install_WithUnmatchedUnmanagedDll_DoesNotThrow()
+        {
+            Assert.DoesNotThrow(() => installTestPlugin("GameData/DogeCoinPlugin-1-0-0.dll",
+                                                        TestData.DogeCoinPlugin(),
+                                                        TestData.DogeCoinPluginZip()),
+                                "Unmanaged file must match identifier");
+            Assert.DoesNotThrow(() => installTestPlugin("GameData/DogeCoinPlugin.dll",
+                                                        TestData.DogeCoinPluginAddonFerram(),
+                                                        TestData.DogeCoinPluginAddonFerramZip()),
+                                "Managed file being installed must match identifier");
+        }
+
+        private void installTestPlugin(string unmanaged, string moduleJson, string zipPath)
+        {
+            // Arrange
+            using (var repo     = new TemporaryRepository(moduleJson))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager  = new GameInstanceManager(nullUser, config)
+                {
+                    CurrentInstance = inst.KSP
+                })
+            {
+                var regMgr    = RegistryManager.Instance(manager.CurrentInstance,
+                                                         repoData.Manager);
+                var module    = CkanModule.FromJson(moduleJson);
+                var modules   = new List<CkanModule> { module };
+                var installer = new ModuleInstaller(inst.KSP, manager.Cache, nullUser);
+                File.WriteAllText(inst.KSP.ToAbsoluteGameDir(unmanaged),
+                                  "Not really a DLL, are we?");
+                regMgr.ScanUnmanagedFiles();
+                manager.Cache.Store(module, zipPath, new Progress<long>(bytes => {}));
+
+                // Act
+                HashSet<string> possibleConfigOnlyDirs = null;
+                new ModuleInstaller(inst.KSP, manager.Cache, nullUser)
+                    .InstallList(modules,
+                                 new RelationshipResolverOptions(),
+                                 regMgr,
+                                 ref possibleConfigOnlyDirs);
+            }
+        }
+
     }
 }

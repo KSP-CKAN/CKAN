@@ -340,10 +340,10 @@ namespace CKAN
                     {
                         // Find where we're installing identifier.optionalversion.dll
                         // (file name might not be an exact match with manually installed)
-                        var dllFolders = files.Where(f =>
-                                Path.GetFileName(f.destination).StartsWith(module.identifier)
-                                    && f.destination.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
-                            .Select(f => Path.GetDirectoryName(ksp.ToRelativeGameDir(f.destination)))
+                        var dllFolders = files
+                            .Select(f => ksp.ToRelativeGameDir(f.destination))
+                            .Where(relPath => ksp.DllPathToIdentifier(relPath) == module.identifier)
+                            .Select(relPath => Path.GetDirectoryName(relPath))
                             .ToHashSet();
                         // Make sure that the DLL is actually included in the install
                         // (NearFutureElectrical, NearFutureElectrical-Core)
