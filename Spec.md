@@ -575,6 +575,17 @@ depends:
     suppress_recommendations: true
 ```
 
+In the interest of the end-user experience, the relationship metadata
+*should* only be used when a game-related relationship exists between
+the mods. They do not have to directly interact, but the rationale should be
+apparent. It *should not* be used purely for promotional purposes. This is
+consistent with [the Debian spec], which states:
+
+> tells the ... user that the listed packages are related to this one and can
+perhaps enhance its usefulness
+
+[the Debian spec]: https://www.debian.org/doc/debian-policy/ch-relationships.html
+
 ##### depends
 
 A list of mods which are *required* for the current mod to operate.
@@ -619,17 +630,6 @@ replaced_by differs from other relationships in two ways:
 
 - It is *not* an array. Only a single mod can be defined as the replacement.
 - Only "version" and "min_version" are permitted as options.
-
-#### A note on relationships
-
-In the interest of the end-user's experience, the relationship metadata 
-*should* only be used when an actual game-related relationship exists between
-the mods.  They do not have to directly interact but the rationale should be 
-apparent.  It *should not* be used purely for promotional purposes.  This is 
-consistent with the Debian spec which states:
-
-> tells the ... user that the listed packages are related to this one and can
-perhaps enhance its usefulness
 
 #### Resources
 
