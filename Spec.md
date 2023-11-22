@@ -58,7 +58,6 @@ files are simply JSON files using UTF-8 as character-encoding.
 
 Except where stated otherwise all strings *should* be printable unicode only.
 
-
 CKAN files *should* have a naming scheme of their mod's identifier,
 followed by a dash, followed by the version number, followed by
 the extension `.ckan`. For example: `RealSolarSystem-7.3.ckan`.
@@ -179,12 +178,12 @@ The license (**v1.0**), or list of licenses (**v1.8**), under which the mod is r
 The same rules as per the
 [Debian license specification](https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/#license-specification) apply, with the following modifications:
 
-* The `MIT` license is always taken to mean the [Expat license](https://www.debian.org/legal/licenses/mit).
-* The creative commons licenses are permitted without a version number, indicating the
+- The `MIT` license is always taken to mean the [Expat license](https://www.debian.org/legal/licenses/mit).
+- The creative commons licenses are permitted without a version number, indicating the
   author did not specify which version applies.
-* Stripping of trailing zeros is not recognised.
-* (**v1.2**) `WTFPL` is recognised as a valid license.
-* (**v1.18**) `Unlicense` is recognised as a valid license.
+- Stripping of trailing zeros is not recognised.
+- (**v1.2**) `WTFPL` is recognised as a valid license.
+- (**v1.18**) `Unlicense` is recognised as a valid license.
 
 The following license strings are also valid and indicate other licensing not
 described above:
@@ -296,13 +295,13 @@ three source directives:
 In addition a destination directive *must* be provided:
 
 - `install_to`: The target location where the matched file or directory should be installed.
-  -  Valid values for this entry for KSP1 mods are `GameData`, `Missions`(**v1.25**), `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Ships/@thumbs/VAB`(**v1.16**), `Ships/@thumbs/SPH`(**v1.16**), `Ships/Script`(**v1.29**), `Tutorial`, `Scenarios` (**v1.14**),
+  - Valid values for this entry for KSP1 mods are `GameData`, `Missions`(**v1.25**), `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Ships/@thumbs/VAB`(**v1.16**), `Ships/@thumbs/SPH`(**v1.16**), `Ships/Script`(**v1.29**), `Tutorial`, `Scenarios` (**v1.14**),
   and `GameRoot` (which should be used sparingly, if at all).
-  -  Valid values for this entry for KSP2 mods are `GameRoot`, `BepInEx/plugins` (**v1.32**), and `GameData/Mods` (**v1.33**)
-  -  A path to a given subfolder location can be specified *only* under `GameData` (**v1.2**);
+  - Valid values for this entry for KSP2 mods are `GameRoot`, `BepInEx/plugins` (**v1.32**), and `GameData/Mods` (**v1.33**)
+  - A path to a given subfolder location can be specified *only* under `GameData` (**v1.2**);
   for example: `GameData/MyMod/Plugins`. The client *must* check this path and abort the install
   if any attempts to traverse up directories are found (eg: `GameData/../Example`).
-  -  Subfolder paths under a matched directory will be preserved, but directories will *only*
+  - Subfolder paths under a matched directory will be preserved, but directories will *only*
   be created when installing to `GameData`, `Tutorial`, or `Scenarios`.
 
 In addition, any number of optional directives *may* be provided:
@@ -425,7 +424,7 @@ Example tags:
 
 Currently recommended tags are listed here:
 
-https://github.com/KSP-CKAN/CKAN/wiki/Suggested-Tags
+<https://github.com/KSP-CKAN/CKAN/wiki/Suggested-Tags>
 
 ##### localizations
 
@@ -490,7 +489,7 @@ of the mod was released. The format is ISO 8601.
     "release_date": "2019-11-30T14:54:45.995Z",
 ```
 
-### Relationships
+#### Relationships
 
 Relationships are optional fields which describe this mod's relationship
 to other mods. They can be used to ensure that a mod is installed with
@@ -632,7 +631,7 @@ consistent with the Debian spec which states:
 > tells the ... user that the listed packages are related to this one and can
 perhaps enhance its usefulness
 
-#### resources
+#### Resources
 
 The `resources` field describes additional information that a user or
 program may wish to know about the mod, but which are not required
@@ -966,6 +965,7 @@ authoritative metadata.
 A metanetkan may be in either JSON or YAML format.
 
 The following conditions apply:
+
 - A metanekan may not reference another metanetkan, otherwise an error is produced.
 - Any fields specified in the metanetkan will override any fields in the target netkan file.
 
@@ -992,13 +992,13 @@ If present, a `$vref` symbol of `#/ckan/ksp-avc` states that version
 information should be retrieved from an embedded KSP-AVC `.version` file in the
 file downloaded by the `download` field. The following conditions apply:
 
-* Only `.version` files that would be *installed* for this mod are considered. (In theory. Transformer ordering may cause files outside the installed folders being considered)
-* It is an error if more than one `.version` file would be considered.
-* It is an error if the `.version` file does not validate according to
+- Only `.version` files that would be *installed* for this mod are considered. (In theory. Transformer ordering may cause files outside the installed folders being considered)
+- It is an error if more than one `.version` file would be considered.
+- It is an error if the `.version` file does not validate according to
   [the KSP-AVC spec].
-* The `KSP_VERSION` field for the `.version` file will be ignored if the
+- The `KSP_VERSION` field for the `.version` file will be ignored if the
   `KSP_VERSION_MIN` and `KSP_VERSION_MAX` fields are set.
-* Netkan will first attempt to use anything after `ksp-avc` as a literal
+- Netkan will first attempt to use anything after `ksp-avc` as a literal
    path within the zip file, and if that fails, will use the string as a
    regexp to search for a matching file to use.
 
