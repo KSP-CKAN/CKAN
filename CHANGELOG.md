@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Fix auto-remove during upgrade (#3913 by: HebaruSan; reviewed: techman83)
 - [Build] Clean up Linux .desktop files (#3927 by: irasponsible; reviewed: HebaruSan)
 - [GUI] Don't change language setting with scroll wheel (#3928 by: HebaruSan; reviewed: techman83)
+- [Core] Make where-CKAN-would-install logic consistent (#3931 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 

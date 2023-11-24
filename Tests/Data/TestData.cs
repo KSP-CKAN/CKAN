@@ -46,13 +46,6 @@ namespace Tests.Data
         public static string DogeCoinFlagZipCorrupt()
             => Path.Combine(DataDir(), "DogeCoinFlag-1.01-corrupt.zip");
 
-        /// <summary>
-        /// Adds a plugins directory to the DogeCoinFlag directory to test.
-        /// </summary>
-        /// <returns>The coin plugin.</returns>
-        public static string DogeCoinPluginZip()
-            => Path.Combine(DataDir(), "DogeCoinPlugin.zip");
-
         ///<summary>
         /// DogeCoinFlag 1.01 info. This doesn't contain any bugs.
         ///</summary>
@@ -339,8 +332,8 @@ namespace Tests.Data
                     ""identifier"": ""DogeCoinPlugin"",
                     ""install"": [
                         {
-                        ""file"": ""GameData/DogeCoinFlag/plugin"",
-                        ""install_to"": ""GameData/DogeCoinFlag"",
+                        ""file"": ""GameData/DogeCoinPlugin/Plugins"",
+                        ""install_to"": ""GameData/DogeCoinPlugin"",
                         ""filter"" : [ ""Thumbs.db"", ""README.md"" ],
                         ""filter_regexp"" : ""\\.bak$""
                         }
@@ -357,10 +350,10 @@ namespace Tests.Data
                     ""author"": ""politas"",
                     ""version"": ""1.01"",
                     ""download"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
-                    ""download_size"": 528,
+                    ""download_size"": 447,
                     ""download_hash"": {
-                        ""sha1"": ""8B4F4DD53E702E0C1D3FBCA1C9CB4E4027F50E8A"",
-                        ""sha256"": ""CEB1F30B8E1561EFD7F02D680407FE8FEC36B37AE073ABA8B06EEE05701F0EEF"",
+                        ""sha1"": ""9EC130C7D212DB664A97C28AFCA46CD186B73B3C"",
+                        ""sha256"": ""C7D787A875C92A0DCA5B7F0B8900F92F5FAE9DC23F2FDB95509B31420F209015"",
                     },
                     ""ksp_version"": ""0.25""
                 }
@@ -368,6 +361,54 @@ namespace Tests.Data
 
         public static CkanModule DogeCoinPlugin_module()
             => CkanModule.FromJson(DogeCoinPlugin());
+
+        /// <summary>
+        /// Adds a plugins directory to the DogeCoinFlag directory to test.
+        /// </summary>
+        /// <returns>The coin plugin.</returns>
+        public static string DogeCoinPluginZip()
+            => Path.Combine(DataDir(), "DogeCoinPlugin.zip");
+
+        public static string DogeCoinPluginAddonFerram()
+            => @"
+                {
+                    ""spec_version"": ""v1.2"",
+                    ""identifier"": ""DogeCoinPlugin"",
+                    ""install"": [
+                        {
+                        ""file"": ""GameData/DogeCoinPlugin/Plugins"",
+                        ""install_to"": ""GameData/DogeCoinPlugin"",
+                        ""filter"" : [ ""Thumbs.db"", ""README.md"" ],
+                        ""filter_regexp"" : ""\\.bak$""
+                        }
+                    ],
+                    ""resources"": {
+                        ""kerbalstuff"": {
+                        ""url"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag""
+                        },
+                        ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/""
+                    },
+                    ""name"": ""Dogecoin Plugin Addon - Ferram"",
+                    ""license"": ""CC-BY"",
+                    ""abstract"": ""Such plugin. Very linkage. Dynamically Minmus! Wow!"",
+                    ""author"": ""politas"",
+                    ""version"": ""1.01"",
+                    ""download"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                    ""download_size"": 357,
+                    ""download_hash"": {
+                        ""sha1"": ""07B05B89258E0D17FF7586054F6CE486AA6FFB7D"",
+                        ""sha256"": ""568F4F2C8B3C6492CF63518272F0DF86E3FBC6A3ADBCC9EC3FD2B6457CC67053"",
+                    },
+                    ""ksp_version"": ""0.25""
+                }
+            ";
+
+        /// <summary>
+        /// Adds a plugins directory to the DogeCoinFlag directory to test.
+        /// </summary>
+        /// <returns>The coin plugin.</returns>
+        public static string DogeCoinPluginAddonFerramZip()
+            => Path.Combine(DataDir(), "DogeCoinPluginAddonFerram.zip");
 
         /// <summary>
         /// Taurus HCV pod, which seems to cause weird KS errors when the unescaped
