@@ -71,18 +71,18 @@ namespace CKAN.GUI
                 // ImageList's default makes icons look like garbage
                 ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
             };
-            this.DependsGraphTree.ImageList.Images.Add("Root", global::CKAN.GUI.Properties.Resources.ksp);
-            this.DependsGraphTree.ImageList.Images.Add("Provides", global::CKAN.GUI.Properties.Resources.ballot);
-            this.DependsGraphTree.ImageList.Images.Add("Depends", global::CKAN.GUI.Properties.Resources.star);
-            this.DependsGraphTree.ImageList.Images.Add("Recommends", global::CKAN.GUI.Properties.Resources.thumbup);
-            this.DependsGraphTree.ImageList.Images.Add("Suggests", global::CKAN.GUI.Properties.Resources.info);
-            this.DependsGraphTree.ImageList.Images.Add("Supports", global::CKAN.GUI.Properties.Resources.smile);
-            this.DependsGraphTree.ImageList.Images.Add("Conflicts", global::CKAN.GUI.Properties.Resources.alert);
+            this.DependsGraphTree.ImageList.Images.Add("Root", global::CKAN.GUI.EmbeddedImages.ksp);
+            this.DependsGraphTree.ImageList.Images.Add("Provides", global::CKAN.GUI.EmbeddedImages.ballot);
+            this.DependsGraphTree.ImageList.Images.Add("Depends", global::CKAN.GUI.EmbeddedImages.star);
+            this.DependsGraphTree.ImageList.Images.Add("Recommends", global::CKAN.GUI.EmbeddedImages.thumbup);
+            this.DependsGraphTree.ImageList.Images.Add("Suggests", global::CKAN.GUI.EmbeddedImages.info);
+            this.DependsGraphTree.ImageList.Images.Add("Supports", global::CKAN.GUI.EmbeddedImages.smile);
+            this.DependsGraphTree.ImageList.Images.Add("Conflicts", global::CKAN.GUI.EmbeddedImages.alert);
             //
             // LegendProvidesImage
             //
             this.LegendProvidesImage.BackColor = System.Drawing.SystemColors.Window;
-            this.LegendProvidesImage.Image = global::CKAN.GUI.Properties.Resources.ballot;
+            this.LegendProvidesImage.Image = global::CKAN.GUI.EmbeddedImages.ballot;
             this.LegendProvidesImage.Location = new System.Drawing.Point(6, 3);
             this.LegendProvidesImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LegendProvidesImage.ClientSize = new System.Drawing.Size(14, 14);
@@ -96,7 +96,7 @@ namespace CKAN.GUI
             // LegendDependsImage
             //
             this.LegendDependsImage.BackColor = System.Drawing.SystemColors.Window;
-            this.LegendDependsImage.Image = global::CKAN.GUI.Properties.Resources.star;
+            this.LegendDependsImage.Image = global::CKAN.GUI.EmbeddedImages.star;
             this.LegendDependsImage.Location = new System.Drawing.Point(6, 21);
             this.LegendDependsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LegendDependsImage.ClientSize = new System.Drawing.Size(14, 14);
@@ -110,7 +110,7 @@ namespace CKAN.GUI
             // LegendRecommendsImage
             //
             this.LegendRecommendsImage.BackColor = System.Drawing.SystemColors.Window;
-            this.LegendRecommendsImage.Image = global::CKAN.GUI.Properties.Resources.thumbup;
+            this.LegendRecommendsImage.Image = global::CKAN.GUI.EmbeddedImages.thumbup;
             this.LegendRecommendsImage.Location = new System.Drawing.Point(6, 39);
             this.LegendRecommendsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LegendRecommendsImage.ClientSize = new System.Drawing.Size(14, 14);
@@ -124,7 +124,7 @@ namespace CKAN.GUI
             // LegendSuggestsImage
             //
             this.LegendSuggestsImage.BackColor = System.Drawing.SystemColors.Window;
-            this.LegendSuggestsImage.Image = global::CKAN.GUI.Properties.Resources.info;
+            this.LegendSuggestsImage.Image = global::CKAN.GUI.EmbeddedImages.info;
             this.LegendSuggestsImage.Location = new System.Drawing.Point(6, 57);
             this.LegendSuggestsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LegendSuggestsImage.ClientSize = new System.Drawing.Size(14, 14);
@@ -138,7 +138,7 @@ namespace CKAN.GUI
             // LegendSupportsImage
             //
             this.LegendSupportsImage.BackColor = System.Drawing.SystemColors.Window;
-            this.LegendSupportsImage.Image = global::CKAN.GUI.Properties.Resources.smile;
+            this.LegendSupportsImage.Image = global::CKAN.GUI.EmbeddedImages.smile;
             this.LegendSupportsImage.Location = new System.Drawing.Point(6, 75);
             this.LegendSupportsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LegendSupportsImage.ClientSize = new System.Drawing.Size(14, 14);
@@ -152,7 +152,7 @@ namespace CKAN.GUI
             // LegendConflictsImage
             //
             this.LegendConflictsImage.BackColor = System.Drawing.SystemColors.Window;
-            this.LegendConflictsImage.Image = global::CKAN.GUI.Properties.Resources.alert;
+            this.LegendConflictsImage.Image = global::CKAN.GUI.EmbeddedImages.alert;
             this.LegendConflictsImage.Location = new System.Drawing.Point(6, 93);
             this.LegendConflictsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LegendConflictsImage.ClientSize = new System.Drawing.Size(14, 14);

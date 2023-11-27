@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using NUnit.Framework;
 
@@ -14,6 +17,9 @@ using CKAN.GUI;
 
 namespace Tests.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     [TestFixture]
     public class ModListTests
     {

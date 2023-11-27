@@ -1,6 +1,9 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
@@ -10,6 +13,9 @@ namespace CKAN.GUI
     ///
     /// Based on https://stackoverflow.com/a/24087828/2422988
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public class DropdownMenuButton : Button
     {
         /// <summary>

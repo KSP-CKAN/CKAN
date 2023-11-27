@@ -2,11 +2,17 @@ using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using CKAN.Configuration;
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class InstallFiltersDialog : Form
     {
         public InstallFiltersDialog(IConfiguration globalConfig, GameInstance instance)

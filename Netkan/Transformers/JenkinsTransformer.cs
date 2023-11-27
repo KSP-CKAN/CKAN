@@ -72,7 +72,7 @@ namespace CKAN.NetKAN.Transformers
                 case 1:
                     JenkinsArtifact artifact = artifacts.Single();
 
-                    string download = Uri.EscapeUriString(
+                    string download = Uri.EscapeDataString(
                         $"{build.Url}artifact/{artifact.RelativePath}"
                     );
                     Log.DebugFormat("Using download URL: {0}", download);
@@ -93,7 +93,7 @@ namespace CKAN.NetKAN.Transformers
                     }
 
                     var resourcesJson = (JObject)json["resources"];
-                    resourcesJson.SafeAdd("ci", Uri.EscapeUriString(metadata.Kref.Id));
+                    resourcesJson.SafeAdd("ci", Uri.EscapeDataString(metadata.Kref.Id));
 
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 

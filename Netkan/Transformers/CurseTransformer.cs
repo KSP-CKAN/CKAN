@@ -283,7 +283,7 @@ namespace CKAN.NetKAN.Transformers
 
             Log.DebugFormat("Escaping {0}", uri);
 
-            var escaped = Uri.EscapeUriString(uri);
+            var escaped = Uri.EscapeDataString(uri);
 
             // Square brackets are "reserved characters" that should not appear
             // in strings to begin with, so C# doesn't try to escape them in case

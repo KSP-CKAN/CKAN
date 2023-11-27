@@ -76,7 +76,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.NameTextBox);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.Name = "RenameInstanceDialog";
             resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);

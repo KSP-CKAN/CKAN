@@ -73,7 +73,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.YesButton);
             this.Controls.Add(this.autoCheckLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.Name = "AskUserForAutoUpdatesDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             resources.ApplyResources(this, "$this");

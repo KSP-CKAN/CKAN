@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.ComponentModel;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using Autofac;
 using log4net;
@@ -14,6 +17,9 @@ using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class ManageMods : UserControl
     {
         public ManageMods()

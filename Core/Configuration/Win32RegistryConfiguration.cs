@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 using Microsoft.Win32;
 
 namespace CKAN.Configuration
@@ -9,6 +12,9 @@ namespace CKAN.Configuration
     // DEPRECATED: We now use a JSON configuration file. This still exists to facilitate migration.
     //
     // N.B., you can resume using this version by changing the instance created in ServiceLocator.
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public class Win32RegistryConfiguration : IConfiguration
     {
         private const           string CKAN_KEY           = @"HKEY_CURRENT_USER\Software\CKAN";

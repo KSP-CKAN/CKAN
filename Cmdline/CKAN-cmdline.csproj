@@ -1,9 +1,10 @@
 <Project>
   <PropertyGroup>
     <AssemblyName>CKAN-CmdLine</AssemblyName>
-    <OutputPath Condition=" '$(MSBuildRuntimeType)' != 'Core' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
-    <OutputPath Condition=" '$(MSBuildRuntimeType)' == 'Core' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
-    <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
+    <OutputPath Condition=" '$(Configuration)' != '' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(Configuration)' == '' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
+    <BaseIntermediateOutputPath Condition=" '$(Configuration)' != '' ">..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath Condition=" '$(Configuration)' == '' ">..\_build\out\$(AssemblyName)\VSCodeIDE\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
@@ -13,17 +14,18 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <Configurations>Debug;Release</Configurations>
+    <Configurations>Debug;Release;NoGUI</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>7.3</LangVersion>
-    <TargetFramework>net48</TargetFramework>
     <StartupObject>CKAN.CmdLine.MainClass</StartupObject>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworks>net48;net7.0;net7.0-windows</TargetFrameworks>
+    <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>IDE1006</NoWarn>
+    <CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />
@@ -32,7 +34,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="ReadLine" Version="1.2.0" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="System" />
     <Reference Include="System.Transactions" />
   </ItemGroup>
@@ -43,20 +45,37 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>MSBuild:Compile</Generator>
+      <LastGenOutput>$(IntermediateOutputPath)Resources.Designer.cs</LastGenOutput>
+      <StronglyTypedFileName>$(IntermediateOutputPath)Resources.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedLanguage>$(Language)</StronglyTypedLanguage>
+      <StronglyTypedNamespace>$(RootNamespace).Properties</StronglyTypedNamespace>
+      <StronglyTypedClassName>%(Filename)</StronglyTypedClassName>
+    </EmbeddedResource>
   </ItemGroup>
+  <Target Name="UseOurResourceManager" AfterTargets="PrepareResources">
+    <WriteLinesToFile File="$(IntermediateOutputPath)Resources.Designer.cs"
+                      Lines="$([System.IO.File]::ReadAllText('$(IntermediateOutputPath)Resources.Designer.cs').Replace('new global::System.Resources.ResourceManager', 'new SingleAssemblyResourceManager').Replace('internal', 'public'))"
+                      Overwrite="true" />
+  </Target>
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleUI\CKAN-ConsoleUI.csproj">
-      <Project>{DA5C7023-9A3B-4204-AE2F-BBA6C388B436}</Project>
-      <Name>CKAN-ConsoleUI</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core\CKAN-core.csproj">
+      <SetTargetFramework>TargetFramework=$(BaseTargetFramework)</SetTargetFramework>
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN-core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GUI\CKAN-GUI.csproj">
+    <ProjectReference Include="..\ConsoleUI\CKAN-ConsoleUI.csproj">
+      <SetTargetFramework>TargetFramework=$(BaseTargetFramework)</SetTargetFramework>
+      <Project>{DA5C7023-9A3B-4204-AE2F-BBA6C388B436}</Project>
+      <Name>CKAN-ConsoleUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GUI\CKAN-GUI.csproj"
+                      Condition=" '$(TargetFramework)' != 'net7.0' ">
+      <SetTargetFramework>TargetFramework=$(TargetFramework)</SetTargetFramework>
       <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
       <Name>CKAN-GUI</Name>
     </ProjectReference>
@@ -68,8 +87,11 @@
     </Content>
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
-  <Target Name="BeforeBuild">
-    <Exec Command="powershell ../build.ps1 Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
-    <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
+  <Target Name="MakeAssemblyInfo" BeforeTargets="BeforeBuild">
+    <Exec Command="powershell.exe -ExecutionPolicy Unrestricted -Command &quot;.\build.ps1 Generate-GlobalAssemblyVersionInfo&quot;"
+          WorkingDirectory=".."
+          Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
+    <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo"
+          Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
   </Target>
 </Project>

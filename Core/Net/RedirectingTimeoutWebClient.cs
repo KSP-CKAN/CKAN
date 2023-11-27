@@ -5,6 +5,9 @@ using System.Linq;
 
 using log4net;
 
+// This WebClient child class does some complicated stuff, let's keep using it for now
+#pragma warning disable SYSLIB0014
+
 namespace CKAN
 {
     /// <summary>

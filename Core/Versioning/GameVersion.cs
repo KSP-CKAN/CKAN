@@ -635,6 +635,12 @@ namespace CKAN.Versioning
         /// </summary>
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
+        #if NET5_0_OR_GREATER
+            => HashCode.Combine(_major.GetHashCode(),
+                                _minor.GetHashCode(),
+                                _patch.GetHashCode(),
+                                _build.GetHashCode());
+        #else
         {
             unchecked
             {
@@ -645,6 +651,7 @@ namespace CKAN.Versioning
                 return hashCode;
             }
         }
+        #endif
 
         /// <summary>
         /// Determines whether two specified <see cref="GameVersion"/> objects are equal.

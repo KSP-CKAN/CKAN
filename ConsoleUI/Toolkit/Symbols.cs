@@ -9,8 +9,16 @@ namespace CKAN.ConsoleUI.Toolkit {
     /// </summary>
     public static class Symbols {
 
+        private static Encoding GetCodePage(int which)
+        {
+            #if !NETFRAMEWORK
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            #endif
+            return Encoding.GetEncoding(which);
+        }
+
         // This needs to be first so it's set when the other properties are initialized
-        private static readonly Encoding dosCodePage = Encoding.GetEncoding(437);
+        private static readonly Encoding dosCodePage = GetCodePage(437);
 
         /// <summary>
         /// The "three horizontal lines" menu symbol in the latest web apps
@@ -137,8 +145,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public static readonly char leftHalfBlock = cp437c(0xdd);
 
-        private static char   cp437c(byte num) { return dosCodePage.GetChars(new byte[] {num})[0]; }
-        private static string cp437s(byte num) { return $"{cp437c(num)}";                          }
+        private static char   cp437c(byte num) => dosCodePage.GetChars(new byte[] {num})[0];
+        private static string cp437s(byte num) => $"{cp437c(num)}";
     }
 
 }

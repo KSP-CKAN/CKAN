@@ -49,7 +49,13 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             if (_pageUrl == null)
             {
-                _pageUrl = new Uri(Regex.Replace(CurseApi.ResolveRedirect(new Uri(GetProjectUrl())).ToString(), "\\?.*$", "")).ToString();
+                var url = new Uri(GetProjectUrl());
+                var resolved = Net.ResolveRedirect(url);
+                if (resolved == null)
+                {
+                    throw new Kraken($"Too many redirects resolving: {url}");
+                }
+                _pageUrl = new Uri(Regex.Replace(resolved.ToString(), "\\?.*$", "")).ToString();
             }
             return _pageUrl;
         }

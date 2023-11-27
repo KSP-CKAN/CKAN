@@ -3,6 +3,9 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Threading.Tasks;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using log4net;
 using Autofac;
@@ -12,6 +15,9 @@ using CKAN.Configuration;
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class SettingsDialog : Form
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(SettingsDialog));

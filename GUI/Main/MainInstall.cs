@@ -7,6 +7,9 @@ using System.Transactions;
 
 using CKAN.Extensions;
 using CKAN.GUI.Attributes;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
@@ -19,6 +22,9 @@ namespace CKAN.GUI
     /// Type expected by InstallMods in DoWorkEventArgs.Argument
     /// Not a `using` because it's used by other files
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public class InstallArgument : Tuple<List<ModChange>, RelationshipResolverOptions>
     {
         public InstallArgument(List<ModChange> changes, RelationshipResolverOptions options)

@@ -5,12 +5,17 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using log4net;
 
 namespace CKAN.GUI
 {
-
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public static class Util
     {
         /// <summary>

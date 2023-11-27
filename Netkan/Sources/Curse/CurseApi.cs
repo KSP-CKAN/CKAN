@@ -45,50 +45,6 @@ namespace CKAN.NetKAN.Sources.Curse
             return CurseMod.FromJson(json);
         }
 
-        public static Uri ResolveRedirect(Uri url)
-        {
-            Uri redirUrl = url;
-            int redirects = 0;
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(redirUrl);
-            request.AllowAutoRedirect = false;
-            request.UserAgent = Net.UserAgentString;
-
-            HttpWebResponse response;
-            try
-            {
-                response = (HttpWebResponse) request.GetResponse();
-            }
-            catch (WebException e)
-            {
-                if (e.Status == WebExceptionStatus.ProtocolError)
-                {
-                    response = e.Response as HttpWebResponse;
-                    if (response?.StatusCode == HttpStatusCode.Forbidden)
-                    {
-                        throw new Kraken("CKAN blocked by CurseForge");
-                    }
-                }
-                throw;
-            }
-            response.Close();
-            while (response.Headers["Location"] != null)
-            {
-                redirects++;
-                if (redirects > 6)
-                {
-                    throw new Kraken("More than 6 redirects when resolving the following url: " + url);
-                }
-
-                redirUrl = new Uri(redirUrl, response.Headers["Location"]);
-                request = (HttpWebRequest) WebRequest.Create(redirUrl);
-                request.AllowAutoRedirect = false;
-                request.UserAgent = Net.UserAgentString;
-                response = (HttpWebResponse) request.GetResponse();
-                response.Close();
-            }
-            return redirUrl;
-        }
-
         private string Call(string nameOrId)
         {
             // If it's numeric, use the old URL format,

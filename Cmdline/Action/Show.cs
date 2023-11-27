@@ -258,43 +258,43 @@ namespace CKAN.CmdLine
                 user.RaiseMessage(Properties.Resources.ShowResourcesHeader);
                 if (module.resources.homepage != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowHomePage, Uri.EscapeUriString(module.resources.homepage.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowHomePage, Uri.EscapeDataString(module.resources.homepage.ToString()));
                 }
                 if (module.resources.manual != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowManual, Uri.EscapeUriString(module.resources.manual.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowManual, Uri.EscapeDataString(module.resources.manual.ToString()));
                 }
                 if (module.resources.spacedock != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowSpaceDock, Uri.EscapeUriString(module.resources.spacedock.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowSpaceDock, Uri.EscapeDataString(module.resources.spacedock.ToString()));
                 }
                 if (module.resources.repository != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowRepository, Uri.EscapeUriString(module.resources.repository.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowRepository, Uri.EscapeDataString(module.resources.repository.ToString()));
                 }
                 if (module.resources.bugtracker != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowBugTracker, Uri.EscapeUriString(module.resources.bugtracker.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowBugTracker, Uri.EscapeDataString(module.resources.bugtracker.ToString()));
                 }
                 if (module.resources.curse != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowCurse, Uri.EscapeUriString(module.resources.curse.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowCurse, Uri.EscapeDataString(module.resources.curse.ToString()));
                 }
                 if (module.resources.store != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowStore, Uri.EscapeUriString(module.resources.store.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowStore, Uri.EscapeDataString(module.resources.store.ToString()));
                 }
                 if (module.resources.steamstore != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowSteamStore, Uri.EscapeUriString(module.resources.steamstore.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowSteamStore, Uri.EscapeDataString(module.resources.steamstore.ToString()));
                 }
                 if (module.resources.remoteAvc != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowVersionFile, Uri.EscapeUriString(module.resources.remoteAvc.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowVersionFile, Uri.EscapeDataString(module.resources.remoteAvc.ToString()));
                 }
                 if (module.resources.remoteSWInfo != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowSpaceWarpInfo, Uri.EscapeUriString(module.resources.remoteSWInfo.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowSpaceWarpInfo, Uri.EscapeDataString(module.resources.remoteSWInfo.ToString()));
                 }
             }
 

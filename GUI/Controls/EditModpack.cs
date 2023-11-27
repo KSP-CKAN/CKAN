@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using Autofac;
 
@@ -12,6 +15,9 @@ using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class EditModpack : UserControl
     {
         public EditModpack()

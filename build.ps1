@@ -17,7 +17,7 @@ if (($PSVersionTable.PSVersion -lt $minPSVer)) {
 }
 
 # Globals
-$NugetVersion       = "5.6.0"
+$NugetVersion       = "6.8.0"
 $UseExperimental    = $false
 $RootDir            = "${PSScriptRoot}"
 $ScriptFile         = "${RootDir}/build.cake"
@@ -56,5 +56,5 @@ if ($UseExperimental) {
 }
 
 # Run Cake
-dotnet cake "${ScriptFile}" ${cakeArgs} ${RemainingArgs}
+dotnet cake --verbosity Minimal "${ScriptFile}" ${cakeArgs} ${RemainingArgs}
 exit $LASTEXITCODE

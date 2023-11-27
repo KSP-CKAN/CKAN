@@ -1,9 +1,10 @@
 <Project>
   <PropertyGroup>
     <AssemblyName>CKAN-NetKAN</AssemblyName>
-    <OutputPath Condition=" '$(MSBuildRuntimeType)' != 'Core' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
-    <OutputPath Condition=" '$(MSBuildRuntimeType)' == 'Core' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
-    <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
+    <OutputPath Condition=" '$(Configuration)' != '' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(Configuration)' == '' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
+    <BaseIntermediateOutputPath Condition=" '$(Configuration)' != '' ">..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath Condition=" '$(Configuration)' == '' ">..\_build\out\$(AssemblyName)\VSCodeIDE\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
@@ -13,13 +14,12 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <Configurations>Debug;Release</Configurations>
+    <Configurations>Debug;Release;NoGUI</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>7.3</LangVersion>
-    <TargetFramework>net48</TargetFramework>
     <StartupObject>CKAN.NetKAN.Program</StartupObject>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworks>net48;net7.0</TargetFrameworks>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -36,7 +36,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="YamlDotNet" Version="9.1.0" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\CKAN-core.csproj">
+      <SetTargetFramework>TargetFramework=$(TargetFramework)</SetTargetFramework>
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN-core</Name>
     </ProjectReference>
@@ -60,8 +61,11 @@
     </Compile>
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
-  <Target Name="BeforeBuild">
-    <Exec Command="powershell ../build.ps1 Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
-    <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
+  <Target Name="MakeAssemblyInfo" BeforeTargets="BeforeBuild">
+    <Exec Command="powershell.exe -ExecutionPolicy Unrestricted -Command &quot;.\build.ps1 Generate-GlobalAssemblyVersionInfo&quot;"
+          WorkingDirectory=".."
+          Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
+    <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo"
+          Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
   </Target>
 </Project>

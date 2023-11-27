@@ -165,7 +165,7 @@ namespace CKAN.GUI
             this.ClientSize = new System.Drawing.Size(800, 300);
             this.MinimumSize = new System.Drawing.Size(675, 200);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.HelpButton = true;

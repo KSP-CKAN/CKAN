@@ -1,8 +1,15 @@
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
+
 namespace CKAN.GUI
 {
     /// <summary>
     /// The GUI implementation of the IUser interface.
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public class GUIUser : IUser
     {
         public GUIUser(Main main, Wait wait)

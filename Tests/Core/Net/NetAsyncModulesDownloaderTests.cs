@@ -143,8 +143,7 @@ namespace Tests.Core.Net
 
         [Test]
         [Category("Online")]
-        [Category("NetAsyncModulesDownloader")]
-        [Explicit]
+        [Category("FlakyNetwork")]
         public void SingleDownload()
         {
             log.Info("Performing single download test.");
@@ -173,8 +172,7 @@ namespace Tests.Core.Net
 
         [Test]
         [Category("Online")]
-        [Category("NetAsyncModulesDownloader")]
-        [Explicit]
+        [Category("FlakyNetwork")]
         public void MultiDownload()
         {
             var modules = new List<CkanModule>();
@@ -196,8 +194,7 @@ namespace Tests.Core.Net
 
         [Test]
         [Category("Online")]
-        [Category("NetAsyncModulesDownloader")]
-        [Explicit]
+        [Category("FlakyNetwork")]
         public void RandSdownload()
         {
             var modules = new List<CkanModule>();

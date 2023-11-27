@@ -1,14 +1,16 @@
 <Project>
   <PropertyGroup>
     <AssemblyName>CKAN-GUI</AssemblyName>
-    <OutputPath Condition=" '$(MSBuildRuntimeType)' != 'Core' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
-    <OutputPath Condition=" '$(MSBuildRuntimeType)' == 'Core' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
-    <BaseIntermediateOutputPath>..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
+    <OutputPath Condition=" '$(Configuration)' != '' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
+    <OutputPath Condition=" '$(Configuration)' == '' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
+    <BaseIntermediateOutputPath Condition=" '$(Configuration)' != '' ">..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath Condition=" '$(Configuration)' == '' ">..\_build\out\$(AssemblyName)\VSCodeIDE\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
     <ProjectGuid>{A79F9D54-315C-472B-928F-713A5860B2BE}</ProjectGuid>
     <OutputType>WinExe</OutputType>
+    <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
     <RootNamespace>CKAN.GUI</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -16,37 +18,35 @@
     <Configurations>Debug;Release</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>7.3</LangVersion>
-    <TargetFramework>net48</TargetFramework>
-    <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworks>net48;net7.0-windows</TargetFrameworks>
+    <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
+    <UseWindowsForms Condition=" '$(TargetFramework)' == 'net7.0-windows' ">true</UseWindowsForms>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>IDE1006</NoWarn>
-    <!-- dotnet build requires this and System.Resources.Extensions
-         to satisfy arbitrary validation checks that don't apply to us,
-         which helpfully break building with Mono.
-         https://github.com/dotnet/msbuild/issues/5787
-         https://stackoverflow.com/a/44966127/2422988 -->
-    <GenerateResourceUsePreserializedResources Condition="'$(MSBuildRuntimeType)'=='Core'">true</GenerateResourceUsePreserializedResources>
+    <CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="ini-parser" Version="3.4.0" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Resources.Extensions" Version="4.6.0"
-                      Condition="'$(MSBuildRuntimeType)'=='Core'" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="6.2.0" />
+    <PackageReference Include="TxFileManager.NETStandard" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\CKAN-core.csproj">
+      <SetTargetFramework>TargetFramework=$(BaseTargetFramework)</SetTargetFramework>
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN-core</Name>
     </ProjectReference>
@@ -74,15 +75,37 @@
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <ItemGroup>
+    <EmbeddedResource Include="..\assets\ckan.ico">
+      <LogicalName>CKAN.ckan.ico</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\*">
+      <LogicalName>CKAN.GUI.Resources.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Update="Controls\**\*.resx;Dialogs\**\*.resx;Main\**\*.resx">
       <DependentUpon>%(Filename).cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Localization\**\*.resx">
       <DependentUpon>$([System.IO.Directory]::GetFiles($(MSBuildProjectDirectory), '$([System.Text.RegularExpressions.Regex]::Replace(%(Filename), '\..*', '')).cs', System.IO.SearchOption.AllDirectories)[0])</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>MSBuild:Compile</Generator>
+      <LastGenOutput>$(IntermediateOutputPath)Resources.Designer.cs</LastGenOutput>
+      <StronglyTypedFileName>$(IntermediateOutputPath)Resources.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedLanguage>$(Language)</StronglyTypedLanguage>
+      <StronglyTypedNamespace>$(RootNamespace).Properties</StronglyTypedNamespace>
+      <StronglyTypedClassName>%(Filename)</StronglyTypedClassName>
+    </EmbeddedResource>
   </ItemGroup>
-  <Target Name="BeforeBuild">
-    <Exec Command="powershell ../build.ps1 Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
-    <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
+  <Target Name="UseOurResourceManager" AfterTargets="PrepareResources">
+    <WriteLinesToFile File="$(IntermediateOutputPath)Resources.Designer.cs"
+                      Lines="$([System.IO.File]::ReadAllText('$(IntermediateOutputPath)Resources.Designer.cs').Replace('new global::System.Resources.ResourceManager', 'new SingleAssemblyResourceManager').Replace('internal', 'public'))"
+                      Overwrite="true" />
+  </Target>
+  <Target Name="MakeAssemblyInfo" BeforeTargets="BeforeBuild">
+    <Exec Command="powershell.exe -ExecutionPolicy Unrestricted -Command &quot;.\build.ps1 Generate-GlobalAssemblyVersionInfo&quot;"
+          WorkingDirectory=".."
+          Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
+    <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo"
+          Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
   </Target>
 </Project>

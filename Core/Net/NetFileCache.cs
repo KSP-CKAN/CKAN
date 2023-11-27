@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading;
-using System.Security.Permissions;
 using System.Security.Cryptography;
+#if NETFRAMEWORK
+using System.Security.Permissions;
+#endif
 
 using log4net;
 using ChinhDo.Transactions.FileManager;
@@ -24,7 +26,10 @@ namespace CKAN
     /// </summary>
 
     // We require fancy permissions to use the FileSystemWatcher
+    // (No longer supported by .NET Core/Standard/5/6/7/etc.)
+    #if NETFRAMEWORK
     [PermissionSet(SecurityAction.Demand, Name="FullTrust")]
+    #endif
     public class NetFileCache : IDisposable
     {
         private readonly FileSystemWatcher watcher;
@@ -548,7 +553,7 @@ namespace CKAN
         /// </returns>
         public static string CreateURLHash(Uri url)
         {
-            using (SHA1 sha1 = new SHA1CryptoServiceProvider())
+            using (SHA1 sha1 = SHA1.Create())
             {
                 byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(url.ToString()));
 
@@ -565,7 +570,7 @@ namespace CKAN
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
         public string GetFileHashSha1(string filePath, IProgress<long> progress, CancellationToken cancelToken = default)
-            => GetFileHash<SHA1CryptoServiceProvider>(filePath, "sha1", sha1Cache, progress, cancelToken);
+            => GetFileHash(filePath, "sha1", sha1Cache, SHA1.Create, progress, cancelToken);
 
         /// <summary>
         /// Calculate the SHA256 hash of a file
@@ -576,7 +581,7 @@ namespace CKAN
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
         public string GetFileHashSha256(string filePath, IProgress<long> progress, CancellationToken cancelToken = default)
-            => GetFileHash<SHA256CryptoServiceProvider>(filePath, "sha256", sha256Cache, progress, cancelToken);
+            => GetFileHash(filePath, "sha256", sha256Cache, SHA256.Create, progress, cancelToken);
 
         /// <summary>
         /// Calculate the hash of a file
@@ -586,8 +591,12 @@ namespace CKAN
         /// <returns>
         /// Hash, in all-caps hexadecimal format
         /// </returns>
-        private string GetFileHash<T>(string filePath, string hashSuffix, Dictionary<string, string> cache, IProgress<long> progress, CancellationToken cancelToken)
-            where T: HashAlgorithm, new()
+        private string GetFileHash(string filePath,
+                                   string hashSuffix,
+                                   Dictionary<string, string> cache,
+                                   Func<HashAlgorithm> getHashAlgo,
+                                   IProgress<long> progress,
+                                   CancellationToken cancelToken)
         {
             string hashFile = $"{filePath}.{hashSuffix}";
             if (cache.TryGetValue(filePath, out string hash))
@@ -604,7 +613,7 @@ namespace CKAN
             {
                 using (FileStream     fs     = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 using (BufferedStream bs     = new BufferedStream(fs))
-                using (T              hasher = new T())
+                using (HashAlgorithm  hasher = getHashAlgo())
                 {
                     hash = BitConverter.ToString(hasher.ComputeHash(bs, progress, cancelToken)).Replace("-", "");
                     cache.Add(filePath, hash);

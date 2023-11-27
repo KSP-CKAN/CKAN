@@ -45,6 +45,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] VSCode clean-up and other minor fixes (#3920 by: HebaruSan)
 - [Build] Modernize build system and .NET platform targets (#3929 by: HebaruSan; reviewed: techman83)
 - [Spec] Add a note on policy on relationship metadata (#3930 by: JonnyOThan; reviewed: HebaruSan)
+- [Build] dotnet build with multi-targeting (#3932 by: HebaruSan; reviewed: techman83)
 
 ## v1.33.2 (Laplace)
 

@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using Autofac;
 
@@ -15,6 +18,9 @@ namespace CKAN.GUI
     /// The GUI implementation of clone and fake.
     /// It's a separate window, handling the whole process.
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class CloneGameInstanceDialog : Form
     {
         private readonly GameInstanceManager manager;

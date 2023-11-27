@@ -3,11 +3,17 @@ using System.Linq;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using CKAN.Extensions;
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class Changeset : UserControl
     {
         public Changeset()

@@ -224,7 +224,7 @@ namespace CKAN.GUI
             this.AcceptButton = this.buttonOK;
             this.CancelButton = this.buttonCancel;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.HelpButton = true;

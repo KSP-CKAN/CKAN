@@ -6,6 +6,9 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Transactions;
 using Timer = System.Timers.Timer;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using Newtonsoft.Json;
 using Autofac;
@@ -22,6 +25,9 @@ namespace CKAN.GUI
     using RepoArgument = Tuple<bool, bool>;
     using RepoResult   = Tuple<RepositoryDataManager.UpdateResult, Dictionary<string, bool>, bool>;
 
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class Main
     {
         public Timer refreshTimer;

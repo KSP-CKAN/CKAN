@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using log4net;
@@ -72,19 +73,19 @@ namespace CKAN.NetKAN.Processors
         private string getQueueUrl(string name)
         {
             log.DebugFormat("Looking up URL for queue {0}", name);
-            return client.GetQueueUrl(new GetQueueUrlRequest() { QueueName = name }).QueueUrl;
+            return client.GetQueueUrlAsync(new GetQueueUrlRequest() { QueueName = name }).Result.QueueUrl;
         }
 
         private void handleMessages(string url, int howMany, int timeoutMinutes)
         {
             log.DebugFormat("Looking for messages from {0}", url);
-            var resp = client.ReceiveMessage(new ReceiveMessageRequest()
+            var resp = client.ReceiveMessageAsync(new ReceiveMessageRequest()
             {
                 QueueUrl              = url,
                 MaxNumberOfMessages   = howMany,
                 VisibilityTimeout     = (int)TimeSpan.FromMinutes(timeoutMinutes).TotalSeconds,
                 MessageAttributeNames = new List<string>() { "All" },
-            });
+            }).Result;
             if (!resp.Messages.Any())
             {
                 log.Debug("No metadata in queue");
@@ -99,7 +100,7 @@ namespace CKAN.NetKAN.Processors
                     var responses = resp.Messages.SelectMany(Inflate).ToList();
                     for (int i = 0; i < responses.Count; i += howMany)
                     {
-                        client.SendMessageBatch(new SendMessageBatchRequest()
+                        client.SendMessageBatchAsync(new SendMessageBatchRequest()
                         {
                             QueueUrl = outputQueueURL,
                             Entries  = responses.GetRange(i, Math.Min(howMany, responses.Count - i)),
@@ -113,7 +114,7 @@ namespace CKAN.NetKAN.Processors
                 try
                 {
                     log.Debug("Deleting messages");
-                    client.DeleteMessageBatch(new DeleteMessageBatchRequest()
+                    client.DeleteMessageBatchAsync(new DeleteMessageBatchRequest()
                     {
                         QueueUrl = url,
                         Entries  = resp.Messages.Select(Delete).ToList(),

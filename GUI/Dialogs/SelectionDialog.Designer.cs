@@ -114,7 +114,7 @@ namespace CKAN.GUI
             this.ClientSize = new System.Drawing.Size(420, 420);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.Name = "SelectionDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             resources.ApplyResources(this, "$this");

@@ -6,6 +6,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading.Tasks;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using log4net;
 
@@ -13,6 +16,9 @@ using CKAN.Games;
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class UnmanagedFiles : UserControl
     {
         public UnmanagedFiles()

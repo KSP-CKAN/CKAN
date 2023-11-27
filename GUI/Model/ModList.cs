@@ -5,6 +5,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using log4net;
 
@@ -34,6 +37,9 @@ namespace CKAN.GUI
     /// The holder of the list of mods to be shown.
     /// Should be a pure data model and avoid UI stuff, but it's not there yet.
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public class ModList
     {
         //identifier, row

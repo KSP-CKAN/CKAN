@@ -328,21 +328,24 @@ namespace Tests.Core
         }
 
         [Test]
-        [Category("TODO")]
-        [Explicit]
         //Test how we handle corrupt data
         public void CorruptZip_242()
         {
             string corrupt_dogezip = TestData.DogeCoinFlagZipCorrupt();
 
-            using (var zipfile = new ZipFile(corrupt_dogezip))
+            var exc = Assert.Throws<ZipException>(() =>
             {
-                // GenerateDefault Install
-                ModuleInstallDescriptor.DefaultInstallStanza(new KerbalSpaceProgram(), "DogeCoinFlag");
+                using (var zipfile = new ZipFile(corrupt_dogezip))
+                {
+                    // GenerateDefault Install
+                    ModuleInstallDescriptor.DefaultInstallStanza(new KerbalSpaceProgram(), "DogeCoinFlag");
 
-                // FindInstallableFiles
-                ModuleInstaller.FindInstallableFiles(TestData.DogeCoinFlag_101_module(), corrupt_dogezip, ksp.KSP);
-            }
+                    // FindInstallableFiles
+                    ModuleInstaller.FindInstallableFiles(TestData.DogeCoinFlag_101_module(),
+                                                         corrupt_dogezip, ksp.KSP);
+                }
+            });
+            Assert.AreEqual("Cannot find central directory", exc.Message);
         }
 
         private string CopyDogeFromZip()

@@ -36,7 +36,12 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             if (string.IsNullOrWhiteSpace(_downloadUrl))
             {
-                _downloadUrl = CurseApi.ResolveRedirect(new Uri(url + "/file")).ToString();
+                var resolved = Net.ResolveRedirect(new Uri(url + "/file"));
+                if (resolved == null)
+                {
+                    throw new Kraken($"Too many redirects resolving: {url}/file");
+                }
+                _downloadUrl = resolved.ToString();
             }
             return _downloadUrl;
         }

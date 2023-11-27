@@ -45,8 +45,10 @@ namespace CKAN.CmdLine
 
     internal class Actions : VerbCommandOptions
     {
+        #if NETFRAMEWORK || WINDOWS
         [VerbOption("gui", HelpText = "Start the CKAN GUI")]
         public GuiOptions GuiOptions { get; set; }
+        #endif
 
         [VerbOption("consoleui", HelpText = "Start the CKAN console UI")]
         public ConsoleUIOptions ConsoleUIOptions { get; set; }
@@ -484,11 +486,13 @@ namespace CKAN.CmdLine
         public bool detail { get; set; }
     }
 
+    #if NETFRAMEWORK || WINDOWS
     internal class GuiOptions : InstanceSpecificOptions
     {
         [Option("show-console", HelpText = "Shows the console while running the GUI")]
         public bool ShowConsole { get; set; }
     }
+    #endif
 
     internal class ConsoleUIOptions : InstanceSpecificOptions
     {

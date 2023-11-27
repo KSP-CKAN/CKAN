@@ -220,7 +220,7 @@ namespace CKAN.GUI
             this.MinimizeBox = false;
             this.MaximizeBox = false;
             this.HelpButton = true;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.MinimumSize = new System.Drawing.Size(560, 200);
             this.Name = "ManageGameInstancesDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

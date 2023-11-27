@@ -333,7 +333,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.EditDetailsPanel);
             this.Controls.Add(this.CloseButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.HelpButton = true;

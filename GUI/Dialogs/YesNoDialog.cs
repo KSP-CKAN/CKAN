@@ -2,9 +2,15 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class YesNoDialog : Form
     {
         public YesNoDialog()

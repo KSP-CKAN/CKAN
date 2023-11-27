@@ -172,7 +172,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.Name = "PluginsDialog";
             this.Load += new System.EventHandler(this.PluginsDialog_Load);
             resources.ApplyResources(this, "$this");

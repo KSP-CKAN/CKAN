@@ -5,7 +5,9 @@ using System.Threading;
 using NUnit.Framework;
 
 using CKAN;
+#if NETFRAMEWORK
 using CKAN.Extensions;
+#endif
 
 namespace Tests.Core.Repositories
 {

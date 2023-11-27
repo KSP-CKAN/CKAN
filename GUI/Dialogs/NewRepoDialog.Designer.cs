@@ -166,7 +166,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.RepositoryGroupBox);
             this.Controls.Add(this.BottomPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-            this.Icon = Properties.Resources.AppIcon;
+            this.Icon = EmbeddedImages.AppIcon;
             this.Name = "NewRepoDialog";
             this.Load += new System.EventHandler(this.NewRepoDialog_Load);
             resources.ApplyResources(this, "$this");
