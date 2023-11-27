@@ -186,7 +186,7 @@ namespace CKAN.NetKAN.Transformers
         {
             if (!string.IsNullOrEmpty(rawURL))
             {
-                string normalized = Normalize(rawURL);
+                string normalized = Net.NormalizeUri(rawURL);
                 if (!string.IsNullOrEmpty(normalized))
                 {
                     resources.SafeAdd(key, normalized);
@@ -195,46 +195,6 @@ namespace CKAN.NetKAN.Transformers
                 {
                     Log.WarnFormat("Could not normalize URL from {0}: {1}", identifier, rawURL);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Provide an escaped version of the given Uri string, including converting
-        /// square brackets to their escaped forms.
-        /// </summary>
-        /// <returns>
-        /// <c>null</c> if the string is not a valid <see cref="Uri"/>, otherwise its normlized form.
-        /// </returns>
-        private static string Normalize(string uri)
-        {
-            Log.DebugFormat("Escaping {0}", uri);
-
-            var escaped = Uri.EscapeDataString(uri);
-
-            // Square brackets are "reserved characters" that should not appear
-            // in strings to begin with, so C# doesn't try to escape them in case
-            // they're being used in a special way. They're not; some mod authors
-            // just have crazy ideas as to what should be in a URL, and SD doesn't
-            // escape them in its API. There's probably more in RFC 3986.
-
-            escaped = escaped.Replace("[", Uri.HexEscape('['));
-            escaped = escaped.Replace("]", Uri.HexEscape(']'));
-
-            // Make sure we have a "http://" or "https://" start.
-            if (!Regex.IsMatch(escaped, "(?i)^(http|https)://"))
-            {
-                // Prepend "http://", as we do not know if the site supports https.
-                escaped = "http://" + escaped;
-            }
-
-            if (Uri.IsWellFormedUriString(escaped, UriKind.Absolute))
-            {
-                Log.DebugFormat("Escaped to {0}", escaped);
-                return escaped;
-            }
-            else
-            {
-                return null;
             }
         }
 

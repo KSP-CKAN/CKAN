@@ -260,7 +260,7 @@ namespace CKAN
             {
                 var req = new HttpRequestMessage(HttpMethod.Head, url);
                 req.Headers.UserAgent.Clear();
-                req.Headers.UserAgent.Add(new ProductInfoHeaderValue(UserAgentString));
+                req.Headers.UserAgent.ParseAdd(UserAgentString);
                 var response = nonRedirectingHttpClient.SendAsync(
                     req, HttpCompletionOption.ResponseHeadersRead).Result;
                 if (response.Headers.Location == null)
@@ -285,6 +285,52 @@ namespace CKAN
             }
             return null;
         }
+
+        /// <summary>
+        /// Provide an escaped version of the given Uri string, including converting
+        /// square brackets to their escaped forms.
+        /// </summary>
+        /// <returns>
+        /// <c>null</c> if the string is not a valid <see cref="Uri"/>, otherwise its normalized form.
+        /// </returns>
+        public static string NormalizeUri(string uri)
+        {
+            // Uri.EscapeUriString has been deprecated because its purpose was ambiguous.
+            // Is it supposed to turn a "&" into part of the content of a form field,
+            // or is it supposed to assume that it separates different form fields?
+            // https://github.com/dotnet/runtime/issues/31387
+            // So now we have to just substitude certain characters ourselves one by one.
+
+            // Square brackets are "reserved characters" that should not appear
+            // in strings to begin with, so C# doesn't try to escape them in case
+            // they're being used in a special way. They're not; some mod authors
+            // just have crazy ideas as to what should be in a URL, and SD doesn't
+            // escape them in its API. There's probably more in RFC 3986.
+            var escaped = UriEscapeAll(uri.Replace(" ", "+"),
+                                       '"', '<', '>', '^', '`',
+                                       '{', '|', '}', '[', ']');
+
+            // Make sure we have a "http://" or "https://" start.
+            if (!Regex.IsMatch(escaped, "(?i)^(http|https)://"))
+            {
+                // Prepend "http://", as we do not know if the site supports https.
+                escaped = "http://" + escaped;
+            }
+
+            if (Uri.IsWellFormedUriString(escaped, UriKind.Absolute))
+            {
+                return escaped;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private static string UriEscapeAll(string orig, params char[] characters)
+            => characters.Aggregate(orig,
+                                    (s, c) => s.Replace(c.ToString(),
+                                                        Uri.HexEscape(c)));
 
         /// <summary>
         /// Translate a URL into a form that returns the raw contents of a file

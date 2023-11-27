@@ -258,43 +258,53 @@ namespace CKAN.CmdLine
                 user.RaiseMessage(Properties.Resources.ShowResourcesHeader);
                 if (module.resources.homepage != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowHomePage, Uri.EscapeDataString(module.resources.homepage.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowHomePage,
+                                      Net.NormalizeUri(module.resources.homepage.ToString()));
                 }
                 if (module.resources.manual != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowManual, Uri.EscapeDataString(module.resources.manual.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowManual,
+                                      Net.NormalizeUri(module.resources.manual.ToString()));
                 }
                 if (module.resources.spacedock != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowSpaceDock, Uri.EscapeDataString(module.resources.spacedock.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowSpaceDock,
+                                      Net.NormalizeUri(module.resources.spacedock.ToString()));
                 }
                 if (module.resources.repository != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowRepository, Uri.EscapeDataString(module.resources.repository.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowRepository,
+                                      Net.NormalizeUri(module.resources.repository.ToString()));
                 }
                 if (module.resources.bugtracker != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowBugTracker, Uri.EscapeDataString(module.resources.bugtracker.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowBugTracker,
+                                      Net.NormalizeUri(module.resources.bugtracker.ToString()));
                 }
                 if (module.resources.curse != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowCurse, Uri.EscapeDataString(module.resources.curse.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowCurse,
+                                      Net.NormalizeUri(module.resources.curse.ToString()));
                 }
                 if (module.resources.store != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowStore, Uri.EscapeDataString(module.resources.store.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowStore,
+                                      Net.NormalizeUri(module.resources.store.ToString()));
                 }
                 if (module.resources.steamstore != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowSteamStore, Uri.EscapeDataString(module.resources.steamstore.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowSteamStore,
+                                      Net.NormalizeUri(module.resources.steamstore.ToString()));
                 }
                 if (module.resources.remoteAvc != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowVersionFile, Uri.EscapeDataString(module.resources.remoteAvc.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowVersionFile,
+                                      Net.NormalizeUri(module.resources.remoteAvc.ToString()));
                 }
                 if (module.resources.remoteSWInfo != null)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowSpaceWarpInfo, Uri.EscapeDataString(module.resources.remoteSWInfo.ToString()));
+                    user.RaiseMessage(Properties.Resources.ShowSpaceWarpInfo,
+                                      Net.NormalizeUri(module.resources.remoteSWInfo.ToString()));
                 }
             }
 

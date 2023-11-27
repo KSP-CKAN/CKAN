@@ -38,7 +38,7 @@ namespace CKAN.NetKAN.Sources.Curse
             }
             // Check if the mod has been removed from Curse and if it corresponds to a KSP mod.
             var error = JsonConvert.DeserializeObject<CurseError>(json);
-            if (!string.IsNullOrWhiteSpace(error.error))
+            if (!string.IsNullOrWhiteSpace(error?.error))
             {
                 throw new Kraken($"Could not get the mod from Curse, reason: {error.message}.");
             }

@@ -91,9 +91,12 @@ namespace CKAN.NetKAN.Sources.Curse
         public static CurseMod FromJson(string json)
         {
             CurseMod mod = JsonConvert.DeserializeObject<CurseMod>(json);
-            foreach (CurseFile file in mod.files)
+            if (mod != null)
             {
-                file.ModPageUrl = mod.GetPageUrl();
+                foreach (CurseFile file in mod.files)
+                {
+                    file.ModPageUrl = mod.GetPageUrl();
+                }
             }
             return mod;
         }
