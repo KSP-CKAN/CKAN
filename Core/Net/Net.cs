@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -258,30 +257,61 @@ namespace CKAN
             const int maxRedirects = 6;
             for (int redirects = 0; redirects <= maxRedirects; ++redirects)
             {
-                var req = new HttpRequestMessage(HttpMethod.Head, url);
-                req.Headers.UserAgent.Clear();
-                req.Headers.UserAgent.ParseAdd(UserAgentString);
-                var response = nonRedirectingHttpClient.SendAsync(
-                    req, HttpCompletionOption.ResponseHeadersRead).Result;
-                if (response.Headers.Location == null)
+                #if NETFRAMEWORK
+
+                // HttpClient doesn't handle redirects well on Mono, but net7.0 considers WebClient obsolete
+
+                var rwClient = new RedirectWebClient();
+                using (rwClient.OpenRead(url)) { }
+                var location = rwClient.ResponseHeaders["Location"];
+                if (location == null)
                 {
                     return url;
                 }
-
-                var location = response.Headers.Location.ToString();
-                if (Uri.IsWellFormedUriString(location, UriKind.Absolute))
+                else if (Uri.IsWellFormedUriString(location, UriKind.Absolute))
                 {
-                    url = response.Headers.Location;
+                    url = new Uri(location);
                 }
                 else if (Uri.IsWellFormedUriString(location, UriKind.Relative))
                 {
-                    url = new Uri(url, response.Headers.Location);
+                    url = new Uri(url, location);
                     log.DebugFormat("Relative URL {0} is absolute URL {1}", location, url);
                 }
                 else
                 {
                     throw new Kraken(string.Format(Properties.Resources.NetInvalidLocation, location));
                 }
+
+                #else
+
+                var req = new HttpRequestMessage(HttpMethod.Head, url);
+                req.Headers.UserAgent.Clear();
+                req.Headers.UserAgent.ParseAdd(UserAgentString);
+                using (var response = nonRedirectingHttpClient.SendAsync(
+                                          req, HttpCompletionOption.ResponseHeadersRead).Result)
+                {
+                    if (response.Headers.Location == null)
+                    {
+                        return url;
+                    }
+
+                    var location = response.Headers.Location.ToString();
+                    if (Uri.IsWellFormedUriString(location, UriKind.Absolute))
+                    {
+                        url = response.Headers.Location;
+                    }
+                    else if (Uri.IsWellFormedUriString(location, UriKind.Relative))
+                    {
+                        url = new Uri(url, response.Headers.Location);
+                        log.DebugFormat("Relative URL {0} is absolute URL {1}", location, url);
+                    }
+                    else
+                    {
+                        throw new Kraken(string.Format(Properties.Resources.NetInvalidLocation, location));
+                    }
+                }
+
+                #endif
             }
             return null;
         }
