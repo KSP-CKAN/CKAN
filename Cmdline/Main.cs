@@ -7,7 +7,6 @@ using System;
 using System.Net;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -368,14 +367,5 @@ namespace CKAN.CmdLine
     public class NoGameInstanceKraken : Kraken
     {
         public NoGameInstanceKraken() { }
-    }
-
-    public class CmdLineUtil
-    {
-        public static uint GetUID()
-            => Platform.IsUnix || Platform.IsMac ? getuid() : 1;
-
-        [DllImport("libc")]
-        private static extern uint getuid();
     }
 }
