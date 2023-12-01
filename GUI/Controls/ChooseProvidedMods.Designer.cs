@@ -45,6 +45,7 @@ namespace CKAN.GUI
             this.ChooseProvidedModsLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.ChooseProvidedModsLabel.Location = new System.Drawing.Point(9, 18);
             this.ChooseProvidedModsLabel.Margin = new System.Windows.Forms.Padding(5,5,5,5);
+            this.ChooseProvidedModsLabel.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
             this.ChooseProvidedModsLabel.Name = "ChooseProvidedModsLabel";
             this.ChooseProvidedModsLabel.Size = new System.Drawing.Size(490, 40);
             this.ChooseProvidedModsLabel.TabIndex = 0;

@@ -27,6 +27,8 @@ namespace CKAN.GUI
             Util.Invoke(this, () =>
             {
                 ChooseProvidedModsLabel.Text = message;
+                ChooseProvidedModsLabel.Height =
+                    Util.LabelStringHeight(CreateGraphics(), ChooseProvidedModsLabel);
 
                 ChooseProvidedModsListView.Items.Clear();
                 ChooseProvidedModsListView.Items.AddRange(modules
@@ -43,6 +45,12 @@ namespace CKAN.GUI
                 ChooseProvidedModsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 ChooseProvidedModsContinueButton.Enabled = false;
             });
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            ChooseProvidedModsLabel.Height = Util.LabelStringHeight(CreateGraphics(), ChooseProvidedModsLabel);
         }
 
         [ForbidGUICalls]
