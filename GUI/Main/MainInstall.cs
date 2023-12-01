@@ -271,6 +271,7 @@ namespace CKAN.GUI
                     {
                         // Prompt user to choose which mod to use
                         tabController.ShowTab("ChooseProvidedModsTabPage", 3);
+                        Util.Invoke(this, () => StatusProgress.Visible = false);
                         ChooseProvidedMods.LoadProviders(k.Message, k.modules, Manager.Cache);
                         tabController.SetTabLock(true);
                         CkanModule chosen = ChooseProvidedMods.Wait();
@@ -283,6 +284,7 @@ namespace CKAN.GUI
                             toInstall.Add(chosen);
                             // DON'T return so we can loop around and try the above InstallList call again
                             tabController.ShowTab("WaitTabPage");
+                            Util.Invoke(this, () => StatusProgress.Visible = true);
                         }
                         else
                         {
