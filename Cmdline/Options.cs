@@ -1,9 +1,6 @@
 using System;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 using log4net;
 using log4net.Core;
@@ -219,23 +216,21 @@ namespace CKAN.CmdLine
         [Option("headless", DefaultValue = false, HelpText = "Set to disable all prompts")]
         public bool Headless { get; set; }
 
-        [Option("asroot", DefaultValue = false, HelpText = "Allows CKAN to run as root on Linux-based systems")]
+        [Option("asroot", DefaultValue = false, HelpText = "Allow CKAN to run as administrator")]
         public bool AsRoot { get; set; }
 
         [HelpVerbOption]
         public string GetUsage(string verb)
-        {
-            return HelpText.AutoBuild(this, verb);
-        }
+            => HelpText.AutoBuild(this, verb);
 
         public virtual int Handle(GameInstanceManager manager, IUser user)
         {
-            CheckMonoVersion(user, 3, 1, 0);
+            CheckMonoVersion(user);
 
             // Processes in Docker containers normally run as root.
             // If we are running in a Docker container, do not require --asroot.
             // Docker creates a .dockerenv file in the root of each container.
-            if ((Platform.IsUnix || Platform.IsMac) && CmdLineUtil.GetUID() == 0 && !File.Exists("/.dockerenv"))
+            if (Platform.IsAdministrator())
             {
                 if (!AsRoot)
                 {
@@ -286,40 +281,14 @@ namespace CKAN.CmdLine
             }
         }
 
-        private static void CheckMonoVersion(IUser user, int rec_major, int rec_minor, int rec_patch)
+        private static void CheckMonoVersion(IUser user)
         {
-            try
+            if (Platform.MonoVersion != null
+                && Platform.MonoVersion < Platform.RecommendedMonoVersion)
             {
-                Type type = Type.GetType("Mono.Runtime");
-                if (type == null)
-                {
-                    return;
-                }
-
-                MethodInfo display_name = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
-                if (display_name != null)
-                {
-                    var version_string = (string) display_name.Invoke(null, null);
-                    var match = Regex.Match(version_string, @"^\D*(?<major>[\d]+)\.(?<minor>\d+)\.(?<revision>\d+).*$");
-
-                    if (match.Success)
-                    {
-                        int major = int.Parse(match.Groups["major"].Value);
-                        int minor = int.Parse(match.Groups["minor"].Value);
-                        int patch = int.Parse(match.Groups["revision"].Value);
-
-                        if (major < rec_major || (major == rec_major && minor < rec_minor))
-                        {
-                            user.RaiseMessage(Properties.Resources.OptionsMonoWarning,
-                                string.Join(".", major, minor, patch),
-                                string.Join(".", rec_major, rec_minor, rec_patch));
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // Ignored. This may be fragile and is just a warning method
+                user.RaiseMessage(Properties.Resources.OptionsMonoWarning,
+                                  Platform.MonoVersion.ToString(),
+                                  Platform.RecommendedMonoVersion.ToString());
             }
         }
 

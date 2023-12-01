@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Shorten toolbar button labels (#3903 by: HebaruSan; reviewed: techman83)
 - [Multiple] Refactor repository and available module handling (#3904, #3907, #3908 by: HebaruSan; reviewed: techman83)
 - [Multiple] Parallelize for performance, relationship resolver improvements (#3917 by: HebaruSan; reviewed: techman83)
+- [Multiple] Modernize administrator and Mono version checks (#3933 by: HebaruSan; reviewed: techman83)
 
 ### Bugfixes
 

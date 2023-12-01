@@ -1,10 +1,14 @@
 using System;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 #if NET6_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
 using System.Text.RegularExpressions;
+using System.Security.Principal;
+
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -17,12 +21,6 @@ namespace CKAN
     /// </summary>
     public static class Platform
     {
-        static Platform()
-        {
-            // This call throws if we try to do it as a static initializer.
-            IsMonoFourOrLater = IsOnMonoFourOrLater();
-        }
-
         /// <summary>
         /// Are we on a Mac?
         /// </summary>
@@ -57,38 +55,52 @@ namespace CKAN
         public static readonly bool IsMono = Type.GetType("Mono.Runtime") != null;
 
         /// <summary>
-        /// Are we running on a Mono with major version 4 or later?
-        /// </summary>
-        public static readonly bool IsMonoFourOrLater;
-
-        /// <summary>
         /// Are we running in an X11 environment?
         /// </summary>
         public static readonly bool IsX11 =
             IsUnix
             && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DISPLAY"));
 
-        private static bool IsOnMonoFourOrLater()
+        public static bool IsAdministrator()
         {
-            if (!IsMono)
+            if (File.Exists("/.dockerenv"))
             {
+                // Treat as non-admin in a docker container, regardless of platform
                 return false;
             }
-
-            // Get Mono's display name and parse the version
-            string display_name =
-                (string)Type.GetType("Mono.Runtime")
-                            .GetMethod("GetDisplayName",
-                                       BindingFlags.NonPublic | BindingFlags.Static)
-                            .Invoke(null, null);
-
-            var match = versionMatcher.Match(display_name);
-            return match.Success
-                   && int.Parse(match.Groups["majorVersion"].Value) >= 4;
+            if (IsWindows)
+            {
+                // On Windows, check if we have administrator or system roles
+                using (var identity = WindowsIdentity.GetCurrent())
+                {
+                    var principal = new WindowsPrincipal(identity);
+                    return principal.IsInRole(WindowsBuiltInRole.Administrator)
+                        || principal.IsInRole(WindowsBuiltInRole.SystemOperator);
+                }
+            }
+            // Otherwise Unix-like; are we root?
+            return getuid() == 0;
         }
 
+        [DllImport("libc")]
+        private static extern uint getuid();
+
         private static readonly Regex versionMatcher =
-            new Regex("^\\s*(?<majorVersion>\\d+)\\.\\d+\\.\\d+\\s*\\(",
+            new Regex("^\\s*(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\s*\\(",
                       RegexOptions.Compiled);
+
+        public static readonly Version MonoVersion
+            = versionMatcher.TryMatch((string)Type.GetType("Mono.Runtime")
+                                                  ?.GetMethod("GetDisplayName",
+                                                              BindingFlags.NonPublic
+                                                              | BindingFlags.Static)
+                                                  ?.Invoke(null, null),
+                                      out Match match)
+                ? new Version(int.Parse(match.Groups["major"].Value),
+                              int.Parse(match.Groups["minor"].Value),
+                              int.Parse(match.Groups["patch"].Value))
+                : null;
+
+        public static readonly Version RecommendedMonoVersion = new Version(5, 0, 0);
     }
 }
