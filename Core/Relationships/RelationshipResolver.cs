@@ -326,14 +326,13 @@ namespace CKAN
                     // Oh no, too many to pick from!
                     if (options.without_toomanyprovides_kraken)
                     {
-                        if (options.get_recommenders)
+                        if (options.get_recommenders && !(reason is SelectionReason.Depends))
                         {
                             for (int i = 0; i < candidates.Count; ++i)
                             {
-                                var cand = candidates[i];
-                                Add(cand, reason is SelectionReason.Recommended rec
-                                              ? rec.WithIndex(i)
-                                              : reason);
+                                Add(candidates[i], reason is SelectionReason.Recommended rec
+                                                       ? rec.WithIndex(i)
+                                                       : reason);
                             }
                         }
                         continue;
@@ -348,15 +347,17 @@ namespace CKAN
                             .ToList();
                         if (provide.Count != 1)
                         {
-                            //We still have either nothing, or too many to pick from
-                            //Just throw the TMP now
-                            throw new TooManyModsProvideKraken(descriptor.ToString(), candidates, descriptor.choice_help_text);
+                            // We still have either nothing, or too many to pick from
+                            // Just throw the TMP now
+                            throw new TooManyModsProvideKraken(reason.Parent, descriptor.ToString(),
+                                                               candidates, descriptor.choice_help_text);
                         }
                         candidates[0] = provide.First();
                     }
                     else
                     {
-                        throw new TooManyModsProvideKraken(descriptor.ToString(), candidates, descriptor.choice_help_text);
+                        throw new TooManyModsProvideKraken(reason.Parent, descriptor.ToString(),
+                                                           candidates, descriptor.choice_help_text);
                     }
                 }
 

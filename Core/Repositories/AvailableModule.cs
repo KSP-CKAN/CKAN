@@ -137,7 +137,7 @@ namespace CKAN
                     // If 'others' matches an identifier, it must also match the versions, else fail
                     if (rel.ContainsAny(others.Select(m => m.identifier)) && !rel.MatchesAny(others, null, null))
                     {
-                        log.DebugFormat("Unsatisfied dependency {0}, rejecting", rel);
+                        log.DebugFormat("Unsatisfied dependency {0}, rejecting {1}", rel, module);
                         return false;
                     }
                 }
@@ -151,7 +151,7 @@ namespace CKAN
                     // If any of the conflicts are present, fail
                     if (rel.MatchesAny(othersMinusSelf, null, null, out CkanModule matched))
                     {
-                        log.DebugFormat("Found conflict with {0}, rejecting", matched);
+                        log.DebugFormat("Found conflict with {0}, rejecting {1}", matched, module);
                         return false;
                     }
                 }
@@ -166,7 +166,7 @@ namespace CKAN
                     {
                         if (rel.MatchesAny(selfArray, null, null))
                         {
-                            log.DebugFormat("Found reverse conflict with {0}, rejecting", other);
+                            log.DebugFormat("Found reverse conflict with {0}, rejecting {1}", other, module);
                             return false;
                         }
                     }

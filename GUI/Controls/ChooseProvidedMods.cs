@@ -27,22 +27,31 @@ namespace CKAN.GUI
             Util.Invoke(this, () =>
             {
                 ChooseProvidedModsLabel.Text = message;
+                ChooseProvidedModsLabel.Height =
+                    Util.LabelStringHeight(CreateGraphics(), ChooseProvidedModsLabel);
 
                 ChooseProvidedModsListView.Items.Clear();
                 ChooseProvidedModsListView.Items.AddRange(modules
-                    .Select(module => new ListViewItem(new string[]
+                    .Select((module, index) => new ListViewItem(new string[]
                     {
                         cache.DescribeAvailability(module),
                         module.@abstract
                     })
                     {
                         Tag     = module,
-                        Checked = false
+                        Checked = index == 0,
                     })
                     .ToArray());
                 ChooseProvidedModsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                ChooseProvidedModsContinueButton.Enabled = false;
+                ChooseProvidedModsContinueButton.Enabled =
+                    (ChooseProvidedModsListView.CheckedItems.Count > 0);
             });
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            ChooseProvidedModsLabel.Height = Util.LabelStringHeight(CreateGraphics(), ChooseProvidedModsLabel);
         }
 
         [ForbidGUICalls]

@@ -259,7 +259,9 @@ Please remove manually before trying to install it.</value></data>
   <data name="KrakenDependencyModuleNotFound" xml:space="preserve"><value>Module not found: {0} {1}</value></data>
   <data name="KrakenParentDependencyNotSatisfied" xml:space="preserve"><value>{0} dependency on {1} version {2} not satisfied</value></data>
   <data name="KrakenAny" xml:space="preserve"><value>(any)</value></data>
-  <data name="KrakenProvidedByMoreThanOne" xml:space="preserve"><value>Module {0} is provided by more than one available module. Please choose one of the following:</value></data>
+  <data name="KrakenProvidedByMoreThanOne" xml:space="preserve"><value>{1} requires {0}, which can be provided by multiple mods.
+
+Which {0} provider would you like to install?</value></data>
   <data name="KrakenInconsistenciesHeader" xml:space="preserve"><value>Inconsistencies were found:</value></data>
   <data name="KrakenMissingDependency" xml:space="preserve"><value>{0} missing dependency {1}</value></data>
   <data name="KrakenConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>
