@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Transactions;
 
+using Autofac;
+
 using CKAN.Extensions;
 using CKAN.GUI.Attributes;
 #if NET5_0_OR_GREATER
@@ -272,7 +274,16 @@ namespace CKAN.GUI
                         // Prompt user to choose which mod to use
                         tabController.ShowTab("ChooseProvidedModsTabPage", 3);
                         Util.Invoke(this, () => StatusProgress.Visible = false);
-                        ChooseProvidedMods.LoadProviders(k.Message, k.modules, Manager.Cache);
+                        var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
+                        ChooseProvidedMods.LoadProviders(
+                            k.Message,
+                            k.modules.OrderByDescending(m => repoData.GetDownloadCount(registry.Repositories.Values,
+                                                                                       m.identifier)
+                                                             ?? 0)
+                                     .ThenByDescending(m => m.identifier == k.requested)
+                                     .ThenBy(m => m.name)
+                                     .ToList(),
+                            Manager.Cache);
                         tabController.SetTabLock(true);
                         CkanModule chosen = ChooseProvidedMods.Wait();
                         // Close the selection prompt
