@@ -326,14 +326,13 @@ namespace CKAN
                     // Oh no, too many to pick from!
                     if (options.without_toomanyprovides_kraken)
                     {
-                        if (options.get_recommenders)
+                        if (options.get_recommenders && !(reason is SelectionReason.Depends))
                         {
                             for (int i = 0; i < candidates.Count; ++i)
                             {
-                                var cand = candidates[i];
-                                Add(cand, reason is SelectionReason.Recommended rec
-                                              ? rec.WithIndex(i)
-                                              : reason);
+                                Add(candidates[i], reason is SelectionReason.Recommended rec
+                                                       ? rec.WithIndex(i)
+                                                       : reason);
                             }
                         }
                         continue;
