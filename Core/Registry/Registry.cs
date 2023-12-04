@@ -964,10 +964,8 @@ namespace CKAN
                     installed_modules.Remove(identifier);
                 }
 
-                foreach (var kvp in dlcs)
+                foreach ((string identifier, ModuleVersion version) in dlcs)
                 {
-                    var identifier = kvp.Key;
-                    var version    = kvp.Value;
                     // Overwrite everything in case there are version differences
                     installed_modules[identifier] =
                         new InstalledModule(null,
@@ -980,7 +978,7 @@ namespace CKAN
                                     null,
                                     new List<string>() { "SQUAD" },
                                     new List<License>() { new License("restricted") },
-                                    version,
+                                    version ?? new UnmanagedModuleVersion(null),
                                     null,
                                     "dlc"),
                             Enumerable.Empty<string>(), false);

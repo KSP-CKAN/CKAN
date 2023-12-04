@@ -875,12 +875,7 @@ namespace CKAN
         public class Installed : SelectionReason
         {
             public override CkanModule Parent
-            {
-                get
-                {
-                    throw new Exception("Should never be called on Installed");
-                }
-            }
+                => throw new Exception("Should never be called on Installed");
 
             public override string ToString()
                 => Properties.Resources.RelationshipResolverInstalledReason;
@@ -889,12 +884,7 @@ namespace CKAN
         public class UserRequested : SelectionReason
         {
             public override CkanModule Parent
-            {
-                get
-                {
-                    throw new Exception("Should never be called on UserRequested");
-                }
-            }
+                => throw new Exception("Should never be called on UserRequested");
 
             public override string ToString()
                 => Properties.Resources.RelationshipResolverUserReason;
