@@ -184,6 +184,19 @@ namespace Tests.Core.Registry
         }
 
         [Test]
+        public void SetDLCs_NullVersion_DoesNotThrow()
+        {
+            var registry = CKAN.Registry.Empty();
+            Assert.DoesNotThrow(() =>
+            {
+                registry.SetDlcs(new Dictionary<string, ModuleVersion>
+                {
+                    { "MissingVersion", null },
+                });
+            }, "Missing readme.txt in a DLC shouldn't trigger an exception");
+        }
+
+        [Test]
         public void CompatibleModules_PastAndFutureCompatibility_ReturnsCurrentOnly()
         {
             // Arrange

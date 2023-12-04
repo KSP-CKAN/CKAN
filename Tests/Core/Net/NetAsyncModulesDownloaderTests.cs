@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using log4net;
 using NUnit.Framework;
 
 using Tests.Data;
@@ -17,15 +16,12 @@ namespace Tests.Core.Net
     [TestFixture]
     public class NetAsyncModulesDownloaderTests
     {
-        private GameInstanceManager manager;
-        private RegistryManager registry_manager;
-        private CKAN.Registry            registry;
-        private DisposableKSP            ksp;
-        private IDownloader async;
-        private NetModuleCache           cache;
-        private TemporaryRepositoryData  repoData;
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncModulesDownloaderTests));
+        private GameInstanceManager     manager;
+        private RegistryManager         registry_manager;
+        private CKAN.Registry           registry;
+        private DisposableKSP           ksp;
+        private NetModuleCache          cache;
+        private TemporaryRepositoryData repoData;
 
         [SetUp]
         public void Setup()
@@ -50,9 +46,6 @@ namespace Tests.Core.Net
             registry.Installed().Clear();
             // Make sure we have a registry we can use.
             registry.RepositoriesSet(repos);
-
-            // Ready our downloader.
-            async = new NetAsyncModulesDownloader(user, manager.Cache);
 
             // General shortcuts
             cache = manager.Cache;
