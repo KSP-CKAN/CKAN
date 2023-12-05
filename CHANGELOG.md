@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Show recommendations of full changeset with opt-out (#3892 by: HebaruSan; reviewed: techman83)
 - [Multiple] Dutch translation and icon duplication guardrails (#3897 by: HebaruSan; reviewed: techman83)
 - [GUI] Shorten toolbar button labels (#3903 by: HebaruSan; reviewed: techman83)
-- [Multiple] Refactor repository and available module handling (#3904, #3907, #3908, #3935 by: HebaruSan; reviewed: techman83)
+- [Multiple] Refactor repository and available module handling (#3904, #3907, #3908, #3935, #3937 by: HebaruSan; reviewed: techman83)
 - [Multiple] Parallelize for performance, relationship resolver improvements (#3917 by: HebaruSan; reviewed: techman83)
 - [Multiple] Modernize administrator and Mono version checks (#3933 by: HebaruSan; reviewed: techman83)
 

@@ -12,7 +12,11 @@ namespace CKAN
     public class JsonAlwaysEmptyObjectConverter : JsonConverter
     {
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            => Activator.CreateInstance(objectType);
+        {
+            // Read and discard this field's object (without this, loading stops!)
+            _ = JToken.Load(reader);
+            return Activator.CreateInstance(objectType);
+        }
 
         public override bool CanWrite => true;
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
