@@ -721,20 +721,20 @@ namespace CKAN
         /// Use UninstallList for user queries, it also does dependency handling.
         /// This does *NOT* save the registry.
         /// </summary>
-        /// <param name="modName">Identifier of module to uninstall</param>
+        /// <param name="identifier">Identifier of module to uninstall</param>
         /// <param name="possibleConfigOnlyDirs">Directories that the user might want to remove after uninstall</param>
-        private void Uninstall(string modName, ref HashSet<string> possibleConfigOnlyDirs, Registry registry)
+        private void Uninstall(string identifier, ref HashSet<string> possibleConfigOnlyDirs, Registry registry)
         {
             TxFileManager file_transaction = new TxFileManager();
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
-                InstalledModule mod = registry.InstalledModule(modName);
+                InstalledModule mod = registry.InstalledModule(identifier);
 
                 if (mod == null)
                 {
-                    log.ErrorFormat("Trying to uninstall {0} but it's not installed", modName);
-                    throw new ModNotInstalledKraken(modName);
+                    log.ErrorFormat("Trying to uninstall {0} but it's not installed", identifier);
+                    throw new ModNotInstalledKraken(identifier);
                 }
 
                 // Walk our registry to find all files for this mod.
@@ -744,6 +744,9 @@ namespace CKAN
                 var directoriesToDelete = Platform.IsWindows
                     ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                     : new HashSet<string>();
+
+                // Files that Windows refused to delete due to locking (probably)
+                var undeletableFiles = new List<string>();
 
                 foreach (string file in files)
                 {
@@ -785,17 +788,32 @@ namespace CKAN
                             file_transaction.Delete(path);
                         }
                     }
-                    catch (Exception ex)
+                    catch (IOException)
                     {
-                        // XXX: This is terrible, we're catching all exceptions.
+                        // "The specified file is in use."
+                        undeletableFiles.Add(file);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        // "The caller does not have the required permission."
+                        // "The file is an executable file that is in use."
+                        undeletableFiles.Add(file);
+                    }
+                    catch (Exception exc)
+                    {
                         // We don't consider this problem serious enough to abort and revert,
                         // so treat it as a "--verbose" level log message.
-                        log.InfoFormat("Failure in locating file {0} : {1}", path, ex.Message);
+                        log.InfoFormat("Failure in locating file {0}: {1}", path, exc.Message);
                     }
                 }
 
+                if (undeletableFiles.Count > 0)
+                {
+                    throw new FailedToDeleteFilesKraken(identifier, undeletableFiles);
+                }
+
                 // Remove from registry.
-                registry.DeregisterModule(ksp, modName);
+                registry.DeregisterModule(ksp, identifier);
 
                 // Our collection of directories may leave empty parent directories.
                 directoriesToDelete = AddParentDirectories(directoriesToDelete);
@@ -877,7 +895,7 @@ namespace CKAN
                         log.InfoFormat("Not removing directory {0}, it's not empty", directory);
                     }
                 }
-                log.InfoFormat("Removed {0}", modName);
+                log.InfoFormat("Removed {0}", identifier);
                 transaction.Complete();
             }
         }

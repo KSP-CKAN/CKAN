@@ -892,24 +892,20 @@ namespace CKAN
         ///
         /// Throws an InconsistentKraken if not all files have been removed.
         /// </summary>
-        public void DeregisterModule(GameInstance inst, string module)
+        public void DeregisterModule(GameInstance inst, string identifier)
         {
-            log.DebugFormat("Deregistering module {0}", module);
+            log.DebugFormat("Deregistering module {0}", identifier);
             EnlistWithTransaction();
 
-            var inconsistencies = new List<string>();
-
-            var absolute_files = installed_modules[module].Files.Select(inst.ToAbsoluteGameDir);
             // Note, this checks to see if a *file* exists; it doesn't
             // trigger on directories, which we allow to still be present
             // (they may be shared by multiple mods.
-
-            foreach (var absolute_file in absolute_files.Where(File.Exists))
-            {
-                inconsistencies.Add(string.Format(
-                    Properties.Resources.RegistryFileNotRemoved,
-                    absolute_file, module));
-            }
+            var inconsistencies = installed_modules[identifier].Files
+                .Where(f => File.Exists(inst.ToAbsoluteGameDir(f)))
+                .Select(relPath => string.Format(
+                                       Properties.Resources.RegistryFileNotRemoved,
+                                       relPath, identifier))
+                .ToList();
 
             if (inconsistencies.Count > 0)
             {
@@ -918,13 +914,13 @@ namespace CKAN
             }
 
             // Okay, all the files are gone. Let's clear our metadata.
-            foreach (string rel_file in installed_modules[module].Files)
+            foreach (string rel_file in installed_modules[identifier].Files)
             {
                 installed_files.Remove(rel_file);
             }
 
             // Bye bye, module, it's been nice having you visit.
-            installed_modules.Remove(module);
+            installed_modules.Remove(identifier);
 
             // Installing and uninstalling mods can change compatibility due to conflicts,
             // so we'll need to reset the compatibility sorter
