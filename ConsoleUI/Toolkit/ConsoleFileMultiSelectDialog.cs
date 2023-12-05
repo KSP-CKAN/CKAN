@@ -196,9 +196,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         private static bool isDir(FileSystemInfo fi)
-        {
-            return (fi.Attributes & FileAttributes.Directory) == FileAttributes.Directory;
-        }
+            => fi.Attributes.HasFlag(FileAttributes.Directory);
 
         /// <summary>
         /// Check whether two file system references are equal.

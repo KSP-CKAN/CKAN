@@ -72,7 +72,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             switch (k.Key) {
                 case ConsoleKey.Tab:
-                    Blur((k.Modifiers & ConsoleModifiers.Shift) == 0);
+                    Blur(!k.Modifiers.HasFlag(ConsoleModifiers.Shift));
                     break;
                 case ConsoleKey.Spacebar:
                 case ConsoleKey.Enter:

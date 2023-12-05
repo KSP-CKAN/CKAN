@@ -107,7 +107,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                     }
                     break;
                 case ConsoleKey.Backspace:
-                    if ((k.Modifiers & ConsoleModifiers.Control) == 0) {
+                    if (!k.Modifiers.HasFlag(ConsoleModifiers.Control)) {
                         if (Position > 0) {
                             --Position;
                             Value = Value.Substring(0, Position) + Value.Substring(Position + 1);
@@ -121,9 +121,9 @@ namespace CKAN.ConsoleUI.Toolkit {
                     break;
                 case ConsoleKey.Delete:
                     if (Position < Value.Length) {
-                        Value = (k.Modifiers & ConsoleModifiers.Control) == 0
-                            ? Value.Substring(0, Position) + Value.Substring(Position + 1)
-                            : Value.Substring(0, Position);
+                        Value = k.Modifiers.HasFlag(ConsoleModifiers.Control)
+                            ? Value.Substring(0, Position)
+                            : Value.Substring(0, Position) + Value.Substring(Position + 1);
                         Changed();
                     }
                     break;
@@ -150,7 +150,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                     Position = Value.Length;
                     break;
                 case ConsoleKey.Tab:
-                    Blur((k.Modifiers & ConsoleModifiers.Shift) == 0);
+                    Blur(!k.Modifiers.HasFlag(ConsoleModifiers.Shift));
                     break;
                 default:
                     if (!char.IsControl(k.KeyChar)) {

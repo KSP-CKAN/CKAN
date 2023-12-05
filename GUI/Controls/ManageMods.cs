@@ -224,7 +224,7 @@ namespace CKAN.GUI
         private void RefreshToolButton_Click(object sender, EventArgs e)
         {
             // If user is holding Shift or Ctrl, force a full update
-            Main.Instance.UpdateRepo((ModifierKeys & (Keys.Control | Keys.Shift)) != 0);
+            Main.Instance.UpdateRepo(ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift));
         }
 
         #region Filter dropdown
@@ -345,74 +345,74 @@ namespace CKAN.GUI
         private void tagFilterButton_Click(object sender, EventArgs e)
         {
             var clicked = sender as ToolStripMenuItem;
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Tag, clicked.Tag as ModuleTag, null), merge);
         }
 
         private void customFilterButton_Click(object sender, EventArgs e)
         {
             var clicked = sender as ToolStripMenuItem;
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, clicked.Tag as ModuleLabel), merge);
         }
 
         private void FilterCompatibleButton_Click(object sender, EventArgs e)
         {
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Compatible), merge);
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
         {
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Installed), merge);
         }
 
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.InstalledUpdateAvailable), merge);
         }
 
         private void FilterReplaceableButton_Click(object sender, EventArgs e)
         {
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Replaceable), merge);
         }
 
         private void FilterCachedButton_Click(object sender, EventArgs e)
         {
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Cached), merge);
         }
 
         private void FilterUncachedButton_Click(object sender, EventArgs e)
         {
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Uncached), merge);
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.NewInRepository), merge);
         }
 
         private void FilterNotInstalledButton_Click(object sender, EventArgs e)
         {
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.NotInstalled), merge);
         }
 
         private void FilterIncompatibleButton_Click(object sender, EventArgs e)
         {
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Incompatible), merge);
         }
 
         private void FilterAllButton_Click(object sender, EventArgs e)
         {
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.All), merge);
         }
 
@@ -579,7 +579,7 @@ namespace CKAN.GUI
             // Left click -> sort by new column / change sorting direction.
             if (e.Button == MouseButtons.Left)
             {
-                if ((ModifierKeys & Keys.Shift) == Keys.Shift)
+                if (ModifierKeys.HasFlag(Keys.Shift))
                 {
                     AddSort(ModGrid.Columns[e.ColumnIndex]);
                 }

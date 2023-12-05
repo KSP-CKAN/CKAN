@@ -9,6 +9,7 @@ using System.Runtime.Versioning;
 using Autofac;
 
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN.GUI
 {
@@ -204,7 +205,7 @@ namespace CKAN.GUI
         private void TagLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var link = sender as LinkLabel;
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             OnChangeFilter?.Invoke(
                 ModList.FilterToSavedSearch(GUIModFilter.Tag, link.Tag as ModuleTag, null),
                 merge);
@@ -213,7 +214,7 @@ namespace CKAN.GUI
         private void LabelLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var link = sender as LinkLabel;
-            var merge = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             OnChangeFilter?.Invoke(
                 ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, link.Tag as ModuleLabel),
                 merge);

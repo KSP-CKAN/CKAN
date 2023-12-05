@@ -111,7 +111,7 @@ namespace CKAN.GUI
                 ReverseRelationshipsCheckbox.CheckState == CheckState.Unchecked
                     // If user holds ctrl or shift, go to "sticky" indeterminate state,
                     // else normal checked
-                    ? (ModifierKeys & (Keys.Control | Keys.Shift)) != 0
+                    ? ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift)
                         ? CheckState.Indeterminate
                         : CheckState.Checked
                     : CheckState.Unchecked;

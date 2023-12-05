@@ -762,7 +762,7 @@ namespace CKAN
                         // explanation. – Kyle Trauberman Aug 30 '12 at 21:28
                         // (https://stackoverflow.com/questions/1395205/better-way-to-check-if-path-is-a-file-or-a-directory)
                         // This is the fastest way to do this test.
-                        if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                        if (attr.HasFlag(FileAttributes.Directory))
                         {
                             if (!directoriesToDelete.Contains(path))
                             {
