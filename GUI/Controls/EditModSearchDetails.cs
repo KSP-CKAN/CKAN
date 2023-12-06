@@ -1,5 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
@@ -8,6 +13,9 @@ namespace CKAN.GUI
     /// Contains several separate fields for searching different properties,
     /// plus a combined field that represents them all in a special syntax.
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class EditModSearchDetails : UserControl
     {
         /// <summary>
@@ -30,6 +38,76 @@ namespace CKAN.GUI
         /// Event fired when user wants to switch focus away from this control.
         /// </summary>
         public event Action SurrenderFocus;
+
+        public void SetFocus()
+        {
+            FilterByNameTextBox.Focus();
+        }
+
+        public ModSearch CurrentSearch()
+            => CurrentSearch(
+                Main.Instance.ManageMods.mainModList
+                                        .ModuleLabels
+                                        .LabelsFor(Main.Instance.CurrentInstance.Name)
+                                        .ToList());
+
+        private ModSearch CurrentSearch(List<ModuleLabel> knownLabels)
+            => new ModSearch(
+                FilterByNameTextBox.Text,
+                FilterByAuthorTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByDescriptionTextBox.Text,
+                FilterByLanguageTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByDependsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByRecommendsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterBySuggestsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByConflictsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByTagsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByLabelsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries)
+                                          .Select(ln => knownLabels.FirstOrDefault(lb => lb.Name == ln))
+                                          .Where(lb => lb != null)
+                                          .ToList(),
+                CompatibleToggle.Value,
+                InstalledToggle.Value,
+                CachedToggle.Value,
+                NewlyCompatibleToggle.Value,
+                UpgradeableToggle.Value,
+                ReplaceableToggle.Value);
+
+        public void PopulateSearch(ModSearch search)
+        {
+            FilterByNameTextBox.Text        = search?.Name
+                                              ?? "";
+            FilterByAuthorTextBox.Text      = search?.Authors.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByDescriptionTextBox.Text = search?.Description
+                                              ?? "";
+            FilterByLanguageTextBox.Text    = search?.Localizations.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByDependsTextBox.Text     = search?.DependsOn.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByRecommendsTextBox.Text  = search?.Recommends.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterBySuggestsTextBox.Text    = search?.Suggests.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByConflictsTextBox.Text   = search?.ConflictsWith.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByTagsTextBox.Text        = search?.TagNames.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByLabelsTextBox.Text      = search?.Labels.Select(lb => lb.Name)
+                                                            .Aggregate("", CombinePieces)
+                                              ?? "";
+
+            CompatibleToggle.Value      = search?.Compatible;
+            InstalledToggle.Value       = search?.Installed;
+            CachedToggle.Value          = search?.Cached;
+            NewlyCompatibleToggle.Value = search?.NewlyCompatible;
+            UpgradeableToggle.Value     = search?.Upgradeable;
+            ReplaceableToggle.Value     = search?.Replaceable;
+        }
+
+        private static string CombinePieces(string joined, string piece)
+            => string.IsNullOrEmpty(joined) ? piece
+                                            : $"{joined} {piece}";
 
         /// <summary>
         /// Override special settings to make this control behave like a dropdown.

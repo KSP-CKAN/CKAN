@@ -178,7 +178,7 @@ namespace CKAN.GUI
             SearchDetails.Visible = expanded;
             if (SearchDetails.Visible)
             {
-                SearchDetails.FilterByNameTextBox.Focus();
+                SearchDetails.SetFocus();
                 if (Main.Instance != null)
                 {
                     Main.Instance.Move   += FormGeometryChanged;
@@ -207,41 +207,8 @@ namespace CKAN.GUI
         private void SearchToEditor()
         {
             suppressSearch = true;
-                SearchDetails.FilterByNameTextBox.Text        = currentSearch?.Name
-                                                                    ?? "";
-                SearchDetails.FilterByAuthorTextBox.Text      = currentSearch?.Authors.Aggregate("", CombinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByDescriptionTextBox.Text = currentSearch?.Description
-                                                                    ?? "";
-                SearchDetails.FilterByLanguageTextBox.Text    = currentSearch?.Localizations.Aggregate("", CombinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByDependsTextBox.Text     = currentSearch?.DependsOn.Aggregate("", CombinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByRecommendsTextBox.Text  = currentSearch?.Recommends.Aggregate("", CombinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByConflictsTextBox.Text   = currentSearch?.ConflictsWith.Aggregate("", CombinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterBySuggestsTextBox.Text    = currentSearch?.Suggests.Aggregate("", CombinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByTagsTextBox.Text        = currentSearch?.TagNames.Aggregate("", CombinePieces)
-                                                                    ?? "";
-                SearchDetails.FilterByLabelsTextBox.Text      = currentSearch?.Labels
-                                                                    .Select(lb => lb.Name)
-                                                                    .Aggregate("", CombinePieces)
-                                                                    ?? "";
-
-                SearchDetails.CompatibleToggle.Value      = currentSearch?.Compatible;
-                SearchDetails.InstalledToggle.Value       = currentSearch?.Installed;
-                SearchDetails.CachedToggle.Value          = currentSearch?.Cached;
-                SearchDetails.NewlyCompatibleToggle.Value = currentSearch?.NewlyCompatible;
-                SearchDetails.UpgradeableToggle.Value     = currentSearch?.Upgradeable;
-                SearchDetails.ReplaceableToggle.Value     = currentSearch?.Replaceable;
+            SearchDetails.PopulateSearch(currentSearch);
             suppressSearch = false;
-        }
-
-        private static string CombinePieces(string joined, string piece)
-        {
-            return string.IsNullOrEmpty(joined) ? piece : $"{joined} {piece}";
         }
 
         private void SearchDetails_ApplySearch(object sender, EventArgs e)
@@ -251,29 +218,7 @@ namespace CKAN.GUI
                 return;
             }
 
-            var knownLabels = Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList();
-
-            currentSearch = new ModSearch(
-                SearchDetails.FilterByNameTextBox.Text,
-                SearchDetails.FilterByAuthorTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                SearchDetails.FilterByDescriptionTextBox.Text,
-                SearchDetails.FilterByLanguageTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                SearchDetails.FilterByDependsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                SearchDetails.FilterByRecommendsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                SearchDetails.FilterBySuggestsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                SearchDetails.FilterByConflictsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                SearchDetails.FilterByTagsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                SearchDetails.FilterByLabelsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries)
-                    .Select(ln => knownLabels.FirstOrDefault(lb => lb.Name == ln))
-                    .Where(lb => lb != null)
-                    .ToList(),
-                SearchDetails.CompatibleToggle.Value,
-                SearchDetails.InstalledToggle.Value,
-                SearchDetails.CachedToggle.Value,
-                SearchDetails.NewlyCompatibleToggle.Value,
-                SearchDetails.UpgradeableToggle.Value,
-                SearchDetails.ReplaceableToggle.Value
-            );
+            currentSearch = SearchDetails.CurrentSearch();
             suppressSearch = true;
                 FilterCombinedTextBox.Text = currentSearch?.Combined ?? "";
             suppressSearch = false;

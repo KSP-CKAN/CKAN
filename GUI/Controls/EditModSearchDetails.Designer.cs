@@ -448,36 +448,36 @@ namespace CKAN.GUI
         #endregion
 
         private System.Windows.Forms.Label FilterByNameLabel;
-        internal CKAN.GUI.HintTextBox FilterByNameTextBox;
+        private CKAN.GUI.HintTextBox FilterByNameTextBox;
         private System.Windows.Forms.Label FilterByAuthorLabel;
-        internal CKAN.GUI.HintTextBox FilterByAuthorTextBox;
+        private CKAN.GUI.HintTextBox FilterByAuthorTextBox;
         private System.Windows.Forms.Label FilterByDescriptionLabel;
-        internal CKAN.GUI.HintTextBox FilterByDescriptionTextBox;
+        private CKAN.GUI.HintTextBox FilterByDescriptionTextBox;
         private System.Windows.Forms.Label FilterByLanguageLabel;
-        internal CKAN.GUI.HintTextBox FilterByLanguageTextBox;
+        private CKAN.GUI.HintTextBox FilterByLanguageTextBox;
         private System.Windows.Forms.Label FilterByDependsLabel;
-        internal CKAN.GUI.HintTextBox FilterByDependsTextBox;
+        private CKAN.GUI.HintTextBox FilterByDependsTextBox;
         private System.Windows.Forms.Label FilterByRecommendsLabel;
-        internal CKAN.GUI.HintTextBox FilterByRecommendsTextBox;
+        private CKAN.GUI.HintTextBox FilterByRecommendsTextBox;
         private System.Windows.Forms.Label FilterBySuggestsLabel;
-        internal CKAN.GUI.HintTextBox FilterBySuggestsTextBox;
+        private CKAN.GUI.HintTextBox FilterBySuggestsTextBox;
         private System.Windows.Forms.Label FilterByConflictsLabel;
-        internal CKAN.GUI.HintTextBox FilterByConflictsTextBox;
+        private CKAN.GUI.HintTextBox FilterByConflictsTextBox;
         private System.Windows.Forms.Label FilterByTagsLabel;
-        internal CKAN.GUI.HintTextBox FilterByTagsTextBox;
+        private CKAN.GUI.HintTextBox FilterByTagsTextBox;
         private System.Windows.Forms.Label FilterByLabelsLabel;
-        internal CKAN.GUI.HintTextBox FilterByLabelsTextBox;
+        private CKAN.GUI.HintTextBox FilterByLabelsTextBox;
         private System.Windows.Forms.Label CompatibleLabel;
-        internal CKAN.GUI.TriStateToggle CompatibleToggle;
+        private CKAN.GUI.TriStateToggle CompatibleToggle;
         private System.Windows.Forms.Label InstalledLabel;
-        internal CKAN.GUI.TriStateToggle InstalledToggle;
+        private CKAN.GUI.TriStateToggle InstalledToggle;
         private System.Windows.Forms.Label CachedLabel;
-        internal CKAN.GUI.TriStateToggle CachedToggle;
+        private CKAN.GUI.TriStateToggle CachedToggle;
         private System.Windows.Forms.Label NewlyCompatibleLabel;
-        internal CKAN.GUI.TriStateToggle NewlyCompatibleToggle;
+        private CKAN.GUI.TriStateToggle NewlyCompatibleToggle;
         private System.Windows.Forms.Label UpgradeableLabel;
-        internal CKAN.GUI.TriStateToggle UpgradeableToggle;
+        private CKAN.GUI.TriStateToggle UpgradeableToggle;
         private System.Windows.Forms.Label ReplaceableLabel;
-        internal CKAN.GUI.TriStateToggle ReplaceableToggle;
+        private CKAN.GUI.TriStateToggle ReplaceableToggle;
     }
 }
