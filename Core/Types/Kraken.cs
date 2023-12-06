@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
+using CKAN.Versioning;
+
 namespace CKAN
 {
     using modRelList = List<Tuple<CkanModule, RelationshipDescriptor, CkanModule>>;
@@ -223,6 +225,20 @@ namespace CKAN
             => Message + Environment.NewLine + Environment.NewLine + StackTrace;
 
         private readonly ICollection<string> inconsistencies;
+    }
+
+    public class FailedToDeleteFilesKraken : Kraken
+    {
+        public FailedToDeleteFilesKraken(string identifier, List<string> undeletableFiles)
+            : base(string.Format(Properties.Resources.KrakenFailedToDeleteFiles,
+                                 identifier,
+                                 string.Join(Environment.NewLine,
+                                             undeletableFiles.Select(f => f.Replace('/', Path.DirectorySeparatorChar)))))
+        {
+            this.undeletableFiles = undeletableFiles;
+        }
+
+        public readonly List<string> undeletableFiles;
     }
 
     /// <summary>
@@ -512,9 +528,9 @@ namespace CKAN
     /// </summary>
     public class WrongGameVersionKraken : Kraken
     {
-        public readonly Versioning.GameVersion version;
+        public readonly GameVersion version;
 
-        public WrongGameVersionKraken(Versioning.GameVersion version, string reason = null, Exception inner_exception = null)
+        public WrongGameVersionKraken(GameVersion version, string reason = null, Exception inner_exception = null)
             : base(reason, inner_exception)
         {
             this.version = version;

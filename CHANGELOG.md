@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Refactor repository and available module handling (#3904, #3907, #3908, #3935, #3937 by: HebaruSan; reviewed: techman83)
 - [Multiple] Parallelize for performance, relationship resolver improvements (#3917 by: HebaruSan; reviewed: techman83)
 - [Multiple] Modernize administrator and Mono version checks (#3933 by: HebaruSan; reviewed: techman83)
+- [Multiple] Improve file deletion error while the game is running (#3938 by: HebaruSan; reviewed: techman83)
 
 ### Bugfixes
 

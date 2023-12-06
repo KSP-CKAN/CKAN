@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Runtime.Versioning;
 #endif
 
+using CKAN.Extensions;
+
 namespace CKAN.GUI
 {
     #if NET5_0_OR_GREATER
@@ -119,7 +121,7 @@ namespace CKAN.GUI
         {
             var link   = sender as LinkLabel;
             var author = link.Text;
-            var merge  = (ModifierKeys & (Keys.Control | Keys.Shift)) != 0;
+            var merge  = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             OnChangeFilter?.Invoke(
                 new SavedSearch()
                 {

@@ -34,6 +34,7 @@ namespace CKAN.GUI
             this.Mod = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChangeType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Reason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.CloseTheGameLabel = new System.Windows.Forms.Label();
             this.BottomButtonPanel = new LeftRightRowPanel();
             this.ConfirmChangesButton = new System.Windows.Forms.Button();
             this.BackButton = new System.Windows.Forms.Button();
@@ -74,6 +75,19 @@ namespace CKAN.GUI
             //
             this.Reason.Width = 606;
             resources.ApplyResources(this.Reason, "Reason");
+            //
+            // CloseTheGameLabel
+            //
+            this.CloseTheGameLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.CloseTheGameLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.CloseTheGameLabel.Location = new System.Drawing.Point(9, 18);
+            this.CloseTheGameLabel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.CloseTheGameLabel.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
+            this.CloseTheGameLabel.Name = "CloseTheGameLabel";
+            this.CloseTheGameLabel.Size = new System.Drawing.Size(490, 50);
+            this.CloseTheGameLabel.TabIndex = 0;
+            this.CloseTheGameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            resources.ApplyResources(this.CloseTheGameLabel, "CloseTheGameLabel");
             // 
             // BottomButtonPanel
             // 
@@ -123,9 +137,10 @@ namespace CKAN.GUI
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.ChangesListView);
+            this.Controls.Add(this.CloseTheGameLabel);
             this.Controls.Add(this.BottomButtonPanel);
-            this.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.Name = "Changeset";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
@@ -141,6 +156,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ColumnHeader Mod;
         private System.Windows.Forms.ColumnHeader ChangeType;
         private System.Windows.Forms.ColumnHeader Reason;
+        private System.Windows.Forms.Label CloseTheGameLabel;
         private LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button BackButton;
         private System.Windows.Forms.Button CancelChangesButton;

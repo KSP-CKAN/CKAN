@@ -30,7 +30,16 @@ namespace CKAN.GUI
             alertLabels    = AlertLabels;
             this.conflicts = conflicts;
             ConfirmChangesButton.Enabled = conflicts == null || !conflicts.Any();
+            CloseTheGameLabel.Visible = changeset != null
+                && changeset.Any(ch => DeletingChanges.Contains(ch.ChangeType));
         }
+
+        private static readonly HashSet<GUIModChangeType> DeletingChanges = new HashSet<GUIModChangeType>
+        {
+            GUIModChangeType.Remove,
+            GUIModChangeType.Update,
+            GUIModChangeType.Replace,
+        };
 
         protected override void OnVisibleChanged(EventArgs e)
         {

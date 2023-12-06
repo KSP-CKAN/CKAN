@@ -242,14 +242,14 @@ namespace CKAN.ConsoleUI.Toolkit {
                     selectedRow = sortedFilteredData.Count - 1;
                     break;
                 case ConsoleKey.Tab:
-                    Blur((k.Modifiers & ConsoleModifiers.Shift) == 0);
+                    Blur(!k.Modifiers.HasFlag(ConsoleModifiers.Shift));
                     break;
                 default:
-                    // Go backwards if (k.Modifiers & ConsoleModifiers.Shift)
+                    // Go backwards if k.Modifiers.HasFlag(ConsoleModifiers.Shift)
                     if (!char.IsControl(k.KeyChar)
                             && (k.Modifiers | ConsoleModifiers.Shift) == ConsoleModifiers.Shift) {
 
-                        bool forward = (k.Modifiers & ConsoleModifiers.Shift) == 0;
+                        bool forward = !k.Modifiers.HasFlag(ConsoleModifiers.Shift);
                         Func<RowT, string> dfltRend = columns[defaultSortColumn].Renderer;
                         // Find first row after current, wrap
                         int startRow = forward

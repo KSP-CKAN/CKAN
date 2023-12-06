@@ -153,7 +153,7 @@ Install the `mono-complete` package or equivalent for your operating system.</va
   <data name="NetRepoLoadedDownloadCounts" xml:space="preserve"><value>Loaded download counts from {0} repository</value></data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve"><value>`any_of` should not be combined with `{0}`</value></data>
   <data name="RegistryFileConflict" xml:space="preserve"><value>{0} wishes to install {1}, but this file is registered to {2}</value></data>
-  <data name="RegistryFileNotRemoved" xml:space="preserve"><value>{0} is registered to {1} but has not been removed!</value></data>
+  <data name="RegistryFileNotRemoved" xml:space="preserve"><value>Error unregistering {1}, file not removed: {0}</value></data>
   <data name="RegistryDefaultDLCAbstract" xml:space="preserve"><value>An official expansion pack</value></data>
   <data name="RegistryManagerDirectoryNotFound" xml:space="preserve"><value>Can't find a directory in {0}</value></data>
   <data name="RegistryManagerExportFilenamePrefix" xml:space="preserve"><value>installed</value></data>
@@ -263,6 +263,11 @@ Please remove manually before trying to install it.</value></data>
 
 Which {0} provider would you like to install?</value></data>
   <data name="KrakenInconsistenciesHeader" xml:space="preserve"><value>Inconsistencies were found:</value></data>
+  <data name="KrakenFailedToDeleteFiles" xml:space="preserve"><value>Unable to overwrite or delete files for {0}:
+
+{1}
+
+If the game is still running, close it and try again. Otherwise check the permissions.</value></data>
   <data name="KrakenMissingDependency" xml:space="preserve"><value>{0} missing dependency {1}</value></data>
   <data name="KrakenConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve"><value>Uh oh, the following things went wrong when downloading...</value></data>
