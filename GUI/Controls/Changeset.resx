@@ -120,6 +120,7 @@
   <data name="Mod.Text" xml:space="preserve"><value>Mod</value></data>
   <data name="ChangeType.Text" xml:space="preserve"><value>Change</value></data>
   <data name="Reason.Text" xml:space="preserve"><value>Reasons for action</value></data>
+  <data name="CloseTheGameLabel.Text" xml:space="preserve"><value>Note: To apply these changes, CKAN must overwrite or delete files. If the game is running, close it before continuing!</value></data>
   <data name="BackButton.Text" xml:space="preserve"><value>Back</value></data>
   <data name="CancelChangesButton.Text" xml:space="preserve"><value>Clear</value></data>
   <data name="ConfirmChangesButton.Text" xml:space="preserve"><value>Apply</value></data>
