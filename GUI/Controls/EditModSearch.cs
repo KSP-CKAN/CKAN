@@ -88,6 +88,29 @@ namespace CKAN.GUI
             }
         }
 
+        public void CloseSearch(Point screenCoords)
+        {
+            // Treat the entire main window as an uncheck button, and let
+            // the actual checkbox handle unchecking itself
+            var bounds = new Rectangle(ExpandButton.PointToScreen(new Point(0, 0)),
+                                       ExpandButton.Size);
+            if (!bounds.Contains(screenCoords))
+            {
+                ExpandButton.Checked = false;
+            }
+        }
+
+        public void ParentMoved()
+        {
+            FormGeometryChanged();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            FormGeometryChanged();
+        }
+
         private bool suppressSearch = false;
         private ModSearch currentSearch = null;
 
@@ -174,25 +197,15 @@ namespace CKAN.GUI
 
         private void DoLayout(bool expanded)
         {
-            FormGeometryChanged(null, null);
+            FormGeometryChanged();
             SearchDetails.Visible = expanded;
             if (SearchDetails.Visible)
             {
                 SearchDetails.SetFocus();
-                if (Main.Instance != null)
-                {
-                    Main.Instance.Move   += FormGeometryChanged;
-                    Resize += FormGeometryChanged;
-                }
-            }
-            else if (Main.Instance != null)
-            {
-                Main.Instance.Move   -= FormGeometryChanged;
-                Resize -= FormGeometryChanged;
             }
         }
 
-        private void FormGeometryChanged(object sender, EventArgs e)
+        private void FormGeometryChanged()
         {
             SearchDetails.Location = PointToScreen(new Point(
                 FilterCombinedTextBox.Left,

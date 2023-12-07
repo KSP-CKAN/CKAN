@@ -1546,6 +1546,16 @@ namespace CKAN.GUI
                 ? null
                 : ModGrid.SelectedRows[0]?.Tag as GUIMod;
 
+        public void CloseSearch(Point screenCoords)
+        {
+            EditModSearches.CloseSearch(screenCoords);
+        }
+
+        public void ParentMoved()
+        {
+            EditModSearches.ParentMoved();
+        }
+
         #region Navigation History
 
         private void NavInit()

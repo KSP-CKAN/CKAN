@@ -127,6 +127,8 @@ namespace CKAN.GUI
                 cp.Style   &= ~(int)WindowStyles.WS_VISIBLE;
                 // The window is a pop-up window. This style cannot be used with the WS_CHILD style.
                 cp.Style   |= unchecked((int)WindowStyles.WS_POPUP);
+                // The window should be placed above all non-topmost windows and should stay above them, even when the window is deactivated. To add or remove this style, use the SetWindowPos function.
+                cp.ExStyle |= (int)WindowExStyles.WS_EX_TOPMOST;
                 // The window is intended to be used as a floating toolbar. A tool window has a title bar that is shorter than a normal title bar, and the window title is drawn using a smaller font. A tool window does not appear in the taskbar or in the dialog that appears when the user presses ALT+TAB. If a tool window has a system menu, its icon is not displayed on the title bar. However, you can display the system menu by right-clicking or by typing ALT+SPACE.
                 cp.ExStyle |= (int)WindowExStyles.WS_EX_TOOLWINDOW;
                 // The window itself contains child windows that should take part in dialog box navigation. If this style is specified, the dialog manager recurses into children of this window when performing navigation operations such as handling the TAB key, an arrow key, or a keyboard mnemonic.
@@ -195,6 +197,7 @@ namespace CKAN.GUI
         // https://docs.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
         private enum WindowExStyles : uint
         {
+            WS_EX_TOPMOST       =        0x8,
             WS_EX_TOOLWINDOW    =       0x80,
             WS_EX_CONTROLPARENT =    0x10000,
             WS_EX_NOACTIVATE    = 0x08000000,
