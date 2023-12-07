@@ -32,6 +32,7 @@ namespace CKAN.GUI
         public ModSearch(
             string byName, List<string> byAuthors, string byDescription, List<string> localizations,
             List<string> depends, List<string> recommends, List<string> suggests, List<string> conflicts,
+            List<string> supports,
             List<string> tagNames, List<ModuleLabel> labels,
             bool? compatible, bool? installed, bool? cached, bool? newlyCompatible,
             bool? upgradeable, bool? replaceable,
@@ -48,6 +49,7 @@ namespace CKAN.GUI
             initStringList(Recommends,    recommends);
             initStringList(Suggests,      suggests);
             initStringList(ConflictsWith, conflicts);
+            initStringList(Supports,      supports);
 
             initStringList(TagNames, tagNames);
             if (labels?.Any() ?? false)
@@ -140,6 +142,11 @@ namespace CKAN.GUI
         public readonly List<string> ConflictsWith = new List<string>();
 
         /// <summary>
+        /// Identifier prefix to find in mod conflicts relationships
+        /// </summary>
+        public readonly List<string> Supports = new List<string>();
+
+        /// <summary>
         /// Full formatted search string
         /// </summary>
         public readonly string Combined;
@@ -163,7 +170,7 @@ namespace CKAN.GUI
             => new ModSearch(
                 // Can't search for spaces, so massage them like SearchableAuthors
                 "", authors.Select(a => CkanModule.nonAlphaNums.Replace(a, "")).ToList(), "", null,
-                null, null, null, null,
+                null, null, null, null, null,
                 null, null,
                 null, null, null, null,
                 null, null);
@@ -183,6 +190,7 @@ namespace CKAN.GUI
                 Recommends.Concat(other.Recommends).Distinct().ToList(),
                 Suggests.Concat(other.Suggests).Distinct().ToList(),
                 ConflictsWith.Concat(other.ConflictsWith).Distinct().ToList(),
+                Supports.Concat(other.Supports).Distinct().ToList(),
                 TagNames.Concat(other.TagNames).Distinct().ToList(),
                 Labels.Concat(other.Labels).Distinct().ToList(),
                 Compatible      ?? other.Compatible,
@@ -233,6 +241,10 @@ namespace CKAN.GUI
             foreach (var conf in ConflictsWith.Where(c => !string.IsNullOrEmpty(c)))
             {
                 pieces.Add(AddTermPrefix(Properties.Resources.ModSearchConflictsPrefix, conf));
+            }
+            foreach (var sup in Supports.Where(s => !string.IsNullOrEmpty(s)))
+            {
+                pieces.Add(AddTermPrefix(Properties.Resources.ModSearchSupportsPrefix, sup));
             }
             foreach (var tagName in TagNames)
             {
@@ -303,6 +315,7 @@ namespace CKAN.GUI
             var recommends = new List<string>();
             var suggests   = new List<string>();
             var conflicts  = new List<string>();
+            var supports   = new List<string>();
 
             List<string>      tagNames = new List<string>();
             List<ModuleLabel> labels   = new List<ModuleLabel>();
@@ -344,6 +357,10 @@ namespace CKAN.GUI
                 else if (TryPrefix(s, Properties.Resources.ModSearchConflictsPrefix, out string conf))
                 {
                     conflicts.Add(conf);
+                }
+                else if (TryPrefix(s, Properties.Resources.ModSearchSupportsPrefix, out string sup))
+                {
+                    supports.Add(sup);
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchTagPrefix, out string tagName))
                 {
@@ -421,7 +438,7 @@ namespace CKAN.GUI
             }
             return new ModSearch(
                 byName, byAuthors, byDescription, byLocalizations,
-                depends, recommends, suggests, conflicts,
+                depends, recommends, suggests, conflicts, supports,
                 tagNames, labels,
                 compatible, installed, cached, newlyCompatible,
                 upgradeable, replaceable,
@@ -483,6 +500,7 @@ namespace CKAN.GUI
                 && MatchesRecommends(mod)
                 && MatchesSuggests(mod)
                 && MatchesConflicts(mod)
+                && MatchesSupports(mod)
                 && MatchesTags(mod)
                 && MatchesLabels(mod)
                 && MatchesCompatible(mod)
@@ -533,6 +551,8 @@ namespace CKAN.GUI
             => RelationshipMatch(mod.ToModule().suggests, Suggests);
         private bool MatchesConflicts(GUIMod mod)
             => RelationshipMatch(mod.ToModule().conflicts, ConflictsWith);
+        private bool MatchesSupports(GUIMod mod)
+            => RelationshipMatch(mod.ToModule().supports, Supports);
         private bool RelationshipMatch(List<RelationshipDescriptor> rels, List<string> toFind)
             => toFind.Count < 1
                 || (rels != null && toFind.All(searchRel =>
@@ -589,6 +609,7 @@ namespace CKAN.GUI
                 && Recommends.SequenceEqual(other.Recommends)
                 && Suggests.SequenceEqual(other.Suggests)
                 && ConflictsWith.SequenceEqual(other.ConflictsWith)
+                && Supports.SequenceEqual(other.Supports)
                 && TagNames.SequenceEqual(other.TagNames)
                 && Labels.SequenceEqual(other.Labels);
 

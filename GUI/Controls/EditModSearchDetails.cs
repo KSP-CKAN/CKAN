@@ -61,6 +61,7 @@ namespace CKAN.GUI
                 FilterByRecommendsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterBySuggestsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByConflictsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterBySupportsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByTagsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByLabelsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries)
                                           .Select(ln => knownLabels.FirstOrDefault(lb => lb.Name == ln))
@@ -90,6 +91,8 @@ namespace CKAN.GUI
             FilterBySuggestsTextBox.Text    = search?.Suggests.Aggregate("", CombinePieces)
                                               ?? "";
             FilterByConflictsTextBox.Text   = search?.ConflictsWith.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterBySupportsTextBox.Text    = search?.Supports.Aggregate("", CombinePieces)
                                               ?? "";
             FilterByTagsTextBox.Text        = search?.TagNames.Aggregate("", CombinePieces)
                                               ?? "";
