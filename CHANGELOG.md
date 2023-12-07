@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Parallelize for performance, relationship resolver improvements (#3917 by: HebaruSan; reviewed: techman83)
 - [Multiple] Modernize administrator and Mono version checks (#3933 by: HebaruSan; reviewed: techman83)
 - [Multiple] Improve file deletion error while the game is running (#3938 by: HebaruSan; reviewed: techman83)
+- [GUI] New Crowdin updates (#3940 by: Olympic1; reviewed: HebaruSan)
 
 ### Bugfixes
 
