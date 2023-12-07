@@ -118,8 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExplanationLabel.Text" xml:space="preserve">
-    <value>Les dossiers ci-dessous sont des restes de mods qui ont été enlevés. Ils contiennent des fichiers qui n'ont pas été installés par CKAN (probablement générés par un mod ou installés manuellement). CKAN ne supprime pas automatiquement les fichiers qu'il n'a pas installés, mais vous pouvez choisir de les enlever si cela a l'air sans danger (recommandé).
-Notez que si vous décidez de ne pas enlever un dossier, ModuleManager risque de penser à tort que ce mod est toujours installé.</value>
+    <value>Attention, il reste certains dossiers, parce que CKAN ne sait pas s'il peut supprimer les fichiers restants. Garder ces dossiers peut casser d'autres mods ! Si vous n'avez pas besoin de ces fichiers, il est recommandé de les supprimer.</value>
   </data>
   <data name="DirectoryColumn.Text" xml:space="preserve">
     <value>Dossiers</value>
