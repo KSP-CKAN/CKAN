@@ -851,24 +851,23 @@ namespace CKAN
 
         public override int GetHashCode()
         {
-            var typeCode = GetType().GetHashCode();
+            var type = GetType();
             // Parent throws in some derived classes
             try
             {
                 #if NET5_0_OR_GREATER
-                return HashCode.Combine(typeCode,
-                                        Parent.GetHashCode());
+                return HashCode.Combine(type, Parent);
                 #else
                 unchecked
                 {
-                    return (typeCode * 397) ^ Parent.GetHashCode();
+                    return (type, Parent).GetHashCode();
                 }
                 #endif
             }
             catch
             {
                 // If thrown, then we're type-only
-                return typeCode;
+                return type.GetHashCode();
             }
         }
 

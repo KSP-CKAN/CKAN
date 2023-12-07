@@ -103,32 +103,15 @@ namespace CKAN.Versioning
     public partial class ModuleVersion : IEquatable<ModuleVersion>
     {
         public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            return obj is ModuleVersion version && Equals(version);
-        }
+            => ReferenceEquals(this, obj)
+                || (obj is ModuleVersion version && Equals(version));
 
         public bool Equals(ModuleVersion other)
-        {
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            return CompareTo(other) == 0;
-        }
+            => ReferenceEquals(this, other)
+                || CompareTo(other) == 0;
 
         public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (_epoch * 397) ^ _version.GetHashCode();
-            }
-        }
+            => (_epoch, _version).GetHashCode();
 
         /// <summary>
         /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is equal to the second.
@@ -152,9 +135,7 @@ namespace CKAN.Versioning
         /// </list>
         /// </returns>
         public static bool operator ==(ModuleVersion left, ModuleVersion right)
-        {
-            return Equals(left, right);
-        }
+            => Equals(left, right);
 
         /// <summary>
         /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is not equal to the second.
@@ -178,9 +159,7 @@ namespace CKAN.Versioning
         /// </list>
         /// </returns>
         public static bool operator !=(ModuleVersion left, ModuleVersion right)
-        {
-            return !Equals(left, right);
-        }
+            => !Equals(left, right);
     }
 
     public partial class ModuleVersion : IComparable<ModuleVersion>

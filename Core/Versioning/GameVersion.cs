@@ -589,19 +589,12 @@ namespace CKAN.Versioning
         /// of the <see cref="obj"/> parameter; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(GameVersion obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(obj, this))
-            {
-                return true;
-            }
-
-            return _major == obj._major && _minor == obj._minor && _patch == obj._patch && _build == obj._build;
-        }
+            => !(obj is null)
+                && (ReferenceEquals(obj, this)
+                    || (_major == obj._major
+                        && _minor == obj._minor
+                        && _patch == obj._patch
+                        && _build == obj._build));
 
         /// <summary>
         /// Returns a value indicating whether the current <see cref="GameVersion"/> object is equal to a specified
@@ -616,19 +609,9 @@ namespace CKAN.Versioning
         /// matches the corresponding component of <see cref="obj"/>; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(obj, this))
-            {
-                return true;
-            }
-
-            return obj is GameVersion gv && Equals(gv);
-        }
+            => !(obj is null)
+                && (ReferenceEquals(obj, this)
+                    || (obj is GameVersion gv && Equals(gv)));
 
         /// <summary>
         /// Returns a hash code for the current <see cref="GameVersion"/> object.
@@ -636,21 +619,9 @@ namespace CKAN.Versioning
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         #if NET5_0_OR_GREATER
-            => HashCode.Combine(_major.GetHashCode(),
-                                _minor.GetHashCode(),
-                                _patch.GetHashCode(),
-                                _build.GetHashCode());
+            => HashCode.Combine(_major, _minor, _patch, _build);
         #else
-        {
-            unchecked
-            {
-                var hashCode = _major.GetHashCode();
-                hashCode = (hashCode*397) ^ _minor.GetHashCode();
-                hashCode = (hashCode*397) ^ _patch.GetHashCode();
-                hashCode = (hashCode*397) ^ _build.GetHashCode();
-                return hashCode;
-            }
-        }
+            => (_major, _minor, _patch, _build).GetHashCode();
         #endif
 
         /// <summary>
@@ -660,9 +631,7 @@ namespace CKAN.Versioning
         /// <param name="v2">The second <see cref="GameVersion"/> object.</param>
         /// <returns><c>true</c> if <see cref="v1"/> equals <see cref="v2"/>; otherwise, <c>false</c>.</returns>
         public static bool operator ==(GameVersion v1, GameVersion v2)
-        {
-            return Equals(v1, v2);
-        }
+            => Equals(v1, v2);
 
         /// <summary>
         /// Determines whether two specified <see cref="GameVersion"/> objects are not equal.
@@ -673,9 +642,7 @@ namespace CKAN.Versioning
         /// <c>true</c> if <see cref="v1"/> does not equal <see cref="v2"/>; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator !=(GameVersion v1, GameVersion v2)
-        {
-            return !Equals(v1, v2);
-        }
+            => !Equals(v1, v2);
     }
 
     public sealed partial class GameVersion : IComparable, IComparable<GameVersion>

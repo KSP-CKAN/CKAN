@@ -170,12 +170,7 @@ namespace CKAN.Versioning
         }
 
         public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((Lower != null ? Lower.GetHashCode() : 0)*397) ^ (Upper != null ? Upper.GetHashCode() : 0);
-            }
-        }
+            => (Lower, Upper).GetHashCode();
 
         public static bool operator ==(GameVersionRange left, GameVersionRange right) => Equals(left, right);
         public static bool operator !=(GameVersionRange left, GameVersionRange right) => !Equals(left, right);

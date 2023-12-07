@@ -688,12 +688,7 @@ namespace CKAN
         }
 
         public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (identifier.GetHashCode() * 397) ^ version.GetHashCode();
-            }
-        }
+            => (identifier, version).GetHashCode();
 
         bool IEquatable<CkanModule>.Equals(CkanModule other)
             => Equals(other);
