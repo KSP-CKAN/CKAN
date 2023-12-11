@@ -885,7 +885,7 @@ namespace CKAN.GUI
 
         private void reportMetadataIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Utilities.ProcessStartURL("https://github.com/KSP-CKAN/NetKAN/issues/new/choose");
+            Utilities.ProcessStartURL(Manager.CurrentInstance.game.MetadataBugtrackerURL.ToString());
         }
 
         private void Main_Resize(object sender, EventArgs e)
