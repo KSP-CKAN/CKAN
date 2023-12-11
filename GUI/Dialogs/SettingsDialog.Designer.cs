@@ -255,6 +255,8 @@ namespace CKAN.GUI
             //
             // CachePath
             //
+            this.CachePath.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.CachePath.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.CachePath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.CachePath.Location = new System.Drawing.Point(12, 18);
             this.CachePath.Margin = new System.Windows.Forms.Padding(2);
@@ -283,6 +285,8 @@ namespace CKAN.GUI
             //
             // CacheLimit
             //
+            this.CacheLimit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.CacheLimit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.CacheLimit.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.CacheLimit.Location = new System.Drawing.Point(117, 63);
             this.CacheLimit.Margin = new System.Windows.Forms.Padding(2);
@@ -499,6 +503,8 @@ namespace CKAN.GUI
             //
             // RefreshTextBox
             //
+            this.RefreshTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.RefreshTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.RefreshTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.RefreshTextBox.Location = new System.Drawing.Point(125, 64);
             this.RefreshTextBox.Name = "RefreshTextBox";

@@ -264,6 +264,8 @@ namespace CKAN.Games.KerbalSpaceProgram
 
         public Uri RepositoryListURL => new Uri("https://raw.githubusercontent.com/KSP-CKAN/CKAN-meta/master/repositories.json");
 
+        public Uri MetadataBugtrackerURL => new Uri("https://github.com/KSP-CKAN/NetKAN/issues/new/choose");
+
         private string Missions(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "Missions"));
 

@@ -218,6 +218,8 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public Uri RepositoryListURL => new Uri("https://raw.githubusercontent.com/KSP-CKAN/KSP2-CKAN-meta/main/repositories.json");
 
+        public Uri MetadataBugtrackerURL => new Uri("https://github.com/KSP-CKAN/KSP2-NetKAN/issues/new/choose");
+
         // Key: Allowed value of install_to
         // Value: Relative path
         // (PrimaryModDirectoryRelative is allowed implicitly)

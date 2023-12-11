@@ -45,7 +45,8 @@ namespace CKAN.Games
         string[]          BuildIDFiles { get; }
 
         // How to get metadata
-        Uri DefaultRepositoryURL { get; }
-        Uri RepositoryListURL    { get; }
+        Uri DefaultRepositoryURL  { get; }
+        Uri RepositoryListURL     { get; }
+        Uri MetadataBugtrackerURL { get; }
     }
 }

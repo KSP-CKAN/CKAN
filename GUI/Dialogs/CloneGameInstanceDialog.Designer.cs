@@ -81,6 +81,8 @@ namespace CKAN.GUI
             //
             // textBoxClonePath
             //
+            this.textBoxClonePath.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.textBoxClonePath.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBoxClonePath.AllowDrop = true;
             this.textBoxClonePath.Location = new System.Drawing.Point(181, 49);
             this.textBoxClonePath.Name = "textBoxClonePath";
@@ -110,9 +112,13 @@ namespace CKAN.GUI
             //
             // textBoxNewName
             //
+            this.textBoxNewName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.textBoxNewName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBoxNewName.Location = new System.Drawing.Point(181, 79);
             this.textBoxNewName.Name = "textBoxNewName";
             this.textBoxNewName.Size = new System.Drawing.Size(218, 20);
+            this.textBoxNewName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.textBoxNewName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBoxNewName.TabIndex = 15;
             //
             // labelNewPath
@@ -126,6 +132,8 @@ namespace CKAN.GUI
             //
             // textBoxNewPath
             //
+            this.textBoxNewPath.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.textBoxNewPath.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBoxNewPath.Location = new System.Drawing.Point(181, 109);
             this.textBoxNewPath.Name = "textBoxNewPath";
             this.textBoxNewPath.Size = new System.Drawing.Size(158, 20);

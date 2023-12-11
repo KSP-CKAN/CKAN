@@ -112,6 +112,8 @@ namespace CKAN.GUI
             this.RepoNameTextBox.Name = "RepoNameTextBox";
             this.RepoNameTextBox.Size = new System.Drawing.Size(110, 30);
             this.RepoNameTextBox.TabIndex = 11;
+            this.RepoNameTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.RepoNameTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.RepoNameTextBox.TextChanged += new System.EventHandler(this.RepoUrlTextBox_TextChanged);
             //
             // RepoUrlLabel
@@ -126,6 +128,8 @@ namespace CKAN.GUI
             // RepoUrlTextBox
             //
             this.RepoUrlTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.RepoUrlTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.RepoUrlTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.RepoUrlTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.RepoUrlTextBox.Location = new System.Drawing.Point(122, 22);
             this.RepoUrlTextBox.Name = "RepoUrlTextBox";

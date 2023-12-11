@@ -46,6 +46,8 @@ namespace CKAN.GUI
             this.FilterBySuggestsTextBox = new CKAN.GUI.HintTextBox();
             this.FilterByConflictsLabel = new System.Windows.Forms.Label();
             this.FilterByConflictsTextBox = new CKAN.GUI.HintTextBox();
+            this.FilterBySupportsLabel = new System.Windows.Forms.Label();
+            this.FilterBySupportsTextBox = new CKAN.GUI.HintTextBox();
             this.FilterByTagsLabel = new System.Windows.Forms.Label();
             this.FilterByTagsTextBox = new CKAN.GUI.HintTextBox();
             this.FilterByLabelsLabel = new System.Windows.Forms.Label();
@@ -256,11 +258,35 @@ namespace CKAN.GUI
             this.FilterByConflictsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByConflictsTextBox, "FilterByConflictsTextBox");
             //
+            // FilterBySupportsLabel
+            //
+            this.FilterBySupportsLabel.AutoSize = true;
+            this.FilterBySupportsLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterBySupportsLabel.Location = new System.Drawing.Point(6, 217);
+            this.FilterBySupportsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.FilterBySupportsLabel.Name = "FilterBySupportsLabel";
+            this.FilterBySupportsLabel.Size = new System.Drawing.Size(149, 20);
+            this.FilterBySupportsLabel.TabIndex = 14;
+            resources.ApplyResources(this.FilterBySupportsLabel, "FilterBySupportsLabel");
+            //
+            // FilterBySupportsTextBox
+            //
+            this.FilterBySupportsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.FilterBySupportsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FilterBySupportsTextBox.Location = new System.Drawing.Point(130, 215);
+            this.FilterBySupportsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.FilterBySupportsTextBox.Name = "FilterBySupportsTextBox";
+            this.FilterBySupportsTextBox.Size = new System.Drawing.Size(160, 26);
+            this.FilterBySupportsTextBox.TabIndex = 15;
+            this.FilterBySupportsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
+            this.FilterBySupportsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
+            resources.ApplyResources(this.FilterBySupportsTextBox, "FilterBySupportsTextBox");
+            //
             // FilterByTagsLabel
             //
             this.FilterByTagsLabel.AutoSize = true;
             this.FilterByTagsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterByTagsLabel.Location = new System.Drawing.Point(6, 217);
+            this.FilterByTagsLabel.Location = new System.Drawing.Point(6, 243);
             this.FilterByTagsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByTagsLabel.Name = "FilterByTagsLabel";
             this.FilterByTagsLabel.Size = new System.Drawing.Size(149, 20);
@@ -271,7 +297,7 @@ namespace CKAN.GUI
             //
             this.FilterByTagsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByTagsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByTagsTextBox.Location = new System.Drawing.Point(130, 215);
+            this.FilterByTagsTextBox.Location = new System.Drawing.Point(130, 241);
             this.FilterByTagsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByTagsTextBox.Name = "FilterByTagsTextBox";
             this.FilterByTagsTextBox.Size = new System.Drawing.Size(160, 26);
@@ -284,7 +310,7 @@ namespace CKAN.GUI
             //
             this.FilterByLabelsLabel.AutoSize = true;
             this.FilterByLabelsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterByLabelsLabel.Location = new System.Drawing.Point(6, 243);
+            this.FilterByLabelsLabel.Location = new System.Drawing.Point(6, 269);
             this.FilterByLabelsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByLabelsLabel.Name = "FilterByLabelsLabel";
             this.FilterByLabelsLabel.Size = new System.Drawing.Size(149, 20);
@@ -295,7 +321,7 @@ namespace CKAN.GUI
             //
             this.FilterByLabelsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByLabelsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByLabelsTextBox.Location = new System.Drawing.Point(130, 241);
+            this.FilterByLabelsTextBox.Location = new System.Drawing.Point(130, 267);
             this.FilterByLabelsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByLabelsTextBox.Name = "FilterByLabelsTextBox";
             this.FilterByLabelsTextBox.Size = new System.Drawing.Size(160, 26);
@@ -308,7 +334,7 @@ namespace CKAN.GUI
             //
             this.CompatibleLabel.AutoSize = true;
             this.CompatibleLabel.BackColor = System.Drawing.Color.Transparent;
-            this.CompatibleLabel.Location = new System.Drawing.Point(6, 269);
+            this.CompatibleLabel.Location = new System.Drawing.Point(6, 295);
             this.CompatibleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.CompatibleLabel.Name = "CompatibleLabel";
             this.CompatibleLabel.Size = new System.Drawing.Size(149, 20);
@@ -317,14 +343,14 @@ namespace CKAN.GUI
             //
             // CompatibleToggle
             //
-            this.CompatibleToggle.Location = new System.Drawing.Point(130, 267);
+            this.CompatibleToggle.Location = new System.Drawing.Point(130, 293);
             this.CompatibleToggle.Changed += TriStateChanged;
             //
             // InstalledLabel
             //
             this.InstalledLabel.AutoSize = true;
             this.InstalledLabel.BackColor = System.Drawing.Color.Transparent;
-            this.InstalledLabel.Location = new System.Drawing.Point(6, 295);
+            this.InstalledLabel.Location = new System.Drawing.Point(6, 321);
             this.InstalledLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.InstalledLabel.Name = "InstalledLabel";
             this.InstalledLabel.Size = new System.Drawing.Size(149, 20);
@@ -333,14 +359,14 @@ namespace CKAN.GUI
             //
             // InstalledToggle
             //
-            this.InstalledToggle.Location = new System.Drawing.Point(130, 293);
+            this.InstalledToggle.Location = new System.Drawing.Point(130, 319);
             this.InstalledToggle.Changed += TriStateChanged;
             //
             // CachedLabel
             //
             this.CachedLabel.AutoSize = true;
             this.CachedLabel.BackColor = System.Drawing.Color.Transparent;
-            this.CachedLabel.Location = new System.Drawing.Point(6, 321);
+            this.CachedLabel.Location = new System.Drawing.Point(6, 347);
             this.CachedLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.CachedLabel.Name = "CachedLabel";
             this.CachedLabel.Size = new System.Drawing.Size(149, 20);
@@ -349,14 +375,14 @@ namespace CKAN.GUI
             //
             // CachedToggle
             //
-            this.CachedToggle.Location = new System.Drawing.Point(130, 319);
+            this.CachedToggle.Location = new System.Drawing.Point(130, 345);
             this.CachedToggle.Changed += TriStateChanged;
             //
             // NewlyCompatibleLabel
             //
             this.NewlyCompatibleLabel.AutoSize = true;
             this.NewlyCompatibleLabel.BackColor = System.Drawing.Color.Transparent;
-            this.NewlyCompatibleLabel.Location = new System.Drawing.Point(6, 347);
+            this.NewlyCompatibleLabel.Location = new System.Drawing.Point(6, 373);
             this.NewlyCompatibleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.NewlyCompatibleLabel.Name = "NewlyCompatibleLabel";
             this.NewlyCompatibleLabel.Size = new System.Drawing.Size(149, 20);
@@ -365,14 +391,14 @@ namespace CKAN.GUI
             //
             // NewlyCompatibleToggle
             //
-            this.NewlyCompatibleToggle.Location = new System.Drawing.Point(130, 345);
+            this.NewlyCompatibleToggle.Location = new System.Drawing.Point(130, 371);
             this.NewlyCompatibleToggle.Changed += TriStateChanged;
             //
             // UpgradeableLabel
             //
             this.UpgradeableLabel.AutoSize = true;
             this.UpgradeableLabel.BackColor = System.Drawing.Color.Transparent;
-            this.UpgradeableLabel.Location = new System.Drawing.Point(6, 373);
+            this.UpgradeableLabel.Location = new System.Drawing.Point(6, 399);
             this.UpgradeableLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.UpgradeableLabel.Name = "UpgradeableLabel";
             this.UpgradeableLabel.Size = new System.Drawing.Size(149, 20);
@@ -381,14 +407,14 @@ namespace CKAN.GUI
             //
             // UpgradeableToggle
             //
-            this.UpgradeableToggle.Location = new System.Drawing.Point(130, 371);
+            this.UpgradeableToggle.Location = new System.Drawing.Point(130, 397);
             this.UpgradeableToggle.Changed += TriStateChanged;
             //
             // ReplaceableLabel
             //
             this.ReplaceableLabel.AutoSize = true;
             this.ReplaceableLabel.BackColor = System.Drawing.Color.Transparent;
-            this.ReplaceableLabel.Location = new System.Drawing.Point(6, 399);
+            this.ReplaceableLabel.Location = new System.Drawing.Point(6, 425);
             this.ReplaceableLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ReplaceableLabel.Name = "ReplaceableLabel";
             this.ReplaceableLabel.Size = new System.Drawing.Size(149, 20);
@@ -397,7 +423,7 @@ namespace CKAN.GUI
             //
             // ReplaceableToggle
             //
-            this.ReplaceableToggle.Location = new System.Drawing.Point(130, 397);
+            this.ReplaceableToggle.Location = new System.Drawing.Point(130, 423);
             this.ReplaceableToggle.Changed += TriStateChanged;
             //
             // EditModSearchDetails
@@ -421,6 +447,8 @@ namespace CKAN.GUI
             this.Controls.Add(this.FilterBySuggestsTextBox);
             this.Controls.Add(this.FilterByConflictsLabel);
             this.Controls.Add(this.FilterByConflictsTextBox);
+            this.Controls.Add(this.FilterBySupportsLabel);
+            this.Controls.Add(this.FilterBySupportsTextBox);
             this.Controls.Add(this.FilterByTagsLabel);
             this.Controls.Add(this.FilterByTagsTextBox);
             this.Controls.Add(this.FilterByLabelsLabel);
@@ -438,7 +466,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.ReplaceableLabel);
             this.Controls.Add(this.ReplaceableToggle);
             this.Name = "EditModSearchDetails";
-            this.Size = new System.Drawing.Size(300, 434);
+            this.Size = new System.Drawing.Size(300, 460);
             resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -448,36 +476,38 @@ namespace CKAN.GUI
         #endregion
 
         private System.Windows.Forms.Label FilterByNameLabel;
-        internal CKAN.GUI.HintTextBox FilterByNameTextBox;
+        private CKAN.GUI.HintTextBox FilterByNameTextBox;
         private System.Windows.Forms.Label FilterByAuthorLabel;
-        internal CKAN.GUI.HintTextBox FilterByAuthorTextBox;
+        private CKAN.GUI.HintTextBox FilterByAuthorTextBox;
         private System.Windows.Forms.Label FilterByDescriptionLabel;
-        internal CKAN.GUI.HintTextBox FilterByDescriptionTextBox;
+        private CKAN.GUI.HintTextBox FilterByDescriptionTextBox;
         private System.Windows.Forms.Label FilterByLanguageLabel;
-        internal CKAN.GUI.HintTextBox FilterByLanguageTextBox;
+        private CKAN.GUI.HintTextBox FilterByLanguageTextBox;
         private System.Windows.Forms.Label FilterByDependsLabel;
-        internal CKAN.GUI.HintTextBox FilterByDependsTextBox;
+        private CKAN.GUI.HintTextBox FilterByDependsTextBox;
         private System.Windows.Forms.Label FilterByRecommendsLabel;
-        internal CKAN.GUI.HintTextBox FilterByRecommendsTextBox;
+        private CKAN.GUI.HintTextBox FilterByRecommendsTextBox;
         private System.Windows.Forms.Label FilterBySuggestsLabel;
-        internal CKAN.GUI.HintTextBox FilterBySuggestsTextBox;
+        private CKAN.GUI.HintTextBox FilterBySuggestsTextBox;
         private System.Windows.Forms.Label FilterByConflictsLabel;
-        internal CKAN.GUI.HintTextBox FilterByConflictsTextBox;
+        private CKAN.GUI.HintTextBox FilterByConflictsTextBox;
+        private System.Windows.Forms.Label FilterBySupportsLabel;
+        private CKAN.GUI.HintTextBox FilterBySupportsTextBox;
         private System.Windows.Forms.Label FilterByTagsLabel;
-        internal CKAN.GUI.HintTextBox FilterByTagsTextBox;
+        private CKAN.GUI.HintTextBox FilterByTagsTextBox;
         private System.Windows.Forms.Label FilterByLabelsLabel;
-        internal CKAN.GUI.HintTextBox FilterByLabelsTextBox;
+        private CKAN.GUI.HintTextBox FilterByLabelsTextBox;
         private System.Windows.Forms.Label CompatibleLabel;
-        internal CKAN.GUI.TriStateToggle CompatibleToggle;
+        private CKAN.GUI.TriStateToggle CompatibleToggle;
         private System.Windows.Forms.Label InstalledLabel;
-        internal CKAN.GUI.TriStateToggle InstalledToggle;
+        private CKAN.GUI.TriStateToggle InstalledToggle;
         private System.Windows.Forms.Label CachedLabel;
-        internal CKAN.GUI.TriStateToggle CachedToggle;
+        private CKAN.GUI.TriStateToggle CachedToggle;
         private System.Windows.Forms.Label NewlyCompatibleLabel;
-        internal CKAN.GUI.TriStateToggle NewlyCompatibleToggle;
+        private CKAN.GUI.TriStateToggle NewlyCompatibleToggle;
         private System.Windows.Forms.Label UpgradeableLabel;
-        internal CKAN.GUI.TriStateToggle UpgradeableToggle;
+        private CKAN.GUI.TriStateToggle UpgradeableToggle;
         private System.Windows.Forms.Label ReplaceableLabel;
-        internal CKAN.GUI.TriStateToggle ReplaceableToggle;
+        private CKAN.GUI.TriStateToggle ReplaceableToggle;
     }
 }

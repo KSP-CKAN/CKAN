@@ -43,6 +43,8 @@ namespace CKAN.GUI
             // 
             // HintTextBox
             // 
+            this.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.Controls.Add(ClearIcon);
             this.SizeChanged += new System.EventHandler(this.HintTextBox_SizeChanged);
             this.TextChanged += new System.EventHandler(this.HintTextBox_TextChanged);

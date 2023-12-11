@@ -112,6 +112,8 @@ namespace CKAN.GUI
             this.IdentifierTextBox.Name = "IdentifierTextBox";
             this.IdentifierTextBox.Size = new System.Drawing.Size(250, 23);
             this.IdentifierTextBox.TabIndex = 1;
+            this.IdentifierTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.IdentifierTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             resources.ApplyResources(this.IdentifierTextBox, "IdentifierTextBox");
             // 
             // NameLabel
@@ -131,6 +133,8 @@ namespace CKAN.GUI
             this.NameTextBox.Name = "NameTextBox";
             this.NameTextBox.Size = new System.Drawing.Size(250, 23);
             this.NameTextBox.TabIndex = 3;
+            this.NameTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.NameTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             resources.ApplyResources(this.NameTextBox, "NameTextBox");
             // 
             // AbstractLabel
@@ -151,6 +155,8 @@ namespace CKAN.GUI
             this.AbstractTextBox.Name = "AbstractTextBox";
             this.AbstractTextBox.Size = new System.Drawing.Size(250, 50);
             this.AbstractTextBox.TabIndex = 5;
+            this.AbstractTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.AbstractTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             resources.ApplyResources(this.AbstractTextBox, "AbstractTextBox");
             // 
             // AuthorLabel
@@ -170,6 +176,8 @@ namespace CKAN.GUI
             this.AuthorTextBox.Name = "AbstractTextBox";
             this.AuthorTextBox.Size = new System.Drawing.Size(250, 23);
             this.AuthorTextBox.TabIndex = 5;
+            this.AuthorTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.AuthorTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             resources.ApplyResources(this.AuthorTextBox, "AuthorTextBox");
             // 
             // VersionLabel
@@ -189,6 +197,8 @@ namespace CKAN.GUI
             this.VersionTextBox.Name = "VersionTextBox";
             this.VersionTextBox.Size = new System.Drawing.Size(250, 23);
             this.VersionTextBox.TabIndex = 7;
+            this.VersionTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.VersionTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             resources.ApplyResources(this.VersionTextBox, "VersionTextBox");
             // 
             // GameVersionLabel

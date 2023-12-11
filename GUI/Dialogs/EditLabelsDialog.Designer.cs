@@ -175,6 +175,8 @@ namespace CKAN.GUI
             this.NameTextBox.Location = new System.Drawing.Point(118, 10);
             this.NameTextBox.Name = "NameTextBox";
             this.NameTextBox.Size = new System.Drawing.Size(125, 23);
+            this.NameTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.NameTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             resources.ApplyResources(this.NameTextBox, "NameTextBox");
             // 
             // ColorLabel

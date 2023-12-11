@@ -545,6 +545,33 @@ namespace CKAN.GUI
             base.OnFormClosing(e);
         }
 
+        // https://learn.microsoft.com/en-us/windows/win32/winmsg/window-notifications
+        private const int WM_PARENTNOTIFY = 0x210;
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            if (Platform.IsWindows)
+            {
+                switch (m.Msg)
+                {
+                    // Windows sends us this when you click outside the search dropdown
+                    // Mono closes the dropdown automatically
+                    case WM_PARENTNOTIFY:
+                        ManageMods?.CloseSearch(
+                            PointToScreen(new Point(m.LParam.ToInt32() & 0xffff,
+                                                    m.LParam.ToInt32() >> 16)));
+                        break;
+                }
+            }
+        }
+
+        protected override void OnMove(EventArgs e)
+        {
+            base.OnMove(e);
+            ManageMods?.ParentMoved();
+        }
+
         private void SetupDefaultSearch()
         {
             var registry = RegistryManager.Instance(CurrentInstance, repoData).registry;
@@ -858,7 +885,7 @@ namespace CKAN.GUI
 
         private void reportMetadataIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Utilities.ProcessStartURL("https://github.com/KSP-CKAN/NetKAN/issues/new/choose");
+            Utilities.ProcessStartURL(Manager.CurrentInstance.game.MetadataBugtrackerURL.ToString());
         }
 
         private void Main_Resize(object sender, EventArgs e)

@@ -1,5 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
@@ -8,6 +13,9 @@ namespace CKAN.GUI
     /// Contains several separate fields for searching different properties,
     /// plus a combined field that represents them all in a special syntax.
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class EditModSearchDetails : UserControl
     {
         /// <summary>
@@ -31,6 +39,79 @@ namespace CKAN.GUI
         /// </summary>
         public event Action SurrenderFocus;
 
+        public void SetFocus()
+        {
+            FilterByNameTextBox.Focus();
+        }
+
+        public ModSearch CurrentSearch()
+            => CurrentSearch(
+                Main.Instance.ManageMods.mainModList
+                                        .ModuleLabels
+                                        .LabelsFor(Main.Instance.CurrentInstance.Name)
+                                        .ToList());
+
+        private ModSearch CurrentSearch(List<ModuleLabel> knownLabels)
+            => new ModSearch(
+                FilterByNameTextBox.Text,
+                FilterByAuthorTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByDescriptionTextBox.Text,
+                FilterByLanguageTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByDependsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByRecommendsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterBySuggestsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByConflictsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterBySupportsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByTagsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByLabelsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries)
+                                          .Select(ln => knownLabels.FirstOrDefault(lb => lb.Name == ln))
+                                          .Where(lb => lb != null)
+                                          .ToList(),
+                CompatibleToggle.Value,
+                InstalledToggle.Value,
+                CachedToggle.Value,
+                NewlyCompatibleToggle.Value,
+                UpgradeableToggle.Value,
+                ReplaceableToggle.Value);
+
+        public void PopulateSearch(ModSearch search)
+        {
+            FilterByNameTextBox.Text        = search?.Name
+                                              ?? "";
+            FilterByAuthorTextBox.Text      = search?.Authors.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByDescriptionTextBox.Text = search?.Description
+                                              ?? "";
+            FilterByLanguageTextBox.Text    = search?.Localizations.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByDependsTextBox.Text     = search?.DependsOn.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByRecommendsTextBox.Text  = search?.Recommends.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterBySuggestsTextBox.Text    = search?.Suggests.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByConflictsTextBox.Text   = search?.ConflictsWith.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterBySupportsTextBox.Text    = search?.Supports.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByTagsTextBox.Text        = search?.TagNames.Aggregate("", CombinePieces)
+                                              ?? "";
+            FilterByLabelsTextBox.Text      = search?.Labels.Select(lb => lb.Name)
+                                                            .Aggregate("", CombinePieces)
+                                              ?? "";
+
+            CompatibleToggle.Value      = search?.Compatible;
+            InstalledToggle.Value       = search?.Installed;
+            CachedToggle.Value          = search?.Cached;
+            NewlyCompatibleToggle.Value = search?.NewlyCompatible;
+            UpgradeableToggle.Value     = search?.Upgradeable;
+            ReplaceableToggle.Value     = search?.Replaceable;
+        }
+
+        private static string CombinePieces(string joined, string piece)
+            => string.IsNullOrEmpty(joined) ? piece
+                                            : $"{joined} {piece}";
+
         /// <summary>
         /// Override special settings to make this control behave like a dropdown.
         /// The "|=" lines are turning ON those flags.
@@ -49,6 +130,8 @@ namespace CKAN.GUI
                 cp.Style   &= ~(int)WindowStyles.WS_VISIBLE;
                 // The window is a pop-up window. This style cannot be used with the WS_CHILD style.
                 cp.Style   |= unchecked((int)WindowStyles.WS_POPUP);
+                // The window should be placed above all non-topmost windows and should stay above them, even when the window is deactivated. To add or remove this style, use the SetWindowPos function.
+                cp.ExStyle |= (int)WindowExStyles.WS_EX_TOPMOST;
                 // The window is intended to be used as a floating toolbar. A tool window has a title bar that is shorter than a normal title bar, and the window title is drawn using a smaller font. A tool window does not appear in the taskbar or in the dialog that appears when the user presses ALT+TAB. If a tool window has a system menu, its icon is not displayed on the title bar. However, you can display the system menu by right-clicking or by typing ALT+SPACE.
                 cp.ExStyle |= (int)WindowExStyles.WS_EX_TOOLWINDOW;
                 // The window itself contains child windows that should take part in dialog box navigation. If this style is specified, the dialog manager recurses into children of this window when performing navigation operations such as handling the TAB key, an arrow key, or a keyboard mnemonic.
@@ -117,6 +200,7 @@ namespace CKAN.GUI
         // https://docs.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
         private enum WindowExStyles : uint
         {
+            WS_EX_TOPMOST       =        0x8,
             WS_EX_TOOLWINDOW    =       0x80,
             WS_EX_CONTROLPARENT =    0x10000,
             WS_EX_NOACTIVATE    = 0x08000000,

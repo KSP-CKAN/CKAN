@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -38,6 +39,22 @@ namespace CKAN.GUI
         public void ExpandCollapse()
         {
             (ActiveControl as EditModSearch)?.ExpandCollapse();
+        }
+
+        public void CloseSearch(Point screenCoords)
+        {
+            foreach (var editor in editors)
+            {
+                editor.CloseSearch(screenCoords);
+            }
+        }
+
+        public void ParentMoved()
+        {
+            foreach (var editor in editors)
+            {
+                editor.ParentMoved();
+            }
         }
 
         public void SetSearches(List<ModSearch> searches)

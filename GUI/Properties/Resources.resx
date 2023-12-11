@@ -412,6 +412,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>rec:</value></data>
   <data name="ModSearchSuggestsPrefix" xml:space="preserve"><value>sug:</value></data>
   <data name="ModSearchConflictsPrefix" xml:space="preserve"><value>conf:</value></data>
+  <data name="ModSearchSupportsPrefix" xml:space="preserve"><value>sup:</value></data>
   <data name="ModSearchTagPrefix" xml:space="preserve"><value>tag:</value></data>
   <data name="ModSearchLabelPrefix" xml:space="preserve"><value>label:</value></data>
   <data name="ModSearchYesPrefix" xml:space="preserve"><value>is:</value></data>

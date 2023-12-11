@@ -33,7 +33,10 @@ namespace CKAN.GUI
             Util.Invoke(statusStrip1, () =>
                 StatusLabel.ToolTipText = StatusLabel.Text = msg.Replace("\r\n", " ").Replace("\n", " ")
             );
-            Wait.AddLogMessage(msg);
+            if (!string.IsNullOrEmpty(msg))
+            {
+                Wait.AddLogMessage(msg);
+            }
         }
 
         [ForbidGUICalls]
