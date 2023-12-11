@@ -725,20 +725,20 @@ namespace CKAN
         /// <param name="possibleConfigOnlyDirs">Directories that the user might want to remove after uninstall</param>
         private void Uninstall(string identifier, ref HashSet<string> possibleConfigOnlyDirs, Registry registry)
         {
-            TxFileManager file_transaction = new TxFileManager();
+            var file_transaction = new TxFileManager();
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
-                InstalledModule mod = registry.InstalledModule(identifier);
+                var instMod = registry.InstalledModule(identifier);
 
-                if (mod == null)
+                if (instMod == null)
                 {
                     log.ErrorFormat("Trying to uninstall {0} but it's not installed", identifier);
                     throw new ModNotInstalledKraken(identifier);
                 }
 
                 // Walk our registry to find all files for this mod.
-                var files = mod.Files.ToArray();
+                var modFiles = instMod.Files.ToArray();
 
                 // We need case insensitive path matching on Windows
                 var directoriesToDelete = Platform.IsWindows
@@ -748,29 +748,16 @@ namespace CKAN
                 // Files that Windows refused to delete due to locking (probably)
                 var undeletableFiles = new List<string>();
 
-                foreach (string file in files)
+                foreach (string relPath in modFiles)
                 {
-                    string path = ksp.ToAbsoluteGameDir(file);
+                    string absPath = ksp.ToAbsoluteGameDir(relPath);
 
                     try
                     {
-                        FileAttributes attr = File.GetAttributes(path);
-
-                        // [This is] bitwise math. Basically, attr is some binary value with one bit meaning
-                        // "this is a directory". The bitwise and & operator will return a binary value where
-                        // only the bits that are on (1) in both the operands are turned on. In this case
-                        // doing a bitwise and operation against attr and the FileAttributes.Directory value
-                        // will return the value of FileAttributes.Directory if the Directory file attribute
-                        // bit is turned on. See en.wikipedia.org/wiki/Bitwise_operation for a better
-                        // explanation. – Kyle Trauberman Aug 30 '12 at 21:28
-                        // (https://stackoverflow.com/questions/1395205/better-way-to-check-if-path-is-a-file-or-a-directory)
-                        // This is the fastest way to do this test.
-                        if (attr.HasFlag(FileAttributes.Directory))
+                        if (File.GetAttributes(absPath)
+                                .HasFlag(FileAttributes.Directory))
                         {
-                            if (!directoriesToDelete.Contains(path))
-                            {
-                                directoriesToDelete.Add(path);
-                            }
+                            directoriesToDelete.Add(absPath);
                         }
                         else
                         {
@@ -778,32 +765,28 @@ namespace CKAN
                             // Helps clean up directories when modules are uninstalled out of dependency order
                             // Since we check for directory contents when deleting, this should purge empty
                             // dirs, making less ModuleManager headaches for people.
-                            var directoryName = Path.GetDirectoryName(path);
-                            if (!(directoriesToDelete.Contains(directoryName)))
-                            {
-                                directoriesToDelete.Add(directoryName);
-                            }
+                            directoriesToDelete.Add(Path.GetDirectoryName(absPath));
 
-                            log.DebugFormat("Removing {0}", file);
-                            file_transaction.Delete(path);
+                            log.DebugFormat("Removing {0}", relPath);
+                            file_transaction.Delete(absPath);
                         }
                     }
                     catch (IOException)
                     {
                         // "The specified file is in use."
-                        undeletableFiles.Add(file);
+                        undeletableFiles.Add(relPath);
                     }
                     catch (UnauthorizedAccessException)
                     {
                         // "The caller does not have the required permission."
                         // "The file is an executable file that is in use."
-                        undeletableFiles.Add(file);
+                        undeletableFiles.Add(relPath);
                     }
                     catch (Exception exc)
                     {
                         // We don't consider this problem serious enough to abort and revert,
                         // so treat it as a "--verbose" level log message.
-                        log.InfoFormat("Failure in locating file {0}: {1}", path, exc.Message);
+                        log.InfoFormat("Failure in locating file {0}: {1}", absPath, exc.Message);
                     }
                 }
 
@@ -834,18 +817,18 @@ namespace CKAN
 
                     // See what's left in this folder and what we can do about it
                     GroupFilesByRemovable(ksp.ToRelativeGameDir(directory),
-                                          registry, files, ksp.game,
+                                          registry, modFiles, ksp.game,
                                           (Directory.Exists(directory)
                                               ? Directory.EnumerateFileSystemEntries(directory, "*", SearchOption.AllDirectories)
                                               : Enumerable.Empty<string>())
-                                           .Select(f => ksp.ToRelativeGameDir(f)),
+                                           .Select(f => ksp.ToRelativeGameDir(f))
+                                           .ToArray(),
                                           out string[] removable,
                                           out string[] notRemovable);
 
                     // Delete the auto-removable files and dirs
-                    foreach (var relPath in removable)
+                    foreach (var absPath in removable.Select(ksp.ToAbsoluteGameDir))
                     {
-                        var absPath = ksp.ToAbsoluteGameDir(relPath);
                         if (File.Exists(absPath))
                         {
                             log.DebugFormat("Attempting transaction deletion of file {0}", absPath);
@@ -866,7 +849,7 @@ namespace CKAN
                         }
                     }
 
-                    if (!notRemovable.Any())
+                    if (notRemovable.Length < 1)
                     {
                         // We *don't* use our file_transaction to delete files here, because
                         // it fails if the system's temp directory is on a different device
@@ -880,19 +863,26 @@ namespace CKAN
                         log.DebugFormat("Removing {0}", directory);
                         Directory.Delete(directory);
                     }
-                    else if (notRemovable.All(f => registry.FileOwner(f) == null && !files.Contains(f)))
+                    else if (notRemovable.Except(possibleConfigOnlyDirs?.Select(ksp.ToRelativeGameDir)
+                                                 ?? Enumerable.Empty<string>())
+                                         // Can't remove if owned by some other mod
+                                         .Any(relPath => registry.FileOwner(relPath) != null
+                                                         || modFiles.Contains(relPath)))
                     {
-                        log.DebugFormat("Directory {0} contains only non-registered files, ask user about it later: {1}",
-                                        directory, string.Join(", ", notRemovable));
-                        if (possibleConfigOnlyDirs == null)
-                        {
-                            possibleConfigOnlyDirs = new HashSet<string>();
-                        }
-                        possibleConfigOnlyDirs.Add(directory);
+                        log.InfoFormat("Not removing directory {0}, it's not empty", directory);
                     }
                     else
                     {
-                        log.InfoFormat("Not removing directory {0}, it's not empty", directory);
+                        log.DebugFormat("Directory {0} contains only non-registered files, ask user about it later: {1}",
+                                        directory,
+                                        string.Join(", ", notRemovable));
+                        if (possibleConfigOnlyDirs == null)
+                        {
+                            possibleConfigOnlyDirs = Platform.IsWindows
+                                ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                                : new HashSet<string>();
+                        }
+                        possibleConfigOnlyDirs.Add(directory);
                     }
                 }
                 log.InfoFormat("Removed {0}", identifier);
@@ -900,14 +890,20 @@ namespace CKAN
             }
         }
 
-        internal static void GroupFilesByRemovable(string relRoot,
-                                                   Registry registry,
-                                                   string[] alreadyRemoving,
-                                                   IGame game,
-                                                   IEnumerable<string> relPaths,
+        internal static void GroupFilesByRemovable(string       relRoot,
+                                                   Registry     registry,
+                                                   string[]     alreadyRemoving,
+                                                   IGame        game,
+                                                   string[]     relPaths,
                                                    out string[] removable,
                                                    out string[] notRemovable)
         {
+            if (relPaths.Length < 1)
+            {
+                removable    = Array.Empty<string>();
+                notRemovable = Array.Empty<string>();
+                return;
+            }
             log.DebugFormat("Getting contents of {0}", relRoot);
             var contents = relPaths
                 // Split into auto-removable and not-removable
@@ -923,8 +919,8 @@ namespace CKAN
                 .ToDictionary(grp => grp.Key,
                               grp => grp.OrderByDescending(f => f.Length)
                                         .ToArray());
-            removable    = contents.TryGetValue(true,  out string[] val1) ? val1 : new string[] {};
-            notRemovable = contents.TryGetValue(false, out string[] val2) ? val2 : new string[] {};
+            removable    = contents.TryGetValue(true,  out string[] val1) ? val1 : Array.Empty<string>();
+            notRemovable = contents.TryGetValue(false, out string[] val2) ? val2 : Array.Empty<string>();
             log.DebugFormat("Got removable: {0}",    string.Join(", ", removable));
             log.DebugFormat("Got notRemovable: {0}", string.Join(", ", notRemovable));
         }
@@ -937,7 +933,9 @@ namespace CKAN
         {
             if (directories == null || directories.Count == 0)
             {
-                return new HashSet<string>();
+                return Platform.IsWindows
+                    ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                    : new HashSet<string>();
             }
 
             var gameDir = CKANPathUtils.NormalizePath(ksp.GameDir());
@@ -949,7 +947,9 @@ namespace CKAN
                 .Distinct()
                 .SelectMany(dir =>
                 {
-                    var results = new HashSet<string>();
+                    var results = Platform.IsWindows
+                        ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                        : new HashSet<string>();
                     // Adding in the DirectorySeparatorChar fixes attempts on Windows
                     // to parse "X:" which resolves to Environment.CurrentDirectory
                     var dirInfo = new DirectoryInfo(

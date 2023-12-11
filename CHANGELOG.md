@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - [Multiple] Support multiple download URLs per module (#3877 by: HebaruSan; reviewed: techman83)
 - [Multiple] French translation updates from Crowdin (#3879 by: vinix38; reviewed: HebaruSan)
-- [Multiple] Improve handling of unregistered files at uninstall (#3890 by: HebaruSan; reviewed: techman83)
+- [Multiple] Improve handling of unregistered files at uninstall (#3890, #3942 by: HebaruSan; reviewed: techman83)
 - [Multiple] Show recommendations of full changeset with opt-out (#3892 by: HebaruSan; reviewed: techman83)
 - [Multiple] Dutch translation and icon duplication guardrails (#3897 by: HebaruSan; reviewed: techman83)
 - [GUI] Shorten toolbar button labels (#3903 by: HebaruSan; reviewed: techman83)
