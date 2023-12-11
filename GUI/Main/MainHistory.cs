@@ -37,12 +37,14 @@ namespace CKAN.GUI
 
         private void InstallationHistory_OnSelectedModuleChanged(CkanModule m)
         {
-            ActiveModInfo = new GUIMod(m, repoData,
-                                       RegistryManager.Instance(CurrentInstance, repoData).registry,
-                                       CurrentInstance.VersionCriteria(),
-                                       null,
-                                       configuration.HideEpochs,
-                                       configuration.HideV);
+            ActiveModInfo = m == null
+                ? null
+                : new GUIMod(m, repoData,
+                             RegistryManager.Instance(CurrentInstance, repoData).registry,
+                             CurrentInstance.VersionCriteria(),
+                             null,
+                             configuration.HideEpochs,
+                             configuration.HideV);
         }
 
     }
