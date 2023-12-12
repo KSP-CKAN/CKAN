@@ -39,6 +39,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Don't change language setting with scroll wheel (#3928 by: HebaruSan; reviewed: techman83)
 - [Core] Make where-CKAN-would-install logic consistent (#3931 by: HebaruSan; reviewed: techman83)
 - [Multiple] Improve provides prompt usability, with bugfixes (#3934 by: HebaruSan; reviewed: JonnyOThan)
+- [GUI] Fix two small typos in Resources.pt-BR.resx at line 182 (#3943 by: idrkwhattoput; reviewed: HebaruSan)
 
 ### Internal
 
