@@ -668,7 +668,7 @@ namespace CKAN
                     registry_manager.registry.FindRemovableAutoInstalled(
                         registry_manager.registry.InstalledModules
                             .Where(im => !revdep.Contains(im.identifier))
-                            .Concat(installing?.Select(m => new InstalledModule(null, m, new string[0], false)) ?? new InstalledModule[0])
+                            .Concat(installing?.Select(m => new InstalledModule(null, m, Array.Empty<string>(), false)) ?? Array.Empty<InstalledModule>())
                             .ToList(),
                         ksp.VersionCriteria())
                     .Select(im => im.identifier))
@@ -1160,7 +1160,7 @@ namespace CKAN
                     // Conjure the future state of the installed modules list after upgrading
                     registry.InstalledModules
                             .Where(im => !removingIdents.Contains(im.identifier))
-                            .Concat(modules.Select(m => new InstalledModule(null, m, new string[0], false)))
+                            .Concat(modules.Select(m => new InstalledModule(null, m, Array.Empty<string>(), false)))
                             .ToList(),
                     ksp.VersionCriteria())
                 .ToList();

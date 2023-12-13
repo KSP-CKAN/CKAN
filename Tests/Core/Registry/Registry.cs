@@ -9,6 +9,7 @@ using Tests.Data;
 
 using CKAN;
 using CKAN.Versioning;
+using System;
 
 namespace Tests.Core.Registry
 {
@@ -315,8 +316,8 @@ namespace Tests.Core.Registry
                 CkanModule dependingMod = registry.GetModuleByVersion("DependingMod", "1.0");
 
                 GameInstance gameInst = gameInstWrapper.KSP;
-                registry.RegisterModule(olderDepMod,  new string[0], gameInst, false);
-                registry.RegisterModule(dependingMod, new string[0], gameInst, false);
+                registry.RegisterModule(olderDepMod,  Array.Empty<string>(), gameInst, false);
+                registry.RegisterModule(dependingMod, Array.Empty<string>(), gameInst, false);
                 GameVersionCriteria crit = new GameVersionCriteria(olderDepMod.ksp_version);
 
                 // Act

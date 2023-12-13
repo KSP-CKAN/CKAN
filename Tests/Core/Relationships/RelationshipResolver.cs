@@ -1036,8 +1036,8 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
 
                 // Start with eve and eveDefaultConfig installed
-                registry.RegisterModule(eve, new string[0], ksp.KSP, false);
-                registry.RegisterModule(eveDefaultConfig, new string[0], ksp.KSP, false);
+                registry.RegisterModule(eve, Array.Empty<string>(), ksp.KSP, false);
+                registry.RegisterModule(eveDefaultConfig, Array.Empty<string>(), ksp.KSP, false);
 
                 Assert.DoesNotThrow(() => registry.CheckSanity());
 

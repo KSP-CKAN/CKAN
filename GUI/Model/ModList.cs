@@ -232,7 +232,7 @@ namespace CKAN.GUI
                         ch.ChangeType == GUIModChangeType.Replace
                             ? registry.GetReplacement(ch.Mod, crit)?.ReplaceWith
                             : (ch as ModUpgrade)?.targetMod ?? ch.Mod,
-                        new string[0],
+                        Enumerable.Empty<string>(),
                         false)));
         }
 
