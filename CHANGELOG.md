@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.34.0
+## v1.34.1
+
+
+
+## v1.34.0 (Minkowski)
 
 ### Features
 
