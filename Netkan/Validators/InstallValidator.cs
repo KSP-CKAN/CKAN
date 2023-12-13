@@ -87,6 +87,10 @@ namespace CKAN.NetKAN.Validators
                         if (stanza.ContainsKey(propName))
                         {
                             string val  = (string)stanza[propName];
+                            if (string.IsNullOrEmpty(val))
+                            {
+                                throw new Kraken($"Install property '{propName}' is null or empty");
+                            }
                             string norm = CKANPathUtils.NormalizePath(val);
                             if (val != norm)
                             {

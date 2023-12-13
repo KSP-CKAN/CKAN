@@ -40,6 +40,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Make where-CKAN-would-install logic consistent (#3931 by: HebaruSan; reviewed: techman83)
 - [Multiple] Improve provides prompt usability, with bugfixes (#3934 by: HebaruSan; reviewed: JonnyOThan)
 - [GUI] Fix two small typos in Resources.pt-BR.resx at line 182 (#3943 by: idrkwhattoput; reviewed: HebaruSan)
+- [Core] Handle backslashes in ZIP paths (#3893 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 

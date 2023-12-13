@@ -427,8 +427,13 @@ namespace CKAN
             // Surely there's a better way, although this is fast enough we may not care.
             foreach (ZipEntry entry in zipfile)
             {
+                // Backslashes are not allowed in filenames according to the ZIP spec,
+                // but there's a non-conformant PowerShell tool that uses them anyway.
+                // Try to accommodate those mods.
+                string entryName = entry.Name.Replace('\\', '/');
+
                 // Skips dirs and things not prescribed by our install stanza.
-                if (!IsWanted(entry.Name, shortestMatch))
+                if (!IsWanted(entryName, shortestMatch))
                 {
                     continue;
                 }
@@ -447,7 +452,7 @@ namespace CKAN
                     // Get the full name of the file.
                     // Update our file info with the install location
                     file_info.destination = TransformOutputName(
-                        ksp.game, entry.Name, installDir, @as);
+                        ksp.game, entryName, installDir, @as);
                     file_info.makedir = AllowDirectoryCreation(
                         ksp.game,
                         ksp?.ToRelativeGameDir(file_info.destination)
