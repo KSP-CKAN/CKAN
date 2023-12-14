@@ -826,7 +826,8 @@ namespace CKAN.GUI
                 tabController.ShowTab("ChangesetTabPage", 1, false);
                 UpdateChangesDialog(
                     changeset,
-                    conflicts.ToDictionary(item => item.Key.ToCkanModule(), item => item.Value));
+                    conflicts.ToDictionary(item => item.Key.ToCkanModule(),
+                                           item => item.Value));
                 auditRecommendationsMenuItem.Enabled = false;
             }
             else
@@ -982,9 +983,11 @@ namespace CKAN.GUI
         }
 
         // This is used by Reinstall
-        private void ManageMods_StartChangeSet(List<ModChange> changeset)
+        private void ManageMods_StartChangeSet(List<ModChange> changeset, Dictionary<GUIMod, string> conflicts)
         {
-            UpdateChangesDialog(changeset, null);
+            UpdateChangesDialog(changeset,
+                                conflicts?.ToDictionary(item => item.Key.ToCkanModule(),
+                                                        item => item.Value));
             tabController.ShowTab("ChangesetTabPage", 1);
         }
 
