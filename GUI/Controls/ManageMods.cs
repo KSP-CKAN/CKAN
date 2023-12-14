@@ -101,7 +101,7 @@ namespace CKAN.GUI
         public event Action<List<ModChange>, Dictionary<GUIMod, string>> OnChangeSetChanged;
         public event Action OnRegistryChanged;
 
-        public event Action<List<ModChange>> StartChangeSet;
+        public event Action<List<ModChange>, Dictionary<GUIMod, string>> StartChangeSet;
         public event Action<IEnumerable<GUIMod>> LabelsAfterUpdate;
 
         private List<ModChange> ChangeSet
@@ -523,7 +523,7 @@ namespace CKAN.GUI
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
         {
-            StartChangeSet?.Invoke(currentChangeSet);
+            StartChangeSet?.Invoke(currentChangeSet, Conflicts);
         }
 
         public void MarkModForUpdate(string identifier, bool value)
@@ -1054,7 +1054,7 @@ namespace CKAN.GUI
                                                                module.version)
                                            ?? module,
                                    true)
-                });
+                }, null);
             }
         }
 
@@ -1672,8 +1672,8 @@ namespace CKAN.GUI
 
         public void InstanceUpdated()
         {
-            ChangeSet = null;
             Conflicts = null;
+            ChangeSet = null;
         }
 
         [ForbidGUICalls]
