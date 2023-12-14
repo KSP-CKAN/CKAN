@@ -771,6 +771,14 @@ namespace CKAN
                             file_transaction.Delete(absPath);
                         }
                     }
+                    catch (FileNotFoundException exc)
+                    {
+                        log.Debug("Ignoring missing file while deleting", exc);
+                    }
+                    catch (DirectoryNotFoundException exc)
+                    {
+                        log.Debug("Ignoring missing directory while deleting", exc);
+                    }
                     catch (IOException)
                     {
                         // "The specified file is in use."
