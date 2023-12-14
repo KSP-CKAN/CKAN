@@ -153,7 +153,7 @@ namespace CKAN.Configuration
         public IEnumerable<string> GetAuthTokenHosts()
         {
             RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(authTokenKeyNoPrefix);
-            return key?.GetValueNames() ?? new string[0];
+            return key?.GetValueNames() ?? Array.Empty<string>();
         }
 
         public void SetAuthToken(string host, string token)

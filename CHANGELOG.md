@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.34.1
 
+### Bugfixes
 
+- [GUI] Protect upgradeable mods from being displayed as uninstalled (#3944 by: HebaruSan)
 
 ## v1.34.0 (Minkowski)
 

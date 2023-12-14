@@ -1193,9 +1193,9 @@ namespace CKAN.GUI
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListLoadingInstalled);
             var versionCriteria = Main.Instance.CurrentInstance.VersionCriteria();
 
-            var installed = registry.InstalledModules
-                                    .Select(im => im.Module)
-                                    .ToHashSet();
+            var installedIdents = registry.InstalledModules
+                                          .Select(im => im.identifier)
+                                          .ToHashSet();
             var gui_mods = registry.InstalledModules
                                    .AsParallel()
                                    .Where(instMod => !instMod.Module.IsDLC)
@@ -1204,7 +1204,7 @@ namespace CKAN.GUI
                                                           Main.Instance.configuration.HideEpochs,
                                                           Main.Instance.configuration.HideV))
                                    .Concat(registry.CompatibleModules(versionCriteria)
-                                                   .Except(installed)
+                                                   .Where(m => !installedIdents.Contains(m.identifier))
                                                    .AsParallel()
                                                    .Where(m => !m.IsDLC)
                                                    .Select(m => new GUIMod(
@@ -1212,7 +1212,7 @@ namespace CKAN.GUI
                                                                     Main.Instance.configuration.HideEpochs,
                                                                     Main.Instance.configuration.HideV)))
                                    .Concat(registry.IncompatibleModules(versionCriteria)
-                                                   .Except(installed)
+                                                   .Where(m => !installedIdents.Contains(m.identifier))
                                                    .AsParallel()
                                                    .Where(m => !m.IsDLC)
                                                    .Select(m => new GUIMod(

@@ -304,7 +304,7 @@ namespace CKAN
                     // Nothing found, try again while simulating an empty mod list
                     // Necessary for e.g. proceed_with_inconsistencies, conflicts will still be caught below
                     candidates = descriptor
-                        .LatestAvailableWithProvides(registry, versionCrit, new CkanModule[0])
+                        .LatestAvailableWithProvides(registry, versionCrit, Array.Empty<CkanModule>())
                         .Where(mod => !modlist.ContainsKey(mod.identifier)
                                       && descriptor1.WithinBounds(mod)
                                       && MightBeInstallable(mod))

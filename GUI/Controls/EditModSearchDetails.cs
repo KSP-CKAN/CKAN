@@ -54,16 +54,16 @@ namespace CKAN.GUI
         private ModSearch CurrentSearch(List<ModuleLabel> knownLabels)
             => new ModSearch(
                 FilterByNameTextBox.Text,
-                FilterByAuthorTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByAuthorTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByDescriptionTextBox.Text,
-                FilterByLanguageTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                FilterByDependsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                FilterByRecommendsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                FilterBySuggestsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                FilterByConflictsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                FilterBySupportsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                FilterByTagsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries).ToList(),
-                FilterByLabelsTextBox.Text.Split(new char[0], StringSplitOptions.RemoveEmptyEntries)
+                FilterByLanguageTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByDependsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByRecommendsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterBySuggestsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByConflictsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterBySupportsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByTagsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
+                FilterByLabelsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries)
                                           .Select(ln => knownLabels.FirstOrDefault(lb => lb.Name == ln))
                                           .Where(lb => lb != null)
                                           .ToList(),
