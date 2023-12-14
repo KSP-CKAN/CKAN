@@ -632,7 +632,7 @@ namespace CKAN
         public IEnumerable<string> ConflictDescriptions
             => conflicts.Where(kvp => kvp.Value == null
                                       // Pick the pair with the least distantly selected one first
-                                      || totalDependers(kvp.Key) < totalDependers(kvp.Value))
+                                      || totalDependers(kvp.Key) <= totalDependers(kvp.Value))
                         .Select(kvp => string.Format(
                             Properties.Resources.RelationshipResolverConflictsWith,
                             conflictingModDescription(kvp.Key,   null),

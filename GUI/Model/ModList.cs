@@ -288,13 +288,8 @@ namespace CKAN.GUI
         {
             DataGridViewRow item = new DataGridViewRow() {Tag = mod};
 
-            Color? myColor = ModuleLabels.LabelsFor(instanceName)
-                .FirstOrDefault(l => l.ContainsModule(game, mod.Identifier))
-                ?.Color;
-            if (myColor.HasValue)
-            {
-                item.DefaultCellStyle.BackColor = myColor.Value;
-            }
+            item.DefaultCellStyle.BackColor = GetRowBackground(mod, false, instanceName, game);
+            item.DefaultCellStyle.SelectionBackColor = SelectionBlend(item.DefaultCellStyle.BackColor);
 
             ModChange myChange = changes?.FindLast((ModChange ch) => ch.Mod.Equals(mod));
 
@@ -380,28 +375,40 @@ namespace CKAN.GUI
         private static string ToGridText(string text)
             => Platform.IsMono ? text.Replace("&", "&&") : text;
 
-        public Color GetRowBackground(GUIMod mod, bool conflicted, string instanceName)
-            => conflicted ? Color.LightCoral
-                          : full_list_of_mod_rows.ContainsKey(mod.Identifier)
-                              ? ModuleLabels.LabelsFor(instanceName)
-                                            .FirstOrDefault(l => l.ContainsModule(Main.Instance.CurrentInstance.game, mod.Identifier))
-                                            ?.Color
-                                ?? Color.Empty
-                              : Color.Empty;
+        public Color GetRowBackground(GUIMod mod, bool conflicted, string instanceName, IGame game)
+            => conflicted ? conflictColor
+                          : Util.BlendColors(
+                              ModuleLabels.LabelsFor(instanceName)
+                                          .Where(l => l.ContainsModule(game, mod.Identifier))
+                                          .Select(l => l.Color)
+                                          .ToArray());
+
+        private static readonly Color conflictColor = Color.FromArgb(255, 64, 64);
 
         /// <summary>
         /// Update the color and visible state of the given row
         /// after it has been added to or removed from a label group
         /// </summary>
         /// <param name="mod">The mod that needs an update</param>
-        public void ReapplyLabels(GUIMod mod, bool conflicted, string instanceName, IGame game, Registry registry)
+        public DataGridViewRow ReapplyLabels(GUIMod mod, bool conflicted,
+                                             string instanceName, IGame game, Registry registry)
         {
             if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out DataGridViewRow row))
             {
-                row.DefaultCellStyle.BackColor = GetRowBackground(mod, conflicted, instanceName);
+                row.DefaultCellStyle.BackColor = GetRowBackground(mod, conflicted, instanceName, game);
+                row.DefaultCellStyle.SelectionBackColor = SelectionBlend(row.DefaultCellStyle.BackColor);
                 row.Visible = IsVisible(mod, instanceName, game, registry);
+                return row;
             }
+            return null;
         }
+
+        private static Color SelectionBlend(Color c)
+            => c == Color.Empty
+                ? SystemColors.Highlight
+                : SystemColors.Highlight.AlphaBlendWith(selectionAlpha, c);
+
+        private const float selectionAlpha = 0.4f;
 
         /// <summary>
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
