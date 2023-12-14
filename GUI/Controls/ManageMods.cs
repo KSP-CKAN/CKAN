@@ -178,45 +178,44 @@ namespace CKAN.GUI
                 Main.Instance.AddStatusMessage("");
             }
 
+            var inst     = Main.Instance.CurrentInstance;
+            var registry = RegistryManager.Instance(inst, repoData).registry;
             if (prevConflicts != null)
             {
                 // Mark old conflicts as non-conflicted
                 // (rows that are _still_ conflicted will be marked as such in the next loop)
-                var inst = Main.Instance.CurrentInstance;
                 foreach (GUIMod guiMod in prevConflicts.Keys)
                 {
-                    DataGridViewRow row = mainModList.full_list_of_mod_rows[guiMod.Identifier];
-
-                    foreach (DataGridViewCell cell in row.Cells)
-                    {
-                        cell.ToolTipText = null;
-                    }
-                    var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
-                    mainModList.ReapplyLabels(guiMod, false, inst.Name, inst.game, registry);
-                    if (row.Visible)
-                    {
-                        ModGrid.InvalidateRow(row.Index);
-                    }
+                    SetUnsetRowConflicted(guiMod, false, null, inst, registry);
                 }
             }
             if (Conflicts != null)
             {
                 // Mark current conflicts as conflicted
-                foreach (var kvp in Conflicts)
+                foreach ((GUIMod guiMod, string conflict_text) in Conflicts)
                 {
-                    GUIMod          guiMod = kvp.Key;
-                    DataGridViewRow row    = mainModList.full_list_of_mod_rows[guiMod.Identifier];
-                    string conflict_text = kvp.Value;
+                    SetUnsetRowConflicted(guiMod, true, conflict_text, inst, registry);
+                }
+            }
+        }
 
-                    foreach (DataGridViewCell cell in row.Cells)
-                    {
-                        cell.ToolTipText = conflict_text;
-                    }
-                    row.DefaultCellStyle.BackColor = mainModList.GetRowBackground(guiMod, true, Main.Instance.CurrentInstance.Name);
-                    if (row.Visible)
-                    {
-                        ModGrid.InvalidateRow(row.Index);
-                    }
+        private void SetUnsetRowConflicted(GUIMod       guiMod,
+                                           bool         conflicted,
+                                           string       tooltip,
+                                           GameInstance inst,
+                                           Registry     registry)
+        {
+            var row = mainModList.ReapplyLabels(guiMod, conflicted,
+                                                inst.Name, inst.game, registry);
+            if (row != null)
+            {
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    cell.ToolTipText = tooltip;
+                }
+                if (row.Visible)
+                {
+                    ModGrid.InvalidateRow(row.Index);
                 }
             }
         }
@@ -291,6 +290,7 @@ namespace CKAN.GUI
                 LabelsContextMenuStrip.Items.Add(
                     new ToolStripMenuItem(mlbl.Name, null, labelMenuItem_Click)
                     {
+                        BackColor    = mlbl.Color,
                         Checked      = mlbl.ContainsModule(Main.Instance.CurrentInstance.game, module.Identifier),
                         CheckOnClick = true,
                         Tag          = mlbl,

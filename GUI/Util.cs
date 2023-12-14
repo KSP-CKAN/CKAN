@@ -290,6 +290,25 @@ namespace CKAN.GUI
             };
         }
 
+        public static Color BlendColors(Color[] colors)
+            => colors.Length <  1 ? Color.Empty
+             : colors.Length == 1 ? colors[0]
+             : colors.Aggregate((back, fore) => fore.AlphaBlendWith(1f / colors.Length, back));
+
+        public static Color AlphaBlendWith(this Color c1, float alpha, Color c2)
+            => AddColors(c1.MultiplyBy(alpha),
+                         c2.MultiplyBy(1f - alpha));
+
+        private static Color MultiplyBy(this Color c, float f)
+            => Color.FromArgb((int)(f * c.R),
+                              (int)(f * c.G),
+                              (int)(f * c.B));
+
+        private static Color AddColors(Color a, Color b)
+            => Color.FromArgb(a.R + b.R,
+                              a.G + b.G,
+                              a.B + b.B);
+
         /// <summary>
         /// Simple syntactic sugar around Graphics.MeasureString
         /// </summary>
