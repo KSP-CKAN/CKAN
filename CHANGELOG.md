@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [GUI] Protect upgradeable mods from being displayed as uninstalled (#3944 by: HebaruSan)
+- [GUI] Restore conflict highlights in changeset (#3948 by: HebaruSan)
 
 ## v1.34.0 (Minkowski)
 
