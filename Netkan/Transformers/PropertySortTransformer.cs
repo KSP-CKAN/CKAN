@@ -110,6 +110,10 @@ namespace CKAN.NetKAN.Transformers
             yield return new Metadata(sortedJson);
         }
 
+        public static Metadata SortProperties(Metadata metadata)
+            => new PropertySortTransformer().Transform(metadata, null)
+                                            .First();
+
         private static double GetPropertySortOrder(string propertyName)
             => PropertySortOrder.TryGetValue(propertyName, out int sortOrder)
                 ? sortOrder
