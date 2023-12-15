@@ -62,8 +62,7 @@ namespace CKAN.NetKAN
                     );
                     inf.ValidateCkan(ckan);
                     Console.WriteLine(QueueHandler.serializeCkan(
-                        new PropertySortTransformer().Transform(ckan, null).First()
-                    ));
+                        PropertySortTransformer.SortProperties(ckan)));
                     return ExitOk;
                 }
 

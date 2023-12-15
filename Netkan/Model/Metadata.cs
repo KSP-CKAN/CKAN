@@ -6,6 +6,7 @@ using YamlDotNet.RepresentationModel;
 
 using CKAN.Versioning;
 using CKAN.NetKAN.Extensions;
+using CKAN.NetKAN.Transformers;
 
 namespace CKAN.NetKAN.Model
 {
@@ -124,8 +125,9 @@ namespace CKAN.NetKAN.Model
 
         public static Metadata Merge(Metadata[] modules)
             => modules.Length == 1 ? modules[0]
-                                   : new Metadata(MergeJson(modules.Select(m => m._json)
-                                                                   .ToArray()));
+                                   : PropertySortTransformer.SortProperties(
+                                       new Metadata(MergeJson(modules.Select(m => m._json)
+                                                                     .ToArray())));
 
         private static JObject MergeJson(JObject[] jsons)
         {
