@@ -17,7 +17,8 @@ namespace CKAN.CmdLine
 
             var compatible = registry
                 .CompatibleModules(instance.VersionCriteria())
-                .Where(m => !m.IsDLC);
+                .Where(m => !m.IsDLC)
+                .OrderBy(m => m.identifier);
 
             user.RaiseMessage(string.Format(Properties.Resources.AvailableHeader,
                 instance.game.ShortName, instance.Version()));
