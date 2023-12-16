@@ -199,7 +199,7 @@ The basic operation of the actual build process is as follows:
     These are the "final" output of the build process and are stored in: `_build/repack/$CONFIGURATION`.
 - Unit tests are executed
   - The NUnit unit tests in `CKAN.Tests.dll` are executed.
-- Smoke tets are executed
+- Smoke tests are executed
   - These are simple tests designed to make sure there isn't anything grossly wrong with the build. All they do is
     execute the repacked `ckan.exe` and `netkan.exe` and make sure their version output matches the expected output.
 

@@ -76,8 +76,7 @@ jobs:
           sh get-docker.sh
           docker build --tag inflator --file ../Dockerfile.netkan .
           docker run --rm --name inflator --entrypoint /bin/bash inflator -c "
-            curl -O https://raw.githubusercontent.com/KSP-CKAN/NetKAN/master/NetKAN/ZeroMiniAVC.netkan && \
-            mono netkan.exe ZeroMiniAVC.netkan
+            mono netkan.exe https://raw.githubusercontent.com/KSP-CKAN/NetKAN/master/NetKAN/ZeroMiniAVC.netkan
           "
         if: matrix.configuration == 'release'
 
