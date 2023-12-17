@@ -18,7 +18,7 @@
     <Configurations>Debug;Release;NoGUI</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>7.3</LangVersion>
-    <NoWarn>IDE1006</NoWarn>
+    <NoWarn>IDE1006,NU1701</NoWarn>
     <TargetFrameworks>net48;net7.0;net7.0-windows</TargetFrameworks>
     <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
     <DefaultItemExcludes Condition=" '$(TargetFramework)' == 'net7.0' ">$(DefaultItemExcludes);AutoUpdate\**;GUI\**</DefaultItemExcludes>
