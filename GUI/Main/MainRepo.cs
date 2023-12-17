@@ -202,7 +202,22 @@ namespace CKAN.GUI
                         EnableMainWindow();
                         break;
 
+                    case AggregateException exc:
+                        foreach (var inner in exc.InnerExceptions
+                                                 .SelectMany(inner =>
+                                                     inner.TraverseNodes(ex => ex.InnerException)
+                                                          .Reverse()))
+                        {
+                            log.Error(inner.Message, inner);
+                            currentUser.RaiseMessage(inner.Message);
+                        }
+                        AddStatusMessage(Properties.Resources.MainRepoFailed);
+                        Wait.Finish();
+                        EnableMainWindow();
+                        break;
+
                     case Exception exc:
+                        log.Error(exc.Message, exc);
                         currentUser.RaiseMessage(exc.Message);
                         AddStatusMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
