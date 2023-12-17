@@ -266,34 +266,34 @@ namespace CKAN.Games.KerbalSpaceProgram
 
         public Uri MetadataBugtrackerURL => new Uri("https://github.com/KSP-CKAN/NetKAN/issues/new/choose");
 
-        private string Missions(GameInstance inst)
+        private static string Missions(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "Missions"));
 
-        private string Ships(GameInstance inst)
+        private static string Ships(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "Ships"));
 
-        private string ShipsVab(GameInstance inst)
+        private static string ShipsVab(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(Ships(inst), "VAB"));
 
-        private string ShipsSph(GameInstance inst)
+        private static string ShipsSph(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(Ships(inst), "SPH"));
 
-        private string ShipsThumbs(GameInstance inst)
+        private static string ShipsThumbs(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(Ships(inst), "@thumbs"));
 
-        private string ShipsThumbsSPH(GameInstance inst)
+        private static string ShipsThumbsSPH(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(ShipsThumbs(inst), "SPH"));
 
-        private string ShipsThumbsVAB(GameInstance inst)
+        private static string ShipsThumbsVAB(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(ShipsThumbs(inst), "VAB"));
 
-        private string ShipsScript(GameInstance inst)
+        private static string ShipsScript(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(Ships(inst), "Script"));
 
-        private string Tutorial(GameInstance inst)
+        private static string Tutorial(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "saves", "training"));
 
-        private string Scenarios(GameInstance inst)
+        private static string Scenarios(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "saves", "scenarios"));
 
         private readonly Dictionary<string, string> allowedFolders = new Dictionary<string, string>
@@ -343,7 +343,7 @@ namespace CKAN.Games.KerbalSpaceProgram
         /// <returns>
         /// args or args minus parameter
         /// </returns>
-        private string[] filterCmdLineArgs(string[] args, GameVersion installedVersion, GameVersionRange crashyKspRange, string parameter)
+        private static string[] filterCmdLineArgs(string[] args, GameVersion installedVersion, GameVersionRange crashyKspRange, string parameter)
         {
             var installedRange = installedVersion.ToVersionRange();
             if (crashyKspRange.IntersectWith(installedRange) != null
