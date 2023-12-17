@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -46,27 +45,17 @@ namespace CKAN
         /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
         /// </returns>
         public static string CurrentETag(Uri url)
-            => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, url),
-                                    HttpCompletionOption.ResponseHeadersRead)
-                         .Result
-                         .Headers.ETag.ToString()
-                         .Replace("\"", "");
-
-        /// <summary>
-        /// "HttpClient is intended to be instantiated once and reused
-        ///  throughout the life of an application. In .NET Core and .NET 5+,
-        ///  HttpClient pools connections inside the handler instance and
-        ///  reuses a connection across multiple requests. If you instantiate
-        ///  an HttpClient class for every request, the number of sockets
-        ///  available under heavy loads will be exhausted. This exhaustion
-        ///  will result in SocketException errors."
-        /// </summary>
-        public static readonly HttpClient httpClient = new HttpClient();
-        public static readonly HttpClient nonRedirectingHttpClient = new HttpClient(
-            new HttpClientHandler()
-            {
-                AllowAutoRedirect = false,
-            });
+        {
+            // HttpClient apparently is worse than what it was supposed to replace
+            #pragma warning disable SYSLIB0014
+            WebRequest req = WebRequest.Create(url);
+            #pragma warning restore SYSLIB0014
+            req.Method = "HEAD";
+            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+            string val = resp.Headers["ETag"]?.Replace("\"", "");
+            resp.Close();
+            return val;
+        }
 
         /// <summary>
         /// Downloads the specified url, and stores it in the filename given.
@@ -257,10 +246,6 @@ namespace CKAN
             const int maxRedirects = 6;
             for (int redirects = 0; redirects <= maxRedirects; ++redirects)
             {
-                #if NETFRAMEWORK
-
-                // HttpClient doesn't handle redirects well on Mono, but net7.0 considers WebClient obsolete
-
                 var rwClient = new RedirectWebClient();
                 using (rwClient.OpenRead(url)) { }
                 var location = rwClient.ResponseHeaders["Location"];
@@ -281,37 +266,6 @@ namespace CKAN
                 {
                     throw new Kraken(string.Format(Properties.Resources.NetInvalidLocation, location));
                 }
-
-                #else
-
-                var req = new HttpRequestMessage(HttpMethod.Head, url);
-                req.Headers.UserAgent.Clear();
-                req.Headers.UserAgent.ParseAdd(UserAgentString);
-                using (var response = nonRedirectingHttpClient.SendAsync(
-                                          req, HttpCompletionOption.ResponseHeadersRead).Result)
-                {
-                    if (response.Headers.Location == null)
-                    {
-                        return url;
-                    }
-
-                    var location = response.Headers.Location.ToString();
-                    if (Uri.IsWellFormedUriString(location, UriKind.Absolute))
-                    {
-                        url = response.Headers.Location;
-                    }
-                    else if (Uri.IsWellFormedUriString(location, UriKind.Relative))
-                    {
-                        url = new Uri(url, response.Headers.Location);
-                        log.DebugFormat("Relative URL {0} is absolute URL {1}", location, url);
-                    }
-                    else
-                    {
-                        throw new Kraken(string.Format(Properties.Resources.NetInvalidLocation, location));
-                    }
-                }
-
-                #endif
             }
             return null;
         }

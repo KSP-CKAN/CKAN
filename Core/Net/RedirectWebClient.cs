@@ -1,7 +1,7 @@
-#if NETFRAMEWORK
-
 using System;
 using System.Net;
+
+#pragma warning disable SYSLIB0014
 
 namespace CKAN
 {
@@ -23,5 +23,3 @@ namespace CKAN
         }
     }
 }
-
-#endif
