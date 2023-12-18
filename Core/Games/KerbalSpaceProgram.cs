@@ -19,9 +19,11 @@ namespace CKAN.Games.KerbalSpaceProgram
     public class KerbalSpaceProgram : IGame
     {
         public string ShortName => "KSP";
+        public DateTime FirstReleaseDate => new DateTime(2011, 6, 24);
 
         public bool GameInFolder(DirectoryInfo where)
-            => Directory.Exists(Path.Combine(where.FullName, "GameData"));
+            => InstanceAnchorFiles.Any(f => File.Exists(Path.Combine(where.FullName, f)))
+                && Directory.Exists(Path.Combine(where.FullName, "GameData"));
 
         /// <summary>
         /// Finds the Steam KSP path. Returns null if the folder cannot be located.
@@ -173,10 +175,14 @@ namespace CKAN.Games.KerbalSpaceProgram
             }
         }
 
-        public string DefaultCommandLine =>
-                  Platform.IsUnix ? "./KSP.x86_64 -single-instance"
-                : Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP"
-                :                   "KSP_x64.exe -single-instance";
+        public string DefaultCommandLine(string path)
+            => Platform.IsMac
+                ? "./KSP.app/Contents/MacOS/KSP"
+                : string.Format(Platform.IsUnix ? "./{0} -single-instance"
+                                                : "{0} -single-instance",
+                                InstanceAnchorFiles.FirstOrDefault(f =>
+                                    File.Exists(Path.Combine(path, f)))
+                                ?? InstanceAnchorFiles.First());
 
         public string[] AdjustCommandLine(string[] args, GameVersion installedVersion)
         {
@@ -254,11 +260,11 @@ namespace CKAN.Games.KerbalSpaceProgram
 
         public string CompatibleVersionsFile => "compatible_ksp_versions.json";
 
-        public string[] BuildIDFiles => new string[]
-        {
-            "buildID.txt",
-            "buildID64.txt"
-        };
+        public string[] InstanceAnchorFiles =>
+            // KSP.app is a directory :(
+              Platform.IsMac     ? new string[] { "buildID64.txt", "buildID.txt" }
+            : Platform.IsUnix    ? new string[] { "KSP.x86_64",    "KSP.x86" }
+            :                      new string[] { "KSP_x64.exe",   "KSP.exe" };
 
         public Uri DefaultRepositoryURL => new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.tar.gz");
 

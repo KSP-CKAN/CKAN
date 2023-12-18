@@ -16,9 +16,9 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
             _kspBuildMap = kspBuildMap;
         }
 
-        private static readonly string[] buildIDfilenames =
+        public static readonly string[] buildIDfilenames =
         {
-            "buildID.txt", "buildID64.txt"
+            "buildID64.txt", "buildID.txt"
         };
 
         public bool TryGetVersion(string directory, out GameVersion result)

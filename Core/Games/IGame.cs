@@ -14,6 +14,7 @@ namespace CKAN.Games
         // Identification, used for display and saved/loaded in settings JSON
         // Must be unique!
         string ShortName { get; }
+        DateTime FirstReleaseDate { get; }
 
         // Where are we?
         bool   GameInFolder(DirectoryInfo where);
@@ -31,7 +32,7 @@ namespace CKAN.Games
         bool           IsReservedDirectory(GameInstance inst, string path);
         bool           AllowInstallationIn(string name, out string path);
         void           RebuildSubdirectories(string absGameRoot);
-        string         DefaultCommandLine { get; }
+        string         DefaultCommandLine(string path);
         string[]       AdjustCommandLine(string[] args, GameVersion installedVersion);
         IDlcDetector[] DlcDetectors { get; }
 
@@ -42,7 +43,7 @@ namespace CKAN.Games
         GameVersion[]     ParseBuildsJson(JToken json);
         GameVersion       DetectVersion(DirectoryInfo where);
         string            CompatibleVersionsFile { get; }
-        string[]          BuildIDFiles { get; }
+        string[]          InstanceAnchorFiles { get; }
 
         // How to get metadata
         Uri DefaultRepositoryURL  { get; }

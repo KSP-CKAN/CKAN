@@ -114,7 +114,7 @@ namespace CKAN.GUI
                 var configuration = new GUIConfiguration
                 {
                     path = path,
-                    CommandLineArguments = game.DefaultCommandLine
+                    CommandLineArguments = game.DefaultCommandLine(path),
                 };
 
                 SaveConfiguration(configuration);

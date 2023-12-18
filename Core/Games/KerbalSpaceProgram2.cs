@@ -17,10 +17,11 @@ namespace CKAN.Games.KerbalSpaceProgram2
     public class KerbalSpaceProgram2 : IGame
     {
         public string ShortName => "KSP2";
+        public DateTime FirstReleaseDate => new DateTime(2023, 2, 24);
 
         public bool GameInFolder(DirectoryInfo where)
-            => where.EnumerateFiles().Any(f => f.Name == "KSP2_x64.exe")
-                && where.EnumerateDirectories().Any(d => d.Name == "KSP2_x64_Data");
+            => InstanceAnchorFiles.Any(f => File.Exists(Path.Combine(where.FullName, f)))
+                && Directory.Exists(Path.Combine(where.FullName, "KSP2_x64_Data"));
 
         /// <summary>
         /// Finds the Steam KSP path. Returns null if the folder cannot be located.
@@ -147,10 +148,10 @@ namespace CKAN.Games.KerbalSpaceProgram2
             }
         }
 
-        public string DefaultCommandLine =>
-                  Platform.IsUnix ? "./KSP2.x86_64 -single-instance"
-                : Platform.IsMac  ? "./KSP2.app/Contents/MacOS/KSP"
-                :                   "KSP2_x64.exe -single-instance";
+        public string DefaultCommandLine(string path)
+            => Platform.IsUnix ? "./KSP2.x86_64 -single-instance"
+             : Platform.IsMac  ? "./KSP2.app/Contents/MacOS/KSP"
+             :                   "KSP2_x64.exe -single-instance";
 
         public string[] AdjustCommandLine(string[] args, GameVersion installedVersion)
             => args;
@@ -209,7 +210,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public string CompatibleVersionsFile => "compatible_game_versions.json";
 
-        public string[] BuildIDFiles => new string[]
+        public string[] InstanceAnchorFiles => new string[]
         {
             "KSP2_x64.exe",
         };

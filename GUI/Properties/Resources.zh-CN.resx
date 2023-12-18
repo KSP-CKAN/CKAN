@@ -120,7 +120,7 @@
   <data name="CKANFileFilter" xml:space="preserve"><value>CKAN元数据 (*.ckan)|*.ckan</value></data>
   <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>导出Mod列表</value></data>
   <data name="AboutDialogLabel2Text" xml:space="preserve"><value>版本 {0}</value></data>
-  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Build metadata file</value></data>
+  <data name="GameProgramFileDescription" xml:space="preserve"><value>Build metadata file</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>请输入新实例名称.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>请输入新实例路径.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"正在克隆实例..."</value></data>

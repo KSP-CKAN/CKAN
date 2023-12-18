@@ -120,7 +120,7 @@
   <data name="CKANFileFilter" xml:space="preserve"><value>CKAN 메타데이터 (*.ckan)|*.ckan</value></data>
   <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>모드 리스트 내보내기</value></data>
   <data name="AboutDialogLabel2Text" xml:space="preserve"><value>버전 {0}</value></data>
-  <data name="BuildIDFilterDescription" xml:space="preserve"><value>메타데이터 파일 빌드</value></data>
+  <data name="GameProgramFileDescription" xml:space="preserve"><value>메타데이터 파일 빌드</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>새로운 인스턴스의 이름을 입력해주세요.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>새로운 인스턴스의 경로를 입력해주세요.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"인스턴스 복제 중..."</value></data>

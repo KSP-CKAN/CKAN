@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [Core] Oops, `HttpClient` actually sucks (#3960 by: HebaruSan; reviewed: techman83)
+- [Multiple] Usability improvements for adding game instance (#3964 by: HebaruSan; reviewed: JonnyOThan)
 
 ### Internal
 

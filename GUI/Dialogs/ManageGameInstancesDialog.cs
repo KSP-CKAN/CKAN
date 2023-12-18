@@ -39,10 +39,8 @@ namespace CKAN.GUI
         /// "Build metadata files (buildID.txt;buildID64.txt)|buildID.txt;buildID64.txt"
         /// </returns>
         public static string GameFolderFilter(GameInstanceManager mgr)
-        {
-            return Properties.Resources.BuildIDFilterDescription
-                + "|" + string.Join(";", mgr.AllBuildIDFiles);
-        }
+        => Properties.Resources.GameProgramFileDescription
+            + "|" + string.Join(";", mgr.AllInstanceAnchorFiles);
 
         public bool HasSelections => GameInstancesListView.SelectedItems.Count > 0;
 
@@ -88,14 +86,16 @@ namespace CKAN.GUI
             AddOrRemoveColumn(GameInstancesListView, Game, !allSameGame, GameInstallVersion.Index);
             AddOrRemoveColumn(GameInstancesListView, GamePlayTime, hasPlayTime, GameInstallPath.Index);
 
-            GameInstancesListView.Items.AddRange(_manager.Instances
-                .OrderByDescending(instance => instance.Value.Version())
-                .Select(instance => new ListViewItem(rowItems(instance.Value, !allSameGame, hasPlayTime))
-                {
-                    Tag = instance.Key
-                })
-                .ToArray()
-            );
+            GameInstancesListView.Items.AddRange(
+                _manager.Instances.OrderByDescending(instance => instance.Value.game.FirstReleaseDate)
+                                  .ThenByDescending(instance => instance.Value.Version())
+                                  .ThenBy(instance => instance.Key)
+                                  .Select(instance => new ListViewItem(
+                                      rowItems(instance.Value, !allSameGame, hasPlayTime))
+                                  {
+                                      Tag = instance.Key
+                                  })
+                                  .ToArray());
 
             GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
