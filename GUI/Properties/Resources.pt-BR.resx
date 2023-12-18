@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutDialogLabel2Text" xml:space="preserve"><value>Versão {0}</value></data>
-  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Arquivo de metadados da Build</value></data>
+  <data name="GameProgramFileDescription" xml:space="preserve"><value>Arquivo de metadados da Build</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Por favor informe o nome da nova instância.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Por favor informe o caminho da nova instância.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"Clonando instância..."</value></data>

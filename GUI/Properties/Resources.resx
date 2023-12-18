@@ -122,7 +122,7 @@
   <data name="CKANFileFilter" xml:space="preserve"><value>CKAN metadata (*.ckan)|*.ckan</value></data>
   <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>Export Mod List</value></data>
   <data name="AboutDialogLabel2Text" xml:space="preserve"><value>Version {0}</value></data>
-  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Build metadata file</value></data>
+  <data name="GameProgramFileDescription" xml:space="preserve"><value>Game program file</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Please enter a name for the new instance.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Please enter a path for the new instance.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"Cloning instance..."</value></data>

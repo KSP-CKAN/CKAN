@@ -14,6 +14,7 @@ using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram;
 using CKAN.Games.KerbalSpaceProgram2;
 using CKAN.Extensions;
+using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 
 namespace CKAN
 {
@@ -43,8 +44,8 @@ namespace CKAN
 
         private readonly SortedList<string, GameInstance> instances = new SortedList<string, GameInstance>();
 
-        public string[] AllBuildIDFiles => knownGames
-            .SelectMany(g => g.BuildIDFiles)
+        public string[] AllInstanceAnchorFiles => knownGames
+            .SelectMany(g => g.InstanceAnchorFiles)
             .Distinct()
             .ToArray();
 
@@ -278,10 +279,15 @@ namespace CKAN
                 fileMgr.CreateDirectory(Path.Combine(newPath, game.PrimaryModDirectoryRelative));
                 game.RebuildSubdirectories(newPath);
 
-                // Don't write the buildID.txts if we have no build, otherwise it would be -1.
-                if (version.IsBuildDefined)
+                foreach (var anchor in game.InstanceAnchorFiles)
                 {
-                    foreach (var b in game.BuildIDFiles)
+                    fileMgr.WriteAllText(Path.Combine(newPath, anchor), "");
+                }
+
+                // Don't write the buildID.txts if we have no build, otherwise it would be -1.
+                if (version.IsBuildDefined && game is KerbalSpaceProgram)
+                {
+                    foreach (var b in KspBuildIdVersionProvider.buildIDfilenames)
                     {
                         fileMgr.WriteAllText(
                             Path.Combine(newPath, b),
@@ -289,8 +295,10 @@ namespace CKAN
                     }
                 }
 
-                // Create the readme.txt WITHOUT build number.
-                fileMgr.WriteAllText(Path.Combine(newPath, "readme.txt"), string.Format("Version {0}", new GameVersion(version.Major, version.Minor, version.Patch).ToString()));
+                // Create the readme.txt WITHOUT build number
+                fileMgr.WriteAllText(Path.Combine(newPath, "readme.txt"),
+                                     string.Format("Version {0}",
+                                                   version.WithoutBuild.ToString()));
 
                 // Create the needed folder structure and the readme.txt for DLCs that should be simulated.
                 if (dlcs != null)

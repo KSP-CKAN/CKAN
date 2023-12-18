@@ -128,7 +128,7 @@
   <data name="AboutDialogLabel2Text" xml:space="preserve">
     <value>Version {0}</value>
   </data>
-  <data name="BuildIDFilterDescription" xml:space="preserve">
+  <data name="GameProgramFileDescription" xml:space="preserve">
     <value>Fichier de métadonnées/Build</value>
   </data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve">

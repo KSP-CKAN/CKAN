@@ -111,7 +111,7 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="CKANFileFilter" xml:space="preserve"><value>CKAN Metadaten (*.ckan)|*.ckan</value></data>
   <data name="ExportInstalledModsDialogTitle" xml:space="preserve"><value>Export der Modliste</value></data>
-  <data name="BuildIDFilterDescription" xml:space="preserve"><value>Build-Metadatendatei</value></data>
+  <data name="GameProgramFileDescription" xml:space="preserve"><value>Build-Metadatendatei</value></data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Bitte gib einen Namen für die neue Instanz an.</value> </data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Bitte gib einen Pfad für die neue Instanz an.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>Klone Instanz...</value></data>
