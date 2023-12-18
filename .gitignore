@@ -45,4 +45,7 @@ bld/
 *.nuget.props
 *.nuget.targets
 
+# Python won't let me install packages globally anymore
+/.venv/
+
 quotes.txt.dat
