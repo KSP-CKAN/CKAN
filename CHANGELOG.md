@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
-- [Core] Oops, `HttpClient` actually sucks (#3960 by: HebaruSan)
+- [Core] Oops, `HttpClient` actually sucks (#3960 by: HebaruSan; reviewed: techman83)
 
 ### Internal
 
