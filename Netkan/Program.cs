@@ -16,6 +16,7 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Processors;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Extensions;
+using YamlDotNet.RepresentationModel;
 
 namespace CKAN.NetKAN
 {
@@ -116,7 +117,7 @@ namespace CKAN.NetKAN
                 else
                 {
                     Log.Fatal(
-                        "Usage: netkan [--verbose|--debug] [--debugger] [--prerelease] [--outputdir=...] <filename>"
+                        "Usage: netkan [--verbose|--debug] [--debugger] [--prerelease] [--outputdir=...] <filename|URL>"
                     );
                     return ExitBadOpt;
                 }
@@ -183,18 +184,22 @@ namespace CKAN.NetKAN
                 Log.WarnFormat("Input is not a .netkan file");
             }
 
-            return YamlExtensions.Parse(File.OpenText(Options.File))
-                                 .Select(ymap => new Metadata(ymap))
-                                 .ToArray();
+            return ArgContents(Options.File).Select(ymap => new Metadata(ymap))
+                                            .ToArray();
         }
 
+        private static YamlMappingNode[] ArgContents(string arg)
+            => Uri.IsWellFormedUriString(arg, UriKind.Absolute)
+                ? YamlExtensions.Parse(Net.DownloadText(new Uri(arg)))
+                : YamlExtensions.Parse(File.OpenText(arg));
+
         internal static string CkanFileName(JObject json)
-        => Path.Combine(
-            Options.OutputDir,
-            string.Format(
-                "{0}-{1}.ckan",
-                (string)json["identifier"],
-                ((string)json["version"]).Replace(':', '-')));
+            => Path.Combine(
+                Options.OutputDir,
+                string.Format(
+                    "{0}-{1}.ckan",
+                    (string)json["identifier"],
+                    ((string)json["version"]).Replace(':', '-')));
 
         private static void WriteCkan(JObject json)
         {

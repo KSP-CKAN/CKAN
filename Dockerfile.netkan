@@ -1,10 +1,27 @@
-FROM mono:latest
-RUN /bin/sed -i 's/^mozilla\/DST_Root_CA_X3.crt$/!mozilla\/DST_Root_CA_X3.crt/' /etc/ca-certificates.conf && \
-    /usr/sbin/update-ca-certificates
+FROM ubuntu:latest
+
+# Don't prompt for time zone
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set up Mono's APT repo
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates gnupg \
+    && gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
+    && echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list \
+    && apt-get update
+
+# Install the necessary pieces of Mono
+RUN apt-get install -y --no-install-recommends \
+    mono-runtime ca-certificates-mono libmono-microsoft-csharp4.0-cil libmono-system-data4.0-cil libmono-system-runtime-serialization4.0-cil libmono-system-transactions4.0-cil libmono-system-net-http-webrequest4.0-cil
+
+# Purge APT download cache, package lists, and logs
+RUN apt-get clean \
+    && rm -r /var/lib/apt/lists /var/log/dpkg.log /var/log/apt
+
 RUN useradd -ms /bin/bash netkan
 USER netkan
 WORKDIR /home/netkan
-ADD netkan.exe .
+ADD --chown=netkan netkan.exe .
 ENTRYPOINT /usr/bin/mono netkan.exe --game ${GAME:-KSP} --queues $QUEUES \
   --net-useragent 'Mozilla/5.0 (compatible; Netkanbot/1.0; CKAN; +https://github.com/KSP-CKAN/NetKAN-Infra)' \
   --github-token $GH_Token --gitlab-token "$GL_Token" --cachedir ckan_cache -v
