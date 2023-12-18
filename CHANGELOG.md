@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.34.3
 
+### Bugfixes
+
+- [Core] Oops, `HttpClient` actually sucks (#3960 by: HebaruSan)
+
 ### Internal
 
 - [Netkan] Re-sort module properties after merging (#3957 by: HebaruSan)
