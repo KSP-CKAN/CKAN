@@ -235,6 +235,9 @@ namespace CKAN.CmdLine
                 if (!AsRoot)
                 {
                     user.RaiseError(Properties.Resources.OptionsRootError);
+                    user.RaiseMessage("");
+                    user.RaiseMessage(Properties.Resources.OptionsPressAnyKey);
+                    Console.ReadKey(true);
                     return Exit.ERROR;
                 }
                 else
