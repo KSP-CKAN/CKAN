@@ -79,8 +79,10 @@ namespace CKAN.NetKAN.Transformers
                     if (GameVersion.TryParse(swinfo.ksp2_version.min, out GameVersion minVer)
                         || GameVersion.TryParse(swinfo.ksp2_version.max, out maxVer))
                     {
-                        log.InfoFormat("Found compatibility: {0}–{1}", minVer, maxVer);
-                        ModuleService.ApplyVersions(json, null, minVer, maxVer);
+                        log.InfoFormat("Found compatibility: {0}–{1}", minVer?.WithoutBuild,
+                                                                       maxVer?.WithoutBuild);
+                        ModuleService.ApplyVersions(json, null, minVer?.WithoutBuild,
+                                                                maxVer?.WithoutBuild);
                     }
                     var moduleDeps = (mod.depends?.OfType<ModuleRelationshipDescriptor>()
                                                   .Select(r => r.name)
