@@ -127,8 +127,17 @@
   <data name="MainUnknownCommand" xml:space="preserve"><value>Unknown command, try --help</value></data>
   <data name="MainMissingInstance" xml:space="preserve"><value>I don't know where a game instance is installed.
 Use 'ckan instance help' for assistance in setting this.</value></data>
-  <data name="OptionsRootError" xml:space="preserve"><value>You are trying to run CKAN as an administrator user.
-This is a bad idea and there is absolutely no good reason to do it. Please run CKAN from a user account (or use --asroot if you are feeling brave).</value></data>
+  <data name="OptionsRootError" xml:space="preserve"><value>
+You are trying to run CKAN as an administrator user.
+This gives programs unlimited power to make unauthorized changes to any part of your system.
+We try our best to avoid bugs and malicious code, but you shouldn't trust us this much!
+
+Running as administrator can also cause filesystem permissions problems, since
+files installed by an administrator cannot be removed by a non-administrator.
+
+Run CKAN as a non-administrator user to protect your system from these risks.
+If you must run as an administrator, the `--asroot` parameter will bypass this check.</value></data>
+  <data name="OptionsPressAnyKey" xml:space="preserve"><value>Press any key to exit...</value></data>
   <data name="OptionsRootWarning" xml:space="preserve"><value>Warning: CKAN is running as an administrator user!</value></data>
   <data name="OptionsMonoWarning" xml:space="preserve"><value>Warning: Detected Mono {0}, recommended version is {1} or later!</value></data>
   <data name="OptionsInstanceAndGameDir" xml:space="preserve"><value>--instance and --gamedir can't be specified at the same time</value></data>

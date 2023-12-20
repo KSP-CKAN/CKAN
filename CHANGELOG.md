@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.34.3
 
+### Features
+
+- [CLI] Pause after administrator error message (#3966 by: HebaruSan; reviewed: techman83)
+
 ### Bugfixes
 
 - [Core] Oops, `HttpClient` actually sucks (#3960 by: HebaruSan; reviewed: techman83)
@@ -620,6 +624,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix 'ManageKspInstances' dialog logic (#2787 by: DasSkelett; reviewed: HebaruSan)
 
 ### Internal
+
 - [Build] Update packages (#2775 by: Olympic1; reviewed: DasSkelett, HebaruSan)
 - [Build] Fix fake/clone tests on Windows (#2778 by: HebaruSan; reviewed: DasSkelett)
 - [Reporting] Update issue templates (#2777 by: Olympic1; reviewed: DasSkelett, HebaruSan)
@@ -899,7 +904,6 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Check zip validity in netkan (#2288 by: HebaruSan; reviewed: politas)
 - [Core] Replace colons with hyphens in archive URLs (#2290 by: HebaruSan; reviewed: techman83)
 - [Core] Force-allow TLS 1.2 on .NET 4.5 (#2297 by: HebaruSan; reviewed: politas)
-
 
 ## v1.24.0-PRE1 (McCandless)
 
