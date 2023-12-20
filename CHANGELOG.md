@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Netkan] Re-sort module properties after merging (#3957 by: HebaruSan)
-- [Netkan] Update and optimize meta tester and inflator images (#3958 by: HebaruSan; reviewed: techman83)
+- [Netkan] Update and optimize meta tester and inflator images (#3958, #3968 by: HebaruSan; reviewed: techman83)
 
 ## v1.34.2 (Minkowski²)
 
