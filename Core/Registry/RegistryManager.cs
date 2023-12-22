@@ -307,6 +307,7 @@ namespace CKAN
             // after deserialisation.
             var settings = new JsonSerializerSettings
             {
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
                 Context = new StreamingContext(StreamingContextStates.Other, gameInstance)
             };
 

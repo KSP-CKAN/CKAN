@@ -333,6 +333,7 @@ namespace CKAN.NetKAN.Services
         private const string SpaceWarpInfoFilename = "swinfo.json";
         private static readonly JsonSerializerSettings ignoreJsonErrors = new JsonSerializerSettings()
         {
+            DateTimeZoneHandling = DateTimeZoneHandling.Utc,
             Error = (sender, e) => e.ErrorContext.Handled = true
         };
 

@@ -341,7 +341,10 @@ namespace CKAN
             try
             {
                 // Use the json string to populate our object
-                JsonConvert.PopulateObject(json, this);
+                JsonConvert.PopulateObject(json, this, new JsonSerializerSettings
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                });
             }
             catch (JsonException ex)
             {

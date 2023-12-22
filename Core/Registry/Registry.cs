@@ -423,7 +423,11 @@ namespace CKAN
             // we had previously.
 
             lock (txMutex) {
-                var options = new JsonSerializerSettings {ObjectCreationHandling = ObjectCreationHandling.Replace};
+                var options = new JsonSerializerSettings
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                    ObjectCreationHandling = ObjectCreationHandling.Replace
+                };
 
                 JsonConvert.PopulateObject(transaction_backup, this, options);
 
