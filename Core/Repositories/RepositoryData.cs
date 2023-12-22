@@ -144,6 +144,7 @@ namespace CKAN
                 {
                     var settings = new JsonSerializerSettings()
                     {
+                        DateTimeZoneHandling = DateTimeZoneHandling.Utc,
                         Context = new StreamingContext(
                             StreamingContextStates.Other,
                             progress == null

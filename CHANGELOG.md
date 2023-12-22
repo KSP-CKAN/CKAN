@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Oops, `HttpClient` actually sucks (#3960 by: HebaruSan; reviewed: techman83)
 - [Multiple] Usability improvements for adding game instance (#3964 by: HebaruSan; reviewed: JonnyOThan)
 - [Core] Fix NullReferenceException in csv/tsv export (#3967 by: HebaruSan)
+- [Core] Fix cache timestamp comparisons (#3974 by: HebaruSan)
 
 ### Internal
 

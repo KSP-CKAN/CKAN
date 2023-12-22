@@ -219,7 +219,7 @@ namespace CKAN
                 // Check local vs remote timestamps; if local is older, then it's invalid.
                 // null means we don't know the remote timestamp (so file is OK)
                 if (remoteTimestamp == null
-                    || remoteTimestamp < File.GetLastWriteTime(file).ToUniversalTime())
+                    || remoteTimestamp < File.GetLastWriteTimeUtc(file))
                 {
                     // File not too old, use it
                     log.Debug("Found good file, using it");
