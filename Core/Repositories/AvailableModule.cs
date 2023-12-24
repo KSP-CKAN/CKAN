@@ -183,7 +183,7 @@ namespace CKAN
         {
             // Cheat slightly for performance:
             // Find the CkanModule with the highest ksp_version_max,
-            // then get the real lastest compatible of just that one mod
+            // then get the real latest compatible of just that one mod
             GameVersion best    = null;
             CkanModule  bestMod = null;
             foreach (var mod in module_version.Values)
