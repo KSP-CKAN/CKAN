@@ -30,7 +30,7 @@ namespace CKAN.GUI
                     foreach (ModuleTag tag in tags)
                     {
                         Controls.Add(TagLabelLink(
-                            tag.Name, tag,
+                            tag.Name, tag, tagToolTip,
                             new LinkLabelLinkClickedEventHandler(TagLinkLabel_LinkClicked)));
                     }
                 }
@@ -39,7 +39,7 @@ namespace CKAN.GUI
                     foreach (ModuleLabel mlbl in labels)
                     {
                         Controls.Add(TagLabelLink(
-                            mlbl.Name, mlbl,
+                            mlbl.Name, mlbl, Properties.Resources.FilterLinkToolTip,
                             new LinkLabelLinkClickedEventHandler(LabelLinkLabel_LinkClicked)));
                     }
                 }
@@ -47,7 +47,24 @@ namespace CKAN.GUI
             });
         }
 
-        public event Action<SavedSearch, bool> OnChangeFilter;
+        public string TagToolTipText
+        {
+            get => tagToolTip;
+            set
+            {
+                tagToolTip = value;
+                foreach (var lbl in Controls.OfType<LinkLabel>()
+                                            .Where(lbl => lbl.Tag is ModuleTag))
+                {
+                    ToolTip.SetToolTip(lbl, tagToolTip);
+                }
+            }
+        }
+
+        public event Action<ModuleTag,   bool> TagClicked;
+        public event Action<ModuleLabel, bool> LabelClicked;
+
+        private string tagToolTip = Properties.Resources.FilterLinkToolTip;
 
         private static int LinkLabelBottom(LinkLabel lbl)
             => lbl == null ? 0
@@ -59,6 +76,7 @@ namespace CKAN.GUI
 
         private LinkLabel TagLabelLink(string name,
                                        object tag,
+                                       string toolTip,
                                        LinkLabelLinkClickedEventHandler onClick)
         {
             var link = new LinkLabel()
@@ -71,7 +89,7 @@ namespace CKAN.GUI
                 Tag          = tag,
             };
             link.LinkClicked += onClick;
-            ToolTip.SetToolTip(link, Properties.Resources.FilterLinkToolTip);
+            ToolTip.SetToolTip(link, toolTip);
             return link;
         }
 
@@ -79,20 +97,14 @@ namespace CKAN.GUI
         {
             var link = sender as LinkLabel;
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            OnChangeFilter?.Invoke(
-                ModList.FilterToSavedSearch(GUIModFilter.Tag,
-                                            link.Tag as ModuleTag, null),
-                merge);
+            TagClicked?.Invoke(link.Tag as ModuleTag, merge);
         }
 
         private void LabelLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var link = sender as LinkLabel;
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            OnChangeFilter?.Invoke(
-                ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null,
-                                            link.Tag as ModuleLabel),
-                merge);
+            LabelClicked?.Invoke(link.Tag as ModuleLabel, merge);
         }
 
         private readonly ToolTip ToolTip = new ToolTip()

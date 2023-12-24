@@ -159,10 +159,16 @@ namespace CKAN.GUI
             });
         }
 
-        private void tagsLabelsLinkList_OnChangeFilter(SavedSearch search, bool merge)
-        {
-            OnChangeFilter?.Invoke(search, merge);
-        }
+
+        private void tagsLabelsLinkList_TagClicked(ModuleTag tag, bool merge)
+            => OnChangeFilter?.Invoke(ModList.FilterToSavedSearch(GUIModFilter.Tag,
+                                                                  tag, null),
+                                      merge);
+
+        private void tagsLabelsLinkList_LabelClicked(ModuleLabel label, bool merge)
+            => OnChangeFilter?.Invoke(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel,
+                                                                  null, label),
+                                      merge);
 
         private void Metadata_OnChangeFilter(SavedSearch search, bool merge)
         {

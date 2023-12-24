@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - [CLI] Pause after administrator error message (#3966 by: HebaruSan; reviewed: techman83)
 - [Multiple] Put auto-installed mods in ignored modpack group by default (#3978 by: HebaruSan)
-- [GUI] Add links to hidden tags and labels below mod list (#3979 by: HebaruSan)
+- [GUI] Add links to hidden tags and labels below mod list (#3979, #3980 by: HebaruSan)
 
 ### Bugfixes
 
