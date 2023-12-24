@@ -81,6 +81,7 @@ namespace CKAN.GUI
             this.reinstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.purgeContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hiddenTagsLabelsLinkList = new CKAN.GUI.TagsLabelsLinkList();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModGrid)).BeginInit();
             this.ModListContextMenuStrip.SuspendLayout();
@@ -284,6 +285,16 @@ namespace CKAN.GUI
             this.NavForwardToolButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
             this.NavForwardToolButton.Click += new System.EventHandler(this.NavForwardToolButton_Click);
             resources.ApplyResources(this.NavForwardToolButton, "NavForwardToolButton");
+            //
+            // InstallAllCheckbox
+            //
+            this.InstallAllCheckbox.Location = new System.Drawing.Point(18, 57);
+            this.InstallAllCheckbox.Size = new System.Drawing.Size(20, 20);
+            this.InstallAllCheckbox.Checked = true;
+            this.InstallAllCheckbox.CheckedChanged += new System.EventHandler(this.InstallAllCheckbox_CheckChanged);
+            this.InstallAllCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.InstallAllCheckbox.TabIndex = 11;
+            this.InstallAllCheckbox.TabStop = false;
             //
             // EditModSearches
             //
@@ -530,21 +541,22 @@ namespace CKAN.GUI
             this.ModListHeaderContextMenuStrip.ShowCheckMargin = true;
             this.ModListHeaderContextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(ModListHeaderContextMenuStrip_ItemClicked);
             //
-            // InstallAllCheckbox
+            // hiddenTagsLabelsLinkList
             //
-            this.InstallAllCheckbox.Location = new System.Drawing.Point(18, 57);
-            this.InstallAllCheckbox.Size = new System.Drawing.Size(20, 20);
-            this.InstallAllCheckbox.Checked = true;
-            this.InstallAllCheckbox.CheckedChanged += new System.EventHandler(this.InstallAllCheckbox_CheckChanged);
-            this.InstallAllCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.InstallAllCheckbox.TabIndex = 11;
-            this.InstallAllCheckbox.TabStop = false;
+            this.hiddenTagsLabelsLinkList.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.hiddenTagsLabelsLinkList.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.hiddenTagsLabelsLinkList.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
+            this.hiddenTagsLabelsLinkList.Location = new System.Drawing.Point(0, 0);
+            this.hiddenTagsLabelsLinkList.Name = "hiddenTagsLabelsLinkList";
+            this.hiddenTagsLabelsLinkList.Size = new System.Drawing.Size(500, 20);
+            this.hiddenTagsLabelsLinkList.OnChangeFilter += hiddenTagsLabelsLinkList_OnChangeFilter;
             //
             // ManageMods
             //
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.InstallAllCheckbox);
             this.Controls.Add(this.ModGrid);
+            this.Controls.Add(this.hiddenTagsLabelsLinkList);
             this.Controls.Add(this.EditModSearches);
             this.Controls.Add(this.menuStrip2);
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -565,6 +577,7 @@ namespace CKAN.GUI
 
         private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.MenuStrip menuStrip2;
+        private System.Windows.Forms.CheckBox InstallAllCheckbox;
         private System.Windows.Forms.ToolStripMenuItem launchGameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RefreshToolButton;
         private System.Windows.Forms.ToolStripMenuItem UpdateAllToolButton;
@@ -584,8 +597,8 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripMenuItem FilterTagsToolButton;
         private System.Windows.Forms.ToolStripMenuItem NavBackwardToolButton;
         private System.Windows.Forms.ToolStripMenuItem NavForwardToolButton;
+        private CKAN.GUI.EditModSearches EditModSearches;
         public System.Windows.Forms.DataGridView ModGrid;
-        private System.Windows.Forms.CheckBox InstallAllCheckbox;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Installed;
         private System.Windows.Forms.DataGridViewCheckBoxColumn AutoInstalled;
         private System.Windows.Forms.DataGridViewCheckBoxColumn UpdateCol;
@@ -613,6 +626,6 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem purgeContentsToolStripMenuItem;
-        private CKAN.GUI.EditModSearches EditModSearches;
+        private CKAN.GUI.TagsLabelsLinkList hiddenTagsLabelsLinkList;
     }
 }
