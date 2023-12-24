@@ -136,6 +136,7 @@
   <data name="FilterLabelsToolButton.Text" xml:space="preserve"><value>Labels</value></data>
   <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve"><value>Previous selected mod...</value></data>
   <data name="NavForwardToolButton.ToolTipText" xml:space="preserve"><value>Next selected mod...</value></data>
+  <data name="hiddenTagsLabelsLinkList.TagToolTipText" xml:space="preserve"><value>Click to show or hide tags</value></data>
   <data name="Installed.HeaderText" xml:space="preserve"><value>Installed</value></data>
   <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>Auto-installed</value></data>
   <data name="UpdateCol.HeaderText" xml:space="preserve"><value>Update</value></data>

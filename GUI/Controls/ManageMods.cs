@@ -594,9 +594,24 @@ namespace CKAN.GUI
             // Right click -> Bring up context menu to change visibility of columns.
             else if (e.Button == MouseButtons.Right)
             {
-                // Start from scrap: clear the entire item list, then add all options again.
-                ModListHeaderContextMenuStrip.Items.Clear();
+                ShowHeaderContextMenu();
+            }
+        }
 
+        private void ShowHeaderContextMenu(bool columns = true,
+                                           bool tags    = true)
+        {
+            if (!columns && !tags)
+            {
+                // Don't show a blank menu
+                return;
+            }
+
+            // Start from scratch: clear the entire item list, then add all options again
+            ModListHeaderContextMenuStrip.Items.Clear();
+
+            if (columns)
+            {
                 // Add columns
                 ModListHeaderContextMenuStrip.Items.AddRange(
                     ModGrid.Columns.Cast<DataGridViewColumn>()
@@ -610,10 +625,16 @@ namespace CKAN.GUI
                     })
                     .ToArray()
                 );
+            }
 
+            if (columns && tags)
+            {
                 // Separator
                 ModListHeaderContextMenuStrip.Items.Add(new ToolStripSeparator());
+            }
 
+            if (tags)
+            {
                 // Add tags
                 var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
                 ModListHeaderContextMenuStrip.Items.AddRange(
@@ -627,10 +648,10 @@ namespace CKAN.GUI
                     })
                     .ToArray()
                 );
-
-                // Show the context menu on cursor position.
-                ModListHeaderContextMenuStrip.Show(Cursor.Position);
             }
+
+            // Show the context menu on cursor position.
+            ModListHeaderContextMenuStrip.Show(Cursor.Position);
         }
 
         /// <summary>
@@ -1595,9 +1616,15 @@ namespace CKAN.GUI
             });
         }
 
-        private void hiddenTagsLabelsLinkList_OnChangeFilter(SavedSearch search, bool merge)
+        private void hiddenTagsLabelsLinkList_TagClicked(ModuleTag tag, bool merge)
         {
-            Filter(search, merge);
+            ShowHeaderContextMenu(columns: false);
+        }
+
+        private void hiddenTagsLabelsLinkList_LabelClicked(ModuleLabel label, bool merge)
+        {
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, label),
+                   merge);
         }
 
         #endregion

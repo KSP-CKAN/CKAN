@@ -89,7 +89,8 @@ namespace CKAN.GUI
             this.tagsLabelsLinkList.Location = new System.Drawing.Point(0, 0);
             this.tagsLabelsLinkList.Name = "tagsLabelsLinkList";
             this.tagsLabelsLinkList.Size = new System.Drawing.Size(500, 20);
-            this.tagsLabelsLinkList.OnChangeFilter += tagsLabelsLinkList_OnChangeFilter;
+            this.tagsLabelsLinkList.TagClicked += tagsLabelsLinkList_TagClicked;
+            this.tagsLabelsLinkList.LabelClicked += tagsLabelsLinkList_LabelClicked;
             //
             // MetadataModuleAbstractLabel
             //
