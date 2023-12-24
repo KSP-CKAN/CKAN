@@ -497,7 +497,7 @@ namespace CKAN
             };
 
             var rels = registry.InstalledModules
-                .Where(inst => !inst.Module.IsDLC && IsAvailable(inst))
+                .Where(inst => !inst.Module.IsDLC && !inst.AutoInstalled && IsAvailable(inst))
                 .OrderBy(inst => inst.identifier, StringComparer.OrdinalIgnoreCase)
                 .Select(with_versions ? (Func<InstalledModule, RelationshipDescriptor>) RelationshipWithVersion
                                       : RelationshipWithoutVersion)
