@@ -324,6 +324,7 @@ namespace CKAN.GUI
             var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
             mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game, registry);
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
+            UpdateHiddenTagsAndLabels();
         }
 
         private void editLabelsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -338,6 +339,7 @@ namespace CKAN.GUI
             {
                 mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false, inst.Name, inst.game, registry);
             }
+            UpdateHiddenTagsAndLabels();
         }
 
         #endregion
@@ -660,6 +662,7 @@ namespace CKAN.GUI
                 }
                 mainModList.ModuleTags.Save(ModuleTagList.DefaultPath);
                 UpdateFilters();
+                UpdateHiddenTagsAndLabels();
             }
         }
 
@@ -1306,6 +1309,8 @@ namespace CKAN.GUI
 
             Main.Instance.Wait.AddLogMessage(Properties.Resources.MainModListUpdatingTray);
 
+            UpdateHiddenTagsAndLabels();
+
             Util.Invoke(this, () => ModGrid.Focus());
             return true;
         }
@@ -1555,6 +1560,47 @@ namespace CKAN.GUI
         {
             EditModSearches.ParentMoved();
         }
+
+        #region Hidden tags and labels links
+
+        [ForbidGUICalls]
+        private void UpdateHiddenTagsAndLabels()
+        {
+            var inst = Main.Instance.CurrentInstance;
+            var registry = RegistryManager.Instance(inst, repoData).registry;
+            var tags = mainModList.ModuleTags.HiddenTags
+                                             .Intersect(registry.Tags.Keys)
+                                             .OrderByDescending(tagName => tagName)
+                                             .Select(tagName => registry.Tags[tagName])
+                                             .ToList();
+            var labels = mainModList.ModuleLabels.LabelsFor(inst.Name)
+                                                 .Where(l => l.Hide && l.ModuleCount(inst.game) > 0)
+                                                 .ToList();
+            hiddenTagsLabelsLinkList.UpdateTagsAndLabels(tags, labels);
+            Util.Invoke(hiddenTagsLabelsLinkList, () =>
+            {
+                hiddenTagsLabelsLinkList.Visible = tags.Count > 0 || labels.Count > 0;
+                if (tags.Count > 0 || labels.Count > 0)
+                {
+                    hiddenTagsLabelsLinkList.Controls.Add(new Label()
+                    {
+                        Text = tags.Count   == 0 ? Properties.Resources.ManageModsHiddenLabels
+                             : labels.Count == 0 ? Properties.Resources.ManageModsHiddenTags
+                             :                     Properties.Resources.ManageModsHiddenLabelsAndTags,
+                        AutoSize = true,
+                        Padding  = new Padding(0),
+                        Margin   = new Padding(0, 2, 0, 2),
+                    });
+                }
+            });
+        }
+
+        private void hiddenTagsLabelsLinkList_OnChangeFilter(SavedSearch search, bool merge)
+        {
+            Filter(search, merge);
+        }
+
+        #endregion
 
         #region Navigation History
 
