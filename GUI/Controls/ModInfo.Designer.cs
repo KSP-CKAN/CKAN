@@ -30,13 +30,12 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ModInfo));
-            this.ToolTip = new System.Windows.Forms.ToolTip();
             this.ModInfoTable = new System.Windows.Forms.TableLayoutPanel();
-            this.MetadataModuleNameTextBox = new TransparentTextBox();
-            this.MetadataTagsLabelsPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.MetadataModuleNameTextBox = new CKAN.GUI.TransparentTextBox();
+            this.tagsLabelsLinkList = new CKAN.GUI.TagsLabelsLinkList();
             this.MetadataModuleAbstractLabel = new System.Windows.Forms.Label();
-            this.MetadataModuleDescriptionTextBox = new TransparentTextBox();
-            this.ModInfoTabControl = new ThemedTabControl();
+            this.MetadataModuleDescriptionTextBox = new CKAN.GUI.TransparentTextBox();
+            this.ModInfoTabControl = new CKAN.GUI.ThemedTabControl();
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
             this.Metadata = new CKAN.GUI.Metadata();
             this.RelationshipTabPage = new System.Windows.Forms.TabPage();
@@ -47,20 +46,13 @@ namespace CKAN.GUI
             this.Versions = new CKAN.GUI.Versions();
             this.SuspendLayout();
             //
-            // ToolTip
-            //
-            this.ToolTip.AutoPopDelay = 10000;
-            this.ToolTip.InitialDelay = 250;
-            this.ToolTip.ReshowDelay = 250;
-            this.ToolTip.ShowAlways = true;
-            //
             // ModInfoTable
             //
             this.ModInfoTable.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ModInfoTable.ColumnCount = 1;
             this.ModInfoTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.ModInfoTable.Controls.Add(this.MetadataModuleNameTextBox, 0, 0);
-            this.ModInfoTable.Controls.Add(this.MetadataTagsLabelsPanel, 0, 1);
+            this.ModInfoTable.Controls.Add(this.tagsLabelsLinkList, 0, 1);
             this.ModInfoTable.Controls.Add(this.MetadataModuleAbstractLabel, 0, 2);
             this.ModInfoTable.Controls.Add(this.MetadataModuleDescriptionTextBox, 0, 3);
             this.ModInfoTable.Controls.Add(this.ModInfoTabControl, 0, 4);
@@ -89,14 +81,15 @@ namespace CKAN.GUI
             this.MetadataModuleNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             resources.ApplyResources(this.MetadataModuleNameTextBox, "MetadataModuleNameTextBox");
             //
-            // MetadataTagsLabelsPanel
+            // tagsLabelsLinkList
             //
-            this.MetadataTagsLabelsPanel.AutoSize = true;
-            this.MetadataTagsLabelsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataTagsLabelsPanel.Padding = new System.Windows.Forms.Padding(0);
-            this.MetadataTagsLabelsPanel.Location = new System.Drawing.Point(0, 0);
-            this.MetadataTagsLabelsPanel.Name = "MetadataTagsLabelsPanel";
-            this.MetadataTagsLabelsPanel.Size = new System.Drawing.Size(500, 20);
+            this.tagsLabelsLinkList.AutoSize = true;
+            this.tagsLabelsLinkList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tagsLabelsLinkList.Padding = new System.Windows.Forms.Padding(0);
+            this.tagsLabelsLinkList.Location = new System.Drawing.Point(0, 0);
+            this.tagsLabelsLinkList.Name = "tagsLabelsLinkList";
+            this.tagsLabelsLinkList.Size = new System.Drawing.Size(500, 20);
+            this.tagsLabelsLinkList.OnChangeFilter += tagsLabelsLinkList_OnChangeFilter;
             //
             // MetadataModuleAbstractLabel
             //
@@ -226,12 +219,11 @@ namespace CKAN.GUI
 
         #endregion
 
-        private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.TableLayoutPanel ModInfoTable;
-        private TransparentTextBox MetadataModuleNameTextBox;
-        private System.Windows.Forms.FlowLayoutPanel MetadataTagsLabelsPanel;
+        private CKAN.GUI.TransparentTextBox MetadataModuleNameTextBox;
+        private CKAN.GUI.TagsLabelsLinkList tagsLabelsLinkList;
         private System.Windows.Forms.Label MetadataModuleAbstractLabel;
-        private TransparentTextBox MetadataModuleDescriptionTextBox;
+        private CKAN.GUI.TransparentTextBox MetadataModuleDescriptionTextBox;
         private System.Windows.Forms.TabControl ModInfoTabControl;
         private System.Windows.Forms.TabPage MetadataTabPage;
         private CKAN.GUI.Metadata Metadata;
