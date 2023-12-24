@@ -200,6 +200,12 @@ namespace CKAN.GUI
             if (GameCompatibilityVersion == null)
             {
                 GameCompatibilityVersion = mod.LatestCompatibleGameVersion();
+                if (GameCompatibilityVersion.IsAny)
+                {
+                    GameCompatibilityVersion = mod.LatestCompatibleRealGameVersion(
+                        Main.Instance?.Manager.CurrentInstance?.game.KnownVersions
+                        ?? new List<GameVersion>() {});
+                }
             }
 
             UpdateIsCached();

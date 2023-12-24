@@ -213,20 +213,29 @@ namespace CKAN.Games.KerbalSpaceProgram
 
         private List<GameVersion> versions;
 
+        private readonly object versionMutex = new object();
+
         public List<GameVersion> KnownVersions
         {
             get
             {
-                // There's a lot of duplicate real versions with different build IDs,
-                // skip all those extra checks when we use these
                 if (versions == null)
                 {
-                    versions = ServiceLocator.Container
-                                             .Resolve<IKspBuildMap>()
-                                             .KnownVersions
-                                             .Select(v => v.WithoutBuild)
-                                             .Distinct()
-                                             .ToList();
+                    lock (versionMutex)
+                    {
+                        if (versions == null)
+                        {
+                            // There's a lot of duplicate real versions with different build IDs,
+                            // skip all those extra checks when we use these
+                            versions = ServiceLocator.Container
+                                                     .Resolve<IKspBuildMap>()
+                                                     .KnownVersions
+                                                     .Select(v => v.WithoutBuild)
+                                                     .Distinct()
+                                                     .OrderBy(v => v)
+                                                     .ToList();
+                        }
+                    }
                 }
                 return versions;
             }
