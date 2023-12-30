@@ -149,8 +149,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
         }
 
         public string DefaultCommandLine(string path)
-            => Platform.IsUnix ? "./KSP2.x86_64 -single-instance"
-             : Platform.IsMac  ? "./KSP2.app/Contents/MacOS/KSP"
+            => Platform.IsMac  ? "./KSP2.app/Contents/MacOS/KSP"
              :                   "KSP2_x64.exe -single-instance";
 
         public string[] AdjustCommandLine(string[] args, GameVersion installedVersion)
