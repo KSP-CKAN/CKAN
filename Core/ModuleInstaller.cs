@@ -1333,7 +1333,8 @@ namespace CKAN
                                         out Dictionary<CkanModule, HashSet<string>>           supporters)
         {
             var crit     = ksp.VersionCriteria();
-            var resolver = new RelationshipResolver(sourceModules, null,
+            var resolver = new RelationshipResolver(sourceModules.Where(m => !m.IsDLC),
+                                                    null,
                                                     RelationshipResolverOptions.KitchenSinkOpts(),
                                                     registry, crit);
             var recommenders = resolver.Dependencies().ToHashSet();
