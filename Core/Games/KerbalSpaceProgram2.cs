@@ -203,10 +203,13 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         private GameVersion VersionFromFile(string path)
             => File.Exists(path)
-                ? GameVersion.Parse(
-                    FileVersionInfo.GetVersionInfo(path).ProductVersion
-                    ?? versions.Last().ToString())
-                : null;
+                && GameVersion.TryParse(FileVersionInfo.GetVersionInfo(path).ProductVersion
+                                        // Fake instances have an EXE containing just the version string
+                                        ?? File.ReadAllText(path),
+                                        out GameVersion v)
+                    ? v
+                    // Fall back to the most recent version
+                    : KnownVersions.Last();
 
         public string CompatibleVersionsFile => "compatible_game_versions.json";
 
