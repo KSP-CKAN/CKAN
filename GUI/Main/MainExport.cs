@@ -23,7 +23,7 @@ namespace CKAN.GUI
             // Background thread so GUI thread can work with the controls
             Task.Factory.StartNew(() =>
             {
-                AddStatusMessage("");
+                currentUser.RaiseMessage("");
                 tabController.ShowTab("EditModpackTabPage", 2);
                 DisableMainWindow();
                 var mgr = RegistryManager.Instance(CurrentInstance, repoData);

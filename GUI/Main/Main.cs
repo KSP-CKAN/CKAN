@@ -32,7 +32,7 @@ namespace CKAN.GUI
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
 
         // Stuff we set in the constructor and never change
-        public readonly GUIUser currentUser;
+        public readonly IUser currentUser;
         public readonly GameInstanceManager Manager;
         public GameInstance CurrentInstance => Manager.CurrentInstance;
         private readonly RepositoryDataManager repoData;
@@ -133,10 +133,11 @@ namespace CKAN.GUI
             // Set the window name and class for X11
             if (Platform.IsX11)
             {
-                HandleCreated += (sender, e) => X11.SetWMClass("CKAN", "CKAN", Handle);
+                HandleCreated += (sender, e) => X11.SetWMClass(Meta.GetProductName(),
+                                                               Meta.GetProductName(), Handle);
             }
 
-            currentUser = new GUIUser(this, Wait);
+            currentUser = new GUIUser(this, Wait, StatusLabel, StatusProgress);
             if (mgr != null)
             {
                 // With a working GUI, assign a GUIUser to the GameInstanceManager to replace the ConsoleUser
@@ -224,7 +225,7 @@ namespace CKAN.GUI
             Wait.StartWaiting(
                 (sender, evt) =>
                 {
-                    Wait.AddLogMessage(Properties.Resources.MainModListLoadingRegistry);
+                    currentUser.RaiseMessage(Properties.Resources.MainModListLoadingRegistry);
                     // Make sure we have a lockable instance
                     do
                     {
@@ -840,6 +841,21 @@ namespace CKAN.GUI
         private void ManageMods_OnRegistryChanged()
         {
             needRegistrySave = true;
+        }
+
+        private void ManageMods_RaiseMessage(string message)
+        {
+            currentUser.RaiseMessage(message);
+        }
+
+        private void ManageMods_RaiseError(string error)
+        {
+            currentUser.RaiseError(error);
+        }
+
+        private void ManageMods_ClearStatusBar()
+        {
+            StatusLabel.ToolTipText = StatusLabel.Text = "";
         }
 
         private void MainTabControl_OnSelectedIndexChanged(object sender, EventArgs e)

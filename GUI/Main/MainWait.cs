@@ -1,4 +1,3 @@
-using System;
 using System.Windows.Forms;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -54,38 +53,14 @@ namespace CKAN.GUI
         {
             Util.Invoke(statusStrip1, () => {
                 StatusProgress.Visible = false;
-                AddStatusMessage(statusMsg);
+                currentUser.RaiseMessage(statusMsg);
             });
             Util.Invoke(WaitTabPage, () => {
                 RecreateDialogs();
                 Wait.Finish();
-                SetProgress(100);
             });
-            Wait.AddLogMessage(logMsg);
+            currentUser.RaiseMessage(logMsg);
             Wait.SetDescription(description);
-        }
-
-        public void SetProgress(int progress)
-        {
-            Wait.ProgressValue = progress;
-            Wait.ProgressIndeterminate = false;
-            Util.Invoke(statusStrip1, () =>
-            {
-                StatusProgress.Value =
-                    Math.Max(StatusProgress.Minimum,
-                        Math.Min(StatusProgress.Maximum, progress));
-                StatusProgress.Style = ProgressBarStyle.Continuous;
-            });
-        }
-
-        [ForbidGUICalls]
-        public void ResetProgress()
-        {
-            Wait.ProgressIndeterminate = true;
-            Util.Invoke(statusStrip1, () =>
-            {
-                StatusProgress.Style = ProgressBarStyle.Marquee;
-            });
         }
 
         public void Wait_OnRetry()

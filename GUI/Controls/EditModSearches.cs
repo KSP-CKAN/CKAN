@@ -26,6 +26,7 @@ namespace CKAN.GUI
 
         public event Action                  SurrenderFocus;
         public event Action<List<ModSearch>> ApplySearches;
+        public event Action<string>          ShowError;
 
         public void Clear()
         {
@@ -113,6 +114,7 @@ namespace CKAN.GUI
             };
             ctl.ApplySearch    += EditModSearch_ApplySearch;
             ctl.SurrenderFocus += EditModSearch_SurrenderFocus;
+            ctl.ShowError      += error => ShowError?.Invoke(error);
 
             editors.Add(ctl);
             Controls.Add(ctl);

@@ -21,6 +21,7 @@ namespace CKAN
         void RaiseError(string message, params object[] args);
 
         void RaiseProgress(string message, int percent);
+        void RaiseProgress(int percent, long bytesPerSecond, long bytesLeft);
         void RaiseMessage(string message, params object[] args);
     }
 
@@ -56,6 +57,10 @@ namespace CKAN
         }
 
         public void RaiseProgress(string message, int percent)
+        {
+        }
+
+        public void RaiseProgress(int percent, long bytesPerSecond, long bytesLeft)
         {
         }
 

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Runtime.Versioning;
 #endif
 
+using CKAN.GUI.Attributes;
+
 namespace CKAN.GUI
 {
     #if NET5_0_OR_GREATER
@@ -20,6 +22,7 @@ namespace CKAN.GUI
             defaultNo  = NoButton.Text;
         }
 
+        [ForbidGUICalls]
         public DialogResult ShowYesNoDialog(Form parentForm, string text, string yesText = null, string noText = null)
         {
             task = new TaskCompletionSource<Tuple<DialogResult, bool>>();
@@ -33,6 +36,7 @@ namespace CKAN.GUI
             return task.Task.Result.Item1;
         }
 
+        [ForbidGUICalls]
         public Tuple<DialogResult, bool> ShowSuppressableYesNoDialog(Form parentForm, string text, string suppressText, string yesText = null, string noText = null)
         {
             task = new TaskCompletionSource<Tuple<DialogResult, bool>>();

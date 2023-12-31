@@ -56,7 +56,6 @@ namespace CKAN.GUI
         /// </summary>
         public void UpdateCKAN()
         {
-            ResetProgress();
             ShowWaitDialog();
             DisableMainWindow();
             tabController.RenameTab("WaitTabPage", Properties.Resources.MainUpgradingWaitTitle);

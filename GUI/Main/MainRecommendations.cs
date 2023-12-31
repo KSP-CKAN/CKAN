@@ -21,7 +21,7 @@ namespace CKAN.GUI
 
         private void ChooseRecommendedMods_OnConflictFound(string message)
         {
-            AddStatusMessage(message);
+            currentUser.RaiseMessage(message);
         }
 
         private void auditRecommendationsMenuItem_Click(object sender, EventArgs e)

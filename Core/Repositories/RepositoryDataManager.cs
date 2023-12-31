@@ -172,7 +172,6 @@ namespace CKAN
                     targets.Select(t => new FileInfo(t.filename).Length));
                 foreach ((Repository repo, Net.DownloadTarget target) in toUpdate.Zip(targets))
                 {
-                    user.RaiseMessage(Properties.Resources.NetRepoLoadingModulesFromRepo, repo.name);
                     var file = target.filename;
                     msg = string.Format(Properties.Resources.NetRepoLoadingModulesFromRepo,
                                         repo.name);

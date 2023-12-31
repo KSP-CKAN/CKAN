@@ -1305,10 +1305,11 @@ namespace CKAN
             => repoDataMgr.GetAllAvailableModules(repositories.Values)
                           // Pick all latest modules where download is not null
                           // Merge all the URLs into one sequence
-                          .SelectMany(availMod => availMod?.Latest()?.download
-                                                  ?? Enumerable.Empty<Uri>())
+                          .SelectMany(availMod => (availMod?.Latest()?.download
+                                                   ?? Enumerable.Empty<Uri>())
+                                                  .Append(availMod?.Latest()?.InternetArchiveDownload))
                           // Skip relative URLs because they don't have hosts
-                          .Where(dlUri => dlUri.IsAbsoluteUri)
+                          .Where(dlUri => dlUri?.IsAbsoluteUri ?? false)
                           // Group the URLs by host
                           .GroupBy(dlUri => dlUri.Host)
                           // Put most commonly used hosts first

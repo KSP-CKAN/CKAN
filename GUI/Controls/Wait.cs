@@ -267,6 +267,36 @@ namespace CKAN.GUI
                 MessageTextBox.Text = "(" + message + ")");
         }
 
+        public void SetMainProgress(string message, int percent)
+        {
+            Util.Invoke(this, () =>
+            {
+                MessageTextBox.Text = $"{message} - {percent}%";
+                ProgressIndeterminate = false;
+                ProgressValue = percent;
+                if (message != lastProgressMessage)
+                {
+                    AddLogMessage(message);
+                    lastProgressMessage = message;
+                }
+            });
+        }
+
+        public void SetMainProgress(int percent, long bytesPerSecond, long bytesLeft)
+        {
+            var fullMsg = string.Format(CKAN.Properties.Resources.NetAsyncDownloaderProgress,
+                                        CkanModule.FmtSize(bytesPerSecond),
+                                        CkanModule.FmtSize(bytesLeft));
+            Util.Invoke(this, () =>
+            {
+                MessageTextBox.Text = $"{fullMsg} - {percent}%";
+                ProgressIndeterminate = false;
+                ProgressValue = percent;
+            });
+        }
+
+        private string lastProgressMessage;
+
         [ForbidGUICalls]
         private void ClearLog()
         {
@@ -274,11 +304,9 @@ namespace CKAN.GUI
                 LogTextBox.Text = "");
         }
 
-        [ForbidGUICalls]
         public void AddLogMessage(string message)
         {
-            Util.Invoke(this, () =>
-                LogTextBox.AppendText(message + "\r\n"));
+            LogTextBox.AppendText(message + "\r\n");
         }
 
         private void RetryCurrentActionButton_Click(object sender, EventArgs e)

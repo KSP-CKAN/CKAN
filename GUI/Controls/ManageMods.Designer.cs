@@ -301,6 +301,7 @@ namespace CKAN.GUI
             this.EditModSearches.Dock = System.Windows.Forms.DockStyle.Top;
             this.EditModSearches.ApplySearches += EditModSearches_ApplySearches;
             this.EditModSearches.SurrenderFocus += EditModSearches_SurrenderFocus;
+            this.EditModSearches.ShowError += EditModSearches_ShowError;
             //
             // ModGrid
             //

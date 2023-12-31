@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using log4net;
 
 namespace CKAN.CmdLine
@@ -255,27 +254,31 @@ namespace CKAN.CmdLine
         /// <param name="percent">Progress in percent</param>
         public void RaiseProgress(string message, int percent)
         {
-            if (Regex.IsMatch(message, Properties.Resources.UserProgressDownloadSubstring, RegexOptions.IgnoreCase))
-            {
-                // In headless mode, only print a new message if the percent has changed,
-                // to reduce clutter in Jenkins for large downloads
-                if (!Headless || percent != previousPercent)
-                {
-                    // The \r at the front here causes download messages to *overwrite* each other.
-                    Console.Write("\r{0} - {1}%           ", message, percent);
-                    previousPercent = percent;
-                }
-            }
-            else
-            {
-                // The percent looks weird on non-download messages.
-                // The leading newline makes sure we don't end up with a mess from previous
-                // download messages.
-                GoToStartOfLine();
-                Console.Write("{0}", message);
-            }
-            // These messages leave the cursor at the end of a line of text
+            // The percent looks weird on non-download messages.
+            // The leading newline makes sure we don't end up with a mess from previous
+            // download messages.
+            GoToStartOfLine();
+            Console.Write("{0}", message);
+
+            // This message leaves the cursor at the end of a line of text
             atStartOfLine = false;
+        }
+
+        public void RaiseProgress(int percent, long bytesPerSecond, long bytesLeft)
+        {
+            if (!Headless || percent != previousPercent)
+            {
+                GoToStartOfLine();
+                var fullMsg = string.Format(CKAN.Properties.Resources.NetAsyncDownloaderProgress,
+                                            CkanModule.FmtSize(bytesPerSecond),
+                                            CkanModule.FmtSize(bytesLeft));
+                // The \r at the front here causes download messages to *overwrite* each other.
+                Console.Write("\r{0} - {1}%           ", fullMsg, percent);
+                previousPercent = percent;
+
+                // This message leaves the cursor at the end of a line of text
+                atStartOfLine = false;
+            }
         }
 
         /// <summary>

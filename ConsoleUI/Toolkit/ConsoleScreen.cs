@@ -205,6 +205,21 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         /// <summary>
+        /// Update a user visible progress bar
+        /// </summary>
+        /// <param name="percent">Value 0-100 representing the progress</param>
+        /// <param name="bytesPerSecond">Current download rate</param>
+        /// <param name="bytesLeft">Bytes remaining in the downloads</param>
+        public void RaiseProgress(int percent, long bytesPerSecond, long bytesLeft)
+        {
+            var fullMsg = string.Format(CKAN.Properties.Resources.NetAsyncDownloaderProgress,
+                                        CkanModule.FmtSize(bytesPerSecond),
+                                        CkanModule.FmtSize(bytesLeft));
+            Progress(fullMsg, percent);
+            Draw(userTheme);
+        }
+
+        /// <summary>
         /// Forward a RaiseProgress request to child classes
         /// </summary>
         /// <param name="message">Message to be shown in progress bar</param>
