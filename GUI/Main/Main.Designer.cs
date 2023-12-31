@@ -480,6 +480,9 @@ namespace CKAN.GUI
             this.ManageMods.OnRegistryChanged += ManageMods_OnRegistryChanged;
             this.ManageMods.LabelsAfterUpdate += ManageMods_LabelsAfterUpdate;
             this.ManageMods.StartChangeSet += ManageMods_StartChangeSet;
+            this.ManageMods.RaiseMessage += ManageMods_RaiseMessage;
+            this.ManageMods.RaiseError += ManageMods_RaiseError;
+            this.ManageMods.ClearStatusBar += ManageMods_ClearStatusBar;
             //
             // ChangesetTabPage
             //

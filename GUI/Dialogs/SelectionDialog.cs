@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using System.Runtime.Versioning;
 #endif
 
+using CKAN.GUI.Attributes;
+
 namespace CKAN.GUI
 {
     #if NET5_0_OR_GREATER
@@ -25,6 +27,7 @@ namespace CKAN.GUI
         /// <returns>The selected index, -1 if canceled.</returns>
         /// <param name="message">Message.</param>
         /// <param name="args">Array of items to select from.</param>
+        [ForbidGUICalls]
         public int ShowSelectionDialog (string message, params object[] args)
         {
             int defaultSelection = -1;

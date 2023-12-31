@@ -68,6 +68,8 @@ namespace CKAN.GUI
         /// </summary>
         public event Action SurrenderFocus;
 
+        public event Action<string> ShowError;
+
         public ModSearch Search
         {
             get => currentSearch;
@@ -141,7 +143,7 @@ namespace CKAN.GUI
             }
             catch (Kraken k)
             {
-                Main.Instance?.AddStatusMessage(k.Message);
+                ShowError?.Invoke(k.Message);
             }
         }
 

@@ -138,8 +138,9 @@ namespace CKAN
                 CkanModule module = null;
                 try
                 {
-                    module = modules.First(m => m.download?.Any(dlUri => dlUri == url)
-                                                ?? false);
+                    module = modules.First(m => (m.download?.Any(dlUri => dlUri == url)
+                                                 ?? false)
+                                                || m.InternetArchiveDownload == url);
                     User.RaiseMessage(Properties.Resources.NetAsyncDownloaderValidating, module);
                     cache.Store(module, filename,
                         new Progress<long>(percent => StoreProgress?.Invoke(module, 100 - percent, 100)),

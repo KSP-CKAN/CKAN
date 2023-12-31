@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix cache timestamp comparisons (#3974 by: HebaruSan)
 - [GUI] Fix compatible popup messing with max game version column (#3976 by: HebaruSan)
 - [Core] Fix Audit Recommendations option (#3988 by: HebaruSan)
+- [Multiple] Installation message usability improvements (#3989 by: HebaruSan)
 
 ### Internal
 

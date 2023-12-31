@@ -700,10 +700,12 @@ namespace CKAN
                 foreach (string mod in goners)
                 {
                     int percent_complete = (step++ * 100) / goners.Count;
-                    User.RaiseProgress(
-                        string.Format(Properties.Resources.ModuleInstallerRemovingMod, mod),
-                        percent_complete);
-                    Uninstall(mod, ref possibleConfigOnlyDirs, registry_manager.registry);
+                    var registry = registry_manager.registry;
+                    User.RaiseProgress(string.Format(Properties.Resources.ModuleInstallerRemovingMod,
+                                                     registry.InstalledModule(mod)?.Module.ToString()
+                                                     ?? mod),
+                                       percent_complete);
+                    Uninstall(mod, ref possibleConfigOnlyDirs, registry);
                 }
 
                 // Enforce consistency if we're not installing anything,

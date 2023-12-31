@@ -68,7 +68,7 @@ namespace CKAN.GUI
         {
             (bool forceFullRefresh, bool refreshWithoutChanges) = (RepoArgument)e.Argument;
             // Don't repeat this stuff if downloads fail
-            AddStatusMessage(Properties.Resources.MainRepoScanning);
+            currentUser.RaiseMessage(Properties.Resources.MainRepoScanning);
             log.Debug("Scanning before repo update");
             var regMgr = RegistryManager.Instance(CurrentInstance, repoData);
             bool scanChanged = regMgr.ScanUnmanagedFiles();
@@ -79,7 +79,6 @@ namespace CKAN.GUI
             // Load cached data with progress bars instead of without if not already loaded
             // (which happens if auto-update is enabled, otherwise this is a no-op).
             // We need the old data to alert the user of newly compatible modules after update.
-            AddStatusMessage(Properties.Resources.LoadingCachedRepoData);
             repoData.Prepopulate(
                 registry.Repositories.Values.ToList(),
                 new Progress<int>(p => currentUser.RaiseProgress(Properties.Resources.LoadingCachedRepoData, p)));
@@ -117,7 +116,7 @@ namespace CKAN.GUI
                             downloader.CancelDownload();
                         };
 
-                        AddStatusMessage(Properties.Resources.MainRepoUpdating);
+                        currentUser.RaiseMessage(Properties.Resources.MainRepoUpdating);
 
                         var updateResult = repoData.Update(repos, CurrentInstance.game,
                                                            forceFullRefresh, downloader, currentUser);
@@ -197,7 +196,7 @@ namespace CKAN.GUI
                             log.Error(exc.Message, exc);
                             currentUser.RaiseMessage(exc.Message);
                         }
-                        AddStatusMessage(Properties.Resources.MainRepoFailed);
+                        currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
                         EnableMainWindow();
                         break;
@@ -211,7 +210,7 @@ namespace CKAN.GUI
                             log.Error(inner.Message, inner);
                             currentUser.RaiseMessage(inner.Message);
                         }
-                        AddStatusMessage(Properties.Resources.MainRepoFailed);
+                        currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
                         EnableMainWindow();
                         break;
@@ -219,7 +218,7 @@ namespace CKAN.GUI
                     case Exception exc:
                         log.Error(exc.Message, exc);
                         currentUser.RaiseMessage(exc.Message);
-                        AddStatusMessage(Properties.Resources.MainRepoFailed);
+                        currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
                         EnableMainWindow();
                         break;
@@ -234,7 +233,7 @@ namespace CKAN.GUI
                 switch (updateResult)
                 {
                     case RepositoryDataManager.UpdateResult.NoChanges:
-                        AddStatusMessage(Properties.Resources.MainRepoUpToDate);
+                        currentUser.RaiseMessage(Properties.Resources.MainRepoUpToDate);
                         // Reload rows if user added a cached repo repo
                         if (refreshWithoutChanges)
                         {
@@ -251,7 +250,7 @@ namespace CKAN.GUI
 
                     case RepositoryDataManager.UpdateResult.Updated:
                     default:
-                        AddStatusMessage(Properties.Resources.MainRepoSuccess);
+                        currentUser.RaiseMessage(Properties.Resources.MainRepoSuccess);
                         ShowRefreshQuestion();
                         UpgradeNotification();
                         RefreshModList(false, oldModules);

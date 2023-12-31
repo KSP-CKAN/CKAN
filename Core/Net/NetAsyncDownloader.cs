@@ -346,10 +346,12 @@ namespace CKAN
         /// true to queue, false to start immediately
         /// </returns>
         private bool shouldQueue(Uri url)
-            => !url.IsFile
+            => !url.IsFile && url.IsAbsoluteUri
                // Ignore inactive downloads
                && downloads.Except(queuedDownloads)
-                           .Any(dl => (!dl.CurrentUri.IsAbsoluteUri || dl.CurrentUri.Host == url.Host)
+                           .Any(dl => dl.CurrentUri != url
+                                      // Look for active downloads from the same host
+                                      && (dl.CurrentUri.IsAbsoluteUri && dl.CurrentUri.Host == url.Host)
                                       // Consider done if no bytes left
                                       && dl.bytesLeft > 0
                                       // Consider done if already tried and failed
@@ -422,11 +424,7 @@ namespace CKAN
             }
 
             int totalPercentage = (int)(((totalSize - totalBytesLeft) * 100) / (totalSize));
-            User.RaiseProgress(
-                string.Format(Properties.Resources.NetAsyncDownloaderProgress,
-                    CkanModule.FmtSize(totalBytesPerSecond),
-                    CkanModule.FmtSize(totalBytesLeft)),
-                totalPercentage);
+            User.RaiseProgress(totalPercentage, totalBytesPerSecond, totalBytesLeft);
         }
 
         private void PopFromQueue(string host)

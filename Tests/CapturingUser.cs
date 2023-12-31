@@ -40,6 +40,12 @@ namespace Tests
             RaisedProgresses.Add(new Tuple<string, int>(message, percent));
         }
 
+        public void RaiseProgress(int percent, long bytesPerSecond, long bytesLeft)
+        {
+            RaisedProgresses.Add(new Tuple<string, int>($"{bytesPerSecond} {bytesLeft}",
+                                                        percent));
+        }
+
         public void RaiseMessage(string message, params object[] args)
         {
             RaisedMessages.Add(string.Format(message, args));

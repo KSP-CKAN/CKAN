@@ -244,7 +244,7 @@ and try again.</value></data>
 Open settings now?</value></data>
   <data name="MainInstallOpenSettings" xml:space="preserve"><value>Open Settings</value></data>
   <data name="MainInstallNo" xml:space="preserve"><value>No</value></data>
-  <data name="MainInstallModSuccess" xml:space="preserve"><value>Module "{0}" successfully installed</value></data>
+  <data name="MainInstallModSuccess" xml:space="preserve"><value>Successfully installed {0}</value></data>
   <data name="MainInstallSuccess" xml:space="preserve"><value>Success!</value></data>
   <data name="MainInstallCancelTooLate" xml:space="preserve"><value>Cancellation too late, process complete!</value></data>
   <data name="MainInstallCancelAfterInstall" xml:space="preserve"><value>User canceled the process manually, but all mods already (un)installed/upgraded.</value></data>

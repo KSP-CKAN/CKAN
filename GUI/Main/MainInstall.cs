@@ -324,7 +324,7 @@ namespace CKAN.GUI
                                      .Any(relF => registry.FileOwner(relF) != null));
                 if (possibleConfigOnlyDirs.Count > 0)
                 {
-                    AddStatusMessage("");
+                    currentUser.RaiseMessage("");
                     tabController.ShowTab("DeleteDirectoriesTabPage", 4);
                     tabController.SetTabLock(true);
 
@@ -355,7 +355,8 @@ namespace CKAN.GUI
 
         private void OnModInstalled(CkanModule mod)
         {
-            AddStatusMessage(string.Format(Properties.Resources.MainInstallModSuccess, mod.name));
+            currentUser.RaiseMessage(string.Format(Properties.Resources.MainInstallModSuccess,
+                                     mod));
             LabelsAfterInstall(mod);
         }
 
@@ -477,7 +478,7 @@ namespace CKAN.GUI
             {
                 // The Result property throws if InstallMods threw (!!!)
                 (bool success, List<ModChange> changes) = (InstallResult)e.Result;
-                AddStatusMessage(Properties.Resources.MainInstallSuccess);
+                currentUser.RaiseMessage(Properties.Resources.MainInstallSuccess);
                 // Rebuilds the list of GUIMods
                 RefreshModList(false);
             }

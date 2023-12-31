@@ -43,8 +43,6 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         private void CacheMod(object sender, DoWorkEventArgs e)
         {
-            ResetProgress();
-
             GUIMod gm = e.Argument as GUIMod;
             downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
             downloader.Progress      += Wait.SetModuleProgress;
