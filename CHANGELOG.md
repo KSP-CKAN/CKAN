@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Re-sort module properties after merging (#3957 by: HebaruSan)
 - [Netkan] Update and optimize meta tester and inflator images (#3958, #3968 by: HebaruSan; reviewed: techman83)
 - [Netkan] Generate schema compliant game versions from swinfo.json (#3969 by: HebaruSan)
+- [Core] Save and load game version for fake KSP2 instances (#3986 by: HebaruSan)
 
 ## v1.34.2 (Minkowski²)
 

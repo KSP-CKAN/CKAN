@@ -281,7 +281,8 @@ namespace CKAN
 
                 foreach (var anchor in game.InstanceAnchorFiles)
                 {
-                    fileMgr.WriteAllText(Path.Combine(newPath, anchor), "");
+                    fileMgr.WriteAllText(Path.Combine(newPath, anchor),
+                                         version.WithoutBuild.ToString());
                 }
 
                 // Don't write the buildID.txts if we have no build, otherwise it would be -1.
@@ -289,9 +290,8 @@ namespace CKAN
                 {
                     foreach (var b in KspBuildIdVersionProvider.buildIDfilenames)
                     {
-                        fileMgr.WriteAllText(
-                            Path.Combine(newPath, b),
-                            string.Format("build id = {0}", version.Build));
+                        fileMgr.WriteAllText(Path.Combine(newPath, b),
+                                             string.Format("build id = {0}", version.Build));
                     }
                 }
 

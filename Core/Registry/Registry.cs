@@ -632,6 +632,7 @@ namespace CKAN
         {
             log.DebugFormat("Finding all available versions for {0}", identifier);
             return getAvail(identifier).SelectMany(am => am.AllAvailable())
+                                       .Distinct()
                                        .OrderByDescending(m => m.version);
         }
 
