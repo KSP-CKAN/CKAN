@@ -149,9 +149,13 @@ namespace CKAN.Games.KerbalSpaceProgram2
         }
 
         public string DefaultCommandLine(string path)
-            => Platform.IsUnix ? "./KSP2.x86_64 -single-instance"
-             : Platform.IsMac  ? "./KSP2.app/Contents/MacOS/KSP"
-             :                   "KSP2_x64.exe -single-instance";
+            => Platform.IsMac
+                ? "./KSP2.app/Contents/MacOS/KSP2"
+                : string.Format(Platform.IsUnix ? "./{0} -single-instance"
+                                                : "{0} -single-instance",
+                                InstanceAnchorFiles.FirstOrDefault(f =>
+                                    File.Exists(Path.Combine(path, f)))
+                                ?? InstanceAnchorFiles.First());
 
         public string[] AdjustCommandLine(string[] args, GameVersion installedVersion)
             => args;
@@ -213,10 +217,19 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public string CompatibleVersionsFile => "compatible_game_versions.json";
 
-        public string[] InstanceAnchorFiles => new string[]
-        {
-            "KSP2_x64.exe",
-        };
+        public string[] InstanceAnchorFiles =>
+            Platform.IsUnix
+                ? new string[]
+                {
+                    // Native Linux port, if/when it arrives
+                    "KSP2.x86_64",
+                    // Windows EXE via Proton on Linux
+                    "KSP2_x64.exe",
+                }
+                : new string[]
+                {
+                    "KSP2_x64.exe",
+                };
 
         public Uri DefaultRepositoryURL => new Uri("https://github.com/KSP-CKAN/KSP2-CKAN-meta/archive/main.tar.gz");
 
