@@ -7,6 +7,7 @@ using YamlDotNet.RepresentationModel;
 using CKAN.Versioning;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Transformers;
+using CKAN.NetKAN.Services;
 
 namespace CKAN.NetKAN.Model
 {
@@ -155,7 +156,12 @@ namespace CKAN.NetKAN.Model
                 }
                 first.Merge(other, mergeSettings);
             }
-            first[DownloadPropertyName] = JArray.FromObject(downloads);
+            // Merge game version compatibility
+            ModuleService.ApplyVersions(first, null, null, null);
+            // Only generate array if multiple URLs
+            first[DownloadPropertyName] = downloads.Length == 1
+                ? downloads.First()
+                : JArray.FromObject(downloads);
             return first;
         }
 
