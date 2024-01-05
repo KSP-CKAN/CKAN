@@ -2,7 +2,7 @@
 
 Our policy is based on two principles:
 
-* CKAN complies with licenses, but does not use them as an excuse to do things mod authors do not want
+* CKAN takes mod authors' licensing rights seriously
 * CKAN acts in the interests of its users **and** mod authors
 
 Note that for purposes of this document, the term "author" does not necessarily mean the original author of a mod. It should be understood to include a maintainer, custodian, etc.
