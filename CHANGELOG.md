@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.34.5
 
+### Internal
 
+- [Policy] Fix #3518 rewrite de-indexing policy (#3993 by: JonnyOThan; reviewed: HebaruSan)
 
 ## v1.34.4 (Niven)
 
