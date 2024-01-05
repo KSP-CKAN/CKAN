@@ -5,6 +5,8 @@ Our policy is based on two principles:
 * CKAN takes licenses very seriously
 * CKAN acts in the interests of its users AND mod authors
 
+Note that for purposes of this document, the term "author" does not necessarily mean the original author of a mod.  It should be understood to include a maintainer, custodian, etc.
+
 CKAN will not index a mod without the author's permission.  The CKAN team recognizes that indexing a mod on CKAN can be a burden on authors - at the very least, they need to make decisions about the metadata and it is one more thing they are responsible for supporting.  Indexing a mod on CKAN also benefits the author: it can make installation easier, reducing support requests; it can enforce depdendencies and conflicts automatically; it provides an easy way for users to update the mod; and it can increase a mod's visibility.  Minimizing the burden and maximizing the benefits to mod authors is a core goal of the CKAN team.
 
 A collaborative environment is crucial.  When something goes wrong - and it will - sometimes the mod author is at fault and sometimes it's the CKAN metadata or a bug in CKAN itself.  Recognizing this and working together to resolve issues yields the greatest benefit to CKAN users.  The CKAN team will always strive to support mod authors in fixing these issues.  The CKAN team can be reached on discord (use Help->Discord in the CKAN client) or you can file an issue on https://github.com/KSP-CKAN/CKAN (if you suspect the issue is related to the client) or https://github.com/KSP-CKAN/NetKAN (if you suspect the issue is related to metadata).  Pull requests are always welcome.
