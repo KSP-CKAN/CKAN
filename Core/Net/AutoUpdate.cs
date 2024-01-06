@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Reflection;
@@ -146,15 +145,15 @@ namespace CKAN
             // download updater app and new ckan.exe
             string updaterFilename = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
             string ckanFilename    = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            Net.DownloadWithProgress(
+            NetAsyncDownloader.DownloadWithProgress(
                 new[]
                 {
-                    new Net.DownloadTarget(
-                        new List<Uri> { latestUpdate.UpdaterDownload },
+                    new NetAsyncDownloader.DownloadTarget(
+                        latestUpdate.UpdaterDownload,
                         updaterFilename,
                         latestUpdate.UpdaterSize),
-                    new Net.DownloadTarget(
-                        new List<Uri> {  latestUpdate.ReleaseDownload },
+                    new NetAsyncDownloader.DownloadTarget(
+                        latestUpdate.ReleaseDownload,
                         ckanFilename,
                         latestUpdate.ReleaseSize),
                 },

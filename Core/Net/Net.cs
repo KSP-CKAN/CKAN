@@ -21,6 +21,7 @@ namespace CKAN
     public static class Net
     {
         // The user agent that we report to web sites
+        // Maybe overwritten by command line args
         public static string UserAgentString = "Mozilla/4.0 (compatible; CKAN)";
 
         private const int MaxRetries             = 3;
@@ -76,14 +77,14 @@ namespace CKAN
 
         public static string Download(string url, out string etag, string filename = null, IUser user = null)
         {
-            TxFileManager FileTransaction = new TxFileManager();
-
             user = user ?? new NullUser();
             user.RaiseMessage(Properties.Resources.NetDownloading, url);
+            var FileTransaction = new TxFileManager();
 
             // Generate a temporary file if none is provided.
             if (filename == null)
             {
+
                 filename = FileTransaction.GetTempFileName();
             }
 
@@ -139,55 +140,6 @@ namespace CKAN
             }
 
             return filename;
-        }
-
-        public class DownloadTarget
-        {
-            public List<Uri> urls     { get; private set; }
-            public string    filename { get; private set; }
-            public long      size     { get; set; }
-            public string    mimeType { get; private set; }
-
-            public DownloadTarget(List<Uri> urls, string filename = null, long size = 0, string mimeType = "")
-            {
-                TxFileManager FileTransaction = new TxFileManager();
-
-                this.urls        = urls;
-                this.filename    = string.IsNullOrEmpty(filename)
-                    ? FileTransaction.GetTempFileName()
-                    : filename;
-                this.size        = size;
-                this.mimeType    = mimeType;
-            }
-        }
-
-        public static string DownloadWithProgress(string url, string filename = null, IUser user = null)
-            => DownloadWithProgress(new Uri(url), filename, user);
-
-        public static string DownloadWithProgress(Uri url, string filename = null, IUser user = null)
-        {
-            var targets = new[] {
-                new DownloadTarget(new List<Uri> { url }, filename)
-            };
-            DownloadWithProgress(targets, user);
-            return targets.First().filename;
-        }
-
-        public static void DownloadWithProgress(IList<DownloadTarget> downloadTargets, IUser user = null)
-        {
-            var downloader = new NetAsyncDownloader(user ?? new NullUser());
-            downloader.onOneCompleted += (url, filename, error, etag) =>
-            {
-                if (error != null)
-                {
-                    user?.RaiseError(error.ToString());
-                }
-                else
-                {
-                    File.Move(filename, downloadTargets.First(p => p.urls.Contains(url)).filename);
-                }
-            };
-            downloader.DownloadAndWait(downloadTargets);
         }
 
         /// <summary>

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,115 +9,13 @@ using System.Threading;
 using Autofac;
 using log4net;
 
-using CKAN.Configuration;
-
 namespace CKAN
 {
     /// <summary>
     /// Download lots of files at once!
     /// </summary>
-    public class NetAsyncDownloader
+    public partial class NetAsyncDownloader
     {
-        // Private utility class for tracking downloads
-        private class NetAsyncDownloaderDownloadPart
-        {
-            public readonly Net.DownloadTarget target;
-            public DateTime lastProgressUpdateTime;
-            public long lastProgressUpdateSize;
-            public readonly string path;
-            public long bytesLeft;
-            public long size;
-            public long bytesPerSecond;
-            public Exception error;
-
-            // Number of target URLs already tried and failed
-            private int triedDownloads;
-
-            /// <summary>
-            /// Percentage, bytes received, total bytes to receive
-            /// </summary>
-            public event Action<int, long, long>                         Progress;
-            public event Action<object, AsyncCompletedEventArgs, string> Done;
-
-            private string mimeType => target.mimeType;
-            private ResumingWebClient agent;
-
-            public NetAsyncDownloaderDownloadPart(Net.DownloadTarget target)
-            {
-                this.target = target;
-                path = target.filename ?? Path.GetTempFileName();
-                size = bytesLeft = target.size;
-                lastProgressUpdateTime = DateTime.Now;
-                triedDownloads = 0;
-            }
-
-            public void Download(Uri url, string path)
-            {
-                ResetAgent();
-                // Check whether to use an auth token for this host
-                if (url.IsAbsoluteUri
-                    && ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(url.Host, out string token)
-                        && !string.IsNullOrEmpty(token))
-                {
-                    log.InfoFormat("Using auth token for {0}", url.Host);
-                    // Send our auth token to the GitHub API (or whoever else needs one)
-                    agent.Headers.Add("Authorization", $"token {token}");
-                }
-                agent.DownloadFileAsyncWithResume(url, path);
-            }
-
-            public Uri CurrentUri => target.urls[triedDownloads];
-
-            public bool HaveMoreUris => triedDownloads + 1 < target.urls.Count;
-
-            public void NextUri()
-            {
-                if (HaveMoreUris)
-                {
-                    ++triedDownloads;
-                }
-            }
-
-            public void Abort()
-            {
-                agent?.CancelAsyncOverridden();
-            }
-
-            private void ResetAgent()
-            {
-                // This WebClient child class does some complicated stuff, let's keep using it for now
-                #pragma warning disable SYSLIB0014
-                agent = new ResumingWebClient();
-                #pragma warning restore SYSLIB0014
-
-                agent.Headers.Add("User-Agent", Net.UserAgentString);
-
-                // Tell the server what kind of files we want
-                if (!string.IsNullOrEmpty(mimeType))
-                {
-                    log.InfoFormat("Setting MIME type {0}", mimeType);
-                    agent.Headers.Add("Accept", mimeType);
-                }
-
-                // Forward progress and completion events to our listeners
-                agent.DownloadProgressChanged += (sender, args) =>
-                {
-                    Progress?.Invoke(args.ProgressPercentage, args.BytesReceived, args.TotalBytesToReceive);
-                };
-                agent.DownloadProgress += (percent, bytesReceived, totalBytesToReceive) =>
-                {
-                    Progress?.Invoke(percent, bytesReceived, totalBytesToReceive);
-                };
-                agent.DownloadFileCompleted += (sender, args) =>
-                {
-                    Done?.Invoke(sender, args,
-                                 args.Cancelled || args.Error != null
-                                     ? null
-                                     : agent.ResponseHeaders?.Get("ETag")?.Replace("\"", ""));
-                };
-            }
-        }
-
         private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncDownloader));
 
         public readonly IUser User;
@@ -126,13 +23,13 @@ namespace CKAN
         /// <summary>
         /// Raised when data arrives for a download
         /// </summary>
-        public event Action<Net.DownloadTarget, long, long> Progress;
+        public event Action<DownloadTarget, long, long> Progress;
 
         private readonly object dlMutex = new object();
         // NOTE: Never remove anything from this, because closures have indexes into it!
         // (Clearing completely after completion is OK)
-        private readonly List<NetAsyncDownloaderDownloadPart> downloads       = new List<NetAsyncDownloaderDownloadPart>();
-        private readonly List<NetAsyncDownloaderDownloadPart> queuedDownloads = new List<NetAsyncDownloaderDownloadPart>();
+        private readonly List<DownloadPart> downloads       = new List<DownloadPart>();
+        private readonly List<DownloadPart> queuedDownloads = new List<DownloadPart>();
         private int completed_downloads;
 
         // For inter-thread communication
@@ -150,20 +47,50 @@ namespace CKAN
             complete_or_canceled = new ManualResetEvent(false);
         }
 
+        public static string DownloadWithProgress(string url, string filename = null, IUser user = null)
+            => DownloadWithProgress(new Uri(url), filename, user);
+
+        public static string DownloadWithProgress(Uri url, string filename = null, IUser user = null)
+        {
+            var targets = new[]
+            {
+                new DownloadTarget(url, filename)
+            };
+            DownloadWithProgress(targets, user);
+            return targets.First().filename;
+        }
+
+        public static void DownloadWithProgress(IList<DownloadTarget> downloadTargets, IUser user = null)
+        {
+            var downloader = new NetAsyncDownloader(user ?? new NullUser());
+            downloader.onOneCompleted += (url, filename, error, etag) =>
+            {
+                if (error != null)
+                {
+                    user?.RaiseError(error.ToString());
+                }
+                else
+                {
+                    File.Move(filename, downloadTargets.First(p => p.urls.Contains(url)).filename);
+                }
+            };
+            downloader.DownloadAndWait(downloadTargets);
+        }
+
         /// <summary>
         /// Start a new batch of downloads
         /// </summary>
         /// <param name="targets">The downloads to begin</param>
-        public void DownloadAndWait(IList<Net.DownloadTarget> targets)
+        public void DownloadAndWait(IList<DownloadTarget> targets)
         {
             lock (dlMutex)
             {
                 if (downloads.Count + queuedDownloads.Count > completed_downloads)
                 {
                     // Some downloads are still in progress, add to the current batch
-                    foreach (Net.DownloadTarget target in targets)
+                    foreach (DownloadTarget target in targets)
                     {
-                        DownloadModule(new NetAsyncDownloaderDownloadPart(target));
+                        DownloadModule(new DownloadPart(target));
                     }
                     // Wait for completion along with original caller
                     // so we can handle completion tasks for the added mods
@@ -282,17 +209,17 @@ namespace CKAN
         /// Downloads our files.
         /// </summary>
         /// <param name="targets">A collection of DownloadTargets</param>
-        private void Download(ICollection<Net.DownloadTarget> targets)
+        private void Download(ICollection<DownloadTarget> targets)
         {
             downloads.Clear();
             queuedDownloads.Clear();
             foreach (var t in targets)
             {
-                DownloadModule(new NetAsyncDownloaderDownloadPart(t));
+                DownloadModule(new DownloadPart(t));
             }
         }
 
-        private void DownloadModule(NetAsyncDownloaderDownloadPart dl)
+        private void DownloadModule(DownloadPart dl)
         {
             if (shouldQueue(dl.CurrentUri))
             {
@@ -372,7 +299,7 @@ namespace CKAN
         /// <param name="bytesToDownload">The total amount of bytes we expect to download</param>
         private void FileProgressReport(int index, long bytesDownloaded, long bytesToDownload)
         {
-            NetAsyncDownloaderDownloadPart download = downloads[index];
+            DownloadPart download = downloads[index];
 
             DateTime now = DateTime.Now;
             TimeSpan timeSpan = now - download.lastProgressUpdateTime;

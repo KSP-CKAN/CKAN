@@ -7,9 +7,7 @@ using Newtonsoft.Json;
 using ChinhDo.Transactions.FileManager;
 using log4net;
 
-#if NETFRAMEWORK
 using CKAN.Extensions;
-#endif
 using CKAN.Games;
 
 namespace CKAN
@@ -160,7 +158,7 @@ namespace CKAN
             try
             {
                 // Download metadata
-                var targets = toUpdate.Select(r => new Net.DownloadTarget(new List<Uri>() { r.uri }))
+                var targets = toUpdate.Select(r => new NetAsyncDownloader.DownloadTarget(r.uri))
                                       .ToArray();
                 downloader.DownloadAndWait(targets);
 
@@ -170,17 +168,20 @@ namespace CKAN
                 var progress = new ProgressFilesOffsetsToPercent(
                     new Progress<int>(p => user.RaiseProgress(msg, p)),
                     targets.Select(t => new FileInfo(t.filename).Length));
-                foreach ((Repository repo, Net.DownloadTarget target) in toUpdate.Zip(targets))
+                foreach ((Repository repo, NetAsyncDownloader.DownloadTarget target) in toUpdate.Zip(targets))
                 {
                     var file = target.filename;
                     msg = string.Format(Properties.Resources.NetRepoLoadingModulesFromRepo,
                                         repo.name);
                     // Load the file, save to in memory cache
+                    log.InfoFormat("Loading {0}...", file);
                     var repoData = repositoriesData[repo] =
                         RepositoryData.FromDownload(file, game, progress);
                     // Save parsed data to disk
+                    log.DebugFormat("Saving data for {0} repo...", repo.name);
                     repoData.SaveTo(GetRepoDataPath(repo));
                     // Delete downloaded archive
+                    log.DebugFormat("Deleting {0}...", file);
                     File.Delete(file);
                     progress.NextFile();
                 }
@@ -200,8 +201,13 @@ namespace CKAN
                                                      kvp.Value))
                                   .ToList());
             }
-            catch
+            catch (Exception exc)
             {
+                foreach (var e in exc.TraverseNodes(ex => ex.InnerException)
+                                     .Reverse())
+                {
+                    log.Error("Repository update failed", e);
+                }
                 // Reset etags on errors
                 loadETags();
                 throw;
