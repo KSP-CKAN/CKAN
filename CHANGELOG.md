@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.34.5
 
+### Bugfixes
+
+- [GUI] Suppress admin user check for URL handler registration (#3996 by: HebaruSan)
+
 ### Internal
 
 - [Policy] Fix #3518 rewrite de-indexing policy (#3993 by: JonnyOThan; reviewed: HebaruSan)

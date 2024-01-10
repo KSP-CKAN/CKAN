@@ -57,7 +57,7 @@ namespace CKAN.GUI
                 {
                     try
                     {
-                       RegisterURLHandler_Win32();
+                        RegisterURLHandler_Win32();
                     }
                     catch (UnauthorizedAccessException)
                     {
@@ -69,14 +69,12 @@ namespace CKAN.GUI
                         if (user.RaiseYesNoDialog(Properties.Resources.URLHandlersPrompt))
                         {
                             // we need elevation to write to the registry
-                            ProcessStartInfo startInfo = new ProcessStartInfo(
-                                Assembly.GetEntryAssembly().Location)
+                            Process.Start(new ProcessStartInfo(Assembly.GetEntryAssembly().Location)
                             {
                                 // trigger a UAC prompt (if UAC is enabled)
                                 Verb      = "runas",
-                                Arguments = $"gui {UrlRegistrationArgument}"
-                            };
-                            Process.Start(startInfo);
+                                Arguments = $"gui --asroot {UrlRegistrationArgument}"
+                            });
                         }
                         else
                         {
