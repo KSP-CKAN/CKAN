@@ -65,17 +65,13 @@ namespace CKAN.Versioning
         /// true if versions have the same epoch, false if different
         /// </returns>
         public bool EpochEquals(ModuleVersion other)
-        {
-            return _epoch == other._epoch;
-        }
+            => _epoch == other._epoch;
 
         /// <returns>
         /// New module version with same version as 'this' but with one greater epoch
         /// </returns>
         public ModuleVersion IncrementEpoch()
-        {
-            return new ModuleVersion($"{_epoch + 1}:{_version}");
-        }
+            => new ModuleVersion($"{_epoch + 1}:{_version}");
 
         /// <summary>
         /// Converts the value of the current <see cref="ModuleVersion"/> object to its equivalent

@@ -195,7 +195,6 @@ namespace CKAN.GUI
         /// <summary>
         /// True if Skip column has a checkmark
         /// </summary>
-        /// <value></value>
         #pragma warning disable IDE0027
         public bool   Skip  { get => !Retry; set { Retry = !value; } }
         #pragma warning restore IDE0027

@@ -659,7 +659,7 @@ namespace CKAN
             // Find all the things which need uninstalling.
             var revdep = mods
                 .Union(registry_manager.registry.FindReverseDependencies(
-                    mods.Except(installing?.Select(m => m.identifier) ?? new string[] {})
+                    mods.Except(installing?.Select(m => m.identifier) ?? Array.Empty<string>())
                         .ToList(),
                     installing))
                 .ToList();

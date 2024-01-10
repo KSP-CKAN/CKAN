@@ -1,6 +1,6 @@
 using System.Windows.Forms;
 
-namespace CKAN
+namespace CKAN.GUI
 {
     /// <summary>
     /// A panel containing two groups of controls in flow layouts,

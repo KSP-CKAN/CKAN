@@ -1,7 +1,11 @@
+using System.IO;
 using System.Net;
+
 using NUnit.Framework;
+using Newtonsoft.Json;
+
 using CKAN;
-using CKAN.Versioning;
+using Tests.Data;
 
 namespace Tests.Core.AutoUpdateTests
 {
@@ -9,23 +13,24 @@ namespace Tests.Core.AutoUpdateTests
     public class AutoUpdateTests
     {
         [Test]
+        [TestCase(true)]
+        [TestCase(false)]
         [Category("Online")]
         // This could fail if run during a release, so it's marked as Flaky.
         [Category("FlakyNetwork")]
-        public void FetchLatestReleaseInfo()
+        public void GetUpdate_DevBuildOrStable_Works(bool devBuild)
         {
             // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
             // This is on by default in .NET 4.6, but not in 4.5.
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
-            var updater = AutoUpdate.Instance;
+            var updater = new AutoUpdate();
+            var update  = updater.GetUpdate(devBuild);
 
             // Is is a *really* basic test to just make sure we get release info
             // if we ask for it.
-            updater.FetchLatestReleaseInfo();
-            Assert.IsNotNull(updater.latestUpdate.ReleaseNotes);
-            Assert.IsNotNull(updater.latestUpdate.Version);
-            Assert.IsTrue(updater.IsFetched());
+            Assert.IsNotNull(update.ReleaseNotes);
+            Assert.IsNotNull(update.Version);
         }
 
         [Test]
@@ -34,15 +39,13 @@ namespace Tests.Core.AutoUpdateTests
         [TestCase("aaa\r\n---\r\nbbb\r\n---\r\nccc", "bbb\r\n---\r\nccc", "Multi release notes markers")]
         public void ExtractReleaseNotes(string body, string expected, string comment)
         {
-            Assert.AreEqual(
-                expected,
-                CkanUpdate.ExtractReleaseNotes(body),
-                comment
-            );
+            Assert.AreEqual(expected,
+                            GitHubReleaseCkanUpdate.ExtractReleaseNotes(body),
+                            comment);
         }
 
         [Test]
-        public void CkanUpdate_NormalUpdate_ParsedCorrectly()
+        public void GitHubReleaseCkanUpdate_NormalUpdate_ParsedCorrectly()
         {
             // Arrange
             const string releaseJSON = @"{
@@ -65,15 +68,39 @@ namespace Tests.Core.AutoUpdateTests
             }";
 
             // Act
-            CkanUpdate cu = new CkanUpdate(releaseJSON);
+            var relInfo = JsonConvert.DeserializeObject<GitHubReleaseInfo>(releaseJSON);
+            var upd     = new GitHubReleaseCkanUpdate(relInfo);
 
             // Assert
-            Assert.AreEqual(new CkanModuleVersion("v1.25.0", "Wallops"), cu.Version);
-            Assert.AreEqual("https://github.com/KSP-CKAN/CKAN/releases/download/v1.25.0/ckan.exe", cu.ReleaseDownload.ToString());
-            Assert.AreEqual(6651392, cu.ReleaseSize);
-            Assert.AreEqual("https://github.com/KSP-CKAN/CKAN/releases/download/v1.25.0/AutoUpdater.exe", cu.UpdaterDownload.ToString());
-            Assert.AreEqual(414208, cu.UpdaterSize);
-            Assert.AreEqual("Greatest release notes of all time", cu.ReleaseNotes);
+            Assert.AreEqual("v1.25.0", relInfo.tag_name);
+            Assert.AreEqual("Wallops", relInfo.name);
+            Assert.AreEqual("https://github.com/KSP-CKAN/CKAN/releases/download/v1.25.0/ckan.exe",
+                            upd.ReleaseDownload.ToString());
+            Assert.AreEqual(6651392, upd.ReleaseSize);
+            Assert.AreEqual("https://github.com/KSP-CKAN/CKAN/releases/download/v1.25.0/AutoUpdater.exe",
+                            upd.UpdaterDownload.ToString());
+            Assert.AreEqual(414208, upd.UpdaterSize);
+            Assert.AreEqual("Greatest release notes of all time", upd.ReleaseNotes);
         }
+
+        [Test]
+        public void S3BuildCkanUpdate_Constructor_ParsedCorrectly()
+        {
+            // Arrange / Act
+            var upd = new S3BuildCkanUpdate(
+                JsonConvert.DeserializeObject<S3BuildVersionInfo>(
+                    File.ReadAllText(TestData.DataDir("version.json"))));
+
+            // Assert
+            Assert.AreEqual("v1.34.5.24015 aka dev",
+                            upd.Version.ToString());
+            Assert.AreEqual("### Internal\n\n- [Policy] Fix #3518 rewrite de-indexing policy (#3993 by: JonnyOThan; reviewed: HebaruSan)",
+                            upd.ReleaseNotes);
+            Assert.AreEqual("https://ksp-ckan.s3-us-west-2.amazonaws.com/ckan.exe",
+                            upd.ReleaseDownload.ToString());
+            Assert.AreEqual("https://ksp-ckan.s3-us-west-2.amazonaws.com/AutoUpdater.exe",
+                            upd.UpdaterDownload.ToString());
+        }
+
     }
 }

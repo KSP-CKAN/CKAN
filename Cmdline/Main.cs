@@ -114,14 +114,10 @@ namespace CKAN.CmdLine
             }
             catch (NoGameInstanceKraken)
             {
+                log.Info("CKAN exiting.");
                 return printMissingInstanceError(new ConsoleUser(false));
             }
-            finally
-            {
-                log.Info("CKAN exiting.");
-            }
 
-            // Why do we print "CKAN exiting" twice???
             Options cmdline;
             try
             {
@@ -129,11 +125,8 @@ namespace CKAN.CmdLine
             }
             catch (BadCommandKraken)
             {
-                return AfterHelp();
-            }
-            finally
-            {
                 log.Info("CKAN exiting.");
+                return AfterHelp();
             }
 
             // Process commandline options.
@@ -301,7 +294,7 @@ namespace CKAN.CmdLine
             // but trying to catch it here doesn't seem to help. Dunno why.
 
             // GUI expects its first param to be an identifier, don't confuse it
-            GUI.GUI.Main_(args.Except(new string[] {"--verbose", "--debug", "--show-console"})
+            GUI.GUI.Main_(args.Except(new string[] {"--verbose", "--debug", "--show-console", "--asroot"})
                               .ToArray(),
                           manager, options.ShowConsole);
 

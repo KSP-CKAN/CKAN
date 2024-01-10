@@ -19,6 +19,8 @@ jobs:
       image: mono:latest
 
     steps:
+      - name: Installing checkout/build dependencies
+        run: apt-get update && apt-get install -y git make sed gzip fakeroot lintian dpkg-dev gpg createrepo
       - uses: actions/checkout@v3
 
       - name: Check version
@@ -35,8 +37,6 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '7'
-      - name: Installing build dependencies
-        run: apt-get update && apt-get install -y git make sed gzip fakeroot lintian dpkg-dev gpg createrepo
       - name: Installing runtime dependencies
         run: apt-get install -y xvfb
       - name: Install Docker
@@ -119,6 +119,9 @@ jobs:
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
           ./build docker-metadata --exclusive
 
+      - name: Create a version.json file for S3
+        shell: bash
+        run: python bin/version_info.py > _build/repack/Release/version.json
       - name: Push ckan.exe and netkan.exe to S3
         # Send ckan.exe and netkan.exe to https://ksp-ckan.s3-us-west-2.amazonaws.com/
         uses: jakejarvis/s3-sync-action@master

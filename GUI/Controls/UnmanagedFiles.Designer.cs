@@ -42,7 +42,7 @@ namespace CKAN.GUI
             this.DeleteButton = new System.Windows.Forms.ToolStripMenuItem();
             this.GameFolderTree = new System.Windows.Forms.TreeView();
             this.OKButton = new System.Windows.Forms.Button();
-            this.BottomButtonPanel = new LeftRightRowPanel();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             //
@@ -192,7 +192,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripMenuItem ShowInFolderButton;
         private System.Windows.Forms.ToolStripMenuItem DeleteButton;
         private System.Windows.Forms.TreeView GameFolderTree;
-        private LeftRightRowPanel BottomButtonPanel;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button OKButton;
     }
 }

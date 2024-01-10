@@ -35,7 +35,7 @@ namespace CKAN.GUI
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
             this.ProgressBarTable = new System.Windows.Forms.TableLayoutPanel();
             this.LogTextBox = new System.Windows.Forms.TextBox();
-            this.BottomButtonPanel = new LeftRightRowPanel();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.CancelCurrentActionButton = new System.Windows.Forms.Button();
             this.RetryCurrentActionButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
@@ -183,7 +183,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ProgressBar DialogProgressBar;
         private System.Windows.Forms.TableLayoutPanel ProgressBarTable;
         private System.Windows.Forms.TextBox LogTextBox;
-        private LeftRightRowPanel BottomButtonPanel;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button RetryCurrentActionButton;
         private System.Windows.Forms.Button CancelCurrentActionButton;
         private System.Windows.Forms.Button OkButton;

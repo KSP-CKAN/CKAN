@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Transactions;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using Autofac;
 
 using CKAN.Extensions;
 using CKAN.GUI.Attributes;
-#if NET5_0_OR_GREATER
-using System.Runtime.Versioning;
-#endif
+using CKAN.Configuration;
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
@@ -429,7 +430,10 @@ namespace CKAN.GUI
                             }
                             // Now pretend they clicked the menu option for the settings
                             Enabled = false;
-                            new SettingsDialog(RegistryManager.Instance(CurrentInstance, repoData),
+                            new SettingsDialog(ServiceLocator.Container.Resolve<IConfiguration>(),
+                                               configuration,
+                                               RegistryManager.Instance(CurrentInstance, repoData),
+                                               updater,
                                                currentUser)
                                 .ShowDialog(this);
                             Enabled = true;

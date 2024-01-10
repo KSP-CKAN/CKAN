@@ -2,12 +2,12 @@ namespace CKAN.GUI
 {
     partial class PlayTime
     {
-        /// <summary> 
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
+        /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -22,8 +22,8 @@ namespace CKAN.GUI
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
+        /// <summary>
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
@@ -34,7 +34,7 @@ namespace CKAN.GUI
             this.PlayTimeGrid = new System.Windows.Forms.DataGridView();
             this.NameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TimeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BottomButtonPanel = new LeftRightRowPanel();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.TotalLabel = new System.Windows.Forms.Label();
             this.OKButton = new System.Windows.Forms.Button();
             this.BottomButtonPanel.SuspendLayout();
@@ -149,7 +149,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.DataGridView PlayTimeGrid;
         private System.Windows.Forms.DataGridViewTextBoxColumn NameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn TimeColumn;
-        private LeftRightRowPanel BottomButtonPanel;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Label TotalLabel;
         private System.Windows.Forms.Button OKButton;
     }

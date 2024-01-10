@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +13,7 @@ namespace CKAN.GUI
     public class ModuleLabelList
     {
         [JsonProperty("labels", NullValueHandling = NullValueHandling.Ignore)]
-        public ModuleLabel[] Labels = new ModuleLabel[] {};
+        public ModuleLabel[] Labels = Array.Empty<ModuleLabel>();
 
         public IEnumerable<ModuleLabel> LabelsFor(string instanceName)
             => Labels.Where(l => l.AppliesTo(instanceName));

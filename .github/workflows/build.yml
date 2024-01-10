@@ -30,18 +30,18 @@ jobs:
       image: mono:${{ matrix.mono }}
 
     steps:
-      - uses: actions/checkout@v3
-
       - name: Adding HTTPS support to APT for old Mono images
         run: |
           apt-get update || true
           apt-get install -y apt-transport-https
+      - name: Installing checkout/build dependencies
+        run: apt-get update && apt-get install -y git
+      - uses: actions/checkout@v3
+
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '7'
-      - name: Installing build dependencies
-        run: apt-get update && apt-get install -y git
       - name: Install runtime dependencies
         run: apt-get install -y xvfb
       - name: Restore cache for _build/tools

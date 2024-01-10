@@ -9,6 +9,7 @@ using Autofac;
 using CKAN.ConsoleUI.Toolkit;
 using CKAN.Extensions;
 using CKAN.Games;
+using CKAN.Configuration;
 
 namespace CKAN.ConsoleUI {
 
@@ -540,7 +541,7 @@ namespace CKAN.ConsoleUI {
         private bool EditInstallFilters(ConsoleTheme theme)
         {
             LaunchSubScreen(theme, new InstallFiltersScreen(
-                ServiceLocator.Container.Resolve<Configuration.IConfiguration>(),
+                ServiceLocator.Container.Resolve<IConfiguration>(),
                 manager.CurrentInstance
             ));
             return true;

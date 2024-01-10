@@ -503,7 +503,7 @@ namespace CKAN
 
         private void LoadInstances()
         {
-            log.Info("Loading KSP instances");
+            log.Info("Loading game instances");
 
             instances.Clear();
 

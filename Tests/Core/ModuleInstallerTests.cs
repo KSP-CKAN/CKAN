@@ -680,7 +680,7 @@ namespace Tests.Core
                 // Act
                 ModuleInstaller.GroupFilesByRemovable(relRoot,
                                                            registry,
-                                                           new string[] {},
+                                                           Array.Empty<string>(),
                                                            game,
                                                            relPaths,
                                                            out string[] removable,

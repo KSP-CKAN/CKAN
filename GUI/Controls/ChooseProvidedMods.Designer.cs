@@ -34,7 +34,7 @@ namespace CKAN.GUI
             this.ChooseProvidedModsListView = new ThemedListView();
             this.modNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.modDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.BottomButtonPanel = new LeftRightRowPanel();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.ChooseProvidedModsCancelButton = new System.Windows.Forms.Button();
             this.ChooseProvidedModsContinueButton = new System.Windows.Forms.Button();
             this.BottomButtonPanel.SuspendLayout();
@@ -136,7 +136,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ListView ChooseProvidedModsListView;
         private System.Windows.Forms.ColumnHeader modNameColumnHeader;
         private System.Windows.Forms.ColumnHeader modDescriptionColumnHeader;
-        private LeftRightRowPanel BottomButtonPanel;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button ChooseProvidedModsCancelButton;
         private System.Windows.Forms.Button ChooseProvidedModsContinueButton;
     }

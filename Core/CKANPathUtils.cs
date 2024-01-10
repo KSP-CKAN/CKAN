@@ -60,7 +60,7 @@ namespace CKAN
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                              "Library", "Application Support", "Steam"),
             }
-            : new string[] {};
+            : Array.Empty<string>();
 
         /// <summary>
         /// Normalizes the path by replacing all \ with / and removing any trailing slash.

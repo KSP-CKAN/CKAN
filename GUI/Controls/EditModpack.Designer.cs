@@ -48,7 +48,7 @@ namespace CKAN.GUI
             this.LicenseLabel = new System.Windows.Forms.Label();
             this.LicenseComboBox = new System.Windows.Forms.ComboBox();
             this.IncludeVersionsCheckbox = new System.Windows.Forms.CheckBox();
-            this.RelationshipsListView = new ThemedListView();
+            this.RelationshipsListView = new CKAN.GUI.ThemedListView();
             this.ModNameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ModVersionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ModAbstractColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -56,7 +56,7 @@ namespace CKAN.GUI
             this.RecommendationsGroup = new System.Windows.Forms.ListViewGroup();
             this.SuggestionsGroup = new System.Windows.Forms.ListViewGroup();
             this.IgnoredGroup = new System.Windows.Forms.ListViewGroup();
-            this.BottomButtonPanel = new LeftRightRowPanel();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.DependsRadioButton = new System.Windows.Forms.RadioButton();
             this.RecommendsRadioButton = new System.Windows.Forms.RadioButton();
             this.SuggestsRadioButton = new System.Windows.Forms.RadioButton();
@@ -450,7 +450,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ListViewGroup RecommendationsGroup;
         private System.Windows.Forms.ListViewGroup SuggestionsGroup;
         private System.Windows.Forms.ListViewGroup IgnoredGroup;
-        private LeftRightRowPanel BottomButtonPanel;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.RadioButton DependsRadioButton;
         private System.Windows.Forms.RadioButton RecommendsRadioButton;
         private System.Windows.Forms.RadioButton SuggestsRadioButton;

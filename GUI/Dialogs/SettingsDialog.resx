@@ -144,6 +144,7 @@
   <data name="LatestVersionPreLabel.Text" xml:space="preserve"><value>Latest version:</value></data>
   <data name="LatestVersionLabel.Text" xml:space="preserve"><value>???</value></data>
   <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve"><value>Check for CKAN updates on launch</value></data>
+  <data name="DevBuildsCheckbox.Text" xml:space="preserve"><value>Use dev builds</value></data>
   <data name="CheckForUpdatesButton.Text" xml:space="preserve"><value>Check for updates</value></data>
   <data name="InstallUpdateButton.Text" xml:space="preserve"><value>Install update</value></data>
   <data name="BehaviourGroupBox.Text" xml:space="preserve"><value>Behaviour</value></data>

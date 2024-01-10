@@ -147,9 +147,11 @@ namespace Tests.Core.Configuration
             }
         }
 
-        public string[] GlobalInstallFilters { get; set; } = new string[] { };
+        public string[] GlobalInstallFilters { get; set; } = Array.Empty<string>();
 
-        public string[] PreferredHosts { get; set; } = new string[] { };
+        public string[] PreferredHosts { get; set; } = Array.Empty<string>();
+
+        public bool DevBuilds { get; set; }
 
         public void Dispose()
         {

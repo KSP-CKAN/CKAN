@@ -405,6 +405,14 @@ namespace CKAN.CmdLine
         [Option("all", DefaultValue = false, HelpText = "Upgrade all available updated modules")]
         public bool upgrade_all { get; set; }
 
+        [Option("dev-build", DefaultValue = false,
+                HelpText = "For `ckan` option only, use dev builds")]
+        public bool dev_build { get; set; }
+
+        [Option("stable-release", DefaultValue = false,
+                HelpText = "For `ckan` option only, use stable releases")]
+        public bool stable_release { get; set; }
+
         [ValueList(typeof (List<string>))]
         [InstalledIdentifiers]
         public List<string> modules { get; set; }

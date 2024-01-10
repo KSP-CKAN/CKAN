@@ -73,14 +73,13 @@ namespace CKAN.GUI
                             {
                                 // trigger a UAC prompt (if UAC is enabled)
                                 Verb      = "runas",
+                                // .NET ignores Verb without this
+                                UseShellExecute = true,
                                 Arguments = $"gui --asroot {UrlRegistrationArgument}"
                             });
                         }
-                        else
-                        {
-                            config.URLHandlerNoNag = true;
-                            config.Save();
-                        }
+                        config.URLHandlerNoNag = true;
+                        config.Save();
                         // Don't re-throw the exception because we just dealt with it
                     }
                 }

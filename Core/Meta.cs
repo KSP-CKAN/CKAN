@@ -28,7 +28,9 @@ namespace CKAN
                 case VersionFormat.Short:
                     return $"v{version.UpToCharacters(shortDelimiters)}";
                 case VersionFormat.Normal:
-                    return $"v{version.UpToCharacter('+')}";
+                    return "v" + Assembly.GetExecutingAssembly()
+                                         .GetAssemblyAttribute<AssemblyFileVersionAttribute>()
+                                         .Version;
                 case VersionFormat.Full:
                     return $"v{version}";
                 default:
@@ -37,9 +39,6 @@ namespace CKAN
         }
 
         private static readonly char[] shortDelimiters = new char[] { '-', '+' };
-
-        private static string UpToCharacter(this string orig, char what)
-            => orig.UpToIndex(orig.IndexOf(what));
 
         private static string UpToCharacters(this string orig, char[] what)
             => orig.UpToIndex(orig.IndexOfAny(what));

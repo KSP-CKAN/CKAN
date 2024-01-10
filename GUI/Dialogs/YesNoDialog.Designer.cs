@@ -31,11 +31,13 @@ namespace CKAN.GUI
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(YesNoDialog));
             this.panel1 = new System.Windows.Forms.Panel();
-            this.DescriptionLabel = new TransparentTextBox();
+            this.DescriptionLabel = new CKAN.GUI.TransparentTextBox();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.SuppressCheckbox = new System.Windows.Forms.CheckBox();
             this.YesButton = new System.Windows.Forms.Button();
             this.NoButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
+            this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -64,6 +66,14 @@ namespace CKAN.GUI
             this.DescriptionLabel.BorderStyle = System.Windows.Forms.BorderStyle.None;
             resources.ApplyResources(this.DescriptionLabel, "DescriptionLabel");
             // 
+            // BottomButtonPanel
+            //
+            this.BottomButtonPanel.LeftControls.Add(this.SuppressCheckbox);
+            this.BottomButtonPanel.RightControls.Add(this.NoButton);
+            this.BottomButtonPanel.RightControls.Add(this.YesButton);
+            this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.BottomButtonPanel.Name = "BottomButtonPanel";
+            //
             // SuppressCheckbox
             // 
             this.SuppressCheckbox.AutoSize = false;
@@ -80,6 +90,8 @@ namespace CKAN.GUI
             // 
             this.YesButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Right));
+            this.YesButton.AutoSize = true;
+            this.YesButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.YesButton.DialogResult = System.Windows.Forms.DialogResult.Yes;
             this.YesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.YesButton.Location = new System.Drawing.Point(250, 92);
@@ -93,6 +105,8 @@ namespace CKAN.GUI
             // 
             this.NoButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Right));
+            this.NoButton.AutoSize = true;
+            this.NoButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.NoButton.DialogResult = System.Windows.Forms.DialogResult.No;
             this.NoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.NoButton.Location = new System.Drawing.Point(331, 92);
@@ -107,9 +121,7 @@ namespace CKAN.GUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(418, 127);
-            this.Controls.Add(this.SuppressCheckbox);
-            this.Controls.Add(this.NoButton);
-            this.Controls.Add(this.YesButton);
+            this.Controls.Add(this.BottomButtonPanel);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = EmbeddedImages.AppIcon;
@@ -117,14 +129,17 @@ namespace CKAN.GUI
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             resources.ApplyResources(this, "$this");
             this.panel1.ResumeLayout(false);
-            this.ResumeLayout(false);
+            this.BottomButtonPanel.ResumeLayout(false);
+            this.BottomButtonPanel.PerformLayout();
+             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private TransparentTextBox DescriptionLabel;
+        private CKAN.GUI.TransparentTextBox DescriptionLabel;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.CheckBox SuppressCheckbox;
         private System.Windows.Forms.Button YesButton;
         private System.Windows.Forms.Button NoButton;

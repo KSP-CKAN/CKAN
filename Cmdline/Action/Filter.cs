@@ -5,6 +5,8 @@ using Autofac;
 using CommandLine;
 using CommandLine.Text;
 
+using CKAN.Configuration;
+
 namespace CKAN.CmdLine
 {
     /// <summary>
@@ -78,7 +80,7 @@ namespace CKAN.CmdLine
                 return exitCode;
             }
 
-            var cfg = ServiceLocator.Container.Resolve<Configuration.IConfiguration>();
+            var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
             user.RaiseMessage(Properties.Resources.FilterListGlobalHeader);
             foreach (string filter in cfg.GlobalInstallFilters)
             {
@@ -111,7 +113,7 @@ namespace CKAN.CmdLine
 
             if (opts.global)
             {
-                var cfg = ServiceLocator.Container.Resolve<Configuration.IConfiguration>();
+                var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
                 var duplicates = cfg.GlobalInstallFilters
                     .Intersect(opts.filters)
                     .ToArray();
@@ -172,7 +174,7 @@ namespace CKAN.CmdLine
 
             if (opts.global)
             {
-                var cfg = ServiceLocator.Container.Resolve<Configuration.IConfiguration>();
+                var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
                 var notFound = opts.filters
                     .Except(cfg.GlobalInstallFilters)
                     .ToArray();

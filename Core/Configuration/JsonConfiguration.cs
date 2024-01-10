@@ -27,8 +27,9 @@ namespace CKAN.Configuration
             public string Language { get; set; }
             public IList<GameInstanceEntry> GameInstances { get; set; } = new List<GameInstanceEntry>();
             public IDictionary<string, string> AuthTokens { get; set; } = new Dictionary<string, string>();
-            public string[] GlobalInstallFilters { get; set; } = new string[] { };
-            public string[] PreferredHosts { get; set; } = new string[] { };
+            public string[] GlobalInstallFilters { get; set; } = Array.Empty<string>();
+            public string[] PreferredHosts { get; set; } = Array.Empty<string>();
+            public bool DevBuilds { get; set; }
         }
 
         public class ConfigConverter : JsonPropertyNamesChangedConverter
@@ -318,6 +319,26 @@ namespace CKAN.Configuration
                 lock (_lock)
                 {
                     config.PreferredHosts = value;
+                    SaveConfig();
+                }
+            }
+        }
+
+        public bool DevBuilds
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return config.DevBuilds;
+                }
+            }
+
+            set
+            {
+                lock (_lock)
+                {
+                    config.DevBuilds = value;
                     SaveConfig();
                 }
             }

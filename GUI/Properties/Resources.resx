@@ -144,6 +144,13 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="GUIModUnknown" xml:space="preserve"><value>Unknown</value></data>
   <data name="GUIModMethodNotCKAN" xml:space="preserve"><value>Method can not be called unless IsCKAN</value></data>
   <data name="GUIModGameCompatibilityLong" xml:space="preserve"><value>{0} (using mod version {1})</value></data>
+  <data name="MainReleasesOrDevBuildsPrompt" xml:space="preserve"><value>CKAN is configured to check for updates at launch. In addition to the regular stable releases, dev builds are also available. Using dev builds will give you early access to new features and bugfixes, but with a higher chance of bugs. Please consider using the dev builds to help us catch and fix bugs before they make it into a release.
+
+Which build would you like to use?
+
+(This setting can be changed later in the CKAN settings.)</value></data>
+  <data name="MainReleasesOrDevBuildsYes" xml:space="preserve"><value>Use stable releases only</value></data>
+  <data name="MainReleasesOrDevBuildsNo" xml:space="preserve"><value>Use dev builds</value></data>
   <data name="MainAutoUpdateFailed" xml:space="preserve"><value>Error in auto-update:&#xD;&#xA;{0}</value></data>
   <data name="MainQuitWithConflicts" xml:space="preserve"><value>There are conflicts. Really quit?&#xD;&#xA;&#xD;&#xA;{0}</value></data>
   <data name="MainQuit" xml:space="preserve"><value>Quit</value></data>

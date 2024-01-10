@@ -37,7 +37,7 @@ namespace CKAN.GUI
             this.ContentsListView = new ThemedListView();
             this.FileColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SelectDirPrompt = new System.Windows.Forms.ListViewItem();
-            this.BottomButtonPanel = new LeftRightRowPanel();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.OpenDirectoryButton = new System.Windows.Forms.Button();
             this.KeepAllButton = new System.Windows.Forms.Button();
             this.DeleteButton = new System.Windows.Forms.Button();
@@ -198,7 +198,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ListView ContentsListView;
         private System.Windows.Forms.ColumnHeader FileColumn;
         private System.Windows.Forms.ListViewItem SelectDirPrompt;
-        private LeftRightRowPanel BottomButtonPanel;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button OpenDirectoryButton;
         private System.Windows.Forms.Button KeepAllButton;
         private System.Windows.Forms.Button DeleteButton;
