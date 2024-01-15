@@ -20,7 +20,10 @@ jobs:
 
     steps:
       - name: Installing checkout/build dependencies
-        run: apt-get update && apt-get install -y git make sed gzip fakeroot lintian dpkg-dev gpg createrepo
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            git make sed gzip fakeroot lintian dpkg-dev gpg createrepo python3-pip
       - uses: actions/checkout@v3
 
       - name: Check version
@@ -32,6 +35,13 @@ jobs:
           then
             echo 'odd_build=true' >> $GITHUB_OUTPUT
           fi
+      - name: Create a version.json file for S3
+        shell: bash
+        run: |
+          export PIP_ROOT_USER_ACTION=ignore
+          pip3 install --upgrade pip
+          pip3 install git
+          python3 bin/version_info.py > _build/repack/Release/version.json
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
@@ -119,9 +129,6 @@ jobs:
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
           ./build docker-metadata --exclusive
 
-      - name: Create a version.json file for S3
-        shell: bash
-        run: python3 bin/version_info.py > _build/repack/Release/version.json
       - name: Push ckan.exe and netkan.exe to S3
         # Send ckan.exe and netkan.exe to https://ksp-ckan.s3-us-west-2.amazonaws.com/
         uses: jakejarvis/s3-sync-action@master
