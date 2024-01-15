@@ -40,7 +40,7 @@ jobs:
         run: |
           export PIP_ROOT_USER_ACTION=ignore
           pip3 install --upgrade pip
-          pip3 install git
+          pip3 install gitpython
           python3 bin/version_info.py > _build/repack/Release/version.json
 
       - name: Setup .NET Core
