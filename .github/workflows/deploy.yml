@@ -42,10 +42,6 @@ jobs:
           dotnet-version: '7'
       - name: Installing runtime dependencies
         run: apt-get install -y xvfb
-      - name: Install Docker
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sh get-docker.sh
 
       - name: Restore cache for _build/tools
         uses: actions/cache@v1
@@ -77,6 +73,7 @@ jobs:
           export PIP_ROOT_USER_ACTION=ignore
           pip3 install --upgrade pip
           pip3 install gitpython
+          git config --global --add safe.directory '*'
           python3 bin/version_info.py > _build/repack/Release/version.json
 
       - name: Build deb
@@ -109,6 +106,11 @@ jobs:
 
       - name: Run tests
         run: xvfb-run ./build test+only --configuration=Release --where="Category!=FlakyNetwork"
+
+      - name: Install Docker
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sh get-docker.sh
 
       - name: Generate inflator Docker image and publish to Hub
         env:
