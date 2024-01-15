@@ -75,9 +75,9 @@ namespace CKAN.NetKAN.Transformers
                     json.SafeAdd("author",   swinfo.author);
                     json.SafeAdd("abstract", swinfo.description);
                     json.SafeAdd("version",  swinfo.version);
-                    GameVersion maxVer = null;
-                    if (GameVersion.TryParse(swinfo.ksp2_version.min, out GameVersion minVer)
-                        || GameVersion.TryParse(swinfo.ksp2_version.max, out maxVer))
+                    bool hasMin = GameVersion.TryParse(swinfo.ksp2_version?.min, out GameVersion minVer);
+                    bool hasMax = GameVersion.TryParse(swinfo.ksp2_version?.max, out GameVersion maxVer);
+                    if (hasMin || hasMax)
                     {
                         log.InfoFormat("Found compatibility: {0}–{1}", minVer?.WithoutBuild,
                                                                        maxVer?.WithoutBuild);
