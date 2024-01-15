@@ -121,7 +121,7 @@ jobs:
 
       - name: Create a version.json file for S3
         shell: bash
-        run: python bin/version_info.py > _build/repack/Release/version.json
+        run: python3 bin/version_info.py > _build/repack/Release/version.json
       - name: Push ckan.exe and netkan.exe to S3
         # Send ckan.exe and netkan.exe to https://ksp-ckan.s3-us-west-2.amazonaws.com/
         uses: jakejarvis/s3-sync-action@master
