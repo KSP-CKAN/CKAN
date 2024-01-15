@@ -183,6 +183,11 @@ namespace CKAN.Configuration
         /// </summary>
         public string[] PreferredHosts { get; set; }
 
+        /// <summary>
+        /// Not implemented because the Windows registry is deprecated
+        /// </summary>
+        public bool DevBuilds { get; set; }
+
         public static bool DoesRegistryConfigurationExist()
         {
             RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(CKAN_KEY_NO_PREFIX);

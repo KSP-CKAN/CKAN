@@ -18,6 +18,7 @@ using Autofac;
 using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.GUI.Attributes;
+using CKAN.Configuration;
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
@@ -36,6 +37,7 @@ namespace CKAN.GUI
         public readonly GameInstanceManager Manager;
         public GameInstance CurrentInstance => Manager.CurrentInstance;
         private readonly RepositoryDataManager repoData;
+        private readonly AutoUpdate updater = new AutoUpdate();
 
         // Stuff we set when the game instance changes
         public GUIConfiguration configuration;
@@ -78,7 +80,7 @@ namespace CKAN.GUI
                 }
             }
 
-            Configuration.IConfiguration mainConfig = ServiceLocator.Container.Resolve<Configuration.IConfiguration>();
+            var mainConfig = ServiceLocator.Container.Resolve<IConfiguration>();
 
             // If the language is not set yet in the config, try to save the current language.
             // If it isn't supported, it'll still be null afterwards. Doesn't matter, .NET handles the resource selection.
@@ -292,14 +294,13 @@ namespace CKAN.GUI
                     {
                         HideWaitDialog();
                         CheckTrayState();
-                        bool autoUpdating = CheckForCKANUpdate();
                         Console.CancelKeyPress += (sender2, evt2) =>
                         {
                             // Hide tray icon on Ctrl-C
                             minimizeNotifyIcon.Visible = false;
                         };
                         InitRefreshTimer();
-                        CurrentInstanceUpdated(!autoUpdating);
+                        CurrentInstanceUpdated();
                     }
                     else
                     {
@@ -334,7 +335,7 @@ namespace CKAN.GUI
                     try
                     {
                         ManageMods.ModGrid.ClearSelection();
-                        CurrentInstanceUpdated(true);
+                        CurrentInstanceUpdated();
                         done = true;
                     }
                     catch (RegistryInUseKraken kraken)
@@ -351,7 +352,7 @@ namespace CKAN.GUI
                         {
                             // Couldn't get the lock, revert to previous instance
                             Manager.CurrentInstance = old_instance;
-                            CurrentInstanceUpdated(false);
+                            CurrentInstanceUpdated();
                             done = true;
                         }
                     }
@@ -375,7 +376,7 @@ namespace CKAN.GUI
         /// React to switching to a new game instance
         /// </summary>
         /// <param name="allowRepoUpdate">true if a repo update is allowed if needed (e.g. on initial load), false otherwise</param>
-        private void CurrentInstanceUpdated(bool allowRepoUpdate)
+        private void CurrentInstanceUpdated()
         {
             // This will throw RegistryInUseKraken if locked by another process
             var regMgr = RegistryManager.Instance(CurrentInstance, repoData);
@@ -407,16 +408,11 @@ namespace CKAN.GUI
             configuration?.Save();
             configuration = GUIConfigForInstance(CurrentInstance);
 
-            if (!configuration.CheckForUpdatesOnLaunchNoNag && AutoUpdate.CanUpdate)
-            {
-                log.Debug("Asking user if they wish for auto-updates");
-                if (new AskUserForAutoUpdatesDialog().ShowDialog(this) == DialogResult.OK)
-                {
-                    configuration.CheckForUpdatesOnLaunch = true;
-                }
+            AutoUpdatePrompts(ServiceLocator.Container
+                                            .Resolve<IConfiguration>(),
+                              configuration);
 
-                configuration.CheckForUpdatesOnLaunchNoNag = true;
-            }
+            bool autoUpdating = CheckForCKANUpdate();
 
             var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
             if (!Directory.Exists(pluginsPath))
@@ -429,7 +425,7 @@ namespace CKAN.GUI
             CurrentInstance.game.RebuildSubdirectories(CurrentInstance.GameDir());
 
             bool repoUpdateNeeded = configuration.RefreshOnStartup;
-            if (allowRepoUpdate)
+            if (!autoUpdating)
             {
                 // If not allowing, don't do anything
                 if (repoUpdateNeeded)
@@ -625,7 +621,11 @@ namespace CKAN.GUI
         {
             // Flipping enabled here hides the main form itself.
             Enabled = false;
-            var dialog = new SettingsDialog(RegistryManager.Instance(CurrentInstance, repoData), currentUser);
+            var dialog = new SettingsDialog(ServiceLocator.Container.Resolve<IConfiguration>(),
+                                            configuration,
+                                            RegistryManager.Instance(CurrentInstance, repoData),
+                                            updater,
+                                            currentUser);
             dialog.ShowDialog(this);
             Enabled = true;
             if (dialog.RepositoryAdded)
@@ -649,7 +649,7 @@ namespace CKAN.GUI
         {
             Enabled = false;
             var dlg = new PreferredHostsDialog(
-                ServiceLocator.Container.Resolve<Configuration.IConfiguration>(),
+                ServiceLocator.Container.Resolve<IConfiguration>(),
                 RegistryManager.Instance(CurrentInstance, repoData).registry);
             dlg.ShowDialog(this);
             Enabled = true;
@@ -658,7 +658,7 @@ namespace CKAN.GUI
         private void installFiltersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Enabled = false;
-            var dlg = new InstallFiltersDialog(ServiceLocator.Container.Resolve<Configuration.IConfiguration>(), CurrentInstance);
+            var dlg = new InstallFiltersDialog(ServiceLocator.Container.Resolve<IConfiguration>(), CurrentInstance);
             dlg.ShowDialog(this);
             Enabled = true;
         }

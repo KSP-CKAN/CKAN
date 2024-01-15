@@ -63,6 +63,7 @@ namespace CKAN.GUI
             this.LatestVersionPreLabel = new System.Windows.Forms.Label();
             this.LatestVersionLabel = new System.Windows.Forms.Label();
             this.CheckUpdateOnLaunchCheckbox = new System.Windows.Forms.CheckBox();
+            this.DevBuildsCheckbox = new System.Windows.Forms.CheckBox();
             this.CheckForUpdatesButton = new System.Windows.Forms.Button();
             this.InstallUpdateButton = new System.Windows.Forms.Button();
             this.BehaviourGroupBox = new System.Windows.Forms.GroupBox();
@@ -100,7 +101,7 @@ namespace CKAN.GUI
             this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RepositoryGroupBox.Location = new System.Drawing.Point(12, 6);
             this.RepositoryGroupBox.Name = "RepositoryGroupBox";
-            this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 128);
+            this.RepositoryGroupBox.Size = new System.Drawing.Size(488, 128);
             this.RepositoryGroupBox.TabIndex = 0;
             this.RepositoryGroupBox.TabStop = false;
             resources.ApplyResources(this.RepositoryGroupBox, "RepositoryGroupBox");
@@ -115,7 +116,7 @@ namespace CKAN.GUI
             this.ReposListBox.FullRowSelect = true;
             this.ReposListBox.MultiSelect = false;
             this.ReposListBox.Name = "ReposListBox";
-            this.ReposListBox.Size = new System.Drawing.Size(452, 67);
+            this.ReposListBox.Size = new System.Drawing.Size(464, 67);
             this.ReposListBox.TabIndex = 0;
             this.ReposListBox.View = System.Windows.Forms.View.Details;
             this.ReposListBox.SelectedIndexChanged += new System.EventHandler(this.ReposListBox_SelectedIndexChanged);
@@ -166,7 +167,7 @@ namespace CKAN.GUI
             //
             this.DeleteRepoButton.Enabled = false;
             this.DeleteRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteRepoButton.Location = new System.Drawing.Point(394, 93);
+            this.DeleteRepoButton.Location = new System.Drawing.Point(406, 93);
             this.DeleteRepoButton.Name = "DeleteRepoButton";
             this.DeleteRepoButton.Size = new System.Drawing.Size(70, 25);
             this.DeleteRepoButton.TabIndex = 4;
@@ -180,9 +181,9 @@ namespace CKAN.GUI
             this.AuthTokensGroupBox.Controls.Add(this.DeleteAuthTokenButton);
             this.AuthTokensGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.AuthTokensGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AuthTokensGroupBox.Location = new System.Drawing.Point(12, 140);
+            this.AuthTokensGroupBox.Location = new System.Drawing.Point(512, 6);
             this.AuthTokensGroupBox.Name = "AuthTokensGroupBox";
-            this.AuthTokensGroupBox.Size = new System.Drawing.Size(476, 128);
+            this.AuthTokensGroupBox.Size = new System.Drawing.Size(244, 128);
             this.AuthTokensGroupBox.TabIndex = 1;
             this.AuthTokensGroupBox.TabStop = false;
             resources.ApplyResources(this.AuthTokensGroupBox, "AuthTokensGroupBox");
@@ -198,13 +199,13 @@ namespace CKAN.GUI
             this.AuthTokensListBox.View = System.Windows.Forms.View.Details;
             this.AuthTokensListBox.Location = new System.Drawing.Point(12, 18);
             this.AuthTokensListBox.Name = "AuthTokensListBox";
-            this.AuthTokensListBox.Size = new System.Drawing.Size(452, 67);
+            this.AuthTokensListBox.Size = new System.Drawing.Size(220, 67);
             this.AuthTokensListBox.TabIndex = 0;
             this.AuthTokensListBox.SelectedIndexChanged += new System.EventHandler(this.AuthTokensListBox_SelectedIndexChanged);
             //
             // AuthHostHeader
             //
-            this.AuthHostHeader.Width = 120;
+            this.AuthHostHeader.Width = 100;
             resources.ApplyResources(this.AuthHostHeader, "AuthHostHeader");
             //
             // AuthTokenHeader
@@ -226,12 +227,110 @@ namespace CKAN.GUI
             //
             this.DeleteAuthTokenButton.Enabled = false;
             this.DeleteAuthTokenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteAuthTokenButton.Location = new System.Drawing.Point(394, 93);
+            this.DeleteAuthTokenButton.Location = new System.Drawing.Point(164, 93);
             this.DeleteAuthTokenButton.Name = "DeleteAuthTokenButton";
             this.DeleteAuthTokenButton.Size = new System.Drawing.Size(70, 25);
             this.DeleteAuthTokenButton.TabIndex = 2;
             this.DeleteAuthTokenButton.Click += new System.EventHandler(this.DeleteAuthTokenButton_Click);
             resources.ApplyResources(this.DeleteAuthTokenButton, "DeleteAuthTokenButton");
+            //
+            // AutoUpdateGroupBox
+            //
+            this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionPreLabel);
+            this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabel);
+            this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionPreLabel);
+            this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionLabel);
+            this.AutoUpdateGroupBox.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
+            this.AutoUpdateGroupBox.Controls.Add(this.DevBuildsCheckbox);
+            this.AutoUpdateGroupBox.Controls.Add(this.CheckForUpdatesButton);
+            this.AutoUpdateGroupBox.Controls.Add(this.InstallUpdateButton);
+            this.AutoUpdateGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.AutoUpdateGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.AutoUpdateGroupBox.Location = new System.Drawing.Point(12, 144);
+            this.AutoUpdateGroupBox.Name = "AutoUpdateGroupBox";
+            this.AutoUpdateGroupBox.Size = new System.Drawing.Size(254, 156);
+            this.AutoUpdateGroupBox.TabIndex = 2;
+            this.AutoUpdateGroupBox.TabStop = false;
+            resources.ApplyResources(this.AutoUpdateGroupBox, "AutoUpdateGroupBox");
+            //
+            // LocalVersionPreLabel
+            //
+            this.LocalVersionPreLabel.AutoSize = true;
+            this.LocalVersionPreLabel.Location = new System.Drawing.Point(9, 18);
+            this.LocalVersionPreLabel.Name = "LocalVersionPreLabel";
+            this.LocalVersionPreLabel.Size = new System.Drawing.Size(73, 13);
+            this.LocalVersionPreLabel.TabIndex = 0;
+            resources.ApplyResources(this.LocalVersionPreLabel, "LocalVersionPreLabel");
+            //
+            // LocalVersionLabel
+            //
+            this.LocalVersionLabel.AutoSize = true;
+            this.LocalVersionLabel.Location = new System.Drawing.Point(95, 18);
+            this.LocalVersionLabel.Name = "LocalVersionLabel";
+            this.LocalVersionLabel.Size = new System.Drawing.Size(37, 13);
+            this.LocalVersionLabel.TabIndex = 1;
+            resources.ApplyResources(this.LocalVersionLabel, "LocalVersionLabel");
+            //
+            // LatestVersionPreLabel
+            //
+            this.LatestVersionPreLabel.AutoSize = true;
+            this.LatestVersionPreLabel.Location = new System.Drawing.Point(9, 39);
+            this.LatestVersionPreLabel.Name = "LatestVersionPreLabel";
+            this.LatestVersionPreLabel.Size = new System.Drawing.Size(76, 13);
+            this.LatestVersionPreLabel.TabIndex = 2;
+            resources.ApplyResources(this.LatestVersionPreLabel, "LatestVersionPreLabel");
+            //
+            // LatestVersionLabel
+            //
+            this.LatestVersionLabel.AutoSize = true;
+            this.LatestVersionLabel.Location = new System.Drawing.Point(95, 39);
+            this.LatestVersionLabel.Name = "LatestVersionLabel";
+            this.LatestVersionLabel.Size = new System.Drawing.Size(25, 13);
+            this.LatestVersionLabel.TabIndex = 3;
+            resources.ApplyResources(this.LatestVersionLabel, "LatestVersionLabel");
+            //
+            // CheckUpdateOnLaunchCheckbox
+            //
+            this.CheckUpdateOnLaunchCheckbox.AutoSize = true;
+            this.CheckUpdateOnLaunchCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CheckUpdateOnLaunchCheckbox.Location = new System.Drawing.Point(12, 61);
+            this.CheckUpdateOnLaunchCheckbox.Name = "CheckUpdateOnLaunchCheckbox";
+            this.CheckUpdateOnLaunchCheckbox.Size = new System.Drawing.Size(195, 17);
+            this.CheckUpdateOnLaunchCheckbox.TabIndex = 4;
+            this.CheckUpdateOnLaunchCheckbox.CheckedChanged += new System.EventHandler(this.CheckUpdateOnLaunchCheckbox_CheckedChanged);
+            resources.ApplyResources(this.CheckUpdateOnLaunchCheckbox, "CheckUpdateOnLaunchCheckbox");
+            //
+            // DevBuildsCheckbox
+            //
+            this.DevBuildsCheckbox.AutoSize = true;
+            this.DevBuildsCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DevBuildsCheckbox.Location = new System.Drawing.Point(12, 85);
+            this.DevBuildsCheckbox.Name = "DevBuildsCheckbox";
+            this.DevBuildsCheckbox.Size = new System.Drawing.Size(195, 17);
+            this.DevBuildsCheckbox.TabIndex = 4;
+            this.DevBuildsCheckbox.CheckedChanged += new System.EventHandler(this.DevBuildsCheckbox_CheckedChanged);
+            resources.ApplyResources(this.DevBuildsCheckbox, "DevBuildsCheckbox");
+            //
+            // CheckForUpdatesButton
+            //
+            this.CheckForUpdatesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CheckForUpdatesButton.Location = new System.Drawing.Point(12, 108);
+            this.CheckForUpdatesButton.Name = "CheckForUpdatesButton";
+            this.CheckForUpdatesButton.Size = new System.Drawing.Size(112, 38);
+            this.CheckForUpdatesButton.TabIndex = 5;
+            this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
+            resources.ApplyResources(this.CheckForUpdatesButton, "CheckForUpdatesButton");
+            //
+            // InstallUpdateButton
+            //
+            this.InstallUpdateButton.Enabled = false;
+            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.InstallUpdateButton.Location = new System.Drawing.Point(130, 108);
+            this.InstallUpdateButton.Name = "InstallUpdateButton";
+            this.InstallUpdateButton.Size = new System.Drawing.Size(112, 38);
+            this.InstallUpdateButton.TabIndex = 6;
+            this.InstallUpdateButton.Click += new System.EventHandler(this.InstallUpdateButton_Click);
+            resources.ApplyResources(this.InstallUpdateButton, "InstallUpdateButton");
             //
             // CacheGroupBox
             //
@@ -246,10 +345,10 @@ namespace CKAN.GUI
             this.CacheGroupBox.Controls.Add(this.OpenCacheButton);
             this.CacheGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CacheGroupBox.Location = new System.Drawing.Point(12, 274);
+            this.CacheGroupBox.Location = new System.Drawing.Point(280, 144);
             this.CacheGroupBox.Name = "CacheGroupBox";
-            this.CacheGroupBox.Size = new System.Drawing.Size(476, 124);
-            this.CacheGroupBox.TabIndex = 2;
+            this.CacheGroupBox.Size = new System.Drawing.Size(476, 156);
+            this.CacheGroupBox.TabIndex = 3;
             this.CacheGroupBox.TabStop = false;
             resources.ApplyResources(this.CacheGroupBox, "CacheGroupBox");
             //
@@ -367,92 +466,6 @@ namespace CKAN.GUI
             this.OpenCacheButton.Click += new System.EventHandler(this.OpenCacheButton_Click);
             resources.ApplyResources(this.OpenCacheButton, "OpenCacheButton");
             //
-            // AutoUpdateGroupBox
-            //
-            this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionPreLabel);
-            this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabel);
-            this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionPreLabel);
-            this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionLabel);
-            this.AutoUpdateGroupBox.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
-            this.AutoUpdateGroupBox.Controls.Add(this.CheckForUpdatesButton);
-            this.AutoUpdateGroupBox.Controls.Add(this.InstallUpdateButton);
-            this.AutoUpdateGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.AutoUpdateGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AutoUpdateGroupBox.Location = new System.Drawing.Point(12, 404);
-            this.AutoUpdateGroupBox.Name = "AutoUpdateGroupBox";
-            this.AutoUpdateGroupBox.Size = new System.Drawing.Size(254, 132);
-            this.AutoUpdateGroupBox.TabIndex = 3;
-            this.AutoUpdateGroupBox.TabStop = false;
-            resources.ApplyResources(this.AutoUpdateGroupBox, "AutoUpdateGroupBox");
-            //
-            // LocalVersionPreLabel
-            //
-            this.LocalVersionPreLabel.AutoSize = true;
-            this.LocalVersionPreLabel.Location = new System.Drawing.Point(9, 18);
-            this.LocalVersionPreLabel.Name = "LocalVersionPreLabel";
-            this.LocalVersionPreLabel.Size = new System.Drawing.Size(73, 13);
-            this.LocalVersionPreLabel.TabIndex = 0;
-            resources.ApplyResources(this.LocalVersionPreLabel, "LocalVersionPreLabel");
-            //
-            // LocalVersionLabel
-            //
-            this.LocalVersionLabel.AutoSize = true;
-            this.LocalVersionLabel.Location = new System.Drawing.Point(95, 18);
-            this.LocalVersionLabel.Name = "LocalVersionLabel";
-            this.LocalVersionLabel.Size = new System.Drawing.Size(37, 13);
-            this.LocalVersionLabel.TabIndex = 1;
-            resources.ApplyResources(this.LocalVersionLabel, "LocalVersionLabel");
-            //
-            // LatestVersionPreLabel
-            //
-            this.LatestVersionPreLabel.AutoSize = true;
-            this.LatestVersionPreLabel.Location = new System.Drawing.Point(9, 39);
-            this.LatestVersionPreLabel.Name = "LatestVersionPreLabel";
-            this.LatestVersionPreLabel.Size = new System.Drawing.Size(76, 13);
-            this.LatestVersionPreLabel.TabIndex = 2;
-            resources.ApplyResources(this.LatestVersionPreLabel, "LatestVersionPreLabel");
-            //
-            // LatestVersionLabel
-            //
-            this.LatestVersionLabel.AutoSize = true;
-            this.LatestVersionLabel.Location = new System.Drawing.Point(95, 39);
-            this.LatestVersionLabel.Name = "LatestVersionLabel";
-            this.LatestVersionLabel.Size = new System.Drawing.Size(25, 13);
-            this.LatestVersionLabel.TabIndex = 3;
-            resources.ApplyResources(this.LatestVersionLabel, "LatestVersionLabel");
-            //
-            // CheckUpdateOnLaunchCheckbox
-            //
-            this.CheckUpdateOnLaunchCheckbox.AutoSize = true;
-            this.CheckUpdateOnLaunchCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CheckUpdateOnLaunchCheckbox.Location = new System.Drawing.Point(12, 61);
-            this.CheckUpdateOnLaunchCheckbox.Name = "CheckUpdateOnLaunchCheckbox";
-            this.CheckUpdateOnLaunchCheckbox.Size = new System.Drawing.Size(195, 17);
-            this.CheckUpdateOnLaunchCheckbox.TabIndex = 4;
-            this.CheckUpdateOnLaunchCheckbox.CheckedChanged += new System.EventHandler(this.CheckUpdateOnLaunchCheckbox_CheckedChanged);
-            resources.ApplyResources(this.CheckUpdateOnLaunchCheckbox, "CheckUpdateOnLaunchCheckbox");
-            //
-            // CheckForUpdatesButton
-            //
-            this.CheckForUpdatesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CheckForUpdatesButton.Location = new System.Drawing.Point(12, 84);
-            this.CheckForUpdatesButton.Name = "CheckForUpdatesButton";
-            this.CheckForUpdatesButton.Size = new System.Drawing.Size(112, 38);
-            this.CheckForUpdatesButton.TabIndex = 5;
-            this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
-            resources.ApplyResources(this.CheckForUpdatesButton, "CheckForUpdatesButton");
-            //
-            // InstallUpdateButton
-            //
-            this.InstallUpdateButton.Enabled = false;
-            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.InstallUpdateButton.Location = new System.Drawing.Point(130, 84);
-            this.InstallUpdateButton.Name = "InstallUpdateButton";
-            this.InstallUpdateButton.Size = new System.Drawing.Size(112, 38);
-            this.InstallUpdateButton.TabIndex = 6;
-            this.InstallUpdateButton.Click += new System.EventHandler(this.InstallUpdateButton_Click);
-            resources.ApplyResources(this.InstallUpdateButton, "InstallUpdateButton");
-            //
             // BehaviourGroupBox
             //
             this.BehaviourGroupBox.Controls.Add(this.EnableTrayIconCheckBox);
@@ -463,9 +476,9 @@ namespace CKAN.GUI
             this.BehaviourGroupBox.Controls.Add(this.PauseRefreshCheckBox);
             this.BehaviourGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.BehaviourGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BehaviourGroupBox.Location = new System.Drawing.Point(278, 404);
+            this.BehaviourGroupBox.Location = new System.Drawing.Point(12, 310);
             this.BehaviourGroupBox.Name = "BehaviourGroupBox";
-            this.BehaviourGroupBox.Size = new System.Drawing.Size(210, 132);
+            this.BehaviourGroupBox.Size = new System.Drawing.Size(254, 150);
             this.BehaviourGroupBox.TabIndex = 4;
             this.BehaviourGroupBox.TabStop = false;
             resources.ApplyResources(this.BehaviourGroupBox, "BehaviourGroupBox");
@@ -544,7 +557,7 @@ namespace CKAN.GUI
             this.MoreSettingsGroupBox.Controls.Add(this.HideVCheckbox);
             this.MoreSettingsGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MoreSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.MoreSettingsGroupBox.Location = new System.Drawing.Point(12, 542);
+            this.MoreSettingsGroupBox.Location = new System.Drawing.Point(280, 310);
             this.MoreSettingsGroupBox.Name = "MoreSettingsGroupBox";
             this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 150);
             this.MoreSettingsGroupBox.TabIndex = 5;
@@ -622,7 +635,7 @@ namespace CKAN.GUI
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(500, 703);
+            this.ClientSize = new System.Drawing.Size(768, 470);
             this.Controls.Add(this.RepositoryGroupBox);
             this.Controls.Add(this.AuthTokensGroupBox);
             this.Controls.Add(this.CacheGroupBox);
@@ -687,6 +700,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.Label LatestVersionPreLabel;
         private System.Windows.Forms.Label LatestVersionLabel;
         private System.Windows.Forms.CheckBox CheckUpdateOnLaunchCheckbox;
+        private System.Windows.Forms.CheckBox DevBuildsCheckbox;
         private System.Windows.Forms.Button CheckForUpdatesButton;
         private System.Windows.Forms.Button InstallUpdateButton;
         private System.Windows.Forms.GroupBox BehaviourGroupBox;

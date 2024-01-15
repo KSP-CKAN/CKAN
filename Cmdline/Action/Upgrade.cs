@@ -3,9 +3,11 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Transactions;
 
+using Autofac;
 using log4net;
 
 using CKAN.Versioning;
+using CKAN.Configuration;
 
 namespace CKAN.CmdLine
 {
@@ -47,38 +49,63 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("  or   ckan upgrade --all");
                 if (AutoUpdate.CanUpdate)
                 {
-                    user.RaiseMessage("  or   ckan upgrade ckan");
+                    user.RaiseMessage("  or   ckan upgrade ckan [--stable-release|--dev-build]");
                 }
                 return Exit.BADOPT;
             }
 
             if (!options.upgrade_all && options.modules[0] == "ckan" && AutoUpdate.CanUpdate)
             {
+                if (options.dev_build && options.stable_release)
+                {
+                    user.RaiseMessage(Properties.Resources.UpgradeCannotCombineFlags);
+                    return Exit.BADOPT;
+                }
+                var config = ServiceLocator.Container.Resolve<IConfiguration>();
+                var devBuild = options.dev_build
+                               || (!options.stable_release && config.DevBuilds);
+                if (devBuild != config.DevBuilds)
+                {
+                    config.DevBuilds = devBuild;
+                    user.RaiseMessage(
+                        config.DevBuilds
+                            ? Properties.Resources.UpgradeSwitchingToDevBuilds
+                            : Properties.Resources.UpgradeSwitchingToStableReleases);
+                }
+
                 user.RaiseMessage(Properties.Resources.UpgradeQueryingCKAN);
-                AutoUpdate.Instance.FetchLatestReleaseInfo();
-                var latestVersion = AutoUpdate.Instance.latestUpdate.Version;
-                var currentVersion = new ModuleVersion(Meta.GetVersion(VersionFormat.Short));
-
-                if (latestVersion.IsGreaterThan(currentVersion))
+                try
                 {
-                    user.RaiseMessage(Properties.Resources.UpgradeNewCKANAvailable, latestVersion);
-                    var releaseNotes = AutoUpdate.Instance.latestUpdate.ReleaseNotes;
-                    user.RaiseMessage(releaseNotes);
-                    user.RaiseMessage("");
-                    user.RaiseMessage("");
+                    var upd = new AutoUpdate();
+                    var update = upd.GetUpdate(config.DevBuilds);
+                    var latestVersion = update.Version;
+                    var currentVersion = new ModuleVersion(Meta.GetVersion());
 
-                    if (user.RaiseYesNoDialog(Properties.Resources.UpgradeProceed))
+                    if (!latestVersion.Equals(currentVersion))
                     {
-                        user.RaiseMessage(Properties.Resources.UpgradePleaseWait);
-                        AutoUpdate.Instance.StartUpdateProcess(false);
-                    }
-                }
-                else
-                {
-                    user.RaiseMessage(Properties.Resources.UpgradeAlreadyHaveLatest);
-                }
+                        user.RaiseMessage(Properties.Resources.UpgradeNewCKANAvailable, latestVersion);
+                        var releaseNotes = update.ReleaseNotes;
+                        user.RaiseMessage(releaseNotes);
+                        user.RaiseMessage("");
+                        user.RaiseMessage("");
 
-                return Exit.OK;
+                        if (user.RaiseYesNoDialog(Properties.Resources.UpgradeProceed))
+                        {
+                            user.RaiseMessage(Properties.Resources.UpgradePleaseWait);
+                            upd.StartUpdateProcess(false, config.DevBuilds, user);
+                        }
+                    }
+                    else
+                    {
+                        user.RaiseMessage(Properties.Resources.UpgradeAlreadyHaveLatest);
+                    }
+                    return Exit.OK;
+                }
+                catch (Exception exc)
+                {
+                    user.RaiseError("Upgrade failed: {0}", exc.Message);
+                    return Exit.ERROR;
+                }
             }
 
             try

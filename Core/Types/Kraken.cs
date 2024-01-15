@@ -251,10 +251,10 @@ namespace CKAN
             modRelList conflicts
         ) : base(
             (depends?.Select(dep => string.Format(Properties.Resources.KrakenMissingDependency, dep.Item1, dep.Item2))
-                ?? new string[] {}
+                ?? Array.Empty<string>()
             ).Concat(
                 conflicts?.Select(conf => string.Format(Properties.Resources.KrakenConflictsWith, conf.Item1, conf.Item2))
-                ?? new string[] {}
+                ?? Array.Empty<string>()
             ).ToArray()
         )
         {

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.34.5
 
+### Features
+
+- [Updater] Support dev builds for auto updater (#3997 by: HebaruSan)
+
 ### Bugfixes
 
 - [GUI] Suppress admin user check for URL handler registration (#3996 by: HebaruSan)

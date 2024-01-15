@@ -42,14 +42,16 @@ namespace CKAN
             this.cache = cache;
         }
 
-        internal Net.DownloadTarget TargetFromModuleGroup(HashSet<CkanModule> group,
-                                                          string[]            preferredHosts)
+        internal NetAsyncDownloader.DownloadTarget TargetFromModuleGroup(
+                HashSet<CkanModule> group,
+                string[]            preferredHosts)
             => TargetFromModuleGroup(group, group.OrderBy(m => m.identifier).First(), preferredHosts);
 
-        private Net.DownloadTarget TargetFromModuleGroup(HashSet<CkanModule> group,
-                                                         CkanModule          first,
-                                                         string[]            preferredHosts)
-            => new Net.DownloadTarget(
+        private NetAsyncDownloader.DownloadTarget TargetFromModuleGroup(
+                HashSet<CkanModule> group,
+                CkanModule          first,
+                string[]            preferredHosts)
+            => new NetAsyncDownloader.DownloadTarget(
                 group.SelectMany(mod => mod.download)
                      .Concat(group.Select(mod => mod.InternetArchiveDownload)
                                   .Where(uri => uri != null)

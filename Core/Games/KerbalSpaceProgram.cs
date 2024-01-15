@@ -101,7 +101,7 @@ namespace CKAN.Games.KerbalSpaceProgram
         }
 
         public string PrimaryModDirectoryRelative => "GameData";
-        public string[] AlternateModDirectoriesRelative => new string[] { };
+        public string[] AlternateModDirectoriesRelative => Array.Empty<string>();
 
         public string PrimaryModDirectory(GameInstance inst)
             => CKANPathUtils.NormalizePath(

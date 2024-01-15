@@ -112,9 +112,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
             "PDLauncher",
         };
 
-        public string[] ReservedPaths => new string[]
-        {
-        };
+        public string[] ReservedPaths => Array.Empty<string>();
 
         public string[] CreateableDirs => new string[]
         {
@@ -124,7 +122,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
             "BepInEx/plugins",
         };
 
-        public string[] AutoRemovableDirs => new string[] { };
+        public string[] AutoRemovableDirs => Array.Empty<string>();
 
         /// <summary>
         /// Checks the path against a list of reserved game directories
@@ -160,7 +158,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
         public string[] AdjustCommandLine(string[] args, GameVersion installedVersion)
             => args;
 
-        public IDlcDetector[] DlcDetectors => new IDlcDetector[] { };
+        public IDlcDetector[] DlcDetectors => Array.Empty<IDlcDetector>();
 
         private static readonly Uri BuildMapUri =
             new Uri("https://raw.githubusercontent.com/KSP-CKAN/KSP2-CKAN-meta/main/builds.json");

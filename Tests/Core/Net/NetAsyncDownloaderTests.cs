@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
 
 using NUnit.Framework;
@@ -25,9 +24,9 @@ namespace Tests.Core.Net
             // Arrange
             var downloader = new NetAsyncDownloader(new NullUser());
             var fromPath   = TestData.DataDir(pathWithinTestData);
-            var target     = new CKAN.Net.DownloadTarget(new List<Uri> { new Uri(fromPath) },
+            var target     = new NetAsyncDownloader.DownloadTarget(new Uri(fromPath),
                                                          Path.GetTempFileName());
-            var targets    = new CKAN.Net.DownloadTarget[] { target };
+            var targets    = new NetAsyncDownloader.DownloadTarget[] { target };
             var origSize   = new FileInfo(fromPath).Length;
 
             // Act
@@ -71,7 +70,7 @@ namespace Tests.Core.Net
             // Arrange
             var downloader = new NetAsyncDownloader(new NullUser());
             var fromPaths  = pathsWithinTestData.Select(p => TestData.DataDir(p)).ToArray();
-            var targets    = fromPaths.Select(p => new CKAN.Net.DownloadTarget(new List<Uri> { new Uri(p) },
+            var targets    = fromPaths.Select(p => new NetAsyncDownloader.DownloadTarget(new Uri(p),
                                                                                Path.GetTempFileName()))
                                       .ToArray();
             var origSizes  = fromPaths.Select(p => new FileInfo(p).Length).ToArray();
@@ -187,7 +186,7 @@ namespace Tests.Core.Net
             // Arrange
             var downloader   = new NetAsyncDownloader(new NullUser());
             var fromPaths    = pathsWithinTestData.Select(p => Path.GetFullPath(TestData.DataDir(p))).ToArray();
-            var targets      = fromPaths.Select(p => new CKAN.Net.DownloadTarget(new List<Uri> { new Uri(p) },
+            var targets      = fromPaths.Select(p => new NetAsyncDownloader.DownloadTarget(new Uri(p),
                                                                                  Path.GetTempFileName()))
                                         .ToArray();
             var badIndices   = fromPaths.Select((p, i) => new Tuple<int, bool>(i, File.Exists(p)))

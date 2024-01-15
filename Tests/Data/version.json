@@ -1,0 +1,4 @@
+{
+    "version": "v1.34.5.24015",
+    "changelog": "### Internal\n\n- [Policy] Fix #3518 rewrite de-indexing policy (#3993 by: JonnyOThan; reviewed: HebaruSan)"
+}

@@ -63,7 +63,7 @@ namespace CKAN.GUI
             Task.Factory.StartNew(() =>
             {
                 var paths = inst?.UnmanagedFiles(registry).ToArray()
-                    ?? new string[] { };
+                    ?? Array.Empty<string>();
                 Util.Invoke(this, () =>
                 {
                     GameFolderTree.BeginUpdate();

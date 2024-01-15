@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -46,7 +47,7 @@ namespace CKAN.AutoUpdateHelper
             // Wait for CKAN to close
             try
             {
-                if (IsOnWindows())
+                if (IsOnWindows)
                 {
                     // On Unix you can only wait for CHILD processes to exit
                     var process = Process.GetProcessById(Math.Abs(pid));
@@ -121,19 +122,19 @@ namespace CKAN.AutoUpdateHelper
         private static void StartCKAN(string path)
         {
             // Start CKAN
-            if (IsOnMono())
+            if (IsOnMono)
             {
                 Process.Start("mono", string.Format("\"{0}\"", path));
             }
             else
             {
-                Process.Start(path);
+                Process.Start(path, "--asroot");
             }
         }
 
         private static void MakeExecutable(string path)
         {
-            if (!IsOnWindows())
+            if (!IsOnWindows)
             {
                 // TODO: It would be really lovely (and safer!) to use the native system
                 // call here: http://docs.go-mono.com/index.aspx?link=M:Mono.Unix.Native.Syscall.chmod
@@ -151,20 +152,14 @@ namespace CKAN.AutoUpdateHelper
         /// <summary>
         /// Are we on Mono?
         /// </summary>
-        private static bool IsOnMono()
-        {
-            return Type.GetType("Mono.Runtime") != null;
-        }
+        private static bool IsOnMono
+            => Type.GetType("Mono.Runtime") != null;
 
         /// <summary>
         /// Are we on Windows?
         /// </summary>
-        private static bool IsOnWindows()
-        {
-            PlatformID platform = Environment.OSVersion.Platform;
-            return platform != PlatformID.MacOSX &&
-                platform != PlatformID.Unix && platform != PlatformID.Xbox;
-        }
+        private static bool IsOnWindows
+            => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         /// <summary>
         /// Display unexpected exceptions to user

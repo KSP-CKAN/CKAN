@@ -117,7 +117,12 @@ namespace CKAN.GUI
         private void cKANSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             OpenWindow();
-            new SettingsDialog(RegistryManager.Instance(CurrentInstance, repoData), currentUser).ShowDialog(this);
+            new SettingsDialog(ServiceLocator.Container.Resolve<IConfiguration>(),
+                               configuration,
+                               RegistryManager.Instance(CurrentInstance, repoData),
+                               updater,
+                               currentUser)
+                .ShowDialog(this);
         }
 
         private void minimizedContextMenuStrip_Opening(object sender, CancelEventArgs e)

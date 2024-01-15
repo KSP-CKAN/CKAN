@@ -181,7 +181,7 @@ namespace CKAN
         {
             get => File.Exists(InstallFiltersFile)
                     ? JsonConvert.DeserializeObject<string[]>(File.ReadAllText(InstallFiltersFile))
-                    : new string[] { };
+                    : Array.Empty<string>();
 
             #pragma warning disable IDE0027
             set

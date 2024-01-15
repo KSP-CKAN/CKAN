@@ -180,7 +180,7 @@ namespace CKAN.NetKAN.Model
                     case JTokenType.String:
                         return new string[] { (string)lic };
                 }
-                return new string[] { };
+                return Array.Empty<string>();
             }
         }
 

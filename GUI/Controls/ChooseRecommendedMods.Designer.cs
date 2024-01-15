@@ -38,7 +38,7 @@ namespace CKAN.GUI
             this.ModNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SourceModulesHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.DescriptionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.BottomButtonPanel = new LeftRightRowPanel();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.RecommendedModsToggleCheckbox = new System.Windows.Forms.CheckBox();
             this.RecommendedModsCancelButton = new System.Windows.Forms.Button();
             this.RecommendedModsContinueButton = new System.Windows.Forms.Button();
@@ -180,7 +180,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ColumnHeader ModNameHeader;
         private System.Windows.Forms.ColumnHeader SourceModulesHeader;
         private System.Windows.Forms.ColumnHeader DescriptionHeader;
-        private LeftRightRowPanel BottomButtonPanel;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.CheckBox RecommendedModsToggleCheckbox;
         private System.Windows.Forms.Button RecommendedModsCancelButton;
         private System.Windows.Forms.Button RecommendedModsContinueButton;

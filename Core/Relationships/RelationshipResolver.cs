@@ -628,7 +628,6 @@ namespace CKAN
         /// Avoids duplicates and explains why dependencies are in the list.
         /// Use for reporting the conflicts to the user, use ConflictsList for coloring rows.
         /// </summary>
-        /// <value></value>
         public IEnumerable<string> ConflictDescriptions
             => conflicts.Where(kvp => kvp.Value == null
                                       // Pick the pair with the least distantly selected one first

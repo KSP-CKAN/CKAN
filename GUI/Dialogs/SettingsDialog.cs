@@ -8,7 +8,6 @@ using System.Runtime.Versioning;
 #endif
 
 using log4net;
-using Autofac;
 
 using CKAN.Versioning;
 using CKAN.Configuration;
@@ -26,23 +25,31 @@ namespace CKAN.GUI
         public bool RepositoryRemoved { get; private set; } = false;
         public bool RepositoryMoved   { get; private set; } = false;
 
-        private readonly IUser m_user;
-        private readonly IConfiguration config;
-        private readonly RegistryManager regMgr;
+        private readonly IConfiguration   coreConfig;
+        private readonly GUIConfiguration guiConfig;
+        private readonly RegistryManager  regMgr;
+        private readonly AutoUpdate       updater;
+        private readonly IUser            user;
 
         /// <summary>
         /// Initialize a settings window
         /// </summary>
-        public SettingsDialog(RegistryManager regMgr, IUser user)
+        public SettingsDialog(IConfiguration   coreConfig,
+                              GUIConfiguration guiConfig,
+                              RegistryManager  regMgr,
+                              AutoUpdate       updater,
+                              IUser            user)
         {
             InitializeComponent();
-            m_user        = user;
-            this.regMgr   = regMgr;
+            this.coreConfig = coreConfig;
+            this.guiConfig  = guiConfig;
+            this.regMgr     = regMgr;
+            this.updater    = updater;
+            this.user       = user;
             if (Platform.IsMono)
             {
                 ClearCacheMenu.Renderer = new FlatToolStripRenderer();
             }
-            config = ServiceLocator.Container.Resolve<IConfiguration>();
         }
 
         private void SettingsDialog_Load(object sender, EventArgs e)
@@ -55,29 +62,50 @@ namespace CKAN.GUI
             RefreshReposListBox(false);
             RefreshAuthTokensListBox();
             UpdateLanguageSelectionComboBox();
+            UpdateAutoUpdate();
 
-            LocalVersionLabel.Text = Meta.GetVersion();
-
-            CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.configuration.CheckForUpdatesOnLaunch;
-            RefreshOnStartupCheckbox.Checked = Main.Instance.configuration.RefreshOnStartup;
-            HideEpochsCheckbox.Checked = Main.Instance.configuration.HideEpochs;
-            HideVCheckbox.Checked = Main.Instance.configuration.HideV;
-            AutoSortUpdateCheckBox.Checked = Main.Instance.configuration.AutoSortByUpdate;
-            EnableTrayIconCheckBox.Checked = MinimizeToTrayCheckBox.Enabled = Main.Instance.configuration.EnableTrayIcon;
-            MinimizeToTrayCheckBox.Checked = Main.Instance.configuration.MinimizeToTray;
-            PauseRefreshCheckBox.Checked = Main.Instance.configuration.RefreshPaused;
+            CheckUpdateOnLaunchCheckbox.Checked = guiConfig.CheckForUpdatesOnLaunch;
+            DevBuildsCheckbox.Checked = coreConfig.DevBuilds;
+            RefreshOnStartupCheckbox.Checked = guiConfig.RefreshOnStartup;
+            HideEpochsCheckbox.Checked = guiConfig.HideEpochs;
+            HideVCheckbox.Checked = guiConfig.HideV;
+            AutoSortUpdateCheckBox.Checked = guiConfig.AutoSortByUpdate;
+            EnableTrayIconCheckBox.Checked = MinimizeToTrayCheckBox.Enabled = guiConfig.EnableTrayIcon;
+            MinimizeToTrayCheckBox.Checked = guiConfig.MinimizeToTray;
+            PauseRefreshCheckBox.Checked = guiConfig.RefreshPaused;
 
             UpdateRefreshRate();
 
-            UpdateCacheInfo(config.DownloadCacheDir);
+            UpdateCacheInfo(coreConfig.DownloadCacheDir);
+        }
+
+        private void UpdateAutoUpdate()
+        {
+            LocalVersionLabel.Text = Meta.GetVersion();
+            try
+            {
+                var latestVersion = updater.GetUpdate(coreConfig.DevBuilds)
+                                           .Version;
+                LatestVersionLabel.Text = latestVersion.ToString();
+                // Allow downgrading in case they want to stop using dev builds
+                InstallUpdateButton.Enabled = !latestVersion.Equals(new ModuleVersion(Meta.GetVersion()));
+            }
+            catch
+            {
+                // Can't get the version, reset the label
+                var resources = new SingleAssemblyComponentResourceManager(typeof(SettingsDialog));
+                resources.ApplyResources(LatestVersionLabel,
+                                         LatestVersionLabel.Name);
+                InstallUpdateButton.Enabled = false;
+            }
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            if (CachePath.Text != config.DownloadCacheDir
+            if (CachePath.Text != coreConfig.DownloadCacheDir
                 && !Main.Instance.Manager.TrySetupCache(CachePath.Text, out string failReason))
             {
-                m_user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
+                user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
                 e.Cancel = true;
             }
             else
@@ -88,10 +116,10 @@ namespace CKAN.GUI
 
         private void UpdateRefreshRate()
         {
-            int rate = config.RefreshRate;
+            int rate = coreConfig.RefreshRate;
             RefreshTextBox.Text = rate.ToString();
             PauseRefreshCheckBox.Enabled = rate != 0;
-            Main.Instance.pauseToolStripMenuItem.Enabled = config.RefreshRate != 0;
+            Main.Instance.pauseToolStripMenuItem.Enabled = coreConfig.RefreshRate != 0;
             Main.Instance.UpdateRefreshTimer();
         }
 
@@ -135,7 +163,7 @@ namespace CKAN.GUI
             LanguageSelectionComboBox.Items.AddRange(Utilities.AvailableLanguages);
             // If the current language is supported by CKAN, set is as selected.
             // Else display a blank field.
-            LanguageSelectionComboBox.SelectedIndex = LanguageSelectionComboBox.FindStringExact(config.Language);
+            LanguageSelectionComboBox.SelectedIndex = LanguageSelectionComboBox.FindStringExact(coreConfig.Language);
         }
 
         private void UpdateCacheInfo(string newPath)
@@ -152,10 +180,10 @@ namespace CKAN.GUI
 
                     Util.Invoke(this, () =>
                     {
-                        if (config.CacheSizeLimit.HasValue)
+                        if (coreConfig.CacheSizeLimit.HasValue)
                         {
                             // Show setting in MiB
-                            CacheLimit.Text = (config.CacheSizeLimit.Value / 1024 / 1024).ToString();
+                            CacheLimit.Text = (coreConfig.CacheSizeLimit.Value / 1024 / 1024).ToString();
                         }
                         CacheSummary.Text = string.Format(
                             Properties.Resources.SettingsDialogSummmary,
@@ -163,8 +191,8 @@ namespace CKAN.GUI
                         CacheSummary.ForeColor   = SystemColors.ControlText;
                         OpenCacheButton.Enabled  = true;
                         ClearCacheButton.Enabled = (cacheSize > 0);
-                        PurgeToLimitMenuItem.Enabled = (config.CacheSizeLimit.HasValue
-                            && cacheSize > config.CacheSizeLimit.Value);
+                        PurgeToLimitMenuItem.Enabled = (coreConfig.CacheSizeLimit.HasValue
+                            && cacheSize > coreConfig.CacheSizeLimit.Value);
                     });
 
                 }
@@ -191,12 +219,12 @@ namespace CKAN.GUI
         {
             if (string.IsNullOrEmpty(CacheLimit.Text))
             {
-                config.CacheSizeLimit = null;
+                coreConfig.CacheSizeLimit = null;
             }
             else
             {
                 // Translate from MB to bytes
-                config.CacheSizeLimit = Convert.ToInt64(CacheLimit.Text) * 1024 * 1024;
+                coreConfig.CacheSizeLimit = Convert.ToInt64(CacheLimit.Text) * 1024 * 1024;
             }
             UpdateCacheInfo(CachePath.Text);
         }
@@ -215,7 +243,7 @@ namespace CKAN.GUI
             {
                 Description         = Properties.Resources.SettingsDialogCacheDescrip,
                 RootFolder          = Environment.SpecialFolder.MyComputer,
-                SelectedPath        = config.DownloadCacheDir,
+                SelectedPath        = coreConfig.DownloadCacheDir,
                 ShowNewFolderButton = true
             };
             DialogResult result = cacheChooser.ShowDialog(this);
@@ -228,30 +256,30 @@ namespace CKAN.GUI
         private void PurgeToLimitMenuItem_Click(object sender, EventArgs e)
         {
             // Purge old downloads if we're over the limit
-            if (config.CacheSizeLimit.HasValue)
+            if (coreConfig.CacheSizeLimit.HasValue)
             {
                 // Switch main cache since user seems committed to this path
-                if (CachePath.Text != config.DownloadCacheDir
+                if (CachePath.Text != coreConfig.DownloadCacheDir
                     && !Main.Instance.Manager.TrySetupCache(CachePath.Text, out string failReason))
                 {
-                    m_user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
+                    user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
                     return;
                 }
 
                 Main.Instance.Manager.Cache.EnforceSizeLimit(
-                    config.CacheSizeLimit.Value,
+                    coreConfig.CacheSizeLimit.Value,
                     regMgr.registry);
-                UpdateCacheInfo(config.DownloadCacheDir);
+                UpdateCacheInfo(coreConfig.DownloadCacheDir);
             }
         }
 
         private void PurgeAllMenuItem_Click(object sender, EventArgs e)
         {
             // Switch main cache since user seems committed to this path
-            if (CachePath.Text != config.DownloadCacheDir
+            if (CachePath.Text != coreConfig.DownloadCacheDir
                 && !Main.Instance.Manager.TrySetupCache(CachePath.Text, out string failReason))
             {
-                m_user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
+                user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
                 return;
             }
 
@@ -279,7 +307,7 @@ namespace CKAN.GUI
                 // finally, clear the preview contents list
                 Main.Instance.RefreshModContentsTree();
 
-                UpdateCacheInfo(config.DownloadCacheDir);
+                UpdateCacheInfo(coreConfig.DownloadCacheDir);
             }
         }
 
@@ -291,7 +319,7 @@ namespace CKAN.GUI
 
         private void OpenCacheButton_Click(object sender, EventArgs e)
         {
-            Utilities.ProcessStartURL(config.DownloadCacheDir);
+            Utilities.ProcessStartURL(coreConfig.DownloadCacheDir);
         }
 
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -347,7 +375,7 @@ namespace CKAN.GUI
                 var registry = regMgr.registry;
                 if (registry.Repositories.Values.Any(other => other.uri == repo.uri))
                 {
-                    m_user.RaiseError(Properties.Resources.SettingsDialogRepoAddDuplicateURL, repo.uri);
+                    user.RaiseError(Properties.Resources.SettingsDialogRepoAddDuplicateURL, repo.uri);
                     return;
                 }
                 if (registry.Repositories.TryGetValue(repo.name, out Repository existing))
@@ -411,9 +439,9 @@ namespace CKAN.GUI
         private void RefreshAuthTokensListBox()
         {
             AuthTokensListBox.Items.Clear();
-            foreach (string host in config.GetAuthTokenHosts())
+            foreach (string host in coreConfig.GetAuthTokenHosts())
             {
-                if (config.TryGetAuthToken(host, out string token))
+                if (coreConfig.TryGetAuthToken(host, out string token))
                 {
                     AuthTokensListBox.Items.Add(new ListViewItem(
                         new string[] { host, token })
@@ -508,7 +536,7 @@ namespace CKAN.GUI
 
                 case DialogResult.OK:
                 case DialogResult.Yes:
-                    config.SetAuthToken(hostTextBox.Text, tokenTextBox.Text);
+                    coreConfig.SetAuthToken(hostTextBox.Text, tokenTextBox.Text);
                     RefreshAuthTokensListBox();
                     break;
             }
@@ -518,22 +546,22 @@ namespace CKAN.GUI
         {
             if (host.Length <= 0)
             {
-                m_user.RaiseError(Properties.Resources.AddAuthTokenHostRequired);
+                user.RaiseError(Properties.Resources.AddAuthTokenHostRequired);
                 return false;
             }
             if (token.Length <= 0)
             {
-                m_user.RaiseError(Properties.Resources.AddAuthTokenTokenRequired);
+                user.RaiseError(Properties.Resources.AddAuthTokenTokenRequired);
                 return false;
             }
             if (Uri.CheckHostName(host) == UriHostNameType.Unknown)
             {
-                m_user.RaiseError(Properties.Resources.AddAuthTokenInvalidHost, host);
+                user.RaiseError(Properties.Resources.AddAuthTokenInvalidHost, host);
                 return false;
             }
-            if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out _))
+            if (coreConfig.TryGetAuthToken(host, out _))
             {
-                m_user.RaiseError(Properties.Resources.AddAuthTokenDupHost, host);
+                user.RaiseError(Properties.Resources.AddAuthTokenDupHost, host);
                 return false;
             }
 
@@ -547,7 +575,7 @@ namespace CKAN.GUI
                 string item = AuthTokensListBox.SelectedItems[0].Tag as string;
                 string host = item?.Split('|')[0].Trim();
 
-                config.SetAuthToken(host, null);
+                coreConfig.SetAuthToken(host, null);
                 RefreshAuthTokensListBox();
                 DeleteAuthTokenButton.Enabled = false;
             }
@@ -557,16 +585,11 @@ namespace CKAN.GUI
         {
             try
             {
-                AutoUpdate.Instance.FetchLatestReleaseInfo();
-                var latestVersion = AutoUpdate.Instance.latestUpdate.Version;
-                InstallUpdateButton.Enabled = latestVersion.IsGreaterThan(new ModuleVersion(Meta.GetVersion(VersionFormat.Short)))
-                    && AutoUpdate.Instance.IsFetched();
-
-                LatestVersionLabel.Text = latestVersion.ToString();
+                UpdateAutoUpdate();
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
-                log.Warn("Exception caught in CheckForUpdates:\r\n" + ex);
+                log.Warn("Exception caught in CheckForUpdates:\r\n" + exc);
             }
         }
 
@@ -579,29 +602,34 @@ namespace CKAN.GUI
             }
             else
             {
-                m_user.RaiseError(Properties.Resources.SettingsDialogUpdateFailed);
+                user.RaiseError(Properties.Resources.SettingsDialogUpdateFailed);
             }
-
         }
 
         private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            Main.Instance.configuration.CheckForUpdatesOnLaunch = CheckUpdateOnLaunchCheckbox.Checked;
+            guiConfig.CheckForUpdatesOnLaunch = CheckUpdateOnLaunchCheckbox.Checked;
+        }
+
+        private void DevBuildsCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            coreConfig.DevBuilds = DevBuildsCheckbox.Checked;
+            UpdateAutoUpdate();
         }
 
         private void RefreshOnStartupCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            Main.Instance.configuration.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
+            guiConfig.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
         }
 
         private void HideEpochsCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            Main.Instance.configuration.HideEpochs = HideEpochsCheckbox.Checked;
+            guiConfig.HideEpochs = HideEpochsCheckbox.Checked;
         }
 
         private void HideVCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            Main.Instance.configuration.HideV = HideVCheckbox.Checked;
+            guiConfig.HideV = HideVCheckbox.Checked;
         }
 
         private void LanguageSelectionComboBox_MouseWheel(object sender, MouseEventArgs e)
@@ -615,29 +643,29 @@ namespace CKAN.GUI
 
         private void LanguageSelectionComboBox_SelectionChanged(object sender, EventArgs e)
         {
-            config.Language = LanguageSelectionComboBox.SelectedItem.ToString();
+            coreConfig.Language = LanguageSelectionComboBox.SelectedItem.ToString();
         }
 
         private void AutoSortUpdateCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Main.Instance.configuration.AutoSortByUpdate = AutoSortUpdateCheckBox.Checked;
+            guiConfig.AutoSortByUpdate = AutoSortUpdateCheckBox.Checked;
         }
 
         private void EnableTrayIconCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            MinimizeToTrayCheckBox.Enabled = Main.Instance.configuration.EnableTrayIcon = EnableTrayIconCheckBox.Checked;
+            MinimizeToTrayCheckBox.Enabled = guiConfig.EnableTrayIcon = EnableTrayIconCheckBox.Checked;
             Main.Instance.CheckTrayState();
         }
 
         private void MinimizeToTrayCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Main.Instance.configuration.MinimizeToTray = MinimizeToTrayCheckBox.Checked;
+            guiConfig.MinimizeToTray = MinimizeToTrayCheckBox.Checked;
             Main.Instance.CheckTrayState();
         }
 
         private void RefreshTextBox_TextChanged(object sender, EventArgs e)
         {
-            config.RefreshRate = string.IsNullOrEmpty(RefreshTextBox.Text) ? 0 : int.Parse(RefreshTextBox.Text);
+            coreConfig.RefreshRate = string.IsNullOrEmpty(RefreshTextBox.Text) ? 0 : int.Parse(RefreshTextBox.Text);
             UpdateRefreshRate();
         }
 
@@ -651,9 +679,9 @@ namespace CKAN.GUI
 
         private void PauseRefreshCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Main.Instance.configuration.RefreshPaused = PauseRefreshCheckBox.Checked;
+            guiConfig.RefreshPaused = PauseRefreshCheckBox.Checked;
 
-            if (Main.Instance.configuration.RefreshPaused)
+            if (guiConfig.RefreshPaused)
             {
                 Main.Instance.refreshTimer.Stop();
             }

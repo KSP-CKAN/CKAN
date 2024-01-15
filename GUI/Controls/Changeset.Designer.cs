@@ -35,7 +35,7 @@ namespace CKAN.GUI
             this.ChangeType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Reason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.CloseTheGameLabel = new System.Windows.Forms.Label();
-            this.BottomButtonPanel = new LeftRightRowPanel();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.ConfirmChangesButton = new System.Windows.Forms.Button();
             this.BackButton = new System.Windows.Forms.Button();
             this.CancelChangesButton = new System.Windows.Forms.Button();
@@ -157,7 +157,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ColumnHeader ChangeType;
         private System.Windows.Forms.ColumnHeader Reason;
         private System.Windows.Forms.Label CloseTheGameLabel;
-        private LeftRightRowPanel BottomButtonPanel;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button BackButton;
         private System.Windows.Forms.Button CancelChangesButton;
         private System.Windows.Forms.Button ConfirmChangesButton;

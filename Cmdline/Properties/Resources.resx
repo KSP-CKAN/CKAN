@@ -362,6 +362,9 @@ Try `ckan list` for a list of installed mods.</value></data>
   <data name="UpdateRemovedHeader" xml:space="preserve"><value>Removed modules [Name (CKAN identifier)]:</value></data>
   <data name="UpdateUpdatedHeader" xml:space="preserve"><value>Updated modules [Name (CKAN identifier)]:</value></data>
   <data name="UpdateSummary" xml:space="preserve"><value>Updated information on {0} compatible modules</value></data>
+  <data name="UpgradeCannotCombineFlags" xml:space="preserve"><value>The `--dev-build` and `--stable-release` flags cannot be combined!</value></data>
+  <data name="UpgradeSwitchingToDevBuilds" xml:space="preserve"><value>Switching to dev builds</value></data>
+  <data name="UpgradeSwitchingToStableReleases" xml:space="preserve"><value>Switching to stable releases</value></data>
   <data name="UpgradeQueryingCKAN" xml:space="preserve"><value>Querying the latest CKAN version</value></data>
   <data name="UpgradeNewCKANAvailable" xml:space="preserve"><value>New CKAN version available - {0}</value></data>
   <data name="UpgradeProceed" xml:space="preserve"><value>Proceed with install?</value></data>

@@ -1,6 +1,7 @@
 #addin "nuget:?package=Cake.SemVer&version=4.0.0"
 #addin "nuget:?package=semver&version=2.3.0"
 #addin "nuget:?package=Cake.Docker&version=0.11.1"
+#addin nuget:?package=Cake.Git&version=3.0.0
 #tool "nuget:?package=ILRepack&version=2.0.18"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.16.3"
 
@@ -258,18 +259,20 @@ Task("Generate-GlobalAssemblyVersionInfo")
     .Description("Intermediate - Calculate the version strings for the assembly.")
     .Does(() =>
 {
-    var version = GetVersion();
-    var versionStr2 = string.Format("{0}.{1}", version.Major, version.Minor);
-    var versionStr3 = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Patch);
-
     var metaDirectory = buildDirectory.Combine("meta");
-
     CreateDirectory(metaDirectory);
+
+    var version = GetVersion();
 
     CreateAssemblyInfo(metaDirectory.CombineWithFilePath("GlobalAssemblyVersionInfo.cs"), new AssemblyInfoSettings
     {
-        Version = versionStr2,
-        FileVersion = versionStr3,
+        Version              = string.Format("{0}.{1}", version.Major, version.Minor),
+        FileVersion          = string.IsNullOrEmpty(version.Metadata)
+                                ? string.Format("{0}.{1}.{2}",
+                                                version.Major, version.Minor, version.Patch)
+                                : string.Format("{0}.{1}.{2}.{3}",
+                                                version.Major, version.Minor, version.Patch,
+                                                version.Metadata),
         InformationalVersion = version.ToString()
     });
 });
@@ -531,37 +534,15 @@ private Semver.SemVersion GetVersion()
 
     if (DirectoryExists(rootDirectory.Combine(".git")))
     {
-        var hash = GetGitCommitHash();
-
-        version = CreateSemVer(
-            version.Major,
-            version.Minor,
-            version.Patch,
-            version.Prerelease,
-            hash == null ? null : hash.Substring(0, 12)
-        );
+        var commitDate = GitLogTip(rootDirectory).Committer.When;
+        version = CreateSemVer(version.Major,
+                               version.Minor,
+                               version.Patch,
+                               version.Prerelease,
+                               commitDate.ToString("yy") + commitDate.DayOfYear.ToString("000"));
     }
 
     return version;
-}
-
-private string GetGitCommitHash()
-{
-    IEnumerable<string> output;
-    try
-    {
-        var exitCode = StartProcess(
-            "git",
-            new ProcessSettings { Arguments = "rev-parse HEAD", RedirectStandardOutput = true },
-            out output
-        );
-
-        return exitCode == 0 ? output.FirstOrDefault() : null;
-    }
-    catch(Exception)
-    {
-        return null;
-    }
 }
 
 private IEnumerable<string> RunExecutable(FilePath executable, string arguments)

@@ -312,7 +312,7 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { mod_a };
 
-                registry.RegisterModule(mod_a, new string[] { }, null, false);
+                registry.RegisterModule(mod_a, Array.Empty<string>(), null, false);
 
                 var relationship_resolver = new RelationshipResolver(
                     list, null, options, registry, null);

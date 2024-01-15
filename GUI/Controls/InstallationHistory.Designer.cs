@@ -45,7 +45,7 @@ namespace CKAN.GUI
             this.DescriptionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SelectInstallMessage = new System.Windows.Forms.ListViewItem();
             this.NoModsMessage = new System.Windows.Forms.ListViewItem();
-            this.BottomButtonPanel = new LeftRightRowPanel();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.OKButton = new System.Windows.Forms.Button();
             this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
@@ -232,7 +232,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ColumnHeader DescriptionColumn;
         private System.Windows.Forms.ListViewItem SelectInstallMessage;
         private System.Windows.Forms.ListViewItem NoModsMessage;
-        private LeftRightRowPanel BottomButtonPanel;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button OKButton;
     }
 }

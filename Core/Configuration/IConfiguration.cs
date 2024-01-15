@@ -63,7 +63,11 @@ namespace CKAN.Configuration
         /// List of hosts in order of priority when there are multiple URLs to choose from.
         /// The first null value represents where all other hosts should go.
         /// </summary>
-        /// <value></value>
         string[] PreferredHosts { get; set; }
+
+        /// <summary>
+        /// true if user wants to use nightly builds from S3, false to use releases from GitHub
+        /// </summary>
+        bool DevBuilds { get; set; }
     }
 }

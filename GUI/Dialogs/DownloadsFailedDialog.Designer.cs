@@ -36,7 +36,7 @@ namespace CKAN.GUI
             this.SkipColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ErrorColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BottomButtonPanel = new LeftRightRowPanel();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.RetryButton = new System.Windows.Forms.Button();
             this.AbortButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.DownloadsGrid)).BeginInit();
@@ -186,7 +186,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.DataGridViewCheckBoxColumn SkipColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ModColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ErrorColumn;
-        private LeftRightRowPanel BottomButtonPanel;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button RetryButton;
         private System.Windows.Forms.Button AbortButton;
     }
