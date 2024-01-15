@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [GUI] Suppress admin user check for URL handler registration (#3996 by: HebaruSan)
+- [Netkan] Fix null reference exception in swinfo transformer (#3999 by: HebaruSan)
 
 ### Internal
 
