@@ -35,13 +35,6 @@ jobs:
           then
             echo 'odd_build=true' >> $GITHUB_OUTPUT
           fi
-      - name: Create a version.json file for S3
-        shell: bash
-        run: |
-          export PIP_ROOT_USER_ACTION=ignore
-          pip3 install --upgrade pip
-          pip3 install gitpython
-          python3 bin/version_info.py > _build/repack/Release/version.json
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
@@ -77,6 +70,14 @@ jobs:
 
       - name: Build ckan.exe and netkan.exe
         run: ./build --configuration=Release
+
+      - name: Create a version.json file for S3
+        shell: bash
+        run: |
+          export PIP_ROOT_USER_ACTION=ignore
+          pip3 install --upgrade pip
+          pip3 install gitpython
+          python3 bin/version_info.py > _build/repack/Release/version.json
 
       - name: Build deb
         env:
