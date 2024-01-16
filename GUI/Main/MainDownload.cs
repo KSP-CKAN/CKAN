@@ -30,7 +30,6 @@ namespace CKAN.GUI
                 {
                     // Just pass to the existing worker
                     downloader.DownloadModules(new List<CkanModule> { module.ToCkanModule() });
-                    UpdateCachedByDownloads(module);
                 });
             }
             else
@@ -81,36 +80,41 @@ namespace CKAN.GUI
             }
             else
             {
-                Util.Invoke(this, () => _PostModCaching((GUIMod)e.Result));
+                // Close progress tab and switch back to mod list
+                HideWaitDialog();
+                EnableMainWindow();
             }
         }
 
         [ForbidGUICalls]
-        private void UpdateCachedByDownloads(GUIMod module)
+        private void UpdateCachedByDownloads(CkanModule module)
         {
-            // Update all mods that share the same ZIP
             var allGuiMods = ManageMods.AllGUIMods();
-            foreach (var otherMod in module.ToModule().GetDownloadsGroup(
-                allGuiMods.Values.Select(guiMod => guiMod.ToModule())
-                                 .Where(mod => mod != null)))
+            var affectedMods =
+                module?.GetDownloadsGroup(allGuiMods.Values
+                                                    .Select(guiMod => guiMod.ToModule())
+                                                    .Where(mod => mod != null))
+                       .Select(other => allGuiMods[other.identifier])
+                ?? allGuiMods.Values;
+            foreach (var otherMod in affectedMods)
             {
-                allGuiMods[otherMod.identifier].UpdateIsCached();
+                otherMod.UpdateIsCached();
             }
         }
 
-        private void _PostModCaching(GUIMod module)
+        [ForbidGUICalls]
+        private void OnModStoredOrPurged(CkanModule module)
         {
             UpdateCachedByDownloads(module);
 
             // Reapply searches in case is:cached or not:cached is active
             ManageMods.UpdateFilters();
 
-            // User might have selected another row. Show current in tree.
-            RefreshModContentsTree();
-
-            // Close progress tab and switch back to mod list
-            HideWaitDialog();
-            EnableMainWindow();
+            if (module == null
+                || ModInfo.SelectedModule?.Identifier == module.identifier)
+            {
+                ModInfo.RefreshModContentsTree();
+            }
         }
     }
 }

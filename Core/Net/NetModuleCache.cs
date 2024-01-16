@@ -42,6 +42,9 @@ namespace CKAN
             cache = new NetFileCache(path);
         }
 
+        public event Action<CkanModule> ModStored;
+        public event Action<CkanModule> ModPurged;
+
         // Simple passthrough wrappers
         public void Dispose()
         {
@@ -50,6 +53,7 @@ namespace CKAN
         public void RemoveAll()
         {
             cache.RemoveAll();
+            ModPurged?.Invoke(null);
         }
         public void MoveFrom(string fromDir)
         {
@@ -215,6 +219,7 @@ namespace CKAN
             var success = cache.Store(module.download[0], path, description ?? module.StandardName(), move);
             // Make sure completion is signalled so progress bars go away
             progress?.Report(100);
+            ModStored?.Invoke(module);
             return success;
         }
 
@@ -318,6 +323,7 @@ namespace CKAN
                     }
                 }
             }
+            ModPurged?.Invoke(module);
             return true;
         }
 

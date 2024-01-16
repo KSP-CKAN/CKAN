@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Runtime.Versioning;
 #endif
 
+using CKAN.GUI.Attributes;
+
 namespace CKAN.GUI
 {
     #if NET5_0_OR_GREATER
@@ -35,6 +37,7 @@ namespace CKAN.GUI
             get => selectedModule;
         }
 
+        [ForbidGUICalls]
         public void RefreshModContentsTree()
         {
             if (currentModContentsModule != null)

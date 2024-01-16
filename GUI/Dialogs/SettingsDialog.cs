@@ -294,18 +294,8 @@ namespace CKAN.GUI
 
             if (deleteConfirmationDialog.ShowYesNoDialog(this, confirmationText) == DialogResult.Yes)
             {
-                // tell the cache object to nuke itself
+                // Tell the cache object to nuke itself
                 Main.Instance.Manager.Cache.RemoveAll();
-
-                // forcibly tell all mod rows to re-check cache state
-                foreach (DataGridViewRow row in Main.Instance.ManageMods.ModGrid.Rows)
-                {
-                    var mod = row.Tag as GUIMod;
-                    mod?.UpdateIsCached();
-                }
-
-                // finally, clear the preview contents list
-                Main.Instance.RefreshModContentsTree();
 
                 UpdateCacheInfo(coreConfig.DownloadCacheDir);
             }

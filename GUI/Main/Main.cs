@@ -151,6 +151,9 @@ namespace CKAN.GUI
                 Manager = new GameInstanceManager(currentUser);
             }
 
+            Manager.Cache.ModStored += OnModStoredOrPurged;
+            Manager.Cache.ModPurged += OnModStoredOrPurged;
+
             tabController = new TabController(MainTabControl);
             tabController.ShowTab("ManageModsTabPage");
 
@@ -593,11 +596,6 @@ namespace CKAN.GUI
             }
         }
 
-        public void RefreshModContentsTree()
-        {
-            ModInfo.RefreshModContentsTree();
-        }
-
         private void ExitToolButton_Click(object sender, EventArgs e)
         {
             Close();
@@ -785,7 +783,10 @@ namespace CKAN.GUI
 
         private void ManageMods_OnSelectedModuleChanged(GUIMod m)
         {
-            ActiveModInfo = m;
+            if (MainTabControl.SelectedTab == ManageModsTabPage)
+            {
+                ActiveModInfo = m;
+            }
         }
 
         private GUIMod ActiveModInfo

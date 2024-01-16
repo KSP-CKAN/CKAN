@@ -1109,20 +1109,6 @@ namespace CKAN.GUI
                 {
                     Main.Instance.Manager.Cache.Purge(mod);
                 }
-
-                // Update all mods that share the same ZIP
-                var allGuiMods = AllGUIMods();
-                foreach (var otherMod in selected.ToModule().GetDownloadsGroup(
-                    allGuiMods.Values.Select(guiMod => guiMod.ToModule())
-                                     .Where(mod => mod != null)))
-                {
-                    allGuiMods[otherMod.identifier].UpdateIsCached();
-                }
-
-                // Reapply searches in case is:cached or not:cached is active
-                UpdateFilters();
-
-                Main.Instance.RefreshModContentsTree();
             }
         }
 
