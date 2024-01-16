@@ -8,6 +8,7 @@ using System.Runtime.Versioning;
 using Autofac;
 
 using CKAN.Versioning;
+using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
@@ -45,6 +46,7 @@ namespace CKAN.GUI
             get => selectedModule;
         }
 
+        [ForbidGUICalls]
         public void RefreshModContentsTree()
         {
             Contents.RefreshModContentsTree();
