@@ -28,7 +28,7 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         public void ErrorDialog(string text, params object[] args)
         {
-            errorDialog.ShowErrorDialog(text, args);
+            errorDialog.ShowErrorDialog(this, text, args);
         }
 
         [ForbidGUICalls]

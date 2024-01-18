@@ -193,9 +193,14 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for output</param>
         /// <param name="instance">Game instance to use</param>
         /// <param name="modules">List of modules to upgrade</param>
-        private void UpgradeModules(GameInstanceManager manager, IUser user, CKAN.GameInstance instance, bool ConfirmPrompt, List<CkanModule> modules)
+        private void UpgradeModules(GameInstanceManager manager,
+                                    IUser               user,
+                                    CKAN.GameInstance   instance,
+                                    bool                ConfirmPrompt,
+                                    List<CkanModule>    modules)
         {
-            UpgradeModules(manager, user, instance, repoData,
+            UpgradeModules(
+                manager, user, instance, repoData,
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs) =>
                     installer.Upgrade(modules, downloader,
                         ref possibleConfigOnlyDirs, regMgr, true, true, ConfirmPrompt),
@@ -210,9 +215,13 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for output</param>
         /// <param name="instance">Game instance to use</param>
         /// <param name="identsAndVersions">List of identifier[=version] to upgrade</param>
-        private void UpgradeModules(GameInstanceManager manager, IUser user, CKAN.GameInstance instance, List<string> identsAndVersions)
+        private void UpgradeModules(GameInstanceManager manager,
+                                    IUser               user,
+                                    CKAN.GameInstance   instance,
+                                    List<string>        identsAndVersions)
         {
-            UpgradeModules(manager, user, instance, repoData,
+            UpgradeModules(
+                manager, user, instance, repoData,
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs) =>
                     installer.Upgrade(
                         identsAndVersions.Select(arg => CkanModule.FromIDandVersion(
@@ -241,11 +250,12 @@ namespace CKAN.CmdLine
         /// <param name="instance">Game instance to use</param>
         /// <param name="attemptUpgradeCallback">Function to call to try to perform the actual upgrade, may throw TooManyModsProvideKraken</param>
         /// <param name="addUserChoiceCallback">Function to call when the user has requested a new module added to the change set in response to TooManyModsProvideKraken</param>
-        private void UpgradeModules(
-            GameInstanceManager manager, IUser user, CKAN.GameInstance instance,
-            RepositoryDataManager repoData,
-            AttemptUpgradeAction attemptUpgradeCallback,
-            Action<CkanModule> addUserChoiceCallback)
+        private void UpgradeModules(GameInstanceManager   manager,
+                                    IUser                 user,
+                                    CKAN.GameInstance     instance,
+                                    RepositoryDataManager repoData,
+                                    AttemptUpgradeAction  attemptUpgradeCallback,
+                                    Action<CkanModule>    addUserChoiceCallback)
         {
             using (TransactionScope transact = CkanTransaction.CreateTransactionScope()) {
                 var installer  = new ModuleInstaller(instance, manager.Cache, user);

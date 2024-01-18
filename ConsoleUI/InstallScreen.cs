@@ -48,13 +48,14 @@ namespace CKAN.ConsoleUI {
                         // Reset this so we stop unless an exception sets it to true
                         retry = false;
 
-                        RegistryManager regMgr = RegistryManager.Instance(manager.CurrentInstance, repoData);
+                        var regMgr   = RegistryManager.Instance(manager.CurrentInstance, repoData);
+                        var registry = regMgr.registry;
 
                         // GUI prompts user to choose recs/sugs,
                         // CmdLine assumes recs and ignores sugs
                         if (plan.Install.Count > 0) {
                             // Track previously rejected optional dependencies and don't prompt for them again.
-                            DependencyScreen ds = new DependencyScreen(manager, regMgr.registry, plan, rejected, debug);
+                            DependencyScreen ds = new DependencyScreen(manager, registry, plan, rejected, debug);
                             if (ds.HaveOptions()) {
                                 LaunchSubScreen(theme, ds);
                             }

@@ -101,6 +101,7 @@ namespace CKAN.GUI
             InitializeComponent();
             // React when the user clicks a tag or filter link in mod info
             ModInfo.OnChangeFilter += ManageMods.Filter;
+            ModInfo.ModuleDoubleClicked += ManageMods.ResetFilterAndSelectModOnList;
             repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
 
             Instance = this;
@@ -256,7 +257,8 @@ namespace CKAN.GUI
                                 if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
                                     && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
                                 {
-                                    errorDialog.ShowErrorDialog(Properties.Resources.MainCorruptedRegistry,
+                                    errorDialog.ShowErrorDialog(this,
+                                        Properties.Resources.MainCorruptedRegistry,
                                         regMgr.previousCorruptedPath, regMgr.previousCorruptedMessage,
                                         Path.Combine(Path.GetDirectoryName(regMgr.previousCorruptedPath) ?? "", regMgr.LatestInstalledExportFilename()));
                                     regMgr.previousCorruptedMessage = null;
@@ -405,7 +407,8 @@ namespace CKAN.GUI
             if (!string.IsNullOrEmpty(regMgr.previousCorruptedMessage)
                 && !string.IsNullOrEmpty(regMgr.previousCorruptedPath))
             {
-                errorDialog.ShowErrorDialog(Properties.Resources.MainCorruptedRegistry,
+                errorDialog.ShowErrorDialog(this,
+                    Properties.Resources.MainCorruptedRegistry,
                     regMgr.previousCorruptedPath, regMgr.previousCorruptedMessage,
                     Path.Combine(Path.GetDirectoryName(regMgr.previousCorruptedPath) ?? "", regMgr.LatestInstalledExportFilename()));
                 regMgr.previousCorruptedMessage = null;

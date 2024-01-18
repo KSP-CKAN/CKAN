@@ -21,6 +21,7 @@ namespace CKAN.GUI
         {
             InitializeComponent();
             Contents.OnDownloadClick += gmod => OnDownloadClick?.Invoke(gmod);
+            Relationships.ModuleDoubleClicked += mod => ModuleDoubleClicked?.Invoke(mod);
         }
 
         public GUIMod SelectedModule
@@ -54,6 +55,7 @@ namespace CKAN.GUI
 
         public event Action<GUIMod>            OnDownloadClick;
         public event Action<SavedSearch, bool> OnChangeFilter;
+        public event Action<CkanModule>        ModuleDoubleClicked;
 
         protected override void OnResize(EventArgs e)
         {

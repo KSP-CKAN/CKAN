@@ -76,6 +76,8 @@ namespace CKAN.GUI
             get => selectedModule;
         }
 
+        public event Action<CkanModule> ModuleDoubleClicked;
+
         private void UpdateModDependencyGraph(CkanModule module)
         {
             Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(module));
@@ -87,7 +89,10 @@ namespace CKAN.GUI
 
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            Main.Instance.ManageMods.ResetFilterAndSelectModOnList(e.Node.Name);
+            if (e.Node.Tag is CkanModule module)
+            {
+                ModuleDoubleClicked?.Invoke(module);
+            }
         }
 
         private bool ImMyOwnGrandpa(TreeNode node)

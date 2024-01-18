@@ -18,7 +18,7 @@ namespace CKAN.GUI
     #endif
     public partial class ManageGameInstancesDialog : Form
     {
-        private readonly GameInstanceManager _manager = Main.Instance.Manager;
+        private static GameInstanceManager manager => Main.Instance.Manager;
         private readonly IUser _user;
         private RenameInstanceDialog _renameInstanceDialog;
         private readonly OpenFileDialog _instanceDialog = new OpenFileDialog()
@@ -27,7 +27,7 @@ namespace CKAN.GUI
             CheckFileExists  = false,
             CheckPathExists  = false,
             InitialDirectory = Environment.CurrentDirectory,
-            Filter           = GameFolderFilter(Main.Instance.Manager),
+            Filter           = GameFolderFilter(manager),
             Multiselect      = false
         };
 
@@ -59,9 +59,9 @@ namespace CKAN.GUI
                 StartPosition = FormStartPosition.CenterScreen;
             }
 
-            if (!_manager.Instances.Any())
+            if (!manager.Instances.Any())
             {
-                _manager.FindAndRegisterDefaultInstances();
+                manager.FindAndRegisterDefaultInstances();
             }
 
             // Set the renderer for the AddNewMenu
@@ -80,14 +80,14 @@ namespace CKAN.GUI
             GameInstancesListView.Items.Clear();
             UpdateButtonState();
 
-            var allSameGame = _manager.Instances.Select(i => i.Value.game).Distinct().Count() <= 1;
-            var hasPlayTime = _manager.Instances.Any(instance => (instance.Value.playTime?.Time ?? TimeSpan.Zero) > TimeSpan.Zero);
+            var allSameGame = manager.Instances.Select(i => i.Value.game).Distinct().Count() <= 1;
+            var hasPlayTime = manager.Instances.Any(instance => (instance.Value.playTime?.Time ?? TimeSpan.Zero) > TimeSpan.Zero);
 
             AddOrRemoveColumn(GameInstancesListView, Game, !allSameGame, GameInstallVersion.Index);
             AddOrRemoveColumn(GameInstancesListView, GamePlayTime, hasPlayTime, GameInstallPath.Index);
 
             GameInstancesListView.Items.AddRange(
-                _manager.Instances.OrderByDescending(instance => instance.Value.game.FirstReleaseDate)
+                manager.Instances.OrderByDescending(instance => instance.Value.game.FirstReleaseDate)
                                   .ThenByDescending(instance => instance.Value.Version())
                                   .ThenBy(instance => instance.Key)
                                   .Select(instance => new ListViewItem(
@@ -119,7 +119,7 @@ namespace CKAN.GUI
             {
                 !instance.Valid
                     ? string.Format(Properties.Resources.ManageGameInstancesNameColumnInvalid, instance.Name)
-                    : !(_manager.CurrentInstance?.Equals(instance) ?? false) && instance.IsMaybeLocked
+                    : !(manager.CurrentInstance?.Equals(instance) ?? false) && instance.IsMaybeLocked
                         ? string.Format(Properties.Resources.ManageGameInstancesNameColumnLocked, instance.Name)
                         : instance.Name
             };
@@ -180,8 +180,8 @@ namespace CKAN.GUI
                 {
                     instanceName = path;
                 }
-                instanceName = _manager.GetNextValidInstanceName(instanceName);
-                _manager.AddInstance(path, instanceName, _user);
+                instanceName = manager.GetNextValidInstanceName(instanceName);
+                manager.AddInstance(path, instanceName, _user);
                 UpdateInstancesList();
             }
             catch (NotKSPDirKraken k)
@@ -197,24 +197,24 @@ namespace CKAN.GUI
 
         private void ImportFromSteamMenuItem_Click(object sender, EventArgs e)
         {
-            var currentDirs = _manager.Instances.Values
+            var currentDirs = manager.Instances.Values
                                                 .Select(inst => inst.GameDir())
                                                 .ToHashSet(Platform.PathComparer);
-            var toAdd = _manager.FindDefaultInstances()
-                                .Where(inst => !currentDirs.Contains(inst.GameDir()));
+            var toAdd = manager.FindDefaultInstances()
+                               .Where(inst => !currentDirs.Contains(inst.GameDir()));
             foreach (var inst in toAdd)
             {
-                _manager.AddInstance(inst);
+                manager.AddInstance(inst);
             }
             UpdateInstancesList();
         }
 
         private void CloneGameInstanceMenuItem_Click(object sender, EventArgs e)
         {
-            var old_instance = Main.Instance.CurrentInstance;
+            var old_instance = manager.CurrentInstance;
 
-            var result = new CloneGameInstanceDialog(_manager, _user, (string)GameInstancesListView.SelectedItems[0].Tag).ShowDialog(this);
-            if (result == DialogResult.OK && !Equals(old_instance, Main.Instance.CurrentInstance))
+            var result = new CloneGameInstanceDialog(manager, _user, (string)GameInstancesListView.SelectedItems[0].Tag).ShowDialog(this);
+            if (result == DialogResult.OK && !Equals(old_instance, manager.CurrentInstance))
             {
                 DialogResult = DialogResult.OK;
                 Close();
@@ -240,7 +240,7 @@ namespace CKAN.GUI
             {
                 try
                 {
-                    _manager.SetCurrentInstance(instName);
+                    manager.SetCurrentInstance(instName);
                     DialogResult = DialogResult.OK;
                     Close();
                 }
@@ -255,7 +255,7 @@ namespace CKAN.GUI
         {
             if (SetAsDefaultCheckbox.Checked)
             {
-                _manager.ClearAutoStart();
+                manager.ClearAutoStart();
                 SetAsDefaultCheckbox.Checked = false;
                 return;
             }
@@ -265,7 +265,7 @@ namespace CKAN.GUI
             {
                 try
                 {
-                    _manager.SetAutoStart(instName);
+                    manager.SetAutoStart(instName);
                     SetAsDefaultCheckbox.Checked = true;
                 }
                 catch (NotKSPDirKraken k)
@@ -285,7 +285,7 @@ namespace CKAN.GUI
             }
 
             string instName = (string)GameInstancesListView.SelectedItems[0].Tag;
-            SetAsDefaultCheckbox.Checked = _manager.AutoStartInstance?.Equals(instName) ?? false;
+            SetAsDefaultCheckbox.Checked = manager.AutoStartInstance?.Equals(instName) ?? false;
         }
 
         private void GameInstancesListView_DoubleClick(object sender, EventArgs r)
@@ -317,7 +317,7 @@ namespace CKAN.GUI
 
         private void OpenDirectoryMenuItem_Click(object sender, EventArgs e)
         {
-            string path = _manager.Instances[(string) GameInstancesListView.SelectedItems[0].Tag].GameDir();
+            string path = manager.Instances[(string) GameInstancesListView.SelectedItems[0].Tag].GameDir();
 
             if (!Directory.Exists(path))
             {
@@ -340,7 +340,7 @@ namespace CKAN.GUI
             }
 
             // proceed with instance rename
-            _manager.RenameInstance(instance, _renameInstanceDialog.GetResult());
+            manager.RenameInstance(instance, _renameInstanceDialog.GetResult());
             UpdateInstancesList();
         }
 
@@ -348,7 +348,7 @@ namespace CKAN.GUI
         {
             foreach (var instance in GameInstancesListView.SelectedItems.OfType<ListViewItem>().Select(item => item.Tag as string))
             {
-                _manager.RemoveInstance(instance);
+                manager.RemoveInstance(instance);
                 UpdateInstancesList();
             }
         }
@@ -356,8 +356,8 @@ namespace CKAN.GUI
         private void UpdateButtonState()
         {
             RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = CloneGameInstanceMenuItem.Enabled = HasSelections;
-            ForgetButton.Enabled = HasSelections && (string)GameInstancesListView.SelectedItems[0].Tag != _manager.CurrentInstance?.Name;
-            ImportFromSteamMenuItem.Enabled = _manager.SteamLibrary.Games.Length > 0;
+            ForgetButton.Enabled = HasSelections && (string)GameInstancesListView.SelectedItems[0].Tag != manager.CurrentInstance?.Name;
+            ImportFromSteamMenuItem.Enabled = manager.SteamLibrary.Games.Length > 0;
         }
     }
 }

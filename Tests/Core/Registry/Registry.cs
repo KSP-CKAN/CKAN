@@ -19,7 +19,7 @@ namespace Tests.Core.Registry
         private string repoDataDir;
 
         private static readonly GameVersionCriteria v0_24_2 = new GameVersionCriteria(GameVersion.Parse("0.24.2"));
-        private static readonly GameVersionCriteria v0_25_0 = new GameVersionCriteria (GameVersion.Parse("0.25.0"));
+        private static readonly GameVersionCriteria v0_25_0 = new GameVersionCriteria(GameVersion.Parse("0.25.0"));
 
         [SetUp]
         public void Setup()

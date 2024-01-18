@@ -24,6 +24,9 @@ namespace CKAN.GUI
         public  CkanModule      LatestAvailableMod  { get; private set; }
         public  InstalledModule InstalledMod        { get; private set; }
 
+        private GameInstance        currentInstance => Main.Instance?.CurrentInstance;
+        private GameInstanceManager manager         => Main.Instance?.Manager;
+
         /// <summary>
         /// The module of the checkbox that is checked in the MainAllModVersions list if any,
         /// null otherwise.
@@ -50,10 +53,9 @@ namespace CKAN.GUI
                     }
                     Main.Instance.ManageMods.MarkModForInstall(Identifier, selectedMod == null);
 
-                    var inst = Main.Instance.CurrentInstance;
                     Main.Instance.ManageMods.UpdateChangeSetAndConflicts(
-                        inst,
-                        RegistryManager.Instance(inst,
+                        currentInstance,
+                        RegistryManager.Instance(currentInstance,
                             ServiceLocator.Container.Resolve<RepositoryDataManager>()).registry);
 
                     OnPropertyChanged();
@@ -204,7 +206,7 @@ namespace CKAN.GUI
                 if (GameCompatibilityVersion.IsAny)
                 {
                     GameCompatibilityVersion = mod.LatestCompatibleRealGameVersion(
-                        Main.Instance?.Manager.CurrentInstance?.game.KnownVersions
+                        manager.CurrentInstance?.game.KnownVersions
                         ?? new List<GameVersion>() {});
                 }
             }
@@ -269,7 +271,7 @@ namespace CKAN.GUI
             if (LatestAvailableMod != null)
             {
                 GameCompatibilityVersion = registry.LatestCompatibleGameVersion(
-                    Main.Instance?.Manager.CurrentInstance?.game.KnownVersions ?? new List<GameVersion>() {},
+                    currentInstance?.game.KnownVersions ?? new List<GameVersion>() {},
                     identifier);
             }
 
@@ -294,12 +296,12 @@ namespace CKAN.GUI
         /// </summary>
         public void UpdateIsCached()
         {
-            if (Main.Instance?.Manager?.Cache == null || Mod?.download == null)
+            if (manager?.Cache == null || Mod?.download == null)
             {
                 return;
             }
 
-            IsCached = Main.Instance.Manager.Cache.IsMaybeCachedZip(Mod);
+            IsCached = manager.Cache.IsMaybeCachedZip(Mod);
         }
 
         /// <summary>

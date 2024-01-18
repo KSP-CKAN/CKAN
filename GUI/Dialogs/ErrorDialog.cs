@@ -22,9 +22,9 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public void ShowErrorDialog(string text, params object[] args)
+        public void ShowErrorDialog(Main mainForm, string text, params object[] args)
         {
-            Util.Invoke(Main.Instance, () =>
+            Util.Invoke(this, () =>
             {
                 log.ErrorFormat(text, args);
                 // Append to previous text, if any
@@ -45,17 +45,12 @@ namespace CKAN.GUI
                                                     ErrorMessage.Width - 4)));
                 if (!Visible)
                 {
-                    StartPosition = Main.Instance.actuallyVisible
+                    StartPosition = mainForm.actuallyVisible
                         ? FormStartPosition.CenterParent
                         : FormStartPosition.CenterScreen;
-                    ShowDialog(Main.Instance);
+                    ShowDialog(mainForm);
                 }
             });
-        }
-
-        public void HideErrorDialog()
-        {
-            Util.Invoke(this, () => Close());
         }
 
         private void DismissButton_Click(object sender, EventArgs e)
