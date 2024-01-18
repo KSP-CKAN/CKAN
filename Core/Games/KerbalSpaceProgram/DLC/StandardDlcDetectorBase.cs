@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -31,7 +32,10 @@ namespace CKAN.Games.KerbalSpaceProgram.DLC
             RegexOptions.Compiled | RegexOptions.IgnoreCase
         );
 
-        protected StandardDlcDetectorBase(IGame game, string identifierBaseName, GameVersion releaseGameVersion, Dictionary<string, string> canonicalVersions = null)
+        protected StandardDlcDetectorBase(IGame game,
+                                          string identifierBaseName,
+                                          GameVersion releaseGameVersion,
+                                          Dictionary<string, string> canonicalVersions = null)
             : this(game, identifierBaseName, identifierBaseName, releaseGameVersion, canonicalVersions) { }
 
         protected StandardDlcDetectorBase(IGame game, string identifierBaseName, string directoryBaseName, GameVersion releaseGameVersion, Dictionary<string, string> canonicalVersions = null)
@@ -55,51 +59,36 @@ namespace CKAN.Games.KerbalSpaceProgram.DLC
 
         public virtual bool IsInstalled(GameInstance ksp, out string identifier, out UnmanagedModuleVersion version)
         {
-            identifier = $"{IdentifierBaseName}-DLC";
-            version = null;
-
-            var directoryPath = Path.Combine(game.PrimaryModDirectory(ksp), "SquadExpansion", DirectoryBaseName);
-            if (Directory.Exists(directoryPath))
+            var directoryPath = Path.Combine(ksp.GameDir(), InstallPath());
+            var readmeFilePath = Path.Combine(directoryPath, "readme.txt");
+            // Steam leaves empty folders behind when you "disable" a DLC,
+            // so only return true if the readme exists
+            if (Directory.Exists(directoryPath) && File.Exists(readmeFilePath))
             {
-                var readmeFilePath = Path.Combine(directoryPath, "readme.txt");
-
-                if (File.Exists(readmeFilePath))
-                {
-                    foreach (var line in File.ReadAllLines(readmeFilePath))
-                    {
-                        var match = VersionPattern.Match(line);
-
-                        if (match.Success)
-                        {
-                            var versionStr = match.Groups["version"].Value;
-
-                            if (CanonicalVersions.ContainsKey(versionStr))
-                            {
-                                versionStr = CanonicalVersions[versionStr];
-                            }
-
-                            version = new UnmanagedModuleVersion(versionStr);
-                            break;
-                        }
-                    }
-                }
-
+                identifier = $"{IdentifierBaseName}-DLC";
+                version = new UnmanagedModuleVersion(
+                              File.ReadAllLines(readmeFilePath)
+                                  .Select(line => VersionPattern.Match(line))
+                                  .Where(match => match.Success)
+                                  .Select(match => match.Groups["version"].Value)
+                                  .Select(verStr => CanonicalVersions.TryGetValue(verStr, out string overrideVer)
+                                                        ? overrideVer
+                                                        : verStr)
+                                  // A null string results in UnmanagedModuleVersion with IsUnknownVersion==true
+                                  .FirstOrDefault());
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            identifier = null;
+            version = null;
+            return false;
         }
 
         public virtual string InstallPath()
-        {
-            return Path.Combine("GameData", "SquadExpansion", DirectoryBaseName);
-        }
+            => Path.Combine(game.PrimaryModDirectoryRelative,
+                            "SquadExpansion",
+                            DirectoryBaseName);
 
         public bool AllowedOnBaseVersion(GameVersion baseVersion)
-        {
-            return baseVersion >= ReleaseGameVersion;
-        }
+            => baseVersion >= ReleaseGameVersion;
     }
 }

@@ -10,7 +10,8 @@ namespace CKAN.Extensions
             => a == null ? b == null
                          : b != null && a.Count == b.Count
                            && a.Keys.All(k => b.ContainsKey(k))
-                           && b.Keys.All(k => a.ContainsKey(k) && a[k].Equals(b[k]));
+                           && b.Keys.All(k => a.ContainsKey(k)
+                                              && EqualityComparer<V>.Default.Equals(a[k], b[k]));
 
         public static V GetOrDefault<K, V>(this Dictionary<K, V> dict, K key)
         {
