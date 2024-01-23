@@ -131,40 +131,45 @@ namespace CKAN.GUI
             }
 
             Util.Invoke(this, () => UseWaitCursor = true);
-            // Prompt for recommendations and suggestions, if any
-            if (installer.FindRecommendations(
-                changes.Where(ch => ch.ChangeType == GUIModChangeType.Install)
-                       .Select(ch => ch.Mod)
-                       .ToHashSet(),
-                toInstall,
-                registry,
-                out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
-                out Dictionary<CkanModule, List<string>> suggestions,
-                out Dictionary<CkanModule, HashSet<string>> supporters))
+            try
             {
-                tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
-                ChooseRecommendedMods.LoadRecommendations(
-                    registry, toInstall, toUninstall,
-                    CurrentInstance.VersionCriteria(), Manager.Cache,
-                    recommendations, suggestions, supporters);
-                tabController.SetTabLock(true);
-                Util.Invoke(this, () => UseWaitCursor = false);
-                var result = ChooseRecommendedMods.Wait();
-                tabController.SetTabLock(false);
-                tabController.HideTab("ChooseRecommendedModsTabPage");
-                if (result == null)
+                // Prompt for recommendations and suggestions, if any
+                if (installer.FindRecommendations(
+                    changes.Where(ch => ch.ChangeType == GUIModChangeType.Install)
+                           .Select(ch => ch.Mod)
+                           .ToHashSet(),
+                    toInstall,
+                    registry,
+                    out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
+                    out Dictionary<CkanModule, List<string>> suggestions,
+                    out Dictionary<CkanModule, HashSet<string>> supporters))
                 {
-                    e.Result = new InstallResult(false, changes);
-                    throw new CancelledActionKraken();
-                }
-                else
-                {
-                    toInstall = toInstall.Concat(result).Distinct().ToList();
+                    tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+                    ChooseRecommendedMods.LoadRecommendations(
+                        registry, toInstall, toUninstall,
+                        CurrentInstance.VersionCriteria(), Manager.Cache,
+                        recommendations, suggestions, supporters);
+                    tabController.SetTabLock(true);
+                    Util.Invoke(this, () => UseWaitCursor = false);
+                    var result = ChooseRecommendedMods.Wait();
+                    tabController.SetTabLock(false);
+                    tabController.HideTab("ChooseRecommendedModsTabPage");
+                    if (result == null)
+                    {
+                        e.Result = new InstallResult(false, changes);
+                        throw new CancelledActionKraken();
+                    }
+                    else
+                    {
+                        toInstall = toInstall.Concat(result).Distinct().ToList();
+                    }
                 }
             }
-            else
+            finally
             {
+                // Make sure the progress tab always shows up with a normal cursor even if an exception is thrown
                 Util.Invoke(this, () => UseWaitCursor = false);
+                ShowWaitDialog();
             }
 
             // Now let's make all our changes.
@@ -173,7 +178,6 @@ namespace CKAN.GUI
                 // Need to be on the GUI thread to get the translated string
                 tabController.RenameTab("WaitTabPage", Properties.Resources.MainInstallWaitTitle);
             });
-            ShowWaitDialog();
             tabController.SetTabLock(true);
 
             IDownloader downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);

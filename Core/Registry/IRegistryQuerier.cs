@@ -230,11 +230,29 @@ namespace CKAN
         /// <returns>
         /// String describing range of compatible game versions.
         /// </returns>
-        public static string CompatibleGameVersions(this IRegistryQuerier querier, IGame game, string identifier)
+        public static string CompatibleGameVersions(this IRegistryQuerier querier,
+                                                    IGame                 game,
+                                                    string                identifier)
         {
-            List<CkanModule> releases = querier.AvailableByIdentifier(identifier).ToList();
-            if (releases != null && releases.Count > 0) {
-                CkanModule.GetMinMaxVersions(releases, out _, out _, out GameVersion minKsp, out GameVersion maxKsp);
+            List<CkanModule> releases = null;
+            try
+            {
+                releases = querier.AvailableByIdentifier(identifier)
+                                  .ToList();
+            }
+            catch
+            {
+                var instMod = querier.InstalledModule(identifier);
+                if (instMod != null)
+                {
+                    releases = Enumerable.Repeat(instMod.Module, 1)
+                                         .ToList();
+                }
+            }
+            if (releases != null && releases.Count > 0)
+            {
+                CkanModule.GetMinMaxVersions(releases, out _, out _,
+                                             out GameVersion minKsp, out GameVersion maxKsp);
                 return GameVersionRange.VersionSpan(game, minKsp, maxKsp);
             }
             return "";

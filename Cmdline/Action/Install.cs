@@ -31,103 +31,80 @@ namespace CKAN.CmdLine
         /// </returns>
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
-            InstallOptions options = (InstallOptions) raw_options;
-
-            if (options.ckan_files != null)
+            var options = raw_options as InstallOptions;
+            if (options.modules.Count == 0 && options.ckan_files == null)
             {
-                // Oooh! We're installing from a CKAN file.
-                foreach (string ckan_file in options.ckan_files)
-                {
-                    Uri ckan_uri;
-
-                    // Check if the argument if a wellformatted Uri.
-                    if (!Uri.IsWellFormedUriString(ckan_file, UriKind.Absolute))
-                    {
-                        // Assume it is a local file, check if the file exists.
-                        if (File.Exists(ckan_file))
-                        {
-                            // Get the full path of the file.
-                            ckan_uri = new Uri(Path.GetFullPath(ckan_file));
-                        }
-                        else
-                        {
-                            // We have no further ideas as what we can do with this Uri, tell the user.
-                            user.RaiseError(Properties.Resources.InstallNotFound, ckan_file);
-                            return Exit.ERROR;
-                        }
-                    }
-                    else
-                    {
-                        ckan_uri = new Uri(ckan_file);
-                    }
-
-                    string filename = string.Empty;
-
-                    // If it is a local file, we already know the filename. If it is remote, create a temporary file and download the remote resource.
-                    if (ckan_uri.IsFile)
-                    {
-                        filename = ckan_uri.LocalPath;
-                        log.InfoFormat("Installing from local CKAN file \"{0}\"", filename);
-                    }
-                    else
-                    {
-                        log.InfoFormat("Installing from remote CKAN file \"{0}\"", ckan_uri);
-                        filename = Net.Download(ckan_uri, null, user);
-
-                        log.DebugFormat("Temporary file for \"{0}\" is at \"{1}\".", ckan_uri, filename);
-                    }
-
-                    // Parse the JSON file.
-                    try
-                    {
-                        CkanModule m = MainClass.LoadCkanFromFile(filename);
-                        options.modules.Add($"{m.identifier}={m.version}");
-                    }
-                    catch (Kraken kraken)
-                    {
-                        user.RaiseError("{0}",
-                            kraken.InnerException == null
-                                ? kraken.Message
-                                : $"{kraken.Message}: {kraken.InnerException.Message}");
-                    }
-                }
-
-                // At times RunCommand() calls itself recursively - in this case we do
-                // not want to be doing this again, so "consume" the option
-                options.ckan_files = null;
-            }
-            else
-            {
-                Search.AdjustModulesCase(instance,
-                                         RegistryManager.Instance(instance, repoData).registry,
-                                         options.modules);
-            }
-
-            if (options.modules.Count == 0)
-            {
-                // What? No files specified?
+                // What? No mods specified?
+                user.RaiseMessage("{0}:", Properties.Resources.Usage);
                 user.RaiseMessage(
-                    $"{Properties.Resources.Usage}: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] [--headless] Mod [Mod2, ...]");
+                    "    ckan install Mod [Mod2, ...] [--with-suggests] [--with-all-suggests] [--no-recommends]");
+                user.RaiseMessage(
+                    "    ckan install -c file_or_url.ckan [file_or_url2.ckan, ...] [--with-suggests] [--with-all-suggests] [--no-recommends]");
                 return Exit.BADOPT;
             }
 
-            // Prepare options. Can these all be done in the new() somehow?
-            var install_ops = new RelationshipResolverOptions
-            {
-                with_all_suggests  = options.with_all_suggests,
-                with_suggests      = options.with_suggests,
-                with_recommends    = !options.no_recommends,
-                allow_incompatible = options.allow_incompatible
-            };
+            var regMgr = RegistryManager.Instance(instance, repoData);
+            List<CkanModule> modules = null;
 
-            if (user.Headless)
+            if (options.ckan_files != null)
             {
-                install_ops.without_toomanyprovides_kraken = true;
-                install_ops.without_enforce_consistency = true;
+                // Install from CKAN files
+                try
+                {
+                    var targets = options.ckan_files
+                                         .Select(arg => new NetAsyncDownloader.DownloadTarget(getUri(arg)))
+                                         .ToList();
+                    log.DebugFormat("Urls: {0}", targets.SelectMany(t => t.urls));
+                    new NetAsyncDownloader(new NullUser()).DownloadAndWait(targets);
+                    log.DebugFormat("Files: {0}", targets.Select(t => t.filename));
+                    modules = targets.Select(t => MainClass.LoadCkanFromFile(t.filename))
+                                     .ToList();
+                }
+                catch (FileNotFoundKraken kraken)
+                {
+                    user.RaiseError(Properties.Resources.InstallNotFound,
+                                    kraken.file);
+                    return Exit.ERROR;
+                }
+                catch (Kraken kraken)
+                {
+                    user.RaiseError("{0}",
+                        kraken.InnerException == null
+                            ? kraken.Message
+                            : $"{kraken.Message}: {kraken.InnerException.Message}");
+                    return Exit.ERROR;
+                }
+            }
+            else
+            {
+                var identifiers = options.modules;
+                var registry    = regMgr.registry;
+                var installed   = registry.InstalledModules
+                                          .Select(im => im.Module)
+                                          .ToArray();
+                var crit        = instance.VersionCriteria();
+                Search.AdjustModulesCase(instance, registry, identifiers);
+                modules = identifiers.Select(arg => CkanModule.FromIDandVersion(
+                                                        registry, arg,
+                                                        options.allow_incompatible
+                                                            ? null
+                                                            : crit)
+                                                    ?? registry.LatestAvailable(arg, crit,
+                                                                                null, installed)
+                                                    ?? registry.InstalledModule(arg)?.Module)
+                                     .ToList();
             }
 
-            var regMgr = RegistryManager.Instance(instance, repoData);
-            List<string> modules = options.modules;
+            var installer   = new ModuleInstaller(instance, manager.Cache, user);
+            var install_ops = new RelationshipResolverOptions
+            {
+                with_all_suggests              = options.with_all_suggests,
+                with_suggests                  = options.with_suggests,
+                with_recommends                = !options.no_recommends,
+                allow_incompatible             = options.allow_incompatible,
+                without_toomanyprovides_kraken = user.Headless,
+                without_enforce_consistency    = user.Headless,
+            };
 
             for (bool done = false; !done; )
             {
@@ -135,15 +112,7 @@ namespace CKAN.CmdLine
                 try
                 {
                     HashSet<string> possibleConfigOnlyDirs = null;
-                    var installer = new ModuleInstaller(instance, manager.Cache, user);
-                    installer.InstallList(modules.Select(arg => CkanModule.FromIDandVersion(
-                                                                    regMgr.registry, arg,
-                                                                    options.allow_incompatible
-                                                                        ? null
-                                                                        : instance.VersionCriteria()))
-                                                 .ToList(),
-                                          install_ops,
-                                          regMgr,
+                    installer.InstallList(modules, install_ops, regMgr,
                                           ref possibleConfigOnlyDirs);
                     user.RaiseMessage("");
                     done = true;
@@ -199,7 +168,7 @@ namespace CKAN.CmdLine
                     }
 
                     // Add the module to the list.
-                    modules.Add($"{ex.modules[result].identifier}={ex.modules[result].version}");
+                    modules.Add(ex.modules[result]);
                     // DON'T return so we can loop around and try again
                 }
                 catch (FileExistsKraken ex)
@@ -274,6 +243,13 @@ namespace CKAN.CmdLine
 
             return Exit.OK;
         }
+
+        private Uri getUri(string arg)
+            => Uri.IsWellFormedUriString(arg, UriKind.Absolute)
+                ? new Uri(arg)
+                : File.Exists(arg)
+                    ? new Uri(Path.GetFullPath(arg))
+                    : throw new FileNotFoundKraken(arg);
 
         private readonly GameInstanceManager   manager;
         private readonly RepositoryDataManager repoData;
