@@ -814,6 +814,10 @@ namespace CKAN
                     .Select(am => am.Latest(gameVersion, relationship_descriptor,
                                             installed, toInstall))
                     .Where(m => m?.ProvidesList?.Contains(identifier) ?? false)
+                    // Put the most popular one on top
+                    .OrderByDescending(m => repoDataMgr.GetDownloadCount(Repositories.Values,
+                                                                         m.identifier)
+                                            ?? 0)
                     .ToList();
             }
             else
