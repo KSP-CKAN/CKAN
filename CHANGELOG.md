@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Fix null reference exception in swinfo transformer (#3999 by: HebaruSan)
 - [GUI] Refactor Contents tab refreshing (#4001 by: HebaruSan)
 - [Core] Fix crash with DLC disabled by Steam (#4002 by: HebaruSan)
+- [Multiple] Fixes for installing .ckan files and DarkKAN mods (#4006 by: HebaruSan)
 
 ### Internal
 

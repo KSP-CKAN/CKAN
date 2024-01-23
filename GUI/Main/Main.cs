@@ -740,7 +740,10 @@ namespace CKAN.GUI
                     Properties.Resources.AllModVersionsInstallYes,
                     Properties.Resources.AllModVersionsInstallNo))
             {
-                InstallModuleDriver(registry_manager.registry, toInstall);
+                UpdateChangesDialog(toInstall.Select(m => new ModChange(m, GUIModChangeType.Install))
+                                             .ToList(),
+                                    null);
+                tabController.ShowTab("ChangesetTabPage", 1);
             }
         }
 

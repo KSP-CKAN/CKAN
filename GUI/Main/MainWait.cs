@@ -51,11 +51,13 @@ namespace CKAN.GUI
         /// <param name="description">Message displayed above the DialogProgress bar</param>
         public void FailWaitDialog(string statusMsg, string logMsg, string description)
         {
-            Util.Invoke(statusStrip1, () => {
+            Util.Invoke(statusStrip1, () =>
+            {
                 StatusProgress.Visible = false;
                 currentUser.RaiseMessage(statusMsg);
             });
-            Util.Invoke(WaitTabPage, () => {
+            Util.Invoke(WaitTabPage, () =>
+            {
                 RecreateDialogs();
                 Wait.Finish();
             });
@@ -65,6 +67,7 @@ namespace CKAN.GUI
 
         public void Wait_OnRetry()
         {
+            EnableMainWindow();
             tabController.ShowTab("ChangesetTabPage", 1);
         }
 
