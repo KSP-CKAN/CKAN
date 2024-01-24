@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Updater] Support dev builds for auto updater (#3997 by: HebaruSan)
+- [GUI] Sort mods satisfying the same recommendation by download count (#4007 by: HebaruSan)
 
 ### Bugfixes
 
