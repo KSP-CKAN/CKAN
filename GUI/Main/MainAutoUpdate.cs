@@ -27,12 +27,11 @@ namespace CKAN.GUI
                 guiConfig.CheckForUpdatesOnLaunchNoNag = true;
             }
 
-            if (!guiConfig.DevBuildsNoNag && guiConfig.CheckForUpdatesOnLaunch)
+            if (!coreConfig.DevBuilds.HasValue && guiConfig.CheckForUpdatesOnLaunch)
             {
                 coreConfig.DevBuilds = !YesNoDialog(Properties.Resources.MainReleasesOrDevBuildsPrompt,
                                                     Properties.Resources.MainReleasesOrDevBuildsYes,
                                                     Properties.Resources.MainReleasesOrDevBuildsNo);
-                guiConfig.DevBuildsNoNag = true;
             }
         }
 
@@ -51,7 +50,7 @@ namespace CKAN.GUI
                 {
                     log.Info("Making auto-update call");
                     var mainConfig = ServiceLocator.Container.Resolve<IConfiguration>();
-                    var update = updater.GetUpdate(mainConfig.DevBuilds);
+                    var update = updater.GetUpdate(mainConfig.DevBuilds ?? false);
                     var latestVersion = update.Version;
                     var currentVersion = new ModuleVersion(Meta.GetVersion());
 
@@ -87,12 +86,12 @@ namespace CKAN.GUI
             DisableMainWindow();
             tabController.RenameTab("WaitTabPage", Properties.Resources.MainUpgradingWaitTitle);
             var mainConfig = ServiceLocator.Container.Resolve<IConfiguration>();
-            var update = updater.GetUpdate(mainConfig.DevBuilds);
+            var update = updater.GetUpdate(mainConfig.DevBuilds ?? false);
             Wait.SetDescription(string.Format(Properties.Resources.MainUpgradingTo,
                                 update.Version));
 
             log.Info("Start ckan update");
-            Wait.StartWaiting((sender, args) => updater.StartUpdateProcess(true, mainConfig.DevBuilds, currentUser),
+            Wait.StartWaiting((sender, args) => updater.StartUpdateProcess(true, mainConfig.DevBuilds ?? false, currentUser),
                               UpdateReady,
                               false,
                               null);

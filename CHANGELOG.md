@@ -6,13 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-- [Updater] Support dev builds for auto updater (#3997 by: HebaruSan)
+- [Updater] Support dev builds for auto updater (#3997, #4008 by: HebaruSan)
 - [GUI] Sort mods satisfying the same recommendation by download count (#4007 by: HebaruSan)
 
 ### Bugfixes
 
 - [GUI] Suppress admin user check for URL handler registration (#3996 by: HebaruSan)
-- [Netkan] Fix null reference exception in swinfo transformer (#3999 by: HebaruSan)
 - [GUI] Refactor Contents tab refreshing (#4001 by: HebaruSan)
 - [Core] Fix crash with DLC disabled by Steam (#4002 by: HebaruSan)
 - [Multiple] Fixes for installing .ckan files and DarkKAN mods (#4006 by: HebaruSan)
@@ -20,6 +19,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Policy] Fix #3518 rewrite de-indexing policy (#3993 by: JonnyOThan; reviewed: HebaruSan)
+- [Netkan] Fix null reference exception in swinfo transformer (#3999 by: HebaruSan)
 
 ## v1.34.4 (Niven)
 
