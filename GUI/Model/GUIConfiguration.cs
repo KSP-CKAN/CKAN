@@ -18,7 +18,6 @@ namespace CKAN.GUI
 
         public bool CheckForUpdatesOnLaunch = false;
         public bool CheckForUpdatesOnLaunchNoNag = false;
-        public bool DevBuildsNoNag = false;
 
         public bool EnableTrayIcon = false;
         public bool MinimizeToTray = false;

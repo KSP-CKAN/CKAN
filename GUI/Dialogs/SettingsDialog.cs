@@ -65,7 +65,7 @@ namespace CKAN.GUI
             UpdateAutoUpdate();
 
             CheckUpdateOnLaunchCheckbox.Checked = guiConfig.CheckForUpdatesOnLaunch;
-            DevBuildsCheckbox.Checked = coreConfig.DevBuilds;
+            DevBuildsCheckbox.Checked = coreConfig.DevBuilds ?? false;
             RefreshOnStartupCheckbox.Checked = guiConfig.RefreshOnStartup;
             HideEpochsCheckbox.Checked = guiConfig.HideEpochs;
             HideVCheckbox.Checked = guiConfig.HideV;
@@ -84,7 +84,7 @@ namespace CKAN.GUI
             LocalVersionLabel.Text = Meta.GetVersion();
             try
             {
-                var latestVersion = updater.GetUpdate(coreConfig.DevBuilds)
+                var latestVersion = updater.GetUpdate(coreConfig.DevBuilds ?? false)
                                            .Version;
                 LatestVersionLabel.Text = latestVersion.ToString();
                 // Allow downgrading in case they want to stop using dev builds

@@ -29,7 +29,7 @@ namespace CKAN.Configuration
             public IDictionary<string, string> AuthTokens { get; set; } = new Dictionary<string, string>();
             public string[] GlobalInstallFilters { get; set; } = Array.Empty<string>();
             public string[] PreferredHosts { get; set; } = Array.Empty<string>();
-            public bool DevBuilds { get; set; }
+            public bool? DevBuilds { get; set; }
         }
 
         public class ConfigConverter : JsonPropertyNamesChangedConverter
@@ -324,7 +324,7 @@ namespace CKAN.Configuration
             }
         }
 
-        public bool DevBuilds
+        public bool? DevBuilds
         {
             get
             {

@@ -151,7 +151,7 @@ namespace Tests.Core.Configuration
 
         public string[] PreferredHosts { get; set; } = Array.Empty<string>();
 
-        public bool DevBuilds { get; set; }
+        public bool? DevBuilds { get; set; }
 
         public void Dispose()
         {

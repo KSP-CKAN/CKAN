@@ -186,7 +186,7 @@ namespace CKAN.Configuration
         /// <summary>
         /// Not implemented because the Windows registry is deprecated
         /// </summary>
-        public bool DevBuilds { get; set; }
+        public bool? DevBuilds { get; set; }
 
         public static bool DoesRegistryConfigurationExist()
         {

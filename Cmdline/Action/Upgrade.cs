@@ -63,12 +63,12 @@ namespace CKAN.CmdLine
                 }
                 var config = ServiceLocator.Container.Resolve<IConfiguration>();
                 var devBuild = options.dev_build
-                               || (!options.stable_release && config.DevBuilds);
+                               || (!options.stable_release && (config.DevBuilds ?? false));
                 if (devBuild != config.DevBuilds)
                 {
                     config.DevBuilds = devBuild;
                     user.RaiseMessage(
-                        config.DevBuilds
+                        config.DevBuilds ?? false
                             ? Properties.Resources.UpgradeSwitchingToDevBuilds
                             : Properties.Resources.UpgradeSwitchingToStableReleases);
                 }
@@ -77,7 +77,7 @@ namespace CKAN.CmdLine
                 try
                 {
                     var upd = new AutoUpdate();
-                    var update = upd.GetUpdate(config.DevBuilds);
+                    var update = upd.GetUpdate(config.DevBuilds ?? false);
                     var latestVersion = update.Version;
                     var currentVersion = new ModuleVersion(Meta.GetVersion());
 
@@ -92,7 +92,7 @@ namespace CKAN.CmdLine
                         if (user.RaiseYesNoDialog(Properties.Resources.UpgradeProceed))
                         {
                             user.RaiseMessage(Properties.Resources.UpgradePleaseWait);
-                            upd.StartUpdateProcess(false, config.DevBuilds, user);
+                            upd.StartUpdateProcess(false, config.DevBuilds ?? false, user);
                         }
                     }
                     else
