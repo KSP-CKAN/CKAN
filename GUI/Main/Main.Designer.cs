@@ -400,7 +400,7 @@ namespace CKAN.GUI
             this.ModInfo.Name = "ModInfo";
             this.ModInfo.Size = new System.Drawing.Size(360, 836);
             this.ModInfo.TabIndex = 34;
-            this.ModInfo.OnDownloadClick += ModInfo_OnDownloadClick;
+            this.ModInfo.OnDownloadClick += this.ModInfo_OnDownloadClick;
             //
             // StatusLabel
             //
@@ -475,14 +475,16 @@ namespace CKAN.GUI
             this.ManageMods.Name = "ManageMods";
             this.ManageMods.Size = new System.Drawing.Size(500, 500);
             this.ManageMods.TabIndex = 4;
-            this.ManageMods.OnSelectedModuleChanged += ManageMods_OnSelectedModuleChanged;
-            this.ManageMods.OnChangeSetChanged += ManageMods_OnChangeSetChanged;
-            this.ManageMods.OnRegistryChanged += ManageMods_OnRegistryChanged;
-            this.ManageMods.LabelsAfterUpdate += ManageMods_LabelsAfterUpdate;
-            this.ManageMods.StartChangeSet += ManageMods_StartChangeSet;
-            this.ManageMods.RaiseMessage += ManageMods_RaiseMessage;
-            this.ManageMods.RaiseError += ManageMods_RaiseError;
-            this.ManageMods.ClearStatusBar += ManageMods_ClearStatusBar;
+            this.ManageMods.OnSelectedModuleChanged += this.ManageMods_OnSelectedModuleChanged;
+            this.ManageMods.OnChangeSetChanged += this.ManageMods_OnChangeSetChanged;
+            this.ManageMods.OnRegistryChanged += this.ManageMods_OnRegistryChanged;
+            this.ManageMods.LabelsAfterUpdate += this.ManageMods_LabelsAfterUpdate;
+            this.ManageMods.StartChangeSet += this.ManageMods_StartChangeSet;
+            this.ManageMods.RaiseMessage += this.ManageMods_RaiseMessage;
+            this.ManageMods.RaiseError += this.ManageMods_RaiseError;
+            this.ManageMods.ClearStatusBar += this.ManageMods_ClearStatusBar;
+            this.ManageMods.LaunchGame += this.LaunchGame;
+            this.ManageMods.EditCommandLines += this.EditCommandLines;
             //
             // ChangesetTabPage
             //
@@ -505,9 +507,9 @@ namespace CKAN.GUI
             this.Changeset.Name = "Changeset";
             this.Changeset.Size = new System.Drawing.Size(500, 500);
             this.Changeset.TabIndex = 32;
-            this.Changeset.OnSelectedItemsChanged += Changeset_OnSelectedItemsChanged;
-            this.Changeset.OnConfirmChanges += Changeset_OnConfirmChanges;
-            this.Changeset.OnCancelChanges += Changeset_OnCancelChanges;
+            this.Changeset.OnSelectedItemsChanged += this.Changeset_OnSelectedItemsChanged;
+            this.Changeset.OnConfirmChanges += this.Changeset_OnConfirmChanges;
+            this.Changeset.OnCancelChanges += this.Changeset_OnCancelChanges;
             //
             // WaitTabPage
             //
@@ -530,8 +532,8 @@ namespace CKAN.GUI
             this.Wait.Name = "Wait";
             this.Wait.Size = new System.Drawing.Size(500, 500);
             this.Wait.TabIndex = 32;
-            this.Wait.OnRetry += Wait_OnRetry;
-            this.Wait.OnOk += Wait_OnOk;
+            this.Wait.OnRetry += this.Wait_OnRetry;
+            this.Wait.OnOk += this.Wait_OnOk;
             //
             // ChooseRecommendedModsTabPage
             //
@@ -578,7 +580,7 @@ namespace CKAN.GUI
             this.PlayTime.Name = "PlayTime";
             this.PlayTime.Size = new System.Drawing.Size(500, 500);
             this.PlayTime.TabIndex = 32;
-            this.PlayTime.Done += PlayTime_Done;
+            this.PlayTime.Done += this.PlayTime_Done;
             //
             // UnmanagedFilesTabPage
             //
@@ -601,7 +603,7 @@ namespace CKAN.GUI
             this.UnmanagedFiles.Name = "UnmanagedFiles";
             this.UnmanagedFiles.Size = new System.Drawing.Size(500, 500);
             this.UnmanagedFiles.TabIndex = 32;
-            this.UnmanagedFiles.Done += UnmanagedFiles_Done;
+            this.UnmanagedFiles.Done += this.UnmanagedFiles_Done;
             //
             // InstallationHistoryTabPage
             //
@@ -624,9 +626,9 @@ namespace CKAN.GUI
             this.InstallationHistory.Name = "InstallationHistory";
             this.InstallationHistory.Size = new System.Drawing.Size(500, 500);
             this.InstallationHistory.TabIndex = 32;
-            this.InstallationHistory.OnSelectedModuleChanged += InstallationHistory_OnSelectedModuleChanged;
-            this.InstallationHistory.Install += InstallationHistory_Install;
-            this.InstallationHistory.Done += InstallationHistory_Done;
+            this.InstallationHistory.OnSelectedModuleChanged += this.InstallationHistory_OnSelectedModuleChanged;
+            this.InstallationHistory.Install += this.InstallationHistory_Install;
+            this.InstallationHistory.Done += this.InstallationHistory_Done;
             //
             // ChooseProvidedModsTabPage
             //

@@ -11,6 +11,7 @@ using log4net.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using CKAN.Games;
 using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Processors;
@@ -48,7 +49,7 @@ namespace CKAN.NetKAN
                     return ExitOk;
                 }
 
-                var game = GameInstanceManager.GameByShortName(Options.Game);
+                var game = KnownGames.GameByShortName(Options.Game);
 
                 if (!string.IsNullOrEmpty(Options.ValidateCkan))
                 {

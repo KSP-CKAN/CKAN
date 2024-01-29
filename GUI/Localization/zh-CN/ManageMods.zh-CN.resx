@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="launchGameToolStripMenuItem.Text" xml:space="preserve"><value>启动游戏</value></data>
+  <data name="LaunchGameToolStripMenuItem.Text" xml:space="preserve"><value>启动游戏</value></data>
   <data name="RefreshToolButton.Text" xml:space="preserve"><value>刷新</value></data>
   <data name="UpdateAllToolButton.Text" xml:space="preserve"><value>添加可用更新</value></data>
   <data name="ApplyToolButton.Text" xml:space="preserve"><value>应用更改</value></data>

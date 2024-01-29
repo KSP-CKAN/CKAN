@@ -117,8 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve"><value>Arguments:</value></data>
-  <data name="AcceptChangesButton.Text" xml:space="preserve"><value>OK</value></data>
-  <data name="CancelChangesButton.Text" xml:space="preserve"><value>Cancel</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Command-line arguments</value></data>
+  <data name="CmdLineColumn.HeaderText" xml:space="preserve"><value>Command lines</value></data>
+  <data name="ResetToDefaultsButton.Text" xml:space="preserve"><value>&amp;Reset</value></data>
+  <data name="AddButton.Text" xml:space="preserve"><value>Add</value></data>
+  <data name="AcceptChangesButton.Text" xml:space="preserve"><value>&amp;Accept</value></data>
+  <data name="CancelChangesButton.Text" xml:space="preserve"><value>&amp;Cancel</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Game command lines</value></data>
 </root>

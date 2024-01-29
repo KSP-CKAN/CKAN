@@ -39,7 +39,7 @@ namespace CKAN.GUI
             this.ClearIcon.Image = global::CKAN.GUI.EmbeddedImages.textClear;
             this.ClearIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.ClearIcon.Size = new System.Drawing.Size(18, 18);
-            this.ClearIcon.Click += HintClearIcon_Click;
+            this.ClearIcon.Click += this.HintClearIcon_Click;
             // 
             // HintTextBox
             // 

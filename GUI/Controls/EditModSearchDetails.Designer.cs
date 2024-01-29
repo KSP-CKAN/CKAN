@@ -344,7 +344,7 @@ namespace CKAN.GUI
             // CompatibleToggle
             //
             this.CompatibleToggle.Location = new System.Drawing.Point(130, 293);
-            this.CompatibleToggle.Changed += TriStateChanged;
+            this.CompatibleToggle.Changed += this.TriStateChanged;
             //
             // InstalledLabel
             //
@@ -360,7 +360,7 @@ namespace CKAN.GUI
             // InstalledToggle
             //
             this.InstalledToggle.Location = new System.Drawing.Point(130, 319);
-            this.InstalledToggle.Changed += TriStateChanged;
+            this.InstalledToggle.Changed += this.TriStateChanged;
             //
             // CachedLabel
             //
@@ -376,7 +376,7 @@ namespace CKAN.GUI
             // CachedToggle
             //
             this.CachedToggle.Location = new System.Drawing.Point(130, 345);
-            this.CachedToggle.Changed += TriStateChanged;
+            this.CachedToggle.Changed += this.TriStateChanged;
             //
             // NewlyCompatibleLabel
             //
@@ -392,7 +392,7 @@ namespace CKAN.GUI
             // NewlyCompatibleToggle
             //
             this.NewlyCompatibleToggle.Location = new System.Drawing.Point(130, 371);
-            this.NewlyCompatibleToggle.Changed += TriStateChanged;
+            this.NewlyCompatibleToggle.Changed += this.TriStateChanged;
             //
             // UpgradeableLabel
             //
@@ -408,7 +408,7 @@ namespace CKAN.GUI
             // UpgradeableToggle
             //
             this.UpgradeableToggle.Location = new System.Drawing.Point(130, 397);
-            this.UpgradeableToggle.Changed += TriStateChanged;
+            this.UpgradeableToggle.Changed += this.TriStateChanged;
             //
             // ReplaceableLabel
             //
@@ -424,7 +424,7 @@ namespace CKAN.GUI
             // ReplaceableToggle
             //
             this.ReplaceableToggle.Location = new System.Drawing.Point(130, 423);
-            this.ReplaceableToggle.Changed += TriStateChanged;
+            this.ReplaceableToggle.Changed += this.TriStateChanged;
             //
             // EditModSearchDetails
             //

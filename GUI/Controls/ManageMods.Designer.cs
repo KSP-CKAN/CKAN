@@ -32,7 +32,9 @@ namespace CKAN.GUI
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ManageMods));
             this.ToolTip = new System.Windows.Forms.ToolTip();
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
-            this.launchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LaunchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CommandLinesToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.EditCommandLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,7 +103,7 @@ namespace CKAN.GUI
             this.menuStrip2.Dock = System.Windows.Forms.DockStyle.Top;
             this.menuStrip2.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.launchGameToolStripMenuItem,
+            this.LaunchGameToolStripMenuItem,
             this.RefreshToolButton,
             this.UpdateAllToolButton,
             this.ApplyToolButton,
@@ -117,15 +119,23 @@ namespace CKAN.GUI
             this.menuStrip2.TabIndex = 4;
             this.menuStrip2.Text = "menuStrip2";
             //
-            // launchGameToolStripMenuItem
+            // LaunchGameToolStripMenuItem
             //
-            this.launchGameToolStripMenuItem.Image = global::CKAN.GUI.EmbeddedImages.ksp;
-            this.launchGameToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.launchGameToolStripMenuItem.Name = "launchGameToolStripMenuItem";
-            this.launchGameToolStripMenuItem.Size = new System.Drawing.Size(146, 56);
-            this.launchGameToolStripMenuItem.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
-            this.launchGameToolStripMenuItem.Click += new System.EventHandler(this.launchGameToolStripMenuItem_Click);
-            resources.ApplyResources(this.launchGameToolStripMenuItem, "launchGameToolStripMenuItem");
+            this.LaunchGameToolStripMenuItem.MouseHover += new System.EventHandler(LaunchGameToolStripMenuItem_MouseHover);
+            this.LaunchGameToolStripMenuItem.Image = global::CKAN.GUI.EmbeddedImages.ksp;
+            this.LaunchGameToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.LaunchGameToolStripMenuItem.Name = "LaunchGameToolStripMenuItem";
+            this.LaunchGameToolStripMenuItem.Size = new System.Drawing.Size(146, 56);
+            this.LaunchGameToolStripMenuItem.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
+            this.LaunchGameToolStripMenuItem.Click += new System.EventHandler(this.LaunchGameToolStripMenuItem_Click);
+            resources.ApplyResources(this.LaunchGameToolStripMenuItem, "LaunchGameToolStripMenuItem");
+            //
+            // EditCommandLinesToolStripMenuItem
+            //
+            this.EditCommandLinesToolStripMenuItem.Name = "EditCommandLinesToolStripMenuItem";
+            this.EditCommandLinesToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.EditCommandLinesToolStripMenuItem.Click += new System.EventHandler(this.EditCommandLinesToolStripMenuItem_Click);
+            resources.ApplyResources(this.EditCommandLinesToolStripMenuItem, "EditCommandLinesToolStripMenuItem");
             //
             // RefreshToolButton
             //
@@ -299,9 +309,9 @@ namespace CKAN.GUI
             // EditModSearches
             //
             this.EditModSearches.Dock = System.Windows.Forms.DockStyle.Top;
-            this.EditModSearches.ApplySearches += EditModSearches_ApplySearches;
-            this.EditModSearches.SurrenderFocus += EditModSearches_SurrenderFocus;
-            this.EditModSearches.ShowError += EditModSearches_ShowError;
+            this.EditModSearches.ApplySearches += this.EditModSearches_ApplySearches;
+            this.EditModSearches.SurrenderFocus += this.EditModSearches_SurrenderFocus;
+            this.EditModSearches.ShowError += this.EditModSearches_ShowError;
             //
             // ModGrid
             //
@@ -550,8 +560,8 @@ namespace CKAN.GUI
             this.hiddenTagsLabelsLinkList.Location = new System.Drawing.Point(0, 0);
             this.hiddenTagsLabelsLinkList.Name = "hiddenTagsLabelsLinkList";
             this.hiddenTagsLabelsLinkList.Size = new System.Drawing.Size(500, 20);
-            this.hiddenTagsLabelsLinkList.TagClicked += hiddenTagsLabelsLinkList_TagClicked;
-            this.hiddenTagsLabelsLinkList.LabelClicked += hiddenTagsLabelsLinkList_LabelClicked;
+            this.hiddenTagsLabelsLinkList.TagClicked += this.hiddenTagsLabelsLinkList_TagClicked;
+            this.hiddenTagsLabelsLinkList.LabelClicked += this.hiddenTagsLabelsLinkList_LabelClicked;
             resources.ApplyResources(this.hiddenTagsLabelsLinkList, "hiddenTagsLabelsLinkList");
             //
             // ManageMods
@@ -581,7 +591,9 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.MenuStrip menuStrip2;
         private System.Windows.Forms.CheckBox InstallAllCheckbox;
-        private System.Windows.Forms.ToolStripMenuItem launchGameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LaunchGameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator CommandLinesToolStripSeparator;
+        private System.Windows.Forms.ToolStripMenuItem EditCommandLinesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RefreshToolButton;
         private System.Windows.Forms.ToolStripMenuItem UpdateAllToolButton;
         private System.Windows.Forms.ToolStripMenuItem ApplyToolButton;

@@ -1,10 +1,10 @@
 using System.IO;
+using System.Collections.Generic;
 
 using NUnit.Framework;
 
 using CKAN;
 using CKAN.GUI;
-using CKAN.Games.KerbalSpaceProgram;
 
 using Tests.Data;
 
@@ -37,7 +37,7 @@ namespace Tests.GUI
                 stream.Write("This is not a valid XML file.");
             }
 
-            Assert.Throws<Kraken>(() => GUIConfiguration.LoadOrCreateConfiguration(tempFile, new KerbalSpaceProgram()));
+            Assert.Throws<Kraken>(() => GUIConfiguration.LoadOrCreateConfiguration(tempFile, new List<string>()));
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace Tests.GUI
                 stream.Write(TestData.ConfigurationFile());
             }
 
-            var result = GUIConfiguration.LoadOrCreateConfiguration(tempFile, new KerbalSpaceProgram());
+            var result = GUIConfiguration.LoadOrCreateConfiguration(tempFile, new List<string>());
 
             Assert.IsNotNull(result);
         }

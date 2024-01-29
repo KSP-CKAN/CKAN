@@ -117,7 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="launchGameToolStripMenuItem.Text" xml:space="preserve"><value>Play</value></data>
+  <data name="LaunchGameToolStripMenuItem.Text" xml:space="preserve"><value>Play</value></data>
+  <data name="EditCommandLinesToolStripMenuItem.Text" xml:space="preserve"><value>Edit command lines...</value></data>
   <data name="RefreshToolButton.Text" xml:space="preserve"><value>Refresh</value></data>
   <data name="UpdateAllToolButton.Text" xml:space="preserve"><value>Update all</value></data>
   <data name="ApplyToolButton.Text" xml:space="preserve"><value>Apply</value></data>

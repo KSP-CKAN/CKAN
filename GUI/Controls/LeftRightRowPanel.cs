@@ -1,4 +1,5 @@
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace CKAN.GUI
 {
@@ -30,6 +31,15 @@ namespace CKAN.GUI
                 // Right align the controls on the right
                 FlowDirection = FlowDirection.RightToLeft,
             };
+
+            // Let the outer control handle horizontal padding
+            LeftPanel.Margin = new Padding(0, LeftPanel.Margin.Top,
+                                           0, LeftPanel.Margin.Bottom);
+            RightPanel.Margin = new Padding(0, RightPanel.Margin.Top,
+                                            0, RightPanel.Margin.Bottom);
+
+            // Don't overwrite graphics drawn on parent
+            BackColor = LeftPanel.BackColor = RightPanel.BackColor = Color.Transparent;
 
             AutoSize = true;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;

@@ -40,7 +40,6 @@ namespace CKAN.GUI
             mainModList = new ModList();
             mainModList.ModFiltersUpdated += UpdateFilters;
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
-            launchGameToolStripMenuItem.MouseHover += (sender, args) => launchGameToolStripMenuItem.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
             ApplyToolButton.Enabled = false;
 
@@ -60,6 +59,7 @@ namespace CKAN.GUI
                 FilterToolButton.DropDown.Renderer = new FlatToolStripRenderer();
                 FilterTagsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
                 FilterLabelsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
+                LaunchGameToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 ModListContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 ModListHeaderContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 LabelsContextMenuStrip.Renderer = new FlatToolStripRenderer();
@@ -80,6 +80,8 @@ namespace CKAN.GUI
         public event Action<string> RaiseMessage;
         public event Action<string> RaiseError;
         public event Action         ClearStatusBar;
+        public event Action<string> LaunchGame;
+        public event Action         EditCommandLines;
 
         public readonly ModList mainModList;
         private List<string> SortColumns
@@ -549,9 +551,42 @@ namespace CKAN.GUI
             mod.SetUpgradeChecked(row, UpdateCol, value);
         }
 
-        private void launchGameToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LaunchGameToolStripMenuItem_MouseHover(object sender, EventArgs e)
         {
-            Main.Instance.LaunchGame();
+            var cmdLines = Main.Instance.configuration.CommandLines;
+            LaunchGameToolStripMenuItem.Tag =
+                LaunchGameToolStripMenuItem.ToolTipText = cmdLines.First();
+            LaunchGameToolStripMenuItem.DropDownItems.Clear();
+            LaunchGameToolStripMenuItem.DropDownItems.AddRange(
+                cmdLines.Select(cmdLine => (ToolStripItem)
+                                           new ToolStripMenuItem(cmdLine, null,
+                                                                 LaunchGameToolStripMenuItem_Click)
+                                           {
+                                               Tag = cmdLine,
+                                               ShortcutKeyDisplayString = CmdLineHelp(cmdLine),
+                                           })
+                        .Append(CommandLinesToolStripSeparator)
+                        .Append(EditCommandLinesToolStripMenuItem)
+                        .ToArray());
+            LaunchGameToolStripMenuItem.ShowDropDown();
+        }
+
+        private string CmdLineHelp(string cmdLine)
+            => Main.Instance.Manager.SteamLibrary.Games.Length > 0
+                ? cmdLine.StartsWith("steam://", StringComparison.InvariantCultureIgnoreCase)
+                    ? Properties.Resources.ManageModsSteamPlayTimeYesTooltip
+                    : Properties.Resources.ManageModsSteamPlayTimeNoTooltip
+                : "";
+
+        private void LaunchGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var menuItem = sender as ToolStripMenuItem;
+            LaunchGame?.Invoke(menuItem?.Tag as string);
+        }
+
+        private void EditCommandLinesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditCommandLines?.Invoke();
         }
 
         private void NavBackwardToolButton_Click(object sender, EventArgs e)
@@ -1156,15 +1191,15 @@ namespace CKAN.GUI
             GUIMod selected_mod = null;
             if (ModGrid.CurrentRow != null)
             {
-                selected_mod = (GUIMod) ModGrid.CurrentRow.Tag;
+                selected_mod = (GUIMod)ModGrid.CurrentRow.Tag;
             }
 
-            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
+            var inst = Main.Instance.CurrentInstance;
+            var registry = RegistryManager.Instance(inst, repoData).registry;
             ModGrid.Rows.Clear();
-            var instName = Main.Instance.CurrentInstance.Name;
-            var instGame = Main.Instance.CurrentInstance.game;
             rows.AsParallel().ForAll(row =>
-                row.Visible = mainModList.IsVisible((GUIMod)row.Tag, instName, instGame, registry));
+                row.Visible = mainModList.IsVisible((GUIMod)row.Tag,
+                                                    inst.Name, inst.game, registry));
             ApplyHeaderGlyphs();
             ModGrid.Rows.AddRange(Sort(rows.Where(row => row.Visible)).ToArray());
 
@@ -1740,6 +1775,7 @@ namespace CKAN.GUI
         {
             Conflicts = null;
             ChangeSet = null;
+            ModGrid.CurrentCell = null;
         }
 
         [ForbidGUICalls]

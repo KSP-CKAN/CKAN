@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace CKAN.Extensions
 {
@@ -215,6 +216,16 @@ namespace CKAN.Extensions
             key = kvp.Key;
             val = kvp.Value;
         }
+
+        /// <summary>
+        /// Try matching a regex against a series of strings and return the Match objects
+        /// </summary>
+        /// <param name="source">Sequence of strings to scan</param>
+        /// <param name="pattern">Pattern to match</param>
+        /// <returns>Sequence of Match objects</returns>
+        public static IEnumerable<Match> WithMatches(this IEnumerable<string> source, Regex pattern)
+            => source.Select(val => pattern.TryMatch(val, out Match match) ? match : null)
+                     .Where(m => m != null);
 
     }
 

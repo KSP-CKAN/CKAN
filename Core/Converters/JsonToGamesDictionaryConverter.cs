@@ -4,6 +4,8 @@ using System.Collections;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using CKAN.Games;
+
 namespace CKAN
 {
     /// <summary>
@@ -59,7 +61,7 @@ namespace CKAN
             var obj = (IDictionary)Activator.CreateInstance(objectType);
             if (!IsTokenEmpty(token))
             {
-                foreach (var gameName in GameInstanceManager.AllGameShortNames())
+                foreach (var gameName in KnownGames.AllGameShortNames())
                 {
                     // Make a new copy of the value for each game
                     obj.Add(gameName, token.ToObject(valueType));

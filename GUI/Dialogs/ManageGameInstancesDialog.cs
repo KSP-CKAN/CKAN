@@ -61,7 +61,7 @@ namespace CKAN.GUI
 
             if (!_manager.Instances.Any())
             {
-                _manager.FindAndRegisterDefaultInstance();
+                _manager.FindAndRegisterDefaultInstances();
             }
 
             // Set the renderer for the AddNewMenu
@@ -193,6 +193,20 @@ namespace CKAN.GUI
             {
                 _user.RaiseError(exc.Message);
             }
+        }
+
+        private void ImportFromSteamMenuItem_Click(object sender, EventArgs e)
+        {
+            var currentDirs = _manager.Instances.Values
+                                                .Select(inst => inst.GameDir())
+                                                .ToHashSet();
+            var toAdd = _manager.FindDefaultInstances()
+                                .Where(inst => !currentDirs.Contains(inst.GameDir()));
+            foreach (var inst in toAdd)
+            {
+                _manager.AddInstance(inst);
+            }
+            UpdateInstancesList();
         }
 
         private void CloneGameInstanceMenuItem_Click(object sender, EventArgs e)
@@ -343,6 +357,7 @@ namespace CKAN.GUI
         {
             RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = CloneGameInstanceMenuItem.Enabled = HasSelections;
             ForgetButton.Enabled = HasSelections && (string)GameInstancesListView.SelectedItems[0].Tag != _manager.CurrentInstance?.Name;
+            ImportFromSteamMenuItem.Enabled = _manager.SteamLibrary.Games.Length > 0;
         }
     }
 }

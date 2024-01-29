@@ -12,7 +12,6 @@ using CKAN.Versioning;
 using CKAN.Configuration;
 using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram;
-using CKAN.Games.KerbalSpaceProgram2;
 using CKAN.Extensions;
 using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 
@@ -23,12 +22,6 @@ namespace CKAN
     /// </summary>
     public class GameInstanceManager : IDisposable
     {
-        private static readonly IGame[] knownGames = new IGame[]
-        {
-            new KerbalSpaceProgram(),
-            new KerbalSpaceProgram2(),
-        };
-
         /// <summary>
         /// An IUser object for user interaction.
         /// It is initialized during the startup with a ConsoleUser,
@@ -40,11 +33,13 @@ namespace CKAN
 
         public NetModuleCache Cache { get; private set; }
 
+        public readonly SteamLibrary SteamLibrary = new SteamLibrary();
+
         private static readonly ILog log = LogManager.GetLogger(typeof (GameInstanceManager));
 
         private readonly SortedList<string, GameInstance> instances = new SortedList<string, GameInstance>();
 
-        public string[] AllInstanceAnchorFiles => knownGames
+        public string[] AllInstanceAnchorFiles => KnownGames.knownGames
             .SelectMany(g => g.InstanceAnchorFiles)
             .Distinct()
             .ToArray();
@@ -98,7 +93,7 @@ namespace CKAN
         // Actual worker for GetPreferredInstance()
         internal GameInstance _GetPreferredInstance()
         {
-            foreach (IGame game in knownGames)
+            foreach (IGame game in KnownGames.knownGames)
             {
                 // TODO: Check which ones match, prompt user if >1
 
@@ -135,7 +130,7 @@ namespace CKAN
             // If we know of no instances, try to find one.
             // Otherwise, we know of too many instances!
             // We don't know which one to pick, so we return null.
-            return !instances.Any() ? FindAndRegisterDefaultInstance() : null;
+            return !instances.Any() ? FindAndRegisterDefaultInstances() : null;
         }
 
         /// <summary>
@@ -145,35 +140,58 @@ namespace CKAN
         ///
         /// Returns the resulting game instance if found.
         /// </summary>
-        public GameInstance FindAndRegisterDefaultInstance()
+        public GameInstance FindAndRegisterDefaultInstances()
         {
             if (instances.Any())
             {
                 throw new KSPManagerKraken("Attempted to scan for defaults with instances");
             }
-            GameInstance val = null;
-            foreach (IGame game in knownGames)
+            var found = FindDefaultInstances();
+            foreach (var inst in found)
             {
-                try
+                log.DebugFormat("Registering {0} at {1}...",
+                                inst.Name, inst.GameDir());
+                AddInstance(inst);
+            }
+            return found.FirstOrDefault();
+        }
+
+        public GameInstance[] FindDefaultInstances()
+        {
+            var found = KnownGames.knownGames.SelectMany(g =>
+                            SteamLibrary.Games
+                                        .Select(sg => new { name = sg.Name, dir = sg.GameDir })
+                                        .Append(new
+                                                {
+                                                    name = string.Format(Properties.Resources.GameInstanceManagerAuto,
+                                                                         g.ShortName),
+                                                    dir  = g.MacPath(),
+                                                })
+                                        .Where(obj => obj.dir != null && g.GameInFolder(obj.dir))
+                                        .Select(obj => new GameInstance(g, obj.dir.FullName, obj.name, User)))
+                                  .Where(inst => inst.Valid)
+                                  .ToArray();
+            foreach (var group in found.GroupBy(inst => inst.Name))
+            {
+                if (group.Count() > 1)
                 {
-                    string gamedir = GameInstance.FindGameDir(game);
-                    GameInstance foundInst = new GameInstance(
-                        game, gamedir, string.Format(Properties.Resources.GameInstanceManagerAuto, game.ShortName), User);
-                    if (foundInst.Valid)
+                    // Make sure the names are unique
+                    int index = 0;
+                    foreach (var inst in group)
                     {
-                        var inst = AddInstance(foundInst);
-                        val = val ?? inst;
+                        // Find an unused name
+                        string name;
+                        do
+                        {
+                            ++index;
+                            name = $"{group.Key} ({++index})";
+                        }
+                        while (found.Any(other => other.Name == name));
+                        inst.Name = name;
                     }
                 }
-                catch (DirectoryNotFoundException)
-                {
-                    // Thrown if no folder found for a game
-                }
-                catch (NotKSPDirKraken)
-                {
-                }
             }
-            return val;
+            return found;
         }
 
         /// <summary>
@@ -429,7 +447,7 @@ namespace CKAN
 
         public void SetCurrentInstanceByPath(string path)
         {
-            var matchingGames = knownGames
+            var matchingGames = KnownGames.knownGames
                 .Where(g => g.GameInFolder(new DirectoryInfo(path)))
                 .ToList();
             switch (matchingGames.Count)
@@ -458,7 +476,7 @@ namespace CKAN
 
         public GameInstance InstanceAt(string path)
         {
-            var matchingGames = knownGames
+            var matchingGames = KnownGames.knownGames
                 .Where(g => g.GameInFolder(new DirectoryInfo(path)))
                 .ToList();
             switch (matchingGames.Count)
@@ -514,8 +532,8 @@ namespace CKAN
                 var gameName = instance.Item3;
                 try
                 {
-                    var game = knownGames.FirstOrDefault(g => g.ShortName == gameName)
-                        ?? knownGames[0];
+                    var game = KnownGames.knownGames.FirstOrDefault(g => g.ShortName == gameName)
+                        ?? KnownGames.knownGames[0];
                     log.DebugFormat("Loading {0} from {1}", name, path);
                     // Add unconditionally, sort out invalid instances downstream
                     instances.Add(name, new GameInstance(game, path, name, User));
@@ -614,7 +632,7 @@ namespace CKAN
         }
 
         public static bool IsGameInstanceDir(DirectoryInfo path)
-            => knownGames.Any(g => g.GameInFolder(path));
+            => KnownGames.knownGames.Any(g => g.GameInFolder(path));
 
         /// <summary>
         /// Tries to determine the game that is installed at the given path
@@ -625,7 +643,7 @@ namespace CKAN
         /// <exception cref="NotKSPDirKraken">Thrown when no games found</exception>
         public IGame DetermineGame(DirectoryInfo path, IUser user)
         {
-            var matchingGames = knownGames.Where(g => g.GameInFolder(path)).ToList();
+            var matchingGames = KnownGames.knownGames.Where(g => g.GameInFolder(path)).ToList();
             switch (matchingGames.Count)
             {
                 case 0:
@@ -642,21 +660,5 @@ namespace CKAN
                     return selection >= 0 ? matchingGames[selection] : null;
             }
         }
-
-        /// <summary>
-        /// Return a game object based on its short name
-        /// </summary>
-        /// <param name="shortName">The short name to find</param>
-        /// <returns>A game object or null if none found</returns>
-        public static IGame GameByShortName(string shortName)
-            => knownGames.FirstOrDefault(g => g.ShortName == shortName);
-
-        /// <summary>
-        /// Return the short names of all known games
-        /// </summary>
-        /// <returns>Sequence of short name strings</returns>
-        public static IEnumerable<string> AllGameShortNames()
-            => knownGames.Select(g => g.ShortName);
-
     }
 }

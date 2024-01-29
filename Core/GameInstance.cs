@@ -33,6 +33,7 @@ namespace CKAN
         public TimeLog playTime;
 
         public string Name { get; set; }
+
         /// <summary>
         /// Returns a file system safe version of the instance name that can be used within file names.
         /// </summary>
@@ -238,44 +239,6 @@ namespace CKAN
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Attempts to automatically find a KSP install on this system.
-        /// Returns the path to the install on success.
-        /// Throws a DirectoryNotFoundException on failure.
-        /// </summary>
-        public static string FindGameDir(IGame game)
-        {
-            // See if we can find KSP as part of a Steam install.
-            string gameSteamPath = game.SteamPath();
-            if (gameSteamPath != null)
-            {
-                if (game.GameInFolder(new DirectoryInfo(gameSteamPath)))
-                {
-                    return gameSteamPath;
-                }
-
-                log.DebugFormat("Have Steam, but {0} is not at \"{1}\".",
-                    game.ShortName, gameSteamPath);
-            }
-
-            // See if we can find a non-Steam Mac KSP install
-            string kspMacPath = game.MacPath();
-            if (kspMacPath != null)
-            {
-                if (game.GameInFolder(new DirectoryInfo(kspMacPath)))
-                {
-                    log.InfoFormat("Found a {0} install at {1}",
-                        game.ShortName, kspMacPath);
-                    return kspMacPath;
-                }
-                log.DebugFormat("Default Mac {0} folder exists at \"{1}\", but {0} is not installed there.",
-                    game.ShortName, kspMacPath);
-            }
-
-            // Oh noes! We can't find KSP!
-            throw new DirectoryNotFoundException();
         }
 
         /// <summary>

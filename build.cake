@@ -16,6 +16,8 @@ var solution = Argument<string>("solution", "CKAN.sln");
 
 var rootDirectory = Context.Environment.WorkingDirectory;
 var buildDirectory = rootDirectory.Combine("_build");
+var nugetDirectory = buildDirectory.Combine("lib")
+                                   .Combine("nuget");
 var outDirectory = buildDirectory.Combine("out");
 var repackDirectory = buildDirectory.Combine("repack");
 var ckanFile = repackDirectory.Combine(configuration)
@@ -188,8 +190,6 @@ Task("Restore")
     .Description("Intermediate - Download dependencies")
     .Does(() =>
     {
-        var nugetDirectory = buildDirectory.Combine("lib")
-                                           .Combine("nuget");
         if (IsRunningOnWindows())
         {
             DotNetRestore(solution, new DotNetRestoreSettings
@@ -305,7 +305,8 @@ Task("Repack-Ckan")
         assemblyPaths,
         new ILRepackSettings
         {
-            Libs           = new List<DirectoryPath> { cmdLineBinDirectory.FullPath },
+            Libs           = new List<DirectoryPath> { cmdLineBinDirectory,
+                                                       netstandardRefDirectory() },
             TargetPlatform = TargetPlatformVersion.v4,
             Parallel       = true,
             Verbose        = false,
@@ -329,7 +330,7 @@ Task("Repack-Ckan")
                                autoupdateBinDirectory)),
         new ILRepackSettings
         {
-            Libs           = new List<DirectoryPath> { autoupdateBinDirectory.FullPath },
+            Libs           = new List<DirectoryPath> { autoupdateBinDirectory },
             TargetPlatform = TargetPlatformVersion.v4,
             Parallel       = true,
             Verbose        = false,
@@ -352,15 +353,16 @@ Task("Repack-Netkan")
                                          .Combine(buildNetFramework);
     var netkanLogFile = repackDirectory.Combine(configuration)
                                        .CombineWithFilePath($"netkan.log");
+    var assemblyPaths = GetFiles(string.Format("{0}/*.dll", netkanBinDirectory));
     ReportRepacking(netkanFile, netkanLogFile);
     ILRepack(
         netkanFile,
         netkanBinDirectory.CombineWithFilePath("CKAN-NetKAN.exe"),
-        GetFiles(string.Format("{0}/*.dll",
-                 netkanBinDirectory)),
+        assemblyPaths,
         new ILRepackSettings
         {
-            Libs           = new List<DirectoryPath> { netkanBinDirectory.FullPath },
+            Libs           = new List<DirectoryPath> { netkanBinDirectory,
+                                                       netstandardRefDirectory() },
             TargetPlatform = TargetPlatformVersion.v4,
             Parallel       = true,
             Verbose        = false,
@@ -519,6 +521,23 @@ Teardown(context =>
 });
 
 RunTarget(target);
+
+private DirectoryPath netstandardRefDirectory()
+{
+    // We need to tell ILRepack where to find netstandard.dll (on Linux),
+    // which doesn't get copied to the output folder
+    var netstandardDirectory = nugetDirectory.Combine("netstandard.library");
+    var netstandardVersion = System.IO.Directory
+                                      .EnumerateDirectories(netstandardDirectory.ToString())
+                                      .Select(p => System.IO.Path.GetFileName(p))
+                                      .OrderBy(p => ParseSemVer(p))
+                                      .Last();
+    return netstandardDirectory.Combine(netstandardVersion)
+                               .Combine("build")
+                               .Combine("netstandard2.0")
+                               .Combine("ref");
+}
+
 
 private Semver.SemVersion GetVersion()
 {

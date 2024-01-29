@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 using log4net;
@@ -19,48 +18,6 @@ namespace CKAN
             Meta.GetProductName());
 
         private static readonly ILog log = LogManager.GetLogger(typeof(CKANPathUtils));
-
-        /// <summary>
-        /// Finds Steam on the current machine.
-        /// </summary>
-        /// <returns>The path to Steam, or null if not found</returns>
-        public static string SteamPath()
-        {
-            foreach (var steam in SteamPaths.Where(p => !string.IsNullOrEmpty(p)))
-            {
-                log.DebugFormat("Looking for Steam in {0}", steam);
-                if (Directory.Exists(steam))
-                {
-                    log.InfoFormat("Found Steam at {0}", steam);
-                    return steam;
-                }
-            }
-            log.Info("Steam not found on this system.");
-            return null;
-        }
-
-        private const string steamRegKey   = @"HKEY_CURRENT_USER\Software\Valve\Steam";
-        private const string steamRegValue = @"SteamPath";
-
-        private static string[] SteamPaths
-            => Platform.IsWindows ? new string[]
-            {
-                // First check the registry
-                (string)Microsoft.Win32.Registry.GetValue(steamRegKey, steamRegValue, null),
-            }
-            : Platform.IsUnix ? new string[]
-            {
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                             ".local", "share", "Steam"),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                             ".steam", "steam"),
-            }
-            : Platform.IsMac ? new string[]
-            {
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                             "Library", "Application Support", "Steam"),
-            }
-            : Array.Empty<string>();
 
         /// <summary>
         /// Normalizes the path by replacing all \ with / and removing any trailing slash.

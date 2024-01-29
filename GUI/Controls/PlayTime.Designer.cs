@@ -80,7 +80,7 @@ namespace CKAN.GUI
             this.PlayTimeGrid.Size = new System.Drawing.Size(1536, 837);
             this.PlayTimeGrid.StandardTab = false;
             this.PlayTimeGrid.TabIndex = 1;
-            this.PlayTimeGrid.CellValueChanged += PlayTimeGrid_CellValueChanged;
+            this.PlayTimeGrid.CellValueChanged += this.PlayTimeGrid_CellValueChanged;
             // 
             // NameColumn
             // 
