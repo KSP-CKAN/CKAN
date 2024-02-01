@@ -254,11 +254,15 @@ namespace CKAN.CmdLine
         /// <param name="percent">Progress in percent</param>
         public void RaiseProgress(string message, int percent)
         {
-            // The percent looks weird on non-download messages.
-            // The leading newline makes sure we don't end up with a mess from previous
-            // download messages.
-            GoToStartOfLine();
-            Console.Write("{0}", message);
+            if (message != lastProgressMessage)
+            {
+                // The percent looks weird on non-download messages.
+                // The leading newline makes sure we don't end up with a mess from previous
+                // download messages.
+                GoToStartOfLine();
+                Console.Write("{0}", message);
+                lastProgressMessage = message;
+            }
 
             // This message leaves the cursor at the end of a line of text
             atStartOfLine = false;
@@ -285,6 +289,8 @@ namespace CKAN.CmdLine
         /// Needed for <see cref="RaiseProgress(string, int)"/>
         /// </summary>
         private int previousPercent = -1;
+
+        private string lastProgressMessage = null;
 
         /// <summary>
         /// Writes a message to the console

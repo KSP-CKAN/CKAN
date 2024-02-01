@@ -27,6 +27,7 @@
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NJsonSchema" Version="10.9.0" />
+    <PackageReference Include="ValveKeyValue" Version="0.3.1.152" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <PackageReference Include="ChinhDo.Transactions.FileManager" Version="1.2.0" />

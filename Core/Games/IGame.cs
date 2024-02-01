@@ -13,13 +13,12 @@ namespace CKAN.Games
     {
         // Identification, used for display and saved/loaded in settings JSON
         // Must be unique!
-        string ShortName { get; }
+        string   ShortName        { get; }
         DateTime FirstReleaseDate { get; }
 
         // Where are we?
-        bool   GameInFolder(DirectoryInfo where);
-        string SteamPath();
-        string MacPath();
+        bool          GameInFolder(DirectoryInfo where);
+        DirectoryInfo MacPath();
 
         // What do we contain?
         string         PrimaryModDirectoryRelative     { get; }
@@ -32,7 +31,7 @@ namespace CKAN.Games
         bool           IsReservedDirectory(GameInstance inst, string path);
         bool           AllowInstallationIn(string name, out string path);
         void           RebuildSubdirectories(string absGameRoot);
-        string         DefaultCommandLine(string path);
+        string[]       DefaultCommandLines(SteamLibrary steamLib, DirectoryInfo path);
         string[]       AdjustCommandLine(string[] args, GameVersion installedVersion);
         IDlcDetector[] DlcDetectors { get; }
 

@@ -172,6 +172,7 @@ namespace CKAN.GUI
 
             // We need a config object to get the window geometry, but we don't need the registry lock yet
             configuration = GUIConfigForInstance(
+                Manager.SteamLibrary,
                 // Find the most recently used instance if no default instance
                 CurrentInstance ?? InstanceWithNewestGUIConfig(Manager.Instances.Values));
 
@@ -203,10 +204,13 @@ namespace CKAN.GUI
         private static string GUIConfigPath(GameInstance inst)
             => Path.Combine(inst.CkanDir(), GUIConfigFilename);
 
-        private static GUIConfiguration GUIConfigForInstance(GameInstance inst)
+        private static GUIConfiguration GUIConfigForInstance(SteamLibrary steamLib, GameInstance inst)
             => inst == null ? new GUIConfiguration()
-                            : GUIConfiguration.LoadOrCreateConfiguration(GUIConfigPath(inst),
-                                                                         inst.game);
+                            : GUIConfiguration.LoadOrCreateConfiguration(
+                                GUIConfigPath(inst),
+                                inst.game.DefaultCommandLines(steamLib,
+                                                              new DirectoryInfo(inst.GameDir()))
+                                         .ToList());
 
         private static GameInstance InstanceWithNewestGUIConfig(IEnumerable<GameInstance> instances)
             => instances.Where(inst => inst.Valid)
@@ -409,7 +413,7 @@ namespace CKAN.GUI
             }
 
             configuration?.Save();
-            configuration = GUIConfigForInstance(CurrentInstance);
+            configuration = GUIConfigForInstance(Manager.SteamLibrary, CurrentInstance);
 
             AutoUpdatePrompts(ServiceLocator.Container
                                             .Resolve<IConfiguration>(),
@@ -427,6 +431,7 @@ namespace CKAN.GUI
 
             CurrentInstance.game.RebuildSubdirectories(CurrentInstance.GameDir());
 
+            ManageMods.InstanceUpdated();
             bool repoUpdateNeeded = configuration.RefreshOnStartup;
             if (!autoUpdating)
             {
@@ -441,7 +446,6 @@ namespace CKAN.GUI
                     RefreshModList(registry.Repositories.Count > 0);
                 }
             }
-            ManageMods.InstanceUpdated();
         }
 
         /// <summary>
@@ -608,10 +612,17 @@ namespace CKAN.GUI
 
         private void GameCommandlineToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            EditCommandLines();
+        }
+
+        private void EditCommandLines()
+        {
             var dialog = new GameCommandLineOptionsDialog();
-            if (dialog.ShowGameCommandLineOptionsDialog(configuration.CommandLineArguments) == DialogResult.OK)
+            var defaults = CurrentInstance.game.DefaultCommandLines(Manager.SteamLibrary,
+                                                                    new DirectoryInfo(CurrentInstance.GameDir()));
+            if (dialog.ShowGameCommandLineOptionsDialog(this, configuration.CommandLines, defaults) == DialogResult.OK)
             {
-                configuration.CommandLineArguments = dialog.GetResult();
+                configuration.CommandLines = dialog.Results;
             }
         }
 
@@ -921,12 +932,12 @@ namespace CKAN.GUI
 
         private void openGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LaunchGame();
+            LaunchGame(configuration.CommandLines.First());
         }
 
-        public void LaunchGame()
+        private void LaunchGame(string command)
         {
-            var split = configuration.CommandLineArguments.Split(' ');
+            var split = command.Split(' ');
             if (split.Length == 0)
             {
                 return;

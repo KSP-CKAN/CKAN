@@ -558,7 +558,7 @@ namespace CKAN.CmdLine
             string path = options.path;
             GameVersion version;
             bool setDefault = options.setDefault;
-            IGame game = GameInstanceManager.GameByShortName(options.gameId);
+            IGame game = KnownGames.GameByShortName(options.gameId);
             if (game == null)
             {
                 User.RaiseMessage(Properties.Resources.InstanceFakeBadGame, options.gameId);

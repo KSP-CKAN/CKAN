@@ -89,8 +89,8 @@ namespace CKAN.GUI
             this.tagsLabelsLinkList.Location = new System.Drawing.Point(0, 0);
             this.tagsLabelsLinkList.Name = "tagsLabelsLinkList";
             this.tagsLabelsLinkList.Size = new System.Drawing.Size(500, 20);
-            this.tagsLabelsLinkList.TagClicked += tagsLabelsLinkList_TagClicked;
-            this.tagsLabelsLinkList.LabelClicked += tagsLabelsLinkList_LabelClicked;
+            this.tagsLabelsLinkList.TagClicked += this.tagsLabelsLinkList_TagClicked;
+            this.tagsLabelsLinkList.LabelClicked += this.tagsLabelsLinkList_LabelClicked;
             //
             // MetadataModuleAbstractLabel
             //
@@ -153,7 +153,7 @@ namespace CKAN.GUI
             this.Metadata.Margin = new System.Windows.Forms.Padding(2);
             this.Metadata.Name = "Metadata";
             this.Metadata.TabIndex = 6;
-            this.Metadata.OnChangeFilter += Metadata_OnChangeFilter;
+            this.Metadata.OnChangeFilter += this.Metadata_OnChangeFilter;
             //
             // RelationshipTabPage
             //

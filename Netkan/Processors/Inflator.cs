@@ -20,7 +20,6 @@ namespace CKAN.NetKAN.Processors
         {
             log.Debug("Initializing inflator");
             cache = FindCache(
-                new GameInstanceManager(new ConsoleUser(false)),
                 ServiceLocator.Container.Resolve<IConfiguration>(),
                 cacheDir);
 
@@ -80,7 +79,7 @@ namespace CKAN.NetKAN.Processors
             ckanValidator.Validate(ckan);
         }
 
-        private static NetFileCache FindCache(GameInstanceManager kspManager, IConfiguration cfg, string cacheDir)
+        private static NetFileCache FindCache(IConfiguration cfg, string cacheDir)
         {
             if (cacheDir != null)
             {
@@ -92,7 +91,7 @@ namespace CKAN.NetKAN.Processors
             {
                 log.InfoFormat("Using main CKAN meta-cache at {0}", cfg.DownloadCacheDir);
                 // Create a new file cache in the same location so NetKAN can download pure URLs not sourced from CkanModules
-                return new NetFileCache(kspManager, cfg.DownloadCacheDir);
+                return new NetFileCache(null, cfg.DownloadCacheDir);
             }
             catch
             {

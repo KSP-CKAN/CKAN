@@ -1,19 +1,21 @@
 using System;
 using System.Xml;
 using System.Collections.Generic;
+using System.Linq;
 using System.Drawing;
 using System.IO;
 using System.Xml.Serialization;
-
-using CKAN.Games;
 
 namespace CKAN.GUI
 {
     [XmlRoot("Configuration")]
     public class GUIConfiguration
     {
-        public string CommandLineArguments = "";
-        public bool AutoCloseWaitDialog = false;
+        public string CommandLineArguments = null;
+
+        [XmlArray, XmlArrayItem(ElementName = "CommandLine")]
+        public List<string> CommandLines = new List<string>();
+
         public bool URLHandlerNoNag = false;
 
         public bool CheckForUpdatesOnLaunch = false;
@@ -25,7 +27,8 @@ namespace CKAN.GUI
         public bool HideEpochs = true;
         public bool HideV = false;
 
-        public bool RefreshOnStartup = true; // Defaults to true, so everyone is forced to refresh on first start
+        // Defaults to true, so everyone is forced to refresh on first start
+        public bool RefreshOnStartup = true;
         public bool RefreshOnStartupNoNag = false;
         public bool RefreshPaused = false;
 
@@ -107,25 +110,27 @@ namespace CKAN.GUI
             }
         }
 
-        public static GUIConfiguration LoadOrCreateConfiguration(string path, IGame game)
+        public static GUIConfiguration LoadOrCreateConfiguration(string       path,
+                                                                 List<string> defaultCommandLines)
         {
             if (!File.Exists(path) || new FileInfo(path).Length == 0)
             {
                 var configuration = new GUIConfiguration
                 {
-                    path = path,
-                    CommandLineArguments = game.DefaultCommandLine(path),
+                    path         = path,
+                    CommandLines = defaultCommandLines,
                 };
 
                 SaveConfiguration(configuration);
             }
 
-            return LoadConfiguration(path);
+            return LoadConfiguration(path, defaultCommandLines);
         }
 
-        private static GUIConfiguration LoadConfiguration(string path)
+        private static GUIConfiguration LoadConfiguration(string       path,
+                                                          List<string> defaultCommandLines)
         {
-            var serializer = new XmlSerializer(typeof (GUIConfiguration));
+            var serializer = new XmlSerializer(typeof(GUIConfiguration));
 
             GUIConfiguration configuration;
             using (var stream = new StreamReader(path))
@@ -163,7 +168,7 @@ namespace CKAN.GUI
             }
 
             configuration.path = path;
-            if (DeserializationFixes(configuration))
+            if (DeserializationFixes(configuration, defaultCommandLines))
             {
                 SaveConfiguration(configuration);
             }
@@ -175,7 +180,8 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="configuration">The current configuration to apply the fixes on</param>
         /// <returns>A bool indicating whether something changed and the configuration should be saved to disk</returns>
-        private static bool DeserializationFixes(GUIConfiguration configuration)
+        private static bool DeserializationFixes(GUIConfiguration configuration,
+                                                 List<string>     defaultCommandLines)
         {
             bool needsSave = false;
 
@@ -186,6 +192,16 @@ namespace CKAN.GUI
             // SizeCol column got renamed to DownloadSize
             needsSave = FixColumnName(configuration.SortColumns,       "SizeCol", "DownloadSize") || needsSave;
             needsSave = FixColumnName(configuration.HiddenColumnNames, "SizeCol", "DownloadSize") || needsSave;
+
+            if (!string.IsNullOrEmpty(configuration.CommandLineArguments))
+            {
+                configuration.CommandLines.AddRange(
+                    Enumerable.Repeat(configuration.CommandLineArguments, 1)
+                              .Concat(defaultCommandLines)
+                              .Distinct());
+                configuration.CommandLineArguments = null;
+                needsSave = true;
+            }
 
             return needsSave;
         }

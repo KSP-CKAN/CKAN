@@ -115,6 +115,8 @@
   <data name="SelectButton.Text" xml:space="preserve"><value>Select</value></data>
   <data name="AddNewButton.Text" xml:space="preserve"><value>New game instance</value></data>
   <data name="AddToCKANMenuItem.Text" xml:space="preserve"><value>Add instance to CKAN</value></data>
+  <data name="ImportFromSteamMenuItem.Text" xml:space="preserve"><value>Import from Steam</value></data>
+  <data name="ImportFromSteamMenuItem.TooltipText" xml:space="preserve"><value>Scan your Steam library for recognized game directories and add them as instances</value></data>
   <data name="CloneGameInstanceMenuItem.Text" xml:space="preserve"><value>Clone instance</value></data>
   <data name="RenameButton.Text" xml:space="preserve"><value>Rename</value></data>
   <data name="SetAsDefaultCheckbox.Text" xml:space="preserve"><value>Set as default</value></data>

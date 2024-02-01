@@ -134,7 +134,7 @@
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN &amp;plugins</value></data>
   <data name="preferredHostsToolStripMenuItem.Text" xml:space="preserve"><value>Preferred &amp;hosts</value></data>
   <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve"><value>Installation &amp;filters</value></data>
-  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Game command-line</value></data>
+  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Game command lines</value></data>
   <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Compatible game versions</value></data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Help</value></data>
   <data name="userGuideToolStripMenuItem.Text" xml:space="preserve"><value>&amp;User guide</value></data>

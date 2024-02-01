@@ -24,67 +24,12 @@ namespace CKAN.Games.KerbalSpaceProgram2
                 && Directory.Exists(Path.Combine(where.FullName, "KSP2_x64_Data"));
 
         /// <summary>
-        /// Finds the Steam KSP path. Returns null if the folder cannot be located.
-        /// </summary>
-        /// <returns>The KSP path.</returns>
-        public string SteamPath()
-        {
-            // Attempt to get the Steam path.
-            string steamPath = CKANPathUtils.SteamPath();
-
-            if (steamPath == null)
-            {
-                return null;
-            }
-
-            // Default steam library
-            string installPath = GameDirectory(steamPath);
-            if (installPath != null)
-            {
-                return installPath;
-            }
-
-            // Attempt to find through config file
-            string configPath = Path.Combine(steamPath, "config", "config.vdf");
-            if (File.Exists(configPath))
-            {
-                log.InfoFormat("Found Steam config file at {0}", configPath);
-                StreamReader reader = new StreamReader(configPath);
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    // Found Steam library
-                    if (line.Contains("BaseInstallFolder"))
-                    {
-                        // This assumes config file is valid, we just skip it if it looks funny.
-                        string[] split_line = line.Split('"');
-
-                        if (split_line.Length > 3)
-                        {
-                            log.DebugFormat("Found a Steam Libary Location at {0}", split_line[3]);
-
-                            installPath = GameDirectory(split_line[3]);
-                            if (installPath != null)
-                            {
-                                log.InfoFormat("Found a KSP install at {0}", installPath);
-                                return installPath;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Could not locate the folder.
-            return null;
-        }
-
-        /// <summary>
         /// Get the default non-Steam path to KSP on macOS
         /// </summary>
         /// <returns>
         /// "/Applications/Kerbal Space Program" if it exists and we're on a Mac, else null
         /// </returns>
-        public string MacPath()
+        public DirectoryInfo MacPath()
         {
             if (Platform.IsMac)
             {
@@ -93,7 +38,8 @@ namespace CKAN.Games.KerbalSpaceProgram2
                     Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
                     "Kerbal Space Program 2"
                 );
-                return Directory.Exists(installPath) ? installPath : null;
+                return Directory.Exists(installPath) ? new DirectoryInfo(installPath)
+                                                     : null;
             }
             return null;
         }
@@ -146,14 +92,18 @@ namespace CKAN.Games.KerbalSpaceProgram2
             }
         }
 
-        public string DefaultCommandLine(string path)
-            => Platform.IsMac
-                ? "./KSP2.app/Contents/MacOS/KSP2"
-                : string.Format(Platform.IsUnix ? "./{0} -single-instance"
-                                                : "{0} -single-instance",
-                                InstanceAnchorFiles.FirstOrDefault(f =>
-                                    File.Exists(Path.Combine(path, f)))
-                                ?? InstanceAnchorFiles.First());
+        public string[] DefaultCommandLines(SteamLibrary steamLib, DirectoryInfo path)
+            => Enumerable.Repeat(Platform.IsMac
+                                     ? "./KSP2.app/Contents/MacOS/KSP2"
+                                     : string.Format(Platform.IsUnix ? "./{0} -single-instance"
+                                                                     : "{0} -single-instance",
+                                                     InstanceAnchorFiles.FirstOrDefault(f =>
+                                                         File.Exists(Path.Combine(path.FullName, f)))
+                                                     ?? InstanceAnchorFiles.First()),
+                                 1)
+                         .Concat(steamLib.GameAppURLs(path)
+                                         .Select(url => url.ToString()))
+                         .ToArray();
 
         public string[] AdjustCommandLine(string[] args, GameVersion installedVersion)
             => args;
@@ -243,28 +193,6 @@ namespace CKAN.Games.KerbalSpaceProgram2
             { "BepInEx",         "BepInEx"         },
             { "BepInEx/plugins", "BepInEx/plugins" },
         };
-
-        /// <summary>
-        /// Finds the KSP path under a Steam Library. Returns null if the folder cannot be located.
-        /// </summary>
-        /// <param name="steamPath">Steam Library Path</param>
-        /// <returns>The KSP path.</returns>
-        private static string GameDirectory(string steamPath)
-        {
-            // There are several possibilities for the path under Linux.
-            // Try with the uppercase version.
-            string installPath = Path.Combine(steamPath, "SteamApps", "common", "Kerbal Space Program 2");
-
-            if (Directory.Exists(installPath))
-            {
-                return installPath;
-            }
-
-            // Try with the lowercase version.
-            installPath = Path.Combine(steamPath, "steamapps", "common", "Kerbal Space Program 2");
-
-            return Directory.Exists(installPath) ? installPath : null;
-        }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(KerbalSpaceProgram2));
     }
