@@ -2,7 +2,7 @@
 #addin "nuget:?package=semver&version=2.3.0"
 #addin "nuget:?package=Cake.Docker&version=0.11.1"
 #addin nuget:?package=Cake.Git&version=3.0.0
-#tool "nuget:?package=ILRepack&version=2.0.18"
+#tool "nuget:?package=ILRepack&version=2.0.27"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.16.3"
 
 using System.Text.RegularExpressions;
@@ -296,6 +296,8 @@ Task("Repack-Ckan")
                     .Combine(configuration)
                     .Combine("bin")
                     .Combine(buildNetFramework))));
+    // Need netstandard.dll facade to instantiate types from ValveKeyValue on Mono
+    assemblyPaths.Add(FacadesDirectory().CombineWithFilePath("netstandard.dll"));
     var ckanLogFile = repackDirectory.Combine(configuration)
                                      .CombineWithFilePath($"ckan.log");
     ReportRepacking(ckanFile, ckanLogFile);
@@ -305,8 +307,7 @@ Task("Repack-Ckan")
         assemblyPaths,
         new ILRepackSettings
         {
-            Libs           = new List<DirectoryPath> { cmdLineBinDirectory,
-                                                       netstandardRefDirectory() },
+            Libs           = new List<DirectoryPath> { cmdLineBinDirectory },
             TargetPlatform = TargetPlatformVersion.v4,
             Parallel       = true,
             Verbose        = false,
@@ -361,8 +362,7 @@ Task("Repack-Netkan")
         assemblyPaths,
         new ILRepackSettings
         {
-            Libs           = new List<DirectoryPath> { netkanBinDirectory,
-                                                       netstandardRefDirectory() },
+            Libs           = new List<DirectoryPath> { netkanBinDirectory },
             TargetPlatform = TargetPlatformVersion.v4,
             Parallel       = true,
             Verbose        = false,
@@ -522,22 +522,19 @@ Teardown(context =>
 
 RunTarget(target);
 
-private DirectoryPath netstandardRefDirectory()
-{
-    // We need to tell ILRepack where to find netstandard.dll (on Linux),
-    // which doesn't get copied to the output folder
-    var netstandardDirectory = nugetDirectory.Combine("netstandard.library");
-    var netstandardVersion = System.IO.Directory
-                                      .EnumerateDirectories(netstandardDirectory.ToString())
-                                      .Select(p => System.IO.Path.GetFileName(p))
-                                      .OrderBy(p => ParseSemVer(p))
-                                      .Last();
-    return netstandardDirectory.Combine(netstandardVersion)
-                               .Combine("build")
-                               .Combine("netstandard2.0")
-                               .Combine("ref");
-}
-
+private DirectoryPath FacadesDirectory()
+    => IsRunningOnWindows()
+        ? Context.Environment.GetSpecialPath(SpecialPath.ProgramFilesX86)
+                             .Combine("Reference Assemblies")
+                             .Combine("Microsoft")
+                             .Combine("Framework")
+                             .Combine(".NETFramework")
+                             .Combine("v4.8")
+                             .Combine("Facades")
+        : new DirectoryPath("/usr").Combine("lib")
+                                   .Combine("mono")
+                                   .Combine("4.8-api")
+                                   .Combine("Facades");
 
 private Semver.SemVersion GetVersion()
 {
