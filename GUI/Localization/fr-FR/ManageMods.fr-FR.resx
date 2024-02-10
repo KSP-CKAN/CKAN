@@ -117,14 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LaunchGameToolStripMenuItem.Text" xml:space="preserve">
-    <value>Lancer le Jeu</value>
+  <data name="launchGameToolStripMenuItem.Text" xml:space="preserve">
+    <value>Jouer</value>
   </data>
   <data name="RefreshToolButton.Text" xml:space="preserve">
     <value>Rafraîchir</value>
   </data>
   <data name="UpdateAllToolButton.Text" xml:space="preserve">
-    <value>Ajouter les mises à jour disponibles</value>
+    <value>Tout mettre à jour</value>
   </data>
   <data name="ApplyToolButton.Text" xml:space="preserve">
     <value>Appliquer les changements</value>
@@ -173,6 +173,9 @@
   </data>
   <data name="NavForwardToolButton.ToolTipText" xml:space="preserve">
     <value>Mod sélectionné suivant...</value>
+  </data>
+  <data name="hiddenTagsLabelsLinkList.TagToolTipText" xml:space="preserve">
+    <value>Cliquez pour afficher ou masquer les étiquettes</value>
   </data>
   <data name="Installed.HeaderText" xml:space="preserve">
     <value>Installé</value>
@@ -233,5 +236,8 @@
   </data>
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
     <value>Modifier les labels...</value>
+  </data>
+  <data name="RefreshToolButton.ToolTipText" xml:space="preserve">
+    <value>Ctrl-clic ou Maj-clic pour re-télécharger les métadonnées, même si elles sont identiques</value>
   </data>
 </root>
