@@ -130,14 +130,13 @@
     <value>Adresse invalide dans l'en-tête d'emplacement : {0}</value>
   </data>
   <data name="NetAsyncDownloaderDownloading" xml:space="preserve">
-    <value>Téléchargement de "{0}"</value>
+    <value>Téléchargement de {0} ...</value>
   </data>
   <data name="NetAsyncDownloaderCancelled" xml:space="preserve">
     <value>Téléchargement annulé par l'utilisateur</value>
   </data>
   <data name="NetAsyncDownloaderProgress" xml:space="preserve">
     <value>{0}/sec - téléchargement en cours - {1} restant</value>
-    <comment>Should contain UserProgressDownloadSubstring from CmdLine</comment>
   </data>
   <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve">
     <value>Échec du téléchargement de "{0}", essai du lien de secours "{1}"</value>
@@ -224,7 +223,10 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
     <value>{0} souhaite installer {1}, mais ce fichier appartient à {2}</value>
   </data>
   <data name="RegistryFileNotRemoved" xml:space="preserve">
-    <value>{0} appartient à {1} mais n'a pas été supprimé !</value>
+    <value>Erreur lors du retrait de {1}, fichier non supprimé : {0}</value>
+  </data>
+  <data name="RegistryDefaultDLCAbstract" xml:space="preserve">
+    <value>Une extension officielle</value>
   </data>
   <data name="RegistryManagerDirectoryNotFound" xml:space="preserve">
     <value>Impossible de trouver un dossier dans {0}</value>
@@ -389,7 +391,7 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
     <value>{0} n'existe pas</value>
   </data>
   <data name="ModuleInstallerDownloading" xml:space="preserve">
-    <value>Téléchargement de "{0}"</value>
+    <value>Téléchargement de {0} ...</value>
   </data>
   <data name="ModuleInstallerNothingToInstall" xml:space="preserve">
     <value>Rien à installer</value>
@@ -401,7 +403,7 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
     <value>L'utilisateur a refusé la liste d'installation</value>
   </data>
   <data name="ModuleInstallerInstallingMod" xml:space="preserve">
-    <value>Installation du mod "{0}"</value>
+    <value>Installation de {0} ...</value>
   </data>
   <data name="ModuleInstallerUpdatingRegistry" xml:space="preserve">
     <value>Mise à jour du registre</value>
@@ -485,6 +487,9 @@ Remplacer ?</value>
   <data name="ModuleInstallerUpgradeUpgradingCached" xml:space="preserve">
     <value> * Mise à jour : {0} {1} vers {2} (en cache)</value>
   </data>
+  <data name="ModuleInstallerUpgradeAutoRemoving" xml:space="preserve">
+    <value> * Suppression automatique : {0} {1}</value>
+  </data>
   <data name="ModuleInstallerUpgradeUserDeclined" xml:space="preserve">
     <value>L'utilisateur a refusé la liste de mise à jour</value>
   </data>
@@ -526,10 +531,19 @@ Veuillez le retirer manuellement avant d'essayer de l'installer.</value>
     <value>(toutes)</value>
   </data>
   <data name="KrakenProvidedByMoreThanOne" xml:space="preserve">
-    <value>Le module {0} est fourni par plusieurs modules possibles. Veuillez en choisir un parmi les suivants :</value>
+    <value>{1} nécessite {0}, qui peut être fourni par plusieurs mods.
+
+Quel fournisseur {0} voulez-vous installer ?</value>
   </data>
   <data name="KrakenInconsistenciesHeader" xml:space="preserve">
-    <value>Les incohérences suivantes ont été trouvées :</value>
+    <value>Des incohérences ont été trouvées :</value>
+  </data>
+  <data name="KrakenFailedToDeleteFiles" xml:space="preserve">
+    <value>Impossible de remplacer ou supprimer des fichiers pour {0} :
+
+{1}
+
+Si le jeu est toujours en cours d'exécution, fermez-le et réessayez. Sinon, vérifiez les permissions.</value>
   </data>
   <data name="KrakenMissingDependency" xml:space="preserve">
     <value>{0} n'a pas sa dépendance {1}</value>
@@ -587,6 +601,9 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   <data name="RelationshipResolverConflictsWith" xml:space="preserve">
     <value>{0} est en conflit avec {1}</value>
   </data>
+  <data name="RelationshipResolverConflictingModDescription" xml:space="preserve">
+    <value>{0} (nécessaire pour : {1})</value>
+  </data>
   <data name="RelationshipResolverRequiredButResolver" xml:space="preserve">
     <value>{0} nécessaire, mais une version incompatible est dans le résolveur</value>
   </data>
@@ -607,6 +624,9 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   </data>
   <data name="RelationshipResolverUserReason" xml:space="preserve">
     <value>Demandé par l'utilisateur</value>
+  </data>
+  <data name="RelationshipResolverDependencyRemoved" xml:space="preserve">
+    <value>Dépendance supprimée</value>
   </data>
   <data name="RelationshipResolverNoLongerUsedReason" xml:space="preserve">
     <value>Auto-installé, les modules qui en dépendaient ont été désinstallés</value>
