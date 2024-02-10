@@ -11,9 +11,7 @@ namespace CKAN.NetKAN.Validators
             var errors = CKANSchema.schema.Validate(metadata.Json());
             if (errors.Any())
             {
-                string msg = errors
-                    .Select(err => $"{err.Path}: {err.Kind}")
-                    .Aggregate((a, b) => $"{a}\r\n{b}");
+                var msg = string.Join(", ", errors.Select(err => $"{err.Path}: {err.Kind}"));
                 throw new Kraken($"Schema validation failed: {msg}");
             }
         }

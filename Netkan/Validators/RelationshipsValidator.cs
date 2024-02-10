@@ -1,7 +1,9 @@
+using System.Linq;
+
 using Newtonsoft.Json.Linq;
+
 using CKAN.Versioning;
 using CKAN.NetKAN.Model;
-using System.Linq;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -18,7 +20,7 @@ namespace CKAN.NetKAN.Validators
                     {
                         throw new Kraken("spec_version v1.2+ required for 'supports'");
                     }
-                    foreach (JObject rel in json[relName].Cast<JObject>())
+                    foreach (var rel in json[relName].Children<JObject>())
                     {
                         if (rel.ContainsKey("any_of"))
                         {
@@ -65,7 +67,6 @@ namespace CKAN.NetKAN.Validators
                     }
                 }
             }
-
         }
 
         private static readonly string[] relProps = new string[]
