@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LaunchGameToolStripMenuItem.Text" xml:space="preserve">
-    <value>Avvia Gioco</value>
+  <data name="launchGameToolStripMenuItem.Text" xml:space="preserve">
+    <value>Gioca</value>
   </data>
   <data name="RefreshToolButton.Text" xml:space="preserve">
     <value>Ricarica</value>
@@ -173,6 +173,9 @@
   </data>
   <data name="NavForwardToolButton.ToolTipText" xml:space="preserve">
     <value>Prossima mod selezionata...</value>
+  </data>
+  <data name="hiddenTagsLabelsLinkList.TagToolTipText" xml:space="preserve">
+    <value>Clicca per mostrare o nascondere i tag</value>
   </data>
   <data name="Installed.HeaderText" xml:space="preserve">
     <value>Installati</value>
@@ -233,5 +236,8 @@
   </data>
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
     <value>Modifica etichette...</value>
+  </data>
+  <data name="RefreshToolButton.ToolTipText" xml:space="preserve">
+    <value>Fai clic con il tasto Ctrl o Shift per scaricare nuovamente i metadati anche se non ci sono state modifiche dall'ultimo aggiornamento</value>
   </data>
 </root>
