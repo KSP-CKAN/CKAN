@@ -146,15 +146,22 @@
 Utilisez 'ckan instance help' pour être aidé dans cette configuration.</value>
   </data>
   <data name="OptionsRootError" xml:space="preserve">
-    <value>Vous essayer d'utiliser CKAN en tant que super-utilisateur.
-C'est une mauvaise idée et il n'y a absolument aucune raison de le faire. Veuillez utiliser CKAN depuis un compte utilisateur (ou utilisez --asroot si vous aimez le risque).</value>
+    <value>
+Vous essayez d'utiliser CKAN en tant qu'administrateur. Cela donne aux programmes des droits illimités sur n'importe quelle partie de votre système. Nous faisons de notre mieux pour éviter les bugs et les lignes de code malintentionnées, mais vous ne devriez pas nous faire confiance à ce point !
+
+Exécuter en tant qu'administrateur peut aussi créer des problèmes de permission, puisque un fichier installé par un administrateur ne pourra pas être retiré par un non administrateur.
+
+Utilisez CKAN en tant qu'utilisateur normal pour éviter ces problèmes.
+Si vous n'avez vraiment pas le choix, le paramètre "--asroot" permet d'utiliser CKAN en tant qu'administrateur.</value>
+  </data>
+  <data name="OptionsPressAnyKey" xml:space="preserve">
+    <value>Appuyez sur n'importe quelle touche pour quitter...</value>
   </data>
   <data name="OptionsRootWarning" xml:space="preserve">
-    <value>Attention : CKAN utilisé par un super-utilisateur !</value>
+    <value>Attention : CKAN est exécuté en tant qu'administrateur !</value>
   </data>
   <data name="OptionsMonoWarning" xml:space="preserve">
-    <value>Attention. Un runtime Mono {0} a été détecté, ce qui est inférieur à la version recommandée {1}.
-Mise à jour conseillée !</value>
+    <value>Attention : Mono {0} détecté, la version recommandée est {1} ou plus récente !</value>
   </data>
   <data name="OptionsInstanceAndGameDir" xml:space="preserve">
     <value>--instance et --gamedir ne peuvent pas être spécifiées en même temps</value>
