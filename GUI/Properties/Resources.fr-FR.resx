@@ -129,7 +129,7 @@
     <value>Version {0}</value>
   </data>
   <data name="GameProgramFileDescription" xml:space="preserve">
-    <value>Fichier de métadonnées/Build</value>
+    <value>Exécutable du jeu</value>
   </data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve">
     <value>Veuillez entrer un nom pour la nouvelle instance.</value>
@@ -338,6 +338,9 @@ Voulez-vous vraiment les installer ? L'annulation annulera toute l'installation.
   <data name="MainChangesetReinstall" xml:space="preserve">
     <value>Réinstaller (métadonnées modifiées)</value>
   </data>
+  <data name="MainChangesetUserReinstall" xml:space="preserve">
+    <value>Réinstallation (à la demande de l'utilisateur)</value>
+  </data>
   <data name="MainImportTitle" xml:space="preserve">
     <value>Importer des Mods</value>
   </data>
@@ -406,7 +409,7 @@ Ouvrir les paramètres maintenant ?</value>
     <value>Non</value>
   </data>
   <data name="MainInstallModSuccess" xml:space="preserve">
-    <value>Le module "{0}" a été installé avec succès</value>
+    <value>Installation réussie de {0}</value>
   </data>
   <data name="MainInstallSuccess" xml:space="preserve">
     <value>Succès !</value>
@@ -592,6 +595,9 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   </data>
   <data name="MainRepoWaitTitle" xml:space="preserve">
     <value>Mise à jour des répertoires</value>
+  </data>
+  <data name="LoadingCachedRepoData" xml:space="preserve">
+    <value>Chargement des données de répertoire en cache</value>
   </data>
   <data name="MainRepoScanning" xml:space="preserve">
     <value>Détection des DLC et des modules installés manuellement...</value>
@@ -894,6 +900,9 @@ Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus
   <data name="ModSearchConflictsPrefix" xml:space="preserve">
     <value>conf:</value>
   </data>
+  <data name="ModSearchSupportsPrefix" xml:space="preserve">
+    <value>sup:</value>
+  </data>
   <data name="ModSearchTagPrefix" xml:space="preserve">
     <value>étiquette:</value>
   </data>
@@ -932,6 +941,15 @@ Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus
   </data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve">
     <value>Décocher pour désinstaller tous les mods, cocher pour annuler les changements</value>
+  </data>
+  <data name="ManageModsHiddenLabels" xml:space="preserve">
+    <value>Labels cachés :</value>
+  </data>
+  <data name="ManageModsHiddenTags" xml:space="preserve">
+    <value>Étiquettes cachées :</value>
+  </data>
+  <data name="ManageModsHiddenLabelsAndTags" xml:space="preserve">
+    <value>Étiquettes et labels cachés :</value>
   </data>
   <data name="TotalPlayTime" xml:space="preserve">
     <value>Temps de Jeu Total : {0} heures</value>
