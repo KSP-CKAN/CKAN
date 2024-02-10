@@ -141,6 +141,9 @@
   <data name="FilterByConflictsLabel.Text" xml:space="preserve">
     <value>Conflit avec :</value>
   </data>
+  <data name="FilterBySupportsLabel.Text" xml:space="preserve">
+    <value>Supporte :</value>
+  </data>
   <data name="FilterByTagsLabel.Text" xml:space="preserve">
     <value>Étiquettes :</value>
   </data>
