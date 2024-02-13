@@ -50,6 +50,11 @@ namespace CKAN.GUI
                 ChooseRecommendedMods.LoadRecommendations(
                     registry, new List<CkanModule>(), new HashSet<CkanModule>(),
                     versionCriteria, Manager.Cache,
+                    CurrentInstance.game,
+                    ManageMods.mainModList.ModuleLabels
+                                          .LabelsFor(CurrentInstance.Name)
+                                          .ToList(),
+                    configuration,
                     recommendations, suggestions, supporters);
                 var result = ChooseRecommendedMods.Wait();
                 tabController.HideTab("ChooseRecommendedModsTabPage");

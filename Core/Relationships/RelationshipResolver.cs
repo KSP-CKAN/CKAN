@@ -737,6 +737,15 @@ namespace CKAN
                 get_recommenders               = true,
             };
 
+        public static RelationshipResolverOptions ConflictsOpts()
+            => new RelationshipResolverOptions()
+            {
+                without_toomanyprovides_kraken = true,
+                proceed_with_inconsistencies   = true,
+                without_enforce_consistency    = true,
+                with_recommends                = false,
+            };
+
         /// <summary>
         /// If true, add recommended mods, and their recommendations.
         /// </summary>

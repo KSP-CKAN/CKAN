@@ -30,6 +30,13 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ChooseRecommendedMods));
+            this.Toolbar = new System.Windows.Forms.MenuStrip();
+            this.UncheckAllButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.UncheckAllDropdown = new System.Windows.Forms.ToolStripDropDownMenu();
+            this.AlwaysUncheckAllButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.UncheckCheckSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.CheckAllButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.CheckRecommendationsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.RecommendedDialogLabel = new System.Windows.Forms.Label();
             this.RecommendedModsListView = new ThemedListView();
             this.RecommendationsGroup = new System.Windows.Forms.ListViewGroup();
@@ -39,11 +46,78 @@ namespace CKAN.GUI
             this.SourceModulesHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.DescriptionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
-            this.RecommendedModsToggleCheckbox = new System.Windows.Forms.CheckBox();
             this.RecommendedModsCancelButton = new System.Windows.Forms.Button();
             this.RecommendedModsContinueButton = new System.Windows.Forms.Button();
             this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
+            //
+            // Toolbar
+            //
+            this.Toolbar.AutoSize = false;
+            this.Toolbar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.Toolbar.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.Toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.UncheckAllButton,
+            this.AlwaysUncheckAllButton,
+            this.UncheckCheckSeparator,
+            this.CheckAllButton,
+            this.CheckRecommendationsButton});
+            this.Toolbar.CanOverflow = true;
+            this.Toolbar.Location = new System.Drawing.Point(0, 0);
+            this.Toolbar.Name = "Toolbar";
+            this.Toolbar.ShowItemToolTips = true;
+            this.Toolbar.Size = new System.Drawing.Size(5876, 48);
+            this.Toolbar.TabStop = true;
+            this.Toolbar.TabIndex = 0;
+            this.Toolbar.Text = "Toolbar";
+            //
+            // UncheckAllButton
+            //
+            this.UncheckAllButton.Image = global::CKAN.GUI.EmbeddedImages.uncheckAll;
+            this.UncheckAllButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.SizeToFit;
+            this.UncheckAllButton.Name = "UncheckAllButton";
+            this.UncheckAllButton.Size = new System.Drawing.Size(114, 56);
+            this.UncheckAllButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
+            this.UncheckAllButton.ButtonClick += new System.EventHandler(this.UncheckAllButton_Click);
+            this.UncheckAllButton.DropDown = this.UncheckAllDropdown;
+            resources.ApplyResources(this.UncheckAllButton, "UncheckAllButton");
+            //
+            // UncheckAllDropdown
+            //
+            this.UncheckAllDropdown.AutoSize = true;
+            this.UncheckAllDropdown.Name = "UncheckAllDropdown";
+            this.UncheckAllDropdown.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AlwaysUncheckAllButton});
+            resources.ApplyResources(this.UncheckAllDropdown, "UncheckAllDropdown");
+            //
+            // AlwaysUncheckAllButton
+            //
+            this.AlwaysUncheckAllButton.AutoSize = true;
+            this.AlwaysUncheckAllButton.CheckOnClick = true;
+            this.AlwaysUncheckAllButton.Name = "AlwaysUncheckAllButton";
+            this.AlwaysUncheckAllButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
+            this.AlwaysUncheckAllButton.CheckedChanged += new System.EventHandler(this.AlwaysUncheckAllButton_CheckedChanged);
+            resources.ApplyResources(this.AlwaysUncheckAllButton, "AlwaysUncheckAllButton");
+            //
+            // CheckAllButton
+            //
+            this.CheckAllButton.Image = global::CKAN.GUI.EmbeddedImages.checkAll;
+            this.CheckAllButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.SizeToFit;
+            this.CheckAllButton.Name = "CheckAllButton";
+            this.CheckAllButton.Size = new System.Drawing.Size(114, 56);
+            this.CheckAllButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
+            this.CheckAllButton.Click += new System.EventHandler(this.CheckAllButton_Click);
+            resources.ApplyResources(this.CheckAllButton, "CheckAllButton");
+            //
+            // CheckRecommendationsButton
+            //
+            this.CheckRecommendationsButton.Image = global::CKAN.GUI.EmbeddedImages.checkRecommendations;
+            this.CheckRecommendationsButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.SizeToFit;
+            this.CheckRecommendationsButton.Name = "CheckRecommendationsButton";
+            this.CheckRecommendationsButton.Size = new System.Drawing.Size(114, 56);
+            this.CheckRecommendationsButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
+            this.CheckRecommendationsButton.Click += new System.EventHandler(this.CheckRecommendationsButton_Click);
+            resources.ApplyResources(this.CheckRecommendationsButton, "CheckRecommendationsButton");
             //
             // RecommendedDialogLabel
             //
@@ -76,6 +150,7 @@ namespace CKAN.GUI
             this.RecommendedModsListView.Groups.Add(this.RecommendationsGroup);
             this.RecommendedModsListView.Groups.Add(this.SuggestionsGroup);
             this.RecommendedModsListView.Groups.Add(this.SupportedByGroup);
+            this.RecommendedModsListView.ColumnWidthChanged += this.RecommendedModsListView_ColumnWidthChanged;
             //
             // RecommendationsGroup
             //
@@ -109,25 +184,13 @@ namespace CKAN.GUI
             //
             this.DescriptionHeader.Width = 606;
             resources.ApplyResources(this.DescriptionHeader, "DescriptionHeader");
-            // 
+            //
             // BottomButtonPanel
-            // 
-            this.BottomButtonPanel.LeftControls.Add(this.RecommendedModsToggleCheckbox);
+            //
             this.BottomButtonPanel.RightControls.Add(this.RecommendedModsContinueButton);
             this.BottomButtonPanel.RightControls.Add(this.RecommendedModsCancelButton);
             this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.BottomButtonPanel.Name = "BottomButtonPanel";
-            //
-            // RecommendedModsToggleCheckbox
-            //
-            this.RecommendedModsToggleCheckbox.AutoSize = true;
-            this.RecommendedModsToggleCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RecommendedModsToggleCheckbox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.RecommendedModsToggleCheckbox.Name = "RecommendedModsToggleCheckbox";
-            this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(131, 24);
-            this.RecommendedModsToggleCheckbox.TabIndex = 2;
-            this.RecommendedModsToggleCheckbox.CheckedChanged += new System.EventHandler(this.RecommendedModsToggleCheckbox_CheckedChanged);
-            resources.ApplyResources(this.RecommendedModsToggleCheckbox, "RecommendedModsToggleCheckbox");
             //
             // RecommendedModsCancelButton
             //
@@ -152,12 +215,13 @@ namespace CKAN.GUI
             this.RecommendedModsContinueButton.TabIndex = 4;
             this.RecommendedModsContinueButton.Click += new System.EventHandler(this.RecommendedModsContinueButton_Click);
             resources.ApplyResources(this.RecommendedModsContinueButton, "RecommendedModsContinueButton");
-            // 
+            //
             // ChooseRecommendedMods
-            // 
+            //
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.RecommendedModsListView);
             this.Controls.Add(this.RecommendedDialogLabel);
+            this.Controls.Add(this.Toolbar);
             this.Controls.Add(this.BottomButtonPanel);
             this.Margin = new System.Windows.Forms.Padding(0,0,0,0);
             this.Padding = new System.Windows.Forms.Padding(0,0,0,0);
@@ -172,6 +236,13 @@ namespace CKAN.GUI
 
         #endregion
 
+        private System.Windows.Forms.MenuStrip Toolbar;
+        private System.Windows.Forms.ToolStripSplitButton UncheckAllButton;
+        private System.Windows.Forms.ToolStripDropDownMenu UncheckAllDropdown;
+        private System.Windows.Forms.ToolStripMenuItem AlwaysUncheckAllButton;
+        private System.Windows.Forms.ToolStripSeparator UncheckCheckSeparator;
+        private System.Windows.Forms.ToolStripMenuItem CheckAllButton;
+        private System.Windows.Forms.ToolStripMenuItem CheckRecommendationsButton;
         private System.Windows.Forms.Label RecommendedDialogLabel;
         private System.Windows.Forms.ListView RecommendedModsListView;
         private System.Windows.Forms.ListViewGroup RecommendationsGroup;
@@ -181,7 +252,6 @@ namespace CKAN.GUI
         private System.Windows.Forms.ColumnHeader SourceModulesHeader;
         private System.Windows.Forms.ColumnHeader DescriptionHeader;
         private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
-        private System.Windows.Forms.CheckBox RecommendedModsToggleCheckbox;
         private System.Windows.Forms.Button RecommendedModsCancelButton;
         private System.Windows.Forms.Button RecommendedModsContinueButton;
     }

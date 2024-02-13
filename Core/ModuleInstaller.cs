@@ -1343,12 +1343,21 @@ namespace CKAN
                                                     registry, crit);
             var recommenders = resolver.Dependencies().ToHashSet();
 
+            var checkedRecs = resolver.Recommendations(recommenders)
+                                      .Where(m => resolver.ReasonsFor(m)
+                                                          .Any(r => (r as SelectionReason.Recommended)?.ProvidesIndex == 0))
+                                      .ToHashSet();
+            var conflicting = new RelationshipResolver(toInstall.Concat(checkedRecs), null,
+                                                       RelationshipResolverOptions.ConflictsOpts(),
+                                                       registry, crit)
+                                  .ConflictList.Keys;
+            // Don't check recommendations that conflict with installed or installing mods
+            checkedRecs.ExceptWith(conflicting);
+
             recommendations = resolver.Recommendations(recommenders)
                                       .ToDictionary(m => m,
                                                     m => new Tuple<bool, List<string>>(
-                                                             resolver.ReasonsFor(m)
-                                                                     .Any(r => (r as SelectionReason.Recommended)
-                                                                                   ?.ProvidesIndex == 0),
+                                                             checkedRecs.Contains(m),
                                                              resolver.ReasonsFor(m)
                                                                      .Where(r => r is SelectionReason.Recommended rec
                                                                                  && recommenders.Contains(rec.Parent))

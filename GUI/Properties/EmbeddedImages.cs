@@ -19,33 +19,36 @@ namespace CKAN.GUI
                 Assembly.GetExecutingAssembly()
                         .GetManifestResourceStream($"CKAN.ckan.ico"));
 
-        public static Bitmap alert         => get("alert");
-        public static Bitmap apply         => get("apply");
-        public static Bitmap backward      => get("backward");
-        public static Bitmap ballot        => get("ballot");
-        public static Bitmap collapseAll   => get("collapseAll");
-        public static Bitmap delete        => get("delete");
-        public static Bitmap expandAll     => get("expandAll");
-        public static Bitmap file          => get("file");
-        public static Bitmap filter        => get("filter");
-        public static Bitmap folder        => get("folder");
-        public static Bitmap folderZip     => get("folderZip");
-        public static Bitmap forward       => get("forward");
-        public static Bitmap info          => get("info");
-        public static Bitmap ksp           => get("ksp");
-        public static Bitmap refresh       => get("refresh");
-        public static Bitmap resetCollapse => get("resetCollapse");
-        public static Bitmap search        => get("search");
-        public static Bitmap settings      => get("settings");
-        public static Bitmap smile         => get("smile");
-        public static Bitmap star          => get("star");
-        public static Bitmap stop          => get("stop");
-        public static Bitmap textClear     => get("textClear");
-        public static Bitmap thumbup       => get("thumbup");
-        public static Bitmap triToggleBoth => get("triToggleBoth");
-        public static Bitmap triToggleNo   => get("triToggleNo");
-        public static Bitmap triToggleYes  => get("triToggleYes");
-        public static Bitmap update        => get("update");
+        public static Bitmap alert                => get("alert");
+        public static Bitmap apply                => get("apply");
+        public static Bitmap backward             => get("backward");
+        public static Bitmap ballot               => get("ballot");
+        public static Bitmap checkAll             => get("checkAll");
+        public static Bitmap checkRecommendations => get("checkRecommendations");
+        public static Bitmap collapseAll          => get("collapseAll");
+        public static Bitmap delete               => get("delete");
+        public static Bitmap expandAll            => get("expandAll");
+        public static Bitmap file                 => get("file");
+        public static Bitmap filter               => get("filter");
+        public static Bitmap folder               => get("folder");
+        public static Bitmap folderZip            => get("folderZip");
+        public static Bitmap forward              => get("forward");
+        public static Bitmap info                 => get("info");
+        public static Bitmap ksp                  => get("ksp");
+        public static Bitmap refresh              => get("refresh");
+        public static Bitmap resetCollapse        => get("resetCollapse");
+        public static Bitmap search               => get("search");
+        public static Bitmap settings             => get("settings");
+        public static Bitmap smile                => get("smile");
+        public static Bitmap star                 => get("star");
+        public static Bitmap stop                 => get("stop");
+        public static Bitmap textClear            => get("textClear");
+        public static Bitmap thumbup              => get("thumbup");
+        public static Bitmap triToggleBoth        => get("triToggleBoth");
+        public static Bitmap triToggleNo          => get("triToggleNo");
+        public static Bitmap triToggleYes         => get("triToggleYes");
+        public static Bitmap uncheckAll           => get("uncheckAll");
+        public static Bitmap update               => get("update");
 
         private static Bitmap get(string what)
             => cache.TryGetValue(what, out Bitmap bmp)

@@ -34,6 +34,8 @@ namespace CKAN.GUI
 
         public bool AutoSortByUpdate = true;
 
+        public bool SuppressRecommendations = false;
+
         public int ActiveFilter = 0;
 
         /// <summary>

@@ -549,7 +549,6 @@ namespace CKAN.GUI
             //
             this.ModListHeaderContextMenuStrip.Name = "ModListHeaderContextMenuStrip";
             this.ModListHeaderContextMenuStrip.AutoSize = true;
-            this.ModListHeaderContextMenuStrip.ShowCheckMargin = true;
             this.ModListHeaderContextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(ModListHeaderContextMenuStrip_ItemClicked);
             //
             // hiddenTagsLabelsLinkList
