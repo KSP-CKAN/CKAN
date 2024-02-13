@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Refactor Contents tab refreshing (#4001 by: HebaruSan)
 - [Core] Fix crash with DLC disabled by Steam (#4002 by: HebaruSan)
 - [Multiple] Fixes for installing .ckan files and DarkKAN mods (#4006 by: HebaruSan)
+- [Core] Only auto-delete manually installed DLLs if also replacing them (#4024 by: HebaruSan)
 
 ### Internal
 

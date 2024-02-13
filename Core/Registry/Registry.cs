@@ -35,7 +35,7 @@ namespace CKAN
         [JsonProperty("sorted_repositories")]
         private SortedDictionary<string, Repository> repositories;
 
-        // name => path
+        // name => relative path
         [JsonProperty]
         private Dictionary<string, string> installed_dlls;
 
@@ -834,7 +834,7 @@ namespace CKAN
         /// track of its metadata and files.
         /// </summary>
         public void RegisterModule(CkanModule          mod,
-                                   IEnumerable<string> absolute_files,
+                                   IEnumerable<string> absoluteFiles,
                                    GameInstance        inst,
                                    bool                autoInstalled)
         {
@@ -850,13 +850,14 @@ namespace CKAN
             var inconsistencies = new List<string>();
 
             // We always work with relative files, so let's get some!
-            IEnumerable<string> relative_files = absolute_files
-                .Select(x => inst.ToRelativeGameDir(x))
-                .Memoize();
+            var relativeFiles = absoluteFiles.Select(x => inst.ToRelativeGameDir(x))
+                                             .ToHashSet(Platform.IsWindows
+                                                            ? StringComparer.OrdinalIgnoreCase
+                                                            : StringComparer.Ordinal);
 
             // For now, it's always cool if a module wants to register a directory.
             // We have to flip back to absolute paths to actually test this.
-            foreach (string file in relative_files.Where(file => !Directory.Exists(inst.ToAbsoluteGameDir(file))))
+            foreach (string file in relativeFiles.Where(file => !Directory.Exists(inst.ToAbsoluteGameDir(file))))
             {
                 if (installed_files.TryGetValue(file, out string owner))
                 {
@@ -881,14 +882,17 @@ namespace CKAN
             // directories aren't really owned like files are. However because each mod maintains
             // its own list of files, we'll remove directories when the last mod using them
             // is uninstalled.
-            foreach (string file in relative_files)
+            foreach (string file in relativeFiles)
             {
                 installed_files[file] = mod.identifier;
             }
 
+            // Make sure mod-owned files aren't in the manually installed DLL dict
+            installed_dlls.RemoveWhere(kvp => relativeFiles.Contains(kvp.Value));
+
             // Finally register our module proper
             installed_modules.Add(mod.identifier,
-                                  new InstalledModule(inst, mod, relative_files, autoInstalled));
+                                  new InstalledModule(inst, mod, relativeFiles, autoInstalled));
 
             // Installing and uninstalling mods can change compatibility due to conflicts,
             // so we'll need to reset the compatibility sorter
