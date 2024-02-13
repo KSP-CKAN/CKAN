@@ -154,7 +154,7 @@ namespace CKAN
                 }
             }
 
-            if (ConfirmPrompt && !User.RaiseYesNoDialog("Continue?"))
+            if (ConfirmPrompt && !User.RaiseYesNoDialog(Properties.Resources.ModuleInstallerContinuePrompt))
             {
                 throw new CancelledActionKraken(Properties.Resources.ModuleInstallerUserDeclined);
             }
@@ -347,20 +347,22 @@ namespace CKAN
                             .ToHashSet();
                         // Make sure that the DLL is actually included in the install
                         // (NearFutureElectrical, NearFutureElectrical-Core)
-                        if (dllFolders.Count > 0
-                            && !dllFolders.Contains(Path.GetDirectoryName(dll)))
+                        if (dllFolders.Count > 0 && registry.FileOwner(dll) == null)
                         {
-                            // Manually installed DLL is somewhere else where we're not installing files,
-                            // probable bad install, alert user and abort
-                            throw new DllLocationMismatchKraken(dll, string.Format(
-                                Properties.Resources.ModuleInstallerBadDLLLocation, module.identifier, dll));
+                            if (!dllFolders.Contains(Path.GetDirectoryName(dll)))
+                            {
+                                // Manually installed DLL is somewhere else where we're not installing files,
+                                // probable bad install, alert user and abort
+                                throw new DllLocationMismatchKraken(dll, string.Format(
+                                    Properties.Resources.ModuleInstallerBadDLLLocation, module.identifier, dll));
+                            }
+                            // Delete the manually installed DLL transaction-style because we believe we'll be replacing it
+                            var toDelete = ksp.ToAbsoluteGameDir(dll);
+                            log.DebugFormat("Deleting manually installed DLL {0}", toDelete);
+                            TxFileManager file_transaction = new TxFileManager();
+                            file_transaction.Snapshot(toDelete);
+                            file_transaction.Delete(toDelete);
                         }
-                        // Delete the manually installed DLL transaction-style because we believe we'll be replacing it
-                        var toDelete = ksp.ToAbsoluteGameDir(dll);
-                        log.DebugFormat("Deleting manually installed DLL {0}", toDelete);
-                        TxFileManager file_transaction = new TxFileManager();
-                        file_transaction.Snapshot(toDelete);
-                        file_transaction.Delete(toDelete);
                     }
 
                     // Look for overwritable files if session is interactive
