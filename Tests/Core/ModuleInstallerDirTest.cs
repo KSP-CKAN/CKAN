@@ -146,9 +146,11 @@ namespace Tests.Core
         }
 
         /// <summary>
-        /// Try to add the same path with multiple casings, ensure no PathErrorKraken
+        /// Try to add the same path with multiple casings, ensure no PathErrorKraken.
+        /// Only runs on Windows because filesystem paths are case sensitive on Unix.
         /// </summary>
         [Test]
+        [Platform("Win")]
         public void TestCaseSensitivity()
         {
             var paths = new HashSet<string>()
