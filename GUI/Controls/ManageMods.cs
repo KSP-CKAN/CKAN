@@ -554,8 +554,6 @@ namespace CKAN.GUI
         private void LaunchGameToolStripMenuItem_MouseHover(object sender, EventArgs e)
         {
             var cmdLines = Main.Instance.configuration.CommandLines;
-            LaunchGameToolStripMenuItem.Tag =
-                LaunchGameToolStripMenuItem.ToolTipText = cmdLines.First();
             LaunchGameToolStripMenuItem.DropDownItems.Clear();
             LaunchGameToolStripMenuItem.DropDownItems.AddRange(
                 cmdLines.Select(cmdLine => (ToolStripItem)

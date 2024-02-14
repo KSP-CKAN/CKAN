@@ -937,11 +937,15 @@ namespace CKAN.GUI
 
         private void openGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LaunchGame(configuration.CommandLines.First());
+            LaunchGame();
         }
 
-        private void LaunchGame(string command)
+        private void LaunchGame(string command = null)
         {
+            if (string.IsNullOrEmpty(command))
+            {
+                command = configuration.CommandLines.First();
+            }
             var split = command.Split(' ');
             if (split.Length == 0)
             {
