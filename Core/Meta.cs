@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 
+using CKAN.Versioning;
+
 namespace CKAN
 {
     public static class Meta
@@ -16,6 +18,8 @@ namespace CKAN
                        .GetAssemblyAttribute<AssemblyProductAttribute>()
                        .Product;
 
+        public static readonly ModuleVersion ReleaseVersion = new ModuleVersion(GetVersion());
+
         public static string GetVersion(VersionFormat format = VersionFormat.Normal)
         {
             var version = Assembly
@@ -25,8 +29,6 @@ namespace CKAN
 
             switch (format)
             {
-                case VersionFormat.Short:
-                    return $"v{version.UpToCharacters(shortDelimiters)}";
                 case VersionFormat.Normal:
                     return "v" + Assembly.GetExecutingAssembly()
                                          .GetAssemblyAttribute<AssemblyFileVersionAttribute>()
@@ -37,15 +39,6 @@ namespace CKAN
                     throw new ArgumentOutOfRangeException(nameof(format), format, null);
             }
         }
-
-        private static readonly char[] shortDelimiters = new char[] { '-', '+' };
-
-        private static string UpToCharacters(this string orig, char[] what)
-            => orig.UpToIndex(orig.IndexOfAny(what));
-
-        private static string UpToIndex(this string orig, int index)
-            => index == -1 ? orig
-                           : orig.Substring(0, index);
 
         private static T GetAssemblyAttribute<T>(this Assembly assembly)
             => (T)assembly.GetCustomAttributes(typeof(T), false)

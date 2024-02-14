@@ -29,7 +29,8 @@ namespace CKAN
     using ArchiveList = Tuple<List<CkanModule>,
                               SortedDictionary<string, int>,
                               GameVersion[],
-                              Repository[]>;
+                              Repository[],
+                              bool>;
 
     /// <summary>
     /// Represents everything we retrieve from one metadata repository
@@ -63,6 +64,12 @@ namespace CKAN
         [JsonProperty("repositories", NullValueHandling = NullValueHandling.Ignore)]
         public readonly Repository[] Repositories;
 
+        /// <summary>
+        /// true if any module we found requires a newer client version, false otherwise
+        /// </summary>
+        [JsonIgnore]
+        public readonly bool UnsupportedSpec;
+
         private RepositoryData(Dictionary<string, AvailableModule> modules,
                                SortedDictionary<string, int>       counts,
                                GameVersion[]                       versions,
@@ -84,7 +91,8 @@ namespace CKAN
         public RepositoryData(IEnumerable<CkanModule>       modules,
                               SortedDictionary<string, int> counts,
                               IEnumerable<GameVersion>      versions,
-                              IEnumerable<Repository>       repos)
+                              IEnumerable<Repository>       repos,
+                              bool                          unsupportedSpec)
             : this(modules?.GroupBy(m => m.identifier)
                            .ToDictionary(grp => grp.Key,
                                          grp => new AvailableModule(grp.Key, grp)),
@@ -92,6 +100,7 @@ namespace CKAN
                    (versions ?? Enumerable.Empty<GameVersion>()).ToArray(),
                    (repos ?? Enumerable.Empty<Repository>()).ToArray())
         {
+            UnsupportedSpec   = unsupportedSpec;
         }
 
         [JsonConstructor]
@@ -192,8 +201,9 @@ namespace CKAN
                 (List<CkanModule>              modules,
                  SortedDictionary<string, int> counts,
                  GameVersion[]                 versions,
-                 Repository[]                  repos) = AggregateArchiveEntries(archiveEntriesFromTar(tarStream, game));
-                return new RepositoryData(modules, counts, versions, repos);
+                 Repository[]                  repos,
+                 bool                          unsupSpec) = AggregateArchiveEntries(archiveEntriesFromTar(tarStream, game));
+                return new RepositoryData(modules, counts, versions, repos, unsupSpec);
             }
         }
 
@@ -249,9 +259,10 @@ namespace CKAN
                 (List<CkanModule>              modules,
                  SortedDictionary<string, int> counts,
                  GameVersion[]                 versions,
-                 Repository[]                  repos) = AggregateArchiveEntries(archiveEntriesFromZip(zipfile, game));
+                 Repository[]                  repos,
+                 bool                          unsupSpec) = AggregateArchiveEntries(archiveEntriesFromZip(zipfile, game));
                 zipfile.Close();
-                return new RepositoryData(modules, counts, versions, repos);
+                return new RepositoryData(modules, counts, versions, repos, unsupSpec);
             }
         }
 
@@ -266,7 +277,7 @@ namespace CKAN
                                            entry.Offset));
 
         private static ArchiveList AggregateArchiveEntries(ParallelQuery<ArchiveEntry> entries)
-            => entries.Aggregate(new ArchiveList(new List<CkanModule>(), null, null, null),
+            => entries.Aggregate(new ArchiveList(new List<CkanModule>(), null, null, null, false),
                                  (subtotal, item) =>
                                     item == null
                                          ? subtotal
@@ -276,12 +287,14 @@ namespace CKAN
                                                  : subtotal.Item1.Append(item.Item1).ToList(),
                                              subtotal.Item2 ?? item.Item2,
                                              subtotal.Item3 ?? item.Item3,
-                                             subtotal.Item4 ?? item.Item4),
+                                             subtotal.Item4 ?? item.Item4,
+                                             subtotal.Item5 || item.Item1 == null),
                                  (total, subtotal)
                                      => new ArchiveList(total.Item1.Concat(subtotal.Item1).ToList(),
                                                         total.Item2 ?? subtotal.Item2,
                                                         total.Item3 ?? subtotal.Item3,
-                                                        total.Item4 ?? subtotal.Item4),
+                                                        total.Item4 ?? subtotal.Item4,
+                                                        total.Item5 || subtotal.Item5),
                                  total => total);
 
         private static ArchiveEntry getArchiveEntry(string       filename,

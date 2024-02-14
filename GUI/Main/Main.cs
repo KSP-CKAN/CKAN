@@ -419,7 +419,12 @@ namespace CKAN.GUI
                                             .Resolve<IConfiguration>(),
                               configuration);
 
-            bool autoUpdating = CheckForCKANUpdate();
+            bool autoUpdating = configuration.CheckForUpdatesOnLaunch
+                                && CheckForCKANUpdate();
+            if (autoUpdating)
+            {
+                UpdateCKAN();
+            }
 
             var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
             if (!Directory.Exists(pluginsPath))

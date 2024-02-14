@@ -248,6 +248,22 @@ namespace CKAN.GUI
                         }
                         break;
 
+
+                    case RepositoryDataManager.UpdateResult.OutdatedClient:
+                        currentUser.RaiseMessage(Properties.Resources.MainRepoOutdatedClient);
+                        if (CheckForCKANUpdate())
+                        {
+                            UpdateCKAN();
+                        }
+                        else
+                        {
+                            // No update available or user said no. Proceed as normal.
+                            ShowRefreshQuestion();
+                            UpgradeNotification();
+                            RefreshModList(false, oldModules);
+                        }
+                        break;
+
                     case RepositoryDataManager.UpdateResult.Updated:
                     default:
                         currentUser.RaiseMessage(Properties.Resources.MainRepoSuccess);

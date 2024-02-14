@@ -42,9 +42,9 @@ namespace CKAN.GUI
         /// <returns>
         /// true if update found, false otherwise.
         /// </returns>
-        private bool CheckForCKANUpdate()
+        public bool CheckForCKANUpdate()
         {
-            if (configuration.CheckForUpdatesOnLaunch && AutoUpdate.CanUpdate)
+            if (AutoUpdate.CanUpdate)
             {
                 try
                 {
@@ -52,16 +52,14 @@ namespace CKAN.GUI
                     var mainConfig = ServiceLocator.Container.Resolve<IConfiguration>();
                     var update = updater.GetUpdate(mainConfig.DevBuilds ?? false);
                     var latestVersion = update.Version;
-                    var currentVersion = new ModuleVersion(Meta.GetVersion());
 
-                    if (latestVersion.IsGreaterThan(currentVersion))
+                    if (latestVersion.IsGreaterThan(Meta.ReleaseVersion))
                     {
-                        log.Debug("Found higher ckan version");
+                        log.DebugFormat("Found higher CKAN version: {0}", latestVersion);
                         var releaseNotes = update.ReleaseNotes;
                         var dialog = new NewUpdateDialog(latestVersion.ToString(), releaseNotes);
                         if (dialog.ShowDialog(this) == DialogResult.OK)
                         {
-                            UpdateCKAN();
                             return true;
                         }
                     }
@@ -90,7 +88,7 @@ namespace CKAN.GUI
             Wait.SetDescription(string.Format(Properties.Resources.MainUpgradingTo,
                                 update.Version));
 
-            log.Info("Start ckan update");
+            log.Info("Starting CKAN update");
             Wait.StartWaiting((sender, args) => updater.StartUpdateProcess(true, mainConfig.DevBuilds ?? false, currentUser),
                               UpdateReady,
                               false,

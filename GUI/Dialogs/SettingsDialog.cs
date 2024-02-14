@@ -585,7 +585,7 @@ namespace CKAN.GUI
 
         private void InstallUpdateButton_Click(object sender, EventArgs e)
         {
-            if (AutoUpdate.CanUpdate)
+            if (Main.Instance.CheckForCKANUpdate())
             {
                 Hide();
                 Main.Instance.UpdateCKAN();
