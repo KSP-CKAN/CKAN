@@ -303,6 +303,14 @@ namespace CKAN
         {
             Exceptions = new List<KeyValuePair<int, Exception>>(errors);
         }
+
+        public DownloadErrorsKraken(int index, Exception exc)
+        {
+            Exceptions = new List<KeyValuePair<int, Exception>>
+            {
+                new KeyValuePair<int, Exception>(index, exc),
+            };
+        }
     }
 
     /// <summary>

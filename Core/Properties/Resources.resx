@@ -151,6 +151,7 @@ Install the `mono-complete` package or equivalent for your operating system.</va
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve"><value>The following inconsistencies were found:</value></data>
   <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve"><value>Loading modules from downloaded {0} repository...</value><comment>Should contain UserProgressDownloadSubstring from CmdLine</comment></data>
   <data name="NetRepoLoadedDownloadCounts" xml:space="preserve"><value>Loaded download counts from {0} repository</value></data>
+  <data name="NetRepoNotATarGz" xml:space="preserve"><value>Not a .tar.gz or .zip, cannot process: {0}</value></data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve"><value>`any_of` should not be combined with `{0}`</value></data>
   <data name="RegistryFileConflict" xml:space="preserve"><value>{0} wishes to install {1}, but this file is registered to {2}</value></data>
   <data name="RegistryFileNotRemoved" xml:space="preserve"><value>Error unregistering {1}, file not removed: {0}</value></data>
