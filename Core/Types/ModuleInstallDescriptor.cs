@@ -293,7 +293,7 @@ namespace CKAN
                 }
                 else
                 {
-                    throw new UnsupportedKraken(Properties.Resources.ModuleInstallDescriptorRequireFileFind);
+                    throw new Kraken(Properties.Resources.ModuleInstallDescriptorRequireFileFind);
                 }
             }
         }

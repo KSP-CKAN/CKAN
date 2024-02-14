@@ -99,7 +99,7 @@ namespace CKAN.GUI
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.ClientSize = new System.Drawing.Size(426, 310);
             this.Controls.Add(this.CancelUpdateButton);
             this.Controls.Add(this.InstallUpdateButton);

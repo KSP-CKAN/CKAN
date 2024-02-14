@@ -700,12 +700,7 @@ namespace CKAN
         /// Returns true if we support at least spec_version of the CKAN spec.
         /// </summary>
         internal static bool IsSpecSupported(ModuleVersion spec_version)
-        {
-            // This could be a read-only state variable; do we have those in C#?
-            ModuleVersion release = new ModuleVersion(Meta.GetVersion(VersionFormat.Short));
-
-            return release == null || release.IsGreaterThan(spec_version);
-        }
+            => Meta.ReleaseVersion.IsGreaterThan(spec_version);
 
         /// <summary>
         /// Returns true if we support the CKAN spec used by this module.

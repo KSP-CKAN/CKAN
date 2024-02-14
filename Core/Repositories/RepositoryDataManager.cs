@@ -116,6 +116,7 @@ namespace CKAN
             Failed,
             Updated,
             NoChanges,
+            OutdatedClient,
         }
 
         /// <summary>
@@ -218,7 +219,9 @@ namespace CKAN
                 downloader.onOneCompleted -= setETag;
             }
 
-            return UpdateResult.Updated;
+            return repositoriesData.Values.Any(repoData => repoData.UnsupportedSpec)
+                ? UpdateResult.OutdatedClient
+                : UpdateResult.Updated;
         }
 
         /// <summary>

@@ -118,7 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="label1.Text" xml:space="preserve"><value>Version:</value></data>
-  <data name="VersionLabel.Text" xml:space="preserve"><value>v0.0.0</value></data>
   <data name="InstallUpdateButton.Text" xml:space="preserve"><value>Install</value></data>
   <data name="CancelUpdateButton.Text" xml:space="preserve"><value>Not now</value></data>
   <data name="$this.Text" xml:space="preserve"><value>A new version of CKAN is available</value></data>
