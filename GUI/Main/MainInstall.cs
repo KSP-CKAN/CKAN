@@ -148,6 +148,11 @@ namespace CKAN.GUI
                     ChooseRecommendedMods.LoadRecommendations(
                         registry, toInstall, toUninstall,
                         CurrentInstance.VersionCriteria(), Manager.Cache,
+                        CurrentInstance.game,
+                        ManageMods.mainModList.ModuleLabels
+                                              .LabelsFor(CurrentInstance.Name)
+                                              .ToList(),
+                        configuration,
                         recommendations, suggestions, supporters);
                     tabController.SetTabLock(true);
                     Util.Invoke(this, () => UseWaitCursor = false);

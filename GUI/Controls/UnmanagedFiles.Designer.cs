@@ -72,7 +72,7 @@ namespace CKAN.GUI
             // RefreshButton
             //
             this.RefreshButton.Image = global::CKAN.GUI.EmbeddedImages.refresh;
-            this.RefreshButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.RefreshButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.SizeToFit;
             this.RefreshButton.Name = "RefreshButton";
             this.RefreshButton.Size = new System.Drawing.Size(114, 56);
             this.RefreshButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
@@ -82,7 +82,7 @@ namespace CKAN.GUI
             // ExpandAllButton
             //
             this.ExpandAllButton.Image = global::CKAN.GUI.EmbeddedImages.expandAll;
-            this.ExpandAllButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.ExpandAllButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.SizeToFit;
             this.ExpandAllButton.Name = "ExpandAllButton";
             this.ExpandAllButton.Size = new System.Drawing.Size(114, 56);
             this.ExpandAllButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
@@ -92,7 +92,7 @@ namespace CKAN.GUI
             // CollapseAllButton
             //
             this.CollapseAllButton.Image = global::CKAN.GUI.EmbeddedImages.collapseAll;
-            this.CollapseAllButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.CollapseAllButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.SizeToFit;
             this.CollapseAllButton.Name = "CollapseAllButton";
             this.CollapseAllButton.Size = new System.Drawing.Size(114, 56);
             this.CollapseAllButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
@@ -102,7 +102,7 @@ namespace CKAN.GUI
             // ResetCollapseButton
             //
             this.ResetCollapseButton.Image = global::CKAN.GUI.EmbeddedImages.resetCollapse;
-            this.ResetCollapseButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.ResetCollapseButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.SizeToFit;
             this.ResetCollapseButton.Name = "ResetCollapseButton";
             this.ResetCollapseButton.Size = new System.Drawing.Size(114, 56);
             this.ResetCollapseButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
@@ -112,7 +112,7 @@ namespace CKAN.GUI
             // ShowInFolderButton
             //
             this.ShowInFolderButton.Image = global::CKAN.GUI.EmbeddedImages.search;
-            this.ShowInFolderButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.ShowInFolderButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.SizeToFit;
             this.ShowInFolderButton.Name = "ShowInFolderButton";
             this.ShowInFolderButton.Size = new System.Drawing.Size(114, 56);
             this.ShowInFolderButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
@@ -122,7 +122,7 @@ namespace CKAN.GUI
             // DeleteButton
             //
             this.DeleteButton.Image = global::CKAN.GUI.EmbeddedImages.delete;
-            this.DeleteButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.DeleteButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.SizeToFit;
             this.DeleteButton.Name = "DeleteButton";
             this.DeleteButton.Size = new System.Drawing.Size(114, 56);
             this.DeleteButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;

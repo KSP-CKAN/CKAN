@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [Updater] Support dev builds for auto updater (#3997, #4008 by: HebaruSan)
 - [GUI] Sort mods satisfying the same recommendation by download count (#4007 by: HebaruSan)
 - [Multiple] Alternate game command lines and Steam refactor (#4010, #4013 by: HebaruSan)
+- [Multiple] Recommendations usability improvements (#4025 by: HebaruSan)
 
 ### Bugfixes
 
