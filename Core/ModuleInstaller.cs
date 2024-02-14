@@ -745,9 +745,7 @@ namespace CKAN
                 var modFiles = instMod.Files.ToArray();
 
                 // We need case insensitive path matching on Windows
-                var directoriesToDelete = Platform.IsWindows
-                    ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                    : new HashSet<string>();
+                var directoriesToDelete = new HashSet<string>(Platform.PathComparer);
 
                 // Files that Windows refused to delete due to locking (probably)
                 var undeletableFiles = new List<string>();
@@ -890,9 +888,7 @@ namespace CKAN
                                         string.Join(", ", notRemovable));
                         if (possibleConfigOnlyDirs == null)
                         {
-                            possibleConfigOnlyDirs = Platform.IsWindows
-                                ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                                : new HashSet<string>();
+                            possibleConfigOnlyDirs = new HashSet<string>(Platform.PathComparer);
                         }
                         possibleConfigOnlyDirs.Add(directory);
                     }
@@ -945,9 +941,7 @@ namespace CKAN
         {
             if (directories == null || directories.Count == 0)
             {
-                return Platform.IsWindows
-                    ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                    : new HashSet<string>();
+                return new HashSet<string>(Platform.PathComparer);
             }
 
             var gameDir = CKANPathUtils.NormalizePath(ksp.GameDir());
@@ -959,9 +953,7 @@ namespace CKAN
                 .Distinct()
                 .SelectMany(dir =>
                 {
-                    var results = Platform.IsWindows
-                        ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                        : new HashSet<string>();
+                    var results = new HashSet<string>(Platform.PathComparer);
                     // Adding in the DirectorySeparatorChar fixes attempts on Windows
                     // to parse "X:" which resolves to Environment.CurrentDirectory
                     var dirInfo = new DirectoryInfo(
@@ -974,7 +966,7 @@ namespace CKAN
                         return results;
                     }
 
-                    if (!dir.StartsWith(gameDir, StringComparison.CurrentCultureIgnoreCase))
+                    if (!dir.StartsWith(gameDir, Platform.PathComparison))
                     {
                         dir = CKANPathUtils.ToAbsolute(dir, gameDir);
                     }

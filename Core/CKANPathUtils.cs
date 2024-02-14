@@ -78,7 +78,7 @@ namespace CKAN
                     Properties.Resources.PathUtilsNotAbsolute, path));
             }
 
-            if (!path.StartsWith(root, StringComparison.CurrentCultureIgnoreCase))
+            if (!path.StartsWith(root, Platform.PathComparison))
             {
                 throw new PathErrorKraken(path, string.Format(
                     Properties.Resources.PathUtilsNotInside, path, root));

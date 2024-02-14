@@ -334,7 +334,7 @@ namespace CKAN
         {
             var paths = Enumerable.Repeat(game.PrimaryModDirectoryRelative, 1)
                                   .Concat(game.AlternateModDirectoriesRelative);
-            if (!paths.Any(p => relative_path.StartsWith($"{p}/", StringComparison.CurrentCultureIgnoreCase)))
+            if (!paths.Any(p => relative_path.StartsWith($"{p}/", Platform.PathComparison)))
             {
                 // DLLs only live in the primary or alternate mod directories
                 return null;

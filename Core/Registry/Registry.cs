@@ -169,9 +169,7 @@ namespace CKAN
                 log.Warn("Older registry format detected, normalising paths...");
 
                 // We need case insensitive path matching on Windows
-                var normalised_installed_files = Platform.IsWindows
-                    ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-                    : new Dictionary<string, string>();
+                var normalised_installed_files = new Dictionary<string, string>(Platform.PathComparer);
 
                 foreach (KeyValuePair<string, string> tuple in installed_files)
                 {
@@ -208,7 +206,7 @@ namespace CKAN
             {
                 // We need case insensitive path matching on Windows
                 // (already done when replacing this object in the above block, hence the 'else')
-                installed_files = new Dictionary<string, string>(installed_files, StringComparer.OrdinalIgnoreCase);
+                installed_files = new Dictionary<string, string>(installed_files, Platform.PathComparer);
             }
 
             // Fix control lock, which previously was indexed with an invalid identifier.
@@ -285,9 +283,7 @@ namespace CKAN
         public void ReindexInstalled()
         {
             // We need case insensitive path matching on Windows
-            installed_files = Platform.IsWindows
-                ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-                : new Dictionary<string, string>();
+            installed_files = new Dictionary<string, string>(Platform.PathComparer);
 
             foreach (InstalledModule module in installed_modules.Values)
             {
@@ -851,9 +847,7 @@ namespace CKAN
 
             // We always work with relative files, so let's get some!
             var relativeFiles = absoluteFiles.Select(x => inst.ToRelativeGameDir(x))
-                                             .ToHashSet(Platform.IsWindows
-                                                            ? StringComparer.OrdinalIgnoreCase
-                                                            : StringComparer.Ordinal);
+                                             .ToHashSet(Platform.PathComparer);
 
             // For now, it's always cool if a module wants to register a directory.
             // We have to flip back to absolute paths to actually test this.

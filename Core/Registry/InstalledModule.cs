@@ -114,9 +114,7 @@ namespace CKAN
             install_time = DateTime.Now;
             source_module = module;
             // We need case insensitive path matching on Windows
-            installed_files = Platform.IsWindows
-                ? new Dictionary<string, InstalledModuleFile>(StringComparer.OrdinalIgnoreCase)
-                : new Dictionary<string, InstalledModuleFile>();
+            installed_files = new Dictionary<string, InstalledModuleFile>(Platform.PathComparer);
             auto_installed = autoInstalled;
 
             if (ksp != null)
@@ -156,7 +154,7 @@ namespace CKAN
             {
                 // We need case insensitive path matching on Windows
                 installed_files = new Dictionary<string, InstalledModuleFile>(installed_files,
-                                                                              StringComparer.OrdinalIgnoreCase);
+                                                                              Platform.PathComparer);
             }
         }
 
@@ -168,9 +166,7 @@ namespace CKAN
         public void Renormalise(GameInstance ksp)
         {
             // We need case insensitive path matching on Windows
-            var normalised_installed_files = Platform.IsWindows
-                ? new Dictionary<string, InstalledModuleFile>(StringComparer.OrdinalIgnoreCase)
-                : new Dictionary<string, InstalledModuleFile>();
+            var normalised_installed_files = new Dictionary<string, InstalledModuleFile>(Platform.PathComparer);
 
             foreach (KeyValuePair<string, InstalledModuleFile> tuple in installed_files)
             {

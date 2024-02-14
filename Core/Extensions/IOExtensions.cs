@@ -15,11 +15,9 @@ namespace CKAN.Extensions
                 // Only child is allowed to have extra pieces
                 return false;
             }
-            var opt = Platform.IsWindows ? StringComparison.InvariantCultureIgnoreCase
-                                         : StringComparison.InvariantCulture;
             for (int i = 0; i < parent.Length; ++i)
             {
-                if (!parent[i].Equals(child[i], opt))
+                if (!parent[i].Equals(child[i], Platform.PathComparison))
                 {
                     return false;
                 }

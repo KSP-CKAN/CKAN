@@ -199,9 +199,7 @@ namespace CKAN.GUI
         {
             var currentDirs = _manager.Instances.Values
                                                 .Select(inst => inst.GameDir())
-                                                .ToHashSet(Platform.IsWindows
-                                                               ? StringComparer.OrdinalIgnoreCase
-                                                               : StringComparer.Ordinal);
+                                                .ToHashSet(Platform.PathComparer);
             var toAdd = _manager.FindDefaultInstances()
                                 .Where(inst => !currentDirs.Contains(inst.GameDir()));
             foreach (var inst in toAdd)

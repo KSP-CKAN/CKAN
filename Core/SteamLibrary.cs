@@ -47,7 +47,7 @@ namespace CKAN
         }
 
         public IEnumerable<Uri> GameAppURLs(DirectoryInfo gameDir)
-            => Games.Where(g => gameDir.FullName.Equals(g.GameDir.FullName, compareOpt))
+            => Games.Where(g => gameDir.FullName.Equals(g.GameDir.FullName, Platform.PathComparison))
                     .Select(g => g.LaunchUrl);
 
         public readonly GameBase[] Games;
@@ -86,10 +86,6 @@ namespace CKAN
             : Array.Empty<string>();
 
         private static readonly string[] appRelPaths = new string[] { "SteamApps", "steamapps" };
-
-        private static readonly StringComparison compareOpt
-            = Platform.IsWindows ? StringComparison.InvariantCultureIgnoreCase
-                                 : StringComparison.InvariantCulture;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(SteamLibrary));
     }

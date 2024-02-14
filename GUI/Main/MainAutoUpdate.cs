@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using Autofac;
 
 using CKAN.Configuration;
-using CKAN.Versioning;
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618

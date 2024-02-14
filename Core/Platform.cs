@@ -61,6 +61,14 @@ namespace CKAN
             IsUnix
             && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DISPLAY"));
 
+        public static readonly StringComparer PathComparer =
+            IsWindows ? StringComparer.OrdinalIgnoreCase
+                      : StringComparer.Ordinal;
+
+        public static readonly StringComparison PathComparison =
+            IsWindows ? StringComparison.OrdinalIgnoreCase
+                      : StringComparison.Ordinal;
+
         public static bool IsAdministrator()
         {
             if (File.Exists("/.dockerenv"))
