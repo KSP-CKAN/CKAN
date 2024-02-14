@@ -187,7 +187,7 @@ namespace CKAN
             {
                 case FileType.TarGz: return FromTarGz(path, game, progress);
                 case FileType.Zip:   return FromZip(path, game, progress);
-                default: throw new UnsupportedKraken($"Not a .tar.gz or .zip, cannot process: {path}");
+                default: throw new UnsupportedKraken(string.Format(Properties.Resources.NetRepoNotATarGz, path));
             }
         }
 

@@ -51,10 +51,19 @@ namespace CKAN
             WebRequest req = WebRequest.Create(url);
             #pragma warning restore SYSLIB0014
             req.Method = "HEAD";
-            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
-            string val = resp.Headers["ETag"]?.Replace("\"", "");
-            resp.Close();
-            return val;
+            try
+            {
+                HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+                string val = resp.Headers["ETag"]?.Replace("\"", "");
+                resp.Close();
+                return val;
+            }
+            catch (WebException exc)
+            {
+                // Let the calling code keep going to get the actual problem
+                log.Debug($"Failed to get ETag from {url}", exc);
+                return null;
+            }
         }
 
         /// <summary>

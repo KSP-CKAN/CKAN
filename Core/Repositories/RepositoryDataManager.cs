@@ -169,21 +169,29 @@ namespace CKAN
                 var progress = new ProgressFilesOffsetsToPercent(
                     new Progress<int>(p => user.RaiseProgress(msg, p)),
                     targets.Select(t => new FileInfo(t.filename).Length));
-                foreach ((Repository repo, NetAsyncDownloader.DownloadTarget target) in toUpdate.Zip(targets))
+                foreach ((var repo, var target) in toUpdate.Zip(targets))
                 {
                     var file = target.filename;
                     msg = string.Format(Properties.Resources.NetRepoLoadingModulesFromRepo,
                                         repo.name);
-                    // Load the file, save to in memory cache
                     log.InfoFormat("Loading {0}...", file);
-                    var repoData = repositoriesData[repo] =
-                        RepositoryData.FromDownload(file, game, progress);
-                    // Save parsed data to disk
-                    log.DebugFormat("Saving data for {0} repo...", repo.name);
-                    repoData.SaveTo(GetRepoDataPath(repo));
-                    // Delete downloaded archive
-                    log.DebugFormat("Deleting {0}...", file);
-                    File.Delete(file);
+                    try
+                    {
+                        // Load the file, save to in memory cache
+                        var repoData = repositoriesData[repo] =
+                            RepositoryData.FromDownload(file, game, progress);
+                        // Save parsed data to disk
+                        log.DebugFormat("Saving data for {0} repo...", repo.name);
+                        repoData.SaveTo(GetRepoDataPath(repo));
+                        // Delete downloaded archive
+                        log.DebugFormat("Deleting {0}...", file);
+                        File.Delete(file);
+                    }
+                    catch (UnsupportedKraken kraken)
+                    {
+                        // Show parsing errors in the Downloads Failed popup
+                        throw new DownloadErrorsKraken(Array.IndexOf(toUpdate, repo), kraken);
+                    }
                     progress.NextFile();
                 }
                 // Commit these etags to disk

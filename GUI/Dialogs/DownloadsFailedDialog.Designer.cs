@@ -168,6 +168,7 @@ namespace CKAN.GUI
             this.Icon = EmbeddedImages.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.Padding = new System.Windows.Forms.Padding(8, 8, 8, 0);
             this.HelpButton = true;
             this.Name = "DownloadsFailedDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
