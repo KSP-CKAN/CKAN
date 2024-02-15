@@ -204,6 +204,12 @@ namespace CKAN.GUI
                 configuration.CommandLineArguments = null;
                 needsSave = true;
             }
+            else if (configuration.CommandLines.Count < 1)
+            {
+                // Don't leave the list empty if user switches CKAN versions
+                configuration.CommandLines.AddRange(defaultCommandLines);
+                needsSave = true;
+            }
 
             return needsSave;
         }
