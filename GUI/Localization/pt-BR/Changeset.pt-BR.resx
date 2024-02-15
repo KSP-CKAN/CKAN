@@ -117,13 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Mod.Text" xml:space="preserve">
+  <data name="ModColumn.HeaderText" xml:space="preserve">
     <value>Mod</value>
   </data>
-  <data name="ChangeType.Text" xml:space="preserve">
+  <data name="ChangeTypeColumn.HeaderText" xml:space="preserve">
     <value>Mudança</value>
   </data>
-  <data name="Reason.Text" xml:space="preserve">
+  <data name="ReasonsColumn.HeaderText" xml:space="preserve">
     <value>Razão para a ação</value>
   </data>
   <data name="BackButton.Text" xml:space="preserve">

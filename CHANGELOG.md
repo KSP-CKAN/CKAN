@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Alternate game command lines and Steam refactor (#4010, #4013, #4028 by: HebaruSan)
 - [Multiple] Recommendations usability improvements (#4025 by: HebaruSan)
 - [Multiple] Prompt for client upgrade when newer spec is found (#4026 by: HebaruSan)
+- [GUI] Ability to clear auto-installed flag from changeset tab (#4033 by: HebaruSan)
 
 ### Bugfixes
 

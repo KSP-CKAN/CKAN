@@ -43,12 +43,6 @@ namespace CKAN.GUI
     public class ModChange
     {
         public CkanModule        Mod        { get; private set; }
-        /// <summary>
-        /// For changes involving another version in addition to the main one,
-        /// this is that other version.
-        /// When upgrading, the target version.
-        /// Otherwise not used.
-        /// </summary>
         public GUIModChangeType  ChangeType { get; private set; }
         public SelectionReason[] Reasons    { get; private set; }
 
@@ -57,6 +51,16 @@ namespace CKAN.GUI
         /// false otherwise
         /// </summary>
         public readonly bool IsAutoRemoval;
+
+        /// <summary>
+        /// true if this change is user requested and no other changes depend on it, false otherwise.
+        /// </summary>
+        public readonly bool IsUserRequested;
+
+        /// <summary>
+        /// true if this change can be removed from a changeset, false otherwise
+        /// </summary>
+        public bool IsRemovable => IsAutoRemoval || IsUserRequested;
 
         // If we don't have a Reason, the user probably wanted to install it
         public ModChange(CkanModule mod, GUIModChangeType changeType)
@@ -74,7 +78,8 @@ namespace CKAN.GUI
             Mod        = mod;
             ChangeType = changeType;
             Reasons    = reasons.ToArray();
-            IsAutoRemoval = Reasons.All(r => r is SelectionReason.NoLongerUsed);
+            IsAutoRemoval   = Reasons.All(r => r is SelectionReason.NoLongerUsed);
+            IsUserRequested = Reasons.All(r => r is SelectionReason.UserRequested);
         }
 
         public override bool Equals(object obj)
@@ -149,6 +154,9 @@ namespace CKAN.GUI
                 : string.Format(Properties.Resources.MainChangesetUpdateSelected,
                                 targetMod.version);
 
+        /// <summary>
+        /// The target version for upgrading
+        /// </summary>
         public readonly CkanModule targetMod;
 
         private bool IsReinstall

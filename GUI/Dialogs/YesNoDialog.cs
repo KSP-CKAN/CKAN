@@ -67,6 +67,7 @@ namespace CKAN.GUI
                 ClientSize.Width,
                 Math.Min(maxHeight, height)
             );
+            ActiveControl = YesButton;
         }
 
         private void SetupSuppressable(string text, string yesText, string noText, string suppressText)

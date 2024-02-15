@@ -826,10 +826,8 @@ namespace CKAN.GUI
             }
         }
 
-        private void ShowSelectionModInfo(ListView.SelectedListViewItemCollection selection)
+        private void ShowSelectionModInfo(CkanModule module)
         {
-            CkanModule module = (CkanModule)selection?.Cast<ListViewItem>().FirstOrDefault()?.Tag;
-
             ActiveModInfo = module == null ? null : new GUIMod(
                 module,
                 repoData,
@@ -838,6 +836,11 @@ namespace CKAN.GUI
                 null,
                 configuration.HideEpochs,
                 configuration.HideV);
+        }
+
+        private void ShowSelectionModInfo(ListView.SelectedListViewItemCollection selection)
+        {
+            ShowSelectionModInfo(selection?.Cast<ListViewItem>().FirstOrDefault()?.Tag as CkanModule);
         }
 
         private void ManageMods_OnChangeSetChanged(List<ModChange> changeset, Dictionary<GUIMod, string> conflicts)
@@ -888,7 +891,7 @@ namespace CKAN.GUI
                     break;
 
                 case "ChangesetTabPage":
-                    ShowSelectionModInfo(Changeset.SelectedItems);
+                    ShowSelectionModInfo(Changeset.SelectedItem);
                     break;
 
                 case "ChooseRecommendedModsTabPage":
@@ -900,7 +903,7 @@ namespace CKAN.GUI
                     break;
 
                 default:
-                    ShowSelectionModInfo(null);
+                    ShowSelectionModInfo((CkanModule)null);
                     break;
             }
         }

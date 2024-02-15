@@ -905,6 +905,42 @@ namespace CKAN.GUI
             }
         }
 
+        public void RemoveChangesetItem(ModChange change)
+        {
+            if (change.IsRemovable
+                && mainModList.full_list_of_mod_rows.TryGetValue(change.Mod.identifier,
+                                                                 out DataGridViewRow row)
+                && row.Tag is GUIMod guiMod)
+            {
+                if (change.IsAutoRemoval)
+                {
+                    guiMod.SetAutoInstallChecked(row, AutoInstalled, false);
+                    OnRegistryChanged?.Invoke();
+                }
+                else if (change.IsUserRequested)
+                {
+                    switch (change.ChangeType)
+                    {
+                        case GUIModChangeType.Install:
+                            guiMod.SetInstallChecked(row, Installed, false);
+                            break;
+                        case GUIModChangeType.Remove:
+                            guiMod.SetInstallChecked(row, Installed, true);
+                            break;
+                        case GUIModChangeType.Update:
+                            guiMod.SetUpgradeChecked(row, UpdateCol, false);
+                            break;
+                        case GUIModChangeType.Replace:
+                            guiMod.SetReplaceChecked(row, ReplaceCol, false);
+                            break;
+                    }
+                }
+                var inst = Main.Instance.CurrentInstance;
+                UpdateChangeSetAndConflicts(
+                    inst, RegistryManager.Instance(inst, repoData).registry);
+            }
+        }
+
         private void ModGrid_GotFocus(object sender, EventArgs e)
         {
             Util.Invoke(this, () =>
@@ -975,12 +1011,16 @@ namespace CKAN.GUI
                 }
                 mod.SetUpgradeChecked(row, UpdateCol, false);
                 mod.SetReplaceChecked(row, ReplaceCol, false);
-                // Marking a mod as AutoInstalled can immediately queue it for removal if there is no dependent mod.
-                // Reset the state of the AutoInstalled checkbox for these by deducing it from the changeset.
-                if (mod.InstalledMod != null &&
-                    ChangeSet.Contains(new ModChange(mod.InstalledMod?.Module, GUIModChangeType.Remove,
-                        new SelectionReason.NoLongerUsed()))
-                )
+            }
+            // Marking a mod as AutoInstalled can immediately queue it for removal if there is no dependent mod.
+            // Reset the state of the AutoInstalled checkbox for these by deducing it from the changeset.
+            foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
+            {
+                GUIMod mod = row.Tag as GUIMod;
+                if (mod.InstalledMod != null
+                    && ChangeSet.Contains(new ModChange(mod.InstalledMod?.Module,
+                                                        GUIModChangeType.Remove,
+                                                        new SelectionReason.NoLongerUsed())))
                 {
                     mod.SetAutoInstallChecked(row, AutoInstalled, false);
                 }

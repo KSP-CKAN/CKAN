@@ -3,6 +3,8 @@ using System.Linq;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.ComponentModel;
+using System.Reflection;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -19,66 +21,66 @@ namespace CKAN.GUI
         public Changeset()
         {
             InitializeComponent();
+            // Reduce the grid's flickering
+            ChangesGrid.GetType()
+                       .GetProperty("DoubleBuffered",
+                                    BindingFlags.Instance | BindingFlags.NonPublic)
+                       .SetValue(ChangesGrid, true, null);
         }
 
-        public void LoadChangeset(
-            List<ModChange> changes,
-            List<ModuleLabel> AlertLabels,
-            Dictionary<CkanModule, string> conflicts)
+        public void LoadChangeset(List<ModChange>                changes,
+                                  List<ModuleLabel>              AlertLabels,
+                                  Dictionary<CkanModule, string> conflicts)
         {
-            changeset      = changes;
-            alertLabels    = AlertLabels;
-            this.conflicts = conflicts;
+            changeset = changes;
             ConfirmChangesButton.Enabled = conflicts == null || !conflicts.Any();
-            CloseTheGameLabel.Visible = changeset != null
-                && changeset.Any(ch => DeletingChanges.Contains(ch.ChangeType));
+            CloseTheGameLabel.Visible = changes?.Any(ch => DeletingChanges.Contains(ch.ChangeType))
+                                        ?? false;
+            ChangesGrid.DataSource = new BindingList<ChangesetRow>(
+                changes?.Select(ch => new ChangesetRow(ch, AlertLabels, conflicts))
+                        .ToList()
+                       ?? new List<ChangesetRow>());
+            ChangesGrid.AutoResizeColumns();
         }
 
-        private static readonly HashSet<GUIModChangeType> DeletingChanges = new HashSet<GUIModChangeType>
-        {
-            GUIModChangeType.Remove,
-            GUIModChangeType.Update,
-            GUIModChangeType.Replace,
-        };
+        public CkanModule SelectedItem => SelectedRow?.Change.Mod;
 
-        protected override void OnVisibleChanged(EventArgs e)
-        {
-            base.OnVisibleChanged(e);
-            if (Visible)
-            {
-                // Update list on each refresh in case caching changed
-                UpdateList();
-            }
-        }
-
-        public ListView.SelectedListViewItemCollection SelectedItems
-            => ChangesListView.SelectedItems;
-
-        public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
+        public event Action<CkanModule> OnSelectedItemsChanged;
+        public event Action<ModChange>  OnRemoveItem;
 
         public event Action<List<ModChange>> OnConfirmChanges;
-        public event Action<bool> OnCancelChanges;
+        public event Action<bool>            OnCancelChanges;
 
-        private void UpdateList()
+        private void ChangesGrid_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
-            ChangesListView.BeginUpdate();
-            ChangesListView.Items.Clear();
-            if (changeset != null)
+            ChangesGrid.ClearSelection();
+            foreach (var row in ChangesGrid.Rows.OfType<DataGridViewRow>())
             {
-                // Changeset sorting is handled upstream in the resolver
-                ChangesListView.Items.AddRange(changeset
-                    .Where(ch => ch.ChangeType != GUIModChangeType.None)
-                    .Select(ch => MakeItem(ch, conflicts))
-                    .ToArray());
-                ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                ChangesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                var obj = row.DataBoundItem as ChangesetRow;
+                row.DefaultCellStyle.ForeColor = obj?.WarningLabel != null
+                                                 ? Color.Red : SystemColors.WindowText;
+                row.DefaultCellStyle.BackColor = obj?.Conflict != null
+                                                 ? Color.LightCoral : Color.Empty;
+                if (obj?.Change.IsRemovable ?? false)
+                {
+                    foreach (var icon in row.Cells.OfType<DataGridViewImageCell>())
+                    {
+                        icon.ToolTipText = string.Format(Properties.Resources.ChangesetDeleteTooltip,
+                                                         obj.ChangeType, obj.Change.Mod);
+                    }
+                }
             }
-            ChangesListView.EndUpdate();
         }
 
-        private void ChangesListView_SelectedIndexChanged(object sender, EventArgs e)
+        private void ChangesGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            OnSelectedItemsChanged?.Invoke(ChangesListView.SelectedItems);
+            if (ChangesGrid.CurrentCell?.OwningColumn == DeleteColumn
+                && ChangesGrid.CurrentRow?.DataBoundItem is ChangesetRow row
+                && row.Change.IsRemovable
+                && row.ConfirmUncheck())
+            {
+                OnRemoveItem?.Invoke(row.Change);
+            }
         }
 
         private void ConfirmChangesButton_Click(object sender, EventArgs e)
@@ -97,35 +99,75 @@ namespace CKAN.GUI
             OnCancelChanges?.Invoke(false);
         }
 
-        private ListViewItem MakeItem(ModChange change, Dictionary<CkanModule, string> conflicts)
+        private void ChangesGrid_SelectionChanged(object sender, EventArgs e)
         {
-            var descr = change.Description;
-            CkanModule m = change.Mod;
-            ModuleLabel warnLbl = alertLabels?.FirstOrDefault(l =>
-                l.ContainsModule(Main.Instance.CurrentInstance.game, m.identifier));
-            return new ListViewItem(new string[]
+            // Don't pop up mod info when they click the X icons
+            if (ChangesGrid.CurrentCell?.OwningColumn is DataGridViewTextBoxColumn)
             {
-                change.NameAndStatus,
-                change.ChangeType.Localize(),
-                conflicts != null && conflicts.TryGetValue(m, out string confDescr)
-                    ? string.Format("{0} ({1})", confDescr, descr)
-                    : warnLbl != null
-                        ? string.Format(
-                            Properties.Resources.MainChangesetWarningInstallingModuleWithLabel,
-                            warnLbl.Name,
-                            descr)
-                        : descr
-            })
-            {
-                Tag         = m,
-                ForeColor   = warnLbl != null ? Color.Red : SystemColors.WindowText,
-                BackColor   = conflicts != null && conflicts.ContainsKey(m) ? Color.LightCoral : Color.Empty,
-                ToolTipText = descr,
-            };
+                OnSelectedItemsChanged?.Invoke(SelectedRow?.Change.Mod);
+            }
         }
 
-        private List<ModChange>                changeset;
-        private List<ModuleLabel>              alertLabels;
-        private Dictionary<CkanModule, string> conflicts;
+        private static readonly HashSet<GUIModChangeType> DeletingChanges = new HashSet<GUIModChangeType>
+        {
+            GUIModChangeType.Remove,
+            GUIModChangeType.Update,
+            GUIModChangeType.Replace,
+        };
+
+        private ChangesetRow SelectedRow
+            => ChangesGrid.SelectedRows
+                          .OfType<DataGridViewRow>()
+                          .FirstOrDefault()
+                          ?.DataBoundItem as ChangesetRow;
+
+        private List<ModChange> changeset;
+    }
+
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
+    public class ChangesetRow
+    {
+        public ChangesetRow(ModChange                      change,
+                            List<ModuleLabel>              alertLabels,
+                            Dictionary<CkanModule, string> conflicts)
+        {
+            Change  = change;
+            WarningLabel = alertLabels?.FirstOrDefault(l =>
+                l.ContainsModule(Main.Instance.CurrentInstance.game,
+                                 Change.Mod.identifier));
+            conflicts?.TryGetValue(Change.Mod, out Conflict);
+            Reasons = Conflict != null
+                        ? string.Format("{0} ({1})", Conflict, Change.Description)
+                    : WarningLabel != null
+                        ? string.Format(
+                            Properties.Resources.MainChangesetWarningInstallingModuleWithLabel,
+                            WarningLabel.Name, Change.Description)
+                    : Change.Description;
+        }
+
+        public readonly ModChange   Change;
+        public readonly ModuleLabel WarningLabel = null;
+        public readonly string      Conflict     = null;
+
+        public string Mod         => Change.NameAndStatus;
+        public string ChangeType  => Change.ChangeType.Localize();
+        public string Reasons     { get; private set; }
+        public Bitmap DeleteImage => Change.IsRemovable ? EmbeddedImages.textClear
+                                                        : EmptyBitmap;
+
+        public bool ConfirmUncheck()
+            => Change.IsAutoRemoval
+                ? Main.Instance.YesNoDialog(
+                    string.Format(Properties.Resources.ChangesetConfirmRemoveAutoRemoval, Change.Mod),
+                    Properties.Resources.ChangesetConfirmRemoveAutoRemovalYes,
+                    Properties.Resources.ChangesetConfirmRemoveAutoRemovalNo)
+                : Main.Instance.YesNoDialog(
+                    string.Format(Properties.Resources.ChangesetConfirmRemoveUserRequested, ChangeType, Change.Mod),
+                    Properties.Resources.ChangesetConfirmRemoveUserRequestedYes,
+                    Properties.Resources.ChangesetConfirmRemoveUserRequestedNo);
+
+        private static readonly Bitmap EmptyBitmap = new Bitmap(1, 1);
     }
 }
