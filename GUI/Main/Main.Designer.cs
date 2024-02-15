@@ -508,6 +508,7 @@ namespace CKAN.GUI
             this.Changeset.Size = new System.Drawing.Size(500, 500);
             this.Changeset.TabIndex = 32;
             this.Changeset.OnSelectedItemsChanged += this.Changeset_OnSelectedItemsChanged;
+            this.Changeset.OnRemoveItem += ManageMods.RemoveChangesetItem;
             this.Changeset.OnConfirmChanges += this.Changeset_OnConfirmChanges;
             this.Changeset.OnCancelChanges += this.Changeset_OnCancelChanges;
             //

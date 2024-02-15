@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ChangeType.Text" xml:space="preserve"><value>Änderung</value></data>
-  <data name="Reason.Text" xml:space="preserve"><value>Grund</value></data>
+  <data name="ChangeTypeColumn.HeaderText" xml:space="preserve"><value>Änderung</value></data>
+  <data name="ReasonsColumn.HeaderText" xml:space="preserve"><value>Grund</value></data>
   <data name="BackButton.Text" xml:space="preserve"><value>Zurück</value></data>
   <data name="CancelChangesButton.Text" xml:space="preserve"><value>Löschen</value></data>
   <data name="ConfirmChangesButton.Text" xml:space="preserve"><value>Annehmen</value></data>

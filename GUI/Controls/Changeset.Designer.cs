@@ -30,10 +30,11 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Changeset));
-            this.ChangesListView = new ThemedListView();
-            this.Mod = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ChangeType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Reason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ChangesGrid = new System.Windows.Forms.DataGridView();
+            this.ModColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ChangeTypeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ReasonsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DeleteColumn = new System.Windows.Forms.DataGridViewImageColumn();
             this.CloseTheGameLabel = new System.Windows.Forms.Label();
             this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.ConfirmChangesButton = new System.Windows.Forms.Button();
@@ -42,39 +43,78 @@ namespace CKAN.GUI
             this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             //
-            // ChangesListView
+            // ChangesGrid
             //
-            this.ChangesListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ChangesListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ChangesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Mod,
-            this.ChangeType,
-            this.Reason});
-            this.ChangesListView.FullRowSelect = true;
-            this.ChangesListView.Location = new System.Drawing.Point(-2, 0);
-            this.ChangesListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.ChangesListView.Name = "ChangesListView";
-            this.ChangesListView.Size = new System.Drawing.Size(1532, 886);
-            this.ChangesListView.ShowItemToolTips = true;
-            this.ChangesListView.TabIndex = 0;
-            this.ChangesListView.UseCompatibleStateImageBehavior = false;
-            this.ChangesListView.View = System.Windows.Forms.View.Details;
-            this.ChangesListView.SelectedIndexChanged += new System.EventHandler(ChangesListView_SelectedIndexChanged);
+            this.ChangesGrid.AllowUserToResizeColumns = true;
+            this.ChangesGrid.AllowUserToOrderColumns = true;
+            this.ChangesGrid.AllowUserToResizeRows = false;
+            this.ChangesGrid.AutoGenerateColumns = false;
+            this.ChangesGrid.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.ChangesGrid.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.ChangesGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ChangesGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ModColumn,
+            this.ChangeTypeColumn,
+            this.ReasonsColumn,
+            this.DeleteColumn});
+            this.ChangesGrid.ColumnHeadersDefaultCellStyle.Padding = new System.Windows.Forms.Padding(1, 3, 1, 3);
+            this.ChangesGrid.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.SystemColors.Control;
+            this.ChangesGrid.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.ChangesGrid.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Control;
+            this.ChangesGrid.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Raised;
+            this.ChangesGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ChangesGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.ChangesGrid.DefaultCellStyle.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.ChangesGrid.EnableHeadersVisualStyles = false;
+            this.ChangesGrid.Location = new System.Drawing.Point(-2, 0);
+            this.ChangesGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ChangesGrid.MultiSelect = false;
+            this.ChangesGrid.Name = "ChangesGrid";
+            this.ChangesGrid.RowHeadersVisible = false;
+            this.ChangesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.ChangesGrid.ShowCellToolTips = true;
+            this.ChangesGrid.Size = new System.Drawing.Size(1532, 886);
+            this.ChangesGrid.TabIndex = 0;
+            this.ChangesGrid.TabStop = false;
+            this.ChangesGrid.SelectionChanged += new System.EventHandler(this.ChangesGrid_SelectionChanged);
+            this.ChangesGrid.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.ChangesGrid_DataBindingComplete);
+            this.ChangesGrid.CellClick += this.ChangesGrid_CellClick;
             //
-            // Mod
+            // ModColumn
             //
-            this.Mod.Width = 332;
-            resources.ApplyResources(this.Mod, "Mod");
+            this.ModColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.ModColumn.Width = 332;
+            this.ModColumn.ValueType = typeof(string);
+            this.ModColumn.DataPropertyName = "Mod";
+            this.ModColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            resources.ApplyResources(this.ModColumn, "ModColumn");
             //
-            // ChangeType
+            // ChangeTypeColumn
             //
-            this.ChangeType.Width = 111;
-            resources.ApplyResources(this.ChangeType, "ChangeType");
+            this.ReasonsColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.ChangeTypeColumn.Width = 111;
+            this.ChangeTypeColumn.ValueType = typeof(string);
+            this.ChangeTypeColumn.DataPropertyName = "ChangeType";
+            this.ChangeTypeColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            resources.ApplyResources(this.ChangeTypeColumn, "ChangeTypeColumn");
             //
-            // Reason
+            // ReasonsColumn
             //
-            this.Reason.Width = 606;
-            resources.ApplyResources(this.Reason, "Reason");
+            this.ReasonsColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ReasonsColumn.Width = 606;
+            this.ReasonsColumn.ValueType = typeof(string);
+            this.ReasonsColumn.DataPropertyName = "Reasons";
+            this.ReasonsColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            resources.ApplyResources(this.ReasonsColumn, "ReasonsColumn");
+            //
+            // DeleteColumn
+            //
+            this.DeleteColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.DeleteColumn.Width = 200;
+            this.DeleteColumn.ValueType = typeof(System.Drawing.Bitmap);
+            this.DeleteColumn.DataPropertyName = "DeleteImage";
+            this.DeleteColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            resources.ApplyResources(this.DeleteColumn, "DeleteColumn");
             //
             // CloseTheGameLabel
             //
@@ -88,9 +128,9 @@ namespace CKAN.GUI
             this.CloseTheGameLabel.TabIndex = 0;
             this.CloseTheGameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             resources.ApplyResources(this.CloseTheGameLabel, "CloseTheGameLabel");
-            // 
+            //
             // BottomButtonPanel
-            // 
+            //
             this.BottomButtonPanel.RightControls.Add(this.ConfirmChangesButton);
             this.BottomButtonPanel.RightControls.Add(this.CancelChangesButton);
             this.BottomButtonPanel.RightControls.Add(this.BackButton);
@@ -132,11 +172,11 @@ namespace CKAN.GUI
             this.ConfirmChangesButton.TabIndex = 2;
             this.ConfirmChangesButton.Click += new System.EventHandler(this.ConfirmChangesButton_Click);
             resources.ApplyResources(this.ConfirmChangesButton, "ConfirmChangesButton");
-            // 
+            //
             // Changeset
-            // 
+            //
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.Controls.Add(this.ChangesListView);
+            this.Controls.Add(this.ChangesGrid);
             this.Controls.Add(this.CloseTheGameLabel);
             this.Controls.Add(this.BottomButtonPanel);
             this.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -152,10 +192,11 @@ namespace CKAN.GUI
 
         #endregion
 
-        private System.Windows.Forms.ListView ChangesListView;
-        private System.Windows.Forms.ColumnHeader Mod;
-        private System.Windows.Forms.ColumnHeader ChangeType;
-        private System.Windows.Forms.ColumnHeader Reason;
+        private System.Windows.Forms.DataGridView ChangesGrid;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ModColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ChangeTypeColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ReasonsColumn;
+        private System.Windows.Forms.DataGridViewImageColumn DeleteColumn;
         private System.Windows.Forms.Label CloseTheGameLabel;
         private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button BackButton;

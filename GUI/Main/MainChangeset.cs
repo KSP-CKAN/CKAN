@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
@@ -20,9 +19,12 @@ namespace CKAN.GUI
                 conflicts);
         }
 
-        private void Changeset_OnSelectedItemsChanged(ListView.SelectedListViewItemCollection items)
+        private void Changeset_OnSelectedItemsChanged(CkanModule item)
         {
-            ShowSelectionModInfo(items);
+            if (MainTabControl.SelectedTab == ChangesetTabPage)
+            {
+                ShowSelectionModInfo(item);
+            }
         }
 
         private void Changeset_OnCancelChanges(bool reset)

@@ -377,6 +377,17 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="EditLabelsDialogSave" xml:space="preserve"><value>Save</value></data>
   <data name="EditLabelsDialogDiscard" xml:space="preserve"><value>Discard</value></data>
   <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve"><value>WARNING: INSTALLING MODULE WITH LABEL {0} ({1})</value></data>
+  <data name="ChangesetDeleteTooltip" xml:space="preserve"><value>Don't {0} {1}</value></data>
+  <data name="ChangesetConfirmRemoveAutoRemoval" xml:space="preserve"><value>{0} is being removed because it was installed as a dependency of another mod, which is being removed.
+
+Are you sure you want to keep it?</value></data>
+  <data name="ChangesetConfirmRemoveAutoRemovalYes" xml:space="preserve"><value>Keep</value></data>
+  <data name="ChangesetConfirmRemoveAutoRemovalNo" xml:space="preserve"><value>Cancel</value></data>
+  <data name="ChangesetConfirmRemoveUserRequested" xml:space="preserve"><value>You had chosen to {0} {1}.
+
+Are you sure you want to skip this change?</value></data>
+  <data name="ChangesetConfirmRemoveUserRequestedYes" xml:space="preserve"><value>Skip</value></data>
+  <data name="ChangesetConfirmRemoveUserRequestedNo" xml:space="preserve"><value>Cancel</value></data>
   <data name="EditLabelsToolTipName" xml:space="preserve"><value>The label will appear in the Labels menu under this name, must be unique per install</value></data>
   <data name="EditLabelsToolTipColor" xml:space="preserve"><value>Rows for modules with this label will be drawn with this background color</value></data>
   <data name="EditLabelsToolTipInstance" xml:space="preserve"><value>The instance for which this label is available, leave blank for all</value></data>
