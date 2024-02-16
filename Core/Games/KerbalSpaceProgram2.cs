@@ -8,6 +8,7 @@ using System.Reflection;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Mono.Cecil;
 
 using CKAN.DLC;
 using CKAN.Versioning;
@@ -21,7 +22,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public bool GameInFolder(DirectoryInfo where)
             => InstanceAnchorFiles.Any(f => File.Exists(Path.Combine(where.FullName, f)))
-                && Directory.Exists(Path.Combine(where.FullName, "KSP2_x64_Data"));
+                && Directory.Exists(Path.Combine(where.FullName, DataDir));
 
         /// <summary>
         /// Get the default non-Steam path to KSP on macOS
@@ -53,7 +54,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public string[] StockFolders => new string[]
         {
-            "KSP2_x64_Data",
+            DataDir,
             "MonoBleedingEdge",
             "PDLauncher",
         };
@@ -84,8 +85,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public void RebuildSubdirectories(string absGameRoot)
         {
-            const string dataDir = "KSP2_x64_Data";
-            var path = Path.Combine(absGameRoot, dataDir);
+            var path = Path.Combine(absGameRoot, DataDir);
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -151,17 +151,39 @@ namespace CKAN.Games.KerbalSpaceProgram2
             => json.ToObject<GameVersion[]>();
 
         public GameVersion DetectVersion(DirectoryInfo where)
-            => VersionFromFile(Path.Combine(where.FullName, "KSP2_x64.exe"));
+            => VersionFromAssembly(Path.Combine(where.FullName,
+                                                DataDir,
+                                                "Managed",
+                                                "Assembly-CSharp.dll"))
+                ?? VersionFromExecutable(Path.Combine(where.FullName,
+                                                      "KSP2_x64.exe"))
+                // Fall back to the most recent version
+                ?? KnownVersions.Last();
 
-        private GameVersion VersionFromFile(string path)
-            => File.Exists(path)
-                && GameVersion.TryParse(FileVersionInfo.GetVersionInfo(path).ProductVersion
+        private static GameVersion VersionFromAssembly(string assemblyPath)
+            => File.Exists(assemblyPath)
+                && GameVersion.TryParse(
+                    AssemblyDefinition.ReadAssembly(assemblyPath)
+                                      .Modules
+                                      .SelectMany(m => m.GetTypes())
+                                      .Where(t => t.Name == "VersionID")
+                                      .SelectMany(t => t.Fields)
+                                      .Where(f => f.Name == "VERSION_TEXT")
+                                      .Select(f => (string)f.Constant)
+                                      .Select(ver => string.Join(".", ver.Split('.').Take(4)))
+                                      .FirstOrDefault(),
+                    out GameVersion v)
+                        ? v
+                        : null;
+
+        private static GameVersion VersionFromExecutable(string exePath)
+            => File.Exists(exePath)
+                && GameVersion.TryParse(FileVersionInfo.GetVersionInfo(exePath).ProductVersion
                                         // Fake instances have an EXE containing just the version string
-                                        ?? File.ReadAllText(path),
+                                        ?? File.ReadAllText(exePath),
                                         out GameVersion v)
                     ? v
-                    // Fall back to the most recent version
-                    : KnownVersions.Last();
+                    : null;
 
         public string CompatibleVersionsFile => "compatible_game_versions.json";
 
@@ -184,6 +206,8 @@ namespace CKAN.Games.KerbalSpaceProgram2
         public Uri RepositoryListURL => new Uri("https://raw.githubusercontent.com/KSP-CKAN/KSP2-CKAN-meta/main/repositories.json");
 
         public Uri MetadataBugtrackerURL => new Uri("https://github.com/KSP-CKAN/KSP2-NetKAN/issues/new/choose");
+
+        private const string DataDir = "KSP2_x64_Data";
 
         // Key: Allowed value of install_to
         // Value: Relative path
