@@ -156,6 +156,9 @@
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
     <value>Configurações de Plugin</value>
   </data>
+  <data name="preferredHostsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Hosts Preferidos</value>
+  </data>
   <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve">
     <value>Filtros de instalação</value>
   </data>
@@ -207,6 +210,12 @@
   <data name="EditModpackTabPage.Text" xml:space="preserve">
     <value>Editar pacote de mods</value>
   </data>
+  <data name="UnmanagedFilesTabPage.Text" xml:space="preserve">
+    <value>Arquivos não gerenciados</value>
+  </data>
+  <data name="InstallationHistoryTabPage.Text" xml:space="preserve">
+    <value>Histórico de instalações</value>
+  </data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve">
     <value>CKAN</value>
   </data>
@@ -236,5 +245,11 @@
   </data>
   <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
     <value>Tempo de jogo...</value>
+  </data>
+  <data name="viewUnmanagedFilesStripMenuItem.Text" xml:space="preserve">
+    <value>Arquivos não gerenciados...</value>
+  </data>
+  <data name="installationHistoryStripMenuItem.Text" xml:space="preserve">
+    <value>Histórico de instalações...</value>
   </data>
 </root>

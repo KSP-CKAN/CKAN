@@ -126,6 +126,9 @@
   <data name="ReasonsColumn.HeaderText" xml:space="preserve">
     <value>Raison de l'action</value>
   </data>
+  <data name="CloseTheGameLabel.Text" xml:space="preserve">
+    <value>Note : Pour appliquer ces modifications, CKAN doit remplacer ou supprimer des fichiers. Si le jeu est en cours d'exécution, fermez-le avant de continuer !</value>
+  </data>
   <data name="BackButton.Text" xml:space="preserve">
     <value>Retour</value>
   </data>

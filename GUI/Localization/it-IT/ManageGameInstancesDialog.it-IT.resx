@@ -112,6 +112,9 @@
   <data name="GameInstallName.Text" xml:space="preserve">
     <value>Nome</value>
   </data>
+  <data name="Game.Text" xml:space="preserve">
+    <value>Gioco</value>
+  </data>
   <data name="GameInstallVersion.Text" xml:space="preserve">
     <value>Versione</value>
   </data>
@@ -130,11 +133,17 @@
   <data name="AddToCKANMenuItem.Text" xml:space="preserve">
     <value>Aggiungi istanza a CKAN</value>
   </data>
+  <data name="CloneGameInstanceMenuItem.Text" xml:space="preserve">
+    <value>Duplica istanza</value>
+  </data>
   <data name="RenameButton.Text" xml:space="preserve">
     <value>Rinomina</value>
   </data>
   <data name="SetAsDefaultCheckbox.Text" xml:space="preserve">
     <value>Imposta come predefinito</value>
+  </data>
+  <data name="ForgetButton.Text" xml:space="preserve">
+    <value>Dimentica</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Gestione Istanze Di Gioco</value>

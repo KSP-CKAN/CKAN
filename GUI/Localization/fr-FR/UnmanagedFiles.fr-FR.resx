@@ -130,7 +130,7 @@
     <value>Tout réduire</value>
   </data>
   <data name="ResetCollapseButton.Text" xml:space="preserve">
-    <value>Réinitialiser</value>
+    <value>Rétablir</value>
   </data>
   <data name="ShowInFolderButton.Text" xml:space="preserve">
     <value>Afficher dans le Dossier</value>

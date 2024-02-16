@@ -141,6 +141,9 @@
   <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
     <value>Importa mods &amp;scaricate...</value>
   </data>
+  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve">
+    <value>Controlla le &amp;raccomandazioni</value>
+  </data>
   <data name="ExitToolButton.Text" xml:space="preserve">
     <value>&amp;Uscita</value>
   </data>
@@ -152,6 +155,9 @@
   </data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Plugin CKAN</value>
+  </data>
+  <data name="preferredHostsToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Host Preferiti</value>
   </data>
   <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Filtri Di Installazione</value>
@@ -204,6 +210,12 @@
   <data name="EditModpackTabPage.Text" xml:space="preserve">
     <value>Modifica ModPack</value>
   </data>
+  <data name="UnmanagedFilesTabPage.Text" xml:space="preserve">
+    <value>File Non Gestiti</value>
+  </data>
+  <data name="InstallationHistoryTabPage.Text" xml:space="preserve">
+    <value>Cronologia Installazioni</value>
+  </data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve">
     <value>CKAN</value>
   </data>
@@ -233,5 +245,11 @@
   </data>
   <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
     <value>Tempo di &amp;Gioco...</value>
+  </data>
+  <data name="viewUnmanagedFilesStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;File Non Gestiti...</value>
+  </data>
+  <data name="installationHistoryStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Cronologia Installazioni...</value>
   </data>
 </root>

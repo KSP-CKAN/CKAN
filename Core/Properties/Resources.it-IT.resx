@@ -209,6 +209,13 @@ Installa il pacchetto `mono-complete` o un pacchetto equivalente per il tuo sist
   <data name="NetRepoInconsistenciesHeader" xml:space="preserve">
     <value>Sono state rilevate le seguenti incoerenze:</value>
   </data>
+  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve">
+    <value>Caricamento dei moduli dal repository scaricato {0}...</value>
+    <comment>Should contain UserProgressDownloadSubstring from CmdLine</comment>
+  </data>
+  <data name="NetRepoLoadedDownloadCounts" xml:space="preserve">
+    <value>Numero di download caricato dal repository {0}</value>
+  </data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve">
     <value>`any_of` non dovrebbe essere combinato con `{0}`</value>
   </data>
@@ -217,6 +224,9 @@ Installa il pacchetto `mono-complete` o un pacchetto equivalente per il tuo sist
   </data>
   <data name="RegistryFileNotRemoved" xml:space="preserve">
     <value>{0} è registrato in {1} ma non è stato rimosso!</value>
+  </data>
+  <data name="RegistryDefaultDLCAbstract" xml:space="preserve">
+    <value>Un pacchetto d'espansione ufficiale</value>
   </data>
   <data name="RegistryManagerDirectoryNotFound" xml:space="preserve">
     <value>Impossibile trovare una cartella in {0}</value>
@@ -456,8 +466,11 @@ Sovrascrivere?</value>
   <data name="ModuleInstallerAboutToUpgrade" xml:space="preserve">
     <value>Stai per aggiornare:</value>
   </data>
+  <data name="ModuleInstallerUpgradeInstallingResuming" xml:space="preserve">
+    <value> * Installa: {0} {1} ({2}, {3} rimanenti)</value>
+  </data>
   <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve">
-    <value> * Installazione: {0} {1} ({2}, {3})</value>
+    <value> * Installa: {0} {1} ({2}, {3} rimanenti)</value>
   </data>
   <data name="ModuleInstallerUpgradeInstallingCached" xml:space="preserve">
     <value> * Installazione: {0} {1} (in cache)</value>
@@ -473,6 +486,9 @@ Sovrascrivere?</value>
   </data>
   <data name="ModuleInstallerUpgradeUpgradingCached" xml:space="preserve">
     <value> * Aggiornamento: {0} {1} a {2} (in cache)</value>
+  </data>
+  <data name="ModuleInstallerUpgradeAutoRemoving" xml:space="preserve">
+    <value> * Rimozione automatica: {0} {1}</value>
   </data>
   <data name="ModuleInstallerUpgradeUserDeclined" xml:space="preserve">
     <value>L'utente ha rifiutato l'elenco degli aggiornamenti</value>
@@ -519,6 +535,13 @@ Rimuovilo manualmente prima di provare a installarlo.</value>
   </data>
   <data name="KrakenInconsistenciesHeader" xml:space="preserve">
     <value>Sono state rilevate le seguenti incoerenze:</value>
+  </data>
+  <data name="KrakenFailedToDeleteFiles" xml:space="preserve">
+    <value>Impossibile sovrascrivere o cancellare i file per {0}:
+
+{1}
+
+Se il gioco è ancora in esecuzione, chiuderlo e riprovare. Altrimenti controllare i permessi.</value>
   </data>
   <data name="KrakenMissingDependency" xml:space="preserve">
     <value>{0} dipendenza mancante {1}</value>
@@ -576,6 +599,9 @@ Libera spazio su quel dispositivo o modifica le impostazioni per utilizzare un'a
   <data name="RelationshipResolverConflictsWith" xml:space="preserve">
     <value>{0} conflitti con {1}</value>
   </data>
+  <data name="RelationshipResolverConflictingModDescription" xml:space="preserve">
+    <value>{0} (necessario per: {1})</value>
+  </data>
   <data name="RelationshipResolverRequiredButResolver" xml:space="preserve">
     <value>{0} richiesta, ma una versione incompatibile è presente nel resolver</value>
   </data>
@@ -596,6 +622,9 @@ Libera spazio su quel dispositivo o modifica le impostazioni per utilizzare un'a
   </data>
   <data name="RelationshipResolverUserReason" xml:space="preserve">
     <value>Richiesta dall'utente</value>
+  </data>
+  <data name="RelationshipResolverDependencyRemoved" xml:space="preserve">
+    <value>Dipendenza rimossa</value>
   </data>
   <data name="RelationshipResolverNoLongerUsedReason" xml:space="preserve">
     <value>Auto-installato, a seconda dei moduli rimossi</value>

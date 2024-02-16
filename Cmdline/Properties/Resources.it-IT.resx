@@ -149,6 +149,9 @@ Usa "ckan instance help" per ottenere aiuto con questa configurazione.</value>
     <value>Stai cercando di eseguire CKAN con i privilegi di amministratore.
 È una pessima idea e non c'è assolutamente alcun motivo per farlo. Utilizza CKAN da un account utente (o usa --asroot se vuoi correre il rischio).</value>
   </data>
+  <data name="OptionsPressAnyKey" xml:space="preserve">
+    <value>Premi un tasto per uscire...</value>
+  </data>
   <data name="OptionsRootWarning" xml:space="preserve">
     <value>Attenzione: Stai eseguendo CKAN come amministratore!</value>
   </data>
@@ -210,6 +213,10 @@ Aggiornamento consigliato!</value>
   <data name="UserSelectionTooSmall" xml:space="preserve">
     <value>Il numero inserito è troppo piccolo</value>
   </data>
+  <data name="UserProgressDownloadSubstring" xml:space="preserve">
+    <value>download</value>
+    <comment>Progress update messages containing this will display a percentage and overwrite the same line on the screen</comment>
+  </data>
   <data name="AuthTokenHostHeader" xml:space="preserve">
     <value>Host</value>
   </data>
@@ -218,6 +225,9 @@ Aggiornamento consigliato!</value>
   </data>
   <data name="AuthTokenHelpSummary" xml:space="preserve">
     <value>Gestione dei gettoni di autenticazione</value>
+  </data>
+  <data name="AuthTokenInvalidHostName" xml:space="preserve">
+    <value>Nome host non valido: {0}</value>
   </data>
   <data name="AvailableHeader" xml:space="preserve">
     <value>Moduli compatibili con {0} {1}</value>
@@ -339,6 +349,9 @@ Prova ad aggiungere manualmente la nuova istanza con "ckan instance add".
   </data>
   <data name="InstanceFakeVersion" xml:space="preserve">
     <value>Controllare l'argomento della versione - Formattarlo come Maj.Min.Patch[.Build] - ad esempio 1.6.0 o 1.2.2.1622</value>
+  </data>
+  <data name="InstanceFakeBadGame" xml:space="preserve">
+    <value>Il gioco {0} non esiste!</value>
   </data>
   <data name="InstanceFakeBadGameVersion" xml:space="preserve">
     <value>Non è stato possibile trovare una versione di gioco valida per il tuo inserimento.
@@ -550,8 +563,14 @@ Prova con `ckan list` per avere un elenco delle mod installate.</value>
   <data name="RepoAvailableFailed" xml:space="preserve">
     <value>Impossibile recuperare l'elenco master di repository CKAN da {0}</value>
   </data>
-  <data name="RepoListHeader" xml:space="preserve">
-    <value>Elencare tutti i repository conosciuti:</value>
+  <data name="RepoListPriorityHeader" xml:space="preserve">
+    <value>Priorità</value>
+  </data>
+  <data name="RepoListNameHeader" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="RepoListURLHeader" xml:space="preserve">
+    <value>URL</value>
   </data>
   <data name="RepoAddNotFound" xml:space="preserve">
     <value>Il nome {0} non è stato trovato nell'elenco principale, fornisci il nome e l'url</value>
@@ -559,8 +578,17 @@ Prova con `ckan list` per avere un elenco delle mod installate.</value>
   <data name="RepoAddDuplicate" xml:space="preserve">
     <value>Una repository con il nome "{0}" esiste già, annulla</value>
   </data>
+  <data name="RepoAddDuplicateURL" xml:space="preserve">
+    <value>Il repository con l'URL "{0}" esiste già, annullamento</value>
+  </data>
   <data name="RepoAdded" xml:space="preserve">
     <value>Aggiunta repository '{0}' - '{1}'</value>
+  </data>
+  <data name="RepoPriorityNotFound" xml:space="preserve">
+    <value>Impossibile trovare il repository con nome "{0}", annullamento</value>
+  </data>
+  <data name="RepoPriorityInvalid" xml:space="preserve">
+    <value>Priorità non valida: {0}, i valori devono essere compresi tra 0 e {1}</value>
   </data>
   <data name="RepoForgetNotFound" xml:space="preserve">
     <value>Impossibile trovare il repository con nome "{0}", annullamento</value>
@@ -684,6 +712,9 @@ Prova con `ckan list` per avere un elenco delle mod installate.</value>
   </data>
   <data name="ShowVersionFile" xml:space="preserve">
     <value>  Versione del file: {0}</value>
+  </data>
+  <data name="ShowSpaceWarpInfo" xml:space="preserve">
+    <value>  File SWInfo:	{0}</value>
   </data>
   <data name="ShowFileName" xml:space="preserve">
     <value>Nome del file: {0}</value>

@@ -117,34 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RecommendedModsCancelButton.Text" xml:space="preserve">
-    <value>取消</value>
+  <data name="TimestampColumn.Text" xml:space="preserve">
+    <value>Timestamp</value>
   </data>
-  <data name="RecommendedModsContinueButton.Text" xml:space="preserve">
-    <value>続ける</value>
+  <data name="NotInstalledGroup.Header" xml:space="preserve">
+    <value>Attualmente non installato</value>
   </data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve">
-    <value>全て選択(解除)</value>
+  <data name="InstalledGroup.Header" xml:space="preserve">
+    <value>Attualmente installata</value>
   </data>
-  <data name="RecommendedDialogLabel.Text" xml:space="preserve">
-    <value>選択されているModは次のModに推奨、提案、またはサポートされています：</value>
+  <data name="NameColumn.Text" xml:space="preserve">
+    <value>Nome</value>
   </data>
-  <data name="RecommendationsGroup.Header" xml:space="preserve">
-    <value>推奨</value>
+  <data name="VersionColumn.Text" xml:space="preserve">
+    <value>Versione</value>
   </data>
-  <data name="SuggestionsGroup.Header" xml:space="preserve">
-    <value>提案</value>
+  <data name="AuthorColumn.Text" xml:space="preserve">
+    <value>Autori</value>
   </data>
-  <data name="SupportedByGroup.Header" xml:space="preserve">
-    <value>サポートされている (選択済みのModが推奨しているわけではありません)</value>
+  <data name="DescriptionColumn.Text" xml:space="preserve">
+    <value>Descrizione</value>
   </data>
-  <data name="ModNameHeader.Text" xml:space="preserve">
-    <value>Mod</value>
+  <data name="SelectInstallMessage.Text" xml:space="preserve">
+    <value>Fare clic su un timestamp a sinistra per vedere quali mod sono stati installati</value>
   </data>
-  <data name="SourceModulesHeader.Text" xml:space="preserve">
-    <value>関係するMod</value>
+  <data name="NoModsMessage.Text" xml:space="preserve">
+    <value>Nessuna mod installata</value>
   </data>
-  <data name="DescriptionHeader.Text" xml:space="preserve">
-    <value>Mod詳細</value>
+  <data name="InstallButton.Text" xml:space="preserve">
+    <value>Installa</value>
+  </data>
+  <data name="OKButton.Text" xml:space="preserve">
+    <value>OK</value>
   </data>
 </root>

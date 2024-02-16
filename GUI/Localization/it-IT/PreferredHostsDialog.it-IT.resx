@@ -117,34 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RecommendedModsCancelButton.Text" xml:space="preserve">
-    <value>取消</value>
+  <data name="ExplanationLabel.Text" xml:space="preserve">
+    <value>Se un modulo ha più URL di download, essi saranno prioritari da host in base all'elenco a destra.</value>
   </data>
-  <data name="RecommendedModsContinueButton.Text" xml:space="preserve">
-    <value>続ける</value>
+  <data name="AvailableHostsLabel.Text" xml:space="preserve">
+    <value>Host disponibili (per popolarità):</value>
   </data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve">
-    <value>全て選択(解除)</value>
+  <data name="PreferredHostsLabel.Text" xml:space="preserve">
+    <value>Host preferiti (per priorità):</value>
   </data>
-  <data name="RecommendedDialogLabel.Text" xml:space="preserve">
-    <value>選択されているModは次のModに推奨、提案、またはサポートされています：</value>
-  </data>
-  <data name="RecommendationsGroup.Header" xml:space="preserve">
-    <value>推奨</value>
-  </data>
-  <data name="SuggestionsGroup.Header" xml:space="preserve">
-    <value>提案</value>
-  </data>
-  <data name="SupportedByGroup.Header" xml:space="preserve">
-    <value>サポートされている (選択済みのModが推奨しているわけではありません)</value>
-  </data>
-  <data name="ModNameHeader.Text" xml:space="preserve">
-    <value>Mod</value>
-  </data>
-  <data name="SourceModulesHeader.Text" xml:space="preserve">
-    <value>関係するMod</value>
-  </data>
-  <data name="DescriptionHeader.Text" xml:space="preserve">
-    <value>Mod詳細</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Host Preferiti</value>
   </data>
 </root>
