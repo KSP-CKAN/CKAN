@@ -50,9 +50,10 @@ namespace CKAN.GUI
                     }
                     Main.Instance.ManageMods.MarkModForInstall(Identifier, selectedMod == null);
 
+                    var inst = Main.Instance.CurrentInstance;
                     Main.Instance.ManageMods.UpdateChangeSetAndConflicts(
-                        Main.Instance.Manager.CurrentInstance,
-                        RegistryManager.Instance(Main.Instance.Manager.CurrentInstance,
+                        inst,
+                        RegistryManager.Instance(inst,
                             ServiceLocator.Container.Resolve<RepositoryDataManager>()).registry);
 
                     OnPropertyChanged();
@@ -122,8 +123,8 @@ namespace CKAN.GUI
         /// otherwise false.
         /// </returns>
         public bool IsInstallable()
-           // Compatible mods are installable, but so are mods that are already installed
-           => !IsIncompatible || IsInstalled;
+            // Compatible mods are installable, but so are mods that are already installed
+            => !IsIncompatible || IsInstalled;
 
         public string Version
             => IsInstalled ? InstalledVersion : LatestVersion;
@@ -218,13 +219,13 @@ namespace CKAN.GUI
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="current_game_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(string                identifier,
-                      RepositoryDataManager repoDataMgr,
-                      IRegistryQuerier      registry,
-                      GameVersionCriteria   current_game_version,
-                      bool? incompatible,
-                      bool  hideEpochs,
-                      bool  hideV)
+        private GUIMod(string                identifier,
+                       RepositoryDataManager repoDataMgr,
+                       IRegistryQuerier      registry,
+                       GameVersionCriteria   current_game_version,
+                       bool? incompatible,
+                       bool  hideEpochs,
+                       bool  hideV)
         {
             Identifier     = identifier;
             IsAutodetected = registry.IsAutodetected(identifier);
@@ -330,7 +331,7 @@ namespace CKAN.GUI
                 ?? InstalledMod?.Module.Equals(SelectedMod)
                 // Both null
                 ?? true;
-            if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
+            if (IsInstalled && IsInstallChecked && HasUpdate && IsUpgradeChecked)
             {
                 yield return new ModUpgrade(Mod,
                                             GUIModChangeType.Update,
@@ -395,13 +396,16 @@ namespace CKAN.GUI
                 if (old_value != value)
                 {
                     update_cell.Value = value;
-                    SelectedMod = value ? LatestCompatibleMod : (SelectedMod ?? InstalledMod?.Module);
+                    SelectedMod = value ? LatestCompatibleMod
+                                        : IsAutodetected ? null
+                                                         : (SelectedMod ?? InstalledMod?.Module);
                 }
                 else if (!set_value_to.HasValue)
                 {
                     var isLatest = (LatestCompatibleMod?.Equals(selectedMod) ?? false);
                     SelectedMod = value ? LatestCompatibleMod
-                        : isLatest ? InstalledMod?.Module : SelectedMod;
+                                        : isLatest ? InstalledMod?.Module
+                                                   : SelectedMod;
                 }
             }
         }

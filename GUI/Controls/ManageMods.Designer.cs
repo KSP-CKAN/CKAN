@@ -154,7 +154,7 @@ namespace CKAN.GUI
             this.UpdateAllToolButton.Name = "UpdateAllToolButton";
             this.UpdateAllToolButton.Size = new System.Drawing.Size(232, 56);
             this.UpdateAllToolButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
-            this.UpdateAllToolButton.Click += new System.EventHandler(this.MarkAllUpdatesToolButton_Click);
+            this.UpdateAllToolButton.Click += new System.EventHandler(this.UpdateAllToolButton_Click);
             resources.ApplyResources(this.UpdateAllToolButton, "UpdateAllToolButton");
             //
             // ApplyToolButton

@@ -678,11 +678,9 @@ namespace CKAN
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
         private readonly List<CkanModule> user_requested_mods = new List<CkanModule>();
 
-        //TODO As the conflict detection gets more advanced there is a greater need to have messages in here
-        // as recreating them from reasons is no longer possible.
         private readonly List<ModPair> conflicts = new List<ModPair>();
         private readonly Dictionary<CkanModule, List<SelectionReason>> reasons =
-            new Dictionary<CkanModule, List<SelectionReason>>(new NameComparer());
+            new Dictionary<CkanModule, List<SelectionReason>>();
 
         private readonly IRegistryQuerier            registry;
         private readonly GameVersionCriteria         versionCrit;
