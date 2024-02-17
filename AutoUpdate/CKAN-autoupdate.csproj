@@ -20,6 +20,7 @@
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
     <TargetFrameworks>net48;net7.0-windows</TargetFrameworks>
     <UseWindowsForms Condition=" '$(TargetFramework)' == 'net7.0-windows' ">true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

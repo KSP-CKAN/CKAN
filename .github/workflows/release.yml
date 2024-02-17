@@ -29,6 +29,14 @@ jobs:
       - name: Run tests
         run: xvfb-run ./build test+only --configuration=Release --where="Category!=FlakyNetwork"
 
+      - name: Publish ckan.dll to NuGet
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        if: env.NUGET_API_KEY
+        run: |
+          curl -o nuget.exe -L 'https://dist.nuget.org/win-x86-commandline/v5.6.0/nuget.exe'
+          mono nuget.exe push _build/out/CKAN/Release/bin/*.nupkg ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -SkipDuplicate
+
       - name: Build dmg
         run: ./build osx --configuration=Release --exclusive
       - name: Build deb

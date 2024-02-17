@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using CKAN.Versioning;
+#if NETSTANDARD2_0
+using CKAN.Extensions;
+#endif
 
 namespace CKAN
 {
